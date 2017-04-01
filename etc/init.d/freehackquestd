@@ -4,6 +4,12 @@
 # Provides:          freehackquestd
 # Short-Description: Start daemon at boot time
 # Description:       Enable service provided by daemon.
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Should-Start:
+# Should-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
 ### END INIT INFO
 
 DAEMON_PATH="/usr/bin/freehackquestd"
@@ -15,7 +21,7 @@ case "$1" in
 start)
 	printf "%-50s" "Starting $NAME..."
 	DATE=`date +%Y%m%d-%H%M%S`
-	PID=`/usr/bin/freehackquestd -d > /var/log/freehackquestd.log 2> /var/log/freehackquestd-error.log & echo $!`
+	PID=`/usr/bin/freehackquestd -d > /var/log/freehackquestd/access.log 2> /var/log/freehackquestd/error.log & echo $!`
 	# echo "Saving PID" $PID " to " $PIDFILE
 	if [ -z $PID ]; then
 		printf "%s\n" "Fail"

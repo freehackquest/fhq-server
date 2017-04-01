@@ -1,4 +1,4 @@
-# FHQ Backend Deamon (Experimental)
+# FHQ Backend Deamon
 
 Backend for freehackquest.com on Qt and WebSockets
 
@@ -23,3 +23,9 @@ Backend for freehackquest.com on Qt and WebSockets
         $ sudo update-rc.d freehackquestd defaults
         $ sudo /etc/init.d/freehackquestd start
 
+or you can use
+
+		$ cp ./etc/freehackquestd/conf.ini.example ./etc/freehackquestd/conf.ini
+		$ ./install.sh
+		$ sudo nano /etc/freehackquestd/conf.ini
+		$ service freehackquestd restart
