@@ -1,9 +1,7 @@
 #ifndef CMD_HELLO_HANDLER_H
 #define CMD_HELLO_HANDLER_H
 
-#include "../interfaces/icmdhandler.h"
-#include "../interfaces/iwebsocketserver.h"
-
+#include <iserver.h>
 #include <QString>
 #include <QVariant>
 

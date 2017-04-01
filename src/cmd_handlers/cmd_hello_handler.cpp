@@ -1,4 +1,4 @@
-#include "cmd_hello_handler.h"
+#include "headers/cmd_hello_handler.h"
 
 QString CmdHelloHandler::cmd(){
 	return "hello";
@@ -37,4 +37,24 @@ void CmdHelloHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 	pWebSocketServer->sendMessage(pClient, jsonData);
+
+	QSqlDatabase db = *(pWebSocketServer->database());
+	QSqlQuery query(db);
+	query.prepare("SELECT * FROM `chatmessages` ORDER BY id DESC LIMIT 0,6");
+	query.exec();
+	QVector<QJsonObject> chats;
+	while (query.next()) {
+		QSqlRecord record = query.record();
+		QJsonObject jsonChat;
+		jsonChat["cmd"] = QJsonValue("chat");
+		jsonChat["type"] = QJsonValue("chat");
+		jsonChat["user"] = record.value("user").toString();
+		jsonChat["message"] = record.value("message").toString();
+		chats.push_back(jsonChat);
+	}
+	
+	for(int i = chats.size()-1; i >= 0; i--){
+		pWebSocketServer->sendMessage(pClient, chats[i]);
+	}
+	
 }

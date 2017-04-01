@@ -54,4 +54,11 @@ void CmdSendChatMessageHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
 	jsonData2["message"] = obj["message"];
 
 	pWebSocketServer->sendToAll(jsonData2);
+	
+	QSqlDatabase db = *(pWebSocketServer->database());
+	QSqlQuery query(db);
+	query.prepare("INSERT INTO chatmessages(user, message, dt) VALUES(:user,:message, NOW())");
+	query.bindValue(":user", username);
+	query.bindValue(":message", obj["message"].toString());
+	query.exec();
 }

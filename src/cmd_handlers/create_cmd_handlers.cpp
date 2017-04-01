@@ -2,7 +2,7 @@
 #include "cmd_addhint_handler.h"
 #include "headers/cmd_deletehint_handler.h"
 #include "cmd_getpublicinfo_handler.h"
-#include "cmd_hello_handler.h"
+#include "headers/cmd_hello_handler.h"
 #include "headers/cmd_hints_handler.h"
 #include "cmd_login_handler.h"
 #include "cmd_send_letters_to_subscribers_handler.h"

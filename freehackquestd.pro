@@ -42,6 +42,7 @@ SOURCES += \
 	src/updates/update0069.cpp \
 	src/updates/update0070.cpp \
 	src/updates/update0071.cpp \
+	src/updates/update0072.cpp \
 
 HEADERS += \
 	src/smtp/smtp.h \
@@ -58,7 +59,7 @@ HEADERS += \
 	src/cmd_handlers/cmd_addhint_handler.h \
 	src/cmd_handlers/headers/cmd_deletehint_handler.h \
 	src/cmd_handlers/cmd_getpublicinfo_handler.h \
-	src/cmd_handlers/cmd_hello_handler.h \
+	src/cmd_handlers/headers/cmd_hello_handler.h \
 	src/cmd_handlers/headers/cmd_hints_handler.h \
 	src/cmd_handlers/cmd_login_handler.h \
 	src/cmd_handlers/headers/cmd_sendchatmessage_handler.h \
@@ -74,4 +75,5 @@ HEADERS += \
 	src/updates/update0069.h \
 	src/updates/update0070.h \
 	src/updates/update0071.h \
+	src/updates/update0072.h \
 	
