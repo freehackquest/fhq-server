@@ -27,3 +27,7 @@
 *.exe
 *.out
 *.app
+
+Makefile
+tmp/*
+conf.ini

@@ -1,0 +1,10 @@
+[DATABASE]
+name=freehackquest
+user=freehackquest_u
+password=freehackquest_password_database
+
+[EMAIL]
+username=freehackquest@gmail.com
+password=somepass
+host=smtp.gmail.com
+port=465
