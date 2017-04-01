@@ -31,3 +31,7 @@
 Makefile
 tmp/*
 conf.ini
+freehackquestd
+
+var/log/freehackquestd/errors/*
+!var/log/freehackquestd/errors/.placeholder
