@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
 	QCoreApplication a(argc, argv);
 
     QCommandLineParser parser;
-    parser.setApplicationDescription("freehackquestd");
+    parser.setApplicationDescription("freehackquest-backend");
     parser.addHelpOption();
 
     QCommandLineOption dbgOption(QStringList() << "d" << "debug", QCoreApplication::translate("main", "Debug output [default: off]."));
@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
     parser.addOption(exportApiOption);
     
     QCommandLineOption portOption(QStringList() << "p" << "port",
-            QCoreApplication::translate("main", "Port for freehackquestd [default: 1234]."),
+            QCoreApplication::translate("main", "Port for freehackquest-backend [default: 1234]."),
             QCoreApplication::translate("main", "port"), QLatin1Literal("1234"));
     parser.addOption(portOption);
     parser.process(a);
@@ -47,8 +47,8 @@ int main(int argc, char** argv) {
     bool debug = parser.isSet(dbgOption);
     int port = parser.value(portOption).toInt();
 
-	if(!QFile::exists("/etc/freehackquestd/conf.ini")){
-		qDebug() << "Not found /etc/freehackquestd/conf.ini";
+	if(!QFile::exists("/etc/freehackquest-backend/conf.ini")){
+		qDebug() << "Not found /etc/freehackquest-backend/conf.ini";
 		return 0;
 	}
 

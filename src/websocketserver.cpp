@@ -14,9 +14,9 @@
 // ---------------------------------------------------------------------
 
 WebSocketServer::WebSocketServer(quint16 port, bool debug, QObject *parent) : QObject(parent) {
-	m_pWebSocketServer = new QWebSocketServer(QStringLiteral("freehackquestd"), QWebSocketServer::NonSecureMode, this);
+	m_pWebSocketServer = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::NonSecureMode, this);
 	m_debug = debug;
-	m_sFilename = "/etc/freehackquestd/conf.ini";
+	m_sFilename = "/etc/freehackquest-backend/conf.ini";
 	if(QFile::exists(m_sFilename)){
 		QSettings sett(m_sFilename, QSettings::IniFormat);
 		m_sDatabase_host = readStringFromSettings(sett, "DATABASE/host", "localhost");
@@ -52,7 +52,7 @@ WebSocketServer::WebSocketServer(quint16 port, bool debug, QObject *parent) : QO
 
     if (m_pWebSocketServer->listen(QHostAddress::Any, port)) {
         if (m_debug)
-            qDebug() << "freehackquestd listening on port" << port;
+            qDebug() << "freehackquest-backend listening on port" << port;
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnection);
         connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &WebSocketServer::closed);
         create_cmd_handlers(m_mapCmdHandlers);
