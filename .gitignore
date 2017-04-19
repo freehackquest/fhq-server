@@ -30,8 +30,11 @@
 
 Makefile
 tmp/*
+tmpdeb/*
 conf.ini
-freehackquestd
+freehackquest-backend
 
-var/log/freehackquestd/errors/*
-!var/log/freehackquestd/errors/.placeholder
+var/log/freehackquest-backend/errors/*
+!var/log/freehackquest-backend/errors/.placeholder
+*.deb
+lintian.log

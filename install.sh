@@ -1,8 +1,8 @@
 #!/bin/bash
 
-ln -s `pwd`/etc/freehackquestd /etc/freehackquestd
-ln -s `pwd`/etc/init.d/freehackquestd /etc/init.d/freehackquestd
-ln -s `pwd`/freehackquestd /usr/bin/freehackquestd
-ln -s `pwd`/var/log/freehackquestd /var/log/freehackquestd
-update-rc.d -f freehackquestd remove
-update-rc.d freehackquestd defaults
+ln -s `pwd`/etc/freehackquest-backend /etc/freehackquest-backend
+ln -s `pwd`/etc/init.d/freehackquestd /etc/init.d/freehackquest-backend
+ln -s `pwd`/freehackquestd /usr/bin/freehackquest-backend
+ln -s `pwd`/var/log/freehackquest-backend /var/log/freehackquest-backend
+update-rc.d -f freehackquest-backend remove
+update-rc.d freehackquest-backend defaults
