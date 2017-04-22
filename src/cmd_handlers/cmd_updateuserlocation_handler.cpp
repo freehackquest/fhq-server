@@ -57,7 +57,7 @@ void CmdUpdateUserLocationHandler::handle(QWebSocket *pClient, IWebSocketServer 
 		return;
 	}
 
-	int userid = vUserID.toInt(0);
+	int userid = vUserID.toInt();
 	if(userid == 0){
 		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::QuestIDMustBeNotZero());
 		return;

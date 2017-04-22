@@ -54,7 +54,7 @@ void CmdAddHintHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocket
 		return;
 	}
 
-	int questid = vQuestid.toInt(0);
+	int questid = vQuestid.toInt();
 	if(questid == 0){
 		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::QuestIDMustBeNotZero());
 		return;

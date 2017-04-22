@@ -46,8 +46,8 @@ void UpdateUserLocationTask::run(){
 			QString country = jsonObject["country"].toString();
 			QString region = jsonObject["regionName"].toString();
 			QString city = jsonObject["city"].toString();
-			double lat = jsonObject["lat"].toDouble(0);
-			double lon = jsonObject["lon"].toDouble(0);
+			double lat = jsonObject["lat"].toDouble();
+			double lon = jsonObject["lon"].toDouble();
 
 			qDebug().nospace() << "UpdateUserLocationTask (uid " << m_nUserID << ") update last_ip, city, region, country";
 

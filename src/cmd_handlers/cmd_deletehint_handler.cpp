@@ -53,7 +53,7 @@ void CmdDeleteHintHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		return;
 	}
 
-	int hintid = vHintid.toInt(0);
+	int hintid = vHintid.toInt();
 	if(hintid == 0){
 		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::HintIDMustBeNotZero());
 		return;
