@@ -70,7 +70,7 @@ void Smtp::sendMailBcc(const QString &from, const QStringList &bcc, const QStrin
     message.replace( QString::fromLatin1( "\r\n.\r\n" ),
     QString::fromLatin1( "\r\n..\r\n" ) );
 
-    qDebug().nospace().noquote() << "==== message ==== \n" << message << "\n==== message ====";
+    qDebug().nospace() << "==== message ==== \n" << message << "\n==== message ====";
 
     this->from = from;
     rcpt_list << bcc;
@@ -210,7 +210,7 @@ void Smtp::readyRead()
 
         //Apperantly for Google it is mandatory to have MAIL FROM and RCPT email formated the following way -> <email@gmail.com>
         if(m_bDebugMode){
-			qDebug().nospace().noquote() << "MAIL FROM:<" << from << ">";
+			qDebug().nospace() << "MAIL FROM:<" << from << ">";
 		}
         *t << "MAIL FROM:<" << from << ">\r\n";
         t->flush();
@@ -221,7 +221,7 @@ void Smtp::readyRead()
         //Apperantly for Google it is mandatory to have MAIL FROM and RCPT email formated the following way -> <email@gmail.com>
 		if(number_of_rcpt < rcpt_list.size()){
 			if(m_bDebugMode){
-				qDebug().nospace().noquote() << "MAIL TO:<" << rcpt_list.at(number_of_rcpt) << ">";
+				qDebug().nospace() << "MAIL TO:<" << rcpt_list.at(number_of_rcpt) << ">";
 			}
 			*t << "RCPT TO:<" << rcpt_list.at(number_of_rcpt) << ">\r\n"; //r
 			t->flush();	
@@ -236,7 +236,7 @@ void Smtp::readyRead()
     else if ( state == Data && responseLine == "250" )
     {
 		if(m_bDebugMode){
-			qDebug().nospace().noquote() << "DATA";
+			qDebug().nospace() << "DATA";
 		}
 			
         *t << "DATA\r\n";
