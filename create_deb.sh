@@ -85,7 +85,7 @@ echo "Source: $name
 Section: misc
 Priority: optional
 Maintainer: Evgenii Sopov <mrseakg@gmail.com>
-Depends: openjdk-7-jre
+Depends: mysql-server libqt5websockets5 libqt5network5 libqt5sql5 libqt5core5a libc6 libstdc++6 libgcc1 zlib1g libicu52 libglib2.0-0 libpcre3
 Version: $version
 Installed-Size: $size
 Homepage: https://github.com/freehackquest/backend

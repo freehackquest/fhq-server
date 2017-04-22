@@ -4,7 +4,7 @@
 # Provides:          freehackquest-backend
 # Short-Description: Start daemon at boot time
 # Description:       Enable service provided by daemon.
-# Required-Start:    $remote_fs $syslog
+# Required-Start:    $remote_fs $syslog $network mysql
 # Required-Stop:     $remote_fs $syslog
 # Should-Start:
 # Should-Stop:
