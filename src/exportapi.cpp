@@ -6,32 +6,32 @@ ExportAPI::ExportAPI(){
 };
 
 void ExportAPI::exporttocommandline(){
-	qDebug().nospace().noquote() << "# FreeHackQuest API (WebSocket port 1234)\n";
+	qDebug().nospace() << "# FreeHackQuest API (WebSocket port 1234)\n";
 	QMap<QString, ICmdHandler *> pHandlers;
 	create_cmd_handlers(pHandlers);
 	foreach( QString key, pHandlers.keys()){
 		ICmdHandler *pHandler = pHandlers.value(key);
-		qDebug().nospace().noquote() << "## Command `" << pHandler->cmd() << "`\n";
+		qDebug().nospace() << "## Command `" << pHandler->cmd() << "`\n";
 		
-		qDebug().nospace().noquote() << pHandler->short_description() << "\n";
+		qDebug().nospace() << pHandler->short_description() << "\n";
 		
-		qDebug().nospace().noquote() << "### Description\n";
-		qDebug().nospace().noquote() << pHandler->description() << "\n";
+		qDebug().nospace() << "### Description\n";
+		qDebug().nospace() << pHandler->description() << "\n";
 				
-		qDebug().nospace().noquote() << "### Access\n";
-		qDebug().nospace().noquote() << " * " << (pHandler->accessUnauthorized() ? "Allowed" : "Denied") << " access unauthorized requests";
-		qDebug().nospace().noquote() << " * " << (pHandler->accessUser() ? "Allowed" : "Denied") << " access user requests";
-		qDebug().nospace().noquote() << " * " << (pHandler->accessTester() ? "Allowed" : "Denied") << " access tester requests";
-		qDebug().nospace().noquote() << " * " << (pHandler->accessAdmin() ? "Allowed" : "Denied") << " access admin requests";
-		qDebug().nospace().noquote() << "\n";
+		qDebug().nospace() << "### Access\n";
+		qDebug().nospace() << " * " << (pHandler->accessUnauthorized() ? "Allowed" : "Denied") << " access unauthorized requests";
+		qDebug().nospace() << " * " << (pHandler->accessUser() ? "Allowed" : "Denied") << " access user requests";
+		qDebug().nospace() << " * " << (pHandler->accessTester() ? "Allowed" : "Denied") << " access tester requests";
+		qDebug().nospace() << " * " << (pHandler->accessAdmin() ? "Allowed" : "Denied") << " access admin requests";
+		qDebug().nospace() << "\n";
 		
 		QStringList errors = pHandler->errors();
 		if(errors.size() > 0){
-			qDebug().nospace().noquote() << "### Errors\n";
+			qDebug().nospace() << "### Errors\n";
 			for(int i = 0; i < errors.size(); i++){
-				qDebug().nospace().noquote() << " * " << errors.at(i);
+				qDebug().nospace() << " * " << errors.at(i);
 			}
-			qDebug().nospace().noquote() << "\n";
+			qDebug().nospace() << "\n";
 		}
 	}
 };

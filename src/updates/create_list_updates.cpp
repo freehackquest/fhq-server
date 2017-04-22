@@ -44,7 +44,7 @@ void tryUpdateDatabase(QSqlDatabase *pDatabase){
 		for(int i = 0; i < vUpdates.size(); i++){
 			IUpdate* pUpdate = vUpdates[i];
 			if(last_version == pUpdate->from_version()){
-				qDebug().nospace().noquote() << "Installing update " << pUpdate->from_version() << " -> " << pUpdate->version() << ": " << pUpdate->name();
+				qDebug().nospace() << "Installing update " << pUpdate->from_version() << " -> " << pUpdate->version() << ": " << pUpdate->name();
 				last_version = pUpdate->version();
 				bHasUpdates = true;
 				pUpdate->update(db);

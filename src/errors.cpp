@@ -11,14 +11,14 @@
 void Errors::WriteServerError(QString errorInfo){
 	QDir dir("/var/log/freehackquestd/errors");
 	if(!dir.exists()){
-		qDebug().nospace().noquote() << dir.absolutePath() << " did not found";
-		qDebug().nospace().noquote() << errorInfo;
+		qDebug().nospace() << dir.absolutePath() << " did not found";
+		qDebug().nospace() << errorInfo;
 		return;
 	}
 	QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd");
 	if(!dir.exists(date) && !dir.mkdir(date)){
-		qDebug().nospace().noquote() << dir.absolutePath() << " could not create dir " << date;
-		qDebug().nospace().noquote() << errorInfo;
+		qDebug().nospace() << dir.absolutePath() << " could not create dir " << date;
+		qDebug().nospace() << errorInfo;
 		return;
 	}
 	dir.cd(date);
@@ -28,8 +28,8 @@ void Errors::WriteServerError(QString errorInfo){
     errorf.open(QIODevice::WriteOnly | QIODevice::Text);
 
     if(!errorf.isOpen()){
-        qDebug().nospace().noquote() << dir.absolutePath() + '/' + time << " could not openfile ";
-		qDebug().nospace().noquote() << errorInfo;
+        qDebug().nospace() << dir.absolutePath() + '/' + time << " could not openfile ";
+		qDebug().nospace() << errorInfo;
 		return;
     }
     QTextStream outStream(&errorf);
