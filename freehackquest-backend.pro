@@ -43,6 +43,7 @@ SOURCES += \
 	src/updates/update0070.cpp \
 	src/updates/update0071.cpp \
 	src/updates/update0072.cpp \
+	src/updates/update0073.cpp \
 
 HEADERS += \
 	src/smtp/smtp.h \
@@ -76,4 +77,5 @@ HEADERS += \
 	src/updates/update0070.h \
 	src/updates/update0071.h \
 	src/updates/update0072.h \
+	src/updates/update0073.h \
 	
