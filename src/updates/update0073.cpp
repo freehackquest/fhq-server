@@ -23,8 +23,8 @@ void Update0073::update(QSqlDatabase &db){
 	query.prepare(
 		"CREATE TABLE IF NOT EXISTS `users_captcha` ("
 		"	  `id` int(11) NOT NULL AUTO_INCREMENT,"
-		"	  `captcha_uuid` varchar(10) NOT NULL,"
-		"	  `captcha_val` varchar(255) NOT NULL,"
+		"	  `captcha_uuid` varchar(127) NOT NULL,"
+		"	  `captcha_val` varchar(127) NOT NULL,"
 		"	  `dt_expired` datetime NOT NULL,"
 		"	  PRIMARY KEY (`id`)"
 		") ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
