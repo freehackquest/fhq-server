@@ -34,6 +34,7 @@ SOURCES += \
 	src/cmd_handlers/cmd_sendchatmessage_handler.cpp \
 	src/cmd_handlers/cmd_send_letters_to_subscribers_handler.cpp \
 	src/cmd_handlers/cmd_users_handler.cpp \
+	src/cmd_handlers/cmd_writeups_handler.cpp \
 	src/cmd_handlers/cmd_user_handler.cpp \
 	src/cmd_handlers/cmd_classbook_handler.cpp \
 	src/cmd_handlers/cmd_updateuserlocation_handler.cpp \
@@ -78,6 +79,7 @@ HEADERS += \
 	src/cmd_handlers/headers/cmd_sendchatmessage_handler.h \
 	src/cmd_handlers/cmd_send_letters_to_subscribers_handler.h \
 	src/cmd_handlers/cmd_users_handler.h \
+	src/cmd_handlers/headers/cmd_writeups_handler.h \
 	src/cmd_handlers/cmd_user_handler.h \
 	src/cmd_handlers/headers/cmd_classbook_handler.h \
 	src/cmd_handlers/headers/cmd_updateuserlocation_handler.h \

@@ -23,7 +23,7 @@ void Update0075::update(QSqlDatabase &db){
 		"	  `id` int(11) NOT NULL AUTO_INCREMENT,"
 		"	  `questid` int(11) NOT NULL,"
 		"	  `type` varchar(64) NOT NULL,"
-		"	  `link` varchar(256) NOT NULL,"
+		"	  `link` varchar(1024) NOT NULL,"
 		"	  `text` varchar(4048) NOT NULL,"
 		"	  `dt` datetime NOT NULL,"
 		"	  PRIMARY KEY (`id`)"
