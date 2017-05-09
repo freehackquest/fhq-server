@@ -36,5 +36,7 @@ freehackquest-backend
 
 var/log/freehackquest-backend/errors/*
 !var/log/freehackquest-backend/errors/.placeholder
+!usr/share/doc/freehackquest-backend
+
 *.deb
 lintian.log
