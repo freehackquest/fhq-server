@@ -25,6 +25,7 @@ cp -R "LICENSE" "tmpdeb/usr/share/doc/freehackquest-backend/copyright"
 
 mkdir "tmpdeb/usr/bin"
 cp "freehackquest-backend" "tmpdeb/usr/bin/freehackquest-backend"
+strip -U -R -o "tmpdeb/usr/bin/freehackquest-backend" "tmpdeb/usr/bin/freehackquest-backend"
 cp -R etc tmpdeb/
 cp -R var tmpdeb/
 rm -rf "tmpdeb/etc/freehackquestd/conf.ini"
@@ -85,7 +86,7 @@ echo "Source: $name
 Section: misc
 Priority: optional
 Maintainer: Evgenii Sopov <mrseakg@gmail.com>
-Depends: mysql-server libqt5websockets5 libqt5network5 libqt5sql5 libqt5core5a libc6 libstdc++6 libgcc1 zlib1g libicu52 libglib2.0-0 libpcre3
+Depends: mysql-server, libqt5websockets5, libqt5network5, libqt5sql5, libqt5core5a, libc6, libstdc++6, libgcc1, zlib1g, libicu52, libglib2.0-0, libpcre3
 Version: $version
 Installed-Size: $size
 Homepage: https://github.com/freehackquest/backend

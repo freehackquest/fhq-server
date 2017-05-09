@@ -5,6 +5,7 @@ QT += core sql network websockets
 QT -= gui
 
 CONFIG   += console
+CONFIG   += release
 CONFIG   -= app_bundle
 OBJECTS_DIR = tmp/
 MOC_DIR = tmp/
