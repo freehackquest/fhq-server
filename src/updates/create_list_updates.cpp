@@ -14,6 +14,7 @@
 #include "update0072.h"
 #include "update0073.h"
 #include "update0074.h"
+#include "update0075.h"
 
 void create_list_updates(QVector<IUpdate *> &vUpdates){
 	vUpdates.push_back(new Database0060());
@@ -31,6 +32,7 @@ void create_list_updates(QVector<IUpdate *> &vUpdates){
 	vUpdates.push_back(new Update0072());
 	vUpdates.push_back(new Update0073());
 	vUpdates.push_back(new Update0074());
+	vUpdates.push_back(new Update0075());
 }
 
 void tryUpdateDatabase(QSqlDatabase *pDatabase){
