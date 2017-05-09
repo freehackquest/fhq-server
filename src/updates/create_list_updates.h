@@ -4,9 +4,6 @@
 #include "../interfaces/iupdate.h"
 #include <QVector>
 #include <QDebug>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QSqlRecord>
 
 void create_list_updates(QVector<IUpdate *> &vUpdates);
 void tryUpdateDatabase(QSqlDatabase *pDatabase);

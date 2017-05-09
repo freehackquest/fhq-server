@@ -2,7 +2,11 @@
 #define INTERFACES_IUPDATE_H
 
 #include <QString>
+#include <QVariant>
 #include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QSqlError>
 
 class IUpdate {
 	public:
