@@ -42,6 +42,8 @@ SOURCES += \
 	src/updates/update0062.cpp \
 	src/updates/update0063.cpp \
 	src/updates/update0064.cpp \
+	src/updates/update0065.cpp \
+	src/updates/update0066.cpp \
 	src/updates/update0067.cpp \
 	src/updates/update0068.cpp \
 	src/updates/update0069.cpp \
@@ -80,6 +82,8 @@ HEADERS += \
 	src/updates/update0062.h \
 	src/updates/update0063.h \
 	src/updates/update0064.h \
+	src/updates/update0065.h \
+	src/updates/update0066.h \
 	src/updates/update0067.h \
 	src/updates/update0068.h \
 	src/updates/update0069.h \

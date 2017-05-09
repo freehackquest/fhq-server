@@ -3,6 +3,8 @@
 #include "update0062.h"
 #include "update0063.h"
 #include "update0064.h"
+#include "update0065.h"
+#include "update0066.h"
 #include "update0067.h"
 #include "update0068.h"
 #include "update0069.h"
@@ -16,6 +18,8 @@ void create_list_updates(QVector<IUpdate *> &vUpdates){
 	vUpdates.push_back(new Update0062());
 	vUpdates.push_back(new Update0063());
 	vUpdates.push_back(new Update0064());
+	vUpdates.push_back(new Update0065());
+	vUpdates.push_back(new Update0066());
 	vUpdates.push_back(new Update0067());
 	vUpdates.push_back(new Update0068());
 	vUpdates.push_back(new Update0069());
