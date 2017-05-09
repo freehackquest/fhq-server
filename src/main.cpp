@@ -23,9 +23,6 @@ int main(int argc, char** argv) {
     QCommandLineParser parser;
     parser.setApplicationDescription("freehackquest-backend");
     parser.addHelpOption();
-
-    QCommandLineOption dbgOption(QStringList() << "d" << "debug", QCoreApplication::translate("main", "Debug output [default: off]."));
-    parser.addOption(dbgOption);
     
     QCommandLineOption exportApiOption(QStringList() << "e" << "export-api", QCoreApplication::translate("main", "Export API"));
     parser.addOption(exportApiOption);
@@ -36,10 +33,10 @@ int main(int argc, char** argv) {
     QCommandLineOption prepareDebOption(QStringList() << "pd" << "prepare-deb", QCoreApplication::translate("main", "Prepare Deb Package"));
     parser.addOption(prepareDebOption);
     
-    QCommandLineOption portOption(QStringList() << "p" << "port",
+    /*QCommandLineOption portOption(QStringList() << "p" << "port",
             QCoreApplication::translate("main", "Port for freehackquest-backend [default: 1234]."),
             QCoreApplication::translate("main", "port"), QLatin1Literal("1234"));
-    parser.addOption(portOption);
+    parser.addOption(portOption);*/
     parser.process(a);
     
     bool version = parser.isSet(versionOption);
@@ -62,8 +59,8 @@ int main(int argc, char** argv) {
 		return 0;
 	}
     
-    bool debug = parser.isSet(dbgOption);
-    int port = parser.value(portOption).toInt();
+    // bool debug = parser.isSet(dbgOption);
+    // int port = parser.value(portOption).toInt();
 
 	if(!QFile::exists("/etc/freehackquest-backend/conf.ini")){
 		qDebug() << "Not found /etc/freehackquest-backend/conf.ini";
@@ -71,7 +68,7 @@ int main(int argc, char** argv) {
 	}
 
 	QThreadPool::globalInstance()->setMaxThreadCount(5);
-    WebSocketServer *pServer = new WebSocketServer(port, debug);
+    WebSocketServer *pServer = new WebSocketServer();
     QObject::connect(pServer, &WebSocketServer::closed, &a, &QCoreApplication::quit);
     
     // TODO redesign to check config

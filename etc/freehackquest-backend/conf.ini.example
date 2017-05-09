@@ -1,4 +1,5 @@
 [DATABASE]
+host=localhost
 name=freehackquest
 user=freehackquest_u
 password=freehackquest_password_database
@@ -8,3 +9,10 @@ username=freehackquest@gmail.com
 password=somepass
 host=smtp.gmail.com
 port=465
+
+[SERVER]
+port = 1234;
+ssl_on = false
+ssl_port = 4613;
+ssl_key_file = /etc/ssl/private/localhost.key
+ssl_cert_file = /etc/ssl/certs/localhost.pem
