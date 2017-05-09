@@ -1,17 +1,13 @@
 #!/bin/bash
 
-# version="0.1.`git rev-list HEAD --count`"
-version="0.1.14"
 name="freehackquest-backend"
-
-echo $version > version
 
 # remove old deb package
 find ./ -name *.deb  | while read f; do  rm "$f"; done
 
 # clear old lintian log
 echo "" > "lintian.log"
-        
+
 # build latest version of binary
 qmake && make
 
@@ -32,6 +28,8 @@ cp -R var tmpdeb/
 cp -R usr tmpdeb/
 rm -rf "tmpdeb/etc/$name/conf.ini"
 
+./freehackquest-backend --prepare-deb
+
 cd tmpdeb
 
 find -type f | grep -re ~$ | while read f; do rm -rf "$f"; done
@@ -50,26 +48,6 @@ fi
 # config files
 echo "/etc/freehackquest-backend/conf.ini.example" >> DEBIAN/conffiles
 echo "/etc/init.d/freehackquest-backend" >> DEBIAN/conffiles
-
-# control
-# todo section ???
-# `arch`
-
-size=($(du -s ./))
-size=${size[0]}
-echo "Source: $name
-Section: misc
-Priority: optional
-Maintainer: Evgenii Sopov <mrseakg@gmail.com>
-Depends: mysql-server, libqt5websockets5, libqt5network5, libqt5sql5, libqt5sql5-mysql, libqt5core5a, libc6, libstdc++6, libgcc1, zlib1g, libicu52, libglib2.0-0, libpcre3
-Version: $version
-Installed-Size: $size
-Homepage: https://github.com/freehackquest/backend
-Package: $name
-Architecture: amd64
-Description: Backend for FreeHackQuest
-  This is an open source platform for competitions in computer security.
-" > DEBIAN/control
 
 # create md5sums
 echo -n "" > DEBIAN/md5sums
@@ -106,7 +84,7 @@ echo "from deb-pkg_create"
 fakeroot dpkg-deb --build tmpdeb ./
 
 # todo uncommneted:
-# rm -rf tmpdeb
+rm -rf tmpdeb
 
 #check
 lintian *.deb > lintian.log

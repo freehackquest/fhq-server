@@ -33,6 +33,9 @@ int main(int argc, char** argv) {
     QCommandLineOption versionOption(QStringList() << "v" << "version", QCoreApplication::translate("main", "Version"));
     parser.addOption(versionOption);
     
+    QCommandLineOption prepareDebOption(QStringList() << "pd" << "prepare-deb", QCoreApplication::translate("main", "Prepare Deb Package"));
+    parser.addOption(prepareDebOption);
+    
     QCommandLineOption portOption(QStringList() << "p" << "port",
             QCoreApplication::translate("main", "Port for freehackquest-backend [default: 1234]."),
             QCoreApplication::translate("main", "port"), QLatin1Literal("1234"));
@@ -41,8 +44,13 @@ int main(int argc, char** argv) {
     
     bool version = parser.isSet(versionOption);
     if(version){
-		
 		std::cout << PrepareTmpDebPackage::version().toStdString() << "\n";
+		return 0;
+	}
+	
+	bool prepare_deb = parser.isSet(prepareDebOption);
+    if(prepare_deb){
+		PrepareTmpDebPackage::prepare("","tmpdeb");
 		return 0;
 	}
     
