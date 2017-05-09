@@ -57,7 +57,11 @@ restart)
 	$0 stop
 	$0 start
 ;;
+force-reload)
+	$0 stop
+	$0 start
+;;
 *)
-	echo "Usage: $0 {status|start|stop|restart}"
+	echo "Usage: $0 {status|start|stop|restart|force-reload}"
 	exit 1
 esac
