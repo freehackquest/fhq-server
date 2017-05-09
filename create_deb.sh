@@ -1,6 +1,7 @@
 #!/bin/bash
 
-version="0.1.`git rev-list HEAD --count`"
+# version="0.1.`git rev-list HEAD --count`"
+version="0.1.14"
 name="freehackquest-backend"
 
 echo $version > version
@@ -19,50 +20,23 @@ rm -rf tmpdeb
 mkdir tmpdeb
 cp -R "DEBIAN" "tmpdeb/"
 mkdir -p "tmpdeb/usr/share/doc"
-mkdir -p "tmpdeb/usr/share/doc/freehackquest-backend"
-mkdir -p "tmpdeb/usr/share/freehackquest-backend/libs"
-cp -R "LICENSE" "tmpdeb/usr/share/doc/freehackquest-backend/copyright"
+mkdir -p "tmpdeb/usr/share/doc/$name"
+mkdir -p "tmpdeb/usr/share/$name/libs"
+cp -R "LICENSE" "tmpdeb/usr/share/doc/$name/copyright"
 
 mkdir "tmpdeb/usr/bin"
-cp "freehackquest-backend" "tmpdeb/usr/bin/freehackquest-backend"
-strip -U -R -o "tmpdeb/usr/bin/freehackquest-backend" "tmpdeb/usr/bin/freehackquest-backend"
+cp "$name" "tmpdeb/usr/bin/$name"
+strip -U -R -o "tmpdeb/usr/bin/$name" "tmpdeb/usr/bin/$name"
 cp -R etc tmpdeb/
 cp -R var tmpdeb/
-rm -rf "tmpdeb/etc/freehackquestd/conf.ini"
+cp -R usr tmpdeb/
+rm -rf "tmpdeb/etc/$name/conf.ini"
 
 cd tmpdeb
 
 find -type f | grep -re ~$ | while read f; do rm -rf "$f"; done
 
-if [ ! -d "usr" ]; then
-	mkdir "usr"
-fi
-
-if [ ! -d "usr/bin" ]; then
-	mkdir "usr/bin"
-fi
-
-if [ ! -d "usr/share" ]; then
-	mkdir "usr/share"  
-fi
-
-
-# find usr/share/bottlefs/ -name *~  | while read f; do  rm "$f"; done
-# find usr/share/bottlefs/ -name .gitignore  | while read f; do  rm "$f"; done
-
-# change log
-echo "$name ($version) unstable; urgency=low" > usr/share/doc/freehackquest-backend/changelog.Debian
-echo "" >> usr/share/doc/freehackquest-backend/changelog.Debian
-
-git log --oneline | while read line
-do
-	echo "  * $line " >> usr/share/doc/freehackquest-backend/changelog.Debian
-done
-echo "" >> usr/share/doc/freehackquest-backend/changelog.Debian
-echo " -- Evgenii Sopov <mrseakg@gmail.com> `date --rfc-2822` " >> usr/share/doc/freehackquest-backend/changelog.Debian
-echo "" >> usr/share/doc/freehackquest-backend/changelog.Debian
-
-gzip -9 usr/share/doc/freehackquest-backend/changelog.Debian
+gzip -9 usr/share/doc/$name/changelog.Debian
 
 # todo manual
 # gzip -9 "usr/share/man/man1/freehackquest-backend.1"
@@ -74,7 +48,8 @@ if [ ! -d "DEBIAN" ]; then
 fi
 
 # config files
-echo "etc/freehackquest-backend/conf.ini.example" >> DEBIAN/conffiles
+echo "/etc/freehackquest-backend/conf.ini.example" >> DEBIAN/conffiles
+echo "/etc/init.d/freehackquest-backend" >> DEBIAN/conffiles
 
 # control
 # todo section ???
@@ -86,13 +61,14 @@ echo "Source: $name
 Section: misc
 Priority: optional
 Maintainer: Evgenii Sopov <mrseakg@gmail.com>
-Depends: mysql-server, libqt5websockets5, libqt5network5, libqt5sql5, libqt5core5a, libc6, libstdc++6, libgcc1, zlib1g, libicu52, libglib2.0-0, libpcre3
+Depends: default-mysql-server, libqt5websockets5, libqt5network5, libqt5sql5, libqt5core5a, libc6, libstdc++6, libgcc1, zlib1g, libicu52, libglib2.0-0, libpcre3
 Version: $version
 Installed-Size: $size
 Homepage: https://github.com/freehackquest/backend
 Package: $name
 Architecture: amd64
 Description: Backend for FreeHackQuest
+  This is an open source platform for competitions in computer security.
 " > DEBIAN/control
 
 # create md5sums
