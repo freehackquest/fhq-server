@@ -1,17 +1,41 @@
 # FHQ Backend Deamon
 
-Backend for freehackquest.com on Qt and WebSockets
+Backend for FreeHackQuest on Qt and WebSockets
 
-## Requirements
+
+## Pre-builds
+
+Prebuild packages: http://dist.freehackquest.com/backend/
+
+	$ sudo apt update
+	$ wget http://dist.freehackquest.com/backend/debian-x64/freehackquest-backend_0.1.14_amd64.deb
+	$ su
+	# apt install mysql-server
+	# dpkg -i freehackquest-backend_0.1.14_amd64.deb
+	# apt -f install
+	# cp /etc/freehackquest-backend/conf.ini.example /etc/freehackquest-backend/conf.ini
+	# nano /etc/freehackquest-backend/conf.ini
+	
+Run for check database configuration:
+
+	# freehackquest -d
+	
+Run like service (or just reboot system):
+
+	# /etc/init.d/freehackquestd start
+
+## Build
+
+### Requirements
 
         $ sudo apt install g++ make qtchooser qt5-default libqt5websockets5 libqt5websockets5-dev libqt5sql5-mysql
 
-## Build
+### Build
 
         $ qmake
         $ make
 
-## configure
+### configure
 
         $ cp ./etc/freehackquestd/conf.ini.example ./etc/freehackquestd/conf.ini
         $ sudo ln -s `pwd`/etc/freehackquestd /etc/freehackquestd
@@ -23,7 +47,7 @@ Backend for freehackquest.com on Qt and WebSockets
         $ sudo update-rc.d freehackquestd defaults
         $ sudo /etc/init.d/freehackquestd start
 
-or you can use
+Or you can use
 
 		$ cp ./etc/freehackquestd/conf.ini.example ./etc/freehackquestd/conf.ini
 		$ ./install.sh
