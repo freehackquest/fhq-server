@@ -26,7 +26,7 @@ cp -R "LICENSE" "tmpdeb/usr/share/doc/$name/copyright"
 
 mkdir "tmpdeb/usr/bin"
 cp "$name" "tmpdeb/usr/bin/$name"
-strip -U -R -o "tmpdeb/usr/bin/$name" "tmpdeb/usr/bin/$name"
+strip -R -o "tmpdeb/usr/bin/$name" "tmpdeb/usr/bin/$name"
 cp -R etc tmpdeb/
 cp -R var tmpdeb/
 cp -R usr tmpdeb/
