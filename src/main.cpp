@@ -53,8 +53,14 @@ int main(int argc, char** argv) {
 	}
 
 	QThreadPool::globalInstance()->setMaxThreadCount(5);
-    WebSocketServer *server = new WebSocketServer(port, debug);
-    QObject::connect(server, &WebSocketServer::closed, &a, &QCoreApplication::quit);
+    WebSocketServer *pServer = new WebSocketServer(port, debug);
+    QObject::connect(pServer, &WebSocketServer::closed, &a, &QCoreApplication::quit);
     
+    // TODO redesign to check config
+    QSqlDatabase *db = pServer->database();
+    if (!db->open()){
+		return -1;
+	}
+	
 	return a.exec();
 }
