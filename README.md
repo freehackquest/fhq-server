@@ -8,10 +8,10 @@ Backend for FreeHackQuest on Qt and WebSockets
 Prebuild packages: http://dist.freehackquest.com/backend/
 
 	$ sudo apt update
-	$ wget http://dist.freehackquest.com/backend/debian-x64/freehackquest-backend_0.1.14_amd64.deb
+	$ wget "http://dist.freehackquest.com/backend/amd64/debian/8.0 (jessie)/freehackquest-backend_0.1.15_amd64.deb"
 	$ su
 	# apt install mysql-server
-	# dpkg -i freehackquest-backend_0.1.14_amd64.deb
+	# dpkg -i freehackquest-backend_0.1.15_amd64.deb
 	# apt -f install
 	# cp /etc/freehackquest-backend/conf.ini.example /etc/freehackquest-backend/conf.ini
 	# nano /etc/freehackquest-backend/conf.ini
