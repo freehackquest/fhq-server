@@ -35,17 +35,6 @@ QStringList CmdWriteUpsHandler::errors(){
 }
 
 void CmdWriteUpsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
-	UserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
-	
-	if(pUserToken == NULL){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::NotAuthorizedRequest());
-		return;
-	}
-
-	if(!pUserToken->isAdmin()){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::AllowedOnlyForAdmin());
-		return;
-	}
 
 	QJsonValueRef vQuestid = obj["questid"];
 	// bool bConvert = false;
