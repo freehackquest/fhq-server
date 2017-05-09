@@ -15,6 +15,7 @@
 #include <QString>
 #include "websocketserver.h"
 #include "exportapi.h"
+#include "prepare_tmp_deb_package.h"
 
 int main(int argc, char** argv) {
 	QCoreApplication a(argc, argv);
@@ -29,12 +30,21 @@ int main(int argc, char** argv) {
     QCommandLineOption exportApiOption(QStringList() << "e" << "export-api", QCoreApplication::translate("main", "Export API"));
     parser.addOption(exportApiOption);
     
+    QCommandLineOption versionOption(QStringList() << "v" << "version", QCoreApplication::translate("main", "Version"));
+    parser.addOption(versionOption);
+    
     QCommandLineOption portOption(QStringList() << "p" << "port",
             QCoreApplication::translate("main", "Port for freehackquest-backend [default: 1234]."),
             QCoreApplication::translate("main", "port"), QLatin1Literal("1234"));
     parser.addOption(portOption);
     parser.process(a);
     
+    bool version = parser.isSet(versionOption);
+    if(version){
+		
+		std::cout << PrepareTmpDebPackage::version().toStdString() << "\n";
+		return 0;
+	}
     
     bool exportApi = parser.isSet(exportApiOption);
     

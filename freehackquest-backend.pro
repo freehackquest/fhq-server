@@ -15,6 +15,7 @@ CONFIG += c++11 c++14
 INCLUDEPATH += src/interfaces
 
 SOURCES += \
+	src/prepare_tmp_deb_package.cpp \
 	src/main.cpp \
 	src/smtp/smtp.cpp \
 	src/websocketserver.cpp \
@@ -54,6 +55,7 @@ SOURCES += \
 	src/updates/update0073.cpp \
 
 HEADERS += \
+	src/prepare_tmp_deb_package.h \
 	src/smtp/smtp.h \
 	src/interfaces/iwebsocketserver.h \
 	src/interfaces/icmdhandler.h \
