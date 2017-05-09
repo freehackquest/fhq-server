@@ -18,7 +18,7 @@ Prebuild packages: http://dist.freehackquest.com/backend/
 	
 Run for check database configuration:
 
-	# freehackquest -d
+	# freehackquest-backend
 	
 Run like service (or just reboot system):
 
@@ -37,19 +37,19 @@ Run like service (or just reboot system):
 
 ### configure
 
-        $ cp ./etc/freehackquestd/conf.ini.example ./etc/freehackquestd/conf.ini
-        $ sudo ln -s `pwd`/etc/freehackquestd /etc/freehackquestd
-        $ sudo ln -s `pwd`/etc/init.d/freehackquestd /etc/init.d/freehackquestd
-        $ sudo ln -s `pwd`/freehackquestd /usr/bin/freehackquestd
-        $ sudo ln -s `pwd`/var/log/freehackquestd /var/log/freehackquestd
-        $ sudo nano /etc/freehackquestd/conf.ini
-        $ sudo update-rc.d -f freehackquestd remove
-        $ sudo update-rc.d freehackquestd defaults
-        $ sudo /etc/init.d/freehackquestd start
+        $ cp ./etc/freehackquest-backend/conf.ini.example ./etc/freehackquest-backend/conf.ini
+        $ sudo ln -s `pwd`/etc/freehackquest-backend /etc/freehackquest-backend
+        $ sudo ln -s `pwd`/etc/init.d/freehackquest-backend /etc/init.d/freehackquest-backend
+        $ sudo ln -s `pwd`/freehackquest-backend /usr/bin/freehackquest-backend
+        $ sudo ln -s `pwd`/var/log/freehackquest-backend /var/log/freehackquest-backend
+        $ sudo nano /etc/freehackquest-backend/conf.ini
+        $ sudo update-rc.d -f freehackquest-backend remove
+        $ sudo update-rc.d freehackquest-backend defaults
+        $ sudo /etc/init.d/freehackquest-backend start
 
 Or you can use
 
-		$ cp ./etc/freehackquestd/conf.ini.example ./etc/freehackquestd/conf.ini
+		$ cp ./etc/freehackquest-backend/conf.ini.example ./etc/freehackquest-backend/conf.ini
 		$ ./install.sh
-		$ sudo nano /etc/freehackquestd/conf.ini
-		$ service freehackquestd restart
+		$ sudo nano /etc/freehackquest-backend/conf.ini
+		$ service freehackquest-backend restart
