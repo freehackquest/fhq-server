@@ -26,8 +26,8 @@ void Update0061::update(QSqlDatabase &db){
 		QSqlRecord record = query.record();
 		int questid = record.value("idquest").toInt();
 		QSqlQuery query2(db);
-		query.prepare("DELETE FROM quest WHERE idquest = :questid");
-		query.bindValue(":questid", questid);
-		query.exec();
+		query2.prepare("DELETE FROM quest WHERE idquest = :questid");
+		query2.bindValue(":questid", questid);
+		query2.exec();
 	}
 }

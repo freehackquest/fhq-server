@@ -28,9 +28,9 @@ void Update0065::update(QSqlDatabase &db){
 		QString questuuid = QUuid::createUuid().toString();
 		questuuid = questuuid.mid(1,questuuid.length()-2);
 		QSqlQuery query2(db);
-		query.prepare("UPDATE quest SET quest_uuid = :questuuid WHERE idquest = :questid AND isnull(quest_uuid)");
-		query.bindValue(":questuuid", questuuid);
-		query.bindValue(":questid", questid);
-		query.exec();
+		query2.prepare("UPDATE quest SET quest_uuid = :questuuid WHERE idquest = :questid AND isnull(quest_uuid)");
+		query2.bindValue(":questuuid", questuuid);
+		query2.bindValue(":questid", questid);
+		query2.exec();
 	}
 }

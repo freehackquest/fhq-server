@@ -38,6 +38,7 @@ SOURCES += \
 	src/cmd_handlers/cmd_updateuserlocation_handler.cpp \
 	src/cmd_handlers/cmd_getmap_handler.cpp \
 	src/updates/create_list_updates.cpp \
+	src/updates/database0060.cpp \
 	src/updates/update0061.cpp \
 	src/updates/update0062.cpp \
 	src/updates/update0063.cpp \
@@ -78,6 +79,7 @@ HEADERS += \
 	src/cmd_handlers/headers/cmd_updateuserlocation_handler.h \
 	src/cmd_handlers/headers/cmd_getmap_handler.h \
 	src/updates/create_list_updates.h \
+	src/updates/database0060.h \
 	src/updates/update0061.h \
 	src/updates/update0062.h \
 	src/updates/update0063.h \
