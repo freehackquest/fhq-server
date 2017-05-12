@@ -89,11 +89,36 @@ Error Errors::HintIDMustBeNotZero(){
 }
 
 Error Errors::UserIDMustBeInteger(){
-	Error error(1011, "Parameter 'userid' must be integer");
+	Error error(400, "Parameter 'userid' must be integer");
 	return error;
 }
 
 Error Errors::UserIDMustBeNotZero(){
-	Error error(1012, "Parameter 'userid' must be not zero");
+	Error error(400, "Parameter 'userid' must be not zero");
+	return error;
+}
+
+Error Errors::ParamTableMustBeActiveOrBackup(){
+	Error error(400, "Parameter 'table' must be 'active' or 'backup'");
+	return error;
+}
+
+Error Errors::OnPageCouldNotBeMoreThen50(){
+	Error error(400, "Parameter 'onpage' could not be more then 50");
+	return error;
+}
+
+Error Errors::GameIDMustBeInteger(){
+	Error error(400, "Parameter 'gameid' must be integer");
+	return error;
+}
+
+Error Errors::OnPageMustBeInteger(){
+	Error error(400, "Parameter 'onpage' must be integer");
+	return error;
+}
+
+Error Errors::PageMustBeInteger(){
+	Error error(400, "Parameter 'page' must be integer");
 	return error;
 }

@@ -19,6 +19,12 @@ class Errors {
 		static Error HintIDMustBeNotZero();
 		static Error UserIDMustBeInteger();
 		static Error UserIDMustBeNotZero();
+		static Error ParamTableMustBeActiveOrBackup();
+		static Error OnPageCouldNotBeMoreThen50();
+		static Error GameIDMustBeInteger();
+		static Error OnPageMustBeInteger();
+		static Error PageMustBeInteger();
+
 	private:
 		
 };

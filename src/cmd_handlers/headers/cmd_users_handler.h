@@ -1,11 +1,7 @@
 #ifndef CMD_USERS_HANDLER_H
 #define CMD_USERS_HANDLER_H
 
-#include "../interfaces/icmdhandler.h"
-#include "../interfaces/iwebsocketserver.h"
-
-#include <QString>
-#include <QVariant>
+#include <iserver.h>
 
 class CmdUsersHandler : public ICmdHandler {
 	

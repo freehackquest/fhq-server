@@ -26,6 +26,7 @@ SOURCES += \
 	src/tasks/update_user_location_task.cpp \
 	src/cmd_handlers/create_cmd_handlers.cpp \
 	src/cmd_handlers/cmd_addhint_handler.cpp \
+	src/cmd_handlers/cmd_answerlist_handler.cpp \
 	src/cmd_handlers/cmd_deletehint_handler.cpp \
 	src/cmd_handlers/cmd_getpublicinfo_handler.cpp \
 	src/cmd_handlers/cmd_hello_handler.cpp \
@@ -71,6 +72,7 @@ HEADERS += \
 	src/tasks/update_user_location_task.h \
 	src/cmd_handlers/create_cmd_handlers.h \
 	src/cmd_handlers/cmd_addhint_handler.h \
+	src/cmd_handlers/headers/cmd_answerlist_handler.h \
 	src/cmd_handlers/headers/cmd_deletehint_handler.h \
 	src/cmd_handlers/cmd_getpublicinfo_handler.h \
 	src/cmd_handlers/headers/cmd_hello_handler.h \
@@ -78,7 +80,7 @@ HEADERS += \
 	src/cmd_handlers/cmd_login_handler.h \
 	src/cmd_handlers/headers/cmd_sendchatmessage_handler.h \
 	src/cmd_handlers/cmd_send_letters_to_subscribers_handler.h \
-	src/cmd_handlers/cmd_users_handler.h \
+	src/cmd_handlers/headers/cmd_users_handler.h \
 	src/cmd_handlers/headers/cmd_writeups_handler.h \
 	src/cmd_handlers/cmd_user_handler.h \
 	src/cmd_handlers/headers/cmd_classbook_handler.h \
