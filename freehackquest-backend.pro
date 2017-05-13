@@ -57,6 +57,7 @@ SOURCES += \
 	src/updates/update0073.cpp \
 	src/updates/update0074.cpp \
 	src/updates/update0075.cpp \
+	src/updates/update0076.cpp \
 
 HEADERS += \
 	src/prepare_tmp_deb_package.h \
@@ -103,4 +104,5 @@ HEADERS += \
 	src/updates/update0073.h \
 	src/updates/update0074.h \
 	src/updates/update0075.h \
+	src/updates/update0076.h \
 	
