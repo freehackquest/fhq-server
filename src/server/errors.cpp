@@ -122,3 +122,8 @@ Error Errors::PageMustBeInteger(){
 	Error error(400, "Parameter 'page' must be integer");
 	return error;
 }
+
+Error Errors::InternalServerError(){
+	Error error(500, "Internal Server Error");
+	return error;
+}

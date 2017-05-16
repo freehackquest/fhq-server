@@ -35,6 +35,9 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 	}
 
 	tryUpdateDatabase(m_pDBConnection->db());
+	
+	create_cmd_handlers(m_mapCmdHandlers);
+	create_memory_cache(m_mapMemoryCache, this);
 
 	m_pWebSocketServer = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::NonSecureMode, this);
 	m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::SecureMode, this);
@@ -43,7 +46,6 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 		qDebug() << "freehackquest-backend listening on port" << m_pServerConfig->serverPort();
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnection);
         connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &WebSocketServer::closed);
-        create_cmd_handlers(m_mapCmdHandlers);
     }else{
 		qDebug() << "ERROR: freehackquest-backend can not listening on port " << m_pServerConfig->serverPort();
 		m_bFailed = true;

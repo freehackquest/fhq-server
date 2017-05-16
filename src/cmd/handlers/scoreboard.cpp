@@ -1,5 +1,6 @@
 #include "../headers/scoreboard.h"
 #include <QJsonArray>
+#include "../../cache/headers/memory_cache_scoreboard.h"
 
 QString CmdScoreboardHandler::cmd(){
 	return "scoreboard";
@@ -99,39 +100,18 @@ void CmdScoreboardHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 			jsonData["count"] = record.value("cnt").toInt();
 		}
 	}*/
-
-	// data
-	// TODO add place
-	QJsonArray users;
-	{
-		QSqlQuery query(db);
-		query.prepare("SELECT "
-			" u.id, "
-			" u.nick, "
-			" u.logo, "
-			" u.rating "
-			" FROM users u "
-			" " + where + 
-			" ORDER BY rating DESC "
-			// " LIMIT " + QString::number(nPage*nOnPage) + "," + QString::number(nOnPage)
-		);
-		foreach(QString key, filter_values.keys() ){
-			query.bindValue(key, filter_values.value(key));
-		}
-		
-		query.exec();
-		while (query.next()) {
-			QSqlRecord record = query.record();
-			QJsonObject user;
-			user["userid"] = record.value("id").toInt();
-			user["nick"] = record.value("nick").toString(); // TODO htmlspecialchars
-			user["logo"] = record.value("logo").toString(); // TODO htmlspecialchars
-			user["rating"] = record.value("rating").toInt();
-			users.push_back(user);
-		}
+	
+	IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("scoreboard");
+	if(pMemoryCache == NULL){
+		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::InternalServerError());
+		return;
 	}
 
+	MemoryCacheScoreboard *pMemoryCacheScoreboard = dynamic_cast<MemoryCacheScoreboard*>(pMemoryCache);
+	pMemoryCacheScoreboard->loadSync();
+
 	jsonData["result"] = QJsonValue("DONE");
-	jsonData["data"] = users;
+	jsonData["count"] = pMemoryCacheScoreboard->count();
+	jsonData["data"] = pMemoryCacheScoreboard->toJsonArray();
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

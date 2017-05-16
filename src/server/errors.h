@@ -24,6 +24,7 @@ class Errors {
 		static Error GameIDMustBeInteger();
 		static Error OnPageMustBeInteger();
 		static Error PageMustBeInteger();
+		static Error InternalServerError();
 
 	private:
 		
