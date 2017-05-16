@@ -7,6 +7,7 @@
 #include <QWebSocketServer>
 #include <QMap>
 #include <QFile>
+#include <QMutex>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QtNetwork/QSslError>
@@ -15,6 +16,7 @@
 
 #include "error.h"
 #include "headers/server_config.h"
+#include "headers/database_connection.h"
 
 // QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 // QT_FORWARD_DECLARE_CLASS(QWebSocket)
@@ -62,8 +64,9 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		ServerConfig* m_pServerConfig;
 		
 		// db two connections
-		QSqlDatabase *m_pDatabase;
-		QSqlDatabase *m_pDatabase_older;
+		QMutex m_mtxSwapConenctions;
+		DatabaseConnection *m_pDBConnection;
+		DatabaseConnection *m_pDBConnection_older;
 };
 
 #endif //WEBSOCKETSERVER_H

@@ -25,21 +25,16 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 		m_bFailed = true;
 		return;
 	}
+
+	m_pDBConnection = new DatabaseConnection("qt_sql_default_connection_1");
+	m_pDBConnection_older = new DatabaseConnection("qt_sql_default_connection_2");
 	
-	m_pDatabase = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL"));
-	m_pDatabase->setHostName(m_pServerConfig->databaseHost());
-	m_pDatabase->setDatabaseName(m_pServerConfig->databaseName());
-	m_pDatabase->setUserName(m_pServerConfig->databaseUser());
-	m_pDatabase->setPassword(m_pServerConfig->databasePassword());
-	if (!m_pDatabase->open()){
-		qDebug() << m_pDatabase->lastError().text();
-		qDebug() << "Failed to connect.";
+	if(!m_pDBConnection->connect(m_pServerConfig)){
 		m_bFailed = true;
 		return;
-	}else{
-		qDebug() << "Success connection to database";
-		tryUpdateDatabase(m_pDatabase);
 	}
+
+	tryUpdateDatabase(m_pDBConnection->db());
 
 	m_pWebSocketServer = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::NonSecureMode, this);
 	m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::SecureMode, this);
@@ -122,7 +117,7 @@ void WebSocketServer::onNewConnectionSSL(){
 
 void WebSocketServer::processTextMessage(QString message) {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-	qDebug() << QDateTime::currentDateTimeUtc().toString() << " [WS] <<< " << message;
+	// qDebug() << QDateTime::currentDateTimeUtc().toString() << " [WS] <<< " << message;
 
 	QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
 	QJsonObject jsonData = doc.object();
@@ -234,7 +229,7 @@ void WebSocketServer::sendMessage(QWebSocket *pClient, QJsonObject obj){
 	 if (pClient) {
 		QJsonDocument doc(obj);
 		QString message = doc.toJson(QJsonDocument::Compact);
-		qDebug() << QDateTime::currentDateTimeUtc().toString() << " [WS] >>> " << message;
+		// qDebug() << QDateTime::currentDateTimeUtc().toString() << " [WS] >>> " << message;
         pClient->sendTextMessage(message);
     }
 }
@@ -262,22 +257,14 @@ void WebSocketServer::sendToAll(QJsonObject obj){
 // ---------------------------------------------------------------------
 
 QSqlDatabase *WebSocketServer::database(){
-	
-	if(!m_pDatabase->isOpen()){
-		qDebug() << "Database is not open";
+	// swap connection
+	QMutexLocker locker (&m_mtxSwapConenctions);
+	if(m_pDBConnection->isOutdated()){
+		m_pDBConnection_older->close();
+		m_pDBConnection_older->swap(m_pDBConnection);
+		m_pDBConnection->connect(m_pServerConfig);
 	}
-	
-	if(m_pDatabase->isOpenError()){
-		qDebug() << "Database connection has error";
-	}
-	
-	if(!m_pDatabase->isValid()){
-		qDebug() << "Database connection invalid";
-	}
-
-	qDebug() << "Database last error: " << m_pDatabase->lastError();
-
-	return m_pDatabase;
+	return m_pDBConnection->db();
 }
 
 // ---------------------------------------------------------------------

@@ -24,6 +24,8 @@ ServerConfig::ServerConfig(){
 	m_sServer_ssl_cert_file = "/etc/ssl/certs/localhost.pem";
 };
 
+// ---------------------------------------------------------------------
+
 bool ServerConfig::load(){
 	if(!QFile::exists(m_sFilename)){
 		qDebug() << "Not found config file " << m_sFilename;
