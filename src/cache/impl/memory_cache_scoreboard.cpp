@@ -22,7 +22,7 @@ MemoryCacheScoreboard::MemoryCacheScoreboard(IWebSocketServer *pWebSocketServer)
 
 void MemoryCacheScoreboard::loadSync(){
 	QSqlDatabase db = *(m_pWebSocketServer->database());
-	m_vRows.clear();
+	m_vRows.clear(); // TODO fix memory leaks
 
 	QSqlQuery query(db);
 	query.prepare("SELECT id,nick,logo,rating FROM users WHERE role = 'user' ORDER BY rating DESC");
