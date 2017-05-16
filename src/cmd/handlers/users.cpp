@@ -35,7 +35,7 @@ QStringList CmdUsersHandler::errors(){
 }
 
 void CmdUsersHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
-	UserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
+	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
 	
 	if(pUserToken == NULL){
 		QJsonObject jsonData;

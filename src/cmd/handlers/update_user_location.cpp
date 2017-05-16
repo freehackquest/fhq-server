@@ -37,7 +37,7 @@ QStringList CmdUpdateUserLocationHandler::errors(){
 }
 
 void CmdUpdateUserLocationHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
-	UserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
+	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
 	
 	if(pUserToken == NULL){
 		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::NotAuthorizedRequest());

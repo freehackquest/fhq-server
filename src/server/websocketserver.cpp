@@ -11,93 +11,54 @@
 #include "../cmd/create_cmd_handlers.h"
 #include "../smtp/smtp.h"
 #include "../updates/create_list_updates.h"
+#include "../cache/create_memory_cache.h"
 
 // QT_USE_NAMESPACE
 
 // ---------------------------------------------------------------------
 
 WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
+
+	m_pServerConfig = new ServerConfig();
 	
-	// default settings
-	m_bFailed = false;
-	m_bServer_ssl_on = false;
-	m_sDatabase_host = "localhost";
-	m_sDatabase_name = "freehackquest";
-	m_sDatabase_user = "freehackquest_u";
-	m_sDatabase_password = "freehackquest_p";
-
-	m_sEmail_smtphost = "smtp.gmail.com";
-	m_nEmail_smtpport = 465;
-	m_sEmail_username = "";
-	m_sEmail_password = "";
-
-	m_nServer_port = 1234;
-	m_bServer_ssl_on = false;
-	m_nServer_ssl_port = 4613;
-	m_sServer_ssl_key_file = "/etc/ssl/private/localhost.key";
-	m_sServer_ssl_cert_file = "/etc/ssl/certs/localhost.pem";
-
-	m_pWebSocketServer = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::NonSecureMode, this);
-	m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::SecureMode, this);
-	m_sFilename = "/etc/freehackquest-backend/conf.ini";
-	if(QFile::exists(m_sFilename)){
-		QSettings sett(m_sFilename, QSettings::IniFormat);
-		m_sDatabase_host = readStringFromSettings(sett, "DATABASE/host", m_sDatabase_host);
-		m_sDatabase_name = readStringFromSettings(sett, "DATABASE/name", m_sDatabase_name);
-		m_sDatabase_user = readStringFromSettings(sett, "DATABASE/user", m_sDatabase_user);
-		m_sDatabase_password = readStringFromSettings(sett, "DATABASE/password", m_sDatabase_password);
-		
-		qDebug() << "Database_host: " << m_sDatabase_host;
-		qDebug() << "Database_name: " << m_sDatabase_name;
-		qDebug() << "Database_user: " << m_sDatabase_user;
-		// qDebug() << "Database_password: " << m_sDatabase_password;
-
-		m_pDatabase = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL"));
-		m_pDatabase->setHostName(m_sDatabase_host);
-		m_pDatabase->setDatabaseName(m_sDatabase_name);
-		m_pDatabase->setUserName(m_sDatabase_user);
-		m_pDatabase->setPassword(m_sDatabase_password);
-		if (!m_pDatabase->open()){
-			qDebug() << m_pDatabase->lastError().text();
-			qDebug() << "Failed to connect.";
-			m_bFailed = true;
-			return;
-		}else{
-			qDebug() << "Success connection to database";
-			tryUpdateDatabase(m_pDatabase);
-		}
-		
-		m_sEmail_smtphost = readStringFromSettings(sett, "EMAIL/host", m_sEmail_smtphost);
-		m_nEmail_smtpport = readIntFromSettings(sett, "EMAIL/port", m_nEmail_smtpport);
-		m_sEmail_username = readStringFromSettings(sett, "EMAIL/username", m_sEmail_username);
-		m_sEmail_password = readStringFromSettings(sett, "EMAIL/password", m_sEmail_password);
-
-		m_nServer_port = readIntFromSettings(sett, "SERVER/port", m_nServer_port);
-		m_bServer_ssl_on = readBoolFromSettings(sett, "SERVER/ssl_on", m_bServer_ssl_on);
-		m_nServer_ssl_port = readIntFromSettings(sett, "SERVER/ssl_port", m_nServer_ssl_port);
-		m_sServer_ssl_key_file = readStringFromSettings(sett, "SERVER/ssl_key_file", m_sServer_ssl_key_file);
-		m_sServer_ssl_cert_file = readStringFromSettings(sett, "SERVER/ssl_cert_file", m_sServer_ssl_cert_file);
-	}else{
-		qDebug() << "Not found config file " << m_sFilename;
+	if(!m_pServerConfig->load()){
 		m_bFailed = true;
 		return;
 	}
+	
+	m_pDatabase = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL"));
+	m_pDatabase->setHostName(m_pServerConfig->databaseHost());
+	m_pDatabase->setDatabaseName(m_pServerConfig->databaseName());
+	m_pDatabase->setUserName(m_pServerConfig->databaseUser());
+	m_pDatabase->setPassword(m_pServerConfig->databasePassword());
+	if (!m_pDatabase->open()){
+		qDebug() << m_pDatabase->lastError().text();
+		qDebug() << "Failed to connect.";
+		m_bFailed = true;
+		return;
+	}else{
+		qDebug() << "Success connection to database";
+		tryUpdateDatabase(m_pDatabase);
+	}
 
-    if (m_pWebSocketServer->listen(QHostAddress::Any, m_nServer_port)) {
-		qDebug() << "freehackquest-backend listening on port" << m_nServer_port;
+	m_pWebSocketServer = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::NonSecureMode, this);
+	m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::SecureMode, this);
+	
+    if (m_pWebSocketServer->listen(QHostAddress::Any, m_pServerConfig->serverPort())) {
+		qDebug() << "freehackquest-backend listening on port" << m_pServerConfig->serverPort();
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnection);
         connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &WebSocketServer::closed);
         create_cmd_handlers(m_mapCmdHandlers);
     }else{
-		qDebug() << "ERROR: freehackquest-backend can not listening on port " << m_nServer_port;
+		qDebug() << "ERROR: freehackquest-backend can not listening on port " << m_pServerConfig->serverPort();
 		m_bFailed = true;
 		return;
 	}
 
-	if(m_bServer_ssl_on){
+	if(m_pServerConfig->serverSslOn()){
 		QSslConfiguration sslConfiguration;
-		QFile certFile(m_sServer_ssl_cert_file);
-		QFile keyFile(m_sServer_ssl_key_file);
+		QFile certFile(m_pServerConfig->serverSslCertFile());
+		QFile keyFile(m_pServerConfig->serverSslKeyFile());
 		certFile.open(QIODevice::ReadOnly);
 		keyFile.open(QIODevice::ReadOnly);
 		QSslCertificate certificate(&certFile, QSsl::Pem);
@@ -110,12 +71,12 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 		sslConfiguration.setProtocol(QSsl::TlsV1SslV3);
 		m_pWebSocketServerSSL->setSslConfiguration(sslConfiguration);
 		
-		if (m_pWebSocketServerSSL->listen(QHostAddress::Any, m_nServer_ssl_port)) {
-			qDebug() << "freehackquest-backend listening (via ssl) on port" << m_nServer_ssl_port;
+		if (m_pWebSocketServerSSL->listen(QHostAddress::Any, m_pServerConfig->serverSslPort())) {
+			qDebug() << "freehackquest-backend listening (via ssl) on port" << m_pServerConfig->serverSslPort();
 			connect(m_pWebSocketServerSSL, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnectionSSL);
 			connect(m_pWebSocketServerSSL, &QWebSocketServer::sslErrors, this, &WebSocketServer::onSslErrors);
 		}else{
-			qDebug() << "ERROR: freehackquest-backend can not listening (via ssl) on port" << m_nServer_ssl_port;
+			qDebug() << "ERROR: freehackquest-backend can not listening (via ssl) on port" << m_pServerConfig->serverSslPort();
 			m_bFailed = true;
 			return;
 		}
@@ -128,42 +89,6 @@ WebSocketServer::~WebSocketServer() {
     m_pWebSocketServer->close();
     m_pWebSocketServerSSL->close();
     qDeleteAll(m_clients.begin(), m_clients.end());
-}
-
-// ---------------------------------------------------------------------
-
-QString WebSocketServer::readStringFromSettings(QSettings &sett, QString settName, QString defaultValue){
-	QString sResult = defaultValue;
-	if(sett.contains(settName)){
-		sResult = sett.value(settName, sResult).toString();
-	}else{
-		qDebug() << "[WARNING] " << settName << " - not found in " << m_sFilename << "\n\t Will be used default value: " << defaultValue;
-	}
-	return sResult;
-}
-
-// ---------------------------------------------------------------------
-
-int WebSocketServer::readIntFromSettings(QSettings &sett, QString settName, int defaultValue){
-	int nResult = defaultValue;
-	if(sett.contains(settName)){
-		nResult = sett.value(settName, nResult).toInt();
-	}else{
-		qDebug() << "[WARNING] " << settName << " - not found in " << m_sFilename << "\n\t Will be used default value: " << defaultValue;
-	}
-	return nResult;
-}
-
-// ---------------------------------------------------------------------
-
-bool WebSocketServer::readBoolFromSettings(QSettings &sett, QString settName, bool defaultValue){
-	bool bResult = defaultValue;
-	if(sett.contains(settName)){
-		bResult = sett.value(settName, bResult).toBool();
-	}else{
-		qDebug() << "[WARNING] " << settName << " - not found in " << m_sFilename << "\n\t Will be used default value: " << defaultValue;
-	}
-	return bResult;
 }
 
 // ---------------------------------------------------------------------
@@ -210,16 +135,13 @@ void WebSocketServer::processTextMessage(QString message) {
 			
 			// check access
 			if(!pCmdHandler->accessUnauthorized()){
-				UserToken *pUserToken = getUserToken(pClient);
+				IUserToken *pUserToken = getUserToken(pClient);
 				if(pUserToken == NULL){
-					QJsonObject jsonData;
-					jsonData["cmd"] = QJsonValue(pCmdHandler->cmd());
-					jsonData["result"] = QJsonValue("FAIL");
-					jsonData["error"] = QJsonValue("Not authorized request");
-					sendMessage(pClient, jsonData);
+					sendMessageError(pClient, pCmdHandler->cmd(), Errors::NotAuthorizedRequest());
 					return;
 				}
 				
+				// TODO redesign
 				// access user
 				if(pUserToken->isUser() && !pCmdHandler->accessUser()){
 					QJsonObject jsonData;
@@ -360,13 +282,13 @@ QSqlDatabase *WebSocketServer::database(){
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::setUserToken(QWebSocket *pClient, UserToken *pUserToken){
+void WebSocketServer::setUserToken(QWebSocket *pClient, IUserToken *pUserToken){
 	m_tokens[pClient] = pUserToken;
 }
 
 // ---------------------------------------------------------------------
 
-UserToken * WebSocketServer::getUserToken(QWebSocket *pClient){
+IUserToken * WebSocketServer::getUserToken(QWebSocket *pClient){
 	if(m_tokens.contains(pClient)){
 		return m_tokens[pClient];
 	}
@@ -376,10 +298,24 @@ UserToken * WebSocketServer::getUserToken(QWebSocket *pClient){
 // ---------------------------------------------------------------------
 
 void WebSocketServer::sendLettersBcc(QStringList emails, QString subject, QString text){
-	Smtp* smtp = new Smtp(m_sEmail_username, m_sEmail_password, m_sEmail_smtphost, m_nEmail_smtpport);
+	QString username = m_pServerConfig->emailUsername();
+	QString password = m_pServerConfig->emailPassword();
+	QString smtphost = m_pServerConfig->emailSmtpHost();
+	int smtpport = m_pServerConfig->emailSmtpPort();
+	
+	Smtp* smtp = new Smtp(username, password, smtphost, smtpport);
 	// smtp->disableDebugMode();
     //connect(smtp, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
 	smtp->sendMailBcc("freehackquest@gmail.com", emails, subject, text);
+}
+
+// ---------------------------------------------------------------------
+
+IMemoryCache *WebSocketServer::findMemoryCache(QString name){
+	if(m_mapMemoryCache.contains(name)){
+		return m_mapMemoryCache[name];
+	}
+	return NULL;
 }
 
 // ---------------------------------------------------------------------

@@ -1,5 +1,5 @@
-#ifndef INTERFACES_ICACHE_H
-#define INTERFACES_ICACHE_H
+#ifndef INTERFACES_IMEMORYCACHE_H
+#define INTERFACES_IMEMORYCACHE_H
 
 #include <QString>
 #include <QVariant>
@@ -8,9 +8,9 @@
 #include <QSqlRecord>
 #include <QSqlError>
 
-class ICache {
+class IMemoryCache {
 	public:
 		virtual QString name() = 0;
 };
 
-#endif // INTERFACES_ICACHE_H
+#endif // INTERFACES_IMEMORYCACHE_H

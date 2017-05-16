@@ -34,7 +34,7 @@ QStringList CmdSendChatMessageHandler::errors(){
 }
 
 void CmdSendChatMessageHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
-	UserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
+	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
 	QString username = "";
 	if(pUserToken != NULL){
 		username = pUserToken->nick();

@@ -7,7 +7,8 @@
 #include <QJsonObject>
 
 #include "icmdhandler.h"
-#include "icache.h"
+#include "imemorycache.h"
+#include "iusertoken.h"
 #include "iwebsocketserver.h"
 
 #endif // INTERFACES_ISERVER_H

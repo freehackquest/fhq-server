@@ -1,6 +1,8 @@
 
 HEADERS += \
-	src/cache/headers/cache_scoreboard.h \
+	src/cache/create_memory_cache.h \
+	src/cache/headers/memory_cache_scoreboard.h \
 
 SOURCES += \
-	src/cache/cache_scoreboard.cpp \
+	src/cache/create_memory_cache.cpp \
+	src/cache/impl/memory_cache_scoreboard.cpp \

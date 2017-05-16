@@ -1,6 +1,7 @@
 #include "../headers/login.h"
 #include "../../tasks/update_user_location_task.h"
 #include <QThreadPool>
+#include "../../server/headers/usertoken.h"
 
 QString CmdLoginHandler::cmd(){
 	return "login";
