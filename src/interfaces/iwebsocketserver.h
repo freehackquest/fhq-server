@@ -9,9 +9,9 @@
 #include <QSqlRecord>
 
 #include "icmdhandler.h"
-#include "../usertoken.h"
-#include "../error.h"
-#include "../errors.h"
+#include "../server/usertoken.h"
+#include "../server/error.h"
+#include "../server/errors.h"
 
 class IWebSocketServer {
 	public:

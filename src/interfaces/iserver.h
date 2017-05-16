@@ -3,8 +3,11 @@
 
 #include <QString>
 #include <QVariant>
+#include <QJsonArray>
+#include <QJsonObject>
 
 #include "icmdhandler.h"
+#include "icache.h"
 #include "iwebsocketserver.h"
 
 #endif // INTERFACES_ISERVER_H
