@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QVariant>
+#include <QMutex>
 #include <QJsonArray>
 #include <QJsonObject>
 
