@@ -1,6 +1,6 @@
 #include "create_cmd_handlers.h"
 #include "headers/addhint.h"
-#include "headers/answerlist.h"
+#include "headers/cmd_answerlist_handler.h"
 #include "headers/classbook.h"
 #include "headers/deletehint.h"
 #include "headers/getmap.h"

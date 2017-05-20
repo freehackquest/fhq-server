@@ -2,7 +2,7 @@
 HEADERS += \
 	src/cmd/create_cmd_handlers.h \
 	src/cmd/headers/addhint.h \
-	src/cmd/headers/answerlist.h \
+	src/cmd/headers/cmd_answerlist_handler.h \
 	src/cmd/headers/deletehint.h \
 	src/cmd/headers/getpublicinfo.h \
 	src/cmd/headers/hello.h \
@@ -22,7 +22,7 @@ HEADERS += \
 SOURCES += \
 	src/cmd/create_cmd_handlers.cpp \
 	src/cmd/handlers/addhint.cpp \
-	src/cmd/handlers/answerlist.cpp \
+	src/cmd/handlers/cmd_answerlist_handler.cpp \
 	src/cmd/handlers/deletehint.cpp \
 	src/cmd/handlers/getpublicinfo.cpp \
 	src/cmd/handlers/hello.cpp \
