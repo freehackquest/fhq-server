@@ -9,10 +9,6 @@ QString Update0061::version(){
 	return "u0061";
 }
 
-QString Update0061::name(){
-	return "Remove personal quests which not passed";
-}
-
 QString Update0061::description(){
 	return "remove personal quests which not passed";
 }

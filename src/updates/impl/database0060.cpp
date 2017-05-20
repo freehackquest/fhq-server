@@ -9,10 +9,6 @@ QString Database0060::version(){
 	return "u0060";
 }
 
-QString Database0060::name(){
-	return "Init database 0060";
-}
-
 QString Database0060::description(){
 	return "Init database 0060";
 }

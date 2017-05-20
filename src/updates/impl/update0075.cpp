@@ -8,10 +8,6 @@ QString Update0075::version(){
 	return "u0075";
 }
 
-QString Update0075::name(){
-	return "Added table quests_writeups";
-}
-
 QString Update0075::description(){
 	return "Added table quests_writeups";
 }

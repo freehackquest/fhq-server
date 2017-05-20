@@ -10,10 +10,6 @@ QString Update0071::version(){
 	return "u0071";
 }
 
-QString Update0071::name(){
-	return "Added classbook table";
-}
-
 QString Update0071::description(){
 	return "Added classbook table";
 }

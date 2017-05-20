@@ -8,10 +8,6 @@ QString Update0062::version(){
 	return "u0062";
 }
 
-QString Update0062::name(){
-	return "Remove table user_old";
-}
-
 QString Update0062::description(){
 	return "Remove table user_old";
 }

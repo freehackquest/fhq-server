@@ -8,10 +8,6 @@ QString Update0074::version(){
 	return "u0074";
 }
 
-QString Update0074::name(){
-	return "Added feedback.from";
-}
-
 QString Update0074::description(){
 	return "Added feedback.from";
 }

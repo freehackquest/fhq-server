@@ -8,10 +8,6 @@ QString Update0076::version(){
 	return "u0076";
 }
 
-QString Update0076::name(){
-	return "Added users.score";
-}
-
 QString Update0076::description(){
 	return "Added users.score";
 }

@@ -10,10 +10,6 @@ QString Update0067::version(){
 	return "u0067";
 }
 
-QString Update0067::name(){
-	return "Added column copyright to quest";
-}
-
 QString Update0067::description(){
 	return "Added column copyright to quest";
 }

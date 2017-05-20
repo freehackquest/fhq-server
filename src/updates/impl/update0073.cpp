@@ -10,10 +10,6 @@ QString Update0073::version(){
 	return "u0073";
 }
 
-QString Update0073::name(){
-	return "Added captcha table";
-}
-
 QString Update0073::description(){
 	return "Added captcha table";
 }

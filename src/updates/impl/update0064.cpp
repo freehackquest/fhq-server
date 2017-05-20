@@ -8,10 +8,6 @@ QString Update0064::version(){
 	return "u0064";
 }
 
-QString Update0064::name(){
-	return "Remove personal quests which passed";
-}
-
 QString Update0064::description(){
 	return "Remove personal quests which passed";
 }

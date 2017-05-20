@@ -1,21 +1,21 @@
 #include "create_list_updates.h"
-#include "database0060.h"
-#include "update0061.h"
-#include "update0062.h"
-#include "update0063.h"
-#include "update0064.h"
-#include "update0065.h"
-#include "update0066.h"
-#include "update0067.h"
-#include "update0068.h"
-#include "update0069.h"
-#include "update0070.h"
-#include "update0071.h"
-#include "update0072.h"
-#include "update0073.h"
-#include "update0074.h"
-#include "update0075.h"
-#include "update0076.h"
+#include "headers/database0060.h"
+#include "headers/update0061.h"
+#include "headers/update0062.h"
+#include "headers/update0063.h"
+#include "headers/update0064.h"
+#include "headers/update0065.h"
+#include "headers/update0066.h"
+#include "headers/update0067.h"
+#include "headers/update0068.h"
+#include "headers/update0069.h"
+#include "headers/update0070.h"
+#include "headers/update0071.h"
+#include "headers/update0072.h"
+#include "headers/update0073.h"
+#include "headers/update0074.h"
+#include "headers/update0075.h"
+#include "headers/update0076.h"
 
 void create_list_updates(QVector<IUpdate *> &vUpdates){
 	vUpdates.push_back(new Database0060());
@@ -41,18 +41,14 @@ void tryUpdateDatabase(QSqlDatabase *pDatabase){
 	QSqlDatabase db = *pDatabase;
 	QSqlQuery query(db);
 
-	query.prepare("SELECT * FROM updates ORDER BY id ASC");
+	query.prepare("SELECT * FROM updates ORDER BY id DESC LIMIT 0,1");
 	query.exec();
-	QString last_version;
-	while (query.next()) {
+	QString last_version = "";
+	if (query.next()) {
 		QSqlRecord record = query.record();
 		// int updateid = record.value("id").toInt();
-		QString from_version = record.value("from_version").toString();
 		QString version = record.value("version").toString();
-		QString name = record.value("name").toString();
 		QString description = record.value("description").toString();
-		QString result = record.value("result").toString();
-		// int userid = record.value("userid").toInt();
 		last_version = version;
 	}
 	
@@ -66,20 +62,16 @@ void tryUpdateDatabase(QSqlDatabase *pDatabase){
 		for(int i = 0; i < vUpdates.size(); i++){
 			IUpdate* pUpdate = vUpdates[i];
 			if(last_version == pUpdate->from_version()){
-				qDebug().nospace() << "Installing update " << pUpdate->from_version() << " -> " << pUpdate->version() << ": " << pUpdate->name();
+				qDebug().nospace() << "Installing update " << pUpdate->from_version() << " -> " << pUpdate->version() << ": " << pUpdate->description();
 				last_version = pUpdate->version();
 				bHasUpdates = true;
 				pUpdate->update(db);
 
 				QSqlQuery insert_query(db);
-				insert_query.prepare("INSERT INTO updates (from_version, version, name, description, result, userid, datetime_update) "
-					  "VALUES (:from_version, :version, :name, :description, :result, :userid, NOW())");
-				insert_query.bindValue(":from_version", pUpdate->from_version());
+				insert_query.prepare("INSERT INTO updates (version, description, datetime_update) "
+					  "VALUES (:version, :description, NOW())");
 				insert_query.bindValue(":version", pUpdate->version());
-				insert_query.bindValue(":name", pUpdate->name());
 				insert_query.bindValue(":description", pUpdate->description());
-				insert_query.bindValue(":result", "updated");
-				insert_query.bindValue(":userid", 0);
 				if(!insert_query.exec()){
 					qDebug() << "[ERROR] sql error: " << insert_query.lastError();
 					return;

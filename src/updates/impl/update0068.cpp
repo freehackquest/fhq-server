@@ -10,10 +10,6 @@ QString Update0068::version(){
 	return "u0068";
 }
 
-QString Update0068::name(){
-	return "Added table hints";
-}
-
 QString Update0068::description(){
 	return "Added table hints";
 }

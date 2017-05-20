@@ -10,10 +10,6 @@ QString Update0070::version(){
 	return "u0070";
 }
 
-QString Update0070::name(){
-	return "Removed table users_ips";
-}
-
 QString Update0070::description(){
 	return "Removed table users_ips";
 }

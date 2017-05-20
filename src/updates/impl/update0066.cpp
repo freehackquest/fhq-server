@@ -8,10 +8,6 @@ QString Update0066::version(){
 	return "u0066";
 }
 
-QString Update0066::name(){
-	return "Drop column quest.for_person";
-}
-
 QString Update0066::description(){
 	return "Drop column quest.for_person";
 }

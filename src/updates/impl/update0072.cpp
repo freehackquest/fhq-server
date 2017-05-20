@@ -10,10 +10,6 @@ QString Update0072::version(){
 	return "u0072";
 }
 
-QString Update0072::name(){
-	return "Added chatmessages table";
-}
-
 QString Update0072::description(){
 	return "Added chatmessages table";
 }

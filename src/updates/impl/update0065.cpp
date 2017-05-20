@@ -9,10 +9,6 @@ QString Update0065::version(){
 	return "u0065";
 }
 
-QString Update0065::name(){
-	return "Update quests uuid";
-}
-
 QString Update0065::description(){
 	return "Update quests uuid";
 }

@@ -10,10 +10,6 @@ QString Update0069::version(){
 	return "u0069";
 }
 
-QString Update0069::name(){
-	return "Add columns to users";
-}
-
 QString Update0069::description(){
 	return "Add columns to users";
 }
