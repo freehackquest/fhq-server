@@ -18,6 +18,8 @@ HEADERS += \
 	src/updates/headers/update0074.h \
 	src/updates/headers/update0075.h \
 	src/updates/headers/update0076.h \
+	src/updates/headers/update0077.h \
+	src/updates/headers/update0078.h \
 
 SOURCES += \
 	src/updates/create_list_updates.cpp \
@@ -38,3 +40,5 @@ SOURCES += \
 	src/updates/impl/update0074.cpp \
 	src/updates/impl/update0075.cpp \
 	src/updates/impl/update0076.cpp \
+	src/updates/impl/update0077.cpp \
+	src/updates/impl/update0078.cpp \
