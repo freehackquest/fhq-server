@@ -1,4 +1,6 @@
 
+INCLUDEPATH += src/cache/headers
+
 HEADERS += \
 	src/cache/create_memory_cache.h \
 	src/cache/headers/memory_cache_scoreboard.h \

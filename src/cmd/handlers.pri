@@ -11,6 +11,7 @@ HEADERS += \
 	src/cmd/headers/scoreboard.h \
 	src/cmd/headers/sendchatmessage.h \
 	src/cmd/headers/send_letters_to_subscribers.h \
+	src/cmd/headers/cmd_serverinfo_handler.h \
 	src/cmd/headers/users.h \
 	src/cmd/headers/writeups.h \
 	src/cmd/headers/user.h \
@@ -30,6 +31,7 @@ SOURCES += \
 	src/cmd/handlers/scoreboard.cpp \
 	src/cmd/handlers/sendchatmessage.cpp \
 	src/cmd/handlers/send_letters_to_subscribers.cpp \
+	src/cmd/handlers/cmd_serverinfo_handler.cpp \
 	src/cmd/handlers/users.cpp \
 	src/cmd/handlers/writeups.cpp \
 	src/cmd/handlers/user.cpp \

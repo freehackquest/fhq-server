@@ -11,6 +11,7 @@
 #include "headers/scoreboard.h"
 #include "headers/sendchatmessage.h"
 #include "headers/send_letters_to_subscribers.h"
+#include "headers/cmd_serverinfo_handler.h"
 #include "headers/update_user_location.h"
 #include "headers/user.h"
 #include "headers/users.h"
@@ -31,6 +32,7 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
 	v.push_back(new CmdScoreboardHandler());
 	v.push_back(new CmdSendChatMessageHandler());
 	v.push_back(new CmdSendLettersToSubscribersHandler());
+	v.push_back(new CmdServerInfoHandler());
 	v.push_back(new CmdUpdateUserLocationHandler());
 	v.push_back(new CmdUserHandler());
 	v.push_back(new CmdUsersHandler());

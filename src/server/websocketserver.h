@@ -17,6 +17,7 @@
 #include "error.h"
 #include "headers/server_config.h"
 #include "headers/database_connection.h"
+#include <memory_cache_serverinfo.h>
 
 // QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 // QT_FORWARD_DECLARE_CLASS(QWebSocket)
@@ -53,12 +54,14 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 
 	private:
 		
+		
 		QWebSocketServer *m_pWebSocketServer;
 		QWebSocketServer *m_pWebSocketServerSSL;
 		QList<QWebSocket *> m_clients;
 		QMap<QWebSocket *, IUserToken *> m_tokens;
 		QMap<QString, ICmdHandler *> m_mapCmdHandlers;
 		QMap<QString, IMemoryCache *> m_mapMemoryCache;
+		MemoryCacheServerInfo *m_pMemoryCacheServerInfo;
 
 		bool m_bFailed;
 		ServerConfig* m_pServerConfig;

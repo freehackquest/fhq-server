@@ -39,6 +39,15 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 	create_cmd_handlers(m_mapCmdHandlers);
 	create_memory_cache(m_mapMemoryCache, this);
 
+	{
+		// init memory cache server info
+		m_pMemoryCacheServerInfo = NULL;
+		IMemoryCache *pMemoryCache = findMemoryCache("serverinfo");
+		if(pMemoryCache != NULL){
+			m_pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
+		}
+	}
+	
 	m_pWebSocketServer = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::NonSecureMode, this);
 	m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::SecureMode, this);
 	
@@ -129,6 +138,10 @@ void WebSocketServer::processTextMessage(QString message) {
 		
 		if(m_mapCmdHandlers.contains(cmd)){
 			ICmdHandler *pCmdHandler = m_mapCmdHandlers[cmd];
+			
+			if(m_pMemoryCacheServerInfo != NULL){
+				m_pMemoryCacheServerInfo->incrementRequests(cmd);
+			}
 			
 			// check access
 			if(!pCmdHandler->accessUnauthorized()){

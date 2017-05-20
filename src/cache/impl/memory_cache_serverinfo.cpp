@@ -20,7 +20,7 @@ MemoryCacheServerInfo::MemoryCacheServerInfo(IWebSocketServer *pWebSocketServer)
 
 // ---------------------------------------------------------------------
 
-void MemoryCacheServerInfo::IncrementRequests(QString cmd){
+void MemoryCacheServerInfo::incrementRequests(QString cmd){
 	QMutexLocker locker (&m_mtxIncrementRequests);
 	if(m_requestsCounter.contains(cmd)){
 		m_requestsCounter[cmd] = m_requestsCounter[cmd]+1;

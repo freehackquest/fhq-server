@@ -11,7 +11,7 @@ class MemoryCacheServerInfo : public IMemoryCache {
 		// class
 		MemoryCacheServerInfo(IWebSocketServer *pWebSocketServer);
 		
-		void IncrementRequests(QString cmd);
+		void incrementRequests(QString cmd);
 		QJsonObject toJsonObject();
 
 	private:
