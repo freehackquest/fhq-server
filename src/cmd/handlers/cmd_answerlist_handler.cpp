@@ -38,18 +38,6 @@ void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
-	
-	QString table = "active";
-	if(obj.contains("table")){
-		table = obj["table"].toString().trimmed();
-	}
-	
-	if(table != "active" && table != "backup"){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::ParamTableMustBeActiveOrBackup());
-		return;
-	}
-	
-	table = table == "active" ? "tryanswer" : "tryanswer_backup";
 
 	int nPage = 0;
 	if(obj.contains("page")){
@@ -62,7 +50,7 @@ void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	}
 	jsonData["page"] = nPage;
 	
-	int nOnPage = 15;
+	int nOnPage = 10;
 	if(obj.contains("onpage")){
 		QJsonValueRef vOnPage = obj["onpage"];
 		if(!vOnPage.isDouble()){
@@ -73,6 +61,7 @@ void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	}
 	if(nOnPage > 50){
 		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::OnPageCouldNotBeMoreThen50());
+		return;
 	}
 	jsonData["onpage"] = nOnPage;
 
@@ -96,17 +85,6 @@ void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		filter_values[":email"] = "%" + user + "%";
 		filter_values[":nick"] = "%" + user + "%";
 	}
-	
-	if(obj.contains("gameid")){
-		QJsonValueRef vGameID = obj["gameid"];
-		if(!vGameID.isDouble()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), Errors::GameIDMustBeInteger());
-			return;
-		}
-		int gameid = vGameID.toInt();
-		filters << "(g.id = :gameid)";
-		filter_values[":gameid"] = gameid;
-	}
 
 	if(obj.contains("questid")){
 		QJsonValueRef vQuestID = obj["questid"];
@@ -117,14 +95,6 @@ void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		int questid = vQuestID.toInt();
 		filters << "(q.idquest = :questid)";
 		filter_values[":questid"] = questid;
-	}
-
-	if(obj.contains("gamename")){
-		QString gamename = obj["gamename"].toString().trimmed();
-		if(gamename != ""){
-			filters << "(g.title LIKE :gamename)";
-			filter_values[":gamename"] = "%" + gamename + "%";
-		}
 	}
 	
 	if(obj.contains("questname")){
@@ -146,7 +116,7 @@ void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	if(obj.contains("passed")){
 		QString passed = obj["passed"].toString().trimmed();
 		if(passed != ""){
-			filters << "(ta.passed = :passed)";
+			filters << "(uqa.passed = :passed)";
 			filter_values[":passed"] = passed;
 		}
 	}
@@ -161,10 +131,9 @@ void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	
 	{
 		QSqlQuery query(db);
-		query.prepare("SELECT count(*) as cnt FROM " + table + " ta "
-			" INNER JOIN users u ON u.id = ta.iduser"
-			" INNER JOIN quest q ON q.idquest = ta.idquest"
-			" INNER JOIN games g ON g.id = ta.gameid"
+		query.prepare("SELECT count(*) as cnt FROM users_quests_answers uqa "
+			" INNER JOIN users u ON u.id = uqa.userid"
+			" INNER JOIN quest q ON q.idquest = uqa.questid"
 			" " + where
 		);
 		foreach(QString key, filter_values.keys() ){
@@ -182,17 +151,25 @@ void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	{
 		QSqlQuery query(db);
 		query.prepare("SELECT "
-			" ta.datetime_try, ta.passed, ta.idquest, ta.iduser, ta.answer_try, ta.answer_real, ta.levenshtein,"
-			" u.nick, u.logo, u.email, "
-			" q.name, q.subject, q.score, q.count_user_solved, q.gameid, "
-			" g.title "
-			" FROM " + table + " ta "
-			
-			" INNER JOIN users u ON u.id = ta.iduser"
-			" INNER JOIN quest q ON q.idquest = ta.idquest"
-			" INNER JOIN games g ON g.id = ta.gameid"
+			" 	uqa.dt,"
+			"	uqa.passed,"
+			"	uqa.questid,"
+			"	uqa.userid,"
+			"	uqa.user_answer,"
+			"	uqa.quest_answer,"
+			"	uqa.levenshtein,"
+			" 	u.nick,"
+			"	u.logo,"
+			"	u.email, "
+			" 	q.name,"
+			"	q.subject,"
+			"	q.score,"
+			"	q.count_user_solved"
+			" FROM users_quests_answers uqa "
+			" INNER JOIN users u ON u.id = uqa.userid"
+			" INNER JOIN quest q ON q.idquest = uqa.questid"
 			" " + where + 
-			" ORDER BY datetime_try DESC "
+			" ORDER BY dt DESC "
 			" LIMIT " + QString::number(nPage*nOnPage) + "," + QString::number(nOnPage)
 		);
 		foreach(QString key, filter_values.keys() ){
@@ -202,31 +179,26 @@ void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		while (query.next()) {
 			QSqlRecord record = query.record();
 			QJsonObject answer;
-			answer["dt"] = record.value("datetime_try").toString();
-			answer["answer_try"] = record.value("answer_try").toString(); // TODO htmlspecialchars
-			answer["answer_real"] = record.value("answer_real").toString(); // TODO htmlspecialchars
+			answer["dt"] = record.value("dt").toString();
+			answer["user_answer"] = record.value("user_answer").toString().toHtmlEscaped(); // TODO htmlspecialchars
+			answer["quest_answer"] = record.value("quest_answer").toString().toHtmlEscaped(); // TODO htmlspecialchars
 			answer["levenshtein"] = record.value("levenshtein").toInt();
 			answer["passed"] = record.value("passed").toString();
 			
-			QJsonObject game; // TODO deprecated
-			game["id"] = record.value("gameid").toInt();
-			game["title"] = record.value("title").toString();
-			answer["game"] = game;
-			
 			QJsonObject quest; // TODO deprecated
-			quest["id"] = record.value("idquest").toInt();
-			quest["name"] = record.value("name").toString();
+			quest["id"] = record.value("questid").toInt();
+			quest["name"] = record.value("name").toString().toHtmlEscaped();
 			quest["score"] = record.value("score").toInt();
 			quest["subject"] = record.value("subject").toString();
 			quest["count_user_solved"] = record.value("count_user_solved").toInt();
 			answer["quest"] = quest;
 
 			QJsonObject user; // TODO deprecated
-			user["id"] = record.value("iduser").toInt();
+			user["id"] = record.value("userid").toInt();
 			user["logo"] = record.value("logo").toString();
-			user["nick"] = record.value("nick").toString();
-			user["email"] = record.value("email").toString();
-			answer["game"] = user;
+			user["nick"] = record.value("nick").toString().toHtmlEscaped();
+			user["email"] = record.value("email").toString().toHtmlEscaped();
+			answer["user"] = user;
 
 			answerlist.push_back(answer);
 		}
