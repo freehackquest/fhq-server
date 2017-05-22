@@ -23,11 +23,11 @@ bool CmdServerInfoHandler::accessAdmin(){
 }
 
 QString CmdServerInfoHandler::short_description(){
-	return "some short description";
+	return "Return server information";
 }
 
 QString CmdServerInfoHandler::description(){
-	return "some description";
+	return "Return server information";
 }
 
 QStringList CmdServerInfoHandler::errors(){
