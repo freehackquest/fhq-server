@@ -53,3 +53,8 @@ Or you can use
 		$ ./install.sh
 		$ sudo nano /etc/freehackquest-backend/conf.ini
 		$ service freehackquest-backend restart
+		
+		
+## Other
+
+Contains source code to compile: https://github.com/bluetiger9/SmtpClient-for-Qt
