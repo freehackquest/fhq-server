@@ -8,6 +8,7 @@ HEADERS += \
 	src/cmd/headers/hello.h \
 	src/cmd/headers/hints.h \
 	src/cmd/headers/login.h \
+	src/cmd/headers/cmd_publiceventslist_handler.h \
 	src/cmd/headers/scoreboard.h \
 	src/cmd/headers/sendchatmessage.h \
 	src/cmd/headers/send_letters_to_subscribers.h \
@@ -28,6 +29,7 @@ SOURCES += \
 	src/cmd/handlers/hello.cpp \
 	src/cmd/handlers/hints.cpp \
 	src/cmd/handlers/login.cpp \
+	src/cmd/handlers/cmd_publiceventslist_handler.cpp \
 	src/cmd/handlers/scoreboard.cpp \
 	src/cmd/handlers/sendchatmessage.cpp \
 	src/cmd/handlers/send_letters_to_subscribers.cpp \

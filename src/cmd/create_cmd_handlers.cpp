@@ -8,6 +8,7 @@
 #include "headers/hello.h"
 #include "headers/hints.h"
 #include "headers/login.h"
+#include "headers/cmd_publiceventslist_handler.h"
 #include "headers/scoreboard.h"
 #include "headers/sendchatmessage.h"
 #include "headers/send_letters_to_subscribers.h"
@@ -29,6 +30,7 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
 	v.push_back(new CmdHelloHandler());
 	v.push_back(new CmdHintsHandler());
 	v.push_back(new CmdLoginHandler());
+	v.push_back(new CmdPublicEventsListHandler());
 	v.push_back(new CmdScoreboardHandler());
 	v.push_back(new CmdSendChatMessageHandler());
 	v.push_back(new CmdSendLettersToSubscribersHandler());
