@@ -3,6 +3,9 @@ HEADERS += \
 	src/cmd/create_cmd_handlers.h \
 	src/cmd/headers/addhint.h \
 	src/cmd/headers/cmd_answerlist_handler.h \
+	src/cmd/headers/cmd_createpublicevent_handler.h \
+	src/cmd/headers/cmd_deletepublicevent_handler.h \
+	src/cmd/headers/cmd_getpublicevent_handler.h \
 	src/cmd/headers/deletehint.h \
 	src/cmd/headers/getpublicinfo.h \
 	src/cmd/headers/hello.h \
@@ -24,6 +27,9 @@ SOURCES += \
 	src/cmd/create_cmd_handlers.cpp \
 	src/cmd/handlers/addhint.cpp \
 	src/cmd/handlers/cmd_answerlist_handler.cpp \
+	src/cmd/handlers/cmd_createpublicevent_handler.cpp \
+	src/cmd/handlers/cmd_deletepublicevent_handler.cpp \
+	src/cmd/handlers/cmd_getpublicevent_handler.cpp \
 	src/cmd/handlers/deletehint.cpp \
 	src/cmd/handlers/getpublicinfo.cpp \
 	src/cmd/handlers/hello.cpp \

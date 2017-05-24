@@ -1,6 +1,9 @@
 #include "create_cmd_handlers.h"
 #include "headers/addhint.h"
 #include "headers/cmd_answerlist_handler.h"
+#include "headers/cmd_deletepublicevent_handler.h"
+#include "headers/cmd_createpublicevent_handler.h"
+#include "headers/cmd_getpublicevent_handler.h"
 #include "headers/classbook.h"
 #include "headers/deletehint.h"
 #include "headers/getmap.h"
@@ -23,6 +26,9 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
 
 	v.push_back(new CmdAddHintHandler());
 	v.push_back(new CmdAnswerListHandler());
+	v.push_back(new CmdCreatePublicEventHandler());
+	v.push_back(new CmdDeletePublicEventHandler());
+	v.push_back(new CmdGetPublicEventHandler());
 	v.push_back(new CmdClassbookHandler());
 	v.push_back(new CmdDeleteHintHandler());
 	v.push_back(new CmdGetMapHandler());

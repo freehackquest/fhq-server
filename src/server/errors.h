@@ -25,6 +25,12 @@ class Errors {
 		static Error OnPageMustBeInteger();
 		static Error PageMustBeInteger();
 		static Error InternalServerError();
+		static Error EventIdMustBeInteger();
+		static Error EventIdExpected();
+		static Error EventNotFound();
+		static Error EventTypeExpected();
+		static Error EventMessageExpected();
+		static Error EventTypeValueExpected();
 
 	private:
 		

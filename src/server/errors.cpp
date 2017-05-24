@@ -127,3 +127,33 @@ Error Errors::InternalServerError(){
 	Error error(500, "Internal Server Error");
 	return error;
 }
+
+Error Errors::EventIdMustBeInteger(){
+	Error error(400, "Parameter 'eventid' must be integer");
+	return error;
+}
+
+Error Errors::EventIdExpected(){
+	Error error(400, "Parameter 'eventid' expected");
+	return error;
+}
+
+Error Errors::EventNotFound(){
+	Error error(404, "Event not found");
+	return error;
+}
+
+Error Errors::EventTypeExpected(){
+	Error error(400, "Parameter 'type' expected");
+	return error;
+}
+
+Error Errors::EventMessageExpected(){
+	Error error(400, "Parameter 'message' expected");
+	return error;
+}
+
+Error Errors::EventTypeValueExpected(){
+	Error error(400, "Parameter 'type' can be has only one from array: [info, users, games, quests, warning]");
+	return error;
+}
