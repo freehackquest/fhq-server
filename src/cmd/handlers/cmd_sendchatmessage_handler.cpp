@@ -1,4 +1,4 @@
-#include "../headers/sendchatmessage.h"
+#include "../headers/cmd_sendchatmessage_handler.h"
 
 QString CmdSendChatMessageHandler::cmd(){
 	return "sendchatmessage";
@@ -47,18 +47,21 @@ void CmdSendChatMessageHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
 	jsonData["result"] = QJsonValue("DONE");
 	pWebSocketServer->sendMessage(pClient, jsonData);
 	
-	QJsonObject jsonData2;
-	jsonData2["cmd"] = QJsonValue("chat");
-	jsonData2["type"] = obj["type"];
-	jsonData2["user"] = username;
-	jsonData2["message"] = obj["message"];
-
-	pWebSocketServer->sendToAll(jsonData2);
-	
 	QSqlDatabase db = *(pWebSocketServer->database());
 	QSqlQuery query(db);
 	query.prepare("INSERT INTO chatmessages(user, message, dt) VALUES(:user,:message, NOW())");
 	query.bindValue(":user", username);
 	query.bindValue(":message", obj["message"].toString());
 	query.exec();
+	
+	QJsonObject jsonData2;
+	jsonData2["cmd"] = QJsonValue("chat");
+	jsonData2["type"] = obj["type"];
+	jsonData2["user"] = username;
+	jsonData2["message"] = obj["message"];
+	jsonData2["dt"] = QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss");
+
+	pWebSocketServer->sendToAll(jsonData2);
+	
+	
 }

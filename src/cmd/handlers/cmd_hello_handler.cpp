@@ -1,4 +1,4 @@
-#include "../headers/hello.h"
+#include "../headers/cmd_hello_handler.h"
 
 QString CmdHelloHandler::cmd(){
 	return "hello";
@@ -50,6 +50,7 @@ void CmdHelloHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 		jsonChat["type"] = QJsonValue("chat");
 		jsonChat["user"] = record.value("user").toString();
 		jsonChat["message"] = record.value("message").toString();
+		jsonChat["dt"] = record.value("dt").toString();
 		chats.push_back(jsonChat);
 	}
 	

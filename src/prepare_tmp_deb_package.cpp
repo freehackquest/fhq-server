@@ -5,7 +5,7 @@
 #include <QSysInfo>
 
 QString PrepareTmpDebPackage::version(){
-	return "0.1.15";
+	return "0.1.16";
 };
 
 QString PrepareTmpDebPackage::name(){

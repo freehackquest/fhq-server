@@ -8,12 +8,12 @@ HEADERS += \
 	src/cmd/headers/cmd_getpublicevent_handler.h \
 	src/cmd/headers/deletehint.h \
 	src/cmd/headers/getpublicinfo.h \
-	src/cmd/headers/hello.h \
+	src/cmd/headers/cmd_hello_handler.h \
 	src/cmd/headers/hints.h \
 	src/cmd/headers/login.h \
 	src/cmd/headers/cmd_publiceventslist_handler.h \
 	src/cmd/headers/scoreboard.h \
-	src/cmd/headers/sendchatmessage.h \
+	src/cmd/headers/cmd_sendchatmessage_handler.h \
 	src/cmd/headers/send_letters_to_subscribers.h \
 	src/cmd/headers/cmd_serverinfo_handler.h \
 	src/cmd/headers/users.h \
@@ -32,12 +32,12 @@ SOURCES += \
 	src/cmd/handlers/cmd_getpublicevent_handler.cpp \
 	src/cmd/handlers/deletehint.cpp \
 	src/cmd/handlers/getpublicinfo.cpp \
-	src/cmd/handlers/hello.cpp \
+	src/cmd/handlers/cmd_hello_handler.cpp \
 	src/cmd/handlers/hints.cpp \
 	src/cmd/handlers/login.cpp \
 	src/cmd/handlers/cmd_publiceventslist_handler.cpp \
 	src/cmd/handlers/scoreboard.cpp \
-	src/cmd/handlers/sendchatmessage.cpp \
+	src/cmd/handlers/cmd_sendchatmessage_handler.cpp \
 	src/cmd/handlers/send_letters_to_subscribers.cpp \
 	src/cmd/handlers/cmd_serverinfo_handler.cpp \
 	src/cmd/handlers/users.cpp \
