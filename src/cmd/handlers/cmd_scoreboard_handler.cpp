@@ -30,7 +30,7 @@ const QVector<CmdInputDef> &CmdScoreboardHandler::inputs(){
 };
 
 QString CmdScoreboardHandler::description(){
-	return "some description";
+	return "Method return scoreboard";
 }
 
 QStringList CmdScoreboardHandler::errors(){

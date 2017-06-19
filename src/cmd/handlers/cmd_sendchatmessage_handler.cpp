@@ -28,7 +28,7 @@ const QVector<CmdInputDef> &CmdSendChatMessageHandler::inputs(){
 };
 
 QString CmdSendChatMessageHandler::description(){
-	return "some description";
+	return "Method will be keep message and it sent to another users";
 }
 
 QStringList CmdSendChatMessageHandler::errors(){

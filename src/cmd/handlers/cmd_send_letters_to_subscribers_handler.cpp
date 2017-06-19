@@ -28,7 +28,7 @@ const QVector<CmdInputDef> &CmdSendLettersToSubscribersHandler::inputs(){
 };
 
 QString CmdSendLettersToSubscribersHandler::description(){
-	return "some description";
+	return "TODO: method will be send letter to subscribers";
 }
 
 QStringList CmdSendLettersToSubscribersHandler::errors(){

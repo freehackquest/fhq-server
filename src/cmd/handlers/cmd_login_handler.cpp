@@ -31,7 +31,7 @@ const QVector<CmdInputDef> &CmdLoginHandler::inputs(){
 };
 
 QString CmdLoginHandler::description(){
-	return "some description";
+	return "Method for login";
 }
 
 QStringList CmdLoginHandler::errors(){

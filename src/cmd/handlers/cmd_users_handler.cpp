@@ -5,6 +5,8 @@ CmdUsersHandler::CmdUsersHandler(){
 }
 
 QString CmdUsersHandler::cmd(){
+	m_vInputs.push_back(CmdInputDef("filter_text").string_().optional());
+	m_vInputs.push_back(CmdInputDef("filter_role").string_().optional());
 	return "users";
 }
 
@@ -29,7 +31,7 @@ const QVector<CmdInputDef> &CmdUsersHandler::inputs(){
 };
 
 QString CmdUsersHandler::description(){
-	return "some description";
+	return "Method return list of users";
 }
 
 QStringList CmdUsersHandler::errors(){
@@ -40,6 +42,7 @@ QStringList CmdUsersHandler::errors(){
 void CmdUsersHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
 	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
 	
+	// TODO redesign
 	if(pUserToken == NULL){
 		QJsonObject jsonData;
 		jsonData["cmd"] = QJsonValue(cmd());
@@ -76,7 +79,6 @@ void CmdUsersHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 			filter_values[":role"] = role;
 		}
 	}
-
 
 	QJsonArray users;
 	QSqlDatabase db = *(pWebSocketServer->database());

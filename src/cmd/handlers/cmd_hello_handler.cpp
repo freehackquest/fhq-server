@@ -28,7 +28,7 @@ const QVector<CmdInputDef> &CmdHelloHandler::inputs(){
 };
 
 QString CmdHelloHandler::description(){
-	return "some description";
+	return "Call this method after connect. Method return based information about server.";
 }
 
 QStringList CmdHelloHandler::errors(){

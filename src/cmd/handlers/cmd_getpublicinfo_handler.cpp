@@ -29,7 +29,7 @@ const QVector<CmdInputDef> &CmdGetPublicInfoHandler::inputs(){
 };
 
 QString CmdGetPublicInfoHandler::description(){
-	return "some description";
+	return "Method retrun public information about server";
 }
 
 QStringList CmdGetPublicInfoHandler::errors(){
