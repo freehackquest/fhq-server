@@ -5,7 +5,21 @@
 
 ServerConfig::ServerConfig(){
 	// default settings
-	m_sFilename = "/etc/freehackquest-backend/conf.ini";
+    QStringList sFilenames;
+    sFilenames << "/etc/freehackquest-backend/conf.ini";
+    sFilenames << "etc/freehackquest-backend/conf.ini";
+    sFilenames << "conf.ini";
+    for(int i = 0; i < sFilenames.size(); i++){
+        QString tmp = sFilenames[i];
+        if(QFile::exists(tmp)){
+            m_sFilename = tmp;
+            qDebug() << "[Info] Found config file " << tmp;
+            break;
+        }else{
+            qDebug() << "[Warning] Not found possible config file " << tmp;
+        }
+    }
+
 	m_bServer_ssl_on = false;
 	m_sDatabase_host = "localhost";
 	m_sDatabase_name = "freehackquest";
@@ -27,12 +41,12 @@ ServerConfig::ServerConfig(){
 // ---------------------------------------------------------------------
 
 bool ServerConfig::load(){
-	if(!QFile::exists(m_sFilename)){
-		qDebug() << "Not found config file " << m_sFilename;
+    if(m_sFilename == ""){
+        qDebug() << "[ERROR] Not found config file ";
 		return false;
 	}
-	
-	QSettings sett(m_sFilename, QSettings::IniFormat);
+
+    QSettings sett(m_sFilename, QSettings::IniFormat);
 	m_sDatabase_host = readStringFromSettings(sett, "DATABASE/host", m_sDatabase_host);
 	m_sDatabase_name = readStringFromSettings(sett, "DATABASE/name", m_sDatabase_name);
 	m_sDatabase_user = readStringFromSettings(sett, "DATABASE/user", m_sDatabase_user);

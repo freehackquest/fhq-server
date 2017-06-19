@@ -36,7 +36,7 @@ class ServerConfig {
 		bool readBoolFromSettings(QSettings &sett, QString settName, bool defaultValue);
 
 		// settings
-		QString m_sFilename;
+        QString m_sFilename;
 		QString m_sDatabase_host;
 		QString m_sDatabase_name;
 		QString m_sDatabase_user;
