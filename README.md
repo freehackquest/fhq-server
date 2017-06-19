@@ -2,7 +2,6 @@
 
 Backend for FreeHackQuest on Qt and WebSockets
 
-
 ## Pre-builds
 
 Prebuild packages: http://dist.freehackquest.com/backend/
@@ -54,7 +53,18 @@ Or you can use
 		$ sudo nano /etc/freehackquest-backend/conf.ini
 		$ service freehackquest-backend restart
 		
+## Doxygen generate documentation
+
+### requariments
+
+	$ sudo apt install doxygen graphviz
+	
+### Build documentation
+
+	$ doxygen doxygen.conf
 		
 ## Other
 
 Contains source code to compile: https://github.com/bluetiger9/SmtpClient-for-Qt
+
+

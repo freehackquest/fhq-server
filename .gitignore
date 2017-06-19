@@ -41,3 +41,5 @@ var/log/freehackquest-backend/errors/*
 *.deb
 lintian.log
 freehackquest-backend.pro.user
+/html/*
+/latex/*
