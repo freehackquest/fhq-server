@@ -1,6 +1,10 @@
 #include "../headers/cmd_deletepublicevent_handler.h"
 #include <QJsonArray>
 
+CmdDeletePublicEventHandler::CmdDeletePublicEventHandler(){
+	
+}
+
 QString CmdDeletePublicEventHandler::cmd(){
 	return "deletepublicevent";
 }

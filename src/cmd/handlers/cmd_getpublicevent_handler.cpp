@@ -1,6 +1,9 @@
 #include "../headers/cmd_getpublicevent_handler.h"
 #include <QJsonArray>
 
+CmdGetPublicEventHandler::CmdGetPublicEventHandler(){
+}
+
 QString CmdGetPublicEventHandler::cmd(){
 	return "getpublicevent";
 }

@@ -1,6 +1,9 @@
 #include "../headers/cmd_users_handler.h"
 #include <QJsonArray>
 
+CmdUsersHandler::CmdUsersHandler(){
+}
+
 QString CmdUsersHandler::cmd(){
 	return "users";
 }

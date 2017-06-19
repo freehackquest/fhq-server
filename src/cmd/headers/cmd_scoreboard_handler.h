@@ -6,6 +6,7 @@
 class CmdScoreboardHandler : public ICmdHandler {
 	
 	public:
+		CmdScoreboardHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();

@@ -1,5 +1,8 @@
 #include "../headers/cmd_api_handler.h"
 
+CmdApiHandler::CmdApiHandler(){
+}
+
 QString CmdApiHandler::cmd(){
 	return "api";
 }

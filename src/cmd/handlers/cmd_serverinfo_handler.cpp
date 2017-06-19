@@ -2,6 +2,9 @@
 #include <QJsonArray>
 #include <memory_cache_serverinfo.h>
 
+CmdServerInfoHandler::CmdServerInfoHandler(){
+}
+
 QString CmdServerInfoHandler::cmd(){
 	return "serverinfo";
 }

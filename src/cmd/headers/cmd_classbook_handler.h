@@ -6,6 +6,7 @@
 class CmdClassbookHandler : public ICmdHandler {
 	
 	public:
+		CmdClassbookHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();

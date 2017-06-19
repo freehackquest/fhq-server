@@ -6,6 +6,7 @@
 class CmdSendLettersToSubscribersHandler : public ICmdHandler {
 	
 	public:
+		CmdSendLettersToSubscribersHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();

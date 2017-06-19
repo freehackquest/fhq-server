@@ -1,6 +1,10 @@
 #include "../headers/cmd_publiceventslist_handler.h"
 #include <QJsonArray>
 
+CmdPublicEventsListHandler::CmdPublicEventsListHandler(){
+	
+}
+
 QString CmdPublicEventsListHandler::cmd(){
 	return "publiceventslist";
 }

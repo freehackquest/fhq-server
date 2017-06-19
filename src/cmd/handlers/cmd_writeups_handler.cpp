@@ -1,6 +1,9 @@
 #include "../headers/cmd_writeups_handler.h"
 #include <QJsonArray>
 
+CmdWriteUpsHandler::CmdWriteUpsHandler(){
+}
+
 QString CmdWriteUpsHandler::cmd(){
 	return "writeups";
 }

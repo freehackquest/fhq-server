@@ -6,6 +6,7 @@
 class CmdGetMapHandler : public ICmdHandler {
 	
 	public:
+		CmdGetMapHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();

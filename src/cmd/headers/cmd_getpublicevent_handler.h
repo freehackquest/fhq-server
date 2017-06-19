@@ -6,6 +6,7 @@
 class CmdGetPublicEventHandler : public ICmdHandler {
 	
 	public:
+		CmdGetPublicEventHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();

@@ -1,4 +1,4 @@
-#include "websocketserver.h"
+#include <websocketserver.h>
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -8,10 +8,10 @@
 #include <QtNetwork/QSslCertificate>
 #include <QtNetwork/QSslKey>
 
-#include "../cmd/create_cmd_handlers.h"
+#include <create_cmd_handlers.h>
 #include "../smtp/smtp.h"
-#include "../updates/create_list_updates.h"
-#include "../cache/create_memory_cache.h"
+#include <create_list_updates.h>
+#include <create_memory_cache.h>
 
 // QT_USE_NAMESPACE
 
@@ -347,6 +347,13 @@ void WebSocketServer::exportApi(QJsonObject &result){
 		handler["access_user"] = pHandler->accessUser();
 		handler["access_tester"] = pHandler->accessTester();
 		handler["access_admin"] = pHandler->accessAdmin();
+
+		QJsonArray inputs;
+		QVector<CmdInputDef> ins = pHandler->inputs();
+		for(int i = 0; i < ins.size(); i++){
+			inputs.append(ins[i].toJson());
+		}
+		handler["inputs"] = inputs;
 
 		QJsonArray errors;
 		QStringList errs = pHandler->errors();

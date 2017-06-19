@@ -6,6 +6,7 @@
 class CmdServerInfoHandler : public ICmdHandler {
 	
 	public:
+		CmdServerInfoHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();

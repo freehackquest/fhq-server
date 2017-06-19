@@ -6,6 +6,7 @@
 class CmdAnswerListHandler : public ICmdHandler {
 	
 	public:
+		CmdAnswerListHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();

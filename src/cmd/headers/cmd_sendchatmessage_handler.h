@@ -6,6 +6,7 @@
 class CmdSendChatMessageHandler : public ICmdHandler {
 	
 	public:
+		CmdSendChatMessageHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();

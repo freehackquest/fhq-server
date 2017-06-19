@@ -1,5 +1,8 @@
 #include "../headers/cmd_sendchatmessage_handler.h"
 
+CmdSendChatMessageHandler::CmdSendChatMessageHandler(){
+}
+
 QString CmdSendChatMessageHandler::cmd(){
 	return "sendchatmessage";
 }

@@ -1,5 +1,9 @@
 #include "../headers/cmd_deletehint_handler.h"
 
+CmdDeleteHintHandler::CmdDeleteHintHandler(){
+	m_vInputs.push_back(CmdInputDef("hintid").required().integer_().description("hint id"));
+}
+
 QString CmdDeleteHintHandler::cmd(){
 	return "deletehint";
 }
@@ -25,7 +29,7 @@ const QVector<CmdInputDef> &CmdDeleteHintHandler::inputs(){
 };
 
 QString CmdDeleteHintHandler::description(){
-	return "some description";
+	return "Method for delete quest";
 }
 
 QStringList CmdDeleteHintHandler::errors(){

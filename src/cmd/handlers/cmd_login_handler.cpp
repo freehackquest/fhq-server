@@ -3,6 +3,9 @@
 #include <QThreadPool>
 #include "../../server/headers/usertoken.h"
 
+CmdLoginHandler::CmdLoginHandler(){
+}
+
 QString CmdLoginHandler::cmd(){
 	return "login";
 }

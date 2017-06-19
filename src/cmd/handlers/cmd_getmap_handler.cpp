@@ -1,6 +1,10 @@
 #include "../headers/cmd_getmap_handler.h"
 #include <QJsonArray>
 
+CmdGetMapHandler::CmdGetMapHandler(){
+	
+}
+
 QString CmdGetMapHandler::cmd(){
 	return "getmap";
 }

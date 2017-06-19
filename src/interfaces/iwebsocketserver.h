@@ -12,8 +12,8 @@
 #include <icmdhandler.h>
 #include <imemorycache.h>
 #include <iusertoken.h>
-#include "../server/error.h"
-#include "../server/errors.h"
+#include <error.h>
+#include <errors.h>
 
 class IWebSocketServer {
 	public:

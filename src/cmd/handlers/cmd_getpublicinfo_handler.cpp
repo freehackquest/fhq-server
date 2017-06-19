@@ -1,5 +1,9 @@
 #include "../headers/cmd_getpublicinfo_handler.h"
 
+CmdGetPublicInfoHandler::CmdGetPublicInfoHandler(){
+	
+}
+
 QString CmdGetPublicInfoHandler::cmd(){
 	return "getpublicinfo";
 }

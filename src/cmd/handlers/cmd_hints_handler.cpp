@@ -1,6 +1,10 @@
 #include "../headers/cmd_hints_handler.h"
 #include <QJsonArray>
 
+CmdHintsHandler::CmdHintsHandler(){
+	
+}
+
 QString CmdHintsHandler::cmd(){
 	return "hints";
 }

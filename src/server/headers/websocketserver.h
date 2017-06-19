@@ -14,9 +14,9 @@
 
 #include <iserver.h>
 
-#include "error.h"
-#include "headers/server_config.h"
-#include "headers/database_connection.h"
+#include <error.h>
+#include <server_config.h>
+#include <database_connection.h>
 #include <memory_cache_serverinfo.h>
 
 // QT_FORWARD_DECLARE_CLASS(QWebSocketServer)

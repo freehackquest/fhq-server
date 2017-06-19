@@ -1,6 +1,9 @@
 #include "../headers/cmd_answerlist_handler.h"
 #include <QJsonArray>
 
+CmdAnswerListHandler::CmdAnswerListHandler(){
+}
+
 QString CmdAnswerListHandler::cmd(){
 	return "answerlist";
 }
@@ -22,8 +25,7 @@ bool CmdAnswerListHandler::accessAdmin(){
 }
 
 const QVector<CmdInputDef> &CmdAnswerListHandler::inputs(){
-	QVector<CmdInputDef> inputs;
-	return inputs;
+	return m_vInputs;
 };
 
 QString CmdAnswerListHandler::description(){

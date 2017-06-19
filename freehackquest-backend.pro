@@ -13,13 +13,17 @@ RCC_DIR = tmp/
 CONFIG += c++11 c++14
 
 INCLUDEPATH += src/interfaces
+INCLUDEPATH += src/server/headers
+INCLUDEPATH += src/cache/headers
+INCLUDEPATH += src/cache
+INCLUDEPATH += src/updates
+INCLUDEPATH += src/cmd
 
 include(src/interfaces/interfaces.pri)
 include(src/cmd/handlers.pri)
 include(src/updates/updates.pri)
 include(src/cache/cache.pri)
 include(src/server/server.pri)
-
 
 SOURCES += \
 	src/prepare_tmp_deb_package.cpp \

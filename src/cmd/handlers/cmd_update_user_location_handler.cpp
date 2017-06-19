@@ -3,6 +3,9 @@
 #include <QJsonArray>
 #include <QThreadPool>
 
+CmdUpdateUserLocationHandler::CmdUpdateUserLocationHandler(){
+}
+
 QString CmdUpdateUserLocationHandler::cmd(){
 	return "updateuserlocation";
 }

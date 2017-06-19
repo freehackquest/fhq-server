@@ -6,6 +6,7 @@
 class CmdAddHintHandler : public ICmdHandler {
 	
 	public:
+		CmdAddHintHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();

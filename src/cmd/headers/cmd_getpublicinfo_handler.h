@@ -4,7 +4,9 @@
 #include <iserver.h>
 
 class CmdGetPublicInfoHandler : public ICmdHandler {
+
 	public:
+		CmdGetPublicInfoHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();

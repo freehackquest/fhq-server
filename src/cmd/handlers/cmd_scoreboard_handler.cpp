@@ -2,6 +2,9 @@
 #include <QJsonArray>
 #include "../../cache/headers/memory_cache_scoreboard.h"
 
+CmdScoreboardHandler::CmdScoreboardHandler(){
+}
+
 QString CmdScoreboardHandler::cmd(){
 	return "scoreboard";
 }

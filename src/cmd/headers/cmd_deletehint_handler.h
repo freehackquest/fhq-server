@@ -6,6 +6,7 @@
 class CmdDeleteHintHandler : public ICmdHandler {
 	
 	public:
+		CmdDeleteHintHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();

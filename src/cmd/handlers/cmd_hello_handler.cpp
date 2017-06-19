@@ -1,5 +1,8 @@
 #include "../headers/cmd_hello_handler.h"
 
+CmdHelloHandler::CmdHelloHandler(){
+}
+
 QString CmdHelloHandler::cmd(){
 	return "hello";
 }
@@ -33,7 +36,7 @@ QStringList CmdHelloHandler::errors(){
 	return list;
 }
 
-void CmdHelloHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdHelloHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject /*obj*/){
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 	pWebSocketServer->sendMessage(pClient, jsonData);

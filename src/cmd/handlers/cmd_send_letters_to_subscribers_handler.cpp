@@ -1,5 +1,8 @@
 #include "../headers/cmd_send_letters_to_subscribers_handler.h"
 
+CmdSendLettersToSubscribersHandler::CmdSendLettersToSubscribersHandler(){
+}
+
 QString CmdSendLettersToSubscribersHandler::cmd(){
 	return "send_letters_to_subscribers";
 }

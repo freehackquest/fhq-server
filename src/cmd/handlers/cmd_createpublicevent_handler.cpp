@@ -1,7 +1,6 @@
 #include "../headers/cmd_createpublicevent_handler.h"
 #include <QJsonArray>
 
-
 CmdCreatePublicEventHandler::CmdCreatePublicEventHandler(){
 	// inputs.push_back(CmdInputDef("type").enum_("info,users,games,quests,warning" ).required());
 	m_vInputs.push_back(CmdInputDef("type").string_().required());

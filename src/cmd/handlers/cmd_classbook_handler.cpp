@@ -2,6 +2,9 @@
 #include <QJsonArray>
 #include <QSqlError>
 
+CmdClassbookHandler::CmdClassbookHandler(){
+}
+
 QString CmdClassbookHandler::cmd(){
 	return "classbook";
 }
@@ -23,8 +26,7 @@ bool CmdClassbookHandler::accessAdmin(){
 }
 
 const QVector<CmdInputDef> &CmdClassbookHandler::inputs(){
-	QVector<CmdInputDef> inputs;
-	return inputs;
+	return m_vInputs;
 };
 
 QString CmdClassbookHandler::description(){

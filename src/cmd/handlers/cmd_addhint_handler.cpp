@@ -1,5 +1,10 @@
 #include "../headers/cmd_addhint_handler.h"
 
+CmdAddHintHandler::CmdAddHintHandler(){
+	m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("quest id"));
+	m_vInputs.push_back(CmdInputDef("hint").required().string_().description("hint text"));
+}
+
 QString CmdAddHintHandler::cmd(){
 	return "addhint";
 }
@@ -21,12 +26,11 @@ bool CmdAddHintHandler::accessAdmin(){
 }
 
 const QVector<CmdInputDef> &CmdAddHintHandler::inputs(){
-	QVector<CmdInputDef> inputs;
-	return inputs;
+	return m_vInputs;
 };
 
 QString CmdAddHintHandler::description(){
-	return "some description";
+	return "Methid add hint to quest";
 }
 
 QStringList CmdAddHintHandler::errors(){
