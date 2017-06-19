@@ -1,9 +1,9 @@
-#ifndef CMD_USER_HANDLER_H
-#define CMD_USER_HANDLER_H
+#ifndef CMD_USERS_HANDLER_H
+#define CMD_USERS_HANDLER_H
 
 #include <iserver.h>
 
-class CmdUserHandler : public ICmdHandler {
+class CmdUsersHandler : public ICmdHandler {
 	
 	public:
 		virtual QString cmd();
@@ -11,12 +11,13 @@ class CmdUserHandler : public ICmdHandler {
 		virtual bool accessUser();
 		virtual bool accessTester();
 		virtual bool accessAdmin();
-		virtual QString short_description();
+		virtual const QVector<CmdInputDef> &inputs();
 		virtual QString description();
 		virtual QStringList errors();
 		virtual void handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj);
 		
 	private:
+		QVector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_USER_HANDLER_H
+#endif // CMD_USERS_HANDLER_H

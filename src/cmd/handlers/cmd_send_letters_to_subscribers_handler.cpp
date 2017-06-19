@@ -1,4 +1,4 @@
-#include "../headers/send_letters_to_subscribers.h"
+#include "../headers/cmd_send_letters_to_subscribers_handler.h"
 
 QString CmdSendLettersToSubscribersHandler::cmd(){
 	return "send_letters_to_subscribers";
@@ -20,9 +20,9 @@ bool CmdSendLettersToSubscribersHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdSendLettersToSubscribersHandler::short_description(){
-	return "some short description";
-}
+const QVector<CmdInputDef> &CmdSendLettersToSubscribersHandler::inputs(){
+	return m_vInputs;
+};
 
 QString CmdSendLettersToSubscribersHandler::description(){
 	return "some description";

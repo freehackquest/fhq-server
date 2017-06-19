@@ -1,4 +1,4 @@
-#include "../headers/scoreboard.h"
+#include "../headers/cmd_scoreboard_handler.h"
 #include <QJsonArray>
 #include "../../cache/headers/memory_cache_scoreboard.h"
 
@@ -22,9 +22,9 @@ bool CmdScoreboardHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdScoreboardHandler::short_description(){
-	return "some short description";
-}
+const QVector<CmdInputDef> &CmdScoreboardHandler::inputs(){
+	return m_vInputs;
+};
 
 QString CmdScoreboardHandler::description(){
 	return "some description";

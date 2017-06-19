@@ -21,12 +21,13 @@ bool CmdAnswerListHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdAnswerListHandler::short_description(){
-	return "some short description";
-}
+const QVector<CmdInputDef> &CmdAnswerListHandler::inputs(){
+	QVector<CmdInputDef> inputs;
+	return inputs;
+};
 
 QString CmdAnswerListHandler::description(){
-	return "some description";
+	return "Return user answer list";
 }
 
 QStringList CmdAnswerListHandler::errors(){

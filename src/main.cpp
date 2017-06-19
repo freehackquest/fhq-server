@@ -28,11 +28,7 @@ int main(int argc, char** argv) {
     
     QCommandLineOption prepareDebOption(QStringList() << "pd" << "prepare-deb", QCoreApplication::translate("main", "Prepare Deb Package"));
     parser.addOption(prepareDebOption);
-    
-    /*QCommandLineOption portOption(QStringList() << "p" << "port",
-            QCoreApplication::translate("main", "Port for freehackquest-backend [default: 1234]."),
-            QCoreApplication::translate("main", "port"), QLatin1Literal("1234"));
-    parser.addOption(portOption);*/
+
     parser.process(a);
     
     bool version = parser.isSet(versionOption);

@@ -21,9 +21,9 @@ bool CmdGetPublicEventHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdGetPublicEventHandler::short_description(){
-	return "Return public event info by id";
-}
+const QVector<CmdInputDef> &CmdGetPublicEventHandler::inputs(){
+	return m_vInputs;
+};
 
 QString CmdGetPublicEventHandler::description(){
 	return

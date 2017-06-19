@@ -21,9 +21,9 @@ bool CmdDeletePublicEventHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdDeletePublicEventHandler::short_description(){
-	return "Delete public event";
-}
+const QVector<CmdInputDef> &CmdDeletePublicEventHandler::inputs(){
+	return m_vInputs;
+};
 
 QString CmdDeletePublicEventHandler::description(){
 	return

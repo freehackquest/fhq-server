@@ -22,9 +22,9 @@ bool CmdServerInfoHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdServerInfoHandler::short_description(){
-	return "Return server information";
-}
+const QVector<CmdInputDef> &CmdServerInfoHandler::inputs(){
+	return m_vInputs;
+};
 
 QString CmdServerInfoHandler::description(){
 	return "Return server information";

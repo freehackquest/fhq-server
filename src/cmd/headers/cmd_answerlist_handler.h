@@ -11,10 +11,12 @@ class CmdAnswerListHandler : public ICmdHandler {
 		virtual bool accessUser();
 		virtual bool accessTester();
 		virtual bool accessAdmin();
-		virtual QString short_description();
+		virtual const QVector<CmdInputDef> &inputs();
 		virtual QString description();
 		virtual QStringList errors();
 		virtual void handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj);
+	private:
+		QVector<CmdInputDef> m_vInputs;
 };
 
 #endif // CMD_ANSWERLIST_HANDLER_H

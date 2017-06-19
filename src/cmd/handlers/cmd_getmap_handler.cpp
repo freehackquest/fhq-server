@@ -1,4 +1,4 @@
-#include "../headers/getmap.h"
+#include "../headers/cmd_getmap_handler.h"
 #include <QJsonArray>
 
 QString CmdGetMapHandler::cmd(){
@@ -21,9 +21,9 @@ bool CmdGetMapHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdGetMapHandler::short_description(){
-	return "Returned coordinate list";
-}
+const QVector<CmdInputDef> &CmdGetMapHandler::inputs(){
+	return m_vInputs;
+};
 
 QString CmdGetMapHandler::description(){
 	return "Returned coordinate list";

@@ -1,4 +1,4 @@
-#include "../headers/writeups.h"
+#include "../headers/cmd_writeups_handler.h"
 #include <QJsonArray>
 
 QString CmdWriteUpsHandler::cmd(){
@@ -21,12 +21,12 @@ bool CmdWriteUpsHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdWriteUpsHandler::short_description(){
-	return "This method will be returned list of writeups by questid";
-}
+const QVector<CmdInputDef> &CmdWriteUpsHandler::inputs(){
+	return m_vInputs;
+};
 
 QString CmdWriteUpsHandler::description(){
-	return "Output: list of writeups, Input: questid";
+	return "This method will be returned list of writeups by questid";
 }
 
 QStringList CmdWriteUpsHandler::errors(){

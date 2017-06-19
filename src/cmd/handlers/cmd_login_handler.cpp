@@ -1,4 +1,4 @@
-#include "../headers/login.h"
+#include "../headers/cmd_login_handler.h"
 #include "../../tasks/update_user_location_task.h"
 #include <QThreadPool>
 #include "../../server/headers/usertoken.h"
@@ -23,9 +23,9 @@ bool CmdLoginHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdLoginHandler::short_description(){
-	return "some short description";
-}
+const QVector<CmdInputDef> &CmdLoginHandler::inputs(){
+	return m_vInputs;
+};
 
 QString CmdLoginHandler::description(){
 	return "some description";

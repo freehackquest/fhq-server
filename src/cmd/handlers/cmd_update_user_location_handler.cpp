@@ -1,4 +1,4 @@
-#include "../headers/update_user_location.h"
+#include "../headers/cmd_update_user_location_handler.h"
 #include "../../tasks/update_user_location_task.h"
 #include <QJsonArray>
 #include <QThreadPool>
@@ -23,12 +23,12 @@ bool CmdUpdateUserLocationHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdUpdateUserLocationHandler::short_description(){
-	return "This method will be try update user location by lastip";
-}
+const QVector<CmdInputDef> &CmdUpdateUserLocationHandler::inputs(){
+	return m_vInputs;
+};
 
 QString CmdUpdateUserLocationHandler::description(){
-	return "Output: void, Input: userid";
+	return "This method will be try update user location by lastip";
 }
 
 QStringList CmdUpdateUserLocationHandler::errors(){

@@ -1,4 +1,4 @@
-#include "../headers/hints.h"
+#include "../headers/cmd_hints_handler.h"
 #include <QJsonArray>
 
 QString CmdHintsHandler::cmd(){
@@ -21,9 +21,9 @@ bool CmdHintsHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdHintsHandler::short_description(){
-	return "This method will be returned list of hints by questid";
-}
+const QVector<CmdInputDef> &CmdHintsHandler::inputs(){
+	return m_vInputs;
+};
 
 QString CmdHintsHandler::description(){
 	return "Output: list of hints, Input: questid";

@@ -20,9 +20,9 @@ bool CmdHelloHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdHelloHandler::short_description(){
-	return "some short description";
-}
+const QVector<CmdInputDef> &CmdHelloHandler::inputs(){
+	return m_vInputs;
+};
 
 QString CmdHelloHandler::description(){
 	return "some description";

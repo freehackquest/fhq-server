@@ -1,4 +1,4 @@
-#include "../headers/user.h"
+#include "../headers/cmd_user_handler.h"
 #include <QJsonArray>
 
 QString CmdUserHandler::cmd(){
@@ -21,12 +21,12 @@ bool CmdUserHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdUserHandler::short_description(){
-	return "some short description";
-}
+const QVector<CmdInputDef> &CmdUserHandler::inputs(){
+	return m_vInputs;
+};
 
 QString CmdUserHandler::description(){
-	return "some description";
+	return "Return user info";
 }
 
 QStringList CmdUserHandler::errors(){

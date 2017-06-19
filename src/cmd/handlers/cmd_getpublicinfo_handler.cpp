@@ -1,4 +1,4 @@
-#include "../headers/getpublicinfo.h"
+#include "../headers/cmd_getpublicinfo_handler.h"
 
 QString CmdGetPublicInfoHandler::cmd(){
 	return "getpublicinfo";
@@ -20,9 +20,9 @@ bool CmdGetPublicInfoHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdGetPublicInfoHandler::short_description(){
-	return "some short description";
-}
+const QVector<CmdInputDef> &CmdGetPublicInfoHandler::inputs(){
+	return m_vInputs;
+};
 
 QString CmdGetPublicInfoHandler::description(){
 	return "some description";

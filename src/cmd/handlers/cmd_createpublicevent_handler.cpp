@@ -1,6 +1,13 @@
 #include "../headers/cmd_createpublicevent_handler.h"
 #include <QJsonArray>
 
+
+CmdCreatePublicEventHandler::CmdCreatePublicEventHandler(){
+	// inputs.push_back(CmdInputDef("type").enum_("info,users,games,quests,warning" ).required());
+	m_vInputs.push_back(CmdInputDef("type").string_().required());
+	m_vInputs.push_back(CmdInputDef("message").string_().required());
+}
+
 QString CmdCreatePublicEventHandler::cmd(){
 	return "createpublicevent";
 }
@@ -21,16 +28,12 @@ bool CmdCreatePublicEventHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdCreatePublicEventHandler::short_description(){
-	return "Create public event";
-}
+const QVector<CmdInputDef> &CmdCreatePublicEventHandler::inputs(){
+	return m_vInputs;
+};
 
 QString CmdCreatePublicEventHandler::description(){
-	return
-		"Create public event\n"
-		" Input params: \n"
-		"   * type \n"
-		"   * message  \n";
+	return "Create the public event";
 }
 
 QStringList CmdCreatePublicEventHandler::errors(){

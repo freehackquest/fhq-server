@@ -3,6 +3,10 @@
 
 #include <iserver.h>
 
+/*! 
+ * This handler will be return list of handlers - publish api interfaces
+ * */
+ 
 class CmdApiHandler : public ICmdHandler {
 	
 	public:
@@ -11,10 +15,12 @@ class CmdApiHandler : public ICmdHandler {
 		virtual bool accessUser();
 		virtual bool accessTester();
 		virtual bool accessAdmin();
-		virtual QString short_description();
+		virtual const QVector<CmdInputDef> &inputs();
 		virtual QString description();
 		virtual QStringList errors();
 		virtual void handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj);
+	private:
+		QVector<CmdInputDef> m_vInputs;
 };
 
 #endif // CMD_API_HANDLER_H

@@ -1,4 +1,4 @@
-#include "../headers/deletehint.h"
+#include "../headers/cmd_deletehint_handler.h"
 
 QString CmdDeleteHintHandler::cmd(){
 	return "deletehint";
@@ -20,9 +20,9 @@ bool CmdDeleteHintHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdDeleteHintHandler::short_description(){
-	return "some short description";
-}
+const QVector<CmdInputDef> &CmdDeleteHintHandler::inputs(){
+	return m_vInputs;
+};
 
 QString CmdDeleteHintHandler::description(){
 	return "some description";

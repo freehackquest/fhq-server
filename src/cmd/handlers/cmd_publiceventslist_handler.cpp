@@ -21,9 +21,9 @@ bool CmdPublicEventsListHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdPublicEventsListHandler::short_description(){
-	return "Return list of public events (news)";
-}
+const QVector<CmdInputDef> &CmdPublicEventsListHandler::inputs(){
+	return m_vInputs;
+};
 
 QString CmdPublicEventsListHandler::description(){
 	return

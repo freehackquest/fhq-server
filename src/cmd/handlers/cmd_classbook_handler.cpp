@@ -1,4 +1,4 @@
-#include "../headers/classbook.h"
+#include "../headers/cmd_classbook_handler.h"
 #include <QJsonArray>
 #include <QSqlError>
 
@@ -22,9 +22,10 @@ bool CmdClassbookHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdClassbookHandler::short_description(){
-	return "Classbook Contents";
-}
+const QVector<CmdInputDef> &CmdClassbookHandler::inputs(){
+	QVector<CmdInputDef> inputs;
+	return inputs;
+};
 
 QString CmdClassbookHandler::description(){
 	return "Return classbook contents";

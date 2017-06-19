@@ -1,4 +1,4 @@
-#include "../headers/addhint.h"
+#include "../headers/cmd_addhint_handler.h"
 
 QString CmdAddHintHandler::cmd(){
 	return "addhint";
@@ -20,9 +20,10 @@ bool CmdAddHintHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdAddHintHandler::short_description(){
-	return "some short description";
-}
+const QVector<CmdInputDef> &CmdAddHintHandler::inputs(){
+	QVector<CmdInputDef> inputs;
+	return inputs;
+};
 
 QString CmdAddHintHandler::description(){
 	return "some description";

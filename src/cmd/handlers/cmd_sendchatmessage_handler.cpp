@@ -20,9 +20,9 @@ bool CmdSendChatMessageHandler::accessAdmin(){
 	return true;
 }
 
-QString CmdSendChatMessageHandler::short_description(){
-	return "some short description";
-}
+const QVector<CmdInputDef> &CmdSendChatMessageHandler::inputs(){
+	return m_vInputs;
+};
 
 QString CmdSendChatMessageHandler::description(){
 	return "some description";
