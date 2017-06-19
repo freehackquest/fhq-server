@@ -3,7 +3,7 @@
 
 #include <QString>
 #include <QJsonObject>
-#include "iwebsocketserver.h"
+#include <iwebsocketserver.h>
 
 class ICmdHandler {
 	public:

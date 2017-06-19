@@ -14,7 +14,6 @@
 #include <QFile>
 #include <QString>
 #include "server/websocketserver.h"
-#include "exportapi.h"
 #include "prepare_tmp_deb_package.h"
 
 int main(int argc, char** argv) {
@@ -23,9 +22,6 @@ int main(int argc, char** argv) {
     QCommandLineParser parser;
     parser.setApplicationDescription("freehackquest-backend");
     parser.addHelpOption();
-    
-    QCommandLineOption exportApiOption(QStringList() << "e" << "export-api", QCoreApplication::translate("main", "Export API"));
-    parser.addOption(exportApiOption);
     
     QCommandLineOption versionOption(QStringList() << "v" << "version", QCoreApplication::translate("main", "Version"));
     parser.addOption(versionOption);
@@ -50,17 +46,6 @@ int main(int argc, char** argv) {
 		PrepareTmpDebPackage::prepare("","tmpdeb");
 		return 0;
 	}
-    
-    bool exportApi = parser.isSet(exportApiOption);
-    
-    if(exportApi){
-		ExportAPI exportApi;
-		exportApi.exporttocommandline();
-		return 0;
-	}
-    
-    // bool debug = parser.isSet(dbgOption);
-    // int port = parser.value(portOption).toInt();
 
 	if(!QFile::exists("/etc/freehackquest-backend/conf.ini")){
 		qDebug() << "Not found /etc/freehackquest-backend/conf.ini";

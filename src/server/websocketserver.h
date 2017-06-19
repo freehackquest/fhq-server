@@ -22,6 +22,14 @@
 // QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 // QT_FORWARD_DECLARE_CLASS(QWebSocket)
 
+/*! \brief WebSocket Server implementation
+ *         Implemented ws://addr:1234 and wss://addr:4613 (optional)
+ *
+ *  This object handle income connections.
+ *  Processing income messages.
+ *  Control database connections
+ */
+ 
 class WebSocketServer : public QObject, public IWebSocketServer {
 	
 	private:
@@ -40,6 +48,8 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		virtual IUserToken * getUserToken(QWebSocket *pClient);
 		virtual void sendLettersBcc(QStringList emails, QString subject, QString text);
 		virtual IMemoryCache *findMemoryCache(QString name);
+		virtual void exportApi(QJsonObject &result);
+		
 		
 	Q_SIGNALS:
 		void closed();

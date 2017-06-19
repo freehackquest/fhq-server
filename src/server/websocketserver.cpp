@@ -99,6 +99,10 @@ WebSocketServer::~WebSocketServer() {
 
 // ---------------------------------------------------------------------
 
+/*! 
+ *  Handling new connection by ws://
+ */
+ 
 void WebSocketServer::onNewConnection()
 {
     QWebSocket *pSocket = m_pWebSocketServer->nextPendingConnection();
@@ -112,6 +116,10 @@ void WebSocketServer::onNewConnection()
 }
 
 // ---------------------------------------------------------------------
+
+/*! 
+ *  Handling new connection by wss://
+ */
 
 void WebSocketServer::onNewConnectionSSL(){
 	QWebSocket *pSocket = m_pWebSocketServerSSL->nextPendingConnection();
@@ -318,6 +326,39 @@ IMemoryCache *WebSocketServer::findMemoryCache(QString name){
 		return m_mapMemoryCache[name];
 	}
 	return NULL;
+}
+
+// ---------------------------------------------------------------------
+
+void WebSocketServer::exportApi(QJsonObject &result){
+	
+	result["port"] = m_pServerConfig->serverPort();
+	result["ssl_port"] = m_pServerConfig->serverPort();
+	
+	QJsonArray handlers;
+	
+	foreach( QString key, m_mapCmdHandlers.keys()){
+		ICmdHandler *pHandler = m_mapCmdHandlers.value(key);
+		QJsonObject handler;
+		
+		handler["cmd"] = pHandler->cmd();
+		handler["description"] = pHandler->description();
+		handler["access_unauthorized"] = pHandler->accessUnauthorized();
+		handler["access_user"] = pHandler->accessUser();
+		handler["access_tester"] = pHandler->accessTester();
+		handler["access_admin"] = pHandler->accessAdmin();
+
+		QJsonArray errors;
+		QStringList errs = pHandler->errors();
+		if(errs.size() > 0){
+			for(int i = 0; i < errors.size(); i++){
+				errors.append(errors.at(i));
+			}
+		}
+		handler["errors"] = errors;
+		handlers.append(handler);
+	}
+	result["handlers"] = handlers;
 }
 
 // ---------------------------------------------------------------------

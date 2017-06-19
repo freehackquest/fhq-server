@@ -7,10 +7,11 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlRecord>
+#include <QMap>
 
-#include "icmdhandler.h"
-#include "imemorycache.h"
-#include "iusertoken.h"
+#include <icmdhandler.h>
+#include <imemorycache.h>
+#include <iusertoken.h>
 #include "../server/error.h"
 #include "../server/errors.h"
 
@@ -25,6 +26,7 @@ class IWebSocketServer {
 		virtual IUserToken * getUserToken(QWebSocket *pClient) = 0;
 		virtual void sendLettersBcc(QStringList emails, QString subject, QString text) = 0;
 		virtual IMemoryCache *findMemoryCache(QString name) = 0;
+		virtual void exportApi(QJsonObject &result) = 0;
 };
 
 #endif // INTERFACES_IWEBSOCKETSERVER_H

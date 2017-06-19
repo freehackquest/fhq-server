@@ -25,13 +25,11 @@ SOURCES += \
 	src/prepare_tmp_deb_package.cpp \
 	src/main.cpp \
 	src/smtp/smtp.cpp \
-	src/exportapi.cpp \
 	src/tasks/update_user_location_task.cpp \
 
 HEADERS += \
 	src/prepare_tmp_deb_package.h \
 	src/smtp/smtp.h \
-	src/exportapi.h \
 	src/tasks/update_user_location_task.h \
 	
 	
