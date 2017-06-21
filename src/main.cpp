@@ -13,7 +13,7 @@
 #include <QtCore>
 #include <QFile>
 #include <QString>
-#include "server/websocketserver.h"
+#include <websocketserver.h>
 #include "prepare_tmp_deb_package.h"
 
 int main(int argc, char** argv) {
