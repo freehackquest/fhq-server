@@ -67,6 +67,7 @@ QJsonObject CmdInputDef::toJson(){
 	QJsonObject obj;
 	obj["name"] = m_sName;
 	obj["type"] = m_sType;
+	obj["restrict"] = m_sRestrict;
 	obj["description"] = m_sDescription;
 	// TODO enum
 	return obj;

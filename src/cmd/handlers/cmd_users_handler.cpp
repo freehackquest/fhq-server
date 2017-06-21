@@ -2,11 +2,11 @@
 #include <QJsonArray>
 
 CmdUsersHandler::CmdUsersHandler(){
+	m_vInputs.push_back(CmdInputDef("filter_text").string_().optional().description("Filter by user email or nick"));
+	m_vInputs.push_back(CmdInputDef("filter_role").string_().optional().description("Filter by user role"));
 }
 
 QString CmdUsersHandler::cmd(){
-	m_vInputs.push_back(CmdInputDef("filter_text").string_().optional());
-	m_vInputs.push_back(CmdInputDef("filter_role").string_().optional());
 	return "users";
 }
 
