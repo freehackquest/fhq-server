@@ -36,10 +36,10 @@ int main(int argc, char** argv) {
     parser.addOption(prepareDebOption);
 
     parser.process(a);
+    std::cout << QCoreApplication::applicationName().toStdString() << "-" << QCoreApplication::applicationVersion().toStdString() << "\n";
     
     bool version = parser.isSet(versionOption);
     if(version){
-		std::cout << "Version: " << QCoreApplication::applicationName().toStdString() << "-" << QCoreApplication::applicationVersion().toStdString() << "\n";
 		return 0;
 	}
 

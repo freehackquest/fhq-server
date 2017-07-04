@@ -9,6 +9,7 @@
 #include "headers/cmd_deletehint_handler.h"
 #include "headers/cmd_getmap_handler.h"
 #include "headers/cmd_getpublicinfo_handler.h"
+#include "headers/cmd_games_handler.h"
 #include "headers/cmd_hello_handler.h"
 #include "headers/cmd_hints_handler.h"
 #include "headers/cmd_login_handler.h"
@@ -33,8 +34,9 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
 	v.push_back(new CmdGetPublicEventHandler());
 	v.push_back(new CmdClassbookHandler());
 	v.push_back(new CmdDeleteHintHandler());
-	v.push_back(new CmdGetMapHandler());
+	v.push_back(new CmdGamesHandler());
 	v.push_back(new CmdGetPublicInfoHandler());
+	v.push_back(new CmdGetMapHandler());
 	v.push_back(new CmdHelloHandler());
 	v.push_back(new CmdHintsHandler());
 	v.push_back(new CmdLoginHandler());

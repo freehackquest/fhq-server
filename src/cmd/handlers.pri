@@ -4,6 +4,7 @@ HEADERS += \
 	src/cmd/headers/cmd_addhint_handler.h \
 	src/cmd/headers/cmd_answerlist_handler.h \
 	src/cmd/headers/cmd_api_handler.h \
+	src/cmd/headers/cmd_classbook_handler.h \
 	src/cmd/headers/cmd_createpublicevent_handler.h \
 	src/cmd/headers/cmd_deletepublicevent_handler.h \
 	src/cmd/headers/cmd_getpublicevent_handler.h \
@@ -13,6 +14,8 @@ HEADERS += \
 	src/cmd/headers/cmd_hints_handler.h \
 	src/cmd/headers/cmd_login_handler.h \
 	src/cmd/headers/cmd_publiceventslist_handler.h \
+	src/cmd/headers/cmd_games_handler.h \
+	src/cmd/headers/cmd_getmap_handler.h \
 	src/cmd/headers/cmd_scoreboard_handler.h \
 	src/cmd/headers/cmd_sendchatmessage_handler.h \
 	src/cmd/headers/cmd_send_letters_to_subscribers_handler.h \
@@ -20,9 +23,7 @@ HEADERS += \
 	src/cmd/headers/cmd_users_handler.h \
 	src/cmd/headers/cmd_writeups_handler.h \
 	src/cmd/headers/cmd_user_handler.h \
-	src/cmd/headers/cmd_classbook_handler.h \
 	src/cmd/headers/cmd_update_user_location_handler.h \
-	src/cmd/headers/cmd_getmap_handler.h \
 
 SOURCES += \
 	src/cmd/create_cmd_handlers.cpp \
@@ -34,6 +35,8 @@ SOURCES += \
 	src/cmd/handlers/cmd_getpublicevent_handler.cpp \
 	src/cmd/handlers/cmd_deletehint_handler.cpp \
 	src/cmd/handlers/cmd_getpublicinfo_handler.cpp \
+	src/cmd/handlers/cmd_games_handler.cpp \
+	src/cmd/handlers/cmd_getmap_handler.cpp \
 	src/cmd/handlers/cmd_hello_handler.cpp \
 	src/cmd/handlers/cmd_hints_handler.cpp \
 	src/cmd/handlers/cmd_login_handler.cpp \
@@ -47,4 +50,4 @@ SOURCES += \
 	src/cmd/handlers/cmd_user_handler.cpp \
 	src/cmd/handlers/cmd_classbook_handler.cpp \
 	src/cmd/handlers/cmd_update_user_location_handler.cpp \
-	src/cmd/handlers/cmd_getmap_handler.cpp \
+	
