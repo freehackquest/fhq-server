@@ -5,8 +5,6 @@
 
 class PrepareTmpDebPackage {
 	public:
-		static QString version();
-		static QString name();
 		static void prepare(QString repo, QString tmpdeb);
 };
 

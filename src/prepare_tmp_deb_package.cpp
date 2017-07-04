@@ -3,14 +3,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QSysInfo>
-
-QString PrepareTmpDebPackage::version(){
-	return "0.1.16";
-};
-
-QString PrepareTmpDebPackage::name(){
-	return "freehackquest-backend";
-}
+#include <QtCore>
 
 void PrepareTmpDebPackage::prepare(QString repo, QString tmpdeb){
 	std::cout << "Distribution: " + QSysInfo::productType().toStdString() + "\n";
@@ -20,7 +13,7 @@ void PrepareTmpDebPackage::prepare(QString repo, QString tmpdeb){
 	if(file.exists()) file.remove();
 	if(file.open(QIODevice::ReadWrite)){
 		QTextStream stream(&file);
-		stream << "Source: " << PrepareTmpDebPackage::name() << endl;
+		stream << "Source: " << QCoreApplication::applicationName() << endl;
 		stream << "Section: misc" << endl;
 		stream << "Priority: optional" << endl;
 		// TODO redesign in static method
@@ -40,16 +33,17 @@ void PrepareTmpDebPackage::prepare(QString repo, QString tmpdeb){
 		stream << "Depends: " << depends.join(", ") << endl;
 		
 		// Version
-		stream << "Version: " << PrepareTmpDebPackage::version() << endl;
-		std::cout << "Version: " + PrepareTmpDebPackage::version().toStdString() + "\n";
+		stream << "Version: " << QCoreApplication::applicationVersion() << endl;
+		std::cout << "Version: " << QCoreApplication::applicationVersion().toStdString() << "\n";
 		
 		 // TODO calculate correct installed size
 		stream << "Installed-Size: 1024" << endl;
 		stream << "Homepage: https://github.com/freehackquest/backend" << endl;
 		
+		
 		// Package
-		stream << "Package: " << PrepareTmpDebPackage::name() << endl;
-		std::cout << "Package: " + PrepareTmpDebPackage::name().toStdString() + "\n";
+		stream << "Package: " << QCoreApplication::applicationName() << endl;
+		std::cout << "Package: " + QCoreApplication::applicationName().toStdString() + "\n";
 		
 		// Architecture
 		if(QSysInfo::currentCpuArchitecture() == "x86_64"){

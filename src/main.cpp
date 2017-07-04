@@ -19,8 +19,14 @@
 int main(int argc, char** argv) {
 	QCoreApplication a(argc, argv);
 
+	a.setApplicationName("freehackquest-backend");
+    a.setApplicationVersion(VERSION_STRING);
+    
+    
     QCommandLineParser parser;
     parser.setApplicationDescription("freehackquest-backend");
+
+    
     parser.addHelpOption();
     
     QCommandLineOption versionOption(QStringList() << "v" << "version", QCoreApplication::translate("main", "Version"));
@@ -33,10 +39,10 @@ int main(int argc, char** argv) {
     
     bool version = parser.isSet(versionOption);
     if(version){
-		std::cout << PrepareTmpDebPackage::version().toStdString() << "\n";
+		std::cout << "Version: " << QCoreApplication::applicationName().toStdString() << "-" << QCoreApplication::applicationVersion().toStdString() << "\n";
 		return 0;
 	}
-	
+
 	bool prepare_deb = parser.isSet(prepareDebOption);
     if(prepare_deb){
 		PrepareTmpDebPackage::prepare("","tmpdeb");
