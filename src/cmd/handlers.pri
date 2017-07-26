@@ -6,6 +6,7 @@ HEADERS += \
 	src/cmd/headers/cmd_api_handler.h \
 	src/cmd/headers/cmd_classbook_handler.h \
 	src/cmd/headers/cmd_createpublicevent_handler.h \
+	src/cmd/headers/cmd_createquest_handler.h \
 	src/cmd/headers/cmd_deletepublicevent_handler.h \
 	src/cmd/headers/cmd_getpublicevent_handler.h \
 	src/cmd/headers/cmd_deletehint_handler.h \
@@ -31,6 +32,7 @@ SOURCES += \
 	src/cmd/handlers/cmd_answerlist_handler.cpp \
 	src/cmd/handlers/cmd_api_handler.cpp \
 	src/cmd/handlers/cmd_createpublicevent_handler.cpp \
+	src/cmd/handlers/cmd_createquest_handler.cpp \
 	src/cmd/handlers/cmd_deletepublicevent_handler.cpp \
 	src/cmd/handlers/cmd_getpublicevent_handler.cpp \
 	src/cmd/handlers/cmd_deletehint_handler.cpp \

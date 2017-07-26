@@ -4,6 +4,7 @@
 #include "headers/cmd_api_handler.h"
 #include "headers/cmd_deletepublicevent_handler.h"
 #include "headers/cmd_createpublicevent_handler.h"
+#include "headers/cmd_createquest_handler.h"
 #include "headers/cmd_getpublicevent_handler.h"
 #include "headers/cmd_classbook_handler.h"
 #include "headers/cmd_deletehint_handler.h"
@@ -30,6 +31,7 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
 	v.push_back(new CmdAnswerListHandler());
 	v.push_back(new CmdApiHandler());
 	v.push_back(new CmdCreatePublicEventHandler());
+	v.push_back(new CmdCreateQuestHandler());
 	v.push_back(new CmdDeletePublicEventHandler());
 	v.push_back(new CmdGetPublicEventHandler());
 	v.push_back(new CmdClassbookHandler());

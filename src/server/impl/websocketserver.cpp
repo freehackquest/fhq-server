@@ -155,38 +155,26 @@ void WebSocketServer::processTextMessage(QString message) {
 			if(!pCmdHandler->accessUnauthorized()){
 				IUserToken *pUserToken = getUserToken(pClient);
 				if(pUserToken == NULL){
-					sendMessageError(pClient, pCmdHandler->cmd(), Errors::NotAuthorizedRequest());
+					this->sendMessageError(pClient, pCmdHandler->cmd(), Errors::NotAuthorizedRequest());
 					return;
 				}
 				
 				// TODO redesign
 				// access user
 				if(pUserToken->isUser() && !pCmdHandler->accessUser()){
-					QJsonObject jsonData;
-					jsonData["cmd"] = QJsonValue(pCmdHandler->cmd());
-					jsonData["result"] = QJsonValue("FAIL");
-					jsonData["error"] = QJsonValue("Access deny for user");
-					sendMessage(pClient, jsonData);
+					this->sendMessageError(pClient, pCmdHandler->cmd(), Errors::AccessDenyForUser());
 					return;
 				}
 				
 				// access tester
 				if(pUserToken->isTester() && !pCmdHandler->accessTester()){
-					QJsonObject jsonData;
-					jsonData["cmd"] = QJsonValue(pCmdHandler->cmd());
-					jsonData["result"] = QJsonValue("FAIL");
-					jsonData["error"] = QJsonValue("Access deny for tester");
-					sendMessage(pClient, jsonData);
+					this->sendMessageError(pClient, pCmdHandler->cmd(), Errors::AccessDenyForTester());
 					return;
 				}
 				
 				// access admin
 				if(pUserToken->isAdmin() && !pCmdHandler->accessAdmin()){
-					QJsonObject jsonData;
-					jsonData["cmd"] = QJsonValue(pCmdHandler->cmd());
-					jsonData["result"] = QJsonValue("FAIL");
-					jsonData["error"] = QJsonValue("Access deny for admin");
-					sendMessage(pClient, jsonData);
+					this->sendMessageError(pClient, pCmdHandler->cmd(), Errors::AccessDenyForAdmin());
 					return;
 				}
 
@@ -194,6 +182,9 @@ void WebSocketServer::processTextMessage(QString message) {
 				pCmdHandler->handle(pClient, this, jsonData);	
 				
 			}else{
+				// TODO check requare params
+				const QVector<CmdInputDef> vInputs = pCmdHandler->inputs();
+				
 				// allow unauthorized request
 				pCmdHandler->handle(pClient, this, jsonData);	
 			}
