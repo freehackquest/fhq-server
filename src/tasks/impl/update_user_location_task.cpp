@@ -5,12 +5,13 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QEventLoop>
-
+#include <log.h>
 
 UpdateUserLocationTask::UpdateUserLocationTask(IWebSocketServer *pWebSocketServer, int userid, QString lastip){
 	m_nUserID = userid;
 	m_pWebSocketServer = pWebSocketServer;
 	mLastIP = lastip;
+	TAG = "UpdateUserLocationTask";
 };
 
 UpdateUserLocationTask::~UpdateUserLocationTask(){
@@ -24,7 +25,9 @@ void UpdateUserLocationTask::run(){
 	QSqlQuery query(db);
 	query.prepare("SELECT * FROM users WHERE id = :id");
 	query.bindValue(":id", m_nUserID);
-	query.exec();
+	if(!query.exec()){
+		Log::err(TAG, query.lastError().text());
+	}
 	if (query.next()) {
 		QSqlRecord record = query.record();
 		QString lastip = record.value("last_ip").toString();
@@ -67,7 +70,9 @@ void UpdateUserLocationTask::run(){
 			query_update.bindValue(":latitude", lat);
 			query_update.bindValue(":longitude", lon);
 			query_update.bindValue(":id", m_nUserID);
-			query_update.exec();
+			if(!query_update.exec()){
+				Log::err(TAG, query_update.lastError().text());
+			}
 		}
 	}else{
 		qDebug().nospace() << "UpdateUserLocationTask failed for " << m_nUserID;

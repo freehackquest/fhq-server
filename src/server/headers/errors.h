@@ -12,6 +12,7 @@ class Errors {
 		static Error AccessDenyForUser();
 		static Error AccessDenyForTester();
 		static Error AccessDenyForAdmin();
+		static Error InvalidToken();
 		static Error LostDatabaseConnection();
 
 		static Error NotImplementedYet();

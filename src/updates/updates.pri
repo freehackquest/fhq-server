@@ -1,4 +1,6 @@
 
+INCLUDEPATH += src/updates
+
 HEADERS += \
 	src/updates/create_list_updates.h \
 	src/updates/headers/database0060.h \

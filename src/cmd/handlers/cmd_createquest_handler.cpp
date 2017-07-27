@@ -1,8 +1,7 @@
 #include "../headers/cmd_createquest_handler.h"
-#include "add_public_events_task.h"
+#include <tasks.h>
 
 #include <QJsonArray>
-#include <QThreadPool>
 #include <QCryptographicHash>
 
 CmdCreateQuestHandler::CmdCreateQuestHandler(){
@@ -167,10 +166,8 @@ void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 	int rowid = query.lastInsertId().toInt();
 	jsonData["questid"] = QJsonValue(rowid);
 
-	AddPublicEventsTask *pAddPublicEventsTask = new AddPublicEventsTask(pWebSocketServer, "quests", "New quest #" + QString::number(rowid) + " " + sName + " (subject: " + sSubject + ")");
-	QThreadPool::globalInstance()->start(pAddPublicEventsTask);
-
-	// TODO update max score in game
+	Run_AddPublicEventsTask(pWebSocketServer, "quests", "New quest #" + QString::number(rowid) + " " + sName + " (subject: " + sSubject + ")");
+	Run_UpdateMaxScoreGameTask(pWebSocketServer,nGameID);
 	
 	jsonData["result"] = QJsonValue("DONE");
 	pWebSocketServer->sendMessage(pClient, jsonData);

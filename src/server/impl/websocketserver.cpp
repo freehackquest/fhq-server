@@ -6,6 +6,7 @@
 #include <QRegExp>
 
 #include <QHostAddress>
+#include <QThread>
 #include <QtNetwork/QSslCertificate>
 #include <QtNetwork/QSslKey>
 
@@ -281,12 +282,28 @@ void WebSocketServer::sendToAll(QJsonObject obj){
 QSqlDatabase *WebSocketServer::database(){
 	// swap connection
 	QMutexLocker locker (&m_mtxSwapConenctions);
-	if(m_pDBConnection->isOutdated()){
-		m_pDBConnection_older->close();
-		m_pDBConnection_older->swap(m_pDBConnection);
-		m_pDBConnection->connect(m_pServerConfig);
+	
+	long long nThreadID = (long long)QThread::currentThreadId();
+	
+	
+	if(m_mDatabaseConnections.contains(nThreadID)){
+		DatabaseConnection *pDBConnection = m_mDatabaseConnections[nThreadID];
+		DatabaseConnection *pDBConnection_older = m_mDatabaseConnections_older[nThreadID];
+		
+		if(pDBConnection->isOutdated()){
+			pDBConnection_older->close();
+			pDBConnection_older->swap(pDBConnection);
+			pDBConnection->connect(m_pServerConfig);
+		}
+		return pDBConnection->db();
 	}
-	return m_pDBConnection->db();
+
+	DatabaseConnection *pDBConnection = new DatabaseConnection("qt_sql_default_connection_1_" + QString::number(nThreadID));
+	DatabaseConnection *pDBConnection_older = new DatabaseConnection("qt_sql_default_connection_2_" + QString::number(nThreadID));
+	m_mDatabaseConnections[nThreadID] = pDBConnection;
+	m_mDatabaseConnections_older[nThreadID] = pDBConnection_older;
+	pDBConnection->connect(m_pServerConfig);
+	return pDBConnection->db();
 }
 
 // ---------------------------------------------------------------------

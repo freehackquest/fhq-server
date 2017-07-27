@@ -1,5 +1,6 @@
 
 INCLUDEPATH += src/cache/headers
+INCLUDEPATH += src/cache
 
 HEADERS += \
 	src/cache/create_memory_cache.h \

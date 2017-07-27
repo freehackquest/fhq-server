@@ -1,9 +1,10 @@
 #include "../headers/cmd_login_handler.h"
-#include "../../tasks/update_user_location_task.h"
-#include <QThreadPool>
-#include "../../server/headers/usertoken.h"
+#include <tasks.h>
+#include <log.h>
+#include <usertoken.h>
 
 CmdLoginHandler::CmdLoginHandler(){
+	TAG = "CmdLoginHandler";
 }
 
 QString CmdLoginHandler::cmd(){
@@ -49,12 +50,16 @@ void CmdLoginHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 		pWebSocketServer->sendMessage(pClient, jsonData);
 		return;
 	}
-
+	QString token = obj["token"].toString();
 	QSqlDatabase db = *(pWebSocketServer->database());
 	QSqlQuery query(db);
 	query.prepare("SELECT * FROM users_tokens WHERE token = :token");
-	query.bindValue(":token", obj["token"].toString());
-	query.exec();
+	query.bindValue(":token", token);
+	if(!query.exec()){
+		Log::err(TAG, query.lastError().text());
+		pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+		return;
+	}
 	if (query.next()) {
 		QSqlRecord record = query.record();
 		int userid = record.value("userid").toInt();
@@ -69,13 +74,12 @@ void CmdLoginHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 		qDebug() << "end_date " << end_date;
 		QString lastip = pClient->peerAddress().toString();
 		pWebSocketServer->setUserToken(pClient, new UserToken(data));
-		UpdateUserLocationTask *pUpdateUserLocationTask = new UpdateUserLocationTask(pWebSocketServer, userid, lastip);
-		QThreadPool::globalInstance()->start(pUpdateUserLocationTask);
-		
+		Run_UpdateUserLocationTask(pWebSocketServer, userid, lastip);
+
 	}else{
-		jsonData["result"] = QJsonValue("FAIL");
-		jsonData["error"] = QJsonValue("Invalid token");
-		pWebSocketServer->sendMessage(pClient, jsonData);
+		Log::err(TAG, "Invalid token " + token);
+		// ["error"]
+		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::InvalidToken());
 		return;
 	}
 

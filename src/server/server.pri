@@ -1,3 +1,6 @@
+
+INCLUDEPATH += src/server/headers
+
 HEADERS += \
 	src/server/headers/usertoken.h \
 	src/server/headers/server_config.h \
@@ -5,6 +8,7 @@ HEADERS += \
 	src/server/headers/cmd_input_def.h \
 	src/server/headers/errors.h \
 	src/server/headers/error.h \
+	src/server/headers/log.h \
 	src/server/headers/websocketserver.h \
 
 SOURCES += \
@@ -15,3 +19,4 @@ SOURCES += \
 	src/server/impl/cmd_input_def.cpp \
 	src/server/impl/errors.cpp \
 	src/server/impl/error.cpp \
+	src/server/impl/log.cpp \

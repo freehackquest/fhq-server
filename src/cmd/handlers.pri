@@ -1,4 +1,6 @@
 
+INCLUDEPATH += src/cmd
+
 HEADERS += \
 	src/cmd/create_cmd_handlers.h \
 	src/cmd/headers/cmd_addhint_handler.h \

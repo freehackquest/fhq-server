@@ -1,7 +1,7 @@
 #ifndef CREATE_LIST_UPDATES_H
 #define CREATE_LIST_UPDATES_H
 
-#include "../interfaces/iupdate.h"
+#include <iupdate.h>
 #include <QVector>
 #include <QDebug>
 

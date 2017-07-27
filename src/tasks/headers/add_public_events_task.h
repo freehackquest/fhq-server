@@ -13,6 +13,7 @@ class AddPublicEventsTask : public QRunnable {
 	private:
 		QString m_sMessage;
 		QString m_sType;
+		QString TAG;
 		IWebSocketServer *m_pWebSocketServer;
 		
 };

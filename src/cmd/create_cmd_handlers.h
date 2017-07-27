@@ -1,7 +1,7 @@
 #ifndef CREATE_CMD_HANDLERS_H
 #define CREATE_CMD_HANDLERS_H
 
-#include "../interfaces/icmdhandler.h"
+#include <icmdhandler.h>
 #include <QString>
 #include <QMap>
 

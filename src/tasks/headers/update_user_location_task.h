@@ -14,6 +14,7 @@ class UpdateUserLocationTask : public QRunnable {
 		int m_nUserID;
 		QString mLastIP;
 		IWebSocketServer *m_pWebSocketServer;
+		QString TAG;
 		
 };
 

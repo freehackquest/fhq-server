@@ -68,42 +68,42 @@ Error Errors::AccessDenyForAdmin(){
 // ---------------------------------------------------------------------
 
 Error Errors::NotImplementedYet(){
-	Error error(1003, "Not implemented yet");
+	Error error(404, "Not implemented yet");
 	return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::NotFoundUserByUUID(QString uuid){
-	Error error(1004, "Not found user by uuid " + uuid);
+	Error error(404, "Not found user by uuid " + uuid);
 	return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::NoneError(){
-	Error error(0, "none");
+	Error error(404, "none");
 	return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::LostDatabaseConnection(){
-	Error error(1006, "Lost Database Connection");
+	Error error(500, "Lost Database Connection");
 	return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::QuestIDMustBeNotZero(){
-	Error error(1008, "Parameter 'questid' must be not zero");
+	Error error(400, "Parameter 'questid' must be not zero");
 	return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::HintIDMustBeNotZero(){
-	Error error(1010, "Parameter 'hintid' must be not zero");
+	Error error(400, "Parameter 'hintid' must be not zero");
 	return error;
 }
 
@@ -186,3 +186,9 @@ Error Errors::ParamMustBeMoreThen(QString param_name, int minval){
 
 // ---------------------------------------------------------------------
 		
+Error Errors::InvalidToken(){
+	Error error(401, "Invalid token");
+	return error;
+}
+
+// ---------------------------------------------------------------------
