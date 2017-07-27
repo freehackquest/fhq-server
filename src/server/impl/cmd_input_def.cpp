@@ -28,14 +28,14 @@ CmdInputDef & CmdInputDef::required(){
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::string_(){
-	m_sType = "string";
+	m_sType = CMD_INPUT_DEF_TYPE_STRING;
 	return *this;
 }
 
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::enum_(QStringList list){
-	m_sType = "enum";
+	m_sType = CMD_INPUT_DEF_TYPE_ENUM;
 	m_lstEnums = list;
 	return *this;
 }
@@ -43,14 +43,21 @@ CmdInputDef & CmdInputDef::enum_(QStringList list){
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::integer_(){
-	m_sType = "integer";
+	m_sType = CMD_INPUT_DEF_TYPE_INTEGER;
+	return *this;
+}
+
+// ---------------------------------------------------------------------
+
+CmdInputDef & CmdInputDef::uuid_(){
+	m_sType = CMD_INPUT_DEF_TYPE_UUID;
 	return *this;
 }
 
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::bool_(){
-	m_sType = "boolean";
+	m_sType = CMD_INPUT_DEF_TYPE_BOOL;
 	return *this;
 }
 
@@ -75,4 +82,50 @@ QJsonObject CmdInputDef::toJson(){
 
 // ---------------------------------------------------------------------
 
+QString CmdInputDef::getName(){
+	return m_sName;
+}
 
+// ---------------------------------------------------------------------
+
+bool CmdInputDef::isRequired(){
+	return m_sRestrict == "required";
+}
+
+// ---------------------------------------------------------------------
+
+bool CmdInputDef::isInteger(){
+	return m_sType == CMD_INPUT_DEF_TYPE_INTEGER;
+}
+
+// ---------------------------------------------------------------------
+
+bool CmdInputDef::isEnum(){
+	return m_sType == CMD_INPUT_DEF_TYPE_ENUM;
+}
+
+// ---------------------------------------------------------------------
+
+bool CmdInputDef::isString(){
+	return m_sType == CMD_INPUT_DEF_TYPE_STRING;
+}
+		
+// ---------------------------------------------------------------------
+
+bool CmdInputDef::isUUID(){
+	return m_sType == CMD_INPUT_DEF_TYPE_UUID;
+}
+
+// ---------------------------------------------------------------------
+
+bool CmdInputDef::isBool(){
+	return m_sType == CMD_INPUT_DEF_TYPE_BOOL;
+}
+
+// ---------------------------------------------------------------------
+
+QStringList CmdInputDef::getEnumList(){
+	return m_lstEnums;
+}
+
+// ---------------------------------------------------------------------

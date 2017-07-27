@@ -4,6 +4,7 @@
 #include <QThreadPool>
 
 CmdUpdateUserLocationHandler::CmdUpdateUserLocationHandler(){
+	m_vInputs.push_back(CmdInputDef("userid").required().string_().description("User ID"));
 }
 
 QString CmdUpdateUserLocationHandler::cmd(){
@@ -47,20 +48,9 @@ void CmdUpdateUserLocationHandler::handle(QWebSocket *pClient, IWebSocketServer 
 		return;
 	}
 
-	if(!pUserToken->isAdmin()){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::AllowedOnlyForAdmin());
-		return;
-	}
-
-	QJsonValueRef vUserID = obj["userid"];
 	// bool bConvert = false;
-	
-	if(!vUserID.isDouble()){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::QuestIDMustBeInteger());
-		return;
-	}
 
-	int userid = vUserID.toInt();
+	int userid = obj["userid"].toInt();
 	if(userid == 0){
 		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::QuestIDMustBeNotZero());
 		return;

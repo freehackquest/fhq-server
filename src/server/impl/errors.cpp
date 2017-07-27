@@ -46,8 +46,22 @@ Error Errors::NotAuthorizedRequest(){
 
 // ---------------------------------------------------------------------
 
-Error Errors::AllowedOnlyForAdmin(){
-	Error error(1002, "Allowed only for admin");
+Error Errors::AccessDenyForUser(){
+	Error error(400, "Access deny for user");
+	return error;
+}
+
+// ---------------------------------------------------------------------
+
+Error Errors::AccessDenyForTester(){
+	Error error(400, "Access deny for tester");
+	return error;
+}
+
+// ---------------------------------------------------------------------
+
+Error Errors::AccessDenyForAdmin(){
+	Error error(400, "Access deny for admin");
 	return error;
 }
 
@@ -67,8 +81,8 @@ Error Errors::NotFoundUserByUUID(QString uuid){
 
 // ---------------------------------------------------------------------
 
-Error Errors::NotFoundUUIDField(){
-	Error error(1005, "Not found uuid field");
+Error Errors::NoneError(){
+	Error error(0, "none");
 	return error;
 }
 
@@ -81,13 +95,6 @@ Error Errors::LostDatabaseConnection(){
 
 // ---------------------------------------------------------------------
 
-Error Errors::QuestIDMustBeInteger(){
-	Error error(1007, "Parameter 'questid' must be integer");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
 Error Errors::QuestIDMustBeNotZero(){
 	Error error(1008, "Parameter 'questid' must be not zero");
 	return error;
@@ -95,22 +102,8 @@ Error Errors::QuestIDMustBeNotZero(){
 
 // ---------------------------------------------------------------------
 
-Error Errors::HintIDMustBeInteger(){
-	Error error(1009, "Parameter 'hintid' must be integer");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
 Error Errors::HintIDMustBeNotZero(){
 	Error error(1010, "Parameter 'hintid' must be not zero");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::UserIDMustBeInteger(){
-	Error error(400, "Parameter 'userid' must be integer");
 	return error;
 }
 
@@ -137,43 +130,8 @@ Error Errors::OnPageCouldNotBeMoreThen50(){
 
 // ---------------------------------------------------------------------
 
-Error Errors::GameIDMustBeInteger(){
-	Error error(400, "Parameter 'gameid' must be integer");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::OnPageMustBeInteger(){
-	Error error(400, "Parameter 'onpage' must be integer");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::PageMustBeInteger(){
-	Error error(400, "Parameter 'page' must be integer");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
 Error Errors::InternalServerError(){
 	Error error(500, "Internal Server Error");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::EventIdMustBeInteger(){
-	Error error(400, "Parameter 'eventid' must be integer");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::EventIdExpected(){
-	Error error(400, "Parameter 'eventid' expected");
 	return error;
 }
 
@@ -186,113 +144,29 @@ Error Errors::EventNotFound(){
 
 // ---------------------------------------------------------------------
 
-Error Errors::EventTypeExpected(){
-	Error error(400, "Parameter 'type' expected");
+Error Errors::ParamExpected(QString param_name){
+	Error error(400, "Parameter '" + param_name + "' expected");
 	return error;
 }
 
 // ---------------------------------------------------------------------
 
-Error Errors::EventMessageExpected(){
-	Error error(400, "Parameter 'message' expected");
+Error Errors::ParamMustBeInteger(QString param_name){
+	Error error(400, "Parameter '" + param_name + "' must be integer");
 	return error;
 }
 
 // ---------------------------------------------------------------------
 
-Error Errors::EventTypeValueExpected(){
-	Error error(400, "Parameter 'type' can be has only one from array: [info, users, games, quests, warning]");
+Error Errors::ParamExpectedValueOneFrom(QString param_name, QStringList eList){
+	Error error(400, "Parameter '" + param_name + "' expected values one from [" + eList.join(",") + "]");
 	return error;
 }
 
 // ---------------------------------------------------------------------
 
-Error Errors::UUIDParamExpected(){
-	Error error(400, "Parameter 'uuid' expected");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::GameIDParamExpected(){
-	Error error(400, "Parameter 'gameid' expected");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::NameParamExpected(){
-	Error error(400, "Parameter 'name' expected");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::TextParamExpected(){
-	Error error(400, "Parameter 'text' expected");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::ScoreParamExpected(){
-	Error error(400, "Parameter 'score' expected");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::SubjectParamExpected(){
-	Error error(400, "Parameter 'subject' expected");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::AnswerParamExpected(){
-	Error error(400, "Parameter 'answer' expected");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::AnswerFormatParamExpected(){
-	Error error(400, "Parameter 'answer_format' expected");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::StateParamExpected(){
-	Error error(400, "Parameter 'state' expected");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::DescriptionStateParamExpected(){
-	Error error(400, "Parameter 'description_state' expected");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::AccessDenyForUser(){
-	Error error(400, "Access deny for user");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::AccessDenyForTester(){
-	Error error(400, "Access deny for tester");
-	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::AccessDenyForAdmin(){
-	Error error(400, "Access deny for admin");
+Error Errors::ParamExpectedUUID(QString param_name){
+	Error error(400, "Parameter '" + param_name + "' expected uuid regexp: /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i");
 	return error;
 }
 

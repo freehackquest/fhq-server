@@ -3,6 +3,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QDateTime>
+#include <QRegExp>
 
 #include <QHostAddress>
 #include <QtNetwork/QSslCertificate>
@@ -159,7 +160,6 @@ void WebSocketServer::processTextMessage(QString message) {
 					return;
 				}
 				
-				// TODO redesign
 				// access user
 				if(pUserToken->isUser() && !pCmdHandler->accessUser()){
 					this->sendMessageError(pClient, pCmdHandler->cmd(), Errors::AccessDenyForUser());
@@ -178,15 +178,23 @@ void WebSocketServer::processTextMessage(QString message) {
 					return;
 				}
 
-				// allow
-				pCmdHandler->handle(pClient, this, jsonData);	
-				
+				// allow access
+				Error error = Errors::NoneError();
+				if(this->validateInputParameters(error, pCmdHandler, jsonData)){
+					pCmdHandler->handle(pClient, this, jsonData);	
+				}else{
+					this->sendMessageError(pClient, pCmdHandler->cmd(), error);
+					return;
+				}
 			}else{
-				// TODO check requare params
-				const QVector<CmdInputDef> vInputs = pCmdHandler->inputs();
-				
 				// allow unauthorized request
-				pCmdHandler->handle(pClient, this, jsonData);	
+				Error error = Errors::NoneError();
+				if(this->validateInputParameters(error, pCmdHandler, jsonData)){
+					pCmdHandler->handle(pClient, this, jsonData);
+				}else{
+					this->sendMessageError(pClient, pCmdHandler->cmd(), error);
+					return;
+				}
 			}
 		}else{
 			qDebug() << "Unknown command: " << cmd;
@@ -357,6 +365,52 @@ void WebSocketServer::exportApi(QJsonObject &result){
 		handlers.append(handler);
 	}
 	result["handlers"] = handlers;
+}
+
+// ---------------------------------------------------------------------
+
+bool WebSocketServer::validateInputParameters(Error &error, ICmdHandler *pCmdHandler, QJsonObject &jsonData){
+	const QVector<CmdInputDef> vInputs = pCmdHandler->inputs();
+	for(int i = 0; i < vInputs.size(); i++){
+		CmdInputDef inDef = vInputs[i];
+		QString sParamName = inDef.getName();
+		if(inDef.isRequired() && !jsonData.contains(sParamName)){
+			error = Errors::ParamExpected(sParamName);
+			return false;
+		}
+		
+		if(jsonData.contains(sParamName)){
+			if(inDef.isInteger()){
+				QJsonValueRef vParam = jsonData[sParamName];
+				if(!vParam.isDouble()){
+					error = Errors::ParamMustBeInteger(sParamName);
+					return false;
+				}
+			}
+			
+			if(inDef.isEnum()){
+				QString val = jsonData[sParamName].toString().trimmed();
+				QStringList eList = inDef.getEnumList();
+				if(!eList.contains(val)){
+					error = Errors::ParamExpectedValueOneFrom(sParamName,eList);
+					return false;
+				}
+			}
+			
+			if(inDef.isUUID()){
+				QString val = jsonData[sParamName].toString();
+				QRegExp rx("[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}");
+				if(!rx.isValid()){
+					qDebug() << rx.errorString();
+				}
+				if(!rx.exactMatch(val)){
+					error = Errors::ParamExpectedUUID(sParamName);
+					return false;
+				}
+			}
+		}
+	}
+	return true;
 }
 
 // ---------------------------------------------------------------------

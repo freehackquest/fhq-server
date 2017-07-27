@@ -3,6 +3,9 @@
 #include "../../cache/headers/memory_cache_scoreboard.h"
 
 CmdScoreboardHandler::CmdScoreboardHandler(){
+	// validation and description input fields
+	m_vInputs.push_back(CmdInputDef("page").required().integer_().description("Number of page"));
+	m_vInputs.push_back(CmdInputDef("onpage").required().integer_().description("How much rows in one page"));
 }
 
 QString CmdScoreboardHandler::cmd(){
@@ -43,26 +46,10 @@ void CmdScoreboardHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 
-	int nPage = 0;
-	if(obj.contains("page")){
-		QJsonValueRef vPage = obj["page"];
-		if(!vPage.isDouble()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), Errors::PageMustBeInteger());
-			return;
-		}
-		nPage = vPage.toInt();
-	}
+	int nPage = obj["page"].toInt();
 	jsonData["page"] = nPage;
 	
-	int nOnPage = 15;
-	if(obj.contains("onpage")){
-		QJsonValueRef vOnPage = obj["onpage"];
-		if(!vOnPage.isDouble()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), Errors::OnPageMustBeInteger());
-			return;
-		}
-		nOnPage = vOnPage.toInt();
-	}
+	int nOnPage = obj["onpage"].toInt();
 	if(nOnPage > 50){
 		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::OnPageCouldNotBeMoreThen50());
 	}

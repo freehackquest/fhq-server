@@ -2,7 +2,9 @@
 #include <QJsonArray>
 
 CmdPublicEventsListHandler::CmdPublicEventsListHandler(){
-	
+	// validation and description input fields
+	m_vInputs.push_back(CmdInputDef("page").required().integer_().description("Number of page"));
+	m_vInputs.push_back(CmdInputDef("onpage").required().integer_().description("How much rows in one page"));
 }
 
 QString CmdPublicEventsListHandler::cmd(){
@@ -49,26 +51,10 @@ void CmdPublicEventsListHandler::handle(QWebSocket *pClient, IWebSocketServer *p
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 
-	int nPage = 0;
-	if(obj.contains("page")){
-		QJsonValueRef vPage = obj["page"];
-		if(!vPage.isDouble()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), Errors::PageMustBeInteger());
-			return;
-		}
-		nPage = vPage.toInt();
-	}
+	int nPage = obj["page"].toInt();
 	jsonData["page"] = nPage;
 	
-	int nOnPage = 10;
-	if(obj.contains("onpage")){
-		QJsonValueRef vOnPage = obj["onpage"];
-		if(!vOnPage.isDouble()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), Errors::OnPageMustBeInteger());
-			return;
-		}
-		nOnPage = vOnPage.toInt();
-	}
+	int nOnPage = obj["onpage"].toInt();;
 	if(nOnPage > 50){
 		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::OnPageCouldNotBeMoreThen50());
 		return;

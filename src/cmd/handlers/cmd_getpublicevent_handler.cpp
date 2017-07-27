@@ -2,6 +2,7 @@
 #include <QJsonArray>
 
 CmdGetPublicEventHandler::CmdGetPublicEventHandler(){
+	m_vInputs.push_back(CmdInputDef("eventid").required().integer_().description("Event id"));
 }
 
 QString CmdGetPublicEventHandler::cmd(){
@@ -44,18 +45,7 @@ void CmdGetPublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *pWe
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 
-	int nEventId = 0;
-	if(obj.contains("eventid")){
-		QJsonValueRef vEventId = obj["eventid"];
-		if(!vEventId.isDouble()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), Errors::EventIdMustBeInteger());
-			return;
-		}
-		nEventId = vEventId.toInt();
-	}else{
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::EventIdExpected());
-		return;
-	}
+	int nEventId = obj["eventid"].toInt();
 	jsonData["eventid"] = nEventId;
 
 	QJsonObject event;

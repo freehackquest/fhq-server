@@ -2,7 +2,7 @@
 #include <QJsonArray>
 
 CmdUserHandler::CmdUserHandler(){
-	
+	m_vInputs.push_back(CmdInputDef("uuid").required().string_().description("Number of page"));
 }
 
 QString CmdUserHandler::cmd(){
@@ -36,8 +36,6 @@ QString CmdUserHandler::description(){
 QStringList CmdUserHandler::errors(){
 	QStringList	list;
 	list << Errors::NotAuthorizedRequest().message();
-	list << Errors::AllowedOnlyForAdmin().message();
-	list << Errors::NotFoundUUIDField().message();
 	list << Errors::NotFoundUserByUUID("some uuid").message();
 	return list;
 }
@@ -47,16 +45,6 @@ void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSer
 	
 	if(pUserToken == NULL){
 		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::NotAuthorizedRequest());
-		return;
-	}
-
-	if(!pUserToken->isAdmin()){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::AllowedOnlyForAdmin());
-		return;
-	}
-
-	if(!obj.contains("uuid")){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::NotFoundUUIDField());
 		return;
 	}
 

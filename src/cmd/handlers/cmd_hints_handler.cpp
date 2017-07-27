@@ -2,7 +2,7 @@
 #include <QJsonArray>
 
 CmdHintsHandler::CmdHintsHandler(){
-	
+	m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest id"));
 }
 
 QString CmdHintsHandler::cmd(){
@@ -46,20 +46,7 @@ void CmdHintsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 		return;
 	}
 
-	if(!pUserToken->isAdmin()){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::AllowedOnlyForAdmin());
-		return;
-	}
-
-	QJsonValueRef vQuestid = obj["questid"];
-	// bool bConvert = false;
-	
-	if(!vQuestid.isDouble()){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::QuestIDMustBeInteger());
-		return;
-	}
-
-	int questid = vQuestid.toInt();
+	int questid = obj["questid"].toInt();
 	if(questid == 0){
 		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::QuestIDMustBeNotZero());
 		return;

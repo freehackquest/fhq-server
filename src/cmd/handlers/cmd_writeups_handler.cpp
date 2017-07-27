@@ -2,6 +2,7 @@
 #include <QJsonArray>
 
 CmdWriteUpsHandler::CmdWriteUpsHandler(){
+	m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest ID"));
 }
 
 QString CmdWriteUpsHandler::cmd(){
@@ -38,16 +39,9 @@ QStringList CmdWriteUpsHandler::errors(){
 }
 
 void CmdWriteUpsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
-
-	QJsonValueRef vQuestid = obj["questid"];
 	// bool bConvert = false;
-	
-	if(!vQuestid.isDouble()){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::QuestIDMustBeInteger());
-		return;
-	}
 
-	int questid = vQuestid.toInt();
+	int questid = obj["questid"].toInt();
 	if(questid == 0){
 		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::QuestIDMustBeNotZero());
 		return;

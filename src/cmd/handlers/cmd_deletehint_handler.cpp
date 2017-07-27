@@ -45,19 +45,9 @@ void CmdDeleteHintHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		return;
 	}
 
-	if(!pUserToken->isAdmin()){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::AllowedOnlyForAdmin());
-		return;
-	}
-
 	QJsonValueRef vHintid = obj["hintid"];
-	
-	if(!vHintid.isDouble()){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::HintIDMustBeInteger());
-		return;
-	}
 
-	int hintid = vHintid.toInt();
+	int hintid = obj["hintid"].toInt();
 	if(hintid == 0){
 		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::HintIDMustBeNotZero());
 		return;

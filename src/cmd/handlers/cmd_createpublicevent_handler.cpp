@@ -2,8 +2,15 @@
 #include <QJsonArray>
 
 CmdCreatePublicEventHandler::CmdCreatePublicEventHandler(){
-	// inputs.push_back(CmdInputDef("type").enum_("info,users,games,quests,warning" ).required());
-	m_vInputs.push_back(CmdInputDef("type").string_().required());
+	QStringList eventTypes;
+	// TODO load from database
+	eventTypes << "info";
+	eventTypes << "users";
+	eventTypes << "games";
+	eventTypes << "quests";
+	eventTypes << "warning";
+	
+	m_vInputs.push_back(CmdInputDef("type").enum_(eventTypes).required());
 	m_vInputs.push_back(CmdInputDef("message").string_().required());
 }
 
@@ -45,23 +52,8 @@ void CmdCreatePublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 
-	if(!obj.contains("type")){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::EventTypeExpected());
-		return;
-	}
-	
-	if(!obj.contains("message")){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::EventMessageExpected());
-		return;
-	}
-
 	QString type = obj["type"].toString().trimmed();
 	QString message = obj["message"].toString().trimmed();
-	
-	if(type != "info" && type != "users" && type != "games" && type != "quests" && type != "warning"){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::EventTypeValueExpected());
-		return;
-	}
 	
 
 	QSqlDatabase db = *(pWebSocketServer->database());

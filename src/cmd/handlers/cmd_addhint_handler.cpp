@@ -46,20 +46,7 @@ void CmdAddHintHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocket
 		return;
 	}
 
-	if(!pUserToken->isAdmin()){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::AllowedOnlyForAdmin());
-		return;
-	}
-
-	QJsonValueRef vQuestid = obj["questid"];
-	// bool bConvert = false;
-	
-	if(!vQuestid.isDouble()){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::QuestIDMustBeInteger());
-		return;
-	}
-
-	int questid = vQuestid.toInt();
+	int questid = obj["questid"].toInt();
 	if(questid == 0){
 		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::QuestIDMustBeNotZero());
 		return;

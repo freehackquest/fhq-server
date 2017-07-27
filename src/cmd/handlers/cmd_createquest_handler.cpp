@@ -2,16 +2,21 @@
 #include <QJsonArray>
 
 CmdCreateQuestHandler::CmdCreateQuestHandler(){
-	m_vInputs.push_back(CmdInputDef("uuid").string_().required());
-	m_vInputs.push_back(CmdInputDef("gameid").integer_().required());
-	m_vInputs.push_back(CmdInputDef("name").string_().required());
-	m_vInputs.push_back(CmdInputDef("text").string_().required());
-	m_vInputs.push_back(CmdInputDef("score").integer_().required());
-	m_vInputs.push_back(CmdInputDef("subject").string_().required());
-	m_vInputs.push_back(CmdInputDef("answer").string_().required());
-	m_vInputs.push_back(CmdInputDef("answer_format").string_().required());
-	m_vInputs.push_back(CmdInputDef("state").string_().required());
-	m_vInputs.push_back(CmdInputDef("description_state").string_().required());
+	m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the quest"));
+	m_vInputs.push_back(CmdInputDef("gameid").integer_().required().description("Which game included this quest"));
+	m_vInputs.push_back(CmdInputDef("name").string_().required().description("Name of the quest"));
+	m_vInputs.push_back(CmdInputDef("text").string_().required().description("Description of the quest"));
+	m_vInputs.push_back(CmdInputDef("score").integer_().required().description("How much append to user score after solve quest by them"));
+	
+	// TODO from database init
+	QStringList questTypes;
+	questTypes << "trivia";
+	
+	m_vInputs.push_back(CmdInputDef("subject").string_().required().description("Subject must be one from types (look types)"));
+	m_vInputs.push_back(CmdInputDef("answer").string_().required().description("Answer for the quest"));
+	m_vInputs.push_back(CmdInputDef("answer_format").string_().required().description("Answer format for the quest"));
+	m_vInputs.push_back(CmdInputDef("state").string_().required().description("State of the quest, can be: open, broken, closed"));
+	m_vInputs.push_back(CmdInputDef("description_state").string_().required().description("You can add some descriptions for quest state"));
 }
 
 QString CmdCreateQuestHandler::cmd(){
@@ -52,64 +57,75 @@ void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 
-	if(!obj.contains("uuid")){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::UUIDParamExpected());
+	QString sUUID = obj["uuid"].toString().trimmed();
+	int nGameID = obj["gameid"].toInt();
+
+	QString sName = obj["name"].toString().trimmed();
+	if(sName.length() == 0){
+		pWebSocketServer->sendMessageError(pClient, cmd(), Error(400, "Name could not be empty"));
 		return;
 	}
 	
-	if(!obj.contains("gameid")){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::GameIDParamExpected());
-		return;
-	}
+	QString sText = obj["text"].toString().trimmed();
+	int nScore = obj["score"].toInt();
+	QString sSubject = obj["subject"].toString().trimmed();
+	QString sAnswer = obj["answer"].toString().trimmed();
+	QString sAnswerFormat = obj["answer_format"].toString().trimmed();
+	QString sState = obj["state"].toString().trimmed();
+	QString sDescriptionState = obj["description_state"].toString().trimmed();
+
 	
-	if(!obj.contains("name")){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::NameParamExpected());
-		return;
-	}
+	QSqlDatabase db = *(pWebSocketServer->database());
+	QSqlQuery query(db);
+	query.prepare("INSERT INTO quest(quest_uuid,name,text,answer,score,author,subject,"
+		"	answer_upper_md5,gameid,state,description_state,"
+		"	count_user_solved,"
+		"	copyright,answer_format,date_change,date_create)"
+		"	VALUES("
+		"		:quest_uuid,"
+		"		:name,"
+		"		:text,"
+		"		:answer,"
+		"		:answer_format,"
+		"		:score,"
+		"		:author,"
+		"		:subject,"
+		"		:answer_upper_md5,"
+		"		:gameid,"
+		"		:state,"
+		"		:description_state,"
+		"		:copyright,"
+		"		:count_user_solved,"
+		"		NOW(),"
+		"		NOW()"
+		"	)");
+	query.bindValue(":quest_uuid", sUUID);
+	query.bindValue(":name", sName);
+	query.bindValue(":text", sText);
+	query.bindValue(":answer", sAnswer);
+	query.bindValue(":answer", sAnswer);
+	query.exec();
 	
-	if(!obj.contains("text")){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::TextParamExpected());
-		return;
-	}
+
+	/*
+	QJsonValueRef vScore = obj["score"];
 	
-	if(!obj.contains("score")){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::ScoreParamExpected());
-		return;
-	}
-	
-	if(!obj.contains("subject")){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::SubjectParamExpected());
-		return;
-	}
-	
-	if(!obj.contains("answer")){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::AnswerParamExpected());
-		return;
-	}
-	
-	if(!obj.contains("answer_format")){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::AnswerFormatParamExpected());
-		return;
-	}
-	
-	if(!obj.contains("state")){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::StateParamExpected());
+	if(!vScore.isDouble()){
+		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::ScoreParamMustBeInteger());
 		return;
 	}
 
-	if(!obj.contains("description_state")){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::DescriptionStateParamExpected());
+	int nScore = vScore.toInt();
+	if(nScore <= 0){
+		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::ScoreParamMustBeMoreZero());
 		return;
-	}
+	}*/
+
+	// check enum
 
 	// TODO insert quest
 /*
-	QSqlDatabase db = *(pWebSocketServer->database());
-	QSqlQuery query(db);
-	query.prepare("INSERT INTO public_events(type,message,dt) VALUES(:type,:message,NOW())");
-	query.bindValue(":type", type);
-	query.bindValue(":message", message);
-	query.exec();
+	
 
 	jsonData["result"] = QJsonValue("DONE");
 	pWebSocketServer->sendMessage(pClient, jsonData);*/

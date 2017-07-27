@@ -7,44 +7,31 @@
 class Errors {
 	public:
 		static void WriteServerError(QString errorInfo);
+		
 		static Error NotAuthorizedRequest();
-		static Error AllowedOnlyForAdmin();
-		static Error NotImplementedYet();
-		static Error NotFoundUserByUUID(QString uuid);
-		static Error NotFoundUUIDField();
-		static Error LostDatabaseConnection();
-		static Error QuestIDMustBeInteger();
-		static Error QuestIDMustBeNotZero();
-		static Error HintIDMustBeInteger();
-		static Error HintIDMustBeNotZero();
-		static Error UserIDMustBeInteger();
-		static Error UserIDMustBeNotZero();
-		static Error ParamTableMustBeActiveOrBackup();
-		static Error OnPageCouldNotBeMoreThen50();
-		static Error GameIDMustBeInteger();
-		static Error OnPageMustBeInteger();
-		static Error PageMustBeInteger();
-		static Error InternalServerError();
-		static Error EventIdMustBeInteger();
-		static Error EventIdExpected();
-		static Error EventNotFound();
-		static Error EventTypeExpected();
-		static Error EventMessageExpected();
-		static Error EventTypeValueExpected();
-		static Error UUIDParamExpected();
-		static Error GameIDParamExpected();
-		static Error NameParamExpected();
-		static Error TextParamExpected();
-		static Error ScoreParamExpected();
-		static Error SubjectParamExpected();
-		static Error AnswerParamExpected();
-		static Error AnswerFormatParamExpected();
-		static Error StateParamExpected();
-		static Error DescriptionStateParamExpected();
 		static Error AccessDenyForUser();
 		static Error AccessDenyForTester();
 		static Error AccessDenyForAdmin();
+		static Error LostDatabaseConnection();
 
+		static Error NotImplementedYet();
+		static Error InternalServerError();
+		static Error ParamExpected(QString param_name);
+		static Error ParamMustBeInteger(QString param_name);
+		static Error ParamExpectedValueOneFrom(QString param_name, QStringList eList);
+		static Error ParamExpectedUUID(QString param_name);
+		
+		static Error NoneError();
+		
+		// custom
+		static Error NotFoundUserByUUID(QString uuid);
+		static Error QuestIDMustBeNotZero();
+		static Error HintIDMustBeNotZero();
+		static Error UserIDMustBeNotZero();
+		static Error ParamTableMustBeActiveOrBackup();
+		static Error OnPageCouldNotBeMoreThen50();
+		static Error EventNotFound();
+		
 	private:
 		
 };

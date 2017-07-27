@@ -2,6 +2,10 @@
 #include <QJsonArray>
 
 CmdAnswerListHandler::CmdAnswerListHandler(){
+	m_vInputs.push_back(CmdInputDef("page").required().integer_().description("Number of page"));
+	m_vInputs.push_back(CmdInputDef("onpage").required().integer_().description("How much rows on page"));
+	m_vInputs.push_back(CmdInputDef("questid").optional().integer_().description("Filter for questid"));
+	m_vInputs.push_back(CmdInputDef("userid").optional().integer_().description("Filter for userid"));
 }
 
 QString CmdAnswerListHandler::cmd(){
@@ -42,42 +46,23 @@ void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 
-	int nPage = 0;
-	if(obj.contains("page")){
-		QJsonValueRef vPage = obj["page"];
-		if(!vPage.isDouble()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), Errors::PageMustBeInteger());
-			return;
-		}
-		nPage = vPage.toInt();
-	}
+	int nPage = obj["page"].toInt();
 	jsonData["page"] = nPage;
 	
-	int nOnPage = 10;
-	if(obj.contains("onpage")){
-		QJsonValueRef vOnPage = obj["onpage"];
-		if(!vOnPage.isDouble()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), Errors::OnPageMustBeInteger());
-			return;
-		}
-		nOnPage = vOnPage.toInt();
-	}
+	int nOnPage = obj["onpage"].toInt();
+	jsonData["onpage"] = nOnPage;
+
 	if(nOnPage > 50){
 		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::OnPageCouldNotBeMoreThen50());
 		return;
 	}
-	jsonData["onpage"] = nOnPage;
+	
 
 	QStringList filters;
 	QMap<QString,QString> filter_values;
 
 	if(obj.contains("userid")){
-		QJsonValueRef vUserID = obj["userid"];
-		if(!vUserID.isDouble()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), Errors::UserIDMustBeInteger());
-			return;
-		}
-		int userid = vUserID.toInt();
+		int userid = obj["userid"].toInt();
 		filters << "(u.id = :userid)";
 		filter_values[":userid"] = userid;
 	}
@@ -90,12 +75,7 @@ void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	}
 
 	if(obj.contains("questid")){
-		QJsonValueRef vQuestID = obj["questid"];
-		if(!vQuestID.isDouble()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), Errors::QuestIDMustBeInteger());
-			return;
-		}
-		int questid = vQuestID.toInt();
+		int questid = obj["questid"].toInt();
 		filters << "(q.idquest = :questid)";
 		filter_values[":questid"] = questid;
 	}

@@ -2,6 +2,7 @@
 #include <QJsonArray>
 
 CmdDeletePublicEventHandler::CmdDeletePublicEventHandler(){
+	m_vInputs.push_back(CmdInputDef("hintid").required().integer_().description("hint id"));
 	
 }
 
@@ -45,18 +46,7 @@ void CmdDeletePublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 
-	int nEventId = 0;
-	if(obj.contains("eventid")){
-		QJsonValueRef vEventId = obj["eventid"];
-		if(!vEventId.isDouble()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), Errors::EventIdMustBeInteger());
-			return;
-		}
-		nEventId = vEventId.toInt();
-	}else{
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::EventIdExpected());
-		return;
-	}
+	int nEventId = obj["eventid"].toInt();
 	jsonData["eventid"] = nEventId;
 
 	QJsonObject event;
