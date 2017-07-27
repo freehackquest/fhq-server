@@ -171,3 +171,18 @@ Error Errors::ParamExpectedUUID(QString param_name){
 }
 
 // ---------------------------------------------------------------------
+
+Error Errors::ParamMustBeLessThen(QString param_name, int maxval){
+	Error error(400, "Parameter '" + param_name + "' must be less then " + QString::number(maxval));
+	return error;
+}
+
+// ---------------------------------------------------------------------
+
+Error Errors::ParamMustBeMoreThen(QString param_name, int minval){
+	Error error(400, "Parameter '" + param_name + "' must be more then " + QString::number(minval));
+	return error;
+}
+
+// ---------------------------------------------------------------------
+		

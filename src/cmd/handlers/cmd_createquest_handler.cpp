@@ -1,12 +1,16 @@
 #include "../headers/cmd_createquest_handler.h"
+#include "add_public_events_task.h"
+
 #include <QJsonArray>
+#include <QThreadPool>
+#include <QCryptographicHash>
 
 CmdCreateQuestHandler::CmdCreateQuestHandler(){
 	m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the quest"));
 	m_vInputs.push_back(CmdInputDef("gameid").integer_().required().description("Which game included this quest"));
 	m_vInputs.push_back(CmdInputDef("name").string_().required().description("Name of the quest"));
 	m_vInputs.push_back(CmdInputDef("text").string_().required().description("Description of the quest"));
-	m_vInputs.push_back(CmdInputDef("score").integer_().required().description("How much append to user score after solve quest by them"));
+	m_vInputs.push_back(CmdInputDef("score").integer_().minval(1).maxval(1000).required().description("How much append to user score after solve quest by them"));
 	
 	// TODO from database init
 	QStringList questTypes;
@@ -56,42 +60,80 @@ void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
+	QSqlDatabase db = *(pWebSocketServer->database());
 
 	QString sUUID = obj["uuid"].toString().trimmed();
+	{
+		QSqlQuery query(db);
+		query.prepare("SELECT * FROM quest WHERE uuid = :uuid");
+		query.bindValue(":uuid", sUUID);
+		query.exec();
+		if (query.next()) {
+			pWebSocketServer->sendMessageError(pClient, cmd(), Error(403, "Quest with uuid {" + sUUID + "} already exists"));
+			return;
+		}
+	}
+	
 	int nGameID = obj["gameid"].toInt();
+	{
+		QSqlQuery query(db);
+		query.prepare("SELECT * FROM games WHERE id = :id");
+		query.bindValue(":id", nGameID);
+		query.exec();
+		if (!query.next()) {
+			pWebSocketServer->sendMessageError(pClient, cmd(), Error(404, "Game not found"));
+			return;
+		}
+	}
 
 	QString sName = obj["name"].toString().trimmed();
-	if(sName.length() == 0){
+	/*if(sName.length() == 0){
 		pWebSocketServer->sendMessageError(pClient, cmd(), Error(400, "Name could not be empty"));
 		return;
-	}
+	}*/
 	
 	QString sText = obj["text"].toString().trimmed();
 	int nScore = obj["score"].toInt();
+	qDebug() << "nScore = " << nScore;
 	QString sSubject = obj["subject"].toString().trimmed();
 	QString sAnswer = obj["answer"].toString().trimmed();
+	QString sAuthor = obj["author"].toString().trimmed();
 	QString sAnswerFormat = obj["answer_format"].toString().trimmed();
 	QString sState = obj["state"].toString().trimmed();
+	QString sCopyright = obj["copyright"].toString().trimmed();
 	QString sDescriptionState = obj["description_state"].toString().trimmed();
 
-	
-	QSqlDatabase db = *(pWebSocketServer->database());
 	QSqlQuery query(db);
-	query.prepare("INSERT INTO quest(quest_uuid,name,text,answer,score,author,subject,"
-		"	answer_upper_md5,gameid,state,description_state,"
-		"	count_user_solved,"
-		"	copyright,answer_format,date_change,date_create)"
+	query.prepare(
+		"INSERT INTO quest("
+		"		uuid,"
+		"		gameid,"
+		"		name,"
+		"		text,"
+		"		answer,"
+		"		answer_upper_md5,"
+		"		answer_format,"
+		"		score,"
+		"		author,"
+		"		subject,"
+		"		state,"
+		"		description_state,"
+		"		copyright,"
+		"		count_user_solved,"
+		"		date_change,"
+		"		date_create"
+		"	)"
 		"	VALUES("
-		"		:quest_uuid,"
+		"		:uuid,"
+		"		:gameid,"
 		"		:name,"
 		"		:text,"
 		"		:answer,"
+		"		:answer_upper_md5,"
 		"		:answer_format,"
 		"		:score,"
 		"		:author,"
 		"		:subject,"
-		"		:answer_upper_md5,"
-		"		:gameid,"
 		"		:state,"
 		"		:description_state,"
 		"		:copyright,"
@@ -99,34 +141,37 @@ void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 		"		NOW(),"
 		"		NOW()"
 		"	)");
-	query.bindValue(":quest_uuid", sUUID);
+	query.bindValue(":uuid", sUUID);
+	query.bindValue(":gameid", nGameID);
 	query.bindValue(":name", sName);
 	query.bindValue(":text", sText);
 	query.bindValue(":answer", sAnswer);
-	query.bindValue(":answer", sAnswer);
-	query.exec();
-	
+	QString sAnswerUpperMd5 = QString(QCryptographicHash::hash(sAnswer.toUpper().toUtf8(),QCryptographicHash::Md5).toHex());
+	query.bindValue(":answer_upper_md5", sAnswerUpperMd5);
+	query.bindValue(":answer_format", sAnswerFormat);
+	query.bindValue(":score", nScore);
+	query.bindValue(":author", sAuthor);
+	query.bindValue(":subject", sSubject);
+	query.bindValue(":state", sState);
+	query.bindValue(":description_state", sDescriptionState);
+	query.bindValue(":copyright", sCopyright);
+	query.bindValue(":count_user_solved", 0);
 
-	/*
-	QJsonValueRef vScore = obj["score"];
-	
-	if(!vScore.isDouble()){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::ScoreParamMustBeInteger());
+	if (!query.exec()){
+		pWebSocketServer->sendMessageError(pClient, cmd(), Error(400, query.lastError().text()));
 		return;
 	}
+		
 
-	int nScore = vScore.toInt();
-	if(nScore <= 0){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::ScoreParamMustBeMoreZero());
-		return;
-	}*/
-
-	// check enum
-
-	// TODO insert quest
-/*
 	
+	int rowid = query.lastInsertId().toInt();
+	jsonData["questid"] = QJsonValue(rowid);
 
+	AddPublicEventsTask *pAddPublicEventsTask = new AddPublicEventsTask(pWebSocketServer, "quests", "New quest #" + QString::number(rowid) + " " + sName + " (subject: " + sSubject + ")");
+	QThreadPool::globalInstance()->start(pAddPublicEventsTask);
+
+	// TODO update max score in game
+	
 	jsonData["result"] = QJsonValue("DONE");
-	pWebSocketServer->sendMessage(pClient, jsonData);*/
+	pWebSocketServer->sendMessage(pClient, jsonData);
 }

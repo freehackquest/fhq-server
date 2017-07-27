@@ -4,6 +4,8 @@
 
 CmdInputDef::CmdInputDef(QString name){
 	m_sName = name;
+	m_bSettedMinVal = false;
+	m_bSettedMaxVal = false;
 }
 
 // ---------------------------------------------------------------------
@@ -70,6 +72,22 @@ CmdInputDef & CmdInputDef::description(QString s){
 
 // ---------------------------------------------------------------------
 
+CmdInputDef & CmdInputDef::minval(int minval){
+	m_bSettedMinVal = true;
+	m_nMinVal = minval;
+	return *this;
+}
+
+// ---------------------------------------------------------------------
+
+CmdInputDef & CmdInputDef::maxval(int maxval){
+	m_bSettedMaxVal = true;
+	m_nMaxVal = maxval;
+	return *this;
+}
+
+// ---------------------------------------------------------------------
+
 QJsonObject CmdInputDef::toJson(){
 	QJsonObject obj;
 	obj["name"] = m_sName;
@@ -77,6 +95,7 @@ QJsonObject CmdInputDef::toJson(){
 	obj["restrict"] = m_sRestrict;
 	obj["description"] = m_sDescription;
 	// TODO enum
+	// TODO min max val
 	return obj;
 }
 
@@ -129,3 +148,28 @@ QStringList CmdInputDef::getEnumList(){
 }
 
 // ---------------------------------------------------------------------
+
+bool CmdInputDef::isMinVal(){
+	return m_bSettedMaxVal;
+}
+
+// ---------------------------------------------------------------------
+
+int CmdInputDef::getMinVal(){
+	return m_nMinVal;
+}
+
+// ---------------------------------------------------------------------
+
+bool CmdInputDef::isMaxVal(){
+	return m_bSettedMaxVal;
+}
+
+// ---------------------------------------------------------------------
+
+int CmdInputDef::getMaxVal(){
+	return m_nMaxVal;
+}
+
+// ---------------------------------------------------------------------
+		

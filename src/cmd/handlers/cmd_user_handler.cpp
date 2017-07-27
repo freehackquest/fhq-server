@@ -2,7 +2,7 @@
 #include <QJsonArray>
 
 CmdUserHandler::CmdUserHandler(){
-	m_vInputs.push_back(CmdInputDef("uuid").required().string_().description("Number of page"));
+	m_vInputs.push_back(CmdInputDef("uuid").required().string_().description("UUID of user"));
 }
 
 QString CmdUserHandler::cmd(){

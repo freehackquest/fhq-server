@@ -27,6 +27,8 @@ class CmdInputDef {
 		CmdInputDef & uuid_();
 		CmdInputDef & enum_(QStringList list);
 		CmdInputDef & description(QString s);
+		CmdInputDef & minval(int minval);
+		CmdInputDef & maxval(int maxval);
 		QJsonObject toJson();
 		
 		QString getName();
@@ -38,6 +40,10 @@ class CmdInputDef {
 		bool isBool();
 		
 		QStringList getEnumList();
+		bool isMinVal();
+		int getMinVal();
+		bool isMaxVal();
+		int getMaxVal();
 		
 	private:
 		QString m_sType;
@@ -45,6 +51,10 @@ class CmdInputDef {
 		QString m_sRestrict;
 		QString m_sDescription;
 		QStringList m_lstEnums;
+		int m_nMinVal;
+		bool m_bSettedMinVal;
+		int m_nMaxVal;
+		bool m_bSettedMaxVal;
 };
 
 #endif // CMD_INPUT_DEF_H

@@ -386,6 +386,15 @@ bool WebSocketServer::validateInputParameters(Error &error, ICmdHandler *pCmdHan
 					error = Errors::ParamMustBeInteger(sParamName);
 					return false;
 				}
+				int val = jsonData[sParamName].toInt();
+				if(inDef.isMinVal() && val < inDef.getMinVal()){
+					error = Errors::ParamMustBeMoreThen(sParamName, inDef.getMinVal());
+					return false;
+				}
+				if(inDef.isMaxVal() && val > inDef.getMaxVal()){
+					error = Errors::ParamMustBeLessThen(sParamName, inDef.getMaxVal());
+					return false;
+				}
 			}
 			
 			if(inDef.isEnum()){
