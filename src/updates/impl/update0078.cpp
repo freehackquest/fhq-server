@@ -13,9 +13,7 @@ QString Update0078::description(){
 }
 
 void Update0078::update(QSqlDatabase &db){
-	{
-		QSqlQuery query(db);
-		query.prepare("ALTER TABLE `quest` DROP COLUMN min_score;");
-		query.exec();
-	}
+	QSqlQuery query(db);
+	query.prepare("ALTER TABLE `quest` DROP COLUMN min_score;");
+	query.exec();
 }
