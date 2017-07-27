@@ -13,7 +13,7 @@ QString Database0060::description(){
 	return "Init database 0060";
 }
 
-void Database0060::update(QSqlDatabase &db){
+bool Database0060::update(QSqlDatabase &db, QString &error){
 	
 	{
 		// Table structure for table `email_delivery`
@@ -29,7 +29,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  `dt` datetime NOT NULL,"
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
 	
 	{
@@ -44,7 +47,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  `userid` int(11) DEFAULT '0',"
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
  
 
@@ -60,7 +66,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  `userid` int(11) DEFAULT '0',"
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
  
 
@@ -96,7 +105,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  KEY `owner` (`owner`),"
 			"  KEY `date_restart` (`date_restart`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
  
 
@@ -112,7 +124,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  PRIMARY KEY (`id`),"
 			"  KEY `message` (`message`(255))"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
 	
 	{
@@ -141,7 +156,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  `count_user_solved` bigint(20) DEFAULT '0',"
 			"  PRIMARY KEY (`idquest`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
  
 
@@ -159,7 +177,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  `filepath` varchar(255) DEFAULT '',"
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
  
 
@@ -178,7 +199,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  `levenshtein` int(11) DEFAULT '100',"
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
  
 
@@ -197,7 +221,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  `levenshtein` int(11) DEFAULT '100',"
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
  
 
@@ -216,7 +243,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  `datetime_update` datetime DEFAULT NULL,"
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
 
 
@@ -286,7 +316,10 @@ void Database0060::update(QSqlDatabase &db){
 			"(59, 'u0058', 'u0059', 'change userid and questid in users_quests to INT', 'change userid and questid in users_quests to INT', 'updated', 220, '2015-06-07 20:59:09'),"
 			"(60, 'u0059', 'u0060', 'moved data from userquest to users_quests', 'moved data from userquest to users_quests', 'updated', 220, '2015-06-07 20:59:46');"
 		);
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
  
 
@@ -301,7 +334,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  `startdate` datetime NOT NULL,"
 			"  UNIQUE KEY `iduser` (`iduser`,`idquest`)"
 			") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
 
 	{
@@ -322,7 +358,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  `status` varchar(255) NOT NULL,"
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
  
 	{
@@ -331,7 +370,10 @@ void Database0060::update(QSqlDatabase &db){
 			"INSERT INTO `users` (`uuid`, `email`, `pass`, `role`, `nick`, `logo`, `dt_create`, `dt_last_login`, `last_ip`, `status`) VALUES"
 			"('39A551F4-3BF0-A1C8-8686-06A5C510DDA3', 'admin', '00fe92df464389f2da26c14475ad81e2632904fa', 'admin', 'Admin', 'files/users/0.png', '0000-00-00 00:00:00', '2015-04-12 23:49:58', '127.0.0.1', 'activated')"
 		);
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
  
 
@@ -347,7 +389,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  `date_change` datetime DEFAULT NULL,"
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
  
 
@@ -370,7 +415,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  KEY `city` (`city`),"
 			"  KEY `client` (`client`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
  
 
@@ -386,7 +434,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  `date_change` datetime DEFAULT NULL,"
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
 
 	{
@@ -399,7 +450,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  `dt_passed` datetime NOT NULL,"
 			"  UNIQUE KEY `userid` (`userid`,`questid`)"
 			") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
  
 
@@ -417,7 +471,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  `end_date` datetime NOT NULL,"
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
  
 
@@ -435,6 +492,10 @@ void Database0060::update(QSqlDatabase &db){
 			"  `end_date` datetime NOT NULL,"
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
+	return true;
 }

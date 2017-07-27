@@ -14,7 +14,7 @@ QString Update0069::description(){
 	return "Add columns to users";
 }
 
-void Update0069::update(QSqlDatabase &db){
+bool Update0069::update(QSqlDatabase &db, QString &error){
 	QSqlQuery query(db);
 	query.prepare("ALTER TABLE `users` "
 		"ADD COLUMN `country` VARCHAR(255) DEFAULT '',"
@@ -23,5 +23,9 @@ void Update0069::update(QSqlDatabase &db){
 		"ADD COLUMN `latitude` DOUBLE  DEFAULT 0.0,"
 		"ADD COLUMN `longitude` DOUBLE  DEFAULT 0.0"
 		";");
-	query.exec();
+	if(!query.exec()){
+		error = query.lastError().text();
+		return false;
+	}
+	return true;
 }

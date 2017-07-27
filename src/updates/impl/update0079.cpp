@@ -12,10 +12,12 @@ QString Update0079::description(){
 	return "Rename table tryanswer to users_quests_answers";
 }
 
-void Update0079::update(QSqlDatabase &db){
-	{
-		QSqlQuery query(db);
-		query.prepare("RENAME TABLE tryanswer TO users_quests_answers;");
-		query.exec();
+bool Update0079::update(QSqlDatabase &db, QString &error){
+	QSqlQuery query(db);
+	query.prepare("RENAME TABLE tryanswer TO users_quests_answers;");
+	if(!query.exec()){
+		error = query.lastError().text();
+		return false;
 	}
+	return true;
 }

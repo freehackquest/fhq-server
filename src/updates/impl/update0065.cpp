@@ -13,10 +13,13 @@ QString Update0065::description(){
 	return "Update quests uuid";
 }
 
-void Update0065::update(QSqlDatabase &db){
+bool Update0065::update(QSqlDatabase &db, QString &error){
 	QSqlQuery query(db);
 	query.prepare("SELECT idquest FROM quest WHERE isnull(quest_uuid)");
-	query.exec();
+	if(!query.exec()){
+		error = query.lastError().text();
+		return false;
+	}
 
 	while (query.next()) {
 		QSqlRecord record = query.record();
@@ -27,6 +30,10 @@ void Update0065::update(QSqlDatabase &db){
 		query2.prepare("UPDATE quest SET quest_uuid = :questuuid WHERE idquest = :questid AND isnull(quest_uuid)");
 		query2.bindValue(":questuuid", questuuid);
 		query2.bindValue(":questid", questid);
-		query2.exec();
+		if(!query2.exec()){
+			error = query2.lastError().text();
+			return false;
+		}
 	}
+	return true;
 }

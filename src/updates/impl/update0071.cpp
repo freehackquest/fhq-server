@@ -14,7 +14,7 @@ QString Update0071::description(){
 	return "Added classbook table";
 }
 
-void Update0071::update(QSqlDatabase &db){
+bool Update0071::update(QSqlDatabase &db, QString &error){
 	QSqlQuery query(db);
 	query.prepare(
 		"CREATE TABLE IF NOT EXISTS `classbook` ("
@@ -27,5 +27,9 @@ void Update0071::update(QSqlDatabase &db){
 		"	  `dt` datetime NOT NULL,"
 		"	  PRIMARY KEY (`id`)"
 		") ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-	query.exec();
+	if(!query.exec()){
+		error = query.lastError().text();
+		return false;
+	}
+	return true;
 }

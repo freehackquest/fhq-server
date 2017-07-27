@@ -12,8 +12,12 @@ QString Update0082::description(){
 	return "New column answer_format in table quest ";
 }
 
-void Update0082::update(QSqlDatabase &db){
+bool Update0082::update(QSqlDatabase &db, QString &error){
 	QSqlQuery query(db);
 	query.prepare("ALTER TABLE quest ADD COLUMN `answer_format` VARCHAR(255) DEFAULT '';");
-	query.exec();
+	if(!query.exec()){
+		error = query.lastError().text();
+		return false;
+	}
+	return true;
 }

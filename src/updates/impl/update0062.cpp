@@ -12,8 +12,12 @@ QString Update0062::description(){
 	return "Remove table user_old";
 }
 
-void Update0062::update(QSqlDatabase &db){
+bool Update0062::update(QSqlDatabase &db, QString &error){
 	QSqlQuery query(db);
 	query.prepare("DROP TABLE user_old");
-	query.exec();
+		if(!query.exec()){
+		error = query.lastError().text();
+		return false;
+	}
+	return true;
 }

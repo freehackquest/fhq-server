@@ -17,32 +17,56 @@ QString Update0081::description(){
 		"answer_real => quest_answer";
 }
 
-void Update0081::update(QSqlDatabase &db){
+bool Update0081::update(QSqlDatabase &db, QString &error){
 	QSqlQuery query(db);
 	query.prepare("ALTER TABLE users_quests_answers CHANGE COLUMN `iduser` `userid` INTEGER NOT NULL;");
-	query.exec();
+	if(!query.exec()){
+		error = query.lastError().text();
+		return false;
+	}
 	
 	QSqlQuery query1(db);
 	query1.prepare("ALTER TABLE users_quests_answers CHANGE COLUMN `idquest` `questid` INTEGER NOT NULL;");
-	query1.exec();
+	if(!query1.exec()){
+		error = query1.lastError().text();
+		return false;
+	}
 
 	QSqlQuery query2(db);
 	query2.prepare("ALTER TABLE users_quests_answers ADD COLUMN `user_answer` VARCHAR(255) NOT NULL;");
-	query2.exec();
+	if(!query2.exec()){
+		error = query2.lastError().text();
+		return false;
+	}
 	
 	QSqlQuery query3(db);
 	query3.prepare("UPDATE users_quests_answers SET user_answer = LEFT(answer_try, 255);");
-	query3.exec();
+	if(!query3.exec()){
+		error = query3.lastError().text();
+		return false;
+	}
 
 	QSqlQuery query4(db);
 	query4.prepare("ALTER TABLE users_quests_answers DROP COLUMN `answer_try`");
-	query4.exec();
+	if(!query4.exec()){
+		error = query4.lastError().text();
+		return false;
+	}
+	
 	
 	QSqlQuery query5(db);
 	query5.prepare("ALTER TABLE users_quests_answers CHANGE COLUMN `answer_real` `quest_answer` VARCHAR(255) NOT NULL;");
-	query5.exec();
+	if(!query5.exec()){
+		error = query5.lastError().text();
+		return false;
+	}
+	
 	
 	QSqlQuery query6(db);
 	query6.prepare("ALTER TABLE users_quests_answers CHANGE COLUMN `datetime_try` `dt` DATETIME NOT NULL;");
-	query6.exec();
+	if(!query6.exec()){
+		error = query6.lastError().text();
+		return false;
+	}
+	return true;
 }

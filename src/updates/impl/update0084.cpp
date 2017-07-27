@@ -12,7 +12,7 @@ QString Update0084::description(){
 	return "Add table settings";
 }
 
-void Update0084::update(QSqlDatabase &db){
+bool Update0084::update(QSqlDatabase &db, QString &error){
 	QSqlQuery query(db);
 	query.prepare(
 		"CREATE TABLE IF NOT EXISTS `settings` ("
@@ -21,5 +21,9 @@ void Update0084::update(QSqlDatabase &db){
 		"	  `value` varchar(255) NOT NULL,"
 		"	  PRIMARY KEY (`id`)"
 		") ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-	query.exec();
+	if(!query.exec()){
+		error = query.lastError().text();
+		return false;
+	}
+	return true;
 }

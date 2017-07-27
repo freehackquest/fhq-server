@@ -12,8 +12,12 @@ QString Update0066::description(){
 	return "Drop column quest.for_person";
 }
 
-void Update0066::update(QSqlDatabase &db){
+bool Update0066::update(QSqlDatabase &db, QString &error){
 	QSqlQuery query(db);
 	query.prepare("ALTER TABLE quest DROP COLUMN for_person");
-	query.exec();
+	if(!query.exec()){
+		error = query.lastError().text();
+		return false;
+	}
+	return true;
 }

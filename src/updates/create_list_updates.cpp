@@ -1,4 +1,5 @@
 #include "create_list_updates.h"
+#include <log.h>
 #include "headers/database0060.h"
 #include "headers/update0061.h"
 #include "headers/update0062.h"
@@ -58,6 +59,7 @@ void create_list_updates(QVector<IUpdate *> &vUpdates){
 }
 
 void tryUpdateDatabase(QSqlDatabase *pDatabase){
+	QString TAG = "tryUpdateDatabase";
 	QSqlDatabase db = *pDatabase;
 	QSqlQuery query(db);
 
@@ -72,7 +74,7 @@ void tryUpdateDatabase(QSqlDatabase *pDatabase){
 		last_version = version;
 	}
 	
-	qDebug() << "last_version:" << last_version;
+	Log::info(TAG, "last_version: " + last_version);
 	QVector<IUpdate *> vUpdates;
 	create_list_updates(vUpdates);
 
@@ -82,10 +84,14 @@ void tryUpdateDatabase(QSqlDatabase *pDatabase){
 		for(int i = 0; i < vUpdates.size(); i++){
 			IUpdate* pUpdate = vUpdates[i];
 			if(last_version == pUpdate->from_version()){
-				qDebug().nospace() << "Installing update " << pUpdate->from_version() << " -> " << pUpdate->version() << ": " << pUpdate->description();
+				Log::info(TAG, "Installing update " + pUpdate->from_version() + " -> " + pUpdate->version() + ": " + pUpdate->description());
 				last_version = pUpdate->version();
 				bHasUpdates = true;
-				pUpdate->update(db);
+				QString error;
+				if(!pUpdate->update(db, error)){
+					Log::err(TAG, "Error on install update " + error);
+					return;
+				}
 
 				QSqlQuery insert_query(db);
 				insert_query.prepare("INSERT INTO updates (version, description, datetime_update) "
@@ -93,7 +99,7 @@ void tryUpdateDatabase(QSqlDatabase *pDatabase){
 				insert_query.bindValue(":version", pUpdate->version());
 				insert_query.bindValue(":description", pUpdate->description());
 				if(!insert_query.exec()){
-					qDebug() << "[ERROR] sql error: " << insert_query.lastError();
+					Log::err(TAG, "Could not insert row to updates: " + insert_query.lastError().text());
 					return;
 				}
 			}

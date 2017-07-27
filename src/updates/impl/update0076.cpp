@@ -12,10 +12,13 @@ QString Update0076::description(){
 	return "Added users.score";
 }
 
-void Update0076::update(QSqlDatabase &db){
+bool Update0076::update(QSqlDatabase &db, QString &error){
 	QSqlQuery query(db);
 	query.prepare("ALTER TABLE `users` ADD COLUMN `rating` INTEGER DEFAULT 0;");
-	query.exec();
+	if(!query.exec()){
+		error = query.lastError().text();
+		return false;
+	}
 	
 	QSqlQuery query3(db);
 	query3.prepare(
@@ -23,7 +26,10 @@ void Update0076::update(QSqlDatabase &db){
 		"   INNER JOIN quest q ON uq.questid = q.idquest"
 		"  GROUP BY uq.userid"
 	);
-	query3.exec();
+	if(!query3.exec()){
+		error = query3.lastError().text();
+		return false;
+	}
 
 	while (query3.next()) {
 		QSqlRecord record = query3.record();
@@ -34,6 +40,10 @@ void Update0076::update(QSqlDatabase &db){
 		query2.prepare("UPDATE users SET rating = :rating WHERE id = :userid");
 		query2.bindValue(":rating", rating);
 		query2.bindValue(":userid", userid);
-		query2.exec();
+		if(!query2.exec()){
+			error = query2.lastError().text();
+			return false;
+		}
 	}
+	return true;
 }

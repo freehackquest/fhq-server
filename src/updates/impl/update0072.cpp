@@ -14,7 +14,7 @@ QString Update0072::description(){
 	return "Added chatmessages table";
 }
 
-void Update0072::update(QSqlDatabase &db){
+bool Update0072::update(QSqlDatabase &db, QString &error){
 	QSqlQuery query(db);
 	query.prepare(
 		"CREATE TABLE IF NOT EXISTS `chatmessages` ("
@@ -24,5 +24,9 @@ void Update0072::update(QSqlDatabase &db){
 		"	  `dt` datetime NOT NULL,"
 		"	  PRIMARY KEY (`id`)"
 		") ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-	query.exec();
+	if(!query.exec()){
+		error = query.lastError().text();
+		return false;
+	}
+	return true;
 }

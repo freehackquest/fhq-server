@@ -14,8 +14,12 @@ QString Update0070::description(){
 	return "Removed table users_ips";
 }
 
-void Update0070::update(QSqlDatabase &db){
+bool Update0070::update(QSqlDatabase &db, QString &error){
 	QSqlQuery query(db);
 	query.prepare("DROP TABLE `users_ips`;");
-	query.exec();
+	if(!query.exec()){
+		error = query.lastError().text();
+		return false;
+	}
+	return true;
 }

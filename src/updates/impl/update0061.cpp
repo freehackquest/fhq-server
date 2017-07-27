@@ -13,10 +13,13 @@ QString Update0061::description(){
 	return "remove personal quests which not passed";
 }
 
-void Update0061::update(QSqlDatabase &db){
+bool Update0061::update(QSqlDatabase &db, QString &error){
 	QSqlQuery query(db);
 	query.prepare("SELECT idquest FROM quest LEFT JOIN users_quests ON users_quests.questid = quest.idquest WHERE for_person <> 0 AND isnull( dt_passed )");
-	query.exec();
+	if(!query.exec()){
+		error = query.lastError().text();
+		return false;
+	}
 
 	while (query.next()) {
 		QSqlRecord record = query.record();
@@ -24,6 +27,10 @@ void Update0061::update(QSqlDatabase &db){
 		QSqlQuery query2(db);
 		query2.prepare("DELETE FROM quest WHERE idquest = :questid");
 		query2.bindValue(":questid", questid);
-		query2.exec();
+		if(!query2.exec()){
+			error = query2.lastError().text();
+			return false;
+		}
 	}
+	return true;
 }

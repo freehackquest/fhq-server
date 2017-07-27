@@ -12,28 +12,41 @@ QString Update0077::description(){
 	return "Removed from_version,name,result,userid from updates";
 }
 
-void Update0077::update(QSqlDatabase &db){
+bool Update0077::update(QSqlDatabase &db, QString &error){
 	{
 		QSqlQuery query(db);
 		query.prepare("ALTER TABLE `updates` DROP COLUMN from_version;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
 	
 	{
 		QSqlQuery query(db);
 		query.prepare("ALTER TABLE `updates` DROP COLUMN name;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
 	
 	{
 		QSqlQuery query(db);
 		query.prepare("ALTER TABLE `updates` DROP COLUMN result;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
 	
 	{
 		QSqlQuery query(db);
 		query.prepare("ALTER TABLE `updates` DROP COLUMN userid;");
-		query.exec();
+		if(!query.exec()){
+			error = query.lastError().text();
+			return false;
+		}
 	}
+	return true;
 }

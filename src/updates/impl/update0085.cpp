@@ -12,8 +12,12 @@ QString Update0085::description(){
 	return "Renamed column quest_uuid to uuid";
 }
 
-void Update0085::update(QSqlDatabase &db){
+bool Update0085::update(QSqlDatabase &db, QString &error){
 	QSqlQuery query(db);
 	query.prepare("ALTER TABLE quest CHANGE COLUMN `quest_uuid` `uuid` varchar(255) NOT NULL;");
-	query.exec();
+	if(!query.exec()){
+		error = query.lastError().text();
+		return false;
+	}
+	return true;
 }

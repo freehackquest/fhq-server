@@ -9,7 +9,7 @@ class Update0078 : public IUpdate {
 		virtual QString from_version();
 		virtual QString version();
 		virtual QString description();
-		virtual void update(QSqlDatabase &db);
+		virtual bool update(QSqlDatabase &db, QString &error);
 };
 
 #endif // UPDATE_0078_H

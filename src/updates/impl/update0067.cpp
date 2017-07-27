@@ -14,8 +14,12 @@ QString Update0067::description(){
 	return "Added column copyright to quest";
 }
 
-void Update0067::update(QSqlDatabase &db){
+bool Update0067::update(QSqlDatabase &db, QString &error){
 	QSqlQuery query(db);
 	query.prepare("ALTER TABLE quest ADD COLUMN copyright VARCHAR(255);");
-	query.exec();
+	if(!query.exec()){
+		error = query.lastError().text();
+		return false;
+	}
+	return true;
 }

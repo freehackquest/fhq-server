@@ -12,8 +12,12 @@ QString Update0078::description(){
 	return "Removed quest.min_score";
 }
 
-void Update0078::update(QSqlDatabase &db){
+bool Update0078::update(QSqlDatabase &db, QString &error){
 	QSqlQuery query(db);
 	query.prepare("ALTER TABLE `quest` DROP COLUMN min_score;");
-	query.exec();
+	if(!query.exec()){
+		error = query.lastError().text();
+		return false;
+	}
+	return true;
 }

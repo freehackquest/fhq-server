@@ -12,8 +12,12 @@ QString Update0086::description(){
 	return "Removed column idauthor from table quest";
 }
 
-void Update0086::update(QSqlDatabase &db){
+bool Update0086::update(QSqlDatabase &db, QString &error){
 	QSqlQuery query(db);
 	query.prepare("ALTER TABLE quest DROP COLUMN `idauthor`");
-	query.exec();
+	if(!query.exec()){
+		error = query.lastError().text();
+		return false;
+	}
+	return true;
 }
