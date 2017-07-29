@@ -18,6 +18,7 @@ HEADERS += \
 	src/cmd/headers/cmd_hints_handler.h \
 	src/cmd/headers/cmd_login_handler.h \
 	src/cmd/headers/cmd_publiceventslist_handler.h \
+	src/cmd/headers/cmd_quest_handler.h \
 	src/cmd/headers/cmd_games_handler.h \
 	src/cmd/headers/cmd_getmap_handler.h \
 	src/cmd/headers/cmd_scoreboard_handler.h \
@@ -27,6 +28,7 @@ HEADERS += \
 	src/cmd/headers/cmd_users_handler.h \
 	src/cmd/headers/cmd_writeups_handler.h \
 	src/cmd/headers/cmd_user_handler.h \
+	src/cmd/headers/cmd_updatequest_handler.h \
 	src/cmd/headers/cmd_update_user_location_handler.h \
 
 SOURCES += \
@@ -47,6 +49,7 @@ SOURCES += \
 	src/cmd/handlers/cmd_hints_handler.cpp \
 	src/cmd/handlers/cmd_login_handler.cpp \
 	src/cmd/handlers/cmd_publiceventslist_handler.cpp \
+	src/cmd/handlers/cmd_quest_handler.cpp \
 	src/cmd/handlers/cmd_scoreboard_handler.cpp \
 	src/cmd/handlers/cmd_sendchatmessage_handler.cpp \
 	src/cmd/handlers/cmd_send_letters_to_subscribers_handler.cpp \
@@ -55,5 +58,6 @@ SOURCES += \
 	src/cmd/handlers/cmd_writeups_handler.cpp \
 	src/cmd/handlers/cmd_user_handler.cpp \
 	src/cmd/handlers/cmd_classbook_handler.cpp \
+	src/cmd/handlers/cmd_updatequest_handler.cpp \
 	src/cmd/handlers/cmd_update_user_location_handler.cpp \
 	

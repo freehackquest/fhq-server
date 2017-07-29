@@ -78,7 +78,7 @@ void CmdDeleteQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			return;
 		}
 	}
-	
+
 	// remove from users_quests_answers
 	{
 		QSqlQuery query(db);
