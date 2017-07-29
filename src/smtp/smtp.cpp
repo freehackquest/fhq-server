@@ -10,6 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 #include "smtp.h"
+#include <log.h>
 
 Smtp::Smtp( const QString &user, const QString &pass, const QString &host, int port, int timeout )
 {    
@@ -28,6 +29,7 @@ Smtp::Smtp( const QString &user, const QString &pass, const QString &host, int p
     this->port = port;
     this->timeout = timeout;
     this->m_bDebugMode = true;
+    TAG = "Smtp";
 }
 
 void Smtp::enableDebugMode(){
@@ -52,7 +54,7 @@ void Smtp::sendMail(const QString &from, const QString &to, const QString &subje
     state = Init;
     socket->connectToHostEncrypted(host, port); //"smtp.gmail.com" and 465 for gmail TLS
     if (!socket->waitForConnected(timeout)) {
-         qDebug() << socket->errorString();
+		Log::err(TAG, socket->errorString());
      }
 
     t = new QTextStream( socket );
@@ -70,7 +72,7 @@ void Smtp::sendMailBcc(const QString &from, const QStringList &bcc, const QStrin
     message.replace( QString::fromLatin1( "\r\n.\r\n" ),
     QString::fromLatin1( "\r\n..\r\n" ) );
 
-    qDebug().nospace() << "==== message ==== \n" << message << "\n==== message ====";
+	Log::info(TAG, "==== message ==== \n" + message + "\n==== message ====");
 
     this->from = from;
     rcpt_list << bcc;
@@ -78,7 +80,7 @@ void Smtp::sendMailBcc(const QString &from, const QStringList &bcc, const QStrin
     state = Init;
     socket->connectToHostEncrypted(host, port); //"smtp.gmail.com" and 465 for gmail TLS
     if (!socket->waitForConnected(timeout)) {
-         qDebug() << socket->errorString();
+		Log::err(TAG, socket->errorString());
      }
 
     t = new QTextStream( socket );
@@ -92,34 +94,34 @@ Smtp::~Smtp()
 void Smtp::stateChanged(QAbstractSocket::SocketState socketState)
 {
 	if(m_bDebugMode){
-		qDebug() <<"stateChanged " << socketState;
+		Log::info(TAG, "stateChanged " + socketState);
 	}
 }
 
 void Smtp::errorReceived(QAbstractSocket::SocketError socketError)
 {
-    qDebug() << "error " <<socketError;
+	Log::err(TAG, socketError);
 }
 
 void Smtp::disconnected()
 {
 	if(m_bDebugMode){
-		qDebug() <<"disconneted";
-		qDebug() << "error "  << socket->errorString();
+		Log::info(TAG, "disconneted");
+		Log::err(TAG, socket->errorString());
 	}
 }
 
 void Smtp::connected()
 {    
 	if(m_bDebugMode){
-		qDebug() << "Connected ";
+		Log::info(TAG, "Connected ");
 	}
 }
 
 void Smtp::readyRead()
 {
 	if(m_bDebugMode){
-		qDebug() <<"readyRead";
+		Log::info(TAG, "readyRead");
 	}
     // SMTP is line-oriented
 
@@ -134,8 +136,8 @@ void Smtp::readyRead()
     responseLine.truncate( 3 );
 
 	if(m_bDebugMode){
-		qDebug() << "Server response code:" <<  responseLine;
-		qDebug() << "Server response: " << response;
+		Log::info(TAG, "Server response code:"  + responseLine);
+		Log::info(TAG, "Server response: " + response);
 	}
 
     if ( state == Init && responseLine == "220" )
@@ -150,7 +152,7 @@ void Smtp::readyRead()
     /*else if (state == Tls && responseLine == "250")
     {
         // Trying AUTH
-        qDebug() << "STarting Tls";
+        Log::info(TAG, "STarting Tls");
         *t << "STARTTLS" << "\r\n";
         t->flush();
         state = HandShake;
@@ -160,7 +162,7 @@ void Smtp::readyRead()
         socket->startClientEncryption();
         if(!socket->waitForEncrypted(timeout))
         {
-            qDebug() << socket->errorString();
+            Log::err(TAG, socket->errorString());
             state = Close;
         }
 
@@ -174,7 +176,7 @@ void Smtp::readyRead()
     {
         // Trying AUTH
         if(m_bDebugMode){
-			qDebug() << "Auth";
+			Log::info(TAG, "Auth");
 		}
         *t << "AUTH LOGIN" << "\r\n";
         t->flush();
@@ -184,7 +186,7 @@ void Smtp::readyRead()
     {
         //Trying User   
         if(m_bDebugMode){     
-			qDebug() << "Username";
+			Log::info(TAG, "Username");
 		}
         //GMAIL is using XOAUTH2 protocol, which basically means that password and username has to be sent in base64 coding
         //https://developers.google.com/gmail/xoauth2_protocol
@@ -197,7 +199,7 @@ void Smtp::readyRead()
     {
         //Trying pass
         if(m_bDebugMode){
-			qDebug() << "Pass";
+			Log::info(TAG, "Pass");
 		}
         *t << QByteArray().append(pass).toBase64() << "\r\n";
         t->flush();
@@ -210,7 +212,7 @@ void Smtp::readyRead()
 
         //Apperantly for Google it is mandatory to have MAIL FROM and RCPT email formated the following way -> <email@gmail.com>
         if(m_bDebugMode){
-			qDebug().nospace() << "MAIL FROM:<" << from << ">";
+			Log::info(TAG, "MAIL FROM:<" + from + ">");
 		}
         *t << "MAIL FROM:<" << from << ">\r\n";
         t->flush();
@@ -221,7 +223,7 @@ void Smtp::readyRead()
         //Apperantly for Google it is mandatory to have MAIL FROM and RCPT email formated the following way -> <email@gmail.com>
 		if(number_of_rcpt < rcpt_list.size()){
 			if(m_bDebugMode){
-				qDebug().nospace() << "MAIL TO:<" << rcpt_list.at(number_of_rcpt) << ">";
+				Log::info(TAG, "MAIL TO:<" + rcpt_list.at(number_of_rcpt) + ">");
 			}
 			*t << "RCPT TO:<" << rcpt_list.at(number_of_rcpt) << ">\r\n"; //r
 			t->flush();	
@@ -236,7 +238,7 @@ void Smtp::readyRead()
     else if ( state == Data && responseLine == "250" )
     {
 		if(m_bDebugMode){
-			qDebug().nospace() << "DATA";
+			Log::info(TAG, "DATA");
 		}
 			
         *t << "DATA\r\n";
@@ -266,7 +268,7 @@ void Smtp::readyRead()
     {
         // something broke.
         if(m_bDebugMode){
-			qDebug() << "Unexpected reply from SMTP server:" << response;
+			Log::info(TAG, "Unexpected reply from SMTP server:" + response);
 		}
         state = Close;
         emit status( tr( "Failed to send message" ) );

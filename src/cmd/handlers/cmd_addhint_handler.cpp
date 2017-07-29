@@ -1,6 +1,8 @@
 #include "../headers/cmd_addhint_handler.h"
+#include <log.h>
 
 CmdAddHintHandler::CmdAddHintHandler(){
+	TAG = "CmdAddHintHandler";
 	m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("quest id"));
 	m_vInputs.push_back(CmdInputDef("hint").required().string_().description("hint text"));
 }
@@ -56,12 +58,11 @@ void CmdAddHintHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocket
 	QSqlDatabase db = *(pWebSocketServer->database());
 	QSqlQuery query(db);
 	query.prepare("INSERT INTO quests_hints (questid, text, dt) VALUES (:questid, :text, NOW())");
-	qDebug() << "questid(n) = " << obj["questid"].toInt();
-	qDebug() << "questid(s) = " << obj["questid"].toString();
-	qDebug() << "hint = " << obj["hint"].toString();
 	query.bindValue(":questid", obj["questid"].toInt());
 	query.bindValue(":text", obj["hint"].toString());
-	query.exec();
+	if(!query.exec()){
+		Log::err(TAG, query.lastError().text());
+	}
 
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());

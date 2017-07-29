@@ -1,11 +1,13 @@
 #include "../headers/database_connection.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <log.h>
 
 DatabaseConnection::DatabaseConnection(QString sNameConnection){
 	m_pDatabase = NULL;
 	m_sNameConnection = sNameConnection;
 	m_nOutdatedAfter = 60*60*1000; // every 1 hour reconnect to database
+	TAG = "DatabaseConnection";
 };
 
 // ---------------------------------------------------------------------
@@ -41,13 +43,12 @@ bool DatabaseConnection::connect(ServerConfig *pServerConfig){
 	m_pDatabase->setUserName(pServerConfig->databaseUser());
 	m_pDatabase->setPassword(pServerConfig->databasePassword());
 	if (!m_pDatabase->open()){
-		qDebug() << m_pDatabase->lastError().text();
-		qDebug() << "Failed to connect.";
+		Log::err(TAG, "Failed to connect." + m_pDatabase->lastError().text());
 		m_pDatabase = NULL;
 		return false;
 	}
 	m_nOpened = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
-	qDebug() << "Success connection to database (Opened: " << m_sNameConnection << ")";
+	Log::info(TAG, "Success connection to database (Opened: " + m_sNameConnection + ")");
 	return true;
 }
 
@@ -62,19 +63,19 @@ bool DatabaseConnection::isOutdated(){
 
 QSqlDatabase *DatabaseConnection::db(){
 	if(m_pDatabase == NULL){
-		qDebug() << "Database is not connected";
+		Log::err(TAG, "Database is not connected");
 		return NULL;
 	}
 	if(!m_pDatabase->isOpen()){
-		qDebug() << "Database is not open";
+		Log::err(TAG, "Database is not open");
 	}
 	
 	if(m_pDatabase->isOpenError()){
-		qDebug() << "Database connection has error";
+		Log::err(TAG, "Database connection has error");
 	}
 	
 	if(!m_pDatabase->isValid()){
-		qDebug() << "Database connection invalid";
+		Log::err(TAG, "Database connection invalid");
 	}
 	
 	return m_pDatabase;
@@ -96,6 +97,6 @@ void DatabaseConnection::close(){
 		delete m_pDatabase;
 		m_pDatabase = NULL;
 		QSqlDatabase::removeDatabase(m_sNameConnection);
-		qDebug() << "Closed connection to database (" << m_sNameConnection << ")";
+		Log::info(TAG, "Closed connection to database (" + m_sNameConnection + ")");
 	}
 }

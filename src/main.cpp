@@ -13,12 +13,15 @@
 #include <QtCore>
 #include <QFile>
 #include <QString>
+#include <log.h>
 #include <websocketserver.h>
 #include "prepare_tmp_deb_package.h"
 
 int main(int argc, char** argv) {
 	QCoreApplication a(argc, argv);
-
+	QString TAG = "main";
+	Log::setdir("/var/log/freehackquest-backend");
+	
 	a.setApplicationName("freehackquest-backend");
     a.setApplicationVersion(VERSION_STRING);
     
@@ -50,7 +53,7 @@ int main(int argc, char** argv) {
 	}
 
 	if(!QFile::exists("/etc/freehackquest-backend/conf.ini")){
-		qDebug() << "Not found /etc/freehackquest-backend/conf.ini";
+		Log::err(TAG, "Not found /etc/freehackquest-backend/conf.ini");
 		return 0;
 	}
 

@@ -1,4 +1,5 @@
 #include "create_cmd_handlers.h"
+#include <log.h>
 #include "headers/cmd_addhint_handler.h"
 #include "headers/cmd_answerlist_handler.h"
 #include "headers/cmd_api_handler.h"
@@ -25,6 +26,7 @@
 #include "headers/cmd_writeups_handler.h"
 
 void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
+	QString TAG = "create_cmd_handlers";
 	QVector<ICmdHandler *> v;
 
 	v.push_back(new CmdAddHintHandler());
@@ -55,7 +57,7 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
 	for(int i = 0; i < v.size(); i++){
 		QString cmd = v[i]->cmd();
 		if(pHandlers.contains(cmd)){
-			qDebug() << "[WARNING] cmd_handler for command " << cmd << " - already registered and will be skipped";	
+			Log::warn(TAG, "cmd_handler for command " + cmd + " - already registered and will be skipped");
 		}else{
 			pHandlers[cmd] = v[i];
 		}

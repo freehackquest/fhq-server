@@ -49,7 +49,7 @@ void CmdServerInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	}
 
 	MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
-	jsonData["data"] = pMemoryCacheServerInfo->toJsonObject();
+	jsonData["data"] = pMemoryCacheServerInfo->toJsonObject(); // TODO how much db connections and time
 	jsonData["result"] = QJsonValue("DONE");
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

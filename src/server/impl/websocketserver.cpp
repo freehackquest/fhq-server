@@ -14,13 +14,14 @@
 #include "../smtp/smtp.h"
 #include <create_list_updates.h>
 #include <create_memory_cache.h>
+#include <log.h>
 
 // QT_USE_NAMESPACE
 
 // ---------------------------------------------------------------------
 
 WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
-
+	TAG = "WebSocketServer";
 	m_pServerConfig = new ServerConfig();
 	
 	if(!m_pServerConfig->load()){
@@ -54,11 +55,11 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 	m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::SecureMode, this);
 	
     if (m_pWebSocketServer->listen(QHostAddress::Any, m_pServerConfig->serverPort())) {
-		qDebug() << "freehackquest-backend listening on port" << m_pServerConfig->serverPort();
+		Log::info(TAG, "freehackquest-backend listening on port" + QString::number(m_pServerConfig->serverPort()));
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnection);
         connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &WebSocketServer::closed);
     }else{
-		qDebug() << "ERROR: freehackquest-backend can not listening on port " << m_pServerConfig->serverPort();
+		Log::err(TAG, "freehackquest-backend can not listening on port " + QString::number(m_pServerConfig->serverPort()));
 		m_bFailed = true;
 		return;
 	}
@@ -80,11 +81,11 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 		m_pWebSocketServerSSL->setSslConfiguration(sslConfiguration);
 		
 		if (m_pWebSocketServerSSL->listen(QHostAddress::Any, m_pServerConfig->serverSslPort())) {
-			qDebug() << "freehackquest-backend listening (via ssl) on port" << m_pServerConfig->serverSslPort();
+			Log::info(TAG, "freehackquest-backend listening (via ssl) on port" + QString::number(m_pServerConfig->serverSslPort()));
 			connect(m_pWebSocketServerSSL, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnectionSSL);
 			connect(m_pWebSocketServerSSL, &QWebSocketServer::sslErrors, this, &WebSocketServer::onSslErrors);
 		}else{
-			qDebug() << "ERROR: freehackquest-backend can not listening (via ssl) on port" << m_pServerConfig->serverSslPort();
+			Log::err(TAG, "freehackquest-backend can not listening (via ssl) on port" + QString::number(m_pServerConfig->serverSslPort()));
 			m_bFailed = true;
 			return;
 		}
@@ -108,7 +109,7 @@ WebSocketServer::~WebSocketServer() {
 void WebSocketServer::onNewConnection()
 {
     QWebSocket *pSocket = m_pWebSocketServer->nextPendingConnection();
-	qDebug() << "NewConnection " << pSocket->peerAddress().toString() << " " << pSocket->peerPort();
+	Log::info(TAG, "NewConnection " + pSocket->peerAddress().toString() + " " + QString::number(pSocket->peerPort()));
         
     connect(pSocket, &QWebSocket::textMessageReceived, this, &WebSocketServer::processTextMessage);
     connect(pSocket, &QWebSocket::binaryMessageReceived, this, &WebSocketServer::processBinaryMessage);
@@ -125,7 +126,7 @@ void WebSocketServer::onNewConnection()
 
 void WebSocketServer::onNewConnectionSSL(){
 	QWebSocket *pSocket = m_pWebSocketServerSSL->nextPendingConnection();
-	qDebug() << "NewConnectionSSL " << pSocket->peerAddress().toString() << " " << pSocket->peerPort();
+	Log::info(TAG, "NewConnectionSSL " + pSocket->peerAddress().toString() + " " + QString::number(pSocket->peerPort()));
         
     connect(pSocket, &QWebSocket::textMessageReceived, this, &WebSocketServer::processTextMessage);
     connect(pSocket, &QWebSocket::binaryMessageReceived, this, &WebSocketServer::processBinaryMessage);
@@ -138,7 +139,7 @@ void WebSocketServer::onNewConnectionSSL(){
 
 void WebSocketServer::processTextMessage(QString message) {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-	// qDebug() << QDateTime::currentDateTimeUtc().toString() << " [WS] <<< " << message;
+	// Log::info(TAG, QDateTime::currentDateTimeUtc().toString() + " [WS] <<< " + message);
 
 	QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
 	QJsonObject jsonData = doc.object();
@@ -198,7 +199,7 @@ void WebSocketServer::processTextMessage(QString message) {
 				}
 			}
 		}else{
-			qDebug() << "Unknown command: " << cmd;
+			Log::warn(TAG, "Unknown command: " + cmd);
 			QJsonObject jsonData;
 			jsonData["cmd"] = QJsonValue(cmd);
 			jsonData["error"] = QString("Unknown command");
@@ -215,7 +216,7 @@ void WebSocketServer::processTextMessage(QString message) {
 
 void WebSocketServer::processBinaryMessage(QByteArray message) {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    qDebug() << "Binary Message received:" << message;
+    Log::info(TAG, "Binary Message received: " + message.toHex());
     if (pClient) {
         pClient->sendBinaryMessage(message);
     }
@@ -225,8 +226,7 @@ void WebSocketServer::processBinaryMessage(QByteArray message) {
 
 void WebSocketServer::socketDisconnected() {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    
-	qDebug() << "socketDisconnected:" << pClient;
+	Log::info(TAG, "socketDisconnected:" + QString::number((quint64)pClient, 16));
     if (pClient) {
 		m_tokens.remove(pClient);
         m_clients.removeAll(pClient);
@@ -237,7 +237,7 @@ void WebSocketServer::socketDisconnected() {
 // ---------------------------------------------------------------------
 
 void WebSocketServer::onSslErrors(const QList<QSslError> &){
-    qDebug() << "Ssl errors occurred";
+	Log::err(TAG, "Ssl errors occurred");
 }
 
 // ---------------------------------------------------------------------
@@ -252,7 +252,7 @@ void WebSocketServer::sendMessage(QWebSocket *pClient, QJsonObject obj){
 	 if (pClient) {
 		QJsonDocument doc(obj);
 		QString message = doc.toJson(QJsonDocument::Compact);
-		// qDebug() << QDateTime::currentDateTimeUtc().toString() << " [WS] >>> " << message;
+		// Log::info(TAG, QDateTime::currentDateTimeUtc().toString() + " [WS] >>> " + message);
         pClient->sendTextMessage(message);
     }
 }
@@ -427,7 +427,7 @@ bool WebSocketServer::validateInputParameters(Error &error, ICmdHandler *pCmdHan
 				QString val = jsonData[sParamName].toString();
 				QRegExp rx("[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}");
 				if(!rx.isValid()){
-					qDebug() << rx.errorString();
+					Log::err(TAG, "validateInputParameters, " + rx.errorString());
 				}
 				if(!rx.exactMatch(val)){
 					error = Errors::ParamExpectedUUID(sParamName);

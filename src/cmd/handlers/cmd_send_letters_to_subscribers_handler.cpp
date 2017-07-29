@@ -56,7 +56,7 @@ void CmdSendLettersToSubscribersHandler::handle(QWebSocket *pClient, IWebSocketS
 		return;
 	}
 
-	qDebug() << "send_letters_to_subscribers!!!";
+	// Log::info(TAG,"send_letters_to_subscribers!!!");
 	
 	QStringList emails;
 	emails << "sea-kg@ya.ru";

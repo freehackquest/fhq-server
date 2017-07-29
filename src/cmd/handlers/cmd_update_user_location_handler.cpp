@@ -79,9 +79,6 @@ void CmdUpdateUserLocationHandler::handle(QWebSocket *pClient, IWebSocketServer 
 		}
 	}
 
-	qDebug() << "lastip: " << lastip;
-	qDebug() << "userid: " << userid;
-
 	Run_UpdateUserLocationTask(pWebSocketServer, userid, lastip);
 
 	QJsonObject jsonData;

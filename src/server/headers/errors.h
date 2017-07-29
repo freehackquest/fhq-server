@@ -6,7 +6,6 @@
 
 class Errors {
 	public:
-		static void WriteServerError(QString errorInfo);
 		
 		static Error NotAuthorizedRequest();
 		static Error AccessDenyForUser();

@@ -19,6 +19,7 @@ class CmdAddHintHandler : public ICmdHandler {
 
 	private:
 		QVector<CmdInputDef> m_vInputs;
+		QString TAG;
 };
 
 #endif // CMD_ADDHINT_HANDLER_H

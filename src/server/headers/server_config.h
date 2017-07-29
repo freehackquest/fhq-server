@@ -31,6 +31,8 @@ class ServerConfig {
 		
 	private:
 
+		QString TAG;
+		
 		QString readStringFromSettings(QSettings &sett, QString settName, QString defaultValue);
 		int readIntFromSettings(QSettings &sett, QString settName, int defaultValue);
 		bool readBoolFromSettings(QSettings &sett, QString settName, bool defaultValue);

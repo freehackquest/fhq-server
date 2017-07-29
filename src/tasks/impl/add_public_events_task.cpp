@@ -19,7 +19,7 @@ AddPublicEventsTask::~AddPublicEventsTask(){
 }
 
 void AddPublicEventsTask::run(){
-	qDebug().nospace() << "AddPublicEventsTask (uid " << m_sMessage << ")";
+	Log::info(TAG, "message " + m_sMessage);
 	QSqlDatabase db = *(m_pWebSocketServer->database());
 	QSqlQuery query(db);
 	query.prepare("INSERT INTO public_events(type,dt,message) VALUES(:type,NOW(),:message)");

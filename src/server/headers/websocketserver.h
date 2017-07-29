@@ -82,6 +82,7 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		QMap<long long, DatabaseConnection *> m_mDatabaseConnections_older;
 		DatabaseConnection *m_pDBConnection;
 		DatabaseConnection *m_pDBConnection_older;
+		QString TAG;
 };
 
 #endif //WEBSOCKETSERVER_H

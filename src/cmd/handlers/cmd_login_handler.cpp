@@ -67,11 +67,6 @@ void CmdLoginHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 		QString data = record.value("data").toString();
 		QString start_date = record.value("start_date").toString();
 		QString end_date = record.value("end_date").toString();
-		qDebug() << "userid " << userid;
-		qDebug() << "status " << status;
-		qDebug() << "data " << data;
-		qDebug() << "start_date " << start_date;
-		qDebug() << "end_date " << end_date;
 		QString lastip = pClient->peerAddress().toString();
 		pWebSocketServer->setUserToken(pClient, new UserToken(data));
 		Run_UpdateUserLocationTask(pWebSocketServer, userid, lastip);

@@ -64,6 +64,7 @@ private:
     int port;
     enum states{Tls, HandShake ,Auth,User,Pass,Rcpt,Mail,Data,Init,Body,Quit,Close};
     int state;
+    QString TAG;
 
 };
 #endif

@@ -21,12 +21,11 @@ include(src/updates/updates.pri)
 include(src/cache/cache.pri)
 include(src/server/server.pri)
 include(src/tasks/tasks.pri)
+include(src/smtp/smtp.pri)
 
 SOURCES += \
 	src/prepare_tmp_deb_package.cpp \
 	src/main.cpp \
-	src/smtp/smtp.cpp \
 
 HEADERS += \
 	src/prepare_tmp_deb_package.h \
-	src/smtp/smtp.h \

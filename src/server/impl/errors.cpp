@@ -7,36 +7,6 @@
 #include <QDateTime>
 #include <QDir>
 
-// use this function for problems with database connection
-void Errors::WriteServerError(QString errorInfo){
-	QDir dir("/var/log/freehackquestd/errors");
-	if(!dir.exists()){
-		qDebug().nospace() << dir.absolutePath() << " did not found";
-		qDebug().nospace() << errorInfo;
-		return;
-	}
-	QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd");
-	if(!dir.exists(date) && !dir.mkdir(date)){
-		qDebug().nospace() << dir.absolutePath() << " could not create dir " << date;
-		qDebug().nospace() << errorInfo;
-		return;
-	}
-	dir.cd(date);
-	
-	QString time = QDateTime::currentDateTime().toString("HHmmss.zzz");
-    QFile errorf(dir.absolutePath() + '/' + time);
-    errorf.open(QIODevice::WriteOnly | QIODevice::Text);
-
-    if(!errorf.isOpen()){
-        qDebug().nospace() << dir.absolutePath() + '/' + time << " could not openfile ";
-		qDebug().nospace() << errorInfo;
-		return;
-    }
-    QTextStream outStream(&errorf);
-    outStream << errorInfo.toUtf8();
-    errorf.close();
-}
-
 // ---------------------------------------------------------------------
 
 Error Errors::NotAuthorizedRequest(){

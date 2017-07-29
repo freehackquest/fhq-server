@@ -25,6 +25,7 @@ class DatabaseConnection {
 		qint64 m_nOpened;
 		QString m_sNameConnection;
 		QSqlDatabase *m_pDatabase;
+		QString TAG;
 };
 
 #endif // SERVER_DATABASE_CONNECTION_H

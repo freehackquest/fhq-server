@@ -2,9 +2,12 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFile>
+#include <log.h>
 
 ServerConfig::ServerConfig(){
 	// default settings
+	TAG = "ServerConfig";
+
     QStringList sFilenames;
     sFilenames << "/etc/freehackquest-backend/conf.ini";
     sFilenames << "etc/freehackquest-backend/conf.ini";
@@ -13,10 +16,10 @@ ServerConfig::ServerConfig(){
         QString tmp = sFilenames[i];
         if(QFile::exists(tmp)){
             m_sFilename = tmp;
-            qDebug() << "[Info] Found config file " << tmp;
+			Log::info(TAG, "Found config file " + tmp);
             break;
         }else{
-            qDebug() << "[Warning] Not found possible config file " << tmp;
+			Log::warn(TAG, "Not found possible config file " + tmp);
         }
     }
 
@@ -42,7 +45,7 @@ ServerConfig::ServerConfig(){
 
 bool ServerConfig::load(){
     if(m_sFilename == ""){
-        qDebug() << "[ERROR] Not found config file ";
+        Log::err(TAG, "Not found config file");
 		return false;
 	}
 
@@ -52,9 +55,9 @@ bool ServerConfig::load(){
 	m_sDatabase_user = readStringFromSettings(sett, "DATABASE/user", m_sDatabase_user);
 	m_sDatabase_password = readStringFromSettings(sett, "DATABASE/password", m_sDatabase_password);
 	
-	qDebug() << "Database_host: " << m_sDatabase_host;
-	qDebug() << "Database_name: " << m_sDatabase_name;
-	qDebug() << "Database_user: " << m_sDatabase_user;
+	Log::info(TAG, "Database_host: " + m_sDatabase_host);
+	Log::info(TAG, "Database name: " + m_sDatabase_name);
+	Log::info(TAG, "Database user: " + m_sDatabase_user);
 	
 	m_sEmail_smtphost = readStringFromSettings(sett, "EMAIL/host", m_sEmail_smtphost);
 	m_nEmail_smtpport = readIntFromSettings(sett, "EMAIL/port", m_nEmail_smtpport);
@@ -76,7 +79,7 @@ QString ServerConfig::readStringFromSettings(QSettings &sett, QString settName, 
 	if(sett.contains(settName)){
 		sResult = sett.value(settName, sResult).toString();
 	}else{
-		qDebug() << "[WARNING] " << settName << " - not found in " << m_sFilename << "\n\t Will be used default value: " << defaultValue;
+		Log::warn(TAG, settName + " - not found in " + m_sFilename + "\n\t Will be used default value: " + defaultValue);
 	}
 	return sResult;
 }
@@ -88,7 +91,7 @@ int ServerConfig::readIntFromSettings(QSettings &sett, QString settName, int def
 	if(sett.contains(settName)){
 		nResult = sett.value(settName, nResult).toInt();
 	}else{
-		qDebug() << "[WARNING] " << settName << " - not found in " << m_sFilename << "\n\t Will be used default value: " << defaultValue;
+		Log::warn(TAG, settName + " - not found in " + m_sFilename + "\n\t Will be used default value: " + defaultValue);
 	}
 	return nResult;
 }
@@ -100,7 +103,7 @@ bool ServerConfig::readBoolFromSettings(QSettings &sett, QString settName, bool 
 	if(sett.contains(settName)){
 		bResult = sett.value(settName, bResult).toBool();
 	}else{
-		qDebug() << "[WARNING] " << settName << " - not found in " << m_sFilename << "\n\t Will be used default value: " << defaultValue;
+		Log::warn(TAG, settName + " - not found in " + m_sFilename + "\n\t Will be used default value: " + defaultValue);
 	}
 	return bResult;
 }

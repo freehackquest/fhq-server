@@ -93,7 +93,6 @@ void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 	
 	QString sText = obj["text"].toString().trimmed();
 	int nScore = obj["score"].toInt();
-	qDebug() << "nScore = " << nScore;
 	QString sSubject = obj["subject"].toString().trimmed();
 	QString sAnswer = obj["answer"].toString().trimmed();
 	QString sAuthor = obj["author"].toString().trimmed();
