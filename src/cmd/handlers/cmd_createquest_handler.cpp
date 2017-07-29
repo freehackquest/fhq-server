@@ -1,5 +1,5 @@
 #include "../headers/cmd_createquest_handler.h"
-#include <tasks.h>
+#include <runtasks.h>
 
 #include <QJsonArray>
 #include <QCryptographicHash>
@@ -156,7 +156,7 @@ void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 	query.bindValue(":count_user_solved", 0);
 
 	if (!query.exec()){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Error(400, query.lastError().text()));
+		pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
 		return;
 	}
 		
@@ -165,8 +165,8 @@ void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 	int rowid = query.lastInsertId().toInt();
 	jsonData["questid"] = QJsonValue(rowid);
 
-	Run_AddPublicEventsTask(pWebSocketServer, "quests", "New quest #" + QString::number(rowid) + " " + sName + " (subject: " + sSubject + ")");
-	Run_UpdateMaxScoreGameTask(pWebSocketServer,nGameID);
+	RunTasks::AddPublicEvents(pWebSocketServer, "quests", "New quest #" + QString::number(rowid) + " " + sName + " (subject: " + sSubject + ")");
+	RunTasks::UpdateMaxScoreGame(pWebSocketServer,nGameID);
 	
 	jsonData["result"] = QJsonValue("DONE");
 	pWebSocketServer->sendMessage(pClient, jsonData);

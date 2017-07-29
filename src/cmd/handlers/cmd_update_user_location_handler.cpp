@@ -1,5 +1,5 @@
 #include "../headers/cmd_update_user_location_handler.h"
-#include <tasks.h>
+#include <runtasks.h>
 #include <QJsonArray>
 
 CmdUpdateUserLocationHandler::CmdUpdateUserLocationHandler(){
@@ -79,7 +79,7 @@ void CmdUpdateUserLocationHandler::handle(QWebSocket *pClient, IWebSocketServer 
 		}
 	}
 
-	Run_UpdateUserLocationTask(pWebSocketServer, userid, lastip);
+	RunTasks::UpdateUserLocation(pWebSocketServer, userid, lastip);
 
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());

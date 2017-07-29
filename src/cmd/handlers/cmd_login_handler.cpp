@@ -1,5 +1,5 @@
 #include "../headers/cmd_login_handler.h"
-#include <tasks.h>
+#include <runtasks.h>
 #include <log.h>
 #include <usertoken.h>
 
@@ -69,7 +69,7 @@ void CmdLoginHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 		QString end_date = record.value("end_date").toString();
 		QString lastip = pClient->peerAddress().toString();
 		pWebSocketServer->setUserToken(pClient, new UserToken(data));
-		Run_UpdateUserLocationTask(pWebSocketServer, userid, lastip);
+		RunTasks::UpdateUserLocation(pWebSocketServer, userid, lastip);
 
 	}else{
 		Log::err(TAG, "Invalid token " + token);

@@ -1,5 +1,6 @@
 #include "../headers/cmd_addhint_handler.h"
 #include <log.h>
+#include <runtasks.h>
 
 CmdAddHintHandler::CmdAddHintHandler(){
 	TAG = "CmdAddHintHandler";
@@ -63,6 +64,8 @@ void CmdAddHintHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocket
 	if(!query.exec()){
 		Log::err(TAG, query.lastError().text());
 	}
+
+	RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Added hint for quest #" + QString::number(questid));
 
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());

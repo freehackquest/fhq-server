@@ -29,7 +29,7 @@ const QVector<CmdInputDef> &CmdDeleteHintHandler::inputs(){
 };
 
 QString CmdDeleteHintHandler::description(){
-	return "Method for delete quest";
+	return "Method for delete hint from quest";
 }
 
 QStringList CmdDeleteHintHandler::errors(){
