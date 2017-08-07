@@ -38,6 +38,15 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 	}
 
 	tryUpdateDatabase(m_pDBConnection->db());
+
+	// TODO: redesign
+	// cleanup old user tokens
+	{
+		QSqlDatabase db = *(m_pDBConnection->db());
+		QSqlQuery query(db);
+		query.prepare("DELETE FROM users_tokens WHERE end_date < NOW()");
+		query.exec();
+	}
 	
 	create_cmd_handlers(m_mapCmdHandlers);
 	create_memory_cache(m_mapMemoryCache, this);
