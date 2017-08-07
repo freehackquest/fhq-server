@@ -26,6 +26,7 @@ class UserToken : public IUserToken {
 		QString m_sEmail;
 		QString m_sNick;
 		int m_nUserID;
+		QString TAG;
 };
 
 #endif // USERTOKEN_H

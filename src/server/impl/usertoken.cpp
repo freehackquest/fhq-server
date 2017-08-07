@@ -1,17 +1,21 @@
 #include "../headers/usertoken.h"
+#include <log.h>
 #include <QJsonDocument>
 #include <QJsonObject>
 
 UserToken::UserToken(){
+	TAG = "UserToken";
 };
 
 UserToken::UserToken(QJsonObject obj){
 	this->fillFromJson(obj);
+	TAG = "UserToken";
 };
 
 UserToken::UserToken(QString json){
 	QJsonDocument doc = QJsonDocument::fromJson(json.toUtf8());
 	this->fillFromJson(doc.object());
+	TAG = "UserToken";
 };
 
 void UserToken::fillFromJson(QJsonObject obj){
@@ -23,7 +27,9 @@ void UserToken::fillFromJson(QJsonObject obj){
 		}
 		
 		if(user.contains("id")){
-			m_nUserID = user["id"].toInt();
+			m_nUserID = user["id"].toString().toInt();
+		}else{
+			m_nUserID = -1;
 		}
 		
 		if(user.contains("email")){
