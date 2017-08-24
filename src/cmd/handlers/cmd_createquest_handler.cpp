@@ -55,7 +55,7 @@ QStringList CmdCreateQuestHandler::errors(){
 	return list;
 }
 
-void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
@@ -68,7 +68,7 @@ void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 		query.bindValue(":uuid", sUUID);
 		query.exec();
 		if (query.next()) {
-			pWebSocketServer->sendMessageError(pClient, cmd(), Error(403, "Quest with uuid {" + sUUID + "} already exists"));
+			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Quest with uuid {" + sUUID + "} already exists"));
 			return;
 		}
 	}
@@ -80,14 +80,14 @@ void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 		query.bindValue(":id", nGameID);
 		query.exec();
 		if (!query.next()) {
-			pWebSocketServer->sendMessageError(pClient, cmd(), Error(404, "Game not found"));
+			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Game not found"));
 			return;
 		}
 	}
 
 	QString sName = obj["name"].toString().trimmed();
 	/*if(sName.length() == 0){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Error(400, "Name could not be empty"));
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(400, "Name could not be empty"));
 		return;
 	}*/
 	
@@ -156,7 +156,7 @@ void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 	query.bindValue(":count_user_solved", 0);
 
 	if (!query.exec()){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 		return;
 	}
 		
@@ -169,5 +169,6 @@ void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 	RunTasks::UpdateMaxScoreGame(pWebSocketServer,nGameID);
 	
 	jsonData["result"] = QJsonValue("DONE");
+	jsonData["m"] = QJsonValue(m);
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

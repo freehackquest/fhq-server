@@ -10,15 +10,15 @@ QString CmdUserHandler::cmd(){
 }
 
 bool CmdUserHandler::accessUnauthorized(){
-	return false;
+	return true;
 }
 
 bool CmdUserHandler::accessUser(){
-	return false;
+	return true;
 }
 
 bool CmdUserHandler::accessTester(){
-	return false;
+	return true;
 }
 
 bool CmdUserHandler::accessAdmin(){
@@ -38,20 +38,20 @@ QStringList CmdUserHandler::errors(){
 	return list;
 }
 
-void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
 	
 	if(!obj.contains("userid") && pUserToken == NULL){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::NotAuthorizedRequest());
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotAuthorizedRequest());
 		return;
 	}
+
 	bool bCurrentUserOrAdmin = false;
 	
 	int nUserID = 0;
 	if(pUserToken != NULL){
 		nUserID = pUserToken->userid();
 		bCurrentUserOrAdmin = true;
-		
 	}
 
 	if(obj.contains("userid")){
@@ -89,7 +89,7 @@ void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSer
 				user["city"] = record.value("city").toString();
 			}
 		}else{
-			pWebSocketServer->sendMessageError(pClient, cmd(), Errors::NotFound("user"));
+			pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("user"));
 			return;
 		}
 	}
@@ -105,6 +105,8 @@ void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSer
 			QString name = record.value("name").toString();
 			QString value = record.value("value").toString();
 			profile[name] = value;
+			
+			// TODO clenup 'template' from user profiles
 		}
 	}
 	
@@ -112,6 +114,7 @@ void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSer
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 	jsonData["result"] = QJsonValue("DONE");
+	jsonData["m"] = QJsonValue(m);
 	jsonData["data"] = user;
 	jsonData["profile"] = profile;
 	jsonData["access"] = bCurrentUserOrAdmin;

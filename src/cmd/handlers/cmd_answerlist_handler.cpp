@@ -41,10 +41,11 @@ QStringList CmdAnswerListHandler::errors(){
 	return list;
 }
 
-void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
+	jsonData["m"] = QJsonValue(m);
 
 	int nPage = obj["page"].toInt();
 	jsonData["page"] = nPage;
@@ -53,7 +54,7 @@ void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	jsonData["onpage"] = nOnPage;
 
 	if(nOnPage > 50){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::OnPageCouldNotBeMoreThen50());
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::OnPageCouldNotBeMoreThen50());
 		return;
 	}
 

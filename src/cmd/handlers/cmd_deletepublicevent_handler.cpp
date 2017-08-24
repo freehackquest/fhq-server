@@ -42,7 +42,7 @@ QStringList CmdDeletePublicEventHandler::errors(){
 	return list;
 }
 
-void CmdDeletePublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdDeletePublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 
@@ -57,7 +57,7 @@ void CmdDeletePublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *
 	query.bindValue(":eventid", nEventId);
 	query.exec();
 	if (!query.next()) {
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::EventNotFound());
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::EventNotFound());
 		return;
 	}
 	
@@ -68,5 +68,6 @@ void CmdDeletePublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *
 
 	jsonData["result"] = QJsonValue("DONE");
 	jsonData["data"] = event;
+	jsonData["m"] = m;
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

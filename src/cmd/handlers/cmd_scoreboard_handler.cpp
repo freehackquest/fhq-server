@@ -41,7 +41,7 @@ QStringList CmdScoreboardHandler::errors(){
 	return list;
 }
 
-void CmdScoreboardHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdScoreboardHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
@@ -51,7 +51,7 @@ void CmdScoreboardHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	
 	int nOnPage = obj["onpage"].toInt();
 	if(nOnPage > 50){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::OnPageCouldNotBeMoreThen50());
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::OnPageCouldNotBeMoreThen50());
 	}
 	jsonData["onpage"] = nOnPage;
 
@@ -93,7 +93,7 @@ void CmdScoreboardHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	
 	IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("scoreboard");
 	if(pMemoryCache == NULL){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::InternalServerError());
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
 		return;
 	}
 
@@ -101,6 +101,7 @@ void CmdScoreboardHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	pMemoryCacheScoreboard->loadSync();
 
 	jsonData["result"] = QJsonValue("DONE");
+	jsonData["m"] = QJsonValue(m);
 	jsonData["count"] = pMemoryCacheScoreboard->count();
 	jsonData["data"] = pMemoryCacheScoreboard->toJsonArray();
 	pWebSocketServer->sendMessage(pClient, jsonData);

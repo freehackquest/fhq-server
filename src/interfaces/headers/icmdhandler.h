@@ -17,7 +17,7 @@ class ICmdHandler {
 		virtual QString description() = 0;
 		virtual const QVector<CmdInputDef> &inputs() = 0;
 		virtual QStringList errors() = 0;
-		virtual void handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj) = 0;
+		virtual void handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj) = 0;
 };
 
 #endif // INTERFACES_ICMDHANDLER_H

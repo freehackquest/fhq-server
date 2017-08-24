@@ -47,7 +47,7 @@ QStringList CmdCreatePublicEventHandler::errors(){
 	return list;
 }
 
-void CmdCreatePublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdCreatePublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());

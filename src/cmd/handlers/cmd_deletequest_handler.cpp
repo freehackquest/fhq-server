@@ -39,11 +39,11 @@ QStringList CmdDeleteQuestHandler::errors(){
 	return list;
 }
 
-void CmdDeleteQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdDeleteQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
 	
 	if(pUserToken == NULL){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::NotAuthorizedRequest());
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotAuthorizedRequest());
 		return;
 	}
 
@@ -56,7 +56,7 @@ void CmdDeleteQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 		query.prepare("SELECT * FROM quest WHERE idquest = :questid");
 		query.bindValue(":questid", questid);
 		if(!query.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 			return;
 		}
 		if (query.next()) {
@@ -64,7 +64,7 @@ void CmdDeleteQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			sName = record.value("name").toString();
 			sSubject = record.value("subject").toString();
 		}else{
-			pWebSocketServer->sendMessageError(pClient, cmd(), Error(404, "Quest not found"));
+			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Quest not found"));
 			return;
 		}
 	}
@@ -74,7 +74,7 @@ void CmdDeleteQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 		query.prepare("DELETE FROM quest WHERE idquest = :questid");
 		query.bindValue(":questid", questid);
 		if(!query.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 			return;
 		}
 	}
@@ -85,7 +85,7 @@ void CmdDeleteQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 		query.prepare("DELETE FROM users_quests_answers WHERE questid = :questid");
 		query.bindValue(":questid", questid);
 		if(!query.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 			return;
 		}
 	}
@@ -96,7 +96,7 @@ void CmdDeleteQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 		query.prepare("DELETE FROM users_quests WHERE questid = :questid");
 		query.bindValue(":questid", questid);
 		if(!query.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 			return;
 		}
 	}
@@ -109,5 +109,6 @@ void CmdDeleteQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 	jsonData["cmd"] = QJsonValue(cmd());
 	jsonData["subject"] = sSubject;
 	jsonData["result"] = QJsonValue("DONE");
+	jsonData["m"] = QJsonValue(m);
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

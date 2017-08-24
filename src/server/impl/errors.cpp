@@ -10,7 +10,7 @@
 // ---------------------------------------------------------------------
 
 Error Errors::NotAuthorizedRequest(){
-	Error error(1001, "Not Authorized Request");
+	Error error(401, "Not Authorized Request");
 	return error;
 }
 

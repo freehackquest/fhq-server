@@ -41,7 +41,7 @@ QStringList CmdGetPublicEventHandler::errors(){
 	return list;
 }
 
-void CmdGetPublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdGetPublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 
@@ -62,11 +62,12 @@ void CmdGetPublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *pWe
 		event["type"] = record.value("type").toString().toHtmlEscaped(); // TODO htmlspecialchars
 		event["message"] = record.value("message").toString().toHtmlEscaped(); // TODO htmlspecialchars
 	}else{
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::EventNotFound());
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::EventNotFound());
 		return;
 	}
 
 	jsonData["result"] = QJsonValue("DONE");
+	jsonData["m"] = QJsonValue(m);
 	jsonData["data"] = event;
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

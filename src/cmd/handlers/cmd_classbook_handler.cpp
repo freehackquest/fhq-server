@@ -38,7 +38,7 @@ QStringList CmdClassbookHandler::errors(){
 	return list;
 }
 
-void CmdClassbookHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdClassbookHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
 	QSqlDatabase db = *(pWebSocketServer->database());
 

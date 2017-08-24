@@ -39,7 +39,7 @@ QStringList CmdGamesHandler::errors(){
 	return list;
 }
 
-void CmdGamesHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdGamesHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
 	QJsonArray games;
 	QSqlDatabase db = *(pWebSocketServer->database());

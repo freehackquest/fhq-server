@@ -19,7 +19,7 @@ class CmdApiHandler : public ICmdHandler {
 		virtual const QVector<CmdInputDef> &inputs();
 		virtual QString description();
 		virtual QStringList errors();
-		virtual void handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj);
+		virtual void handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj);
 	private:
 		QVector<CmdInputDef> m_vInputs;
 };

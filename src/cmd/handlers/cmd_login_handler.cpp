@@ -40,14 +40,12 @@ QStringList CmdLoginHandler::errors(){
 	return list;
 }
 
-void CmdLoginHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdLoginHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 	
 	if(!obj.contains("token")){
-		jsonData["result"] = QJsonValue("FAIL");
-		jsonData["error"] = QJsonValue("Not found requred parameter token");
-		pWebSocketServer->sendMessage(pClient, jsonData);
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("requred parameter token"));
 		return;
 	}
 	QString token = obj["token"].toString();
@@ -57,7 +55,7 @@ void CmdLoginHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 	query.bindValue(":token", token);
 	if(!query.exec()){
 		Log::err(TAG, query.lastError().text());
-		pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 		return;
 	}
 	if (query.next()) {
@@ -74,10 +72,11 @@ void CmdLoginHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 	}else{
 		Log::err(TAG, "Invalid token " + token);
 		// ["error"]
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::InvalidToken());
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InvalidToken());
 		return;
 	}
 
 	jsonData["result"] = QJsonValue("DONE");
+	jsonData["m"] = QJsonValue(m);
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

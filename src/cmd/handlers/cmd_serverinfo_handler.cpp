@@ -38,18 +38,19 @@ QStringList CmdServerInfoHandler::errors(){
 	return list;
 }
 
-void CmdServerInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdServerInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 	
 	IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serverinfo");
 	if(pMemoryCache == NULL){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::InternalServerError());
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
 		return;
 	}
 
 	MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
 	jsonData["data"] = pMemoryCacheServerInfo->toJsonObject(); // TODO how much db connections and time
 	jsonData["result"] = QJsonValue("DONE");
+	jsonData["m"] = QJsonValue(m);
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

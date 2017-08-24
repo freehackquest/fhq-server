@@ -36,12 +36,14 @@ QStringList CmdHelloHandler::errors(){
 	return list;
 }
 
-void CmdHelloHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject /*obj*/){
+void CmdHelloHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
+	jsonData["m"] = QJsonValue(m);
 	pWebSocketServer->sendMessage(pClient, jsonData);
 
-	QSqlDatabase db = *(pWebSocketServer->database());
+	// TODO move to another handler
+	/*QSqlDatabase db = *(pWebSocketServer->database());
 	QSqlQuery query(db);
 	query.prepare("SELECT * FROM `chatmessages` ORDER BY id DESC LIMIT 0,6");
 	query.exec();
@@ -50,6 +52,7 @@ void CmdHelloHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 		QSqlRecord record = query.record();
 		QJsonObject jsonChat;
 		jsonChat["cmd"] = QJsonValue("chat");
+		jsonChat["m"] = QJsonValue(m);
 		jsonChat["type"] = QJsonValue("chat");
 		jsonChat["user"] = record.value("user").toString();
 		jsonChat["message"] = record.value("message").toString();
@@ -59,6 +62,5 @@ void CmdHelloHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 	
 	for(int i = chats.size()-1; i >= 0; i--){
 		pWebSocketServer->sendMessage(pClient, chats[i]);
-	}
-	
+	}*/
 }

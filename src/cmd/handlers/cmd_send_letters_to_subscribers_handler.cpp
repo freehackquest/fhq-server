@@ -36,12 +36,13 @@ QStringList CmdSendLettersToSubscribersHandler::errors(){
 	return list;
 }
 
-void CmdSendLettersToSubscribersHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdSendLettersToSubscribersHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
 	if(pUserToken == NULL){
 		QJsonObject jsonData;
 		jsonData["cmd"] = QJsonValue(cmd());
 		jsonData["result"] = QJsonValue("FAIL");
+		jsonData["m"] = QJsonValue(m);
 		jsonData["error"] = QJsonValue("Not authorized request");
 		pWebSocketServer->sendMessage(pClient, jsonData);
 		return;
@@ -51,6 +52,7 @@ void CmdSendLettersToSubscribersHandler::handle(QWebSocket *pClient, IWebSocketS
 		QJsonObject jsonData;
 		jsonData["cmd"] = QJsonValue(cmd());
 		jsonData["result"] = QJsonValue("FAIL");
+		jsonData["m"] = QJsonValue(m);
 		jsonData["error"] = QJsonValue("Allowed only fot admin");
 		pWebSocketServer->sendMessage(pClient, jsonData);
 		return;
@@ -67,5 +69,6 @@ void CmdSendLettersToSubscribersHandler::handle(QWebSocket *pClient, IWebSocketS
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 	jsonData["result"] = QJsonValue("DONE");
+	jsonData["m"] = QJsonValue(m);
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

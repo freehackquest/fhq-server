@@ -57,7 +57,7 @@ QStringList CmdUpdateQuestHandler::errors(){
 	return list;
 }
 
-void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
@@ -81,7 +81,7 @@ void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 		query.prepare("SELECT * FROM quest WHERE idquest = :questid");
 		query.bindValue(":questid", nQuestID);
 		if(!query.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 			return;
 		}
 		if (query.next()) {
@@ -98,7 +98,7 @@ void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			sCopyrightPrev = record.value("copyright").toString();
 			sDescriptionStatePrev = record.value("description_state").toString();
 		}else{
-			pWebSocketServer->sendMessageError(pClient, cmd(), Error(404, "Quest not found"));
+			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Quest not found"));
 			return;
 		}
 	}
@@ -112,7 +112,7 @@ void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			query.bindValue(":name", sName);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 				return;
 			}
 			sNamePrev = sName;
@@ -129,7 +129,7 @@ void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			query.bindValue(":id", nGameID);
 			query.exec();
 			if (!query.next()) {
-				pWebSocketServer->sendMessageError(pClient, cmd(), Error(404, "Game not found"));
+				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Game not found"));
 				return;
 			}
 		}
@@ -140,7 +140,7 @@ void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			query.bindValue(":gameid", nGameID);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 				return;
 			}
 			RunTasks::UpdateMaxScoreGame(pWebSocketServer,nGameID);
@@ -159,7 +159,7 @@ void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			query.bindValue(":subject", sSubject);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 				return;
 			}
 			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated subject of quest #" + QString::number(nQuestID) + " " + sNamePrev);
@@ -176,7 +176,7 @@ void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			query.bindValue(":text", sText);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 				return;
 			}
 			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated text of quest #" + QString::number(nQuestID) + " " + sNamePrev);
@@ -192,7 +192,7 @@ void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			query.bindValue(":score", nScore);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 				return;
 			}
 			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated score of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from " + QString::number(nScorePrev) + " to " + QString::number(nScore));
@@ -210,7 +210,7 @@ void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			query.bindValue(":answer", sAnswer);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 				return;
 			}
 			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated answer of quest #" + QString::number(nQuestID) + " " + sNamePrev);
@@ -226,7 +226,7 @@ void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			query.bindValue(":author", sAuthor);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 				return;
 			}
 			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated author of quest #" + QString::number(nQuestID) + " " + sNamePrev);
@@ -242,7 +242,7 @@ void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			query.bindValue(":answer_format", sAnswerFormat);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 				return;
 			}
 			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated answer format of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sAnswerFormatPrev + "] to [" + sAnswerFormat + "]");
@@ -258,7 +258,7 @@ void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			query.bindValue(":state", sState);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 				return;
 			}
 			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated state of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sStatePrev + "] to [" + sState + "]");
@@ -274,7 +274,7 @@ void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			query.bindValue(":copyright", sCopyright);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 				return;
 			}
 			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated copyright of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sCopyrightPrev + "] to [" + sCopyright + "]");
@@ -290,7 +290,7 @@ void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			query.bindValue(":description_state", sDescriptionState);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), Error(500, query.lastError().text()));
+				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 				return;
 			}
 			// nothing to inform
@@ -298,5 +298,6 @@ void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 	}
 	
 	jsonData["result"] = QJsonValue("DONE");
+	jsonData["m"] = QJsonValue(m);
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

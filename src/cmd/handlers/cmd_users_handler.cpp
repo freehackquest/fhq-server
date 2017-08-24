@@ -39,27 +39,14 @@ QStringList CmdUsersHandler::errors(){
 	return list;
 }
 
-void CmdUsersHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdUsersHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
-	
-	// TODO redesign
+
 	if(pUserToken == NULL){
-		QJsonObject jsonData;
-		jsonData["cmd"] = QJsonValue(cmd());
-		jsonData["result"] = QJsonValue("FAIL");
-		jsonData["error"] = QJsonValue("Not authorized request");
-		pWebSocketServer->sendMessage(pClient, jsonData);
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotAuthorizedRequest());
 		return;
 	}
 
-	if(!pUserToken->isAdmin()){
-		QJsonObject jsonData;
-		jsonData["cmd"] = QJsonValue(cmd());
-		jsonData["result"] = QJsonValue("FAIL");
-		jsonData["error"] = QJsonValue("Allowed only fot admin");
-		pWebSocketServer->sendMessage(pClient, jsonData);
-		return;
-	}
 
 	QStringList filters;
 	QMap<QString,QString> filter_values;
@@ -109,6 +96,7 @@ void CmdUsersHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 	jsonData["result"] = QJsonValue("DONE");
+	jsonData["m"] = QJsonValue(m);
 	jsonData["data"] = users;
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

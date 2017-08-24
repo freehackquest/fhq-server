@@ -37,19 +37,17 @@ QStringList CmdDeleteHintHandler::errors(){
 	return list;
 }
 
-void CmdDeleteHintHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdDeleteHintHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
 	
 	if(pUserToken == NULL){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::NotAuthorizedRequest());
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotAuthorizedRequest());
 		return;
 	}
 
-	QJsonValueRef vHintid = obj["hintid"];
-
 	int hintid = obj["hintid"].toInt();
 	if(hintid == 0){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::HintIDMustBeNotZero());
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::HintIDMustBeNotZero());
 		return;
 	}
 	
@@ -63,5 +61,6 @@ void CmdDeleteHintHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 	jsonData["result"] = QJsonValue("DONE");
+	jsonData["m"] = QJsonValue(m);
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

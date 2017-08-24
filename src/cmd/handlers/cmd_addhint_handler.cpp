@@ -41,17 +41,17 @@ QStringList CmdAddHintHandler::errors(){
 	return list;
 }
 
-void CmdAddHintHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdAddHintHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
 	
 	if(pUserToken == NULL){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::NotAuthorizedRequest());
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotAuthorizedRequest());
 		return;
 	}
 
 	int questid = obj["questid"].toInt();
 	if(questid == 0){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::QuestIDMustBeNotZero());
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::QuestIDMustBeNotZero());
 		return;
 	}
 	
@@ -69,6 +69,7 @@ void CmdAddHintHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocket
 
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
+	jsonData["m"] = QJsonValue(m);
 	jsonData["result"] = QJsonValue("DONE");
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

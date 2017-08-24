@@ -152,72 +152,65 @@ void WebSocketServer::processTextMessage(QString message) {
 
 	QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
 	QJsonObject jsonData = doc.object();
+	if(!jsonData.contains("cmd")){
+		this->sendMessageError(pClient, "error", "", Errors::NotFound("requare parameter 'cmd'"));
+		return;
+	}
+	QString cmd = jsonData["cmd"].toString();
 	
-	if(jsonData.contains("cmd")){
-		QString cmd = jsonData["cmd"].toString();
-		
-		if(m_mapCmdHandlers.contains(cmd)){
-			ICmdHandler *pCmdHandler = m_mapCmdHandlers[cmd];
-			
-			if(m_pMemoryCacheServerInfo != NULL){
-				m_pMemoryCacheServerInfo->incrementRequests(cmd);
-			}
-			
-			// check access
-			if(!pCmdHandler->accessUnauthorized()){
-				IUserToken *pUserToken = getUserToken(pClient);
-				if(pUserToken == NULL){
-					this->sendMessageError(pClient, pCmdHandler->cmd(), Errors::NotAuthorizedRequest());
-					return;
-				}
-				
-				// access user
-				if(pUserToken->isUser() && !pCmdHandler->accessUser()){
-					this->sendMessageError(pClient, pCmdHandler->cmd(), Errors::AccessDenyForUser());
-					return;
-				}
-				
-				// access tester
-				if(pUserToken->isTester() && !pCmdHandler->accessTester()){
-					this->sendMessageError(pClient, pCmdHandler->cmd(), Errors::AccessDenyForTester());
-					return;
-				}
-				
-				// access admin
-				if(pUserToken->isAdmin() && !pCmdHandler->accessAdmin()){
-					this->sendMessageError(pClient, pCmdHandler->cmd(), Errors::AccessDenyForAdmin());
-					return;
-				}
+	if(!jsonData.contains("m")){
+		this->sendMessageError(pClient, cmd, "", Errors::NotFound("requare parameter 'm' - messageid"));
+		return;
+	}
+	
+	QString m = jsonData["m"].toString();
+	
+	if(!m_mapCmdHandlers.contains(cmd)){
+		Log::warn(TAG, "Unknown command: " + cmd);
+		this->sendMessageError(pClient, cmd, m, Errors::NotFound("command '" + cmd + "'"));
+		return;
+	}
 
-				// allow access
-				Error error = Errors::NoneError();
-				if(this->validateInputParameters(error, pCmdHandler, jsonData)){
-					pCmdHandler->handle(pClient, this, jsonData);	
-				}else{
-					this->sendMessageError(pClient, pCmdHandler->cmd(), error);
-					return;
-				}
-			}else{
-				// allow unauthorized request
-				Error error = Errors::NoneError();
-				if(this->validateInputParameters(error, pCmdHandler, jsonData)){
-					pCmdHandler->handle(pClient, this, jsonData);
-				}else{
-					this->sendMessageError(pClient, pCmdHandler->cmd(), error);
-					return;
-				}
-			}
-		}else{
-			Log::warn(TAG, "Unknown command: " + cmd);
-			QJsonObject jsonData;
-			jsonData["cmd"] = QJsonValue(cmd);
-			jsonData["error"] = QString("Unknown command");
-			this->sendMessage(pClient, jsonData);
+	ICmdHandler *pCmdHandler = m_mapCmdHandlers[cmd];
+	
+	if(m_pMemoryCacheServerInfo != NULL){
+		m_pMemoryCacheServerInfo->incrementRequests(cmd);
+	}
+	
+	// check access
+	if(!pCmdHandler->accessUnauthorized()){
+		IUserToken *pUserToken = getUserToken(pClient);
+		if(pUserToken == NULL){
+			this->sendMessageError(pClient, pCmdHandler->cmd(), m, Errors::NotAuthorizedRequest());
+			return;
 		}
+		
+		// access user
+		if(pUserToken->isUser() && !pCmdHandler->accessUser()){
+			this->sendMessageError(pClient, pCmdHandler->cmd(), m, Errors::AccessDenyForUser());
+			return;
+		}
+		
+		// access tester
+		if(pUserToken->isTester() && !pCmdHandler->accessTester()){
+			this->sendMessageError(pClient, pCmdHandler->cmd(), m, Errors::AccessDenyForTester());
+			return;
+		}
+		
+		// access admin
+		if(pUserToken->isAdmin() && !pCmdHandler->accessAdmin()){
+			this->sendMessageError(pClient, pCmdHandler->cmd(), m, Errors::AccessDenyForAdmin());
+			return;
+		}
+	}
+
+	// allow access
+	Error error = Errors::NoneError();
+	if(this->validateInputParameters(error, pCmdHandler, jsonData)){
+		pCmdHandler->handle(pClient, this, m, jsonData);
 	}else{
-		QJsonObject jsonData;
-		jsonData["error"] = QString("Invalid command format");
-		this->sendMessage(pClient, jsonData);
+		this->sendMessageError(pClient, pCmdHandler->cmd(), m, error);
+		return;
 	}
 }
 
@@ -268,9 +261,10 @@ void WebSocketServer::sendMessage(QWebSocket *pClient, QJsonObject obj){
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendMessageError(QWebSocket *pClient, QString cmd, Error error){
+void WebSocketServer::sendMessageError(QWebSocket *pClient, QString cmd, QString m, Error error){
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd);
+	jsonData["m"] = QJsonValue(m);
 	jsonData["result"] = QJsonValue("FAIL");
 	jsonData["error"] = QJsonValue(error.message());
 	jsonData["code"] = QJsonValue(error.codeError());

@@ -29,3 +29,18 @@ SOURCES += \
 
 HEADERS += \
 	src/prepare_tmp_deb_package.h \
+
+documentation.path = /usr/share/doc/freehackquest-backend
+documentation.files = docs/*
+
+INSTALLS += documentation
+
+target.path = /usr/bin
+INSTALLS += target
+
+configfiles.files += data/config/*
+
+configfiles.path = /usr/share/
+configfiles.files = etc/freehackquest-backend/*
+# yourset.extra = custom commands to run, eg. `touch somefile.txt`
+INSTALLS += configfiles

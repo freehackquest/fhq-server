@@ -36,9 +36,10 @@ QStringList CmdApiHandler::errors(){
 	return list;
 }
 
-void CmdApiHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdApiHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
+	jsonData["m"] = QJsonValue(m);
 	QJsonObject data;
 	pWebSocketServer->exportApi(data);
 	jsonData["data"] = data;

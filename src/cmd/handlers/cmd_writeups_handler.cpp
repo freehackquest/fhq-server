@@ -38,12 +38,12 @@ QStringList CmdWriteUpsHandler::errors(){
 	return list;
 }
 
-void CmdWriteUpsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject obj){
+void CmdWriteUpsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	// bool bConvert = false;
 
 	int questid = obj["questid"].toInt();
 	if(questid == 0){
-		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::QuestIDMustBeNotZero());
+		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::QuestIDMustBeNotZero());
 		return;
 	}
 
@@ -74,6 +74,7 @@ void CmdWriteUpsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocke
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 	jsonData["result"] = QJsonValue("DONE");
+	jsonData["m"] = QJsonValue(m);
 	jsonData["data"] = writeups;
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }
