@@ -43,3 +43,5 @@ lintian.log
 freehackquest-backend.pro.user
 /html/*
 /latex/*
+
+.qmake.stash

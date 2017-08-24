@@ -22,11 +22,10 @@ class Errors {
 		static Error ParamExpectedUUID(QString param_name);
 		static Error ParamMustBeLessThen(QString param_name, int maxval);
 		static Error ParamMustBeMoreThen(QString param_name, int minval);
-		
 		static Error NoneError();
+		static Error NotFound(QString what);
 		
 		// custom
-		static Error NotFoundUserByUUID(QString uuid);
 		static Error QuestIDMustBeNotZero();
 		static Error HintIDMustBeNotZero();
 		static Error UserIDMustBeNotZero();

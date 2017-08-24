@@ -56,7 +56,6 @@ void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		pWebSocketServer->sendMessageError(pClient, cmd(), Errors::OnPageCouldNotBeMoreThen50());
 		return;
 	}
-	
 
 	QStringList filters;
 	QMap<QString,QString> filter_values;

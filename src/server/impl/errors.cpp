@@ -44,15 +44,15 @@ Error Errors::NotImplementedYet(){
 
 // ---------------------------------------------------------------------
 
-Error Errors::NotFoundUserByUUID(QString uuid){
-	Error error(404, "Not found user by uuid " + uuid);
+Error Errors::NoneError(){
+	Error error(404, "none");
 	return error;
 }
 
 // ---------------------------------------------------------------------
 
-Error Errors::NoneError(){
-	Error error(404, "none");
+Error Errors::NotFound(QString what){
+	Error error(404, "Not found " + what);
 	return error;
 }
 
