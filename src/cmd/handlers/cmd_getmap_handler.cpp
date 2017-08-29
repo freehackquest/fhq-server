@@ -38,7 +38,7 @@ QStringList CmdGetMapHandler::errors(){
 	return list;
 }
 
-void CmdGetMapHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdGetMapHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
 	QJsonArray coords;
 	QSqlDatabase db = *(pWebSocketServer->database());
 	QSqlQuery query(db);
@@ -62,6 +62,7 @@ void CmdGetMapHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketS
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 	jsonData["result"] = QJsonValue("DONE");
+    jsonData["m"] = QJsonValue(m);
 	jsonData["data"] = coords;
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

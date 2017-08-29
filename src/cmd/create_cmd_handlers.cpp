@@ -26,6 +26,7 @@
 #include "headers/cmd_update_user_location_handler.h"
 #include "headers/cmd_user_handler.h"
 #include "headers/cmd_users_handler.h"
+#include "headers/cmd_user_skills_handler.h"
 #include "headers/cmd_writeups_handler.h"
 
 void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
@@ -58,6 +59,7 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
 	v.push_back(new CmdUpdateUserLocationHandler());
 	v.push_back(new CmdUserHandler());
 	v.push_back(new CmdUsersHandler());
+	v.push_back(new CmdUserSkillsHandler());
 	v.push_back(new CmdWriteUpsHandler());
 
 	for(int i = 0; i < v.size(); i++){

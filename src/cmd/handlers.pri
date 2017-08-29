@@ -25,9 +25,10 @@ HEADERS += \
 	src/cmd/headers/cmd_sendchatmessage_handler.h \
 	src/cmd/headers/cmd_send_letters_to_subscribers_handler.h \
 	src/cmd/headers/cmd_serverinfo_handler.h \
-	src/cmd/headers/cmd_users_handler.h \
 	src/cmd/headers/cmd_writeups_handler.h \
 	src/cmd/headers/cmd_user_handler.h \
+	src/cmd/headers/cmd_users_handler.h \
+	src/cmd/headers/cmd_user_skills_handler.h \
 	src/cmd/headers/cmd_updatequest_handler.h \
 	src/cmd/headers/cmd_update_user_location_handler.h \
 
@@ -54,9 +55,10 @@ SOURCES += \
 	src/cmd/handlers/cmd_sendchatmessage_handler.cpp \
 	src/cmd/handlers/cmd_send_letters_to_subscribers_handler.cpp \
 	src/cmd/handlers/cmd_serverinfo_handler.cpp \
-	src/cmd/handlers/cmd_users_handler.cpp \
 	src/cmd/handlers/cmd_writeups_handler.cpp \
 	src/cmd/handlers/cmd_user_handler.cpp \
+	src/cmd/handlers/cmd_users_handler.cpp \
+	src/cmd/handlers/cmd_user_skills_handler.cpp \
 	src/cmd/handlers/cmd_classbook_handler.cpp \
 	src/cmd/handlers/cmd_updatequest_handler.cpp \
 	src/cmd/handlers/cmd_update_user_location_handler.cpp \

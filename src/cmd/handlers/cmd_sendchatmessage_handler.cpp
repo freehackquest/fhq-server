@@ -48,6 +48,7 @@ void CmdSendChatMessageHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 	jsonData["result"] = QJsonValue("DONE");
+    jsonData["m"] = QJsonValue(m);
 	pWebSocketServer->sendMessage(pClient, jsonData);
 	
 	QSqlDatabase db = *(pWebSocketServer->database());

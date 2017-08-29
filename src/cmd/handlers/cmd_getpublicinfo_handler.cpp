@@ -40,6 +40,7 @@ QStringList CmdGetPublicInfoHandler::errors(){
 void CmdGetPublicInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
+	jsonData["m"] = QJsonValue(m);
 	jsonData["connectedusers"] = pWebSocketServer->getConnectedUsers();
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

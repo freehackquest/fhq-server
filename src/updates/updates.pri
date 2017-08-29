@@ -30,6 +30,7 @@ HEADERS += \
 	src/updates/headers/update0084.h \
 	src/updates/headers/update0085.h \
 	src/updates/headers/update0086.h \
+	src/updates/headers/update0087.h \
 
 SOURCES += \
 	src/updates/create_list_updates.cpp \
@@ -60,3 +61,4 @@ SOURCES += \
 	src/updates/impl/update0084.cpp \
 	src/updates/impl/update0085.cpp \
 	src/updates/impl/update0086.cpp \
+	src/updates/impl/update0087.cpp \

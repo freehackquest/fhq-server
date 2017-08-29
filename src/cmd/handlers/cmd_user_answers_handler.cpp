@@ -1,47 +1,47 @@
 #include "../headers/cmd_user_handler.h"
 #include <QJsonArray>
 
-CmdUserHandler::CmdUserHandler(){
-	m_vInputs.push_back(CmdInputDef("userid").optional().integer_().description("Id of user"));
+CmdUserAnswersHandler::CmdUserAnswersHandler(){
+	m_vInputs.push_back(CmdInputDef("questid").optional().integer_().description("Id of quest"));
 }
 
-QString CmdUserHandler::cmd(){
-	return "user";
+QString CmdUserAnswersHandler::cmd(){
+	return "user_answers";
 }
 
-bool CmdUserHandler::accessUnauthorized(){
+bool CmdUserAnswersHandler::accessUnauthorized(){
+	return false;
+}
+
+bool CmdUserAnswersHandler::accessUser(){
 	return true;
 }
 
-bool CmdUserHandler::accessUser(){
+bool CmdUserAnswersHandler::accessTester(){
 	return true;
 }
 
-bool CmdUserHandler::accessTester(){
+bool CmdUserAnswersHandler::accessAdmin(){
 	return true;
 }
 
-bool CmdUserHandler::accessAdmin(){
-	return true;
-}
-
-const QVector<CmdInputDef> &CmdUserHandler::inputs(){
+const QVector<CmdInputDef> &CmdUserAnswersHandler::inputs(){
 	return m_vInputs;
 };
 
-QString CmdUserHandler::description(){
-	return "Return user info";
+QString CmdUserAnswersHandler::description(){
+	return "Return user answer list";
 }
 
-QStringList CmdUserHandler::errors(){
+QStringList CmdUserAnswersHandler::errors(){
 	QStringList	list;
 	return list;
 }
 
-void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdUserAnswersHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
 	
-	if(!obj.contains("userid") && pUserToken == NULL){
+	if(pUserToken == NULL){
 		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotAuthorizedRequest());
 		return;
 	}
@@ -76,7 +76,6 @@ void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSer
 			user["nick"] = record.value("nick").toString();
 			user["role"] = record.value("role").toString();
 			user["logo"] = record.value("logo").toString();
-			user["about"] = record.value("about").toString();
 			user["status"] = record.value("status").toString();
 			user["rating"] = record.value("rating").toString();
 			

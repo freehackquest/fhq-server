@@ -61,8 +61,11 @@ void CmdCreatePublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *
 	query.prepare("INSERT INTO public_events(type,message,dt) VALUES(:type,:message,NOW())");
 	query.bindValue(":type", type);
 	query.bindValue(":message", message);
-	query.exec();
+    if(!query.exec()){
+        // TODO database error
+    }
 
 	jsonData["result"] = QJsonValue("DONE");
+    jsonData["m"] = QJsonValue(m);
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

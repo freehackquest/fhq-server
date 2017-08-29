@@ -36,7 +36,7 @@ QStringList CmdSendLettersToSubscribersHandler::errors(){
 	return list;
 }
 
-void CmdSendLettersToSubscribersHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdSendLettersToSubscribersHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
 	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
 	if(pUserToken == NULL){
 		QJsonObject jsonData;

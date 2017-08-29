@@ -162,3 +162,10 @@ Error Errors::InvalidToken(){
 }
 
 // ---------------------------------------------------------------------
+
+Error Errors::DatabaseError(QString text){
+	Error error(500, "Database error. " + text);
+	return error;
+}
+
+// ---------------------------------------------------------------------

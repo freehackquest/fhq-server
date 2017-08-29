@@ -24,6 +24,7 @@ class Errors {
 		static Error ParamMustBeMoreThen(QString param_name, int minval);
 		static Error NoneError();
 		static Error NotFound(QString what);
+        static Error DatabaseError(QString text);
 		
 		// custom
 		static Error QuestIDMustBeNotZero();
