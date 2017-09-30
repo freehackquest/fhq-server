@@ -15,7 +15,7 @@ ServerSettHelper::ServerSettHelper(){
 
 // ---------------------------------------------------------------------
 
-ServerSettHelper::ServerSettHelper(QString sName, QString sValue, QString sGroup) : ServerSettHelper(){
+ServerSettHelper::ServerSettHelper(QString sGroup, QString sName, QString sValue) : ServerSettHelper(){
     m_sName = sName;
     m_sType = SETT_TYPE_STRING;
     m_sValueAsString = sValue;
@@ -26,7 +26,7 @@ ServerSettHelper::ServerSettHelper(QString sName, QString sValue, QString sGroup
 
 // ---------------------------------------------------------------------
 
-ServerSettHelper::ServerSettHelper(QString sName, bool bValue, QString sGroup) : ServerSettHelper(){
+ServerSettHelper::ServerSettHelper(QString sGroup, QString sName, bool bValue) : ServerSettHelper(){
     m_sName = sName;
     m_sType = SETT_TYPE_BOOLEAN;
     m_sValueAsString = bValue ? "yes" : "no";
@@ -37,7 +37,7 @@ ServerSettHelper::ServerSettHelper(QString sName, bool bValue, QString sGroup) :
 
 // ---------------------------------------------------------------------
 
-ServerSettHelper::ServerSettHelper(QString sName, int nValue, QString sGroup) : ServerSettHelper(){
+ServerSettHelper::ServerSettHelper(QString sGroup, QString sName, int nValue) : ServerSettHelper(){
     m_sName = sName;
     m_sType = SETT_TYPE_INTEGER;
     m_sValueAsString = QString::number(nValue);

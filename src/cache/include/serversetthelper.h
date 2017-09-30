@@ -8,9 +8,9 @@ class ServerSettHelper {
 
 public:
     ServerSettHelper();
-    ServerSettHelper(QString sName, QString sValue, QString sGroup);
-    ServerSettHelper(QString sName, bool bValue, QString sGroup);
-    ServerSettHelper(QString sName, int nValue, QString sGroup);
+    ServerSettHelper(QString sGroup, QString sName, QString sValue);
+    ServerSettHelper(QString sGroup, QString sName, bool bValue);
+    ServerSettHelper(QString sGroup, QString sName, int nValue);
 
     QString name();
     QString valueAsString();
