@@ -1,6 +1,7 @@
 #ifndef INTERFACES_IUPDATE_H
 #define INTERFACES_IUPDATE_H
 
+#include <log.h>
 #include <QString>
 #include <QVariant>
 #include <QSqlDatabase>

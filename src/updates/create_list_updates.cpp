@@ -1,33 +1,34 @@
 #include "create_list_updates.h"
-#include <log.h>
-#include "headers/database0060.h"
-#include "headers/update0061.h"
-#include "headers/update0062.h"
-#include "headers/update0063.h"
-#include "headers/update0064.h"
-#include "headers/update0065.h"
-#include "headers/update0066.h"
-#include "headers/update0067.h"
-#include "headers/update0068.h"
-#include "headers/update0069.h"
-#include "headers/update0070.h"
-#include "headers/update0071.h"
-#include "headers/update0072.h"
-#include "headers/update0073.h"
-#include "headers/update0074.h"
-#include "headers/update0075.h"
-#include "headers/update0076.h"
-#include "headers/update0077.h"
-#include "headers/update0078.h"
-#include "headers/update0079.h"
-#include "headers/update0080.h"
-#include "headers/update0081.h"
-#include "headers/update0082.h"
-#include "headers/update0083.h"
-#include "headers/update0084.h"
-#include "headers/update0085.h"
-#include "headers/update0086.h"
-#include "headers/update0087.h"
+#include <database0060.h>
+#include <update0061.h>
+#include <update0062.h>
+#include <update0063.h>
+#include <update0064.h>
+#include <update0065.h>
+#include <update0066.h>
+#include <update0067.h>
+#include <update0068.h>
+#include <update0069.h>
+#include <update0070.h>
+#include <update0071.h>
+#include <update0072.h>
+#include <update0073.h>
+#include <update0074.h>
+#include <update0075.h>
+#include <update0076.h>
+#include <update0077.h>
+#include <update0078.h>
+#include <update0079.h>
+#include <update0080.h>
+#include <update0081.h>
+#include <update0082.h>
+#include <update0083.h>
+#include <update0084.h>
+#include <update0085.h>
+#include <update0086.h>
+#include <update0087.h>
+#include <update0088.h>
+#include <update0089.h>
 
 void create_list_updates(QVector<IUpdate *> &vUpdates){
 	vUpdates.push_back(new Database0060());
@@ -58,6 +59,8 @@ void create_list_updates(QVector<IUpdate *> &vUpdates){
 	vUpdates.push_back(new Update0085());
 	vUpdates.push_back(new Update0086());
 	vUpdates.push_back(new Update0087());
+	vUpdates.push_back(new Update0088());
+	vUpdates.push_back(new Update0089());
 }
 
 void tryUpdateDatabase(QSqlDatabase *pDatabase){
