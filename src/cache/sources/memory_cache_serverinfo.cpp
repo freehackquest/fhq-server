@@ -1,4 +1,4 @@
-#include "../headers/memory_cache_serverinfo.h"
+#include <memory_cache_serverinfo.h>
 
 #include <QTextStream>
 #include <QFile>

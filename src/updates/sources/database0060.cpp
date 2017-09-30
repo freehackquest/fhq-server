@@ -1,4 +1,4 @@
-#include "../headers/database0060.h"
+#include <database0060.h>
 #include <QSqlQuery>
 
 QString Database0060::from_version(){

@@ -1,4 +1,4 @@
-#include "../headers/update0073.h"
+#include <update0073.h>
 #include <QSqlQuery>
 
 

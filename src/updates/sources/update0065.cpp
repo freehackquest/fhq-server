@@ -1,4 +1,4 @@
-#include "../headers/update0065.h"
+#include <update0065.h>
 #include <QUuid>
 
 QString Update0065::from_version(){

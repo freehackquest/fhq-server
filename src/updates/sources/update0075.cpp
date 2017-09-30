@@ -1,4 +1,4 @@
-#include "../headers/update0075.h"
+#include <update0075.h>
 
 QString Update0075::from_version(){
 	return "u0074";

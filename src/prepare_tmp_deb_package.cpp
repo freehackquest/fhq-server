@@ -5,7 +5,7 @@
 #include <QSysInfo>
 #include <QtCore>
 
-void PrepareTmpDebPackage::prepare(QString repo, QString tmpdeb){
+void PrepareTmpDebPackage::prepare(QString /*repo*/, QString tmpdeb){
 	std::cout << "Distribution: " + QSysInfo::productType().toStdString() + "\n";
 	std::cout << "Distribution version: " + QSysInfo::productVersion().toStdString() + "\n";
 

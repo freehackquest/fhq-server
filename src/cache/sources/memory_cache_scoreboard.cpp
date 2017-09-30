@@ -1,4 +1,4 @@
-#include "../headers/memory_cache_scoreboard.h"
+#include <memory_cache_scoreboard.h>
 
 #include <QTextStream>
 #include <QFile>
