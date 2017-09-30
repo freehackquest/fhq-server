@@ -28,7 +28,7 @@ MemoryCacheServerSettings::MemoryCacheServerSettings(IWebSocketServer *pWebSocke
     addNewSetting(new ServerSettHelper(sGroupMail, "mail_host", QString("ssl://smtp.gmail.com")));
     addNewSetting(new ServerSettHelper(sGroupMail, "mail_port", 465));
     addNewSetting(new ServerSettHelper(sGroupMail, "mail_username", QString("freehackquest@gmail.com")));
-    addNewSetting(new ServerSettHelper(sGroupMail, "mail_password", QString("some")));
+    addNewSetting(new ServerSettHelper(sGroupMail, "mail_password", QString("some"), true));
     addNewSetting(new ServerSettHelper(sGroupMail, "mail_auth", true));
     addNewSetting(new ServerSettHelper(sGroupMail, "mail_allow", true));
     addNewSetting(new ServerSettHelper(sGroupMail, "mail_system_message_admin_email", QString("")));
@@ -207,14 +207,25 @@ void MemoryCacheServerSettings::setSettBoolean(QString sName, bool bValue){
 
 // ---------------------------------------------------------------------
 
-QJsonArray MemoryCacheServerSettings::toJsonObject(){
+QJsonArray MemoryCacheServerSettings::toJsonArray(){
     QJsonArray res;
     foreach( QString sName, m_mapSettings.keys()){
         ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
 
         QJsonObject sett;
         sett["name"] = pServerSettHelper->name();
-        sett["value"] = pServerSettHelper->valueAsString();
+        if(pServerSettHelper->isBoolean()){
+			sett["value"] = pServerSettHelper->valueAsBoolean();
+        }else if(pServerSettHelper->isString()){
+            sett["value"] = pServerSettHelper->valueAsString();
+        }else if(pServerSettHelper->isInteger()){
+            sett["value"] = pServerSettHelper->valueAsInteger();
+        }else if(pServerSettHelper->isPassword()){
+            sett["value"] = "******";
+        }else{
+            sett["value"] = pServerSettHelper->valueAsString();
+        }
+        
         sett["group"] = pServerSettHelper->group();
         sett["type"] = pServerSettHelper->type();
         res.append(sett);

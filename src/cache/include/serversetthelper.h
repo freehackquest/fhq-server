@@ -8,12 +8,13 @@ class ServerSettHelper {
 
 public:
     ServerSettHelper();
-    ServerSettHelper(QString sGroup, QString sName, QString sValue);
+    ServerSettHelper(QString sGroup, QString sName, QString sValue, bool bPassword = false);
     ServerSettHelper(QString sGroup, QString sName, bool bValue);
     ServerSettHelper(QString sGroup, QString sName, int nValue);
 
     QString name();
     QString valueAsString();
+    QString valueAsPassword();
     int valueAsInteger();
     bool valueAsBoolean();
     void setValue(QString sValue);
@@ -25,6 +26,7 @@ public:
     bool isBoolean();
     bool isString();
     bool isInteger();
+    bool isPassword();
 
 private:
 
@@ -41,5 +43,6 @@ private:
 static QString SETT_TYPE_STRING = "string";
 static QString SETT_TYPE_BOOLEAN = "boolean";
 static QString SETT_TYPE_INTEGER = "integer";
+static QString SETT_TYPE_PASSWORD = "password";
 
 #endif // SERVERSETT_HELPER_H

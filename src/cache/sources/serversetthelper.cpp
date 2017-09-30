@@ -15,9 +15,9 @@ ServerSettHelper::ServerSettHelper(){
 
 // ---------------------------------------------------------------------
 
-ServerSettHelper::ServerSettHelper(QString sGroup, QString sName, QString sValue) : ServerSettHelper(){
+ServerSettHelper::ServerSettHelper(QString sGroup, QString sName, QString sValue, bool bPassword) : ServerSettHelper(){
     m_sName = sName;
-    m_sType = SETT_TYPE_STRING;
+    m_sType = bPassword ? SETT_TYPE_PASSWORD : SETT_TYPE_STRING;
     m_sValueAsString = sValue;
     m_nValueAsInteger = 0;
     m_bValueAsBoolean = false;
@@ -55,6 +55,12 @@ QString ServerSettHelper::name(){
 // ---------------------------------------------------------------------
 
 QString ServerSettHelper::valueAsString(){
+    return m_sValueAsString;
+}
+
+// ---------------------------------------------------------------------
+
+QString ServerSettHelper::valueAsPassword(){
     return m_sValueAsString;
 }
 
@@ -118,6 +124,12 @@ bool ServerSettHelper::isBoolean(){
 
 bool ServerSettHelper::isInteger(){
     return m_sType == SETT_TYPE_INTEGER;
+}
+
+// ---------------------------------------------------------------------
+
+bool ServerSettHelper::isPassword(){
+    return m_sType == SETT_TYPE_PASSWORD;
 }
 
 // ---------------------------------------------------------------------

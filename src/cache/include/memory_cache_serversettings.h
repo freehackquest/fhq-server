@@ -3,6 +3,7 @@
 
 #include <iserver.h>
 #include <serversetthelper.h>
+#include <QJsonArray>
 
 class MemoryCacheServerSettings : public IMemoryCache {
 	public:
@@ -19,7 +20,7 @@ class MemoryCacheServerSettings : public IMemoryCache {
 		bool getSettBoolean(QString sName);
 		void setSettBoolean(QString sName, bool bValue);
 
-        QJsonArray toJsonObject();
+        QJsonArray toJsonArray();
 
 	private:
 
