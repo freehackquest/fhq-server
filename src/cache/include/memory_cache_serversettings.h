@@ -15,10 +15,15 @@ class MemoryCacheServerSettings : public IMemoryCache {
 		
 		QString getSettString(QString name);
 		void setSettString(QString sName, QString sValue);
+        QString getSettPassword(QString name);
+        void setSettPassword(QString sName, QString sValue);
 		int getSettInteger(QString sName);
 		void setSettInteger(QString sName, int nValue);
 		bool getSettBoolean(QString sName);
 		void setSettBoolean(QString sName, bool bValue);
+
+        bool hasSett(QString sName);
+        QString getSettType(QString sName);
 
         QJsonArray toJsonArray();
 

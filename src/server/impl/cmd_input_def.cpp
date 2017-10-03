@@ -65,6 +65,13 @@ CmdInputDef & CmdInputDef::bool_(){
 
 // ---------------------------------------------------------------------
 
+CmdInputDef & CmdInputDef::any_(){
+    m_sType = CMD_INPUT_DEF_TYPE_ANY;
+    return *this;
+}
+
+// ---------------------------------------------------------------------
+
 CmdInputDef & CmdInputDef::description(QString s){
 	m_sDescription = s;
 	return *this;
@@ -139,6 +146,12 @@ bool CmdInputDef::isUUID(){
 
 bool CmdInputDef::isBool(){
 	return m_sType == CMD_INPUT_DEF_TYPE_BOOL;
+}
+
+// ---------------------------------------------------------------------
+
+bool CmdInputDef::isAny(){
+    return m_sType == CMD_INPUT_DEF_TYPE_ANY;
 }
 
 // ---------------------------------------------------------------------

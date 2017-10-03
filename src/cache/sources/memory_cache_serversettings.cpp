@@ -69,6 +69,8 @@ MemoryCacheServerSettings::MemoryCacheServerSettings(IWebSocketServer *pWebSocke
                     }else if(pServerSettHelper->isInteger()){
                         // TODO check convertation string to int
                         pServerSettHelper->setValue(sValue.toInt());
+                    }else if(pServerSettHelper->isPassword()){
+                        pServerSettHelper->setValue(sValue);
                     }else{
                         Log::err(TAG, "No handle type for setting '" + sName + "'");
                     }
@@ -125,6 +127,41 @@ void MemoryCacheServerSettings::setSettString(QString sName, QString sValue){
     if(m_mapSettings.contains(sName)){
         ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
         if(!pServerSettHelper->isString()){
+            Log::err(TAG, "Wrong type setting string (set): " + sName);
+        }else{
+            pServerSettHelper->setValue(sValue);
+            updateSettingDatabase(pServerSettHelper);
+        }
+    }else{
+        Log::err(TAG, "Not found server setting string (set): " + sName);
+    }
+}
+
+// ---------------------------------------------------------------------
+
+QString MemoryCacheServerSettings::getSettPassword(QString sName){
+    QMutexLocker locker (&m_mtxServerSettings);
+    QString sResult = "";
+    if(m_mapSettings.contains(sName)){
+        ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
+        if(!pServerSettHelper->isPassword()){
+            Log::err(TAG, "Wrong type setting password (get): " + sName);
+        }else{
+            sResult = pServerSettHelper->valueAsString();
+        }
+    }else{
+        Log::err(TAG, "Not found server setting password (get): " + sName);
+    }
+    return sResult;
+}
+
+// ---------------------------------------------------------------------
+
+void MemoryCacheServerSettings::setSettPassword(QString sName, QString sValue){
+    QMutexLocker locker (&m_mtxServerSettings);
+    if(m_mapSettings.contains(sName)){
+        ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
+        if(!pServerSettHelper->isPassword()){
             Log::err(TAG, "Wrong type setting string (set): " + sName);
         }else{
             pServerSettHelper->setValue(sValue);
@@ -203,6 +240,21 @@ void MemoryCacheServerSettings::setSettBoolean(QString sName, bool bValue){
     }else{
         Log::err(TAG, "Not found server setting integer (set): " + sName);
     }
+}
+
+// ---------------------------------------------------------------------
+
+bool MemoryCacheServerSettings::hasSett(QString sName){
+    return m_mapSettings.contains(sName);
+}
+
+// ---------------------------------------------------------------------
+
+QString MemoryCacheServerSettings::getSettType(QString sName){
+    if(m_mapSettings.contains(sName)){
+        return m_mapSettings[sName]->type();
+    }
+    return "";
 }
 
 // ---------------------------------------------------------------------

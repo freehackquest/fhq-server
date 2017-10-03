@@ -1,5 +1,6 @@
 #include <cmd_getmap_handler.h>
 #include <QJsonArray>
+#include <memory_cache_serversettings.h>
 
 CmdGetMapHandler::CmdGetMapHandler(){
 	
@@ -39,6 +40,15 @@ QStringList CmdGetMapHandler::errors(){
 }
 
 void CmdGetMapHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
+
+    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
+    if(pMemoryCache == NULL){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
+        return;
+    }
+
+    MemoryCacheServerSettings *pMemoryCacheServerSettings = dynamic_cast<MemoryCacheServerSettings*>(pMemoryCache);
+
 	QJsonArray coords;
 	QSqlDatabase db = *(pWebSocketServer->database());
 	QSqlQuery query(db);
@@ -64,5 +74,6 @@ void CmdGetMapHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketS
 	jsonData["result"] = QJsonValue("DONE");
     jsonData["m"] = QJsonValue(m);
 	jsonData["data"] = coords;
+    jsonData["google_map_api_key"] = pMemoryCacheServerSettings->getSettString("google_map_api_key");
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

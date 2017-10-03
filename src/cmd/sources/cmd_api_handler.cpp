@@ -1,4 +1,5 @@
 #include <cmd_api_handler.h>
+#include <QtCore>
 
 CmdApiHandler::CmdApiHandler(){
 }
@@ -43,5 +44,6 @@ void CmdApiHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServ
 	QJsonObject data;
 	pWebSocketServer->exportApi(data);
 	jsonData["data"] = data;
+    jsonData["version"] = QCoreApplication::applicationVersion();
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }

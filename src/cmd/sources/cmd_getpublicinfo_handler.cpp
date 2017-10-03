@@ -29,7 +29,7 @@ const QVector<CmdInputDef> &CmdGetPublicInfoHandler::inputs(){
 };
 
 QString CmdGetPublicInfoHandler::description(){
-	return "Method retrun public information about server";
+    return "Method return public information about server";
 }
 
 QStringList CmdGetPublicInfoHandler::errors(){
@@ -37,7 +37,7 @@ QStringList CmdGetPublicInfoHandler::errors(){
 	return list;
 }
 
-void CmdGetPublicInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdGetPublicInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 	jsonData["m"] = QJsonValue(m);

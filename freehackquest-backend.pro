@@ -1,8 +1,8 @@
 TEMPLATE = app
 TARGET = freehackquest-backend
 
-VERSION = 0.1.17
-DEFINES += VERSION_STRING=\\\"0.1.17\\\"
+VERSION = 0.1.18
+DEFINES += VERSION_STRING=\\\"0.1.18\\\"
 
 QT += core sql network websockets
 QT -= gui
