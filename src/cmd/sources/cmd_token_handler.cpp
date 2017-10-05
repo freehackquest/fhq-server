@@ -60,15 +60,15 @@ void CmdTokenHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 	}
 	if (query.next()) {
 		QSqlRecord record = query.record();
-		int userid = record.value("userid").toInt();
+        int userid = record.value("userid").toInt();
 		QString status = record.value("status").toString();
 		QString data = record.value("data").toString();
 		QString start_date = record.value("start_date").toString();
 		QString end_date = record.value("end_date").toString();
 		QString lastip = pClient->peerAddress().toString();
 		pWebSocketServer->setUserToken(pClient, new UserToken(data));
-		RunTasks::UpdateUserLocation(pWebSocketServer, userid, lastip);
-
+        // TODO redesign this
+        RunTasks::UpdateUserLocation(pWebSocketServer, userid, lastip);
 	}else{
 		Log::err(TAG, "Invalid token " + token);
 		// ["error"]
