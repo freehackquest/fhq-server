@@ -37,7 +37,10 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 		return;
 	}
 
-	tryUpdateDatabase(m_pDBConnection->db());
+    if(!tryUpdateDatabase(m_pDBConnection->db())){
+        m_bFailed = true;
+        return;
+    }
 
 	// TODO: redesign
 	// cleanup old user tokens
@@ -107,6 +110,12 @@ WebSocketServer::~WebSocketServer() {
     m_pWebSocketServer->close();
     m_pWebSocketServerSSL->close();
     qDeleteAll(m_clients.begin(), m_clients.end());
+}
+
+// ---------------------------------------------------------------------
+
+bool WebSocketServer::isFailed(){
+    return m_bFailed;
 }
 
 // ---------------------------------------------------------------------

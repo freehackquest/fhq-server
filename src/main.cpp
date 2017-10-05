@@ -59,6 +59,11 @@ int main(int argc, char** argv) {
 
 	QThreadPool::globalInstance()->setMaxThreadCount(5);
     WebSocketServer *pServer = new WebSocketServer();
+    if(pServer->isFailed()){
+        Log::err(TAG, "Could not start server");
+        return -1;
+    }
+
     QObject::connect(pServer, &WebSocketServer::closed, &a, &QCoreApplication::quit);
     
     // TODO redesign to check config

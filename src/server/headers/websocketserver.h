@@ -37,6 +37,7 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 	public:
 		explicit WebSocketServer(QObject *parent = Q_NULLPTR);
 		~WebSocketServer();
+        bool isFailed();
 
 		// IWebSocketServer
 		virtual int getConnectedUsers();
@@ -50,7 +51,8 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		virtual IMemoryCache *findMemoryCache(QString name);
 		virtual void exportApi(QJsonObject &result);
 		
-		
+
+
 	Q_SIGNALS:
 		void closed();
 
