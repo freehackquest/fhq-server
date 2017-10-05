@@ -69,21 +69,13 @@ void CmdLoginHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
     if (query.next()) {
         QSqlRecord record = query.record();
 
-        // {"user":{"id":"47","email":"freehackquest@gmail.com","nick":"admin1","role":"admin"}}
-
-        Log::info(TAG, "Found");
-
         int userid = record.value("id").toInt();
         QString email = record.value("email").toString();
         QString nick = record.value("nick").toString();
         QString role = record.value("role").toString();
 
-        Log::info(TAG, "UserID: " + QString::number(userid));
-        Log::info(TAG, "Nick: " + nick);
-        Log::info(TAG, "Role: " + role);
-
         QJsonObject user;
-        user["id"] = userid;
+        user["id"] = QString::number(userid);
         user["email"] = email;
         user["nick"] = nick;
         user["role"] = role;
@@ -97,8 +89,6 @@ void CmdLoginHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
         QString token = QUuid::createUuid().toString();
         token = token.mid(1,token.length()-2);
         token = token.toUpper();
-
-        Log::info(TAG, "token: " + token);
 
         QSqlQuery query_token(db);
         query_token.prepare("INSERT INTO users_tokens (userid, token, status, data, start_date, end_date) VALUES(:userid, :token, :status, :data, NOW(), NOW() + INTERVAL 1 DAY)");
@@ -124,7 +114,6 @@ void CmdLoginHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 
     }else{
         Log::err(TAG, "Invalid login or password");
-        // ["error"]
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(401, "Invalid login or password"));
         return;
     }

@@ -1,7 +1,9 @@
 #include <cmd_user_handler.h>
+#include <log.h>
 #include <QJsonArray>
 
 CmdUserHandler::CmdUserHandler(){
+    TAG = "CmdUserHandler";
 	m_vInputs.push_back(CmdInputDef("userid").optional().integer_().description("Id of user"));
 }
 

@@ -67,6 +67,7 @@ void CmdTokenHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 		QString end_date = record.value("end_date").toString();
 		QString lastip = pClient->peerAddress().toString();
 		pWebSocketServer->setUserToken(pClient, new UserToken(data));
+        Log::info(TAG, "userid: " + QString::number(userid));
         // TODO redesign this
         RunTasks::UpdateUserLocation(pWebSocketServer, userid, lastip);
 	}else{
