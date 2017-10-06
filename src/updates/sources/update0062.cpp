@@ -14,7 +14,7 @@ QString Update0062::description(){
 
 bool Update0062::update(QSqlDatabase &db, QString &error){
 	QSqlQuery query(db);
-	query.prepare("DROP TABLE user_old");
+    query.prepare("DROP TABLE IF EXISTS user_old");
 		if(!query.exec()){
 		error = query.lastError().text();
 		return false;
