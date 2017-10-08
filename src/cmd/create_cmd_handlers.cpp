@@ -20,6 +20,7 @@
 #include <cmd_login_handler.h>
 #include <cmd_publiceventslist_handler.h>
 #include <cmd_quest_handler.h>
+#include <cmd_quest_pass_handler.h>
 #include <cmd_quests_subjects_handler.h>
 #include <cmd_quests_handler.h>
 #include <cmd_registration_handler.h>
@@ -62,6 +63,7 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
 	v.push_back(new CmdLoginHandler());
 	v.push_back(new CmdPublicEventsListHandler());
 	v.push_back(new CmdQuestHandler());
+    v.push_back(new CmdQuestPassHandler());
     v.push_back(new CmdQuestsSubjectsHandler());
     v.push_back(new CmdQuestsHandler());
     v.push_back(new CmdRegistrationHandler());
