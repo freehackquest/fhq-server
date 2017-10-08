@@ -20,6 +20,7 @@ HEADERS += \
     src/cmd/include/cmd_login_handler.h \
     src/cmd/include/cmd_publiceventslist_handler.h \
     src/cmd/include/cmd_quest_handler.h \
+    src/cmd/include/cmd_registration_handler.h \
     src/cmd/include/cmd_game_create_handler.h \
     src/cmd/include/cmd_games_handler.h \
     src/cmd/include/cmd_getmap_handler.h \
@@ -57,6 +58,7 @@ SOURCES += \
     src/cmd/sources/cmd_login_handler.cpp \
     src/cmd/sources/cmd_publiceventslist_handler.cpp \
     src/cmd/sources/cmd_quest_handler.cpp \
+    src/cmd/sources/cmd_registration_handler.cpp \
     src/cmd/sources/cmd_scoreboard_handler.cpp \
     src/cmd/sources/cmd_sendchatmessage_handler.cpp \
     src/cmd/sources/cmd_send_letters_to_subscribers_handler.cpp \
