@@ -57,8 +57,11 @@ void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSer
 	}
 
 	if(obj.contains("userid")){
-		nUserID = obj["userid"].toInt();
-		bCurrentUserOrAdmin = false;
+        int nUserID_ = obj["userid"].toInt();
+        if(nUserID_ != nUserID){
+            bCurrentUserOrAdmin = false;
+        }
+        nUserID = nUserID_;
 	}
 	
 	QJsonObject user;
