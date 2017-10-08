@@ -42,7 +42,7 @@ void CmdQuestsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketS
 
     int nUserID = 0;
     IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
-    if(pUserToken == NULL){
+    if(pUserToken != NULL){
         nUserID = pUserToken->userid();
     }
 
