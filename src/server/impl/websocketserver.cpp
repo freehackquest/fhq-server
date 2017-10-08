@@ -11,7 +11,7 @@
 #include <QtNetwork/QSslKey>
 
 #include <create_cmd_handlers.h>
-#include "../smtp/smtp.h"
+#include <SmtpMime>
 #include <create_list_updates.h>
 #include <create_memory_cache.h>
 #include <log.h>
@@ -336,15 +336,17 @@ IUserToken * WebSocketServer::getUserToken(QWebSocket *pClient){
 // ---------------------------------------------------------------------
 
 void WebSocketServer::sendLettersBcc(QStringList emails, QString subject, QString text){
-	QString username = m_pServerConfig->emailUsername();
+    /*QString username = m_pServerConfig->emailUsername();
 	QString password = m_pServerConfig->emailPassword();
 	QString smtphost = m_pServerConfig->emailSmtpHost();
 	int smtpport = m_pServerConfig->emailSmtpPort();
 	
+
+
 	Smtp* smtp = new Smtp(username, password, smtphost, smtpport);
 	// smtp->disableDebugMode();
     //connect(smtp, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
-	smtp->sendMailBcc("freehackquest@gmail.com", emails, subject, text);
+    smtp->sendMailBcc("freehackquest@gmail.com", emails, subject, text);*/
 }
 
 // ---------------------------------------------------------------------

@@ -5,6 +5,8 @@
 #include <QCryptographicHash>
 #include <QUuid>
 #include <QRegularExpression>
+#include <memory_cache_serversettings.h>
+#include <SmtpMime>
 
 CmdRegistrationHandler::CmdRegistrationHandler(){
     TAG = "CmdRegistrationHandler";
@@ -52,7 +54,13 @@ void CmdRegistrationHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebS
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 	
-    // TODO move this to
+    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
+    if(pMemoryCache == NULL){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
+        return;
+    }
+    MemoryCacheServerSettings *pMemoryCacheServerSettings = dynamic_cast<MemoryCacheServerSettings*>(pMemoryCache);
+
     QRegularExpression regexEmail("^[0-9a-zA-Z]{1}[0-9a-zA-Z-._]*[0-9a-zA-Z]{1}@[0-9a-zA-Z]{1}[-.0-9a-zA-Z]*[0-9a-zA-Z]{1}\\.[a-zA-Z]{2,6}$");
     QString sEmail = obj["email"].toString();
 
@@ -176,7 +184,50 @@ void CmdRegistrationHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebS
         return;
     }
 
-    Log::info(TAG, "TODO send email with password " + sPassword);
+    QString sMailHost = pMemoryCacheServerSettings->getSettString("mail_host");
+    int nMailPort = pMemoryCacheServerSettings->getSettInteger("mail_port");
+    QString sMailPassword = pMemoryCacheServerSettings->getSettPassword("mail_password");
+    QString sMailFrom = pMemoryCacheServerSettings->getSettString("mail_from");
+
+
+    SmtpClient smtp(sMailHost, nMailPort, SmtpClient::SslConnection);
+    smtp.setUser(sMailFrom);
+    smtp.setPassword(sMailPassword);
+
+    MimeMessage message;
+
+    EmailAddress sender(sMailFrom, "FreeHackQuest");
+    message.setSender(&sender);
+
+    EmailAddress to(sEmail, "");
+    message.addRecipient(&to);
+
+    message.setSubject("Registration on FreeHackQuest");
+
+    MimeText text;
+    text.setText("Welcome to FreeHackQuest 2017!\n"
+                 "You login: " + sEmail + "\n"
+                 "You password: " + sPassword + "\n"
+              );
+
+    message.addPart(&text);
+
+    // Now we can send the mail
+    if (!smtp.connectToHost()) {
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, "[MAIL] Failed to connect to host!"));
+        return;
+    }
+
+    if (!smtp.login()) {
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, "[MAIL] Failed to login!"));
+        return;
+    }
+
+    if (!smtp.sendMail(message)) {
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, "[MAIL] Failed to send mail!"));
+        return;
+    }
+    smtp.quit();
 
     int nUserID = query_insert.lastInsertId().toInt();
 
