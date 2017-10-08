@@ -36,6 +36,7 @@ HEADERS += \
     src/cmd/include/cmd_user_handler.h \
     src/cmd/include/cmd_users_handler.h \
     src/cmd/include/cmd_user_skills_handler.h \
+    src/cmd/include/cmd_user_change_password_handler.h \
     src/cmd/include/cmd_updatequest_handler.h \
     src/cmd/include/cmd_update_user_location_handler.h \
     src/cmd/include/cmd_update_server_settings_handler.h \
@@ -73,6 +74,7 @@ SOURCES += \
     src/cmd/sources/cmd_user_handler.cpp \
     src/cmd/sources/cmd_users_handler.cpp \
     src/cmd/sources/cmd_user_skills_handler.cpp \
+    src/cmd/sources/cmd_user_change_password_handler.cpp \
     src/cmd/sources/cmd_classbook_handler.cpp \
     src/cmd/sources/cmd_updatequest_handler.cpp \
     src/cmd/sources/cmd_update_user_location_handler.cpp \
