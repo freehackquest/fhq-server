@@ -1,12 +1,12 @@
-#ifndef CMD_CREATEPUBLICEVENT_HANDLER_H
-#define CMD_CREATEPUBLICEVENT_HANDLER_H
+#ifndef CMD_FEEDBACK_ADD_HANDLER_H
+#define CMD_FEEDBACK_ADD_HANDLER_H
 
 #include <iserver.h>
 
-class CmdCreatePublicEventHandler : public ICmdHandler {
+class CmdFeedbackAddHandler : public ICmdHandler {
 	
 	public:
-		CmdCreatePublicEventHandler();
+        CmdFeedbackAddHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();
@@ -22,4 +22,4 @@ class CmdCreatePublicEventHandler : public ICmdHandler {
 		QVector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_CREATEPUBLICEVENT_HANDLER_H
+#endif // CMD_FEEDBACK_ADD_HANDLER_H

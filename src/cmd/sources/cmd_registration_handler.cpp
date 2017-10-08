@@ -184,11 +184,15 @@ void CmdRegistrationHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebS
         return;
     }
 
+    int nUserID = query_insert.lastInsertId().toInt();
+
+    RunTasks::AddPublicEvents(pWebSocketServer, "users", "New user #" + QString::number(nUserID) + "  " + sNick);
+
+    // TODO move to tasks
     QString sMailHost = pMemoryCacheServerSettings->getSettString("mail_host");
     int nMailPort = pMemoryCacheServerSettings->getSettInteger("mail_port");
     QString sMailPassword = pMemoryCacheServerSettings->getSettPassword("mail_password");
     QString sMailFrom = pMemoryCacheServerSettings->getSettString("mail_from");
-
 
     SmtpClient smtp(sMailHost, nMailPort, SmtpClient::SslConnection);
     smtp.setUser(sMailFrom);
@@ -229,7 +233,7 @@ void CmdRegistrationHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebS
     }
     smtp.quit();
 
-    int nUserID = query_insert.lastInsertId().toInt();
+
 
     jsonData["result"] = QJsonValue("DONE");
     jsonData["m"] = QJsonValue(m);

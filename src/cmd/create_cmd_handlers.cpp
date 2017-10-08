@@ -10,6 +10,7 @@
 #include <cmd_classbook_handler.h>
 #include <cmd_deletehint_handler.h>
 #include <cmd_deletequest_handler.h>
+#include <cmd_feedback_add_handler.h>
 #include <cmd_getmap_handler.h>
 #include <cmd_getpublicinfo_handler.h>
 #include <cmd_game_create_handler.h>
@@ -51,6 +52,7 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
 	v.push_back(new CmdClassbookHandler());
 	v.push_back(new CmdDeleteHintHandler());
 	v.push_back(new CmdDeleteQuestHandler());
+    v.push_back(new CmdFeedbackAddHandler());
     v.push_back(new CmdGameCreateHandler());
 	v.push_back(new CmdGamesHandler());
 	v.push_back(new CmdGetPublicInfoHandler());

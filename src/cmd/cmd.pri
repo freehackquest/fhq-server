@@ -14,6 +14,7 @@ HEADERS += \
     src/cmd/include/cmd_getpublicevent_handler.h \
     src/cmd/include/cmd_deletehint_handler.h \
     src/cmd/include/cmd_deletequest_handler.h \
+    src/cmd/include/cmd_feedback_add_handler.h \
     src/cmd/include/cmd_getpublicinfo_handler.h \
     src/cmd/include/cmd_hello_handler.h \
     src/cmd/include/cmd_hints_handler.h \
@@ -52,6 +53,7 @@ SOURCES += \
     src/cmd/sources/cmd_getpublicevent_handler.cpp \
     src/cmd/sources/cmd_deletehint_handler.cpp \
     src/cmd/sources/cmd_deletequest_handler.cpp \
+    src/cmd/sources/cmd_feedback_add_handler.cpp \
     src/cmd/sources/cmd_getpublicinfo_handler.cpp \
     src/cmd/sources/cmd_game_create_handler.cpp \
     src/cmd/sources/cmd_games_handler.cpp \
