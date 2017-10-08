@@ -130,7 +130,7 @@ void CmdRegistrationHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebS
                          "   country,"
                          "   region,"
                          "   city,"
-                         // "   university,"
+                         "   university,"
                          "   latitude,"
                          "   longitude,"
                          "   rating,"
@@ -149,7 +149,7 @@ void CmdRegistrationHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebS
                          "   :country,"
                          "   :region,"
                          "   :city,"
-                         // "   :university,"
+                         "   :university,"
                          "   :latitude,"
                          "   :longitude,"
                          "   :rating,"
@@ -173,7 +173,7 @@ void CmdRegistrationHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebS
     query_insert.bindValue(":country", sCountry);
     query_insert.bindValue(":region", sRegion);
     query_insert.bindValue(":city", sCity);
-    // query_insert.bindValue(":university", sUniversity);
+    query_insert.bindValue(":university", sUniversity);
     query_insert.bindValue(":latitude", 0);
     query_insert.bindValue(":longitude", 0);
     query_insert.bindValue(":rating", 0);

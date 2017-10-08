@@ -34,6 +34,7 @@ HEADERS += \
 	src/updates/include/update0087.h \
 	src/updates/include/update0088.h \
 	src/updates/include/update0089.h \
+        src/updates/include/update0090.h \
 
 SOURCES += \
 	src/updates/create_list_updates.cpp \
@@ -67,3 +68,4 @@ SOURCES += \
 	src/updates/sources/update0087.cpp \
 	src/updates/sources/update0088.cpp \
 	src/updates/sources/update0089.cpp \
+        src/updates/sources/update0090.cpp \

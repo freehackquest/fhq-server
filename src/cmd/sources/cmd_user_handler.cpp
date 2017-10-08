@@ -93,6 +93,7 @@ void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSer
 				user["country"] = record.value("country").toString();
 				user["region"] = record.value("region").toString();
 				user["city"] = record.value("city").toString();
+                user["univercity"] = record.value("univercity").toString();
 			}
 		}else{
 			pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("user"));
