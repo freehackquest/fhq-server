@@ -9,9 +9,9 @@ ServerConfig::ServerConfig(){
 	TAG = "ServerConfig";
 
     QStringList sFilenames;
+    sFilenames << "conf.ini";
     sFilenames << "/etc/freehackquest-backend/conf.ini";
     sFilenames << "etc/freehackquest-backend/conf.ini";
-    sFilenames << "conf.ini";
     for(int i = 0; i < sFilenames.size(); i++){
         QString tmp = sFilenames[i];
         if(QFile::exists(tmp)){
