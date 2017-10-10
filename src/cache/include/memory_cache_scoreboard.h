@@ -22,6 +22,7 @@ class MemoryCacheScoreboard : public IMemoryCache {
 			int userid = 0;
 			QString logo = "";
 			QString nick = "";
+            QString university = "";
 		};
 		
 		struct ScoreboardRow {

@@ -70,26 +70,7 @@ void CmdScoreboardHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	if(where.length() > 0){
 		where = "WHERE " + where;
 	}
-	
-	// count quests
-	QSqlDatabase db = *(pWebSocketServer->database());
-	/*{
-		QSqlQuery query(db);
-		query.prepare("SELECT count(*) as cnt FROM " + table + " ta "
-			" INNER JOIN users u ON u.id = ta.iduser"
-			" INNER JOIN quest q ON q.idquest = ta.idquest"
-			" INNER JOIN games g ON g.id = ta.gameid"
-			" " + where
-		);
-		foreach(QString key, filter_values.keys() ){
-			query.bindValue(key, filter_values.value(key));
-		}
-		query.exec();
-		if (query.next()) {
-			QSqlRecord record = query.record();
-			jsonData["count"] = record.value("cnt").toInt();
-		}
-	}*/
+
 	
 	IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("scoreboard");
 	if(pMemoryCache == NULL){

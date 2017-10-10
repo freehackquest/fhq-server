@@ -25,14 +25,15 @@ void MemoryCacheScoreboard::loadSync(){
 	m_vRows.clear(); // TODO fix memory leaks
 
 	QSqlQuery query(db);
-	query.prepare("SELECT id,nick,logo,rating FROM users WHERE role = 'user' ORDER BY rating DESC");
+    query.prepare("SELECT id,nick,logo,university,rating FROM users WHERE role = 'user' ORDER BY rating DESC");
 	query.exec();
 	while (query.next()) {
 		QSqlRecord record = query.record();
 		User *pUser = new User();
 		pUser->userid = record.value("id").toInt();
-		pUser->nick = record.value("nick").toString(); // TODO htmlspecialchars
-		pUser->logo = record.value("logo").toString(); // TODO htmlspecialchars
+        pUser->nick = record.value("nick").toString().toHtmlEscaped();
+        pUser->university = record.value("university").toString().toHtmlEscaped();
+        pUser->logo = record.value("logo").toString().toHtmlEscaped();
 		int rating = record.value("rating").toInt();
 		int nRow = findScoreboardRowByRating(rating);
 		if(nRow < 0){
@@ -75,6 +76,7 @@ QJsonArray MemoryCacheScoreboard::toJsonArray(){
 			user["userid"] = m_vRows[i]->vUsers[u]->userid;
 			user["nick"] = m_vRows[i]->vUsers[u]->nick;
 			user["logo"] = m_vRows[i]->vUsers[u]->logo;
+            user["university"] = m_vRows[i]->vUsers[u]->university;
 			user["rating"] = m_vRows[i]->rating;
 			users.push_back(user);
 		}

@@ -78,13 +78,14 @@ void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSer
 			QSqlRecord record = query.record();
 			user["id"] = record.value("id").toInt();
 			user["uuid"] = record.value("uuid").toString();
-			user["nick"] = record.value("nick").toString();
+            user["nick"] = record.value("nick").toString().toHtmlEscaped();
 			user["role"] = record.value("role").toString();
-			user["logo"] = record.value("logo").toString();
-			user["about"] = record.value("about").toString();
+            user["logo"] = record.value("logo").toString().toHtmlEscaped();
+            user["about"] = record.value("about").toString().toHtmlEscaped();
 			user["status"] = record.value("status").toString();
 			user["rating"] = record.value("rating").toString();
-			
+            user["university"] = record.value("university").toString().toHtmlEscaped();
+
 			if(bCurrentUserOrAdmin){
 				user["email"] = record.value("email").toString();
 				user["dt_create"] = record.value("dt_create").toString();
@@ -93,7 +94,6 @@ void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSer
 				user["country"] = record.value("country").toString();
 				user["region"] = record.value("region").toString();
 				user["city"] = record.value("city").toString();
-                user["univercity"] = record.value("univercity").toString();
 			}
 		}else{
 			pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("user"));
