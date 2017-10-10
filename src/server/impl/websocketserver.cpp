@@ -157,7 +157,7 @@ void WebSocketServer::onNewConnectionSSL(){
 
 void WebSocketServer::processTextMessage(QString message) {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-	// Log::info(TAG, QDateTime::currentDateTimeUtc().toString() + " [WS] <<< " + message);
+    Log::info(TAG, "[WS] <<< " + message);
 
 	QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
 	QJsonObject jsonData = doc.object();

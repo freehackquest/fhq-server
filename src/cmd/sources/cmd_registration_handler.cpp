@@ -11,9 +11,6 @@
 CmdRegistrationHandler::CmdRegistrationHandler(){
     TAG = "CmdRegistrationHandler";
     m_vInputs.push_back(CmdInputDef("email").required().string_().description("E-mail"));
-    m_vInputs.push_back(CmdInputDef("country").required().string_().description("Country"));
-    m_vInputs.push_back(CmdInputDef("region").required().string_().description("Region"));
-    m_vInputs.push_back(CmdInputDef("city").required().string_().description("City"));
     m_vInputs.push_back(CmdInputDef("university").required().string_().description("University"));
 }
 
@@ -70,9 +67,6 @@ void CmdRegistrationHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebS
         return;
     }
 
-    QString sCountry = obj["password"].toString();
-    QString sRegion = obj["region"].toString();
-    QString sCity = obj["city"].toString();
     QString sUniversity = obj["university"].toString();
 
     QSqlDatabase db = *(pWebSocketServer->database());
@@ -168,11 +162,11 @@ void CmdRegistrationHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebS
     query_insert.bindValue(":role", "user");
     query_insert.bindValue(":nick", sNick);
     query_insert.bindValue(":logo", "files/users/0.png");
-    query_insert.bindValue(":last_ip", sLastIP);
+    query_insert.bindValue(":last_ip", "");
     query_insert.bindValue(":status", "activated");
-    query_insert.bindValue(":country", sCountry);
-    query_insert.bindValue(":region", sRegion);
-    query_insert.bindValue(":city", sCity);
+    query_insert.bindValue(":country", "");
+    query_insert.bindValue(":region", "");
+    query_insert.bindValue(":city", "");
     query_insert.bindValue(":university", sUniversity);
     query_insert.bindValue(":latitude", 0);
     query_insert.bindValue(":longitude", 0);

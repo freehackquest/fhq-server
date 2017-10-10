@@ -5,6 +5,7 @@
 
 CmdTokenHandler::CmdTokenHandler(){
     TAG = "CmdTokenHandler";
+    m_vInputs.push_back(CmdInputDef("token").string_().optional().description("Auth token"));
 }
 
 QString CmdTokenHandler::cmd(){
