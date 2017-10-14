@@ -49,7 +49,7 @@ void CmdUserUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
     int nUserIDFromToken = pUserToken->userid();
     int nUserID = obj["userid"].toInt();
 
-    if(nUserIDFromToken != nUserID){
+    if(nUserIDFromToken != nUserID && !pUserToken->isAdmin()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Deny change inmormation about user"));
         return;
     }
@@ -63,7 +63,7 @@ void CmdUserUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM users WHERE id = :userid");
-        query.bindValue(":userid", nUserIDFromToken);
+        query.bindValue(":userid", nUserID);
 
         if(!query.exec()){
             pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::DatabaseError(query.lastError().text()));
@@ -100,7 +100,7 @@ void CmdUserUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         query.bindValue(":nick", sNick);
         query.bindValue(":university", sUniversity);
         query.bindValue(":about", sAbout);
-        query.bindValue(":userid", nUserIDFromToken);
+        query.bindValue(":userid", nUserID);
 		if(!query.exec()){
             pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
             return;
@@ -108,10 +108,11 @@ void CmdUserUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	}
 
     pUserToken->setNick(sNick);
-    RunTasks::AddPublicEvents(pWebSocketServer, "users", "User #" + QString::number(nUserIDFromToken) + "  " + sNick
-                              + " updated info about self");
+    RunTasks::AddPublicEvents(pWebSocketServer, "users", "User #" + QString::number(nUserID) + "  " + sNick
+                              + " updated info");
 
     QJsonObject jsonData;
+    jsonData["id"] = nUserID;
     jsonData["nick"] = sNick.toHtmlEscaped();
     jsonData["university"] = sUniversity.toHtmlEscaped();
     jsonData["about"] = sAbout.toHtmlEscaped();
