@@ -3,7 +3,7 @@
 Update0090::Update0090(){
     TAG = "Update0090";
 }
-	
+
 QString Update0090::from_version(){
     return "u0089";
 }
@@ -13,7 +13,7 @@ QString Update0090::version(){
 }
 
 QString Update0090::description(){
-	return "Added column type to table settings";
+    return "Added column type to table settings";
 }
 
 bool Update0090::update(QSqlDatabase &db, QString &error){
@@ -24,5 +24,5 @@ bool Update0090::update(QSqlDatabase &db, QString &error){
 		Log::info(TAG, "Problem with install update " + error);
 		return false;
 	}
-	return true;
+    return true;
 }

@@ -4,7 +4,7 @@
 #include <iupdate.h>
 
 class Update0090 : public IUpdate {
-	
+
 	public:
         Update0090();
 		virtual QString from_version();
