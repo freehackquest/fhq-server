@@ -1,4 +1,4 @@
-#include <cmd_createquest_handler.h>
+#include <cmd_quest_create_handler.h>
 #include <runtasks.h>
 
 #include <QJsonArray>
@@ -14,7 +14,7 @@ CmdCreateQuestHandler::CmdCreateQuestHandler(){
 	// TODO from database init
 	QStringList questTypes;
 	questTypes << "trivia";
-	
+    m_vInputs.push_back(CmdInputDef("author").string_().required().description("Author of the quest"));
 	m_vInputs.push_back(CmdInputDef("subject").string_().required().description("Subject must be one from types (look types)"));
 	m_vInputs.push_back(CmdInputDef("answer").string_().required().description("Answer for the quest"));
 	m_vInputs.push_back(CmdInputDef("answer_format").string_().required().description("Answer format for the quest"));

@@ -42,8 +42,8 @@ QStringList CmdUserChangePasswordHandler::errors(){
 }
 
 void CmdUserChangePasswordHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
-	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
-	
+
+    IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
     int nUserID = pUserToken->userid();
 
     QSqlDatabase db = *(pWebSocketServer->database());

@@ -9,6 +9,7 @@ class IUserToken {
 		virtual bool isTester() = 0;
 		virtual bool hasRole() = 0;
 		virtual QString nick() = 0;
+        virtual void setNick(QString) = 0;
 		virtual QString email() = 0;
 		virtual int userid() = 0;
 };

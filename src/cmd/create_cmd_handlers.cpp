@@ -5,7 +5,6 @@
 #include <cmd_api_handler.h>
 #include <cmd_deletepublicevent_handler.h>
 #include <cmd_createpublicevent_handler.h>
-#include <cmd_createquest_handler.h>
 #include <cmd_getpublicevent_handler.h>
 #include <cmd_classbook_handler.h>
 #include <cmd_deletehint_handler.h>
@@ -20,6 +19,7 @@
 #include <cmd_login_handler.h>
 #include <cmd_publiceventslist_handler.h>
 #include <cmd_quest_handler.h>
+#include <cmd_quest_create_handler.h>
 #include <cmd_quest_pass_handler.h>
 #include <cmd_quests_subjects_handler.h>
 #include <cmd_quests_handler.h>
@@ -36,6 +36,7 @@
 #include <cmd_user_handler.h>
 #include <cmd_users_handler.h>
 #include <cmd_user_skills_handler.h>
+#include <cmd_user_update_handler.h>
 #include <cmd_user_change_password_handler.h>
 #include <cmd_writeups_handler.h>
 
@@ -80,6 +81,7 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
     v.push_back(new CmdUserHandler());
     v.push_back(new CmdUserChangePasswordHandler());
 	v.push_back(new CmdUserSkillsHandler());
+    v.push_back(new CmdUserUpdateHandler());
 	v.push_back(new CmdWriteUpsHandler());
 
 	for(int i = 0; i < v.size(); i++){

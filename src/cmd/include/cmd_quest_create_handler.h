@@ -1,5 +1,5 @@
-#ifndef CMD_CREATEQUEST_HANDLER_H
-#define CMD_CREATEQUEST_HANDLER_H
+#ifndef CMD_QUEST_CREATE_HANDLER_H
+#define CMD_QUEST_CREATE_HANDLER_H
 
 #include <iserver.h>
 
@@ -22,4 +22,4 @@ class CmdCreateQuestHandler : public ICmdHandler {
 		QVector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_CREATEQUEST_HANDLER_H
+#endif // CMD_QUEST_CREATE_HANDLER_H
