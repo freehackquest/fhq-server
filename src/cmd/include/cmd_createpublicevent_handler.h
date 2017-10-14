@@ -18,6 +18,7 @@ class CmdCreatePublicEventHandler : public ICmdHandler {
 		virtual void handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj);
 		
 	private:
+        QString TAG;
 		QVector<CmdInputDef> m_vInputs;
 };
 

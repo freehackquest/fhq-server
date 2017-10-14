@@ -1,7 +1,9 @@
 #include <cmd_user_handler.h>
+#include <log.h>
 #include <QJsonArray>
 
 CmdUserHandler::CmdUserHandler(){
+    TAG = "CmdUserHandler";
 	m_vInputs.push_back(CmdInputDef("userid").optional().integer_().description("Id of user"));
 }
 
@@ -55,8 +57,11 @@ void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSer
 	}
 
 	if(obj.contains("userid")){
-		nUserID = obj["userid"].toInt();
-		bCurrentUserOrAdmin = false;
+        int nUserID_ = obj["userid"].toInt();
+        if(nUserID_ != nUserID){
+            bCurrentUserOrAdmin = false;
+        }
+        nUserID = nUserID_;
 	}
 	
 	QJsonObject user;
@@ -73,13 +78,14 @@ void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSer
 			QSqlRecord record = query.record();
 			user["id"] = record.value("id").toInt();
 			user["uuid"] = record.value("uuid").toString();
-			user["nick"] = record.value("nick").toString();
+            user["nick"] = record.value("nick").toString().toHtmlEscaped();
 			user["role"] = record.value("role").toString();
-			user["logo"] = record.value("logo").toString();
-			user["about"] = record.value("about").toString();
+            user["logo"] = record.value("logo").toString().toHtmlEscaped();
+            user["about"] = record.value("about").toString().toHtmlEscaped();
 			user["status"] = record.value("status").toString();
 			user["rating"] = record.value("rating").toString();
-			
+            user["university"] = record.value("university").toString().toHtmlEscaped();
+
 			if(bCurrentUserOrAdmin){
 				user["email"] = record.value("email").toString();
 				user["dt_create"] = record.value("dt_create").toString();

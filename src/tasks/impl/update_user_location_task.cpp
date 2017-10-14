@@ -12,7 +12,7 @@ UpdateUserLocationTask::UpdateUserLocationTask(IWebSocketServer *pWebSocketServe
 	m_pWebSocketServer = pWebSocketServer;
 	mLastIP = lastip;
 	TAG = "UpdateUserLocationTask";
-};
+}
 
 UpdateUserLocationTask::~UpdateUserLocationTask(){
 	
@@ -32,8 +32,8 @@ void UpdateUserLocationTask::run(){
 		QSqlRecord record = query.record();
 		QString lastip = record.value("last_ip").toString();
 
-		// mLastIP = "176.49.180.161";
 		if(lastip != mLastIP){
+            Log::info(TAG, "Update user # " + QString::number(m_nUserID) + " location by ip " + mLastIP);
 			QNetworkAccessManager manager;
 			QUrl url("http://ip-api.com/json/" + mLastIP);
 			QNetworkRequest request(url);
@@ -73,7 +73,9 @@ void UpdateUserLocationTask::run(){
 			if(!query_update.exec()){
 				Log::err(TAG, query_update.lastError().text());
 			}
-		}
+        }else{
+
+        }
 	}else{
 		Log::err(TAG, "failed for userid = " + QString::number(m_nUserID) + "(not found userid in database)");
 	}

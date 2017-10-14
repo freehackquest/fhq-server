@@ -251,20 +251,6 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 
 
 	{
-		//  Dumping data for table `updates`
-		QSqlQuery query(db);
-		query.prepare(
-			"INSERT INTO `updates` (`from_version`, `version`, `name`, `description`, `result`, `userid`, `datetime_update`) VALUES"
-            "('u0059', 'u0060', 'moved data from userquest to users_quests', 'moved data from userquest to users_quests', 'updated', 220, '2015-06-07 20:59:46');"
-		);
-		if(!query.exec()){
-			error = query.lastError().text();
-			return false;
-		}
-	}
- 
-
-	{
 		// Table structure for table `userquest`
 		QSqlQuery query(db);
 		query.prepare(""
@@ -309,7 +295,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 		QSqlQuery query(db);
 		query.prepare(
 			"INSERT INTO `users` (`uuid`, `email`, `pass`, `role`, `nick`, `logo`, `dt_create`, `dt_last_login`, `last_ip`, `status`) VALUES"
-            "('39A551F4-3BF0-A1C8-8686-06A5C510DDA3', 'admin', '00fe92df464389f2da26c14475ad81e2632904fa', 'admin', 'Admin', 'files/users/0.png', '1970-01-12 00:00:00', '2015-04-12 23:49:58', '127.0.0.1', 'activated')"
+            "('39A551F4-3BF0-A1C8-8686-06A5C510DDA3', 'admin', '06976539736714f7eaaa9409a643855029717a9d', 'admin', 'Admin', 'files/users/0.png', '1970-01-01 00:00:00', '2015-04-12 23:49:58', '127.0.0.1', 'activated')"
 		);
 		if(!query.exec()){
 			error = query.lastError().text();
@@ -317,7 +303,6 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 		}
 	}
  
-
 	{
 		// Table structure for table `users_games`
 		QSqlQuery query(db);

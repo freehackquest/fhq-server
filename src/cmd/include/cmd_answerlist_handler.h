@@ -16,7 +16,9 @@ class CmdAnswerListHandler : public ICmdHandler {
 		virtual QString description();
 		virtual QStringList errors();
 		virtual void handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj);
-	private:
+
+    private:
+        QString TAG;
 		QVector<CmdInputDef> m_vInputs;
 };
 

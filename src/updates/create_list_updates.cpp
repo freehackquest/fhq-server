@@ -30,6 +30,7 @@
 #include <update0088.h>
 #include <update0089.h>
 #include <update0090.h>
+#include <update0091.h>
 
 void create_list_updates(QVector<IUpdate *> &vUpdates){
 	vUpdates.push_back(new Database0060());
@@ -63,9 +64,10 @@ void create_list_updates(QVector<IUpdate *> &vUpdates){
 	vUpdates.push_back(new Update0088());
 	vUpdates.push_back(new Update0089());
     vUpdates.push_back(new Update0090());
+    vUpdates.push_back(new Update0091());
 }
 
-void tryUpdateDatabase(QSqlDatabase *pDatabase){
+bool tryUpdateDatabase(QSqlDatabase *pDatabase){
 	QString TAG = "tryUpdateDatabase";
 	QSqlDatabase db = *pDatabase;
 	QSqlQuery query(db);
@@ -97,7 +99,7 @@ void tryUpdateDatabase(QSqlDatabase *pDatabase){
 				QString error;
 				if(!pUpdate->update(db, error)){
 					Log::err(TAG, "Error on install update " + error);
-					return;
+                    return false;
 				}
 
 				QSqlQuery insert_query(db);
@@ -107,9 +109,10 @@ void tryUpdateDatabase(QSqlDatabase *pDatabase){
 				insert_query.bindValue(":description", pUpdate->description());
 				if(!insert_query.exec()){
 					Log::err(TAG, "Could not insert row to updates: " + insert_query.lastError().text());
-					return;
+                    return false;
 				}
 			}
 		}
 	}
+    return true;
 }
