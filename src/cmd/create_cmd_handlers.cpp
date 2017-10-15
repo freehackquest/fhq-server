@@ -23,6 +23,7 @@
 #include <cmd_quest_pass_handler.h>
 #include <cmd_quests_subjects_handler.h>
 #include <cmd_quests_handler.h>
+#include <cmd_quest_statistics_handler.h>
 #include <cmd_registration_handler.h>
 #include <cmd_scoreboard_handler.h>
 #include <cmd_sendchatmessage_handler.h>
@@ -66,6 +67,7 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
 	v.push_back(new CmdQuestHandler());
     v.push_back(new CmdQuestPassHandler());
     v.push_back(new CmdQuestsSubjectsHandler());
+    v.push_back(new CmdQuestStatisticsHandler());
     v.push_back(new CmdQuestsHandler());
     v.push_back(new CmdRegistrationHandler());
 	v.push_back(new CmdScoreboardHandler());

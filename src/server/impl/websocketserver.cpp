@@ -264,7 +264,13 @@ void WebSocketServer::sendMessage(QWebSocket *pClient, QJsonObject obj){
 		QJsonDocument doc(obj);
 		QString message = doc.toJson(QJsonDocument::Compact);
 		// Log::info(TAG, QDateTime::currentDateTimeUtc().toString() + " [WS] >>> " + message);
-        pClient->sendTextMessage(message);
+        if(m_clients.contains(pClient)){
+            try{
+                pClient->sendTextMessage(message);
+            }catch(...){
+                Log::err(TAG, "Could not send message >>> " + message);
+            }
+        }
     }
 }
 
