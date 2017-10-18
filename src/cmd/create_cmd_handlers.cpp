@@ -13,6 +13,12 @@
 #include <cmd_getmap_handler.h>
 #include <cmd_getpublicinfo_handler.h>
 #include <cmd_game_create_handler.h>
+#include <cmd_game_delete_handler.h>
+#include <cmd_game_export_handler.h>
+#include <cmd_game_import_handler.h>
+#include <cmd_game_info_handler.h>
+#include <cmd_game_update_handler.h>
+#include <cmd_game_update_logo_handler.h>
 #include <cmd_games_handler.h>
 #include <cmd_hello_handler.h>
 #include <cmd_hints_handler.h>
@@ -57,6 +63,12 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
 	v.push_back(new CmdDeleteQuestHandler());
     v.push_back(new CmdFeedbackAddHandler());
     v.push_back(new CmdGameCreateHandler());
+    v.push_back(new CmdGameDeleteHandler());
+    v.push_back(new CmdGameExportHandler());
+    v.push_back(new CmdGameImportHandler());
+    v.push_back(new CmdGameInfoHandler());
+    v.push_back(new CmdGameUpdateHandler());
+    v.push_back(new CmdGameUpdateLogoHandler());
 	v.push_back(new CmdGamesHandler());
 	v.push_back(new CmdGetPublicInfoHandler());
 	v.push_back(new CmdGetMapHandler());
