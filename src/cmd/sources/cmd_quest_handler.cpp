@@ -1,6 +1,7 @@
 #include <cmd_quest_handler.h>
 #include <runtasks.h>
 #include <log.h>
+#include <memory_cache_serversettings.h>
 
 #include <QJsonArray>
 #include <QCryptographicHash>
@@ -47,6 +48,15 @@ void CmdQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 	QSqlDatabase db = *(pWebSocketServer->database());
+
+    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
+    if(pMemoryCache == NULL){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
+        return;
+    }
+
+    MemoryCacheServerSettings *pMemoryCacheServerSettings = dynamic_cast<MemoryCacheServerSettings*>(pMemoryCache);
+    QString sBaseGamesURL = pMemoryCacheServerSettings->getSettString("server_folder_games_url");
 
 	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
 	bool bAdmin = false;
@@ -132,9 +142,10 @@ void CmdQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 				}
 				if (query_game.next()) {
 					QSqlRecord record_game = query_game.record();
-					game["id"] = record_game.value("id").toInt();
+                    int nGameID = record_game.value("id").toInt();
+                    game["id"] = nGameID;
 					game["title"] = record_game.value("title").toString();
-					game["logo"] = record_game.value("logo").toString();
+                    game["logo"] = sBaseGamesURL + QString::number(nGameID) + ".png";
 				}else{
 					pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Game not found"));
 					return;
