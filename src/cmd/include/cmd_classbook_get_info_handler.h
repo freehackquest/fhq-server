@@ -1,12 +1,12 @@
-#ifndef CMD_CLASSBOOK_GETLIST_HANDLER
-#define CMD_CLASSBOOK_GETLIST_HANDLER
+#ifndef CMD_CLASSBOOK_GET_INFO_HANDLER
+#define CMD_CLASSBOOK_GET_INFO_HANDLER
 
 #include <iserver.h>
 
-class CmdClassbookGetListHandler : public ICmdHandler {
+class CmdClassbookGetInfoHandler : public ICmdHandler {
 
     public:
-        CmdClassbookGetListHandler();
+        CmdClassbookGetInfoHandler();
         virtual QString cmd();
         virtual bool accessUnauthorized();
         virtual bool accessUser();
@@ -22,5 +22,5 @@ class CmdClassbookGetListHandler : public ICmdHandler {
         QVector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_CLASSBOOK_GETLIST_HANDLER
+#endif // CMD_CLASSBOOK_GET_INFO_HANDLER
 
