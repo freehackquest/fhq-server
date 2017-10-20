@@ -6,7 +6,7 @@ CmdClassbookGetInfoHandler::CmdClassbookGetInfoHandler(){
 }
 
 QString CmdClassbookGetInfoHandler::cmd(){
-    return "classbookgetinfo";
+    return "classbook_get_info";
 }
 
 bool CmdClassbookGetInfoHandler::accessUnauthorized(){

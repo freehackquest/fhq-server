@@ -8,7 +8,7 @@
 #include <cmd_createquest_handler.h>
 #include <cmd_getpublicevent_handler.h>
 #include <cmd_classbook_get_info_handler.h>
-#include <cmd_classbook_getlist_handler.h>
+#include <cmd_classbook_get_list_handler.h>
 #include <cmd_classbook_handler.h>
 #include <cmd_deletehint_handler.h>
 #include <cmd_deletequest_handler.h>

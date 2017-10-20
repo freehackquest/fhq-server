@@ -1,4 +1,4 @@
-#include <cmd_classbook_getlist_handler.h>
+#include <cmd_classbook_get_list_handler.h>
 #include <QJsonArray>
 #include <QSqlError>
 
@@ -6,7 +6,7 @@ CmdClassbookGetListHandler::CmdClassbookGetListHandler(){
 }
 
 QString CmdClassbookGetListHandler::cmd(){
-    return "classbookgetlist";
+    return "classbook_get_list";
 }
 
 bool CmdClassbookGetListHandler::accessUnauthorized(){
