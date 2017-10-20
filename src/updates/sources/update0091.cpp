@@ -73,6 +73,14 @@ bool Update0091::update(QSqlDatabase &db, QString &error){
         Log::info(TAG, "Problem with install update " + error);
         return false;
     }
+
+    QSqlQuery query7(db);
+    query7.prepare("ALTER TABLE classbook ADD COLUMN ordered INT(11) NOT NULL after parentid;");
+    if(!query7.exec()){
+        error = query7.lastError().text();
+        Log::info(TAG, "Problem with install update " + error);
+        return false;
+    }
     return true;
 
 }
