@@ -36,6 +36,7 @@ HEADERS += \
 	src/updates/include/update0089.h \
         src/updates/include/update0090.h \
         src/updates/include/update0091.h \
+    $$PWD/include/update0092.h \
     $$PWD/include/update0093.h
 
 SOURCES += \
@@ -72,4 +73,5 @@ SOURCES += \
 	src/updates/sources/update0089.cpp \
         src/updates/sources/update0090.cpp \
         src/updates/sources/update0091.cpp \
+    $$PWD/sources/update0092.cpp \
     $$PWD/sources/update0093.cpp
