@@ -43,7 +43,7 @@ const QVector<CmdInputDef> &CmdGameCreateHandler::inputs(){
 };
 
 QString CmdGameCreateHandler::description(){
-	return "Create the quest";
+    return "Create the game";
 }
 
 QStringList CmdGameCreateHandler::errors(){

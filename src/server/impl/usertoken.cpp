@@ -40,34 +40,38 @@ void UserToken::fillFromJson(QJsonObject obj){
 			m_sNick = user["nick"].toString();
 		}
 	}
-};
+}
 
 bool UserToken::isAdmin(){
 	return m_sRole == "admin";
-};
+}
 
 bool UserToken::isUser(){
 	return m_sRole == "user";
-};
+}
 
 bool UserToken::isTester(){
 	return m_sRole == "tester";
-};
+}
 
 bool UserToken::hasRole(){
 	return m_sRole != "";
-};
+}
 
 QString UserToken::nick(){
 	return m_sNick;
-};
+}
+
+void UserToken::setNick(QString sNick){
+    m_sNick = sNick;
+}
 
 int UserToken::userid(){
 	return m_nUserID;
-};
+}
 
 QString UserToken::email(){
 	return m_sEmail;
-};
+}
 
 

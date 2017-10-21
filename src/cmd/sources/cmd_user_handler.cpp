@@ -60,6 +60,9 @@ void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSer
         int nUserID_ = obj["userid"].toInt();
         if(nUserID_ != nUserID){
             bCurrentUserOrAdmin = false;
+            if(pUserToken != NULL){
+                bCurrentUserOrAdmin = pUserToken->isAdmin();
+            }
         }
         nUserID = nUserID_;
 	}

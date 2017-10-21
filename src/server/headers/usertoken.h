@@ -19,6 +19,7 @@ class UserToken : public IUserToken {
 		virtual bool isTester();
 		virtual bool hasRole();
 		virtual QString nick();
+        virtual void setNick(QString);
 		virtual QString email();
 		virtual int userid();
 	private:

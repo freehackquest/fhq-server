@@ -50,6 +50,7 @@ void CmdUserSkillsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		query.prepare("SELECT q.subject, sum(q.score) as sum_subject FROM quest q WHERE ! ISNULL( q.subject ) GROUP BY q.subject");
 		if(!query.exec()){
             pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::DatabaseError(query.lastError().text()));
+            return;
 		};
 		
 		while(query.next()) {
@@ -67,6 +68,7 @@ void CmdUserSkillsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		query.bindValue(":userid", nUserID);
         if(!query.exec()){
             pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::DatabaseError(query.lastError().text()));
+            return;
         };
 		
         while(query.next()) {
