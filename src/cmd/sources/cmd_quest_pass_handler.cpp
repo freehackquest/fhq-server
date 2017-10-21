@@ -63,6 +63,7 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
     QString sState = "";
     QString sQuestAnswer = "";
     QString sQuestName = "";
+    int nGameID = 0;
 	{
 		QSqlQuery query(db);
         query.prepare("SELECT * FROM quest WHERE idquest = :questid");
@@ -77,11 +78,27 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
             sState = record.value("state").toString();
             sQuestAnswer = record.value("answer").toString().trimmed();
             sQuestName = record.value("name").toString().trimmed();
+            nGameID = record.value("gameid").toInt();
 		}else{
 			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Quest not found"));
 			return;
 		}
 	}
+
+    {
+        QSqlQuery query(db);
+        query.prepare("SELECT * FROM games WHERE id = :gameid AND date_stop > NOW()");
+        query.bindValue(":gameid", nGameID);
+        if(!query.exec()){
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            return;
+        }
+
+        if (!query.next()) {
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Game ended"));
+            return;
+        }
+    }
 
     // check passed quest
     {
