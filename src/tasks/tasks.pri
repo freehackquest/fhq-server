@@ -8,7 +8,7 @@ HEADERS += \
         src/tasks/headers/update_quest_solved_task.h \
         src/tasks/headers/update_user_location_task.h \
         src/tasks/headers/update_user_rating_task.h \
-	src/tasks/runtasks.h \
+	src/tasks/runtasks.h
 
 SOURCES += \
 	src/tasks/impl/add_public_events_task.cpp \
