@@ -2,7 +2,9 @@
 #include <QJsonArray>
 #include <QSqlError>
 
-CmdClassbookGetInfoHandler::CmdClassbookGetInfoHandler(){
+CmdClassbookGetInfoHandler::CmdClassbookGetInfoHandler(){\
+    m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("id for classbook article"));
+    m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("Language"));
 }
 
 QString CmdClassbookGetInfoHandler::cmd(){
@@ -47,20 +49,21 @@ void CmdClassbookGetInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *p
     QJsonObject info;
 
     QSqlQuery query(db);
-    query.prepare("SELECT name, content FROM classbook WHERE id=:classbookid");
+    query.prepare("SELECT name, parentid, content FROM classbook WHERE id=:classbookid");
     query.bindValue(":classbookid", classbookid);
     query.exec();
     while (query.next()) {
         QSqlRecord record = query.record();
-        info["id"] = classbookid;
+        info["classbookid"] = classbookid;
+        info["parentid"] = record.value("parentid").toString();
         info["name"] = record.value("name").toString();
         info["content"] = record.value("content").toString();
     }
 
     QJsonObject jsonData;
     jsonData["cmd"] = QJsonValue(cmd());
-    jsonData["result"] = QJsonValue("DONE");
     jsonData["m"] = QJsonValue(m);
-    jsonData["info"] = info;
+    jsonData["result"] = QJsonValue("DONE");
+    jsonData["data"] = info;
     pWebSocketServer->sendMessage(pClient, jsonData);
 }

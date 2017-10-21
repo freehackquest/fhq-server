@@ -3,6 +3,7 @@
 #include <QSqlError>
 
 CmdClassbookGetListHandler::CmdClassbookGetListHandler(){
+    m_vInputs.push_back(CmdInputDef("parentid").required().integer_().description("parentid for classbook article"));
 }
 
 QString CmdClassbookGetListHandler::cmd(){
@@ -30,7 +31,7 @@ const QVector<CmdInputDef> &CmdClassbookGetListHandler::inputs(){
 };
 
 QString CmdClassbookGetListHandler::description(){
-    return "Return list of names from classbook";
+    return "Return list of parentid, id, names for classbook article";
 }
 
 QStringList CmdClassbookGetListHandler::errors(){
@@ -45,41 +46,29 @@ void CmdClassbookGetListHandler::handle(QWebSocket *pClient, IWebSocketServer *p
     QJsonObject jsonResponse;
     jsonResponse["cmd"] = QJsonValue(cmd());
 
-    int parentid = 0;
-    if(obj.contains("parentid")){
-        parentid = obj["parentid"].toInt();
-    }
+    int parentid = obj["parentid"].toInt();
+
     jsonResponse["parentid"] = parentid;
 
-    QString contain;
-    if(obj.contains("contain")){
-        contain = obj["contain"].toString().trimmed();
-    }
-
-    QString where = "WHERE parentid =:parentid";
-    if(contain.length() != 0){
-        where = "WHERE content LIKE '%:contain%' OR name LIKE '%:contain%'";
-    }
-
-    // data
-    QJsonArray names;
+    QJsonArray data;
     {
         QSqlQuery query(db);
-        query.prepare("SELECT name FROM classbook "+where);
+        query.prepare("SELECT id, name FROM classbook WHERE parentid =:parentid");
         query.bindValue(":parentid", parentid);
-        query.bindValue(":contain", contain);
         query.exec();
         while (query.next()) {
             QSqlRecord record = query.record();
-            QString name;
-            name = record.value("name").toString();
-            names.push_back(name);
+            QJsonObject item;
+            item["parentid"] = parentid;
+            item["classbookid"] = record.value("id").toInt();
+            item["name"] = record.value("name").toString();
+            data.push_back(item);
         }
     }
 
-    jsonResponse["result"] = QJsonValue("DONE");
     jsonResponse["m"] = QJsonValue(m);
-    jsonResponse["names"] = names;
+    jsonResponse["result"] = QJsonValue("DONE");
+    jsonResponse["data"] = data;
     pWebSocketServer->sendMessage(pClient, jsonResponse);
 }
 
