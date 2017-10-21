@@ -49,7 +49,9 @@ HEADERS += \
     src/cmd/include/cmd_updatequest_handler.h \
     src/cmd/include/cmd_update_user_location_handler.h \
     src/cmd/include/cmd_update_server_settings_handler.h \
-    $$PWD/include/cmd_quest_create_handler.h
+    src/cmd/include/cmd_classbook_get_info_handler.h \
+    src/cmd/include/cmd_classbook_get_list_handler.h \
+    src/cmd/include/cmd_quest_create_handler.h
 
 SOURCES += \
     src/cmd/create_cmd_handlers.cpp \
@@ -98,5 +100,7 @@ SOURCES += \
     src/cmd/sources/cmd_updatequest_handler.cpp \
     src/cmd/sources/cmd_update_user_location_handler.cpp \
     src/cmd/sources/cmd_update_server_settings_handler.cpp \
-    $$PWD/sources/cmd_quest_create_handler.cpp
+    src/cmd/sources/cmd_classbook_get_info_handler.cpp \
+    src/cmd/sources/cmd_classbook_get_list_handler.cpp \
+    src/cmd/sources/cmd_quest_create_handler.cpp
 	
