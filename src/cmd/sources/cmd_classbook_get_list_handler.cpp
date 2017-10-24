@@ -4,6 +4,7 @@
 
 CmdClassbookGetListHandler::CmdClassbookGetListHandler(){
     m_vInputs.push_back(CmdInputDef("parentid").required().integer_().description("parentid for classbook article"));
+    m_vInputs.push_back(CmdInputDef("order").optional().integer_().description("order for classbook article"));
 }
 
 QString CmdClassbookGetListHandler::cmd(){
@@ -53,7 +54,7 @@ void CmdClassbookGetListHandler::handle(QWebSocket *pClient, IWebSocketServer *p
     QJsonArray data;
     {
         QSqlQuery query(db);
-        query.prepare("SELECT id, name FROM classbook WHERE parentid =:parentid");
+        query.prepare("SELECT id, name FROM classbook WHERE parentid =:parentid ORDER BY ordered");
         query.bindValue(":parentid", parentid);
         query.exec();
         while (query.next()) {
