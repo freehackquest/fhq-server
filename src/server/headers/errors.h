@@ -33,6 +33,7 @@ class Errors {
 		static Error ParamTableMustBeActiveOrBackup();
 		static Error OnPageCouldNotBeMoreThen50();
 		static Error EventNotFound();
+        static Error UuidAlreadyExist(QString text);
 		
 	private:
 		
