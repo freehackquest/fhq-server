@@ -1,46 +1,46 @@
-#include <cmd_update_server_settings_handler.h>
+#include <cmd_server_settings_update_handler.h>
 #include <QJsonArray>
 #include <memory_cache_serversettings.h>
 
-CmdUpdateServerSettingsHandler::CmdUpdateServerSettingsHandler(){
+CmdServerSettingsUpdateHandler::CmdServerSettingsUpdateHandler(){
     m_vInputs.push_back(CmdInputDef("name").required().string_().description("name of setting"));
     m_vInputs.push_back(CmdInputDef("value").required().any_().description("value of setting"));
 }
 
-QString CmdUpdateServerSettingsHandler::cmd(){
-        return "update_server_settings";
+QString CmdServerSettingsUpdateHandler::cmd(){
+        return "server_settings_update";
 }
 
-bool CmdUpdateServerSettingsHandler::accessUnauthorized(){
+bool CmdServerSettingsUpdateHandler::accessUnauthorized(){
 	return false;
 }
 
-bool CmdUpdateServerSettingsHandler::accessUser(){
+bool CmdServerSettingsUpdateHandler::accessUser(){
 	return false;
 }
 
-bool CmdUpdateServerSettingsHandler::accessTester(){
+bool CmdServerSettingsUpdateHandler::accessTester(){
 	return false;
 }
 
-bool CmdUpdateServerSettingsHandler::accessAdmin(){
+bool CmdServerSettingsUpdateHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdUpdateServerSettingsHandler::inputs(){
+const QVector<CmdInputDef> &CmdServerSettingsUpdateHandler::inputs(){
 	return m_vInputs;
 };
 
-QString CmdUpdateServerSettingsHandler::description(){
-        return "Return server settings";
+QString CmdServerSettingsUpdateHandler::description(){
+        return "Update server settings";
 }
 
-QStringList CmdUpdateServerSettingsHandler::errors(){
+QStringList CmdServerSettingsUpdateHandler::errors(){
 	QStringList	list;
 	return list;
 }
 
-void CmdUpdateServerSettingsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdServerSettingsUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
 
@@ -49,9 +49,6 @@ void CmdUpdateServerSettingsHandler::handle(QWebSocket *pClient, IWebSocketServe
 		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
 		return;
 	}
-
-    // ServerSettHelper
-
 
     QString sName = obj["name"].toString();
     QString sNewValue = obj["value"].toString();
@@ -77,8 +74,6 @@ void CmdUpdateServerSettingsHandler::handle(QWebSocket *pClient, IWebSocketServe
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotImplementedYet());
         return;
     }
-
-
 
 	jsonData["result"] = QJsonValue("DONE");
 	jsonData["m"] = QJsonValue(m);

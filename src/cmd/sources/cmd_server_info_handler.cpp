@@ -1,4 +1,4 @@
-#include <cmd_serverinfo_handler.h>
+#include <cmd_server_info_handler.h>
 #include <QJsonArray>
 #include <memory_cache_serverinfo.h>
 
@@ -6,7 +6,7 @@ CmdServerInfoHandler::CmdServerInfoHandler(){
 }
 
 QString CmdServerInfoHandler::cmd(){
-	return "serverinfo";
+    return "server_info";
 }
 
 bool CmdServerInfoHandler::accessUnauthorized(){

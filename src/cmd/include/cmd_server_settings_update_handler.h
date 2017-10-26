@@ -1,12 +1,12 @@
-#ifndef CMD_UPDATE_SERVER_SETTINGS_HANDLER_H
-#define CMD_UPDATE_SERVER_SETTINGS_HANDLER_H
+#ifndef CMD_SERVER_SETTINGS_UPDATE_HANDLER_H
+#define CMD_SERVER_SETTINGS_UPDATE_HANDLER_H
 
 #include <iserver.h>
 
-class CmdUpdateServerSettingsHandler : public ICmdHandler {
+class CmdServerSettingsUpdateHandler : public ICmdHandler {
 	
 	public:
-        CmdUpdateServerSettingsHandler();
+        CmdServerSettingsUpdateHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();
@@ -21,4 +21,4 @@ class CmdUpdateServerSettingsHandler : public ICmdHandler {
 		QVector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_UPDATE_SERVER_SETTINGS_HANDLER_H
+#endif // CMD_SERVER_SETTINGS_UPDATE_HANDLER_H

@@ -36,8 +36,9 @@ HEADERS += \
     src/cmd/include/cmd_getmap_handler.h \
     src/cmd/include/cmd_scoreboard_handler.h \
     src/cmd/include/cmd_sendchatmessage_handler.h \
-    src/cmd/include/cmd_serverinfo_handler.h \
-    src/cmd/include/cmd_serversettings_handler.h \
+    src/cmd/include/cmd_server_info_handler.h \
+    src/cmd/include/cmd_server_settings_handler.h \
+    src/cmd/include/cmd_server_settings_update_handler.h \
     src/cmd/include/cmd_writeups_handler.h \
     src/cmd/include/cmd_token_handler.h \
     src/cmd/include/cmd_user_handler.h \
@@ -48,7 +49,6 @@ HEADERS += \
     src/cmd/include/cmd_user_change_password_handler.h \
     src/cmd/include/cmd_updatequest_handler.h \
     src/cmd/include/cmd_update_user_location_handler.h \
-    src/cmd/include/cmd_update_server_settings_handler.h \
     src/cmd/include/cmd_classbook_get_info_handler.h \
     src/cmd/include/cmd_classbook_get_list_handler.h \
     src/cmd/include/cmd_quest_create_handler.h
@@ -86,8 +86,9 @@ SOURCES += \
     src/cmd/sources/cmd_registration_handler.cpp \
     src/cmd/sources/cmd_scoreboard_handler.cpp \
     src/cmd/sources/cmd_sendchatmessage_handler.cpp \
-    src/cmd/sources/cmd_serverinfo_handler.cpp \
-    src/cmd/sources/cmd_serversettings_handler.cpp \
+    src/cmd/sources/cmd_server_info_handler.cpp \
+    src/cmd/sources/cmd_server_settings_handler.cpp \
+    src/cmd/sources/cmd_server_settings_update_handler.cpp \
     src/cmd/sources/cmd_writeups_handler.cpp \
     src/cmd/sources/cmd_token_handler.cpp \
     src/cmd/sources/cmd_user_handler.cpp \
@@ -99,7 +100,6 @@ SOURCES += \
     src/cmd/sources/cmd_classbook_handler.cpp \
     src/cmd/sources/cmd_updatequest_handler.cpp \
     src/cmd/sources/cmd_update_user_location_handler.cpp \
-    src/cmd/sources/cmd_update_server_settings_handler.cpp \
     src/cmd/sources/cmd_classbook_get_info_handler.cpp \
     src/cmd/sources/cmd_classbook_get_list_handler.cpp \
     src/cmd/sources/cmd_quest_create_handler.cpp
