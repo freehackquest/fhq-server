@@ -42,6 +42,7 @@ HEADERS += \
     src/cmd/include/cmd_writeups_handler.h \
     src/cmd/include/cmd_token_handler.h \
     src/cmd/include/cmd_user_handler.h \
+    src/cmd/include/cmd_user_reset_password_handler.h \
     src/cmd/include/cmd_users_handler.h \
     src/cmd/include/cmd_user_skills_handler.h \
     src/cmd/include/cmd_user_update_handler.h \
@@ -92,6 +93,7 @@ SOURCES += \
     src/cmd/sources/cmd_writeups_handler.cpp \
     src/cmd/sources/cmd_token_handler.cpp \
     src/cmd/sources/cmd_user_handler.cpp \
+    src/cmd/sources/cmd_user_reset_password_handler.cpp \
     src/cmd/sources/cmd_users_handler.cpp \
     src/cmd/sources/cmd_user_skills_handler.cpp \
     src/cmd/sources/cmd_user_update_handler.cpp \
