@@ -35,7 +35,6 @@
 #include <cmd_registration_handler.h>
 #include <cmd_scoreboard_handler.h>
 #include <cmd_sendchatmessage_handler.h>
-#include <cmd_send_letters_to_subscribers_handler.h>
 #include <cmd_serverinfo_handler.h>
 #include <cmd_serversettings_handler.h>
 #include <cmd_token_handler.h>
@@ -89,7 +88,6 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
     v.push_back(new CmdRegistrationHandler());
 	v.push_back(new CmdScoreboardHandler());
 	v.push_back(new CmdSendChatMessageHandler());
-	v.push_back(new CmdSendLettersToSubscribersHandler());
 	v.push_back(new CmdServerInfoHandler());
     v.push_back(new CmdServerSettingsHandler());
     v.push_back(new CmdTokenHandler());

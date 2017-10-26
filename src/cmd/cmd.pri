@@ -36,7 +36,6 @@ HEADERS += \
     src/cmd/include/cmd_getmap_handler.h \
     src/cmd/include/cmd_scoreboard_handler.h \
     src/cmd/include/cmd_sendchatmessage_handler.h \
-    src/cmd/include/cmd_send_letters_to_subscribers_handler.h \
     src/cmd/include/cmd_serverinfo_handler.h \
     src/cmd/include/cmd_serversettings_handler.h \
     src/cmd/include/cmd_writeups_handler.h \
