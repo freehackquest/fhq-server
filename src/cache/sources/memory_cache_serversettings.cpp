@@ -41,6 +41,10 @@ MemoryCacheServerSettings::MemoryCacheServerSettings(IWebSocketServer *pWebSocke
     QString sGroupServerFolders = "server_folders";
     addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_games", QString("/var/www/html/fhq/files/games/")));
     addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_games_url", QString("https://freehackquest.com/files/games/")));
+    addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_quests", QString("/var/www/html/fhq/files/quests/")));
+    addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_quests_url", QString("https://freehackquest.com/files/quests/")));
+    addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_users", QString("/var/www/html/fhq/files/quests/")));
+    addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_users_url", QString("https://freehackquest.com/files/quests/")));
 
     QStringList listFoundInDatabase;
 
