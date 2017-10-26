@@ -5,7 +5,7 @@
 #include <QJsonObject>
 #include <QVector>
 #include <iwebsocketserver.h>
-#include "../server/headers/cmd_input_def.h"
+#include <cmd_input_def.h>
 
 class ICmdHandler {
 	public:

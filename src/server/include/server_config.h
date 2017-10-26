@@ -44,11 +44,6 @@ class ServerConfig {
 		QString m_sDatabase_user;
 		QString m_sDatabase_password;
 		
-		QString m_sEmail_smtphost;
-		int m_nEmail_smtpport;
-		QString m_sEmail_username;
-		QString m_sEmail_password;
-		
 		bool m_bServer_ssl_on;
 		int m_nServer_port;
 		int m_nServer_ssl_port;

@@ -341,22 +341,6 @@ IUserToken * WebSocketServer::getUserToken(QWebSocket *pClient){
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendLettersBcc(QStringList emails, QString subject, QString text){
-    /*QString username = m_pServerConfig->emailUsername();
-	QString password = m_pServerConfig->emailPassword();
-	QString smtphost = m_pServerConfig->emailSmtpHost();
-	int smtpport = m_pServerConfig->emailSmtpPort();
-	
-
-
-	Smtp* smtp = new Smtp(username, password, smtphost, smtpport);
-	// smtp->disableDebugMode();
-    //connect(smtp, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
-    smtp->sendMailBcc("freehackquest@gmail.com", emails, subject, text);*/
-}
-
-// ---------------------------------------------------------------------
-
 IMemoryCache *WebSocketServer::findMemoryCache(QString name){
 	if(m_mapMemoryCache.contains(name)){
 		return m_mapMemoryCache[name];
