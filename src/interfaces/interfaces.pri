@@ -1,12 +1,12 @@
 
 INCLUDEPATH += src/interfaces
-INCLUDEPATH += src/interfaces/headers
+INCLUDEPATH += src/interfaces/include
 
 HEADERS += \
-	src/interfaces/headers/icmdhandler.h \
-	src/interfaces/headers/imemorycache.h \
-	src/interfaces/headers/iserver.h \
-	src/interfaces/headers/iupdate.h \
-	src/interfaces/headers/iuser.h \
-	src/interfaces/headers/iusertoken.h \
-	src/interfaces/headers/iwebsocketserver.h \
+        src/interfaces/include/icmdhandler.h \
+        src/interfaces/include/imemorycache.h \
+        src/interfaces/include/iserver.h \
+        src/interfaces/include/iupdate.h \
+        src/interfaces/include/iuser.h \
+        src/interfaces/include/iusertoken.h \
+        src/interfaces/include/iwebsocketserver.h \
