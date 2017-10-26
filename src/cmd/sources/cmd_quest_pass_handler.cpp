@@ -87,7 +87,7 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
 
     {
         QSqlQuery query(db);
-        query.prepare("SELECT * FROM games WHERE id = :gameid AND date_stop > NOW()");
+        query.prepare("SELECT * FROM games WHERE id = 2 AND (NOW() < date_stop OR NOW() > date_restart)");
         query.bindValue(":gameid", nGameID);
         if(!query.exec()){
             pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
@@ -95,7 +95,7 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
         }
 
         if (!query.next()) {
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Game ended"));
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Game ended. Please "));
             return;
         }
     }
