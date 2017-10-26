@@ -86,7 +86,6 @@ SOURCES += \
     src/cmd/sources/cmd_registration_handler.cpp \
     src/cmd/sources/cmd_scoreboard_handler.cpp \
     src/cmd/sources/cmd_sendchatmessage_handler.cpp \
-    src/cmd/sources/cmd_send_letters_to_subscribers_handler.cpp \
     src/cmd/sources/cmd_serverinfo_handler.cpp \
     src/cmd/sources/cmd_serversettings_handler.cpp \
     src/cmd/sources/cmd_writeups_handler.cpp \
