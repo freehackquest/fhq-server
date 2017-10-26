@@ -14,11 +14,11 @@ HEADERS += \
     src/cmd/include/cmd_deletehint_handler.h \
     src/cmd/include/cmd_deletequest_handler.h \
     src/cmd/include/cmd_feedback_add_handler.h \
-    src/cmd/include/cmd_getpublicinfo_handler.h \
     src/cmd/include/cmd_hello_handler.h \
     src/cmd/include/cmd_hints_handler.h \
     src/cmd/include/cmd_login_handler.h \
     src/cmd/include/cmd_publiceventslist_handler.h \
+    src/cmd/include/cmd_public_info_handler.h \
     src/cmd/include/cmd_quest_handler.h \
     src/cmd/include/cmd_quest_pass_handler.h \
     src/cmd/include/cmd_quest_statistics_handler.h \
@@ -51,7 +51,7 @@ HEADERS += \
     src/cmd/include/cmd_update_user_location_handler.h \
     src/cmd/include/cmd_classbook_get_info_handler.h \
     src/cmd/include/cmd_classbook_get_list_handler.h \
-    src/cmd/include/cmd_quest_create_handler.h
+    src/cmd/include/cmd_quest_create_handler.h \
 
 SOURCES += \
     src/cmd/create_cmd_handlers.cpp \
@@ -64,7 +64,6 @@ SOURCES += \
     src/cmd/sources/cmd_deletehint_handler.cpp \
     src/cmd/sources/cmd_deletequest_handler.cpp \
     src/cmd/sources/cmd_feedback_add_handler.cpp \
-    src/cmd/sources/cmd_getpublicinfo_handler.cpp \
     src/cmd/sources/cmd_game_create_handler.cpp \
     src/cmd/sources/cmd_game_delete_handler.cpp \
     src/cmd/sources/cmd_game_export_handler.cpp \
@@ -78,6 +77,7 @@ SOURCES += \
     src/cmd/sources/cmd_hints_handler.cpp \
     src/cmd/sources/cmd_login_handler.cpp \
     src/cmd/sources/cmd_publiceventslist_handler.cpp \
+    src/cmd/sources/cmd_public_info_handler.cpp \
     src/cmd/sources/cmd_quest_handler.cpp \
     src/cmd/sources/cmd_quest_pass_handler.cpp \
     src/cmd/sources/cmd_quest_statistics_handler.cpp \
@@ -102,5 +102,5 @@ SOURCES += \
     src/cmd/sources/cmd_update_user_location_handler.cpp \
     src/cmd/sources/cmd_classbook_get_info_handler.cpp \
     src/cmd/sources/cmd_classbook_get_list_handler.cpp \
-    src/cmd/sources/cmd_quest_create_handler.cpp
-	
+    src/cmd/sources/cmd_quest_create_handler.cpp \
+
