@@ -1,4 +1,4 @@
-#include "../headers/cmd_input_def.h"
+#include <cmd_input_def.h>
 #include <QJsonDocument>
 #include <QJsonObject>
 
