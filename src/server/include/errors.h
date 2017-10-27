@@ -32,7 +32,7 @@ class Errors {
 		static Error UserIDMustBeNotZero();
 		static Error ParamTableMustBeActiveOrBackup();
 		static Error OnPageCouldNotBeMoreThen50();
-		static Error EventNotFound();
+        static Error EventNotFound();
 		
 	private:
 		

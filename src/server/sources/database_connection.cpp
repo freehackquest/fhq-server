@@ -1,4 +1,4 @@
-#include "../headers/database_connection.h"
+#include <database_connection.h>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <log.h>

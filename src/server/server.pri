@@ -1,22 +1,23 @@
 
-INCLUDEPATH += src/server/headers
+INCLUDEPATH += src/server/include
+INCLUDEPATH += src/server
 
 HEADERS += \
-	src/server/headers/usertoken.h \
-	src/server/headers/server_config.h \
-	src/server/headers/database_connection.h \
-	src/server/headers/cmd_input_def.h \
-	src/server/headers/errors.h \
-	src/server/headers/error.h \
-	src/server/headers/log.h \
-	src/server/headers/websocketserver.h \
+        src/server/include/usertoken.h \
+        src/server/include/server_config.h \
+        src/server/include/database_connection.h \
+        src/server/include/cmd_input_def.h \
+        src/server/include/errors.h \
+        src/server/include/error.h \
+        src/server/include/log.h \
+        src/server/include/websocketserver.h \
 
 SOURCES += \
-	src/server/impl/websocketserver.cpp \
-	src/server/impl/usertoken.cpp \
-	src/server/impl/server_config.cpp \
-	src/server/impl/database_connection.cpp \
-	src/server/impl/cmd_input_def.cpp \
-	src/server/impl/errors.cpp \
-	src/server/impl/error.cpp \
-	src/server/impl/log.cpp \
+        src/server/sources/websocketserver.cpp \
+        src/server/sources/usertoken.cpp \
+        src/server/sources/server_config.cpp \
+        src/server/sources/database_connection.cpp \
+        src/server/sources/cmd_input_def.cpp \
+        src/server/sources/errors.cpp \
+        src/server/sources/error.cpp \
+        src/server/sources/log.cpp \

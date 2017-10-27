@@ -1,4 +1,4 @@
-#include "../headers/server_config.h"
+#include <server_config.h>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFile>
@@ -29,11 +29,6 @@ ServerConfig::ServerConfig(){
 	m_sDatabase_user = "freehackquest_u";
 	m_sDatabase_password = "freehackquest_p";
 
-	m_sEmail_smtphost = "smtp.gmail.com";
-	m_nEmail_smtpport = 465;
-	m_sEmail_username = "";
-	m_sEmail_password = "";
-
 	m_nServer_port = 1234;
 	m_bServer_ssl_on = false;
 	m_nServer_ssl_port = 4613;
@@ -58,11 +53,6 @@ bool ServerConfig::load(){
 	Log::info(TAG, "Database_host: " + m_sDatabase_host);
 	Log::info(TAG, "Database name: " + m_sDatabase_name);
 	Log::info(TAG, "Database user: " + m_sDatabase_user);
-	
-	m_sEmail_smtphost = readStringFromSettings(sett, "EMAIL/host", m_sEmail_smtphost);
-	m_nEmail_smtpport = readIntFromSettings(sett, "EMAIL/port", m_nEmail_smtpport);
-	m_sEmail_username = readStringFromSettings(sett, "EMAIL/username", m_sEmail_username);
-	m_sEmail_password = readStringFromSettings(sett, "EMAIL/password", m_sEmail_password);
 
 	m_nServer_port = readIntFromSettings(sett, "SERVER/port", m_nServer_port);
 	m_bServer_ssl_on = readBoolFromSettings(sett, "SERVER/ssl_on", m_bServer_ssl_on);
@@ -130,30 +120,6 @@ QString ServerConfig::databaseUser(){
 
 QString ServerConfig::databasePassword(){
 	return m_sDatabase_password;
-}
-
-// ---------------------------------------------------------------------
-
-QString ServerConfig::emailUsername(){
-	return m_sEmail_username;
-}
-
-// ---------------------------------------------------------------------
-
-QString ServerConfig::emailPassword(){
-	return m_sEmail_password;
-}
-
-// ---------------------------------------------------------------------
-
-QString ServerConfig::emailSmtpHost(){
-	return m_sEmail_smtphost;
-}
-
-// ---------------------------------------------------------------------
-
-int ServerConfig::emailSmtpPort(){
-	return m_nEmail_smtpport;
 }
 
 // ---------------------------------------------------------------------

@@ -47,10 +47,8 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		virtual QSqlDatabase *database();
 		virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken);
 		virtual IUserToken * getUserToken(QWebSocket *pClient);
-		virtual void sendLettersBcc(QStringList emails, QString subject, QString text);
 		virtual IMemoryCache *findMemoryCache(QString name);
 		virtual void exportApi(QJsonObject &result);
-		
 
 
 	Q_SIGNALS:

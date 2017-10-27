@@ -24,7 +24,6 @@ class IWebSocketServer {
 		virtual QSqlDatabase *database() = 0;
 		virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken) = 0;
 		virtual IUserToken * getUserToken(QWebSocket *pClient) = 0;
-		virtual void sendLettersBcc(QStringList emails, QString subject, QString text) = 0;
 		virtual IMemoryCache *findMemoryCache(QString name) = 0;
 		virtual void exportApi(QJsonObject &result) = 0;
 };

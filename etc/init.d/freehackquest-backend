@@ -21,7 +21,7 @@ case "$1" in
 start)
 	printf "%-50s" "Starting $NAME..."
 	DATE=`date +%Y%m%d-%H%M%S`
-	PID=`/usr/bin/freehackquest-backend > /var/log/freehackquest-backend/access.log 2> /var/log/freehackquest-backend/error.log & echo $!`
+	PID=`/usr/bin/freehackquest-backend > /var/log/freehackquest-backend/access-$DATE.log 2> /var/log/freehackquest-backend/error-$DATE.log & echo $!`
 	# echo "Saving PID" $PID " to " $PIDFILE
 	if [ -z $PID ]; then
 		printf "%s\n" "Fail"
