@@ -33,7 +33,7 @@ bool CmdClassbookAddRecordHandler::accessAdmin(){
 
 const QVector<CmdInputDef> &CmdClassbookAddRecordHandler::inputs(){
     return m_vInputs;
-};
+}
 
 QString CmdClassbookAddRecordHandler::description(){
     return "Adds a new article with the specified name, content, and id.";
