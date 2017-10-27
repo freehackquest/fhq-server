@@ -2,7 +2,7 @@
 #include <QJsonArray>
 #include <QSqlError>
 
-CmdClassbookGetInfoHandler::CmdClassbookGetInfoHandler(){\
+CmdClassbookGetInfoHandler::CmdClassbookGetInfoHandler(){
     m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("id for classbook article"));
     m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("Language"));
 }
@@ -52,12 +52,15 @@ void CmdClassbookGetInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *p
     query.prepare("SELECT name, parentid, content FROM classbook WHERE id=:classbookid");
     query.bindValue(":classbookid", classbookid);
     query.exec();
-    while (query.next()) {
+    if (query.next()) {
         QSqlRecord record = query.record();
         info["classbookid"] = classbookid;
         info["parentid"] = record.value("parentid").toString();
         info["name"] = record.value("name").toString();
         info["content"] = record.value("content").toString();
+    }else{
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("article"));
+        return;
     }
 
     QJsonObject jsonData;

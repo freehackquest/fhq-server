@@ -5,7 +5,7 @@ Update0093::Update0093(){
 }
 
 QString Update0093::from_version(){
-    return "u0091";
+    return "u0092";
 }
 
 QString Update0093::version(){
