@@ -52,7 +52,8 @@ HEADERS += \
     src/cmd/include/cmd_classbook_get_info_handler.h \
     src/cmd/include/cmd_classbook_get_list_handler.h \
     src/cmd/include/cmd_quest_create_handler.h \
-    $$PWD/include/cmd_classbook_add_record_handler.h
+    $$PWD/include/cmd_classbook_add_record_handler.h \
+    $$PWD/include/cmd_classbook_delete_record_handler.h
 
 SOURCES += \
     src/cmd/create_cmd_handlers.cpp \
@@ -104,5 +105,6 @@ SOURCES += \
     src/cmd/sources/cmd_classbook_get_info_handler.cpp \
     src/cmd/sources/cmd_classbook_get_list_handler.cpp \
     src/cmd/sources/cmd_quest_create_handler.cpp \
-    $$PWD/sources/cmd_classbook_add_record_handler.cpp
+    $$PWD/sources/cmd_classbook_add_record_handler.cpp \
+    $$PWD/sources/cmd_classbook_delete_record_handler.cpp
 	

@@ -6,6 +6,8 @@
 #include <cmd_deletepublicevent_handler.h>
 #include <cmd_createpublicevent_handler.h>
 #include <cmd_getpublicevent_handler.h>
+#include <cmd_classbook_add_record_handler.h>
+#include <cmd_classbook_delete_record_handler.h>
 #include <cmd_classbook_get_info_handler.h>
 #include <cmd_classbook_get_list_handler.h>
 #include <cmd_classbook_handler.h>
@@ -48,7 +50,6 @@
 #include <cmd_user_update_handler.h>
 #include <cmd_user_change_password_handler.h>
 #include <cmd_writeups_handler.h>
-#include <cmd_classbook_add_record_handler.h>
 
 void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
 	QString TAG = "create_cmd_handlers";
@@ -62,6 +63,7 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
 	v.push_back(new CmdDeletePublicEventHandler());
 	v.push_back(new CmdGetPublicEventHandler());
     v.push_back(new CmdClassbookAddRecordHandler());
+    v.push_back(new CmdClassbookDeleteRecordHandler());
     v.push_back(new CmdClassbookGetInfoHandler());
     v.push_back(new CmdClassbookGetListHandler());
 	v.push_back(new CmdClassbookHandler());

@@ -16,15 +16,15 @@ QString CmdClassbookAddRecordHandler::cmd(){
 }
 
 bool CmdClassbookAddRecordHandler::accessUnauthorized(){
-    return true;
+    return false;
 }
 
 bool CmdClassbookAddRecordHandler::accessUser(){
-    return true;
+    return false;
 }
 
 bool CmdClassbookAddRecordHandler::accessTester(){
-    return true;
+    return false;
 }
 
 bool CmdClassbookAddRecordHandler::accessAdmin(){
