@@ -12,15 +12,15 @@ QString CmdClassbookLocalizationDeleteRecordHandler::cmd(){
 }
 
 bool CmdClassbookLocalizationDeleteRecordHandler::accessUnauthorized(){
-    return true;
+    return false;
 }
 
 bool CmdClassbookLocalizationDeleteRecordHandler::accessUser(){
-    return true;
+    return false;
 }
 
 bool CmdClassbookLocalizationDeleteRecordHandler::accessTester(){
-    return true;
+    return false;
 }
 
 bool CmdClassbookLocalizationDeleteRecordHandler::accessAdmin(){
@@ -42,11 +42,21 @@ QStringList CmdClassbookLocalizationDeleteRecordHandler::errors(){
 
 void CmdClassbookLocalizationDeleteRecordHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
-    int classbook_localizationid = obj["classbook_localizationid"].toInt();
-
     QSqlDatabase db = *(pWebSocketServer->database());
 
     QSqlQuery query(db);
+    QString classbook_localizationid;
+    if(obj.contains("classbook_localizationid")){
+        query.prepare("SELECT classbook_localizationid FROM classbook_localization WHERE classbook_localizationid=:classbook_localizationid");
+        query.bindValue(":classbook_localizationid", obj["classbook_localizationid"].toInt());
+        query.exec();
+        if(query.next()){
+            classbook_localizationid = obj["classbook_localizationid"].toInt();
+        } else {
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "This localization doesn't exist"));
+            return;
+        }
+    }
     query.prepare("DELETE FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", classbook_localizationid);
     if(!query.exec()){

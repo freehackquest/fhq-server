@@ -14,15 +14,15 @@ QString CmdClassbookLocalizationUpdateRecordHandler::cmd(){
 }
 
 bool CmdClassbookLocalizationUpdateRecordHandler::accessUnauthorized(){
-    return true;
+    return false;
 }
 
 bool CmdClassbookLocalizationUpdateRecordHandler::accessUser(){
-    return true;
+    return false;
 }
 
 bool CmdClassbookLocalizationUpdateRecordHandler::accessTester(){
-    return true;
+    return false;
 }
 
 bool CmdClassbookLocalizationUpdateRecordHandler::accessAdmin(){
@@ -44,15 +44,27 @@ QStringList CmdClassbookLocalizationUpdateRecordHandler::errors(){
 
 void CmdClassbookLocalizationUpdateRecordHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
-    int classbook_localizationid = obj["classbook_localizationid"].toInt();
-    QString name = obj["name"].toString().trimmed();
-    QString content = obj["content"].toString().trimmed();
-
     QSqlDatabase db = *(pWebSocketServer->database());
 
     QJsonObject data;
 
     QSqlQuery query(db);
+    QString classbook_localizationid;
+    if(obj.contains("classbook_localizationid")){
+        query.prepare("SELECT classbook_localizationid FROM classbook_localization WHERE classbook_localizationid=:classbook_localizationid");
+        query.bindValue(":classbook_localizationid", obj["classbook_localizationid"].toInt());
+        query.exec();
+        if(query.next()){
+            classbook_localizationid = obj["classbook_localizationid"].toInt();
+        } else {
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "This localization doesn't exist"));
+            return;
+        }
+    }
+
+    QString name = obj["name"].toString().trimmed();
+    QString content = obj["content"].toString().trimmed();
+
     query.prepare("UPDATE classbook_localization SET name = :name, content = :content, updated = NOW() "
                   "WHERE classbook_localizationid = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", classbook_localizationid);
@@ -61,14 +73,12 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(QWebSocket *pClient, IW
     if(!query.exec()){
         Log::err(TAG, query.lastError().text());
     }
-    while (query.next()) {
-        QSqlRecord record = query.record();
-        data["classbookid"] = record.value("classbookid").toInt();
-        data["classbook_localizationid"] = classbook_localizationid;
-        data["lang"] = record.value("lang").toString();
-        data["name"] = name;
-        data["content"] = content;
-    }
+    QSqlRecord record = query.record();
+    data["classbookid"] = record.value("classbookid").toInt();
+    data["classbook_localizationid"] = classbook_localizationid;
+    data["lang"] = record.value("lang").toString();
+    data["name"] = name;
+    data["content"] = content;
 
     QJsonObject jsonData;
     jsonData["cmd"] = QJsonValue(cmd());

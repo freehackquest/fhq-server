@@ -15,15 +15,15 @@ QString CmdClassbookLocalizationAddRecordHandler::cmd(){
 }
 
 bool CmdClassbookLocalizationAddRecordHandler::accessUnauthorized(){
-    return true;
+    return false;
 }
 
 bool CmdClassbookLocalizationAddRecordHandler::accessUser(){
-    return true;
+    return false;
 }
 
 bool CmdClassbookLocalizationAddRecordHandler::accessTester(){
-    return true;
+    return false;
 }
 
 bool CmdClassbookLocalizationAddRecordHandler::accessAdmin(){
@@ -46,16 +46,43 @@ QStringList CmdClassbookLocalizationAddRecordHandler::errors(){
 void CmdClassbookLocalizationAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
     int classbookid = obj["classbookid"].toInt();
-    QString lang = obj["lang"].toString().trimmed();
-    QString name = obj["name"].toString().trimmed();
-    QString content = obj["content"].toString().trimmed();
 
     QSqlDatabase db = *(pWebSocketServer->database());
 
     QJsonObject data;
 
     QSqlQuery query(db);
-    query.prepare("INSERT INTO classbook_localization(classbookid,lang,name,content,created,updated) VALUES(:classbookid,:lang,:name,:content,NOW(),NOW())");
+    QString lang;
+    if(obj.contains("lang")){
+        query.prepare("SELECT lang FROM classbook_localization WHERE lang=:lang");
+        query.bindValue(":lang", obj["lang"].toString().trimmed());
+        query.exec();
+        if(!query.next()){
+            lang = obj["lang"].toString().trimmed();
+        } else {
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "This lang already exist"));
+            return;
+        }
+    }
+
+    QString name = obj["name"].toString().trimmed();
+    QString content = obj["content"].toString().trimmed();
+
+    query.prepare("INSERT INTO classbook_localization("
+                  "classbookid,"
+                  "lang,name,"
+                  "content,"
+                  "created,"
+                  "updated"
+                  ") "
+                  "VALUES("
+                  ":classbookid,"
+                  ":lang,"
+                  ":name,"
+                  ":content,"
+                  "NOW(),"
+                  "NOW()"
+                  ")");
     query.bindValue(":classbookid", classbookid);
     query.bindValue(":lang", lang);
     query.bindValue(":name", name);
@@ -63,14 +90,11 @@ void CmdClassbookLocalizationAddRecordHandler::handle(QWebSocket *pClient, IWebS
     if(!query.exec()){
         Log::err(TAG, query.lastError().text());
     }
-    while (query.next()) {
-        QSqlRecord record = query.record();
-        data["classbookid"] = classbookid;
-        data["classbook_localizationid"] = QJsonValue(query.lastInsertId().toInt());
-        data["lang"] = lang;
-        data["name"] = name;
-        data["content"] = content;
-    }
+    data["classbookid"] = classbookid;
+    data["classbook_localizationid"] = QJsonValue(query.lastInsertId().toInt());
+    data["lang"] = lang;
+    data["name"] = name;
+    data["content"] = content;
 
     QJsonObject jsonData;
     jsonData["cmd"] = QJsonValue(cmd());
