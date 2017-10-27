@@ -1,4 +1,4 @@
-#include "error.h"
+#include <error.h>
 
 Error::Error(int codeError, QString message){
 	m_nCodeError = codeError;

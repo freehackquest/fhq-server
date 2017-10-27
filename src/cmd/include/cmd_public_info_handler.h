@@ -1,12 +1,12 @@
-#ifndef CMD_GETPUBLICINFO_HANDLER_H
-#define CMD_GETPUBLICINFO_HANDLER_H
+#ifndef CMD_PUBLIC_INFO_HANDLER_H
+#define CMD_PUBLIC_INFO_HANDLER_H
 
 #include <iserver.h>
 
-class CmdGetPublicInfoHandler : public ICmdHandler {
+class CmdPublicInfoHandler : public ICmdHandler {
 
 	public:
-		CmdGetPublicInfoHandler();
+        CmdPublicInfoHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();
@@ -21,4 +21,4 @@ class CmdGetPublicInfoHandler : public ICmdHandler {
 		QVector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_GETPUBLICINFO_HANDLER_H
+#endif // CMD_PUBLIC_INFO_HANDLER_H

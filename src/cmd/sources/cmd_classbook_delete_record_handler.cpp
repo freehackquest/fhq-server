@@ -46,8 +46,17 @@ void CmdClassbookDeleteRecordHandler::handle(QWebSocket *pClient, IWebSocketServ
 
     int classbookid = obj["classbookid"].toInt();
 
+    //DELETE Record IF haven't childs
     QSqlQuery query(db);
     if(classbookid !=0){
+        query.prepare("SELECT id FROM classbook WHERE parentid=:classbookid");
+        query.bindValue(":classbookid", classbookid);
+        query.exec();
+        if (query.next()){
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Could not delete, because childs exists. Please remove childs first."));
+            return;
+        }
+        //Delete record in classbook
         query.prepare("DELETE FROM classbook WHERE id=:classbookid");
         query.bindValue(":classbookid", classbookid);
         query.exec();
@@ -55,6 +64,14 @@ void CmdClassbookDeleteRecordHandler::handle(QWebSocket *pClient, IWebSocketServ
             pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::DatabaseError(query.lastError().text()));
             return;
         }
+        //Delete record's localization
+        /*query.prepare("DELETE FROM classbook WHERE id=:classbookid");
+        query.bindValue(":classbookid", classbookid);
+        query.exec();
+        if(!query.exec()){
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::DatabaseError(query.lastError().text()));
+            return;
+        }*/
     }
 
     QJsonObject jsonResponse;

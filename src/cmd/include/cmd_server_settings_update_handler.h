@@ -1,12 +1,12 @@
-#ifndef CMD_SEND_LETTERS_TO_SUBSCRIBERS_HANDLER_H
-#define CMD_SEND_LETTERS_TO_SUBSCRIBERS_HANDLER_H
+#ifndef CMD_SERVER_SETTINGS_UPDATE_HANDLER_H
+#define CMD_SERVER_SETTINGS_UPDATE_HANDLER_H
 
 #include <iserver.h>
 
-class CmdSendLettersToSubscribersHandler : public ICmdHandler {
+class CmdServerSettingsUpdateHandler : public ICmdHandler {
 	
 	public:
-		CmdSendLettersToSubscribersHandler();
+        CmdServerSettingsUpdateHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();
@@ -21,4 +21,4 @@ class CmdSendLettersToSubscribersHandler : public ICmdHandler {
 		QVector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_SEND_LETTERS_TO_SUBSCRIBERS_HANDLER_H
+#endif // CMD_SERVER_SETTINGS_UPDATE_HANDLER_H

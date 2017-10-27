@@ -74,7 +74,7 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
         if (!query.next()){
             uuid = obj["uuid"].toString();
         } else {
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::UuidAlreadyExist(obj["uuid"].toString()));
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Uuid already exist"));
             return;
         }
     } else {

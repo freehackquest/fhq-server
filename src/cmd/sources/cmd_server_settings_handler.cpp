@@ -1,4 +1,4 @@
-#include <cmd_serversettings_handler.h>
+#include <cmd_server_settings_handler.h>
 #include <QJsonArray>
 #include <memory_cache_serversettings.h>
 
@@ -6,7 +6,7 @@ CmdServerSettingsHandler::CmdServerSettingsHandler(){
 }
 
 QString CmdServerSettingsHandler::cmd(){
-        return "serversettings";
+        return "server_settings";
 }
 
 bool CmdServerSettingsHandler::accessUnauthorized(){

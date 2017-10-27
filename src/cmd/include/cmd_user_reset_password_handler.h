@@ -1,12 +1,12 @@
-#ifndef CMD_UPDATE_SERVER_SETTINGS_HANDLER_H
-#define CMD_UPDATE_SERVER_SETTINGS_HANDLER_H
+#ifndef CMD_USER_RESET_PASSWORD_REGISTRATION_HANDLER_H
+#define CMD_USER_RESET_PASSWORD_REGISTRATION_HANDLER_H
 
 #include <iserver.h>
 
-class CmdUpdateServerSettingsHandler : public ICmdHandler {
+class CmdUserResetPasswordHandler : public ICmdHandler {
 	
 	public:
-        CmdUpdateServerSettingsHandler();
+        CmdUserResetPasswordHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();
@@ -16,9 +16,10 @@ class CmdUpdateServerSettingsHandler : public ICmdHandler {
 		virtual QString description();
 		virtual QStringList errors();
 		virtual void handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj);
-		
+
 	private:
 		QVector<CmdInputDef> m_vInputs;
+		QString TAG;
 };
 
-#endif // CMD_UPDATE_SERVER_SETTINGS_HANDLER_H
+#endif // CMD_USER_RESET_PASSWORD_REGISTRATION_HANDLER_H

@@ -41,7 +41,7 @@ QStringList CmdGameImportHandler::errors(){
 	return list;
 }
 
-void CmdGameImportHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdGameImportHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
     pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotImplementedYet());
     return;
 

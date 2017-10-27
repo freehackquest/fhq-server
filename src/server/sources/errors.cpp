@@ -1,4 +1,4 @@
-#include "errors.h"
+#include <errors.h>
 
 #include <QTextStream>
 #include <QFile>
@@ -166,13 +166,6 @@ Error Errors::InvalidToken(){
 Error Errors::DatabaseError(QString text){
 	Error error(500, "Database error. " + text);
 	return error;
-}
-
-// ---------------------------------------------------------------------
-
-Error Errors::UuidAlreadyExist(QString text){
-    Error error(403, "Uuid alredy exist " + text);
-    return error;
 }
 
 // ---------------------------------------------------------------------
