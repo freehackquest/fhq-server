@@ -64,14 +64,15 @@ void CmdClassbookDeleteRecordHandler::handle(QWebSocket *pClient, IWebSocketServ
             pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::DatabaseError(query.lastError().text()));
             return;
         }
+
         //Delete record's localization
-        /*query.prepare("DELETE FROM classbook WHERE id=:classbookid");
+        query.prepare("DELETE FROM classbook_localization WHERE classbookid=:classbookid");
         query.bindValue(":classbookid", classbookid);
         query.exec();
         if(!query.exec()){
             pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::DatabaseError(query.lastError().text()));
             return;
-        }*/
+        }
     }
 
     QJsonObject jsonResponse;
