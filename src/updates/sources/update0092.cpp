@@ -1,7 +1,7 @@
 #include <update0092.h>
 
 Update0092::Update0092(){
-    TAG = "Update0093";
+    TAG = "Update0092";
 }
 
 QString Update0092::from_version(){
