@@ -62,8 +62,8 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
         }
     }
 
-    QString name = obj["name"].toString().trimmed();
-    QString content = obj["content"].toString();
+    QString name = obj["name"].toString().trimmed().toHtmlEscaped();
+    QString content = obj["content"].toString().trimmed().toHtmlEscaped();
 
     //Set uuid from request if free, else generate uuid
     QString uuid;
@@ -92,10 +92,24 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
         parentuuid = record.value("uuid").toString();
     }
 
-    //Set ordered of article if have, else set 1000
-    int ordered = 1000;
+    //Set ordered of article: increment max of child's ordered
+    int ordered;
     if (obj.contains("order")){
         ordered = obj["order"].toInt();
+    } else {
+        query.prepare("SELECT MAX(ordered) AS max FROM classbook WHERE parentid=:parentid");
+        query.bindValue(":parentid", parentid);
+        query.exec();
+        if (query.next()){
+            QSqlRecord record = query.record();
+            ordered = record.value("max").toInt() + 1;
+        } else {
+            query.prepare("SELECT ordered FROM classbook WHERE id=:parentid");
+            query.bindValue(":parentid", parentid);
+            query.exec();
+            QSqlRecord record = query.record();
+            ordered = record.value("ordered").toInt() + 1;
+        }
     }
 
     //Set Datetime

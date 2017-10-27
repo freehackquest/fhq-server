@@ -171,7 +171,7 @@ Error Errors::DatabaseError(QString text){
 // ---------------------------------------------------------------------
 
 Error Errors::UuidAlreadyExist(QString text){
-    Error error(401, "Uuid alredy exist " + text);
+    Error error(403, "Uuid alredy exist " + text);
     return error;
 }
 
