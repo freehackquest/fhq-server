@@ -1,46 +1,46 @@
-#include <cmd_classbook_get_list_handler.h>
+#include <cmd_classbook_list_handler.h>
 #include <QJsonArray>
 #include <QSqlError>
 
-CmdClassbookGetListHandler::CmdClassbookGetListHandler(){
+CmdClassbookListHandler::CmdClassbookListHandler(){
     m_vInputs.push_back(CmdInputDef("parentid").required().integer_().description("parentid for classbook article"));
     m_vInputs.push_back(CmdInputDef("ordered").optional().integer_().description("order for classbook article"));
 }
 
-QString CmdClassbookGetListHandler::cmd(){
-    return "classbook_get_list";
+QString CmdClassbookListHandler::cmd(){
+    return "classbook_list";
 }
 
-bool CmdClassbookGetListHandler::accessUnauthorized(){
+bool CmdClassbookListHandler::accessUnauthorized(){
     return true;
 }
 
-bool CmdClassbookGetListHandler::accessUser(){
+bool CmdClassbookListHandler::accessUser(){
     return true;
 }
 
-bool CmdClassbookGetListHandler::accessTester(){
+bool CmdClassbookListHandler::accessTester(){
     return true;
 }
 
-bool CmdClassbookGetListHandler::accessAdmin(){
+bool CmdClassbookListHandler::accessAdmin(){
     return true;
 }
 
-const QVector<CmdInputDef> &CmdClassbookGetListHandler::inputs(){
+const QVector<CmdInputDef> &CmdClassbookListHandler::inputs(){
     return m_vInputs;
 };
 
-QString CmdClassbookGetListHandler::description(){
+QString CmdClassbookListHandler::description(){
     return "Return list of parentid, id, names for classbook article";
 }
 
-QStringList CmdClassbookGetListHandler::errors(){
+QStringList CmdClassbookListHandler::errors(){
     QStringList	list;
     return list;
 }
 
-void CmdClassbookGetListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdClassbookListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
     QSqlDatabase db = *(pWebSocketServer->database());
 

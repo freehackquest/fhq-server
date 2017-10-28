@@ -1,46 +1,46 @@
-#include <cmd_classbook_get_info_handler.h>
+#include <cmd_classbook_info_handler.h>
 #include <QJsonArray>
 #include <QSqlError>
 
-CmdClassbookGetInfoHandler::CmdClassbookGetInfoHandler(){
+CmdClassbookInfoHandler::CmdClassbookInfoHandler(){
     m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("id for classbook article"));
     m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("Language"));
 }
 
-QString CmdClassbookGetInfoHandler::cmd(){
+QString CmdClassbookInfoHandler::cmd(){
     return "classbook_get_info";
 }
 
-bool CmdClassbookGetInfoHandler::accessUnauthorized(){
+bool CmdClassbookInfoHandler::accessUnauthorized(){
     return true;
 }
 
-bool CmdClassbookGetInfoHandler::accessUser(){
+bool CmdClassbookInfoHandler::accessUser(){
     return true;
 }
 
-bool CmdClassbookGetInfoHandler::accessTester(){
+bool CmdClassbookInfoHandler::accessTester(){
     return true;
 }
 
-bool CmdClassbookGetInfoHandler::accessAdmin(){
+bool CmdClassbookInfoHandler::accessAdmin(){
     return true;
 }
 
-const QVector<CmdInputDef> &CmdClassbookGetInfoHandler::inputs(){
+const QVector<CmdInputDef> &CmdClassbookInfoHandler::inputs(){
     return m_vInputs;
 };
 
-QString CmdClassbookGetInfoHandler::description(){
+QString CmdClassbookInfoHandler::description(){
     return "Return name and content classbook record for id";
 }
 
-QStringList CmdClassbookGetInfoHandler::errors(){
+QStringList CmdClassbookInfoHandler::errors(){
     QStringList	list;
     return list;
 }
 
-void CmdClassbookGetInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
     QSqlDatabase db = *(pWebSocketServer->database());
 

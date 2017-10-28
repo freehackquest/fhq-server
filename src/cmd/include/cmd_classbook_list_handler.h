@@ -3,10 +3,10 @@
 
 #include <iserver.h>
 
-class CmdClassbookGetListHandler : public ICmdHandler {
+class CmdClassbookListHandler : public ICmdHandler {
 
     public:
-        CmdClassbookGetListHandler();
+        CmdClassbookListHandler();
         virtual QString cmd();
         virtual bool accessUnauthorized();
         virtual bool accessUser();
