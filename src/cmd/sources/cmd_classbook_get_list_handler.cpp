@@ -4,7 +4,7 @@
 
 CmdClassbookGetListHandler::CmdClassbookGetListHandler(){
     m_vInputs.push_back(CmdInputDef("parentid").required().integer_().description("parentid for classbook article"));
-    m_vInputs.push_back(CmdInputDef("order").optional().integer_().description("order for classbook article"));
+    m_vInputs.push_back(CmdInputDef("ordered").optional().integer_().description("order for classbook article"));
 }
 
 QString CmdClassbookGetListHandler::cmd(){
