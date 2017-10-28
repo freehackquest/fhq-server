@@ -53,16 +53,17 @@ void CmdClassbookLocalizationAddRecordHandler::handle(QWebSocket *pClient, IWebS
 
     QSqlQuery query(db);
     QString lang;
-    if(obj.contains("lang")){
-        query.prepare("SELECT lang FROM classbook_localization WHERE lang=:lang");
-        query.bindValue(":lang", obj["lang"].toString().trimmed());
-        query.exec();
-        if(!query.next()){
-            lang = obj["lang"].toString().trimmed();
-        } else {
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "This lang already exist"));
-            return;
-        }
+    query.prepare("SELECT lang FROM classbook_localization WHERE lang=:lang");
+    query.bindValue(":lang", obj["lang"].toString().trimmed());
+    if(!query.exec()){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        return;
+    }
+    if(!query.next()){
+        lang = obj["lang"].toString().trimmed();
+    } else {
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "This lang already exist"));
+        return;
     }
 
     QString name = obj["name"].toString().trimmed();
@@ -88,7 +89,8 @@ void CmdClassbookLocalizationAddRecordHandler::handle(QWebSocket *pClient, IWebS
     query.bindValue(":name", name);
     query.bindValue(":content", content);
     if(!query.exec()){
-        Log::err(TAG, query.lastError().text());
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        return;
     }
     data["classbookid"] = classbookid;
     data["classbook_localizationid"] = QJsonValue(query.lastInsertId().toInt());
