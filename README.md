@@ -1,7 +1,7 @@
 # FreeHackQuest Backend
 
 Backend for FreeHackQuest on Qt and WebSockets
-Frontend for FreeHackQuest here: (https://github.com/freehackquest/frontend)[https://github.com/freehackquest/frontend]
+Frontend for FreeHackQuest here: [https://github.com/freehackquest/frontend](https://github.com/freehackquest/frontend)
 
 ## Requirements
 
