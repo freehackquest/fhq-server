@@ -4,18 +4,20 @@ TARGET = freehackquest-backend
 VERSION = 0.1.18
 DEFINES += VERSION_STRING=\\\"0.1.18\\\"
 
-QT += core sql network websockets
-QT -= gui
-
 CONFIG   += console
 CONFIG   += release
 CONFIG   -= app_bundle
+
+QT += core sql network websockets
+# QT -= gui
+
 OBJECTS_DIR = tmp/
 MOC_DIR = tmp/
 RCC_DIR = tmp/
 CONFIG += c++11 c++14
 
 include(src/interfaces/interfaces.pri)
+include(src/utils/utils.pri)
 include(src/cmd/cmd.pri)
 include(src/updates/updates.pri)
 include(src/cache/cache.pri)

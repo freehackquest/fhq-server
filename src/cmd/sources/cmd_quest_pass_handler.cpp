@@ -1,6 +1,7 @@
 #include <cmd_quest_pass_handler.h>
 #include <runtasks.h>
 #include <log.h>
+#include <utils.h>
 
 #include <QJsonArray>
 #include <QCryptographicHash>
@@ -63,6 +64,7 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
     QString sState = "";
     QString sQuestAnswer = "";
     QString sQuestName = "";
+    int nGameID = 0;
 	{
 		QSqlQuery query(db);
         query.prepare("SELECT * FROM quest WHERE idquest = :questid");
@@ -77,11 +79,27 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
             sState = record.value("state").toString();
             sQuestAnswer = record.value("answer").toString().trimmed();
             sQuestName = record.value("name").toString().trimmed();
+            nGameID = record.value("gameid").toInt();
 		}else{
 			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Quest not found"));
 			return;
 		}
 	}
+
+    {
+        QSqlQuery query(db);
+        query.prepare("SELECT * FROM games WHERE id = 2 AND (NOW() < date_stop OR NOW() > date_restart)");
+        query.bindValue(":gameid", nGameID);
+        if(!query.exec()){
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            return;
+        }
+
+        if (!query.next()) {
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Game ended. Please "));
+            return;
+        }
+    }
 
     // check passed quest
     {
@@ -135,7 +153,8 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
         query.bindValue(":user_answer", sUserAnswer);
         query.bindValue(":quest_answer", sQuestAnswer);
         query.bindValue(":passed", sPassed);
-        query.bindValue(":levenshtein", 1000);
+        int nLevenshtein = UtilsLevenshtein::distance(sUserAnswer.toUpper(), sQuestAnswer.toUpper());
+        query.bindValue(":levenshtein", nLevenshtein);
 
         if(!query.exec()){
             pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));

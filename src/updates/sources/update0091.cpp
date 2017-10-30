@@ -73,6 +73,7 @@ bool Update0091::update(QSqlDatabase &db, QString &error){
         Log::info(TAG, "Problem with install update " + error);
         return false;
     }
+
     return true;
 
 }
