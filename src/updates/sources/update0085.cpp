@@ -1,5 +1,9 @@
 #include <update0085.h>
 
+Update0085::Update0085(){
+    TAG = "Update0085";
+}
+
 QString Update0085::from_version(){
 	return "u0084";
 }
@@ -17,6 +21,7 @@ bool Update0085::update(QSqlDatabase &db, QString &error){
 	query.prepare("ALTER TABLE quest CHANGE COLUMN `quest_uuid` `uuid` varchar(255) NOT NULL;");
 	if(!query.exec()){
 		error = query.lastError().text();
+        Log::err(TAG, "The problem with altering the table " + error);
 		return false;
 	}
 	return true;

@@ -32,7 +32,7 @@ bool Update0092::update(QSqlDatabase &db, QString &error){
             ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
         if(!query.exec()){
             error = query.lastError().text();
-            Log::err(TAG, "Problem with creating a table " + error);
+            Log::err(TAG, "The problem with creating a table " + error);
             return false;
         }
     }
@@ -52,7 +52,7 @@ bool Update0092::update(QSqlDatabase &db, QString &error){
             ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
         if(!query.exec()){
             error = query.lastError().text();
-            Log::err(TAG, "Problem with creating a table " + error);
+            Log::err(TAG, "The problem with creating a table " + error);
             return false;
         }
     }

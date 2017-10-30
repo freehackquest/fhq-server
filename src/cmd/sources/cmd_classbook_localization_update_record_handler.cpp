@@ -50,7 +50,7 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(QWebSocket *pClient, IW
 
     QSqlQuery query(db);
     QString classbook_localizationid;
-    query.prepare("SELECT classbook_localizationid FROM classbook_localization WHERE classbook_localizationid=:classbook_localizationid");
+    query.prepare("SELECT classbook_localizationid FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", obj["classbook_localizationid"].toInt());
     if(!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
@@ -62,7 +62,6 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(QWebSocket *pClient, IW
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This localization doesn't exist"));
         return;
     }
-
 
     QString name = obj["name"].toString().trimmed();
     QString content = obj["content"].toString().trimmed();

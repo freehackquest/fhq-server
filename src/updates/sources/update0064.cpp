@@ -1,5 +1,9 @@
 #include <update0064.h>
 
+Update0064::Update0064(){
+    TAG = "Update0064";
+}
+
 QString Update0064::from_version(){
 	return "u0063";
 }
@@ -17,6 +21,7 @@ bool Update0064::update(QSqlDatabase &db, QString &error){
 	query.prepare("SELECT idquest FROM quest LEFT JOIN users_quests ON users_quests.questid = quest.idquest WHERE for_person <> 0");
 	if(!query.exec()){
 		error = query.lastError().text();
+        Log::err(TAG, "The problem with data selection " + error);
 		return false;
 	}
 
@@ -29,6 +34,7 @@ bool Update0064::update(QSqlDatabase &db, QString &error){
 		query2.exec();
 		if(!query2.exec()){
 			error = query2.lastError().text();
+            Log::err(TAG, "The problem with deleting data " + error);
 			return false;
 		}
 	}

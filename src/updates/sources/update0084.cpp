@@ -1,5 +1,9 @@
 #include <update0084.h>
 
+Update0084::Update0084(){
+    TAG = "Update0084";
+}
+
 QString Update0084::from_version(){
 	return "u0083";
 }
@@ -23,6 +27,7 @@ bool Update0084::update(QSqlDatabase &db, QString &error){
 		") ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 	if(!query.exec()){
 		error = query.lastError().text();
+        Log::err(TAG, "The problem with creating a table " + error);
 		return false;
 	}
 	return true;

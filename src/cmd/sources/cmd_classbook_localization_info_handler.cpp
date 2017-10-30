@@ -1,48 +1,50 @@
-#include <cmd_classbook_localization_delete_record_handler.h>
+#include <cmd_classbook_localization_info_handler.h>
 #include <QJsonArray>
 #include <QSqlError>
 #include <log.h>
 
-CmdClassbookLocalizationDeleteRecordHandler::CmdClassbookLocalizationDeleteRecordHandler(){
+CmdClassbookLocalizationInfoHandler::CmdClassbookLocalizationInfoHandler(){
     m_vInputs.push_back(CmdInputDef("classbook_localizationid").required().integer_().description("Localization id"));
 }
 
-QString CmdClassbookLocalizationDeleteRecordHandler::cmd(){
-    return "classbook_localization_delete_record";
+QString CmdClassbookLocalizationInfoHandler::cmd(){
+    return "classbook_localization_info";
 }
 
-bool CmdClassbookLocalizationDeleteRecordHandler::accessUnauthorized(){
+bool CmdClassbookLocalizationInfoHandler::accessUnauthorized(){
     return false;
 }
 
-bool CmdClassbookLocalizationDeleteRecordHandler::accessUser(){
+bool CmdClassbookLocalizationInfoHandler::accessUser(){
     return false;
 }
 
-bool CmdClassbookLocalizationDeleteRecordHandler::accessTester(){
+bool CmdClassbookLocalizationInfoHandler::accessTester(){
     return false;
 }
 
-bool CmdClassbookLocalizationDeleteRecordHandler::accessAdmin(){
+bool CmdClassbookLocalizationInfoHandler::accessAdmin(){
     return true;
 }
 
-const QVector<CmdInputDef> &CmdClassbookLocalizationDeleteRecordHandler::inputs(){
+const QVector<CmdInputDef> &CmdClassbookLocalizationInfoHandler::inputs(){
     return m_vInputs;
 };
 
-QString CmdClassbookLocalizationDeleteRecordHandler::description(){
-    return "Delete an article localization";
+QString CmdClassbookLocalizationInfoHandler::description(){
+    return "Find and display localization for an article by classbookid";
 }
 
-QStringList CmdClassbookLocalizationDeleteRecordHandler::errors(){
+QStringList CmdClassbookLocalizationInfoHandler::errors(){
     QStringList	list;
     return list;
 }
 
-void CmdClassbookLocalizationDeleteRecordHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdClassbookLocalizationInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
     QSqlDatabase db = *(pWebSocketServer->database());
+
+    QJsonObject data;
 
     QSqlQuery query(db);
     QString classbook_localizationid;
@@ -58,17 +60,24 @@ void CmdClassbookLocalizationDeleteRecordHandler::handle(QWebSocket *pClient, IW
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This localization doesn't exist"));
         return;
     }
-    query.prepare("DELETE FROM classbook_localization WHERE id = :classbook_localizationid");
+
+    query.prepare("SELECT id, lang FROM classbook_localization WHERE id=:classbook_localizationid");
     query.bindValue(":classbook_localizationid", classbook_localizationid);
-    if(!query.exec()){
+    if (!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
     }
+    QSqlRecord record = query.record();
+    data["classbookid"] = record.value("classbookid").toInt();
+    data["classbook_localizationid"] = classbook_localizationid;
+    data["lang"] = record.value("lang").toString();
+    data["name"] = record.value("name").toString();
+    data["content"] = record.value("content").toString();
 
     QJsonObject jsonData;
     jsonData["cmd"] = QJsonValue(cmd());
     jsonData["m"] = QJsonValue(m);
     jsonData["result"] = QJsonValue("DONE");
+    jsonData["data"] = data;
     pWebSocketServer->sendMessage(pClient, jsonData);
 }
-
