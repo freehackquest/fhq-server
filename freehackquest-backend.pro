@@ -17,6 +17,7 @@ RCC_DIR = tmp/
 CONFIG += c++11 c++14
 
 include(src/interfaces/interfaces.pri)
+include(src/utils/utils.pri)
 include(src/cmd/cmd.pri)
 include(src/updates/updates.pri)
 include(src/cache/cache.pri)
