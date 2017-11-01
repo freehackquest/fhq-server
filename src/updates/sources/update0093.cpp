@@ -22,7 +22,7 @@ bool Update0093::update(QSqlDatabase &db, QString &error){
     query.prepare("ALTER TABLE classbook ADD COLUMN ordered INT(11) NOT NULL after parentid;");
     if(!query.exec()){
         error = query.lastError().text();
-        Log::err(TAG, "Problem with install update " + error);
+        Log::err(TAG, "The problem with altering the table " + error);
         return false;
     }
     return true;

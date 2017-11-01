@@ -53,7 +53,7 @@ void CmdClassbookLocalizationAddRecordHandler::handle(QWebSocket *pClient, IWebS
 
     QSqlQuery query(db);
     QString lang;
-    query.prepare("SELECT lang FROM classbook_localization WHERE lang=:lang");
+    query.prepare("SELECT lang FROM classbook_localization WHERE lang = :lang");
     query.bindValue(":lang", obj["lang"].toString().trimmed());
     if(!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
@@ -71,7 +71,8 @@ void CmdClassbookLocalizationAddRecordHandler::handle(QWebSocket *pClient, IWebS
 
     query.prepare("INSERT INTO classbook_localization("
                   "classbookid,"
-                  "lang,name,"
+                  "lang,"
+                  "name,"
                   "content,"
                   "created,"
                   "updated"

@@ -1,5 +1,9 @@
 #include <update0076.h>
 
+Update0076::Update0076(){
+    TAG = "Update0076";
+}
+
 QString Update0076::from_version(){
 	return "u0075";
 }
@@ -17,6 +21,7 @@ bool Update0076::update(QSqlDatabase &db, QString &error){
 	query.prepare("ALTER TABLE `users` ADD COLUMN `rating` INTEGER DEFAULT 0;");
 	if(!query.exec()){
 		error = query.lastError().text();
+        Log::err(TAG, "The problem with altering the table " + error);
 		return false;
 	}
 	
@@ -28,6 +33,7 @@ bool Update0076::update(QSqlDatabase &db, QString &error){
 	);
 	if(!query3.exec()){
 		error = query3.lastError().text();
+        Log::err(TAG, "The problem with data selection " + error);
 		return false;
 	}
 
@@ -42,6 +48,7 @@ bool Update0076::update(QSqlDatabase &db, QString &error){
 		query2.bindValue(":userid", userid);
 		if(!query2.exec()){
 			error = query2.lastError().text();
+            Log::err(TAG, "The problem with updating the data " + error);
 			return false;
 		}
 	}

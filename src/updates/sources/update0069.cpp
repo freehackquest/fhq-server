@@ -1,6 +1,9 @@
 #include <update0069.h>
 #include <QSqlQuery>
 
+Update0069::Update0069(){
+    TAG = "Update0069";
+}
 
 QString Update0069::from_version(){
 	return "u0068";
@@ -25,6 +28,7 @@ bool Update0069::update(QSqlDatabase &db, QString &error){
 		";");
 	if(!query.exec()){
 		error = query.lastError().text();
+        Log::err(TAG, "The problem with altering the table " + error);
 		return false;
 	}
 	return true;

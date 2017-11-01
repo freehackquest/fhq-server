@@ -56,7 +56,8 @@ HEADERS += \
     $$PWD/include/cmd_classbook_localization_delete_record_handler.h \
     $$PWD/include/cmd_classbook_localization_update_record_handler.h \
     $$PWD/include/cmd_classbook_add_record_handler.h \
-    $$PWD/include/cmd_classbook_delete_record_handler.h
+    $$PWD/include/cmd_classbook_delete_record_handler.h \
+    $$PWD/include/cmd_classbook_localization_info_handler.h
 
 SOURCES += \
     src/cmd/create_cmd_handlers.cpp \
@@ -112,4 +113,5 @@ SOURCES += \
     $$PWD/sources/cmd_classbook_localization_delete_record_handler.cpp \
     $$PWD/sources/cmd_classbook_localization_update_record_handler.cpp \
     $$PWD/sources/cmd_classbook_add_record_handler.cpp \
-    $$PWD/sources/cmd_classbook_delete_record_handler.cpp
+    $$PWD/sources/cmd_classbook_delete_record_handler.cpp \
+    $$PWD/sources/cmd_classbook_localization_info_handler.cpp

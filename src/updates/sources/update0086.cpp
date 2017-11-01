@@ -1,5 +1,9 @@
 #include <update0086.h>
 
+Update0086::Update0086(){
+    TAG = "Update0086";
+}
+
 QString Update0086::from_version(){
 	return "u0085";
 }
@@ -17,6 +21,7 @@ bool Update0086::update(QSqlDatabase &db, QString &error){
 	query.prepare("ALTER TABLE quest DROP COLUMN `idauthor`");
 	if(!query.exec()){
 		error = query.lastError().text();
+        Log::err(TAG, "The problem with altering the table " + error);
 		return false;
 	}
 	return true;

@@ -1,6 +1,10 @@
 #include <database0060.h>
 #include <QSqlQuery>
 
+Database0060::Database0060(){
+    TAG = "Database0060";
+}
+
 QString Database0060::from_version(){
 	return "";
 }
@@ -31,6 +35,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
@@ -49,6 +54,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
@@ -68,6 +74,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
@@ -107,6 +114,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
@@ -126,6 +134,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
@@ -158,6 +167,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
@@ -179,6 +189,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
@@ -201,6 +212,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
@@ -223,6 +235,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
@@ -245,6 +258,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
@@ -263,6 +277,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
@@ -287,6 +302,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
@@ -299,6 +315,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 		);
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with data insertion " + error);
 			return false;
 		}
 	}
@@ -317,6 +334,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
@@ -343,6 +361,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
@@ -362,6 +381,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
@@ -378,6 +398,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
@@ -399,6 +420,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
@@ -420,6 +442,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			") ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
 			error = query.lastError().text();
+            Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
 	}
