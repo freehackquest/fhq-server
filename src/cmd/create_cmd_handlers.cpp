@@ -10,6 +10,9 @@
 #include <cmd_classbook_delete_record_handler.h>
 #include <cmd_classbook_get_info_handler.h>
 #include <cmd_classbook_get_list_handler.h>
+#include <cmd_classbook_localization_add_record_handler.h>
+#include <cmd_classbook_localization_delete_record_handler.h>
+#include <cmd_classbook_localization_update_record_handler.h>
 #include <cmd_classbook_handler.h>
 #include <cmd_deletehint_handler.h>
 #include <cmd_deletequest_handler.h>
@@ -66,6 +69,9 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
     v.push_back(new CmdClassbookDeleteRecordHandler());
     v.push_back(new CmdClassbookGetInfoHandler());
     v.push_back(new CmdClassbookGetListHandler());
+    v.push_back(new CmdClassbookLocalizationAddRecordHandler());
+    v.push_back(new CmdClassbookLocalizationDeleteRecordHandler());
+    v.push_back(new CmdClassbookLocalizationUpdateRecordHandler());
 	v.push_back(new CmdClassbookHandler());
 	v.push_back(new CmdDeleteHintHandler());
 	v.push_back(new CmdDeleteQuestHandler());
