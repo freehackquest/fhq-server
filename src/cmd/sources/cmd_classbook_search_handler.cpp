@@ -1,51 +1,52 @@
-#include <cmd_classbook_list_handler.h>
+#include <cmd_classbook_search_handler.h>
 #include <QJsonArray>
 #include <QSqlError>
 
-CmdClassbookListHandler::CmdClassbookListHandler(){
+CmdClassbookSearchHandler::CmdClassbookSearchHandler(){
     m_vInputs.push_back(CmdInputDef("parentid").required().integer_().description("parentid for classbook articles"));
     m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("lang for classbook articles"));
+    m_vInputs.push_back(CmdInputDef("search").required().string_().description("Search string by LIKE"));
 }
 
-QString CmdClassbookListHandler::cmd(){
-    return "classbook_get_list";
+QString CmdClassbookSearchHandler::cmd(){
+    return "classbook_search";
 }
 
-bool CmdClassbookListHandler::accessUnauthorized(){
+bool CmdClassbookSearchHandler::accessUnauthorized(){
     return true;
 }
 
-bool CmdClassbookListHandler::accessUser(){
+bool CmdClassbookSearchHandler::accessUser(){
     return true;
 }
 
-bool CmdClassbookListHandler::accessTester(){
+bool CmdClassbookSearchHandler::accessTester(){
     return true;
 }
 
-bool CmdClassbookListHandler::accessAdmin(){
+bool CmdClassbookSearchHandler::accessAdmin(){
     return true;
 }
 
-const QVector<CmdInputDef> &CmdClassbookListHandler::inputs(){
+const QVector<CmdInputDef> &CmdClassbookSearchHandler::inputs(){
     return m_vInputs;
 };
 
-QString CmdClassbookListHandler::description(){
-    return "Return list of classbook articles with parentid, id, names, childs, proposals for a given parentid";
+QString CmdClassbookSearchHandler::description(){
+    return "Return list of classbook articles with parentid, id, names, childs, proposals for search string";
 }
 
-QStringList CmdClassbookListHandler::errors(){
+QStringList CmdClassbookSearchHandler::errors(){
     QStringList	list;
     return list;
 }
 
-void CmdClassbookListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdClassbookSearchHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
     QSqlDatabase db = *(pWebSocketServer->database());
 
     int parentid = obj["parentid"].toInt();
-
+    QString search = obj["search"].toString();
     QString lang = "en";
     if (obj.contains("lang")){
         lang = obj.value("lang").toString().trimmed();
@@ -53,8 +54,20 @@ void CmdClassbookListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
 
     QJsonArray data;
     QSqlQuery query(db);
-    query.prepare("SELECT id, name FROM classbook WHERE parentid =:parentid ORDER BY ordered");
-    query.bindValue(":parentid", parentid);
+    if (lang == "en") {
+        query.prepare("SELECT id, name FROM classbook WHERE parentid=:parentid "
+                      "AND (name LIKE '%:search%' OR content LIKE '%:search%') ORDER BY ordered");
+        query.bindValue(":parentid", parentid);
+        query.bindValue(":search", search);
+    } else {
+        query.prepare("SELECT classbookid, name FROM classbook_localization "
+                  "WHERE lang=:lang AND (name LIKE '%:search%' OR content LIKE '%:search%') "
+                  "AND classbookid "
+                  "IN(SELECT id FROM classbook WHERE parentid=:parentid ORDER BY ordered)");
+        query.bindValue(":parentid", parentid);
+        query.bindValue(":search", search);
+        query.bindValue(":lang", lang);
+    }
     query.exec();
     while (query.next()) {
         QSqlRecord record = query.record();
@@ -63,24 +76,7 @@ void CmdClassbookListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
         item["parentid"] = parentid;
         classbookid = record.value("id").toInt();
         item["classbookid"] = classbookid;
-
-        //GET name with the lang
-        if (lang == "en"){
-            item["name"] = record.value("name").toString();
-        } else {
-            QSqlQuery query_lang(db);
-            query_lang.prepare("SELECT name FROM classbook_localization WHERE classbookid=:classbookid AND lang=:lang");
-            query_lang.bindValue(":classbookid", classbookid);
-            query_lang.bindValue(":lang", lang);
-            query_lang.exec();
-            if (query_lang.next()){
-                QSqlRecord record_lang = query_lang.record();
-                item["name"] = record_lang.value("name").toString();
-            } else {
-                pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Not found localization for articles with a given parentid"));
-                return;
-            }
-        }
+        item["name"] = record.value("name").toString();
 
         //COUNT childs for an article
         QSqlQuery query_childs(db);
@@ -118,4 +114,5 @@ void CmdClassbookListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
     jsonResponse["data"] = data;
     pWebSocketServer->sendMessage(pClient, jsonResponse);
 }
+
 
