@@ -5,8 +5,6 @@
 CmdClassbookInfoHandler::CmdClassbookInfoHandler(){
     m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("id for the classbook article"));
     m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("Set lang for the article"));
-    m_vInputs.push_back(CmdInputDef("proposal").optional().string_().description("Proposal"));
-    m_vInputs.push_back(CmdInputDef("search").optional().string_().description("Search articles by LIKE"));
 }
 
 QString CmdClassbookInfoHandler::cmd(){
@@ -50,6 +48,7 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
 
     QSqlQuery query(db);
     QJsonObject info;
+
     //GET parentid and uuid for an article
     query.prepare("SELECT parentid, uuid FROM classbook WHERE id=:classbookid");
     query.bindValue(":classbookid", classbookid);
