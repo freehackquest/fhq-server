@@ -3,8 +3,8 @@
 #include <QSqlError>
 
 CmdClassbookInfoHandler::CmdClassbookInfoHandler(){
-    m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("id for an classbook article"));
-    m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("Set lang for an article"));
+    m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("id for the classbook article"));
+    m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("Set lang for the article"));
     m_vInputs.push_back(CmdInputDef("proposal").optional().string_().description("Proposal"));
     m_vInputs.push_back(CmdInputDef("search").optional().string_().description("Search articles by LIKE"));
 }
@@ -60,7 +60,7 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
         info["parentid"] = record.value("parentid").toInt();
         info["uuid"] = record.value("uuid").toString();
     } else {
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("an article"));
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("the article"));
         return;
     }
     QString lang = "en";
@@ -77,7 +77,7 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
             info["name"] = record.value("name").toString();
             info["content"] = record.value("content").toString();
         } else {
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("Localization for an article"));
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("Localization for the article"));
             return;
         }
     } else {
@@ -91,7 +91,51 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
             info["name"] = record.value("name").toString();
             info["content"] = record.value("content").toString();
         } else {
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("an article"));
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("the article"));
+            return;
+        }
+    }
+
+    //FIND langs for the article
+    QJsonObject langs;
+    query.prepare("SELECT id, lang FROM classbook_localization WHERE classbookid=:classbookid");
+    query.bindValue(":classbookid", classbookid);
+    query.exec();
+    if (query.next()) {
+        QSqlRecord record = query.record();
+        QString local_lang;
+        local_lang = record.value("lang").toString();
+        langs[local_lang] = record.value("id").toInt();
+    } else {
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("localization for the article"));
+        return;
+    }
+    info["langs"] = langs;
+
+    //FIND parents for the article
+    QJsonArray parents;
+    int parentid = info.value("parentid").toInt();
+    for (int i=0; i < 5; ++i){
+        if (parentid==0){
+            QJsonObject parent;
+            parent["classbookid"] = 0;
+            parent["parentid"] = 0;
+            parent["name"] = "Root";
+            break;
+        }
+        query.prepare("SELECT id, name, parentid FROM classbook WHERE id=:parentid");
+        query.bindValue(":parentid", parentid);
+        query.exec();
+        if (query.next()) {
+            QSqlRecord record = query.record();
+            QJsonObject parent;
+            parent["classbookid"] = record.value("id").toInt();
+            parentid = record.value("parentid").toInt();
+            parent["parentid"] = parentid;
+            parent["name"] = record.value("name").toString();
+            parents.push_back(parent);
+        } else {
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Error in PATHFINDER. Not found the article with a given classbookid"));
             return;
         }
     }
