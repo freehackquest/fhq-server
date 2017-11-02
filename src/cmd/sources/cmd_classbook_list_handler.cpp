@@ -52,9 +52,15 @@ void CmdClassbookListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
         lang = obj.value("lang").toString().trimmed();
     }
 
+    QString where = "";
+    QString search = "";
+    if (obj.contains("search")){
+        search = obj.value("search").toString().trimmed();
+        where = "AND (name LIKE '%"+ where +"%' OR content LIKE '%"+ where +"%')";
+    }
     QJsonArray data;
     QSqlQuery query(db);
-    query.prepare("SELECT id, name FROM classbook WHERE parentid =:parentid ORDER BY ordered");
+    query.prepare("SELECT id, name FROM classbook WHERE parentid =:parentid "+ where + " ORDER BY ordered");
     query.bindValue(":parentid", parentid);
     query.exec();
     while (query.next()) {
