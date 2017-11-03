@@ -49,7 +49,7 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
     QSqlQuery query(db);
     QJsonObject info;
 
-    //GET parentid and uuid for an article
+    //GET parentid and uuid for the article
     query.prepare("SELECT parentid, uuid FROM classbook WHERE id=:classbookid");
     query.bindValue(":classbookid", classbookid);
     query.exec();
@@ -62,9 +62,15 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("the article"));
         return;
     }
-    QString lang = "en";
-    if(obj.contains("lang")){
-        //GET localization for an article with a given lang
+    QString lang;
+    if (obj.contains("lang")){
+        lang = obj.value("lang").toString().trimmed();
+    } else {
+        lang = "en";
+        info["lang"] = QJsonValue(lang);
+    }
+    if(lang != "en"){
+        //GET localization for the article with a given lang
         lang = obj.value("lang").toString().trimmed();
         query.prepare("SELECT name, content FROM classbook_localization WHERE classbookid=:classbookid AND lang=:lang");
         query.bindValue(":classbookid", classbookid);
@@ -76,11 +82,21 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
             info["name"] = record.value("name").toString();
             info["content"] = record.value("content").toString();
         } else {
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("Localization for the article"));
-            return;
+            //GET default localization for the article
+            query.prepare("SELECT name, content FROM classbook WHERE id=:classbookid");
+            query.bindValue(":classbookid", classbookid);
+            query.exec();
+            if (query.next()) {
+                QSqlRecord record = query.record();
+                info["name"] = record.value("name").toString();
+                info["content"] = record.value("content").toString();
+            } else {
+                pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("the article"));
+                return;
+            }
         }
     } else {
-        //GET default localization for an article
+        //GET default localization for the article
         query.prepare("SELECT name, content FROM classbook WHERE id=:classbookid");
         query.bindValue(":classbookid", classbookid);
         query.exec();
@@ -105,9 +121,6 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
         QString local_lang;
         local_lang = record.value("lang").toString();
         langs[local_lang] = record.value("id").toInt();
-    } else {
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("localization for the article"));
-        return;
     }
     info["langs"] = langs;
 
