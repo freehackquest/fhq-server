@@ -94,7 +94,7 @@ void Log::add(QString type, QString tag, QString msg){
 	QMutexLocker locker(&LOG_MUTEX);
 	QString sThreadID = "0x" + QString::number((long long)QThread::currentThreadId(), 16);
 	msg = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz") + ", " + sThreadID + " [" + type + "] " + tag + ": " + msg;
-	qDebug() << msg;
+	qDebug().nospace().noquote() << msg;
 	LAST_LOG_MESSAGES << msg;
 	while(LAST_LOG_MESSAGES.size() > 50){
 		LAST_LOG_MESSAGES.removeLast();

@@ -24,13 +24,10 @@ include(src/cache/cache.pri)
 include(src/server/server.pri)
 include(src/tasks/tasks.pri)
 include(src/smtp/smtp.pri)
+include(src/unit_tests/unit_tests.pri)
 
 SOURCES += \
-	src/prepare_tmp_deb_package.cpp \
 	src/main.cpp \
-
-HEADERS += \
-	src/prepare_tmp_deb_package.h \
 
 documentation.path = /usr/share/doc/freehackquest-backend
 documentation.files = docs/*
