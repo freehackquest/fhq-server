@@ -12,7 +12,7 @@ QString CmdClassbookProposalDeleteRecordHandler::cmd(){
 }
 
 bool CmdClassbookProposalDeleteRecordHandler::accessUnauthorized(){
-    return true;
+    return false;
 }
 
 bool CmdClassbookProposalDeleteRecordHandler::accessUser(){

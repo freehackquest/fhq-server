@@ -15,7 +15,7 @@ QString CmdClassbookProposalAddRecordHandler::cmd(){
 }
 
 bool CmdClassbookProposalAddRecordHandler::accessUnauthorized(){
-    return true;
+    return false;
 }
 
 bool CmdClassbookProposalAddRecordHandler::accessUser(){
@@ -49,23 +49,22 @@ void CmdClassbookProposalAddRecordHandler::handle(QWebSocket *pClient, IWebSocke
 
     QJsonObject data;
 
-    int classbookid = obj["classbookid"].toInt();
-
     QSqlQuery query(db);
-    QString lang;
-    query.prepare("SELECT lang FROM classbook_proposal WHERE lang = :lang");
-    query.bindValue(":lang", obj["lang"].toString().trimmed());
+    QString classbookid;
+    query.prepare("SELECT classbookid FROM classbook_proposal WHERE classbookid = :classbookid");
+    query.bindValue(":classbookid", obj["classbookid"].toString().trimmed());
     if(!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
     }
-    if(!query.next()){
-        lang = obj["lang"].toString().trimmed();
+    if(query.next()){
+        classbookid = obj["classbookid"].toInt();
     } else {
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "This lang already exist"));
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This article doesn't exist"));
         return;
     }
 
+    QString lang = obj["lang"].toString().trimmed();
     QString name = obj["name"].toString().trimmed();
     QString content = obj["content"].toString().trimmed();
 

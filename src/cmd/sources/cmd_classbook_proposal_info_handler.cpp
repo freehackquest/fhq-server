@@ -12,7 +12,7 @@ QString CmdClassbookProposalInfoHandler::cmd(){
 }
 
 bool CmdClassbookProposalInfoHandler::accessUnauthorized(){
-    return true;
+    return false;
 }
 
 bool CmdClassbookProposalInfoHandler::accessUser(){
