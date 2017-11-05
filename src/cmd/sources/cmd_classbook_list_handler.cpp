@@ -51,7 +51,7 @@ void CmdClassbookListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
     query.prepare("SELECT name FROM classbook WHERE parentid =:parentid");
     query.bindValue(":parentid", parentid);
     query.exec();
-    if (!query.next()){
+    if (!query.next() && parentid != 0){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Not found the article with a given parentid"));
         return;
     }

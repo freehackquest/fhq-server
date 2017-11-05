@@ -44,8 +44,18 @@ QStringList CmdClassbookSearchHandler::errors(){
 void CmdClassbookSearchHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
     QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlQuery query(db);
 
     int parentid = obj["parentid"].toInt();
+    //CHECK exist parentid in DB
+    query.prepare("SELECT name FROM classbook WHERE parentid =:parentid");
+    query.bindValue(":parentid", parentid);
+    query.exec();
+    if (!query.next() && parentid != 0){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Not found the article with a given parentid"));
+        return;
+    }
+
     QString search = obj["search"].toString();
 
     //SET lang
@@ -62,7 +72,6 @@ void CmdClassbookSearchHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
     }
 
     QJsonArray data;
-    QSqlQuery query(db);
     if (lang == "en") {
         query.prepare("SELECT id, name FROM classbook WHERE parentid=:parentid "
                       "AND (name LIKE '%:search%' OR content LIKE '%:search%') ORDER BY ordered");
@@ -77,6 +86,7 @@ void CmdClassbookSearchHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
         query.bindValue(":search", search);
         query.bindValue(":lang", lang);
     }
+
     query.exec();
     while (query.next()) {
         QSqlRecord record = query.record();
