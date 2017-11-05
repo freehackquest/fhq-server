@@ -43,16 +43,34 @@ QStringList CmdClassbookListHandler::errors(){
 void CmdClassbookListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
     QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlQuery query(db);
 
     int parentid = obj["parentid"].toInt();
 
-    QString lang = "en";
+    //CHECK exist parentid in DB
+    query.prepare("SELECT name FROM classbook WHERE parentid =:parentid");
+    query.bindValue(":parentid", parentid);
+    query.exec();
+    if (!query.next()){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Not found the article with a given parentid"));
+        return;
+    }
+
+
+    //SET lang
+    QString lang;
     if (obj.contains("lang")){
         lang = obj.value("lang").toString().trimmed();
+        QList<QString> allow_lang = {"en", "ru","de"};
+        if(!allow_lang.contains(lang)){
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Language is'not support"));
+            return;
+        }
+    } else {
+        lang = "en";
     }
 
     QJsonArray data;
-    QSqlQuery query(db);
     query.prepare("SELECT id, name FROM classbook WHERE parentid =:parentid ORDER BY ordered");
     query.bindValue(":parentid", parentid);
     query.exec();
@@ -77,8 +95,7 @@ void CmdClassbookListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
                 QSqlRecord record_lang = query_lang.record();
                 item["name"] = record_lang.value("name").toString();
             } else {
-                pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Not found localization for articles with a given parentid"));
-                return;
+                item["name"] = record.value("name").toString();
             }
         }
 

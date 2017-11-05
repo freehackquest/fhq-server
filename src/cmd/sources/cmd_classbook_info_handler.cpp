@@ -62,13 +62,21 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("the article"));
         return;
     }
+
+    //SET lang
     QString lang;
     if (obj.contains("lang")){
         lang = obj.value("lang").toString().trimmed();
+        QList<QString> allow_lang = {"en", "ru","de"};
+        if(!allow_lang.contains(lang)){
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Language is'not support"));
+            return;
+        }
     } else {
         lang = "en";
-        info["lang"] = QJsonValue(lang);
     }
+
+    //GET localization
     if(lang != "en"){
         //GET localization for the article with a given lang
         lang = obj.value("lang").toString().trimmed();
@@ -88,6 +96,7 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
             query.exec();
             if (query.next()) {
                 QSqlRecord record = query.record();
+                info["lang"] = QJsonValue("en");
                 info["name"] = record.value("name").toString();
                 info["content"] = record.value("content").toString();
             } else {
