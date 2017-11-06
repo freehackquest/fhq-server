@@ -19,7 +19,7 @@ QString Update0094::description(){
 bool Update0094::update(QSqlDatabase &db, QString &error){
 
     QSqlQuery query(db);
-    query.prepare("ALTER TABLE classbook DROP COLUMN logo;");
+    query.prepare("ALTER TABLE games DROP COLUMN logo;");
     if(!query.exec()){
         error = query.lastError().text();
         Log::err(TAG, "The problem with altering the table " + error);
