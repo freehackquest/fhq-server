@@ -69,7 +69,7 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
         lang = obj.value("lang").toString().trimmed();
         QList<QString> allow_lang = {"en", "ru","de"};
         if(!allow_lang.contains(lang)){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Language is'not support"));
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Language is not support"));
             return;
         }
     } else {
@@ -135,14 +135,21 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
 
     //FIND parents for the article
     QJsonArray parents;
+    QSet<int> set_of_parent;
     int parentid = info.value("parentid").toInt();
     for (int i=0; i < 5; ++i){
+        //END IT root article
         if (parentid==0){
             QJsonObject parent;
             parent["classbookid"] = 0;
             parent["parentid"] = 0;
             parent["name"] = "Root";
+            parents.push_back(parent);
             break;
+        }
+        //CONTINUE if already have a article in parents
+        if (set_of_parent.contains(parentid)){
+            continue;
         }
         query.prepare("SELECT id, name, parentid FROM classbook WHERE id=:parentid");
         query.bindValue(":parentid", parentid);
@@ -151,15 +158,21 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
             QSqlRecord record = query.record();
             QJsonObject parent;
             parent["classbookid"] = record.value("id").toInt();
+            if (classbookid == parent["classbookid"].toInt()){
+                continue;
+            }
             parentid = record.value("parentid").toInt();
             parent["parentid"] = parentid;
             parent["name"] = record.value("name").toString();
             parents.push_back(parent);
+            set_of_parent.insert(parent["classbookid"].toInt());
         } else {
             pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Error in PATHFINDER. Not found the article with a given classbookid"));
             return;
         }
     }
+    //ADD parents to response
+    info["parents"] = parents;
 
     QJsonObject jsonData;
     jsonData["cmd"] = QJsonValue(cmd());

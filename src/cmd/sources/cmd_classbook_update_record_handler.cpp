@@ -48,6 +48,11 @@ void CmdClassbookUpdateRecordHandler::handle(QWebSocket *pClient, IWebSocketServ
     QSqlDatabase db = *(pWebSocketServer->database());
 
     int classbookid = obj["classbookid"].toInt();
+    //IF classbookid = 0, THEN reject request
+    if(classbookid == 0){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Not today. It's root article id"));
+        return;
+    }
 
     //Find article with a given classbookid
     QSqlQuery query(db);
@@ -59,14 +64,8 @@ void CmdClassbookUpdateRecordHandler::handle(QWebSocket *pClient, IWebSocketServ
         return;
     }
 
-    //IF classbookid = 0, THEN reject request
-    if(classbookid == 0){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Not today. It's root article id"));
-        return;
-    }
-
     //CHECK Do we have anything to change?
-    if(!obj.contains("name") || !obj.contains("content") || !obj.contains("ordered") || !obj.contains("parentid")){
+    if (!(obj.contains("name") || obj.contains("content") || obj.contains("ordered") || obj.contains("parentid"))){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Not found a charges. Not enough parameters"));
         return;
     }
@@ -75,12 +74,16 @@ void CmdClassbookUpdateRecordHandler::handle(QWebSocket *pClient, IWebSocketServ
     //FIND article with id = parentid AND UPDATE parentid IF exist
     if(obj.contains("parentid")){
         parentid = obj.value("parentid").toInt();
-        query.prepare("SELECT name FROM classbook WHERE id=:parentid");
-        query.bindValue(":parentid", parentid);
-        query.exec();
-        if(!query.next()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Not found a article with a given parentid"));
-            return;
+
+        if (parentid != 0){
+            //CHECK existence of the article
+            query.prepare("SELECT name FROM classbook WHERE id=:parentid");
+            query.bindValue(":parentid", parentid);
+            query.exec();
+            if(!query.next()){
+                pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Not found a article with a given parentid"));
+                return;
+            }
         }
 
         query.prepare("UPDATE classbook SET parentid=:parentid WHERE id=:classbookid");

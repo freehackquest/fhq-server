@@ -72,21 +72,9 @@ void CmdClassbookSearchHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
     }
 
     QJsonArray data;
-    if (lang == "en") {
-        query.prepare("SELECT id, name FROM classbook WHERE parentid=:parentid "
-                      "AND (name LIKE '%:search%' OR content LIKE '%:search%') ORDER BY ordered");
-        query.bindValue(":parentid", parentid);
-        query.bindValue(":search", search);
-    } else {
-        query.prepare("SELECT classbookid, name FROM classbook_localization "
-                  "WHERE lang=:lang AND (name LIKE '%:search%' OR content LIKE '%:search%') "
-                  "AND classbookid "
-                  "IN(SELECT id FROM classbook WHERE parentid=:parentid ORDER BY ordered)");
-        query.bindValue(":parentid", parentid);
-        query.bindValue(":search", search);
-        query.bindValue(":lang", lang);
-    }
-
+    query.prepare("SELECT id, name FROM classbook WHERE name LIKE :search OR content LIKE :search ORDER BY ordered;");
+    query.bindValue(":parentid", parentid);
+    query.bindValue(":search", "'%" + search + "%'");
     query.exec();
     while (query.next()) {
         QSqlRecord record = query.record();
