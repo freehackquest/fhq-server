@@ -1,6 +1,7 @@
 #include <cmd_quest_pass_handler.h>
 #include <runtasks.h>
 #include <log.h>
+#include <utils.h>
 
 #include <QJsonArray>
 #include <QCryptographicHash>
@@ -87,7 +88,7 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
 
     {
         QSqlQuery query(db);
-        query.prepare("SELECT * FROM games WHERE id = 2 AND (NOW() < date_stop OR NOW() > date_restart)");
+        query.prepare("SELECT * FROM games WHERE id = :gameid AND (NOW() < date_stop OR NOW() > date_restart)");
         query.bindValue(":gameid", nGameID);
         if(!query.exec()){
             pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
@@ -95,7 +96,7 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
         }
 
         if (!query.next()) {
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Game ended. Please "));
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Game ended. Please wait date of restart."));
             return;
         }
     }
@@ -152,7 +153,8 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
         query.bindValue(":user_answer", sUserAnswer);
         query.bindValue(":quest_answer", sQuestAnswer);
         query.bindValue(":passed", sPassed);
-        query.bindValue(":levenshtein", 1000);
+        int nLevenshtein = UtilsLevenshtein::distance(sUserAnswer.toUpper(), sQuestAnswer.toUpper());
+        query.bindValue(":levenshtein", nLevenshtein);
 
         if(!query.exec()){
             pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));

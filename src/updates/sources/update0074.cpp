@@ -1,5 +1,9 @@
 #include <update0074.h>
 
+Update0074::Update0074(){
+    TAG = "Update0074";
+}
+
 QString Update0074::from_version(){
 	return "u0073";
 }
@@ -17,6 +21,7 @@ bool Update0074::update(QSqlDatabase &db, QString &error){
 	query.prepare("ALTER TABLE `feedback` ADD COLUMN `from` VARCHAR(255) DEFAULT '';");
 	if(!query.exec()){
 		error = query.lastError().text();
+        Log::err(TAG, "The problem with altering the table " + error);
 		return false;
 	}
 	return true;

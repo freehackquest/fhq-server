@@ -6,7 +6,6 @@
 
 CmdGameCreateHandler::CmdGameCreateHandler(){
     m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
-    m_vInputs.push_back(CmdInputDef("logo").string_().required().description("Logo"));
     m_vInputs.push_back(CmdInputDef("name").string_().required().description("Name of the Game"));
     m_vInputs.push_back(CmdInputDef("description").string_().required().description("Description of the Game"));
     m_vInputs.push_back(CmdInputDef("state").string_().required().description("State of the game"));
@@ -76,7 +75,6 @@ void CmdGameCreateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
     }
 	
     QString sDescription = obj["description"].toString().trimmed();
-    QString sLogo = obj["logo"].toString().trimmed();
     QString sState = obj["state"].toString().trimmed();
     QString sForm = obj["form"].toString().trimmed();
     QString sType = obj["type"].toString().trimmed();
@@ -90,7 +88,6 @@ void CmdGameCreateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         "INSERT INTO games("
 		"		uuid,"
         "		title,"
-        "		logo,"
         "		type_game,"
         "		date_create,"
         "		date_change,"
@@ -107,7 +104,6 @@ void CmdGameCreateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		"	VALUES("
 		"		:uuid,"
         "		:title,"
-        "		:logo,"
         "		:type_game,"
         "		NOW(),"
         "		NOW(),"
@@ -123,7 +119,6 @@ void CmdGameCreateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		"	)");
 	query.bindValue(":uuid", sUUID);
     query.bindValue(":title", sName);
-    query.bindValue(":logo", sLogo);
     query.bindValue(":type_game", sType);
     query.bindValue(":date_start", sDateStart);
     query.bindValue(":date_stop", sDateStop);

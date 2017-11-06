@@ -4,12 +4,6 @@ name=freehackquest
 user=freehackquest_u
 password=freehackquest_password_database
 
-[EMAIL]
-username=freehackquest@gmail.com
-password=somepass
-host=smtp.gmail.com
-port=465
-
 [SERVER]
 port = 1234;
 ssl_on = false

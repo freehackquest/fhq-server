@@ -1,21 +1,23 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <signal.h>
+// #include <stdio.h>
+// #include <stdlib.h>
+// #include <string.h>
+// #include <signal.h>
 #include <iostream>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <unistd.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <syslog.h>
+// #include <sys/stat.h>
+// #include <sys/types.h>
+// #include <sys/time.h>
+// #include <unistd.h>
+// #include <errno.h>
+// #include <fcntl.h>
+// #include <syslog.h>
 #include <QtCore>
 #include <QFile>
 #include <QString>
 #include <log.h>
 #include <websocketserver.h>
-#include "prepare_tmp_deb_package.h"
+#include <utils_prepare_deb_package.h>
+#include <utils_create_config.h>
+#include <create_unit_tests.h>
 
 int main(int argc, char** argv) {
 	QCoreApplication a(argc, argv);
@@ -28,15 +30,20 @@ int main(int argc, char** argv) {
     
     QCommandLineParser parser;
     parser.setApplicationDescription("freehackquest-backend");
-
     
     parser.addHelpOption();
     
-    QCommandLineOption versionOption(QStringList() << "v" << "version", QCoreApplication::translate("main", "Version"));
+    QCommandLineOption versionOption(QStringList() << "ver" << "version", QCoreApplication::translate("main", "Version"));
     parser.addOption(versionOption);
     
     QCommandLineOption prepareDebOption(QStringList() << "pd" << "prepare-deb", QCoreApplication::translate("main", "Prepare Deb Package"));
     parser.addOption(prepareDebOption);
+    
+    QCommandLineOption optRunUnitTests(QStringList() << "rut" << "run-unit-tests", QCoreApplication::translate("main", "Run unit tests"));
+    parser.addOption(optRunUnitTests);
+
+    QCommandLineOption optCreateConfigLinux(QStringList() << "cc-lin" << "create-config-linux", QCoreApplication::translate("main", "Create config file for Linux: /etc/freehackquest-backend/conf.ini"));
+    parser.addOption(optCreateConfigLinux);
 
     parser.process(a);
     std::cout << QCoreApplication::applicationName().toStdString() << "-" << QCoreApplication::applicationVersion().toStdString() << "\n";
@@ -46,11 +53,33 @@ int main(int argc, char** argv) {
 		return 0;
 	}
 
-	bool prepare_deb = parser.isSet(prepareDebOption);
-    if(prepare_deb){
-		PrepareTmpDebPackage::prepare("","tmpdeb");
+	bool bRunUnitTests = parser.isSet(optRunUnitTests);
+    if(bRunUnitTests){
+		QMap<QString, IUnitTest *> mapUnitTests;
+		create_unit_tests(mapUnitTests);
+		foreach( QString name, mapUnitTests.keys()){
+			IUnitTest *pUnitTest = mapUnitTests.value(name);
+			Log::info(TAG,  "Run test  " + name);
+			if(pUnitTest->run()){
+				Log::info(TAG,  "Test passed");
+			}else{
+				Log::err(TAG,  "Test failed");
+			}
+		}
 		return 0;
 	}
+
+	bool bPrepareDebPackage = parser.isSet(prepareDebOption);
+    if(bPrepareDebPackage){
+		UtilsPrepareDebPackage::prepare("","tmpdeb");
+		return 0;
+	}
+
+	bool bCreateConfigLinux = parser.isSet(optCreateConfigLinux);
+	if(bCreateConfigLinux){
+		UtilsCreateConfig::forLinux();
+		return 0;
+	};
 
 	if(!QFile::exists("/etc/freehackquest-backend/conf.ini")){
 		Log::err(TAG, "Not found /etc/freehackquest-backend/conf.ini");

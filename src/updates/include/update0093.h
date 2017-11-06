@@ -1,5 +1,5 @@
-#ifndef UPDATE0093
-#define UPDATE0093
+#ifndef UPDATE_0093_H
+#define UPDATE_0093_H
 
 #include <iupdate.h>
 
@@ -16,5 +16,5 @@ class Update0093 : public IUpdate {
         QString TAG;
 };
 
-#endif // UPDATE0093
+#endif // UPDATE_0093_H
 

@@ -1,5 +1,4 @@
 #include "update_user_location_task.h"
-#include <QDebug>
 #include <QThread>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>

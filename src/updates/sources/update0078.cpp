@@ -1,5 +1,9 @@
 #include <update0078.h>
 
+Update0078::Update0078(){
+    TAG = "Update0078";
+}
+
 QString Update0078::from_version(){
 	return "u0077";
 }
@@ -17,6 +21,7 @@ bool Update0078::update(QSqlDatabase &db, QString &error){
 	query.prepare("ALTER TABLE `quest` DROP COLUMN min_score;");
 	if(!query.exec()){
 		error = query.lastError().text();
+        Log::err(TAG, "The problem with altering the table " + error);
 		return false;
 	}
 	return true;

@@ -21,7 +21,7 @@ bool Update0090::update(QSqlDatabase &db, QString &error){
     query.prepare("ALTER TABLE users ADD COLUMN `university` VARCHAR(255) DEFAULT ''");
 	if(!query.exec()){
 		error = query.lastError().text();
-		Log::info(TAG, "Problem with install update " + error);
+        Log::err(TAG, "The problem with altering the table " + error);
 		return false;
 	}
     return true;

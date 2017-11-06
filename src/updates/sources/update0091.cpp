@@ -22,7 +22,7 @@ bool Update0091::update(QSqlDatabase &db, QString &error){
     query.prepare("ALTER TABLE classbook DROP COLUMN name_ru;");
     if(!query.exec()){
         error = query.lastError().text();
-        Log::info(TAG, "Problem with install update " + error);
+        Log::err(TAG, "The problem with altering the table " + error);
         return false;
     }
 
@@ -30,7 +30,7 @@ bool Update0091::update(QSqlDatabase &db, QString &error){
     query1.prepare("ALTER TABLE classbook DROP COLUMN name_en;");
     if(!query1.exec()){
         error = query1.lastError().text();
-        Log::info(TAG, "Problem with install update " + error);
+        Log::err(TAG, "The problem with altering the table " + error);
         return false;
     }
 
@@ -38,7 +38,7 @@ bool Update0091::update(QSqlDatabase &db, QString &error){
     query2.prepare("ALTER TABLE classbook DROP COLUMN dt;");
     if(!query2.exec()){
         error = query2.lastError().text();
-        Log::info(TAG, "Problem with install update " + error);
+        Log::err(TAG, "The problem with altering the table " + error);
         return false;
     }
 
@@ -46,7 +46,7 @@ bool Update0091::update(QSqlDatabase &db, QString &error){
     query3.prepare("ALTER TABLE classbook ADD name VARCHAR(128) NOT NULL after parentuuid;");
     if(!query3.exec()){
         error = query3.lastError().text();
-        Log::info(TAG, "Problem with install update " + error);
+        Log::err(TAG, "The problem with altering the table " + error);
         return false;
     }
 
@@ -54,7 +54,7 @@ bool Update0091::update(QSqlDatabase &db, QString &error){
     query4.prepare("ALTER TABLE classbook ADD content TEXT NOT NULL after name;");
     if(!query4.exec()){
         error = query4.lastError().text();
-        Log::info(TAG, "Problem with install update " + error);
+        Log::err(TAG, "The problem with altering the table " + error);
         return false;
     }
 
@@ -62,7 +62,7 @@ bool Update0091::update(QSqlDatabase &db, QString &error){
     query5.prepare("ALTER TABLE classbook ADD COLUMN created datetime NOT NULL after content;");
     if(!query5.exec()){
         error = query5.lastError().text();
-        Log::info(TAG, "Problem with install update " + error);
+        Log::err(TAG, "The problem with altering the table " + error);
         return false;
     }
 
@@ -70,7 +70,7 @@ bool Update0091::update(QSqlDatabase &db, QString &error){
     query6.prepare("ALTER TABLE classbook ADD COLUMN updated datetime NOT NULL after created;");
     if(!query6.exec()){
         error = query6.lastError().text();
-        Log::info(TAG, "Problem with install update " + error);
+        Log::err(TAG, "The problem with altering the table " + error);
         return false;
     }
 

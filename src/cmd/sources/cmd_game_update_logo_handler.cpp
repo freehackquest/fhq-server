@@ -49,6 +49,8 @@ void CmdGameUpdateLogoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWe
 
     int nGameID = obj["gameid"].toInt();
 
+    // TODO check existing game
+
     IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
     if(pMemoryCache == NULL){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());

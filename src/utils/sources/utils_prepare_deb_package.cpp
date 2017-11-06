@@ -1,11 +1,11 @@
-#include "prepare_tmp_deb_package.h"
+#include <utils_prepare_deb_package.h>
 #include <iostream>
 #include <QFile>
 #include <QTextStream>
 #include <QSysInfo>
 #include <QtCore>
 
-void PrepareTmpDebPackage::prepare(QString /*repo*/, QString tmpdeb){
+void UtilsPrepareDebPackage::prepare(QString /*repo*/, QString tmpdeb){
 	std::cout << "Distribution: " + QSysInfo::productType().toStdString() + "\n";
 	std::cout << "Distribution version: " + QSysInfo::productVersion().toStdString() + "\n";
 

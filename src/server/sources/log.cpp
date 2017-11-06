@@ -2,7 +2,7 @@
 
 #include <QTextStream>
 #include <QFile>
-#include <QDebug>
+#include <iostream>
 #include <QByteArray>
 #include <QDateTime>
 #include <QDir>
@@ -94,7 +94,7 @@ void Log::add(QString type, QString tag, QString msg){
 	QMutexLocker locker(&LOG_MUTEX);
 	QString sThreadID = "0x" + QString::number((long long)QThread::currentThreadId(), 16);
 	msg = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz") + ", " + sThreadID + " [" + type + "] " + tag + ": " + msg;
-	qDebug() << msg;
+    std::cout << msg.toStdString() << "\r\n";
 	LAST_LOG_MESSAGES << msg;
 	while(LAST_LOG_MESSAGES.size() > 50){
 		LAST_LOG_MESSAGES.removeLast();
@@ -108,14 +108,14 @@ void Log::add(QString type, QString tag, QString msg){
 void Errors::WriteServerError(QString errorInfo){
 	QDir dir("/var/log/freehackquestd/errors");
 	if(!dir.exists()){
-		qDebug().nospace() << dir.absolutePath() << " did not found";
-		qDebug().nospace() << errorInfo;
+        std::cout << dir.absolutePath() << " did not found";
+        std::cout << errorInfo;
 		return;
 	}
 	QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd");
 	if(!dir.exists(date) && !dir.mkdir(date)){
-		qDebug().nospace() << dir.absolutePath() << " could not create dir " << date;
-		qDebug().nospace() << errorInfo;
+        std::cout << dir.absolutePath() << " could not create dir " << date;
+        std::cout << errorInfo;
 		return;
 	}
 	dir.cd(date);
@@ -125,8 +125,8 @@ void Errors::WriteServerError(QString errorInfo){
     errorf.open(QIODevice::WriteOnly | QIODevice::Text);
 
     if(!errorf.isOpen()){
-        qDebug().nospace() << dir.absolutePath() + '/' + time << " could not openfile ";
-		qDebug().nospace() << errorInfo;
+        std::cout << dir.absolutePath() + '/' + time << " could not openfile ";
+        std::cout << errorInfo;
 		return;
     }
     QTextStream outStream(&errorf);

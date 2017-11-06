@@ -3,7 +3,6 @@
 
 #include <iserver.h>
 #include <QVector>
-#include <QDebug>
 
 void create_memory_cache(QMap<QString, IMemoryCache *> &mapMemoryCache, IWebSocketServer *pWebSocketServer);
 	

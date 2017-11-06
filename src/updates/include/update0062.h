@@ -5,11 +5,15 @@
 
 class Update0062 : public IUpdate {
 	
-	public:
-		virtual QString from_version();
-		virtual QString version();
-		virtual QString description();
-		virtual bool update(QSqlDatabase &db, QString &error);
+    public:
+        Update0062();
+        virtual QString from_version();
+        virtual QString version();
+        virtual QString description();
+        virtual bool update(QSqlDatabase &db, QString &error);
+
+    private:
+        QString TAG;
 };
 
 #endif // UPDATE_0062_H
