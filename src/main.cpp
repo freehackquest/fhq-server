@@ -81,11 +81,6 @@ int main(int argc, char** argv) {
 		return 0;
 	};
 
-	if(!QFile::exists("/etc/freehackquest-backend/conf.ini")){
-		Log::err(TAG, "Not found /etc/freehackquest-backend/conf.ini");
-		return 0;
-	}
-
 	QThreadPool::globalInstance()->setMaxThreadCount(5);
     WebSocketServer *pServer = new WebSocketServer();
     if(pServer->isFailed()){

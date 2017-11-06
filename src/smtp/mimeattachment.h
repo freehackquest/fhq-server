@@ -23,9 +23,7 @@
 #include "mimepart.h"
 #include "mimefile.h"
 
-#include "smtpexports.h"
-
-class SMTP_EXPORT MimeAttachment : public MimeFile
+class MimeAttachment : public MimeFile
 {
     Q_OBJECT
 public:

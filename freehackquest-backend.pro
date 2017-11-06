@@ -1,8 +1,8 @@
 TEMPLATE = app
 TARGET = freehackquest-backend
 
-VERSION = 0.1.18
-DEFINES += VERSION_STRING=\\\"0.1.18\\\"
+VERSION = 0.1.19
+DEFINES += VERSION_STRING=\\\"0.1.19\\\"
 
 CONFIG   += console
 CONFIG   += release

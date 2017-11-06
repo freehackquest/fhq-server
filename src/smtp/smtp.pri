@@ -3,7 +3,7 @@ INCLUDEPATH += src/smtp
 
 HEADERS += \
     src/smtp/emailaddress.h \
-    src/smtp//mimeattachment.h \
+    src/smtp/mimeattachment.h \
     src/smtp/mimefile.h \
     src/smtp/mimehtml.h \
     src/smtp/mimeinlinefile.h \
@@ -14,8 +14,7 @@ HEADERS += \
     src/smtp/SmtpMime \
     src/smtp/quotedprintable.h \
     src/smtp/mimemultipart.h \
-    src/smtp/mimecontentformatter.h \
-    src/smtp/smtpexports.h
+    src/smtp/mimecontentformatter.h
 
 SOURCES += \
     src/smtp/emailaddress.cpp \

@@ -22,9 +22,7 @@
 #include <QObject>
 #include <QByteArray>
 
-#include "smtpexports.h"
-
-class SMTP_EXPORT QuotedPrintable : public QObject
+class QuotedPrintable : public QObject
 {
     Q_OBJECT
 public:
