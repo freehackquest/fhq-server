@@ -8,7 +8,7 @@ CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler(){
     m_vInputs.push_back(CmdInputDef("name").required().string_().description("name of article"));
     m_vInputs.push_back(CmdInputDef("content").required().string_().description("content of article"));
     m_vInputs.push_back(CmdInputDef("uuid").optional().uuid_().description("uuid of article"));
-    m_vInputs.push_back(CmdInputDef("order").optional().integer_().description("order of article"));
+    m_vInputs.push_back(CmdInputDef("ordered").optional().integer_().description("order of article"));
 }
 
 QString CmdClassbookAddRecordHandler::cmd(){
@@ -95,7 +95,7 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
     //Set ordered of article: increment max of child's ordered
     int ordered;
     if (obj.contains("order")){
-        ordered = obj["order"].toInt();
+        ordered = obj["ordered"].toInt();
     } else {
         query.prepare("SELECT MAX(ordered) AS max FROM classbook WHERE parentid=:parentid");
         query.bindValue(":parentid", parentid);
