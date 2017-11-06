@@ -5,7 +5,7 @@
 #include <QCryptographicHash>
 
 CmdGameDeleteHandler::CmdGameDeleteHandler(){
-    m_vInputs.push_back(CmdInputDef("gameid").integer_().required().description("Game ID"));
+    m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
     m_vInputs.push_back(CmdInputDef("admin_password").string_().required().description("Admin Password"));
 }
 
@@ -44,7 +44,7 @@ QStringList CmdGameDeleteHandler::errors(){
 
 void CmdGameDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
-	int nGameID = obj["gameid"].toInt();
+    QString sUuid = obj["uuid"].toString().trimmed();
 	QString sAdminPassword = obj["admin_password"].toString();
 	
 	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
@@ -52,6 +52,7 @@ void CmdGameDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
     
 	QSqlDatabase db = *(pWebSocketServer->database());
 	
+    // check admin password
 	{
 		QSqlQuery query(db);
 		query.prepare("SELECT * FROM users WHERE id = :userid");
@@ -73,25 +74,35 @@ void CmdGameDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 			return;
 		}
 
-		if(sAdminPassword != sPass){
+        QString sAdminPasswordHash = sEmail.toUpper() + sAdminPassword;
+        sAdminPasswordHash = QString("%1").arg(QString(QCryptographicHash::hash(sAdminPasswordHash.toUtf8(),QCryptographicHash::Sha1).toHex()));
+
+        if(sAdminPasswordHash != sPass){
 			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(401, "Wrong password"));
 			return;
 		}
 	}
 
+    int nGameID = 0;
+
+    // check existing game
 	{
 		QSqlQuery query(db);
-		query.prepare("SELECT * FROM games WHERE id = :gameid");
-		query.bindValue(":gameid", nGameID);
+        query.prepare("SELECT * FROM games WHERE uuid = :uuid");
+        query.bindValue(":uuid", sUuid);
 		
 		if(!query.exec()){
 			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 			return;
 		}
+
 		if(!query.next()) {
 			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Game not found"));	
 			return;
-		}
+        }else{
+            QSqlRecord record = query.record();
+            nGameID = record.value("id").toInt();
+        }
 	}
 
 	// delete from users_games
