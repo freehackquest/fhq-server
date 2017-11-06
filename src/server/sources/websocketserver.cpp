@@ -23,8 +23,9 @@
 WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 	TAG = "WebSocketServer";
 	m_pServerConfig = new ServerConfig();
-	
-	if(!m_pServerConfig->load()){
+    m_bFailed = false;
+
+    if(!m_pServerConfig->load()){
 		m_bFailed = true;
 		return;
 	}
