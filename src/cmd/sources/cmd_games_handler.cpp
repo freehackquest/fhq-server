@@ -55,8 +55,13 @@ void CmdGamesHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 	QSqlDatabase db = *(pWebSocketServer->database());
 	QSqlQuery query(db);
 	query.prepare("SELECT * FROM games ORDER BY games.date_start");
-	query.exec();
-	while (query.next()) {
+
+    if(!query.exec()){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        return;
+    }
+
+    while (query.next()) {
 		QSqlRecord record = query.record();
 		QJsonObject game;
         int nGameID = record.value("id").toInt();
