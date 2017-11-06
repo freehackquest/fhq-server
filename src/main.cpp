@@ -30,7 +30,6 @@ int main(int argc, char** argv) {
     
     QCommandLineParser parser;
     parser.setApplicationDescription("freehackquest-backend");
-
     
     parser.addHelpOption();
     

@@ -3,7 +3,6 @@
 
 #include <iupdate.h>
 #include <QVector>
-#include <QDebug>
 
 void create_list_updates(QVector<IUpdate *> &vUpdates);
 bool tryUpdateDatabase(QSqlDatabase *pDatabase);

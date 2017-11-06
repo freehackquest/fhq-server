@@ -1,6 +1,5 @@
 #include "update_max_score_game_task.h"
 #include <log.h>
-#include <QDebug>
 #include <QThread>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>

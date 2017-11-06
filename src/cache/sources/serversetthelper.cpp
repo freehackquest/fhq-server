@@ -4,7 +4,6 @@
 
 #include <QTextStream>
 #include <QFile>
-#include <QDebug>
 #include <QByteArray>
 #include <QDateTime>
 #include <QDir>
