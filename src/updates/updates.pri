@@ -3,41 +3,42 @@ INCLUDEPATH += src/updates
 INCLUDEPATH += src/updates/include
 
 HEADERS += \
-	src/updates/create_list_updates.h \
-	src/updates/include/database0060.h \
-	src/updates/include/update0061.h \
-	src/updates/include/update0062.h \
-	src/updates/include/update0063.h \
-	src/updates/include/update0064.h \
-	src/updates/include/update0065.h \
-	src/updates/include/update0066.h \
-	src/updates/include/update0067.h \
-	src/updates/include/update0068.h \
-	src/updates/include/update0069.h \
-	src/updates/include/update0070.h \
-	src/updates/include/update0071.h \
-	src/updates/include/update0072.h \
-	src/updates/include/update0073.h \
-	src/updates/include/update0074.h \
-	src/updates/include/update0075.h \
-	src/updates/include/update0076.h \
-	src/updates/include/update0077.h \
-	src/updates/include/update0078.h \
-	src/updates/include/update0079.h \
-	src/updates/include/update0080.h \
-	src/updates/include/update0081.h \
-	src/updates/include/update0082.h \
-	src/updates/include/update0083.h \
-	src/updates/include/update0084.h \
-	src/updates/include/update0085.h \
-	src/updates/include/update0086.h \
-	src/updates/include/update0087.h \
-	src/updates/include/update0088.h \
-	src/updates/include/update0089.h \
-        src/updates/include/update0090.h \
-        src/updates/include/update0091.h \
+    src/updates/create_list_updates.h \
+    src/updates/include/database0060.h \
+    src/updates/include/update0061.h \
+    src/updates/include/update0062.h \
+    src/updates/include/update0063.h \
+    src/updates/include/update0064.h \
+    src/updates/include/update0065.h \
+    src/updates/include/update0066.h \
+    src/updates/include/update0067.h \
+    src/updates/include/update0068.h \
+    src/updates/include/update0069.h \
+    src/updates/include/update0070.h \
+    src/updates/include/update0071.h \
+    src/updates/include/update0072.h \
+    src/updates/include/update0073.h \
+    src/updates/include/update0074.h \
+    src/updates/include/update0075.h \
+    src/updates/include/update0076.h \
+    src/updates/include/update0077.h \
+    src/updates/include/update0078.h \
+    src/updates/include/update0079.h \
+    src/updates/include/update0080.h \
+    src/updates/include/update0081.h \
+    src/updates/include/update0082.h \
+    src/updates/include/update0083.h \
+    src/updates/include/update0084.h \
+    src/updates/include/update0085.h \
+    src/updates/include/update0086.h \
+    src/updates/include/update0087.h \
+    src/updates/include/update0088.h \
+    src/updates/include/update0089.h \
+    src/updates/include/update0090.h \
+    src/updates/include/update0091.h \
     $$PWD/include/update0092.h \
-    $$PWD/include/update0093.h
+    $$PWD/include/update0093.h \
+    $$PWD/include/update0094.h \
 
 SOURCES += \
 	src/updates/create_list_updates.cpp \
@@ -74,4 +75,5 @@ SOURCES += \
         src/updates/sources/update0090.cpp \
         src/updates/sources/update0091.cpp \
     $$PWD/sources/update0092.cpp \
-    $$PWD/sources/update0093.cpp
+    $$PWD/sources/update0093.cpp \
+    $$PWD/sources/update0094.cpp \

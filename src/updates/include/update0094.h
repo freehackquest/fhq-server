@@ -1,12 +1,12 @@
-#ifndef UPDATE_0093_H
-#define UPDATE_0093_H
+#ifndef UPDATE_0094_H
+#define UPDATE_0094_H
 
 #include <iupdate.h>
 
-class Update0093 : public IUpdate {
+class Update0094 : public IUpdate {
 
     public:
-        Update0093();
+        Update0094();
         virtual QString from_version();
         virtual QString version();
         virtual QString description();
@@ -16,5 +16,5 @@ class Update0093 : public IUpdate {
         QString TAG;
 };
 
-#endif // UPDATE_0093_H
+#endif // UPDATE_0094_H
 
