@@ -1,34 +1,16 @@
 #include <utils_levenshtein.h>
-#include <QVector>
-int UtilsLevenshtein::find_min(int a,int b, int c)
+int UtilsLevenshtein::distance(const QString &s1, const QString &s2)
 {
-        if(a < b && a < c)
-                return a;
-        else if(b < a && b < c)
-                return b;
-        else
-                return c;
-};
-int UtilsLevenshtein::distance(const QString &one, const QString &two){
-        int len_one = one.length(), len_two = two.length();
-        QVector<int> distances_one; //[len_two + 1];
-        QVector<int> distances_two; //[len_two + 1];
-        int substitution_cost;
+    const std::size_t len1 = s1.length(), len2 = s2.length();
+    std::vector<std::vector<unsigned int> > d(len1 + 1, std::vector<unsigned int>(len2 + 1));
 
-        for (int i = 0; i < len_two; i++)
-        {
-                distances_one.push_back(i);
-        };
-        for (int i = 0; i < len_one - 1; i++) {
-                distances_two.push_back(i + 1);
-                for (int j = 0; j < len_two - 1; j++) {
-                        if (one[i] == two[j]) {
-                                substitution_cost = 0;
-                        } else {
-                                substitution_cost = 1;
-                        }
-                        distances_two[j + 1] = find_min(distances_two[j] + 1, distances_one[j + 1] + 1, distances_one[j] + substitution_cost);
-                };
-        };
-        return distances_two[len_two];
-};
+    d[0][0] = 0;
+    for(unsigned int i = 1; i <= len1; ++i) d[i][0] = i;
+    for(unsigned int i = 1; i <= len2; ++i) d[0][i] = i;
+
+    for(unsigned int i = 1; i <= len1; ++i)
+        for(unsigned int j = 1; j <= len2; ++j)
+            d[i][j] = std::min(std::min( d[i - 1][j] + 1, d[i][j - 1] + 1), (d[i - 1][j - 1] + (s1[i - 1] == s2[j - 1] ? 0 : 1)));
+
+    return d[len1][len2];
+}
