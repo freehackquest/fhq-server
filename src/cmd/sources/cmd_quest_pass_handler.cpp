@@ -142,6 +142,7 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
 
     bool bPassed = sQuestAnswer.toUpper() == sUserAnswer.toUpper();
     QString sPassed = bPassed ? "Yes" : "No";
+    int nLevenshtein = UtilsLevenshtein::distance(sUserAnswer.toUpper(), sQuestAnswer.toUpper());
 
     // insert to user tries
     {
@@ -153,7 +154,6 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
         query.bindValue(":user_answer", sUserAnswer);
         query.bindValue(":quest_answer", sQuestAnswer);
         query.bindValue(":passed", sPassed);
-        int nLevenshtein = UtilsLevenshtein::distance(sUserAnswer.toUpper(), sQuestAnswer.toUpper());
         query.bindValue(":levenshtein", nLevenshtein);
 
         if(!query.exec()){
@@ -163,7 +163,7 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
     }
 
     if(!bPassed){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Answer incorrect"));
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Answer incorrect. Levenshtein distance: " + QString::number(nLevenshtein)));
         return;
     }
 
