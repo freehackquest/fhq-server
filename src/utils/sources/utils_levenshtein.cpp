@@ -1,4 +1,6 @@
 #include <utils_levenshtein.h>
+#include <vector>
+
 int UtilsLevenshtein::distance(const QString &s1, const QString &s2)
 {
     const std::size_t len1 = s1.length(), len2 = s2.length();
