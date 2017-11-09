@@ -146,7 +146,7 @@ void CmdClassbookUpdateRecordHandler::handle(QWebSocket *pClient, IWebSocketServ
 
     //GET article info
     QJsonObject info;
-    query.prepare("SELECT id, name, content, ordered, parentid FROM classbook WHERE id=:classbookid");
+    query.prepare("SELECT id, name, content, md5_content, ordered, parentid FROM classbook WHERE id=:classbookid");
     query.bindValue(":classbookid", classbookid);
     query.exec();
     if (query.next()) {
@@ -155,6 +155,7 @@ void CmdClassbookUpdateRecordHandler::handle(QWebSocket *pClient, IWebSocketServ
         info["parentid"] = record.value("parentid").toInt();
         info["name"] = record.value("name").toString();
         info["content"] = record.value("content").toString();
+        info["md5_content"] = record.value("md5_content").toString();
         info["ordered"] = record.value("ordered").toInt();
     } else {
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("article"));
