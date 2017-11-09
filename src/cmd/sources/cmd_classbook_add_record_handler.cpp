@@ -116,11 +116,6 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
         }
     }
 
-    //Set Datetime
-    QDateTime created, updated;
-    created = QDateTime::currentDateTime();
-    updated = created;
-
     //Insert article into classbook
     query.prepare("INSERT INTO classbook("
                   "parentid,"
@@ -141,8 +136,8 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
                   ":name,"
                   ":content,"
                   ":md5_content,"
-                  ":created,"
-                  ":updated"
+                  "NOW()"
+                  "NOW()"
                   ")");
     query.bindValue(":parentid", parentid);
     query.bindValue(":ordered", ordered);
@@ -151,8 +146,6 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
     query.bindValue(":name", name);
     query.bindValue(":content", content);
     query.bindValue(":md5_content", md5_content);
-    query.bindValue(":created", created);
-    query.bindValue(":updated", updated);
     if (!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
