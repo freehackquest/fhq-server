@@ -13,7 +13,7 @@ QString Update0095::version(){
 }
 
 QString Update0095::description(){
-    return "Add columns md5_content and uuid to classbook and classbook_localization";
+    return "Add columns md5_content and uuid to classbook, classbook_localization and classbook_proposal";
 }
 
 bool Update0095::update(QSqlDatabase &db, QString &error){
@@ -37,6 +37,22 @@ bool Update0095::update(QSqlDatabase &db, QString &error){
     QSqlQuery query3(db);
     query3.prepare("ALTER TABLE classbook_localization ADD COLUMN uuid VARCHAR(128) NOT NULL AFTER classbookid");
     if(!query3.exec()){
+        error = query3.lastError().text();
+        Log::err(TAG, "The problem with altering the table " + error);
+        return false;
+    }
+
+    QSqlQuery query4(db);
+    query4.prepare("ALTER TABLE classbook_proposal ADD COLUMN md5_content CHAR(32) NOT NULL AFTER content");
+    if(!query4.exec()){
+        error = query4.lastError().text();
+        Log::err(TAG, "The problem with altering the table " + error);
+        return false;
+    }
+
+    QSqlQuery query5(db);
+    query5.prepare("ALTER TABLE classbook_proposal ADD COLUMN uuid VARCHAR(128) NOT NULL AFTER classbookid");
+    if(!query5.exec()){
         error = query3.lastError().text();
         Log::err(TAG, "The problem with altering the table " + error);
         return false;

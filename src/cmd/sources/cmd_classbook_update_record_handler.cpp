@@ -121,6 +121,17 @@ void CmdClassbookUpdateRecordHandler::handle(QWebSocket *pClient, IWebSocketServ
         }
     }
 
+    //Set and update md5_content hash
+    QString md5_content = QString(QCryptographicHash::hash(content.toUtf8(), QCryptographicHash::Md5).toHex());
+    //UPDATE md5_content for article
+    query.prepare("UPDATE classbook SET md5_content=:md5_content WHERE id=:classbookid");
+    query.bindValue(":classbookid", classbookid);
+    query.bindValue(":md5_content", md5_content);
+    if (!query.exec()){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        return;
+    }
+
     //UPDATE ordered for article
     int ordered;
     if(obj.contains("ordered")){
