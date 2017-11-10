@@ -103,6 +103,8 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 			return;
 		}
 	}
+    m_pMemoryCacheServerInfo->serverStarted();
+    // TODO save in database information about server started
 }
 
 // ---------------------------------------------------------------------

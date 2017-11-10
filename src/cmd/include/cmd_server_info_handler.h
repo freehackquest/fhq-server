@@ -19,6 +19,7 @@ class CmdServerInfoHandler : public ICmdHandler {
 		
 	private:
 		QVector<CmdInputDef> m_vInputs;
+        QString TAG;
 };
 
 #endif // CMD_SERVERINFO_HANDLER_H

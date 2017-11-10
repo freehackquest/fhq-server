@@ -40,3 +40,13 @@ QJsonObject MemoryCacheServerInfo::toJsonObject(){
 }
 
 // ---------------------------------------------------------------------
+
+void MemoryCacheServerInfo::serverStarted(){
+    m_dtServerStarted = QDateTime::currentDateTimeUtc();
+}
+
+// ---------------------------------------------------------------------
+
+QDateTime MemoryCacheServerInfo::getServerStart(){
+    return m_dtServerStarted;
+}
