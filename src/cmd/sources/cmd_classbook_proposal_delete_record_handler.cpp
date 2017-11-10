@@ -45,16 +45,14 @@ void CmdClassbookProposalDeleteRecordHandler::handle(QWebSocket *pClient, IWebSo
     QSqlDatabase db = *(pWebSocketServer->database());
 
     QSqlQuery query(db);
-    QString classbook_proposal_id;
-    query.prepare("SELECT classbook_proposal_id FROM classbook_proposal WHERE id = :classbook_proposal_id");
+    int classbook_proposal_id = obj["classbook_proposal_id"].toInt();
+    query.prepare("SELECT id FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", obj["classbook_proposal_id"].toInt());
     if(!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
     }
-    if(query.next()){
-        classbook_proposal_id = obj["classbook_proposal_id"].toInt();
-    } else {
+    if(!query.next()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This localization doesn't exist"));
         return;
     }

@@ -58,8 +58,8 @@ void CmdClassbookProposalListHandler::handle(QWebSocket *pClient, IWebSocketServ
         else n = 1;
     }
 
-    QString classbookid;
-    QString lang;
+    int classbookid = obj["classbookid"].toInt();
+    QString lang = obj["lang"].toString().trimmed();
 
     switch(n){
         case 4:
@@ -69,9 +69,7 @@ void CmdClassbookProposalListHandler::handle(QWebSocket *pClient, IWebSocketServ
                 pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
                 return;
             }
-            if(query.next()){
-                classbookid = obj["classbookid"].toInt();
-            } else {
+            if(!query.next()){
                 pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This article doesn't exist"));
                 return;
             }
@@ -81,9 +79,7 @@ void CmdClassbookProposalListHandler::handle(QWebSocket *pClient, IWebSocketServ
                 pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
                 return;
             }
-            if(query.next()){
-                lang = obj["lang"].toInt();
-            } else {
+            if(!query.next()){
                 pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This language doesn't exist"));
                 return;
             }
@@ -101,9 +97,7 @@ void CmdClassbookProposalListHandler::handle(QWebSocket *pClient, IWebSocketServ
                 pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
                 return;
             }
-            if(query.next()){
-                classbookid = obj["classbookid"].toInt();
-            } else {
+            if(!query.next()){
                 pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This article doesn't exist"));
                 return;
             }
@@ -120,9 +114,7 @@ void CmdClassbookProposalListHandler::handle(QWebSocket *pClient, IWebSocketServ
                 pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
                 return;
             }
-            if(query.next()){
-                lang = obj["lang"].toInt();
-            } else {
+            if(!query.next()){
                 pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This language doesn't exist"));
                 return;
             }
