@@ -79,7 +79,7 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
             return;
         }
     } else {
-        uuid = QUuid::createUuid().toString();
+        uuid = QUuid::createUuid().toString().replace("{", "").replace("}", "");
     }
 
     //Set md5_content hash

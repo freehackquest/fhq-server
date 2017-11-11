@@ -74,7 +74,7 @@ void CmdClassbookProposalAddRecordHandler::handle(QWebSocket *pClient, IWebSocke
     QString md5_content = QString(QCryptographicHash::hash(content.toUtf8(), QCryptographicHash::Md5).toHex());
 
     //generate uuid
-    QString uuid = QUuid::createUuid().toString();
+    QString uuid = QUuid::createUuid().toString().replace("{", "").replace("}", "");
 
     query.prepare("INSERT INTO classbook_proposal("
                   "classbookid,"
