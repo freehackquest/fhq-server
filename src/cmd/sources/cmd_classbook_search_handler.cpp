@@ -72,9 +72,16 @@ void CmdClassbookSearchHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
     }
 
     QJsonArray data;
-    query.prepare("SELECT id, name FROM classbook WHERE name LIKE :search OR content LIKE :search ORDER BY ordered;");
-    query.bindValue(":parentid", parentid);
-    query.bindValue(":search", "'%" + search + "%'");
+    if (lang != "en"){
+        query.prepare("SELECT id, name FROM classbook WHERE name LIKE :search OR content LIKE :search ORDER BY ordered;");
+        query.bindValue(":search", "'%" + search + "%'");
+    } else {
+        query.prepare("SELECT classbookid, name FROM classbook_localization "
+                          "WHERE lang=:lang AND (name LIKE '%:search%' OR content LIKE '%:search%')");
+        query.bindValue(":search", search);
+        query.bindValue(":lang", lang);
+    }
+    //DOESN'T WORK
     query.exec();
     while (query.next()) {
         QSqlRecord record = query.record();
@@ -83,6 +90,12 @@ void CmdClassbookSearchHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
         item["parentid"] = parentid;
         classbookid = record.value("id").toInt();
         item["classbookid"] = classbookid;
+        if (lang != "en"){
+            query.prepare("SELECT classbookid, name FROM classbook_localization "
+                              "WHERE lang=:lang AND (name LIKE '%:search%' OR content LIKE '%:search%')");
+            query.bindValue(":search", search);
+            query.bindValue(":lang", lang);
+        }
         item["name"] = record.value("name").toString();
 
         //COUNT childs for an article

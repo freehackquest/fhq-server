@@ -2,6 +2,7 @@
 #include <QJsonArray>
 #include <QSqlError>
 #include <QUuid>
+#include <QCryptographicHash>
 
 CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler(){
     m_vInputs.push_back(CmdInputDef("parentid").required().integer_().description("pareintid for classbook article"));
@@ -65,21 +66,24 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
     QString name = obj["name"].toString().trimmed().toHtmlEscaped();
     QString content = obj["content"].toString().trimmed().toHtmlEscaped();
 
-    //Set uuid from request if free, else generate uuid
+    //Set uuid from request if available, else generate uuid
     QString uuid;
     if(obj.contains("uuid")){
         query.prepare("SELECT uuid FROM classbook WHERE uuid=:uuid");
         query.bindValue(":uuid", obj["uuid"].toString());
         query.exec();
         if (!query.next()){
-            uuid = obj["uuid"].toString();
+            uuid = obj["uuid"].toString().replace("{", "").replace("}", "");
         } else {
             pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Uuid already exist"));
             return;
         }
     } else {
-        uuid = QUuid::createUuid().toString();
+        uuid = QUuid::createUuid().toString().replace("{", "").replace("}", "");
     }
+
+    //Set md5_content hash
+    QString md5_content = QString(QCryptographicHash::hash(content.toUtf8(), QCryptographicHash::Md5).toHex());
 
     //Find parentuuid from database
     QString parentuuid = "00000000-0000-0000-0000-000000000000";
@@ -112,11 +116,6 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
         }
     }
 
-    //Set Datetime
-    QDateTime created, updated;
-    created = QDateTime::currentDateTime();
-    updated = created;
-
     //Insert article into classbook
     query.prepare("INSERT INTO classbook("
                   "parentid,"
@@ -125,6 +124,7 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
                   "parentuuid,"
                   "name,"
                   "content,"
+                  "md5_content,"
                   "created,"
                   "updated"
                   ")"
@@ -135,8 +135,9 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
                   ":parentuuid,"
                   ":name,"
                   ":content,"
-                  ":created,"
-                  ":updated"
+                  ":md5_content,"
+                  "NOW()"
+                  "NOW()"
                   ")");
     query.bindValue(":parentid", parentid);
     query.bindValue(":ordered", ordered);
@@ -144,8 +145,7 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
     query.bindValue(":parentuuid", parentuuid);
     query.bindValue(":name", name);
     query.bindValue(":content", content);
-    query.bindValue(":created", created);
-    query.bindValue(":updated", updated);
+    query.bindValue(":md5_content", md5_content);
     if (!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
@@ -157,6 +157,7 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
     data["parentid"] = parentid;
     data["name"] = name;
     data["content"] = content;
+    data["md5_content"] = md5_content;
 
     QJsonObject jsonResponse;
     jsonResponse["cmd"] = QJsonValue(cmd());
