@@ -90,6 +90,7 @@ void CmdClassbookProposalListHandler::handle(QWebSocket *pClient, IWebSocketServ
                 pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
                 return;
             }
+            break;
         case 3:
             query.prepare("SELECT classbookid FROM classbook_proposal WHERE classbookid = :classbookid");
             query.bindValue(":classbookid", obj["classbookid"].toInt());
@@ -107,6 +108,7 @@ void CmdClassbookProposalListHandler::handle(QWebSocket *pClient, IWebSocketServ
                 pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
                 return;
             }
+            break;
         case 2:
             query.prepare("SELECT lang FROM classbook_proposal WHERE lang = :lang");
             query.bindValue(":lang", obj["lang"].toInt());
@@ -124,12 +126,14 @@ void CmdClassbookProposalListHandler::handle(QWebSocket *pClient, IWebSocketServ
                 pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
                 return;
             }
+            break;
         case 1:
             query.prepare("SELECT id, name FROM classbook_proposal");
             if (!query.exec()){
                 pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
                 return;
             }
+            break;
     }
 
     while (query.next()) {

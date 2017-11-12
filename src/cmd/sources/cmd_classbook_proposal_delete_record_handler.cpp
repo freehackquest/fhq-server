@@ -53,7 +53,7 @@ void CmdClassbookProposalDeleteRecordHandler::handle(QWebSocket *pClient, IWebSo
         return;
     }
     if(!query.next()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This localization doesn't exist"));
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This proposal doesn't exist"));
         return;
     }
     query.prepare("DELETE FROM classbook_proposal WHERE id = :classbook_proposal_id");
