@@ -1,12 +1,12 @@
-#ifndef CMD_DELETEQUEST_HANDLER_H
-#define CMD_DELETEQUEST_HANDLER_H
+#ifndef CMD_QUEST_DELETE_HANDLER_H
+#define CMD_QUEST_DELETE_HANDLER_H
 
 #include <iserver.h>
 
-class CmdDeleteQuestHandler : public ICmdHandler {
+class CmdQuestDeleteHandler : public ICmdHandler {
 	
 	public:
-		CmdDeleteQuestHandler();
+        CmdQuestDeleteHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();
@@ -22,4 +22,4 @@ class CmdDeleteQuestHandler : public ICmdHandler {
 		QVector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_DELETEQUEST_HANDLER_H
+#endif // CMD_QUEST_DELETE_HANDLER_H
