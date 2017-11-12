@@ -19,6 +19,7 @@ CONFIG += c++11 c++14
 include(src/interfaces/interfaces.pri)
 include(src/utils/utils.pri)
 include(src/cmd/cmd.pri)
+include(src/cmd_users/cmd_users.pri)
 include(src/updates/updates.pri)
 include(src/cache/cache.pri)
 include(src/server/server.pri)

@@ -42,13 +42,6 @@ HEADERS += \
     src/cmd/include/cmd_server_settings_update_handler.h \
     src/cmd/include/cmd_writeups_handler.h \
     src/cmd/include/cmd_token_handler.h \
-    src/cmd/include/cmd_user_handler.h \
-    src/cmd/include/cmd_user_reset_password_handler.h \
-    src/cmd/include/cmd_users_handler.h \
-    src/cmd/include/cmd_user_skills_handler.h \
-    src/cmd/include/cmd_user_update_handler.h \
-    src/cmd/include/cmd_user_change_password_handler.h \
-    src/cmd/include/cmd_update_user_location_handler.h \
     src/cmd/include/cmd_quest_create_handler.h \
     $$PWD/include/cmd_classbook_localization_add_record_handler.h \
     $$PWD/include/cmd_classbook_localization_delete_record_handler.h \
@@ -104,14 +97,7 @@ SOURCES += \
     src/cmd/sources/cmd_server_settings_update_handler.cpp \
     src/cmd/sources/cmd_writeups_handler.cpp \
     src/cmd/sources/cmd_token_handler.cpp \
-    src/cmd/sources/cmd_user_handler.cpp \
-    src/cmd/sources/cmd_user_reset_password_handler.cpp \
-    src/cmd/sources/cmd_users_handler.cpp \
-    src/cmd/sources/cmd_user_skills_handler.cpp \
-    src/cmd/sources/cmd_user_update_handler.cpp \
-    src/cmd/sources/cmd_user_change_password_handler.cpp \
     src/cmd/sources/cmd_classbook_handler.cpp \
-    src/cmd/sources/cmd_update_user_location_handler.cpp \
     src/cmd/sources/cmd_quest_create_handler.cpp \
     $$PWD/sources/cmd_classbook_localization_add_record_handler.cpp \
     $$PWD/sources/cmd_classbook_localization_delete_record_handler.cpp \
