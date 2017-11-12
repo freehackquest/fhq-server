@@ -33,7 +33,6 @@
 #include <cmd_game_update_handler.h>
 #include <cmd_game_update_logo_handler.h>
 #include <cmd_games_handler.h>
-#include <cmd_hello_handler.h>
 #include <cmd_hints_handler.h>
 #include <cmd_login_handler.h>
 #include <cmd_publiceventslist_handler.h>
@@ -91,7 +90,6 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
     v.push_back(new CmdGameUpdateLogoHandler());
 	v.push_back(new CmdGamesHandler());
 	v.push_back(new CmdGetMapHandler());
-	v.push_back(new CmdHelloHandler());
 	v.push_back(new CmdHintsHandler());
 	v.push_back(new CmdLoginHandler());
 	v.push_back(new CmdPublicEventsListHandler());

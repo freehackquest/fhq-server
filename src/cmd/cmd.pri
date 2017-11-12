@@ -13,7 +13,6 @@ HEADERS += \
     src/cmd/include/cmd_getpublicevent_handler.h \
     src/cmd/include/cmd_deletehint_handler.h \
     src/cmd/include/cmd_feedback_add_handler.h \
-    src/cmd/include/cmd_hello_handler.h \
     src/cmd/include/cmd_hints_handler.h \
     src/cmd/include/cmd_login_handler.h \
     src/cmd/include/cmd_publiceventslist_handler.h \
@@ -77,7 +76,6 @@ SOURCES += \
     src/cmd/sources/cmd_game_update_logo_handler.cpp \
     src/cmd/sources/cmd_games_handler.cpp \
     src/cmd/sources/cmd_getmap_handler.cpp \
-    src/cmd/sources/cmd_hello_handler.cpp \
     src/cmd/sources/cmd_hints_handler.cpp \
     src/cmd/sources/cmd_login_handler.cpp \
     src/cmd/sources/cmd_publiceventslist_handler.cpp \
