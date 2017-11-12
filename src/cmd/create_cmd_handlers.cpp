@@ -44,6 +44,7 @@
 #include <cmd_quests_subjects_handler.h>
 #include <cmd_quests_handler.h>
 #include <cmd_quest_statistics_handler.h>
+#include <cmd_quest_update_handler.h>
 #include <cmd_registration_handler.h>
 #include <cmd_scoreboard_handler.h>
 #include <cmd_sendchatmessage_handler.h>
@@ -51,7 +52,6 @@
 #include <cmd_server_settings_handler.h>
 #include <cmd_server_settings_update_handler.h>
 #include <cmd_token_handler.h>
-#include <cmd_updatequest_handler.h>
 #include <cmd_update_user_location_handler.h>
 #include <cmd_user_handler.h>
 #include <cmd_user_reset_password_handler.h>
@@ -108,6 +108,7 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
     v.push_back(new CmdQuestPassHandler());
     v.push_back(new CmdQuestsSubjectsHandler());
     v.push_back(new CmdQuestStatisticsHandler());
+    v.push_back(new CmdQuestUpdateHandler());
     v.push_back(new CmdQuestsHandler());
     v.push_back(new CmdRegistrationHandler());
 	v.push_back(new CmdScoreboardHandler());
@@ -116,7 +117,6 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
     v.push_back(new CmdServerSettingsHandler());
     v.push_back(new CmdServerSettingsUpdateHandler());
     v.push_back(new CmdTokenHandler());
-	v.push_back(new CmdUpdateQuestHandler());
     v.push_back(new CmdUpdateUserLocationHandler());
     v.push_back(new CmdUsersHandler());
     v.push_back(new CmdUserHandler());

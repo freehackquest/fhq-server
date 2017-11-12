@@ -1,10 +1,10 @@
-#include <cmd_updatequest_handler.h>
+#include <cmd_quest_update_handler.h>
 #include <runtasks.h>
 
 #include <QJsonArray>
 #include <QCryptographicHash>
 
-CmdUpdateQuestHandler::CmdUpdateQuestHandler(){
+CmdQuestUpdateHandler::CmdQuestUpdateHandler(){
 	m_vInputs.push_back(CmdInputDef("questid").integer_().required().description("Quest ID"));
 	m_vInputs.push_back(CmdInputDef("name").string_().optional().description("Name of the quest"));
 	
@@ -24,40 +24,40 @@ CmdUpdateQuestHandler::CmdUpdateQuestHandler(){
 	m_vInputs.push_back(CmdInputDef("description_state").string_().optional().description("You can add some descriptions for quest state"));
 }
 
-QString CmdUpdateQuestHandler::cmd(){
-	return "updatequest";
+QString CmdQuestUpdateHandler::cmd(){
+    return "quest_update";
 }
 
-bool CmdUpdateQuestHandler::accessUnauthorized(){
+bool CmdQuestUpdateHandler::accessUnauthorized(){
 	return false;
 }
 
-bool CmdUpdateQuestHandler::accessUser(){
+bool CmdQuestUpdateHandler::accessUser(){
 	return false;
 }
 
-bool CmdUpdateQuestHandler::accessTester(){
+bool CmdQuestUpdateHandler::accessTester(){
 	return false;
 }
 
-bool CmdUpdateQuestHandler::accessAdmin(){
+bool CmdQuestUpdateHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdUpdateQuestHandler::inputs(){
+const QVector<CmdInputDef> &CmdQuestUpdateHandler::inputs(){
 	return m_vInputs;
 };
 
-QString CmdUpdateQuestHandler::description(){
+QString CmdQuestUpdateHandler::description(){
 	return "Update the quest info";
 }
 
-QStringList CmdUpdateQuestHandler::errors(){
+QStringList CmdQuestUpdateHandler::errors(){
 	QStringList	list;
 	return list;
 }
 
-void CmdUpdateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdQuestUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());

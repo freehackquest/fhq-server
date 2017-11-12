@@ -22,6 +22,7 @@ HEADERS += \
     src/cmd/include/cmd_quest_handler.h \
     src/cmd/include/cmd_quest_pass_handler.h \
     src/cmd/include/cmd_quest_statistics_handler.h \
+    src/cmd/include/cmd_quest_update_handler.h \
     src/cmd/include/cmd_quests_subjects_handler.h \
     src/cmd/include/cmd_quests_handler.h \
     src/cmd/include/cmd_registration_handler.h \
@@ -47,7 +48,6 @@ HEADERS += \
     src/cmd/include/cmd_user_skills_handler.h \
     src/cmd/include/cmd_user_update_handler.h \
     src/cmd/include/cmd_user_change_password_handler.h \
-    src/cmd/include/cmd_updatequest_handler.h \
     src/cmd/include/cmd_update_user_location_handler.h \
     src/cmd/include/cmd_quest_create_handler.h \
     $$PWD/include/cmd_classbook_localization_add_record_handler.h \
@@ -93,6 +93,7 @@ SOURCES += \
     src/cmd/sources/cmd_quest_handler.cpp \
     src/cmd/sources/cmd_quest_pass_handler.cpp \
     src/cmd/sources/cmd_quest_statistics_handler.cpp \
+    src/cmd/sources/cmd_quest_update_handler.cpp \
     src/cmd/sources/cmd_quests_subjects_handler.cpp \
     src/cmd/sources/cmd_quests_handler.cpp \
     src/cmd/sources/cmd_registration_handler.cpp \
@@ -110,7 +111,6 @@ SOURCES += \
     src/cmd/sources/cmd_user_update_handler.cpp \
     src/cmd/sources/cmd_user_change_password_handler.cpp \
     src/cmd/sources/cmd_classbook_handler.cpp \
-    src/cmd/sources/cmd_updatequest_handler.cpp \
     src/cmd/sources/cmd_update_user_location_handler.cpp \
     src/cmd/sources/cmd_quest_create_handler.cpp \
     $$PWD/sources/cmd_classbook_localization_add_record_handler.cpp \
