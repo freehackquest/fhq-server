@@ -15,9 +15,13 @@ OBJECTS_DIR = tmp/
 MOC_DIR = tmp/
 RCC_DIR = tmp/
 CONFIG += c++11 c++14
+LIBS = -lz
+
+# INCLUDEPATH += $$[QT_INSTALL_HEADERS]/QtZlib
 
 # 3rd party
 include(src/3rdParty/smtp/smtp.pri)
+include(src/3rdParty/quazip-0.7.3.pri)
 
 include(src/interfaces/interfaces.pri)
 include(src/utils/utils.pri)
