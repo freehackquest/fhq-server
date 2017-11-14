@@ -16,6 +16,9 @@ MOC_DIR = tmp/
 RCC_DIR = tmp/
 CONFIG += c++11 c++14
 
+# 3rd party
+include(src/3rdParty/smtp/smtp.pri)
+
 include(src/interfaces/interfaces.pri)
 include(src/utils/utils.pri)
 include(src/cmd/cmd.pri)
@@ -25,7 +28,6 @@ include(src/updates/updates.pri)
 include(src/cache/cache.pri)
 include(src/server/server.pri)
 include(src/tasks/tasks.pri)
-include(src/smtp/smtp.pri)
 include(src/unit_tests/unit_tests.pri)
 
 SOURCES += \
