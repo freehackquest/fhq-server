@@ -25,14 +25,6 @@ HEADERS += \
     src/cmd/include/cmd_quests_subjects_handler.h \
     src/cmd/include/cmd_quests_handler.h \
     src/cmd/include/cmd_registration_handler.h \
-    src/cmd/include/cmd_game_create_handler.h \
-    src/cmd/include/cmd_game_delete_handler.h \
-    src/cmd/include/cmd_game_export_handler.h \
-    src/cmd/include/cmd_game_import_handler.h \
-    src/cmd/include/cmd_game_info_handler.h \
-    src/cmd/include/cmd_game_update_handler.h \
-    src/cmd/include/cmd_game_update_logo_handler.h \
-    src/cmd/include/cmd_games_handler.h \
     src/cmd/include/cmd_getmap_handler.h \
     src/cmd/include/cmd_scoreboard_handler.h \
     src/cmd/include/cmd_sendchatmessage_handler.h \
@@ -67,14 +59,6 @@ SOURCES += \
     src/cmd/sources/cmd_getpublicevent_handler.cpp \
     src/cmd/sources/cmd_deletehint_handler.cpp \
     src/cmd/sources/cmd_feedback_add_handler.cpp \
-    src/cmd/sources/cmd_game_create_handler.cpp \
-    src/cmd/sources/cmd_game_delete_handler.cpp \
-    src/cmd/sources/cmd_game_export_handler.cpp \
-    src/cmd/sources/cmd_game_import_handler.cpp \
-    src/cmd/sources/cmd_game_info_handler.cpp \
-    src/cmd/sources/cmd_game_update_handler.cpp \
-    src/cmd/sources/cmd_game_update_logo_handler.cpp \
-    src/cmd/sources/cmd_games_handler.cpp \
     src/cmd/sources/cmd_getmap_handler.cpp \
     src/cmd/sources/cmd_hints_handler.cpp \
     src/cmd/sources/cmd_login_handler.cpp \
