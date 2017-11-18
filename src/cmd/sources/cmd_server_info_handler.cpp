@@ -59,9 +59,9 @@ void CmdServerInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 
     jsonData["request_statistics"] = jsonRequestStatistics;
     jsonData["server_started"] = pMemoryCacheServerInfo->getServerStart().toString(Qt::ISODate);
-    qint64 updatime = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
-    updatime = updatime - pMemoryCacheServerInfo->getServerStart().toSecsSinceEpoch();
-    jsonData["server_uptime_sec"] = updatime;
+    qint64 updatime = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
+    updatime = updatime - pMemoryCacheServerInfo->getServerStart().toMSecsSinceEpoch();
+    jsonData["server_uptime_sec"] = updatime/1000;
 
     /* NOT WORK
      * QJsonArray lastLogMessages;
