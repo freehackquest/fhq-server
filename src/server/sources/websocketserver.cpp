@@ -232,12 +232,13 @@ void WebSocketServer::processTextMessage(QString message) {
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::processBinaryMessage(QByteArray message) {
-    QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    Log::info(TAG, "Binary Message received: " + message.toHex());
-    if (pClient) {
+void WebSocketServer::processBinaryMessage(QByteArray /*message*/) {
+    // QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
+    // NOT SUPPORTED
+    // Log::info(TAG, "Binary Message received: " + message.toHex());
+    /*if (pClient) {
         pClient->sendBinaryMessage(message);
-    }
+    }*/
 }
 
 // ---------------------------------------------------------------------
