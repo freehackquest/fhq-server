@@ -18,6 +18,7 @@ class CmdGameExportHandler : public ICmdHandler {
 
     private:
         QVector<CmdInputDef> m_vInputs;
+        QString TAG;
 };
 
 #endif // CMD_GAME_EXPORT_HANDLER_H
