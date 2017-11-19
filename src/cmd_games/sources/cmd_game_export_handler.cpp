@@ -87,10 +87,8 @@ void CmdGameExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         return;
     }
 
-
-
     // find logo for game
-    QString sGameLogoFilename;
+    QString sGameLogoFilename = "";
     {
         IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
         if(pMemoryCache == NULL){
@@ -106,37 +104,28 @@ void CmdGameExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
     quint64 ts = QDateTime::currentMSecsSinceEpoch();
     QString tmpZipFile = tmpDir + "/freehackquest-backend-game_" + QString::number(ts) + ".zip";
 
-    Log::info(TAG, "fileName: " + tmpZipFile);
-
     // prepare zip archive
     QuaZip zip(tmpZipFile);
     zip.open(QuaZip::mdCreate);
     QuaZipFile export_zipfile(&zip);
 
-    // try pack logo
+    // pack logo
     {
         QFile fileLogo(sGameLogoFilename);
-        if(fileLogo.exists()){
-            Log::info(TAG, "Try pack logo");
+        if(fileLogo.exists() && fileLogo.open(QIODevice::ReadOnly)){
             export_zipfile.open(QIODevice::WriteOnly, QuaZipNewInfo(sUuid.toLower() + ".png"));
             // After .toString(), you should specify a text codec to use to encode the
             // string data into the (binary) file. Here, I use UTF-8:
-            QDataStream ts(&fileLogo);
-            char *buff = new char[2048];
-            memset(buff, 0, 2048);
-            while(int readed = ts.readRawData(buff, 2048) > 0){
-                export_zipfile.write(buff, readed);
-                memset(buff, 0, 2048);
-            }
+            QByteArray baLogo = fileLogo.readAll();
+            export_zipfile.write(baLogo);
             export_zipfile.close();
         }else{
             Log::warn(TAG, "Logo not found " + sGameLogoFilename);
         }
     }
 
-    // try pack json file
+    // pack json file
     {
-        Log::info(TAG, "Try pack json file");
         export_zipfile.open(QIODevice::WriteOnly, QuaZipNewInfo(sUuid.toLower() + ".json"));
         QJsonDocument doc(jsonGame);
         QString message = doc.toJson(QJsonDocument::Compact);
@@ -145,7 +134,21 @@ void CmdGameExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
     }
     zip.close();
 
-    // Qua
+    // preapre zip base64
+    {
+        QFile fileZip(tmpZipFile);
+        if (!fileZip.open(QIODevice::ReadOnly)){
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, "Could not open zip file"));
+            return;
+        }
+        QByteArray baZip = fileZip.readAll();
+        QJsonObject jsonData;
+        jsonData["zipfile_base64"] = QString(baZip.toBase64());
+        jsonData["zipfile_name"] = "game_" + sUuid.toLower() + ".zip";
+        jsonResponse["data"] = jsonData;
+        fileZip.close();
+        fileZip.remove();
+    }
     jsonResponse["result"] = QJsonValue("DONE");
     pWebSocketServer->sendMessage(pClient, jsonResponse);
 }
