@@ -8,6 +8,7 @@
 #include <cmd_getpublicevent_handler.h>
 #include <cmd_classbook_add_record_handler.h>
 #include <cmd_classbook_delete_record_handler.h>
+#include <cmd_classbook_export_handler.h>
 #include <cmd_classbook_info_handler.h>
 #include <cmd_classbook_list_handler.h>
 #include <cmd_classbook_search_handler.h>
@@ -74,6 +75,7 @@ void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers){
 	v.push_back(new CmdGetPublicEventHandler());
     v.push_back(new CmdClassbookAddRecordHandler());
     v.push_back(new CmdClassbookDeleteRecordHandler());
+    v.push_back(new CmdClassbookExportHandler());
     v.push_back(new CmdClassbookInfoHandler());
     v.push_back(new CmdClassbookListHandler());
     v.push_back(new CmdClassbookSearchHandler());
