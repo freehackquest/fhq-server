@@ -110,7 +110,3 @@ void CmdClassbookExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
     file.remove();
     pWebSocketServer->sendMessage(pClient, jsonResponse);
 }
-
-void CmdClassbookExportHandler::createHtml(QTextStream out, QString lang){
-
-}
