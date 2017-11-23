@@ -16,6 +16,7 @@ class CmdClassbookExportHandler : public ICmdHandler {
         virtual QString description();
         virtual QStringList errors();
         virtual void handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj);
+        virtual void createHtml(QTextStream out, QString lang);
 
     private:
         QString TAG;
