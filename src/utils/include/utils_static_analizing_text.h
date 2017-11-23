@@ -6,8 +6,8 @@
 #include <QChar>
 
 class UtilsStaticAnalizingText {
-public:
-    QMap<QChar, double> calc(const QString &text);
+    public:
+        static QMap<QChar, double> calc(const QString &text);
 };
 
 #endif
