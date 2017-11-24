@@ -4,6 +4,9 @@
 #include <QTemporaryFile>
 #include <QTemporaryDir>
 #include <QFile>
+#include <quazip.h>
+#include <quazipfile.h>
+#include <quazipfileinfo.h>
 
 CmdClassbookExportHandler::CmdClassbookExportHandler(){
     m_vInputs.push_back(CmdInputDef("output").required().string_().description("The output file format"));
@@ -33,7 +36,7 @@ bool CmdClassbookExportHandler::accessAdmin(){
 
 const QVector<CmdInputDef> &CmdClassbookExportHandler::inputs(){
     return m_vInputs;
-};
+}
 
 QString CmdClassbookExportHandler::description(){
     return "Export classbook's articles to html or zip archive";
@@ -63,16 +66,53 @@ void CmdClassbookExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
     file.open(QIODevice::ReadOnly);
 
     QJsonObject jsonResponse;
+    if (obj.contains("zip") and obj.value("zip").toBool()){
+        QString tmpDir = QDir::tempPath();
+        QString tmpZipFile = tmpDir + "/freehackquest-classbook_" + lang + ".zip";
+        // prepare zip archive
+        QuaZip zip(tmpZipFile);
+        zip.open(QuaZip::mdCreate);
+        QuaZipFile export_zipfile(&zip);
+
+        QString name;
+        if (obj.value("output") == "html"){
+            name = "freehackquest-classbook.html";}
+        if (obj.value("output") == "markdown"){
+            name = "freehackquest-classbook.md";
+        }
+        export_zipfile.open(QIODevice::WriteOnly, QuaZipNewInfo(name));
+        // After .toString(), you should specify a text codec to use to encode the
+        // string data into the (binary) file. Here, I use UTF-8:
+        export_zipfile.write(file.readAll());
+        export_zipfile.close();
+        zip.close();
+        QFile fileZip(tmpZipFile);
+        if (!fileZip.open(QIODevice::ReadOnly)){
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, "Could not open zip file"));
+            return;
+        }
+        QByteArray baZip = fileZip.readAll();
+        QJsonObject jsonData;
+        jsonData["zipfile_base64"] = QString(baZip.toBase64());
+        jsonData["zipfile_name"] = name;
+        jsonResponse["data"] = jsonData;
+        fileZip.close();
+        fileZip.remove();
+    } else {
+        jsonResponse["data"] = QString::fromUtf8(file.readAll());
+    }
+
     jsonResponse["cmd"] = QJsonValue(cmd());
     jsonResponse["m"] = QJsonValue(m);
-    jsonResponse["data"] = QString::fromUtf8(file.readAll());
     jsonResponse["result"] = QJsonValue("DONE");
     pWebSocketServer->sendMessage(pClient, jsonResponse);
+    file.close();
     //file.remove();
 }
 
 void CmdClassbookExportHandler::createHtml(QFile *file, QString lang, QSqlQuery query){
     QTextStream out(file);
+    out.setCodec("UTF-8");
     QMap <int, QString> name_of_articles;
     if (lang == "en"){
         query.prepare("SELECT id, name FROM classbook ORDER BY ordered");
@@ -127,6 +167,7 @@ void CmdClassbookExportHandler::createHtml(QFile *file, QString lang, QSqlQuery 
 
 void CmdClassbookExportHandler::createMD(QFile *file, QString lang, QSqlQuery query){
     QTextStream out(file);
+    out.setCodec("UTF-8");
     QList<QString> name_of_articles;
     if (lang == "en"){
         query.prepare("SELECT name FROM classbook ORDER BY ordered");
