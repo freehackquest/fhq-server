@@ -12,12 +12,16 @@ class MemoryCacheServerInfo : public IMemoryCache {
 		MemoryCacheServerInfo(IWebSocketServer *pWebSocketServer);
 		
 		void incrementRequests(QString cmd);
+        void serverStarted();
+        QDateTime getServerStart();
 		QJsonObject toJsonObject();
 
 	private:
 		IWebSocketServer *m_pWebSocketServer;
 		QMap<QString, int> m_requestsCounter;
 		QMutex m_mtxIncrementRequests;
+
+        QDateTime m_dtServerStarted;
 		
 };
 

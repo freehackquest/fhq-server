@@ -1,8 +1,11 @@
 #include <cmd_server_info_handler.h>
 #include <QJsonArray>
+#include <log.h>
+#include <iostream>
 #include <memory_cache_serverinfo.h>
 
 CmdServerInfoHandler::CmdServerInfoHandler(){
+    TAG = "CmdServerInfoHandler";
 }
 
 QString CmdServerInfoHandler::cmd(){
@@ -39,9 +42,12 @@ QStringList CmdServerInfoHandler::errors(){
 }
 
 void CmdServerInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
-	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
-	
+    QJsonObject jsonResponse;
+    jsonResponse["cmd"] = QJsonValue(cmd());
+    jsonResponse["m"] = QJsonValue(m);
+    QJsonObject jsonData;
+
+    QJsonObject jsonRequestStatistics;
 	IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serverinfo");
 	if(pMemoryCache == NULL){
 		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
@@ -49,8 +55,29 @@ void CmdServerInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	}
 
 	MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
-	jsonData["data"] = pMemoryCacheServerInfo->toJsonObject(); // TODO how much db connections and time
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonRequestStatistics = pMemoryCacheServerInfo->toJsonObject(); // TODO how much db connections and time
+
+    jsonData["request_statistics"] = jsonRequestStatistics;
+    jsonData["server_started"] = pMemoryCacheServerInfo->getServerStart().toString(Qt::ISODate);
+    qint64 updatime = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
+    updatime = updatime - pMemoryCacheServerInfo->getServerStart().toMSecsSinceEpoch();
+    jsonData["server_uptime_sec"] = updatime/1000;
+
+    /* NOT WORK
+     * QJsonArray lastLogMessages;
+    {
+        QMutexLocker locker(&g_LOG_MUTEX);
+        int len = g_LAST_LOG_MESSAGES.size();
+        g_LAST_LOG_MESSAGES << "log";
+        for(int i = 0; i < len; i++){
+            lastLogMessages.append(g_LAST_LOG_MESSAGES[i]);
+        }
+    }
+    jsonData["last_log_messages"] = lastLogMessages;
+    */
+    jsonData["last_log_messages"] = Log::last_logs();
+
+    jsonResponse["data"] = jsonData;
+    jsonResponse["result"] = QJsonValue("DONE");
+    pWebSocketServer->sendMessage(pClient, jsonResponse);
 }

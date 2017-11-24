@@ -1,12 +1,12 @@
-#ifndef CMD_HELLO_HANDLER_H
-#define CMD_HELLO_HANDLER_H
+#ifndef CMD_QUEST_DELETE_HANDLER_H
+#define CMD_QUEST_DELETE_HANDLER_H
 
 #include <iserver.h>
 
-class CmdHelloHandler : public ICmdHandler {
+class CmdQuestDeleteHandler : public ICmdHandler {
 	
 	public:
-		CmdHelloHandler();
+        CmdQuestDeleteHandler();
 		virtual QString cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();
@@ -16,9 +16,10 @@ class CmdHelloHandler : public ICmdHandler {
 		virtual QString description();
 		virtual QStringList errors();
 		virtual void handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj);
-		
+	
 	private:
+        QString TAG;
 		QVector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_HELLO_HANDLER_H
+#endif // CMD_QUEST_DELETE_HANDLER_H

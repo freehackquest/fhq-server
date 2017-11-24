@@ -10,6 +10,8 @@
 #include <QtNetwork/QSslCertificate>
 #include <QtNetwork/QSslKey>
 
+#include <create_cmd_users_handlers.h>
+#include <create_cmd_games_handlers.h>
 #include <create_cmd_handlers.h>
 #include <SmtpMime>
 #include <create_list_updates.h>
@@ -52,6 +54,8 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 		query.exec();
 	}
 	
+    create_cmd_users_handlers(m_mapCmdHandlers);
+    create_cmd_games_handlers(m_mapCmdHandlers);
 	create_cmd_handlers(m_mapCmdHandlers);
 	create_memory_cache(m_mapMemoryCache, this);
 
@@ -103,6 +107,8 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 			return;
 		}
 	}
+    m_pMemoryCacheServerInfo->serverStarted();
+    // TODO save in database information about server started
 }
 
 // ---------------------------------------------------------------------
@@ -226,12 +232,13 @@ void WebSocketServer::processTextMessage(QString message) {
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::processBinaryMessage(QByteArray message) {
-    QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    Log::info(TAG, "Binary Message received: " + message.toHex());
-    if (pClient) {
+void WebSocketServer::processBinaryMessage(QByteArray /*message*/) {
+    // QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
+    // NOT SUPPORTED
+    // Log::info(TAG, "Binary Message received: " + message.toHex());
+    /*if (pClient) {
         pClient->sendBinaryMessage(message);
-    }
+    }*/
 }
 
 // ---------------------------------------------------------------------

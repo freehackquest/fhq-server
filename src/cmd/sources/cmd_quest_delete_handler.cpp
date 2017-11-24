@@ -1,45 +1,45 @@
-#include <cmd_deletequest_handler.h>
+#include <cmd_quest_delete_handler.h>
 #include <runtasks.h>
 
 
-CmdDeleteQuestHandler::CmdDeleteQuestHandler(){
+CmdQuestDeleteHandler::CmdQuestDeleteHandler(){
 	m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest ID"));
 }
 
-QString CmdDeleteQuestHandler::cmd(){
-	return "deletequest";
+QString CmdQuestDeleteHandler::cmd(){
+    return "quest_delete";
 }
 
-bool CmdDeleteQuestHandler::accessUnauthorized(){
+bool CmdQuestDeleteHandler::accessUnauthorized(){
 	return false;
 }
 
-bool CmdDeleteQuestHandler::accessUser(){
+bool CmdQuestDeleteHandler::accessUser(){
 	return false;
 }
 
-bool CmdDeleteQuestHandler::accessTester(){
+bool CmdQuestDeleteHandler::accessTester(){
 	return false;
 }
 
-bool CmdDeleteQuestHandler::accessAdmin(){
+bool CmdQuestDeleteHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdDeleteQuestHandler::inputs(){
+const QVector<CmdInputDef> &CmdQuestDeleteHandler::inputs(){
 	return m_vInputs;
 };
 
-QString CmdDeleteQuestHandler::description(){
+QString CmdQuestDeleteHandler::description(){
 	return "Method for delete quest";
 }
 
-QStringList CmdDeleteQuestHandler::errors(){
+QStringList CmdQuestDeleteHandler::errors(){
 	QStringList	list;
 	return list;
 }
 
-void CmdDeleteQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdQuestDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
 	
 	if(pUserToken == NULL){
@@ -105,10 +105,10 @@ void CmdDeleteQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 
 	// todo recalculate rating/score for users how solved this quest
 
-	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
-	jsonData["subject"] = sSubject;
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    QJsonObject jsonResponse;
+    jsonResponse["cmd"] = QJsonValue(cmd());
+    jsonResponse["subject"] = sSubject;
+    jsonResponse["result"] = QJsonValue("DONE");
+    jsonResponse["m"] = QJsonValue(m);
+    pWebSocketServer->sendMessage(pClient, jsonResponse);
 }
