@@ -107,7 +107,7 @@ void CmdClassbookExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
     jsonResponse["result"] = QJsonValue("DONE");
     pWebSocketServer->sendMessage(pClient, jsonResponse);
     file.close();
-    //file.remove();
+    file.remove();
 }
 
 void CmdClassbookExportHandler::createHtml(QFile *file, QString lang, QSqlQuery query){
