@@ -2,6 +2,7 @@
 #define CMD_CLASSBOOK_EXPORT
 
 #include <iserver.h>
+#include <QFile>
 
 class CmdClassbookExportHandler : public ICmdHandler {
 
@@ -20,6 +21,8 @@ class CmdClassbookExportHandler : public ICmdHandler {
     private:
         QString TAG;
         QVector<CmdInputDef> m_vInputs;
+        void createHtml(QFile *file, QString lang, QSqlQuery query);
+        void createMD(QFile *file , QString lang, QSqlQuery query);
 };
 
 #endif // CMD_CLASSBOOK_EXPORT
