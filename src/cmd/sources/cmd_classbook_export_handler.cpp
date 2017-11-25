@@ -1,7 +1,6 @@
 #include <cmd_classbook_export_handler.h>
 #include <QJsonArray>
 #include <QSqlError>
-#include <QTemporaryFile>
 #include <QTemporaryDir>
 #include <QFile>
 #include <quazip.h>
@@ -11,7 +10,7 @@
 CmdClassbookExportHandler::CmdClassbookExportHandler(){
     m_vInputs.push_back(CmdInputDef("output").required().string_().description("The output file format"));
     m_vInputs.push_back(CmdInputDef("lang").required().string_().description("The output file format"));
-    m_vInputs.push_back(CmdInputDef("zip").optional().bool_().description("The output file format"));
+    m_vInputs.push_back(CmdInputDef("zip").optional().bool_().description("Ziping the output"));
 }
 
 QString CmdClassbookExportHandler::cmd(){
@@ -39,7 +38,7 @@ const QVector<CmdInputDef> &CmdClassbookExportHandler::inputs(){
 }
 
 QString CmdClassbookExportHandler::description(){
-    return "Export classbook's articles to html or zip archive";
+    return "Export classbook's articles to html or markdown, optionally in zip archive.";
 }
 
 QStringList CmdClassbookExportHandler::errors(){
@@ -52,14 +51,28 @@ void CmdClassbookExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
     QSqlDatabase db = *(pWebSocketServer->database());
     QSqlQuery query(db);
 
-    QFile file;
-    file.setFileName("/tmp/freehackquest_export_F3h233h2");
-    file.open(QIODevice::WriteOnly);
     QString lang = obj.value("lang").toString().trimmed();
-    if (obj.value("output") == "html"){
+    QString output = obj.value("output").toString().trimmed();
+    //Check parametrs
+    if (output != "html" && output != "markdown"){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "The output is not supported."));
+        return;
+    }
+    QList<QString> langs;
+    langs << "en" << "de" << "ru";
+    if (!langs.contains(obj.value("lang").toString())){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "The language is not supported."));
+        return;
+    }
+
+    QString tmpFileDir = QDir::tempPath();
+    QString tmpFile = tmpFileDir + "/freehackquest-classbook_export_file";
+    QFile file(tmpFile);
+    file.open(QIODevice::WriteOnly);
+    if (output == "html"){
         createHtml(&file, lang, query);
     }
-    if (obj.value("output") == "markdown"){
+    if (output == "markdown"){
         createMD(&file, lang, query);
     }
     file.close();
@@ -74,12 +87,7 @@ void CmdClassbookExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
         zip.open(QuaZip::mdCreate);
         QuaZipFile export_zipfile(&zip);
 
-        QString name;
-        if (obj.value("output") == "html"){
-            name = "freehackquest-classbook.html";}
-        if (obj.value("output") == "markdown"){
-            name = "freehackquest-classbook.md";
-        }
+        QString name = "freehackquest-classbook." + output;
         export_zipfile.open(QIODevice::WriteOnly, QuaZipNewInfo(name));
         // After .toString(), you should specify a text codec to use to encode the
         // string data into the (binary) file. Here, I use UTF-8:
