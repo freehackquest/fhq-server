@@ -10,7 +10,7 @@
 CmdClassbookExportHandler::CmdClassbookExportHandler(){
     m_vInputs.push_back(CmdInputDef("output").required().string_().description("The output file format"));
     m_vInputs.push_back(CmdInputDef("lang").required().string_().description("The output file format"));
-    m_vInputs.push_back(CmdInputDef("zip").optional().bool_().description("Ziping the output"));
+    m_vInputs.push_back(CmdInputDef("zip").optional().bool_().description("Zipping the output"));
 }
 
 QString CmdClassbookExportHandler::cmd(){
