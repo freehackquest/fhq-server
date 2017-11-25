@@ -2,6 +2,7 @@
 #include <QJsonArray>
 #include <QSqlError>
 #include <log.h>
+#include <QCryptographicHash>
 
 CmdClassbookLocalizationUpdateRecordHandler::CmdClassbookLocalizationUpdateRecordHandler(){
     m_vInputs.push_back(CmdInputDef("classbook_localizationid").required().integer_().description("Localization id"));
@@ -64,11 +65,15 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(QWebSocket *pClient, IW
     QString name = obj["name"].toString().trimmed();
     QString content = obj["content"].toString().trimmed();
 
-    query.prepare("UPDATE classbook_localization SET name = :name, content = :content, updated = NOW() "
+    //Set md5_content hash
+    QString md5_content = QString(QCryptographicHash::hash(content.toUtf8(), QCryptographicHash::Md5).toHex());
+
+    query.prepare("UPDATE classbook_localization SET name = :name, content = :content, md5_content = :md5_content, updated = NOW() "
                   "WHERE classbook_localizationid = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", classbook_localizationid);
     query.bindValue(":name", name);
     query.bindValue(":content", content);
+    query.bindValue(":md5_content", md5_content);
     if(!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
@@ -79,6 +84,7 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(QWebSocket *pClient, IW
     data["lang"] = record.value("lang").toString();
     data["name"] = name;
     data["content"] = content;
+    data["md5_content"] = md5_content;
 
     QJsonObject jsonData;
     jsonData["cmd"] = QJsonValue(cmd());

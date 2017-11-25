@@ -112,9 +112,11 @@ void CmdClassbookUpdateRecordHandler::handle(QWebSocket *pClient, IWebSocketServ
     QString content;
     if(obj.contains("content")){
         content = obj.value("content").toString().trimmed().toHtmlEscaped();
-        query.prepare("UPDATE classbook SET content=:content WHERE id=:classbookid");
+        QString md5_content = QString(QCryptographicHash::hash(content.toUtf8(), QCryptographicHash::Md5).toHex());
+        query.prepare("UPDATE classbook SET content=:content, md5_content=:md5_content WHERE id=:classbookid");
         query.bindValue(":classbookid", classbookid);
         query.bindValue(":content", content);
+        query.bindValue(":md5_content", md5_content);
         if (!query.exec()){
             pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
             return;
@@ -134,9 +136,17 @@ void CmdClassbookUpdateRecordHandler::handle(QWebSocket *pClient, IWebSocketServ
         }
     }
 
+    //UPDATE updated column
+    query.prepare("UPDATE classbook SET updated = NOW() WHERE id=:classbookid");
+    query.bindValue(":classbookid", classbookid);
+    if (!query.exec()){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        return;
+    }
+
     //GET article info
     QJsonObject info;
-    query.prepare("SELECT id, name, content, ordered, parentid FROM classbook WHERE id=:classbookid");
+    query.prepare("SELECT id, name, content, md5_content, ordered, parentid FROM classbook WHERE id=:classbookid");
     query.bindValue(":classbookid", classbookid);
     query.exec();
     if (query.next()) {
@@ -145,6 +155,7 @@ void CmdClassbookUpdateRecordHandler::handle(QWebSocket *pClient, IWebSocketServ
         info["parentid"] = record.value("parentid").toInt();
         info["name"] = record.value("name").toString();
         info["content"] = record.value("content").toString();
+        info["md5_content"] = record.value("md5_content").toString();
         info["ordered"] = record.value("ordered").toInt();
     } else {
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("article"));

@@ -85,53 +85,32 @@ void Log::warn(QString tag, QString msg){
 // ---------------------------------------------------------------------
 
 void Log::setdir(QString dir){
-	LOG_DIR_PATH = dir;
+    g_LOG_DIR_PATH = dir;
+}
+
+// ---------------------------------------------------------------------
+
+QJsonArray Log::last_logs(){
+    QMutexLocker locker(&g_LOG_MUTEX);
+    QJsonArray lastLogMessages;
+    int len = g_LAST_LOG_MESSAGES.size();
+    for(int i = 0; i < len; i++){
+        lastLogMessages.append(g_LAST_LOG_MESSAGES[i]);
+    }
+    return lastLogMessages;
 }
 
 // ---------------------------------------------------------------------
 
 void Log::add(QString type, QString tag, QString msg){
-	QMutexLocker locker(&LOG_MUTEX);
+    QMutexLocker locker(&g_LOG_MUTEX);
 	QString sThreadID = "0x" + QString::number((long long)QThread::currentThreadId(), 16);
 	msg = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz") + ", " + sThreadID + " [" + type + "] " + tag + ": " + msg;
     std::cout << msg.toStdString() << "\r\n";
-	LAST_LOG_MESSAGES << msg;
-	while(LAST_LOG_MESSAGES.size() > 50){
-		LAST_LOG_MESSAGES.removeLast();
+    g_LAST_LOG_MESSAGES.push_front(msg);
+    while(g_LAST_LOG_MESSAGES.size() > 50){
+        g_LAST_LOG_MESSAGES.removeLast();
 	}
 }
 
 // ---------------------------------------------------------------------
-
-/*
-// use this function for problems with database connection
-void Errors::WriteServerError(QString errorInfo){
-	QDir dir("/var/log/freehackquestd/errors");
-	if(!dir.exists()){
-        std::cout << dir.absolutePath() << " did not found";
-        std::cout << errorInfo;
-		return;
-	}
-	QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd");
-	if(!dir.exists(date) && !dir.mkdir(date)){
-        std::cout << dir.absolutePath() << " could not create dir " << date;
-        std::cout << errorInfo;
-		return;
-	}
-	dir.cd(date);
-	
-	QString time = QDateTime::currentDateTime().toString("HHmmss.zzz");
-    QFile errorf(dir.absolutePath() + '/' + time);
-    errorf.open(QIODevice::WriteOnly | QIODevice::Text);
-
-    if(!errorf.isOpen()){
-        std::cout << dir.absolutePath() + '/' + time << " could not openfile ";
-        std::cout << errorInfo;
-		return;
-    }
-    QTextStream outStream(&errorf);
-    outStream << errorInfo.toUtf8();
-    errorf.close();
-}
-
-*/
