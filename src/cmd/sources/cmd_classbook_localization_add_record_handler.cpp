@@ -54,16 +54,14 @@ void CmdClassbookLocalizationAddRecordHandler::handle(QWebSocket *pClient, IWebS
     QJsonObject data;
 
     QSqlQuery query(db);
-    QString lang;
+    QString lang = obj["lang"].toString().trimmed();
     query.prepare("SELECT lang FROM classbook_localization WHERE lang = :lang");
     query.bindValue(":lang", obj["lang"].toString().trimmed());
     if(!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
     }
-    if(!query.next()){
-        lang = obj["lang"].toString().trimmed();
-    } else {
+    if(query.next()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "This lang already exist"));
         return;
     }
