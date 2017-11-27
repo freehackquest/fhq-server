@@ -52,16 +52,14 @@ void CmdClassbookProposalAddRecordHandler::handle(QWebSocket *pClient, IWebSocke
     QJsonObject data;
 
     QSqlQuery query(db);
-    QString classbookid;
+    int classbookid = obj["classbookid"].toInt();
     query.prepare("SELECT id FROM classbook WHERE id = :classbookid");
     query.bindValue(":classbookid", obj["classbookid"].toString().trimmed());
     if(!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
     }
-    if(query.next()){
-        classbookid = obj["classbookid"].toInt();
-    } else {
+    if(!query.next()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This article doesn't exist"));
         return;
     }

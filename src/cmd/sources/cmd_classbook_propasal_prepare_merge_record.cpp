@@ -1,46 +1,46 @@
-#include <cmd_classbook_proposal_info_handler.h>
+#include <cmd_classbook_propasal_prepare_merge_record.h>
 #include <QJsonArray>
 #include <QSqlError>
 #include <log.h>
 
-CmdClassbookProposalInfoHandler::CmdClassbookProposalInfoHandler(){
+CmdClassbookProposalPrepareMergeRecordHandler::CmdClassbookProposalPrepareMergeRecordHandler(){
     m_vInputs.push_back(CmdInputDef("classbook_proposal_id").required().integer_().description("Proposal id"));
 }
 
-QString CmdClassbookProposalInfoHandler::cmd(){
-    return "classbook_proposal_info";
+QString CmdClassbookProposalPrepareMergeRecordHandler::cmd(){
+    return "classbook_propasal_prepare_merge_record";
 }
 
-bool CmdClassbookProposalInfoHandler::accessUnauthorized(){
+bool CmdClassbookProposalPrepareMergeRecordHandler::accessUnauthorized(){
     return false;
 }
 
-bool CmdClassbookProposalInfoHandler::accessUser(){
+bool CmdClassbookProposalPrepareMergeRecordHandler::accessUser(){
+    return false;
+}
+
+bool CmdClassbookProposalPrepareMergeRecordHandler::accessTester(){
+    return false;
+}
+
+bool CmdClassbookProposalPrepareMergeRecordHandler::accessAdmin(){
     return true;
 }
 
-bool CmdClassbookProposalInfoHandler::accessTester(){
-    return true;
-}
-
-bool CmdClassbookProposalInfoHandler::accessAdmin(){
-    return true;
-}
-
-const QVector<CmdInputDef> &CmdClassbookProposalInfoHandler::inputs(){
+const QVector<CmdInputDef> &CmdClassbookProposalPrepareMergeRecordHandler::inputs(){
     return m_vInputs;
 };
 
-QString CmdClassbookProposalInfoHandler::description(){
-    return "Find and display all proposal data by id";
+QString CmdClassbookProposalPrepareMergeRecordHandler::description(){
+    return "Prepare to merge updating requests";
 }
 
-QStringList CmdClassbookProposalInfoHandler::errors(){
+QStringList CmdClassbookProposalPrepareMergeRecordHandler::errors(){
     QStringList	list;
     return list;
 }
 
-void CmdClassbookProposalInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdClassbookProposalPrepareMergeRecordHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
     QSqlDatabase db = *(pWebSocketServer->database());
 
@@ -59,18 +59,16 @@ void CmdClassbookProposalInfoHandler::handle(QWebSocket *pClient, IWebSocketServ
         return;
     }
 
-    query.prepare("SELECT id, classbookid, lang, name, content FROM classbook_proposal WHERE id = :classbook_proposal_id");
+    query.prepare("SELECT content FROM classbook WHERE id IN (SELECT classbookid FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", classbook_proposal_id);
     if (!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
     }
     QSqlRecord record = query.record();
-    data["classbookid"] = record.value("classbookid").toInt();
-    data["id"] = classbook_proposal_id;
-    data["lang"] = record.value("lang").toString();
-    data["name"] = record.value("name").toString();
     data["content"] = record.value("content").toString();
+
+    //add merge and update output
 
     QJsonObject jsonData;
     jsonData["cmd"] = QJsonValue(cmd());
@@ -79,4 +77,5 @@ void CmdClassbookProposalInfoHandler::handle(QWebSocket *pClient, IWebSocketServ
     jsonData["data"] = data;
     pWebSocketServer->sendMessage(pClient, jsonData);
 }
+
 
