@@ -65,7 +65,7 @@ void CmdHintsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 		QString text = record.value("text").toString();
 		QString dt = record.value("dt").toString();
 		QJsonObject hint;
-		hint["hintid"] = hintid;
+        hint["id"] = hintid;
 		hint["questid"] = questid2;
 		hint["text"] = text;
 		hint["dt"] = dt;
