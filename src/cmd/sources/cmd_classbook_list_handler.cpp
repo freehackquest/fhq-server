@@ -48,7 +48,7 @@ void CmdClassbookListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
     int parentid = obj["parentid"].toInt();
 
     //CHECK exist parentid in DB
-    query.prepare("SELECT name FROM classbook WHERE parentid =:parentid");
+    query.prepare("SELECT name FROM classbook WHERE id =:parentid");
     query.bindValue(":parentid", parentid);
     query.exec();
     if (!query.next() && parentid != 0){
