@@ -136,7 +136,7 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
                   ":name,"
                   ":content,"
                   ":md5_content,"
-                  "NOW()"
+                  "NOW(),"
                   "NOW()"
                   ")");
     query.bindValue(":parentid", parentid);
