@@ -4,6 +4,8 @@
 #include <QString>
 #include <QMap>
 #include <QChar>
+#include <QRegExp>
+#include <QDebug>
 
 class UtilsStaticAnalizingText {
     public:
