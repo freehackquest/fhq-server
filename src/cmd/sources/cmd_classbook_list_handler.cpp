@@ -49,8 +49,9 @@ void CmdClassbookListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
     int parentid = obj["parentid"].toInt();
     QJsonArray data;
 
-    if (obj.contains("search")){
+    if (obj.contains("search") && !obj.value("search").toString().isEmpty()){
         QString search = obj.value("search").toString();
+
         //SET lang
         QString lang;
         if (obj.contains("lang")){
