@@ -60,7 +60,7 @@ void CmdClassbookLocalizationInfoHandler::handle(QWebSocket *pClient, IWebSocket
     }
 
     query.prepare("SELECT id, lang FROM classbook_localization WHERE id = :classbook_localizationid");
-    query.bindValue(":classbook_localizationid", classbook_localizationid);
+    query.bindValue(":classbook_localizationid", classbook_localizationid); //?
     if (!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
