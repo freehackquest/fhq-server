@@ -52,7 +52,7 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(QWebSocket *pClient, IW
     QSqlQuery query(db);
     int classbook_localizationid = obj["classbook_localizationid"].toInt();
     query.prepare("SELECT id FROM classbook_localization WHERE id = :classbook_localizationid");
-    query.bindValue(":classbook_localizationid", obj["classbook_localizationid"].toInt());
+    query.bindValue(":classbook_localizationid", classbook_localizationid);
     if(!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
@@ -69,7 +69,7 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(QWebSocket *pClient, IW
     QString md5_content = QString(QCryptographicHash::hash(content.toUtf8(), QCryptographicHash::Md5).toHex());
 
     query.prepare("UPDATE classbook_localization SET name = :name, content = :content, md5_content = :md5_content, updated = NOW() "
-                  "WHERE classbook_localizationid = :classbook_localizationid");
+                  "WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", classbook_localizationid);
     query.bindValue(":name", name);
     query.bindValue(":content", content);
@@ -78,6 +78,10 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(QWebSocket *pClient, IW
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
     }
+    query.prepare("SELECT classbookid, lang FROM classbook_localization WHERE id=:id");
+    query.bindValue(":id", classbook_localizationid);
+    query.exec();
+    query.next();
     QSqlRecord record = query.record();
     data["classbookid"] = record.value("classbookid").toInt();
     data["classbook_localizationid"] = classbook_localizationid;
