@@ -59,12 +59,13 @@ void CmdClassbookProposalInfoHandler::handle(QWebSocket *pClient, IWebSocketServ
         return;
     }
 
-    query.prepare("SELECT id, classbookid, lang, name, content FROM classbook_proposal WHERE id = :classbook_proposal_id");
+    query.prepare("SELECT classbookid, lang, name, content FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", classbook_proposal_id);
     if (!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
     }
+    query.next();
     QSqlRecord record = query.record();
     data["classbookid"] = record.value("classbookid").toInt();
     data["id"] = classbook_proposal_id;

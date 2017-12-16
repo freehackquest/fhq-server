@@ -98,21 +98,31 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
 
     //Set ordered of article: increment max of child's ordered
     int ordered;
-    if (obj.contains("order")){
+    if (obj.contains("ordered")){
         ordered = obj["ordered"].toInt();
     } else {
         query.prepare("SELECT MAX(ordered) AS max FROM classbook WHERE parentid=:parentid");
         query.bindValue(":parentid", parentid);
         query.exec();
-        if (query.next()){
-            QSqlRecord record = query.record();
+        QSqlRecord record = query.record();
+        if (!record.value("max").isNull())
             ordered = record.value("max").toInt() + 1;
-        } else {
-            query.prepare("SELECT ordered FROM classbook WHERE id=:parentid");
-            query.bindValue(":parentid", parentid);
-            query.exec();
-            QSqlRecord record = query.record();
-            ordered = record.value("ordered").toInt() + 1;
+        else {
+            if (parentid != 0){
+                query.prepare("SELECT ordered FROM classbook WHERE id=:parentid");
+                query.bindValue(":parentid", parentid);
+                query.exec();
+                if (query.next()){
+                    QSqlRecord record = query.record();
+                    ordered = record.value("ordered").toInt() + 1;
+                } else {
+                    pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+                    return;
+                }
+            } else {
+                ordered = 1;
+            }
+
         }
     }
 
@@ -136,7 +146,7 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
                   ":name,"
                   ":content,"
                   ":md5_content,"
-                  "NOW()"
+                  "NOW(),"
                   "NOW()"
                   ")");
     query.bindValue(":parentid", parentid);
