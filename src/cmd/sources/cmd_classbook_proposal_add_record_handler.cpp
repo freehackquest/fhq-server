@@ -54,7 +54,7 @@ void CmdClassbookProposalAddRecordHandler::handle(QWebSocket *pClient, IWebSocke
     QSqlQuery query(db);
     int classbookid = obj["classbookid"].toInt();
     query.prepare("SELECT id FROM classbook WHERE id = :classbookid");
-    query.bindValue(":classbookid", obj["classbookid"].toInt());
+    query.bindValue(":classbookid", classbookid);
     if(!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
@@ -102,8 +102,9 @@ void CmdClassbookProposalAddRecordHandler::handle(QWebSocket *pClient, IWebSocke
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
     }
+    int rowid = query.lastInsertId().toInt();
     data["classbookid"] = classbookid;
-    data["classbook_proposal_id"] = QJsonValue(query.lastInsertId().toInt());
+    data["classbook_proposal_id"] = QJsonValue(rowid);
     data["lang"] = lang;
     data["name"] = name;
     data["content"] = content;

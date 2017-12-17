@@ -48,9 +48,12 @@ void CmdClassbookProposalListHandler::handle(QWebSocket *pClient, IWebSocketServ
     QSqlQuery query(db);
 
     QJsonObject item;
-    QJsonArray data;   
+    QJsonArray data;
 
+    QString sQuery;
     QMap<QString, QJsonValue> mapFilter;
+
+    //checkout and validation of classbookid
     if(obj.contains("classbookid")){
         query.prepare("SELECT id FROM classbook WHERE id = :classbookid");
         query.bindValue(":classbookid", obj["classbookid"].toInt());
@@ -64,11 +67,15 @@ void CmdClassbookProposalListHandler::handle(QWebSocket *pClient, IWebSocketServ
         }
         mapFilter.insert("classbookid", obj["classbookid"].toInt());
     }
+
+    //checkout of lang and generation of query's bone
     if(obj.contains("lang")){
         mapFilter.insert("lang", obj["lang"].toString().trimmed());
+        sQuery = "SELECT id, name FROM classbook_proposal";
     }
+    else sQuery = "SELECT id, name, lang FROM classbook_proposal";
 
-    QString sQuery = "SELECT id, name FROM classbook_proposal";
+    //generation of the rest of the query
     if(mapFilter.size() > 0) sQuery += " WHERE ";
     bool bFirst = true;
     foreach(QString key, mapFilter.keys()){
@@ -77,9 +84,14 @@ void CmdClassbookProposalListHandler::handle(QWebSocket *pClient, IWebSocketServ
         sQuery +=  key + " = :" + key;
     }
     query.prepare(sQuery);
+
+    //binding of values
     foreach(QString key, mapFilter.keys()){
         QMap<QString, QJsonValue>::const_iterator v = mapFilter.lowerBound(key);
-        query.bindValue(":" + key, v.value());
+        if(key=="classbookid")
+            query.bindValue(":" + key, v.value().toInt());
+        else
+            query.bindValue(":" + key, v.value());
     }
     if (!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
@@ -90,7 +102,10 @@ void CmdClassbookProposalListHandler::handle(QWebSocket *pClient, IWebSocketServ
         QSqlRecord record = query.record();
         item["id"] = record.value("id").toInt();
         item["classbookid"] = obj["classbookid"].toInt();
-        item["lang"] = obj["lang"].toString().trimmed();
+        if(obj.contains("lang")){
+            item["lang"] = obj["lang"].toString().trimmed();
+        }
+        else item["lang"] = record.value("lang").toString().trimmed();
         item["name"] = record.value("name").toString();
         data.push_back(item);
     }
