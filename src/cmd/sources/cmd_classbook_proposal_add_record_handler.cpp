@@ -54,7 +54,7 @@ void CmdClassbookProposalAddRecordHandler::handle(QWebSocket *pClient, IWebSocke
     QSqlQuery query(db);
     int classbookid = obj["classbookid"].toInt();
     query.prepare("SELECT id FROM classbook WHERE id = :classbookid");
-    query.bindValue(":classbookid", obj["classbookid"].toString().trimmed());
+    query.bindValue(":classbookid", obj["classbookid"].toInt());
     if(!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
