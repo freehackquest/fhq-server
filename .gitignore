@@ -28,6 +28,10 @@
 *.out
 *.app
 
+# CLion additions
+/.idea
+/cmake-build-debug
+
 Makefile
 tmp/*
 tmpdeb/*
