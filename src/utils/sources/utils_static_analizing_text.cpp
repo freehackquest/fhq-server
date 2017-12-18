@@ -1,13 +1,21 @@
 #include <utils_static_analizing_text.h>
 
+double UtilsStaticAnalizingText::calcWeightOfOneChar(int strLen){
+  return 100.0/static_cast<double>(strLen);
+}
+
 QMap<QChar, double> UtilsStaticAnalizingText::calc(const QString &text){
   QMap<QChar, double> map;
   QString str = text;
   str = str.toLower();
-  str = str.remove(QRegExp("[^a-zA-Z\\d\\s]"));
-  for (int i = 0; i < str.length(); i++) {
-    map[str[i]] = 1.0;
+  str = str.remove(QRegExp("[^a-zA-Z]"));
+  int strLen = str.length();
+  double weightOfOneChar = calcWeightOfOneChar(strLen);
+  for (int i = 0; i < strLen; i++) {
+    map[str[i]] = 0.0;
   }
-  qDebug() << str;
+  for (int i = 0; i < strLen; i++) {
+    map[str[i]] += weightOfOneChar;
+  }
   return map;
 }

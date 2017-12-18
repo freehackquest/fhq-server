@@ -10,6 +10,8 @@
 class UtilsStaticAnalizingText {
     public:
         static QMap<QChar, double> calc(const QString &text);
+    private:
+        static double calcWeightOfOneChar(int strLen); 
 };
 
 #endif
