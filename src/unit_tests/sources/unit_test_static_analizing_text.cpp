@@ -17,23 +17,27 @@ bool UnitTestStaticAnalizingText::run(){
 	};
 
 	std::vector<LTest *> tests;
-	QMap<QChar, double> data;
-	data['t'] = 50.0;
-	data['e'] = 25.0;
-	data['s'] = 25.0;
-	tests.push_back(new LTest("test", data));
+	QMap<QChar, double> firstCase;
+	firstCase['t'] = 50.0;
+	firstCase['e'] = 25.0;
+	firstCase['s'] = 25.0;
+	tests.push_back(new LTest("test", firstCase));
+
+	QMap<QChar, double> secondCase;
+	secondCase['a'] = 100.0;
+	tests.push_back(new LTest("2343@#$@#a", secondCase));
 
 	unsigned int nSuccess = 0;
 	for(unsigned int i = 0; i < tests.size(); i++){
 			QString s1 = tests[i]->s1;
 			QMap<QChar, double> n = tests[i]->n;
 			QMap<QChar, double> n1 = UtilsStaticAnalizingText::calc(s1);
-			// if (n1 != n) {
-			// 		std::cout << "data static analizing for " << s1.toStdString() << "\n"
-			// 							<< " (expected " << n << ", but got " << n1 << ")";
-			// }else{
-			// 		nSuccess++;
-			// }
+
+			if (n1 != n) {
+					std::cout << "Wrong\n";
+			}else{
+					nSuccess++;
+			}
 	}
 	return nSuccess == tests.size();
 }
