@@ -1,6 +1,7 @@
 #include <cmd_classbook_proposal_list_handler.h>
 #include <QJsonArray>
 #include <QSqlError>
+#include <QMap>
 #include <log.h>
 
 CmdClassbookProposalListHandler::CmdClassbookProposalListHandler(){
@@ -49,98 +50,62 @@ void CmdClassbookProposalListHandler::handle(QWebSocket *pClient, IWebSocketServ
     QJsonObject item;
     QJsonArray data;
 
-    int n;
+    QString sQuery;
+    QMap<QString, QJsonValue> mapFilter;
+
+    //checkout and validation of classbookid
     if(obj.contains("classbookid")){
-        if(obj.contains("lang")) n = 4;
-        else n = 3;
-    } else {
-        if(obj.contains("lang")) n = 2;
-        else n = 1;
+        query.prepare("SELECT id FROM classbook WHERE id = :classbookid");
+        query.bindValue(":classbookid", obj["classbookid"].toInt());
+        if(!query.exec()){
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            return;
+        }
+        if(!query.next()){
+            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This article doesn't exist"));
+            return;
+        }
+        mapFilter.insert("classbookid", obj["classbookid"].toInt());
     }
 
-    int classbookid = obj["classbookid"].toInt();
-    QString lang = obj["lang"].toString().trimmed();
+    //checkout of lang and generation of query's bone
+    if(obj.contains("lang")){
+        mapFilter.insert("lang", obj["lang"].toString().trimmed());
+        sQuery = "SELECT id, name FROM classbook_proposal";
+    }
+    else sQuery = "SELECT id, name, lang FROM classbook_proposal";
 
-    switch(n){
-            case 4:
-                query.prepare("SELECT id FROM classbook WHERE id = :classbookid");
-                query.bindValue(":classbookid", obj["classbookid"].toInt());
-                if(!query.exec()){
-                    pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
-                    return;
-                }
-                if(!query.next()){
-                    pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This article doesn't exist"));
-                    return;
-                }
-                query.prepare("SELECT lang FROM classbook_proposal WHERE lang = :lang");
-                query.bindValue(":lang", obj["lang"].toInt());
-                if(!query.exec()){
-                    pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
-                    return;
-                }
-                if(!query.next()){
-                    pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This language doesn't exist"));
-                    return;
-                }
-                query.prepare("SELECT id, name FROM classbook_proposal WHERE classbookid = :classbookid AND lang = :lang");
-                query.bindValue(":classbookid", classbookid);
-                query.bindValue(":lang", lang);
-                if (!query.exec()){
-                    pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
-                    return;
-                }
-                break;
-            case 3:
-                query.prepare("SELECT id FROM classbook WHERE id = :classbookid");
-                query.bindValue(":classbookid", obj["classbookid"].toInt());
-                if(!query.exec()){
-                    pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
-                    return;
-                }
-                if(!query.next()){
-                    pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This article doesn't exist"));
-                    return;
-                }
-                query.prepare("SELECT id, name FROM classbook_proposal WHERE classbookid = :classbookid");
-                query.bindValue(":classbookid", classbookid);
-                if (!query.exec()){
-                    pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
-                    return;
-                }
-                break;
-            case 2:
-                query.prepare("SELECT lang FROM classbook_proposal WHERE lang = :lang");
-                query.bindValue(":lang", obj["lang"].toInt());
-                if(!query.exec()){
-                    pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
-                    return;
-                }
-                if(!query.next()){
-                    pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This language doesn't exist"));
-                    return;
-                }
-                query.prepare("SELECT id, name FROM classbook_proposal WHERE lang = :lang");
-                query.bindValue(":lang", lang);
-                if (!query.exec()){
-                    pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
-                    return;
-                }
-                break;
-            case 1:
-                query.prepare("SELECT id, name FROM classbook_proposal");
-                if (!query.exec()){
-                    pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
-                    return;
-                }
-                break;
-        }
+    //generation of the rest of the query
+    if(mapFilter.size() > 0) sQuery += " WHERE ";
+    bool bFirst = true;
+    foreach(QString key, mapFilter.keys()){
+        if(!bFirst) sQuery += " AND ";
+        bFirst = false;
+        sQuery +=  key + " = :" + key;
+    }
+    query.prepare(sQuery);
+
+    //binding of values
+    foreach(QString key, mapFilter.keys()){
+        QMap<QString, QJsonValue>::const_iterator v = mapFilter.lowerBound(key);
+        if(key=="classbookid")
+            query.bindValue(":" + key, v.value().toInt());
+        else
+            query.bindValue(":" + key, v.value());
+    }
+    if (!query.exec()){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        return;
+    }
 
     while (query.next()) {
         QSqlRecord record = query.record();
         item["id"] = record.value("id").toInt();
-        item["classbookid"] = classbookid;
-        item["lang"] = lang;
+        item["classbookid"] = obj["classbookid"].toInt();
+        if(obj.contains("lang")){
+            item["lang"] = obj["lang"].toString().trimmed();
+        }
+        else item["lang"] = record.value("lang").toString().trimmed();
         item["name"] = record.value("name").toString();
         data.push_back(item);
     }

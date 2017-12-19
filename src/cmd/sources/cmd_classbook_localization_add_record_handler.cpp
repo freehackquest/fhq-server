@@ -87,11 +87,11 @@ void CmdClassbookLocalizationAddRecordHandler::handle(QWebSocket *pClient, IWebS
                   ") "
                   "VALUES("
                   ":classbookid,"
-                  ":uuid"
+                  ":uuid,"
                   ":lang,"
                   ":name,"
                   ":content,"
-                  ":md5_content"
+                  ":md5_content,"
                   "NOW(),"
                   "NOW()"
                   ")");
@@ -105,8 +105,9 @@ void CmdClassbookLocalizationAddRecordHandler::handle(QWebSocket *pClient, IWebS
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
     }
+    int rowid = query.lastInsertId().toInt();
     data["classbookid"] = classbookid;
-    data["classbook_localizationid"] = QJsonValue(query.lastInsertId().toInt());
+    data["classbook_localizationid"] = QJsonValue(rowid);
     data["lang"] = lang;
     data["name"] = name;
     data["content"] = content;
