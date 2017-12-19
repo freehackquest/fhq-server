@@ -27,8 +27,6 @@ bool Update0092::update(QSqlDatabase &db, QString &error){
             "  `lang` varchar(8) NOT NULL,"
             "  `name` varchar(128) NOT NULL,"
             "  `content` text NOT NULL,"
-            "  `name_before` varchar(128) NOT NULL,"
-            "  `content_before` text NOT NULL,"
             "  `created` datetime NOT NULL,"
             "  PRIMARY KEY (`id`)"
             ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");

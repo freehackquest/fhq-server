@@ -29,8 +29,8 @@
 *.app
 
 # CLion additions
-/.idea
-/cmake-build-debug
+.idea/*
+cmake-build-debug/*
 
 Makefile
 tmp/*
