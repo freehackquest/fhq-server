@@ -1,4 +1,6 @@
-#include <cmd_classbook_propasal_prepare_merge_record.h>
+#include <cmd_classbook_proposal_prepare_merge_record.h>
+#include <utils_merge_text.h>
+#include <vector>
 #include <QJsonArray>
 #include <QSqlError>
 #include <log.h>
@@ -47,6 +49,7 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(QWebSocket *pClient, 
     QJsonObject data;
 
     QSqlQuery query(db);
+    QSqlRecord record = query.record();
     int classbook_proposal_id = obj["classbook_proposal_id"].toInt();
     query.prepare("SELECT id FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", obj["classbook_proposal_id"].toInt());
@@ -65,10 +68,20 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(QWebSocket *pClient, 
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
     }
-    QSqlRecord record = query.record();
-    data["content"] = record.value("content").toString();
+    QString curtxt = record.value("content").toString();
 
-    //add merge and update output
+    query.prepare("SELECT content, content_before FROM classbook_proposal WHERE id = :classbook_proposal_id");
+    query.bindValue(":classbook_proposal_id", classbook_proposal_id);
+    if (!query.exec()){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        return;
+    }
+    QString txt1 = record.value("content").toString();
+    QString txt2 = record.value("content_before").toString();
+    std::vector<row *> arr1, arr2;
+    UtilsMergeText::merge(curtxt, txt1, txt2, arr1, arr2);
+
+    //TO DO final merge, lang checkout, update output (with data)
 
     QJsonObject jsonData;
     jsonData["cmd"] = QJsonValue(cmd());

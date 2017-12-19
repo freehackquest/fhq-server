@@ -25,6 +25,7 @@ bool UnitTestMergeText::run(){
 
     std::vector<LTest *> tests;
     std::vector<row *> arr1, arr2;
+    //guess, it's mock, dudes
     tests.push_back(new LTest("You/are/got/and/good", "I/got/Mike/and/this is/good/boy", "I/cure/damn/ill/cancer", arr1, arr2, 8));
 
     unsigned int nSuccess = 0;

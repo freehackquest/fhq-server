@@ -53,20 +53,30 @@ void CmdClassbookProposalAddRecordHandler::handle(QWebSocket *pClient, IWebSocke
 
     QSqlQuery query(db);
     int classbookid = obj["classbookid"].toInt();
-    query.prepare("SELECT id FROM classbook WHERE id = :classbookid");
-    query.bindValue(":classbookid", classbookid);
+    QString lang = obj["lang"].toString().trimmed();
+    QString name = obj["name"].toString().trimmed();
+    QString content = obj["content"].toString().trimmed();
+
+    //obtain a current version of classbook name and content
+    if(lang=="en"){
+        query.prepare("SELECT name, content FROM classbook WHERE id = :classbookid");
+        query.bindValue(":classbookid", classbookid);
+    }
+    else {
+        query.prepare("SELECT name, content FROM classbook_localization WHERE lang = :lang");
+        query.bindValue(":lang", lang);
+    }
     if(!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
         return;
     }
     if(!query.next()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This article doesn't exist"));
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This article or localization doesn't exist"));
         return;
     }
-
-    QString lang = obj["lang"].toString().trimmed();
-    QString name = obj["name"].toString().trimmed();
-    QString content = obj["content"].toString().trimmed();
+    QSqlRecord record = query.record();
+    QString name_before = record.value("name").toString();
+    QString content_before = record.value("content").toString();
 
     //Set md5_content hash
     QString md5_content = QString(QCryptographicHash::hash(content.toUtf8(), QCryptographicHash::Md5).toHex());
@@ -80,6 +90,8 @@ void CmdClassbookProposalAddRecordHandler::handle(QWebSocket *pClient, IWebSocke
                   "lang,"
                   "name,"
                   "content,"
+                  "name_before,"
+                  "content_before,"
                   "md5_content,"
                   "created"
                   ") "
@@ -89,6 +101,8 @@ void CmdClassbookProposalAddRecordHandler::handle(QWebSocket *pClient, IWebSocke
                   ":lang,"
                   ":name,"
                   ":content,"
+                  ":name_before,"
+                  ":content_before,"
                   ":md5_content,"
                   "NOW()"
                   ")");
@@ -97,6 +111,8 @@ void CmdClassbookProposalAddRecordHandler::handle(QWebSocket *pClient, IWebSocke
     query.bindValue(":lang", lang);
     query.bindValue(":name", name);
     query.bindValue(":content", content);
+    query.bindValue(":name_before", name_before);
+    query.bindValue(":content_before", content_before);
     query.bindValue(":md5_content", md5_content);
     if(!query.exec()){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
@@ -108,6 +124,8 @@ void CmdClassbookProposalAddRecordHandler::handle(QWebSocket *pClient, IWebSocke
     data["lang"] = lang;
     data["name"] = name;
     data["content"] = content;
+    data["name_before"] = name_before;
+    data["content_before"] = content_before;
     data["md5_content"] = md5_content;
 
     QJsonObject jsonData;
