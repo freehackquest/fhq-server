@@ -1,4 +1,5 @@
 [DATABASE]
+usemysql=yes
 host=localhost
 name=freehackquest
 user=freehackquest_u

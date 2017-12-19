@@ -24,10 +24,16 @@ ServerConfig::ServerConfig(){
     }
 
 	m_bServer_ssl_on = false;
+	m_bDatabase_usemysql = true;
+
+	// sql
 	m_sDatabase_host = "localhost";
 	m_sDatabase_name = "freehackquest";
 	m_sDatabase_user = "freehackquest_u";
 	m_sDatabase_password = "freehackquest_p";
+
+	// local nosql
+	m_sDatabase_path = "/var/lib/freehackquest-backend/data";
 
 	m_nServer_port = 1234;
 	m_bServer_ssl_on = false;
@@ -45,14 +51,20 @@ bool ServerConfig::load(){
 	}
 
     QSettings sett(m_sFilename, QSettings::IniFormat);
-	m_sDatabase_host = readStringFromSettings(sett, "DATABASE/host", m_sDatabase_host);
-	m_sDatabase_name = readStringFromSettings(sett, "DATABASE/name", m_sDatabase_name);
-	m_sDatabase_user = readStringFromSettings(sett, "DATABASE/user", m_sDatabase_user);
-	m_sDatabase_password = readStringFromSettings(sett, "DATABASE/password", m_sDatabase_password);
-	
-	Log::info(TAG, "Database_host: " + m_sDatabase_host);
-	Log::info(TAG, "Database name: " + m_sDatabase_name);
-	Log::info(TAG, "Database user: " + m_sDatabase_user);
+    m_bDatabase_usemysql = readBoolFromSettings(sett, "DATABASE/usemysql", m_bDatabase_usemysql);
+    if(m_bDatabase_usemysql){
+		m_sDatabase_host = readStringFromSettings(sett, "DATABASE/host", m_sDatabase_host);
+		m_sDatabase_name = readStringFromSettings(sett, "DATABASE/name", m_sDatabase_name);
+		m_sDatabase_user = readStringFromSettings(sett, "DATABASE/user", m_sDatabase_user);
+		m_sDatabase_password = readStringFromSettings(sett, "DATABASE/password", m_sDatabase_password);
+
+		Log::info(TAG, "Database_host: " + m_sDatabase_host);
+		Log::info(TAG, "Database name: " + m_sDatabase_name);
+		Log::info(TAG, "Database user: " + m_sDatabase_user);
+	}else{
+		m_sDatabase_path = readStringFromSettings(sett, "DATABASE/path", m_sDatabase_path);
+		Log::info(TAG, "Database: using " + m_sDatabase_path);
+	}
 
 	m_nServer_port = readIntFromSettings(sett, "SERVER/port", m_nServer_port);
 	m_bServer_ssl_on = readBoolFromSettings(sett, "SERVER/ssl_on", m_bServer_ssl_on);
@@ -120,6 +132,18 @@ QString ServerConfig::databaseUser(){
 
 QString ServerConfig::databasePassword(){
 	return m_sDatabase_password;
+}
+
+// ---------------------------------------------------------------------
+
+bool ServerConfig::databaseUseMySQL(){
+	return m_bDatabase_usemysql;
+}
+
+// ---------------------------------------------------------------------
+
+QString ServerConfig::databasePath(){
+	return m_sDatabase_path;
 }
 
 // ---------------------------------------------------------------------

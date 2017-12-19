@@ -17,6 +17,8 @@ class ServerConfig {
 		QString databaseName();
 		QString databaseUser();
 		QString databasePassword();
+		bool databaseUseMySQL();
+		QString databasePath();
 
 		QString emailUsername();
 		QString emailPassword();
@@ -39,10 +41,12 @@ class ServerConfig {
 
 		// settings
         QString m_sFilename;
+        bool m_bDatabase_usemysql;
 		QString m_sDatabase_host;
 		QString m_sDatabase_name;
 		QString m_sDatabase_user;
 		QString m_sDatabase_password;
+		QString m_sDatabase_path;
 		
 		bool m_bServer_ssl_on;
 		int m_nServer_port;
