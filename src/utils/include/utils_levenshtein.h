@@ -4,8 +4,8 @@
 #include <QString>
 
 class UtilsLevenshtein {
-public:
-    static int distance(const QString &str1, const QString &str2);
+    public:
+        static int distance(const QString &str1, const QString &str2);
 };
 
 #endif
