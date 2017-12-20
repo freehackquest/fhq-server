@@ -13,6 +13,11 @@ struct row{
     bool operator < (const row& a) const {
         return (id < a.id);
     }
+    bool operator == (const row& a) const {
+        if ((id==a.id)&&(key==a.key)&&(line==a.line))
+            return 1;
+        else return 0;
+    }
 };
 
 class UtilsMergeText {

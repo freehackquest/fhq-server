@@ -10,13 +10,16 @@ void UtilsMergeText::compare(QString &txt1, QString &txt2, std::vector<row *> &a
     int len2 = list2.size();
     int i=0, j=0;
     //main comparisons
+    //TO DO delete t-index and try to change goto to brake
     for(;((i<len1)&&(j<len2));++i, ++j){
         if(list1[i]!=list2[j]){
+            //checkout for added rows
             for(int k=j+1;k<len2;++k) if(list1[i]==list2[k]){
                 for(int t=j;t<k;++t) arr.push_back(new row(t, sWord.at(0), list2.at(t)));
                 j+=(k-j);
                 goto exit;
             }
+            //checkout for deleted rows
             for(int k=i+1;k<len1;++k) if(list1[k]==list2[j]){
                 for(int t=i;t<k;++t) arr.push_back(new row(t, sWord.at(1), list1.at(t)));
                 i+=(k-i);
@@ -73,6 +76,12 @@ void UtilsMergeText::merge(QString &curtxt, QString &txt1, QString &txt2, std::v
             }
             //delete of add overlays from the second vector
             if((arr1.at(i)->line==arr2.at(j)->line)&&(arr2.at(j)->key=="!add"))
+            {
+                arr2.erase(arr2.begin()+j);
+                break;
+            }
+            //updating priority
+            if((arr1.at(i)->key==arr2.at(j)->key)&&(arr2.at(j)->key!="!add")&&(arr2.at(j)->key!="!del"))
             {
                 arr2.erase(arr2.begin()+j);
                 break;
