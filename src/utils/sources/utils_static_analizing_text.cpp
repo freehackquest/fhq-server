@@ -8,7 +8,6 @@ QMap<QChar, double> UtilsStaticAnalizingText::calc(const QString &text){
   QMap<QChar, double> map;
   QString str = text;
   str = str.toLower();
-  str = str.remove(QRegExp("[^a-zA-Z]"));
   int strLen = str.length();
   double weightOfOneChar = calcWeightOfOneChar(strLen);
   for (int i = 0; i < strLen; i++) {
