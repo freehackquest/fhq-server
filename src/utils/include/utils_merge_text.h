@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <vector>
+#include <set>
 
 struct row{
     row(int id, QString key, QString line) :
@@ -10,15 +11,30 @@ struct row{
     int id;
     QString key;
     QString line;
-    bool operator < (const row& a) const {
-        return (id < a.id);
-    }
+/*    bool operator = (const row* &a) const {
+        return (id = a.id);
+    }*/
+/*    bool operator () (const row& a, const row& b) const {
+        return a.id < b.id;
+    }*/
     bool operator == (const row& a) const {
         if ((id==a.id)&&(key==a.key)&&(line==a.line))
             return 1;
         else return 0;
     }
 };
+
+/*std::vector<row> m(std::vector<row *> &first, std::vector<row *> &last){
+    std::vector<row> v3;
+
+    std::set <row> s1(first.begin(), first.end());
+    std::set <row> s2(last.begin(), last.end());
+
+    set_difference(s1.begin(), s1.end(), s2.begin(), s2.end(), back_inserter(v3));
+    set_difference(s2.begin(), s2.end(), s1.begin(), s1.end(), back_inserter(v3));
+
+    return v3;
+}*/
 
 class UtilsMergeText {
     public:

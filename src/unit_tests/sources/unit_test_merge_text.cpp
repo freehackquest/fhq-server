@@ -87,7 +87,6 @@ bool UnitTestMergeText::run(){
         arr1.clear(), arr2.clear();
     }
 
-    /*
     //sort module test
     struct LTest2 {
         LTest2(QString txt1, QString txt2, QString txt3, std::vector<row *> arr1, std::vector<row *> arr2, std::vector<row *> arr3) :
@@ -114,10 +113,15 @@ bool UnitTestMergeText::run(){
     QString txt3 = tests2[0]->txt3;
     UtilsMergeText::merge(txt1, txt2, txt3, arr1, arr2);
 
-    unsigned int sortSuc;
-    for(int i=0;i<8;++i)if(arr1.at(i)==arr3.at(i)) sortSuc++;
+    unsigned int Success;
+    for(int i=0;i<8;++i)if(arr1.at(i)==arr3.at(i)) Success++;
 
-    if(sortSuc==8)nSuccess++;*/
+    if(Success==8)nSuccess++;
+
+    int id1 = arr1.at(0)->id;
+    QString key1 = arr1.at(0)->key;
+
+    std::cout << "this thing work: " << id1 << " - " << key1.toStdString() << "\n";
 
     return nSuccess == tests1.size();
 }

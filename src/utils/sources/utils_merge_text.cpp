@@ -10,24 +10,33 @@ void UtilsMergeText::compare(QString &txt1, QString &txt2, std::vector<row *> &a
     int len2 = list2.size();
     int i=0, j=0;
     //main comparisons
-    //TO DO delete t-index and try to change goto to brake
-    for(;((i<len1)&&(j<len2));++i, ++j){
-        if(list1[i]!=list2[j]){
+    while((i<len1)&&(j<len2)){
+        if(list1[i]!=list2[j])
+        {
             //checkout for added rows
-            for(int k=j+1;k<len2;++k) if(list1[i]==list2[k]){
-                for(int t=j;t<k;++t) arr.push_back(new row(t, sWord.at(0), list2.at(t)));
-                j+=(k-j);
+            for(int k=j+1;k<len2;++k) if(list1[i]==list2[k])
+            {
+                while(j<k)
+                {
+                    arr.push_back(new row(j, sWord.at(0), list2.at(j)));
+                    j++;
+                }
                 goto exit;
             }
             //checkout for deleted rows
-            for(int k=i+1;k<len1;++k) if(list1[k]==list2[j]){
-                for(int t=i;t<k;++t) arr.push_back(new row(t, sWord.at(1), list1.at(t)));
-                i+=(k-i);
+            for(int k=i+1;k<len1;++k) if(list1[k]==list2[j])
+            {
+                while(i<k)
+                {
+                    arr.push_back(new row(i, sWord.at(1), list1.at(i)));
+                    i++;
+                }
                 goto exit;
             }
             arr.push_back(new row(i, list1.at(i), list2.at(j)));
             exit:;
         }
+        i++, j++;
     }
     //work with the end of the texts
     while(j<len2){
@@ -74,12 +83,6 @@ void UtilsMergeText::merge(QString &curtxt, QString &txt1, QString &txt2, std::v
                 arr2.erase(arr2.begin()+j);
                 break;
             }
-            //delete of add overlays from the second vector
-            if((arr1.at(i)->line==arr2.at(j)->line)&&(arr2.at(j)->key=="!add"))
-            {
-                arr2.erase(arr2.begin()+j);
-                break;
-            }
             //updating priority
             if((arr1.at(i)->key==arr2.at(j)->key)&&(arr2.at(j)->key!="!add")&&(arr2.at(j)->key!="!del"))
             {
@@ -89,7 +92,21 @@ void UtilsMergeText::merge(QString &curtxt, QString &txt1, QString &txt2, std::v
         }
     }
     //merge and sort vectors
+
+    //arr1 = m(arr1,arr2);
+
+    /*int N = arr1.size();
+    std::merge(arr1.begin(),arr1.end(),arr2.begin(),arr2.end(),std::back_inserter(arr1));
+    for(int i=0;i<N;i++)arr1.erase(arr1.begin());*/
+
+    /*int N = arr1.size();
+    std::vector<row*> dst;
+    std::merge(arr1.begin(),arr1.end(),arr2.begin(),arr2.end(),std::back_inserter(dst));
+    arr1.reserve(arr1.size()+dst.size());
+    arr1.insert(arr1.end(),dst.begin(),dst.end());
+    for(int i=0;i<N;i++)arr1.erase(arr1.begin());*/
+
     arr1.reserve(arr1.size()+arr2.size());
     arr1.insert(arr1.end(),arr2.begin(),arr2.end());
-    std::sort(arr1.begin(), arr1.end());
+    std::sort(arr1.begin(),arr1.end());
 }
