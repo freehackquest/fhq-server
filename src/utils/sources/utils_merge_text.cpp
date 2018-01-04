@@ -92,21 +92,14 @@ void UtilsMergeText::merge(QString &curtxt, QString &txt1, QString &txt2, std::v
         }
     }
     //merge and sort vectors
-
-    //arr1 = m(arr1,arr2);
-
-    /*int N = arr1.size();
-    std::merge(arr1.begin(),arr1.end(),arr2.begin(),arr2.end(),std::back_inserter(arr1));
-    for(int i=0;i<N;i++)arr1.erase(arr1.begin());*/
-
-    /*int N = arr1.size();
-    std::vector<row*> dst;
-    std::merge(arr1.begin(),arr1.end(),arr2.begin(),arr2.end(),std::back_inserter(dst));
-    arr1.reserve(arr1.size()+dst.size());
-    arr1.insert(arr1.end(),dst.begin(),dst.end());
-    for(int i=0;i<N;i++)arr1.erase(arr1.begin());*/
-
     arr1.reserve(arr1.size()+arr2.size());
     arr1.insert(arr1.end(),arr2.begin(),arr2.end());
-    std::sort(arr1.begin(),arr1.end());
+    for(unsigned int i=0;i<arr1.size();++i)
+        for(unsigned int j=arr1.size()-1;j>i;--j)
+            if(arr1.at(j-1)->id > arr1.at(j)->id)
+            {
+                std::swap(arr1.at(j-1)->id,arr1.at(j)->id);
+                std::swap(arr1.at(j-1)->key,arr1.at(j)->key);
+                std::swap(arr1.at(j-1)->line,arr1.at(j)->line);
+            }
 }

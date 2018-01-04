@@ -79,11 +79,11 @@ bool UnitTestMergeText::run(){
         UtilsMergeText::merge(txt1, txt2, txt3, arr1, arr2);
         unsigned int n = tests1[i]->n;
 
-        //TO DO output
-        /*QString s = arr1.at(0)->line;
-        std::cout << s.toStdString();*/
-
         if(arr1.size()==n) nSuccess++;
+        else std::cout << "In the test №" << i+1
+                       << " the length of the vector is expected: " << n
+                       << ", but obtained: " << arr1.size() <<".\n";
+
         arr1.clear(), arr2.clear();
     }
 
@@ -113,15 +113,29 @@ bool UnitTestMergeText::run(){
     QString txt3 = tests2[0]->txt3;
     UtilsMergeText::merge(txt1, txt2, txt3, arr1, arr2);
 
-    unsigned int Success;
-    for(int i=0;i<8;++i)if(arr1.at(i)==arr3.at(i)) Success++;
+    unsigned int Success = 0;
+    for(int i=0;i<8;++i)
+    {
+        int id1 = arr1.at(i)->id;
+        int id2 = arr3.at(i)->id;
+        QString key1 = arr1.at(i)->key;
+        QString key2 = arr3.at(i)->key;
+        QString line1 = arr1.at(i)->line;
+        QString line2 = arr3.at(i)->line;
+        if(id1==id2 && key1==key2 && line1==line2) Success+=1;
+        else
+        {
+            std::cout << "In the sort test in the element №" << i+1 << ":\n";
+            if(id1!=id2) std::cout << "expected id: " << id2
+                                   << ", but obtained: " << id1 << std::endl;
+            if(key1!=key2) std::cout  << "expected key: " << key2.toStdString()
+                                      << ", but obtained: " << key1.toStdString() << std::endl;
+            if(line1!=line2) std::cout  << "expected line: " << line2.toStdString()
+                                        << ", but obtained: " << line1.toStdString() << std::endl;
+        }
+    }
 
-    if(Success==8)nSuccess++;
+    if(Success==8) nSuccess++;
 
-    int id1 = arr1.at(0)->id;
-    QString key1 = arr1.at(0)->key;
-
-    std::cout << "this thing work: " << id1 << " - " << key1.toStdString() << "\n";
-
-    return nSuccess == tests1.size();
+    return nSuccess == tests1.size()+1;
 }
