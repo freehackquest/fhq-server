@@ -27,47 +27,47 @@ bool UnitTestMergeText::run(){
     std::vector<LTest *> tests1;
     std::vector<row *> arr1, arr2;
 
-    //empty
+    //empty (Test №1)
     tests1.push_back(new LTest("", "", "", arr1, arr2, 0));
-    //without any difference
+    //without any difference (Test №2)
     tests1.push_back(new LTest("I/got/Mike", "I/got/Mike", "I/got/Mike", arr1, arr2, 0));
-    //with a difference in the ending
+    //with a difference in the ending (Tests №3-6)
     tests1.push_back(new LTest("I/got/Mike", "I/got/Mike", "I/got/Nike", arr1, arr2, 1));
     tests1.push_back(new LTest("I/got/Nike", "I/got/Mike", "I/got/Mike", arr1, arr2, 1));
     tests1.push_back(new LTest("I/got/Nike", "I/got/Mike", "I/got/Nike", arr1, arr2, 1));
     tests1.push_back(new LTest("I/got/Bike", "I/got/Mike", "I/got/Nike", arr1, arr2, 1));
-    //with a difference in the beginning
+    //with a difference in the beginning (Tests №7-10)
     tests1.push_back(new LTest("I/got/Mike", "I/got/Mike", "You/got/Mike", arr1, arr2, 1));
     tests1.push_back(new LTest("You/got/Mike", "I/got/Mike", "I/got/Mike", arr1, arr2, 1));
     tests1.push_back(new LTest("You/got/Mike", "I/got/Mike", "You/got/Mike", arr1, arr2, 1));
     tests1.push_back(new LTest("We/got/Mike", "I/got/Mike", "You/got/Mike", arr1, arr2, 1));
-    //with a difference in the middle of the row
+    //with a difference in the middle of the row (Tests №11-15)
     tests1.push_back(new LTest("I/have/cute/cats", "I/have/cute/cats", "I/have/huge/cats", arr1, arr2, 1));
     tests1.push_back(new LTest("I/have/huge/cats", "I/have/cute/cats", "I/have/cute/cats", arr1, arr2, 1));
     tests1.push_back(new LTest("I/have/huge/cats", "I/have/cute/cats", "I/have/huge/cats", arr1, arr2, 1));
     tests1.push_back(new LTest("I/have/difference/cats", "I/have/cute/cats", "I/have/huge/cats", arr1, arr2, 1));
     tests1.push_back(new LTest("I/betray/cats", "I/have/cats", "I/love/cats", arr1, arr2, 1));
-    //delete lines from the end of text
+    //delete lines from the end of text (Tests №16-19)
     tests1.push_back(new LTest("Go/to/the/school", "Go/to/the/school", "Go/to", arr1, arr2, 2));
     tests1.push_back(new LTest("Go/to", "Go/to/the/school", "Go/to/the/school", arr1, arr2, 2));
     tests1.push_back(new LTest("Go/to/the", "Go/to/the/school", "Go/to", arr1, arr2, 2));
     tests1.push_back(new LTest("Go/to", "Go/to/the/school", "Go/to/the", arr1, arr2, 2));
-    //add lines in the end of text
+    //add lines in the end of text (Tests №20-23)
     tests1.push_back(new LTest("Go/to", "Go/to", "Go/to/the/school", arr1, arr2, 2));
     tests1.push_back(new LTest("Go/to/the/school", "Go/to", "Go/to", arr1, arr2, 2));
     tests1.push_back(new LTest("Go/to/the", "Go/to", "Go/to/the/school", arr1, arr2, 2));
     tests1.push_back(new LTest("Go/to/the/school", "Go/to", "Go/to/the", arr1, arr2, 2));
-    //delete rows from the beginning and the middle of text
+    //delete rows from the beginning and the middle of text (Tests №24-27)
     tests1.push_back(new LTest("Go/to/the/school", "Go/to/the/school", "the/school", arr1, arr2, 2));
     tests1.push_back(new LTest("the/school", "Go/to/the/school", "Go/to/the/school", arr1, arr2, 2));
     tests1.push_back(new LTest("Go/to/the/school", "Go/to/the/school", "Go/to/school", arr1, arr2, 1));
     tests1.push_back(new LTest("Go/to/school", "Go/to/the/school", "Go/to/the/school", arr1, arr2, 1));
-    //add rows to the beginning and the middle of text
+    //add rows to the beginning and the middle of text (Tests №28-31)
     tests1.push_back(new LTest("the/school", "the/school", "Go/to/the/school", arr1, arr2, 2));
     tests1.push_back(new LTest("Go/to/the/school", "the/school", "the/school", arr1, arr2, 2));
     tests1.push_back(new LTest("Go/the/school", "the/school", "the/school", arr1, arr2, 1));
     tests1.push_back(new LTest("the/school", "the/school", "Go/the/school", arr1, arr2, 1));
-    //complex
+    //complex (Tests №32-33)
     tests1.push_back(new LTest("You/are/got/and/good", "I/got/Mike/and/this is/good/boy", "I/cure/damn/ill/cancer", arr1, arr2, 8));
     tests1.push_back(new LTest("We/spent/the rest/of our life/on/this/course/work", "We/spent/a lot of/time/on/this/course/work", "We/gonna/spend/a lot of/funky/time/on/course/work", arr1, arr2, 6));
 

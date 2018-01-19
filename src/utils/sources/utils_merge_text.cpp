@@ -54,21 +54,13 @@ void UtilsMergeText::merge(QString &curtxt, QString &txt1, QString &txt2, std::v
     compare(txt1, curtxt, arr2);
     for(unsigned int i=0;i<arr2.size();++i){
         for(unsigned int j=0;j<arr1.size();++j){
-            //delete of matches
-            if((arr2.at(i)->line==arr1.at(j)->line)
-                    &&(arr2.at(i)->key==arr1.at(j)->key))
-            {
-                arr1.erase(arr1.begin()+j);
-                break;
-            }
-            //delete of del overlays from the first vector
-            if((arr2.at(i)->key==arr1.at(j)->line)&&(arr1.at(j)->key=="!del"))
-            {
-                arr1.erase(arr1.begin()+j);
-                break;
-            }
-            //delete of add overlays from the first vector
-            if((arr2.at(i)->line==arr1.at(j)->line)&&(arr1.at(j)->key=="!add"))
+            //delete of matches and 'del'/'add' overlays from the first vector
+            bool bLinesEqual = arr2.at(i)->line==arr1.at(j)->line;
+            bool bKeysEqual = arr2.at(i)->key==arr1.at(j)->line;
+            QString sKey1 = arr1.at(j)->key;
+            QString sKey2 = arr2.at(i)->key;
+            if ((bLinesEqual && (sKey1 == sKey2 || sKey1 == "!add"))
+                    || (bKeysEqual && (sKey1 == "!del")))
             {
                 arr1.erase(arr1.begin()+j);
                 break;
@@ -77,14 +69,12 @@ void UtilsMergeText::merge(QString &curtxt, QString &txt1, QString &txt2, std::v
     }
     for(unsigned int i=0;i<arr1.size();++i){
         for(unsigned int j=0;j<arr2.size();++j){
-            //delete of del overlays from the second vector
-            if((arr1.at(i)->key==arr2.at(j)->line)&&(arr2.at(j)->key=="!del"))
-            {
-                arr2.erase(arr2.begin()+j);
-                break;
-            }
-            //updating priority
-            if((arr1.at(i)->key==arr2.at(j)->key)&&(arr2.at(j)->key!="!add")&&(arr2.at(j)->key!="!del"))
+            //delete of del overlays from the second vector and update of priority
+            bool bLinesEqual = arr1.at(i)->key==arr2.at(j)->line;
+            bool bKeysEqual = arr1.at(i)->key==arr2.at(j)->key;
+            QString sKey = arr2.at(j)->key;
+            if((bLinesEqual && (sKey == "!del"))
+                    || (bKeysEqual && (sKey != "!add") && (sKey != "!del")))
             {
                 arr2.erase(arr2.begin()+j);
                 break;
