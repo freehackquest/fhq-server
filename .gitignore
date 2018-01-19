@@ -41,6 +41,9 @@ freehackquest-backend
 var/log/freehackquest-backend/errors/*
 !var/log/freehackquest-backend/errors/.placeholder
 !usr/share/doc/freehackquest-backend
+!etc/init.d/freehackquest-backend
+!etc/freehackquest-backend/conf.ini.example
+
 
 *.deb
 lintian.log

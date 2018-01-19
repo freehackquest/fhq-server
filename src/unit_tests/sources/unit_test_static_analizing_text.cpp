@@ -24,15 +24,20 @@ bool UnitTestStaticAnalizingText::run(){
 	tests.push_back(new LTest("test", firstCase));
 
 	QMap<QChar, double> secondCase;
-	secondCase['a'] = 100.0;
-	tests.push_back(new LTest("2343@#$@#a", secondCase));
+	secondCase['1'] = 50.0;
+	secondCase['2'] = 50.0;
+	tests.push_back(new LTest("12", secondCase));
+
+	QMap<QChar, double> thirdCase;
+	thirdCase['.'] = 50.0;
+	thirdCase['-'] = 50.0;
+	tests.push_back(new LTest(".--.", thirdCase));
 
 	unsigned int nSuccess = 0;
 	for(unsigned int i = 0; i < tests.size(); i++){
 			QString s1 = tests[i]->s1;
 			QMap<QChar, double> n = tests[i]->n;
 			QMap<QChar, double> n1 = UtilsStaticAnalizingText::calc(s1);
-
 			if (n1 != n) {
 					std::cout << "Wrong\n";
 			}else{
