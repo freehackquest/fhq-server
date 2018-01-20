@@ -50,7 +50,6 @@ void CmdDeleteHintHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::HintIDMustBeNotZero());
 		return;
 	}
-	
 
 	QSqlDatabase db = *(pWebSocketServer->database());
 	QSqlQuery query(db);

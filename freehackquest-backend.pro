@@ -16,7 +16,7 @@ MOC_DIR = tmp/
 RCC_DIR = tmp/
 CONFIG += c++11 c++14
 LIBS = -lz
-
+RESOURCES = freehackquest-backend.qrc
 # INCLUDEPATH += $$[QT_INSTALL_HEADERS]/QtZlib
 
 # 3rd party

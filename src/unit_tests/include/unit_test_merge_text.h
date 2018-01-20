@@ -8,6 +8,8 @@ public:
     virtual QString name();
     virtual void init();
     virtual bool run();
+private:
+    QString loadFileFromRes(QString res_name);
 };
 
 #endif // UNIT_TEST_MERGE_TEXT_H

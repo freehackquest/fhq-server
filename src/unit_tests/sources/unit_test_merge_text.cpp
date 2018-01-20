@@ -2,6 +2,8 @@
 #include <utils_merge_text.h>
 #include <vector>
 #include <QStringList>
+#include <QFile>
+#include <QTextStream>
 #include <iostream>
 
 QString UnitTestMergeText::name(){
@@ -26,6 +28,12 @@ bool UnitTestMergeText::run(){
 
     std::vector<LTest *> tests1;
     std::vector<row *> arr1, arr2;
+
+    // Load texts from resources
+    QString text1 = UnitTestMergeText::loadFileFromRes(":/res/unit_test_merge/text001.txt");
+    QString text2 = UnitTestMergeText::loadFileFromRes(":/res/unit_test_merge/text002.txt");
+
+    // std::cout << text1.toStdString() << "\n";
 
     //empty (Test №1)
     tests1.push_back(new LTest("", "", "", arr1, arr2, 0));
@@ -138,4 +146,17 @@ bool UnitTestMergeText::run(){
     if(Success==8) nSuccess++;
 
     return nSuccess == tests1.size()+1;
+}
+
+QString UnitTestMergeText::loadFileFromRes(QString res_name){
+    QFile file_res(res_name);
+    if (!file_res.open(QIODevice::ReadOnly)){
+        std::cerr << "Could not open file: '" << res_name.toStdString() << "'\n";
+        return "";
+    }
+    QTextStream stream_res( &file_res );
+    QString sFileContent;
+    sFileContent.append(stream_res.readAll());
+    file_res.close();
+    return sFileContent;
 }
