@@ -5,6 +5,7 @@
 #include <QByteArray>
 #include <QDateTime>
 #include <QDir>
+#include <log.h>
 
 // IMemoryCache
 QString MemoryCacheServerInfo::name(){
@@ -14,7 +15,11 @@ QString MemoryCacheServerInfo::name(){
 // ---------------------------------------------------------------------
 
 MemoryCacheServerInfo::MemoryCacheServerInfo(IWebSocketServer *pWebSocketServer){
+    TAG = "MemoryCacheServerInfo";
 	m_pWebSocketServer = pWebSocketServer;
+    m_nCountQuests = 0;
+    m_nCountQuestsAttempt = 0;
+    m_nCountQuestsCompleted = 0;
 }
 
 // ---------------------------------------------------------------------
@@ -50,3 +55,104 @@ void MemoryCacheServerInfo::serverStarted(){
 QDateTime MemoryCacheServerInfo::getServerStart(){
     return m_dtServerStarted;
 }
+
+// ---------------------------------------------------------------------
+
+int MemoryCacheServerInfo::countQuests(){
+    return m_nCountQuests;
+}
+
+// ---------------------------------------------------------------------
+
+int MemoryCacheServerInfo::countQuestsAttempt(){
+    return m_nCountQuestsAttempt;
+}
+
+// ---------------------------------------------------------------------
+
+int MemoryCacheServerInfo::countQuestsCompleted(){
+    return m_nCountQuestsCompleted;
+}
+
+// ---------------------------------------------------------------------
+
+void MemoryCacheServerInfo::incrementQuests(){
+    m_nCountQuests++;
+}
+
+// ---------------------------------------------------------------------
+
+void MemoryCacheServerInfo::decrementQuests(){
+    m_nCountQuests--;
+}
+
+// ---------------------------------------------------------------------
+
+void MemoryCacheServerInfo::incrementQuestsAttempt(){
+    m_nCountQuestsAttempt++;
+}
+
+// ---------------------------------------------------------------------
+
+void MemoryCacheServerInfo::incrementQuestsCompleted(){
+    m_nCountQuestsCompleted++;
+}
+
+// ---------------------------------------------------------------------
+
+void MemoryCacheServerInfo::initCounters(){
+    QSqlDatabase db = *(m_pWebSocketServer->database());
+    QSqlQuery query(db);
+
+    // count quests
+    {
+        QSqlQuery query(db);
+        query.prepare("SELECT COUNT(*) cnt FROM quest");
+        if (!query.exec()){
+            Log::err(TAG, query.lastError().text());
+            return;
+        }
+        if (query.next()) {
+            QSqlRecord record = query.record();
+            m_nCountQuests = record.value("cnt").toInt();
+        }else{
+            // TODO error
+            m_nCountQuests = 0;
+        }
+    }
+
+    // quest attempts
+    {
+        QSqlQuery query(db);
+        query.prepare("SELECT COUNT(*) cnt FROM users_quests_answers");
+        if (!query.exec()){
+            Log::err(TAG, query.lastError().text());
+            return;
+        }
+        if (query.next()) {
+            QSqlRecord record = query.record();
+            m_nCountQuestsAttempt = record.value("cnt").toInt();
+        }else{
+            // TODO error
+            m_nCountQuestsAttempt = 0;
+        }
+    }
+
+    // completed
+    {
+        QSqlQuery query(db);
+        query.prepare("SELECT COUNT(*) cnt FROM users_quests");
+        if (!query.exec()){
+            Log::err(TAG, query.lastError().text());
+            return;
+        }
+        if (query.next()) {
+            QSqlRecord record = query.record();
+            m_nCountQuestsCompleted = record.value("cnt").toInt();
+        }else{
+            // TODO error
+            m_nCountQuestsCompleted = 0;
+        }
+    }
+}
+

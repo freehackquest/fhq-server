@@ -65,6 +65,7 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 		IMemoryCache *pMemoryCache = findMemoryCache("serverinfo");
 		if(pMemoryCache != NULL){
 			m_pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
+            m_pMemoryCacheServerInfo->initCounters();
 		}
 	}
 	

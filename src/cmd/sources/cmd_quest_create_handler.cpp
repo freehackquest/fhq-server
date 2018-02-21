@@ -1,5 +1,6 @@
 #include <cmd_quest_create_handler.h>
 #include <runtasks.h>
+#include <memory_cache_serverinfo.h>
 
 #include <QJsonArray>
 #include <QCryptographicHash>
@@ -59,6 +60,14 @@ void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
+
+    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serverinfo");
+    if(pMemoryCache == NULL){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
+        return;
+    }
+    MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
+
 	QSqlDatabase db = *(pWebSocketServer->database());
 
 	QString sUUID = obj["uuid"].toString().trimmed();
@@ -159,7 +168,7 @@ void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 		pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
 		return;
 	}
-		
+    pMemoryCacheServerInfo->incrementQuests();
 
 	
 	int rowid = query.lastInsertId().toInt();

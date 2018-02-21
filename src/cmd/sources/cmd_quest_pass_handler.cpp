@@ -2,6 +2,7 @@
 #include <runtasks.h>
 #include <log.h>
 #include <utils.h>
+#include <memory_cache_serverinfo.h>
 
 #include <QJsonArray>
 #include <QCryptographicHash>
@@ -48,6 +49,16 @@ QStringList CmdQuestPassHandler::errors(){
 void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	QJsonObject jsonData;
 	jsonData["cmd"] = QJsonValue(cmd());
+
+
+    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serverinfo");
+    if(pMemoryCache == NULL){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
+        return;
+    }
+    MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
+
+
 	QSqlDatabase db = *(pWebSocketServer->database());
 
 	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
@@ -144,6 +155,7 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
     QString sPassed = bPassed ? "Yes" : "No";
     int nLevenshtein = UtilsLevenshtein::distance(sUserAnswer.toUpper(), sQuestAnswer.toUpper());
 
+
     // insert to user tries
     {
         QSqlQuery query(db);
@@ -160,6 +172,7 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
             pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
             return;
         }
+        pMemoryCacheServerInfo->incrementQuestsAttempt();
     }
 
     if(!bPassed){
@@ -179,6 +192,7 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
             return;
         }
     }
+    pMemoryCacheServerInfo->incrementQuestsCompleted();
 
 
     RunTasks::AddPublicEvents(pWebSocketServer, "quests", "User #" + QString::number(nUserID) + "  " + sNick

@@ -1,4 +1,5 @@
 #include <cmd_public_info_handler.h>
+#include <memory_cache_serverinfo.h>
 
 CmdPublicInfoHandler::CmdPublicInfoHandler(){
 	
@@ -43,6 +44,17 @@ void CmdPublicInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
     QJsonArray jsonWinners;
     QJsonArray jsonCities;
 
+    // fill quests info
+    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serverinfo");
+    if(pMemoryCache == NULL){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
+        return;
+    }
+    MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
+    jsonQuests["count"] = pMemoryCacheServerInfo->countQuests();
+    jsonQuests["attempts"] = pMemoryCacheServerInfo->countQuestsAttempt();
+    jsonQuests["solved"] = pMemoryCacheServerInfo->countQuestsCompleted();
+
     QSqlDatabase db = *(pWebSocketServer->database());
 
     int nMoreThen = 2;
@@ -77,58 +89,7 @@ void CmdPublicInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         }
     }
 
-    // TODO get from cache
-    {
-        QSqlQuery query(db);
-        query.prepare("SELECT COUNT(*) cnt FROM quest");
-        if (!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
-            return;
-        }
-        if (query.next()) {
-            QSqlRecord record = query.record();
-            jsonQuests["count"] = record.value("cnt").toInt();
-        }else{
-            // TODO error
-            jsonQuests["count"] = 0;
-        }
-    }
 
-
-    // users_quests_answers
-    // TODO get from cache
-    {
-        QSqlQuery query(db);
-        query.prepare("SELECT COUNT(*) cnt FROM users_quests_answers");
-        if (!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
-            return;
-        }
-        if (query.next()) {
-            QSqlRecord record = query.record();
-            jsonQuests["attempts"] = record.value("cnt").toInt();
-        }else{
-            // TODO error
-            jsonQuests["attempts"] = 0;
-        }
-    }
-
-    // TODO get from cache
-    {
-        QSqlQuery query(db);
-        query.prepare("SELECT COUNT(*) cnt FROM users_quests");
-        if (!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
-            return;
-        }
-        if (query.next()) {
-            QSqlRecord record = query.record();
-            jsonQuests["solved"] = record.value("cnt").toInt();
-        }else{
-            // TODO error
-            jsonQuests["solved"] = 0;
-        }
-    }
 
     // TODO get from cache
     {

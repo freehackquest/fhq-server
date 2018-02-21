@@ -1,6 +1,6 @@
 #include <cmd_quest_delete_handler.h>
 #include <runtasks.h>
-
+#include <memory_cache_serverinfo.h>
 
 CmdQuestDeleteHandler::CmdQuestDeleteHandler(){
 	m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest ID"));
@@ -40,12 +40,19 @@ QStringList CmdQuestDeleteHandler::errors(){
 }
 
 void CmdQuestDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
-	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
+    /*IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
 	
 	if(pUserToken == NULL){
 		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotAuthorizedRequest());
 		return;
-	}
+    }*/
+
+    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serverinfo");
+    if(pMemoryCache == NULL){
+        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
+        return;
+    }
+    MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
 
 	int questid = obj["questid"].toInt();
 	QString sName = "";
@@ -100,6 +107,7 @@ void CmdQuestDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			return;
 		}
 	}
+    pMemoryCacheServerInfo->decrementQuests();
 
 	RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Removed quest #" + QString::number(questid) + " " + sName + " (subject: " + sSubject + ")");
 

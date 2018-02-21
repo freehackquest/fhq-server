@@ -13,6 +13,15 @@ class MemoryCacheServerInfo : public IMemoryCache {
 		
 		void incrementRequests(QString cmd);
         void serverStarted();
+        int countQuests();
+        int countQuestsAttempt();
+        int countQuestsCompleted();
+        void incrementQuests();
+        void decrementQuests();
+        void incrementQuestsAttempt();
+        void incrementQuestsCompleted();
+        void initCounters();
+
         QDateTime getServerStart();
 		QJsonObject toJsonObject();
 
@@ -21,7 +30,11 @@ class MemoryCacheServerInfo : public IMemoryCache {
 		QMap<QString, int> m_requestsCounter;
 		QMutex m_mtxIncrementRequests;
 
+        QString TAG;
         QDateTime m_dtServerStarted;
+        int m_nCountQuests;
+        int m_nCountQuestsAttempt;
+        int m_nCountQuestsCompleted;
 		
 };
 
