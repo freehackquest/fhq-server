@@ -1,6 +1,5 @@
 
 INCLUDEPATH += backend/employees
-INCLUDEPATH += backend/interfaces
 INCLUDEPATH += backend/employees/include
 
 HEADERS += \
