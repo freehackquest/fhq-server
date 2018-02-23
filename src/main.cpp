@@ -18,6 +18,8 @@
 #include <utils_prepare_deb_package.h>
 #include <utils_create_config.h>
 #include <create_unit_tests.h>
+#include <employees.h>
+#include <employ_json.h>
 
 int main(int argc, char** argv) {
 	QCoreApplication a(argc, argv);
@@ -41,6 +43,9 @@ int main(int argc, char** argv) {
     
     QCommandLineOption optRunUnitTests(QStringList() << "rut" << "run-unit-tests", QCoreApplication::translate("main", "Run unit tests"));
     parser.addOption(optRunUnitTests);
+
+    QCommandLineOption optTest(QStringList() << "t" << "test", QCoreApplication::translate("main", "Run test"));
+    parser.addOption(optTest);
 
     QCommandLineOption optCreateConfigLinux(QStringList() << "cc-lin" << "create-config-linux", QCoreApplication::translate("main", "Create config file for Linux: /etc/freehackquest-backend/conf.ini"));
     parser.addOption(optCreateConfigLinux);
@@ -68,6 +73,17 @@ int main(int argc, char** argv) {
 		}
 		return 0;
 	}
+
+    bool bTest = parser.isSet(optTest);
+    if(bTest){
+        EmployJson *pEmployJson1 = findEmploy<EmployJson>();
+        EmployJson *pEmployJson2 = findEmploy<EmployJson>();
+        std::cout << "pEmployJson1: " << pEmployJson1 << "\n";
+        std::cout << "pEmployJson2: " << pEmployJson2 << "\n";
+        pEmployJson2->test();
+        return 0;
+    }
+
 
 	bool bPrepareDebPackage = parser.isSet(prepareDebOption);
     if(bPrepareDebPackage){
