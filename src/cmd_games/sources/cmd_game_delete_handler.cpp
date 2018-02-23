@@ -9,7 +9,7 @@ CmdGameDeleteHandler::CmdGameDeleteHandler(){
     m_vInputs.push_back(CmdInputDef("admin_password").string_().required().description("Admin Password"));
 }
 
-QString CmdGameDeleteHandler::cmd(){
+std::string CmdGameDeleteHandler::cmd(){
     return "game_delete";
 }
 
@@ -161,7 +161,7 @@ void CmdGameDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	}
 
     QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["result"] = QJsonValue("DONE");
 	jsonData["m"] = QJsonValue(m);
     pWebSocketServer->sendMessage(pClient, jsonData);

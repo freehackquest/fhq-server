@@ -42,7 +42,7 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		// IWebSocketServer
 		virtual int getConnectedUsers();
 		virtual void sendMessage(QWebSocket *pClient, QJsonObject obj);
-		virtual void sendMessageError(QWebSocket *pClient, QString cmd, QString m, Error error);
+        virtual void sendMessageError(QWebSocket *pClient, const std::string &cmd, QString m, Error error);
 		virtual void sendToAll(QJsonObject obj);
 		virtual QSqlDatabase *database();
 		virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken);
@@ -69,7 +69,7 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		QWebSocketServer *m_pWebSocketServerSSL;
 		QList<QWebSocket *> m_clients;
 		QMap<QWebSocket *, IUserToken *> m_tokens;
-		QMap<QString, ICmdHandler *> m_mapCmdHandlers;
+        QMap<std::string, ICmdHandler *> m_mapCmdHandlers;
 		QMap<QString, IMemoryCache *> m_mapMemoryCache;
 		MemoryCacheServerInfo *m_pMemoryCacheServerInfo;
 

@@ -7,7 +7,7 @@ class CmdGameUpdateLogoHandler : public ICmdHandler {
 	
     public:
         CmdGameUpdateLogoHandler();
-        virtual QString cmd();
+        virtual std::string cmd();
         virtual bool accessUnauthorized();
         virtual bool accessUser();
         virtual bool accessTester();

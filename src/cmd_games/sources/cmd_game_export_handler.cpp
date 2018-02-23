@@ -17,7 +17,7 @@ CmdGameExportHandler::CmdGameExportHandler(){
     m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
 }
 
-QString CmdGameExportHandler::cmd(){
+std::string CmdGameExportHandler::cmd(){
     return "game_export";
 }
 
@@ -52,7 +52,7 @@ QStringList CmdGameExportHandler::errors(){
 
 void CmdGameExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
     QJsonObject jsonResponse;
-    jsonResponse["cmd"] = QJsonValue(cmd());
+    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonResponse["m"] = QJsonValue(m);
 
     QString sUuid = obj["uuid"].toString();

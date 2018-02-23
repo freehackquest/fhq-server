@@ -8,7 +8,7 @@ CmdUserChangePasswordHandler::CmdUserChangePasswordHandler(){
     m_vInputs.push_back(CmdInputDef("password_new").required().string_().description("New password"));
 }
 
-QString CmdUserChangePasswordHandler::cmd(){
+std::string CmdUserChangePasswordHandler::cmd(){
     return "user_change_password";
 }
 
@@ -94,7 +94,7 @@ void CmdUserChangePasswordHandler::handle(QWebSocket *pClient, IWebSocketServer 
     }
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["result"] = QJsonValue("DONE");
 	jsonData["m"] = QJsonValue(m);
 	pWebSocketServer->sendMessage(pClient, jsonData);

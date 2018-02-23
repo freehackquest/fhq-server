@@ -7,7 +7,7 @@ CmdClassbookLocalizationDeleteRecordHandler::CmdClassbookLocalizationDeleteRecor
     m_vInputs.push_back(CmdInputDef("classbook_localizationid").required().integer_().description("Localization id"));
 }
 
-QString CmdClassbookLocalizationDeleteRecordHandler::cmd(){
+std::string CmdClassbookLocalizationDeleteRecordHandler::cmd(){
     return "classbook_localization_delete_record";
 }
 
@@ -64,7 +64,7 @@ void CmdClassbookLocalizationDeleteRecordHandler::handle(QWebSocket *pClient, IW
     }
 
     QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonData["m"] = QJsonValue(m);
     jsonData["result"] = QJsonValue("DONE");
     pWebSocketServer->sendMessage(pClient, jsonData);

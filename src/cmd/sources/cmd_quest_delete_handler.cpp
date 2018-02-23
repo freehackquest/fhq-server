@@ -6,7 +6,7 @@ CmdQuestDeleteHandler::CmdQuestDeleteHandler(){
 	m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest ID"));
 }
 
-QString CmdQuestDeleteHandler::cmd(){
+std::string CmdQuestDeleteHandler::cmd(){
     return "quest_delete";
 }
 
@@ -114,7 +114,7 @@ void CmdQuestDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 	// todo recalculate rating/score for users how solved this quest
 
     QJsonObject jsonResponse;
-    jsonResponse["cmd"] = QJsonValue(cmd());
+    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonResponse["subject"] = sSubject;
     jsonResponse["result"] = QJsonValue("DONE");
     jsonResponse["m"] = QJsonValue(m);

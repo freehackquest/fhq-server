@@ -17,7 +17,7 @@ CmdGameCreateHandler::CmdGameCreateHandler(){
     m_vInputs.push_back(CmdInputDef("organizators").string_().required().description("Organizators"));
 }
 
-QString CmdGameCreateHandler::cmd(){
+std::string CmdGameCreateHandler::cmd(){
     return "game_create";
 }
 
@@ -53,7 +53,7 @@ QStringList CmdGameCreateHandler::errors(){
 void CmdGameCreateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
     QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	QSqlDatabase db = *(pWebSocketServer->database());
 
 	QString sUUID = obj["uuid"].toString().trimmed();

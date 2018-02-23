@@ -7,7 +7,7 @@ class CmdUpdateUserLocationHandler : public ICmdHandler {
 	
 	public:
 		CmdUpdateUserLocationHandler();
-		virtual QString cmd();
+        virtual std::string cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();
 		virtual bool accessTester();

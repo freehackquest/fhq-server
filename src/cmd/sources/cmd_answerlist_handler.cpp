@@ -8,7 +8,7 @@ CmdAnswerListHandler::CmdAnswerListHandler(){
 	m_vInputs.push_back(CmdInputDef("userid").optional().integer_().description("Filter for userid"));
 }
 
-QString CmdAnswerListHandler::cmd(){
+std::string CmdAnswerListHandler::cmd(){
 	return "answerlist";
 }
 
@@ -44,7 +44,7 @@ QStringList CmdAnswerListHandler::errors(){
 void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["m"] = QJsonValue(m);
 
 	int nPage = obj["page"].toInt();

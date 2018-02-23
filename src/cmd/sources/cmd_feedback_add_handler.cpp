@@ -13,7 +13,7 @@ CmdFeedbackAddHandler::CmdFeedbackAddHandler(){
     m_vInputs.push_back(CmdInputDef("type").string_().required().description("Type"));
 }
 
-QString CmdFeedbackAddHandler::cmd(){
+std::string CmdFeedbackAddHandler::cmd(){
     return "feedback_add";
 }
 
@@ -49,7 +49,7 @@ QStringList CmdFeedbackAddHandler::errors(){
 void CmdFeedbackAddHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	QSqlDatabase db = *(pWebSocketServer->database());
 
     int nUserID = 0;

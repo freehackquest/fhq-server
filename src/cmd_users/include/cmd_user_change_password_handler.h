@@ -7,7 +7,7 @@ class CmdUserChangePasswordHandler : public ICmdHandler {
 	
 	public:
         CmdUserChangePasswordHandler();
-		virtual QString cmd();
+        virtual std::string cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();
 		virtual bool accessTester();

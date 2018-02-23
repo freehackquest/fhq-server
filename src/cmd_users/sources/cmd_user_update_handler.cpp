@@ -10,7 +10,7 @@ CmdUserUpdateHandler::CmdUserUpdateHandler(){
     m_vInputs.push_back(CmdInputDef("about").optional().string_().description("About of user"));
 }
 
-QString CmdUserUpdateHandler::cmd(){
+std::string CmdUserUpdateHandler::cmd(){
     return "user_update";
 }
 
@@ -117,7 +117,7 @@ void CmdUserUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
     jsonData["university"] = sUniversity.toHtmlEscaped();
     jsonData["about"] = sAbout.toHtmlEscaped();
 
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["result"] = QJsonValue("DONE");
 	jsonData["m"] = QJsonValue(m);
     jsonData["data"] = jsonData;

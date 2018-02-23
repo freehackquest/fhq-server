@@ -13,7 +13,7 @@ CmdQuestPassHandler::CmdQuestPassHandler(){
     TAG = "CmdQuestPassHandler";
 }
 
-QString CmdQuestPassHandler::cmd(){
+std::string CmdQuestPassHandler::cmd(){
     return "quest_pass";
 }
 
@@ -48,7 +48,7 @@ QStringList CmdQuestPassHandler::errors(){
 
 void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 
 
     IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serverinfo");

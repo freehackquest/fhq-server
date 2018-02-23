@@ -17,7 +17,7 @@ CmdGameUpdateHandler::CmdGameUpdateHandler(){
     m_vInputs.push_back(CmdInputDef("organizators").string_().required().description("Organizators"));
 }
 
-QString CmdGameUpdateHandler::cmd(){
+std::string CmdGameUpdateHandler::cmd(){
     return "game_update";
 }
 
@@ -222,7 +222,7 @@ void CmdGameUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
     }
 
     QJsonObject jsonResponse;
-    jsonResponse["cmd"] = QJsonValue(cmd());
+    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonResponse["result"] = QJsonValue("DONE");
     jsonResponse["m"] = QJsonValue(m);
     jsonResponse["data"] = jsonData;

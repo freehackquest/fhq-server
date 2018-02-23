@@ -6,7 +6,7 @@ CmdQuestsSubjectsHandler::CmdQuestsSubjectsHandler(){
 	// m_vInputs.push_back(CmdInputDef("filter_role").string_().optional().description("Filter by user role"));
 }
 
-QString CmdQuestsSubjectsHandler::cmd(){
+std::string CmdQuestsSubjectsHandler::cmd(){
     return "quests_subjects";
 }
 
@@ -59,7 +59,7 @@ void CmdQuestsSubjectsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWe
 	}
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["result"] = QJsonValue("DONE");
 	jsonData["m"] = QJsonValue(m);
     jsonData["data"] = subjects;

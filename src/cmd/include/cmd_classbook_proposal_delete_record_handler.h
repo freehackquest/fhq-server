@@ -7,7 +7,7 @@ class CmdClassbookProposalDeleteRecordHandler : public ICmdHandler {
 
     public:
         CmdClassbookProposalDeleteRecordHandler();
-        virtual QString cmd();
+        virtual std::string cmd();
         virtual bool accessUnauthorized();
         virtual bool accessUser();
         virtual bool accessTester();

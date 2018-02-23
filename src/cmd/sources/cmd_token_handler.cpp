@@ -8,7 +8,7 @@ CmdTokenHandler::CmdTokenHandler(){
     m_vInputs.push_back(CmdInputDef("token").string_().optional().description("Auth token"));
 }
 
-QString CmdTokenHandler::cmd(){
+std::string CmdTokenHandler::cmd(){
     return "token";
 }
 
@@ -43,7 +43,7 @@ QStringList CmdTokenHandler::errors(){
 
 void CmdTokenHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	
 	if(!obj.contains("token")){
 		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("requred parameter token"));

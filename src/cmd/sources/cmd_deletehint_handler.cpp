@@ -4,7 +4,7 @@ CmdDeleteHintHandler::CmdDeleteHintHandler(){
 	m_vInputs.push_back(CmdInputDef("hintid").required().integer_().description("hint id"));
 }
 
-QString CmdDeleteHintHandler::cmd(){
+std::string CmdDeleteHintHandler::cmd(){
 	return "deletehint";
 }
 
@@ -58,7 +58,7 @@ void CmdDeleteHintHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	query.exec();
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["result"] = QJsonValue("DONE");
 	jsonData["m"] = QJsonValue(m);
 	pWebSocketServer->sendMessage(pClient, jsonData);

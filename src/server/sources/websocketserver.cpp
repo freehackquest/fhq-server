@@ -173,7 +173,7 @@ void WebSocketServer::processTextMessage(QString message) {
 		this->sendMessageError(pClient, "error", "", Errors::NotFound("requare parameter 'cmd'"));
 		return;
 	}
-	QString cmd = jsonData["cmd"].toString();
+    std::string cmd = jsonData["cmd"].toString().toStdString();
 	
 	if(!jsonData.contains("m")){
 		this->sendMessageError(pClient, cmd, "", Errors::NotFound("requare parameter 'm' - messageid"));
@@ -183,15 +183,15 @@ void WebSocketServer::processTextMessage(QString message) {
 	QString m = jsonData["m"].toString();
 	
 	if(!m_mapCmdHandlers.contains(cmd)){
-		Log::warn(TAG, "Unknown command: " + cmd);
-		this->sendMessageError(pClient, cmd, m, Errors::NotFound("command '" + cmd + "'"));
+        Log::warn(TAG, "Unknown command: " + QString(cmd.c_str()));
+        this->sendMessageError(pClient, cmd, m, Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
 		return;
 	}
 
 	ICmdHandler *pCmdHandler = m_mapCmdHandlers[cmd];
 	
 	if(m_pMemoryCacheServerInfo != NULL){
-		m_pMemoryCacheServerInfo->incrementRequests(cmd);
+        m_pMemoryCacheServerInfo->incrementRequests(QString(cmd.c_str()));
 	}
 	
 	// check access
@@ -285,9 +285,9 @@ void WebSocketServer::sendMessage(QWebSocket *pClient, QJsonObject obj){
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendMessageError(QWebSocket *pClient, QString cmd, QString m, Error error){
+void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &cmd, QString m, Error error){
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd);
+    jsonData["cmd"] = QJsonValue(QString(cmd.c_str()));
 	jsonData["m"] = QJsonValue(m);
 	jsonData["result"] = QJsonValue("FAIL");
 	jsonData["error"] = QJsonValue(error.message());
@@ -366,11 +366,11 @@ void WebSocketServer::exportApi(QJsonObject &result){
 	
 	QJsonArray handlers;
 	
-	foreach( QString key, m_mapCmdHandlers.keys()){
+    foreach( std::string key, m_mapCmdHandlers.keys()){
 		ICmdHandler *pHandler = m_mapCmdHandlers.value(key);
 		QJsonObject handler;
 		
-		handler["cmd"] = pHandler->cmd();
+        handler["cmd"] = QString(pHandler->cmd().c_str());
 		handler["description"] = pHandler->description();
 		handler["access_unauthorized"] = pHandler->accessUnauthorized();
 		handler["access_user"] = pHandler->accessUser();

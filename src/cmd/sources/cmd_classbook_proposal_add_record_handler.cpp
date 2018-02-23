@@ -12,7 +12,7 @@ CmdClassbookProposalAddRecordHandler::CmdClassbookProposalAddRecordHandler(){
     m_vInputs.push_back(CmdInputDef("content").required().string_().description("The content of the article"));
 }
 
-QString CmdClassbookProposalAddRecordHandler::cmd(){
+std::string CmdClassbookProposalAddRecordHandler::cmd(){
     return "classbook_proposal_add_record";
 }
 
@@ -129,7 +129,7 @@ void CmdClassbookProposalAddRecordHandler::handle(QWebSocket *pClient, IWebSocke
     data["md5_content"] = md5_content;
 
     QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonData["m"] = QJsonValue(m);
     jsonData["result"] = QJsonValue("DONE");
     jsonData["data"] = data;

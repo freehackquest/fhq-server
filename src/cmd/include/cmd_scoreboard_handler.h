@@ -7,7 +7,7 @@ class CmdScoreboardHandler : public ICmdHandler {
 	
 	public:
 		CmdScoreboardHandler();
-		virtual QString cmd();
+        virtual std::string cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();
 		virtual bool accessTester();

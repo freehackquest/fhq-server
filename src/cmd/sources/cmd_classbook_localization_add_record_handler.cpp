@@ -12,7 +12,7 @@ CmdClassbookLocalizationAddRecordHandler::CmdClassbookLocalizationAddRecordHandl
     m_vInputs.push_back(CmdInputDef("content").required().string_().description("The content of the article"));
 }
 
-QString CmdClassbookLocalizationAddRecordHandler::cmd(){
+std::string CmdClassbookLocalizationAddRecordHandler::cmd(){
     return "classbook_localization_add_record";
 }
 
@@ -115,7 +115,7 @@ void CmdClassbookLocalizationAddRecordHandler::handle(QWebSocket *pClient, IWebS
     data["md5_content"] = md5_content;
 
     QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonData["m"] = QJsonValue(m);
     jsonData["result"] = QJsonValue("DONE");
     jsonData["data"] = data;

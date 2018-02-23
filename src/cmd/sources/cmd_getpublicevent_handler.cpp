@@ -5,7 +5,7 @@ CmdGetPublicEventHandler::CmdGetPublicEventHandler(){
 	m_vInputs.push_back(CmdInputDef("eventid").required().integer_().description("Event id"));
 }
 
-QString CmdGetPublicEventHandler::cmd(){
+std::string CmdGetPublicEventHandler::cmd(){
 	return "getpublicevent";
 }
 
@@ -43,7 +43,7 @@ QStringList CmdGetPublicEventHandler::errors(){
 
 void CmdGetPublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 
 	int nEventId = obj["eventid"].toInt();
 	jsonData["eventid"] = nEventId;

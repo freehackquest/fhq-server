@@ -5,7 +5,7 @@ CmdPublicInfoHandler::CmdPublicInfoHandler(){
 	
 }
 
-QString CmdPublicInfoHandler::cmd(){
+std::string CmdPublicInfoHandler::cmd(){
     return "public_info";
 }
 
@@ -113,7 +113,7 @@ void CmdPublicInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         }
     }
 
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["m"] = QJsonValue(m);
     jsonData["quests"] = jsonQuests;
     jsonData["winners"] = jsonWinners;

@@ -5,7 +5,7 @@ CmdHintsHandler::CmdHintsHandler(){
 	m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest id"));
 }
 
-QString CmdHintsHandler::cmd(){
+std::string CmdHintsHandler::cmd(){
 	return "hints";
 }
 
@@ -73,7 +73,7 @@ void CmdHintsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 	}
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["result"] = QJsonValue("DONE");
 	jsonData["m"] = QJsonValue(m);
 	jsonData["data"] = hints;

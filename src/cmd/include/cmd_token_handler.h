@@ -7,7 +7,7 @@ class CmdTokenHandler : public ICmdHandler {
 	
 	public:
         CmdTokenHandler();
-		virtual QString cmd();
+        virtual std::string cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();
 		virtual bool accessTester();

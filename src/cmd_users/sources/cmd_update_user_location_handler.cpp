@@ -6,7 +6,7 @@ CmdUpdateUserLocationHandler::CmdUpdateUserLocationHandler(){
 	m_vInputs.push_back(CmdInputDef("userid").required().integer_().description("User ID"));
 }
 
-QString CmdUpdateUserLocationHandler::cmd(){
+std::string CmdUpdateUserLocationHandler::cmd(){
 	return "updateuserlocation";
 }
 
@@ -84,7 +84,7 @@ void CmdUpdateUserLocationHandler::handle(QWebSocket *pClient, IWebSocketServer 
 	RunTasks::UpdateUserLocation(pWebSocketServer, userid, lastip);
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["result"] = QJsonValue("DONE");
 	jsonData["m"] = QJsonValue(m);
 	pWebSocketServer->sendMessage(pClient, jsonData);

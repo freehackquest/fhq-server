@@ -23,7 +23,7 @@ CmdCreateQuestHandler::CmdCreateQuestHandler(){
 	m_vInputs.push_back(CmdInputDef("description_state").string_().required().description("You can add some descriptions for quest state"));
 }
 
-QString CmdCreateQuestHandler::cmd(){
+std::string CmdCreateQuestHandler::cmd(){
 	return "createquest";
 }
 
@@ -59,7 +59,7 @@ QStringList CmdCreateQuestHandler::errors(){
 void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 
     IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serverinfo");
     if(pMemoryCache == NULL){

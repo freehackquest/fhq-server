@@ -8,7 +8,7 @@
 #include <cmd_user_update_handler.h>
 #include <cmd_user_change_password_handler.h>
 
-void create_cmd_users_handlers(QMap<QString, ICmdHandler *> &pHandlers){
+void create_cmd_users_handlers(QMap<std::string, ICmdHandler *> &pHandlers){
     QString TAG = "create_cmd_users_handlers";
 	QVector<ICmdHandler *> v;
 
@@ -21,9 +21,9 @@ void create_cmd_users_handlers(QMap<QString, ICmdHandler *> &pHandlers){
     v.push_back(new CmdUserUpdateHandler());
 
 	for(int i = 0; i < v.size(); i++){
-		QString cmd = v[i]->cmd();
+        std::string cmd = v[i]->cmd();
 		if(pHandlers.contains(cmd)){
-			Log::warn(TAG, "cmd_handler for command " + cmd + " - already registered and will be skipped");
+            Log::warn(TAG, "cmd_handler for command " + QString(cmd.c_str()) + " - already registered and will be skipped");
 		}else{
 			pHandlers[cmd] = v[i];
 		}

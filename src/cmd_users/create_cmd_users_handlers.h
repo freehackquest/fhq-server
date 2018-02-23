@@ -5,6 +5,6 @@
 #include <QString>
 #include <QMap>
 
-void create_cmd_users_handlers(QMap<QString, ICmdHandler *> &pHandlers);
+void create_cmd_users_handlers(QMap<std::string, ICmdHandler *> &pHandlers);
 
 #endif // CREATE_CMD_USERS_HANDLERS_H

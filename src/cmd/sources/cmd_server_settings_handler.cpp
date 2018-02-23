@@ -5,7 +5,7 @@
 CmdServerSettingsHandler::CmdServerSettingsHandler(){
 }
 
-QString CmdServerSettingsHandler::cmd(){
+std::string CmdServerSettingsHandler::cmd(){
         return "server_settings";
 }
 
@@ -40,7 +40,7 @@ QStringList CmdServerSettingsHandler::errors(){
 
 void CmdServerSettingsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	
     IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
 	if(pMemoryCache == NULL){

@@ -7,7 +7,7 @@ class CmdQuestStatisticsHandler : public ICmdHandler {
 	
 	public:
         CmdQuestStatisticsHandler();
-		virtual QString cmd();
+        virtual std::string cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();
 		virtual bool accessTester();

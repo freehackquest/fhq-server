@@ -3,7 +3,7 @@
 CmdSendChatMessageHandler::CmdSendChatMessageHandler(){
 }
 
-QString CmdSendChatMessageHandler::cmd(){
+std::string CmdSendChatMessageHandler::cmd(){
 	return "sendchatmessage";
 }
 
@@ -46,7 +46,7 @@ void CmdSendChatMessageHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
 	}
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["result"] = QJsonValue("DONE");
     jsonData["m"] = QJsonValue(m);
 	pWebSocketServer->sendMessage(pClient, jsonData);

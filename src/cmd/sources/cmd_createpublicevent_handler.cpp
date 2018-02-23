@@ -14,7 +14,7 @@ CmdCreatePublicEventHandler::CmdCreatePublicEventHandler(){
 	m_vInputs.push_back(CmdInputDef("message").string_().required());
 }
 
-QString CmdCreatePublicEventHandler::cmd(){
+std::string CmdCreatePublicEventHandler::cmd(){
 	return "createpublicevent";
 }
 
@@ -50,7 +50,7 @@ QStringList CmdCreatePublicEventHandler::errors(){
 void CmdCreatePublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 
 	QString type = obj["type"].toString().trimmed();
 	QString message = obj["message"].toString().trimmed();

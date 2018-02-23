@@ -5,7 +5,7 @@ CmdWriteUpsHandler::CmdWriteUpsHandler(){
 	m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest ID"));
 }
 
-QString CmdWriteUpsHandler::cmd(){
+std::string CmdWriteUpsHandler::cmd(){
 	return "writeups";
 }
 
@@ -72,7 +72,7 @@ void CmdWriteUpsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocke
 	}
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["result"] = QJsonValue("DONE");
 	jsonData["m"] = QJsonValue(m);
 	jsonData["data"] = writeups;

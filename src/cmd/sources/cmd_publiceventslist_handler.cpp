@@ -7,7 +7,7 @@ CmdPublicEventsListHandler::CmdPublicEventsListHandler(){
 	m_vInputs.push_back(CmdInputDef("onpage").required().integer_().description("How much rows in one page"));
 }
 
-QString CmdPublicEventsListHandler::cmd(){
+std::string CmdPublicEventsListHandler::cmd(){
 	return "publiceventslist";
 }
 
@@ -49,7 +49,7 @@ QStringList CmdPublicEventsListHandler::errors(){
 void CmdPublicEventsListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 
 	int nPage = obj["page"].toInt();
 	jsonData["page"] = nPage;

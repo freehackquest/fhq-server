@@ -24,7 +24,7 @@ CmdQuestUpdateHandler::CmdQuestUpdateHandler(){
 	m_vInputs.push_back(CmdInputDef("description_state").string_().optional().description("You can add some descriptions for quest state"));
 }
 
-QString CmdQuestUpdateHandler::cmd(){
+std::string CmdQuestUpdateHandler::cmd(){
     return "quest_update";
 }
 
@@ -60,7 +60,7 @@ QStringList CmdQuestUpdateHandler::errors(){
 void CmdQuestUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	QSqlDatabase db = *(pWebSocketServer->database());
 
 	int nQuestID = obj["questid"].toInt();

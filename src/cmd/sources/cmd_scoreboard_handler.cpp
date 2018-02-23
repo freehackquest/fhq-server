@@ -8,7 +8,7 @@ CmdScoreboardHandler::CmdScoreboardHandler(){
 	m_vInputs.push_back(CmdInputDef("onpage").required().integer_().description("How much rows in one page"));
 }
 
-QString CmdScoreboardHandler::cmd(){
+std::string CmdScoreboardHandler::cmd(){
 	return "scoreboard";
 }
 
@@ -44,7 +44,7 @@ QStringList CmdScoreboardHandler::errors(){
 void CmdScoreboardHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 
 	int nPage = obj["page"].toInt();
 	jsonData["page"] = nPage;

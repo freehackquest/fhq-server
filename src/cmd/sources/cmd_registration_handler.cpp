@@ -14,7 +14,7 @@ CmdRegistrationHandler::CmdRegistrationHandler(){
     m_vInputs.push_back(CmdInputDef("university").required().string_().description("University"));
 }
 
-QString CmdRegistrationHandler::cmd(){
+std::string CmdRegistrationHandler::cmd(){
     return "registration";
 }
 
@@ -49,7 +49,7 @@ QStringList CmdRegistrationHandler::errors(){
 
 void CmdRegistrationHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	
     IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
     if(pMemoryCache == NULL){

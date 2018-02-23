@@ -8,7 +8,7 @@ CmdGameImportHandler::CmdGameImportHandler(){
     m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
 }
 
-QString CmdGameImportHandler::cmd(){
+std::string CmdGameImportHandler::cmd(){
     return "game_import";
 }
 
@@ -47,7 +47,7 @@ void CmdGameImportHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 
     // TODO
     QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonData["result"] = QJsonValue("DONE");
     jsonData["m"] = QJsonValue(m);
     pWebSocketServer->sendMessage(pClient, jsonData);

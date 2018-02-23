@@ -8,7 +8,7 @@ CmdClassbookListHandler::CmdClassbookListHandler(){
     m_vInputs.push_back(CmdInputDef("search").optional().string_().description("Search string for classbook articles"));
 }
 
-QString CmdClassbookListHandler::cmd(){
+std::string CmdClassbookListHandler::cmd(){
     return "classbook_list";
 }
 
@@ -204,7 +204,7 @@ void CmdClassbookListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
     }}
 
     QJsonObject jsonResponse;
-    jsonResponse["cmd"] = QJsonValue(cmd());
+    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonResponse["m"] = QJsonValue(m);
     jsonResponse["result"] = QJsonValue("DONE");
     jsonResponse["data"] = data;

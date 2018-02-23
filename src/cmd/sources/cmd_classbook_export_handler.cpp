@@ -13,7 +13,7 @@ CmdClassbookExportHandler::CmdClassbookExportHandler(){
     m_vInputs.push_back(CmdInputDef("zip").optional().bool_().description("Zipping the output"));
 }
 
-QString CmdClassbookExportHandler::cmd(){
+std::string CmdClassbookExportHandler::cmd(){
     return "classbook_export";
 }
 
@@ -110,7 +110,7 @@ void CmdClassbookExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
         jsonResponse["data"] = QString::fromUtf8(file.readAll());
     }
 
-    jsonResponse["cmd"] = QJsonValue(cmd());
+    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonResponse["m"] = QJsonValue(m);
     jsonResponse["result"] = QJsonValue("DONE");
     pWebSocketServer->sendMessage(pClient, jsonResponse);

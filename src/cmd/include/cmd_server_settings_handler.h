@@ -6,8 +6,8 @@
 class CmdServerSettingsHandler : public ICmdHandler {
 	
 	public:
-                CmdServerSettingsHandler();
-		virtual QString cmd();
+        CmdServerSettingsHandler();
+        virtual std::string cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();
 		virtual bool accessTester();

@@ -5,6 +5,6 @@
 #include <QString>
 #include <QMap>
 
-void create_cmd_handlers(QMap<QString, ICmdHandler *> &pHandlers);
+void create_cmd_handlers(QMap<std::string, ICmdHandler *> &pHandlers);
 
 #endif // CREATE_CMD_HANDLERS_H

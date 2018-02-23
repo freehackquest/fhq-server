@@ -7,7 +7,7 @@ class CmdGameImportHandler : public ICmdHandler {
 	
     public:
         CmdGameImportHandler();
-        virtual QString cmd();
+        virtual std::string cmd();
         virtual bool accessUnauthorized();
         virtual bool accessUser();
         virtual bool accessTester();

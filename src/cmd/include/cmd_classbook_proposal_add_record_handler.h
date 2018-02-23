@@ -7,7 +7,7 @@ class CmdClassbookProposalAddRecordHandler : public ICmdHandler {
 
     public:
         CmdClassbookProposalAddRecordHandler();
-        virtual QString cmd();
+        virtual std::string cmd();
         virtual bool accessUnauthorized();
         virtual bool accessUser();
         virtual bool accessTester();

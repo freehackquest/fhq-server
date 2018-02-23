@@ -6,7 +6,7 @@ CmdGetMapHandler::CmdGetMapHandler(){
 	
 }
 
-QString CmdGetMapHandler::cmd(){
+std::string CmdGetMapHandler::cmd(){
 	return "getmap";
 }
 
@@ -70,7 +70,7 @@ void CmdGetMapHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketS
 	}
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["result"] = QJsonValue("DONE");
     jsonData["m"] = QJsonValue(m);
 	jsonData["data"] = coords;

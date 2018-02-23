@@ -9,7 +9,7 @@
 
 class ICmdHandler {
 	public:
-		virtual QString cmd() = 0;
+                virtual std::string cmd() = 0;
 		virtual bool accessUnauthorized() = 0;
 		virtual bool accessUser() = 0;
 		virtual bool accessTester() = 0;

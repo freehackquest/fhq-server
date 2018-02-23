@@ -5,7 +5,7 @@ CmdQuestsHandler::CmdQuestsHandler(){
     m_vInputs.push_back(CmdInputDef("subject").string_().optional().description("Filter by subject"));
 }
 
-QString CmdQuestsHandler::cmd(){
+std::string CmdQuestsHandler::cmd(){
     return "quests";
 }
 
@@ -98,7 +98,7 @@ void CmdQuestsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketS
 
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["result"] = QJsonValue("DONE");
 	jsonData["m"] = QJsonValue(m);
     jsonData["data"] = quests;

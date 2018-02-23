@@ -5,7 +5,7 @@ CmdUserSkillsHandler::CmdUserSkillsHandler(){
     m_vInputs.push_back(CmdInputDef("userid").required().integer_().description("Id of user"));
 }
 
-QString CmdUserSkillsHandler::cmd(){
+std::string CmdUserSkillsHandler::cmd(){
 	return "user_skills";
 }
 
@@ -79,7 +79,7 @@ void CmdUserSkillsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	}
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["result"] = QJsonValue("DONE");
 	jsonData["m"] = QJsonValue(m);
 	jsonData["skills_max"] = skills_max;

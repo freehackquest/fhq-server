@@ -9,7 +9,7 @@ CmdClassbookProposalPrepareMergeRecordHandler::CmdClassbookProposalPrepareMergeR
     m_vInputs.push_back(CmdInputDef("classbook_proposal_id").required().integer_().description("Proposal id"));
 }
 
-QString CmdClassbookProposalPrepareMergeRecordHandler::cmd(){
+std::string CmdClassbookProposalPrepareMergeRecordHandler::cmd(){
     return "classbook_propasal_prepare_merge_record";
 }
 
@@ -84,7 +84,7 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(QWebSocket *pClient, 
     //TO DO final merge, lang checkout, update output (with data)
 
     QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonData["m"] = QJsonValue(m);
     jsonData["result"] = QJsonValue("DONE");
     jsonData["data"] = data;

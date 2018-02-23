@@ -10,7 +10,7 @@ CmdClassbookUpdateRecordHandler::CmdClassbookUpdateRecordHandler(){
     m_vInputs.push_back(CmdInputDef("parentid").optional().integer_().description("parentid for classbook article"));
 }
 
-QString CmdClassbookUpdateRecordHandler::cmd(){
+std::string CmdClassbookUpdateRecordHandler::cmd(){
     return "classbook_update_record";
 }
 
@@ -163,7 +163,7 @@ void CmdClassbookUpdateRecordHandler::handle(QWebSocket *pClient, IWebSocketServ
     }
 
     QJsonObject jsonResponse;
-    jsonResponse["cmd"] = QJsonValue(cmd());
+    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonResponse["m"] = QJsonValue(m);
     jsonResponse["result"] = QJsonValue("DONE");
     jsonResponse["data"] = QJsonValue(info);

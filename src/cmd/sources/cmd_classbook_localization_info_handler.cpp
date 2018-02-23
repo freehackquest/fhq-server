@@ -7,7 +7,7 @@ CmdClassbookLocalizationInfoHandler::CmdClassbookLocalizationInfoHandler(){
     m_vInputs.push_back(CmdInputDef("classbook_localizationid").required().integer_().description("Localization id"));
 }
 
-QString CmdClassbookLocalizationInfoHandler::cmd(){
+std::string CmdClassbookLocalizationInfoHandler::cmd(){
     return "classbook_localization_info";
 }
 
@@ -74,7 +74,7 @@ void CmdClassbookLocalizationInfoHandler::handle(QWebSocket *pClient, IWebSocket
     data["content"] = record.value("content").toString();
 
     QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonData["m"] = QJsonValue(m);
     jsonData["result"] = QJsonValue("DONE");
     jsonData["data"] = data;

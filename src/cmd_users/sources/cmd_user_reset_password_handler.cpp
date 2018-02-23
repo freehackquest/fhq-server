@@ -13,7 +13,7 @@ CmdUserResetPasswordHandler::CmdUserResetPasswordHandler(){
     m_vInputs.push_back(CmdInputDef("email").required().string_().description("E-mail"));
 }
 
-QString CmdUserResetPasswordHandler::cmd(){
+std::string CmdUserResetPasswordHandler::cmd(){
     return "user_reset_password";
 }
 
@@ -48,7 +48,7 @@ QStringList CmdUserResetPasswordHandler::errors(){
 
 void CmdUserResetPasswordHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	
     IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
     if(pMemoryCache == NULL){

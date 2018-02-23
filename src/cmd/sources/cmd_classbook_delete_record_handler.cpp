@@ -7,7 +7,7 @@ CmdClassbookDeleteRecordHandler::CmdClassbookDeleteRecordHandler(){
     m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("id for classbook article"));
 }
 
-QString CmdClassbookDeleteRecordHandler::cmd(){
+std::string CmdClassbookDeleteRecordHandler::cmd(){
     return "classbook_delete_record";
 }
 
@@ -76,7 +76,7 @@ void CmdClassbookDeleteRecordHandler::handle(QWebSocket *pClient, IWebSocketServ
     }
 
     QJsonObject jsonResponse;
-    jsonResponse["cmd"] = QJsonValue(cmd());
+    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonResponse["m"] = QJsonValue(m);
     jsonResponse["result"] = QJsonValue("DONE");
     pWebSocketServer->sendMessage(pClient, jsonResponse);

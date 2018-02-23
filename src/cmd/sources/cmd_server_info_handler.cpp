@@ -8,7 +8,7 @@ CmdServerInfoHandler::CmdServerInfoHandler(){
     TAG = "CmdServerInfoHandler";
 }
 
-QString CmdServerInfoHandler::cmd(){
+std::string CmdServerInfoHandler::cmd(){
     return "server_info";
 }
 
@@ -43,7 +43,7 @@ QStringList CmdServerInfoHandler::errors(){
 
 void CmdServerInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
     QJsonObject jsonResponse;
-    jsonResponse["cmd"] = QJsonValue(cmd());
+    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonResponse["m"] = QJsonValue(m);
     QJsonObject jsonData;
 

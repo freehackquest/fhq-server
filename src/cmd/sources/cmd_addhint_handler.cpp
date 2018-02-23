@@ -8,7 +8,7 @@ CmdAddHintHandler::CmdAddHintHandler(){
 	m_vInputs.push_back(CmdInputDef("hint").required().string_().description("hint text"));
 }
 
-QString CmdAddHintHandler::cmd(){
+std::string CmdAddHintHandler::cmd(){
 	return "addhint";
 }
 
@@ -68,7 +68,7 @@ void CmdAddHintHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocket
 	RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Added hint for quest #" + QString::number(questid));
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["m"] = QJsonValue(m);
 	jsonData["result"] = QJsonValue("DONE");
 	pWebSocketServer->sendMessage(pClient, jsonData);

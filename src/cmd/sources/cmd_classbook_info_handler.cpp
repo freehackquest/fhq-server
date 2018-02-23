@@ -7,7 +7,7 @@ CmdClassbookInfoHandler::CmdClassbookInfoHandler(){
     m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("Set lang for the article"));
 }
 
-QString CmdClassbookInfoHandler::cmd(){
+std::string CmdClassbookInfoHandler::cmd(){
     return "classbook_info";
 }
 
@@ -175,7 +175,7 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
     info["parents"] = parents;
 
     QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonData["m"] = QJsonValue(m);
     jsonData["result"] = QJsonValue("DONE");
     jsonData["data"] = info;

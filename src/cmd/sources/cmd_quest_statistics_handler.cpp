@@ -10,7 +10,7 @@ CmdQuestStatisticsHandler::CmdQuestStatisticsHandler(){
     TAG = "CmdQuestStatisticsHandler";
 }
 
-QString CmdQuestStatisticsHandler::cmd(){
+std::string CmdQuestStatisticsHandler::cmd(){
     return "quest_statistics";
 }
 
@@ -46,7 +46,7 @@ QStringList CmdQuestStatisticsHandler::errors(){
 void CmdQuestStatisticsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
     QJsonObject jsonResponse;
     QJsonObject jsonData;
-    jsonResponse["cmd"] = QJsonValue(cmd());
+    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
 	QSqlDatabase db = *(pWebSocketServer->database());
 
     int nQuestID = obj["questid"].toInt();

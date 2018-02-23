@@ -7,7 +7,7 @@ CmdUserHandler::CmdUserHandler(){
 	m_vInputs.push_back(CmdInputDef("userid").optional().integer_().description("Id of user"));
 }
 
-QString CmdUserHandler::cmd(){
+std::string CmdUserHandler::cmd(){
 	return "user";
 }
 
@@ -122,7 +122,7 @@ void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSer
 	
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["result"] = QJsonValue("DONE");
 	jsonData["m"] = QJsonValue(m);
 	jsonData["data"] = user;

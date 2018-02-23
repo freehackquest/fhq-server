@@ -7,7 +7,7 @@ CmdGamesHandler::CmdGamesHandler(){
 	// m_vInputs.push_back(CmdInputDef("filter_role").string_().optional().description("Filter by user role"));
 }
 
-QString CmdGamesHandler::cmd(){
+std::string CmdGamesHandler::cmd(){
 	return "games";
 }
 
@@ -82,7 +82,7 @@ void CmdGamesHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 	}
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["result"] = QJsonValue("DONE");
 	jsonData["m"] = QJsonValue(m);
 	jsonData["data"] = games;

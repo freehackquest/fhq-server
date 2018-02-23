@@ -7,7 +7,7 @@ class CmdGetMapHandler : public ICmdHandler {
 	
 	public:
 		CmdGetMapHandler();
-		virtual QString cmd();
+        virtual std::string cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();
 		virtual bool accessTester();

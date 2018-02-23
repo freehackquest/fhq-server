@@ -12,7 +12,7 @@ CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler(){
     m_vInputs.push_back(CmdInputDef("ordered").optional().integer_().description("order of article"));
 }
 
-QString CmdClassbookAddRecordHandler::cmd(){
+std::string CmdClassbookAddRecordHandler::cmd(){
     return "classbook_add_record";
 }
 
@@ -170,7 +170,7 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
     data["md5_content"] = md5_content;
 
     QJsonObject jsonResponse;
-    jsonResponse["cmd"] = QJsonValue(cmd());
+    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonResponse["m"] = QJsonValue(m);
     jsonResponse["result"] = QJsonValue("DONE");
     jsonResponse["data"] = data;

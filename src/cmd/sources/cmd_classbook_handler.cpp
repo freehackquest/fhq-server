@@ -5,7 +5,7 @@
 CmdClassbookHandler::CmdClassbookHandler(){
 }
 
-QString CmdClassbookHandler::cmd(){
+std::string CmdClassbookHandler::cmd(){
 	return "classbook";
 }
 
@@ -63,7 +63,7 @@ void CmdClassbookHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
 	}
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["result"] = QJsonValue("DONE");
     jsonData["m"] = QJsonValue(m);
 	jsonData["items"] = contents;

@@ -7,7 +7,7 @@ class CmdUserHandler : public ICmdHandler {
 	
 	public:
 		CmdUserHandler();
-		virtual QString cmd();
+        virtual std::string cmd();
 		virtual bool accessUnauthorized();
 		virtual bool accessUser();
 		virtual bool accessTester();

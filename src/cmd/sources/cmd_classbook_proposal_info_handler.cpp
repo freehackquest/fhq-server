@@ -7,7 +7,7 @@ CmdClassbookProposalInfoHandler::CmdClassbookProposalInfoHandler(){
     m_vInputs.push_back(CmdInputDef("classbook_proposal_id").required().integer_().description("Proposal id"));
 }
 
-QString CmdClassbookProposalInfoHandler::cmd(){
+std::string CmdClassbookProposalInfoHandler::cmd(){
     return "classbook_proposal_info";
 }
 
@@ -74,7 +74,7 @@ void CmdClassbookProposalInfoHandler::handle(QWebSocket *pClient, IWebSocketServ
     data["content"] = record.value("content").toString();
 
     QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonData["m"] = QJsonValue(m);
     jsonData["result"] = QJsonValue("DONE");
     jsonData["data"] = data;

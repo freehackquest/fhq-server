@@ -6,7 +6,7 @@ CmdDeletePublicEventHandler::CmdDeletePublicEventHandler(){
 	
 }
 
-QString CmdDeletePublicEventHandler::cmd(){
+std::string CmdDeletePublicEventHandler::cmd(){
 	return "deletepublicevent";
 }
 
@@ -44,7 +44,7 @@ QStringList CmdDeletePublicEventHandler::errors(){
 
 void CmdDeletePublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 
 	int nEventId = obj["eventid"].toInt();
 	jsonData["eventid"] = nEventId;

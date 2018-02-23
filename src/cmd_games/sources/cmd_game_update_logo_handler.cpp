@@ -12,7 +12,7 @@ CmdGameUpdateLogoHandler::CmdGameUpdateLogoHandler(){
     m_vInputs.push_back(CmdInputDef("image_png_base64").string_().required().description("Image PNG in Base64"));
 }
 
-QString CmdGameUpdateLogoHandler::cmd(){
+std::string CmdGameUpdateLogoHandler::cmd(){
     return "game_update_logo";
 }
 
@@ -95,7 +95,7 @@ void CmdGameUpdateLogoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWe
     }
 
     QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonData["result"] = QJsonValue("DONE");
     jsonData["m"] = QJsonValue(m);
     pWebSocketServer->sendMessage(pClient, jsonData);

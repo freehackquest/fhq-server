@@ -8,7 +8,7 @@ CmdUsersHandler::CmdUsersHandler(){
     m_vInputs.push_back(CmdInputDef("page").integer_().optional().description("page"));
 }
 
-QString CmdUsersHandler::cmd(){
+std::string CmdUsersHandler::cmd(){
 	return "users";
 }
 
@@ -147,7 +147,7 @@ void CmdUsersHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
     }
 
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	jsonData["result"] = QJsonValue("DONE");
 	jsonData["m"] = QJsonValue(m);
 	jsonData["data"] = users;

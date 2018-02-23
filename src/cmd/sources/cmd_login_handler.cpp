@@ -11,7 +11,7 @@ CmdLoginHandler::CmdLoginHandler(){
     m_vInputs.push_back(CmdInputDef("password").required().string_().description("Password"));
 }
 
-QString CmdLoginHandler::cmd(){
+std::string CmdLoginHandler::cmd(){
 	return "login";
 }
 
@@ -46,7 +46,7 @@ QStringList CmdLoginHandler::errors(){
 
 void CmdLoginHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	
     QString email = obj["email"].toString();
     QString password = obj["password"].toString();

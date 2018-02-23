@@ -7,7 +7,7 @@ CmdServerSettingsUpdateHandler::CmdServerSettingsUpdateHandler(){
     m_vInputs.push_back(CmdInputDef("value").required().any_().description("value of setting"));
 }
 
-QString CmdServerSettingsUpdateHandler::cmd(){
+std::string CmdServerSettingsUpdateHandler::cmd(){
         return "server_settings_update";
 }
 
@@ -42,7 +42,7 @@ QStringList CmdServerSettingsUpdateHandler::errors(){
 
 void CmdServerSettingsUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
 	QJsonObject jsonData;
-	jsonData["cmd"] = QJsonValue(cmd());
+    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 
     IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
 	if(pMemoryCache == NULL){
