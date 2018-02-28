@@ -5,7 +5,7 @@
 
 class EmployJson : public IEmploy {
     public:
-       static std::string getEmployName() { return "EmployJson"; };
+       static std::string getEmployName() { return "EmployJson"; }
        virtual void test();
 };
 

@@ -10,7 +10,7 @@
 #include <quazipfileinfo.h>
 #include <log.h>
 #include <iostream>
-#include <memory_cache_serversettings.h>
+#include <employ_settings.h>
 
 CmdGameExportHandler::CmdGameExportHandler(){
     TAG = "CmdGameExportHandler";
@@ -90,13 +90,8 @@ void CmdGameExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
     // find logo for game
     QString sGameLogoFilename = "";
     {
-        IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
-        if(pMemoryCache == NULL){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
-            return;
-        }
-        MemoryCacheServerSettings *pMemoryCacheServerSettings = dynamic_cast<MemoryCacheServerSettings*>(pMemoryCache);
-        QString sBasePath = pMemoryCacheServerSettings->getSettString("server_folder_games");
+        EmploySettings *pSettings = findEmploy<EmploySettings>();
+        QString sBasePath = pSettings->getSettString("server_folder_games");
         sGameLogoFilename = sBasePath + QString::number(nGameID) + ".png";
     }
 

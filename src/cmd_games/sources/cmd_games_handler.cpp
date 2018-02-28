@@ -1,6 +1,6 @@
 #include <cmd_games_handler.h>
 #include <QJsonArray>
-#include <memory_cache_serversettings.h>
+#include <employ_settings.h>
 
 CmdGamesHandler::CmdGamesHandler(){
 	// m_vInputs.push_back(CmdInputDef("filter_text").string_().optional().description("Filter by user email or nick"));
@@ -42,14 +42,9 @@ QStringList CmdGamesHandler::errors(){
 
 void CmdGamesHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
 
-    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
-    if(pMemoryCache == NULL){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
-        return;
-    }
+    EmploySettings *pSettings = findEmploy<EmploySettings>();
 
-    MemoryCacheServerSettings *pMemoryCacheServerSettings = dynamic_cast<MemoryCacheServerSettings*>(pMemoryCache);
-    QString base_url = pMemoryCacheServerSettings->getSettString("server_folder_games_url");
+    QString base_url = pSettings->getSettString("server_folder_games_url");
 
 	QJsonArray games;
 	QSqlDatabase db = *(pWebSocketServer->database());

@@ -1,7 +1,7 @@
 #include <cmd_feedback_add_handler.h>
 #include <runtasks.h>
 #include <QRegularExpression>
-#include <memory_cache_serversettings.h>
+#include <employ_settings.h>
 #include <SmtpMime>
 #include <QJsonArray>
 #include <QCryptographicHash>
@@ -62,13 +62,7 @@ void CmdFeedbackAddHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
         sEmail = pUserToken->email();
         nUserID = pUserToken->userid();
     }
-
-    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
-    if(pMemoryCache == NULL){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
-        return;
-    }
-    MemoryCacheServerSettings *pMemoryCacheServerSettings = dynamic_cast<MemoryCacheServerSettings*>(pMemoryCache);
+    EmploySettings *pSettings = findEmploy<EmploySettings>();
 
     QRegularExpression regexEmail("^[0-9a-zA-Z]{1}[0-9a-zA-Z-._]*[0-9a-zA-Z]{1}@[0-9a-zA-Z]{1}[-.0-9a-zA-Z]*[0-9a-zA-Z]{1}\\.[a-zA-Z]{2,6}$");
     if(!regexEmail.match(sEmail).hasMatch()){
@@ -91,11 +85,11 @@ void CmdFeedbackAddHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
     RunTasks::AddPublicEvents(pWebSocketServer, "users", "Added feedback");
 	
     // TODO move to tasks
-    QString sMailHost = pMemoryCacheServerSettings->getSettString("mail_host");
-    int nMailPort = pMemoryCacheServerSettings->getSettInteger("mail_port");
-    QString sMailPassword = pMemoryCacheServerSettings->getSettPassword("mail_password");
-    QString sMailFrom = pMemoryCacheServerSettings->getSettString("mail_from");
-    QString sMailToAdmin = pMemoryCacheServerSettings->getSettString("mail_system_message_admin_email");
+    QString sMailHost = pSettings->getSettString("mail_host");
+    int nMailPort = pSettings->getSettInteger("mail_port");
+    QString sMailPassword = pSettings->getSettPassword("mail_password");
+    QString sMailFrom = pSettings->getSettString("mail_from");
+    QString sMailToAdmin = pSettings->getSettString("mail_system_message_admin_email");
 
     SmtpClient smtp(sMailHost, nMailPort, SmtpClient::SslConnection);
     smtp.setUser(sMailFrom);

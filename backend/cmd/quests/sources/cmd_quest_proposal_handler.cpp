@@ -1,8 +1,8 @@
 #include <cmd_quest_proposal_handler.h>
 #include <QJsonArray>
 #include <SmtpMime>
-#include <memory_cache_serverinfo.h>
-#include <memory_cache_serversettings.h>
+// #include <memory_cache_serverinfo.h>
+#include <employ_settings.h>
 
 CmdQuestProposalHandler::CmdQuestProposalHandler(){
     TAG = "CmdQuestProposalHandler";
@@ -57,12 +57,7 @@ void CmdQuestProposalHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
     QJsonObject jsonData;
     jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 
-    IMemoryCache *pMemoryCache2 = pWebSocketServer->findMemoryCache("serversettings");
-    if(pMemoryCache2 == NULL){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
-        return;
-    }
-    MemoryCacheServerSettings *pMemoryCacheServerSettings = dynamic_cast<MemoryCacheServerSettings*>(pMemoryCache2);
+    EmploySettings *pSettings = findEmploy<EmploySettings>();
 
     QSqlDatabase db = *(pWebSocketServer->database());
 
@@ -176,11 +171,11 @@ void CmdQuestProposalHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
     jsonData["questid"] = QJsonValue(nQuestProposalId);
 
     // TODO move to tasks
-    QString sMailHost = pMemoryCacheServerSettings->getSettString("mail_host");
-    int nMailPort = pMemoryCacheServerSettings->getSettInteger("mail_port");
-    QString sMailPassword = pMemoryCacheServerSettings->getSettPassword("mail_password");
-    QString sMailFrom = pMemoryCacheServerSettings->getSettString("mail_from");
-    QString sMailToAdmin = pMemoryCacheServerSettings->getSettString("mail_system_message_admin_email");
+    QString sMailHost = pSettings->getSettString("mail_host");
+    int nMailPort = pSettings->getSettInteger("mail_port");
+    QString sMailPassword = pSettings->getSettPassword("mail_password");
+    QString sMailFrom = pSettings->getSettString("mail_from");
+    QString sMailToAdmin = pSettings->getSettString("mail_system_message_admin_email");
 
     SmtpClient smtp(sMailHost, nMailPort, SmtpClient::SslConnection);
     smtp.setUser(sMailFrom);

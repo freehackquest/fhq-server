@@ -5,7 +5,7 @@
 #include <QCryptographicHash>
 #include <QUuid>
 #include <QRegularExpression>
-#include <memory_cache_serversettings.h>
+#include <employ_settings.h>
 #include <SmtpMime>
 
 CmdRegistrationHandler::CmdRegistrationHandler(){
@@ -51,12 +51,7 @@ void CmdRegistrationHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebS
 	QJsonObject jsonData;
     jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	
-    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
-    if(pMemoryCache == NULL){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
-        return;
-    }
-    MemoryCacheServerSettings *pMemoryCacheServerSettings = dynamic_cast<MemoryCacheServerSettings*>(pMemoryCache);
+    EmploySettings *pSettings = findEmploy<EmploySettings>();
 
     QRegularExpression regexEmail("^[0-9a-zA-Z]{1}[0-9a-zA-Z-._]*[0-9a-zA-Z]{1}@[0-9a-zA-Z]{1}[-.0-9a-zA-Z]*[0-9a-zA-Z]{1}\\.[a-zA-Z]{2,6}$");
     QString sEmail = obj["email"].toString();
@@ -183,10 +178,10 @@ void CmdRegistrationHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebS
     RunTasks::AddPublicEvents(pWebSocketServer, "users", "New user #" + QString::number(nUserID) + "  " + sNick);
 
     // TODO move to tasks
-    QString sMailHost = pMemoryCacheServerSettings->getSettString("mail_host");
-    int nMailPort = pMemoryCacheServerSettings->getSettInteger("mail_port");
-    QString sMailPassword = pMemoryCacheServerSettings->getSettPassword("mail_password");
-    QString sMailFrom = pMemoryCacheServerSettings->getSettString("mail_from");
+    QString sMailHost = pSettings->getSettString("mail_host");
+    int nMailPort = pSettings->getSettInteger("mail_port");
+    QString sMailPassword = pSettings->getSettPassword("mail_password");
+    QString sMailFrom = pSettings->getSettString("mail_from");
 
     SmtpClient smtp(sMailHost, nMailPort, SmtpClient::SslConnection);
     smtp.setUser(sMailFrom);

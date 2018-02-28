@@ -1,12 +1,14 @@
 
-INCLUDEPATH += backend/employees
-INCLUDEPATH += backend/employees/include
+INCLUDEPATH += $$PWD
+INCLUDEPATH += $$PWD/include
 
 HEADERS += \
-        backend/interfaces/iemploy.h \
-        backend/employees/employees.h \
-        backend/employees/include/employ_json.h \
+        $$PWD/employees.h \
+        $$PWD/include/employ_json.h \
+        $$PWD/include/employ_settings.h \
 
 SOURCES += \
-	backend/employees/sources/employ_json.cpp \
-	backend/employees/employees.cpp \
+    $$PWD/employees.cpp \
+    $$PWD/sources/employ_json.cpp \
+    $$PWD/sources/employ_settings.cpp \
+

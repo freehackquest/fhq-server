@@ -19,6 +19,8 @@
 #include <create_memory_cache.h>
 #include <log.h>
 
+#include <employ_settings.h>
+
 // QT_USE_NAMESPACE
 
 // ---------------------------------------------------------------------
@@ -60,6 +62,10 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
     create_cmd_quests_handlers(m_mapCmdHandlers);
 	create_cmd_handlers(m_mapCmdHandlers);
 	create_memory_cache(m_mapMemoryCache, this);
+
+    EmploySettings *pSettings = findEmploy<EmploySettings>();
+    pSettings->initSettings(this);
+
 
 	{
 		// init memory cache server info

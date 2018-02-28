@@ -1,7 +1,7 @@
 #include <cmd_quest_handler.h>
 #include <runtasks.h>
 #include <log.h>
-#include <memory_cache_serversettings.h>
+#include <employ_settings.h>
 
 #include <QJsonArray>
 #include <QCryptographicHash>
@@ -49,14 +49,9 @@ void CmdQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
     jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	QSqlDatabase db = *(pWebSocketServer->database());
 
-    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
-    if(pMemoryCache == NULL){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
-        return;
-    }
+    EmploySettings *pSettings = findEmploy<EmploySettings>();
 
-    MemoryCacheServerSettings *pMemoryCacheServerSettings = dynamic_cast<MemoryCacheServerSettings*>(pMemoryCache);
-    QString sBaseGamesURL = pMemoryCacheServerSettings->getSettString("server_folder_games_url");
+    QString sBaseGamesURL = pSettings->getSettString("server_folder_games_url");
 
 	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
 	bool bAdmin = false;

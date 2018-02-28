@@ -1,6 +1,6 @@
 #include <cmd_server_settings_update_handler.h>
 #include <QJsonArray>
-#include <memory_cache_serversettings.h>
+#include <employ_settings.h>
 
 CmdServerSettingsUpdateHandler::CmdServerSettingsUpdateHandler(){
     m_vInputs.push_back(CmdInputDef("name").required().string_().description("name of setting"));
@@ -44,32 +44,26 @@ void CmdServerSettingsUpdateHandler::handle(QWebSocket *pClient, IWebSocketServe
 	QJsonObject jsonData;
     jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 
-    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
-	if(pMemoryCache == NULL){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
-		return;
-	}
+    EmploySettings *pSettings = findEmploy<EmploySettings>();
 
     QString sName = obj["name"].toString();
     QString sNewValue = obj["value"].toString();
 
-    MemoryCacheServerSettings *pMemoryCacheServerSettings = dynamic_cast<MemoryCacheServerSettings*>(pMemoryCache);
-
-    if(!pMemoryCacheServerSettings->hasSett(sName)){
+    if(!pSettings->hasSett(sName)){
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("Setting with name: " + sName + " did not found"));
         return;
     }
 
-    QString sType = pMemoryCacheServerSettings->getSettType(sName);
+    QString sType = pSettings->getSettType(sName);
 
     if(sType == SETT_TYPE_STRING){
-        pMemoryCacheServerSettings->setSettString(sName, sNewValue);
+        pSettings->setSettString(sName, sNewValue);
     }else if(sType == SETT_TYPE_PASSWORD){
-        pMemoryCacheServerSettings->setSettPassword(sName, sNewValue);
+        pSettings->setSettPassword(sName, sNewValue);
     }else if(sType == SETT_TYPE_INTEGER){
-        pMemoryCacheServerSettings->setSettInteger(sName, sNewValue.toInt());
+        pSettings->setSettInteger(sName, sNewValue.toInt());
     }else if(sType == SETT_TYPE_BOOLEAN){
-        pMemoryCacheServerSettings->setSettBoolean(sName, sNewValue == "yes");
+        pSettings->setSettBoolean(sName, sNewValue == "yes");
     }else{
         pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotImplementedYet());
         return;

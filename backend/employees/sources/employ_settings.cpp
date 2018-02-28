@@ -1,4 +1,6 @@
-#include <memory_cache_serversettings.h>
+#include <employ_settings.h>
+
+// ---------------------------------------------------------------------
 
 #include <log.h>
 
@@ -8,15 +10,17 @@
 #include <QDateTime>
 #include <QDir>
 
-// IMemoryCache
-QString MemoryCacheServerSettings::name(){
-	return "serversettings";
+// ---------------------------------------------------------------------
+
+void EmploySettings::test(){
+
 }
 
 // ---------------------------------------------------------------------
 
-MemoryCacheServerSettings::MemoryCacheServerSettings(IWebSocketServer *pWebSocketServer){
-	m_pWebSocketServer = pWebSocketServer;
+void EmploySettings::initSettings(IWebSocketServer *pWebSocketServer){
+    Log::info(TAG, "Start init settings");
+    m_pWebSocketServer = pWebSocketServer;
     TAG = "MemoryCacheServerSettings";
 
     QString sGroupProfile = "profile";
@@ -99,7 +103,7 @@ MemoryCacheServerSettings::MemoryCacheServerSettings(IWebSocketServer *pWebSocke
 
 // ---------------------------------------------------------------------
 
-void MemoryCacheServerSettings::addNewSetting(ServerSettHelper* pServerSettHelper){
+void EmploySettings::addNewSetting(ServerSettHelper* pServerSettHelper){
     QString sName = pServerSettHelper->name();
     if(!m_mapSettings.contains(sName)){
         m_mapSettings[sName] = pServerSettHelper;
@@ -111,8 +115,8 @@ void MemoryCacheServerSettings::addNewSetting(ServerSettHelper* pServerSettHelpe
 
 // ---------------------------------------------------------------------
 
-QString MemoryCacheServerSettings::getSettString(QString sName){
-	QMutexLocker locker (&m_mtxServerSettings);
+QString EmploySettings::getSettString(QString sName){
+    QMutexLocker locker (&m_mtxServerSettings);
     QString sResult = "";
     if(m_mapSettings.contains(sName)){
         ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
@@ -129,8 +133,8 @@ QString MemoryCacheServerSettings::getSettString(QString sName){
 
 // ---------------------------------------------------------------------
 
-void MemoryCacheServerSettings::setSettString(QString sName, QString sValue){
-	QMutexLocker locker (&m_mtxServerSettings);
+void EmploySettings::setSettString(QString sName, QString sValue){
+    QMutexLocker locker (&m_mtxServerSettings);
     if(m_mapSettings.contains(sName)){
         ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
         if(!pServerSettHelper->isString()){
@@ -146,7 +150,7 @@ void MemoryCacheServerSettings::setSettString(QString sName, QString sValue){
 
 // ---------------------------------------------------------------------
 
-QString MemoryCacheServerSettings::getSettPassword(QString sName){
+QString EmploySettings::getSettPassword(QString sName){
     QMutexLocker locker (&m_mtxServerSettings);
     QString sResult = "";
     if(m_mapSettings.contains(sName)){
@@ -164,7 +168,7 @@ QString MemoryCacheServerSettings::getSettPassword(QString sName){
 
 // ---------------------------------------------------------------------
 
-void MemoryCacheServerSettings::setSettPassword(QString sName, QString sValue){
+void EmploySettings::setSettPassword(QString sName, QString sValue){
     QMutexLocker locker (&m_mtxServerSettings);
     if(m_mapSettings.contains(sName)){
         ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
@@ -181,8 +185,8 @@ void MemoryCacheServerSettings::setSettPassword(QString sName, QString sValue){
 
 // ---------------------------------------------------------------------
 
-int MemoryCacheServerSettings::getSettInteger(QString sName){
-	QMutexLocker locker (&m_mtxServerSettings);
+int EmploySettings::getSettInteger(QString sName){
+    QMutexLocker locker (&m_mtxServerSettings);
     int nResult = 0;
     if(m_mapSettings.contains(sName)){
         ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
@@ -199,8 +203,8 @@ int MemoryCacheServerSettings::getSettInteger(QString sName){
 
 // ---------------------------------------------------------------------
 
-void MemoryCacheServerSettings::setSettInteger(QString sName, int nValue){
-	QMutexLocker locker (&m_mtxServerSettings);
+void EmploySettings::setSettInteger(QString sName, int nValue){
+    QMutexLocker locker (&m_mtxServerSettings);
     if(m_mapSettings.contains(sName)){
         ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
         if(!pServerSettHelper->isInteger()){
@@ -216,8 +220,8 @@ void MemoryCacheServerSettings::setSettInteger(QString sName, int nValue){
 
 // ---------------------------------------------------------------------
 
-bool MemoryCacheServerSettings::getSettBoolean(QString sName){
-	QMutexLocker locker (&m_mtxServerSettings);
+bool EmploySettings::getSettBoolean(QString sName){
+    QMutexLocker locker (&m_mtxServerSettings);
     bool bResult = false;
     if(m_mapSettings.contains(sName)){
         ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
@@ -234,7 +238,7 @@ bool MemoryCacheServerSettings::getSettBoolean(QString sName){
 
 // ---------------------------------------------------------------------
 
-void MemoryCacheServerSettings::setSettBoolean(QString sName, bool bValue){
+void EmploySettings::setSettBoolean(QString sName, bool bValue){
     QMutexLocker locker (&m_mtxServerSettings);
     if(m_mapSettings.contains(sName)){
         ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
@@ -251,13 +255,13 @@ void MemoryCacheServerSettings::setSettBoolean(QString sName, bool bValue){
 
 // ---------------------------------------------------------------------
 
-bool MemoryCacheServerSettings::hasSett(QString sName){
+bool EmploySettings::hasSett(QString sName){
     return m_mapSettings.contains(sName);
 }
 
 // ---------------------------------------------------------------------
 
-QString MemoryCacheServerSettings::getSettType(QString sName){
+QString EmploySettings::getSettType(QString sName){
     if(m_mapSettings.contains(sName)){
         return m_mapSettings[sName]->type();
     }
@@ -266,7 +270,7 @@ QString MemoryCacheServerSettings::getSettType(QString sName){
 
 // ---------------------------------------------------------------------
 
-QJsonArray MemoryCacheServerSettings::toJsonArray(){
+QJsonArray EmploySettings::toJsonArray(){
     QJsonArray res;
     foreach( QString sName, m_mapSettings.keys()){
         ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
@@ -274,7 +278,7 @@ QJsonArray MemoryCacheServerSettings::toJsonArray(){
         QJsonObject sett;
         sett["name"] = pServerSettHelper->name();
         if(pServerSettHelper->isBoolean()){
-			sett["value"] = pServerSettHelper->valueAsBoolean();
+            sett["value"] = pServerSettHelper->valueAsBoolean();
         }else if(pServerSettHelper->isString()){
             sett["value"] = pServerSettHelper->valueAsString();
         }else if(pServerSettHelper->isInteger()){
@@ -284,17 +288,17 @@ QJsonArray MemoryCacheServerSettings::toJsonArray(){
         }else{
             sett["value"] = pServerSettHelper->valueAsString();
         }
-        
+
         sett["group"] = pServerSettHelper->group();
         sett["type"] = pServerSettHelper->type();
         res.append(sett);
     }
-	return res;
+    return res;
 }
 
 // ---------------------------------------------------------------------
 
-void MemoryCacheServerSettings::initSettingDatabase(ServerSettHelper *pServerSettHelper){
+void EmploySettings::initSettingDatabase(ServerSettHelper *pServerSettHelper){
     Log::info(TAG, "Init settings to database: " + pServerSettHelper->name());
     QSqlDatabase db = *(m_pWebSocketServer->database());
     QSqlQuery query(db);
@@ -310,7 +314,7 @@ void MemoryCacheServerSettings::initSettingDatabase(ServerSettHelper *pServerSet
 
 // ---------------------------------------------------------------------
 
-void MemoryCacheServerSettings::updateSettingDatabase(ServerSettHelper *pServerSettHelper){
+void EmploySettings::updateSettingDatabase(ServerSettHelper *pServerSettHelper){
     QSqlDatabase db = *(m_pWebSocketServer->database());
     QSqlQuery query(db);
     query.prepare("UPDATE settings SET value = :value WHERE name = :name");
@@ -320,3 +324,4 @@ void MemoryCacheServerSettings::updateSettingDatabase(ServerSettHelper *pServerS
         Log::err(TAG, query.lastError().text());
     }
 }
+

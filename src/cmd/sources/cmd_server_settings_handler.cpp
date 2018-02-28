@@ -1,6 +1,7 @@
 #include <cmd_server_settings_handler.h>
 #include <QJsonArray>
-#include <memory_cache_serversettings.h>
+// #include <memory_cache_serversettings.h>
+#include <employ_settings.h>
 
 CmdServerSettingsHandler::CmdServerSettingsHandler(){
 }
@@ -42,14 +43,17 @@ void CmdServerSettingsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWe
 	QJsonObject jsonData;
     jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	
-    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
+    EmploySettings *pSettings = findEmploy<EmploySettings>();
+
+    /*IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
 	if(pMemoryCache == NULL){
 		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
 		return;
 	}
 
     MemoryCacheServerSettings *pMemoryCacheServerSettings = dynamic_cast<MemoryCacheServerSettings*>(pMemoryCache);
-    jsonData["data"] = pMemoryCacheServerSettings->toJsonArray(); // TODO how much db connections and time
+    */
+    jsonData["data"] = pSettings->toJsonArray(); // TODO how much db connections and time
 	jsonData["result"] = QJsonValue("DONE");
 	jsonData["m"] = QJsonValue(m);
 	pWebSocketServer->sendMessage(pClient, jsonData);

@@ -1,6 +1,6 @@
 #include <cmd_game_update_logo_handler.h>
 #include <runtasks.h>
-#include <memory_cache_serversettings.h>
+#include <employ_settings.h>
 
 #include <QJsonArray>
 #include <QCryptographicHash>
@@ -51,14 +51,9 @@ void CmdGameUpdateLogoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWe
 
     // TODO check existing game
 
-    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
-    if(pMemoryCache == NULL){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
-        return;
-    }
+    EmploySettings *pSettings = findEmploy<EmploySettings>();
 
-    MemoryCacheServerSettings *pMemoryCacheServerSettings = dynamic_cast<MemoryCacheServerSettings*>(pMemoryCache);
-    QString sBasePath = pMemoryCacheServerSettings->getSettString("server_folder_games");
+    QString sBasePath = pSettings->getSettString("server_folder_games");
 
     QString sFilename = sBasePath + QString::number(nGameID) + ".png";
 
