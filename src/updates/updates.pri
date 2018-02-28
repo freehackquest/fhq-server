@@ -40,7 +40,8 @@ HEADERS += \
     $$PWD/include/update0093.h \
     $$PWD/include/update0094.h \
     $$PWD/include/update0095.h \
-    $$PWD/include/update0096.h
+    $$PWD/include/update0096.h \
+    $$PWD/include/update0097.h
 
 SOURCES += \
 	src/updates/create_list_updates.cpp \
@@ -80,4 +81,5 @@ SOURCES += \
     $$PWD/sources/update0093.cpp \
     $$PWD/sources/update0094.cpp \
     $$PWD/sources/update0095.cpp \
-    $$PWD/sources/update0096.cpp
+    $$PWD/sources/update0096.cpp \
+    $$PWD/sources/update0097.cpp
