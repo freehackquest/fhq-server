@@ -25,7 +25,7 @@ bool CmdWriteUpsHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdWriteUpsHandler::inputs(){
+const std::vector<CmdInputDef> &CmdWriteUpsHandler::inputs(){
 	return m_vInputs;
 };
 

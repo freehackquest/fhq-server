@@ -32,7 +32,7 @@ bool CmdGameUpdateLogoHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdGameUpdateLogoHandler::inputs(){
+const std::vector<CmdInputDef> &CmdGameUpdateLogoHandler::inputs(){
 	return m_vInputs;
 };
 

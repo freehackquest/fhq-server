@@ -29,7 +29,7 @@ bool CmdClassbookProposalPrepareMergeRecordHandler::accessAdmin(){
     return true;
 }
 
-const QVector<CmdInputDef> &CmdClassbookProposalPrepareMergeRecordHandler::inputs(){
+const std::vector<CmdInputDef> &CmdClassbookProposalPrepareMergeRecordHandler::inputs(){
     return m_vInputs;
 };
 

@@ -27,9 +27,9 @@ bool CmdPublicEventsListHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdPublicEventsListHandler::inputs(){
+const std::vector<CmdInputDef> &CmdPublicEventsListHandler::inputs(){
 	return m_vInputs;
-};
+}
 
 QString CmdPublicEventsListHandler::description(){
 	return

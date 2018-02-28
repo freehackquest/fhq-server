@@ -28,7 +28,7 @@ bool CmdAnswerListHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdAnswerListHandler::inputs(){
+const std::vector<CmdInputDef> &CmdAnswerListHandler::inputs(){
 	return m_vInputs;
 };
 

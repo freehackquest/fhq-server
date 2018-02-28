@@ -27,7 +27,7 @@ bool CmdClassbookInfoHandler::accessAdmin(){
     return true;
 }
 
-const QVector<CmdInputDef> &CmdClassbookInfoHandler::inputs(){
+const std::vector<CmdInputDef> &CmdClassbookInfoHandler::inputs(){
     return m_vInputs;
 };
 

@@ -26,7 +26,7 @@ bool CmdQuestDeleteHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdQuestDeleteHandler::inputs(){
+const std::vector<CmdInputDef> &CmdQuestDeleteHandler::inputs(){
 	return m_vInputs;
 };
 

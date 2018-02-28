@@ -27,7 +27,7 @@ bool CmdClassbookLocalizationInfoHandler::accessAdmin(){
     return true;
 }
 
-const QVector<CmdInputDef> &CmdClassbookLocalizationInfoHandler::inputs(){
+const std::vector<CmdInputDef> &CmdClassbookLocalizationInfoHandler::inputs(){
     return m_vInputs;
 };
 

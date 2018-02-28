@@ -25,7 +25,7 @@ bool CmdUserSkillsHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdUserSkillsHandler::inputs(){
+const std::vector<CmdInputDef> &CmdUserSkillsHandler::inputs(){
 	return m_vInputs;
 };
 

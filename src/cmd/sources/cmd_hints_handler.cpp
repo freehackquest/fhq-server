@@ -25,7 +25,7 @@ bool CmdHintsHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdHintsHandler::inputs(){
+const std::vector<CmdInputDef> &CmdHintsHandler::inputs(){
 	return m_vInputs;
 };
 

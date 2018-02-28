@@ -25,7 +25,7 @@ bool CmdPublicInfoHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdPublicInfoHandler::inputs(){
+const std::vector<CmdInputDef> &CmdPublicInfoHandler::inputs(){
 	return m_vInputs;
 };
 

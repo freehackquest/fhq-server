@@ -27,7 +27,7 @@ bool CmdGamesHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdGamesHandler::inputs(){
+const std::vector<CmdInputDef> &CmdGamesHandler::inputs(){
 	return m_vInputs;
 };
 

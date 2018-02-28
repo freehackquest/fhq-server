@@ -29,7 +29,7 @@ bool CmdClassbookProposalListHandler::accessAdmin(){
     return true;
 }
 
-const QVector<CmdInputDef> &CmdClassbookProposalListHandler::inputs(){
+const std::vector<CmdInputDef> &CmdClassbookProposalListHandler::inputs(){
     return m_vInputs;
 };
 

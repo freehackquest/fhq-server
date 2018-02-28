@@ -33,7 +33,7 @@ bool CmdQuestPassHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdQuestPassHandler::inputs(){
+const std::vector<CmdInputDef> &CmdQuestPassHandler::inputs(){
 	return m_vInputs;
 };
 

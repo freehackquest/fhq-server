@@ -24,7 +24,7 @@ bool CmdDeleteHintHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdDeleteHintHandler::inputs(){
+const std::vector<CmdInputDef> &CmdDeleteHintHandler::inputs(){
 	return m_vInputs;
 };
 

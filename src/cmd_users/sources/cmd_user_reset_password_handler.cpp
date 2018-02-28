@@ -33,7 +33,7 @@ bool CmdUserResetPasswordHandler::accessAdmin(){
     return false;
 }
 
-const QVector<CmdInputDef> &CmdUserResetPasswordHandler::inputs(){
+const std::vector<CmdInputDef> &CmdUserResetPasswordHandler::inputs(){
 	return m_vInputs;
 };
 

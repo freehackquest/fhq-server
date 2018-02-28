@@ -380,8 +380,8 @@ void WebSocketServer::exportApi(QJsonObject &result){
 		handler["access_admin"] = pHandler->accessAdmin();
 
 		QJsonArray inputs;
-		QVector<CmdInputDef> ins = pHandler->inputs();
-		for(int i = 0; i < ins.size(); i++){
+        std::vector<CmdInputDef> ins = pHandler->inputs();
+        for(unsigned int i = 0; i < ins.size(); i++){
 			inputs.append(ins[i].toJson());
 		}
 		handler["inputs"] = inputs;
@@ -402,8 +402,8 @@ void WebSocketServer::exportApi(QJsonObject &result){
 // ---------------------------------------------------------------------
 
 bool WebSocketServer::validateInputParameters(Error &error, ICmdHandler *pCmdHandler, QJsonObject &jsonData){
-	const QVector<CmdInputDef> vInputs = pCmdHandler->inputs();
-	for(int i = 0; i < vInputs.size(); i++){
+    const std::vector<CmdInputDef> vInputs = pCmdHandler->inputs();
+    for(unsigned int i = 0; i < vInputs.size(); i++){
 		CmdInputDef inDef = vInputs[i];
 		QString sParamName = inDef.getName();
 		if(inDef.isRequired() && !jsonData.contains(sParamName)){

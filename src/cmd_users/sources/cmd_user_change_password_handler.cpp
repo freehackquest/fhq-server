@@ -28,7 +28,7 @@ bool CmdUserChangePasswordHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdUserChangePasswordHandler::inputs(){
+const std::vector<CmdInputDef> &CmdUserChangePasswordHandler::inputs(){
 	return m_vInputs;
 };
 

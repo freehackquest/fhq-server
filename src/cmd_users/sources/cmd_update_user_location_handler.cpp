@@ -26,7 +26,7 @@ bool CmdUpdateUserLocationHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdUpdateUserLocationHandler::inputs(){
+const std::vector<CmdInputDef> &CmdUpdateUserLocationHandler::inputs(){
 	return m_vInputs;
 };
 

@@ -33,7 +33,7 @@ bool CmdFeedbackAddHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdFeedbackAddHandler::inputs(){
+const std::vector<CmdInputDef> &CmdFeedbackAddHandler::inputs(){
 	return m_vInputs;
 };
 

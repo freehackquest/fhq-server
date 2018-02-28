@@ -23,7 +23,7 @@ bool CmdSendChatMessageHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdSendChatMessageHandler::inputs(){
+const std::vector<CmdInputDef> &CmdSendChatMessageHandler::inputs(){
 	return m_vInputs;
 };
 

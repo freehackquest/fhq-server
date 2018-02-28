@@ -30,7 +30,7 @@ bool CmdUserUpdateHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdUserUpdateHandler::inputs(){
+const std::vector<CmdInputDef> &CmdUserUpdateHandler::inputs(){
 	return m_vInputs;
 };
 

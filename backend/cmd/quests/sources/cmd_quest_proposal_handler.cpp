@@ -39,7 +39,7 @@ bool CmdQuestProposalHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdQuestProposalHandler::inputs(){
+const std::vector<CmdInputDef> &CmdQuestProposalHandler::inputs(){
 	return m_vInputs;
 };
 
@@ -56,13 +56,6 @@ void CmdQuestProposalHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
 
     QJsonObject jsonData;
     jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-
-    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serverinfo");
-    if(pMemoryCache == NULL){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
-        return;
-    }
-    MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
 
     IMemoryCache *pMemoryCache2 = pWebSocketServer->findMemoryCache("serversettings");
     if(pMemoryCache2 == NULL){

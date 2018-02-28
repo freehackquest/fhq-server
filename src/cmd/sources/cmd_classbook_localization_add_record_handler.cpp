@@ -32,7 +32,7 @@ bool CmdClassbookLocalizationAddRecordHandler::accessAdmin(){
     return true;
 }
 
-const QVector<CmdInputDef> &CmdClassbookLocalizationAddRecordHandler::inputs(){
+const std::vector<CmdInputDef> &CmdClassbookLocalizationAddRecordHandler::inputs(){
     return m_vInputs;
 };
 

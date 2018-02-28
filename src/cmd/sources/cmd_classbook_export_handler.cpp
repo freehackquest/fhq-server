@@ -33,7 +33,7 @@ bool CmdClassbookExportHandler::accessAdmin(){
     return true;
 }
 
-const QVector<CmdInputDef> &CmdClassbookExportHandler::inputs(){
+const std::vector<CmdInputDef> &CmdClassbookExportHandler::inputs(){
     return m_vInputs;
 }
 

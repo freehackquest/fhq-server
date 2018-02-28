@@ -30,7 +30,7 @@ bool CmdClassbookLocalizationUpdateRecordHandler::accessAdmin(){
     return true;
 }
 
-const QVector<CmdInputDef> &CmdClassbookLocalizationUpdateRecordHandler::inputs(){
+const std::vector<CmdInputDef> &CmdClassbookLocalizationUpdateRecordHandler::inputs(){
     return m_vInputs;
 };
 

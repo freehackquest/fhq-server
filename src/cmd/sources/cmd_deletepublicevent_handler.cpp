@@ -26,7 +26,7 @@ bool CmdDeletePublicEventHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdDeletePublicEventHandler::inputs(){
+const std::vector<CmdInputDef> &CmdDeletePublicEventHandler::inputs(){
 	return m_vInputs;
 };
 

@@ -26,9 +26,9 @@ bool CmdQuestsSubjectsHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdQuestsSubjectsHandler::inputs(){
+const std::vector<CmdInputDef> &CmdQuestsSubjectsHandler::inputs(){
 	return m_vInputs;
-};
+}
 
 QString CmdQuestsSubjectsHandler::description(){
 	return "Method returned list of games";

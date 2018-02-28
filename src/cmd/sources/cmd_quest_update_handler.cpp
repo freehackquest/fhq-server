@@ -44,7 +44,7 @@ bool CmdQuestUpdateHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdQuestUpdateHandler::inputs(){
+const std::vector<CmdInputDef> &CmdQuestUpdateHandler::inputs(){
 	return m_vInputs;
 };
 

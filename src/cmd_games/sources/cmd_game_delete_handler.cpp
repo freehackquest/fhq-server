@@ -29,7 +29,7 @@ bool CmdGameDeleteHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdGameDeleteHandler::inputs(){
+const std::vector<CmdInputDef> &CmdGameDeleteHandler::inputs(){
 	return m_vInputs;
 };
 

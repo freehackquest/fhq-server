@@ -26,7 +26,7 @@ bool CmdGetMapHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdGetMapHandler::inputs(){
+const std::vector<CmdInputDef> &CmdGetMapHandler::inputs(){
 	return m_vInputs;
 };
 

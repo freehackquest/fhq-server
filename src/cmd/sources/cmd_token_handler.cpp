@@ -28,7 +28,7 @@ bool CmdTokenHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdTokenHandler::inputs(){
+const std::vector<CmdInputDef> &CmdTokenHandler::inputs(){
 	return m_vInputs;
 };
 

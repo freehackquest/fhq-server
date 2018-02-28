@@ -34,7 +34,7 @@ bool CmdRegistrationHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdRegistrationHandler::inputs(){
+const std::vector<CmdInputDef> &CmdRegistrationHandler::inputs(){
 	return m_vInputs;
 };
 

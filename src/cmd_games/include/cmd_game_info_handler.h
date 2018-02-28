@@ -12,13 +12,13 @@ class CmdGameInfoHandler : public ICmdHandler {
         virtual bool accessUser();
         virtual bool accessTester();
         virtual bool accessAdmin();
-        virtual const QVector<CmdInputDef> &inputs();
+        virtual const std::vector<CmdInputDef> &inputs();
         virtual QString description();
         virtual QStringList errors();
         virtual void handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj);
 
     private:
-        QVector<CmdInputDef> m_vInputs;
+        std::vector<CmdInputDef> m_vInputs;
 };
 
 #endif // CMD_GAME_INFO_HANDLER_H

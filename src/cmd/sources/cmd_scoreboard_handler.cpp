@@ -28,7 +28,7 @@ bool CmdScoreboardHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdScoreboardHandler::inputs(){
+const std::vector<CmdInputDef> &CmdScoreboardHandler::inputs(){
 	return m_vInputs;
 };
 

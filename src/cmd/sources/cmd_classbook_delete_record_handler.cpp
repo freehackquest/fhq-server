@@ -27,7 +27,7 @@ bool CmdClassbookDeleteRecordHandler::accessAdmin(){
     return true;
 }
 
-const QVector<CmdInputDef> &CmdClassbookDeleteRecordHandler::inputs(){
+const std::vector<CmdInputDef> &CmdClassbookDeleteRecordHandler::inputs(){
     return m_vInputs;
 };
 

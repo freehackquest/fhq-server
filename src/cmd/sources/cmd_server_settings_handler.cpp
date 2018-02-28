@@ -25,7 +25,7 @@ bool CmdServerSettingsHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdServerSettingsHandler::inputs(){
+const std::vector<CmdInputDef> &CmdServerSettingsHandler::inputs(){
 	return m_vInputs;
 };
 

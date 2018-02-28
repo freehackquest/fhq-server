@@ -24,7 +24,7 @@ bool CmdApiHandler::accessAdmin(){
 	return true;
 }
 
-const QVector<CmdInputDef> &CmdApiHandler::inputs(){
+const std::vector<CmdInputDef> &CmdApiHandler::inputs(){
 	return m_vInputs;
 };
 
