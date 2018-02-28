@@ -6,13 +6,29 @@
 #include <map>
 
 extern std::map<std::string, IEmploy*> *g_pEmployees;
-extern void initEmployees();
+
+// RegistryEmploy
+
+template <typename T> class RegistryEmploy {
+public:
+    RegistryEmploy() {
+        if(g_pEmployees == NULL){
+            g_pEmployees = new std::map<std::string, IEmploy*>();
+        }
+
+        IEmploy *pEmploy = new T();
+        std::string sEmployName = T::getEmployName();
+        g_pEmployees->insert(std::pair<std::string, IEmploy*>(sEmployName,pEmploy));
+    }
+};
+
+// findEmploy
 
 template <class T> T* findEmploy() {
     // Log::err("findEmploy", "Find employ start");
-    if(g_pEmployees == NULL){
+    /*if(g_pEmployees == NULL){
         initEmployees();
-    }
+    }*/
     std::string sEmployName = T::getEmployName();
     // Log::err("findEmploy", "Find employ " + QString(sEmployName.c_str()));
     // Log::err("findEmploy", "Employees count: " + QString::number(g_pEmployees->size()));
@@ -32,5 +48,8 @@ template <class T> T* findEmploy() {
     }
     return pTEmploy;
 }
+
+
+
 
 #endif // EMPLOYEES_H

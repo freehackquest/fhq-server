@@ -19,9 +19,11 @@ void EmploySettings::test(){
 // ---------------------------------------------------------------------
 
 void EmploySettings::initSettings(IWebSocketServer *pWebSocketServer){
+    TAG = "MemoryCacheServerSettings";
+
     Log::info(TAG, "Start init settings");
     m_pWebSocketServer = pWebSocketServer;
-    TAG = "MemoryCacheServerSettings";
+
 
     QString sGroupProfile = "profile";
     addNewSetting(new ServerSettHelper(sGroupProfile, "profile_change_nick", true));

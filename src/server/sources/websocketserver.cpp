@@ -66,7 +66,6 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
     EmploySettings *pSettings = findEmploy<EmploySettings>();
     pSettings->initSettings(this);
 
-
 	{
 		// init memory cache server info
 		m_pMemoryCacheServerInfo = NULL;
