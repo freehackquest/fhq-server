@@ -19,13 +19,12 @@ LIBS = -lz
 RESOURCES = freehackquest-backend.qrc
 # INCLUDEPATH += $$[QT_INSTALL_HEADERS]/QtZlib
 
-INCLUDEPATH += backend/interfaces
-
 # 3rd party
 include(src/3rdParty/smtp/smtp.pri)
 include(src/3rdParty/quazip-0.7.3.pri)
 
 # other
+include(backend/interfaces/interfaces.pri)
 include(backend/employees/employees.pri)
 include(src/utils/utils.pri)
 include(src/cmd/cmd.pri)
