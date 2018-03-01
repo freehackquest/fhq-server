@@ -177,19 +177,23 @@ void WebSocketServer::processTextMessage(QString message) {
 
 	QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
 	QJsonObject jsonData = doc.object();
-	if(!jsonData.contains("cmd")){
+
+	ModelRequestData *pModelRequestData = new ModelRequestData(pClient, this, jsonData);
+
+	if(!pModelRequestData->hasCommand()){
 		this->sendMessageError(pClient, "error", "", Errors::NotFound("requare parameter 'cmd'"));
+		// pModelRequestData->sendError(Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
 		return;
 	}
-    std::string cmd = jsonData["cmd"].toString().toStdString();
 	
-	if(!jsonData.contains("m")){
+	std::string cmd = pModelRequestData->command();
+	
+	if(!pModelRequestData->hasM()){
 		this->sendMessageError(pClient, cmd, "", Errors::NotFound("requare parameter 'm' - messageid"));
 		return;
 	}
 	
-	QString m = jsonData["m"].toString();
-	ModelRequestData *pModelRequestData = new ModelRequestData(pClient, this, m.toStdString(), jsonData);
+	QString m = QString(pModelRequestData->m().c_str());
 
 	if(!m_mapCmdHandlers.contains(cmd)){
         Log::warn(TAG, "Unknown command: " + QString(cmd.c_str()));

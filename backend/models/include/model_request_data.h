@@ -5,17 +5,21 @@
 
 class ModelRequestData {
     public:
-		ModelRequestData(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, std::string m, QJsonObject obj);
+		ModelRequestData(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject jsonData);
 		QWebSocket *client();
 		IWebSocketServer *server();
 		QJsonObject data();
 		std::string m();
-
+		bool hasM();
+		std::string command();
+		bool hasCommand();
+		
 	private:
 		QWebSocket *m_pClient;
 		IWebSocketServer *m_pServer;
-		std::string m_sMessage;
 		QJsonObject m_jsonObject;
+		std::string m_sMessageId;
+		std::string m_sCommand;
 };
 
 #endif // MODEL_REQUEST_DATA_H
