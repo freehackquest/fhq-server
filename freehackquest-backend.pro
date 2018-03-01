@@ -26,6 +26,7 @@ include(src/3rdParty/quazip-0.7.3.pri)
 # other
 include(backend/interfaces/interfaces.pri)
 include(backend/employees/employees.pri)
+include(backend/models/models.pri)
 include(src/utils/utils.pri)
 include(src/cmd/cmd.pri)
 include(src/cmd_users/cmd_users.pri)

@@ -20,6 +20,7 @@
 #include <log.h>
 
 #include <employ_settings.h>
+#include <model_request_data.h>
 
 // QT_USE_NAMESPACE
 
@@ -188,7 +189,8 @@ void WebSocketServer::processTextMessage(QString message) {
 	}
 	
 	QString m = jsonData["m"].toString();
-	
+	ModelRequestData *pModelRequestData = new ModelRequestData(pClient, this, m.toStdString(), jsonData);
+
 	if(!m_mapCmdHandlers.contains(cmd)){
         Log::warn(TAG, "Unknown command: " + QString(cmd.c_str()));
         this->sendMessageError(pClient, cmd, m, Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));

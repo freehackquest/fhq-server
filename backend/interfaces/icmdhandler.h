@@ -6,6 +6,7 @@
 #include <QVector>
 #include <iwebsocketserver.h>
 #include <cmd_input_def.h>
+#include <model_request_data.h>
 
 class ICmdHandler {
 	public:
