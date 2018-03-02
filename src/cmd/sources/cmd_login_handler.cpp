@@ -1,7 +1,7 @@
 #include <cmd_login_handler.h>
 #include <runtasks.h>
 #include <log.h>
-#include <usertoken.h>
+#include <model_usertoken.h>
 #include <QCryptographicHash>
 #include <QUuid>
 
@@ -106,7 +106,7 @@ void CmdLoginHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
         jsonData["token"] = token;
         jsonData["user"] = user;
 
-        pWebSocketServer->setUserToken(pClient, new UserToken(user_token));
+        pWebSocketServer->setUserToken(pClient, new ModelUserToken(user_token));
 
         // update user location
         QString lastip = pClient->peerAddress().toString();

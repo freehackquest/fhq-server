@@ -1,24 +1,24 @@
-#include <usertoken.h>
+#include <model_usertoken.h>
 #include <log.h>
 #include <QJsonDocument>
 #include <QJsonObject>
 
-UserToken::UserToken(){
-	TAG = "UserToken";
+ModelUserToken::ModelUserToken(){
+	TAG = "ModelUserToken";
 };
 
-UserToken::UserToken(QJsonObject obj){
+ModelUserToken::ModelUserToken(QJsonObject obj){
 	this->fillFromJson(obj);
 	TAG = "UserToken";
 };
 
-UserToken::UserToken(QString json){
+ModelUserToken::ModelUserToken(QString json){
 	QJsonDocument doc = QJsonDocument::fromJson(json.toUtf8());
 	this->fillFromJson(doc.object());
 	TAG = "UserToken";
 };
 
-void UserToken::fillFromJson(QJsonObject obj){
+void ModelUserToken::fillFromJson(QJsonObject obj){
 	
 	if(obj.contains("user")){
 		QJsonObject user = obj["user"].toObject();
@@ -42,35 +42,35 @@ void UserToken::fillFromJson(QJsonObject obj){
 	}
 }
 
-bool UserToken::isAdmin(){
+bool ModelUserToken::isAdmin(){
 	return m_sRole == "admin";
 }
 
-bool UserToken::isUser(){
+bool ModelUserToken::isUser(){
 	return m_sRole == "user";
 }
 
-bool UserToken::isTester(){
+bool ModelUserToken::isTester(){
 	return m_sRole == "tester";
 }
 
-bool UserToken::hasRole(){
+bool ModelUserToken::hasRole(){
 	return m_sRole != "";
 }
 
-QString UserToken::nick(){
+QString ModelUserToken::nick(){
 	return m_sNick;
 }
 
-void UserToken::setNick(QString sNick){
+void ModelUserToken::setNick(QString sNick){
     m_sNick = sNick;
 }
 
-int UserToken::userid(){
+int ModelUserToken::userid(){
 	return m_nUserID;
 }
 
-QString UserToken::email(){
+QString ModelUserToken::email(){
 	return m_sEmail;
 }
 

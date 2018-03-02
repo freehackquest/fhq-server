@@ -3,6 +3,7 @@
 #include <QJsonObject>
 #include <log.h>
 
+
 DatabaseConnection::DatabaseConnection(QString sNameConnection){
 	m_pDatabase = NULL;
 	m_sNameConnection = sNameConnection;
@@ -36,7 +37,7 @@ void DatabaseConnection::setNameConnection(QString sNameConnection){
 
 // ---------------------------------------------------------------------
 
-bool DatabaseConnection::connect(ServerConfig *pServerConfig){
+bool DatabaseConnection::connect(ModelServerConfig *pServerConfig){
 	m_pDatabase = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL", m_sNameConnection));
 	m_pDatabase->setHostName(pServerConfig->databaseHost());
 	m_pDatabase->setDatabaseName(pServerConfig->databaseName());

@@ -1,5 +1,5 @@
-#ifndef SERVER_CONFIG_H
-#define SERVER_CONFIG_H
+#ifndef MODEL_SERVER_CONFIG_H
+#define MODEL_SERVER_CONFIG_H
 
 #include <iserver.h>
 
@@ -7,9 +7,9 @@
 #include <QJsonObject>
 #include <QSettings>
 
-class ServerConfig {
+class ModelServerConfig {
 	public:
-		ServerConfig();
+		ModelServerConfig();
 
 		bool load(); 
 
@@ -56,4 +56,4 @@ class ServerConfig {
 		
 };
 
-#endif // SERVER_CONFIG_H
+#endif // MODEL_SERVER_CONFIG_H

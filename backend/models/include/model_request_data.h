@@ -13,7 +13,7 @@ class ModelRequestData {
 		bool hasM();
 		std::string command();
 		bool hasCommand();
-		
+
 	private:
 		QWebSocket *m_pClient;
 		IWebSocketServer *m_pServer;

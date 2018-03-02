@@ -1,10 +1,10 @@
-#include <server_config.h>
+#include <model_server_config.h>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFile>
 #include <log.h>
 
-ServerConfig::ServerConfig(){
+ModelServerConfig::ModelServerConfig(){
 	// default settings
 	TAG = "ServerConfig";
 
@@ -44,7 +44,7 @@ ServerConfig::ServerConfig(){
 
 // ---------------------------------------------------------------------
 
-bool ServerConfig::load(){
+bool ModelServerConfig::load(){
     if(m_sFilename == ""){
         Log::err(TAG, "Not found config file");
 		return false;
@@ -76,7 +76,7 @@ bool ServerConfig::load(){
 
 // ---------------------------------------------------------------------
 
-QString ServerConfig::readStringFromSettings(QSettings &sett, QString settName, QString defaultValue){
+QString ModelServerConfig::readStringFromSettings(QSettings &sett, QString settName, QString defaultValue){
 	QString sResult = defaultValue;
 	if(sett.contains(settName)){
 		sResult = sett.value(settName, sResult).toString();
@@ -88,7 +88,7 @@ QString ServerConfig::readStringFromSettings(QSettings &sett, QString settName, 
 
 // ---------------------------------------------------------------------
 
-int ServerConfig::readIntFromSettings(QSettings &sett, QString settName, int defaultValue){
+int ModelServerConfig::readIntFromSettings(QSettings &sett, QString settName, int defaultValue){
 	int nResult = defaultValue;
 	if(sett.contains(settName)){
 		nResult = sett.value(settName, nResult).toInt();
@@ -100,7 +100,7 @@ int ServerConfig::readIntFromSettings(QSettings &sett, QString settName, int def
 
 // ---------------------------------------------------------------------
 
-bool ServerConfig::readBoolFromSettings(QSettings &sett, QString settName, bool defaultValue){
+bool ModelServerConfig::readBoolFromSettings(QSettings &sett, QString settName, bool defaultValue){
 	bool bResult = defaultValue;
 	if(sett.contains(settName)){
 		bResult = sett.value(settName, bResult).toBool();
@@ -112,67 +112,67 @@ bool ServerConfig::readBoolFromSettings(QSettings &sett, QString settName, bool 
 
 // ---------------------------------------------------------------------
 
-QString ServerConfig::databaseHost(){
+QString ModelServerConfig::databaseHost(){
 	return m_sDatabase_host;
 }
 
 // ---------------------------------------------------------------------
 
-QString ServerConfig::databaseName(){
+QString ModelServerConfig::databaseName(){
 	return m_sDatabase_name;
 }
 
 // ---------------------------------------------------------------------
 
-QString ServerConfig::databaseUser(){
+QString ModelServerConfig::databaseUser(){
 	return m_sDatabase_user;
 }
 
 // ---------------------------------------------------------------------
 
-QString ServerConfig::databasePassword(){
+QString ModelServerConfig::databasePassword(){
 	return m_sDatabase_password;
 }
 
 // ---------------------------------------------------------------------
 
-bool ServerConfig::databaseUseMySQL(){
+bool ModelServerConfig::databaseUseMySQL(){
 	return m_bDatabase_usemysql;
 }
 
 // ---------------------------------------------------------------------
 
-QString ServerConfig::databasePath(){
+QString ModelServerConfig::databasePath(){
 	return m_sDatabase_path;
 }
 
 // ---------------------------------------------------------------------
 
-bool ServerConfig::serverSslOn(){
+bool ModelServerConfig::serverSslOn(){
 	return m_bServer_ssl_on;
 }
 
 // ---------------------------------------------------------------------
 
-int ServerConfig::serverPort(){
+int ModelServerConfig::serverPort(){
 	return m_nServer_port;
 }
 
 // ---------------------------------------------------------------------
 
-int ServerConfig::serverSslPort(){
+int ModelServerConfig::serverSslPort(){
 	return m_nServer_ssl_port;
 }
 
 // ---------------------------------------------------------------------
 
-QString ServerConfig::serverSslKeyFile(){
+QString ModelServerConfig::serverSslKeyFile(){
 	return m_sServer_ssl_key_file;
 }
 
 // ---------------------------------------------------------------------
 
-QString ServerConfig::serverSslCertFile(){
+QString ModelServerConfig::serverSslCertFile(){
 	return m_sServer_ssl_cert_file;
 }
 

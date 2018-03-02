@@ -1,7 +1,7 @@
 #include <cmd_token_handler.h>
 #include <runtasks.h>
 #include <log.h>
-#include <usertoken.h>
+#include <model_usertoken.h>
 
 CmdTokenHandler::CmdTokenHandler(){
     TAG = "CmdTokenHandler";
@@ -67,7 +67,7 @@ void CmdTokenHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 		QString start_date = record.value("start_date").toString();
 		QString end_date = record.value("end_date").toString();
 		QString lastip = pClient->peerAddress().toString();
-		pWebSocketServer->setUserToken(pClient, new UserToken(data));
+		pWebSocketServer->setUserToken(pClient, new ModelUserToken(data));
         Log::info(TAG, "userid: " + QString::number(userid));
         // TODO redesign this
         RunTasks::UpdateUserLocation(pWebSocketServer, userid, lastip);

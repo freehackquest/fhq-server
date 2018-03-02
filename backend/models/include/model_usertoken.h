@@ -1,16 +1,16 @@
-#ifndef USERTOKEN_H
-#define USERTOKEN_H
+#ifndef MODEL_USERTOKEN_H
+#define MODEL_USERTOKEN_H
 
 #include <iserver.h>
 
 #include <QString>
 #include <QJsonObject>
 
-class UserToken : public IUserToken {
+class ModelUserToken : public IUserToken {
 	public:
-		UserToken();
-		UserToken(QJsonObject obj);
-		UserToken(QString json);
+		ModelUserToken();
+		ModelUserToken(QJsonObject obj);
+		ModelUserToken(QString json);
 
 		// IUserToken
 		virtual void fillFromJson(QJsonObject obj);
@@ -30,4 +30,4 @@ class UserToken : public IUserToken {
 		QString TAG;
 };
 
-#endif // USERTOKEN_H
+#endif // MODEL_USERTOKEN_H
