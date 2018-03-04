@@ -20,8 +20,8 @@ RESOURCES = freehackquest-backend.qrc
 # INCLUDEPATH += $$[QT_INSTALL_HEADERS]/QtZlib
 
 # 3rd party
-include(src/3rdParty/smtp/smtp.pri)
-include(src/3rdParty/quazip-0.7.3.pri)
+include(backend/3rdParty/smtp/smtp.pri)
+include(backend/3rdParty/quazip-0.7.3.pri)
 
 # other
 include(backend/interfaces/interfaces.pri)
