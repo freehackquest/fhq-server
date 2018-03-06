@@ -1,5 +1,5 @@
-#ifndef MODEL_REQUEST_DATA_H
-#define MODEL_REQUEST_DATA_H
+#ifndef MODEL_REQUEST_H
+#define MODEL_REQUEST_H
 
 #include <iwebsocketserver.h>
 
@@ -25,4 +25,4 @@ class ModelRequest {
 		std::string m_sCommand;
 };
 
-#endif // MODEL_REQUEST_DATA_H
+#endif // MODEL_REQUEST_H
