@@ -20,7 +20,7 @@
 #include <log.h>
 
 #include <employ_settings.h>
-#include <model_request_data.h>
+#include <model_request.h>
 
 // QT_USE_NAMESPACE
 
@@ -176,28 +176,28 @@ void WebSocketServer::processTextMessage(QString message) {
     Log::info(TAG, "[WS] <<< " + message);
 
 	QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
-	QJsonObject jsonData = doc.object();
+    QJsonObject jsonRequest = doc.object();
 
-	ModelRequestData *pModelRequestData = new ModelRequestData(pClient, this, jsonData);
+    ModelRequest *pModelRequest = new ModelRequest(pClient, this, jsonRequest);
 
-	if(!pModelRequestData->hasCommand()){
+    if(!pModelRequest->hasCommand()){
 		this->sendMessageError(pClient, "error", "", Errors::NotFound("requare parameter 'cmd'"));
 		// pModelRequestData->sendError(Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
 		return;
 	}
 	
-	std::string cmd = pModelRequestData->command();
+    std::string cmd = pModelRequest->command();
 	
-	if(!pModelRequestData->hasM()){
+    if(!pModelRequest->hasM()){
 		this->sendMessageError(pClient, cmd, "", Errors::NotFound("requare parameter 'm' - messageid"));
 		return;
 	}
 	
-	QString m = QString(pModelRequestData->m().c_str());
+    // QString m = QString(pModelRequest->m().c_str());
 
 	if(!m_mapCmdHandlers.contains(cmd)){
         Log::warn(TAG, "Unknown command: " + QString(cmd.c_str()));
-        this->sendMessageError(pClient, cmd, m, Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
+        pModelRequest->sendMessageError(cmd, Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
 		return;
 	}
 
@@ -211,35 +211,35 @@ void WebSocketServer::processTextMessage(QString message) {
 	if(!pCmdHandler->accessUnauthorized()){
 		IUserToken *pUserToken = getUserToken(pClient);
 		if(pUserToken == NULL){
-			this->sendMessageError(pClient, pCmdHandler->cmd(), m, Errors::NotAuthorizedRequest());
+            pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::NotAuthorizedRequest());
 			return;
 		}
 		
 		// access user
 		if(pUserToken->isUser() && !pCmdHandler->accessUser()){
-			this->sendMessageError(pClient, pCmdHandler->cmd(), m, Errors::AccessDenyForUser());
+            pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::AccessDenyForUser());
 			return;
 		}
 		
 		// access tester
 		if(pUserToken->isTester() && !pCmdHandler->accessTester()){
-			this->sendMessageError(pClient, pCmdHandler->cmd(), m, Errors::AccessDenyForTester());
+            pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::AccessDenyForTester());
 			return;
 		}
 		
 		// access admin
 		if(pUserToken->isAdmin() && !pCmdHandler->accessAdmin()){
-			this->sendMessageError(pClient, pCmdHandler->cmd(), m, Errors::AccessDenyForAdmin());
+            pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::AccessDenyForAdmin());
 			return;
 		}
 	}
 
 	// allow access
 	Error error = Errors::NoneError();
-	if(this->validateInputParameters(error, pCmdHandler, jsonData)){
-		pCmdHandler->handle(pClient, this, m, jsonData);
+    if(this->validateInputParameters(error, pCmdHandler, jsonRequest)){
+        pCmdHandler->handle(pModelRequest);
 	}else{
-		this->sendMessageError(pClient, pCmdHandler->cmd(), m, error);
+        pModelRequest->sendMessageError(pCmdHandler->cmd(), error);
 		return;
 	}
 }
@@ -299,13 +299,13 @@ void WebSocketServer::sendMessage(QWebSocket *pClient, QJsonObject obj){
 // ---------------------------------------------------------------------
 
 void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &cmd, QString m, Error error){
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd.c_str()));
-	jsonData["m"] = QJsonValue(m);
-	jsonData["result"] = QJsonValue("FAIL");
-	jsonData["error"] = QJsonValue(error.message());
-	jsonData["code"] = QJsonValue(error.codeError());
-	this->sendMessage(pClient, jsonData);
+    QJsonObject jsonResponse;
+    jsonResponse["cmd"] = QJsonValue(QString(cmd.c_str()));
+    jsonResponse["m"] = QJsonValue(m);
+    jsonResponse["result"] = QJsonValue("FAIL");
+    jsonResponse["error"] = QJsonValue(error.message());
+    jsonResponse["code"] = QJsonValue(error.codeError());
+    this->sendMessage(pClient, jsonResponse);
 	return;
 }
 
@@ -412,24 +412,24 @@ void WebSocketServer::exportApi(QJsonObject &result){
 
 // ---------------------------------------------------------------------
 
-bool WebSocketServer::validateInputParameters(Error &error, ICmdHandler *pCmdHandler, QJsonObject &jsonData){
+bool WebSocketServer::validateInputParameters(Error &error, ICmdHandler *pCmdHandler, QJsonObject &jsonRequest){
     const std::vector<CmdInputDef> vInputs = pCmdHandler->inputs();
     for(unsigned int i = 0; i < vInputs.size(); i++){
 		CmdInputDef inDef = vInputs[i];
 		QString sParamName = inDef.getName();
-		if(inDef.isRequired() && !jsonData.contains(sParamName)){
+        if(inDef.isRequired() && !jsonRequest.contains(sParamName)){
 			error = Errors::ParamExpected(sParamName);
 			return false;
 		}
 		
-		if(jsonData.contains(sParamName)){
+        if(jsonRequest.contains(sParamName)){
 			if(inDef.isInteger()){
-				QJsonValueRef vParam = jsonData[sParamName];
+                QJsonValueRef vParam = jsonRequest[sParamName];
 				if(!vParam.isDouble()){
 					error = Errors::ParamMustBeInteger(sParamName);
 					return false;
 				}
-				int val = jsonData[sParamName].toInt();
+                int val = jsonRequest[sParamName].toInt();
 				if(inDef.isMinVal() && val < inDef.getMinVal()){
 					error = Errors::ParamMustBeMoreThen(sParamName, inDef.getMinVal());
 					return false;
@@ -441,7 +441,7 @@ bool WebSocketServer::validateInputParameters(Error &error, ICmdHandler *pCmdHan
 			}
 			
 			if(inDef.isEnum()){
-				QString val = jsonData[sParamName].toString().trimmed();
+                QString val = jsonRequest[sParamName].toString().trimmed();
 				QStringList eList = inDef.getEnumList();
 				if(!eList.contains(val)){
 					error = Errors::ParamExpectedValueOneFrom(sParamName,eList);
@@ -450,7 +450,7 @@ bool WebSocketServer::validateInputParameters(Error &error, ICmdHandler *pCmdHan
 			}
 			
 			if(inDef.isUUID()){
-				QString val = jsonData[sParamName].toString();
+                QString val = jsonRequest[sParamName].toString();
 				QRegExp rx("[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}");
 				if(!rx.isValid()){
 					Log::err(TAG, "validateInputParameters, " + rx.errorString());

@@ -40,34 +40,32 @@ QStringList CmdClassbookProposalDeleteRecordHandler::errors(){
     return list;
 }
 
-void CmdClassbookProposalDeleteRecordHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdClassbookProposalDeleteRecordHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 
     QSqlQuery query(db);
-    int classbook_proposal_id = obj["classbook_proposal_id"].toInt();
+    int classbook_proposal_id = jsonRequest["classbook_proposal_id"].toInt();
     query.prepare("SELECT id FROM classbook_proposal WHERE id = :classbook_proposal_id");
-    query.bindValue(":classbook_proposal_id", obj["classbook_proposal_id"].toInt());
+    query.bindValue(":classbook_proposal_id", jsonRequest["classbook_proposal_id"].toInt());
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
     if(!query.next()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This proposal doesn't exist"));
+        pRequest->sendMessageError(cmd(), Error(404, "This proposal doesn't exist"));
         return;
     }
     query.prepare("DELETE FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", classbook_proposal_id);
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
 
-    QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonData["m"] = QJsonValue(m);
-    jsonData["result"] = QJsonValue("DONE");
-    pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 

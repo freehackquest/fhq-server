@@ -4,9 +4,9 @@
 #include <QString>
 #include <QJsonObject>
 #include <QVector>
-#include <iwebsocketserver.h>
+#include <model_request.h>
 #include <cmd_input_def.h>
-#include <model_request_data.h>
+
 
 class ICmdHandler {
 	public:
@@ -18,7 +18,7 @@ class ICmdHandler {
         virtual QString description() = 0;
         virtual const std::vector<CmdInputDef> &inputs() = 0;
         virtual QStringList errors() = 0;
-        virtual void handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj) = 0;
+        virtual void handle(ModelRequest *pRequest) = 0;
 };
 
 #endif // INTERFACES_ICMDHANDLER_H

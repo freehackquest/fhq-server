@@ -47,16 +47,15 @@ QStringList CmdCreatePublicEventHandler::errors(){
 	return list;
 }
 
-void CmdCreatePublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdCreatePublicEventHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-
-	QString type = obj["type"].toString().trimmed();
-	QString message = obj["message"].toString().trimmed();
+    QString type = jsonRequest["type"].toString().trimmed();
+    QString message = jsonRequest["message"].toString().trimmed();
 	
 
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 	QSqlQuery query(db);
 	query.prepare("INSERT INTO public_events(type,message,dt) VALUES(:type,:message,NOW())");
 	query.bindValue(":type", type);
@@ -65,7 +64,5 @@ void CmdCreatePublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *
         // TODO database error
     }
 
-	jsonData["result"] = QJsonValue("DONE");
-    jsonData["m"] = QJsonValue(m);
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

@@ -38,9 +38,11 @@ QStringList CmdClassbookHandler::errors(){
 	return list;
 }
 
-void CmdClassbookHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
+void CmdClassbookHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 
 	QJsonArray contents;
 
@@ -62,10 +64,6 @@ void CmdClassbookHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
 		contents.push_back(jsonItem);
 	}
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["result"] = QJsonValue("DONE");
-    jsonData["m"] = QJsonValue(m);
-	jsonData["items"] = contents;
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["items"] = contents;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

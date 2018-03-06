@@ -39,17 +39,22 @@ QStringList CmdQuestsSubjectsHandler::errors(){
 	return list;
 }
 
-void CmdQuestsSubjectsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
+void CmdQuestsSubjectsHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+
     QJsonArray subjects;
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
+
 	QSqlQuery query(db);
     query.prepare("SELECT subject, COUNT(*) as cnt FROM `quest` WHERE quest.state = :state GROUP BY subject");
     query.bindValue(":state", "open");
 
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
+
 	while (query.next()) {
 		QSqlRecord record = query.record();
         QJsonObject subject;
@@ -58,11 +63,7 @@ void CmdQuestsSubjectsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWe
         subjects.push_back(subject);
 	}
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-    jsonData["data"] = subjects;
-		
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["data"] = subjects;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+
 }

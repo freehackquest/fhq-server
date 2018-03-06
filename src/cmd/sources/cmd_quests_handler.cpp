@@ -38,18 +38,20 @@ QStringList CmdQuestsHandler::errors(){
 	return list;
 }
 
-void CmdQuestsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdQuestsHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
     int nUserID = 0;
-    IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
+    IUserToken *pUserToken = pRequest->userToken();
     if(pUserToken != NULL){
         nUserID = pUserToken->userid();
     }
 
-    QString sSubject = obj["subject"].toString();
+    QString sSubject = jsonRequest["subject"].toString();
 
     QJsonArray quests;
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 	QSqlQuery query(db);
 
     query.prepare(""
@@ -76,7 +78,7 @@ void CmdQuestsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketS
     query.bindValue(":subject", sSubject);
 
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
 	while (query.next()) {
@@ -96,12 +98,6 @@ void CmdQuestsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketS
         quests.push_back(quest);
 	}
 
-
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-    jsonData["data"] = quests;
-		
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["data"] = quests;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

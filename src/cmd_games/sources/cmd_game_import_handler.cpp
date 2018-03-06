@@ -41,14 +41,13 @@ QStringList CmdGameImportHandler::errors(){
 	return list;
 }
 
-void CmdGameImportHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
-    pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotImplementedYet());
+void CmdGameImportHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+
+    pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
     return;
 
     // TODO
-    QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonData["result"] = QJsonValue("DONE");
-    jsonData["m"] = QJsonValue(m);
-    pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

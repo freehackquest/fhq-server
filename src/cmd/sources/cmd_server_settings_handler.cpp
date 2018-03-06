@@ -39,22 +39,12 @@ QStringList CmdServerSettingsHandler::errors(){
 	return list;
 }
 
-void CmdServerSettingsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
+void CmdServerSettingsHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 	
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
-    /*IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serversettings");
-	if(pMemoryCache == NULL){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
-		return;
-	}
-
-    MemoryCacheServerSettings *pMemoryCacheServerSettings = dynamic_cast<MemoryCacheServerSettings*>(pMemoryCache);
-    */
-    jsonData["data"] = pSettings->toJsonArray(); // TODO how much db connections and time
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["data"] = pSettings->toJsonArray(); // TODO how much db connections and time
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

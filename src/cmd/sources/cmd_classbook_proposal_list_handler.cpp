@@ -42,9 +42,12 @@ QStringList CmdClassbookProposalListHandler::errors(){
     return list;
 }
 
-void CmdClassbookProposalListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
+
     QSqlQuery query(db);
 
     QJsonObject item;
@@ -54,23 +57,23 @@ void CmdClassbookProposalListHandler::handle(QWebSocket *pClient, IWebSocketServ
     QMap<QString, QJsonValue> mapFilter;
 
     //checkout and validation of classbookid
-    if(obj.contains("classbookid")){
+    if(jsonRequest.contains("classbookid")){
         query.prepare("SELECT id FROM classbook WHERE id = :classbookid");
-        query.bindValue(":classbookid", obj["classbookid"].toInt());
+        query.bindValue(":classbookid", jsonRequest["classbookid"].toInt());
         if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
         if(!query.next()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This article doesn't exist"));
+            pRequest->sendMessageError(cmd(), Error(404, "This article doesn't exist"));
             return;
         }
-        mapFilter.insert("classbookid", obj["classbookid"].toInt());
+        mapFilter.insert("classbookid", jsonRequest["classbookid"].toInt());
     }
 
     //checkout of lang and generation of query's bone
-    if(obj.contains("lang")){
-        mapFilter.insert("lang", obj["lang"].toString().trimmed());
+    if(jsonRequest.contains("lang")){
+        mapFilter.insert("lang", jsonRequest["lang"].toString().trimmed());
         sQuery = "SELECT id, name FROM classbook_proposal";
     }
     else sQuery = "SELECT id, name, lang FROM classbook_proposal";
@@ -94,26 +97,22 @@ void CmdClassbookProposalListHandler::handle(QWebSocket *pClient, IWebSocketServ
             query.bindValue(":" + key, v.value());
     }
     if (!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
 
     while (query.next()) {
         QSqlRecord record = query.record();
         item["id"] = record.value("id").toInt();
-        item["classbookid"] = obj["classbookid"].toInt();
-        if(obj.contains("lang")){
-            item["lang"] = obj["lang"].toString().trimmed();
+        item["classbookid"] = jsonRequest["classbookid"].toInt();
+        if(jsonRequest.contains("lang")){
+            item["lang"] = jsonRequest["lang"].toString().trimmed();
         }
         else item["lang"] = record.value("lang").toString().trimmed();
         item["name"] = record.value("name").toString();
         data.push_back(item);
     }
 
-    QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonData["m"] = QJsonValue(m);
-    jsonData["result"] = QJsonValue("DONE");
-    jsonData["data"] = data;
-    pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["data"] = data;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

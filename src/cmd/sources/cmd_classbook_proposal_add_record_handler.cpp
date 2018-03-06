@@ -45,17 +45,19 @@ QStringList CmdClassbookProposalAddRecordHandler::errors(){
     return list;
 }
 
-void CmdClassbookProposalAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 
     QJsonObject data;
 
     QSqlQuery query(db);
-    int classbookid = obj["classbookid"].toInt();
-    QString lang = obj["lang"].toString().trimmed();
-    QString name = obj["name"].toString().trimmed();
-    QString content = obj["content"].toString().trimmed();
+    int classbookid = jsonRequest["classbookid"].toInt();
+    QString lang = jsonRequest["lang"].toString().trimmed();
+    QString name = jsonRequest["name"].toString().trimmed();
+    QString content = jsonRequest["content"].toString().trimmed();
 
     //obtain a current version of classbook name and content
     if(lang=="en"){
@@ -67,11 +69,11 @@ void CmdClassbookProposalAddRecordHandler::handle(QWebSocket *pClient, IWebSocke
         query.bindValue(":lang", lang);
     }
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
     if(!query.next()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This article or localization doesn't exist"));
+        pRequest->sendMessageError(cmd(), Error(404, "This article or localization doesn't exist"));
         return;
     }
     QSqlRecord record = query.record();
@@ -115,7 +117,7 @@ void CmdClassbookProposalAddRecordHandler::handle(QWebSocket *pClient, IWebSocke
     query.bindValue(":content_before", content_before);
     query.bindValue(":md5_content", md5_content);
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
     int rowid = query.lastInsertId().toInt();
@@ -128,11 +130,8 @@ void CmdClassbookProposalAddRecordHandler::handle(QWebSocket *pClient, IWebSocke
     data["content_before"] = content_before;
     data["md5_content"] = md5_content;
 
-    QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonData["m"] = QJsonValue(m);
-    jsonData["result"] = QJsonValue("DONE");
-    jsonData["data"] = data;
-    pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["data"] = data;
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 

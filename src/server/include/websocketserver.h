@@ -63,7 +63,7 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		void onSslErrors(const QList<QSslError> &errors);
 
 	private:
-		bool validateInputParameters(Error &error, ICmdHandler *pCmdHandler, QJsonObject &jsonData);
+        bool validateInputParameters(Error &error, ICmdHandler *pCmdHandler, QJsonObject &jsonRequest);
 		
 		QWebSocketServer *m_pWebSocketServer;
 		QWebSocketServer *m_pWebSocketServerSSL;

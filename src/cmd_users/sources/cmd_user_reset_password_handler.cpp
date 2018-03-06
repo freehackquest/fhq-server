@@ -1,7 +1,7 @@
 #include <cmd_user_reset_password_handler.h>
 #include <runtasks.h>
 #include <log.h>
-#include <usertoken.h>
+#include <model_usertoken.h>
 #include <QCryptographicHash>
 #include <QUuid>
 #include <QRegularExpression>
@@ -46,28 +46,28 @@ QStringList CmdUserResetPasswordHandler::errors(){
 	return list;
 }
 
-void CmdUserResetPasswordHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
+void CmdUserResetPasswordHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 	
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
     QRegularExpression regexEmail("^[0-9a-zA-Z]{1}[0-9a-zA-Z-._]*[0-9a-zA-Z]{1}@[0-9a-zA-Z]{1}[-.0-9a-zA-Z]*[0-9a-zA-Z]{1}\\.[a-zA-Z]{2,6}$");
-    QString sEmail = obj["email"].toString();
+    QString sEmail = jsonRequest["email"].toString();
 
     if(!regexEmail.match(sEmail).hasMatch()){
         Log::err(TAG, "Invalid email format " + sEmail);
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(400, "Expected email format"));
+        pRequest->sendMessageError(cmd(), Error(400, "Expected email format"));
         return;
     }
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
     QSqlQuery query(db);
     query.prepare("SELECT * FROM users WHERE email = :email");
     query.bindValue(":email", sEmail);
     if(!query.exec()){
         Log::err(TAG, query.lastError().text());
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
     int nUserID = 0;
@@ -78,7 +78,7 @@ void CmdUserResetPasswordHandler::handle(QWebSocket *pClient, IWebSocketServer *
         sNick = record.value("nick").toString().toHtmlEscaped();
     }else{
         Log::err(TAG, "User not found" + sEmail);
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "This email not exists"));
+        pRequest->sendMessageError(cmd(), Error(403, "This email not exists"));
         return;
     }
 
@@ -104,11 +104,11 @@ void CmdUserResetPasswordHandler::handle(QWebSocket *pClient, IWebSocketServer *
     query_update.bindValue(":email", sEmail);
 
     if(!query_update.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query_update.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query_update.lastError().text()));
         return;
     }
 
-    RunTasks::AddPublicEvents(pWebSocketServer, "users", "User comeback #" + QString::number(nUserID) + "  " + sNick);
+    RunTasks::AddPublicEvents(pRequest->server(), "users", "User comeback #" + QString::number(nUserID) + "  " + sNick);
 
     // TODO move to tasks
     QString sMailHost = pSettings->getSettString("mail_host");
@@ -140,24 +140,21 @@ void CmdUserResetPasswordHandler::handle(QWebSocket *pClient, IWebSocketServer *
 
     // Now we can send the mail
     if (!smtp.connectToHost()) {
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, "[MAIL] Failed to connect to host!"));
+        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to connect to host!"));
         return;
     }
 
     if (!smtp.login()) {
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, "[MAIL] Failed to login!"));
+        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to login!"));
         return;
     }
 
     if (!smtp.sendMail(message)) {
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, "[MAIL] Failed to send mail!"));
+        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to send mail!"));
         return;
     }
     smtp.quit();
 
 
-
-    jsonData["result"] = QJsonValue("DONE");
-    jsonData["m"] = QJsonValue(m);
-    pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

@@ -1,18 +1,21 @@
 #ifndef MODEL_REQUEST_DATA_H
 #define MODEL_REQUEST_DATA_H
 
-#include <iserver.h>
+#include <iwebsocketserver.h>
 
-class ModelRequestData {
+class ModelRequest {
     public:
-		ModelRequestData(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject jsonData);
+        ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject jsonData);
 		QWebSocket *client();
 		IWebSocketServer *server();
+        IUserToken *userToken();
 		QJsonObject data();
 		std::string m();
 		bool hasM();
 		std::string command();
 		bool hasCommand();
+        void sendMessageError(const std::string &cmd, Error error);
+        void sendMessageSuccess(std::string cmd, QJsonObject jsonResponse);
 
 	private:
 		QWebSocket *m_pClient;

@@ -41,27 +41,25 @@ QStringList CmdServerInfoHandler::errors(){
 	return list;
 }
 
-void CmdServerInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
+void CmdServerInfoHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
-    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonResponse["m"] = QJsonValue(m);
-    QJsonObject jsonData;
 
     QJsonObject jsonRequestStatistics;
-	IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serverinfo");
+    IMemoryCache *pMemoryCache = pRequest->server()->findMemoryCache("serverinfo");
 	if(pMemoryCache == NULL){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
+        pRequest->sendMessageError(cmd(), Errors::InternalServerError());
 		return;
 	}
 
 	MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
     jsonRequestStatistics = pMemoryCacheServerInfo->toJsonObject(); // TODO how much db connections and time
 
-    jsonData["request_statistics"] = jsonRequestStatistics;
-    jsonData["server_started"] = pMemoryCacheServerInfo->getServerStart().toString(Qt::ISODate);
+    jsonResponse["request_statistics"] = jsonRequestStatistics;
+    jsonResponse["server_started"] = pMemoryCacheServerInfo->getServerStart().toString(Qt::ISODate);
     qint64 updatime = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
     updatime = updatime - pMemoryCacheServerInfo->getServerStart().toMSecsSinceEpoch();
-    jsonData["server_uptime_sec"] = updatime/1000;
+    jsonResponse["server_uptime_sec"] = updatime/1000;
 
     /* NOT WORK
      * QJsonArray lastLogMessages;
@@ -75,9 +73,8 @@ void CmdServerInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
     }
     jsonData["last_log_messages"] = lastLogMessages;
     */
-    jsonData["last_log_messages"] = Log::last_logs();
+    jsonResponse["last_log_messages"] = Log::last_logs();
+    // jsonResponse["data"] = jsonData;
 
-    jsonResponse["data"] = jsonData;
-    jsonResponse["result"] = QJsonValue("DONE");
-    pWebSocketServer->sendMessage(pClient, jsonResponse);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

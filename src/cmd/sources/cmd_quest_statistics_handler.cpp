@@ -43,13 +43,14 @@ QStringList CmdQuestStatisticsHandler::errors(){
 	return list;
 }
 
-void CmdQuestStatisticsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdQuestStatisticsHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
-    QJsonObject jsonData;
-    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
-	QSqlDatabase db = *(pWebSocketServer->database());
 
-    int nQuestID = obj["questid"].toInt();
+
+    QSqlDatabase db = *(pRequest->server()->database());
+
+    int nQuestID = jsonRequest["questid"].toInt();
 
     // check quest exists
     {
@@ -57,12 +58,12 @@ void CmdQuestStatisticsHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
         query.prepare("SELECT * FROM quest WHERE idquest = :questid");
         query.bindValue(":questid", nQuestID);
         if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
 
         if (!query.next()) {
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Quest not found"));
+            pRequest->sendMessageError(cmd(), Error(404, "Quest not found"));
             return;
         }
     }
@@ -80,15 +81,15 @@ void CmdQuestStatisticsHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
         query.bindValue(":passed", "No");
         query.bindValue(":role", "user");
         if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
 
         if (query.next()) {
             QSqlRecord record = query.record();
-            jsonData["tries"] = record.value("cnt").toInt();
+            jsonResponse["tries"] = record.value("cnt").toInt();
         }else{
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Quest not found"));
+            pRequest->sendMessageError(cmd(), Error(404, "Quest not found"));
             return;
         }
     }
@@ -101,15 +102,15 @@ void CmdQuestStatisticsHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
         query.bindValue(":passed", "Yes");
         query.bindValue(":role", "user");
         if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
 
         if (query.next()) {
             QSqlRecord record = query.record();
-            jsonData["solved"] = record.value("cnt").toInt();
+            jsonResponse["solved"] = record.value("cnt").toInt();
         }else{
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Quest not found"));
+            pRequest->sendMessageError(cmd(), Error(404, "Quest not found"));
             return;
         }
     }
@@ -124,7 +125,7 @@ void CmdQuestStatisticsHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
         query.bindValue(":questid", nQuestID);
 
         if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
         QJsonArray users;
@@ -137,11 +138,10 @@ void CmdQuestStatisticsHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
             user["university"] = record.value("university").toString().toHtmlEscaped();
             users.append(user);
         }
-        jsonData["users"] = users;
+        jsonResponse["users"] = users;
     }
 
-    jsonResponse["result"] = QJsonValue("DONE");
-    jsonResponse["m"] = QJsonValue(m);
-    jsonResponse["data"] = jsonData;
-    pWebSocketServer->sendMessage(pClient, jsonResponse);
+    // TODO check this
+    // jsonResponse["data"] = jsonData;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

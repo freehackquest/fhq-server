@@ -45,11 +45,14 @@ QStringList CmdClassbookAddRecordHandler::errors(){
     return list;
 }
 
-void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    int parentid = obj["parentid"].toInt();
+    QSqlDatabase db = *(pRequest->server()->database());
+
+    int parentid = jsonRequest["parentid"].toInt();
 
     //Check parentid in database
     QSqlQuery query(db);
@@ -58,24 +61,24 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
         query.bindValue(":parentid", parentid);
         query.exec();
         if (!query.next()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("article with this id"));
+            pRequest->sendMessageError(cmd(), Errors::NotFound("article with this id"));
             return;
         }
     }
 
-    QString name = obj["name"].toString().trimmed().toHtmlEscaped();
-    QString content = obj["content"].toString().trimmed().toHtmlEscaped();
+    QString name = jsonRequest["name"].toString().trimmed().toHtmlEscaped();
+    QString content = jsonRequest["content"].toString().trimmed().toHtmlEscaped();
 
     //Set uuid from request if available, else generate uuid
     QString uuid;
-    if(obj.contains("uuid")){
+    if(jsonRequest.contains("uuid")){
         query.prepare("SELECT uuid FROM classbook WHERE uuid=:uuid");
-        query.bindValue(":uuid", obj["uuid"].toString());
+        query.bindValue(":uuid", jsonRequest["uuid"].toString());
         query.exec();
         if (!query.next()){
-            uuid = obj["uuid"].toString().replace("{", "").replace("}", "");
+            uuid = jsonRequest["uuid"].toString().replace("{", "").replace("}", "");
         } else {
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Uuid already exist"));
+            pRequest->sendMessageError(cmd(), Error(403, "Uuid already exist"));
             return;
         }
     } else {
@@ -98,8 +101,8 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
 
     //Set ordered of article: increment max of child's ordered
     int ordered;
-    if (obj.contains("ordered")){
-        ordered = obj["ordered"].toInt();
+    if (jsonRequest.contains("ordered")){
+        ordered = jsonRequest["ordered"].toInt();
     } else {
         query.prepare("SELECT MAX(ordered) AS max FROM classbook WHERE parentid=:parentid");
         query.bindValue(":parentid", parentid);
@@ -116,7 +119,7 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
                     QSqlRecord record = query.record();
                     ordered = record.value("ordered").toInt() + 1;
                 } else {
-                    pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+                    pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
                     return;
                 }
             } else {
@@ -157,7 +160,7 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
     query.bindValue(":content", content);
     query.bindValue(":md5_content", md5_content);
     if (!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
 
@@ -169,11 +172,7 @@ void CmdClassbookAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer 
     data["content"] = content;
     data["md5_content"] = md5_content;
 
-    QJsonObject jsonResponse;
-    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonResponse["m"] = QJsonValue(m);
-    jsonResponse["result"] = QJsonValue("DONE");
     jsonResponse["data"] = data;
-    pWebSocketServer->sendMessage(pClient, jsonResponse);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 

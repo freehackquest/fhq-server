@@ -42,23 +42,25 @@ QStringList CmdGameDeleteHandler::errors(){
 	return list;
 }
 
-void CmdGameDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdGameDeleteHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    QString sUuid = obj["uuid"].toString().trimmed();
-	QString sAdminPassword = obj["admin_password"].toString();
+    QString sUuid = jsonRequest["uuid"].toString().trimmed();
+    QString sAdminPassword = jsonRequest["admin_password"].toString();
 	
-	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
+    IUserToken *pUserToken = pRequest->userToken();
     int nUserID = pUserToken->userid();
-    
-	QSqlDatabase db = *(pWebSocketServer->database());
-	
+
+    QSqlDatabase db = *(pRequest->server()->database());
+
     // check admin password
 	{
 		QSqlQuery query(db);
 		query.prepare("SELECT * FROM users WHERE id = :userid");
 		query.bindValue(":userid", nUserID);
 		if(!query.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 			return;
 		}
 
@@ -70,7 +72,7 @@ void CmdGameDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 			sEmail = record.value("email").toString();
 			sPass = record.value("pass").toString();
 		}else{
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("user"));
+            pRequest->sendMessageError(cmd(), Errors::NotFound("user"));
 			return;
 		}
 
@@ -78,7 +80,7 @@ void CmdGameDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         sAdminPasswordHash = QString("%1").arg(QString(QCryptographicHash::hash(sAdminPasswordHash.toUtf8(),QCryptographicHash::Sha1).toHex()));
 
         if(sAdminPasswordHash != sPass){
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(401, "Wrong password"));
+            pRequest->sendMessageError(cmd(), Error(401, "Wrong password"));
 			return;
 		}
 	}
@@ -92,12 +94,12 @@ void CmdGameDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         query.bindValue(":uuid", sUuid);
 		
 		if(!query.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 			return;
 		}
 
 		if(!query.next()) {
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Game not found"));	
+            pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
 			return;
         }else{
             QSqlRecord record = query.record();
@@ -111,7 +113,7 @@ void CmdGameDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		query_del.prepare("DELETE FROM users_games WHERE gameid = :gameid");
 		query_del.bindValue(":gameid", nGameID);
 		if(!query_del.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
 			return;
 		}
 	}
@@ -122,7 +124,7 @@ void CmdGameDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		query_del.prepare("DELETE FROM users_quests_answers WHERE questid IN (SELECT idquest FROM quest q WHERE q.gameid = :gameid)");
 		query_del.bindValue(":gameid", nGameID);
 		if(!query_del.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
 			return;
 		}
 	}
@@ -133,7 +135,7 @@ void CmdGameDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		query_del.prepare("DELETE FROM users_quests WHERE questid IN (SELECT idquest FROM quest q WHERE q.gameid = :gameid)");
 		query_del.bindValue(":gameid", nGameID);
 		if(!query_del.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
 			return;
 		}
 	}
@@ -144,7 +146,7 @@ void CmdGameDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		query_del.prepare("DELETE FROM quest WHERE gameid = :gameid");
 		query_del.bindValue(":gameid", nGameID);
 		if(!query_del.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
 			return;
 		}
 	}
@@ -155,14 +157,10 @@ void CmdGameDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		query_del.prepare("DELETE FROM games WHERE id = :gameid");
 		query_del.bindValue(":gameid", nGameID);
 		if(!query_del.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
 			return;
 		}
 	}
 
-    QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-    pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

@@ -41,18 +41,20 @@ QStringList CmdUserChangePasswordHandler::errors(){
 	return list;
 }
 
-void CmdUserChangePasswordHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdUserChangePasswordHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
+    IUserToken *pUserToken = pRequest->userToken();
     int nUserID = pUserToken->userid();
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 
     QSqlQuery query(db);
     query.prepare("SELECT * FROM users WHERE id = :userid");
     query.bindValue(":userid", nUserID);
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
 
@@ -64,18 +66,18 @@ void CmdUserChangePasswordHandler::handle(QWebSocket *pClient, IWebSocketServer 
         sEmail = record.value("email").toString();
         sPass = record.value("pass").toString();
     }else{
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("user"));
+        pRequest->sendMessageError(cmd(), Errors::NotFound("user"));
         return;
     }
 
-    QString sOldPassword = obj["password_old"].toString();
-    QString sNewPassword = obj["password_new"].toString();
+    QString sOldPassword = jsonRequest["password_old"].toString();
+    QString sNewPassword = jsonRequest["password_new"].toString();
 
     QString sOldPassword_sha1 = sEmail.toUpper() + sOldPassword;
     sOldPassword_sha1 = QString("%1").arg(QString(QCryptographicHash::hash(sOldPassword_sha1.toUtf8(),QCryptographicHash::Sha1).toHex()));
 
     if(sOldPassword_sha1 != sPass){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(401, "Wrong password"));
+        pRequest->sendMessageError(cmd(), Error(401, "Wrong password"));
         return;
     }
 
@@ -89,13 +91,9 @@ void CmdUserChangePasswordHandler::handle(QWebSocket *pClient, IWebSocketServer 
     query_update.bindValue(":email", sEmail);
 
     if(!query_update.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query_update.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query_update.lastError().text()));
         return;
     }
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

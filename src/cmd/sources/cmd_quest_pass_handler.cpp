@@ -46,22 +46,20 @@ QStringList CmdQuestPassHandler::errors(){
 	return list;
 }
 
-void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
+void CmdQuestPassHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-
-    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serverinfo");
+    IMemoryCache *pMemoryCache = pRequest->server()->findMemoryCache("serverinfo");
     if(pMemoryCache == NULL){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
+        pRequest->sendMessageError(cmd(), Errors::InternalServerError());
         return;
     }
     MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
 
+    QSqlDatabase db = *(pRequest->server()->database());
 
-	QSqlDatabase db = *(pWebSocketServer->database());
-
-	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
+    IUserToken *pUserToken = pRequest->userToken();
 	int nUserID = 0;
     QString sNick = "";
 	if(pUserToken != NULL) {
@@ -69,8 +67,8 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
         sNick = pUserToken->nick();
 	}
 
-	int nQuestID = obj["questid"].toInt();
-    QString sUserAnswer = obj["answer"].toString().trimmed();
+    int nQuestID = jsonRequest["questid"].toInt();
+    QString sUserAnswer = jsonRequest["answer"].toString().trimmed();
 
     QString sState = "";
     QString sQuestAnswer = "";
@@ -81,7 +79,7 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
         query.prepare("SELECT * FROM quest WHERE idquest = :questid");
         query.bindValue(":questid", nQuestID);
         if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
 		
@@ -92,7 +90,7 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
             sQuestName = record.value("name").toString().trimmed();
             nGameID = record.value("gameid").toInt();
 		}else{
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Quest not found"));
+            pRequest->sendMessageError(cmd(), Error(404, "Quest not found"));
 			return;
 		}
 	}
@@ -102,12 +100,12 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
         query.prepare("SELECT * FROM games WHERE id = :gameid AND (NOW() < date_stop OR NOW() > date_restart)");
         query.bindValue(":gameid", nGameID);
         if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
 
         if (!query.next()) {
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Game ended. Please wait date of restart."));
+            pRequest->sendMessageError(cmd(), Error(403, "Game ended. Please wait date of restart."));
             return;
         }
     }
@@ -119,13 +117,13 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
         query.bindValue(":questid", nQuestID);
         query.bindValue(":userid", nUserID);
         if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
         if (query.next()) {
             QSqlRecord record = query.record();
             if(record.value("cnt").toInt() > 0){
-                pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Quest already passed"));
+                pRequest->sendMessageError(cmd(), Error(404, "Quest already passed"));
                 return;
             }
         }
@@ -139,13 +137,13 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
         query.bindValue(":questid", nQuestID);
         query.bindValue(":userid", nUserID);
         if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
         if (query.next()) {
             QSqlRecord record = query.record();
             if(record.value("cnt").toInt() > 0){
-                pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Your already try this answer."));
+                pRequest->sendMessageError(cmd(), Error(404, "Your already try this answer."));
                 return;
             }
         }
@@ -169,14 +167,14 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
         query.bindValue(":levenshtein", nLevenshtein);
 
         if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
         pMemoryCacheServerInfo->incrementQuestsAttempt();
     }
 
     if(!bPassed){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Answer incorrect. Levenshtein distance: " + QString::number(nLevenshtein)));
+        pRequest->sendMessageError(cmd(), Error(403, "Answer incorrect. Levenshtein distance: " + QString::number(nLevenshtein)));
         return;
     }
 
@@ -188,20 +186,18 @@ void CmdQuestPassHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSock
         query.bindValue(":userid", nUserID);
         query.bindValue(":questid", nQuestID);
         if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
     }
     pMemoryCacheServerInfo->incrementQuestsCompleted();
 
 
-    RunTasks::AddPublicEvents(pWebSocketServer, "quests", "User #" + QString::number(nUserID) + "  " + sNick
+    RunTasks::AddPublicEvents(pRequest->server(), "quests", "User #" + QString::number(nUserID) + "  " + sNick
                               + " passed quest #" + QString::number(nQuestID) + " " + sQuestName);
 
-    RunTasks::UpdateUserRating(pWebSocketServer, nUserID);
-    RunTasks::UpdateQuestSolved(pWebSocketServer, nQuestID);
+    RunTasks::UpdateUserRating(pRequest->server(), nUserID);
+    RunTasks::UpdateQuestSolved(pRequest->server(), nQuestID);
 
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

@@ -40,33 +40,31 @@ QStringList CmdClassbookLocalizationDeleteRecordHandler::errors(){
     return list;
 }
 
-void CmdClassbookLocalizationDeleteRecordHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdClassbookLocalizationDeleteRecordHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 
     QSqlQuery query(db);
-    int classbook_localizationid = obj["classbook_localizationid"].toInt();
+    int classbook_localizationid = jsonRequest["classbook_localizationid"].toInt();
     query.prepare("SELECT id FROM classbook_localization WHERE id = :classbook_localizationid");
-    query.bindValue(":classbook_localizationid", obj["classbook_localizationid"].toInt());
+    query.bindValue(":classbook_localizationid", jsonRequest["classbook_localizationid"].toInt());
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
     if(!query.next()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This localization doesn't exist"));
+        pRequest->sendMessageError(cmd(), Error(404, "This localization doesn't exist"));
         return;
     }
     query.prepare("DELETE FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", classbook_localizationid);
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
 
-    QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonData["m"] = QJsonValue(m);
-    jsonData["result"] = QJsonValue("DONE");
-    pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 

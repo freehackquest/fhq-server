@@ -50,38 +50,38 @@ QStringList CmdGameCreateHandler::errors(){
 	return list;
 }
 
-void CmdGameCreateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdGameCreateHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 
-	QString sUUID = obj["uuid"].toString().trimmed();
+    QString sUUID = jsonRequest["uuid"].toString().trimmed();
 	{
 		QSqlQuery query(db);
         query.prepare("SELECT * FROM games WHERE uuid = :uuid");
 		query.bindValue(":uuid", sUUID);
 		query.exec();
 		if (query.next()) {
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Game with uuid {" + sUUID + "} already exists"));
+            pRequest->sendMessageError(cmd(), Error(403, "Game with uuid {" + sUUID + "} already exists"));
 			return;
 		}
 	}
 
-	QString sName = obj["name"].toString().trimmed();
+    QString sName = jsonRequest["name"].toString().trimmed();
     if(sName.length() == 0){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(400, "Name could not be empty"));
+        pRequest->sendMessageError(cmd(), Error(400, "Name could not be empty"));
 		return;
     }
 	
-    QString sDescription = obj["description"].toString().trimmed();
-    QString sState = obj["state"].toString().trimmed();
-    QString sForm = obj["form"].toString().trimmed();
-    QString sType = obj["type"].toString().trimmed();
-    QString sDateStart = obj["date_start"].toString().trimmed();
-    QString sDateStop = obj["date_stop"].toString().trimmed();
-    QString sDateRestart = obj["date_restart"].toString().trimmed();
-    QString sOrganizators = obj["organizators"].toString().trimmed();
+    QString sDescription = jsonRequest["description"].toString().trimmed();
+    QString sState = jsonRequest["state"].toString().trimmed();
+    QString sForm = jsonRequest["form"].toString().trimmed();
+    QString sType = jsonRequest["type"].toString().trimmed();
+    QString sDateStart = jsonRequest["date_start"].toString().trimmed();
+    QString sDateStop = jsonRequest["date_stop"].toString().trimmed();
+    QString sDateRestart = jsonRequest["date_restart"].toString().trimmed();
+    QString sOrganizators = jsonRequest["organizators"].toString().trimmed();
 
 	QSqlQuery query(db);
 	query.prepare(
@@ -131,16 +131,14 @@ void CmdGameCreateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
     query.bindValue(":maxscore", 0);
 
 	if (!query.exec()){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 		return;
 	}
 	
 	int rowid = query.lastInsertId().toInt();
-	jsonData["questid"] = QJsonValue(rowid);
+    jsonResponse["questid"] = QJsonValue(rowid);
 
-    RunTasks::AddPublicEvents(pWebSocketServer, "games", "New game #" + QString::number(rowid) + " " + sName);
-	
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-    pWebSocketServer->sendMessage(pClient, jsonData);
+    RunTasks::AddPublicEvents(pRequest->server(), "games", "New game #" + QString::number(rowid) + " " + sName);
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

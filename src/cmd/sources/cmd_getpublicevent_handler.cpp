@@ -41,16 +41,16 @@ QStringList CmdGetPublicEventHandler::errors(){
 	return list;
 }
 
-void CmdGetPublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
+void CmdGetPublicEventHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-	int nEventId = obj["eventid"].toInt();
-	jsonData["eventid"] = nEventId;
+    int nEventId = jsonRequest["eventid"].toInt();
+    jsonResponse["eventid"] = nEventId;
 
 	QJsonObject event;
 	
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 	QSqlQuery query(db);
 	query.prepare("SELECT * FROM public_events e WHERE id = :eventid");
 	query.bindValue(":eventid", nEventId);
@@ -62,12 +62,10 @@ void CmdGetPublicEventHandler::handle(QWebSocket *pClient, IWebSocketServer *pWe
 		event["type"] = record.value("type").toString().toHtmlEscaped(); // TODO htmlspecialchars
 		event["message"] = record.value("message").toString().toHtmlEscaped(); // TODO htmlspecialchars
 	}else{
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::EventNotFound());
+        pRequest->sendMessageError(cmd(), Errors::EventNotFound());
 		return;
 	}
 
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	jsonData["data"] = event;
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["data"] = event;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

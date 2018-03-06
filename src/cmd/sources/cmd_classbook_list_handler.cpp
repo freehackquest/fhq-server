@@ -41,24 +41,26 @@ QStringList CmdClassbookListHandler::errors(){
     return list;
 }
 
-void CmdClassbookListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdClassbookListHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
     QSqlQuery query(db);
 
-    int parentid = obj["parentid"].toInt();
+    int parentid = jsonRequest["parentid"].toInt();
     QJsonArray data;
 
-    if (obj.contains("search") && !obj.value("search").toString().isEmpty()){
-        QString search = obj.value("search").toString();
+    if (jsonRequest.contains("search") && !jsonRequest.value("search").toString().isEmpty()){
+        QString search = jsonRequest.value("search").toString();
 
         //SET lang
         QString lang;
-        if (obj.contains("lang")){
-            lang = obj.value("lang").toString().trimmed();
+        if (jsonRequest.contains("lang")){
+            lang = jsonRequest.value("lang").toString().trimmed();
             QList<QString> allow_lang = {"en", "ru","de"};
             if(!allow_lang.contains(lang)){
-                pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Language is'not support"));
+                pRequest->sendMessageError(cmd(), Error(404, "Language is'not support"));
                 return;
             }
         } else {
@@ -75,7 +77,7 @@ void CmdClassbookListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
         }
 
         if (!query1.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query1.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query1.lastError().text()));
             return;
         }
         while (query1.next()) {
@@ -128,18 +130,18 @@ void CmdClassbookListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
     query.bindValue(":parentid", parentid);
     query.exec();
     if (!query.next() && parentid != 0){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Not found the article with a given parentid"));
+        pRequest->sendMessageError(cmd(), Error(404, "Not found the article with a given parentid"));
         return;
     }
 
 
     //SET lang
     QString lang;
-    if (obj.contains("lang")){
-        lang = obj.value("lang").toString().trimmed();
+    if (jsonRequest.contains("lang")){
+        lang = jsonRequest.value("lang").toString().trimmed();
         QList<QString> allow_lang = {"en", "ru","de"};
         if(!allow_lang.contains(lang)){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Language is'not support"));
+            pRequest->sendMessageError(cmd(), Error(404, "Language is'not support"));
             return;
         }
     } else {
@@ -203,11 +205,7 @@ void CmdClassbookListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
         data.push_back(item);
     }}
 
-    QJsonObject jsonResponse;
-    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonResponse["m"] = QJsonValue(m);
-    jsonResponse["result"] = QJsonValue("DONE");
     jsonResponse["data"] = data;
-    pWebSocketServer->sendMessage(pClient, jsonResponse);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 

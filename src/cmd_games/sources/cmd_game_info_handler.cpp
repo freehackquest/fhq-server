@@ -41,44 +41,43 @@ QStringList CmdGameInfoHandler::errors(){
 	return list;
 }
 
-void CmdGameInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
-    QJsonObject jsonData;
+void CmdGameInfoHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    QString sUuid = obj["uuid"].toString().trimmed();
+    QJsonObject data;
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QString sUuid = jsonRequest["uuid"].toString().trimmed();
+
+    QSqlDatabase db = *(pRequest->server()->database());
+
     QSqlQuery query(db);
     query.prepare("SELECT * FROM games WHERE uuid = :gameuuid");
     query.bindValue(":gameuuid", sUuid);
 
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
 
     if (query.next()) {
         QSqlRecord record = query.record();
-        jsonData["uuid"] = record.value("uuid").toString();
-        jsonData["title"] = record.value("title").toString();
-        jsonData["type_game"] = record.value("type_game").toString();
-        jsonData["date_start"] = record.value("date_start").toString();
-        jsonData["date_stop"] = record.value("date_stop").toString();
-        jsonData["date_restart"] = record.value("date_restart").toString();
-        jsonData["description"] = record.value("description").toString();
-        jsonData["state"] = record.value("state").toString();
-        jsonData["form"] = record.value("form").toString();
-        jsonData["organizators"] = record.value("organizators").toString();
-        jsonData["maxscore"] = record.value("maxscore").toInt();
+        data["uuid"] = record.value("uuid").toString();
+        data["title"] = record.value("title").toString();
+        data["type_game"] = record.value("type_game").toString();
+        data["date_start"] = record.value("date_start").toString();
+        data["date_stop"] = record.value("date_stop").toString();
+        data["date_restart"] = record.value("date_restart").toString();
+        data["description"] = record.value("description").toString();
+        data["state"] = record.value("state").toString();
+        data["form"] = record.value("form").toString();
+        data["organizators"] = record.value("organizators").toString();
+        data["maxscore"] = record.value("maxscore").toInt();
     } else {
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Game not found"));
+        pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
         return;
     }
 
-    QJsonObject jsonResponse;
-    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonResponse["result"] = QJsonValue("DONE");
-    jsonResponse["m"] = QJsonValue(m);
-    jsonResponse["data"] = jsonData;
-
-    pWebSocketServer->sendMessage(pClient, jsonResponse);
+    jsonResponse["data"] = data;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

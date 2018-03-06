@@ -38,18 +38,21 @@ QStringList CmdUserSkillsHandler::errors(){
 	return list;
 }
 
-void CmdUserSkillsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdUserSkillsHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+
 
 	QJsonObject skills_max;
 	QJsonObject skills_user;
 
-	QSqlDatabase db = *(pWebSocketServer->database());
-	
+    QSqlDatabase db = *(pRequest->server()->database());
+
 	{
 		QSqlQuery query(db);
 		query.prepare("SELECT q.subject, sum(q.score) as sum_subject FROM quest q WHERE ! ISNULL( q.subject ) GROUP BY q.subject");
 		if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::DatabaseError(query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Errors::DatabaseError(query.lastError().text()));
             return;
 		};
 		
@@ -61,13 +64,13 @@ void CmdUserSkillsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	}
 	
 	
-	int nUserID = obj["userid"].toInt();
+    int nUserID = jsonRequest["userid"].toInt();
 	{
 		QSqlQuery query(db);
 		query.prepare("SELECT uq.userid, q.subject, SUM( q.score ) as sum_score FROM users_quests uq INNER JOIN quest q ON uq.questid = q.idquest WHERE ! ISNULL( q.subject ) AND uq.userid = :userid GROUP BY uq.userid, q.subject");
 		query.bindValue(":userid", nUserID);
         if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::DatabaseError(query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Errors::DatabaseError(query.lastError().text()));
             return;
         };
 		
@@ -78,11 +81,8 @@ void CmdUserSkillsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         }
 	}
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	jsonData["skills_max"] = skills_max;
-	jsonData["skills_user"] = skills_user;
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["skills_max"] = skills_max;
+    jsonResponse["skills_user"] = skills_user;
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

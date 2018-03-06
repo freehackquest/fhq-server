@@ -46,22 +46,24 @@ QStringList CmdClassbookExportHandler::errors(){
     return list;
 }
 
-void CmdClassbookExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdClassbookExportHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
     QSqlQuery query(db);
 
-    QString lang = obj.value("lang").toString().trimmed();
-    QString output = obj.value("output").toString().trimmed();
+    QString lang = jsonRequest.value("lang").toString().trimmed();
+    QString output = jsonRequest.value("output").toString().trimmed();
     //Check parametrs
     if (output != "html" && output != "markdown"){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "The output is not supported."));
+        pRequest->sendMessageError(cmd(), Error(403, "The output is not supported."));
         return;
     }
     QList<QString> langs;
     langs << "en" << "de" << "ru";
-    if (!langs.contains(obj.value("lang").toString())){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "The language is not supported."));
+    if (!langs.contains(jsonRequest.value("lang").toString())){
+        pRequest->sendMessageError(cmd(), Error(403, "The language is not supported."));
         return;
     }
 
@@ -78,8 +80,7 @@ void CmdClassbookExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
     file.close();
     file.open(QIODevice::ReadOnly);
 
-    QJsonObject jsonResponse;
-    if (obj.contains("zip") and obj.value("zip").toBool()){
+    if (jsonRequest.contains("zip") && jsonRequest.value("zip").toBool()){
         QString tmpDir = QDir::tempPath();
         QString tmpZipFile = tmpDir + "/freehackquest-classbook_" + lang + ".zip";
         // prepare zip archive
@@ -96,7 +97,7 @@ void CmdClassbookExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
         zip.close();
         QFile fileZip(tmpZipFile);
         if (!fileZip.open(QIODevice::ReadOnly)){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, "Could not open zip file"));
+            pRequest->sendMessageError(cmd(), Error(500, "Could not open zip file"));
             return;
         }
         QByteArray baZip = fileZip.readAll();
@@ -110,10 +111,7 @@ void CmdClassbookExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
         jsonResponse["data"] = QString::fromUtf8(file.readAll());
     }
 
-    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonResponse["m"] = QJsonValue(m);
-    jsonResponse["result"] = QJsonValue("DONE");
-    pWebSocketServer->sendMessage(pClient, jsonResponse);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
     file.close();
     file.remove();
 }

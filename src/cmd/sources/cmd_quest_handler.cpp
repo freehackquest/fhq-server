@@ -44,16 +44,17 @@ QStringList CmdQuestHandler::errors(){
 	return list;
 }
 
-void CmdQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	QSqlDatabase db = *(pWebSocketServer->database());
+void CmdQuestHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+
+    QSqlDatabase db = *(pRequest->server()->database());
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
     QString sBaseGamesURL = pSettings->getSettString("server_folder_games_url");
 
-	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
+    IUserToken *pUserToken = pRequest->userToken();
 	bool bAdmin = false;
 	int nUserID = 0;
 	if(pUserToken != NULL) {
@@ -61,7 +62,7 @@ void CmdQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 		nUserID = pUserToken->userid();
 	}
 
-	int nQuestID = obj["questid"].toInt();
+    int nQuestID = jsonRequest["questid"].toInt();
 
 	{
 		QSqlQuery query(db);
@@ -90,7 +91,7 @@ void CmdQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 		query.bindValue(":userid", nUserID);
 		query.bindValue(":questid", nQuestID);
 		if(!query.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 			return;
 		}
 		
@@ -123,7 +124,7 @@ void CmdQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 				quest["answer"] = record.value("answer").toString();
 				quest["description_state"] = record.value("description_state").toString();
 			}
-			jsonData["quest"] = quest;
+            jsonResponse["quest"] = quest;
 			
 			// game info
 			{
@@ -132,7 +133,7 @@ void CmdQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 				query_game.prepare("SELECT * FROM games WHERE id = :id");
 				query_game.bindValue(":id", nGameID);
 				if(!query_game.exec()){
-					pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query_game.lastError().text()));
+                    pRequest->sendMessageError(cmd(), Error(500, query_game.lastError().text()));
 					return;
 				}
 				if (query_game.next()) {
@@ -142,10 +143,10 @@ void CmdQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 					game["title"] = record_game.value("title").toString();
                     game["logo"] = sBaseGamesURL + QString::number(nGameID) + ".png";
 				}else{
-					pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Game not found"));
+                    pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
 					return;
 				}
-				jsonData["game"] = game;
+                jsonResponse["game"] = game;
 			}
 			
 
@@ -156,7 +157,7 @@ void CmdQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 				query_files.prepare("SELECT * FROM quests_files WHERE questid = :questid");
 				query_files.bindValue(":questid", nQuestID);
 				if(!query_files.exec()){
-					pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query_files.lastError().text()));
+                    pRequest->sendMessageError(cmd(), Error(500, query_files.lastError().text()));
 					return;
 				}
 				while (query_files.next()) {
@@ -170,7 +171,7 @@ void CmdQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 					fileinfo["filepath"] = record_game.value("filepath").toString();
 					files.append(fileinfo);
 				}
-				jsonData["files"] = files;
+                jsonResponse["files"] = files;
 			}
 	
 			// hints
@@ -180,7 +181,7 @@ void CmdQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 				query_hints.prepare("SELECT * FROM quests_hints WHERE questid = :questid");
 				query_hints.bindValue(":questid", nQuestID);
 				if(!query_hints.exec()){
-					pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query_hints.lastError().text()));
+                    pRequest->sendMessageError(cmd(), Error(500, query_hints.lastError().text()));
 					return;
 				}
 				while (query_hints.next()) {
@@ -190,16 +191,14 @@ void CmdQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 					hint["text"] = record_game.value("text").toString();
 					hints.append(hint);
 				}
-				jsonData["hints"] = hints;
+                jsonResponse["hints"] = hints;
 			}
 	
 		}else{
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Quest not found"));
+            pRequest->sendMessageError(cmd(), Error(404, "Quest not found"));
 			return;
 		}
 	}
-	
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	pWebSocketServer->sendMessage(pClient, jsonData);
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

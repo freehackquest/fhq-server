@@ -40,11 +40,14 @@ QStringList CmdUserHandler::errors(){
 	return list;
 }
 
-void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
-	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
+void CmdUserHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+
+    IUserToken *pUserToken = pRequest->userToken();
 	
-	if(!obj.contains("userid") && pUserToken == NULL){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotAuthorizedRequest());
+    if(!jsonRequest.contains("userid") && pUserToken == NULL){
+        pRequest->sendMessageError(cmd(), Errors::NotAuthorizedRequest());
 		return;
 	}
 
@@ -56,8 +59,8 @@ void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSer
 		bCurrentUserOrAdmin = true;
 	}
 
-	if(obj.contains("userid")){
-        int nUserID_ = obj["userid"].toInt();
+    if(jsonRequest.contains("userid")){
+        int nUserID_ = jsonRequest["userid"].toInt();
         if(nUserID_ != nUserID){
             bCurrentUserOrAdmin = false;
             if(pUserToken != NULL){
@@ -67,10 +70,10 @@ void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSer
         nUserID = nUserID_;
 	}
 	
-	QJsonObject user;
+    QJsonObject data;
 	QJsonObject profile;
-	QSqlDatabase db = *(pWebSocketServer->database());
-	
+    QSqlDatabase db = *(pRequest->server()->database());
+
 	{
 		QSqlQuery query(db);
 		query.prepare("SELECT * FROM users WHERE id = :userid");
@@ -79,27 +82,27 @@ void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSer
 		
 		if (query.next()) {
 			QSqlRecord record = query.record();
-			user["id"] = record.value("id").toInt();
-			user["uuid"] = record.value("uuid").toString();
-            user["nick"] = record.value("nick").toString().toHtmlEscaped();
-			user["role"] = record.value("role").toString();
-            user["logo"] = record.value("logo").toString().toHtmlEscaped();
-            user["about"] = record.value("about").toString().toHtmlEscaped();
-			user["status"] = record.value("status").toString();
-			user["rating"] = record.value("rating").toString();
-            user["university"] = record.value("university").toString().toHtmlEscaped();
+            data["id"] = record.value("id").toInt();
+            data["uuid"] = record.value("uuid").toString();
+            data["nick"] = record.value("nick").toString().toHtmlEscaped();
+            data["role"] = record.value("role").toString();
+            data["logo"] = record.value("logo").toString().toHtmlEscaped();
+            data["about"] = record.value("about").toString().toHtmlEscaped();
+            data["status"] = record.value("status").toString();
+            data["rating"] = record.value("rating").toString();
+            data["university"] = record.value("university").toString().toHtmlEscaped();
 
 			if(bCurrentUserOrAdmin){
-				user["email"] = record.value("email").toString();
-				user["dt_create"] = record.value("dt_create").toString();
-				user["dt_last_login"] = record.value("dt_last_login").toString();
-				user["last_ip"] = record.value("last_ip").toString();
-				user["country"] = record.value("country").toString();
-				user["region"] = record.value("region").toString();
-				user["city"] = record.value("city").toString();
+                data["email"] = record.value("email").toString();
+                data["dt_create"] = record.value("dt_create").toString();
+                data["dt_last_login"] = record.value("dt_last_login").toString();
+                data["last_ip"] = record.value("last_ip").toString();
+                data["country"] = record.value("country").toString();
+                data["region"] = record.value("region").toString();
+                data["city"] = record.value("city").toString();
 			}
 		}else{
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("user"));
+            pRequest->sendMessageError(cmd(), Errors::NotFound("user"));
 			return;
 		}
 	}
@@ -121,12 +124,9 @@ void CmdUserHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSer
 	}
 	
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	jsonData["data"] = user;
-	jsonData["profile"] = profile;
-	jsonData["access"] = bCurrentUserOrAdmin;
-	pWebSocketServer->sendMessage(pClient, jsonData);
+
+    jsonResponse["data"] = data;
+    jsonResponse["profile"] = profile;
+    jsonResponse["access"] = bCurrentUserOrAdmin;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

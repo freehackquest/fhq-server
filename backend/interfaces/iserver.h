@@ -7,10 +7,10 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
-#include "icmdhandler.h"
-#include "imemorycache.h"
-#include "iusertoken.h"
-#include "iuser.h"
-#include "iwebsocketserver.h"
+#include <icmdhandler.h>
+#include <imemorycache.h>
+#include <iusertoken.h>
+#include <iuser.h>
+#include <iwebsocketserver.h>
 
 #endif // INTERFACES_ISERVER_H

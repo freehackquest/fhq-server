@@ -44,18 +44,18 @@ QStringList CmdLoginHandler::errors(){
 	return list;
 }
 
-void CmdLoginHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
+void CmdLoginHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 	
-    QString email = obj["email"].toString();
-    QString password = obj["password"].toString();
+    QString email = jsonRequest["email"].toString();
+    QString password = jsonRequest["password"].toString();
 
     QString password_sha1 = email.toUpper() + password;
 
     password_sha1 = QString("%1").arg(QString(QCryptographicHash::hash(password_sha1.toUtf8(),QCryptographicHash::Sha1).toHex()));
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
     QSqlQuery query(db);
     query.prepare("SELECT * FROM users WHERE email = :email AND pass = :pass");
     query.bindValue(":email", email);
@@ -63,7 +63,7 @@ void CmdLoginHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 
     if(!query.exec()){
         Log::err(TAG, query.lastError().text());
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
     if (query.next()) {
@@ -99,26 +99,24 @@ void CmdLoginHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 
         if(!query_token.exec()){
             Log::err(TAG, query_token.lastError().text());
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query_token.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_token.lastError().text()));
             return;
         }
 
-        jsonData["token"] = token;
-        jsonData["user"] = user;
+        jsonResponse["token"] = token;
+        jsonResponse["user"] = user;
 
-        pWebSocketServer->setUserToken(pClient, new ModelUserToken(user_token));
+        pRequest->server()->setUserToken(pRequest->client(), new ModelUserToken(user_token));
 
         // update user location
-        QString lastip = pClient->peerAddress().toString();
-        RunTasks::UpdateUserLocation(pWebSocketServer, userid, lastip);
+        QString lastip = pRequest->client()->peerAddress().toString();
+        RunTasks::UpdateUserLocation(pRequest->server(), userid, lastip);
 
     }else{
         Log::err(TAG, "Invalid login or password");
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(401, "Invalid login or password"));
+        pRequest->sendMessageError(cmd(), Error(401, "Invalid login or password"));
         return;
     }
 
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

@@ -46,18 +46,18 @@ QStringList CmdFeedbackAddHandler::errors(){
 	return list;
 }
 
-void CmdFeedbackAddHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdFeedbackAddHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 
     int nUserID = 0;
-    QString sEmail = obj["from"].toString().trimmed();
-    QString sText = obj["text"].toString().trimmed();
-    QString sType = obj["type"].toString().trimmed();
+    QString sEmail = jsonRequest["from"].toString().trimmed();
+    QString sText = jsonRequest["text"].toString().trimmed();
+    QString sType = jsonRequest["type"].toString().trimmed();
 
-    IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
+    IUserToken *pUserToken = pRequest->userToken();
     if(pUserToken != NULL){
         sEmail = pUserToken->email();
         nUserID = pUserToken->userid();
@@ -67,7 +67,7 @@ void CmdFeedbackAddHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
     QRegularExpression regexEmail("^[0-9a-zA-Z]{1}[0-9a-zA-Z-._]*[0-9a-zA-Z]{1}@[0-9a-zA-Z]{1}[-.0-9a-zA-Z]*[0-9a-zA-Z]{1}\\.[a-zA-Z]{2,6}$");
     if(!regexEmail.match(sEmail).hasMatch()){
         Log::err(TAG, "Invalid email format " + sEmail);
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(400, "Expected email format"));
+        pRequest->sendMessageError(cmd(), Error(400, "Expected email format"));
         return;
     }
 
@@ -78,11 +78,11 @@ void CmdFeedbackAddHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
     query.bindValue(":text", sText);
     query.bindValue(":userid", nUserID);
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
 
-    RunTasks::AddPublicEvents(pWebSocketServer, "users", "Added feedback");
+    RunTasks::AddPublicEvents(pRequest->server(), "users", "Added feedback");
 	
     // TODO move to tasks
     QString sMailHost = pSettings->getSettString("mail_host");
@@ -115,23 +115,20 @@ void CmdFeedbackAddHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 
     // Now we can send the mail
     if (!smtp.connectToHost()) {
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, "[MAIL] Failed to connect to host!"));
+        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to connect to host!"));
         return;
     }
 
     if (!smtp.login()) {
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, "[MAIL] Failed to login!"));
+        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to login!"));
         return;
     }
 
     if (!smtp.sendMail(message)) {
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, "[MAIL] Failed to send mail!"));
+        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to send mail!"));
         return;
     }
     smtp.quit();
 
-
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

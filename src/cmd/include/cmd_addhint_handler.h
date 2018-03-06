@@ -2,6 +2,7 @@
 #define CMD_ADDHINT_HANDLER_H
 
 #include <iserver.h>
+#include <model_request.h>
 
 class CmdAddHintHandler : public ICmdHandler {
 	
@@ -15,7 +16,7 @@ class CmdAddHintHandler : public ICmdHandler {
         virtual const std::vector<CmdInputDef> &inputs();
 		virtual QString description();
 		virtual QStringList errors();
-		virtual void handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj);
+        virtual void handle(ModelRequest *pRequest);
 
 	private:
         QString TAG;

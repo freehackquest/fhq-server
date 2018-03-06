@@ -50,19 +50,19 @@ QStringList CmdGameExportHandler::errors(){
 	return list;
 }
 
-void CmdGameExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdGameExportHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
-    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonResponse["m"] = QJsonValue(m);
 
-    QString sUuid = obj["uuid"].toString();
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QString sUuid = jsonRequest["uuid"].toString();
+    QSqlDatabase db = *(pRequest->server()->database());
+
     QSqlQuery query(db);
     query.prepare("SELECT * FROM games WHERE uuid = :gameuuid");
     query.bindValue(":gameuuid", sUuid);
 
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
 
@@ -83,7 +83,7 @@ void CmdGameExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         jsonGame["organizators"] = record.value("organizators").toString();
         jsonGame["maxscore"] = record.value("maxscore").toInt();
     } else {
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Game not found"));
+        pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
         return;
     }
 
@@ -133,7 +133,7 @@ void CmdGameExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
     {
         QFile fileZip(tmpZipFile);
         if (!fileZip.open(QIODevice::ReadOnly)){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, "Could not open zip file"));
+            pRequest->sendMessageError(cmd(), Error(500, "Could not open zip file"));
             return;
         }
         QByteArray baZip = fileZip.readAll();
@@ -144,6 +144,6 @@ void CmdGameExportHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         fileZip.close();
         fileZip.remove();
     }
-    jsonResponse["result"] = QJsonValue("DONE");
-    pWebSocketServer->sendMessage(pClient, jsonResponse);
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

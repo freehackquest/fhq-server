@@ -56,59 +56,58 @@ QStringList CmdCreateQuestHandler::errors(){
 	return list;
 }
 
-void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdCreateQuestHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-
-    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serverinfo");
+    IMemoryCache *pMemoryCache = pRequest->server()->findMemoryCache("serverinfo");
     if(pMemoryCache == NULL){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
+        pRequest->sendMessageError(cmd(), Errors::InternalServerError());
         return;
     }
     MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
 
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 
-	QString sUUID = obj["uuid"].toString().trimmed();
+    QString sUUID = jsonRequest["uuid"].toString().trimmed();
 	{
 		QSqlQuery query(db);
 		query.prepare("SELECT * FROM quest WHERE uuid = :uuid");
 		query.bindValue(":uuid", sUUID);
 		query.exec();
 		if (query.next()) {
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Quest with uuid {" + sUUID + "} already exists"));
+            pRequest->sendMessageError(cmd(), Error(403, "Quest with uuid {" + sUUID + "} already exists"));
 			return;
 		}
 	}
 	
-	int nGameID = obj["gameid"].toInt();
+    int nGameID = jsonRequest["gameid"].toInt();
 	{
 		QSqlQuery query(db);
 		query.prepare("SELECT * FROM games WHERE id = :id");
 		query.bindValue(":id", nGameID);
 		query.exec();
 		if (!query.next()) {
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Game not found"));
+            pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
 			return;
 		}
 	}
 
-	QString sName = obj["name"].toString().trimmed();
+    QString sName = jsonRequest["name"].toString().trimmed();
 	/*if(sName.length() == 0){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(400, "Name could not be empty"));
+        pRequest->sendMessageError(cmd(), Error(400, "Name could not be empty"));
 		return;
 	}*/
 	
-	QString sText = obj["text"].toString().trimmed();
-	int nScore = obj["score"].toInt();
-	QString sSubject = obj["subject"].toString().trimmed();
-	QString sAnswer = obj["answer"].toString().trimmed();
-	QString sAuthor = obj["author"].toString().trimmed();
-	QString sAnswerFormat = obj["answer_format"].toString().trimmed();
-	QString sState = obj["state"].toString().trimmed();
-	QString sCopyright = obj["copyright"].toString().trimmed();
-	QString sDescriptionState = obj["description_state"].toString().trimmed();
+    QString sText = jsonRequest["text"].toString().trimmed();
+    int nScore = jsonRequest["score"].toInt();
+    QString sSubject = jsonRequest["subject"].toString().trimmed();
+    QString sAnswer = jsonRequest["answer"].toString().trimmed();
+    QString sAuthor = jsonRequest["author"].toString().trimmed();
+    QString sAnswerFormat = jsonRequest["answer_format"].toString().trimmed();
+    QString sState = jsonRequest["state"].toString().trimmed();
+    QString sCopyright = jsonRequest["copyright"].toString().trimmed();
+    QString sDescriptionState = jsonRequest["description_state"].toString().trimmed();
 
 	QSqlQuery query(db);
 	query.prepare(
@@ -165,19 +164,17 @@ void CmdCreateQuestHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 	query.bindValue(":count_user_solved", 0);
 
 	if (!query.exec()){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 		return;
 	}
     pMemoryCacheServerInfo->incrementQuests();
 
 	
 	int rowid = query.lastInsertId().toInt();
-	jsonData["questid"] = QJsonValue(rowid);
+    jsonResponse["questid"] = QJsonValue(rowid);
 
-	RunTasks::AddPublicEvents(pWebSocketServer, "quests", "New quest #" + QString::number(rowid) + " " + sName + " (subject: " + sSubject + ")");
-	RunTasks::UpdateMaxScoreGame(pWebSocketServer,nGameID);
-	
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    RunTasks::AddPublicEvents(pRequest->server(), "quests", "New quest #" + QString::number(rowid) + " " + sName + " (subject: " + sSubject + ")");
+    RunTasks::UpdateMaxScoreGame(pRequest->server(),nGameID);
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

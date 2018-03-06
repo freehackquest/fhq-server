@@ -39,25 +39,21 @@ QStringList CmdUpdateUserLocationHandler::errors(){
 	return list;
 }
 
-void CmdUpdateUserLocationHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
-	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
-	
-	if(pUserToken == NULL){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotAuthorizedRequest());
-		return;
-	}
+void CmdUpdateUserLocationHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
 	// bool bConvert = false;
 
-	int userid = obj["userid"].toInt();
+    int userid = jsonRequest["userid"].toInt();
 	
 	// TODO redesign
 	if(userid == 0){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::QuestIDMustBeNotZero());
+        pRequest->sendMessageError(cmd(), Errors::QuestIDMustBeNotZero());
 		return;
 	}
 
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 	QString lastip = "";
 	{
 		QSqlQuery query(db);
@@ -81,11 +77,7 @@ void CmdUpdateUserLocationHandler::handle(QWebSocket *pClient, IWebSocketServer 
 		}
 	}
 
-	RunTasks::UpdateUserLocation(pWebSocketServer, userid, lastip);
+    RunTasks::UpdateUserLocation(pRequest->server(), userid, lastip);
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

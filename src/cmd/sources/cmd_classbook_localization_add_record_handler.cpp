@@ -45,30 +45,32 @@ QStringList CmdClassbookLocalizationAddRecordHandler::errors(){
     return list;
 }
 
-void CmdClassbookLocalizationAddRecordHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    int classbookid = obj["classbookid"].toInt();
+    int classbookid = jsonRequest["classbookid"].toInt();
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 
     QJsonObject data;
 
     QSqlQuery query(db);
-    QString lang = obj["lang"].toString().trimmed();
+    QString lang = jsonRequest["lang"].toString().trimmed();
     query.prepare("SELECT lang FROM classbook_localization WHERE lang = :lang AND classbookid=:classbookid");
-    query.bindValue(":lang", obj["lang"].toString().trimmed());
+    query.bindValue(":lang", jsonRequest["lang"].toString().trimmed());
     query.bindValue(":classbookid", classbookid);
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
     if(query.next()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "This lang already exist"));
+        pRequest->sendMessageError(cmd(), Error(400, "This lang already exist"));
         return;
     }
 
-    QString name = obj["name"].toString().trimmed();
-    QString content = obj["content"].toString().trimmed();
+    QString name = jsonRequest["name"].toString().trimmed();
+    QString content = jsonRequest["content"].toString().trimmed();
 
     //Set md5_content hash
     QString md5_content = QString(QCryptographicHash::hash(content.toUtf8(), QCryptographicHash::Md5).toHex());
@@ -103,7 +105,7 @@ void CmdClassbookLocalizationAddRecordHandler::handle(QWebSocket *pClient, IWebS
     query.bindValue(":content", content);
     query.bindValue(":md5_content", md5_content);
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
     int rowid = query.lastInsertId().toInt();
@@ -114,10 +116,6 @@ void CmdClassbookLocalizationAddRecordHandler::handle(QWebSocket *pClient, IWebS
     data["content"] = content;
     data["md5_content"] = md5_content;
 
-    QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonData["m"] = QJsonValue(m);
-    jsonData["result"] = QJsonValue("DONE");
-    jsonData["data"] = data;
-    pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["data"] = data;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

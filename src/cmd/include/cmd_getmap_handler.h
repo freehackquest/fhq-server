@@ -15,7 +15,7 @@ class CmdGetMapHandler : public ICmdHandler {
         virtual const std::vector<CmdInputDef> &inputs();
 		virtual QString description();
 		virtual QStringList errors();
-		virtual void handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj);
+        virtual void handle(ModelRequest *pRequest);
 		
 	private:
         std::vector<CmdInputDef> m_vInputs;

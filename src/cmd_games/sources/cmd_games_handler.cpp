@@ -40,19 +40,23 @@ QStringList CmdGamesHandler::errors(){
 	return list;
 }
 
-void CmdGamesHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
+void CmdGamesHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
     QString base_url = pSettings->getSettString("server_folder_games_url");
 
 	QJsonArray games;
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
+
 	QSqlQuery query(db);
 	query.prepare("SELECT * FROM games ORDER BY games.date_start");
 
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
 
@@ -76,11 +80,6 @@ void CmdGamesHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 		games.push_back(game);
 	}
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	jsonData["data"] = games;
-		
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["data"] = games;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

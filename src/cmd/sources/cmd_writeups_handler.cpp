@@ -38,17 +38,20 @@ QStringList CmdWriteUpsHandler::errors(){
 	return list;
 }
 
-void CmdWriteUpsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdWriteUpsHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+
 	// bool bConvert = false;
 
-	int questid = obj["questid"].toInt();
+    int questid = jsonRequest["questid"].toInt();
 	if(questid == 0){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::QuestIDMustBeNotZero());
+        pRequest->sendMessageError(cmd(), Errors::QuestIDMustBeNotZero());
 		return;
 	}
 
 	QJsonArray writeups;
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 	QSqlQuery query(db);
 	query.prepare("SELECT * FROM quests_writeups WHERE questid = :questid");
 	query.bindValue(":questid", questid);
@@ -71,10 +74,6 @@ void CmdWriteUpsHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocke
 		writeups.push_back(writeup);
 	}
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	jsonData["data"] = writeups;
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["data"] = writeups;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

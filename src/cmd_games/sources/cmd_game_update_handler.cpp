@@ -50,19 +50,22 @@ QStringList CmdGameUpdateHandler::errors(){
 	return list;
 }
 
-void CmdGameUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
-    QJsonObject jsonData;
+void CmdGameUpdateHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    QString sUuid = obj["uuid"].toString().trimmed();
-    QString sName = obj["name"].toString().trimmed();
-    QString sDescription = obj["description"].toString().trimmed();
-    QString sState = obj["state"].toString().trimmed();
-    QString sForm = obj["form"].toString().trimmed();
-    QString sType = obj["type"].toString().trimmed();
-    QString sDateStart = obj["date_start"].toString().trimmed();
-    QString sDateStop = obj["date_stop"].toString().trimmed();
-    QString sDateRestart = obj["date_restart"].toString().trimmed();
-    QString sOrganizators = obj["organizators"].toString().trimmed();
+    // QJsonObject data;
+
+    QString sUuid = jsonRequest["uuid"].toString().trimmed();
+    QString sName = jsonRequest["name"].toString().trimmed();
+    QString sDescription = jsonRequest["description"].toString().trimmed();
+    QString sState = jsonRequest["state"].toString().trimmed();
+    QString sForm = jsonRequest["form"].toString().trimmed();
+    QString sType = jsonRequest["type"].toString().trimmed();
+    QString sDateStart = jsonRequest["date_start"].toString().trimmed();
+    QString sDateStop = jsonRequest["date_stop"].toString().trimmed();
+    QString sDateRestart = jsonRequest["date_restart"].toString().trimmed();
+    QString sOrganizators = jsonRequest["organizators"].toString().trimmed();
 
 
     // original values
@@ -76,14 +79,14 @@ void CmdGameUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
     QString sDateStopPrev = "";
     QString sDateRestartPrev = "";
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM games WHERE uuid = :gameuuid");
         query.bindValue(":gameuuid", sUuid);
 
         if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
 
@@ -99,7 +102,7 @@ void CmdGameUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
             sDateStopPrev = record.value("date_stop").toString();
             sDateRestartPrev = record.value("date_restart").toString();
         } else {
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Game not found"));
+            pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
             return;
         }
     }
@@ -110,10 +113,10 @@ void CmdGameUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         query.bindValue(":name", sName);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated name of game {" + sUuid + "} from [" + sNamePrev + "] to [" + sName + "]");
+        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated name of game {" + sUuid + "} from [" + sNamePrev + "] to [" + sName + "]");
         sNamePrev = sName;
     }
 
@@ -123,10 +126,10 @@ void CmdGameUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         query.bindValue(":type_game", sType);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated type of game {" + sUuid + "} from [" + sTypePrev + "] to [" + sType + "]");
+        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated type of game {" + sUuid + "} from [" + sTypePrev + "] to [" + sType + "]");
         sTypePrev = sType;
     }
 
@@ -136,10 +139,10 @@ void CmdGameUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         query.bindValue(":description", sDescription);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated description of the game {" + sUuid + "}");
+        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated description of the game {" + sUuid + "}");
         sDescriptionPrev = sDescription;
     }
 
@@ -149,10 +152,10 @@ void CmdGameUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         query.bindValue(":state", sState);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated state of game {" + sUuid + "} from [" + sStatePrev + "] to [" + sState + "]");
+        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated state of game {" + sUuid + "} from [" + sStatePrev + "] to [" + sState + "]");
         sStatePrev = sState;
     }
 
@@ -162,10 +165,10 @@ void CmdGameUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         query.bindValue(":form", sForm);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated form of game {" + sUuid + "} from [" + sFormPrev + "] to [" + sForm + "]");
+        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated form of game {" + sUuid + "} from [" + sFormPrev + "] to [" + sForm + "]");
         sFormPrev = sForm;
     }
 
@@ -175,10 +178,10 @@ void CmdGameUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         query.bindValue(":organizators", sOrganizators);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated organizators of game {" + sUuid + "}");
+        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated organizators of game {" + sUuid + "}");
         sOrganizatorsPrev = sOrganizators;
     }
 
@@ -188,10 +191,10 @@ void CmdGameUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         query.bindValue(":date_start", sDateStart);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated date start of game {" + sUuid + "} from [" + sDateStartPrev + "] to [" + sDateStart + "]");
+        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated date start of game {" + sUuid + "} from [" + sDateStartPrev + "] to [" + sDateStart + "]");
         sDateStartPrev = sDateStart;
     }
 
@@ -201,10 +204,10 @@ void CmdGameUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         query.bindValue(":date_stop", sDateStop);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated date stop of game {" + sUuid + "} from [" + sDateStopPrev + "] to [" + sDateStop + "]");
+        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated date stop of game {" + sUuid + "} from [" + sDateStopPrev + "] to [" + sDateStop + "]");
         sDateStopPrev = sDateStop;
     }
 
@@ -214,17 +217,13 @@ void CmdGameUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         query.bindValue(":date_restart", sDateRestart);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated date stop of game {" + sUuid + "} from [" + sDateRestartPrev + "] to [" + sDateRestart + "]");
+        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated date stop of game {" + sUuid + "} from [" + sDateRestartPrev + "] to [" + sDateRestart + "]");
         sDateRestartPrev = sDateRestart;
     }
 
-    QJsonObject jsonResponse;
-    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonResponse["result"] = QJsonValue("DONE");
-    jsonResponse["m"] = QJsonValue(m);
-    jsonResponse["data"] = jsonData;
-    pWebSocketServer->sendMessage(pClient, jsonResponse);
+    // jsonResponse["data"] = data;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

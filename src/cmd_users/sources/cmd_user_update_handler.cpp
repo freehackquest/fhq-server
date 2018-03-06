@@ -43,14 +43,18 @@ QStringList CmdUserUpdateHandler::errors(){
 	return list;
 }
 
-void CmdUserUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdUserUpdateHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+    QJsonObject data;
 
-    IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
+
+    IUserToken *pUserToken = pRequest->userToken();
     int nUserIDFromToken = pUserToken->userid();
-    int nUserID = obj["userid"].toInt();
+    int nUserID = jsonRequest["userid"].toInt();
 
     if(nUserIDFromToken != nUserID && !pUserToken->isAdmin()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Deny change inmormation about user"));
+        pRequest->sendMessageError(cmd(), Error(403, "Deny change inmormation about user"));
         return;
     }
 
@@ -58,20 +62,19 @@ void CmdUserUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
     QString sUniversity = "";
     QString sAbout = "";
 
-
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM users WHERE id = :userid");
         query.bindValue(":userid", nUserID);
 
         if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::DatabaseError(query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Errors::DatabaseError(query.lastError().text()));
             return;
         };
 
         if(!query.next()) {
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "User not found"));
+            pRequest->sendMessageError(cmd(), Error(404, "User not found"));
             return;
         }else{
             QSqlRecord record = query.record();
@@ -81,16 +84,16 @@ void CmdUserUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         }
     }
 
-    if(obj.contains("nick")){
-        sNick = obj["nick"].toString();
+    if(jsonRequest.contains("nick")){
+        sNick = jsonRequest["nick"].toString();
     }
 
-    if(obj.contains("university")){
-        sUniversity = obj["university"].toString();
+    if(jsonRequest.contains("university")){
+        sUniversity = jsonRequest["university"].toString();
     }
 
-    if(obj.contains("about")){
-        sAbout = obj["about"].toString();
+    if(jsonRequest.contains("about")){
+        sAbout = jsonRequest["about"].toString();
     }
 
     // update
@@ -102,25 +105,20 @@ void CmdUserUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         query.bindValue(":about", sAbout);
         query.bindValue(":userid", nUserID);
 		if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
 		};
 	}
 
     pUserToken->setNick(sNick);
-    RunTasks::AddPublicEvents(pWebSocketServer, "users", "User #" + QString::number(nUserID) + "  " + sNick
+    RunTasks::AddPublicEvents(pRequest->server(), "users", "User #" + QString::number(nUserID) + "  " + sNick
                               + " updated info");
 
-    QJsonObject jsonData;
-    jsonData["id"] = nUserID;
-    jsonData["nick"] = sNick.toHtmlEscaped();
-    jsonData["university"] = sUniversity.toHtmlEscaped();
-    jsonData["about"] = sAbout.toHtmlEscaped();
+    data["id"] = nUserID;
+    data["nick"] = sNick.toHtmlEscaped();
+    data["university"] = sUniversity.toHtmlEscaped();
+    data["about"] = sAbout.toHtmlEscaped();
+    jsonResponse["data"] = data;
 
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-    jsonData["data"] = jsonData;
-
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

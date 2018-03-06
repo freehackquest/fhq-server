@@ -41,13 +41,9 @@ QStringList CmdUsersHandler::errors(){
 	return list;
 }
 
-void CmdUsersHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
-	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
-
-	if(pUserToken == NULL){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotAuthorizedRequest());
-		return;
-	}
+void CmdUsersHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
 
 	QStringList filters;
@@ -57,32 +53,32 @@ void CmdUsersHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
     int nOnPage = 5;
     int nCount = 0;
 
-	if(obj.contains("filter_text")){
-		QString text = obj["filter_text"].toString().trimmed();
+    if(jsonRequest.contains("filter_text")){
+        QString text = jsonRequest["filter_text"].toString().trimmed();
 		if(text != ""){
 			filters << "(email LIKE :email OR nick LIKE :nick)";
 			filter_values[":email"] = "%" + text + "%";
 			filter_values[":nick"] = "%" + text + "%";
 		}
 	}
-	if(obj.contains("filter_role")){
-		QString role = obj["filter_role"].toString().trimmed();
+    if(jsonRequest.contains("filter_role")){
+        QString role = jsonRequest["filter_role"].toString().trimmed();
 		if(role != ""){
 			filters << "role = :role";
 			filter_values[":role"] = role;
 		}
 	}
 
-    if(obj.contains("page")){
-        nPage = obj["page"].toInt();
+    if(jsonRequest.contains("page")){
+        nPage = jsonRequest["page"].toInt();
     }
 
-    if(obj.contains("onpage")){
-        nOnPage = obj["onpage"].toInt();
+    if(jsonRequest.contains("onpage")){
+        nOnPage = jsonRequest["onpage"].toInt();
     }
 
 	QJsonArray users;
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 	QString where = filters.join(" AND "); 
 	if(where.length() > 0){
 		where = "WHERE " + where;
@@ -96,7 +92,7 @@ void CmdUsersHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
             query.bindValue(key, filter_values.value(key));
         }
         if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
         if(query.next()) {
@@ -146,13 +142,9 @@ void CmdUsersHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
         }
     }
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	jsonData["data"] = users;
-    jsonData["onpage"] = nOnPage;
-    jsonData["page"] = nPage;
-    jsonData["count"] = nCount;
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["data"] = users;
+    jsonResponse["onpage"] = nOnPage;
+    jsonResponse["page"] = nPage;
+    jsonResponse["count"] = nCount;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

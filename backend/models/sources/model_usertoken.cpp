@@ -5,18 +5,18 @@
 
 ModelUserToken::ModelUserToken(){
 	TAG = "ModelUserToken";
-};
+}
 
 ModelUserToken::ModelUserToken(QJsonObject obj){
 	this->fillFromJson(obj);
-	TAG = "UserToken";
-};
+    TAG = "ModelUserToken";
+}
 
 ModelUserToken::ModelUserToken(QString json){
 	QJsonDocument doc = QJsonDocument::fromJson(json.toUtf8());
 	this->fillFromJson(doc.object());
-	TAG = "UserToken";
-};
+    TAG = "ModelUserToken";
+}
 
 void ModelUserToken::fillFromJson(QJsonObject obj){
 	

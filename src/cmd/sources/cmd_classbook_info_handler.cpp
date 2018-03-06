@@ -40,11 +40,13 @@ QStringList CmdClassbookInfoHandler::errors(){
     return list;
 }
 
-void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 
-    int classbookid = obj["classbookid"].toInt();
+    int classbookid = jsonRequest["classbookid"].toInt();
 
     QSqlQuery query(db);
     QJsonObject info;
@@ -59,17 +61,17 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
         info["parentid"] = record.value("parentid").toInt();
         info["uuid"] = record.value("uuid").toString();
     } else {
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("the article"));
+        pRequest->sendMessageError(cmd(), Errors::NotFound("the article"));
         return;
     }
 
     //SET lang
     QString lang;
-    if (obj.contains("lang")){
-        lang = obj.value("lang").toString().trimmed();
+    if (jsonRequest.contains("lang")){
+        lang = jsonRequest.value("lang").toString().trimmed();
         QList<QString> allow_lang = {"en", "ru","de"};
         if(!allow_lang.contains(lang)){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Language is not support"));
+            pRequest->sendMessageError(cmd(), Error(404, "Language is not support"));
             return;
         }
     } else {
@@ -79,7 +81,7 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
     //GET localization
     if(lang != "en"){
         //GET localization for the article with a given lang
-        lang = obj.value("lang").toString().trimmed();
+        lang = jsonRequest.value("lang").toString().trimmed();
         query.prepare("SELECT name, content FROM classbook_localization WHERE classbookid=:classbookid AND lang=:lang");
         query.bindValue(":classbookid", classbookid);
         query.bindValue(":lang", lang);
@@ -100,7 +102,7 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
                 info["name"] = record.value("name").toString();
                 info["content"] = record.value("content").toString();
             } else {
-                pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("the article"));
+                pRequest->sendMessageError(cmd(), Errors::NotFound("the article"));
                 return;
             }
         }
@@ -115,7 +117,7 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
             info["name"] = record.value("name").toString();
             info["content"] = record.value("content").toString();
         } else {
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("the article"));
+            pRequest->sendMessageError(cmd(), Errors::NotFound("the article"));
             return;
         }
     }
@@ -167,17 +169,13 @@ void CmdClassbookInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
             parents.push_back(parent);
             set_of_parent.insert(parent["classbookid"].toInt());
         } else {
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Error in PATHFINDER. Not found the article with a given classbookid"));
+            pRequest->sendMessageError(cmd(), Error(404, "Error in PATHFINDER. Not found the article with a given classbookid"));
             return;
         }
     }
     //ADD parents to response
     info["parents"] = parents;
 
-    QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonData["m"] = QJsonValue(m);
-    jsonData["result"] = QJsonValue("DONE");
-    jsonData["data"] = info;
-    pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["data"] = info;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

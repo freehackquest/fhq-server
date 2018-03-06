@@ -41,35 +41,25 @@ QStringList CmdAddHintHandler::errors(){
 	return list;
 }
 
-void CmdAddHintHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
-	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
-	
-	if(pUserToken == NULL){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotAuthorizedRequest());
-		return;
-	}
+void CmdAddHintHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-	int questid = obj["questid"].toInt();
+    int questid = jsonRequest["questid"].toInt();
 	if(questid == 0){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::QuestIDMustBeNotZero());
+        pRequest->sendMessageError(cmd(), Errors::QuestIDMustBeNotZero());
 		return;
 	}
-	
 
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 	QSqlQuery query(db);
 	query.prepare("INSERT INTO quests_hints (questid, text, dt) VALUES (:questid, :text, NOW())");
-	query.bindValue(":questid", obj["questid"].toInt());
-	query.bindValue(":text", obj["hint"].toString());
+    query.bindValue(":questid", jsonRequest["questid"].toInt());
+    query.bindValue(":text", jsonRequest["hint"].toString());
 	if(!query.exec()){
 		Log::err(TAG, query.lastError().text());
 	}
 
-	RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Added hint for quest #" + QString::number(questid));
-
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["m"] = QJsonValue(m);
-	jsonData["result"] = QJsonValue("DONE");
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    RunTasks::AddPublicEvents(pRequest->server(), "quests", "Added hint for quest #" + QString::number(questid));
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

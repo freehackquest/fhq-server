@@ -39,12 +39,14 @@ QStringList CmdGetMapHandler::errors(){
 	return list;
 }
 
-void CmdGetMapHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
+void CmdGetMapHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
 	QJsonArray coords;
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 	QSqlQuery query(db);
 	query.prepare("SELECT COUNT(*) as cnt, latitude, longitude FROM `users` GROUP BY latitude, longitude");
 	query.exec();
@@ -63,11 +65,7 @@ void CmdGetMapHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketS
 		coords.push_back(item);
 	}
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["result"] = QJsonValue("DONE");
-    jsonData["m"] = QJsonValue(m);
-	jsonData["data"] = coords;
-    jsonData["google_map_api_key"] = pSettings->getSettString("google_map_api_key");
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["data"] = coords;
+    jsonResponse["google_map_api_key"] = pSettings->getSettString("google_map_api_key");
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

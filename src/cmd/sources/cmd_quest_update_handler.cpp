@@ -57,13 +57,13 @@ QStringList CmdQuestUpdateHandler::errors(){
 	return list;
 }
 
-void CmdQuestUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdQuestUpdateHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 
-	int nQuestID = obj["questid"].toInt();
+    int nQuestID = jsonRequest["questid"].toInt();
 	QString sNamePrev = "";
 	QString sTextPrev = "";
 	int nScorePrev = 0;
@@ -81,7 +81,7 @@ void CmdQuestUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 		query.prepare("SELECT * FROM quest WHERE idquest = :questid");
 		query.bindValue(":questid", nQuestID);
 		if(!query.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 			return;
 		}
 		if (query.next()) {
@@ -98,38 +98,38 @@ void CmdQuestUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			sCopyrightPrev = record.value("copyright").toString();
 			sDescriptionStatePrev = record.value("description_state").toString();
 		}else{
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Quest not found"));
+            pRequest->sendMessageError(cmd(), Error(404, "Quest not found"));
 			return;
 		}
 	}
 
 	// Update name
-	if(obj.contains("name")){
-		QString sName = obj["name"].toString().trimmed();
+    if(jsonRequest.contains("name")){
+        QString sName = jsonRequest["name"].toString().trimmed();
 		if(sName != sNamePrev){
 			QSqlQuery query(db);
 			query.prepare("UPDATE quest SET name = :name WHERE idquest = :questid");
 			query.bindValue(":name", sName);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
 			sNamePrev = sName;
-			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated name of quest #" + QString::number(nQuestID) + " from [" + sNamePrev + "] to [" + sName + "]");
+            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated name of quest #" + QString::number(nQuestID) + " from [" + sNamePrev + "] to [" + sName + "]");
 		}
 	}
 
 	// Update gameid
-	if(obj.contains("gameid")){
-		int nGameID = obj["gameid"].toInt();
+    if(jsonRequest.contains("gameid")){
+        int nGameID = jsonRequest["gameid"].toInt();
 		{
 			QSqlQuery query(db);
 			query.prepare("SELECT * FROM games WHERE id = :id");
 			query.bindValue(":id", nGameID);
 			query.exec();
 			if (!query.next()) {
-				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Game not found"));
+                pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
 				return;
 			}
 		}
@@ -140,164 +140,162 @@ void CmdQuestUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			query.bindValue(":gameid", nGameID);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-			RunTasks::UpdateMaxScoreGame(pWebSocketServer,nGameID);
-			RunTasks::UpdateMaxScoreGame(pWebSocketServer,nGameIDPrev);
-			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Moved quest #" + QString::number(nQuestID) + " from " + QString::number(nGameIDPrev) + " to " + QString::number(nGameID));
+            RunTasks::UpdateMaxScoreGame(pRequest->server(),nGameID);
+            RunTasks::UpdateMaxScoreGame(pRequest->server(),nGameIDPrev);
+            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Moved quest #" + QString::number(nQuestID) + " from " + QString::number(nGameIDPrev) + " to " + QString::number(nGameID));
 			nGameIDPrev = nGameID;
 		}
 	}
 	
 	// Update subject
-	if(obj.contains("subject")){
-		QString sSubject = obj["subject"].toString().trimmed();
+    if(jsonRequest.contains("subject")){
+        QString sSubject = jsonRequest["subject"].toString().trimmed();
 		if(sSubject != sSubjectPrev){
 			QSqlQuery query(db);
 			query.prepare("UPDATE quest SET subject = :subject WHERE idquest = :questid");
 			query.bindValue(":subject", sSubject);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated subject of quest #" + QString::number(nQuestID) + " " + sNamePrev);
+            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated subject of quest #" + QString::number(nQuestID) + " " + sNamePrev);
 			// TODO update skills of users in future
 		}
 	}
 	
 	// Update text
-	if(obj.contains("text")){
-		QString sText = obj["text"].toString().trimmed();
+    if(jsonRequest.contains("text")){
+        QString sText = jsonRequest["text"].toString().trimmed();
 		if(sText != sTextPrev){
 			QSqlQuery query(db);
 			query.prepare("UPDATE quest SET text = :text WHERE idquest = :questid");
 			query.bindValue(":text", sText);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated text of quest #" + QString::number(nQuestID) + " " + sNamePrev);
+            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated text of quest #" + QString::number(nQuestID) + " " + sNamePrev);
 		}
 	}
 	
 	// Update score
-	if(obj.contains("score")){
-		int nScore = obj["score"].toInt();
+    if(jsonRequest.contains("score")){
+        int nScore = jsonRequest["score"].toInt();
 		if(nScore != nScorePrev){
 			QSqlQuery query(db);
 			query.prepare("UPDATE quest SET score = :score WHERE idquest = :questid");
 			query.bindValue(":score", nScore);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated score of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from " + QString::number(nScorePrev) + " to " + QString::number(nScore));
-			RunTasks::UpdateMaxScoreGame(pWebSocketServer,nGameIDPrev);
+            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated score of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from " + QString::number(nScorePrev) + " to " + QString::number(nScore));
+            RunTasks::UpdateMaxScoreGame(pRequest->server(),nGameIDPrev);
 			// TODO update users reting/score
 		}
 	}
 	
 	// Update answer
-	if(obj.contains("answer")){
-		QString sAnswer = obj["answer"].toString();
+    if(jsonRequest.contains("answer")){
+        QString sAnswer = jsonRequest["answer"].toString();
 		if(sAnswer != sAnswerPrev){
 			QSqlQuery query(db);
 			query.prepare("UPDATE quest SET answer = :answer WHERE idquest = :questid");
 			query.bindValue(":answer", sAnswer);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated answer of quest #" + QString::number(nQuestID) + " " + sNamePrev);
+            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated answer of quest #" + QString::number(nQuestID) + " " + sNamePrev);
 		}
 	}
 	
 	// Update author
-	if(obj.contains("author")){
-		QString sAuthor = obj["author"].toString();
+    if(jsonRequest.contains("author")){
+        QString sAuthor = jsonRequest["author"].toString();
 		if(sAuthor != sAuthorPrev){
 			QSqlQuery query(db);
 			query.prepare("UPDATE quest SET author = :author WHERE idquest = :questid");
 			query.bindValue(":author", sAuthor);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated author of quest #" + QString::number(nQuestID) + " " + sNamePrev);
+            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated author of quest #" + QString::number(nQuestID) + " " + sNamePrev);
 		}
 	}
 	
 	// Update answer format
-	if(obj.contains("answer_format")){
-		QString sAnswerFormat = obj["answer_format"].toString();
+    if(jsonRequest.contains("answer_format")){
+        QString sAnswerFormat = jsonRequest["answer_format"].toString();
 		if(sAnswerFormat != sAnswerFormatPrev){
 			QSqlQuery query(db);
 			query.prepare("UPDATE quest SET answer_format = :answer_format WHERE idquest = :questid");
 			query.bindValue(":answer_format", sAnswerFormat);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated answer format of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sAnswerFormatPrev + "] to [" + sAnswerFormat + "]");
+            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated answer format of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sAnswerFormatPrev + "] to [" + sAnswerFormat + "]");
 		}
 	}
 	
 	// Update state
-	if(obj.contains("state")){
-		QString sState = obj["state"].toString();
+    if(jsonRequest.contains("state")){
+        QString sState = jsonRequest["state"].toString();
 		if(sState != sStatePrev){
 			QSqlQuery query(db);
 			query.prepare("UPDATE quest SET state = :state WHERE idquest = :questid");
 			query.bindValue(":state", sState);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated state of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sStatePrev + "] to [" + sState + "]");
+            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated state of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sStatePrev + "] to [" + sState + "]");
 		}
 	}
 	
 	// Update copyright
-	if(obj.contains("copyright")){
-		QString sCopyright = obj["copyright"].toString();
+    if(jsonRequest.contains("copyright")){
+        QString sCopyright = jsonRequest["copyright"].toString();
 		if(sCopyright != sCopyrightPrev){
 			QSqlQuery query(db);
 			query.prepare("UPDATE quest SET copyright = :copyright WHERE idquest = :questid");
 			query.bindValue(":copyright", sCopyright);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-			RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Updated copyright of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sCopyrightPrev + "] to [" + sCopyright + "]");
+            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated copyright of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sCopyrightPrev + "] to [" + sCopyright + "]");
 		}
 	}
 	
 	// Update copyright
-	if(obj.contains("description_state")){
-		QString sDescriptionState = obj["description_state"].toString();
+    if(jsonRequest.contains("description_state")){
+        QString sDescriptionState = jsonRequest["description_state"].toString();
 		if(sDescriptionState != sDescriptionStatePrev){
 			QSqlQuery query(db);
 			query.prepare("UPDATE quest SET description_state = :description_state WHERE idquest = :questid");
 			query.bindValue(":description_state", sDescriptionState);
 			query.bindValue(":questid", nQuestID);
 			if (!query.exec()){
-				pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
 			// nothing to inform
 		}
 	}
-	
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	pWebSocketServer->sendMessage(pClient, jsonData);
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

@@ -41,63 +41,61 @@ QStringList CmdAnswerListHandler::errors(){
 	return list;
 }
 
-void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdAnswerListHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["m"] = QJsonValue(m);
-
-	int nPage = obj["page"].toInt();
-	jsonData["page"] = nPage;
+    int nPage = jsonRequest["page"].toInt();
+    jsonResponse["page"] = nPage;
 	
-	int nOnPage = obj["onpage"].toInt();
-	jsonData["onpage"] = nOnPage;
+    int nOnPage = jsonRequest["onpage"].toInt();
+    jsonResponse["onpage"] = nOnPage;
 
 	if(nOnPage > 50){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::OnPageCouldNotBeMoreThen50());
+        pRequest->sendMessageError(cmd(), Errors::OnPageCouldNotBeMoreThen50());
 		return;
 	}
 
 	QStringList filters;
 	QMap<QString,QString> filter_values;
 
-	if(obj.contains("userid")){
-		int userid = obj["userid"].toInt();
+    if(jsonRequest.contains("userid")){
+        int userid = jsonRequest["userid"].toInt();
 		filters << "(u.id = :userid)";
 		filter_values[":userid"] = userid;
 	}
 	
-	if(obj.contains("user")){
-		QString user = obj["user"].toString().trimmed();
+    if(jsonRequest.contains("user")){
+        QString user = jsonRequest["user"].toString().trimmed();
 		filters << "(u.email like :email OR u.nick like :nick)";
 		filter_values[":email"] = "%" + user + "%";
 		filter_values[":nick"] = "%" + user + "%";
 	}
 
-	if(obj.contains("questid")){
-		int questid = obj["questid"].toInt();
+    if(jsonRequest.contains("questid")){
+        int questid = jsonRequest["questid"].toInt();
 		filters << "(q.idquest = :questid)";
 		filter_values[":questid"] = questid;
 	}
 	
-	if(obj.contains("questname")){
-		QString questname = obj["questname"].toString().trimmed();
+    if(jsonRequest.contains("questname")){
+        QString questname = jsonRequest["questname"].toString().trimmed();
 		if(questname != ""){
 			filters << "(q.name LIKE :questname)";
 			filter_values[":questname"] = "%" + questname + "%";
 		}
 	}
 	
-	if(obj.contains("questsubject")){
-		QString questsubject = obj["questsubject"].toString().trimmed();
+    if(jsonRequest.contains("questsubject")){
+        QString questsubject = jsonRequest["questsubject"].toString().trimmed();
 		if(questsubject != ""){
 			filters << "(q.subject = :questsubject)";
 			filter_values[":questsubject"] = questsubject;
 		}
 	}
 
-	if(obj.contains("passed")){
-		QString passed = obj["passed"].toString().trimmed();
+    if(jsonRequest.contains("passed")){
+        QString passed = jsonRequest["passed"].toString().trimmed();
 		if(passed != ""){
 			filters << "(uqa.passed = :passed)";
 			filter_values[":passed"] = passed;
@@ -108,9 +106,9 @@ void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	if(where.length() > 0){
 		where = "WHERE " + where;
 	}
-	
+
 	// count quests
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 	
 	{
 		QSqlQuery query(db);
@@ -125,7 +123,7 @@ void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		query.exec();
 		if (query.next()) {
 			QSqlRecord record = query.record();
-			jsonData["count"] = record.value("cnt").toInt();
+            jsonResponse["count"] = record.value("cnt").toInt();
 		}
 	}
 
@@ -187,7 +185,6 @@ void CmdAnswerListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 		}
 	}
 
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["data"] = answerlist;
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["data"] = answerlist;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

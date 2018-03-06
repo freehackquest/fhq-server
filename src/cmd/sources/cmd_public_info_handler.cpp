@@ -38,16 +38,18 @@ QStringList CmdPublicInfoHandler::errors(){
 	return list;
 }
 
-void CmdPublicInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
-	QJsonObject jsonData;
+void CmdPublicInfoHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+
     QJsonObject jsonQuests;
     QJsonArray jsonWinners;
     QJsonArray jsonCities;
 
     // fill quests info
-    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serverinfo");
+    IMemoryCache *pMemoryCache = pRequest->server()->findMemoryCache("serverinfo");
     if(pMemoryCache == NULL){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
+        pRequest->sendMessageError(cmd(), Errors::InternalServerError());
         return;
     }
     MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
@@ -55,7 +57,8 @@ void CmdPublicInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
     jsonQuests["attempts"] = pMemoryCacheServerInfo->countQuestsAttempt();
     jsonQuests["solved"] = pMemoryCacheServerInfo->countQuestsCompleted();
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
+
 
     int nMoreThen = 2;
     int nCitiesLimit = 20;
@@ -77,7 +80,7 @@ void CmdPublicInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         query.bindValue(":morethan", nMoreThen);
         query.bindValue(":citieslimit", nCitiesLimit);
         if (!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
         while(query.next()) {
@@ -97,7 +100,7 @@ void CmdPublicInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         query.prepare("SELECT u.nick, u.university, u.rating FROM users u WHERE u.role = :role ORDER BY u.rating DESC LIMIT 0,10");
         query.bindValue(":role", "user");
         if (!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
         int nPlace = 1;
@@ -113,11 +116,9 @@ void CmdPublicInfoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
         }
     }
 
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["m"] = QJsonValue(m);
-    jsonData["quests"] = jsonQuests;
-    jsonData["winners"] = jsonWinners;
-    jsonData["cities"] = jsonCities;
-	jsonData["connectedusers"] = pWebSocketServer->getConnectedUsers();
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["quests"] = jsonQuests;
+    jsonResponse["winners"] = jsonWinners;
+    jsonResponse["cities"] = jsonCities;
+    jsonResponse["connectedusers"] = pRequest->server()->getConnectedUsers();
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

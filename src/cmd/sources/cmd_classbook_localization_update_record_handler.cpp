@@ -43,27 +43,29 @@ QStringList CmdClassbookLocalizationUpdateRecordHandler::errors(){
     return list;
 }
 
-void CmdClassbookLocalizationUpdateRecordHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 
     QJsonObject data;
 
     QSqlQuery query(db);
-    int classbook_localizationid = obj["classbook_localizationid"].toInt();
+    int classbook_localizationid = jsonRequest["classbook_localizationid"].toInt();
     query.prepare("SELECT id FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", classbook_localizationid);
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
     if(!query.next()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This localization doesn't exist"));
+        pRequest->sendMessageError(cmd(), Error(404, "This localization doesn't exist"));
         return;
     }
 
-    QString name = obj["name"].toString().trimmed();
-    QString content = obj["content"].toString().trimmed();
+    QString name = jsonRequest["name"].toString().trimmed();
+    QString content = jsonRequest["content"].toString().trimmed();
 
     //Set md5_content hash
     QString md5_content = QString(QCryptographicHash::hash(content.toUtf8(), QCryptographicHash::Md5).toHex());
@@ -75,7 +77,7 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(QWebSocket *pClient, IW
     query.bindValue(":content", content);
     query.bindValue(":md5_content", md5_content);
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
     query.prepare("SELECT classbookid, lang FROM classbook_localization WHERE id=:id");
@@ -90,10 +92,6 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(QWebSocket *pClient, IW
     data["content"] = content;
     data["md5_content"] = md5_content;
 
-    QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonData["m"] = QJsonValue(m);
-    jsonData["result"] = QJsonValue("DONE");
-    jsonData["data"] = data;
-    pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["data"] = data;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

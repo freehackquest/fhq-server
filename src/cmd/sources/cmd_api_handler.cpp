@@ -37,13 +37,13 @@ QStringList CmdApiHandler::errors(){
 	return list;
 }
 
-void CmdApiHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject /*obj*/){
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["m"] = QJsonValue(m);
+void CmdApiHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonResponse;
+
 	QJsonObject data;
-	pWebSocketServer->exportApi(data);
-	jsonData["data"] = data;
-    jsonData["version"] = QCoreApplication::applicationVersion();
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->server()->exportApi(data);
+
+    jsonResponse["data"] = data;
+    jsonResponse["version"] = QCoreApplication::applicationVersion();
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

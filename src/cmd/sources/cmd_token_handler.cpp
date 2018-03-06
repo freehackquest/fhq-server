@@ -41,22 +41,26 @@ QStringList CmdTokenHandler::errors(){
 	return list;
 }
 
-void CmdTokenHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdTokenHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+
 	QJsonObject jsonData;
     jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 	
-	if(!obj.contains("token")){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("requred parameter token"));
+    if(!jsonRequest.contains("token")){
+        pRequest->sendMessageError(cmd(), Errors::NotFound("requred parameter token"));
 		return;
 	}
-	QString token = obj["token"].toString();
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QString token = jsonRequest["token"].toString();
+    QSqlDatabase db = *(pRequest->server()->database());
+
 	QSqlQuery query(db);
 	query.prepare("SELECT * FROM users_tokens WHERE token = :token");
 	query.bindValue(":token", token);
 	if(!query.exec()){
 		Log::err(TAG, query.lastError().text());
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 		return;
 	}
 	if (query.next()) {
@@ -66,19 +70,17 @@ void CmdTokenHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketSe
 		QString data = record.value("data").toString();
 		QString start_date = record.value("start_date").toString();
 		QString end_date = record.value("end_date").toString();
-		QString lastip = pClient->peerAddress().toString();
-		pWebSocketServer->setUserToken(pClient, new ModelUserToken(data));
+        QString lastip = pRequest->client()->peerAddress().toString();
+        pRequest->server()->setUserToken(pRequest->client(), new ModelUserToken(data));
         Log::info(TAG, "userid: " + QString::number(userid));
         // TODO redesign this
-        RunTasks::UpdateUserLocation(pWebSocketServer, userid, lastip);
+        RunTasks::UpdateUserLocation(pRequest->server(), userid, lastip);
 	}else{
 		Log::err(TAG, "Invalid token " + token);
 		// ["error"]
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InvalidToken());
+        pRequest->sendMessageError(cmd(), Errors::InvalidToken());
 		return;
 	}
 
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

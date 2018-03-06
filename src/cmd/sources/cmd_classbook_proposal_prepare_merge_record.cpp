@@ -42,30 +42,32 @@ QStringList CmdClassbookProposalPrepareMergeRecordHandler::errors(){
     return list;
 }
 
-void CmdClassbookProposalPrepareMergeRecordHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 
     QJsonObject data;
 
     QSqlQuery query(db);
     QSqlRecord record = query.record();
-    int classbook_proposal_id = obj["classbook_proposal_id"].toInt();
+    int classbook_proposal_id = jsonRequest["classbook_proposal_id"].toInt();
     query.prepare("SELECT id FROM classbook_proposal WHERE id = :classbook_proposal_id");
-    query.bindValue(":classbook_proposal_id", obj["classbook_proposal_id"].toInt());
+    query.bindValue(":classbook_proposal_id", jsonRequest["classbook_proposal_id"].toInt());
     if(!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
     if(!query.next()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "This proposal doesn't exist"));
+        pRequest->sendMessageError(cmd(), Error(404, "This proposal doesn't exist"));
         return;
     }
 
     query.prepare("SELECT content FROM classbook WHERE id IN (SELECT classbookid FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", classbook_proposal_id);
     if (!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
     QString curtxt = record.value("content").toString();
@@ -73,7 +75,7 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(QWebSocket *pClient, 
     query.prepare("SELECT content, content_before FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", classbook_proposal_id);
     if (!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
     QString txt1 = record.value("content").toString();
@@ -83,12 +85,8 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(QWebSocket *pClient, 
 
     //TO DO final merge, lang checkout, update output (with data)
 
-    QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonData["m"] = QJsonValue(m);
-    jsonData["result"] = QJsonValue("DONE");
-    jsonData["data"] = data;
-    pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["data"] = data;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 

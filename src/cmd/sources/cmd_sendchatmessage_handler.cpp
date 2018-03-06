@@ -36,8 +36,11 @@ QStringList CmdSendChatMessageHandler::errors(){
 	return list;
 }
 
-void CmdSendChatMessageHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m,  QJsonObject obj){
-	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
+void CmdSendChatMessageHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+
+    IUserToken *pUserToken = pRequest->userToken();
 	QString username = "";
 	if(pUserToken != NULL){
 		username = pUserToken->nick();
@@ -45,27 +48,21 @@ void CmdSendChatMessageHandler::handle(QWebSocket *pClient, IWebSocketServer *pW
 		username = "Guest";
 	}
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["result"] = QJsonValue("DONE");
-    jsonData["m"] = QJsonValue(m);
-	pWebSocketServer->sendMessage(pClient, jsonData);
-	
-	QSqlDatabase db = *(pWebSocketServer->database());
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+
+    QSqlDatabase db = *(pRequest->server()->database());
 	QSqlQuery query(db);
 	query.prepare("INSERT INTO chatmessages(user, message, dt) VALUES(:user,:message, NOW())");
 	query.bindValue(":user", username);
-	query.bindValue(":message", obj["message"].toString());
+    query.bindValue(":message", jsonRequest["message"].toString());
 	query.exec();
 	
 	QJsonObject jsonData2;
 	jsonData2["cmd"] = QJsonValue("chat");
-	jsonData2["type"] = obj["type"];
+    jsonData2["type"] = jsonRequest["type"];
 	jsonData2["user"] = username;
-	jsonData2["message"] = obj["message"];
+    jsonData2["message"] = jsonRequest["message"];
 	jsonData2["dt"] = QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss");
 
-	pWebSocketServer->sendToAll(jsonData2);
-	
-	
+    pRequest->server()->sendToAll(jsonData2);
 }

@@ -52,16 +52,15 @@ QStringList CmdQuestProposalHandler::errors(){
 	return list;
 }
 
-void CmdQuestProposalHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
-
-    QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
+void CmdQuestProposalHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 
-    IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
+    IUserToken *pUserToken = pRequest->userToken();
     int nUserID = 0;
     QString sUserEmail = "";
     if(pUserToken != NULL) {
@@ -71,50 +70,50 @@ void CmdQuestProposalHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
 
     // check the user already sended quest
 
-    int nGameID = obj["gameid"].toInt();
+    int nGameID = jsonRequest["gameid"].toInt();
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM games WHERE id = :id");
         query.bindValue(":id", nGameID);
         query.exec();
         if (!query.next()) {
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Game not found"));
+            pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
             return;
         }
     }
 
-    QString sName = obj["name"].toString().trimmed();
+    QString sName = jsonRequest["name"].toString().trimmed();
     if(sName.length() == 0){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(400, "Name could not be empty"));
+        pRequest->sendMessageError(cmd(), Error(400, "Name could not be empty"));
         return;
     }
 
-    QString sText = obj["text"].toString().trimmed();
+    QString sText = jsonRequest["text"].toString().trimmed();
 
-    int nScore = obj["score"].toInt();
-    QString sSubject = obj["subject"].toString().trimmed();
-    QString sAnswer = obj["answer"].toString().trimmed();
+    int nScore = jsonRequest["score"].toInt();
+    QString sSubject = jsonRequest["subject"].toString().trimmed();
+    QString sAnswer = jsonRequest["answer"].toString().trimmed();
 
     if(sAnswer.length() == 0){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(400, "Answer could not be empty"));
+        pRequest->sendMessageError(cmd(), Error(400, "Answer could not be empty"));
         return;
     }
 
-    QString sAuthor = obj["author"].toString().trimmed();
+    QString sAuthor = jsonRequest["author"].toString().trimmed();
 
     if(sAuthor.length() == 0){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(400, "Author could not be empty"));
+        pRequest->sendMessageError(cmd(), Error(400, "Author could not be empty"));
         return;
     }
 
-    QString sAnswerFormat = obj["answer_format"].toString().trimmed();
+    QString sAnswerFormat = jsonRequest["answer_format"].toString().trimmed();
 
     if(sAnswerFormat.length() == 0){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(400, "Answer Format could not be empty"));
+        pRequest->sendMessageError(cmd(), Error(400, "Answer Format could not be empty"));
         return;
     }
 
-    QString sCopyright = obj["copyright"].toString().trimmed();
+    QString sCopyright = jsonRequest["copyright"].toString().trimmed();
 
     QSqlQuery query(db);
     query.prepare(
@@ -161,14 +160,14 @@ void CmdQuestProposalHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
     query.bindValue(":confirmed", 0);
 
     if (!query.exec()){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
     // pMemoryCacheServerInfo->incrementQuests();
 
 
     int nQuestProposalId = query.lastInsertId().toInt();
-    jsonData["questid"] = QJsonValue(nQuestProposalId);
+    jsonResponse["questid"] = QJsonValue(nQuestProposalId);
 
     // TODO move to tasks
     QString sMailHost = pSettings->getSettString("mail_host");
@@ -201,23 +200,21 @@ void CmdQuestProposalHandler::handle(QWebSocket *pClient, IWebSocketServer *pWeb
 
     // Now we can send the mail
     if (!smtp.connectToHost()) {
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, "[MAIL] Failed to connect to host!"));
+        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to connect to host!"));
         return;
     }
 
     if (!smtp.login()) {
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, "[MAIL] Failed to login!"));
+        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to login!"));
         return;
     }
 
     if (!smtp.sendMail(message)) {
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, "[MAIL] Failed to send mail!"));
+        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to send mail!"));
         return;
     }
     smtp.quit();
 
 
-    jsonData["result"] = QJsonValue("DONE");
-    jsonData["m"] = QJsonValue(m);
-    pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

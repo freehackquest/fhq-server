@@ -39,31 +39,27 @@ QStringList CmdQuestDeleteHandler::errors(){
 	return list;
 }
 
-void CmdQuestDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
-    /*IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
-	
-	if(pUserToken == NULL){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotAuthorizedRequest());
-		return;
-    }*/
+void CmdQuestDeleteHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("serverinfo");
+    IMemoryCache *pMemoryCache = pRequest->server()->findMemoryCache("serverinfo");
     if(pMemoryCache == NULL){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
+        pRequest->sendMessageError(cmd(), Errors::InternalServerError());
         return;
     }
     MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
 
-	int questid = obj["questid"].toInt();
+    int questid = jsonRequest["questid"].toInt();
 	QString sName = "";
 	QString sSubject = "";
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 	{
 		QSqlQuery query(db);
 		query.prepare("SELECT * FROM quest WHERE idquest = :questid");
 		query.bindValue(":questid", questid);
 		if(!query.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 			return;
 		}
 		if (query.next()) {
@@ -71,7 +67,7 @@ void CmdQuestDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 			sName = record.value("name").toString();
 			sSubject = record.value("subject").toString();
 		}else{
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(404, "Quest not found"));
+            pRequest->sendMessageError(cmd(), Error(404, "Quest not found"));
 			return;
 		}
 	}
@@ -81,7 +77,7 @@ void CmdQuestDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 		query.prepare("DELETE FROM quest WHERE idquest = :questid");
 		query.bindValue(":questid", questid);
 		if(!query.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 			return;
 		}
 	}
@@ -92,7 +88,7 @@ void CmdQuestDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 		query.prepare("DELETE FROM users_quests_answers WHERE questid = :questid");
 		query.bindValue(":questid", questid);
 		if(!query.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 			return;
 		}
 	}
@@ -103,20 +99,16 @@ void CmdQuestDeleteHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 		query.prepare("DELETE FROM users_quests WHERE questid = :questid");
 		query.bindValue(":questid", questid);
 		if(!query.exec()){
-			pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 			return;
 		}
 	}
     pMemoryCacheServerInfo->decrementQuests();
 
-	RunTasks::AddPublicEvents(pWebSocketServer, "quests", "Removed quest #" + QString::number(questid) + " " + sName + " (subject: " + sSubject + ")");
+    RunTasks::AddPublicEvents(pRequest->server(), "quests", "Removed quest #" + QString::number(questid) + " " + sName + " (subject: " + sSubject + ")");
 
 	// todo recalculate rating/score for users how solved this quest
 
-    QJsonObject jsonResponse;
-    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
     jsonResponse["subject"] = sSubject;
-    jsonResponse["result"] = QJsonValue("DONE");
-    jsonResponse["m"] = QJsonValue(m);
-    pWebSocketServer->sendMessage(pClient, jsonResponse);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

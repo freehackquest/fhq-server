@@ -40,17 +40,17 @@ QStringList CmdServerSettingsUpdateHandler::errors(){
 	return list;
 }
 
-void CmdServerSettingsUpdateHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
+void CmdServerSettingsUpdateHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
-    QString sName = obj["name"].toString();
-    QString sNewValue = obj["value"].toString();
+    QString sName = jsonRequest["name"].toString();
+    QString sNewValue = jsonRequest["value"].toString();
 
     if(!pSettings->hasSett(sName)){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotFound("Setting with name: " + sName + " did not found"));
+        pRequest->sendMessageError(cmd(), Errors::NotFound("Setting with name: " + sName + " did not found"));
         return;
     }
 
@@ -65,11 +65,9 @@ void CmdServerSettingsUpdateHandler::handle(QWebSocket *pClient, IWebSocketServe
     }else if(sType == SETT_TYPE_BOOLEAN){
         pSettings->setSettBoolean(sName, sNewValue == "yes");
     }else{
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotImplementedYet());
+        pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
         return;
     }
 
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

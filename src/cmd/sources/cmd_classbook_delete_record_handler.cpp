@@ -40,11 +40,13 @@ QStringList CmdClassbookDeleteRecordHandler::errors(){
     return list;
 }
 
-void CmdClassbookDeleteRecordHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 
-    int classbookid = obj["classbookid"].toInt();
+    int classbookid = jsonRequest["classbookid"].toInt();
 
     //DELETE Record IF haven't childs
     QSqlQuery query(db);
@@ -53,7 +55,7 @@ void CmdClassbookDeleteRecordHandler::handle(QWebSocket *pClient, IWebSocketServ
         query.bindValue(":classbookid", classbookid);
         query.exec();
         if (query.next()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Could not delete, because childs exists. Please remove childs first."));
+            pRequest->sendMessageError(cmd(), Error(403, "Could not delete, because childs exists. Please remove childs first."));
             return;
         }
         //Delete record in classbook
@@ -61,7 +63,7 @@ void CmdClassbookDeleteRecordHandler::handle(QWebSocket *pClient, IWebSocketServ
         query.bindValue(":classbookid", classbookid);
         query.exec();
         if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::DatabaseError(query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Errors::DatabaseError(query.lastError().text()));
             return;
         }
 
@@ -70,15 +72,11 @@ void CmdClassbookDeleteRecordHandler::handle(QWebSocket *pClient, IWebSocketServ
         query.bindValue(":classbookid", classbookid);
         query.exec();
         if(!query.exec()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::DatabaseError(query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Errors::DatabaseError(query.lastError().text()));
             return;
         }
     }
 
-    QJsonObject jsonResponse;
-    jsonResponse["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonResponse["m"] = QJsonValue(m);
-    jsonResponse["result"] = QJsonValue("DONE");
-    pWebSocketServer->sendMessage(pClient, jsonResponse);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 

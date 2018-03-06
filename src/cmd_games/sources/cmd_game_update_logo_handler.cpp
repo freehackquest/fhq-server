@@ -45,9 +45,12 @@ QStringList CmdGameUpdateLogoHandler::errors(){
 	return list;
 }
 
-void CmdGameUpdateLogoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdGameUpdateLogoHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    int nGameID = obj["gameid"].toInt();
+
+    int nGameID = jsonRequest["gameid"].toInt();
 
     // TODO check existing game
 
@@ -59,18 +62,18 @@ void CmdGameUpdateLogoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWe
 
     QByteArray baImagePNGBase64;
 
-    QString sImagePngBase64 = obj["image_png_base64"].toString();
+    QString sImagePngBase64 = jsonRequest["image_png_base64"].toString();
     baImagePNGBase64.append(sImagePngBase64);
     QByteArray baImagePNG = QByteArray::fromBase64(baImagePNGBase64); // .fromBase64(baImagePNGBase64);
 
     if(baImagePNG.size() == 0){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(400, "Could not decode base64"));
+        pRequest->sendMessageError(cmd(), Error(400, "Could not decode base64"));
         return;
     }
 
     QImage img = QImage::fromData(baImagePNG,"PNG");
     if(img.height() == 0 && img.width() == 0){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(400, "Could not decode bytearray to png"));
+        pRequest->sendMessageError(cmd(), Error(400, "Could not decode bytearray to png"));
         return;
     }
 
@@ -80,18 +83,14 @@ void CmdGameUpdateLogoHandler::handle(QWebSocket *pClient, IWebSocketServer *pWe
 
     if(file.exists()){
         if(!file.remove()){
-            pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Could not remove old file"));
+            pRequest->sendMessageError(cmd(), Error(403, "Could not remove old file"));
             return;
         }
     }
     if(!img.save(sFilename)){
-        pWebSocketServer->sendMessageError(pClient, cmd(), m, Error(403, "Could not save new file"));
+        pRequest->sendMessageError(cmd(), Error(403, "Could not save new file"));
         return;
     }
 
-    QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-    jsonData["result"] = QJsonValue("DONE");
-    jsonData["m"] = QJsonValue(m);
-    pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

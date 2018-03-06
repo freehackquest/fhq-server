@@ -41,25 +41,25 @@ QStringList CmdScoreboardHandler::errors(){
 	return list;
 }
 
-void CmdScoreboardHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdScoreboardHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 
-	int nPage = obj["page"].toInt();
-	jsonData["page"] = nPage;
+    int nPage = jsonRequest["page"].toInt();
+    jsonResponse["page"] = nPage;
 	
-	int nOnPage = obj["onpage"].toInt();
+    int nOnPage = jsonRequest["onpage"].toInt();
 	if(nOnPage > 50){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::OnPageCouldNotBeMoreThen50());
+        pRequest->sendMessageError(cmd(), Errors::OnPageCouldNotBeMoreThen50());
 	}
-	jsonData["onpage"] = nOnPage;
+    jsonResponse["onpage"] = nOnPage;
 
 	QStringList filters;
 	QMap<QString,QString> filter_values;
 	
-	if(obj.contains("user")){
-		QString user = obj["user"].toString().trimmed();
+    if(jsonRequest.contains("user")){
+        QString user = jsonRequest["user"].toString().trimmed();
 		filters << "(u.nick like :nick)";
 		filter_values[":nick"] = "%" + user + "%";
 	}
@@ -72,18 +72,17 @@ void CmdScoreboardHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSoc
 	}
 
 	
-	IMemoryCache *pMemoryCache = pWebSocketServer->findMemoryCache("scoreboard");
+    IMemoryCache *pMemoryCache = pRequest->server()->findMemoryCache("scoreboard");
 	if(pMemoryCache == NULL){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::InternalServerError());
+        pRequest->sendMessageError(cmd(), Errors::InternalServerError());
 		return;
 	}
 
 	MemoryCacheScoreboard *pMemoryCacheScoreboard = dynamic_cast<MemoryCacheScoreboard*>(pMemoryCache);
 	pMemoryCacheScoreboard->loadSync();
 
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	jsonData["count"] = pMemoryCacheScoreboard->count();
-	jsonData["data"] = pMemoryCacheScoreboard->toJsonArray();
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["count"] = pMemoryCacheScoreboard->count();
+    jsonResponse["data"] = pMemoryCacheScoreboard->toJsonArray();
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

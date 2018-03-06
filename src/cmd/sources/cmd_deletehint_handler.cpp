@@ -37,29 +37,21 @@ QStringList CmdDeleteHintHandler::errors(){
 	return list;
 }
 
-void CmdDeleteHintHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
-	IUserToken *pUserToken = pWebSocketServer->getUserToken(pClient);
-	
-	if(pUserToken == NULL){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::NotAuthorizedRequest());
-		return;
-	}
+void CmdDeleteHintHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-	int hintid = obj["hintid"].toInt();
+    int hintid = jsonRequest["hintid"].toInt();
 	if(hintid == 0){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::HintIDMustBeNotZero());
+        pRequest->sendMessageError(cmd(), Errors::HintIDMustBeNotZero()); // TODO redesign
 		return;
 	}
 
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 	QSqlQuery query(db);
 	query.prepare("DELETE FROM quests_hints WHERE id = :hintid");
 	query.bindValue(":hintid", hintid);
 	query.exec();
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

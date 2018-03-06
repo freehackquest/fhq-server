@@ -46,34 +46,34 @@ QStringList CmdPublicEventsListHandler::errors(){
 	return list;
 }
 
-void CmdPublicEventsListHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QString m, QJsonObject obj){
+void CmdPublicEventsListHandler::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-	QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
 
-	int nPage = obj["page"].toInt();
-	jsonData["page"] = nPage;
+    int nPage = jsonRequest["page"].toInt();
+    jsonResponse["page"] = nPage;
 	
-	int nOnPage = obj["onpage"].toInt();;
+    int nOnPage = jsonRequest["onpage"].toInt();;
 	if(nOnPage > 50){
-		pWebSocketServer->sendMessageError(pClient, cmd(), m, Errors::OnPageCouldNotBeMoreThen50());
+        pRequest->sendMessageError(cmd(), Errors::OnPageCouldNotBeMoreThen50());
 		return;
 	}
-	jsonData["onpage"] = nOnPage;
+    jsonResponse["onpage"] = nOnPage;
 
 	QStringList filters;
 	QMap<QString,QString> filter_values;
 	
-	if(obj.contains("type")){
-		QString type = obj["type"].toString().trimmed();
+    if(jsonRequest.contains("type")){
+        QString type = jsonRequest["type"].toString().trimmed();
 		if(type != ""){
 			filters << "(e.type = :type)";
 			filter_values[":type"] = type;
 		}
 	}
 	
-	if(obj.contains("search")){
-		QString search = obj["search"].toString().trimmed();
+    if(jsonRequest.contains("search")){
+        QString search = jsonRequest["search"].toString().trimmed();
 		if(search != ""){
 			filters << "(e.message LIKE :search)";
 			filter_values[":search"] = "%" + search + "%";
@@ -86,7 +86,7 @@ void CmdPublicEventsListHandler::handle(QWebSocket *pClient, IWebSocketServer *p
 	}
 	
 	// count quests
-	QSqlDatabase db = *(pWebSocketServer->database());
+    QSqlDatabase db = *(pRequest->server()->database());
 	
 	{
 		QSqlQuery query(db);
@@ -99,7 +99,7 @@ void CmdPublicEventsListHandler::handle(QWebSocket *pClient, IWebSocketServer *p
 		query.exec();
 		if (query.next()) {
 			QSqlRecord record = query.record();
-			jsonData["count"] = record.value("cnt").toInt();
+            jsonResponse["count"] = record.value("cnt").toInt();
 		}
 	}
 
@@ -128,8 +128,6 @@ void CmdPublicEventsListHandler::handle(QWebSocket *pClient, IWebSocketServer *p
 		}
 	}
 
-	jsonData["result"] = QJsonValue("DONE");
-	jsonData["m"] = QJsonValue(m);
-	jsonData["data"] = publiceventslist;
-	pWebSocketServer->sendMessage(pClient, jsonData);
+    jsonResponse["data"] = publiceventslist;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
