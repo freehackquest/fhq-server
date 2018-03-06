@@ -4,42 +4,41 @@
 
 CmdAddHintHandler::CmdAddHintHandler(){
 	TAG = "CmdAddHintHandler";
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
 	m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("quest id"));
 	m_vInputs.push_back(CmdInputDef("hint").required().string_().description("hint text"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdAddHintHandler::cmd(){
 	return "addhint";
 }
 
-bool CmdAddHintHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+std::string CmdAddHintHandler::description(){
+    return "Methid add hint to quest";
 }
 
-bool CmdAddHintHandler::accessUser(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdAddHintHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdAddHintHandler::accessTester(){
-	return false;
-}
-
-bool CmdAddHintHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdAddHintHandler::inputs(){
 	return m_vInputs;
-};
-
-QString CmdAddHintHandler::description(){
-	return "Methid add hint to quest";
 }
 
-QStringList CmdAddHintHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdAddHintHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

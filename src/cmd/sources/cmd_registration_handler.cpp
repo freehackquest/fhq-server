@@ -10,42 +10,41 @@
 
 CmdRegistrationHandler::CmdRegistrationHandler(){
     TAG = "CmdRegistrationHandler";
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(false);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("email").required().string_().description("E-mail"));
     m_vInputs.push_back(CmdInputDef("university").required().string_().description("University"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdRegistrationHandler::cmd(){
     return "registration";
 }
 
-bool CmdRegistrationHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdRegistrationHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdRegistrationHandler::accessUser(){
-	return true;
-}
-
-bool CmdRegistrationHandler::accessTester(){
-	return true;
-}
-
-bool CmdRegistrationHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdRegistrationHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdRegistrationHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdRegistrationHandler::description(){
 	return "Method for login";
 }
 
-QStringList CmdRegistrationHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdRegistrationHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

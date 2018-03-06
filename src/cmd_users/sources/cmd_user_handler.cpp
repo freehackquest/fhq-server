@@ -4,41 +4,40 @@
 
 CmdUserHandler::CmdUserHandler(){
     TAG = "CmdUserHandler";
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
 	m_vInputs.push_back(CmdInputDef("userid").optional().integer_().description("Id of user"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdUserHandler::cmd(){
 	return "user";
 }
 
-bool CmdUserHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdUserHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdUserHandler::accessUser(){
-	return true;
-}
-
-bool CmdUserHandler::accessTester(){
-	return true;
-}
-
-bool CmdUserHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdUserHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdUserHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdUserHandler::description(){
 	return "Return user info";
 }
 
-QStringList CmdUserHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdUserHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
@@ -122,8 +121,6 @@ void CmdUserHandler::handle(ModelRequest *pRequest){
 			// TODO clenup 'template' from user profiles
 		}
 	}
-	
-
 
     jsonResponse["data"] = data;
     jsonResponse["profile"] = profile;

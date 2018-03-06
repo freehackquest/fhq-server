@@ -5,6 +5,12 @@
 #include <QCryptographicHash>
 
 CmdGameUpdateHandler::CmdGameUpdateHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
     m_vInputs.push_back(CmdInputDef("name").string_().required().description("Name of the Game"));
     m_vInputs.push_back(CmdInputDef("description").string_().required().description("Description of the Game"));
@@ -17,38 +23,31 @@ CmdGameUpdateHandler::CmdGameUpdateHandler(){
     m_vInputs.push_back(CmdInputDef("organizators").string_().required().description("Organizators"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdGameUpdateHandler::cmd(){
     return "game_update";
 }
 
-bool CmdGameUpdateHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdGameUpdateHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdGameUpdateHandler::accessUser(){
-	return false;
-}
-
-bool CmdGameUpdateHandler::accessTester(){
-	return false;
-}
-
-bool CmdGameUpdateHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdGameUpdateHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdGameUpdateHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdGameUpdateHandler::description(){
 	return "Create the quest";
 }
 
-QStringList CmdGameUpdateHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdGameUpdateHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

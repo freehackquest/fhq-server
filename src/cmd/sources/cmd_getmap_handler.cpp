@@ -3,41 +3,37 @@
 #include <employ_settings.h>
 
 CmdGetMapHandler::CmdGetMapHandler(){
-	
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdGetMapHandler::cmd(){
 	return "getmap";
 }
 
-bool CmdGetMapHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdGetMapHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdGetMapHandler::accessUser(){
-	return true;
-}
-
-bool CmdGetMapHandler::accessTester(){
-	return true;
-}
-
-bool CmdGetMapHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdGetMapHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdGetMapHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdGetMapHandler::description(){
 	return "Returned coordinate list";
 }
 
-QStringList CmdGetMapHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdGetMapHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

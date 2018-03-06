@@ -2,45 +2,44 @@
 #include <QJsonArray>
 
 CmdDeletePublicEventHandler::CmdDeletePublicEventHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
 	m_vInputs.push_back(CmdInputDef("hintid").required().integer_().description("hint id"));
 	
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdDeletePublicEventHandler::cmd(){
 	return "deletepublicevent";
 }
 
-bool CmdDeletePublicEventHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdDeletePublicEventHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdDeletePublicEventHandler::accessUser(){
-	return false;
-}
-
-bool CmdDeletePublicEventHandler::accessTester(){
-	return false;
-}
-
-bool CmdDeletePublicEventHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdDeletePublicEventHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdDeletePublicEventHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdDeletePublicEventHandler::description(){
 	return
 		"Delete public event\n"
 		" Input params: \n"
 		"   * eventid \n";
 }
 
-QStringList CmdDeletePublicEventHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdDeletePublicEventHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

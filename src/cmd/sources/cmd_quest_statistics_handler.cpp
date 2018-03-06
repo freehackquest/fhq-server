@@ -6,42 +6,41 @@
 #include <QCryptographicHash>
 
 CmdQuestStatisticsHandler::CmdQuestStatisticsHandler(){
-	m_vInputs.push_back(CmdInputDef("questid").integer_().required().description("Quest ID"));
     TAG = "CmdQuestStatisticsHandler";
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
+	m_vInputs.push_back(CmdInputDef("questid").integer_().required().description("Quest ID"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdQuestStatisticsHandler::cmd(){
     return "quest_statistics";
 }
 
-bool CmdQuestStatisticsHandler::accessUnauthorized(){
-    return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdQuestStatisticsHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdQuestStatisticsHandler::accessUser(){
-	return true;
-}
-
-bool CmdQuestStatisticsHandler::accessTester(){
-	return true;
-}
-
-bool CmdQuestStatisticsHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdQuestStatisticsHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdQuestStatisticsHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdQuestStatisticsHandler::description(){
 	return "Update the quest info";
 }
 
-QStringList CmdQuestStatisticsHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdQuestStatisticsHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

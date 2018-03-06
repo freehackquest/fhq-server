@@ -8,42 +8,41 @@
 #include <QImage>
 
 CmdGameUpdateLogoHandler::CmdGameUpdateLogoHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("gameid").integer_().required().description("GameID"));
     m_vInputs.push_back(CmdInputDef("image_png_base64").string_().required().description("Image PNG in Base64"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdGameUpdateLogoHandler::cmd(){
     return "game_update_logo";
 }
 
-bool CmdGameUpdateLogoHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdGameUpdateLogoHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdGameUpdateLogoHandler::accessUser(){
-	return false;
-}
-
-bool CmdGameUpdateLogoHandler::accessTester(){
-	return false;
-}
-
-bool CmdGameUpdateLogoHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdGameUpdateLogoHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdGameUpdateLogoHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdGameUpdateLogoHandler::description(){
     return "Update game logo";
 }
 
-QStringList CmdGameUpdateLogoHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdGameUpdateLogoHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

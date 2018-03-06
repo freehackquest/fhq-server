@@ -4,40 +4,39 @@
 #include <employ_settings.h>
 
 CmdServerSettingsHandler::CmdServerSettingsHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdServerSettingsHandler::cmd(){
         return "server_settings";
 }
 
-bool CmdServerSettingsHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdServerSettingsHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdServerSettingsHandler::accessUser(){
-	return false;
-}
-
-bool CmdServerSettingsHandler::accessTester(){
-	return false;
-}
-
-bool CmdServerSettingsHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdServerSettingsHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdServerSettingsHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdServerSettingsHandler::description(){
         return "Return server settings";
 }
 
-QStringList CmdServerSettingsHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdServerSettingsHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

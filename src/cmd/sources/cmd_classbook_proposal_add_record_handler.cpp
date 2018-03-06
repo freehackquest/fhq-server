@@ -6,44 +6,43 @@
 #include <QCryptographicHash>
 
 CmdClassbookProposalAddRecordHandler::CmdClassbookProposalAddRecordHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("Classbookid for an article"));
     m_vInputs.push_back(CmdInputDef("lang").required().string_().description("Language"));
     m_vInputs.push_back(CmdInputDef("name").required().string_().description("Article name"));
     m_vInputs.push_back(CmdInputDef("content").required().string_().description("The content of the article"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdClassbookProposalAddRecordHandler::cmd(){
     return "classbook_proposal_add_record";
 }
 
-bool CmdClassbookProposalAddRecordHandler::accessUnauthorized(){
-    return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookProposalAddRecordHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdClassbookProposalAddRecordHandler::accessUser(){
-    return true;
-}
-
-bool CmdClassbookProposalAddRecordHandler::accessTester(){
-    return true;
-}
-
-bool CmdClassbookProposalAddRecordHandler::accessAdmin(){
-    return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdClassbookProposalAddRecordHandler::inputs(){
     return m_vInputs;
-};
+}
 
-QString CmdClassbookProposalAddRecordHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookProposalAddRecordHandler::description(){
     return "Propose an update of article";
 }
 
-QStringList CmdClassbookProposalAddRecordHandler::errors(){
-    QStringList	list;
-    return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

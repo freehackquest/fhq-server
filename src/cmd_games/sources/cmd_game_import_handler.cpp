@@ -5,41 +5,40 @@
 #include <QCryptographicHash>
 
 CmdGameImportHandler::CmdGameImportHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdGameImportHandler::cmd(){
     return "game_import";
 }
 
-bool CmdGameImportHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdGameImportHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdGameImportHandler::accessUser(){
-	return false;
-}
-
-bool CmdGameImportHandler::accessTester(){
-	return false;
-}
-
-bool CmdGameImportHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdGameImportHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdGameImportHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdGameImportHandler::description(){
     return "Import game";
 }
 
-QStringList CmdGameImportHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdGameImportHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

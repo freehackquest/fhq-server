@@ -4,41 +4,40 @@
 #include <log.h>
 
 CmdClassbookLocalizationInfoHandler::CmdClassbookLocalizationInfoHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbook_localizationid").required().integer_().description("Localization id"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdClassbookLocalizationInfoHandler::cmd(){
     return "classbook_localization_info";
 }
 
-bool CmdClassbookLocalizationInfoHandler::accessUnauthorized(){
-    return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookLocalizationInfoHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdClassbookLocalizationInfoHandler::accessUser(){
-    return false;
-}
-
-bool CmdClassbookLocalizationInfoHandler::accessTester(){
-    return false;
-}
-
-bool CmdClassbookLocalizationInfoHandler::accessAdmin(){
-    return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdClassbookLocalizationInfoHandler::inputs(){
     return m_vInputs;
-};
+}
 
-QString CmdClassbookLocalizationInfoHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookLocalizationInfoHandler::description(){
     return "Find and display localization for an article by classbookid";
 }
 
-QStringList CmdClassbookLocalizationInfoHandler::errors(){
-    QStringList	list;
-    return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdClassbookLocalizationInfoHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

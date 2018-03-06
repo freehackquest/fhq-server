@@ -1,40 +1,37 @@
 #include <cmd_sendchatmessage_handler.h>
 
 CmdSendChatMessageHandler::CmdSendChatMessageHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdSendChatMessageHandler::cmd(){
 	return "sendchatmessage";
 }
 
-bool CmdSendChatMessageHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdSendChatMessageHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdSendChatMessageHandler::accessUser(){
-	return true;
-}
-
-bool CmdSendChatMessageHandler::accessTester(){
-	return true;
-}
-
-bool CmdSendChatMessageHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdSendChatMessageHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdSendChatMessageHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdSendChatMessageHandler::description(){
 	return "Method will be keep message and it sent to another users";
 }
 
-QStringList CmdSendChatMessageHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdSendChatMessageHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

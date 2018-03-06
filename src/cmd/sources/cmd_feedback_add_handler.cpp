@@ -8,43 +8,42 @@
 
 CmdFeedbackAddHandler::CmdFeedbackAddHandler(){
     TAG = "CmdFeedbackAddHandler";
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("from").string_().required().description("From user"));
     m_vInputs.push_back(CmdInputDef("text").string_().required().description("Text of feedback"));
     m_vInputs.push_back(CmdInputDef("type").string_().required().description("Type"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdFeedbackAddHandler::cmd(){
     return "feedback_add";
 }
 
-bool CmdFeedbackAddHandler::accessUnauthorized(){
-    return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdFeedbackAddHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdFeedbackAddHandler::accessUser(){
-    return true;
-}
-
-bool CmdFeedbackAddHandler::accessTester(){
-    return true;
-}
-
-bool CmdFeedbackAddHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdFeedbackAddHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdFeedbackAddHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdFeedbackAddHandler::description(){
 	return "Create the quest";
 }
 
-QStringList CmdFeedbackAddHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdFeedbackAddHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

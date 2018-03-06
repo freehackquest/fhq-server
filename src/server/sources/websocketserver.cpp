@@ -208,7 +208,8 @@ void WebSocketServer::processTextMessage(QString message) {
 	}
 	
 	// check access
-	if(!pCmdHandler->accessUnauthorized()){
+    const ModelCommandAccess access = pCmdHandler->access();
+    if(!access.accessUnauthorized()){
 		IUserToken *pUserToken = getUserToken(pClient);
 		if(pUserToken == NULL){
             pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::NotAuthorizedRequest());
@@ -216,19 +217,13 @@ void WebSocketServer::processTextMessage(QString message) {
 		}
 		
 		// access user
-		if(pUserToken->isUser() && !pCmdHandler->accessUser()){
+        if(pUserToken->isUser() && !access.accessUser()){
             pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::AccessDenyForUser());
 			return;
 		}
 		
-		// access tester
-		if(pUserToken->isTester() && !pCmdHandler->accessTester()){
-            pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::AccessDenyForTester());
-			return;
-		}
-		
 		// access admin
-		if(pUserToken->isAdmin() && !pCmdHandler->accessAdmin()){
+        if(pUserToken->isAdmin() && !access.accessAdmin()){
             pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::AccessDenyForAdmin());
 			return;
 		}
@@ -384,11 +379,10 @@ void WebSocketServer::exportApi(QJsonObject &result){
 		QJsonObject handler;
 		
         handler["cmd"] = QString(pHandler->cmd().c_str());
-		handler["description"] = pHandler->description();
-		handler["access_unauthorized"] = pHandler->accessUnauthorized();
-		handler["access_user"] = pHandler->accessUser();
-		handler["access_tester"] = pHandler->accessTester();
-		handler["access_admin"] = pHandler->accessAdmin();
+        handler["description"] = QString(pHandler->description().c_str());
+        handler["access_unauthorized"] = pHandler->access().accessUnauthorized();
+        handler["access_user"] = pHandler->access().accessUser();
+        handler["access_admin"] = pHandler->access().accessAdmin();
 
 		QJsonArray inputs;
         std::vector<CmdInputDef> ins = pHandler->inputs();
@@ -396,15 +390,6 @@ void WebSocketServer::exportApi(QJsonObject &result){
 			inputs.append(ins[i].toJson());
 		}
 		handler["inputs"] = inputs;
-
-		QJsonArray errors;
-		QStringList errs = pHandler->errors();
-		if(errs.size() > 0){
-			for(int i = 0; i < errors.size(); i++){
-				errors.append(errors.at(i));
-			}
-		}
-		handler["errors"] = errors;
 		handlers.append(handler);
 	}
 	result["handlers"] = handlers;

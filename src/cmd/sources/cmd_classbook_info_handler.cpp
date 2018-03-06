@@ -3,42 +3,39 @@
 #include <QSqlError>
 
 CmdClassbookInfoHandler::CmdClassbookInfoHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("id for the classbook article"));
     m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("Set lang for the article"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdClassbookInfoHandler::cmd(){
     return "classbook_info";
 }
 
-bool CmdClassbookInfoHandler::accessUnauthorized(){
-    return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookInfoHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdClassbookInfoHandler::accessUser(){
-    return true;
-}
-
-bool CmdClassbookInfoHandler::accessTester(){
-    return true;
-}
-
-bool CmdClassbookInfoHandler::accessAdmin(){
-    return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdClassbookInfoHandler::inputs(){
     return m_vInputs;
 };
 
-QString CmdClassbookInfoHandler::description(){
+std::string CmdClassbookInfoHandler::description(){
     return "Return name and content, langs, path classbook article with a given id";
 }
 
-QStringList CmdClassbookInfoHandler::errors(){
-    QStringList	list;
-    return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

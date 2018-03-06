@@ -6,44 +6,43 @@
 #include <QCryptographicHash>
 
 CmdClassbookLocalizationAddRecordHandler::CmdClassbookLocalizationAddRecordHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("Classbookid for article localization"));
     m_vInputs.push_back(CmdInputDef("lang").required().string_().description("Language"));
     m_vInputs.push_back(CmdInputDef("name").required().string_().description("Article name"));
     m_vInputs.push_back(CmdInputDef("content").required().string_().description("The content of the article"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdClassbookLocalizationAddRecordHandler::cmd(){
     return "classbook_localization_add_record";
 }
 
-bool CmdClassbookLocalizationAddRecordHandler::accessUnauthorized(){
-    return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookLocalizationAddRecordHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdClassbookLocalizationAddRecordHandler::accessUser(){
-    return false;
-}
-
-bool CmdClassbookLocalizationAddRecordHandler::accessTester(){
-    return false;
-}
-
-bool CmdClassbookLocalizationAddRecordHandler::accessAdmin(){
-    return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdClassbookLocalizationAddRecordHandler::inputs(){
     return m_vInputs;
-};
+}
 
-QString CmdClassbookLocalizationAddRecordHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookLocalizationAddRecordHandler::description(){
     return "Add a new article localization for the English version";
 }
 
-QStringList CmdClassbookLocalizationAddRecordHandler::errors(){
-    QStringList	list;
-    return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

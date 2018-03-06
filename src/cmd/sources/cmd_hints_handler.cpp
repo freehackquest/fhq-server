@@ -2,41 +2,40 @@
 #include <QJsonArray>
 
 CmdHintsHandler::CmdHintsHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
 	m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest id"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdHintsHandler::cmd(){
 	return "hints";
 }
 
-bool CmdHintsHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdHintsHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdHintsHandler::accessUser(){
-	return true;
-}
-
-bool CmdHintsHandler::accessTester(){
-	return true;
-}
-
-bool CmdHintsHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdHintsHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdHintsHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdHintsHandler::description(){
 	return "Output: list of hints, Input: questid";
 }
 
-QStringList CmdHintsHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdHintsHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

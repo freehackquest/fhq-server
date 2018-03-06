@@ -3,41 +3,40 @@
 #include <QJsonArray>
 
 CmdUpdateUserLocationHandler::CmdUpdateUserLocationHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
 	m_vInputs.push_back(CmdInputDef("userid").required().integer_().description("User ID"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdUpdateUserLocationHandler::cmd(){
 	return "updateuserlocation";
 }
 
-bool CmdUpdateUserLocationHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdUpdateUserLocationHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdUpdateUserLocationHandler::accessUser(){
-	return false;
-}
-
-bool CmdUpdateUserLocationHandler::accessTester(){
-	return false;
-}
-
-bool CmdUpdateUserLocationHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdUpdateUserLocationHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdUpdateUserLocationHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdUpdateUserLocationHandler::description(){
 	return "This method will be try update user location by lastip";
 }
 
-QStringList CmdUpdateUserLocationHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdUpdateUserLocationHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

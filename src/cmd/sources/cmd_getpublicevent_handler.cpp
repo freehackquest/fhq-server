@@ -2,44 +2,43 @@
 #include <QJsonArray>
 
 CmdGetPublicEventHandler::CmdGetPublicEventHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
 	m_vInputs.push_back(CmdInputDef("eventid").required().integer_().description("Event id"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdGetPublicEventHandler::cmd(){
 	return "getpublicevent";
 }
 
-bool CmdGetPublicEventHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdGetPublicEventHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdGetPublicEventHandler::accessUser(){
-	return true;
-}
-
-bool CmdGetPublicEventHandler::accessTester(){
-	return true;
-}
-
-bool CmdGetPublicEventHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdGetPublicEventHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdGetPublicEventHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdGetPublicEventHandler::description(){
 	return
 		"Return public event info by id\n"
 		" Input params: \n"
 		"   * eventid \n";
 }
 
-QStringList CmdGetPublicEventHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdGetPublicEventHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

@@ -5,43 +5,42 @@
 #include <QCryptographicHash>
 
 CmdClassbookLocalizationUpdateRecordHandler::CmdClassbookLocalizationUpdateRecordHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbook_localizationid").required().integer_().description("Localization id"));
     m_vInputs.push_back(CmdInputDef("name").required().string_().description("Article name"));
     m_vInputs.push_back(CmdInputDef("content").required().string_().description("The content of the article"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdClassbookLocalizationUpdateRecordHandler::cmd(){
     return "classbook_localization_update_record";
 }
 
-bool CmdClassbookLocalizationUpdateRecordHandler::accessUnauthorized(){
-    return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookLocalizationUpdateRecordHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdClassbookLocalizationUpdateRecordHandler::accessUser(){
-    return false;
-}
-
-bool CmdClassbookLocalizationUpdateRecordHandler::accessTester(){
-    return false;
-}
-
-bool CmdClassbookLocalizationUpdateRecordHandler::accessAdmin(){
-    return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdClassbookLocalizationUpdateRecordHandler::inputs(){
     return m_vInputs;
-};
+}
 
-QString CmdClassbookLocalizationUpdateRecordHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookLocalizationUpdateRecordHandler::description(){
     return "Update table with localization by classbookid";
 }
 
-QStringList CmdClassbookLocalizationUpdateRecordHandler::errors(){
-    QStringList	list;
-    return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

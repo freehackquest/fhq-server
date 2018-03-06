@@ -3,40 +3,38 @@
 #include <QSqlError>
 
 CmdClassbookHandler::CmdClassbookHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdClassbookHandler::cmd(){
 	return "classbook";
 }
 
-bool CmdClassbookHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdClassbookHandler::accessUser(){
-	return true;
-}
-
-bool CmdClassbookHandler::accessTester(){
-	return true;
-}
-
-bool CmdClassbookHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdClassbookHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdClassbookHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookHandler::description(){
 	return "Return classbook contents";
 }
 
-QStringList CmdClassbookHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdClassbookHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

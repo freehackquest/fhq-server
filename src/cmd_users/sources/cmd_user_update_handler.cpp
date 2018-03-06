@@ -4,44 +4,43 @@
 #include <log.h>
 
 CmdUserUpdateHandler::CmdUserUpdateHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("userid").required().integer_().description("Id of user"));
     m_vInputs.push_back(CmdInputDef("nick").optional().string_().description("Nick of user"));
     m_vInputs.push_back(CmdInputDef("university").optional().string_().description("University of user"));
     m_vInputs.push_back(CmdInputDef("about").optional().string_().description("About of user"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdUserUpdateHandler::cmd(){
     return "user_update";
 }
 
-bool CmdUserUpdateHandler::accessUnauthorized(){
-    return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdUserUpdateHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdUserUpdateHandler::accessUser(){
-    return true;
-}
-
-bool CmdUserUpdateHandler::accessTester(){
-	return true;
-}
-
-bool CmdUserUpdateHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdUserUpdateHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdUserUpdateHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdUserUpdateHandler::description(){
     return "Update user info";
 }
 
-QStringList CmdUserUpdateHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdUserUpdateHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

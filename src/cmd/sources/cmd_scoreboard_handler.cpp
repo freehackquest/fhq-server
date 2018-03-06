@@ -3,43 +3,41 @@
 #include <memory_cache_scoreboard.h>
 
 CmdScoreboardHandler::CmdScoreboardHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
 	// validation and description input fields
 	m_vInputs.push_back(CmdInputDef("page").required().integer_().description("Number of page"));
 	m_vInputs.push_back(CmdInputDef("onpage").required().integer_().description("How much rows in one page"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdScoreboardHandler::cmd(){
 	return "scoreboard";
 }
 
-bool CmdScoreboardHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdScoreboardHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdScoreboardHandler::accessUser(){
-	return true;
-}
-
-bool CmdScoreboardHandler::accessTester(){
-	return true;
-}
-
-bool CmdScoreboardHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdScoreboardHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdScoreboardHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdScoreboardHandler::description(){
 	return "Method return scoreboard";
 }
 
-QStringList CmdScoreboardHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdScoreboardHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

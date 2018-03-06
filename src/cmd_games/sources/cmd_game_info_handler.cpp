@@ -5,41 +5,40 @@
 #include <QCryptographicHash>
 
 CmdGameInfoHandler::CmdGameInfoHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdGameInfoHandler::cmd(){
     return "game_info";
 }
 
-bool CmdGameInfoHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdGameInfoHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdGameInfoHandler::accessUser(){
-	return false;
-}
-
-bool CmdGameInfoHandler::accessTester(){
-	return false;
-}
-
-bool CmdGameInfoHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdGameInfoHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdGameInfoHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdGameInfoHandler::description(){
     return "Return game info";
 }
 
-QStringList CmdGameInfoHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdGameInfoHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

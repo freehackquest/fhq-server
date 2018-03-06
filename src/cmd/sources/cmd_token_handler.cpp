@@ -5,41 +5,40 @@
 
 CmdTokenHandler::CmdTokenHandler(){
     TAG = "CmdTokenHandler";
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(false);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("token").string_().optional().description("Auth token"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdTokenHandler::cmd(){
     return "token";
 }
 
-bool CmdTokenHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdTokenHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdTokenHandler::accessUser(){
-	return true;
-}
-
-bool CmdTokenHandler::accessTester(){
-	return true;
-}
-
-bool CmdTokenHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdTokenHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdTokenHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdTokenHandler::description(){
     return "Method for login by token";
 }
 
-QStringList CmdTokenHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdTokenHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

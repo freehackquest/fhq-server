@@ -6,6 +6,12 @@
 
 CmdQuestProposalHandler::CmdQuestProposalHandler(){
     TAG = "CmdQuestProposalHandler";
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("gameid").integer_().required().description("Which game included this quest"));
     m_vInputs.push_back(CmdInputDef("name").string_().required().description("Name of the quest"));
     m_vInputs.push_back(CmdInputDef("text").string_().required().description("Description of the quest"));
@@ -19,38 +25,31 @@ CmdQuestProposalHandler::CmdQuestProposalHandler(){
     m_vInputs.push_back(CmdInputDef("answer_format").string_().required().description("Answer format for the quest"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdQuestProposalHandler::cmd(){
         return "quest_proposal";
 }
 
-bool CmdQuestProposalHandler::accessUnauthorized(){
-        return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdQuestProposalHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdQuestProposalHandler::accessUser(){
-	return true;
-}
-
-bool CmdQuestProposalHandler::accessTester(){
-	return true;
-}
-
-bool CmdQuestProposalHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdQuestProposalHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdQuestProposalHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdQuestProposalHandler::description(){
         return "Add quest proposal ";
 }
 
-QStringList CmdQuestProposalHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdQuestProposalHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

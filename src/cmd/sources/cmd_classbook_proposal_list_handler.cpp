@@ -5,42 +5,41 @@
 #include <log.h>
 
 CmdClassbookProposalListHandler::CmdClassbookProposalListHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbookid").optional().integer_().description("Classbookid for an article"));
     m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("Language"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdClassbookProposalListHandler::cmd(){
     return "classbook_proposal_list";
 }
 
-bool CmdClassbookProposalListHandler::accessUnauthorized(){
-    return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookProposalListHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdClassbookProposalListHandler::accessUser(){
-    return true;
-}
-
-bool CmdClassbookProposalListHandler::accessTester(){
-    return true;
-}
-
-bool CmdClassbookProposalListHandler::accessAdmin(){
-    return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdClassbookProposalListHandler::inputs(){
     return m_vInputs;
-};
+}
 
-QString CmdClassbookProposalListHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookProposalListHandler::description(){
     return "Display list of proposals by classbookid";
 }
 
-QStringList CmdClassbookProposalListHandler::errors(){
-    QStringList	list;
-    return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

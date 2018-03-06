@@ -2,44 +2,44 @@
 #include <QJsonArray>
 
 CmdAnswerListHandler::CmdAnswerListHandler(){
+    TAG = "CmdAnswerListHandler";
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
 	m_vInputs.push_back(CmdInputDef("page").required().integer_().description("Number of page"));
 	m_vInputs.push_back(CmdInputDef("onpage").required().integer_().description("How much rows on page"));
 	m_vInputs.push_back(CmdInputDef("questid").optional().integer_().description("Filter for questid"));
 	m_vInputs.push_back(CmdInputDef("userid").optional().integer_().description("Filter for userid"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdAnswerListHandler::cmd(){
 	return "answerlist";
 }
 
-bool CmdAnswerListHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdAnswerListHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdAnswerListHandler::accessUser(){
-	return false;
-}
-
-bool CmdAnswerListHandler::accessTester(){
-	return false;
-}
-
-bool CmdAnswerListHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdAnswerListHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdAnswerListHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdAnswerListHandler::description(){
 	return "Return user answer list";
 }
 
-QStringList CmdAnswerListHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdAnswerListHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

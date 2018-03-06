@@ -6,41 +6,40 @@
 #include <log.h>
 
 CmdClassbookProposalPrepareMergeRecordHandler::CmdClassbookProposalPrepareMergeRecordHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbook_proposal_id").required().integer_().description("Proposal id"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdClassbookProposalPrepareMergeRecordHandler::cmd(){
     return "classbook_propasal_prepare_merge_record";
 }
 
-bool CmdClassbookProposalPrepareMergeRecordHandler::accessUnauthorized(){
-    return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookProposalPrepareMergeRecordHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdClassbookProposalPrepareMergeRecordHandler::accessUser(){
-    return false;
-}
-
-bool CmdClassbookProposalPrepareMergeRecordHandler::accessTester(){
-    return false;
-}
-
-bool CmdClassbookProposalPrepareMergeRecordHandler::accessAdmin(){
-    return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdClassbookProposalPrepareMergeRecordHandler::inputs(){
     return m_vInputs;
-};
+}
 
-QString CmdClassbookProposalPrepareMergeRecordHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookProposalPrepareMergeRecordHandler::description(){
     return "Prepare to merge updating requests";
 }
 
-QStringList CmdClassbookProposalPrepareMergeRecordHandler::errors(){
-    QStringList	list;
-    return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

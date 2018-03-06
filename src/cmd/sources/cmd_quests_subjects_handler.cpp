@@ -2,42 +2,41 @@
 #include <QJsonArray>
 
 CmdQuestsSubjectsHandler::CmdQuestsSubjectsHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
 	// m_vInputs.push_back(CmdInputDef("filter_text").string_().optional().description("Filter by user email or nick"));
 	// m_vInputs.push_back(CmdInputDef("filter_role").string_().optional().description("Filter by user role"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdQuestsSubjectsHandler::cmd(){
     return "quests_subjects";
 }
 
-bool CmdQuestsSubjectsHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdQuestsSubjectsHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdQuestsSubjectsHandler::accessUser(){
-	return true;
-}
-
-bool CmdQuestsSubjectsHandler::accessTester(){
-	return true;
-}
-
-bool CmdQuestsSubjectsHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdQuestsSubjectsHandler::inputs(){
 	return m_vInputs;
 }
 
-QString CmdQuestsSubjectsHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdQuestsSubjectsHandler::description(){
 	return "Method returned list of games";
 }
 
-QStringList CmdQuestsSubjectsHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdQuestsSubjectsHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

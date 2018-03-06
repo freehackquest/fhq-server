@@ -4,41 +4,40 @@
 #include <log.h>
 
 CmdClassbookProposalDeleteRecordHandler::CmdClassbookProposalDeleteRecordHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbook_proposal_id").required().integer_().description("Proposal id"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdClassbookProposalDeleteRecordHandler::cmd(){
     return "classbook_proposal_delete_record";
 }
 
-bool CmdClassbookProposalDeleteRecordHandler::accessUnauthorized(){
-    return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookProposalDeleteRecordHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdClassbookProposalDeleteRecordHandler::accessUser(){
-    return true;
-}
-
-bool CmdClassbookProposalDeleteRecordHandler::accessTester(){
-    return true;
-}
-
-bool CmdClassbookProposalDeleteRecordHandler::accessAdmin(){
-    return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdClassbookProposalDeleteRecordHandler::inputs(){
     return m_vInputs;
-};
+}
 
-QString CmdClassbookProposalDeleteRecordHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookProposalDeleteRecordHandler::description(){
     return "Delete a proposal of updating an article";
 }
 
-QStringList CmdClassbookProposalDeleteRecordHandler::errors(){
-    QStringList	list;
-    return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdClassbookProposalDeleteRecordHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

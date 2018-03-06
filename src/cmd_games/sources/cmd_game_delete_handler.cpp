@@ -5,42 +5,40 @@
 #include <QCryptographicHash>
 
 CmdGameDeleteHandler::CmdGameDeleteHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
     m_vInputs.push_back(CmdInputDef("admin_password").string_().required().description("Admin Password"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdGameDeleteHandler::cmd(){
     return "game_delete";
 }
+// ---------------------------------------------------------------------
 
-bool CmdGameDeleteHandler::accessUnauthorized(){
-	return false;
+const ModelCommandAccess & CmdGameDeleteHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdGameDeleteHandler::accessUser(){
-	return false;
-}
-
-bool CmdGameDeleteHandler::accessTester(){
-	return false;
-}
-
-bool CmdGameDeleteHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdGameDeleteHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdGameDeleteHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdGameDeleteHandler::description(){
     return "Remove game and all quests";
 }
 
-QStringList CmdGameDeleteHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdGameDeleteHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

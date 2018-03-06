@@ -14,41 +14,40 @@
 
 CmdGameExportHandler::CmdGameExportHandler(){
     TAG = "CmdGameExportHandler";
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdGameExportHandler::cmd(){
     return "game_export";
 }
 
-bool CmdGameExportHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdGameExportHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdGameExportHandler::accessUser(){
-	return false;
-}
-
-bool CmdGameExportHandler::accessTester(){
-	return false;
-}
-
-bool CmdGameExportHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdGameExportHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdGameExportHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdGameExportHandler::description(){
     return "Export the game";
 }
 
-QStringList CmdGameExportHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdGameExportHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

@@ -5,6 +5,12 @@
 #include <QCryptographicHash>
 
 CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("parentid").required().integer_().description("pareintid for classbook article"));
     m_vInputs.push_back(CmdInputDef("name").required().string_().description("name of article"));
     m_vInputs.push_back(CmdInputDef("content").required().string_().description("content of article"));
@@ -12,38 +18,32 @@ CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler(){
     m_vInputs.push_back(CmdInputDef("ordered").optional().integer_().description("order of article"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdClassbookAddRecordHandler::cmd(){
     return "classbook_add_record";
 }
 
-bool CmdClassbookAddRecordHandler::accessUnauthorized(){
-    return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookAddRecordHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdClassbookAddRecordHandler::accessUser(){
-    return false;
-}
 
-bool CmdClassbookAddRecordHandler::accessTester(){
-    return false;
-}
-
-bool CmdClassbookAddRecordHandler::accessAdmin(){
-    return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdClassbookAddRecordHandler::inputs(){
     return m_vInputs;
 }
 
-QString CmdClassbookAddRecordHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookAddRecordHandler::description(){
     return "Adds a new article with the specified name, content, and id.";
 }
 
-QStringList CmdClassbookAddRecordHandler::errors(){
-    QStringList	list;
-    return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
 

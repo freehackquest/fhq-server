@@ -8,43 +8,43 @@
 #include <QCryptographicHash>
 
 CmdQuestPassHandler::CmdQuestPassHandler(){
+    TAG = "CmdQuestPassHandler";
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
 	m_vInputs.push_back(CmdInputDef("questid").integer_().required().description("Quest ID"));
     m_vInputs.push_back(CmdInputDef("answer").string_().required().description("Answer"));
-    TAG = "CmdQuestPassHandler";
+
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdQuestPassHandler::cmd(){
     return "quest_pass";
 }
 
-bool CmdQuestPassHandler::accessUnauthorized(){
-    return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdQuestPassHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdQuestPassHandler::accessUser(){
-	return true;
-}
-
-bool CmdQuestPassHandler::accessTester(){
-	return true;
-}
-
-bool CmdQuestPassHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdQuestPassHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdQuestPassHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdQuestPassHandler::description(){
 	return "Update the quest info";
 }
 
-QStringList CmdQuestPassHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdQuestPassHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

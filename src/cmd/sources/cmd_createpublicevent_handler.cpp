@@ -2,6 +2,11 @@
 #include <QJsonArray>
 
 CmdCreatePublicEventHandler::CmdCreatePublicEventHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
 	QStringList eventTypes;
 	// TODO load from database
 	eventTypes << "info";
@@ -10,42 +15,36 @@ CmdCreatePublicEventHandler::CmdCreatePublicEventHandler(){
 	eventTypes << "quests";
 	eventTypes << "warning";
 	
+    // validation and description input fields
 	m_vInputs.push_back(CmdInputDef("type").enum_(eventTypes).required());
 	m_vInputs.push_back(CmdInputDef("message").string_().required());
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdCreatePublicEventHandler::cmd(){
 	return "createpublicevent";
 }
 
-bool CmdCreatePublicEventHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdCreatePublicEventHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdCreatePublicEventHandler::accessUser(){
-	return false;
-}
-
-bool CmdCreatePublicEventHandler::accessTester(){
-	return false;
-}
-
-bool CmdCreatePublicEventHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdCreatePublicEventHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdCreatePublicEventHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdCreatePublicEventHandler::description(){
 	return "Create the public event";
 }
 
-QStringList CmdCreatePublicEventHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdCreatePublicEventHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

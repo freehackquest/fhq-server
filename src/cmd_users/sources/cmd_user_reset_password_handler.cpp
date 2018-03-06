@@ -10,41 +10,40 @@
 
 CmdUserResetPasswordHandler::CmdUserResetPasswordHandler(){
     TAG = "CmdUserResetPasswordHandler";
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(false);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("email").required().string_().description("E-mail"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdUserResetPasswordHandler::cmd(){
     return "user_reset_password";
 }
 
-bool CmdUserResetPasswordHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdUserResetPasswordHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdUserResetPasswordHandler::accessUser(){
-    return false;
-}
-
-bool CmdUserResetPasswordHandler::accessTester(){
-    return false;
-}
-
-bool CmdUserResetPasswordHandler::accessAdmin(){
-    return false;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdUserResetPasswordHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdUserResetPasswordHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdUserResetPasswordHandler::description(){
     return "Method for reset password";
 }
 
-QStringList CmdUserResetPasswordHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdUserResetPasswordHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

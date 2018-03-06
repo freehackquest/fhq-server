@@ -2,41 +2,40 @@
 #include <QJsonArray>
 
 CmdWriteUpsHandler::CmdWriteUpsHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
 	m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest ID"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdWriteUpsHandler::cmd(){
 	return "writeups";
 }
 
-bool CmdWriteUpsHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdWriteUpsHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdWriteUpsHandler::accessUser(){
-	return true;
-}
-
-bool CmdWriteUpsHandler::accessTester(){
-	return true;
-}
-
-bool CmdWriteUpsHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdWriteUpsHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdWriteUpsHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdWriteUpsHandler::description(){
 	return "This method will be returned list of writeups by questid";
 }
 
-QStringList CmdWriteUpsHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdWriteUpsHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

@@ -3,42 +3,41 @@
 #include <employ_settings.h>
 
 CmdServerSettingsUpdateHandler::CmdServerSettingsUpdateHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("name").required().string_().description("name of setting"));
     m_vInputs.push_back(CmdInputDef("value").required().any_().description("value of setting"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdServerSettingsUpdateHandler::cmd(){
         return "server_settings_update";
 }
 
-bool CmdServerSettingsUpdateHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdServerSettingsUpdateHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdServerSettingsUpdateHandler::accessUser(){
-	return false;
-}
-
-bool CmdServerSettingsUpdateHandler::accessTester(){
-	return false;
-}
-
-bool CmdServerSettingsUpdateHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdServerSettingsUpdateHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdServerSettingsUpdateHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdServerSettingsUpdateHandler::description(){
         return "Update server settings";
 }
 
-QStringList CmdServerSettingsUpdateHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdServerSettingsUpdateHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

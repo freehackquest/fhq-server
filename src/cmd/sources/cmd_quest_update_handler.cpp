@@ -5,11 +5,15 @@
 #include <QCryptographicHash>
 
 CmdQuestUpdateHandler::CmdQuestUpdateHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
 	m_vInputs.push_back(CmdInputDef("questid").integer_().required().description("Quest ID"));
 	m_vInputs.push_back(CmdInputDef("name").string_().optional().description("Name of the quest"));
-	
 	m_vInputs.push_back(CmdInputDef("gameid").integer_().optional().description("Which game included this quest"));
-	
 	m_vInputs.push_back(CmdInputDef("text").string_().optional().description("Description of the quest"));
 	m_vInputs.push_back(CmdInputDef("score").integer_().minval(1).maxval(1000).optional().description("How much append to user score after solve quest by them"));
 	
@@ -24,38 +28,31 @@ CmdQuestUpdateHandler::CmdQuestUpdateHandler(){
 	m_vInputs.push_back(CmdInputDef("description_state").string_().optional().description("You can add some descriptions for quest state"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdQuestUpdateHandler::cmd(){
     return "quest_update";
 }
 
-bool CmdQuestUpdateHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdQuestUpdateHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdQuestUpdateHandler::accessUser(){
-	return false;
-}
-
-bool CmdQuestUpdateHandler::accessTester(){
-	return false;
-}
-
-bool CmdQuestUpdateHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdQuestUpdateHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdQuestUpdateHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdQuestUpdateHandler::description(){
 	return "Update the quest info";
 }
 
-QStringList CmdQuestUpdateHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdQuestUpdateHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

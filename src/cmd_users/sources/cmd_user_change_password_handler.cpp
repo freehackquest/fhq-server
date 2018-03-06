@@ -4,42 +4,41 @@
 
 CmdUserChangePasswordHandler::CmdUserChangePasswordHandler(){
     TAG = "CmdUserChangePasswordHandler";
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("password_old").required().string_().description("Old password"));
     m_vInputs.push_back(CmdInputDef("password_new").required().string_().description("New password"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdUserChangePasswordHandler::cmd(){
     return "user_change_password";
 }
 
-bool CmdUserChangePasswordHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdUserChangePasswordHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdUserChangePasswordHandler::accessUser(){
-	return true;
-}
-
-bool CmdUserChangePasswordHandler::accessTester(){
-	return true;
-}
-
-bool CmdUserChangePasswordHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdUserChangePasswordHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdUserChangePasswordHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdUserChangePasswordHandler::description(){
 	return "Return user answer list";
 }
 
-QStringList CmdUserChangePasswordHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdUserChangePasswordHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

@@ -3,6 +3,12 @@
 #include <QSqlError>
 
 CmdClassbookUpdateRecordHandler::CmdClassbookUpdateRecordHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("id for classbook article"));
     m_vInputs.push_back(CmdInputDef("name").optional().string_().description("name for classbook article"));
     m_vInputs.push_back(CmdInputDef("content").optional().string_().description("content for classbook article"));
@@ -10,38 +16,31 @@ CmdClassbookUpdateRecordHandler::CmdClassbookUpdateRecordHandler(){
     m_vInputs.push_back(CmdInputDef("parentid").optional().integer_().description("parentid for classbook article"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdClassbookUpdateRecordHandler::cmd(){
     return "classbook_update_record";
 }
 
-bool CmdClassbookUpdateRecordHandler::accessUnauthorized(){
-    return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookUpdateRecordHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdClassbookUpdateRecordHandler::accessUser(){
-    return false;
-}
-
-bool CmdClassbookUpdateRecordHandler::accessTester(){
-    return false;
-}
-
-bool CmdClassbookUpdateRecordHandler::accessAdmin(){
-    return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdClassbookUpdateRecordHandler::inputs(){
     return m_vInputs;
-};
+}
 
-QString CmdClassbookUpdateRecordHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookUpdateRecordHandler::description(){
     return "Update a article with a given classbookid";
 }
 
-QStringList CmdClassbookUpdateRecordHandler::errors(){
-    QStringList	list;
-    return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

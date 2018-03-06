@@ -3,41 +3,40 @@
 #include <memory_cache_serverinfo.h>
 
 CmdQuestDeleteHandler::CmdQuestDeleteHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
 	m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest ID"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdQuestDeleteHandler::cmd(){
     return "quest_delete";
 }
 
-bool CmdQuestDeleteHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdQuestDeleteHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdQuestDeleteHandler::accessUser(){
-	return false;
-}
-
-bool CmdQuestDeleteHandler::accessTester(){
-	return false;
-}
-
-bool CmdQuestDeleteHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdQuestDeleteHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdQuestDeleteHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdQuestDeleteHandler::description(){
 	return "Method for delete quest";
 }
 
-QStringList CmdQuestDeleteHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdQuestDeleteHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

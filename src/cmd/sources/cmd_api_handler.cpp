@@ -2,40 +2,38 @@
 #include <QtCore>
 
 CmdApiHandler::CmdApiHandler(){
+    TAG = "CmdApiHandler";
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdApiHandler::cmd(){
 	return "api";
 }
 
-bool CmdApiHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+std::string CmdApiHandler::description(){
+    return "This method Will be return list of all handlers";
 }
 
-bool CmdApiHandler::accessUser(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdApiHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdApiHandler::accessTester(){
-	return true;
-}
-
-bool CmdApiHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdApiHandler::inputs(){
 	return m_vInputs;
-};
-
-QString CmdApiHandler::description(){
-	return "This method Will be return list of all handlers";
 }
 
-QStringList CmdApiHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdApiHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonResponse;

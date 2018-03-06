@@ -4,41 +4,40 @@
 #include <log.h>
 
 CmdClassbookLocalizationDeleteRecordHandler::CmdClassbookLocalizationDeleteRecordHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbook_localizationid").required().integer_().description("Localization id"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdClassbookLocalizationDeleteRecordHandler::cmd(){
     return "classbook_localization_delete_record";
 }
 
-bool CmdClassbookLocalizationDeleteRecordHandler::accessUnauthorized(){
-    return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookLocalizationDeleteRecordHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdClassbookLocalizationDeleteRecordHandler::accessUser(){
-    return false;
-}
-
-bool CmdClassbookLocalizationDeleteRecordHandler::accessTester(){
-    return false;
-}
-
-bool CmdClassbookLocalizationDeleteRecordHandler::accessAdmin(){
-    return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdClassbookLocalizationDeleteRecordHandler::inputs(){
     return m_vInputs;
-};
+}
 
-QString CmdClassbookLocalizationDeleteRecordHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookLocalizationDeleteRecordHandler::description(){
     return "Delete an article localization";
 }
 
-QStringList CmdClassbookLocalizationDeleteRecordHandler::errors(){
-    QStringList	list;
-    return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdClassbookLocalizationDeleteRecordHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

@@ -3,43 +3,42 @@
 #include <QSqlError>
 
 CmdClassbookListHandler::CmdClassbookListHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("parentid").required().integer_().description("parentid for classbook articles"));
     m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("lang for classbook articles"));
     m_vInputs.push_back(CmdInputDef("search").optional().string_().description("Search string for classbook articles"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdClassbookListHandler::cmd(){
     return "classbook_list";
 }
 
-bool CmdClassbookListHandler::accessUnauthorized(){
-    return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookListHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdClassbookListHandler::accessUser(){
-    return true;
-}
-
-bool CmdClassbookListHandler::accessTester(){
-    return true;
-}
-
-bool CmdClassbookListHandler::accessAdmin(){
-    return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdClassbookListHandler::inputs(){
     return m_vInputs;
-};
+}
 
-QString CmdClassbookListHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookListHandler::description(){
     return "Return list of classbook articles with parentid, id, names, childs, proposals for a given parentid";
 }
 
-QStringList CmdClassbookListHandler::errors(){
-    QStringList	list;
-    return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdClassbookListHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

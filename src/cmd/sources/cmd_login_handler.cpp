@@ -7,42 +7,41 @@
 
 CmdLoginHandler::CmdLoginHandler(){
 	TAG = "CmdLoginHandler";
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(false);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("email").required().string_().description("E-mail"));
     m_vInputs.push_back(CmdInputDef("password").required().string_().description("Password"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdLoginHandler::cmd(){
 	return "login";
 }
 
-bool CmdLoginHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdLoginHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdLoginHandler::accessUser(){
-	return true;
-}
-
-bool CmdLoginHandler::accessTester(){
-	return true;
-}
-
-bool CmdLoginHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdLoginHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdLoginHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdLoginHandler::description(){
 	return "Method for login";
 }
 
-QStringList CmdLoginHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdLoginHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

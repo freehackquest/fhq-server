@@ -12,16 +12,13 @@ class CmdApiHandler : public ICmdHandler {
 	public:
 		CmdApiHandler();
         virtual std::string cmd();
-		virtual bool accessUnauthorized();
-		virtual bool accessUser();
-		virtual bool accessTester();
-		virtual bool accessAdmin();
+        virtual std::string description();
+        virtual const ModelCommandAccess &access();
         virtual const std::vector<CmdInputDef> &inputs();
-		virtual QString description();
-		virtual QStringList errors();
         virtual void handle(ModelRequest *pRequest);
 	private:
         QString TAG;
+        ModelCommandAccess m_modelCommandAccess;
         std::vector<CmdInputDef> m_vInputs;
 };
 

@@ -8,43 +8,42 @@
 #include <quazipfileinfo.h>
 
 CmdClassbookExportHandler::CmdClassbookExportHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("output").required().string_().description("The output file format"));
     m_vInputs.push_back(CmdInputDef("lang").required().string_().description("The output file format"));
     m_vInputs.push_back(CmdInputDef("zip").optional().bool_().description("Zipping the output"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdClassbookExportHandler::cmd(){
     return "classbook_export";
 }
 
-bool CmdClassbookExportHandler::accessUnauthorized(){
-    return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookExportHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdClassbookExportHandler::accessUser(){
-    return true;
-}
-
-bool CmdClassbookExportHandler::accessTester(){
-    return true;
-}
-
-bool CmdClassbookExportHandler::accessAdmin(){
-    return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdClassbookExportHandler::inputs(){
     return m_vInputs;
 }
 
-QString CmdClassbookExportHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookExportHandler::description(){
     return "Export classbook's articles to html or markdown, optionally in zip archive.";
 }
 
-QStringList CmdClassbookExportHandler::errors(){
-    QStringList	list;
-    return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdClassbookExportHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

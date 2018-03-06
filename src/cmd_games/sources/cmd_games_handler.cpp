@@ -3,42 +3,41 @@
 #include <employ_settings.h>
 
 CmdGamesHandler::CmdGamesHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
 	// m_vInputs.push_back(CmdInputDef("filter_text").string_().optional().description("Filter by user email or nick"));
 	// m_vInputs.push_back(CmdInputDef("filter_role").string_().optional().description("Filter by user role"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdGamesHandler::cmd(){
 	return "games";
 }
 
-bool CmdGamesHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdGamesHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdGamesHandler::accessUser(){
-	return true;
-}
-
-bool CmdGamesHandler::accessTester(){
-	return true;
-}
-
-bool CmdGamesHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdGamesHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdGamesHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdGamesHandler::description(){
 	return "Method returned list of games";
 }
 
-QStringList CmdGamesHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdGamesHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

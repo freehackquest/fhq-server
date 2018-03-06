@@ -6,6 +6,12 @@
 #include <QCryptographicHash>
 
 CmdCreateQuestHandler::CmdCreateQuestHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
 	m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the quest"));
 	m_vInputs.push_back(CmdInputDef("gameid").integer_().required().description("Which game included this quest"));
 	m_vInputs.push_back(CmdInputDef("name").string_().required().description("Name of the quest"));
@@ -23,38 +29,31 @@ CmdCreateQuestHandler::CmdCreateQuestHandler(){
 	m_vInputs.push_back(CmdInputDef("description_state").string_().required().description("You can add some descriptions for quest state"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdCreateQuestHandler::cmd(){
 	return "createquest";
 }
 
-bool CmdCreateQuestHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdCreateQuestHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdCreateQuestHandler::accessUser(){
-	return false;
-}
-
-bool CmdCreateQuestHandler::accessTester(){
-	return false;
-}
-
-bool CmdCreateQuestHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdCreateQuestHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdCreateQuestHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdCreateQuestHandler::description(){
 	return "Create the quest";
 }
 
-QStringList CmdCreateQuestHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdCreateQuestHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

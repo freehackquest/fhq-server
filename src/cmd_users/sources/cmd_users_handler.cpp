@@ -2,44 +2,44 @@
 #include <QJsonArray>
 
 CmdUsersHandler::CmdUsersHandler(){
+    TAG = "CmdUsersHandler";
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
 	m_vInputs.push_back(CmdInputDef("filter_text").string_().optional().description("Filter by user email or nick"));
 	m_vInputs.push_back(CmdInputDef("filter_role").string_().optional().description("Filter by user role"));
     m_vInputs.push_back(CmdInputDef("onpage").integer_().optional().description("On page"));
     m_vInputs.push_back(CmdInputDef("page").integer_().optional().description("page"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdUsersHandler::cmd(){
 	return "users";
 }
 
-bool CmdUsersHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+std::string CmdUsersHandler::description(){
+    return "Method return list of users";
 }
 
-bool CmdUsersHandler::accessUser(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdUsersHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdUsersHandler::accessTester(){
-	return false;
-}
-
-bool CmdUsersHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdUsersHandler::inputs(){
 	return m_vInputs;
-};
-
-QString CmdUsersHandler::description(){
-	return "Method return list of users";
 }
 
-QStringList CmdUsersHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdUsersHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

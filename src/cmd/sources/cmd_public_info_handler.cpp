@@ -2,41 +2,38 @@
 #include <memory_cache_serverinfo.h>
 
 CmdPublicInfoHandler::CmdPublicInfoHandler(){
-	
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdPublicInfoHandler::cmd(){
     return "public_info";
 }
 
-bool CmdPublicInfoHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdPublicInfoHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdPublicInfoHandler::accessUser(){
-	return true;
-}
-
-bool CmdPublicInfoHandler::accessTester(){
-	return true;
-}
-
-bool CmdPublicInfoHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdPublicInfoHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdPublicInfoHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdPublicInfoHandler::description(){
     return "Method return public information about server";
 }
 
-QStringList CmdPublicInfoHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdPublicInfoHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

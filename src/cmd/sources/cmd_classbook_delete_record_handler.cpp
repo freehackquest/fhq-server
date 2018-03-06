@@ -4,41 +4,40 @@
 #include <QUuid>
 
 CmdClassbookDeleteRecordHandler::CmdClassbookDeleteRecordHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("id for classbook article"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdClassbookDeleteRecordHandler::cmd(){
     return "classbook_delete_record";
 }
 
-bool CmdClassbookDeleteRecordHandler::accessUnauthorized(){
-    return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookDeleteRecordHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdClassbookDeleteRecordHandler::accessUser(){
-    return false;
-}
-
-bool CmdClassbookDeleteRecordHandler::accessTester(){
-    return false;
-}
-
-bool CmdClassbookDeleteRecordHandler::accessAdmin(){
-    return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdClassbookDeleteRecordHandler::inputs(){
     return m_vInputs;
-};
+}
 
-QString CmdClassbookDeleteRecordHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookDeleteRecordHandler::description(){
     return "Delete a article with a given classbookid";
 }
 
-QStringList CmdClassbookDeleteRecordHandler::errors(){
-    QStringList	list;
-    return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

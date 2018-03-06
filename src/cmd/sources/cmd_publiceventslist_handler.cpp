@@ -2,36 +2,37 @@
 #include <QJsonArray>
 
 CmdPublicEventsListHandler::CmdPublicEventsListHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
 	// validation and description input fields
 	m_vInputs.push_back(CmdInputDef("page").required().integer_().description("Number of page"));
 	m_vInputs.push_back(CmdInputDef("onpage").required().integer_().description("How much rows in one page"));
 }
 
+// ---------------------------------------------------------------------
+
 std::string CmdPublicEventsListHandler::cmd(){
 	return "publiceventslist";
 }
 
-bool CmdPublicEventsListHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdPublicEventsListHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdPublicEventsListHandler::accessUser(){
-	return true;
-}
-
-bool CmdPublicEventsListHandler::accessTester(){
-	return true;
-}
-
-bool CmdPublicEventsListHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdPublicEventsListHandler::inputs(){
 	return m_vInputs;
 }
 
-QString CmdPublicEventsListHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdPublicEventsListHandler::description(){
 	return
 		"Return list of public events (news)\n"
 		" Input params: \n"
@@ -41,10 +42,7 @@ QString CmdPublicEventsListHandler::description(){
 		"   * search   \n";
 }
 
-QStringList CmdPublicEventsListHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdPublicEventsListHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

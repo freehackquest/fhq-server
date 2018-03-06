@@ -2,41 +2,40 @@
 #include <QJsonArray>
 
 CmdUserSkillsHandler::CmdUserSkillsHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("userid").required().integer_().description("Id of user"));
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdUserSkillsHandler::cmd(){
 	return "user_skills";
 }
 
-bool CmdUserSkillsHandler::accessUnauthorized(){
-	return true;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdUserSkillsHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdUserSkillsHandler::accessUser(){
-	return true;
-}
-
-bool CmdUserSkillsHandler::accessTester(){
-	return true;
-}
-
-bool CmdUserSkillsHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdUserSkillsHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdUserSkillsHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdUserSkillsHandler::description(){
 	return "Return user skills info";
 }
 
-QStringList CmdUserSkillsHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdUserSkillsHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();

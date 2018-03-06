@@ -6,40 +6,37 @@
 
 CmdServerInfoHandler::CmdServerInfoHandler(){
     TAG = "CmdServerInfoHandler";
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
 }
+
+// ---------------------------------------------------------------------
 
 std::string CmdServerInfoHandler::cmd(){
     return "server_info";
 }
 
-bool CmdServerInfoHandler::accessUnauthorized(){
-	return false;
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdServerInfoHandler::access(){
+    return m_modelCommandAccess;
 }
 
-bool CmdServerInfoHandler::accessUser(){
-	return false;
-}
-
-bool CmdServerInfoHandler::accessTester(){
-	return false;
-}
-
-bool CmdServerInfoHandler::accessAdmin(){
-	return true;
-}
+// ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdServerInfoHandler::inputs(){
 	return m_vInputs;
-};
+}
 
-QString CmdServerInfoHandler::description(){
+// ---------------------------------------------------------------------
+
+std::string CmdServerInfoHandler::description(){
 	return "Return server information";
 }
 
-QStringList CmdServerInfoHandler::errors(){
-	QStringList	list;
-	return list;
-}
+// ---------------------------------------------------------------------
 
 void CmdServerInfoHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
