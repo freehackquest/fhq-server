@@ -44,6 +44,7 @@ QStringList CmdServerInfoHandler::errors(){
 void CmdServerInfoHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
+    QJsonObject data;
 
     QJsonObject jsonRequestStatistics;
     IMemoryCache *pMemoryCache = pRequest->server()->findMemoryCache("serverinfo");
@@ -55,11 +56,11 @@ void CmdServerInfoHandler::handle(ModelRequest *pRequest){
 	MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
     jsonRequestStatistics = pMemoryCacheServerInfo->toJsonObject(); // TODO how much db connections and time
 
-    jsonResponse["request_statistics"] = jsonRequestStatistics;
-    jsonResponse["server_started"] = pMemoryCacheServerInfo->getServerStart().toString(Qt::ISODate);
+    data["request_statistics"] = jsonRequestStatistics;
+    data["server_started"] = pMemoryCacheServerInfo->getServerStart().toString(Qt::ISODate);
     qint64 updatime = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
     updatime = updatime - pMemoryCacheServerInfo->getServerStart().toMSecsSinceEpoch();
-    jsonResponse["server_uptime_sec"] = updatime/1000;
+    data["server_uptime_sec"] = updatime/1000;
 
     /* NOT WORK
      * QJsonArray lastLogMessages;
@@ -71,10 +72,10 @@ void CmdServerInfoHandler::handle(ModelRequest *pRequest){
             lastLogMessages.append(g_LAST_LOG_MESSAGES[i]);
         }
     }
-    jsonData["last_log_messages"] = lastLogMessages;
+    data["last_log_messages"] = lastLogMessages;
     */
-    jsonResponse["last_log_messages"] = Log::last_logs();
-    // jsonResponse["data"] = jsonData;
+    data["last_log_messages"] = Log::last_logs();
+    jsonResponse["data"] = data;
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
