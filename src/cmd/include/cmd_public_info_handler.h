@@ -2,6 +2,7 @@
 #define CMD_PUBLIC_INFO_HANDLER_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdPublicInfoHandler : public ICmdHandler {
 

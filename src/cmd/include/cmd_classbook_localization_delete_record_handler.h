@@ -2,6 +2,7 @@
 #define CMD_CLASSBOOK_LOCALIZATION_DELETE_RECORD_HANDLER_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdClassbookLocalizationDeleteRecordHandler : public ICmdHandler {
 

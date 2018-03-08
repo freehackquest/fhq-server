@@ -2,6 +2,7 @@
 #define CMD_API_HANDLER_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 /*! 
  * This handler will be return list of handlers - publish api interfaces

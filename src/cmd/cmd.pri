@@ -17,13 +17,6 @@ HEADERS += \
     src/cmd/include/cmd_login_handler.h \
     src/cmd/include/cmd_publiceventslist_handler.h \
     src/cmd/include/cmd_public_info_handler.h \
-    src/cmd/include/cmd_quest_delete_handler.h \
-    src/cmd/include/cmd_quest_handler.h \
-    src/cmd/include/cmd_quest_pass_handler.h \
-    src/cmd/include/cmd_quest_statistics_handler.h \
-    src/cmd/include/cmd_quest_update_handler.h \
-    src/cmd/include/cmd_quests_subjects_handler.h \
-    src/cmd/include/cmd_quests_handler.h \
     src/cmd/include/cmd_registration_handler.h \
     src/cmd/include/cmd_getmap_handler.h \
     src/cmd/include/cmd_scoreboard_handler.h \
@@ -65,13 +58,6 @@ SOURCES += \
     src/cmd/sources/cmd_login_handler.cpp \
     src/cmd/sources/cmd_publiceventslist_handler.cpp \
     src/cmd/sources/cmd_public_info_handler.cpp \
-    src/cmd/sources/cmd_quest_delete_handler.cpp \
-    src/cmd/sources/cmd_quest_handler.cpp \
-    src/cmd/sources/cmd_quest_pass_handler.cpp \
-    src/cmd/sources/cmd_quest_statistics_handler.cpp \
-    src/cmd/sources/cmd_quest_update_handler.cpp \
-    src/cmd/sources/cmd_quests_subjects_handler.cpp \
-    src/cmd/sources/cmd_quests_handler.cpp \
     src/cmd/sources/cmd_registration_handler.cpp \
     src/cmd/sources/cmd_scoreboard_handler.cpp \
     src/cmd/sources/cmd_sendchatmessage_handler.cpp \
@@ -81,7 +67,6 @@ SOURCES += \
     src/cmd/sources/cmd_writeups_handler.cpp \
     src/cmd/sources/cmd_token_handler.cpp \
     src/cmd/sources/cmd_classbook_handler.cpp \
-    src/cmd/sources/cmd_quest_create_handler.cpp \
     $$PWD/sources/cmd_classbook_localization_add_record_handler.cpp \
     $$PWD/sources/cmd_classbook_localization_delete_record_handler.cpp \
     $$PWD/sources/cmd_classbook_localization_update_record_handler.cpp \

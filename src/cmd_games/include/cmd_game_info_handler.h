@@ -2,6 +2,7 @@
 #define CMD_GAME_INFO_HANDLER_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdGameInfoHandler : public ICmdHandler {
 	

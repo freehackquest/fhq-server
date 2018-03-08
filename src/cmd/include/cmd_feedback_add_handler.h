@@ -2,6 +2,7 @@
 #define CMD_FEEDBACK_ADD_HANDLER_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdFeedbackAddHandler : public ICmdHandler {
 	

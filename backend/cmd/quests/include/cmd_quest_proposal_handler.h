@@ -2,6 +2,7 @@
 #define CMD_QUEST_PROPOSAL_HANDLER_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdQuestProposalHandler : public ICmdHandler {
 	
@@ -18,5 +19,7 @@ class CmdQuestProposalHandler : public ICmdHandler {
         ModelCommandAccess m_modelCommandAccess;
         std::vector<CmdInputDef> m_vInputs;
 };
+
+REGISTRY_CMD(CmdQuestProposalHandler)
 
 #endif // CMD_QUEST_PROPOSAL_HANDLER_H

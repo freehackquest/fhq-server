@@ -2,6 +2,7 @@
 #define CMD_USER_CHANGE_PASSWORD_HANDLER_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdUserChangePasswordHandler : public ICmdHandler {
 	

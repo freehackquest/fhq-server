@@ -2,6 +2,7 @@
 #define CMD_CLASSBOOK_DELETE_RECORD_HANDLER
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdClassbookDeleteRecordHandler : public ICmdHandler {
 

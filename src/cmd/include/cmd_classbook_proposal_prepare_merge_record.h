@@ -2,6 +2,7 @@
 #define CMD_CLASSBOOK_PROPOSAL_PREPARE_MERGE_RECORD_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdClassbookProposalPrepareMergeRecordHandler : public ICmdHandler {
 

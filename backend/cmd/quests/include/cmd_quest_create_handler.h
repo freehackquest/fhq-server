@@ -1,12 +1,13 @@
-#ifndef CMD_QUEST_HANDLER_H
-#define CMD_QUEST_HANDLER_H
+#ifndef CMD_QUEST_CREATE_HANDLER_H
+#define CMD_QUEST_CREATE_HANDLER_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
-class CmdQuestHandler : public ICmdHandler {
+class CmdCreateQuestHandler : public ICmdHandler {
 	
 	public:
-		CmdQuestHandler();
+		CmdCreateQuestHandler();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -19,4 +20,4 @@ class CmdQuestHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_QUEST_HANDLER_H
+#endif // CMD_QUEST_CREATE_HANDLER_H

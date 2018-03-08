@@ -3,6 +3,7 @@
 
 #include <iserver.h>
 #include <QFile>
+#include <cmd_handlers.h>
 
 class CmdClassbookExportHandler : public ICmdHandler {
 

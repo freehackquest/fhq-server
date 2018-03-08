@@ -2,6 +2,7 @@
 #define CMD_DELETEHINT_HANDLER_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdDeleteHintHandler : public ICmdHandler {
 	

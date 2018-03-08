@@ -2,6 +2,7 @@
 #define CMD_USER_SKILLS_HANDLER_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdUserSkillsHandler : public ICmdHandler {
 	

@@ -2,6 +2,7 @@
 #define CMD_CLASSBOOK_GETLIST_HANDLER
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdClassbookListHandler : public ICmdHandler {
 

@@ -2,6 +2,7 @@
 #define CMD_CLASSBOOK_LOCALIZATION_INFO_HANDLER_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdClassbookLocalizationInfoHandler : public ICmdHandler {
 

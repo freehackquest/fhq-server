@@ -2,6 +2,7 @@
 #define CMD_SERVER_SETTINGS_HANDLER_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdServerSettingsHandler : public ICmdHandler {
 	

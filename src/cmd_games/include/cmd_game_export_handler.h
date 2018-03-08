@@ -2,6 +2,7 @@
 #define CMD_GAME_EXPORT_HANDLER_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdGameExportHandler : public ICmdHandler {
     public:

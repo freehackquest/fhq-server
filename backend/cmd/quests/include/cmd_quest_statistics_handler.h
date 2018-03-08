@@ -1,12 +1,13 @@
-#ifndef CMD_QUEST_UPDATE_HANDLER_H
-#define CMD_QUEST_UPDATE_HANDLER_H
+#ifndef CMD_QUEST_STATISTICS_HANDLER_H
+#define CMD_QUEST_STATISTICS_HANDLER_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
-class CmdQuestUpdateHandler : public ICmdHandler {
+class CmdQuestStatisticsHandler : public ICmdHandler {
 	
 	public:
-        CmdQuestUpdateHandler();
+        CmdQuestStatisticsHandler();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -19,4 +20,6 @@ class CmdQuestUpdateHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_QUEST_UPDATE_HANDLER_H
+REGISTRY_CMD(CmdQuestStatisticsHandler)
+
+#endif // CMD_QUEST_STATISTICS_HANDLER_H

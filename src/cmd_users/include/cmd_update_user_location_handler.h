@@ -2,6 +2,7 @@
 #define CMD_UPDATE_USER_LOCATION_HANDLER_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdUpdateUserLocationHandler : public ICmdHandler {
 	

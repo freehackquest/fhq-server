@@ -2,6 +2,7 @@
 #define CMD_WRITEUPS_HANDLER_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdWriteUpsHandler : public ICmdHandler {
 	

@@ -2,6 +2,7 @@
 #define CMD_GETPUBLICEVENT_HANDLER_H
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdGetPublicEventHandler : public ICmdHandler {
 	

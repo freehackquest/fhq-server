@@ -3,6 +3,7 @@
 
 #include <iserver.h>
 #include <model_request.h>
+#include <cmd_handlers.h>
 
 class CmdAddHintHandler : public ICmdHandler {
 	

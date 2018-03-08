@@ -12,7 +12,6 @@
 
 #include <create_cmd_users_handlers.h>
 #include <create_cmd_games_handlers.h>
-#include <create_cmd_quests_handlers.h>
 #include <create_cmd_handlers.h>
 #include <SmtpMime>
 #include <create_list_updates.h>
@@ -21,6 +20,7 @@
 
 #include <employ_settings.h>
 #include <model_request.h>
+#include <cmd_handlers.h>
 
 // QT_USE_NAMESPACE
 
@@ -60,7 +60,6 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 	
     create_cmd_users_handlers(m_mapCmdHandlers);
     create_cmd_games_handlers(m_mapCmdHandlers);
-    create_cmd_quests_handlers(m_mapCmdHandlers);
 	create_cmd_handlers(m_mapCmdHandlers);
 	create_memory_cache(m_mapMemoryCache, this);
 
@@ -195,13 +194,15 @@ void WebSocketServer::processTextMessage(QString message) {
 	
     // QString m = QString(pModelRequest->m().c_str());
 
-	if(!m_mapCmdHandlers.contains(cmd)){
-        Log::warn(TAG, "Unknown command: " + QString(cmd.c_str()));
-        pModelRequest->sendMessageError(cmd, Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
-		return;
-	}
-
-	ICmdHandler *pCmdHandler = m_mapCmdHandlers[cmd];
+    ICmdHandler *pCmdHandler = findCmdHandler(cmd);
+    if(pCmdHandler == NULL){
+        if(!m_mapCmdHandlers.contains(cmd)){
+            Log::warn(TAG, "Unknown command: " + QString(cmd.c_str()));
+            pModelRequest->sendMessageError(cmd, Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
+            return;
+        }
+        pCmdHandler = m_mapCmdHandlers[cmd];
+    }
 	
 	if(m_pMemoryCacheServerInfo != NULL){
         m_pMemoryCacheServerInfo->incrementRequests(QString(cmd.c_str()));

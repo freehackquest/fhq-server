@@ -2,6 +2,7 @@
 #define CMD_CLASSBOOK_GET_INFO_HANDLER
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdClassbookInfoHandler : public ICmdHandler {
 

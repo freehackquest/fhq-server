@@ -2,6 +2,7 @@
 #define CMD_CLASSBOOK_UPDATE_RECORD_HANDLER
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 class CmdClassbookUpdateRecordHandler : public ICmdHandler {
 
