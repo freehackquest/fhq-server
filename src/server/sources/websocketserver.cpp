@@ -11,7 +11,6 @@
 #include <QtNetwork/QSslKey>
 
 #include <create_cmd_users_handlers.h>
-#include <create_cmd_games_handlers.h>
 #include <create_cmd_handlers.h>
 #include <SmtpMime>
 #include <create_list_updates.h>
@@ -59,7 +58,6 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
     }*/
 	
     create_cmd_users_handlers(m_mapCmdHandlers);
-    create_cmd_games_handlers(m_mapCmdHandlers);
 	create_cmd_handlers(m_mapCmdHandlers);
 	create_memory_cache(m_mapMemoryCache, this);
 

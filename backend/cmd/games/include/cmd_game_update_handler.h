@@ -20,4 +20,6 @@ class CmdGameUpdateHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
+REGISTRY_CMD(CmdGameUpdateHandler)
+
 #endif // CMD_GAME_UPDATE_HANDLER_H
