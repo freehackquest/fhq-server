@@ -10,7 +10,6 @@
 #include <QtNetwork/QSslCertificate>
 #include <QtNetwork/QSslKey>
 
-#include <create_cmd_handlers.h>
 #include <SmtpMime>
 #include <create_list_updates.h>
 #include <create_memory_cache.h>
@@ -56,7 +55,6 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 		query.exec();
     }*/
 
-	create_cmd_handlers(m_mapCmdHandlers);
 	create_memory_cache(m_mapMemoryCache, this);
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
@@ -192,12 +190,9 @@ void WebSocketServer::processTextMessage(QString message) {
 
     ICmdHandler *pCmdHandler = findCmdHandler(cmd);
     if(pCmdHandler == NULL){
-        if(!m_mapCmdHandlers.contains(cmd)){
-            Log::warn(TAG, "Unknown command: " + QString(cmd.c_str()));
-            pModelRequest->sendMessageError(cmd, Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
-            return;
-        }
-        pCmdHandler = m_mapCmdHandlers[cmd];
+        Log::warn(TAG, "Unknown command: " + QString(cmd.c_str()));
+        pModelRequest->sendMessageError(cmd, Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
+        return;
     }
 	
 	if(m_pMemoryCacheServerInfo != NULL){
@@ -371,7 +366,8 @@ void WebSocketServer::exportApi(QJsonObject &result){
 	
 	QJsonArray handlers;
 	
-    foreach( std::string key, m_mapCmdHandlers.keys()){
+    // TODO
+    /*foreach( std::string key, m_mapCmdHandlers.keys()){
 		ICmdHandler *pHandler = m_mapCmdHandlers.value(key);
 		QJsonObject handler;
 		
@@ -388,7 +384,7 @@ void WebSocketServer::exportApi(QJsonObject &result){
 		}
 		handler["inputs"] = inputs;
 		handlers.append(handler);
-	}
+    }*/
 	result["handlers"] = handlers;
 }
 

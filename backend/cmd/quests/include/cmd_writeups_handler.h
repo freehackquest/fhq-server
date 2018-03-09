@@ -20,4 +20,6 @@ class CmdWriteUpsHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
+REGISTRY_CMD(CmdWriteUpsHandler)
+
 #endif // CMD_WRITEUPS_HANDLER_H

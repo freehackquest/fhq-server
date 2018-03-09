@@ -69,7 +69,6 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		QWebSocketServer *m_pWebSocketServerSSL;
 		QList<QWebSocket *> m_clients;
 		QMap<QWebSocket *, IUserToken *> m_tokens;
-        QMap<std::string, ICmdHandler *> m_mapCmdHandlers;
 		QMap<QString, IMemoryCache *> m_mapMemoryCache;
 		MemoryCacheServerInfo *m_pMemoryCacheServerInfo;
 
