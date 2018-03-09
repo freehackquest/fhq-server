@@ -11,7 +11,7 @@ HEADERS += \
     $$PWD/include/cmd_quest_update_handler.h \
     $$PWD/include/cmd_quests_subjects_handler.h \
     $$PWD/include/cmd_quests_handler.h \
-
+    $$PWD/include/cmd_quest_create_handler.h \
 
 SOURCES += \
     $$PWD/sources/cmd_quest_proposal_handler.cpp \

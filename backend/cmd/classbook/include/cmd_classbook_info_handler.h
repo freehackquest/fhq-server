@@ -1,13 +1,13 @@
-#ifndef CMD_CLASSBOOK_LOCALIZATION_UPDATE_RECORD_HANDLER_H
-#define CMD_CLASSBOOK_LOCALIZATION_UPDATE_RECORD_HANDLER_H
+#ifndef CMD_CLASSBOOK_GET_INFO_HANDLER
+#define CMD_CLASSBOOK_GET_INFO_HANDLER
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdClassbookLocalizationUpdateRecordHandler : public ICmdHandler {
+class CmdClassbookInfoHandler : public ICmdHandler {
 
     public:
-        CmdClassbookLocalizationUpdateRecordHandler();
+        CmdClassbookInfoHandler();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -20,5 +20,7 @@ class CmdClassbookLocalizationUpdateRecordHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_CLASSBOOK_LOCALIZATION_UPDATE_RECORD_HANDLER_H
+REGISTRY_CMD(CmdClassbookInfoHandler)
+
+#endif // CMD_CLASSBOOK_GET_INFO_HANDLER
 

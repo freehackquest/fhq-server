@@ -1,13 +1,13 @@
-#ifndef CMD_CLASSBOOK_PROPOSAL_DELETE_RECORD_HANDLER_H
-#define CMD_CLASSBOOK_PROPOSAL_DELETE_RECORD_HANDLER_H
+#ifndef CMD_CLASSBOOK_UPDATE_RECORD_HANDLER
+#define CMD_CLASSBOOK_UPDATE_RECORD_HANDLER
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdClassbookProposalDeleteRecordHandler : public ICmdHandler {
+class CmdClassbookUpdateRecordHandler : public ICmdHandler {
 
     public:
-        CmdClassbookProposalDeleteRecordHandler();
+        CmdClassbookUpdateRecordHandler();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -20,5 +20,7 @@ class CmdClassbookProposalDeleteRecordHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_CLASSBOOK_PROPOSAL_DELETE_RECORD_HANDLER_H
+REGISTRY_CMD(CmdClassbookUpdateRecordHandler)
+
+#endif // CMD_CLASSBOOK_UPDATE_RECORD_HANDLER
 

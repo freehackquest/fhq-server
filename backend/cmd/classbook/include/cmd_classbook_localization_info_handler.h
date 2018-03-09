@@ -1,13 +1,13 @@
-#ifndef CMD_CLASSBOOK_PROPOSAL_PREPARE_MERGE_RECORD_H
-#define CMD_CLASSBOOK_PROPOSAL_PREPARE_MERGE_RECORD_H
+#ifndef CMD_CLASSBOOK_LOCALIZATION_INFO_HANDLER_H
+#define CMD_CLASSBOOK_LOCALIZATION_INFO_HANDLER_H
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdClassbookProposalPrepareMergeRecordHandler : public ICmdHandler {
+class CmdClassbookLocalizationInfoHandler : public ICmdHandler {
 
     public:
-        CmdClassbookProposalPrepareMergeRecordHandler();
+        CmdClassbookLocalizationInfoHandler();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -20,5 +20,7 @@ class CmdClassbookProposalPrepareMergeRecordHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_CLASSBOOK_PROPOSAL_PREPARE_MERGE_RECORD_H
+REGISTRY_CMD(CmdClassbookLocalizationInfoHandler)
+
+#endif // CMD_CLASSBOOK_LOCALIZATION_INFO_HANDLER_H
 

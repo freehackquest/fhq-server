@@ -1,13 +1,13 @@
-#ifndef CMD_CLASSBOOK_LOCALIZATION_DELETE_RECORD_HANDLER_H
-#define CMD_CLASSBOOK_LOCALIZATION_DELETE_RECORD_HANDLER_H
+#ifndef CMD_CLASSBOOK_PROPOSAL_PREPARE_MERGE_RECORD_H
+#define CMD_CLASSBOOK_PROPOSAL_PREPARE_MERGE_RECORD_H
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdClassbookLocalizationDeleteRecordHandler : public ICmdHandler {
+class CmdClassbookProposalPrepareMergeRecordHandler : public ICmdHandler {
 
     public:
-        CmdClassbookLocalizationDeleteRecordHandler();
+        CmdClassbookProposalPrepareMergeRecordHandler();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -20,5 +20,7 @@ class CmdClassbookLocalizationDeleteRecordHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_CLASSBOOK_LOCALIZATION_DELETE_RECORD_HANDLER_H
+REGISTRY_CMD(CmdClassbookProposalPrepareMergeRecordHandler)
+
+#endif // CMD_CLASSBOOK_PROPOSAL_PREPARE_MERGE_RECORD_H
 

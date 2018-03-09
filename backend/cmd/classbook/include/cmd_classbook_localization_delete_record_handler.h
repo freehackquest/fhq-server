@@ -1,13 +1,13 @@
-#ifndef CMD_CLASSBOOK_PROPOSAL_LIST_HANDLER_H
-#define CMD_CLASSBOOK_PROPOSAL_LIST_HANDLER_H
+#ifndef CMD_CLASSBOOK_LOCALIZATION_DELETE_RECORD_HANDLER_H
+#define CMD_CLASSBOOK_LOCALIZATION_DELETE_RECORD_HANDLER_H
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdClassbookProposalListHandler : public ICmdHandler {
+class CmdClassbookLocalizationDeleteRecordHandler : public ICmdHandler {
 
     public:
-        CmdClassbookProposalListHandler();
+        CmdClassbookLocalizationDeleteRecordHandler();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -20,5 +20,7 @@ class CmdClassbookProposalListHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_CLASSBOOK_PROPOSAL_LIST_HANDLER_H
+REGISTRY_CMD(CmdClassbookLocalizationDeleteRecordHandler)
+
+#endif // CMD_CLASSBOOK_LOCALIZATION_DELETE_RECORD_HANDLER_H
 

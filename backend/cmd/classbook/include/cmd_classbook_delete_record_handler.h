@@ -1,14 +1,13 @@
-#ifndef CMD_CLASSBOOK_EXPORT
-#define CMD_CLASSBOOK_EXPORT
+#ifndef CMD_CLASSBOOK_DELETE_RECORD_HANDLER
+#define CMD_CLASSBOOK_DELETE_RECORD_HANDLER
 
 #include <iserver.h>
-#include <QFile>
 #include <cmd_handlers.h>
 
-class CmdClassbookExportHandler : public ICmdHandler {
+class CmdClassbookDeleteRecordHandler : public ICmdHandler {
 
     public:
-        CmdClassbookExportHandler();
+        CmdClassbookDeleteRecordHandler();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -19,10 +18,9 @@ class CmdClassbookExportHandler : public ICmdHandler {
         QString TAG;
         ModelCommandAccess m_modelCommandAccess;
         std::vector<CmdInputDef> m_vInputs;
-
-        void createHtml(QFile *file, QString lang, QSqlQuery query);
-        void createMD(QFile *file , QString lang, QSqlQuery query);
 };
 
-#endif // CMD_CLASSBOOK_EXPORT
+REGISTRY_CMD(CmdClassbookDeleteRecordHandler)
+
+#endif // CMD_CLASSBOOK_DELETE_RECORD_HANDLER
 

@@ -1,13 +1,13 @@
-#ifndef CMD_CLASSBOOK_GETLIST_HANDLER
-#define CMD_CLASSBOOK_GETLIST_HANDLER
+#ifndef CMD_CLASSBOOK_PROPOSAL_LIST_HANDLER_H
+#define CMD_CLASSBOOK_PROPOSAL_LIST_HANDLER_H
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdClassbookListHandler : public ICmdHandler {
+class CmdClassbookProposalListHandler : public ICmdHandler {
 
     public:
-        CmdClassbookListHandler();
+        CmdClassbookProposalListHandler();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -20,5 +20,7 @@ class CmdClassbookListHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_CLASSBOOK_GETLIST_HANDLER
+REGISTRY_CMD(CmdClassbookProposalListHandler)
+
+#endif // CMD_CLASSBOOK_PROPOSAL_LIST_HANDLER_H
 

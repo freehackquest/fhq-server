@@ -6,21 +6,6 @@
 #include <cmd_deletepublicevent_handler.h>
 #include <cmd_createpublicevent_handler.h>
 #include <cmd_getpublicevent_handler.h>
-#include <cmd_classbook_add_record_handler.h>
-#include <cmd_classbook_delete_record_handler.h>
-#include <cmd_classbook_export_handler.h>
-#include <cmd_classbook_info_handler.h>
-#include <cmd_classbook_list_handler.h>
-#include <cmd_classbook_update_record_handler.h>
-#include <cmd_classbook_localization_add_record_handler.h>
-#include <cmd_classbook_localization_delete_record_handler.h>
-#include <cmd_classbook_localization_info_handler.h>
-#include <cmd_classbook_localization_update_record_handler.h>
-#include <cmd_classbook_proposal_add_record_handler.h>
-#include <cmd_classbook_proposal_delete_record_handler.h>
-#include <cmd_classbook_proposal_info_handler.h>
-#include <cmd_classbook_proposal_list_handler.h>
-#include <cmd_classbook_handler.h>
 #include <cmd_deletehint_handler.h>
 #include <cmd_feedback_add_handler.h>
 #include <cmd_getmap_handler.h>
@@ -47,21 +32,6 @@ void create_cmd_handlers(QMap<std::string, ICmdHandler *> &pHandlers){
 	v.push_back(new CmdCreatePublicEventHandler());
 	v.push_back(new CmdDeletePublicEventHandler());
 	v.push_back(new CmdGetPublicEventHandler());
-    v.push_back(new CmdClassbookAddRecordHandler());
-    v.push_back(new CmdClassbookDeleteRecordHandler());
-    v.push_back(new CmdClassbookExportHandler());
-    v.push_back(new CmdClassbookInfoHandler());
-    v.push_back(new CmdClassbookListHandler());
-    v.push_back(new CmdClassbookUpdateRecordHandler());
-    v.push_back(new CmdClassbookLocalizationAddRecordHandler());
-    v.push_back(new CmdClassbookLocalizationDeleteRecordHandler());
-    v.push_back(new CmdClassbookLocalizationInfoHandler());
-    v.push_back(new CmdClassbookLocalizationUpdateRecordHandler());
-    v.push_back(new CmdClassbookProposalAddRecordHandler());
-    v.push_back(new CmdClassbookProposalDeleteRecordHandler());
-    v.push_back(new CmdClassbookProposalInfoHandler());
-    v.push_back(new CmdClassbookProposalListHandler());
-	v.push_back(new CmdClassbookHandler());
 	v.push_back(new CmdDeleteHintHandler());
     v.push_back(new CmdFeedbackAddHandler());
 	v.push_back(new CmdGetMapHandler());

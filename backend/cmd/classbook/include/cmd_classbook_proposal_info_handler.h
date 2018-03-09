@@ -20,5 +20,7 @@ class CmdClassbookProposalInfoHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
+REGISTRY_CMD(CmdClassbookProposalInfoHandler)
+
 #endif // CMD_CLASSBOOK_PROPOSAL_INFO_HANDLER_H
 

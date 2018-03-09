@@ -1,13 +1,13 @@
-#ifndef CMD_CLASSBOOK_PROPOSAL_ADD_RECORD_HANDLER_H
-#define CMD_CLASSBOOK_PROPOSAL_ADD_RECORD_HANDLER_H
+#ifndef CMD_CLASSBOOK_ADD_RECORD_HANDLER
+#define CMD_CLASSBOOK_ADD_RECORD_HANDLER
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdClassbookProposalAddRecordHandler : public ICmdHandler {
+class CmdClassbookAddRecordHandler : public ICmdHandler {
 
     public:
-        CmdClassbookProposalAddRecordHandler();
+        CmdClassbookAddRecordHandler();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -20,5 +20,7 @@ class CmdClassbookProposalAddRecordHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_CLASSBOOK_PROPOSAL_ADD_RECORD_HANDLER_H
+REGISTRY_CMD(CmdClassbookAddRecordHandler)
+
+#endif // CMD_CLASSBOOK_ADD_RECORD_HANDLER
 

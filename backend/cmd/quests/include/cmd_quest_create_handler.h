@@ -20,4 +20,6 @@ class CmdCreateQuestHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
+REGISTRY_CMD(CmdCreateQuestHandler)
+
 #endif // CMD_QUEST_CREATE_HANDLER_H
