@@ -1,13 +1,13 @@
-#ifndef CMD_DELETEPUBLICEVENT_HANDLER_H
-#define CMD_DELETEPUBLICEVENT_HANDLER_H
+#ifndef CMD_PUBLICEVENTSLIST_HANDLER_H
+#define CMD_PUBLICEVENTSLIST_HANDLER_H
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdDeletePublicEventHandler : public ICmdHandler {
+class CmdPublicEventsListHandler : public ICmdHandler {
 	
 	public:
-		CmdDeletePublicEventHandler();
+		CmdPublicEventsListHandler();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -20,4 +20,6 @@ class CmdDeletePublicEventHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_DELETEPUBLICEVENT_HANDLER_H
+REGISTRY_CMD(CmdPublicEventsListHandler)
+
+#endif // CMD_PUBLICEVENTSLIST_HANDLER_H

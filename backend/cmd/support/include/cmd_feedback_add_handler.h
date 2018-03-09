@@ -1,13 +1,13 @@
-#ifndef CMD_PUBLICEVENTSLIST_HANDLER_H
-#define CMD_PUBLICEVENTSLIST_HANDLER_H
+#ifndef CMD_FEEDBACK_ADD_HANDLER_H
+#define CMD_FEEDBACK_ADD_HANDLER_H
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdPublicEventsListHandler : public ICmdHandler {
+class CmdFeedbackAddHandler : public ICmdHandler {
 	
 	public:
-		CmdPublicEventsListHandler();
+        CmdFeedbackAddHandler();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -20,4 +20,6 @@ class CmdPublicEventsListHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_PUBLICEVENTSLIST_HANDLER_H
+REGISTRY_CMD(CmdFeedbackAddHandler)
+
+#endif // CMD_FEEDBACK_ADD_HANDLER_H

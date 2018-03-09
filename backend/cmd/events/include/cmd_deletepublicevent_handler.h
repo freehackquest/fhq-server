@@ -1,13 +1,13 @@
-#ifndef CMD_FEEDBACK_ADD_HANDLER_H
-#define CMD_FEEDBACK_ADD_HANDLER_H
+#ifndef CMD_DELETEPUBLICEVENT_HANDLER_H
+#define CMD_DELETEPUBLICEVENT_HANDLER_H
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdFeedbackAddHandler : public ICmdHandler {
+class CmdDeletePublicEventHandler : public ICmdHandler {
 	
 	public:
-        CmdFeedbackAddHandler();
+		CmdDeletePublicEventHandler();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -20,4 +20,6 @@ class CmdFeedbackAddHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_FEEDBACK_ADD_HANDLER_H
+REGISTRY_CMD(CmdDeletePublicEventHandler)
+
+#endif // CMD_DELETEPUBLICEVENT_HANDLER_H
