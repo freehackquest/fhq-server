@@ -359,37 +359,6 @@ IMemoryCache *WebSocketServer::findMemoryCache(QString name){
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::exportApi(QJsonObject &result){
-	
-	result["port"] = m_pServerConfig->serverPort();
-	result["ssl_port"] = m_pServerConfig->serverPort();
-	
-	QJsonArray handlers;
-	
-    // TODO
-    /*foreach( std::string key, m_mapCmdHandlers.keys()){
-		ICmdHandler *pHandler = m_mapCmdHandlers.value(key);
-		QJsonObject handler;
-		
-        handler["cmd"] = QString(pHandler->cmd().c_str());
-        handler["description"] = QString(pHandler->description().c_str());
-        handler["access_unauthorized"] = pHandler->access().accessUnauthorized();
-        handler["access_user"] = pHandler->access().accessUser();
-        handler["access_admin"] = pHandler->access().accessAdmin();
-
-		QJsonArray inputs;
-        std::vector<CmdInputDef> ins = pHandler->inputs();
-        for(unsigned int i = 0; i < ins.size(); i++){
-			inputs.append(ins[i].toJson());
-		}
-		handler["inputs"] = inputs;
-		handlers.append(handler);
-    }*/
-	result["handlers"] = handlers;
-}
-
-// ---------------------------------------------------------------------
-
 bool WebSocketServer::validateInputParameters(Error &error, ICmdHandler *pCmdHandler, QJsonObject &jsonRequest){
     const std::vector<CmdInputDef> vInputs = pCmdHandler->inputs();
     for(unsigned int i = 0; i < vInputs.size(); i++){

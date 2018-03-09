@@ -21,6 +21,12 @@ void Log::err(QString tag, QString msg){
 
 // ---------------------------------------------------------------------
 
+void Log::err(const std::string & tag, const std::string &msg){
+    Log::add("ERR",QString(tag.c_str()), QString(msg.c_str()));
+}
+
+// ---------------------------------------------------------------------
+
 void Log::err(QString tag, QAbstractSocket::SocketError socketError){
 	QString msg = "Unknown error";
 	if(socketError == QAbstractSocket::ConnectionRefusedError){

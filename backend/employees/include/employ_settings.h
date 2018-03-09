@@ -40,7 +40,4 @@ private:
     QString TAG;
 };
 
-// registry employ
-static RegistryEmploy<EmploySettings> registryEmploySettings;
-
 #endif // EMPLOY_SETTINGS_H

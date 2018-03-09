@@ -6,11 +6,14 @@
 #include <QMutex>
 #include <QJsonArray>
 #include <QAbstractSocket>
+#include <stdio.h>
+#include <iostream>
 
 class Log {
 	public:
 		static void info(QString tag, QString msg);
 		static void err(QString tag, QString msg);
+        static void err(const std::string &tag, const std::string &msg);
 		static void err(QString tag, QAbstractSocket::SocketError socketError);
 		static void warn(QString tag, QString msg);
 		static void setdir(QString dir);

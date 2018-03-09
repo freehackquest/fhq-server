@@ -1,5 +1,5 @@
-#ifndef CMD_API_HANDLER_H
-#define CMD_API_HANDLER_H
+#ifndef CMD_HANDLER_SERVER_API_H
+#define CMD_HANDLER_SERVER_API_H
 
 #include <iserver.h>
 #include <cmd_handlers.h>
@@ -8,10 +8,10 @@
  * This handler will be return list of handlers - publish api interfaces
  * */
  
-class CmdApiHandler : public ICmdHandler {
+class CmdHandlerServerApi : public ICmdHandler {
 	
 	public:
-		CmdApiHandler();
+        CmdHandlerServerApi();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -23,6 +23,6 @@ class CmdApiHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-REGISTRY_CMD(CmdApiHandler)
+REGISTRY_CMD(CmdHandlerServerApi)
 
-#endif // CMD_API_HANDLER_H
+#endif // CMD_HANDLER_SERVER_API_H

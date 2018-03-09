@@ -18,7 +18,8 @@ public:
         }
 
         ICmdHandler *pCmdHandler = new T();
-        std::string sCmd = pCmdHandler->cmd(); // T::getEmployName();
+        std::string sCmd = pCmdHandler->cmd(); // TODO change to static method
+        std::cout << "Try register cmd: " << sCmd << "\n";
         g_pCmdHandlers->insert(std::pair<std::string, ICmdHandler*>(sCmd,pCmdHandler));
     }
 };

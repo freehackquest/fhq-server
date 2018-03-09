@@ -16,16 +16,25 @@ public:
             g_pEmployees = new std::map<std::string, IEmploy*>();
         }
 
-        IEmploy *pEmploy = new T();
         std::string sEmployName = T::getEmployName();
-        g_pEmployees->insert(std::pair<std::string, IEmploy*>(sEmployName,pEmploy));
+        std::cout << "Try register employ " << sEmployName << "\n";
+        if(g_pEmployees->count(sEmployName)){
+            Log::err("RegistryEmploy", sEmployName + " -  already registered");
+        }else{
+            IEmploy *pEmploy = new T();
+            g_pEmployees->insert(std::pair<std::string, IEmploy*>(sEmployName,pEmploy));
+        }
     }
 };
+
+#define REGISTRY_EMPLOY( classname ) \
+    static RegistryEmploy<classname> registry ## classname; \
+
 
 // findEmploy
 
 template <class T> T* findEmploy() {
-    // Log::err("findEmploy", "Find employ start");
+
     /*if(g_pEmployees == NULL){
         initEmployees();
     }*/

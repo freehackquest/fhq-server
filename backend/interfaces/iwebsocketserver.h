@@ -24,7 +24,6 @@ class IWebSocketServer {
 		virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken) = 0;
 		virtual IUserToken * getUserToken(QWebSocket *pClient) = 0;
 		virtual IMemoryCache *findMemoryCache(QString name) = 0;
-		virtual void exportApi(QJsonObject &result) = 0;
 };
 
 #endif // INTERFACES_IWEBSOCKETSERVER_H

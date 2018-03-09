@@ -48,8 +48,6 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken);
 		virtual IUserToken * getUserToken(QWebSocket *pClient);
 		virtual IMemoryCache *findMemoryCache(QString name);
-		virtual void exportApi(QJsonObject &result);
-
 
 	Q_SIGNALS:
 		void closed();

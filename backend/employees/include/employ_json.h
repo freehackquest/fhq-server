@@ -9,7 +9,4 @@ class EmployJson : public IEmploy {
        virtual void test();
 };
 
-// registry employ
-static RegistryEmploy<EmployJson> registryEmployJson;
-
 #endif // EMPLOY_JSON_H

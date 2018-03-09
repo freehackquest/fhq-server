@@ -1,5 +1,7 @@
 #include <employ_settings.h>
 
+REGISTRY_EMPLOY(EmploySettings)
+
 // ---------------------------------------------------------------------
 
 #include <log.h>
@@ -326,4 +328,6 @@ void EmploySettings::updateSettingDatabase(ServerSettHelper *pServerSettHelper){
         Log::err(TAG, query.lastError().text());
     }
 }
+
+// ---------------------------------------------------------------------
 
