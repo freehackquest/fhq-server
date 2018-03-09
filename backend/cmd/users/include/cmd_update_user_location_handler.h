@@ -20,4 +20,6 @@ class CmdUpdateUserLocationHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
+REGISTRY_CMD(CmdUpdateUserLocationHandler)
+
 #endif // CMD_UPDATE_USER_LOCATION_HANDLER_H

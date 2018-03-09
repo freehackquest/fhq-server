@@ -7,7 +7,6 @@ HEADERS += \
     src/cmd/include/cmd_addhint_handler.h \
     src/cmd/include/cmd_answerlist_handler.h \
     src/cmd/include/cmd_api_handler.h \
-    src/cmd/include/cmd_classbook_handler.h \
     src/cmd/include/cmd_createpublicevent_handler.h \
     src/cmd/include/cmd_deletepublicevent_handler.h \
     src/cmd/include/cmd_getpublicevent_handler.h \

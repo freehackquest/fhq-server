@@ -1,13 +1,13 @@
-#ifndef CMD_USERS_HANDLER_H
-#define CMD_USERS_HANDLER_H
+#ifndef CMD_USER_HANDLER_H
+#define CMD_USER_HANDLER_H
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdUsersHandler : public ICmdHandler {
+class CmdUserHandler : public ICmdHandler {
 	
 	public:
-		CmdUsersHandler();
+		CmdUserHandler();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -20,4 +20,6 @@ class CmdUsersHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_USERS_HANDLER_H
+REGISTRY_CMD(CmdUserHandler)
+
+#endif // CMD_USER_HANDLER_H

@@ -20,4 +20,6 @@ class CmdUserSkillsHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
+REGISTRY_CMD(CmdUserSkillsHandler)
+
 #endif // CMD_USER_SKILLS_HANDLER_H

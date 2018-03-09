@@ -1,13 +1,13 @@
-#ifndef CMD_USER_HANDLER_H
-#define CMD_USER_HANDLER_H
+#ifndef CMD_USER_CHANGE_PASSWORD_HANDLER_H
+#define CMD_USER_CHANGE_PASSWORD_HANDLER_H
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdUserHandler : public ICmdHandler {
+class CmdUserChangePasswordHandler : public ICmdHandler {
 	
 	public:
-		CmdUserHandler();
+        CmdUserChangePasswordHandler();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -20,4 +20,6 @@ class CmdUserHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_USER_HANDLER_H
+REGISTRY_CMD(CmdUserChangePasswordHandler)
+
+#endif // CMD_USER_CHANGE_PASSWORD_HANDLER_H

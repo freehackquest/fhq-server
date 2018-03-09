@@ -10,7 +10,6 @@
 #include <QtNetwork/QSslCertificate>
 #include <QtNetwork/QSslKey>
 
-#include <create_cmd_users_handlers.h>
 #include <create_cmd_handlers.h>
 #include <SmtpMime>
 #include <create_list_updates.h>
@@ -56,8 +55,7 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 		query.prepare("DELETE FROM users_tokens WHERE end_date < NOW()");
 		query.exec();
     }*/
-	
-    create_cmd_users_handlers(m_mapCmdHandlers);
+
 	create_cmd_handlers(m_mapCmdHandlers);
 	create_memory_cache(m_mapMemoryCache, this);
 
