@@ -23,4 +23,6 @@ class CmdApiHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
+REGISTRY_CMD(CmdApiHandler)
+
 #endif // CMD_API_HANDLER_H

@@ -20,4 +20,6 @@ class CmdLoginHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
+REGISTRY_CMD(CmdLoginHandler)
+
 #endif // CMD_LOGIN_HANDLER_H

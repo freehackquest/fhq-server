@@ -1,13 +1,13 @@
-#ifndef CMD_SCOREBOARD_HANDLER_H
-#define CMD_SCOREBOARD_HANDLER_H
+#ifndef CMD_PUBLIC_INFO_HANDLER_H
+#define CMD_PUBLIC_INFO_HANDLER_H
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdScoreboardHandler : public ICmdHandler {
-	
+class CmdPublicInfoHandler : public ICmdHandler {
+
 	public:
-		CmdScoreboardHandler();
+        CmdPublicInfoHandler();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -20,4 +20,6 @@ class CmdScoreboardHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_SCOREBOARD_HANDLER_H
+REGISTRY_CMD(CmdPublicInfoHandler)
+
+#endif // CMD_PUBLIC_INFO_HANDLER_H

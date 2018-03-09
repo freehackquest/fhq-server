@@ -1,13 +1,13 @@
-#ifndef CMD_GETMAP_HANDLER_H
-#define CMD_GETMAP_HANDLER_H
+#ifndef CMD_SCOREBOARD_HANDLER_H
+#define CMD_SCOREBOARD_HANDLER_H
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdGetMapHandler : public ICmdHandler {
+class CmdScoreboardHandler : public ICmdHandler {
 	
 	public:
-		CmdGetMapHandler();
+		CmdScoreboardHandler();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -20,4 +20,6 @@ class CmdGetMapHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-#endif // CMD_GETMAP_HANDLER_H
+REGISTRY_CMD(CmdScoreboardHandler)
+
+#endif // CMD_SCOREBOARD_HANDLER_H
