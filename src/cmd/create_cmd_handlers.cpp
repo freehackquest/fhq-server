@@ -16,15 +16,13 @@
 #include <cmd_registration_handler.h>
 #include <cmd_scoreboard_handler.h>
 #include <cmd_sendchatmessage_handler.h>
-#include <cmd_server_info_handler.h>
-#include <cmd_server_settings_handler.h>
-#include <cmd_server_settings_update_handler.h>
 #include <cmd_token_handler.h>
 #include <cmd_writeups_handler.h>
 
 void create_cmd_handlers(QMap<std::string, ICmdHandler *> &pHandlers){
 	QString TAG = "create_cmd_handlers";
 	QVector<ICmdHandler *> v;
+
 
 	v.push_back(new CmdAddHintHandler());
 	v.push_back(new CmdAnswerListHandler());
@@ -42,9 +40,6 @@ void create_cmd_handlers(QMap<std::string, ICmdHandler *> &pHandlers){
     v.push_back(new CmdRegistrationHandler());
 	v.push_back(new CmdScoreboardHandler());
 	v.push_back(new CmdSendChatMessageHandler());
-	v.push_back(new CmdServerInfoHandler());
-    v.push_back(new CmdServerSettingsHandler());
-    v.push_back(new CmdServerSettingsUpdateHandler());
     v.push_back(new CmdTokenHandler());
 	v.push_back(new CmdWriteUpsHandler());
 

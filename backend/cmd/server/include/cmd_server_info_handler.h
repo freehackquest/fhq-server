@@ -20,4 +20,6 @@ class CmdServerInfoHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
+REGISTRY_CMD(CmdServerInfoHandler)
+
 #endif // CMD_SERVERINFO_HANDLER_H

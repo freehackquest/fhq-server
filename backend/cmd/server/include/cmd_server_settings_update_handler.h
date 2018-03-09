@@ -20,4 +20,6 @@ class CmdServerSettingsUpdateHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
+REGISTRY_CMD(CmdServerSettingsUpdateHandler)
+
 #endif // CMD_SERVER_SETTINGS_UPDATE_HANDLER_H

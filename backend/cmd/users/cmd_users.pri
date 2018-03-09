@@ -1,6 +1,5 @@
 
 INCLUDEPATH += $$PWD/include
-INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/include/cmd_user_handler.h \

@@ -20,9 +20,6 @@ HEADERS += \
     src/cmd/include/cmd_getmap_handler.h \
     src/cmd/include/cmd_scoreboard_handler.h \
     src/cmd/include/cmd_sendchatmessage_handler.h \
-    src/cmd/include/cmd_server_info_handler.h \
-    src/cmd/include/cmd_server_settings_handler.h \
-    src/cmd/include/cmd_server_settings_update_handler.h \
     src/cmd/include/cmd_writeups_handler.h \
     src/cmd/include/cmd_token_handler.h \
 
@@ -46,8 +43,5 @@ SOURCES += \
     src/cmd/sources/cmd_registration_handler.cpp \
     src/cmd/sources/cmd_scoreboard_handler.cpp \
     src/cmd/sources/cmd_sendchatmessage_handler.cpp \
-    src/cmd/sources/cmd_server_info_handler.cpp \
-    src/cmd/sources/cmd_server_settings_handler.cpp \
-    src/cmd/sources/cmd_server_settings_update_handler.cpp \
     src/cmd/sources/cmd_writeups_handler.cpp \
     src/cmd/sources/cmd_token_handler.cpp \
