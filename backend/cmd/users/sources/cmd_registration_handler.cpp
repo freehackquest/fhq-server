@@ -41,7 +41,7 @@ const std::vector<CmdInputDef> &CmdRegistrationHandler::inputs(){
 // ---------------------------------------------------------------------
 
 std::string CmdRegistrationHandler::description(){
-	return "Method for login";
+    return "Method for registration";
 }
 
 // ---------------------------------------------------------------------
