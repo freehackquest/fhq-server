@@ -15,9 +15,12 @@ CmdUserCreateHandler::CmdUserCreateHandler(){
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("login").required().string_().description("User's login"));
+    m_vInputs.push_back(CmdInputDef("email").required().string_().description("User's E-mail"));
     m_vInputs.push_back(CmdInputDef("nick").required().string_().description("User's nick"));
-    m_vInputs.push_back(CmdInputDef("pass").required().string_().description("Password"));
+    m_vInputs.push_back(CmdInputDef("password").required().string_().description("Password"));
+    m_vInputs.push_back(CmdInputDef("role").required().string_().description("User's role"));
+    m_vInputs.push_back(CmdInputDef("university").optional().string_().description("University"));
+
 }
 
 // ---------------------------------------------------------------------
@@ -52,27 +55,27 @@ void CmdUserCreateHandler::handle(ModelRequest *pRequest){
 
     //EmploySettings *pSettings = findEmploy<EmploySettings>();
 
-    QRegularExpression regexLogin("^[0-9a-zA-Z-._]{3,128}$");
-    QString sLogin = jsonRequest["login"].toString();
+    QRegularExpression regexEmail("^[0-9a-zA-Z-._]{3,128}$");
+    QString sEmail = jsonRequest["email"].toString();
 
-    if(!regexLogin.match(sLogin).hasMatch()){
-        Log::err(TAG, "Invalid login format " + sLogin);
-        pRequest->sendMessageError(cmd(), Error(400, "Expected login format"));
+    if(!regexEmail.match(sEmail).hasMatch()){
+        Log::err(TAG, "Invalid email format " + sEmail);
+        pRequest->sendMessageError(cmd(), Error(400, "Expected email format"));
         return;
     }
 
     QSqlDatabase db = *(pRequest->server()->database());
     QSqlQuery query(db);
-    query.prepare("SELECT * FROM users WHERE email = :login");
-    query.bindValue(":login", sLogin);
+    query.prepare("SELECT * FROM users WHERE email = :email");
+    query.bindValue(":email", sEmail);
     if(!query.exec()){
         Log::err(TAG, query.lastError().text());
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
     if (query.next()) {
-        Log::err(TAG, "User already exists " + sLogin);
-        pRequest->sendMessageError(cmd(), Error(403, "This login is already in use"));
+        Log::err(TAG, "User already exists " + sEmail);
+        pRequest->sendMessageError(cmd(), Error(403, "This email already exists"));
         return;
     }
 
@@ -87,17 +90,30 @@ void CmdUserCreateHandler::handle(ModelRequest *pRequest){
 
     sNick = "hacker-" + sNick;
 
-    QRegularExpression regexPass("^[0-9a-zA-Z]{3,128}$");
-    QString sPass = jsonRequest["pass"].toString();
+    QRegularExpression regexPassword("^[0-9a-zA-Z]{3,128}$");
+    QString sPassword = jsonRequest["password"].toString();
 
-    if(!regexPass.match(sPass).hasMatch()){
+    if(!regexPassword.match(sPassword).hasMatch()){
         Log::err(TAG, "Invalid password format");
         pRequest->sendMessageError(cmd(), Error(400, "Expected password format"));
         return;
     }
 
-    QString sPassword_sha1 = sLogin.toUpper() + sPass;
+    QString sPassword_sha1 = sEmail.toUpper() + sPassword;
     sPassword_sha1 = QString("%1").arg(QString(QCryptographicHash::hash(sPassword_sha1.toUtf8(),QCryptographicHash::Sha1).toHex()));
+
+    QString sRole = jsonRequest.value("role").toString();
+    if(sRole != "User" || sRole != "Admin"){
+        Log::err(TAG, "Invalid role format " + sRole);
+        pRequest->sendMessageError(cmd(), Error(400, "This role doesn't exist"));
+        return;
+    }
+
+    QString sUniversity;
+    if(jsonRequest.contains("university"))
+        sUniversity = jsonRequest.value("university").toString();
+    else
+        sUniversity = "";
 
     QSqlQuery query_insert(db);
     query_insert.prepare(""
@@ -122,7 +138,7 @@ void CmdUserCreateHandler::handle(ModelRequest *pRequest){
                          "   about)"
                          "VALUES("
                          "   :uuid, "
-                         "   :login, "
+                         "   :email, "
                          "   :pass, "
                          "   :role, "
                          "   :nick,"
@@ -148,9 +164,9 @@ void CmdUserCreateHandler::handle(ModelRequest *pRequest){
     sUuid = sUuid.toUpper();
 
     query_insert.bindValue(":uuid", sUuid);
-    query_insert.bindValue(":login", sLogin);
+    query_insert.bindValue(":email", sEmail);
     query_insert.bindValue(":pass", sPassword_sha1);
-    query_insert.bindValue(":role", "user");
+    query_insert.bindValue(":role", sRole);
     query_insert.bindValue(":nick", sNick);
     query_insert.bindValue(":logo", "files/users/0.png");
     query_insert.bindValue(":last_ip", "");
@@ -158,7 +174,7 @@ void CmdUserCreateHandler::handle(ModelRequest *pRequest){
     query_insert.bindValue(":country", "");
     query_insert.bindValue(":region", "");
     query_insert.bindValue(":city", "");
-    query_insert.bindValue(":university", "");
+    query_insert.bindValue(":university", sUniversity);
     query_insert.bindValue(":latitude", 0);
     query_insert.bindValue(":longitude", 0);
     query_insert.bindValue(":rating", 0);
