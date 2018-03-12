@@ -23,7 +23,7 @@ CmdUserCreateHandler::CmdUserCreateHandler(){
 // ---------------------------------------------------------------------
 
 std::string CmdUserCreateHandler::cmd(){
-    return "user creation";
+    return "user_create";
 }
 
 // ---------------------------------------------------------------------
@@ -174,5 +174,4 @@ void CmdUserCreateHandler::handle(ModelRequest *pRequest){
     RunTasks::AddPublicEvents(pRequest->server(), "users", "New user #" + QString::number(nUserID) + "  " + sNick);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
-    RunTasks::UpdateUserLocation(pRequest->server(), nUserID, sLastIP);
 }
