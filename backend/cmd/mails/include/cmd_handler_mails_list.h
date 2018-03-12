@@ -1,13 +1,13 @@
-#ifndef CMD_MAILS_LIST_HANDLER_H
-#define CMD_MAILS_LIST_HANDLER_H
+#ifndef CMD_HANDLER_MAILS_LIST_H
+#define CMD_HANDLER_MAILS_LIST_H
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdMailsListHandler : public ICmdHandler {
+class CmdHandlerMailsList : public ICmdHandler {
 	
 	public:
-        CmdMailsListHandler();
+        CmdHandlerMailsList();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
@@ -20,8 +20,6 @@ class CmdMailsListHandler : public ICmdHandler {
         std::vector<CmdInputDef> m_vInputs;
 };
 
-// RegistryCmdHandler<CmdMailsListHandler> registryCmdHandlerCmdMailsListHandler;
+REGISTRY_CMD(CmdHandlerMailsList)
 
-REGISTRY_CMD(CmdMailsListHandler)
-
-#endif // CMD_MAILS_LIST_HANDLER_H
+#endif // CMD_HANDLER_MAILS_LIST_H

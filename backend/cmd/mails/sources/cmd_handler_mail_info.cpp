@@ -1,12 +1,11 @@
-#include <cmd_mails_list_handler.h>
+#include <cmd_handler_mail_info.h>
 #include <QJsonArray>
 #include <SmtpMime>
 // #include <memory_cache_serverinfo.h>
 #include <employ_settings.h>
 
-CmdMailsListHandler::CmdMailsListHandler(){
-    TAG = "CmdMailsListHandler";
-    // Log::info(TAG, "Created");
+CmdHandlerMailInfo::CmdHandlerMailInfo(){
+    TAG = "CmdHandlerMailInfo";
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -17,31 +16,31 @@ CmdMailsListHandler::CmdMailsListHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdMailsListHandler::cmd(){
-        return "mails_list";
+std::string CmdHandlerMailInfo::cmd(){
+        return "mail_info";
 }
 
 // ---------------------------------------------------------------------
 
-const ModelCommandAccess & CmdMailsListHandler::access(){
+const ModelCommandAccess & CmdHandlerMailInfo::access(){
     return m_modelCommandAccess;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<CmdInputDef> &CmdMailsListHandler::inputs(){
+const std::vector<CmdInputDef> &CmdHandlerMailInfo::inputs(){
 	return m_vInputs;
 }
 
 // ---------------------------------------------------------------------
 
-std::string CmdMailsListHandler::description(){
+std::string CmdHandlerMailInfo::description(){
         return "Mails list";
 }
 
 // ---------------------------------------------------------------------
 
-void CmdMailsListHandler::handle(ModelRequest *pRequest){
+void CmdHandlerMailInfo::handle(ModelRequest *pRequest){
     // QJsonObject jsonRequest = pRequest->data();
     // QJsonObject jsonResponse;
 
