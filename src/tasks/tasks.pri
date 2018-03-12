@@ -8,7 +8,8 @@ HEADERS += \
         src/tasks/include/update_quest_solved_task.h \
         src/tasks/include/update_user_location_task.h \
         src/tasks/include/update_user_rating_task.h \
-	src/tasks/runtasks.h
+	src/tasks/runtasks.h \
+    $$PWD/include/mail_send_task.h
 
 SOURCES += \
         src/tasks/sources/add_public_events_task.cpp \
