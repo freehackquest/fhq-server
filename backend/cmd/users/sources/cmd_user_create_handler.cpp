@@ -79,16 +79,13 @@ void CmdUserCreateHandler::handle(ModelRequest *pRequest){
         return;
     }
 
-    QRegularExpression regexNick("^[0-9A-H]{3,128}$");
-    QString sNick = jsonRequest["nick"].toString();
+    QString sNick = jsonRequest["nick"].toString().trimmed();
 
-    if(!regexNick.match(sNick).hasMatch()){
+    if(sNick.size() < 3 && sNick.size() > 128){
         Log::err(TAG, "Invalid nick format " + sNick);
         pRequest->sendMessageError(cmd(), Error(400, "Expected nick format"));
         return;
     }
-
-    sNick = "hacker-" + sNick;
 
     QRegularExpression regexPassword("^[0-9a-zA-Z]{3,128}$");
     QString sPassword = jsonRequest["password"].toString();
@@ -103,7 +100,7 @@ void CmdUserCreateHandler::handle(ModelRequest *pRequest){
     sPassword_sha1 = QString("%1").arg(QString(QCryptographicHash::hash(sPassword_sha1.toUtf8(),QCryptographicHash::Sha1).toHex()));
 
     QString sRole = jsonRequest.value("role").toString();
-    if(sRole != "User" || sRole != "Admin"){
+    if(sRole != "user" || sRole != "admin"){
         Log::err(TAG, "Invalid role format " + sRole);
         pRequest->sendMessageError(cmd(), Error(400, "This role doesn't exist"));
         return;
