@@ -1,9 +1,9 @@
-#include <cmd_addhint_handler.h>
+#include <cmd_handler_addhint.h>
 #include <log.h>
 #include <runtasks.h>
 
-CmdAddHintHandler::CmdAddHintHandler(){
-	TAG = "CmdAddHintHandler";
+CmdHandlerAddHint::CmdHandlerAddHint(){
+	TAG = "CmdHandlerAddHint";
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -16,31 +16,31 @@ CmdAddHintHandler::CmdAddHintHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdAddHintHandler::cmd(){
+std::string CmdHandlerAddHint::cmd(){
 	return "addhint";
 }
 
 // ---------------------------------------------------------------------
 
-std::string CmdAddHintHandler::description(){
+std::string CmdHandlerAddHint::description(){
     return "Methid add hint to quest";
 }
 
 // ---------------------------------------------------------------------
 
-const ModelCommandAccess & CmdAddHintHandler::access(){
+const ModelCommandAccess & CmdHandlerAddHint::access(){
     return m_modelCommandAccess;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<CmdInputDef> &CmdAddHintHandler::inputs(){
+const std::vector<CmdInputDef> &CmdHandlerAddHint::inputs(){
 	return m_vInputs;
 }
 
 // ---------------------------------------------------------------------
 
-void CmdAddHintHandler::handle(ModelRequest *pRequest){
+void CmdHandlerAddHint::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 

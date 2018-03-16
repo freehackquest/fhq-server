@@ -1,25 +1,25 @@
-#ifndef CMD_ANSWERLIST_HANDLER_H
-#define CMD_ANSWERLIST_HANDLER_H
+#ifndef CMD_HANDLER_HINTS_H
+#define CMD_HANDLER_HINTS_H
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdAnswerListHandler : public ICmdHandler {
+class CmdHandlerHints : public ICmdHandler {
 	
 	public:
-		CmdAnswerListHandler();
+		CmdHandlerHints();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
         virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
+		
+	private:
         QString TAG;
         ModelCommandAccess m_modelCommandAccess;
         std::vector<CmdInputDef> m_vInputs;
 };
 
-REGISTRY_CMD(CmdAnswerListHandler)
+REGISTRY_CMD(CmdHandlerHints)
 
-#endif // CMD_ANSWERLIST_HANDLER_H
+#endif // CMD_HANDLER_HINTS_H

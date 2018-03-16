@@ -1,12 +1,12 @@
-#include <cmd_quest_statistics_handler.h>
+#include <cmd_handler_quest_statistics.h>
 #include <runtasks.h>
 #include <log.h>
 
 #include <QJsonArray>
 #include <QCryptographicHash>
 
-CmdQuestStatisticsHandler::CmdQuestStatisticsHandler(){
-    TAG = "CmdQuestStatisticsHandler";
+CmdHandlerQuestStatistics::CmdHandlerQuestStatistics(){
+    TAG = "CmdHandlerQuestStatistics";
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -18,31 +18,31 @@ CmdQuestStatisticsHandler::CmdQuestStatisticsHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdQuestStatisticsHandler::cmd(){
+std::string CmdHandlerQuestStatistics::cmd(){
     return "quest_statistics";
 }
 
 // ---------------------------------------------------------------------
 
-const ModelCommandAccess & CmdQuestStatisticsHandler::access(){
+const ModelCommandAccess & CmdHandlerQuestStatistics::access(){
     return m_modelCommandAccess;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<CmdInputDef> &CmdQuestStatisticsHandler::inputs(){
+const std::vector<CmdInputDef> &CmdHandlerQuestStatistics::inputs(){
 	return m_vInputs;
 }
 
 // ---------------------------------------------------------------------
 
-std::string CmdQuestStatisticsHandler::description(){
+std::string CmdHandlerQuestStatistics::description(){
 	return "Update the quest info";
 }
 
 // ---------------------------------------------------------------------
 
-void CmdQuestStatisticsHandler::handle(ModelRequest *pRequest){
+void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 

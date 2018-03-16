@@ -1,25 +1,25 @@
-#ifndef CMD_WRITEUPS_HANDLER_H
-#define CMD_WRITEUPS_HANDLER_H
+#ifndef CMD_HANDLER_DELETEHINT_H
+#define CMD_HANDLER_DELETEHINT_H
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdWriteUpsHandler : public ICmdHandler {
+class CmdHandlerDeleteHint : public ICmdHandler {
 	
 	public:
-		CmdWriteUpsHandler();
+		CmdHandlerDeleteHint();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
         virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-		
+	
 	private:
         QString TAG;
         ModelCommandAccess m_modelCommandAccess;
         std::vector<CmdInputDef> m_vInputs;
 };
 
-REGISTRY_CMD(CmdWriteUpsHandler)
+REGISTRY_CMD(CmdHandlerDeleteHint)
 
-#endif // CMD_WRITEUPS_HANDLER_H
+#endif // CMD_HANDLER_DELETEHINT_H

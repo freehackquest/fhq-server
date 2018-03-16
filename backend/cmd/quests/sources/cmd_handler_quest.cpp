@@ -1,4 +1,4 @@
-#include <cmd_quest_handler.h>
+#include <cmd_handler_quest.h>
 #include <runtasks.h>
 #include <log.h>
 #include <employ_settings.h>
@@ -6,8 +6,8 @@
 #include <QJsonArray>
 #include <QCryptographicHash>
 
-CmdQuestHandler::CmdQuestHandler(){
-    TAG = "CmdQuestHandler";
+CmdHandlerQuest::CmdHandlerQuest(){
+    TAG = "CmdHandlerQuest";
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -19,31 +19,31 @@ CmdQuestHandler::CmdQuestHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdQuestHandler::cmd(){
+std::string CmdHandlerQuest::cmd(){
 	return "quest";
 }
 
 // ---------------------------------------------------------------------
 
-const ModelCommandAccess & CmdQuestHandler::access(){
+const ModelCommandAccess & CmdHandlerQuest::access(){
     return m_modelCommandAccess;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<CmdInputDef> &CmdQuestHandler::inputs(){
+const std::vector<CmdInputDef> &CmdHandlerQuest::inputs(){
 	return m_vInputs;
 }
 
 // ---------------------------------------------------------------------
 
-std::string CmdQuestHandler::description(){
+std::string CmdHandlerQuest::description(){
 	return "Update the quest info";
 }
 
 // ---------------------------------------------------------------------
 
-void CmdQuestHandler::handle(ModelRequest *pRequest){
+void CmdHandlerQuest::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 

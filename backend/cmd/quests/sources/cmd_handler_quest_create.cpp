@@ -1,11 +1,11 @@
-#include <cmd_quest_create_handler.h>
+#include <cmd_handler_quest_create.h>
 #include <runtasks.h>
 #include <memory_cache_serverinfo.h>
 
 #include <QJsonArray>
 #include <QCryptographicHash>
 
-CmdCreateQuestHandler::CmdCreateQuestHandler(){
+CmdHandlerCreateQuest::CmdHandlerCreateQuest(){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -31,31 +31,31 @@ CmdCreateQuestHandler::CmdCreateQuestHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdCreateQuestHandler::cmd(){
+std::string CmdHandlerCreateQuest::cmd(){
 	return "createquest";
 }
 
 // ---------------------------------------------------------------------
 
-const ModelCommandAccess & CmdCreateQuestHandler::access(){
+const ModelCommandAccess & CmdHandlerCreateQuest::access(){
     return m_modelCommandAccess;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<CmdInputDef> &CmdCreateQuestHandler::inputs(){
+const std::vector<CmdInputDef> &CmdHandlerCreateQuest::inputs(){
 	return m_vInputs;
 }
 
 // ---------------------------------------------------------------------
 
-std::string CmdCreateQuestHandler::description(){
+std::string CmdHandlerCreateQuest::description(){
 	return "Create the quest";
 }
 
 // ---------------------------------------------------------------------
 
-void CmdCreateQuestHandler::handle(ModelRequest *pRequest){
+void CmdHandlerCreateQuest::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 

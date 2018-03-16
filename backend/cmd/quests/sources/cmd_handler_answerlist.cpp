@@ -1,8 +1,8 @@
-#include <cmd_answerlist_handler.h>
+#include <cmd_handler_answerlist.h>
 #include <QJsonArray>
 
-CmdAnswerListHandler::CmdAnswerListHandler(){
-    TAG = "CmdAnswerListHandler";
+CmdHandlerAnswerList::CmdHandlerAnswerList(){
+    TAG = "CmdHandlerAnswerList";
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -17,31 +17,31 @@ CmdAnswerListHandler::CmdAnswerListHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdAnswerListHandler::cmd(){
+std::string CmdHandlerAnswerList::cmd(){
 	return "answerlist";
 }
 
 // ---------------------------------------------------------------------
 
-const ModelCommandAccess & CmdAnswerListHandler::access(){
+const ModelCommandAccess & CmdHandlerAnswerList::access(){
     return m_modelCommandAccess;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<CmdInputDef> &CmdAnswerListHandler::inputs(){
+const std::vector<CmdInputDef> &CmdHandlerAnswerList::inputs(){
 	return m_vInputs;
 }
 
 // ---------------------------------------------------------------------
 
-std::string CmdAnswerListHandler::description(){
+std::string CmdHandlerAnswerList::description(){
 	return "Return user answer list";
 }
 
 // ---------------------------------------------------------------------
 
-void CmdAnswerListHandler::handle(ModelRequest *pRequest){
+void CmdHandlerAnswerList::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 

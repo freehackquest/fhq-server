@@ -1,8 +1,8 @@
-#include <cmd_quest_delete_handler.h>
+#include <cmd_handler_quest_delete.h>
 #include <runtasks.h>
 #include <memory_cache_serverinfo.h>
 
-CmdQuestDeleteHandler::CmdQuestDeleteHandler(){
+CmdHandlerQuestDelete::CmdHandlerQuestDelete(){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -14,31 +14,31 @@ CmdQuestDeleteHandler::CmdQuestDeleteHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdQuestDeleteHandler::cmd(){
+std::string CmdHandlerQuestDelete::cmd(){
     return "quest_delete";
 }
 
 // ---------------------------------------------------------------------
 
-const ModelCommandAccess & CmdQuestDeleteHandler::access(){
+const ModelCommandAccess & CmdHandlerQuestDelete::access(){
     return m_modelCommandAccess;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<CmdInputDef> &CmdQuestDeleteHandler::inputs(){
+const std::vector<CmdInputDef> &CmdHandlerQuestDelete::inputs(){
 	return m_vInputs;
 }
 
 // ---------------------------------------------------------------------
 
-std::string CmdQuestDeleteHandler::description(){
+std::string CmdHandlerQuestDelete::description(){
 	return "Method for delete quest";
 }
 
 // ---------------------------------------------------------------------
 
-void CmdQuestDeleteHandler::handle(ModelRequest *pRequest){
+void CmdHandlerQuestDelete::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 

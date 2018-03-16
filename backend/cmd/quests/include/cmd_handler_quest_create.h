@@ -1,27 +1,25 @@
-#ifndef CMD_ADDHINT_HANDLER_H
-#define CMD_ADDHINT_HANDLER_H
+#ifndef CMD_HANDLER_QUEST_CREATE_H
+#define CMD_HANDLER_QUEST_CREATE_H
 
 #include <iserver.h>
-#include <model_request.h>
 #include <cmd_handlers.h>
 
-class CmdAddHintHandler : public ICmdHandler {
+class CmdHandlerCreateQuest : public ICmdHandler {
 	
 	public:
-		CmdAddHintHandler();
+		CmdHandlerCreateQuest();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
         virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
+		
 	private:
         QString TAG;
         ModelCommandAccess m_modelCommandAccess;
         std::vector<CmdInputDef> m_vInputs;
-
 };
 
-REGISTRY_CMD(CmdAddHintHandler)
+REGISTRY_CMD(CmdHandlerCreateQuest)
 
-#endif // CMD_ADDHINT_HANDLER_H
+#endif // CMD_HANDLER_QUEST_CREATE_H

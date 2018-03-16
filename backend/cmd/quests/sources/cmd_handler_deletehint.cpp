@@ -1,7 +1,8 @@
-#include <cmd_deletehint_handler.h>
+#include <cmd_handler_deletehint.h>
 
-CmdDeleteHintHandler::CmdDeleteHintHandler(){
-
+CmdHandlerDeleteHint::CmdHandlerDeleteHint(){
+	TAG = "CmdHandlerDeleteHint";
+	
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
@@ -12,31 +13,31 @@ CmdDeleteHintHandler::CmdDeleteHintHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdDeleteHintHandler::cmd(){
+std::string CmdHandlerDeleteHint::cmd(){
 	return "deletehint";
 }
 
 // ---------------------------------------------------------------------
 
-const ModelCommandAccess & CmdDeleteHintHandler::access(){
+const ModelCommandAccess & CmdHandlerDeleteHint::access(){
     return m_modelCommandAccess;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<CmdInputDef> &CmdDeleteHintHandler::inputs(){
+const std::vector<CmdInputDef> &CmdHandlerDeleteHint::inputs(){
 	return m_vInputs;
 }
 
 // ---------------------------------------------------------------------
 
-std::string CmdDeleteHintHandler::description(){
+std::string CmdHandlerDeleteHint::description(){
 	return "Method for delete hint from quest";
 }
 
 // ---------------------------------------------------------------------
 
-void CmdDeleteHintHandler::handle(ModelRequest *pRequest){
+void CmdHandlerDeleteHint::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
