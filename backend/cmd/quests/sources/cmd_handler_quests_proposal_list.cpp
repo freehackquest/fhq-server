@@ -103,7 +103,7 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest){
             int nID = record.value("id").toInt();
             int nUserID = record.value("userid").toInt();
             QString sEmail = record.value("email").toString();
-            QString sNick = record.value("nick").toString();
+            QString sNick = record.value("nick").toString().toHtmlEscaped();
             int nGameID = record.value("gameid").toInt();
             QString sGameTitle = record.value("game_title").toString();
             int nConfirmed = record.value("confirmed").toInt();
