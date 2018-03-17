@@ -5,7 +5,6 @@
 #include <QCryptographicHash>
 #include <QUuid>
 #include <QRegularExpression>
-#include <employ_settings.h>
 
 CmdUserCreateHandler::CmdUserCreateHandler(){
     TAG = "CmdUsersCreateHandler";
@@ -53,9 +52,7 @@ void CmdUserCreateHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
-    //EmploySettings *pSettings = findEmploy<EmploySettings>();
-
-    QRegularExpression regexEmail("^[0-9a-zA-Z-._]{3,128}$");
+    QRegularExpression regexEmail("^[0-9a-zA-Z-._@]{3,128}$");
     QString sEmail = jsonRequest["email"].toString();
 
     if(!regexEmail.match(sEmail).hasMatch()){
@@ -100,7 +97,7 @@ void CmdUserCreateHandler::handle(ModelRequest *pRequest){
     sPassword_sha1 = QString("%1").arg(QString(QCryptographicHash::hash(sPassword_sha1.toUtf8(),QCryptographicHash::Sha1).toHex()));
 
     QString sRole = jsonRequest.value("role").toString();
-    if(sRole != "user" || sRole != "admin"){
+    if(sRole != "user" && sRole != "admin"){
         Log::err(TAG, "Invalid role format " + sRole);
         pRequest->sendMessageError(cmd(), Error(400, "This role doesn't exist"));
         return;

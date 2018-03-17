@@ -4,7 +4,7 @@
 #include <QString>
 #include <QMap>
 #include <QChar>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QDebug>
 
 class UtilsStaticAnalizingText {

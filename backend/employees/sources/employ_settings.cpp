@@ -31,11 +31,11 @@ void EmploySettings::initSettings(IWebSocketServer *pWebSocketServer){
     addNewSetting(new ServerSettHelper(sGroupProfile, "profile_change_nick", true));
 
     QString sGroupMail = "mail";
-    addNewSetting(new ServerSettHelper(sGroupMail, "mail_from", QString("freehackquest@gmail.com")));
-    addNewSetting(new ServerSettHelper(sGroupMail, "mail_host", QString("ssl://smtp.gmail.com")));
+    addNewSetting(new ServerSettHelper(sGroupMail, "mail_from", QString("fhqdebug@gmail.com")));
+    addNewSetting(new ServerSettHelper(sGroupMail, "mail_host", QString("smtp.gmail.com")));
     addNewSetting(new ServerSettHelper(sGroupMail, "mail_port", 465));
-    addNewSetting(new ServerSettHelper(sGroupMail, "mail_username", QString("freehackquest@gmail.com")));
-    addNewSetting(new ServerSettHelper(sGroupMail, "mail_password", QString("some"), true));
+    addNewSetting(new ServerSettHelper(sGroupMail, "mail_username", QString("fhqdebug@gmail.com")));
+    addNewSetting(new ServerSettHelper(sGroupMail, "mail_password", QString("Friday-73"), true));
     addNewSetting(new ServerSettHelper(sGroupMail, "mail_auth", true));
     addNewSetting(new ServerSettHelper(sGroupMail, "mail_allow", true));
     addNewSetting(new ServerSettHelper(sGroupMail, "mail_system_message_admin_email", QString("")));

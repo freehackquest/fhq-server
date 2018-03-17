@@ -127,6 +127,14 @@ Error Errors::ParamMustBeInteger(QString param_name){
 
 // ---------------------------------------------------------------------
 
+Error Errors::ParamMustBeEmail(QString param_name){
+    Error error(400, "Parameter '" + param_name + "' must be email type");
+    return error;
+}
+
+// ---------------------------------------------------------------------
+
+
 Error Errors::ParamExpectedValueOneFrom(QString param_name, QStringList eList){
 	Error error(400, "Parameter '" + param_name + "' expected values one from [" + eList.join(",") + "]");
 	return error;

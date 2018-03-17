@@ -18,6 +18,7 @@ class Errors {
 		static Error InternalServerError();
 		static Error ParamExpected(QString param_name);
 		static Error ParamMustBeInteger(QString param_name);
+        static Error ParamMustBeEmail(QString param_name);
 		static Error ParamExpectedValueOneFrom(QString param_name, QStringList eList);
 		static Error ParamExpectedUUID(QString param_name);
 		static Error ParamMustBeLessThen(QString param_name, int maxval);

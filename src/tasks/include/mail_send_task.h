@@ -11,7 +11,7 @@ class MailSendTask : public QRunnable {
 
     public:
         MailSendTask(IWebSocketServer *pWebSocketServer,  MimeMessage message);
-        ~UpdateUserLocationTask();
+        ~MailSendTask();
     private:
         MimeMessage m_message;
         IWebSocketServer *m_pWebSocketServer;

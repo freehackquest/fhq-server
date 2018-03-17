@@ -3,7 +3,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QDateTime>
-#include <QRegExp>
+#include <QRegularExpression>
 
 #include <QHostAddress>
 #include <QThread>
@@ -398,15 +398,27 @@ bool WebSocketServer::validateInputParameters(Error &error, ICmdHandler *pCmdHan
 			
 			if(inDef.isUUID()){
                 QString val = jsonRequest[sParamName].toString();
-				QRegExp rx("[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}");
-				if(!rx.isValid()){
+                QRegularExpression rx("[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}");
+                if(!rx.isValid()){
 					Log::err(TAG, "validateInputParameters, " + rx.errorString());
 				}
-				if(!rx.exactMatch(val)){
+                if(!rx.match(val).hasMatch()){
 					error = Errors::ParamExpectedUUID(sParamName);
 					return false;
 				}
 			}
+
+            if(inDef.isEmail()){
+                QString val = jsonRequest[sParamName].toString();
+                QRegularExpression rx("^[0-9a-zA-Z]{1}[0-9a-zA-Z-._]*[0-9a-zA-Z]{1}@[0-9a-zA-Z]{1}[-.0-9a-zA-Z]*[0-9a-zA-Z]{1}\\.[a-zA-Z]{2,6}$");
+                if(!rx.isValid()){
+                    Log::err(TAG, "validateInputParameters, " + rx.errorString());
+                }
+                if(!rx.match(val).hasMatch()){
+                    error = Errors::ParamMustBeEmail(sParamName);
+                    return false;
+                }
+            }
 		}
 	}
 	return true;
