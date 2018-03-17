@@ -1,7 +1,7 @@
-#include <cmd_hints_handler.h>
+#include <cmd_handler_hints.h>
 #include <QJsonArray>
 
-CmdHintsHandler::CmdHintsHandler(){
+CmdHandlerHints::CmdHandlerHints(){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -13,31 +13,31 @@ CmdHintsHandler::CmdHintsHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdHintsHandler::cmd(){
+std::string CmdHandlerHints::cmd(){
 	return "hints";
 }
 
 // ---------------------------------------------------------------------
 
-const ModelCommandAccess & CmdHintsHandler::access(){
+const ModelCommandAccess & CmdHandlerHints::access(){
     return m_modelCommandAccess;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<CmdInputDef> &CmdHintsHandler::inputs(){
+const std::vector<CmdInputDef> &CmdHandlerHints::inputs(){
 	return m_vInputs;
 }
 
 // ---------------------------------------------------------------------
 
-std::string CmdHintsHandler::description(){
+std::string CmdHandlerHints::description(){
 	return "Output: list of hints, Input: questid";
 }
 
 // ---------------------------------------------------------------------
 
-void CmdHintsHandler::handle(ModelRequest *pRequest){
+void CmdHandlerHints::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 

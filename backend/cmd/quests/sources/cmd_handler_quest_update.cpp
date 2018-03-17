@@ -1,10 +1,10 @@
-#include <cmd_quest_update_handler.h>
+#include <cmd_handler_quest_update.h>
 #include <runtasks.h>
 
 #include <QJsonArray>
 #include <QCryptographicHash>
 
-CmdQuestUpdateHandler::CmdQuestUpdateHandler(){
+CmdHandlerQuestUpdate::CmdHandlerQuestUpdate(){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -30,31 +30,31 @@ CmdQuestUpdateHandler::CmdQuestUpdateHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdQuestUpdateHandler::cmd(){
+std::string CmdHandlerQuestUpdate::cmd(){
     return "quest_update";
 }
 
 // ---------------------------------------------------------------------
 
-const ModelCommandAccess & CmdQuestUpdateHandler::access(){
+const ModelCommandAccess & CmdHandlerQuestUpdate::access(){
     return m_modelCommandAccess;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<CmdInputDef> &CmdQuestUpdateHandler::inputs(){
+const std::vector<CmdInputDef> &CmdHandlerQuestUpdate::inputs(){
 	return m_vInputs;
 }
 
 // ---------------------------------------------------------------------
 
-std::string CmdQuestUpdateHandler::description(){
+std::string CmdHandlerQuestUpdate::description(){
 	return "Update the quest info";
 }
 
 // ---------------------------------------------------------------------
 
-void CmdQuestUpdateHandler::handle(ModelRequest *pRequest){
+void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 

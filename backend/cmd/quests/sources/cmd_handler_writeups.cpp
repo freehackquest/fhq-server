@@ -1,7 +1,7 @@
-#include <cmd_writeups_handler.h>
+#include <cmd_handler_writeups.h>
 #include <QJsonArray>
 
-CmdWriteUpsHandler::CmdWriteUpsHandler(){
+CmdHandlerWriteUps::CmdHandlerWriteUps(){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -13,31 +13,31 @@ CmdWriteUpsHandler::CmdWriteUpsHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdWriteUpsHandler::cmd(){
+std::string CmdHandlerWriteUps::cmd(){
 	return "writeups";
 }
 
 // ---------------------------------------------------------------------
 
-const ModelCommandAccess & CmdWriteUpsHandler::access(){
+const ModelCommandAccess & CmdHandlerWriteUps::access(){
     return m_modelCommandAccess;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<CmdInputDef> &CmdWriteUpsHandler::inputs(){
+const std::vector<CmdInputDef> &CmdHandlerWriteUps::inputs(){
 	return m_vInputs;
 }
 
 // ---------------------------------------------------------------------
 
-std::string CmdWriteUpsHandler::description(){
+std::string CmdHandlerWriteUps::description(){
 	return "This method will be returned list of writeups by questid";
 }
 
 // ---------------------------------------------------------------------
 
-void CmdWriteUpsHandler::handle(ModelRequest *pRequest){
+void CmdHandlerWriteUps::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 

@@ -1,25 +1,25 @@
-#ifndef CMD_DELETEHINT_HANDLER_H
-#define CMD_DELETEHINT_HANDLER_H
+#ifndef CMD_HANDLER_QUEST_PROPOSAL_HANDLER_H
+#define CMD_HANDLER_QUEST_PROPOSAL_HANDLER_H
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdDeleteHintHandler : public ICmdHandler {
+class CmdHandlerQuestProposal : public ICmdHandler {
 	
 	public:
-		CmdDeleteHintHandler();
+        CmdHandlerQuestProposal();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
         virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-	
+
 	private:
         QString TAG;
         ModelCommandAccess m_modelCommandAccess;
         std::vector<CmdInputDef> m_vInputs;
 };
 
-REGISTRY_CMD(CmdDeleteHintHandler)
+REGISTRY_CMD(CmdHandlerQuestProposal)
 
-#endif // CMD_DELETEHINT_HANDLER_H
+#endif // CMD_HANDLER_QUEST_PROPOSAL_HANDLER_H

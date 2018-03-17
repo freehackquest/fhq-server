@@ -1,25 +1,25 @@
-#ifndef CMD_QUEST_PROPOSAL_HANDLER_H
-#define CMD_QUEST_PROPOSAL_HANDLER_H
+#ifndef CMD_HANDLER_QUEST_PASS_H
+#define CMD_HANDLER_QUEST_PASS_H
 
 #include <iserver.h>
 #include <cmd_handlers.h>
 
-class CmdQuestProposalHandler : public ICmdHandler {
+class CmdHandlerQuestPass : public ICmdHandler {
 	
 	public:
-        CmdQuestProposalHandler();
+        CmdHandlerQuestPass();
         virtual std::string cmd();
         virtual std::string description();
         virtual const ModelCommandAccess &access();
         virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
+		
 	private:
         QString TAG;
         ModelCommandAccess m_modelCommandAccess;
         std::vector<CmdInputDef> m_vInputs;
 };
 
-REGISTRY_CMD(CmdQuestProposalHandler)
+REGISTRY_CMD(CmdHandlerQuestPass)
 
-#endif // CMD_QUEST_PROPOSAL_HANDLER_H
+#endif // CMD_HANDLER_QUEST_PASS_HANDLER_H

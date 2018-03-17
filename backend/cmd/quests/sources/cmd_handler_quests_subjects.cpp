@@ -1,7 +1,7 @@
-#include <cmd_quests_subjects_handler.h>
+#include <cmd_handler_quests_subjects.h>
 #include <QJsonArray>
 
-CmdQuestsSubjectsHandler::CmdQuestsSubjectsHandler(){
+CmdHandlerQuestsSubjects::CmdHandlerQuestsSubjects(){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -14,31 +14,31 @@ CmdQuestsSubjectsHandler::CmdQuestsSubjectsHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdQuestsSubjectsHandler::cmd(){
+std::string CmdHandlerQuestsSubjects::cmd(){
     return "quests_subjects";
 }
 
 // ---------------------------------------------------------------------
 
-const ModelCommandAccess & CmdQuestsSubjectsHandler::access(){
+const ModelCommandAccess & CmdHandlerQuestsSubjects::access(){
     return m_modelCommandAccess;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<CmdInputDef> &CmdQuestsSubjectsHandler::inputs(){
+const std::vector<CmdInputDef> &CmdHandlerQuestsSubjects::inputs(){
 	return m_vInputs;
 }
 
 // ---------------------------------------------------------------------
 
-std::string CmdQuestsSubjectsHandler::description(){
+std::string CmdHandlerQuestsSubjects::description(){
 	return "Method returned list of games";
 }
 
 // ---------------------------------------------------------------------
 
-void CmdQuestsSubjectsHandler::handle(ModelRequest *pRequest){
+void CmdHandlerQuestsSubjects::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 

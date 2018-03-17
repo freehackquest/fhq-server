@@ -1,10 +1,10 @@
-#include <cmd_quest_proposal_handler.h>
+#include <cmd_handler_quest_proposal.h>
 #include <QJsonArray>
 #include <SmtpMime>
 // #include <memory_cache_serverinfo.h>
 #include <employ_settings.h>
 
-CmdQuestProposalHandler::CmdQuestProposalHandler(){
+CmdHandlerQuestProposal::CmdHandlerQuestProposal(){
     TAG = "CmdQuestProposalHandler";
 
     m_modelCommandAccess.setAccessUnauthorized(false);
@@ -27,31 +27,31 @@ CmdQuestProposalHandler::CmdQuestProposalHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdQuestProposalHandler::cmd(){
+std::string CmdHandlerQuestProposal::cmd(){
         return "quest_proposal";
 }
 
 // ---------------------------------------------------------------------
 
-const ModelCommandAccess & CmdQuestProposalHandler::access(){
+const ModelCommandAccess & CmdHandlerQuestProposal::access(){
     return m_modelCommandAccess;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<CmdInputDef> &CmdQuestProposalHandler::inputs(){
+const std::vector<CmdInputDef> &CmdHandlerQuestProposal::inputs(){
 	return m_vInputs;
 }
 
 // ---------------------------------------------------------------------
 
-std::string CmdQuestProposalHandler::description(){
+std::string CmdHandlerQuestProposal::description(){
         return "Add quest proposal ";
 }
 
 // ---------------------------------------------------------------------
 
-void CmdQuestProposalHandler::handle(ModelRequest *pRequest){
+void CmdHandlerQuestProposal::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -186,6 +186,7 @@ void CmdQuestProposalHandler::handle(ModelRequest *pRequest){
 
     EmailAddress to(sMailToAdmin, "");
     message.addRecipient(&to);
+    // message.addRecipient(&sUserEmail);
 
     message.setSubject("Quest Proposal (FreeHackQuest)");
     MimeText text;
