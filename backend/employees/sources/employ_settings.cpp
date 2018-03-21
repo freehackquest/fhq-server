@@ -53,6 +53,13 @@ void EmploySettings::initSettings(IWebSocketServer *pWebSocketServer){
     addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_users", QString("/var/www/html/fhq/files/quests/")));
     addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_users_url", QString("https://freehackquest.com/files/quests/")));
 
+    // LXD
+    QString sGroupLXD = "lxd";
+    addNewSetting(new ServerSettHelper(sGroupLXD, "path_dir_lxc_ssl", QString("/home/fhq/.config/lxc")));
+    addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_server_ip", QString("127.0.0.1")));
+    addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_server_port", QString("8443")));
+    addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_passwd", QString("freehackquest")));
+
     QStringList listFoundInDatabase;
 
     QSqlDatabase db = *(pWebSocketServer->database());
