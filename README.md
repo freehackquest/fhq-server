@@ -43,7 +43,7 @@ Run like service (or just reboot system):
 
 ### Requirements
 
-        $ sudo apt install g++ make qtchooser qt5-default libqt5websockets5 libqt5websockets5-dev libqt5sql5-mysql
+        $ sudo apt install g++ make qtchooser qt5-default libqt5websockets5 libqt5websockets5-dev libqt5sql5-mysql libcurl4-openssl-dev
 
 ### Build
 

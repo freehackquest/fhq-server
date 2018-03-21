@@ -1,0 +1,5 @@
+#ifndef MODEL_LXD_REQUEST
+#define MODEL_LXD_REQUEST
+
+#endif // MODEL_LXD_REQUEST
+
