@@ -29,9 +29,9 @@ void EmployOrchestra::initSettings(){
     Log::info(TAG, "Start init settings");
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
-    path_dir_lxc_ssl = pSettings->getSettString("path_dir_lxc_ssl");
-    QString lxd_server_ip = "https://" +  pSettings->getSettString("lxd_server_ip");
-    QString lxd_server_port = pSettings->getSettString("lxd_server_port");
+    path_dir_lxc_ssl = pSettings->getSettString("path_dir_lxc_ssl").toStdString();
+    std::string lxd_server_ip = "https://" +  pSettings->getSettString("lxd_server_ip").toStdString();
+    std::string lxd_server_port = pSettings->getSettString("lxd_server_port").toStdString();
     lxd_address = "https://" + lxd_server_ip + ":" + lxd_server_port;
     QString lxd_passwd = pSettings->getSettString("lxd_passwd");
 
@@ -90,7 +90,7 @@ bool EmployOrchestra::pull_container_names(){
             QJsonArray metadata = res.value("metadata").toArray();
 
             foreach (const QJsonValue & value, metadata) {
-                names << value.toString();
+                names.push_back(value.toString().toStdString());
             }
         }
     }

@@ -2,15 +2,15 @@
 
 LXDContainer::LXDContainer(QJsonObject jsonData){
     if(jsonData.contains("name")){
-        name = jsonData.value("name").toString();
+        name = jsonData.value("name").toString().toStdString();
     } else {
         error = "Container name is missing.";
     }
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
-    path_dir_lxc_ssl = pSettings->getSettString("path_dir_lxc_ssl");
-    QString lxd_server_ip = "https://" +  pSettings->getSettString("lxd_server_ip");
-    QString lxd_server_port = pSettings->getSettString("lxd_server_port");
+    path_dir_lxc_ssl = pSettings->getSettString("path_dir_lxc_ssl").toStdString();
+    std::string lxd_server_ip = "https://" +  pSettings->getSettString("lxd_server_ip").toStdString();
+    std::string lxd_server_port = pSettings->getSettString("lxd_server_port").toStdString();
     lxd_address = "https://" + lxd_server_ip + ":" + lxd_server_port;
 }
 
@@ -28,7 +28,7 @@ QJsonObject LXDContainer::state(){
 
     CURLcode ret;
     CURL *hnd;
-    std::string hostname = lxd_address.toStdString() + "/1.0/containers/xenial/state";
+    std::string hostname = lxd_address + "/1.0/containers/xenial/state";
 
     hnd = curl_easy_init();
     curl_easy_setopt(hnd, CURLOPT_URL, hostname.c_str());
@@ -106,7 +106,7 @@ bool LXDContainer::start(){
     CURL *hnd;
     std::string readBuffer;
 
-    std::string hostname = lxd_address.toStdString() + "/1.0/containers/" + name.toStdString() + "/state";
+    std::string hostname = lxd_address + "/1.0/containers/" + name + "/state";
 
     hnd = curl_easy_init();
     curl_easy_setopt(hnd, CURLOPT_URL, hostname.c_str());
@@ -146,7 +146,7 @@ bool LXDContainer::stop(){
     CURLcode ret;
     CURL *hnd;
     std::string readBuffer;
-    std::string hostname = "https://127.0.0.1:8443/1.0/containers/" + name.toStdString() + "/state";
+    std::string hostname = "https://127.0.0.1:8443/1.0/containers/" + name + "/state";
 
     hnd = curl_easy_init();
     curl_easy_setopt(hnd, CURLOPT_URL, hostname.c_str());
@@ -186,7 +186,7 @@ bool LXDContainer::remove(){
 
 }
 
-QString LXDContainer::exec(QString){
+std::string LXDContainer::exec(std::string){
 
 }
 

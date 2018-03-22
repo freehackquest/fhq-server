@@ -1,7 +1,6 @@
 #ifndef MODEL_LXD_CONTAINER
 #define MODEL_LXD_CONTAINER
 
-#include <QString>
 #include <string>
 #include <curl/curl.h>
 #include <QJsonObject>
@@ -11,10 +10,10 @@
 class LXDContainer {
     public:
         LXDContainer(QJsonObject jsonData);
-        QString name;
-        QString status;
-        QString IPv4;
-        QString error;
+        std::string name;
+        std::string status;
+        std::string IPv4;
+        std::string error;
 
         QJsonObject state();
         bool create(std::string name);
@@ -22,12 +21,12 @@ class LXDContainer {
         bool stop();
         bool remove();
         bool read_file(QFile & file);
-        QString exec(QString);
+        std::string exec(std::string);
 
 
     private:
-        QString lxd_address;
-        QString path_dir_lxc_ssl;
+        std::string lxd_address;
+        std::string path_dir_lxc_ssl;
         std::string response;
 };
 

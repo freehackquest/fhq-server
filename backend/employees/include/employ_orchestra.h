@@ -4,10 +4,10 @@
 #include <employees.h>
 #include <model_lxd_container.h>
 
-#include <QString>
+#include <list>
 #include <string>
+#include <map>
 #include <curl/curl.h>
-#include <QMap>
 
 
 class EmployOrchestra : public IEmploy {
@@ -23,11 +23,11 @@ public:
 
 
 private:
-    QMap<std::string, LXDContainer> containers_map;
+    std::map<std::string, LXDContainer *> containers_map;
     bool pull_container_names();
-    QStringList names;
-    QString path_dir_lxc_ssl;
-    QString lxd_address;
+    std::list<std::string> names;
+    std::string path_dir_lxc_ssl;
+    std::string lxd_address;
     QString TAG;
 };
 
