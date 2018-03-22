@@ -335,6 +335,8 @@ QSqlDatabase *WebSocketServer::database(){
 
 // ---------------------------------------------------------------------
 
+// TODO move to EmployUsers
+
 void WebSocketServer::setUserToken(QWebSocket *pClient, IUserToken *pUserToken){
 	m_tokens[pClient] = pUserToken;
 }
@@ -359,6 +361,7 @@ IMemoryCache *WebSocketServer::findMemoryCache(QString name){
 
 // ---------------------------------------------------------------------
 
+// TODO move to EmployValidateInput
 bool WebSocketServer::validateInputParameters(Error &error, ICmdHandler *pCmdHandler, QJsonObject &jsonRequest){
     const std::vector<CmdInputDef> vInputs = pCmdHandler->inputs();
     for(unsigned int i = 0; i < vInputs.size(); i++){
