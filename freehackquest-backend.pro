@@ -22,6 +22,7 @@ RESOURCES = freehackquest-backend.qrc
 # 3rd party
 include(backend/3rdParty/smtp/smtp.pri)
 include(backend/3rdParty/quazip-0.7.3.pri)
+include(backend/3rdParty/nlohmann.pri)
 
 # other
 include(backend/employees/employees.pri)

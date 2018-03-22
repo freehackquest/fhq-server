@@ -168,10 +168,12 @@ void WebSocketServer::processTextMessage(QString message) {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     Log::info(TAG, "[WS] <<< " + message);
 
-	QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
-    QJsonObject jsonRequest = doc.object();
+    nlohmann::json jsonRequest_ = nlohmann::json::parse(message.toStdString());
 
-    ModelRequest *pModelRequest = new ModelRequest(pClient, this, jsonRequest);
+    QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8()); // TODO deprecated
+    QJsonObject jsonRequest = doc.object(); // TODO deprecated
+
+    ModelRequest *pModelRequest = new ModelRequest(pClient, this, jsonRequest, jsonRequest_);
 
     if(!pModelRequest->hasCommand()){
 		this->sendMessageError(pClient, "error", "", Errors::NotFound("requare parameter 'cmd'"));
@@ -185,8 +187,6 @@ void WebSocketServer::processTextMessage(QString message) {
 		this->sendMessageError(pClient, cmd, "", Errors::NotFound("requare parameter 'm' - messageid"));
 		return;
 	}
-	
-    // QString m = QString(pModelRequest->m().c_str());
 
     ICmdHandler *pCmdHandler = findCmdHandler(cmd);
     if(pCmdHandler == NULL){
