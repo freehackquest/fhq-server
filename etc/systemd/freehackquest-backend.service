@@ -1,0 +1,14 @@
+[Unit]
+Description=FreeHackQuestBackend
+
+[Service]
+WorkingDirectory=/usr/bin/freehackquest-backend
+User=user
+Group=user
+ExecStart=`/usr/bin/freehackquest-backend > /var/log/freehackquest-backend/access.log 2> /var/log/freehackquest-backend/error.log`
+
+TimeoutSec=30
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
