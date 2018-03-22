@@ -10,7 +10,7 @@ class ModelRequest {
 		QWebSocket *client();
 		IWebSocketServer *server();
         IUserToken *userToken();
-		QJsonObject data();
+        QJsonObject data(); // deprecated
         const nlohmann::json& jsonRequest();
 		std::string m();
 		bool hasM();
@@ -22,7 +22,7 @@ class ModelRequest {
 	private:
 		QWebSocket *m_pClient;
 		IWebSocketServer *m_pServer;
-		QJsonObject m_jsonObject;
+        QJsonObject m_jsonObject; // deprecated
         nlohmann::json m_jsonRequest;
 		std::string m_sMessageId;
 		std::string m_sCommand;

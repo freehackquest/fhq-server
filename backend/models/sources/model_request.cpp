@@ -32,7 +32,7 @@ IWebSocketServer *ModelRequest::server(){
 
 // ---------------------------------------------------------------------
 
-QJsonObject ModelRequest::data(){
+QJsonObject ModelRequest::data(){ // deprecated
 	return m_jsonObject;
 }
 

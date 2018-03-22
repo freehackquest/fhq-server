@@ -41,24 +41,36 @@ const std::vector<CmdInputDef> &CmdHandlerAddHint::inputs(){
 // ---------------------------------------------------------------------
 
 void CmdHandlerAddHint::handle(ModelRequest *pRequest){
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonRequest = pRequest->jsonRequest();
+    QJsonObject jsonResponse; // TODO redesign to nlohmann::json
 
-    int questid = jsonRequest["questid"].toInt();
-	if(questid == 0){
+    // get quest id
+    int nQuestId = 0;
+    if(jsonRequest["questid"].is_number_integer()){
+        nQuestId = jsonRequest.at("questid");
+    }
+
+    if(nQuestId == 0){
+        // todo this check move to cmd input def
         pRequest->sendMessageError(cmd(), Errors::QuestIDMustBeNotZero());
 		return;
 	}
 
+    // hint text
+    std::string sHint = "";
+    if(jsonRequest["hint"].is_string()){
+        sHint = jsonRequest["hint"];
+    }
+
     QSqlDatabase db = *(pRequest->server()->database());
 	QSqlQuery query(db);
 	query.prepare("INSERT INTO quests_hints (questid, text, dt) VALUES (:questid, :text, NOW())");
-    query.bindValue(":questid", jsonRequest["questid"].toInt());
-    query.bindValue(":text", jsonRequest["hint"].toString());
+    query.bindValue(":questid", nQuestId);
+    query.bindValue(":text", QString(sHint.c_str()));
 	if(!query.exec()){
 		Log::err(TAG, query.lastError().text());
 	}
 
-    RunTasks::AddPublicEvents(pRequest->server(), "quests", "Added hint for quest #" + QString::number(questid));
+    RunTasks::AddPublicEvents(pRequest->server(), "quests", "Added hint for quest #" + QString::number(nQuestId));
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
