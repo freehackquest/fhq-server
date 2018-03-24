@@ -1,12 +1,7 @@
-# systemd
+# SYSTEMD
 
-## Make and Install
-
-```
-$ cd ..
-$ qmake && make
-$ sudo make install
-```
+* [CONFIGURING](install/CONFIGURING.md)
+* [HOW-TO-BUILD](install/HOW-TO-BUILD.md)
 
 ## copy (or replace) fhq-server.service
 
@@ -24,7 +19,7 @@ $ sudo mkdir /usr/share/fhq-server
 ## Copy config
 
 ```
-$ sudo cp ./etc/freehackquest-backend/conf.ini.example ./etc/freehackquest-backend/conf.ini
+$ sudo cp ../backend/fhq-server.conf.example ./etc/fhq-server/conf.ini
 ```
 
 ## Reload and restart
