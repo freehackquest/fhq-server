@@ -82,17 +82,7 @@ $ cp ./etc/systemd/freehackquest-backend.service  /etc/systemd/system/freehackqu
 $ systemctl daemon-reload
 $ systemctl restart freehackquest-backend.service
 ```
-## Doxygen generate documentation
 
-### Requirements
-```
-$ sudo apt install doxygen graphviz
-```
-### Build documentation
-
-```
-$ doxygen doxygen.conf
-```
 ## 3rdParty
 
 * Contains source code to compile: [SmtpClient-for-Qt](https://github.com/bluetiger9/SmtpClient-for-Qt)
