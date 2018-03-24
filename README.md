@@ -85,8 +85,9 @@ Or you can use:
 
 	$ doxygen doxygen.conf
 		
-## Other
+## 3rdParty
 
-Contains source code to compile: https://github.com/bluetiger9/SmtpClient-for-Qt
+* Contains source code to compile: https://github.com/bluetiger9/SmtpClient-for-Qt
+* For Json: https://github.com/nlohmann/json
 
 
