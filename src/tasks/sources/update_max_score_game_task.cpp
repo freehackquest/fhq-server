@@ -5,7 +5,6 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QEventLoop>
-#include <log.h>
 
 UpdateMaxScoreGameTask::UpdateMaxScoreGameTask(IWebSocketServer *pWebSocketServer, int gameid){
 	TAG = "UpdateMaxScoreGameTask";

@@ -10,12 +10,14 @@ class MailSendTask : public QRunnable {
     void run();
 
     public:
-        MailSendTask(IWebSocketServer *pWebSocketServer,  MimeMessage message);
+        MailSendTask(IWebSocketServer *pWebSocketServer,  QString to, QString subject, QString content);
         ~MailSendTask();
     private:
-        MimeMessage m_message;
+        QString TAG;
+        QString m_to;
+        QString m_subject;
+        QString m_content;
         IWebSocketServer *m_pWebSocketServer;
-
 };
 
 #endif // MAIL_SEND_TASK_H
