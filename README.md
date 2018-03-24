@@ -75,13 +75,6 @@ $ sudo /etc/init.d/freehackquest-backend start
 Or you can use:
 ```
 $ service freehackquest-backend start
-```
-Or you can use `systemd`
-```
-$ cp ./etc/systemd/freehackquest-backend.service  /etc/systemd/system/freehackquest-backend.service
-$ systemctl daemon-reload
-$ systemctl restart freehackquest-backend.service
-```
 
 ## 3rdParty
 
