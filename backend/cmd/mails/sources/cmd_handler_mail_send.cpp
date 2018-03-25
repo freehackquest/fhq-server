@@ -1,5 +1,6 @@
 #include <cmd_handler_mail_send.h>
 #include <SmtpMime>
+#include <runtasks.h>
 #include <employ_settings.h>
 
 CmdHandlerMailSend::CmdHandlerMailSend(){
@@ -46,53 +47,11 @@ void CmdHandlerMailSend::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
-
     QString sEmail = jsonRequest["to"].toString();
-
     QString sSubject = jsonRequest["subject"].toString();
     QString sBody = jsonRequest["body"].toString();
 
-    QString sMailHost = pSettings->getSettString("mail_host");
-    int nMailPort = pSettings->getSettInteger("mail_port");
-    QString sMailPassword = pSettings->getSettPassword("mail_password");
-    QString sMailFrom = pSettings->getSettString("mail_from");
-
-    SmtpClient smtp(sMailHost, nMailPort, SmtpClient::SslConnection);
-    smtp.setUser(sMailFrom);
-    smtp.setPassword(sMailPassword);
-
-    MimeMessage message;
-
-    EmailAddress sender(sMailFrom, "FreeHackQuest");
-    message.setSender(&sender);
-
-    EmailAddress to(sEmail, "");
-    message.addRecipient(&to);
-
-    message.setSubject(sSubject);
-
-    MimeText text;
-    text.setText(sBody);
-
-    message.addPart(&text);
-
-    // Now we can send the mail
-    if (!smtp.connectToHost()) {
-        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to connect to host!"));
-        return;
-    }
-
-    if (!smtp.login()) {
-        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to login!"));
-        return;
-    }
-
-    if (!smtp.sendMail(message)) {
-        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to send mail!"));
-        return;
-    }
-    smtp.quit();
+    RunTasks::MailSend(pRequest->server(), sEmail, sSubject, sBody);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

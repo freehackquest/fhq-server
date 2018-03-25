@@ -64,7 +64,7 @@ void MailSendTask::run(){
     query.bindValue(":to_email", m_to);
     query.bindValue(":subject", m_subject);
     query.bindValue(":message", m_content);
-    query.bindValue(":priority", ""); //?
+    query.bindValue(":priority", "");
     query.bindValue(":status", "loaded");
     if(!query.exec()){
         Log::err(TAG, query.lastError().text());
