@@ -16,7 +16,7 @@ MOC_DIR = tmp/
 RCC_DIR = tmp/
 CONFIG += c++11 c++14
 LIBS = -lz
-RESOURCES = freehackquest-backend.qrc
+RESOURCES = backend/fhq-server.qrc
 # INCLUDEPATH += $$[QT_INSTALL_HEADERS]/QtZlib
 
 # 3rd party
@@ -47,17 +47,5 @@ include(src/unit_tests/unit_tests.pri)
 SOURCES += \
 	src/main.cpp \
 
-documentation.path = /usr/share/doc/freehackquest-backend
-documentation.files = docs/*
-
-INSTALLS += documentation
-
 target.path = /usr/bin
 INSTALLS += target
-
-configfiles.files += data/config/*
-
-configfiles.path = /usr/share/
-configfiles.files = etc/freehackquest-backend/*
-# yourset.extra = custom commands to run, eg. `touch somefile.txt`
-INSTALLS += configfiles
