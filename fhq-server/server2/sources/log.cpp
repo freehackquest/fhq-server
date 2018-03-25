@@ -9,31 +9,19 @@
 #include <QThread>
 #include <QMutexLocker>
 
-void Log::info(QString tag, QString msg){
+void Log::info(const std::string &sTag, const std::string &sMessage){
 	Log::add("INFO",tag, msg);
 }
 
 // ---------------------------------------------------------------------
 
-void Log::info(const std::string & sTag, const std::string &sMessage){
-    Log::add("INFO",QString(sTag.c_str()), QString(sMessage.c_str()));
+void Log::err(const std::string & tag, const std::string &sMessage){
+    Log::add("ERR",sTag), QString(msg.c_str()));
 }
 
 // ---------------------------------------------------------------------
 
-void Log::err(QString tag, QString msg){
-	Log::add("ERR",tag, msg);
-}
-
-// ---------------------------------------------------------------------
-
-void Log::err(const std::string & sTag, const std::string &sMessage){
-    Log::add("ERR",QString(sTag.c_str()), QString(sMessage.c_str()));
-}
-
-// ---------------------------------------------------------------------
-
-void Log::err(QString tag, QAbstractSocket::SocketError socketError){
+void Log::err(const std::string &tag, QAbstractSocket::SocketError socketError){
 	QString msg = "Unknown error";
 	if(socketError == QAbstractSocket::ConnectionRefusedError){
 		msg = "QAbstractSocket::ConnectionRefusedError, The connection was refused by the peer (or timed out).";
@@ -90,38 +78,33 @@ void Log::err(QString tag, QAbstractSocket::SocketError socketError){
 
 // ---------------------------------------------------------------------
 
-void Log::warn(QString tag, QString msg){
+void Log::warn(const std::string &tag, const std::string &msg){
 	Log::add("WARN",tag, msg);
 }
 
 // ---------------------------------------------------------------------
 
-void Log::warn(const std::string & sTag, const std::string &sMessage){
-    Log::add("WARN",QString(sTag.c_str()), QString(sMessage.c_str()));
-}
-
-// ---------------------------------------------------------------------
-
-void Log::setdir(QString dir){
+void Log::setdir(std::string dir){
     g_LOG_DIR_PATH = dir;
 }
 
 // ---------------------------------------------------------------------
 
-QJsonArray Log::last_logs(){
-    QMutexLocker locker(&g_LOG_MUTEX);
+static nlohmann::json Log::last_logs(){
+    g_LOG_MUTEX.lock();
     QJsonArray lastLogMessages;
     int len = g_LAST_LOG_MESSAGES.size();
     for(int i = 0; i < len; i++){
         lastLogMessages.append(g_LAST_LOG_MESSAGES[i]);
     }
+    g_LOG_MUTEX.unlock();
     return lastLogMessages;
 }
 
 // ---------------------------------------------------------------------
 
 void Log::add(QString type, QString tag, QString msg){
-    QMutexLocker locker(&g_LOG_MUTEX);
+    g_LOG_MUTEX.lock();
 	QString sThreadID = "0x" + QString::number((long long)QThread::currentThreadId(), 16);
 	msg = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz") + ", " + sThreadID + " [" + type + "] " + tag + ": " + msg;
     std::cout << msg.toStdString() << "\r\n";
@@ -129,6 +112,7 @@ void Log::add(QString type, QString tag, QString msg){
     while(g_LAST_LOG_MESSAGES.size() > 50){
         g_LAST_LOG_MESSAGES.removeLast();
 	}
+    g_LOG_MUTEX.unlock();
 }
 
 // ---------------------------------------------------------------------

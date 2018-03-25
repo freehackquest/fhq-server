@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ### BEGIN INIT INFO
-# Provides:          freehackquest-backend
+# Provides:          fhq-server
 # Short-Description: Start daemon at boot time
 # Description:       Enable service provided by daemon.
 # Required-Start:    $remote_fs $syslog $network mysql
@@ -14,14 +14,14 @@
 
 DAEMON_PATH="/usr/bin/freehackquest-backend"
 NAME=freehackquestd
-DESC="freehackquest backend"
+DESC="FreeHackQuest Server"
 
 PIDFILE=/var/run/$NAME.pid
 case "$1" in
 start)
 	printf "%-50s" "Starting $NAME..."
 	DATE=`date +%Y%m%d-%H%M%S`
-	PID=`/usr/bin/freehackquest-backend > /var/log/freehackquest-backend/access-$DATE.log 2> /var/log/freehackquest-backend/error-$DATE.log & echo $!`
+	PID=`/usr/bin/fhq-server > /var/log/fhq-server/access-$DATE.log 2> /var/log/fhq-server/error-$DATE.log & echo $!`
 	# echo "Saving PID" $PID " to " $PIDFILE
 	if [ -z $PID ]; then
 		printf "%s\n" "Fail"
