@@ -11,6 +11,7 @@ ModelServerConfig::ModelServerConfig(){
     QStringList sFilenames;
     sFilenames << "conf.ini";
     sFilenames << "/etc/freehackquest-backend/conf.ini";
+    sFilenames << "/etc/fhq-server/conf.ini";
     sFilenames << "etc/freehackquest-backend/conf.ini";
     for(int i = 0; i < sFilenames.size(); i++){
         QString tmp = sFilenames[i];
@@ -27,13 +28,14 @@ ModelServerConfig::ModelServerConfig(){
 	m_bDatabase_usemysql = true;
 
 	// sql
-	m_sDatabase_host = "localhost";
+    m_bDatabase_usemysql = true;
+    m_sDatabase_host = "localhost";
 	m_sDatabase_name = "freehackquest";
 	m_sDatabase_user = "freehackquest_u";
 	m_sDatabase_password = "freehackquest_p";
 
 	// local nosql
-	m_sDatabase_path = "/var/lib/freehackquest-backend/data";
+    m_sDatabase_path = "/var/lib/fhq-server/data";
 
 	m_nServer_port = 1234;
 	m_bServer_ssl_on = false;
@@ -51,6 +53,7 @@ bool ModelServerConfig::load(){
 	}
 
     QSettings sett(m_sFilename, QSettings::IniFormat);
+
     m_bDatabase_usemysql = readBoolFromSettings(sett, "DATABASE/usemysql", m_bDatabase_usemysql);
     if(m_bDatabase_usemysql){
 		m_sDatabase_host = readStringFromSettings(sett, "DATABASE/host", m_sDatabase_host);
@@ -81,7 +84,7 @@ QString ModelServerConfig::readStringFromSettings(QSettings &sett, QString settN
 	if(sett.contains(settName)){
 		sResult = sett.value(settName, sResult).toString();
 	}else{
-		Log::warn(TAG, settName + " - not found in " + m_sFilename + "\n\t Will be used default value: " + defaultValue);
+        Log::warn(TAG, settName + " - not found in " + m_sFilename + "\n\t Will be used default value: " + defaultValue);
 	}
 	return sResult;
 }
@@ -93,7 +96,7 @@ int ModelServerConfig::readIntFromSettings(QSettings &sett, QString settName, in
 	if(sett.contains(settName)){
 		nResult = sett.value(settName, nResult).toInt();
 	}else{
-		Log::warn(TAG, settName + " - not found in " + m_sFilename + "\n\t Will be used default value: " + defaultValue);
+        Log::warn(TAG, settName + " - not found in " + m_sFilename + "\n\t Will be used default value: " + QString::number(defaultValue));
 	}
 	return nResult;
 }
@@ -105,7 +108,7 @@ bool ModelServerConfig::readBoolFromSettings(QSettings &sett, QString settName, 
 	if(sett.contains(settName)){
 		bResult = sett.value(settName, bResult).toBool();
 	}else{
-		Log::warn(TAG, settName + " - not found in " + m_sFilename + "\n\t Will be used default value: " + defaultValue);
+        Log::warn(TAG, settName + " - not found in " + m_sFilename + "\n\t Will be used default value: " + (defaultValue ? "true" : "false"));
 	}
 	return bResult;
 }
