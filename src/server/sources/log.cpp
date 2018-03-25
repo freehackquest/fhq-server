@@ -1,39 +1,35 @@
 #include <log.h>
 
-#include <QTextStream>
-#include <QFile>
 #include <iostream>
-#include <QByteArray>
 #include <QDateTime>
 #include <QDir>
 #include <QThread>
-#include <QMutexLocker>
 
-void Log::info(QString tag, QString msg){
-	Log::add("INFO",tag, msg);
+void Log::info(QString tag, QString msg){ // deprecated
+    Log::add("INFO",tag.toStdString(), msg.toStdString());
 }
 
 // ---------------------------------------------------------------------
 
 void Log::info(const std::string & sTag, const std::string &sMessage){
-    Log::add("INFO",QString(sTag.c_str()), QString(sMessage.c_str()));
+    Log::add("INFO",sTag, sMessage);
 }
 
 // ---------------------------------------------------------------------
 
-void Log::err(QString tag, QString msg){
-	Log::add("ERR",tag, msg);
+void Log::err(QString tag, QString msg){ // deprecated
+    Log::add("ERR",tag.toStdString(), msg.toStdString());
 }
 
 // ---------------------------------------------------------------------
 
 void Log::err(const std::string & sTag, const std::string &sMessage){
-    Log::add("ERR",QString(sTag.c_str()), QString(sMessage.c_str()));
+    Log::add("ERR",sTag, sMessage);
 }
 
 // ---------------------------------------------------------------------
 
-void Log::err(QString tag, QAbstractSocket::SocketError socketError){
+void Log::err(QString tag, QAbstractSocket::SocketError socketError){ // deprecated
 	QString msg = "Unknown error";
 	if(socketError == QAbstractSocket::ConnectionRefusedError){
 		msg = "QAbstractSocket::ConnectionRefusedError, The connection was refused by the peer (or timed out).";
@@ -85,50 +81,53 @@ void Log::err(QString tag, QAbstractSocket::SocketError socketError){
 		msg = "QAbstractSocket::UnknownSocketError, An unidentified error occurred.";
 	}
 
-	Log::add("ERR",tag, msg);
+    Log::add("ERR",tag.toStdString(), msg.toStdString());
 }
 
 // ---------------------------------------------------------------------
 
-void Log::warn(QString tag, QString msg){
-	Log::add("WARN",tag, msg);
+void Log::warn(QString tag, QString msg){ // deprecated
+    Log::add("WARN",tag.toStdString(), msg.toStdString());
 }
 
 // ---------------------------------------------------------------------
 
 void Log::warn(const std::string & sTag, const std::string &sMessage){
-    Log::add("WARN",QString(sTag.c_str()), QString(sMessage.c_str()));
+    Log::add("WARN",sTag, sMessage);
 }
 
 // ---------------------------------------------------------------------
 
-void Log::setdir(QString dir){
-    g_LOG_DIR_PATH = dir;
+void Log::setdir(const std::string &sDirectoryPath){
+    g_LOG_DIR_PATH = sDirectoryPath;
 }
 
 // ---------------------------------------------------------------------
 
 QJsonArray Log::last_logs(){
-    QMutexLocker locker(&g_LOG_MUTEX);
+    g_LOG_MUTEX.lock();
     QJsonArray lastLogMessages;
     int len = g_LAST_LOG_MESSAGES.size();
     for(int i = 0; i < len; i++){
         lastLogMessages.append(g_LAST_LOG_MESSAGES[i]);
     }
+    g_LOG_MUTEX.unlock();
     return lastLogMessages;
 }
 
 // ---------------------------------------------------------------------
 
-void Log::add(QString type, QString tag, QString msg){
-    QMutexLocker locker(&g_LOG_MUTEX);
+void Log::add(const std::string &sType, const std::string &sTag, const std::string &sMessage){
+    g_LOG_MUTEX.lock();
+     // TODO write to file
 	QString sThreadID = "0x" + QString::number((long long)QThread::currentThreadId(), 16);
-	msg = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz") + ", " + sThreadID + " [" + type + "] " + tag + ": " + msg;
-    std::cout << msg.toStdString() << "\r\n";
-    g_LAST_LOG_MESSAGES.push_front(msg);
+    std::string sLogMessage = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz").toStdString() + ", " + sThreadID.toStdString() + " [" + sType + "] " + sTag + ": " + sMessage;
+    std::cout << sLogMessage << "\r\n";
+    g_LAST_LOG_MESSAGES.push_front(QString(sLogMessage.c_str()));
     while(g_LAST_LOG_MESSAGES.size() > 50){
         g_LAST_LOG_MESSAGES.removeLast();
 	}
+    g_LOG_MUTEX.unlock();
 }
 
 // ---------------------------------------------------------------------

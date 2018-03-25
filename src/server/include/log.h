@@ -3,11 +3,11 @@
 
 #include <QString>
 #include <QStringList>
-#include <QMutex>
 #include <QJsonArray>
 #include <QAbstractSocket>
 #include <stdio.h>
 #include <iostream>
+#include <mutex>
 
 class Log {
 	public:
@@ -18,15 +18,15 @@ class Log {
         static void err(QString tag, QAbstractSocket::SocketError socketError); // Move from here
         static void warn(QString tag, QString msg);  // depricated
         static void warn(const std::string &sTag, const std::string &sMessage);
-        static void setdir(QString dir);  // depricated
+        static void setdir(const std::string &sDirectoryPath);
         static QJsonArray last_logs();  // depricated
 
 	private:
-		static void add(QString type, QString tag, QString msg);
+        static void add(const std::string &sType, const std::string &sTag, const std::string &sMessage);
 };
 
-static QMutex g_LOG_MUTEX;
+static std::mutex g_LOG_MUTEX;
 static QStringList g_LAST_LOG_MESSAGES;
-static QString g_LOG_DIR_PATH;
+static std::string g_LOG_DIR_PATH;
 
 #endif // LOG_H
