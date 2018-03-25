@@ -1,6 +1,7 @@
 #include <cmd_handler_quest_proposal.h>
 #include <QJsonArray>
 #include <SmtpMime>
+#include <runtasks.h>
 // #include <memory_cache_serverinfo.h>
 #include <employ_settings.h>
 
@@ -168,53 +169,14 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest){
     int nQuestProposalId = query.lastInsertId().toInt();
     jsonResponse["questid"] = QJsonValue(nQuestProposalId);
 
-    // TODO move to tasks
-    QString sMailHost = pSettings->getSettString("mail_host");
-    int nMailPort = pSettings->getSettInteger("mail_port");
-    QString sMailPassword = pSettings->getSettPassword("mail_password");
-    QString sMailFrom = pSettings->getSettString("mail_from");
     QString sMailToAdmin = pSettings->getSettString("mail_system_message_admin_email");
+    QString sMessageSubject = "Quest Proposal (FreeHackQuest)";
+    QString sContext = "Quest Proposal \n"
+                       "UserID: " + QString::number(nUserID) + "\n"
+                       "From: " + sUserEmail + "\n"
+                       "QuestProposalId: #" + QString::number(nQuestProposalId) + "\n";
 
-    SmtpClient smtp(sMailHost, nMailPort, SmtpClient::SslConnection);
-    smtp.setUser(sMailFrom);
-    smtp.setPassword(sMailPassword);
-
-    MimeMessage message;
-
-    EmailAddress sender(sMailFrom, "FreeHackQuest");
-    message.setSender(&sender);
-
-    EmailAddress to(sMailToAdmin, "");
-    message.addRecipient(&to);
-    // message.addRecipient(&sUserEmail);
-
-    message.setSubject("Quest Proposal (FreeHackQuest)");
-    MimeText text;
-    text.setText("Quest Proposal \n"
-                 "UserID: " + QString::number(nUserID) + "\n"
-                 "From: " + sUserEmail + "\n"
-                 "QuestProposalId: #" + QString::number(nQuestProposalId) + "\n"
-              );
-
-    message.addPart(&text);
-
-    // Now we can send the mail
-    if (!smtp.connectToHost()) {
-        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to connect to host!"));
-        return;
-    }
-
-    if (!smtp.login()) {
-        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to login!"));
-        return;
-    }
-
-    if (!smtp.sendMail(message)) {
-        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to send mail!"));
-        return;
-    }
-    smtp.quit();
-
+    RunTasks::MailSend(pRequest->server(), sMailToAdmin, sMessageSubject, sContext);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

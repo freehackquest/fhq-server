@@ -1,7 +1,6 @@
 #include <cmd_handler_mail_send.h>
 #include <SmtpMime>
 #include <runtasks.h>
-#include <employ_settings.h>
 
 CmdHandlerMailSend::CmdHandlerMailSend(){
     TAG = "CmdHandlerMailSend";
