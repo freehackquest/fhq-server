@@ -366,7 +366,7 @@ bool WebSocketServer::validateInputParameters(Error &error, ICmdHandler *pCmdHan
     const std::vector<CmdInputDef> vInputs = pCmdHandler->inputs();
     for(unsigned int i = 0; i < vInputs.size(); i++){
 		CmdInputDef inDef = vInputs[i];
-		QString sParamName = inDef.getName();
+        QString sParamName = QString(inDef.getName().c_str());
         if(inDef.isRequired() && !jsonRequest.contains(sParamName)){
 			error = Errors::ParamExpected(sParamName);
 			return false;

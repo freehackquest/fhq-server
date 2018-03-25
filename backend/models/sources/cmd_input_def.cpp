@@ -2,7 +2,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-CmdInputDef::CmdInputDef(QString name){
+CmdInputDef::CmdInputDef(const std::string &name){
 	m_sName = name;
 	m_bSettedMinVal = false;
 	m_bSettedMaxVal = false;
@@ -79,7 +79,7 @@ CmdInputDef & CmdInputDef::any_(){
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::description(QString s){
+CmdInputDef & CmdInputDef::description(const std::string& s){
 	m_sDescription = s;
 	return *this;
 }
@@ -104,10 +104,10 @@ CmdInputDef & CmdInputDef::maxval(int maxval){
 
 QJsonObject CmdInputDef::toJson(){
 	QJsonObject obj;
-	obj["name"] = m_sName;
+    obj["name"] = QString(m_sName.c_str());
 	obj["type"] = m_sType;
 	obj["restrict"] = m_sRestrict;
-	obj["description"] = m_sDescription;
+    obj["description"] = QString(m_sDescription.c_str());
 	// TODO enum
 	// TODO min max val
 	return obj;
@@ -115,7 +115,7 @@ QJsonObject CmdInputDef::toJson(){
 
 // ---------------------------------------------------------------------
 
-QString CmdInputDef::getName(){
+std::string CmdInputDef::getName(){
 	return m_sName;
 }
 

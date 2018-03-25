@@ -19,7 +19,7 @@ static const QString CMD_INPUT_DEF_TYPE_ANY = "any";
 	
 class CmdInputDef {
 	public:
-		CmdInputDef(QString name);
+        CmdInputDef(const std::string &name);
 		CmdInputDef();
 		CmdInputDef & optional();
 		CmdInputDef & required();
@@ -30,12 +30,12 @@ class CmdInputDef {
 		CmdInputDef & bool_();
 		CmdInputDef & uuid_();
 		CmdInputDef & enum_(QStringList list);
-		CmdInputDef & description(QString s);
+        CmdInputDef & description(const std::string &sDescription);
 		CmdInputDef & minval(int minval);
 		CmdInputDef & maxval(int maxval);
 		QJsonObject toJson();
 		
-		QString getName();
+        std::string getName();
 		bool isRequired();
 		bool isInteger();
 		bool isEnum();
@@ -53,9 +53,9 @@ class CmdInputDef {
 		
 	private:
 		QString m_sType;
-		QString m_sName;
+        std::string m_sName;
 		QString m_sRestrict;
-		QString m_sDescription;
+        std::string m_sDescription;
 		QStringList m_lstEnums;
 		int m_nMinVal;
 		bool m_bSettedMinVal;
