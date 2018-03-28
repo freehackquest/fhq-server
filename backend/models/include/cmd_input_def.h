@@ -14,6 +14,7 @@ static const QString CMD_INPUT_DEF_TYPE_BOOL = "boolean";
 static const QString CMD_INPUT_DEF_TYPE_ENUM = "enum";
 static const QString CMD_INPUT_DEF_TYPE_UUID = "uuid";
 static const QString CMD_INPUT_DEF_TYPE_INTEGER = "integer";
+static const QString CMD_INPUT_DEF_TYPE_EMAIL = "email";
 static const QString CMD_INPUT_DEF_TYPE_ANY = "any";
 	
 class CmdInputDef {
@@ -24,6 +25,7 @@ class CmdInputDef {
 		CmdInputDef & required();
 		CmdInputDef & string_();
 		CmdInputDef & integer_();
+        CmdInputDef & email_();
         CmdInputDef & any_();
 		CmdInputDef & bool_();
 		CmdInputDef & uuid_();
@@ -40,6 +42,7 @@ class CmdInputDef {
 		bool isString();
 		bool isUUID();
 		bool isBool();
+        bool isEmail();
         bool isAny();
 		
 		QStringList getEnumList();

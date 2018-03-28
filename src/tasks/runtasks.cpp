@@ -1,5 +1,6 @@
 #include <runtasks.h>
 #include <add_public_events_task.h>
+#include <mail_send_task.h>
 #include <update_max_score_game_task.h>
 #include <update_quest_solved_task.h>
 #include <update_user_location_task.h>
@@ -31,6 +32,11 @@ void RunTasks::UpdateUserLocation(IWebSocketServer *pWebSocketServer, int userid
 void RunTasks::UpdateUserRating(IWebSocketServer *pWebSocketServer, int nUserID){
     UpdateUserRatingTask *pUpdateUserRatingTask = new UpdateUserRatingTask(pWebSocketServer, nUserID);
     QThreadPool::globalInstance()->start(pUpdateUserRatingTask);
+}
+
+void RunTasks::MailSend(IWebSocketServer *pWebSocketServer,  QString to, QString subject, QString content){
+    MailSendTask *pMailSendTask = new MailSendTask(pWebSocketServer, to, subject, content);
+    QThreadPool::globalInstance()->start(pMailSendTask);
 }
 
 

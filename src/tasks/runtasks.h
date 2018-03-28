@@ -11,6 +11,7 @@ class RunTasks {
 		static void UpdateMaxScoreGame(IWebSocketServer *pWebSocketServer, int gameid);
         static void UpdateUserRating(IWebSocketServer *pWebSocketServer, int nUserID);
         static void UpdateQuestSolved(IWebSocketServer *pWebSocketServer, int nQuestID);
+        static void MailSend(IWebSocketServer *pWebSocketServer,  QString to, QString subject, QString content);
 };
 
 #endif // RUNTASKS_H

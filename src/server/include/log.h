@@ -11,13 +11,15 @@
 
 class Log {
 	public:
-		static void info(QString tag, QString msg);
-		static void err(QString tag, QString msg);
-        static void err(const std::string &tag, const std::string &msg);
-		static void err(QString tag, QAbstractSocket::SocketError socketError);
-		static void warn(QString tag, QString msg);
-		static void setdir(QString dir);
-        static QJsonArray last_logs();
+        static void info(QString tag, QString msg);  // depricated
+        static void info(const std::string &sTag, const std::string &sMessage);
+        static void err(QString tag, QString msg); // depricated
+        static void err(const std::string &sTag, const std::string &sMessage);
+        static void err(QString tag, QAbstractSocket::SocketError socketError); // Move from here
+        static void warn(QString tag, QString msg);  // depricated
+        static void warn(const std::string &sTag, const std::string &sMessage);
+        static void setdir(QString dir);  // depricated
+        static QJsonArray last_logs();  // depricated
 
 	private:
 		static void add(QString type, QString tag, QString msg);

@@ -1,8 +1,6 @@
 #include <cmd_handler_mail_send.h>
-#include <QJsonArray>
 #include <SmtpMime>
-// #include <memory_cache_serverinfo.h>
-#include <employ_settings.h>
+#include <runtasks.h>
 
 CmdHandlerMailSend::CmdHandlerMailSend(){
     TAG = "CmdHandlerMailSend";
@@ -12,6 +10,10 @@ CmdHandlerMailSend::CmdHandlerMailSend(){
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
+    m_vInputs.push_back(CmdInputDef("to").required().email_().description("E-mail of the recipient"));
+    m_vInputs.push_back(CmdInputDef("subject").required().string_().description("Subject of the message"));
+    m_vInputs.push_back(CmdInputDef("body").required().string_().description("Body of the message"));
+
 }
 
 // ---------------------------------------------------------------------
@@ -41,8 +43,14 @@ std::string CmdHandlerMailSend::description(){
 // ---------------------------------------------------------------------
 
 void CmdHandlerMailSend::handle(ModelRequest *pRequest){
-    // QJsonObject jsonRequest = pRequest->data();
-    // QJsonObject jsonResponse;
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
 
-    pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
+    QString sEmail = jsonRequest["to"].toString();
+    QString sSubject = jsonRequest["subject"].toString();
+    QString sBody = jsonRequest["body"].toString();
+
+    RunTasks::MailSend(pRequest->server(), sEmail, sSubject, sBody);
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

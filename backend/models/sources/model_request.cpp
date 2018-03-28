@@ -1,19 +1,21 @@
 #include <model_request.h>
+#include <iostream>
 
 // ---------------------------------------------------------------------
 
-ModelRequest::ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject jsonData){
+ModelRequest::ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject jsonData, nlohmann::json &jsonRequest_){
 	m_pClient = pClient;
 	m_pServer = pWebSocketServer;
-	m_jsonObject = jsonData;
+    m_jsonObject = jsonData; // todo deprecated
+    m_jsonRequest = jsonRequest_;
+
+    if(m_jsonRequest["cmd"].is_string()){
+        m_sCommand = m_jsonRequest["cmd"];
+    }
 	
-	if(m_jsonObject.contains("cmd")){
-		m_sCommand = m_jsonObject["cmd"].toString().toStdString();
-	}
-	
-	if(m_jsonObject.contains("m")){
-		m_sMessageId = m_jsonObject["m"].toString().toStdString();
-	}
+    if(m_jsonRequest["m"].is_string()){
+        m_sMessageId = m_jsonRequest["m"];
+    }
 }
 
 // ---------------------------------------------------------------------
@@ -30,8 +32,14 @@ IWebSocketServer *ModelRequest::server(){
 
 // ---------------------------------------------------------------------
 
-QJsonObject ModelRequest::data(){
+QJsonObject ModelRequest::data(){ // deprecated
 	return m_jsonObject;
+}
+
+// ---------------------------------------------------------------------
+
+const nlohmann::json& ModelRequest::jsonRequest(){
+    return m_jsonRequest;
 }
 
 // ---------------------------------------------------------------------

@@ -52,3 +52,7 @@ freehackquest-backend.pro.user
 /latex/*
 
 .qmake.stash
+.DS_Store
+fhq-server/build
+fhq-server/fhq-server
+fhq-server/debian/files

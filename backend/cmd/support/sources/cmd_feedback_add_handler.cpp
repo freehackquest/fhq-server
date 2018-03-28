@@ -1,6 +1,5 @@
 #include <cmd_feedback_add_handler.h>
 #include <runtasks.h>
-#include <QRegularExpression>
 #include <employ_settings.h>
 #include <SmtpMime>
 #include <QJsonArray>
@@ -14,7 +13,7 @@ CmdFeedbackAddHandler::CmdFeedbackAddHandler(){
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("from").string_().required().description("From user"));
+    m_vInputs.push_back(CmdInputDef("from").email_().required().description("From user"));
     m_vInputs.push_back(CmdInputDef("text").string_().required().description("Text of feedback"));
     m_vInputs.push_back(CmdInputDef("type").string_().required().description("Type"));
 }
@@ -63,13 +62,6 @@ void CmdFeedbackAddHandler::handle(ModelRequest *pRequest){
     }
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
-    QRegularExpression regexEmail("^[0-9a-zA-Z]{1}[0-9a-zA-Z-._]*[0-9a-zA-Z]{1}@[0-9a-zA-Z]{1}[-.0-9a-zA-Z]*[0-9a-zA-Z]{1}\\.[a-zA-Z]{2,6}$");
-    if(!regexEmail.match(sEmail).hasMatch()){
-        Log::err(TAG, "Invalid email format " + sEmail);
-        pRequest->sendMessageError(cmd(), Error(400, "Expected email format"));
-        return;
-    }
-
     QSqlQuery query(db);
     query.prepare("INSERT INTO feedback(`type`, `from`, `text`, `userid`, `dt`) VALUES(:type,:from,:text,:userid,NOW());");
     query.bindValue(":type", sType);
@@ -83,51 +75,14 @@ void CmdFeedbackAddHandler::handle(ModelRequest *pRequest){
 
     RunTasks::AddPublicEvents(pRequest->server(), "users", "Added feedback");
 	
-    // TODO move to tasks
-    QString sMailHost = pSettings->getSettString("mail_host");
-    int nMailPort = pSettings->getSettInteger("mail_port");
-    QString sMailPassword = pSettings->getSettPassword("mail_password");
-    QString sMailFrom = pSettings->getSettString("mail_from");
     QString sMailToAdmin = pSettings->getSettString("mail_system_message_admin_email");
+    QString sSubject = "Feedback (FreeHackQuest 2017)";
+    QString sContext = "Feedback \n"
+                       "Type: " + sType + "\n"
+                       "From: " + sEmail + "\n"
+                       "Text: \n" + sText + "\n";
 
-    SmtpClient smtp(sMailHost, nMailPort, SmtpClient::SslConnection);
-    smtp.setUser(sMailFrom);
-    smtp.setPassword(sMailPassword);
-
-    MimeMessage message;
-
-    EmailAddress sender(sMailFrom, "FreeHackQuest");
-    message.setSender(&sender);
-
-    EmailAddress to(sMailToAdmin, "");
-    message.addRecipient(&to);
-
-    message.setSubject("Feedback (FreeHackQuest 2017)");
-    MimeText text;
-    text.setText("Feedback \n"
-                 "Type: " + sType + "\n"
-                 "From: " + sEmail + "\n"
-                 "Text: \n" + sText + "\n"
-              );
-
-    message.addPart(&text);
-
-    // Now we can send the mail
-    if (!smtp.connectToHost()) {
-        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to connect to host!"));
-        return;
-    }
-
-    if (!smtp.login()) {
-        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to login!"));
-        return;
-    }
-
-    if (!smtp.sendMail(message)) {
-        pRequest->sendMessageError(cmd(), Error(500, "[MAIL] Failed to send mail!"));
-        return;
-    }
-    smtp.quit();
+    RunTasks::MailSend(pRequest->server(), sMailToAdmin, sSubject, sContext);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

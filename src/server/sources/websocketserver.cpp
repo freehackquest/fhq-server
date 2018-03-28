@@ -3,7 +3,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QDateTime>
-#include <QRegExp>
+#include <QRegularExpression>
 
 #include <QHostAddress>
 #include <QThread>
@@ -168,10 +168,12 @@ void WebSocketServer::processTextMessage(QString message) {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     Log::info(TAG, "[WS] <<< " + message);
 
-	QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
-    QJsonObject jsonRequest = doc.object();
+    nlohmann::json jsonRequest_ = nlohmann::json::parse(message.toStdString());
 
-    ModelRequest *pModelRequest = new ModelRequest(pClient, this, jsonRequest);
+    QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8()); // TODO deprecated
+    QJsonObject jsonRequest = doc.object(); // TODO deprecated
+
+    ModelRequest *pModelRequest = new ModelRequest(pClient, this, jsonRequest, jsonRequest_);
 
     if(!pModelRequest->hasCommand()){
 		this->sendMessageError(pClient, "error", "", Errors::NotFound("requare parameter 'cmd'"));
@@ -185,8 +187,6 @@ void WebSocketServer::processTextMessage(QString message) {
 		this->sendMessageError(pClient, cmd, "", Errors::NotFound("requare parameter 'm' - messageid"));
 		return;
 	}
-	
-    // QString m = QString(pModelRequest->m().c_str());
 
     ICmdHandler *pCmdHandler = findCmdHandler(cmd);
     if(pCmdHandler == NULL){
@@ -335,6 +335,8 @@ QSqlDatabase *WebSocketServer::database(){
 
 // ---------------------------------------------------------------------
 
+// TODO move to EmployUsers
+
 void WebSocketServer::setUserToken(QWebSocket *pClient, IUserToken *pUserToken){
 	m_tokens[pClient] = pUserToken;
 }
@@ -359,6 +361,7 @@ IMemoryCache *WebSocketServer::findMemoryCache(QString name){
 
 // ---------------------------------------------------------------------
 
+// TODO move to EmployValidateInput
 bool WebSocketServer::validateInputParameters(Error &error, ICmdHandler *pCmdHandler, QJsonObject &jsonRequest){
     const std::vector<CmdInputDef> vInputs = pCmdHandler->inputs();
     for(unsigned int i = 0; i < vInputs.size(); i++){
@@ -398,15 +401,27 @@ bool WebSocketServer::validateInputParameters(Error &error, ICmdHandler *pCmdHan
 			
 			if(inDef.isUUID()){
                 QString val = jsonRequest[sParamName].toString();
-				QRegExp rx("[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}");
-				if(!rx.isValid()){
+                QRegularExpression rx("[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}");
+                if(!rx.isValid()){
 					Log::err(TAG, "validateInputParameters, " + rx.errorString());
 				}
-				if(!rx.exactMatch(val)){
+                if(!rx.match(val).hasMatch()){
 					error = Errors::ParamExpectedUUID(sParamName);
 					return false;
 				}
 			}
+
+            if(inDef.isEmail()){
+                QString val = jsonRequest[sParamName].toString();
+                QRegularExpression rx("^[0-9a-zA-Z]{1}[0-9a-zA-Z-._]*[0-9a-zA-Z]{1}@[0-9a-zA-Z]{1}[-.0-9a-zA-Z]*[0-9a-zA-Z]{1}\\.[a-zA-Z]{2,6}$");
+                if(!rx.isValid()){
+                    Log::err(TAG, "validateInputParameters, " + rx.errorString());
+                }
+                if(!rx.match(val).hasMatch()){
+                    error = Errors::ParamMustBeEmail(sParamName);
+                    return false;
+                }
+            }
 		}
 	}
 	return true;

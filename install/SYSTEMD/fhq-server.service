@@ -1,0 +1,19 @@
+[Unit]
+Description=FreeHackQuest Server
+After=syslog.target
+After=network.target
+After=mysql.service
+Requires=mysql.service
+
+[Service]
+WorkingDirectory=/usr/share/fhq-server
+User=root
+Group=root
+ExecStart=/bin/sh -c '/usr/bin/freehackquest-backend > /var/log/fhq-server/access.log 2> /var/log/fhq-server/error.log'
+
+TimeoutSec=30
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+Alias=fhq-server.service

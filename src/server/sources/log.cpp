@@ -15,14 +15,20 @@ void Log::info(QString tag, QString msg){
 
 // ---------------------------------------------------------------------
 
+void Log::info(const std::string & sTag, const std::string &sMessage){
+    Log::add("INFO",QString(sTag.c_str()), QString(sMessage.c_str()));
+}
+
+// ---------------------------------------------------------------------
+
 void Log::err(QString tag, QString msg){
 	Log::add("ERR",tag, msg);
 }
 
 // ---------------------------------------------------------------------
 
-void Log::err(const std::string & tag, const std::string &msg){
-    Log::add("ERR",QString(tag.c_str()), QString(msg.c_str()));
+void Log::err(const std::string & sTag, const std::string &sMessage){
+    Log::add("ERR",QString(sTag.c_str()), QString(sMessage.c_str()));
 }
 
 // ---------------------------------------------------------------------
@@ -86,6 +92,12 @@ void Log::err(QString tag, QAbstractSocket::SocketError socketError){
 
 void Log::warn(QString tag, QString msg){
 	Log::add("WARN",tag, msg);
+}
+
+// ---------------------------------------------------------------------
+
+void Log::warn(const std::string & sTag, const std::string &sMessage){
+    Log::add("WARN",QString(sTag.c_str()), QString(sMessage.c_str()));
 }
 
 // ---------------------------------------------------------------------
