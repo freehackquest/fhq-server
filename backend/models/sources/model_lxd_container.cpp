@@ -74,7 +74,7 @@ nlohmann::json LXDContainer::state(){
     curl_easy_cleanup(hnd);
     hnd = NULL;
 
-    return QJsonObject();
+    return nlohmann::json::object_t();
 
 }
 

@@ -3,7 +3,6 @@
 
 #include <string>
 #include <curl/curl.h>
-#include <QJsonObject>
 #include <QFile>
 #include <employ_settings.h>
 #include <json.hpp>
