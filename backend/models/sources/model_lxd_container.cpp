@@ -23,7 +23,24 @@ static size_t write_to_string(void *ptr, size_t size, size_t count, void *stream
 static char errorBuffer[CURL_ERROR_SIZE];
 
 
-QJsonObject LXDContainer::state(){
+std::string LXDContainer::get_name(){
+    return name;
+}
+
+std::string LXDContainer::get_status(){
+    return status;
+}
+
+std::string LXDContainer::get_IPv4(){
+    return IPv4;
+}
+
+std::string LXDContainer::get_error(){
+    return error;
+}
+
+
+nlohmann::json LXDContainer::state(){
     //TO DO return value
 
     CURLcode ret;

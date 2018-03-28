@@ -6,16 +6,17 @@
 #include <QJsonObject>
 #include <QFile>
 #include <employ_settings.h>
+#include <json.hpp>
 
 class LXDContainer {
     public:
         LXDContainer(QJsonObject jsonData);
-        std::string name;
-        std::string status;
-        std::string IPv4;
-        std::string error;
+        std::string get_name();
+        std::string get_status();
+        std::string get_IPv4();
+        std::string get_error();
 
-        QJsonObject state();
+        nlohmann::json state();
         bool create(std::string name);
         bool start();
         bool stop();
@@ -28,6 +29,10 @@ class LXDContainer {
         std::string lxd_address;
         std::string path_dir_lxc_ssl;
         std::string response;
+        std::string name;
+        std::string status;
+        std::string IPv4;
+        std::string error;
 };
 
 #endif // MODEL_LXD_CONTAINER

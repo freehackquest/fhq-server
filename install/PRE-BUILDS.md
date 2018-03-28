@@ -3,7 +3,7 @@
 Prebuild packages: http://dist.freehackquest.com/backend/
 ```
 $ sudo apt update
-$ sudo apt install qt5-default libqt5websockets5 libqt5sql5-mysql
+$ sudo apt install qt5-default libqt5websockets5 libqt5sql5-mysql libcurl4-openssl-dev
 $ wget "http://dist.freehackquest.com/backend/amd64/debian/8.0 (jessie)/freehackquest-backend_0.1.15_amd64.deb"
 $ su
 # apt install mysql-server
