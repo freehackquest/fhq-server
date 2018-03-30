@@ -5,7 +5,7 @@ Frontend for FreeHackQuest here: [frontend](https://github.com/freehackquest/fro
 
 * [CONFIGURING](install/CONFIGURING.md)
 * [HOW-TO-BUILD](install/HOW-TO-BUILD.md)
-* [PRE-BUILDS](install/PRE-BUILD.md)
+* [PRE-BUILDS](install/PRE-BUILDS.md)
 * Configure autostart
 	* [SYSTEMD](install/SYSTEMD.md)
 	* [INITD](install/INITD.md)
