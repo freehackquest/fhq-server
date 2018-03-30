@@ -6,6 +6,12 @@
 $ sudo apt install g++ make qtchooser qt5-default libqt5websockets5 libqt5websockets5-dev libqt5sql5-mysql
 ```
 
+## New Requirements
+
+```
+$ sudo apt install libwebsockets-dev libcurl4-openssl-dev
+```
+
 ## Building
 ```
 $ cd ..
@@ -14,5 +20,5 @@ $ qmake && make
 
 ## Install 
 ```
-$ qmake && make
+$ make && sudo make install
 ```
