@@ -2,12 +2,12 @@ Source: fhq-server
 Section: devel
 Priority: optional
 Maintainer: Free Hack Quest <freehackquest@gmail.com>
-Build-Depends: cmake, build-essential
+Build-Depends: cmake, build-essential, libwebsockets-dev, libcurl4-openssl-dev, qtbase5-dev
 Homepage: https://freehackquest.com
 
 Package: fhq-server
 Architecture: any
-Depends: 
+Depends: libwebsockets8, libcurl4-openssl-dev
 Description: FreeHackQuest Server
  This is an open source platform for competitions in computer security.
 
