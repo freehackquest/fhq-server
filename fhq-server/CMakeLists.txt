@@ -7,6 +7,13 @@ set(EXECUTABLE_OUTPUT_PATH ${fhq-server_SOURCE_DIR})
 
 add_definitions(-DVERSION_STRING="0.2.0")
 
+include_directories("src/utils" "src/utils/include")
+include_directories("src/tasks" "src/tasks/include")
+include_directories("src/cache" "src/cache/include")
+include_directories("src/updates" "src/updates/include")
+include_directories("src/unit_tests" "src/unit_tests/include")
+include_directories("src/interfaces")
+
 file(GLOB_RECURSE FHQSRV_SOURCES "src/*.cpp")
 file(GLOB_RECURSE FHQSRV_HEADERS "src/*.h")
 

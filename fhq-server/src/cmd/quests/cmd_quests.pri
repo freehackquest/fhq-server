@@ -11,10 +11,10 @@ HEADERS += \
     $$PWD/include/cmd_handler_quest_create.h \
     $$PWD/include/cmd_handler_quest_delete.h \
     $$PWD/include/cmd_handler_quest_pass.h \
-	$$PWD/include/cmd_handler_quest_proposal.h \
-	$$PWD/include/cmd_handler_quests.h \
-	$$PWD/include/cmd_handler_quests_proposal_list.h \
-	$$PWD/include/cmd_handler_quests_subjects.h \
+    $$PWD/include/cmd_handler_quest_proposal.h \
+    $$PWD/include/cmd_handler_quests.h \
+    $$PWD/include/cmd_handler_quests_proposal_list.h \
+    $$PWD/include/cmd_handler_quests_subjects.h \
     $$PWD/include/cmd_handler_quest_statistics.h \
     $$PWD/include/cmd_handler_quest_update.h \
     $$PWD/include/cmd_handler_writeups.h \

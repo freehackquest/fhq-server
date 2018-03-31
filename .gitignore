@@ -56,3 +56,4 @@ freehackquest-backend.pro.user
 fhq-server/build
 fhq-server/fhq-server
 fhq-server/debian/files
+fhq-server/fhq-server.pro.user

@@ -1,14 +1,34 @@
+// #include <stdio.h>
+// #include <stdlib.h>
+// #include <string.h>
+// #include <signal.h>
 #include <iostream>
+// #include <sys/stat.h>
+// #include <sys/types.h>
+// #include <sys/time.h>
+// #include <unistd.h>
+// #include <errno.h>
+// #include <fcntl.h>
+// #include <syslog.h>
 #include <QtCore>
 #include <QFile>
 #include <QString>
+#include <log.h>
+#include <websocketserver.h>
+#include <utils_prepare_deb_package.h>
+#include <utils_create_config.h>
+#include <create_unit_tests.h>
+#include <employees.h>
+#include <employ_json.h>
 
 int main(int argc, char** argv) {
 	QCoreApplication a(argc, argv);
 	QString TAG = "main";
+	Log::setdir("/var/log/freehackquest-backend");
 	
-	a.setApplicationName("fhq-server");
+	a.setApplicationName("freehackquest-backend");
     a.setApplicationVersion(VERSION_STRING);
+    
     
     QCommandLineParser parser;
     parser.setApplicationDescription("freehackquest-backend");
@@ -38,6 +58,59 @@ int main(int argc, char** argv) {
 		return 0;
 	}
 
+	bool bRunUnitTests = parser.isSet(optRunUnitTests);
+    if(bRunUnitTests){
+		QMap<QString, IUnitTest *> mapUnitTests;
+		create_unit_tests(mapUnitTests);
+		foreach( QString name, mapUnitTests.keys()){
+			IUnitTest *pUnitTest = mapUnitTests.value(name);
+			Log::info(TAG,  "Run test  " + name);
+			if(pUnitTest->run()){
+				Log::info(TAG,  "Test passed");
+			}else{
+				Log::err(TAG,  "Test failed");
+			}
+		}
+		return 0;
+	}
 
-    return 0;
+    bool bTest = parser.isSet(optTest);
+    if(bTest){
+        EmployJson *pEmployJson1 = findEmploy<EmployJson>();
+        EmployJson *pEmployJson2 = findEmploy<EmployJson>();
+        std::cout << "pEmployJson1: " << pEmployJson1 << "\n";
+        std::cout << "pEmployJson2: " << pEmployJson2 << "\n";
+        pEmployJson2->test();
+        return 0;
+    }
+
+
+	bool bPrepareDebPackage = parser.isSet(prepareDebOption);
+    if(bPrepareDebPackage){
+		UtilsPrepareDebPackage::prepare("","tmpdeb");
+		return 0;
+	}
+
+	bool bCreateConfigLinux = parser.isSet(optCreateConfigLinux);
+	if(bCreateConfigLinux){
+		UtilsCreateConfig::forLinux();
+		return 0;
+	};
+
+	QThreadPool::globalInstance()->setMaxThreadCount(5);
+    WebSocketServer *pServer = new WebSocketServer();
+    if(pServer->isFailed()){
+        Log::err(TAG, "Could not start server");
+        return -1;
+    }
+
+    QObject::connect(pServer, &WebSocketServer::closed, &a, &QCoreApplication::quit);
+    
+    // TODO redesign to check config
+    QSqlDatabase *db = pServer->database();
+    if (!db->open()){
+		return -1;
+	}
+	
+	return a.exec();
 }
