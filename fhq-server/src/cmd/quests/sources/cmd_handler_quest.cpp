@@ -6,8 +6,10 @@
 #include <QJsonArray>
 #include <QCryptographicHash>
 
-CmdHandlerQuest::CmdHandlerQuest(){
-    TAG = "CmdHandlerQuest";
+CmdHandlerQuest::CmdHandlerQuest()
+    : CmdHandlerBase("quest", "Update the quest info"){
+
+    CmdHandlerBase::TAG = "CmdHandlerQuest";
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -15,30 +17,6 @@ CmdHandlerQuest::CmdHandlerQuest(){
 
     // validation and description input fields
 	m_vInputs.push_back(CmdInputDef("questid").integer_().required().description("Quest ID"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerQuest::cmd(){
-	return "quest";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerQuest::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdHandlerQuest::inputs(){
-	return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerQuest::description(){
-	return "Update the quest info";
 }
 
 // ---------------------------------------------------------------------
