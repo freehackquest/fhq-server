@@ -33,18 +33,18 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest){
     }
 
     std::vector<std::string> vWhereQuery;
-    std::map<std::string, std::string> mapFilter;
+    std::vector<std::pair<std::string, std::string> > vWhereValues;
 
     // get quest id
     if(jsonRequest["subject"].is_string()){
         std::string sSubject = jsonRequest.at("subject");
         vWhereQuery.push_back("(q.subject = :subject)");
-        mapFilter.insert(std::pair<std::string, std::string>(":subject",sSubject));
+        vWhereValues.push_back(std::pair<std::string, std::string>(":subject",sSubject));
     }
 
-    if(!pUserToken->isAdmin()){
+    if((pUserToken != NULL && !pUserToken->isAdmin()) || (pUserToken == NULL)){
         vWhereQuery.push_back("(q.state = :state)");
-        mapFilter.insert(std::pair<std::string, std::string>(":state","open"));
+        vWhereValues.push_back(std::pair<std::string, std::string>(":state","open"));
     }
 
     std::string sWhere = "";
@@ -54,6 +54,8 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest){
 
     }
     sWhere = sWhere.length() > 0 ? " WHERE " + sWhere : "";
+    std::cout << "sWhere: " << sWhere << std::endl;
+
     auto jsonQuests = nlohmann::json::array();
 
     QSqlDatabase db = *(pRequest->server()->database());
@@ -79,8 +81,9 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest){
 
     query.bindValue(":userid", nUserID);
 
-    for (auto const& x : mapFilter){
-        query.bindValue(QString(x.first.c_str()), QString(x.second.c_str()));
+    for(unsigned int i = 0; i < vWhereValues.size(); i++){
+        std::pair<std::string, std::string> p = vWhereValues[i];
+        query.bindValue(QString(p.first.c_str()), QString(p.second.c_str()));
     }
 
     if(!query.exec()){
@@ -97,7 +100,7 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest){
         jsonQuest["subject"] = record.value("subject").toString().toStdString();
         jsonQuest["dt_passed"] = record.value("dt_passed").toString().toStdString();
         jsonQuest["solved"] = record.value("count_user_solved").toInt();
-        jsonQuest["state"] = record.value("count_user_solved").toString().toStdString();
+        jsonQuest["state"] = record.value("state").toString().toStdString();
 
         std::string status = record.value("dt_passed").toString().toStdString();
         jsonQuest["status"] = (status == "" ? "open" : "completed");
