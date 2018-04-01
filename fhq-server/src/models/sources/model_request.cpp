@@ -62,7 +62,17 @@ void ModelRequest::sendMessageError(const std::string &cmd, Error error){
 
 // ---------------------------------------------------------------------
 
-void ModelRequest::sendMessageSuccess(std::string cmd, QJsonObject jsonResponse){
+void ModelRequest::sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse){
+    jsonResponse["cmd"] = cmd;
+    jsonResponse["m"] = m_sMessageId;
+    jsonResponse["result"] = "DONE";
+    m_pServer->sendMessage(m_pClient, jsonResponse);
+}
+
+// ---------------------------------------------------------------------
+
+// deprecated
+void ModelRequest::sendMessageSuccess(const std::string &cmd, QJsonObject jsonResponse){
     jsonResponse["cmd"] = QJsonValue(QString(cmd.c_str()));
     jsonResponse["m"] = QJsonValue(QString(m_sMessageId.c_str()));
     jsonResponse["result"] = QJsonValue("DONE");

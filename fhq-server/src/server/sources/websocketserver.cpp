@@ -268,6 +268,7 @@ int WebSocketServer::getConnectedUsers(){
 
 // ---------------------------------------------------------------------
 
+// deprecated
 void WebSocketServer::sendMessage(QWebSocket *pClient, QJsonObject obj){
 	 if (pClient) {
 		QJsonDocument doc(obj);
@@ -281,6 +282,21 @@ void WebSocketServer::sendMessage(QWebSocket *pClient, QJsonObject obj){
             }
         }
     }
+}
+
+// ---------------------------------------------------------------------
+
+void WebSocketServer::sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse){
+    if (pClient) {
+       std::string message = jsonResponse.dump();
+       if(m_clients.contains(pClient)){
+           try{
+               pClient->sendTextMessage(QString(message.c_str()));
+           }catch(...){
+               Log::err(TAG.toStdString(), "Could not send message >>> " + message);
+           }
+       }
+   }
 }
 
 // ---------------------------------------------------------------------

@@ -17,8 +17,8 @@ class ModelRequest {
 		std::string command();
 		bool hasCommand();
         void sendMessageError(const std::string &cmd, Error error);
-        void sendMessageSuccess(std::string cmd, QJsonObject jsonResponse);
-
+        void sendMessageSuccess(const std::string &cmd, QJsonObject jsonResponse); // depricated
+        void sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse);
 	private:
 		QWebSocket *m_pClient;
 		IWebSocketServer *m_pServer;

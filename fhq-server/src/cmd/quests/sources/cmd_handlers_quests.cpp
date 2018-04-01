@@ -24,7 +24,7 @@ CmdHandlerQuests::CmdHandlerQuests()
 
 void CmdHandlerQuests::handle(ModelRequest *pRequest){
     nlohmann::json jsonRequest = pRequest->jsonRequest();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     int nUserID = 0;
     IUserToken *pUserToken = pRequest->userToken();
@@ -54,9 +54,8 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest){
 
     }
     sWhere = sWhere.length() > 0 ? " WHERE " + sWhere : "";
-    Log::info(TAG, "sWhere " + sWhere);
-    std::cout << "sWhere " << sWhere << std::endl;
-    QJsonArray quests;
+    auto jsonQuests = nlohmann::json::array();
+
     QSqlDatabase db = *(pRequest->server()->database());
 	QSqlQuery query(db);
 
@@ -90,23 +89,23 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest){
     }
 	while (query.next()) {
 		QSqlRecord record = query.record();
-        QJsonObject quest;
-        quest["questid"] = record.value("idquest").toInt();
-        quest["score"] = record.value("score").toInt();
-        quest["name"] = record.value("name").toString();
-        quest["gameid"] = record.value("gameid").toInt();
-        quest["subject"] = record.value("subject").toString();
-        quest["dt_passed"] = record.value("dt_passed").toString();
-        quest["solved"] = record.value("count_user_solved").toInt();
-        quest["state"] = record.value("count_user_solved").toString();
+        nlohmann::json jsonQuest;
+        jsonQuest["questid"] = record.value("idquest").toInt();
+        jsonQuest["score"] = record.value("score").toInt();
+        jsonQuest["name"] = record.value("name").toString().toStdString();
+        jsonQuest["gameid"] = record.value("gameid").toInt();
+        jsonQuest["subject"] = record.value("subject").toString().toStdString();
+        jsonQuest["dt_passed"] = record.value("dt_passed").toString().toStdString();
+        jsonQuest["solved"] = record.value("count_user_solved").toInt();
+        jsonQuest["state"] = record.value("count_user_solved").toString().toStdString();
 
-        QString status = record.value("dt_passed").toString();
-        quest["status"] = (status == "" ? "open" : "completed");
+        std::string status = record.value("dt_passed").toString().toStdString();
+        jsonQuest["status"] = (status == "" ? "open" : "completed");
 
-        quests.push_back(quest);
+        jsonQuests.push_back(jsonQuest);
 	}
 
-    jsonResponse["data"] = quests;
+    jsonResponse["data"] = jsonQuests;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
