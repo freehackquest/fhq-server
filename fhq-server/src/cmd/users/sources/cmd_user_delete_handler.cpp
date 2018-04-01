@@ -9,7 +9,7 @@ CmdUserDeleteHandler::CmdUserDeleteHandler(){
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("uuid").required().string_().description("User's uuid"));
+    m_vInputs.push_back(CmdInputDef("uuid").required().uuid_().description("User's uuid"));
     m_vInputs.push_back(CmdInputDef("password").required().string_().description("Admin's password"));
 }
 
@@ -53,7 +53,7 @@ void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
     // check admin password
     {
         QSqlQuery query(db);
-        query.prepare("SELECT * FROM users WHERE uuid = :userid");
+        query.prepare("SELECT * FROM users WHERE id = :userid");
         query.bindValue(":userid", nAdminUserID);
         if(!query.exec()){
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
@@ -81,11 +81,11 @@ void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
         }
     }
 
-    QString sUuid = jsonRequest["uuid"].toString();
+    QString sUuid = jsonRequest["uuid"].toString().trimmed();
 
     int nUserID = 0;
 
-    // check existing game
+    // check if the user exists
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM users WHERE uuid = :uuid");
