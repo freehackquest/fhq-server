@@ -6,7 +6,7 @@
 CmdHandlerBase::CmdHandlerBase(const std::string &sCmd, const std::string &sDescription){
     m_sCmd = sCmd;
     m_sDescription = sDescription;
-    TAG = "CmdHandlerBase";
+    TAG = "CmdHandlerBase(" + sCmd + ")";
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);

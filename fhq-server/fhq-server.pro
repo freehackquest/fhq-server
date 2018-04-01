@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = freehackquest-backend
+TARGET = fhq-server
 
 VERSION = 0.1.19
 DEFINES += VERSION_STRING=\\\"0.1.19\\\"

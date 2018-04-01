@@ -17,7 +17,7 @@ class CmdHandlerBase : public ICmdHandler {
         virtual void handle(ModelRequest *pRequest) = 0;
 
     protected:
-        QString TAG;
+        std::string TAG;
         std::string m_sCmd;
         std::string m_sDescription;
         ModelCommandAccess m_modelCommandAccess;
