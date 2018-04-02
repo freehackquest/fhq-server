@@ -12,8 +12,8 @@
  *****************************************/
 
 
-CmdHandlerServerApi::CmdHandlerServerApi(){
-    TAG = "CmdHandlerServerApi";
+CmdHandlerServerApi::CmdHandlerServerApi()
+    : CmdHandlerBase("server_api", "This method Will be return list of all handlers"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -22,68 +22,41 @@ CmdHandlerServerApi::CmdHandlerServerApi(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdHandlerServerApi::cmd(){
-    return "server_api";
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerServerApi::description(){
-    return "This method Will be return list of all handlers";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerServerApi::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdHandlerServerApi::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
 void CmdHandlerServerApi::handle(ModelRequest *pRequest){
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
-    QJsonObject data;
-    // pRequest->server()->exportApi(data);
+    // EmploySettings *pSettings = findEmploy<EmploySettings>();
 
     // TODO
     /*result["port"] = m_pServerConfig->serverPort();
     result["ssl_port"] = m_pServerConfig->serverPort();*/
 
-
-    QJsonArray handlers;
+    auto jsonHandlers = nlohmann::json::array();
     std::map<std::string, ICmdHandler *>::iterator it = g_pCmdHandlers->begin();
     while(it != g_pCmdHandlers->end()){
         std::string sCmd = it->first;
         ICmdHandler *pHandler = g_pCmdHandlers->at(sCmd);
 
-        QJsonObject handler;
+        nlohmann::json jsonHandler;
 
-        handler["cmd"] = QString(pHandler->cmd().c_str());
-        handler["description"] = QString(pHandler->description().c_str());
-        handler["access_unauthorized"] = pHandler->access().accessUnauthorized();
-        handler["access_user"] = pHandler->access().accessUser();
-        handler["access_admin"] = pHandler->access().accessAdmin();
+        jsonHandler["cmd"] = pHandler->cmd().c_str();
+        jsonHandler["description"] = pHandler->description();
+        jsonHandler["access_unauthorized"] = pHandler->access().accessUnauthorized();
+        jsonHandler["access_user"] = pHandler->access().accessUser();
+        jsonHandler["access_admin"] = pHandler->access().accessAdmin();
 
-        QJsonArray inputs;
+        auto jsonInputs = nlohmann::json::array();
         std::vector<CmdInputDef> ins = pHandler->inputs();
         for(unsigned int i = 0; i < ins.size(); i++){
-            inputs.append(ins[i].toJson());
+            jsonInputs.push_back(ins[i].toJson());
         }
-        handler["inputs"] = inputs;
-        handlers.append(handler);
+        jsonHandler["inputs"] = jsonInputs;
+        jsonHandlers.push_back(jsonHandler);
 
         it++;
     }
-    jsonResponse["data"] = handlers;
-    jsonResponse["version"] = QCoreApplication::applicationVersion();
+    jsonResponse["data"] = jsonHandlers;
+    jsonResponse["version"] = QCoreApplication::applicationVersion().toStdString();
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -91,7 +64,8 @@ void CmdHandlerServerApi::handle(ModelRequest *pRequest){
  * This handler will be return public info
  *****************************************/
 
-CmdPublicInfoHandler::CmdPublicInfoHandler(){
+CmdHandlerPublicInfo::CmdHandlerPublicInfo()
+    : CmdHandlerBase("public_info", "Method return public information about server"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -99,39 +73,16 @@ CmdPublicInfoHandler::CmdPublicInfoHandler(){
 
 }
 
-// ---------------------------------------------------------------------
-
-std::string CmdPublicInfoHandler::cmd(){
-    return "public_info";
-}
 
 // ---------------------------------------------------------------------
 
-const ModelCommandAccess & CmdPublicInfoHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdPublicInfoHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdPublicInfoHandler::description(){
-    return "Method return public information about server";
-}
-
-// ---------------------------------------------------------------------
-
-void CmdPublicInfoHandler::handle(ModelRequest *pRequest){
+void CmdHandlerPublicInfo::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
-    QJsonObject jsonQuests;
-    QJsonArray jsonWinners;
-    QJsonArray jsonCities;
+    nlohmann::json jsonQuests;
+    auto jsonWinners = nlohmann::json::array();
+    auto jsonCities = nlohmann::json::array();
 
     // fill quests info
     IMemoryCache *pMemoryCache = pRequest->server()->findMemoryCache("serverinfo");
@@ -172,10 +123,10 @@ void CmdPublicInfoHandler::handle(ModelRequest *pRequest){
         }
         while(query.next()) {
             QSqlRecord record = query.record();
-            QJsonObject city;
+            nlohmann::json city;
             city["cnt"] = record.value("cnt").toInt();
-            city["city"] = record.value("city").toString().toHtmlEscaped();
-            jsonCities.append(city);
+            city["city"] = record.value("city").toString().toHtmlEscaped().toStdString();
+            jsonCities.push_back(city);
         }
     }
 
@@ -193,12 +144,12 @@ void CmdPublicInfoHandler::handle(ModelRequest *pRequest){
         int nPlace = 1;
         while(query.next()) {
             QSqlRecord record = query.record();
-            QJsonObject user;
-            user["place"] = nPlace;
-            user["nick"] = record.value("nick").toString().toHtmlEscaped();
-            user["university"] = record.value("university").toString().toHtmlEscaped();
-            user["rating"] = record.value("rating").toInt();
-            jsonWinners.append(user);
+            nlohmann::json jsonUser;
+            jsonUser["place"] = nPlace;
+            jsonUser["nick"] = record.value("nick").toString().toHtmlEscaped().toStdString();
+            jsonUser["university"] = record.value("university").toString().toHtmlEscaped().toStdString();
+            jsonUser["rating"] = record.value("rating").toInt();
+            jsonWinners.push_back(jsonUser);
             nPlace++;
         }
     }
@@ -214,7 +165,8 @@ void CmdPublicInfoHandler::handle(ModelRequest *pRequest){
  * This handler will be return private server info
  *****************************************/
 
-CmdServerInfoHandler::CmdServerInfoHandler(){
+CmdHandlerServerInfo::CmdHandlerServerInfo()
+    : CmdHandlerBase("server_info", "Return server private information"){
     TAG = "CmdServerInfoHandler";
 
     m_modelCommandAccess.setAccessUnauthorized(false);
@@ -224,36 +176,11 @@ CmdServerInfoHandler::CmdServerInfoHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdServerInfoHandler::cmd(){
-    return "server_info";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdServerInfoHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdServerInfoHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdServerInfoHandler::description(){
-    return "Return server information";
-}
-
-// ---------------------------------------------------------------------
-
-void CmdServerInfoHandler::handle(ModelRequest *pRequest){
+void CmdHandlerServerInfo::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
-    QJsonObject data;
+    nlohmann::json jsonResponse;
+    nlohmann::json data;
 
-    QJsonObject jsonRequestStatistics;
     IMemoryCache *pMemoryCache = pRequest->server()->findMemoryCache("serverinfo");
     if(pMemoryCache == NULL){
         pRequest->sendMessageError(cmd(), Errors::InternalServerError());
@@ -261,26 +188,13 @@ void CmdServerInfoHandler::handle(ModelRequest *pRequest){
     }
 
     MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
-    jsonRequestStatistics = pMemoryCacheServerInfo->toJsonObject(); // TODO how much db connections and time
+    nlohmann::json jsonRequestStatistics = pMemoryCacheServerInfo->toJson(); // TODO how much db connections and time
 
     data["request_statistics"] = jsonRequestStatistics;
-    data["server_started"] = pMemoryCacheServerInfo->getServerStart().toString(Qt::ISODate);
+    data["server_started"] = pMemoryCacheServerInfo->getServerStart().toString(Qt::ISODate).toStdString();
     qint64 updatime = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
     updatime = updatime - pMemoryCacheServerInfo->getServerStart().toMSecsSinceEpoch();
     data["server_uptime_sec"] = updatime/1000;
-
-    /* NOT WORK
-     * QJsonArray lastLogMessages;
-    {
-        QMutexLocker locker(&g_LOG_MUTEX);
-        int len = g_LAST_LOG_MESSAGES.size();
-        g_LAST_LOG_MESSAGES << "log";
-        for(int i = 0; i < len; i++){
-            lastLogMessages.append(g_LAST_LOG_MESSAGES[i]);
-        }
-    }
-    data["last_log_messages"] = lastLogMessages;
-    */
     data["last_log_messages"] = Log::last_logs();
     jsonResponse["data"] = data;
 
@@ -291,7 +205,8 @@ void CmdServerInfoHandler::handle(ModelRequest *pRequest){
  * This handler will be return private server settings
  *****************************************/
 
-CmdServerSettingsHandler::CmdServerSettingsHandler(){
+CmdHandlerServerSettings::CmdHandlerServerSettings()
+    : CmdHandlerBase("server_settings", "Return server settings"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -302,37 +217,12 @@ CmdServerSettingsHandler::CmdServerSettingsHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdServerSettingsHandler::cmd(){
-        return "server_settings";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdServerSettingsHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdServerSettingsHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdServerSettingsHandler::description(){
-        return "Return server settings";
-}
-
-// ---------------------------------------------------------------------
-
-void CmdServerSettingsHandler::handle(ModelRequest *pRequest){
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+void CmdHandlerServerSettings::handle(ModelRequest *pRequest){
+    nlohmann::json jsonResponse;
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
-    jsonResponse["data"] = pSettings->toJsonArray(); // TODO how much db connections and time
+    jsonResponse["data"] = pSettings->toJson(); // TODO how much db connections and time
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -340,7 +230,8 @@ void CmdServerSettingsHandler::handle(ModelRequest *pRequest){
  * This handler for update private server settings
  *****************************************/
 
-CmdServerSettingsUpdateHandler::CmdServerSettingsUpdateHandler(){
+CmdHandlerServerSettingsUpdate::CmdHandlerServerSettingsUpdate()
+    : CmdHandlerBase("server_settings_update", "Update server settings"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -353,33 +244,9 @@ CmdServerSettingsUpdateHandler::CmdServerSettingsUpdateHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdServerSettingsUpdateHandler::cmd(){
-        return "server_settings_update";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdServerSettingsUpdateHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdServerSettingsUpdateHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdServerSettingsUpdateHandler::description(){
-        return "Update server settings";
-}
-
-// ---------------------------------------------------------------------
-
-void CmdServerSettingsUpdateHandler::handle(ModelRequest *pRequest){
+void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 

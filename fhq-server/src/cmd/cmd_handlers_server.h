@@ -7,19 +7,11 @@
  * This handler will be return list of handlers - publish api interfaces
  * */
 
-class CmdHandlerServerApi : public ICmdHandler {
+class CmdHandlerServerApi : public CmdHandlerBase {
 
     public:
         CmdHandlerServerApi();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdHandlerServerApi)
@@ -28,89 +20,53 @@ REGISTRY_CMD(CmdHandlerServerApi)
  * This handler will be return public info
  * */
 
-class CmdPublicInfoHandler : public ICmdHandler {
+class CmdHandlerPublicInfo : public CmdHandlerBase {
 
     public:
-        CmdPublicInfoHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
+        CmdHandlerPublicInfo();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
-REGISTRY_CMD(CmdPublicInfoHandler)
+REGISTRY_CMD(CmdHandlerPublicInfo)
 
 
 /*!
  * This handler will be return private server info
  * */
 
-class CmdServerInfoHandler : public ICmdHandler {
+class CmdHandlerServerInfo : public CmdHandlerBase {
 
     public:
-        CmdServerInfoHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
+        CmdHandlerServerInfo();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
-REGISTRY_CMD(CmdServerInfoHandler)
+REGISTRY_CMD(CmdHandlerServerInfo)
 
 /*!
  * This handler will be return private server settings
  * */
 
-class CmdServerSettingsHandler : public ICmdHandler {
+class CmdHandlerServerSettings : public CmdHandlerBase {
 
     public:
-        CmdServerSettingsHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
+        CmdHandlerServerSettings();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
-REGISTRY_CMD(CmdServerSettingsHandler)
+REGISTRY_CMD(CmdHandlerServerSettings)
 
 /*!
  * This handler for update private server settings
  * */
 
-class CmdServerSettingsUpdateHandler : public ICmdHandler {
+class CmdHandlerServerSettingsUpdate : public CmdHandlerBase {
 
     public:
-        CmdServerSettingsUpdateHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
+        CmdHandlerServerSettingsUpdate();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
-REGISTRY_CMD(CmdServerSettingsUpdateHandler)
+REGISTRY_CMD(CmdHandlerServerSettingsUpdate)
 
 #endif // CMD_HADNLERS_SERVER_H
