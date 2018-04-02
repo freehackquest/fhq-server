@@ -1,4 +1,4 @@
-#include "../headers/cmd_user_handler.h"
+/*#include "../headers/cmd_user_handler.h"
 #include <QJsonArray>
 
 CmdUserAnswersHandler::CmdUserAnswersHandler(){
@@ -120,3 +120,4 @@ void CmdUserAnswersHandler::handle(QWebSocket *pClient, IWebSocketServer *pWebSo
 	jsonData["access"] = bCurrentUserOrAdmin;
 	pWebSocketServer->sendMessage(pClient, jsonData);
 }
+*/

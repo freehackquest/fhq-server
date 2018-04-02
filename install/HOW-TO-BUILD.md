@@ -10,6 +10,7 @@ $ sudo apt install g++ make qtchooser qt5-default libqt5websockets5 libqt5websoc
 
 ```
 $ sudo apt install libwebsockets-dev libcurl4-openssl-dev
+$ sudo apt install zlib1g-dev
 ```
 
 ## Building
