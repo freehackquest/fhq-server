@@ -1,11 +1,16 @@
-#include <log.h>
-#include <employees.h>
 #include <employ_server_info.h>
-#include <employ_settings.h>
+
+REGISTRY_EMPLOY(EmployServerInfo)
 
 // ---------------------------------------------------------------------
 
-std::map<std::string, IEmploy*> *g_pEmployees = NULL;
+EmployServerInfo::EmployServerInfo()
+    : EmployBase("json", {"1", "2"}) {
+
+}
 
 // ---------------------------------------------------------------------
 
+void EmployServerInfo::test(){
+
+}

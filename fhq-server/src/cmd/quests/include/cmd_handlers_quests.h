@@ -1,9 +1,12 @@
 #ifndef CMD_HANDLERS_QUESTS_H
 #define CMD_HANDLERS_QUESTS_H
 
-// ------------ Quest List --------------------
-
 #include <cmd_handler_base.h>
+
+/*********************************************
+ * List of Quests
+**********************************************/
+
 class CmdHandlerQuests : public CmdHandlerBase {
 	
 	public:
@@ -13,7 +16,9 @@ class CmdHandlerQuests : public CmdHandlerBase {
 
 REGISTRY_CMD(CmdHandlerQuests)
 
-// ------------ Quest Info --------------------
+/*********************************************
+ * Quest Info
+**********************************************/
 
 class CmdHandlerQuest : public CmdHandlerBase {
 

@@ -19,7 +19,7 @@
 #include <utils_create_config.h>
 #include <create_unit_tests.h>
 #include <employees.h>
-#include <employ_json.h>
+#include <employ_server_info.h>
 
 int main(int argc, char** argv) {
 	QCoreApplication a(argc, argv);
@@ -73,16 +73,6 @@ int main(int argc, char** argv) {
 		}
 		return 0;
 	}
-
-    bool bTest = parser.isSet(optTest);
-    if(bTest){
-        EmployJson *pEmployJson1 = findEmploy<EmployJson>();
-        EmployJson *pEmployJson2 = findEmploy<EmployJson>();
-        std::cout << "pEmployJson1: " << pEmployJson1 << "\n";
-        std::cout << "pEmployJson2: " << pEmployJson2 << "\n";
-        pEmployJson2->test();
-        return 0;
-    }
 
 
 	bool bPrepareDebPackage = parser.isSet(prepareDebOption);
