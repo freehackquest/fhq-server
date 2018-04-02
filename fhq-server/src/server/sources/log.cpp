@@ -104,12 +104,12 @@ void Log::setdir(const std::string &sDirectoryPath){
 
 // ---------------------------------------------------------------------
 
-QJsonArray Log::last_logs(){
+nlohmann::json Log::last_logs(){
     g_LOG_MUTEX.lock();
-    QJsonArray lastLogMessages;
+    auto lastLogMessages = nlohmann::json::array();
     int len = g_LAST_LOG_MESSAGES.size();
     for(int i = 0; i < len; i++){
-        lastLogMessages.append(g_LAST_LOG_MESSAGES[i]);
+        lastLogMessages.push_back(g_LAST_LOG_MESSAGES[i]);
     }
     g_LOG_MUTEX.unlock();
     return lastLogMessages;
@@ -123,9 +123,9 @@ void Log::add(const std::string &sType, const std::string &sTag, const std::stri
 	QString sThreadID = "0x" + QString::number((long long)QThread::currentThreadId(), 16);
     std::string sLogMessage = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz").toStdString() + ", " + sThreadID.toStdString() + " [" + sType + "] " + sTag + ": " + sMessage;
     std::cout << sLogMessage << "\r\n";
-    g_LAST_LOG_MESSAGES.push_front(QString(sLogMessage.c_str()));
+    g_LAST_LOG_MESSAGES.push_front(sLogMessage);
     while(g_LAST_LOG_MESSAGES.size() > 50){
-        g_LAST_LOG_MESSAGES.removeLast();
+        g_LAST_LOG_MESSAGES.pop_back();
 	}
     g_LOG_MUTEX.unlock();
 }
