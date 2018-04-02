@@ -2,6 +2,7 @@
 #define MEMORY_CACHE_SERVERINFO_H
 
 #include <iserver.h>
+// #include <json.hpp>
 
 class MemoryCacheServerInfo : public IMemoryCache {
 	public:
@@ -23,7 +24,7 @@ class MemoryCacheServerInfo : public IMemoryCache {
         void initCounters();
 
         QDateTime getServerStart();
-		QJsonObject toJsonObject();
+        nlohmann::json toJson();
 
 	private:
 		IWebSocketServer *m_pWebSocketServer;

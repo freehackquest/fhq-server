@@ -35,13 +35,13 @@ void MemoryCacheServerInfo::incrementRequests(QString cmd){
 
 // ---------------------------------------------------------------------
 
-QJsonObject MemoryCacheServerInfo::toJsonObject(){
-	QJsonObject res;
+nlohmann::json MemoryCacheServerInfo::toJson(){
+    nlohmann::json jsonRes;
 	foreach( QString key, m_requestsCounter.keys()){
 		int count = m_requestsCounter.value(key);
-		res[key] = count;
-	}
-	return res;
+        jsonRes[key.toStdString()] = count;
+    }
+    return jsonRes;
 }
 
 // ---------------------------------------------------------------------
