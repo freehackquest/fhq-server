@@ -19,7 +19,8 @@
 **********************************************/
 
 
-CmdGameCreateHandler::CmdGameCreateHandler(){
+CmdGameCreateHandler::CmdGameCreateHandler()
+   : CmdHandlerBase("game_create", "Create the game"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -38,26 +39,6 @@ CmdGameCreateHandler::CmdGameCreateHandler(){
     m_vInputs.push_back(CmdInputDef("organizators").string_().required().description("Organizators"));
 }
 
-// ---------------------------------------------------------------------
-
-std::string CmdGameCreateHandler::cmd(){
-    return "game_create";
-}
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdGameCreateHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdGameCreateHandler::inputs(){
-    return m_vInputs;
-}
-
-std::string CmdGameCreateHandler::description(){
-    return "Create the game";
-}
 
 // ---------------------------------------------------------------------
 
@@ -158,7 +139,8 @@ void CmdGameCreateHandler::handle(ModelRequest *pRequest){
  * Delete Game
 **********************************************/
 
-CmdGameDeleteHandler::CmdGameDeleteHandler(){
+CmdGameDeleteHandler::CmdGameDeleteHandler()
+    : CmdHandlerBase("game_delete", "Remove game and all quests"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -167,29 +149,6 @@ CmdGameDeleteHandler::CmdGameDeleteHandler(){
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
     m_vInputs.push_back(CmdInputDef("admin_password").string_().required().description("Admin Password"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdGameDeleteHandler::cmd(){
-    return "game_delete";
-}
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdGameDeleteHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdGameDeleteHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdGameDeleteHandler::description(){
-    return "Remove game and all quests";
 }
 
 // ---------------------------------------------------------------------
@@ -323,8 +282,8 @@ void CmdGameDeleteHandler::handle(ModelRequest *pRequest){
 **********************************************/
 
 
-CmdGameExportHandler::CmdGameExportHandler(){
-    TAG = "CmdGameExportHandler";
+CmdGameExportHandler::CmdGameExportHandler()
+    : CmdHandlerBase("game_export", "Export the game") {
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -332,30 +291,6 @@ CmdGameExportHandler::CmdGameExportHandler(){
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdGameExportHandler::cmd(){
-    return "game_export";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdGameExportHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdGameExportHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdGameExportHandler::description(){
-    return "Export the game";
 }
 
 // ---------------------------------------------------------------------
@@ -425,7 +360,7 @@ void CmdGameExportHandler::handle(ModelRequest *pRequest){
             export_zipfile.write(baLogo);
             export_zipfile.close();
         }else{
-            Log::warn(TAG, "Logo not found " + sGameLogoFilename);
+            Log::warn(TAG, QString("Logo not found " + sGameLogoFilename).toStdString());
         }
     }
 
@@ -463,7 +398,8 @@ void CmdGameExportHandler::handle(ModelRequest *pRequest){
 **********************************************/
 
 
-CmdGameImportHandler::CmdGameImportHandler(){
+CmdGameImportHandler::CmdGameImportHandler()
+    : CmdHandlerBase("game_import", "Import game") {
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -471,30 +407,6 @@ CmdGameImportHandler::CmdGameImportHandler(){
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdGameImportHandler::cmd(){
-    return "game_import";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdGameImportHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdGameImportHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdGameImportHandler::description(){
-    return "Import game";
 }
 
 // ---------------------------------------------------------------------
@@ -516,7 +428,8 @@ void CmdGameImportHandler::handle(ModelRequest *pRequest){
 **********************************************/
 
 
-CmdGameInfoHandler::CmdGameInfoHandler(){
+CmdGameInfoHandler::CmdGameInfoHandler()
+    : CmdHandlerBase("game_info", "Return game info"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -524,30 +437,6 @@ CmdGameInfoHandler::CmdGameInfoHandler(){
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdGameInfoHandler::cmd(){
-    return "game_info";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdGameInfoHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdGameInfoHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdGameInfoHandler::description(){
-    return "Return game info";
 }
 
 // ---------------------------------------------------------------------
@@ -597,8 +486,8 @@ void CmdGameInfoHandler::handle(ModelRequest *pRequest){
  * Update Game
 **********************************************/
 
-
-CmdGameUpdateHandler::CmdGameUpdateHandler(){
+CmdGameUpdateHandler::CmdGameUpdateHandler()
+    : CmdHandlerBase("game_update", "Update game info"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -615,30 +504,6 @@ CmdGameUpdateHandler::CmdGameUpdateHandler(){
     m_vInputs.push_back(CmdInputDef("date_stop").string_().required().description("Date stop"));
     m_vInputs.push_back(CmdInputDef("date_restart").string_().required().description("Date restart"));
     m_vInputs.push_back(CmdInputDef("organizators").string_().required().description("Organizators"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdGameUpdateHandler::cmd(){
-    return "game_update";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdGameUpdateHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdGameUpdateHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdGameUpdateHandler::description(){
-    return "Create the quest";
 }
 
 // ---------------------------------------------------------------------
@@ -829,7 +694,8 @@ void CmdGameUpdateHandler::handle(ModelRequest *pRequest){
 **********************************************/
 
 
-CmdGameUpdateLogoHandler::CmdGameUpdateLogoHandler(){
+CmdGameUpdateLogoHandler::CmdGameUpdateLogoHandler()
+    : CmdHandlerBase("game_update_logo", "Update game logo"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -838,30 +704,6 @@ CmdGameUpdateLogoHandler::CmdGameUpdateLogoHandler(){
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("gameid").integer_().required().description("GameID"));
     m_vInputs.push_back(CmdInputDef("image_png_base64").string_().required().description("Image PNG in Base64"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdGameUpdateLogoHandler::cmd(){
-    return "game_update_logo";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdGameUpdateLogoHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdGameUpdateLogoHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdGameUpdateLogoHandler::description(){
-    return "Update game logo";
 }
 
 // ---------------------------------------------------------------------
@@ -922,7 +764,8 @@ void CmdGameUpdateLogoHandler::handle(ModelRequest *pRequest){
 **********************************************/
 
 
-CmdGamesHandler::CmdGamesHandler(){
+CmdGamesHandler::CmdGamesHandler()
+    : CmdHandlerBase("games", "Method returned list of games"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -931,30 +774,6 @@ CmdGamesHandler::CmdGamesHandler(){
     // validation and description input fields
     // m_vInputs.push_back(CmdInputDef("filter_text").string_().optional().description("Filter by user email or nick"));
     // m_vInputs.push_back(CmdInputDef("filter_role").string_().optional().description("Filter by user role"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdGamesHandler::cmd(){
-    return "games";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdGamesHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdGamesHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdGamesHandler::description(){
-    return "Method returned list of games";
 }
 
 // ---------------------------------------------------------------------

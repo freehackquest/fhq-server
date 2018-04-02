@@ -1,29 +1,17 @@
 #ifndef CMD_HADNLERS_GAMES_H
 #define CMD_HADNLERS_GAMES_H
 
-#include <icmdhandler.h>
-#include <log.h>
-#include <iserver.h>
-#include <cmd_handlers.h>
+#include <cmd_handler_base.h>
 
 /*********************************************
  * Create Game
 **********************************************/
 
-class CmdGameCreateHandler : public ICmdHandler {
+class CmdGameCreateHandler : public CmdHandlerBase {
 
     public:
         CmdGameCreateHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdGameCreateHandler)
@@ -32,20 +20,11 @@ REGISTRY_CMD(CmdGameCreateHandler)
  * Delete Game
 **********************************************/
 
-class CmdGameDeleteHandler : public ICmdHandler {
+class CmdGameDeleteHandler : public CmdHandlerBase {
 
     public:
         CmdGameDeleteHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdGameDeleteHandler)
@@ -54,19 +33,10 @@ REGISTRY_CMD(CmdGameDeleteHandler)
  * Export Game
 **********************************************/
 
-class CmdGameExportHandler : public ICmdHandler {
+class CmdGameExportHandler : public CmdHandlerBase {
     public:
         CmdGameExportHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdGameExportHandler)
@@ -75,43 +45,24 @@ REGISTRY_CMD(CmdGameExportHandler)
  * Import Game
 **********************************************/
 
-class CmdGameImportHandler : public ICmdHandler {
+class CmdGameImportHandler : public CmdHandlerBase {
 
     public:
         CmdGameImportHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdGameImportHandler)
-
 
 /*********************************************
  * Info Game
 **********************************************/
 
-class CmdGameInfoHandler : public ICmdHandler {
+class CmdGameInfoHandler : public CmdHandlerBase {
 
     public:
         CmdGameInfoHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdGameInfoHandler)
@@ -120,43 +71,24 @@ REGISTRY_CMD(CmdGameInfoHandler)
  * Update Game
 **********************************************/
 
-class CmdGameUpdateHandler : public ICmdHandler {
+class CmdGameUpdateHandler : public CmdHandlerBase {
 
     public:
         CmdGameUpdateHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdGameUpdateHandler)
-
 
 /*********************************************
  * Update Logo Game
 **********************************************/
 
-class CmdGameUpdateLogoHandler : public ICmdHandler {
+class CmdGameUpdateLogoHandler : public CmdHandlerBase {
 
     public:
         CmdGameUpdateLogoHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdGameUpdateLogoHandler)
@@ -165,20 +97,11 @@ REGISTRY_CMD(CmdGameUpdateLogoHandler)
  * List of Games
 **********************************************/
 
-class CmdGamesHandler : public ICmdHandler {
+class CmdGamesHandler : public CmdHandlerBase {
 
     public:
         CmdGamesHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdGamesHandler)
