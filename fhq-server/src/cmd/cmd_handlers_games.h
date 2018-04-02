@@ -7,103 +7,103 @@
  * Create Game
 **********************************************/
 
-class CmdGameCreateHandler : public CmdHandlerBase {
+class CmdHandlerGameCreate : public CmdHandlerBase {
 
     public:
-        CmdGameCreateHandler();
+        CmdHandlerGameCreate();
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdGameCreateHandler)
+REGISTRY_CMD(CmdHandlerGameCreate)
 
 /*********************************************
  * Delete Game
 **********************************************/
 
-class CmdGameDeleteHandler : public CmdHandlerBase {
+class CmdHandlerGameDelete : public CmdHandlerBase {
 
     public:
-        CmdGameDeleteHandler();
+        CmdHandlerGameDelete();
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdGameDeleteHandler)
+REGISTRY_CMD(CmdHandlerGameDelete)
 
 /*********************************************
  * Export Game
 **********************************************/
 
-class CmdGameExportHandler : public CmdHandlerBase {
+class CmdHandlerGameExport : public CmdHandlerBase {
     public:
-        CmdGameExportHandler();
+        CmdHandlerGameExport();
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdGameExportHandler)
+REGISTRY_CMD(CmdHandlerGameExport)
 
 /*********************************************
  * Import Game
 **********************************************/
 
-class CmdGameImportHandler : public CmdHandlerBase {
+class CmdHandlerGameImport : public CmdHandlerBase {
 
     public:
-        CmdGameImportHandler();
+        CmdHandlerGameImport();
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdGameImportHandler)
+REGISTRY_CMD(CmdHandlerGameImport)
 
 /*********************************************
  * Info Game
 **********************************************/
 
-class CmdGameInfoHandler : public CmdHandlerBase {
+class CmdHandlerGameInfo : public CmdHandlerBase {
 
     public:
-        CmdGameInfoHandler();
+        CmdHandlerGameInfo();
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdGameInfoHandler)
+REGISTRY_CMD(CmdHandlerGameInfo)
 
 /*********************************************
  * Update Game
 **********************************************/
 
-class CmdGameUpdateHandler : public CmdHandlerBase {
+class CmdHandlerGameUpdate : public CmdHandlerBase {
 
     public:
-        CmdGameUpdateHandler();
+        CmdHandlerGameUpdate();
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdGameUpdateHandler)
+REGISTRY_CMD(CmdHandlerGameUpdate)
 
 /*********************************************
  * Update Logo Game
 **********************************************/
 
-class CmdGameUpdateLogoHandler : public CmdHandlerBase {
+class CmdHandlerGameUpdateLogo : public CmdHandlerBase {
 
     public:
-        CmdGameUpdateLogoHandler();
+        CmdHandlerGameUpdateLogo();
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdGameUpdateLogoHandler)
+REGISTRY_CMD(CmdHandlerGameUpdateLogo)
 
 /*********************************************
  * List of Games
 **********************************************/
 
-class CmdGamesHandler : public CmdHandlerBase {
+class CmdHandlerGames : public CmdHandlerBase {
 
     public:
-        CmdGamesHandler();
+        CmdHandlerGames();
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdGamesHandler)
+REGISTRY_CMD(CmdHandlerGames)
 
 #endif // CMD_HADNLERS_GAMES_H

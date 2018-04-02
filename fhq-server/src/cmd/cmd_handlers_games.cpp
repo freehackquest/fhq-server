@@ -19,7 +19,7 @@
 **********************************************/
 
 
-CmdGameCreateHandler::CmdGameCreateHandler()
+CmdHandlerGameCreate::CmdHandlerGameCreate()
    : CmdHandlerBase("game_create", "Create the game"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
@@ -42,9 +42,9 @@ CmdGameCreateHandler::CmdGameCreateHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdGameCreateHandler::handle(ModelRequest *pRequest){
+void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pRequest->server()->database());
 
@@ -128,7 +128,7 @@ void CmdGameCreateHandler::handle(ModelRequest *pRequest){
     }
 
     int rowid = query.lastInsertId().toInt();
-    jsonResponse["questid"] = QJsonValue(rowid);
+    jsonResponse["questid"] = rowid;
 
     RunTasks::AddPublicEvents(pRequest->server(), "games", "New game #" + QString::number(rowid) + " " + sName);
 
@@ -139,7 +139,7 @@ void CmdGameCreateHandler::handle(ModelRequest *pRequest){
  * Delete Game
 **********************************************/
 
-CmdGameDeleteHandler::CmdGameDeleteHandler()
+CmdHandlerGameDelete::CmdHandlerGameDelete()
     : CmdHandlerBase("game_delete", "Remove game and all quests"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
@@ -153,9 +153,9 @@ CmdGameDeleteHandler::CmdGameDeleteHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdGameDeleteHandler::handle(ModelRequest *pRequest){
+void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QString sUuid = jsonRequest["uuid"].toString().trimmed();
     QString sAdminPassword = jsonRequest["admin_password"].toString();
@@ -282,7 +282,7 @@ void CmdGameDeleteHandler::handle(ModelRequest *pRequest){
 **********************************************/
 
 
-CmdGameExportHandler::CmdGameExportHandler()
+CmdHandlerGameExport::CmdHandlerGameExport()
     : CmdHandlerBase("game_export", "Export the game") {
 
     m_modelCommandAccess.setAccessUnauthorized(false);
@@ -295,9 +295,9 @@ CmdGameExportHandler::CmdGameExportHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdGameExportHandler::handle(ModelRequest *pRequest){
+void CmdHandlerGameExport::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QString sUuid = jsonRequest["uuid"].toString();
     QSqlDatabase db = *(pRequest->server()->database());
@@ -311,21 +311,21 @@ void CmdGameExportHandler::handle(ModelRequest *pRequest){
         return;
     }
 
-    QJsonObject jsonGame;
+    nlohmann::json jsonGame;
     int nGameID = 0;
     if (query.next()) {
         QSqlRecord record = query.record();
         nGameID  = record.value("id").toInt();
-        jsonGame["uuid"] = record.value("uuid").toString();
-        jsonGame["title"] = record.value("title").toString();
-        jsonGame["type_game"] = record.value("type_game").toString();
-        jsonGame["date_start"] = record.value("date_start").toString();
-        jsonGame["date_stop"] = record.value("date_stop").toString();
-        jsonGame["date_restart"] = record.value("date_restart").toString();
-        jsonGame["description"] = record.value("description").toString();
-        jsonGame["state"] = record.value("state").toString();
-        jsonGame["form"] = record.value("form").toString();
-        jsonGame["organizators"] = record.value("organizators").toString();
+        jsonGame["uuid"] = record.value("uuid").toString().toStdString();
+        jsonGame["title"] = record.value("title").toString().toStdString();
+        jsonGame["type_game"] = record.value("type_game").toString().toStdString();
+        jsonGame["date_start"] = record.value("date_start").toString().toStdString();
+        jsonGame["date_stop"] = record.value("date_stop").toString().toStdString();
+        jsonGame["date_restart"] = record.value("date_restart").toString().toStdString();
+        jsonGame["description"] = record.value("description").toString().toStdString();
+        jsonGame["state"] = record.value("state").toString().toStdString();
+        jsonGame["form"] = record.value("form").toString().toStdString();
+        jsonGame["organizators"] = record.value("organizators").toString().toStdString();
         jsonGame["maxscore"] = record.value("maxscore").toInt();
     } else {
         pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
@@ -342,7 +342,7 @@ void CmdGameExportHandler::handle(ModelRequest *pRequest){
 
     QString tmpDir = QDir::tempPath();
     quint64 ts = QDateTime::currentMSecsSinceEpoch();
-    QString tmpZipFile = tmpDir + "/freehackquest-backend-game_" + QString::number(ts) + ".zip";
+    QString tmpZipFile = tmpDir + "/fhq-server-game_" + QString::number(ts) + ".zip";
 
     // prepare zip archive
     QuaZip zip(tmpZipFile);
@@ -367,9 +367,8 @@ void CmdGameExportHandler::handle(ModelRequest *pRequest){
     // pack json file
     {
         export_zipfile.open(QIODevice::WriteOnly, QuaZipNewInfo(sUuid.toLower() + ".json"));
-        QJsonDocument doc(jsonGame);
-        QString message = doc.toJson(QJsonDocument::Compact);
-        export_zipfile.write(message.toUtf8());
+        std::string message = jsonGame.dump();
+        export_zipfile.write(QString(message.c_str()).toUtf8());
         export_zipfile.close();
     }
     zip.close();
@@ -382,9 +381,9 @@ void CmdGameExportHandler::handle(ModelRequest *pRequest){
             return;
         }
         QByteArray baZip = fileZip.readAll();
-        QJsonObject jsonData;
-        jsonData["zipfile_base64"] = QString(baZip.toBase64());
-        jsonData["zipfile_name"] = "game_" + sUuid.toLower() + ".zip";
+        nlohmann::json jsonData;
+        jsonData["zipfile_base64"] = QString(baZip.toBase64()).toStdString();
+        jsonData["zipfile_name"] = QString("game_" + sUuid.toLower() + ".zip").toStdString();
         jsonResponse["data"] = jsonData;
         fileZip.close();
         fileZip.remove();
@@ -398,7 +397,7 @@ void CmdGameExportHandler::handle(ModelRequest *pRequest){
 **********************************************/
 
 
-CmdGameImportHandler::CmdGameImportHandler()
+CmdHandlerGameImport::CmdHandlerGameImport()
     : CmdHandlerBase("game_import", "Import game") {
 
     m_modelCommandAccess.setAccessUnauthorized(false);
@@ -411,15 +410,15 @@ CmdGameImportHandler::CmdGameImportHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdGameImportHandler::handle(ModelRequest *pRequest){
+void CmdHandlerGameImport::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
     return;
 
     // TODO
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    // pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 
@@ -428,7 +427,7 @@ void CmdGameImportHandler::handle(ModelRequest *pRequest){
 **********************************************/
 
 
-CmdGameInfoHandler::CmdGameInfoHandler()
+CmdHandlerGameInfo::CmdHandlerGameInfo()
     : CmdHandlerBase("game_info", "Return game info"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
@@ -441,11 +440,10 @@ CmdGameInfoHandler::CmdGameInfoHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdGameInfoHandler::handle(ModelRequest *pRequest){
+void CmdHandlerGameInfo::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
-
-    QJsonObject data;
+    nlohmann::json jsonResponse;
+    nlohmann::json data;
 
     QString sUuid = jsonRequest["uuid"].toString().trimmed();
 
@@ -462,16 +460,16 @@ void CmdGameInfoHandler::handle(ModelRequest *pRequest){
 
     if (query.next()) {
         QSqlRecord record = query.record();
-        data["uuid"] = record.value("uuid").toString();
-        data["title"] = record.value("title").toString();
-        data["type_game"] = record.value("type_game").toString();
-        data["date_start"] = record.value("date_start").toString();
-        data["date_stop"] = record.value("date_stop").toString();
-        data["date_restart"] = record.value("date_restart").toString();
-        data["description"] = record.value("description").toString();
-        data["state"] = record.value("state").toString();
-        data["form"] = record.value("form").toString();
-        data["organizators"] = record.value("organizators").toString();
+        data["uuid"] = record.value("uuid").toString().toStdString();
+        data["title"] = record.value("title").toString().toStdString();
+        data["type_game"] = record.value("type_game").toString().toStdString();
+        data["date_start"] = record.value("date_start").toString().toStdString();
+        data["date_stop"] = record.value("date_stop").toString().toStdString();
+        data["date_restart"] = record.value("date_restart").toString().toStdString();
+        data["description"] = record.value("description").toString().toStdString();
+        data["state"] = record.value("state").toString().toStdString();
+        data["form"] = record.value("form").toString().toStdString();
+        data["organizators"] = record.value("organizators").toString().toStdString();
         data["maxscore"] = record.value("maxscore").toInt();
     } else {
         pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
@@ -486,7 +484,7 @@ void CmdGameInfoHandler::handle(ModelRequest *pRequest){
  * Update Game
 **********************************************/
 
-CmdGameUpdateHandler::CmdGameUpdateHandler()
+CmdHandlerGameUpdate::CmdHandlerGameUpdate()
     : CmdHandlerBase("game_update", "Update game info"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
@@ -508,9 +506,9 @@ CmdGameUpdateHandler::CmdGameUpdateHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdGameUpdateHandler::handle(ModelRequest *pRequest){
+void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     // QJsonObject data;
 
@@ -687,14 +685,12 @@ void CmdGameUpdateHandler::handle(ModelRequest *pRequest){
 }
 
 
-
-
 /*********************************************
  * Update Logo Game
 **********************************************/
 
 
-CmdGameUpdateLogoHandler::CmdGameUpdateLogoHandler()
+CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
     : CmdHandlerBase("game_update_logo", "Update game logo"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
@@ -708,9 +704,9 @@ CmdGameUpdateLogoHandler::CmdGameUpdateLogoHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdGameUpdateLogoHandler::handle(ModelRequest *pRequest){
+void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
 
     int nGameID = jsonRequest["gameid"].toInt();
@@ -764,7 +760,7 @@ void CmdGameUpdateLogoHandler::handle(ModelRequest *pRequest){
 **********************************************/
 
 
-CmdGamesHandler::CmdGamesHandler()
+CmdHandlerGames::CmdHandlerGames()
     : CmdHandlerBase("games", "Method returned list of games"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
@@ -778,16 +774,16 @@ CmdGamesHandler::CmdGamesHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdGamesHandler::handle(ModelRequest *pRequest){
+void CmdHandlerGames::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
-
+    nlohmann::json jsonResponse;
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
     QString base_url = pSettings->getSettString("server_folder_games_url");
 
-    QJsonArray games;
+    auto jsonGames = nlohmann::json::array();
+
     QSqlDatabase db = *(pRequest->server()->database());
 
     QSqlQuery query(db);
@@ -800,25 +796,25 @@ void CmdGamesHandler::handle(ModelRequest *pRequest){
 
     while (query.next()) {
         QSqlRecord record = query.record();
-        QJsonObject game;
+        nlohmann::json jsonGame;
         int nGameID = record.value("id").toInt();
-        game["id"] = nGameID;
-        game["uuid"] = record.value("uuid").toString();
-        game["title"] = record.value("title").toString();
-        game["type_game"] = record.value("type_game").toString();
-        game["date_start"] = record.value("date_start").toString();
-        game["date_stop"] = record.value("date_stop").toString();
-        game["date_restart"] = record.value("date_restart").toString();
-        game["description"] = record.value("description").toString();
-        game["state"] = record.value("state").toString();
-        game["form"] = record.value("form").toString();
-        game["logo"] = base_url + QString::number(nGameID) + ".png";
-        game["organizators"] = record.value("organizators").toString();
-        game["maxscore"] = record.value("maxscore").toInt();
-        games.push_back(game);
+        jsonGame["id"] = nGameID;
+        jsonGame["uuid"] = record.value("uuid").toString().toStdString();
+        jsonGame["title"] = record.value("title").toString().toStdString();
+        jsonGame["type_game"] = record.value("type_game").toString().toStdString();
+        jsonGame["date_start"] = record.value("date_start").toString().toStdString();
+        jsonGame["date_stop"] = record.value("date_stop").toString().toStdString();
+        jsonGame["date_restart"] = record.value("date_restart").toString().toStdString();
+        jsonGame["description"] = record.value("description").toString().toStdString();
+        jsonGame["state"] = record.value("state").toString().toStdString();
+        jsonGame["form"] = record.value("form").toString().toStdString();
+        jsonGame["logo"] = QString(base_url + QString::number(nGameID) + ".png").toStdString();
+        jsonGame["organizators"] = record.value("organizators").toString().toStdString();
+        jsonGame["maxscore"] = record.value("maxscore").toInt();
+        jsonGames.push_back(jsonGame);
     }
 
-    jsonResponse["data"] = games;
+    jsonResponse["data"] = jsonGames;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
