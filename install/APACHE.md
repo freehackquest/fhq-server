@@ -6,6 +6,7 @@
 
 ## Configure proxing websockets
 
+If you want to avoid problems with blocked websocket ports from users (1234 - ws, 4613 - wss)
 
 ```
 $ sudo a2enmod proxy
@@ -17,7 +18,6 @@ $ sudo a2enmod headers
 
 ## Configure proxy websocket (for http)
 
-*if you get reposrts with problems with port from users*
 
 ```
 <VirtualHost *:80>
