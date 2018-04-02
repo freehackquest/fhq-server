@@ -123,6 +123,7 @@ void Log::add(const std::string &sType, const std::string &sTag, const std::stri
 	QString sThreadID = "0x" + QString::number((long long)QThread::currentThreadId(), 16);
     std::string sLogMessage = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz").toStdString() + ", " + sThreadID.toStdString() + " [" + sType + "] " + sTag + ": " + sMessage;
     std::cout << sLogMessage << "\r\n";
+
     g_LAST_LOG_MESSAGES.push_front(sLogMessage);
     while(g_LAST_LOG_MESSAGES.size() > 50){
         g_LAST_LOG_MESSAGES.pop_back();

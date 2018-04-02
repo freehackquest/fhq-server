@@ -7,6 +7,8 @@
 #include <iostream>
 #include <mutex>
 #include <json.hpp>
+#include <deque>
+
 
 class Log {
 	public:
@@ -24,8 +26,10 @@ class Log {
         static void add(const std::string &sType, const std::string &sTag, const std::string &sMessage);
 };
 
+// TODO redesign to extern
+
 static std::mutex g_LOG_MUTEX;
-static std::vector<std::string> g_LAST_LOG_MESSAGES;
+static std::deque<std::string> g_LAST_LOG_MESSAGES;
 static std::string g_LOG_DIR_PATH;
 
 #endif // SERVER_LOG_H
