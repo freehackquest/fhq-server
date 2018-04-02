@@ -274,30 +274,31 @@ QString EmploySettings::getSettType(QString sName){
 
 // ---------------------------------------------------------------------
 
-QJsonArray EmploySettings::toJsonArray(){
-    QJsonArray res;
+nlohmann::json EmploySettings::toJson(){
+    auto jsonSettings = nlohmann::json::array();
+
     foreach( QString sName, m_mapSettings.keys()){
         ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
 
-        QJsonObject sett;
-        sett["name"] = pServerSettHelper->name();
+        nlohmann::json jsonSett;
+        jsonSett["name"] = pServerSettHelper->name().toStdString();
         if(pServerSettHelper->isBoolean()){
-            sett["value"] = pServerSettHelper->valueAsBoolean();
+            jsonSett["value"] = pServerSettHelper->valueAsBoolean();
         }else if(pServerSettHelper->isString()){
-            sett["value"] = pServerSettHelper->valueAsString();
+            jsonSett["value"] = pServerSettHelper->valueAsString().toStdString();
         }else if(pServerSettHelper->isInteger()){
-            sett["value"] = pServerSettHelper->valueAsInteger();
+            jsonSett["value"] = pServerSettHelper->valueAsInteger();
         }else if(pServerSettHelper->isPassword()){
-            sett["value"] = "******";
+            jsonSett["value"] = "******";
         }else{
-            sett["value"] = pServerSettHelper->valueAsString();
+            jsonSett["value"] = pServerSettHelper->valueAsString().toStdString();
         }
 
-        sett["group"] = pServerSettHelper->group();
-        sett["type"] = pServerSettHelper->type();
-        res.append(sett);
+        jsonSett["group"] = pServerSettHelper->group().toStdString();
+        jsonSett["type"] = pServerSettHelper->type().toStdString();
+        jsonSettings.push_back(jsonSett);
     }
-    return res;
+    return jsonSettings;
 }
 
 // ---------------------------------------------------------------------

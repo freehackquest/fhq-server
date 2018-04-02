@@ -25,7 +25,7 @@ public:
     bool hasSett(QString sName);
     QString getSettType(QString sName);
 
-    QJsonArray toJsonArray();
+    nlohmann::json toJson();
 
 private:
 
