@@ -1,21 +1,20 @@
 #ifndef CMD_INPUT_DEF_H
 #define CMD_INPUT_DEF_H
 
-#include <QString>
-#include <QJsonObject>
+#include <json.hpp>
 #include <QStringList>
 
 /*! 
  * Helper api methods description for input params in handlers
  * */
 
-static const QString CMD_INPUT_DEF_TYPE_STRING = "string";
-static const QString CMD_INPUT_DEF_TYPE_BOOL = "boolean";
-static const QString CMD_INPUT_DEF_TYPE_ENUM = "enum";
-static const QString CMD_INPUT_DEF_TYPE_UUID = "uuid";
-static const QString CMD_INPUT_DEF_TYPE_INTEGER = "integer";
-static const QString CMD_INPUT_DEF_TYPE_EMAIL = "email";
-static const QString CMD_INPUT_DEF_TYPE_ANY = "any";
+static const std::string CMD_INPUT_DEF_TYPE_STRING = "string";
+static const std::string CMD_INPUT_DEF_TYPE_BOOL = "boolean";
+static const std::string CMD_INPUT_DEF_TYPE_ENUM = "enum";
+static const std::string CMD_INPUT_DEF_TYPE_UUID = "uuid";
+static const std::string CMD_INPUT_DEF_TYPE_INTEGER = "integer";
+static const std::string CMD_INPUT_DEF_TYPE_EMAIL = "email";
+static const std::string CMD_INPUT_DEF_TYPE_ANY = "any";
 	
 class CmdInputDef {
 	public:
@@ -33,7 +32,7 @@ class CmdInputDef {
         CmdInputDef & description(const std::string &sDescription);
 		CmdInputDef & minval(int minval);
 		CmdInputDef & maxval(int maxval);
-		QJsonObject toJson();
+        nlohmann::json toJson();
 		
         std::string getName();
 		bool isRequired();
@@ -52,9 +51,9 @@ class CmdInputDef {
 		int getMaxVal();
 		
 	private:
-		QString m_sType;
+        std::string m_sType;
         std::string m_sName;
-		QString m_sRestrict;
+        std::string m_sRestrict;
         std::string m_sDescription;
 		QStringList m_lstEnums;
 		int m_nMinVal;

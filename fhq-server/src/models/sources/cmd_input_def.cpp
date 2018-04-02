@@ -102,12 +102,12 @@ CmdInputDef & CmdInputDef::maxval(int maxval){
 
 // ---------------------------------------------------------------------
 
-QJsonObject CmdInputDef::toJson(){
-	QJsonObject obj;
-    obj["name"] = QString(m_sName.c_str());
-	obj["type"] = m_sType;
-	obj["restrict"] = m_sRestrict;
-    obj["description"] = QString(m_sDescription.c_str());
+nlohmann::json CmdInputDef::toJson(){
+    nlohmann::json obj;
+    obj["name"] = m_sName;
+    obj["type"] = m_sType;
+    obj["restrict"] = m_sRestrict;
+    obj["description"] = m_sDescription;
 	// TODO enum
 	// TODO min max val
 	return obj;
