@@ -30,8 +30,8 @@ case "$1" in
 
   configure)
     # Set up our config for lighttpd
-    update-rc.d -f freehackquest-backend remove
-	update-rc.d freehackquest-backend defaults
+    update-rc.d -f fhq-server remove
+	update-rc.d fhq-server defaults
   ;;
 
   abort-upgrade|abort-remove|abort-deconfigure)
