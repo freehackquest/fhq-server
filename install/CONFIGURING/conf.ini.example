@@ -1,9 +1,9 @@
 [DATABASE]
 usemysql=yes
 host=localhost
-name=freehackquest
-user=freehackquest_u
-password=freehackquest_password_database
+name=fhq
+user=fhq_u
+password=fhq_pwd_db
 
 [SERVER]
 port = 1234;

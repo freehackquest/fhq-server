@@ -1,9 +1,9 @@
 #!/bin/bash
 
-COUNT=$(ps -aux | grep freehackquest-backend | wc -l)
+COUNT=$(ps -aux | grep fhq-server | wc -l)
 
 if [ $COUNT -ne 2 ]; then
 	echo "Need restart backend"
-	service freehackquest-backend stop
-	service freehackquest-backend restart
+	service fhq-server stop
+	service fhq-server restart
 fi
