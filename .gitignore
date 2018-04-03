@@ -58,3 +58,4 @@ fhq-server/fhq-server
 fhq-server/debian/files
 fhq-server/fhq-server.pro.user
 fhq-server/tmp/*
+build-fhq-server-Desktop-Debug/
