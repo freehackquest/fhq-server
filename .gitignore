@@ -59,3 +59,4 @@ fhq-server/debian/files
 fhq-server/fhq-server.pro.user
 fhq-server/tmp/*
 tmpdeb
+install/DOXYGEN/html/*
