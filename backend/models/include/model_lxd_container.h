@@ -14,6 +14,7 @@ class LXDContainer {
         std::string get_status();
         std::string get_IPv4();
         std::string get_error();
+        std::string set_prefix();
 
         nlohmann::json state();
         bool create(std::string name);
@@ -32,6 +33,7 @@ class LXDContainer {
         std::string status;
         std::string IPv4;
         std::string error;
+        std::string prefix;
 };
 
 #endif // MODEL_LXD_CONTAINER

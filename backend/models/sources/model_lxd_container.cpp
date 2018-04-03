@@ -1,4 +1,5 @@
 #include <model_lxd_container.h>
+#include <employ_orchestra.h>
 
 LXDContainer::LXDContainer(QJsonObject jsonData){
     if(jsonData.contains("name")){
@@ -12,6 +13,7 @@ LXDContainer::LXDContainer(QJsonObject jsonData){
     std::string lxd_server_ip = "https://" +  pSettings->getSettString("lxd_server_ip").toStdString();
     std::string lxd_server_port = pSettings->getSettString("lxd_server_port").toStdString();
     lxd_address = "https://" + lxd_server_ip + ":" + lxd_server_port;
+    prefix = "fhq_";
 }
 
 
@@ -80,40 +82,20 @@ nlohmann::json LXDContainer::state(){
 
 
 bool LXDContainer::create(std::string name){
-    CURLcode ret;
-    CURL *hnd;
-    std::string readBuffer;
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    std::string address = "/1.0/containers";
+    std::string setings = "{\"name\": \"" + prefix + name + "\", \"source\": {\"type\": \"image\", \"protocol\": \"simplestreams\", \"server\": \"https://cloud-images.ubuntu.com/daily\", \"alias\": \"16.04\"}}";
+    nlohmann::json res;
+    std::string err;
 
-    std::string setings = "{\"name\": \"" + name + "\", \"source\": {\"type\": \"image\", \"protocol\": \"simplestreams\", \"server\": \"https://cloud-images.ubuntu.com/daily\", \"alias\": \"16.04\"}}";
-    hnd = curl_easy_init();
-    curl_easy_setopt(hnd, CURLOPT_URL, "https://127.0.0.1:8443/1.0/containers");
-    curl_easy_setopt(hnd, CURLOPT_NOPROGRESS, 1L);
-    curl_easy_setopt(hnd, CURLOPT_POSTFIELDS, setings.c_str());
-    curl_easy_setopt(hnd, CURLOPT_POSTFIELDSIZE_LARGE, (curl_off_t)setings.size());
-    curl_easy_setopt(hnd, CURLOPT_USERAGENT, "curl/7.47.0");
-    curl_easy_setopt(hnd, CURLOPT_MAXREDIRS, 50L);
-    curl_easy_setopt(hnd, CURLOPT_SSLCERT, path_dir_lxc_ssl + "/client.crt");
-    curl_easy_setopt(hnd, CURLOPT_SSLKEY, path_dir_lxc_ssl + "/client.key");
-    curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYPEER, 0L);
-    curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYHOST, 0L);
-    curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
-    //curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
-    //Saving response
-    curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, write_to_string);
-    curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &response);
-    curl_easy_setopt(hnd, CURLOPT_ERRORBUFFER, errorBuffer);
-    ret = curl_easy_perform(hnd);
-
-    if(ret != CURLE_OK) {
-        fprintf(stderr, "Failed to create container [%s]\n", errorBuffer);
-        error = errorBuffer;
+    if (pOrchestra->send_post_request(address, setings, res, err)){
+        this->error = err;
         return false;
     }
 
-    curl_easy_cleanup(hnd);
-    hnd = NULL;
 
+    //TO DO
+    //Check response
     return true;
 
 }
