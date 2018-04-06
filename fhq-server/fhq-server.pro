@@ -15,7 +15,7 @@ OBJECTS_DIR = tmp/
 MOC_DIR = tmp/
 RCC_DIR = tmp/
 CONFIG += c++11 c++14
-LIBS = -lz
+LIBS = -lz -lcurl
 RESOURCES = src/fhq-server.qrc
 # INCLUDEPATH += $$[QT_INSTALL_HEADERS]/QtZlib
 
