@@ -12,7 +12,7 @@
 # Default-Stop:
 ### END INIT INFO
 
-DAEMON_PATH="/usr/bin/freehackquest-backend"
+DAEMON_PATH="/usr/bin/fhq-server"
 NAME=freehackquestd
 DESC="FreeHackQuest Server"
 

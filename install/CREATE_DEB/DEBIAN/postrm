@@ -26,7 +26,7 @@ fi
 
 case "$1" in
   purge|remove)
-    update-rc.d -f freehackquest-backend remove
+    update-rc.d -f fhq-server remove
   ;;
 
   upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)

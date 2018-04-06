@@ -1,0 +1,10 @@
+Source: fhq-server
+Section: devel
+Priority: optional
+Maintainer: Free Hack Quest <freehackquest@gmail.com>
+Package: fhq-server
+Version: 0.1.19
+Architecture: amd64
+Depends: libqt5websockets5, libqt5network5, libqt5sql5, libqt5sql5-mysql, libqt5core5a, libc6, libstdc++6, libgcc1, zlib1g, libicu52, libglib2.0-0, libpcre3
+Description: FreeHackQuest Server
+ This is an open source platform for competitions in computer security.
