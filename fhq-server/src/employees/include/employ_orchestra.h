@@ -21,6 +21,7 @@ public:
     LXDContainer find_container(std::string name);
     bool remove_container(std::string name);
     bool send_post_request(std::string address, std::string setings, nlohmann::json & response, std::string & error);
+    bool send_get_request(std::string address, nlohmann::json & response, std::string & error);
 
 
 private:
