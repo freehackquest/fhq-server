@@ -137,7 +137,7 @@ bool LXDContainer::start(){
     curl_easy_cleanup(hnd);
     hnd = NULL;
 
-    return true;;
+    return true;
 
 }
 
