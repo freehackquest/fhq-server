@@ -55,7 +55,7 @@ void EmploySettings::initSettings(IWebSocketServer *pWebSocketServer){
 
     // LXD
     QString sGroupLXD = "lxd";
-    addNewSetting(new ServerSettHelper(sGroupLXD, "path_dir_lxc_ssl", QString("/home/fhq/.config/lxc")));
+    addNewSetting(new ServerSettHelper(sGroupLXD, "path_dir_lxc_ssl", QString("~/.config/lxc")));
     addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_server_ip", QString("127.0.0.1")));
     addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_server_port", QString("8443")));
     addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_passwd", QString("freehackquest")));
