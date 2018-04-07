@@ -9,8 +9,7 @@ HEADERS += \
     $$PWD/include/model_server_config.h \
     $$PWD/include/model_command_access.h \
     $$PWD/include/model_lxd_container.h \
-    $$PWD/include/model_command_input_def.h \
-    $$PWD/include/model_command_access.h
+    $$PWD/include/model_command_input_def.h
 
 SOURCES += \
     $$PWD/sources/cmd_input_def.cpp \
@@ -19,6 +18,5 @@ SOURCES += \
     $$PWD/sources/model_server_config.cpp \
     $$PWD/sources/model_command_access.cpp \
     $$PWD/sources/model_lxd_container.cpp \
-    $$PWD/sources/model_command_input_def.cpp \
-    $$PWD/sources/model_command_access.cpp
+    $$PWD/sources/model_command_input_def.cpp
 
