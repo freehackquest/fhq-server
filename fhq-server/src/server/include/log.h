@@ -20,7 +20,10 @@ class Log {
         static void warn(QString tag, QString msg);  // depricated
         static void warn(const std::string &sTag, const std::string &sMessage);
         static void setdir(const std::string &sDirectoryPath);
-        static nlohmann::json last_logs();  // depricated
+        static nlohmann::json last_logs();
+        static void initGlobalVariables();
+        static std::string currentTime();
+        static std::string threadId();
 
 	private:
         static void add(const std::string &sType, const std::string &sTag, const std::string &sMessage);
@@ -28,8 +31,9 @@ class Log {
 
 // TODO redesign to extern
 
-static std::mutex g_LOG_MUTEX;
-static std::deque<std::string> g_LAST_LOG_MESSAGES;
+extern std::mutex *g_LOG_MUTEX;
+extern std::deque<std::string> *g_LAST_LOG_MESSAGES;
+
 static std::string g_LOG_DIR_PATH;
 
 #endif // SERVER_LOG_H

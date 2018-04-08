@@ -1,9 +1,17 @@
 #include <log.h>
 
 #include <iostream>
-#include <QDateTime>
-#include <QDir>
 #include <thread>
+#include <time.h>
+#include <stdio.h>
+#include <sys/time.h>
+#include <time.h>
+#include <math.h>
+
+// Last log messages
+std::deque<std::string> *g_LAST_LOG_MESSAGES = NULL;
+std::mutex *g_LOG_MUTEX = NULL;
+
 
 void Log::info(QString tag, QString msg){ // deprecated
     Log::add("INFO",tag.toStdString(), msg.toStdString());
@@ -104,36 +112,83 @@ void Log::setdir(const std::string &sDirectoryPath){
 
 // ---------------------------------------------------------------------
 
-nlohmann::json Log::last_logs(){
-    g_LOG_MUTEX.lock();
-    auto lastLogMessages = nlohmann::json::array();
-    int len = g_LAST_LOG_MESSAGES.size();
-    for(int i = 0; i < len; i++){
-        lastLogMessages.push_back(g_LAST_LOG_MESSAGES[i]);
+void Log::initGlobalVariables(){
+    // create deque if not created
+    if(g_LAST_LOG_MESSAGES == NULL){
+        std::cout << "Init last messages deque\n";
+        g_LAST_LOG_MESSAGES = new std::deque<std::string>();
     }
-    g_LOG_MUTEX.unlock();
+    if(g_LOG_MUTEX == NULL){
+        std::cout << "Init mutex for log\n";
+        g_LOG_MUTEX = new std::mutex();
+    }
+}
+
+// ---------------------------------------------------------------------
+
+std::string Log::currentTime(){
+    // milleseconds
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    int millisec = lrint(tv.tv_usec/1000.0); // Round to nearest millisec
+    if (millisec>=1000) { // Allow for rounding up to nearest second
+        millisec -=1000;
+        tv.tv_sec++;
+    }
+
+    // datetime
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+
+    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
+    // for more information about date/time format
+    strftime(buf, sizeof(buf), "%Y-%m-%d %X.", &tstruct);
+    return std::string(buf) + std::to_string(millisec);
+}
+
+// ---------------------------------------------------------------------
+
+std::string Log::threadId(){
+    std::thread::id this_id = std::this_thread::get_id();
+    std::stringstream stream;
+    stream << std::hex << this_id;
+    return std::string(stream.str());
+}
+
+// ---------------------------------------------------------------------
+
+nlohmann::json Log::last_logs(){
+    Log::initGlobalVariables();
+    g_LOG_MUTEX->lock();
+    auto lastLogMessages = nlohmann::json::array();
+    int len = g_LAST_LOG_MESSAGES->size();
+    for(int i = 0; i < len; i++){
+        lastLogMessages.push_back(g_LAST_LOG_MESSAGES->at(i));
+    }
+    g_LOG_MUTEX->unlock();
     return lastLogMessages;
 }
 
 // ---------------------------------------------------------------------
 
 void Log::add(const std::string &sType, const std::string &sTag, const std::string &sMessage){
-    // thread id
-    std::thread::id this_id = std::this_thread::get_id();
-    std::stringstream stream;
-    stream << std::hex << this_id;
-    std::string sThreadID( stream.str() );
+    Log::initGlobalVariables();
 
-    g_LOG_MUTEX.lock();
+    std::string sThreadID = Log::threadId();
+    std::string sCurrentTime = Log::currentTime();
+
+    g_LOG_MUTEX->lock();
      // TODO write to file
-    std::string sLogMessage = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz").toStdString() + ", 0x" + sThreadID + " [" + sType + "] " + sTag + ": " + sMessage;
+    std::string sLogMessage = sCurrentTime + ", 0x" + sThreadID + " [" + sType + "] " + sTag + ": " + sMessage;
     std::cout << sLogMessage << "\r\n";
 
-    g_LAST_LOG_MESSAGES.push_front(sLogMessage);
-    while(g_LAST_LOG_MESSAGES.size() > 50){
-        g_LAST_LOG_MESSAGES.pop_back();
+    g_LAST_LOG_MESSAGES->push_front(sLogMessage);
+    while(g_LAST_LOG_MESSAGES->size() > 50){
+        g_LAST_LOG_MESSAGES->pop_back();
 	}
-    g_LOG_MUTEX.unlock();
+    g_LOG_MUTEX->unlock();
 }
 
 // ---------------------------------------------------------------------
