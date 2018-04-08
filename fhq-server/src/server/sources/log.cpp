@@ -115,12 +115,13 @@ void Log::setdir(const std::string &sDirectoryPath){
 void Log::initGlobalVariables(){
     // create deque if not created
     if(g_LAST_LOG_MESSAGES == NULL){
-        std::cout << "Init last messages deque\n";
         g_LAST_LOG_MESSAGES = new std::deque<std::string>();
+        std::cout << Log::currentTime() + ", " + Log::threadId() + " Init last messages deque\r\n";
     }
+    // create mutex if not created
     if(g_LOG_MUTEX == NULL){
-        std::cout << "Init mutex for log\n";
         g_LOG_MUTEX = new std::mutex();
+        std::cout << Log::currentTime() + ", " + Log::threadId() + " Init mutex for log\r\n";
     }
 }
 
@@ -154,7 +155,7 @@ std::string Log::threadId(){
     std::thread::id this_id = std::this_thread::get_id();
     std::stringstream stream;
     stream << std::hex << this_id;
-    return std::string(stream.str());
+    return "0x" + std::string(stream.str());
 }
 
 // ---------------------------------------------------------------------
@@ -176,12 +177,9 @@ nlohmann::json Log::last_logs(){
 void Log::add(const std::string &sType, const std::string &sTag, const std::string &sMessage){
     Log::initGlobalVariables();
 
-    std::string sThreadID = Log::threadId();
-    std::string sCurrentTime = Log::currentTime();
-
     g_LOG_MUTEX->lock();
      // TODO write to file
-    std::string sLogMessage = sCurrentTime + ", 0x" + sThreadID + " [" + sType + "] " + sTag + ": " + sMessage;
+    std::string sLogMessage = Log::currentTime() + ", " + Log::threadId() + " [" + sType + "] " + sTag + ": " + sMessage;
     std::cout << sLogMessage << "\r\n";
 
     g_LAST_LOG_MESSAGES->push_front(sLogMessage);
