@@ -3,7 +3,7 @@
 #include <iostream>
 #include <QDateTime>
 #include <QDir>
-#include <QThread>
+#include <thread>
 
 void Log::info(QString tag, QString msg){ // deprecated
     Log::add("INFO",tag.toStdString(), msg.toStdString());
@@ -118,10 +118,15 @@ nlohmann::json Log::last_logs(){
 // ---------------------------------------------------------------------
 
 void Log::add(const std::string &sType, const std::string &sTag, const std::string &sMessage){
+    // thread id
+    std::thread::id this_id = std::this_thread::get_id();
+    std::stringstream stream;
+    stream << std::hex << this_id;
+    std::string sThreadID( stream.str() );
+
     g_LOG_MUTEX.lock();
      // TODO write to file
-	QString sThreadID = "0x" + QString::number((long long)QThread::currentThreadId(), 16);
-    std::string sLogMessage = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz").toStdString() + ", " + sThreadID.toStdString() + " [" + sType + "] " + sTag + ": " + sMessage;
+    std::string sLogMessage = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz").toStdString() + ", 0x" + sThreadID + " [" + sType + "] " + sTag + ": " + sMessage;
     std::cout << sLogMessage << "\r\n";
 
     g_LAST_LOG_MESSAGES.push_front(sLogMessage);
