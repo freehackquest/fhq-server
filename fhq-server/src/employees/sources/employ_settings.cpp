@@ -1,21 +1,25 @@
 #include <employ_settings.h>
-
-REGISTRY_EMPLOY(EmploySettings)
-
-// ---------------------------------------------------------------------
-
 #include <log.h>
-
 #include <QTextStream>
 #include <QFile>
 #include <QByteArray>
 #include <QDateTime>
 #include <QDir>
 
+REGISTRY_EMPLOY(EmploySettings)
+
 // ---------------------------------------------------------------------
 
-void EmploySettings::test(){
+EmploySettings::EmploySettings()
+    : EmployBase(EmploySettings::name(), {}){
 
+}
+
+// ---------------------------------------------------------------------
+
+bool EmploySettings::init(){
+    // TODO
+    return false;
 }
 
 // ---------------------------------------------------------------------

@@ -1,48 +1,50 @@
 #ifndef EMPLOYEES_H
 #define EMPLOYEES_H
 
-#include <iemploy.h>
 #include <log.h>
 #include <map>
+#include <string>
+#include <vector>
 
-extern std::map<std::string, IEmploy*> *g_pEmployees;
+// ---------------------------------------------------------------------
+// base employ class
 
-// RegistryEmploy
-
-template <typename T> class RegistryEmploy {
+class EmployBase {
 public:
-    RegistryEmploy() {
-        if(g_pEmployees == NULL){
-            g_pEmployees = new std::map<std::string, IEmploy*>();
-        }
-
-        std::string sEmployName = T::getEmployName();
-        std::cout << "Try register employ " << sEmployName << "\n";
-        if(g_pEmployees->count(sEmployName)){
-            Log::err("RegistryEmploy", sEmployName + " -  already registered");
-        }else{
-            IEmploy *pEmploy = new T();
-            g_pEmployees->insert(std::pair<std::string, IEmploy*>(sEmployName,pEmploy));
-        }
-    }
+    EmployBase(
+        const std::string &sName,
+        const std::vector<std::string> &vLoadAfter);
+    virtual bool init() = 0;
+private:
+    std::string TAG;
+    std::string m_sName;
+    std::vector<std::string> m_vLoadAfter;
 };
 
+// ---------------------------------------------------------------------
+// public employees
+
+extern std::map<std::string, EmployBase*> *g_pEmployees;
+
+class Employees {
+    public:
+        static void initGlobalVariables();
+        static void addEmploy(const std::string &sName, EmployBase* pEmploy);
+};
+
+// ---------------------------------------------------------------------
+// RegistryEmploy
 #define REGISTRY_EMPLOY( classname ) \
-    static RegistryEmploy<classname> registry ## classname; \
+    static classname * pRegistry ## classname = new classname(); \
 
-
+// ---------------------------------------------------------------------
 // findEmploy
 
 template <class T> T* findEmploy() {
+    Employees::initGlobalVariables();
     std::string TAG = "findEmploy";
-    /*if(g_pEmployees == NULL){
-        initEmployees();
-    }*/
-    std::string sEmployName = T::getEmployName();
-    // Log::err(TAG, "Find employ " + QString(sEmployName.c_str()));
-    // Log::err(TAG, "Employees count: " + QString::number(g_pEmployees->size()).toStdString());
-
-    IEmploy *pEmploy = NULL;
+    std::string sEmployName = T::name();
+    EmployBase *pEmploy = NULL;
     if(g_pEmployees->count(sEmployName)){
         pEmploy = g_pEmployees->at(sEmployName);
     }
@@ -57,8 +59,5 @@ template <class T> T* findEmploy() {
     }
     return pTEmploy;
 }
-
-
-
 
 #endif // EMPLOYEES_H

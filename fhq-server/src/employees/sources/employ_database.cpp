@@ -1,18 +1,19 @@
 #include <employ_server_config.h>
+#include <employ_database.h>
 
 
-REGISTRY_EMPLOY(EmployServerConfig)
+REGISTRY_EMPLOY(EmployDatabase)
 
 // ---------------------------------------------------------------------
 
-EmployServerConfig::EmployServerConfig()
-    : EmployBase(EmployServerConfig::name(), {}){
+EmployDatabase::EmployDatabase()
+    : EmployBase(EmployDatabase::name(), {EmployServerConfig::name()}) {
 
 }
 
 // ---------------------------------------------------------------------
 
-bool EmployServerConfig::init(){
+bool EmployDatabase::init(){
     // TODO
     return false;
 }

@@ -7,10 +7,11 @@
 
 #include <QString>
 
-class EmploySettings : public IEmploy {
+class EmploySettings : public EmployBase {
 public:
-    static std::string getEmployName() { return "EmploySettings"; }
-    virtual void test();
+    EmploySettings();
+    static std::string name() { return "EmploySettings"; }
+    virtual bool init();
 
     void initSettings(IWebSocketServer *pWebSocketServer);
     QString getSettString(QString name);

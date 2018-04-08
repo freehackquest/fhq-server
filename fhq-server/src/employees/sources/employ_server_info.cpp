@@ -1,16 +1,19 @@
+#include <employ_server_config.h>
 #include <employ_server_info.h>
+
 
 REGISTRY_EMPLOY(EmployServerInfo)
 
 // ---------------------------------------------------------------------
 
 EmployServerInfo::EmployServerInfo()
-    : EmployBase("json", {"1", "2"}) {
+    : EmployBase(EmployServerInfo::name(), {"EmployDatabase", EmployServerConfig::name()}) {
 
 }
 
 // ---------------------------------------------------------------------
 
-void EmployServerInfo::test(){
-
+bool EmployServerInfo::init(){
+    // TODO
+    return false;
 }

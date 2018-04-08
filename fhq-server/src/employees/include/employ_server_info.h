@@ -2,13 +2,12 @@
 #define EMPLOY_SERVER_INFO_H
 
 #include <employees.h>
-#include <employ_base.h>
 
-class EmployServerInfo : public IEmploy, EmployBase {
+class EmployServerInfo : public EmployBase {
     public:
-        EmployServerInfo();
-       static std::string getEmployName() { return "EmployJson"; }
-       virtual void test();
+       EmployServerInfo();
+       static std::string name() { return "EmployServerInfo"; }
+       virtual bool init();
 };
 
 #endif // EMPLOY_SERVER_INFO_H

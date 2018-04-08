@@ -1,5 +1,4 @@
 #include <cmd_handlers_quests.h>
-#include <QJsonArray>
 #include <runtasks.h>
 #include <log.h>
 #include <utils.h>

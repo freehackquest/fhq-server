@@ -3,12 +3,11 @@
 
 #include <employees.h>
 
-class EmployServerConfig : public IEmploy {
+class EmployServerConfig : public EmployBase {
     public:
-       static std::string getEmployName() { return "EmployServerConfig"; }
-       virtual void test();
+        EmployServerConfig();
+        static std::string name() { return "EmployServerConfig"; }
+        virtual bool init();
 };
-
-REGISTRY_EMPLOY(EmployServerConfig)
 
 #endif // EMPLOY_SERVER_CONFIG_H
