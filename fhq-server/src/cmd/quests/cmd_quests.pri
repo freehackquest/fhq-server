@@ -9,7 +9,6 @@ HEADERS += \
     $$PWD/include/cmd_handler_hints.h \
     $$PWD/include/cmd_handler_quest_create.h \
     $$PWD/include/cmd_handler_quest_delete.h \
-    $$PWD/include/cmd_handler_quest_pass.h \
     $$PWD/include/cmd_handler_quest_proposal.h \
     $$PWD/include/cmd_handler_quests_proposal_list.h \
     $$PWD/include/cmd_handler_quests_subjects.h \
@@ -24,7 +23,6 @@ SOURCES += \
     $$PWD/sources/cmd_handler_hints.cpp \
     $$PWD/sources/cmd_handler_quest_create.cpp \
     $$PWD/sources/cmd_handler_quest_delete.cpp \
-    $$PWD/sources/cmd_handler_quest_pass.cpp \
     $$PWD/sources/cmd_handler_quest_proposal.cpp \
     $$PWD/sources/cmd_handler_quests_proposal_list.cpp \
     $$PWD/sources/cmd_handler_quests_subjects.cpp \

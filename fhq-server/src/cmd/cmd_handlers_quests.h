@@ -30,4 +30,18 @@ class CmdHandlerQuest : public CmdHandlerBase {
 
 REGISTRY_CMD(CmdHandlerQuest)
 
+
+// *******************************************
+// *************** Quest Pass ****************
+// *******************************************
+
+class CmdHandlerQuestPass : public CmdHandlerBase {
+
+    public:
+        CmdHandlerQuestPass();
+        virtual void handle(ModelRequest *pRequest);
+};
+
+REGISTRY_CMD(CmdHandlerQuestPass)
+
 #endif // CMD_HANDLERS_QUESTS_H
