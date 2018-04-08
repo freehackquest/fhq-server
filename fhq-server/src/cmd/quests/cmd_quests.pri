@@ -16,8 +16,6 @@ HEADERS += \
     $$PWD/include/cmd_handler_quest_statistics.h \
     $$PWD/include/cmd_handler_quest_update.h \
     $$PWD/include/cmd_handler_writeups.h \
-    $$PWD/include/cmd_handlers_quests.h
-
 
 SOURCES += \
     $$PWD/sources/cmd_handler_addhint.cpp \
@@ -33,4 +31,4 @@ SOURCES += \
     $$PWD/sources/cmd_handler_quest_statistics.cpp \
     $$PWD/sources/cmd_handler_quest_update.cpp \
     $$PWD/sources/cmd_handler_writeups.cpp \
-    $$PWD/sources/cmd_handlers_quests.cpp
+
