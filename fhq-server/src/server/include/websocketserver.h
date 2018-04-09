@@ -15,7 +15,6 @@
 #include <iserver.h>
 
 #include <error.h>
-#include <model_server_config.h>
 #include <database_connection.h>
 #include <memory_cache_serverinfo.h>
 
@@ -72,7 +71,6 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		MemoryCacheServerInfo *m_pMemoryCacheServerInfo;
 
 		bool m_bFailed;
-		ModelServerConfig* m_pServerConfig;
 		
 		// db two connections
 		QMutex m_mtxSwapConenctions;

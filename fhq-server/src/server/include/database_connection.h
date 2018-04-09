@@ -6,7 +6,6 @@
 #include <QString>
 #include <QJsonObject>
 #include <QDateTime>
-#include <model_server_config.h>
 
 class DatabaseConnection {
 	public:
@@ -14,7 +13,7 @@ class DatabaseConnection {
 		void swap(DatabaseConnection *pDatabaseConnection);
 		QString nameConnection();
 		void setNameConnection(QString sNameConnection);
-		bool connect(ModelServerConfig *pServerConfig);
+		bool connect();
 		QSqlDatabase *db();
 		void setDb(QSqlDatabase *pDatabase);
 		void close();

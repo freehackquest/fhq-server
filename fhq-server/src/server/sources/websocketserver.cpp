@@ -15,6 +15,7 @@
 #include <create_memory_cache.h>
 #include <log.h>
 
+#include <employ_server_config.h>
 #include <employ_settings.h>
 #include <model_request.h>
 #include <cmd_handlers.h>
@@ -31,18 +32,14 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
         return;
 	}
 	
-	m_pServerConfig = new ModelServerConfig();
+	EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
+    
     m_bFailed = false;
-
-    if(!m_pServerConfig->load()){
-		m_bFailed = true;
-		return;
-	}
 
 	m_pDBConnection = new DatabaseConnection("qt_sql_default_connection_1");
 	m_pDBConnection_older = new DatabaseConnection("qt_sql_default_connection_2");
 	
-	if(!m_pDBConnection->connect(m_pServerConfig)){
+	if(!m_pDBConnection->connect()){
 		m_bFailed = true;
 		return;
 	}
@@ -61,10 +58,10 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 		query.exec();
     }*/
 
-	create_memory_cache(m_mapMemoryCache, this);
-
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
+	EmploySettings *pSettings = findEmploy<EmploySettings>();
     pSettings->initSettings(this);
+    
+	create_memory_cache(m_mapMemoryCache, this);
 
 	{
 		// init memory cache server info
@@ -79,20 +76,20 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 	m_pWebSocketServer = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::NonSecureMode, this);
 	m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::SecureMode, this);
 	
-    if (m_pWebSocketServer->listen(QHostAddress::Any, m_pServerConfig->serverPort())) {
-		Log::info(TAG, "freehackquest-backend listening on port" + QString::number(m_pServerConfig->serverPort()));
+    if (m_pWebSocketServer->listen(QHostAddress::Any, pServerConfig->serverPort())) {
+		Log::info(TAG, "freehackquest-backend listening on port" + QString::number(pServerConfig->serverPort()));
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnection);
         connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &WebSocketServer::closed);
     }else{
-		Log::err(TAG, "freehackquest-backend can not listening on port " + QString::number(m_pServerConfig->serverPort()));
+		Log::err(TAG, "freehackquest-backend can not listening on port " + QString::number(pServerConfig->serverPort()));
 		m_bFailed = true;
 		return;
 	}
 
-	if(m_pServerConfig->serverSslOn()){
+	if(pServerConfig->serverSslOn()){
 		QSslConfiguration sslConfiguration;
-		QFile certFile(m_pServerConfig->serverSslCertFile());
-		QFile keyFile(m_pServerConfig->serverSslKeyFile());
+		QFile certFile(pServerConfig->serverSslCertFile());
+		QFile keyFile(pServerConfig->serverSslKeyFile());
 		certFile.open(QIODevice::ReadOnly);
 		keyFile.open(QIODevice::ReadOnly);
 		QSslCertificate certificate(&certFile, QSsl::Pem);
@@ -105,12 +102,12 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 		sslConfiguration.setProtocol(QSsl::TlsV1SslV3);
 		m_pWebSocketServerSSL->setSslConfiguration(sslConfiguration);
 		
-		if (m_pWebSocketServerSSL->listen(QHostAddress::Any, m_pServerConfig->serverSslPort())) {
-			Log::info(TAG, "freehackquest-backend listening (via ssl) on port" + QString::number(m_pServerConfig->serverSslPort()));
+		if (m_pWebSocketServerSSL->listen(QHostAddress::Any, pServerConfig->serverSslPort())) {
+			Log::info(TAG, "freehackquest-backend listening (via ssl) on port" + QString::number(pServerConfig->serverSslPort()));
 			connect(m_pWebSocketServerSSL, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnectionSSL);
 			connect(m_pWebSocketServerSSL, &QWebSocketServer::sslErrors, this, &WebSocketServer::onSslErrors);
 		}else{
-			Log::err(TAG, "freehackquest-backend can not listening (via ssl) on port" + QString::number(m_pServerConfig->serverSslPort()));
+			Log::err(TAG, "freehackquest-backend can not listening (via ssl) on port" + QString::number(pServerConfig->serverSslPort()));
 			m_bFailed = true;
 			return;
 		}
@@ -342,7 +339,7 @@ QSqlDatabase *WebSocketServer::database(){
 		if(pDBConnection->isOutdated()){
 			pDBConnection_older->close();
 			pDBConnection_older->swap(pDBConnection);
-			pDBConnection->connect(m_pServerConfig);
+			pDBConnection->connect();
 		}
 		return pDBConnection->db();
 	}
@@ -351,7 +348,7 @@ QSqlDatabase *WebSocketServer::database(){
 	DatabaseConnection *pDBConnection_older = new DatabaseConnection("qt_sql_default_connection_2_" + QString::number(nThreadID));
 	m_mDatabaseConnections[nThreadID] = pDBConnection;
 	m_mDatabaseConnections_older[nThreadID] = pDBConnection_older;
-	pDBConnection->connect(m_pServerConfig);
+	pDBConnection->connect();
 	return pDBConnection->db();
 }
 

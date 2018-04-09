@@ -1,6 +1,5 @@
 #include <database_connection.h>
-#include <QJsonDocument>
-#include <QJsonObject>
+#include <employ_server_config.h>
 #include <log.h>
 
 
@@ -37,7 +36,9 @@ void DatabaseConnection::setNameConnection(QString sNameConnection){
 
 // ---------------------------------------------------------------------
 
-bool DatabaseConnection::connect(ModelServerConfig *pServerConfig){
+bool DatabaseConnection::connect(){
+	EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
+	
 	m_pDatabase = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL", m_sNameConnection));
 	m_pDatabase->setHostName(pServerConfig->databaseHost());
 	m_pDatabase->setDatabaseName(pServerConfig->databaseName());
