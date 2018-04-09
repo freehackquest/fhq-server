@@ -11,11 +11,11 @@
 #include <QtNetwork/QSslKey>
 
 #include <SmtpMime>
-#include <create_list_updates.h>
 #include <create_memory_cache.h>
 #include <log.h>
 
 #include <employ_server_config.h>
+#include <employ_database.h>
 #include <employ_settings.h>
 #include <model_request.h>
 #include <cmd_handlers.h>
@@ -26,40 +26,14 @@
 
 WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 	TAG = "WebSocketServer";
-	
+
+	m_bFailed = false;
 	if(!Employees::init({})){
 		m_bFailed = true;
         return;
 	}
 	
 	EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
-    
-    m_bFailed = false;
-
-	m_pDBConnection = new DatabaseConnection("qt_sql_default_connection_1");
-	m_pDBConnection_older = new DatabaseConnection("qt_sql_default_connection_2");
-	
-	if(!m_pDBConnection->connect()){
-		m_bFailed = true;
-		return;
-	}
-
-    if(!tryUpdateDatabase(m_pDBConnection->db())){
-        m_bFailed = true;
-        return;
-    }
-
-	// TODO: redesign
-	// cleanup old user tokens
-    /*{
-		QSqlDatabase db = *(m_pDBConnection->db());
-		QSqlQuery query(db);
-		query.prepare("DELETE FROM users_tokens WHERE end_date < NOW()");
-		query.exec();
-    }*/
-
-	EmploySettings *pSettings = findEmploy<EmploySettings>();
-    pSettings->initSettings(this);
     
 	create_memory_cache(m_mapMemoryCache, this);
 
@@ -324,32 +298,10 @@ void WebSocketServer::sendToAll(QJsonObject obj){
 }
 
 // ---------------------------------------------------------------------
-
+// deprecated
 QSqlDatabase *WebSocketServer::database(){
-	// swap connection
-	QMutexLocker locker (&m_mtxSwapConenctions);
-	
-	long long nThreadID = (long long)QThread::currentThreadId();
-	
-	
-	if(m_mDatabaseConnections.contains(nThreadID)){
-		DatabaseConnection *pDBConnection = m_mDatabaseConnections[nThreadID];
-		DatabaseConnection *pDBConnection_older = m_mDatabaseConnections_older[nThreadID];
-		
-		if(pDBConnection->isOutdated()){
-			pDBConnection_older->close();
-			pDBConnection_older->swap(pDBConnection);
-			pDBConnection->connect();
-		}
-		return pDBConnection->db();
-	}
-
-	DatabaseConnection *pDBConnection = new DatabaseConnection("qt_sql_default_connection_1_" + QString::number(nThreadID));
-	DatabaseConnection *pDBConnection_older = new DatabaseConnection("qt_sql_default_connection_2_" + QString::number(nThreadID));
-	m_mDatabaseConnections[nThreadID] = pDBConnection;
-	m_mDatabaseConnections_older[nThreadID] = pDBConnection_older;
-	pDBConnection->connect();
-	return pDBConnection->db();
+	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+	return pDatabase->database();
 }
 
 // ---------------------------------------------------------------------

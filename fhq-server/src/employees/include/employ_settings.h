@@ -13,7 +13,6 @@ public:
     static std::string name() { return "EmploySettings"; }
     virtual bool init();
 
-    void initSettings(IWebSocketServer *pWebSocketServer);
     QString getSettString(QString name);
     void setSettString(QString sName, QString sValue);
     QString getSettPassword(QString name);
@@ -34,7 +33,6 @@ private:
     void initSettingDatabase(ServerSettHelper* pServerSettHelper);
     void updateSettingDatabase(ServerSettHelper* pServerSettHelper);
 
-    IWebSocketServer *m_pWebSocketServer;
     QMap<QString, ServerSettHelper*> m_mapSettings;
 
     QMutex m_mtxServerSettings;

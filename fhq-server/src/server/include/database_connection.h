@@ -1,11 +1,11 @@
 #ifndef SERVER_DATABASE_CONNECTION_H
 #define SERVER_DATABASE_CONNECTION_H
 
-#include <iserver.h>
-
 #include <QString>
 #include <QJsonObject>
 #include <QDateTime>
+#include <QSqlDatabase>
+#include <QSqlError>
 
 class DatabaseConnection {
 	public:

@@ -13,24 +13,13 @@ REGISTRY_EMPLOY(EmploySettings)
 
 EmploySettings::EmploySettings()
     : EmployBase(EmploySettings::name(), {EmployDatabase::name()}){
-
+	TAG = QString(EmploySettings::name().c_str());
 }
 
 // ---------------------------------------------------------------------
 
 bool EmploySettings::init(){
-    // TODO
-    return true;
-}
-
-// ---------------------------------------------------------------------
-
-void EmploySettings::initSettings(IWebSocketServer *pWebSocketServer){
-    TAG = "MemoryCacheServerSettings";
-
-    Log::info(TAG, "Start init settings");
-    m_pWebSocketServer = pWebSocketServer;
-
+	Log::info(TAG, "Start init settings");
 
     QString sGroupProfile = "profile";
     addNewSetting(new ServerSettHelper(sGroupProfile, "profile_change_nick", true));
@@ -60,7 +49,8 @@ void EmploySettings::initSettings(IWebSocketServer *pWebSocketServer){
 
     QStringList listFoundInDatabase;
 
-    QSqlDatabase db = *(pWebSocketServer->database());
+	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
 
     // load from database
     {
@@ -108,6 +98,7 @@ void EmploySettings::initSettings(IWebSocketServer *pWebSocketServer){
             initSettingDatabase(pServerSettHelper);
         }
     }
+    return true;
 }
 
 // ---------------------------------------------------------------------
@@ -310,7 +301,8 @@ nlohmann::json EmploySettings::toJson(){
 
 void EmploySettings::initSettingDatabase(ServerSettHelper *pServerSettHelper){
     Log::info(TAG, "Init settings to database: " + pServerSettHelper->name());
-    QSqlDatabase db = *(m_pWebSocketServer->database());
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("INSERT INTO settings (`name`, `value`, `group`, `type`) VALUES (:name, :value, :group, :type)");
     query.bindValue(":name", pServerSettHelper->name());
@@ -325,7 +317,8 @@ void EmploySettings::initSettingDatabase(ServerSettHelper *pServerSettHelper){
 // ---------------------------------------------------------------------
 
 void EmploySettings::updateSettingDatabase(ServerSettHelper *pServerSettHelper){
-    QSqlDatabase db = *(m_pWebSocketServer->database());
+	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("UPDATE settings SET value = :value WHERE name = :name");
     query.bindValue(":value", pServerSettHelper->valueAsString());

@@ -44,7 +44,7 @@ class WebSocketServer : public QObject, public IWebSocketServer {
         virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse);
         virtual void sendMessageError(QWebSocket *pClient, const std::string &cmd, QString m, Error error);
 		virtual void sendToAll(QJsonObject obj);
-		virtual QSqlDatabase *database();
+		virtual QSqlDatabase *database();  // deprecated
 		virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken);
 		virtual IUserToken * getUserToken(QWebSocket *pClient);
 		virtual IMemoryCache *findMemoryCache(QString name);
@@ -71,13 +71,6 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		MemoryCacheServerInfo *m_pMemoryCacheServerInfo;
 
 		bool m_bFailed;
-		
-		// db two connections
-		QMutex m_mtxSwapConenctions;
-		QMap<long long, DatabaseConnection *> m_mDatabaseConnections;
-		QMap<long long, DatabaseConnection *> m_mDatabaseConnections_older;
-		DatabaseConnection *m_pDBConnection;
-		DatabaseConnection *m_pDBConnection_older;
 		QString TAG;
 };
 
