@@ -11,7 +11,6 @@
 #include <QtNetwork/QSslKey>
 
 #include <SmtpMime>
-#include <create_memory_cache.h>
 #include <log.h>
 
 #include <employ_server_config.h>
@@ -36,9 +35,6 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 	}
 	
 	EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
-    
-	create_memory_cache(m_mapMemoryCache, this);
-
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
 
 	

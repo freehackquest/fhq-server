@@ -1,6 +1,6 @@
 #include <cmd_scoreboard_handler.h>
 #include <QJsonArray>
-#include <memory_cache_scoreboard.h>
+#include <employ_scoreboard.h>
 
 CmdScoreboardHandler::CmdScoreboardHandler(){
 
@@ -76,11 +76,11 @@ void CmdScoreboardHandler::handle(ModelRequest *pRequest){
 		return;
 	}
 
-	MemoryCacheScoreboard *pMemoryCacheScoreboard = dynamic_cast<MemoryCacheScoreboard*>(pMemoryCache);
-	pMemoryCacheScoreboard->loadSync();
+    EmployScoreboard *pScoreboard = findEmploy<EmployScoreboard>();
+    pScoreboard->loadSync();
 
-    jsonResponse["count"] = pMemoryCacheScoreboard->count();
-    jsonResponse["data"] = pMemoryCacheScoreboard->toJsonArray();
+    jsonResponse["count"] = pScoreboard->count();
+    jsonResponse["data"] = pScoreboard->toJsonArray();
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
