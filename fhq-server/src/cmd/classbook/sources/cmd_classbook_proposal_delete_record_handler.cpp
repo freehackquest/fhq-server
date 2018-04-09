@@ -2,6 +2,7 @@
 #include <QJsonArray>
 #include <QSqlError>
 #include <log.h>
+#include <employ_database.h>
 
 CmdClassbookProposalDeleteRecordHandler::CmdClassbookProposalDeleteRecordHandler(){
 
@@ -40,10 +41,11 @@ std::string CmdClassbookProposalDeleteRecordHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdClassbookProposalDeleteRecordHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
     int classbook_proposal_id = jsonRequest["classbook_proposal_id"].toInt();

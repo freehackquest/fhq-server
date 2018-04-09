@@ -1,4 +1,5 @@
 #include <cmd_classbook_list_handler.h>
+#include <employ_database.h>
 #include <QJsonArray>
 #include <QSqlError>
 
@@ -41,10 +42,11 @@ std::string CmdClassbookListHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdClassbookListHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
 
     int parentid = jsonRequest["parentid"].toInt();

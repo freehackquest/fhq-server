@@ -1,6 +1,8 @@
 #include <cmd_classbook_handler.h>
+#include <employ_database.h>
 #include <QJsonArray>
 #include <QSqlError>
+#include <employ_database.h>
 
 CmdClassbookHandler::CmdClassbookHandler(){
 
@@ -37,10 +39,11 @@ std::string CmdClassbookHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdClassbookHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
 	QJsonArray contents;
 

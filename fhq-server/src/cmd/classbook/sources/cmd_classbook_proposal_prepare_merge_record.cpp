@@ -4,6 +4,7 @@
 #include <QJsonArray>
 #include <QSqlError>
 #include <log.h>
+#include <employ_database.h>
 
 CmdClassbookProposalPrepareMergeRecordHandler::CmdClassbookProposalPrepareMergeRecordHandler(){
 
@@ -42,10 +43,12 @@ std::string CmdClassbookProposalPrepareMergeRecordHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     QJsonObject data;
 

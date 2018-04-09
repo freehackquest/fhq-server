@@ -2,6 +2,7 @@
 #include <QJsonArray>
 #include <QSqlError>
 #include <log.h>
+#include <employ_database.h>
 
 CmdClassbookProposalInfoHandler::CmdClassbookProposalInfoHandler(){
 
@@ -40,10 +41,11 @@ std::string CmdClassbookProposalInfoHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdClassbookProposalInfoHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     QJsonObject data;
 

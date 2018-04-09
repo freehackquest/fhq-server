@@ -4,6 +4,7 @@
 #include <log.h>
 #include <QUuid>
 #include <QCryptographicHash>
+#include <employ_database.h>
 
 CmdClassbookProposalAddRecordHandler::CmdClassbookProposalAddRecordHandler(){
 
@@ -45,10 +46,11 @@ std::string CmdClassbookProposalAddRecordHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     QJsonObject data;
 

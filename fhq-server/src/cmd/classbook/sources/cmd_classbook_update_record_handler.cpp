@@ -1,6 +1,7 @@
 #include <cmd_classbook_update_record_handler.h>
 #include <QJsonArray>
 #include <QSqlError>
+#include <employ_database.h>
 
 CmdClassbookUpdateRecordHandler::CmdClassbookUpdateRecordHandler(){
 
@@ -43,10 +44,11 @@ std::string CmdClassbookUpdateRecordHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     int classbookid = jsonRequest["classbookid"].toInt();
     //IF classbookid = 0, THEN reject request

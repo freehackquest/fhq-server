@@ -1,4 +1,5 @@
 #include <cmd_classbook_export_handler.h>
+#include <employ_database.h>
 #include <QJsonArray>
 #include <QSqlError>
 #include <QTemporaryDir>
@@ -46,10 +47,12 @@ std::string CmdClassbookExportHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdClassbookExportHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
 
     QString lang = jsonRequest.value("lang").toString().trimmed();

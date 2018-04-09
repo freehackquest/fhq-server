@@ -4,6 +4,7 @@
 #include <log.h>
 #include <iostream>
 #include <employ_settings.h>
+#include <employ_database.h>
 #include <memory_cache_serverinfo.h>
 #include <QtCore>
 
@@ -77,6 +78,8 @@ CmdHandlerPublicInfo::CmdHandlerPublicInfo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerPublicInfo::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
@@ -95,7 +98,7 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest){
     jsonQuests["attempts"] = pMemoryCacheServerInfo->countQuestsAttempt();
     jsonQuests["solved"] = pMemoryCacheServerInfo->countQuestsCompleted();
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
 
     int nMoreThen = 2;

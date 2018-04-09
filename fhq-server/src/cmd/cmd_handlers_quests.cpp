@@ -4,6 +4,7 @@
 #include <utils.h>
 #include <employ_settings.h>
 #include <QCryptographicHash>
+#include <employ_database.h>
 #include <memory_cache_serverinfo.h>
 
 // *******************************************
@@ -24,6 +25,7 @@ CmdHandlerQuests::CmdHandlerQuests()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuests::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
@@ -59,7 +61,7 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest){
 
     auto jsonQuests = nlohmann::json::array();
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 	QSqlQuery query(db);
 
     query.prepare(""
@@ -132,10 +134,12 @@ CmdHandlerQuest::CmdHandlerQuest()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuest::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
@@ -310,6 +314,7 @@ CmdHandlerQuestPass::CmdHandlerQuestPass()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -320,7 +325,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
     }
     MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     IUserToken *pUserToken = pRequest->userToken();
     int nUserID = 0;

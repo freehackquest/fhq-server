@@ -4,6 +4,7 @@
 #include <log.h>
 #include <QUuid>
 #include <QCryptographicHash>
+#include <employ_database.h>
 
 CmdClassbookLocalizationAddRecordHandler::CmdClassbookLocalizationAddRecordHandler(){
 
@@ -45,12 +46,13 @@ std::string CmdClassbookLocalizationAddRecordHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
     int classbookid = jsonRequest["classbookid"].toInt();
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     QJsonObject data;
 

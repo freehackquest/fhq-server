@@ -1,4 +1,5 @@
 #include <cmd_classbook_add_record_handler.h>
+#include <employ_database.h>
 #include <QJsonArray>
 #include <QSqlError>
 #include <QUuid>
@@ -46,11 +47,12 @@ std::string CmdClassbookAddRecordHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     int parentid = jsonRequest["parentid"].toInt();
 

@@ -3,6 +3,7 @@
 #include <SmtpMime>
 // #include <memory_cache_serverinfo.h>
 #include <employ_settings.h>
+#include <employ_database.h>
 
 CmdHandlerMailsList::CmdHandlerMailsList(){
     TAG = "CmdHandlerMailsList";

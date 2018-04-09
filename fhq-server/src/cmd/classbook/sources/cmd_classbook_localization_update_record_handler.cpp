@@ -3,6 +3,7 @@
 #include <QSqlError>
 #include <log.h>
 #include <QCryptographicHash>
+#include <employ_database.h>
 
 CmdClassbookLocalizationUpdateRecordHandler::CmdClassbookLocalizationUpdateRecordHandler(){
 
@@ -43,10 +44,11 @@ std::string CmdClassbookLocalizationUpdateRecordHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     QJsonObject data;
 
