@@ -5,6 +5,7 @@
 #include <QByteArray>
 #include <QDateTime>
 #include <QDir>
+#include <employ_database.h>
 
 // IMemoryCache
 QString MemoryCacheScoreboard::name(){
@@ -20,7 +21,9 @@ MemoryCacheScoreboard::MemoryCacheScoreboard(IWebSocketServer *pWebSocketServer)
 // ---------------------------------------------------------------------
 
 void MemoryCacheScoreboard::loadSync(){
-	QSqlDatabase db = *(m_pWebSocketServer->database());
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
+    QSqlDatabase db = *(pDatabase->database());
 	m_vRows.clear(); // TODO fix memory leaks
 
 	QSqlQuery query(db);

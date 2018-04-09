@@ -1,6 +1,7 @@
 #include <cmd_user_change_password_handler.h>
 #include <log.h>
 #include <QJsonArray>
+#include <employ_database.h>
 
 CmdUserChangePasswordHandler::CmdUserChangePasswordHandler(){
     TAG = "CmdUserChangePasswordHandler";
@@ -41,13 +42,15 @@ std::string CmdUserChangePasswordHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdUserChangePasswordHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
     IUserToken *pUserToken = pRequest->userToken();
     int nUserID = pUserToken->userid();
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
     query.prepare("SELECT * FROM users WHERE id = :userid");

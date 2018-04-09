@@ -5,6 +5,7 @@
 #include <QCryptographicHash>
 #include <QUuid>
 #include <SmtpMime>
+#include <employ_database.h>
 
 CmdRegistrationHandler::CmdRegistrationHandler(){
     TAG = "CmdRegistrationHandler";
@@ -45,6 +46,8 @@ std::string CmdRegistrationHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdRegistrationHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 	
@@ -54,7 +57,7 @@ void CmdRegistrationHandler::handle(ModelRequest *pRequest){
 
     QString sUniversity = jsonRequest["university"].toString();
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("SELECT * FROM users WHERE email = :email");
     query.bindValue(":email", sEmail);

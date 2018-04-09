@@ -1,5 +1,6 @@
 #include <cmd_users_handler.h>
 #include <QJsonArray>
+#include <employ_database.h>
 
 CmdUsersHandler::CmdUsersHandler(){
     TAG = "CmdUsersHandler";
@@ -42,6 +43,8 @@ const std::vector<CmdInputDef> &CmdUsersHandler::inputs(){
 // ---------------------------------------------------------------------
 
 void CmdUsersHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -78,7 +81,7 @@ void CmdUsersHandler::handle(ModelRequest *pRequest){
     }
 
 	QJsonArray users;
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 	QString where = filters.join(" AND "); 
 	if(where.length() > 0){
 		where = "WHERE " + where;

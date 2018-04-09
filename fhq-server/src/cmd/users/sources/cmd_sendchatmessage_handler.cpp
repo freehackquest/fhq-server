@@ -1,4 +1,5 @@
 #include <cmd_sendchatmessage_handler.h>
+#include <employ_database.h>
 
 CmdSendChatMessageHandler::CmdSendChatMessageHandler(){
 
@@ -34,6 +35,8 @@ std::string CmdSendChatMessageHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdSendChatMessageHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -47,7 +50,7 @@ void CmdSendChatMessageHandler::handle(ModelRequest *pRequest){
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 	QSqlQuery query(db);
 	query.prepare("INSERT INTO chatmessages(user, message, dt) VALUES(:user,:message, NOW())");
 	query.bindValue(":user", username);

@@ -6,6 +6,7 @@
 #include <QUuid>
 #include <employ_settings.h>
 #include <SmtpMime>
+#include <employ_database.h>
 
 CmdUserResetPasswordHandler::CmdUserResetPasswordHandler(){
     TAG = "CmdUserResetPasswordHandler";
@@ -45,12 +46,14 @@ std::string CmdUserResetPasswordHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdUserResetPasswordHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 	
     QString sEmail = jsonRequest["email"].toString();
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("SELECT * FROM users WHERE email = :email");
     query.bindValue(":email", sEmail);

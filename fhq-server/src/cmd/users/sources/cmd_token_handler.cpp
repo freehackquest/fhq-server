@@ -2,6 +2,7 @@
 #include <runtasks.h>
 #include <log.h>
 #include <model_usertoken.h>
+#include <employ_database.h>
 
 CmdTokenHandler::CmdTokenHandler(){
     TAG = "CmdTokenHandler";
@@ -41,6 +42,8 @@ std::string CmdTokenHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdTokenHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -52,7 +55,7 @@ void CmdTokenHandler::handle(ModelRequest *pRequest){
 		return;
 	}
     QString token = jsonRequest["token"].toString();
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
 	QSqlQuery query(db);
 	query.prepare("SELECT * FROM users_tokens WHERE token = :token");

@@ -1,6 +1,7 @@
 #include <cmd_getmap_handler.h>
 #include <QJsonArray>
 #include <employ_settings.h>
+#include <employ_database.h>
 
 CmdGetMapHandler::CmdGetMapHandler(){
 
@@ -36,13 +37,15 @@ std::string CmdGetMapHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdGetMapHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
 	QJsonArray coords;
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 	QSqlQuery query(db);
 	query.prepare("SELECT COUNT(*) as cnt, latitude, longitude FROM `users` GROUP BY latitude, longitude");
 	query.exec();

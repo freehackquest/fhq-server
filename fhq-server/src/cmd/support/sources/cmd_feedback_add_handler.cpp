@@ -4,6 +4,7 @@
 #include <SmtpMime>
 #include <QJsonArray>
 #include <QCryptographicHash>
+#include <employ_database.h>
 
 CmdFeedbackAddHandler::CmdFeedbackAddHandler(){
     TAG = "CmdFeedbackAddHandler";
@@ -45,10 +46,12 @@ std::string CmdFeedbackAddHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdFeedbackAddHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     int nUserID = 0;
     QString sEmail = jsonRequest["from"].toString().trimmed();

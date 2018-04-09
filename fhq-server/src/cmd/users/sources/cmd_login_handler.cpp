@@ -4,6 +4,7 @@
 #include <model_usertoken.h>
 #include <QCryptographicHash>
 #include <QUuid>
+#include <employ_database.h>
 
 CmdLoginHandler::CmdLoginHandler(){
 	TAG = "CmdLoginHandler";
@@ -44,6 +45,8 @@ std::string CmdLoginHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdLoginHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 	
@@ -54,7 +57,7 @@ void CmdLoginHandler::handle(ModelRequest *pRequest){
 
     password_sha1 = QString("%1").arg(QString(QCryptographicHash::hash(password_sha1.toUtf8(),QCryptographicHash::Sha1).toHex()));
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("SELECT * FROM users WHERE email = :email AND pass = :pass");
     query.bindValue(":email", email);

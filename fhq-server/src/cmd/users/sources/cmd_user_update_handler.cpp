@@ -2,6 +2,7 @@
 #include <QJsonArray>
 #include <runtasks.h>
 #include <log.h>
+#include <employ_database.h>
 
 CmdUserUpdateHandler::CmdUserUpdateHandler(){
 
@@ -43,6 +44,8 @@ std::string CmdUserUpdateHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdUserUpdateHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
     QJsonObject data;
@@ -61,7 +64,7 @@ void CmdUserUpdateHandler::handle(ModelRequest *pRequest){
     QString sUniversity = "";
     QString sAbout = "";
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM users WHERE id = :userid");

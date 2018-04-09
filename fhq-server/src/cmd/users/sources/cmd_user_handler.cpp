@@ -1,6 +1,7 @@
 #include <cmd_user_handler.h>
 #include <log.h>
 #include <QJsonArray>
+#include <employ_database.h>
 
 CmdUserHandler::CmdUserHandler(){
     TAG = "CmdUserHandler";
@@ -40,6 +41,8 @@ std::string CmdUserHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdUserHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -71,7 +74,7 @@ void CmdUserHandler::handle(ModelRequest *pRequest){
 	
     QJsonObject data;
 	QJsonObject profile;
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
 	{
 		QSqlQuery query(db);

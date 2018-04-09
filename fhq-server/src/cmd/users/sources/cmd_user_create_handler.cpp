@@ -5,6 +5,7 @@
 #include <QCryptographicHash>
 #include <QUuid>
 #include <QRegularExpression>
+#include <employ_database.h>
 
 CmdUserCreateHandler::CmdUserCreateHandler(){
     TAG = "CmdUsersCreateHandler";
@@ -49,6 +50,8 @@ std::string CmdUserCreateHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdUserCreateHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -61,7 +64,7 @@ void CmdUserCreateHandler::handle(ModelRequest *pRequest){
         return;
     }
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("SELECT * FROM users WHERE email = :email");
     query.bindValue(":email", sEmail);

@@ -1,5 +1,6 @@
 #include <cmd_user_skills_handler.h>
 #include <QJsonArray>
+#include <employ_database.h>
 
 CmdUserSkillsHandler::CmdUserSkillsHandler(){
 
@@ -38,6 +39,8 @@ std::string CmdUserSkillsHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdUserSkillsHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -45,7 +48,7 @@ void CmdUserSkillsHandler::handle(ModelRequest *pRequest){
 	QJsonObject skills_max;
 	QJsonObject skills_user;
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
 	{
 		QSqlQuery query(db);

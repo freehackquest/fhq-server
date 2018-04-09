@@ -1,5 +1,6 @@
 #include <cmd_user_delete_handler.h>
 #include <log.h>
+#include <employ_database.h>
 
 CmdUserDeleteHandler::CmdUserDeleteHandler(){
     TAG = "CmdUsersDeleteHandler";
@@ -40,6 +41,8 @@ std::string CmdUserDeleteHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -48,7 +51,7 @@ void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
     IUserToken *pUserToken = pRequest->userToken();
     int nAdminUserID = pUserToken->userid();
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     // check admin password
     {

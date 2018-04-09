@@ -1,6 +1,7 @@
 #include <cmd_update_user_location_handler.h>
 #include <runtasks.h>
 #include <QJsonArray>
+#include <employ_database.h>
 
 CmdUpdateUserLocationHandler::CmdUpdateUserLocationHandler(){
 
@@ -39,6 +40,8 @@ std::string CmdUpdateUserLocationHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdUpdateUserLocationHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -52,7 +55,7 @@ void CmdUpdateUserLocationHandler::handle(ModelRequest *pRequest){
 		return;
 	}
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 	QString lastip = "";
 	{
 		QSqlQuery query(db);
