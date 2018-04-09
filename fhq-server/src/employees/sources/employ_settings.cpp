@@ -1,4 +1,5 @@
 #include <employ_settings.h>
+#include <employ_database.h>
 #include <log.h>
 #include <QTextStream>
 #include <QFile>
@@ -11,7 +12,7 @@ REGISTRY_EMPLOY(EmploySettings)
 // ---------------------------------------------------------------------
 
 EmploySettings::EmploySettings()
-    : EmployBase(EmploySettings::name(), {}){
+    : EmployBase(EmploySettings::name(), {EmployDatabase::name()}){
 
 }
 
@@ -19,7 +20,7 @@ EmploySettings::EmploySettings()
 
 bool EmploySettings::init(){
     // TODO
-    return false;
+    return true;
 }
 
 // ---------------------------------------------------------------------

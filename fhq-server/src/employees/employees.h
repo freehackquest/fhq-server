@@ -15,6 +15,7 @@ public:
         const std::string &sName,
         const std::vector<std::string> &vLoadAfter);
     virtual bool init() = 0;
+    const std::vector<std::string> &loadAfter();
 private:
     std::string TAG;
     std::string m_sName;
@@ -25,11 +26,13 @@ private:
 // public employees
 
 extern std::map<std::string, EmployBase*> *g_pEmployees;
+extern std::vector<std::string> *g_pInitEmployees;
 
 class Employees {
     public:
         static void initGlobalVariables();
         static void addEmploy(const std::string &sName, EmployBase* pEmploy);
+        static bool init(const std::vector<std::string> &vLoadAfter);
 };
 
 // ---------------------------------------------------------------------

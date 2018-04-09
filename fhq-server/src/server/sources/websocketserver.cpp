@@ -25,6 +25,12 @@
 
 WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 	TAG = "WebSocketServer";
+	
+	if(!Employees::init({})){
+		m_bFailed = true;
+        return;
+	}
+	
 	m_pServerConfig = new ModelServerConfig();
     m_bFailed = false;
 

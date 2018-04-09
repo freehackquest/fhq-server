@@ -14,5 +14,5 @@ EmployServerConfig::EmployServerConfig()
 
 bool EmployServerConfig::init(){
     // TODO
-    return false;
+    return true;
 }

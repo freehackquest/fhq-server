@@ -15,5 +15,5 @@ EmployDatabase::EmployDatabase()
 
 bool EmployDatabase::init(){
     // TODO
-    return false;
+    return true;
 }
