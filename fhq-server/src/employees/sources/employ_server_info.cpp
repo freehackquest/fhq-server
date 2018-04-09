@@ -80,7 +80,7 @@ bool EmployServerInfo::init(){
 
 // ---------------------------------------------------------------------
 
-void EmployServerInfo::incrementRequests(QString cmd){
+void EmployServerInfo::incrementRequests(const std::string& cmd){
     QMutexLocker locker (&m_mtxIncrementRequests);
     if(m_requestsCounter.contains(cmd)){
         m_requestsCounter[cmd] = m_requestsCounter[cmd]+1;
@@ -93,9 +93,9 @@ void EmployServerInfo::incrementRequests(QString cmd){
 
 nlohmann::json EmployServerInfo::toJson(){
     nlohmann::json jsonRes;
-    foreach( QString key, m_requestsCounter.keys()){
+    foreach( std::string key, m_requestsCounter.keys()){
         int count = m_requestsCounter.value(key);
-        jsonRes[key.toStdString()] = count;
+        jsonRes[key] = count;
     }
     return jsonRes;
 }

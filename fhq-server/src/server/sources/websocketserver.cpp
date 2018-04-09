@@ -169,7 +169,7 @@ void WebSocketServer::processTextMessage(QString message) {
         return;
     }
 
-    pServerInfo->incrementRequests(QString(cmd.c_str()));
+    pServerInfo->incrementRequests(cmd);
 	
 	// check access
     const ModelCommandAccess access = pCmdHandler->access();

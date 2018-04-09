@@ -11,7 +11,7 @@ class EmployServerInfo : public EmployBase {
        static std::string name() { return "EmployServerInfo"; }
        virtual bool init();
 
-       void incrementRequests(QString cmd);
+       void incrementRequests(const std::string &cmd);
        void serverStarted();
        int countQuests();
        int countQuestsAttempt();
@@ -27,7 +27,7 @@ class EmployServerInfo : public EmployBase {
 
    private:
 
-       QMap<QString, int> m_requestsCounter;
+       QMap<std::string, int> m_requestsCounter;
        QMutex m_mtxIncrementRequests;
 
        QString TAG;
