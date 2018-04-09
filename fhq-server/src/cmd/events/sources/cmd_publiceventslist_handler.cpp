@@ -1,4 +1,5 @@
 #include <cmd_publiceventslist_handler.h>
+#include <employ_database.h>
 #include <QJsonArray>
 
 CmdPublicEventsListHandler::CmdPublicEventsListHandler(){
@@ -45,6 +46,8 @@ std::string CmdPublicEventsListHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdPublicEventsListHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -84,7 +87,7 @@ void CmdPublicEventsListHandler::handle(ModelRequest *pRequest){
 	}
 	
 	// count quests
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 	
 	{
 		QSqlQuery query(db);

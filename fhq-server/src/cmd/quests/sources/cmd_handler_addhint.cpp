@@ -1,6 +1,7 @@
 #include <cmd_handler_addhint.h>
 #include <log.h>
 #include <runtasks.h>
+#include <employ_database.h>
 
 CmdHandlerAddHint::CmdHandlerAddHint(){
 	TAG = "CmdHandlerAddHint";
@@ -41,6 +42,8 @@ const std::vector<CmdInputDef> &CmdHandlerAddHint::inputs(){
 // ---------------------------------------------------------------------
 
 void CmdHandlerAddHint::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     QJsonObject jsonResponse; // TODO redesign to nlohmann::json
 
@@ -62,7 +65,7 @@ void CmdHandlerAddHint::handle(ModelRequest *pRequest){
         sHint = jsonRequest["hint"];
     }
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 	QSqlQuery query(db);
 	query.prepare("INSERT INTO quests_hints (questid, text, dt) VALUES (:questid, :text, NOW())");
     query.bindValue(":questid", nQuestId);

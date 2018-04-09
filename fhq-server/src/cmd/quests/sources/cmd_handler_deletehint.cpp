@@ -1,4 +1,5 @@
 #include <cmd_handler_deletehint.h>
+#include <employ_database.h>
 
 CmdHandlerDeleteHint::CmdHandlerDeleteHint(){
 	TAG = "CmdHandlerDeleteHint";
@@ -38,6 +39,8 @@ std::string CmdHandlerDeleteHint::description(){
 // ---------------------------------------------------------------------
 
 void CmdHandlerDeleteHint::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -47,7 +50,7 @@ void CmdHandlerDeleteHint::handle(ModelRequest *pRequest){
 		return;
 	}
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 	QSqlQuery query(db);
 	query.prepare("DELETE FROM quests_hints WHERE id = :hintid");
 	query.bindValue(":hintid", hintid);

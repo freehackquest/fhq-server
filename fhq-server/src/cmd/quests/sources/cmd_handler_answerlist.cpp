@@ -1,5 +1,6 @@
 #include <cmd_handler_answerlist.h>
 #include <QJsonArray>
+#include <employ_database.h>
 
 CmdHandlerAnswerList::CmdHandlerAnswerList(){
     TAG = "CmdHandlerAnswerList";
@@ -42,6 +43,8 @@ std::string CmdHandlerAnswerList::description(){
 // ---------------------------------------------------------------------
 
 void CmdHandlerAnswerList::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -108,7 +111,7 @@ void CmdHandlerAnswerList::handle(ModelRequest *pRequest){
 	}
 
 	// count quests
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 	
 	{
 		QSqlQuery query(db);

@@ -1,5 +1,6 @@
 #include <cmd_handler_writeups.h>
 #include <QJsonArray>
+#include <employ_database.h>
 
 CmdHandlerWriteUps::CmdHandlerWriteUps(){
 
@@ -38,6 +39,8 @@ std::string CmdHandlerWriteUps::description(){
 // ---------------------------------------------------------------------
 
 void CmdHandlerWriteUps::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -50,7 +53,7 @@ void CmdHandlerWriteUps::handle(ModelRequest *pRequest){
 	}
 
 	QJsonArray writeups;
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 	QSqlQuery query(db);
 	query.prepare("SELECT * FROM quests_writeups WHERE questid = :questid");
 	query.bindValue(":questid", questid);

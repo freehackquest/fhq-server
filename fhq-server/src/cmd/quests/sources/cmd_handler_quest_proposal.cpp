@@ -4,6 +4,7 @@
 #include <runtasks.h>
 // #include <memory_cache_serverinfo.h>
 #include <employ_settings.h>
+#include <employ_database.h>
 
 CmdHandlerQuestProposal::CmdHandlerQuestProposal(){
     TAG = "CmdQuestProposalHandler";
@@ -53,12 +54,14 @@ std::string CmdHandlerQuestProposal::description(){
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestProposal::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     IUserToken *pUserToken = pRequest->userToken();
     int nUserID = 0;

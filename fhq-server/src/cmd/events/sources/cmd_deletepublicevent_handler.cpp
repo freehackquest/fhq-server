@@ -1,4 +1,5 @@
 #include <cmd_deletepublicevent_handler.h>
+#include <employ_database.h>
 #include <QJsonArray>
 
 CmdDeletePublicEventHandler::CmdDeletePublicEventHandler(){
@@ -42,6 +43,8 @@ std::string CmdDeletePublicEventHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdDeletePublicEventHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
 	QJsonObject jsonData;
     jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
@@ -51,7 +54,7 @@ void CmdDeletePublicEventHandler::handle(ModelRequest *pRequest){
 
 	QJsonObject event;
 	
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 	QSqlQuery query(db);
 	query.prepare("SELECT * FROM public_events WHERE id = :eventid");
 	query.bindValue(":eventid", nEventId);

@@ -1,5 +1,6 @@
 #include <cmd_handler_quests_subjects.h>
 #include <QJsonArray>
+#include <employ_database.h>
 
 CmdHandlerQuestsSubjects::CmdHandlerQuestsSubjects(){
 
@@ -39,11 +40,13 @@ std::string CmdHandlerQuestsSubjects::description(){
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestsSubjects::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
     QJsonArray subjects;
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
 	QSqlQuery query(db);
     query.prepare("SELECT subject, COUNT(*) as cnt FROM `quest` WHERE quest.state = :state GROUP BY subject");

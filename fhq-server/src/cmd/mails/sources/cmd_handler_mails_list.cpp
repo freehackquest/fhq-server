@@ -47,6 +47,8 @@ std::string CmdHandlerMailsList::description(){
 // ---------------------------------------------------------------------
 
 void CmdHandlerMailsList::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -90,7 +92,7 @@ void CmdHandlerMailsList::handle(ModelRequest *pRequest){
     }
 
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
     QString where = filters.join(" AND ");
     if(where.length() > 0){
         where = "WHERE " + where;

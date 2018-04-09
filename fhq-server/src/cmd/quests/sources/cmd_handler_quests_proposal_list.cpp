@@ -3,6 +3,7 @@
 #include <SmtpMime>
 // #include <memory_cache_serverinfo.h>
 #include <employ_settings.h>
+#include <employ_database.h>
 
 CmdHandlerQuestsProposalList::CmdHandlerQuestsProposalList(){
     TAG = "CmdHandlerQuestsProposalList";
@@ -43,6 +44,8 @@ std::string CmdHandlerQuestsProposalList::description(){
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -62,7 +65,7 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest){
     }
 
 	;
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 	QString where = filters.join(" AND "); 
 	if(where.length() > 0){
 		where = "WHERE " + where;

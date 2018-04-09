@@ -1,7 +1,7 @@
 #include <cmd_handler_quest_statistics.h>
 #include <runtasks.h>
 #include <log.h>
-
+#include <employ_database.h>
 #include <QJsonArray>
 #include <QCryptographicHash>
 
@@ -43,11 +43,13 @@ std::string CmdHandlerQuestStatistics::description(){
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     int nQuestID = jsonRequest["questid"].toInt();
 

@@ -1,4 +1,5 @@
 #include <cmd_getpublicevent_handler.h>
+#include <employ_database.h>
 #include <QJsonArray>
 
 CmdGetPublicEventHandler::CmdGetPublicEventHandler(){
@@ -41,6 +42,8 @@ std::string CmdGetPublicEventHandler::description(){
 // ---------------------------------------------------------------------
 
 void CmdGetPublicEventHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -49,7 +52,7 @@ void CmdGetPublicEventHandler::handle(ModelRequest *pRequest){
 
 	QJsonObject event;
 	
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 	QSqlQuery query(db);
 	query.prepare("SELECT * FROM public_events e WHERE id = :eventid");
 	query.bindValue(":eventid", nEventId);

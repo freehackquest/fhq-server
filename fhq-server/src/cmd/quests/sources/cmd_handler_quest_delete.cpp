@@ -1,6 +1,7 @@
 #include <cmd_handler_quest_delete.h>
 #include <runtasks.h>
 #include <memory_cache_serverinfo.h>
+#include <employ_database.h>
 
 CmdHandlerQuestDelete::CmdHandlerQuestDelete(){
 
@@ -39,6 +40,8 @@ std::string CmdHandlerQuestDelete::description(){
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestDelete::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -52,7 +55,7 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest){
     int questid = jsonRequest["questid"].toInt();
 	QString sName = "";
 	QString sSubject = "";
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 	{
 		QSqlQuery query(db);
 		query.prepare("SELECT * FROM quest WHERE idquest = :questid");

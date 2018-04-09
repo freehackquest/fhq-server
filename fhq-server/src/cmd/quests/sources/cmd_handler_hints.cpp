@@ -1,5 +1,6 @@
 #include <cmd_handler_hints.h>
 #include <QJsonArray>
+#include <employ_database.h>
 
 CmdHandlerHints::CmdHandlerHints(){
 
@@ -38,6 +39,8 @@ std::string CmdHandlerHints::description(){
 // ---------------------------------------------------------------------
 
 void CmdHandlerHints::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
@@ -48,7 +51,7 @@ void CmdHandlerHints::handle(ModelRequest *pRequest){
 	}
 
 	QJsonArray hints;
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
 	QSqlQuery query(db);
 	query.prepare("SELECT * FROM quests_hints WHERE questid = :questid");

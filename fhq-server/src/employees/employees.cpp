@@ -39,10 +39,9 @@ void Employees::addEmploy(const std::string &sName, EmployBase* pEmploy){
 bool Employees::init(const std::vector<std::string> &vStart){
 	Employees::initGlobalVariables();
 
-    for(int i = 0; i < vStart.size(); i++){
+    for(unsigned int i = 0; i < vStart.size(); i++){
         g_pInitEmployees->push_back(vStart[i]);
     }
-
 
 	std::string TAG = "Employees_init";
 	bool bRepeat = true;
