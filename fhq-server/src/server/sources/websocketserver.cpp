@@ -17,8 +17,10 @@
 #include <employ_server_config.h>
 #include <employ_database.h>
 #include <employ_settings.h>
+#include <employ_server_info.h>
 #include <model_request.h>
 #include <cmd_handlers.h>
+
 
 // QT_USE_NAMESPACE
 
@@ -37,15 +39,8 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
     
 	create_memory_cache(m_mapMemoryCache, this);
 
-	{
-		// init memory cache server info
-		m_pMemoryCacheServerInfo = NULL;
-		IMemoryCache *pMemoryCache = findMemoryCache("serverinfo");
-		if(pMemoryCache != NULL){
-			m_pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
-            m_pMemoryCacheServerInfo->initCounters();
-		}
-	}
+    EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
+
 	
 	m_pWebSocketServer = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::NonSecureMode, this);
 	m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::SecureMode, this);
@@ -86,7 +81,7 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 			return;
 		}
 	}
-    m_pMemoryCacheServerInfo->serverStarted();
+    pServerInfo->serverStarted();
     // TODO save in database information about server started
 }
 
@@ -142,6 +137,8 @@ void WebSocketServer::onNewConnectionSSL(){
 // ---------------------------------------------------------------------
 
 void WebSocketServer::processTextMessage(QString message) {
+    EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
+
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     Log::info(TAG, "[WS] <<< " + message);
 
@@ -171,10 +168,8 @@ void WebSocketServer::processTextMessage(QString message) {
         pModelRequest->sendMessageError(cmd, Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
         return;
     }
-	
-	if(m_pMemoryCacheServerInfo != NULL){
-        m_pMemoryCacheServerInfo->incrementRequests(QString(cmd.c_str()));
-	}
+
+    pServerInfo->incrementRequests(QString(cmd.c_str()));
 	
 	// check access
     const ModelCommandAccess access = pCmdHandler->access();

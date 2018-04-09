@@ -5,7 +5,7 @@
 #include <iostream>
 #include <employ_settings.h>
 #include <employ_database.h>
-#include <memory_cache_serverinfo.h>
+#include <employ_server_info.h>
 #include <QtCore>
 
 /*****************************************
@@ -79,6 +79,7 @@ CmdHandlerPublicInfo::CmdHandlerPublicInfo()
 
 void CmdHandlerPublicInfo::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
 
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
@@ -87,16 +88,9 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest){
     auto jsonWinners = nlohmann::json::array();
     auto jsonCities = nlohmann::json::array();
 
-    // fill quests info
-    IMemoryCache *pMemoryCache = pRequest->server()->findMemoryCache("serverinfo");
-    if(pMemoryCache == NULL){
-        pRequest->sendMessageError(cmd(), Errors::InternalServerError());
-        return;
-    }
-    MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
-    jsonQuests["count"] = pMemoryCacheServerInfo->countQuests();
-    jsonQuests["attempts"] = pMemoryCacheServerInfo->countQuestsAttempt();
-    jsonQuests["solved"] = pMemoryCacheServerInfo->countQuestsCompleted();
+    jsonQuests["count"] = pServerInfo->countQuests();
+    jsonQuests["attempts"] = pServerInfo->countQuestsAttempt();
+    jsonQuests["solved"] = pServerInfo->countQuestsCompleted();
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -180,23 +174,17 @@ CmdHandlerServerInfo::CmdHandlerServerInfo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerServerInfo::handle(ModelRequest *pRequest){
-    QJsonObject jsonRequest = pRequest->data();
+    EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
+    // QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
     nlohmann::json data;
 
-    IMemoryCache *pMemoryCache = pRequest->server()->findMemoryCache("serverinfo");
-    if(pMemoryCache == NULL){
-        pRequest->sendMessageError(cmd(), Errors::InternalServerError());
-        return;
-    }
-
-    MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
-    nlohmann::json jsonRequestStatistics = pMemoryCacheServerInfo->toJson(); // TODO how much db connections and time
+    nlohmann::json jsonRequestStatistics = pServerInfo->toJson(); // TODO how much db connections and time
 
     data["request_statistics"] = jsonRequestStatistics;
-    data["server_started"] = pMemoryCacheServerInfo->getServerStart().toString(Qt::ISODate).toStdString();
+    data["server_started"] = pServerInfo->getServerStart().toString(Qt::ISODate).toStdString();
     qint64 updatime = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
-    updatime = updatime - pMemoryCacheServerInfo->getServerStart().toMSecsSinceEpoch();
+    updatime = updatime - pServerInfo->getServerStart().toMSecsSinceEpoch();
     data["server_uptime_sec"] = updatime/1000;
     data["last_log_messages"] = Log::last_logs();
     jsonResponse["data"] = data;

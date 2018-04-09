@@ -1,7 +1,7 @@
 #include <cmd_handler_quest_create.h>
 #include <runtasks.h>
-#include <memory_cache_serverinfo.h>
 #include <employ_database.h>
+#include <employ_server_info.h>
 #include <QJsonArray>
 #include <QCryptographicHash>
 
@@ -57,16 +57,10 @@ std::string CmdHandlerCreateQuest::description(){
 
 void CmdHandlerCreateQuest::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
 
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
-
-    IMemoryCache *pMemoryCache = pRequest->server()->findMemoryCache("serverinfo");
-    if(pMemoryCache == NULL){
-        pRequest->sendMessageError(cmd(), Errors::InternalServerError());
-        return;
-    }
-    MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -168,7 +162,7 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest){
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 		return;
 	}
-    pMemoryCacheServerInfo->incrementQuests();
+    pServerInfo->incrementQuests();
 
 	
 	int rowid = query.lastInsertId().toInt();

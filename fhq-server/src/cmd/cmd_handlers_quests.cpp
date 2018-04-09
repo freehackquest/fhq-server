@@ -5,7 +5,7 @@
 #include <employ_settings.h>
 #include <QCryptographicHash>
 #include <employ_database.h>
-#include <memory_cache_serverinfo.h>
+#include <employ_server_info.h>
 
 // *******************************************
 // *************** Quest List ****************
@@ -315,15 +315,10 @@ CmdHandlerQuestPass::CmdHandlerQuestPass()
 
 void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
+
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
-
-    IMemoryCache *pMemoryCache = pRequest->server()->findMemoryCache("serverinfo");
-    if(pMemoryCache == NULL){
-        pRequest->sendMessageError(cmd(), Errors::InternalServerError());
-        return;
-    }
-    MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -438,7 +433,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        pMemoryCacheServerInfo->incrementQuestsAttempt();
+        pServerInfo->incrementQuestsAttempt();
     }
 
     if(!bPassed){
@@ -458,7 +453,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
             return;
         }
     }
-    pMemoryCacheServerInfo->incrementQuestsCompleted();
+    pServerInfo->incrementQuestsCompleted();
 
 
     RunTasks::AddPublicEvents("quests", "User #" + QString::number(nUserID) + "  " + sNick

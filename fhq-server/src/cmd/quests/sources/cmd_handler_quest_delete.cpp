@@ -1,7 +1,7 @@
 #include <cmd_handler_quest_delete.h>
 #include <runtasks.h>
-#include <memory_cache_serverinfo.h>
 #include <employ_database.h>
+#include <employ_server_info.h>
 
 CmdHandlerQuestDelete::CmdHandlerQuestDelete(){
 
@@ -41,16 +41,10 @@ std::string CmdHandlerQuestDelete::description(){
 
 void CmdHandlerQuestDelete::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
 
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
-
-    IMemoryCache *pMemoryCache = pRequest->server()->findMemoryCache("serverinfo");
-    if(pMemoryCache == NULL){
-        pRequest->sendMessageError(cmd(), Errors::InternalServerError());
-        return;
-    }
-    MemoryCacheServerInfo *pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
 
     int questid = jsonRequest["questid"].toInt();
 	QString sName = "";
@@ -105,7 +99,7 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest){
 			return;
 		}
 	}
-    pMemoryCacheServerInfo->decrementQuests();
+    pServerInfo->decrementQuests();
 
     RunTasks::AddPublicEvents("quests", "Removed quest #" + QString::number(questid) + " " + sName + " (subject: " + sSubject + ")");
 
