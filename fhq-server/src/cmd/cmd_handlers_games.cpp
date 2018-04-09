@@ -11,6 +11,7 @@
 #include <log.h>
 #include <iostream>
 #include <employ_settings.h>
+#include <employ_database.h>
 #include <QFile>
 #include <QImage>
 
@@ -43,10 +44,13 @@ CmdHandlerGameCreate::CmdHandlerGameCreate()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
-
-    QSqlDatabase db = *(pRequest->server()->database());
+	
+	
+    QSqlDatabase db = *(pDatabase->database());
 
     QString sUUID = jsonRequest["uuid"].toString().trimmed();
     {
@@ -154,6 +158,8 @@ CmdHandlerGameDelete::CmdHandlerGameDelete()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
+	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+	
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
@@ -163,7 +169,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
     IUserToken *pUserToken = pRequest->userToken();
     int nUserID = pUserToken->userid();
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     // check admin password
     {
@@ -296,11 +302,13 @@ CmdHandlerGameExport::CmdHandlerGameExport()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameExport::handle(ModelRequest *pRequest){
+	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+	
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
     QString sUuid = jsonRequest["uuid"].toString();
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
     query.prepare("SELECT * FROM games WHERE uuid = :gameuuid");
@@ -441,13 +449,15 @@ CmdHandlerGameInfo::CmdHandlerGameInfo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameInfo::handle(ModelRequest *pRequest){
+	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+	
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
     nlohmann::json data;
 
     QString sUuid = jsonRequest["uuid"].toString().trimmed();
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
     query.prepare("SELECT * FROM games WHERE uuid = :gameuuid");
@@ -507,6 +517,8 @@ CmdHandlerGameUpdate::CmdHandlerGameUpdate()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
+	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+	
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
@@ -535,7 +547,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
     QString sDateStopPrev = "";
     QString sDateRestartPrev = "";
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM games WHERE uuid = :gameuuid");
@@ -705,13 +717,32 @@ CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
+	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+	
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
 
     int nGameID = jsonRequest["gameid"].toInt();
 
-    // TODO check existing game
+    QSqlDatabase db = *(pDatabase->database());
+    {
+        QSqlQuery query(db);
+        query.prepare("SELECT * FROM games WHERE id = :gameid");
+        query.bindValue(":gameid", nGameID);
+
+        if(!query.exec()){
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            return;
+        }
+
+        if (query.next()) {
+            // nothing
+        } else {
+            pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
+            return;
+        }
+    }
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
@@ -775,6 +806,8 @@ CmdHandlerGames::CmdHandlerGames()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGames::handle(ModelRequest *pRequest){
+	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+	
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
@@ -784,7 +817,7 @@ void CmdHandlerGames::handle(ModelRequest *pRequest){
 
     auto jsonGames = nlohmann::json::array();
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
     query.prepare("SELECT * FROM games ORDER BY games.date_start");
