@@ -5,10 +5,10 @@
 #include <QNetworkReply>
 #include <QEventLoop>
 #include <log.h>
+#include <employ_database.h>
 
-UpdateUserLocationTask::UpdateUserLocationTask(IWebSocketServer *pWebSocketServer, int userid, QString lastip){
+UpdateUserLocationTask::UpdateUserLocationTask(int userid, QString lastip){
 	m_nUserID = userid;
-	m_pWebSocketServer = pWebSocketServer;
 	mLastIP = lastip;
 	TAG = "UpdateUserLocationTask";
 }
@@ -19,8 +19,9 @@ UpdateUserLocationTask::~UpdateUserLocationTask(){
 
 void UpdateUserLocationTask::run(){
 	Log::info(TAG, "userid = " + QString::number(m_nUserID) + " start");
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-	QSqlDatabase db = *(m_pWebSocketServer->database());
+    QSqlDatabase db = *(pDatabase->database());
 	QSqlQuery query(db);
 	query.prepare("SELECT * FROM users WHERE id = :id");
 	query.bindValue(":id", m_nUserID);

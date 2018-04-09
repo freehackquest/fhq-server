@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QDir>
 #include <log.h>
+#include <employ_database.h>
 
 // IMemoryCache
 QString MemoryCacheServerInfo::name(){
@@ -101,7 +102,8 @@ void MemoryCacheServerInfo::incrementQuestsCompleted(){
 // ---------------------------------------------------------------------
 
 void MemoryCacheServerInfo::initCounters(){
-    QSqlDatabase db = *(m_pWebSocketServer->database());
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
 
     // count quests

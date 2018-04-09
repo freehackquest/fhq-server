@@ -9,7 +9,7 @@ class UpdateUserRatingTask : public QRunnable {
 	void run();
 
 	public:
-        UpdateUserRatingTask(IWebSocketServer *pWebSocketServer, int nUserID);
+        UpdateUserRatingTask(int nUserID);
         ~UpdateUserRatingTask();
 	private:
         int m_nUserID;

@@ -174,8 +174,8 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest){
 	int rowid = query.lastInsertId().toInt();
     jsonResponse["questid"] = QJsonValue(rowid);
 
-    RunTasks::AddPublicEvents(pRequest->server(), "quests", "New quest #" + QString::number(rowid) + " " + sName + " (subject: " + sSubject + ")");
-    RunTasks::UpdateMaxScoreGame(pRequest->server(),nGameID);
+    RunTasks::AddPublicEvents("quests", "New quest #" + QString::number(rowid) + " " + sName + " (subject: " + sSubject + ")");
+    RunTasks::UpdateMaxScoreGame(nGameID);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

@@ -9,28 +9,28 @@
 #include <QRunnable>
 #include <QThreadPool>
 
-void RunTasks::AddPublicEvents(IWebSocketServer *pWebSocketServer, QString type, QString message){
-	AddPublicEventsTask *pAddPublicEventsTask = new AddPublicEventsTask(pWebSocketServer, type, message);
+void RunTasks::AddPublicEvents(QString type, QString message){
+    AddPublicEventsTask *pAddPublicEventsTask = new AddPublicEventsTask(type, message);
 	QThreadPool::globalInstance()->start(pAddPublicEventsTask);
 }
 
-void RunTasks::UpdateMaxScoreGame(IWebSocketServer *pWebSocketServer, int gameid){
-    UpdateMaxScoreGameTask *pUpdateMaxScoreGameTask = new UpdateMaxScoreGameTask(pWebSocketServer, gameid);
+void RunTasks::UpdateMaxScoreGame(int gameid){
+    UpdateMaxScoreGameTask *pUpdateMaxScoreGameTask = new UpdateMaxScoreGameTask(gameid);
     QThreadPool::globalInstance()->start(pUpdateMaxScoreGameTask);
 }
 
-void RunTasks::UpdateQuestSolved(IWebSocketServer *pWebSocketServer, int nQuestID){
-    UpdateQuestSolvedTask *pUpdateQuestSolvedTask = new UpdateQuestSolvedTask(pWebSocketServer, nQuestID);
+void RunTasks::UpdateQuestSolved(int nQuestID){
+    UpdateQuestSolvedTask *pUpdateQuestSolvedTask = new UpdateQuestSolvedTask(nQuestID);
     QThreadPool::globalInstance()->start(pUpdateQuestSolvedTask);
 }
 
-void RunTasks::UpdateUserLocation(IWebSocketServer *pWebSocketServer, int userid, QString lastip){
-	UpdateUserLocationTask *pUpdateUserLocationTask = new UpdateUserLocationTask(pWebSocketServer, userid, lastip);
+void RunTasks::UpdateUserLocation(int userid, QString lastip){
+    UpdateUserLocationTask *pUpdateUserLocationTask = new UpdateUserLocationTask(userid, lastip);
 	QThreadPool::globalInstance()->start(pUpdateUserLocationTask);
 }
 
-void RunTasks::UpdateUserRating(IWebSocketServer *pWebSocketServer, int nUserID){
-    UpdateUserRatingTask *pUpdateUserRatingTask = new UpdateUserRatingTask(pWebSocketServer, nUserID);
+void RunTasks::UpdateUserRating(int nUserID){
+    UpdateUserRatingTask *pUpdateUserRatingTask = new UpdateUserRatingTask(nUserID);
     QThreadPool::globalInstance()->start(pUpdateUserRatingTask);
 }
 

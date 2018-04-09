@@ -115,7 +115,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
 				return;
 			}
 			sNamePrev = sName;
-            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated name of quest #" + QString::number(nQuestID) + " from [" + sNamePrev + "] to [" + sName + "]");
+            RunTasks::AddPublicEvents("quests", "Updated name of quest #" + QString::number(nQuestID) + " from [" + sNamePrev + "] to [" + sName + "]");
 		}
 	}
 
@@ -142,9 +142,9 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
                 pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-            RunTasks::UpdateMaxScoreGame(pRequest->server(),nGameID);
-            RunTasks::UpdateMaxScoreGame(pRequest->server(),nGameIDPrev);
-            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Moved quest #" + QString::number(nQuestID) + " from " + QString::number(nGameIDPrev) + " to " + QString::number(nGameID));
+            RunTasks::UpdateMaxScoreGame(nGameID);
+            RunTasks::UpdateMaxScoreGame(nGameIDPrev);
+            RunTasks::AddPublicEvents("quests", "Moved quest #" + QString::number(nQuestID) + " from " + QString::number(nGameIDPrev) + " to " + QString::number(nGameID));
 			nGameIDPrev = nGameID;
 		}
 	}
@@ -161,7 +161,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
                 pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated subject of quest #" + QString::number(nQuestID) + " " + sNamePrev);
+            RunTasks::AddPublicEvents("quests", "Updated subject of quest #" + QString::number(nQuestID) + " " + sNamePrev);
 			// TODO update skills of users in future
 		}
 	}
@@ -178,7 +178,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
                 pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated text of quest #" + QString::number(nQuestID) + " " + sNamePrev);
+            RunTasks::AddPublicEvents("quests", "Updated text of quest #" + QString::number(nQuestID) + " " + sNamePrev);
 		}
 	}
 	
@@ -194,8 +194,8 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
                 pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated score of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from " + QString::number(nScorePrev) + " to " + QString::number(nScore));
-            RunTasks::UpdateMaxScoreGame(pRequest->server(),nGameIDPrev);
+            RunTasks::AddPublicEvents("quests", "Updated score of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from " + QString::number(nScorePrev) + " to " + QString::number(nScore));
+            RunTasks::UpdateMaxScoreGame(nGameIDPrev);
 			// TODO update users reting/score
 		}
 	}
@@ -212,7 +212,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
                 pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated answer of quest #" + QString::number(nQuestID) + " " + sNamePrev);
+            RunTasks::AddPublicEvents("quests", "Updated answer of quest #" + QString::number(nQuestID) + " " + sNamePrev);
 		}
 	}
 	
@@ -228,7 +228,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
                 pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated author of quest #" + QString::number(nQuestID) + " " + sNamePrev);
+            RunTasks::AddPublicEvents("quests", "Updated author of quest #" + QString::number(nQuestID) + " " + sNamePrev);
 		}
 	}
 	
@@ -244,7 +244,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
                 pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated answer format of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sAnswerFormatPrev + "] to [" + sAnswerFormat + "]");
+            RunTasks::AddPublicEvents("quests", "Updated answer format of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sAnswerFormatPrev + "] to [" + sAnswerFormat + "]");
 		}
 	}
 	
@@ -260,7 +260,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
                 pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated state of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sStatePrev + "] to [" + sState + "]");
+            RunTasks::AddPublicEvents("quests", "Updated state of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sStatePrev + "] to [" + sState + "]");
 		}
 	}
 	
@@ -276,7 +276,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
                 pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
 				return;
 			}
-            RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated copyright of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sCopyrightPrev + "] to [" + sCopyright + "]");
+            RunTasks::AddPublicEvents("quests", "Updated copyright of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sCopyrightPrev + "] to [" + sCopyright + "]");
 		}
 	}
 	

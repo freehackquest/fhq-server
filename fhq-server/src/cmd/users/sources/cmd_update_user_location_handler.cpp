@@ -79,7 +79,7 @@ void CmdUpdateUserLocationHandler::handle(ModelRequest *pRequest){
 		}
 	}
 
-    RunTasks::UpdateUserLocation(pRequest->server(), userid, lastip);
+    RunTasks::UpdateUserLocation(userid, lastip);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

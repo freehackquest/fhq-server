@@ -168,7 +168,7 @@ void CmdRegistrationHandler::handle(ModelRequest *pRequest){
 
     int nUserID = query_insert.lastInsertId().toInt();
 
-    RunTasks::AddPublicEvents(pRequest->server(), "users", "New user #" + QString::number(nUserID) + "  " + sNick);
+    RunTasks::AddPublicEvents("users", "New user #" + QString::number(nUserID) + "  " + sNick);
 
     QString sSubject = "Registration on FreeHackQuest";
     QString sContext = "Welcome to FreeHackQuest 2017!\n"
@@ -178,5 +178,5 @@ void CmdRegistrationHandler::handle(ModelRequest *pRequest){
     RunTasks::MailSend(pRequest->server(), sEmail, sSubject, sContext);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
-    RunTasks::UpdateUserLocation(pRequest->server(), nUserID, sLastIP);
+    RunTasks::UpdateUserLocation(nUserID, sLastIP);
 }

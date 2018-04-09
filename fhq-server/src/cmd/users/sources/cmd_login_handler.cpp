@@ -112,7 +112,7 @@ void CmdLoginHandler::handle(ModelRequest *pRequest){
 
         // update user location
         QString lastip = pRequest->client()->peerAddress().toString();
-        RunTasks::UpdateUserLocation(pRequest->server(), userid, lastip);
+        RunTasks::UpdateUserLocation(userid, lastip);
 
     }else{
         Log::err(TAG, "Invalid login or password");

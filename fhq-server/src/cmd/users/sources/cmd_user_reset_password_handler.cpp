@@ -100,7 +100,7 @@ void CmdUserResetPasswordHandler::handle(ModelRequest *pRequest){
         return;
     }
 
-    RunTasks::AddPublicEvents(pRequest->server(), "users", "User comeback #" + QString::number(nUserID) + "  " + sNick);
+    RunTasks::AddPublicEvents("users", "User comeback #" + QString::number(nUserID) + "  " + sNick);
 
     QString sSubject = "Reset Password from FreeHackQuest";
     QString sContext = "Welcome back to FreeHackQuest!\n"

@@ -134,7 +134,7 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
     int rowid = query.lastInsertId().toInt();
     jsonResponse["questid"] = rowid;
 
-    RunTasks::AddPublicEvents(pRequest->server(), "games", "New game #" + QString::number(rowid) + " " + sName);
+    RunTasks::AddPublicEvents("games", "New game #" + QString::number(rowid) + " " + sName);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -584,7 +584,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated name of game {" + sUuid + "} from [" + sNamePrev + "] to [" + sName + "]");
+        RunTasks::AddPublicEvents("games", "Updated name of game {" + sUuid + "} from [" + sNamePrev + "] to [" + sName + "]");
         sNamePrev = sName;
     }
 
@@ -597,7 +597,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated type of game {" + sUuid + "} from [" + sTypePrev + "] to [" + sType + "]");
+        RunTasks::AddPublicEvents("games", "Updated type of game {" + sUuid + "} from [" + sTypePrev + "] to [" + sType + "]");
         sTypePrev = sType;
     }
 
@@ -610,7 +610,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated description of the game {" + sUuid + "}");
+        RunTasks::AddPublicEvents("games", "Updated description of the game {" + sUuid + "}");
         sDescriptionPrev = sDescription;
     }
 
@@ -623,7 +623,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated state of game {" + sUuid + "} from [" + sStatePrev + "] to [" + sState + "]");
+        RunTasks::AddPublicEvents("games", "Updated state of game {" + sUuid + "} from [" + sStatePrev + "] to [" + sState + "]");
         sStatePrev = sState;
     }
 
@@ -636,7 +636,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated form of game {" + sUuid + "} from [" + sFormPrev + "] to [" + sForm + "]");
+        RunTasks::AddPublicEvents("games", "Updated form of game {" + sUuid + "} from [" + sFormPrev + "] to [" + sForm + "]");
         sFormPrev = sForm;
     }
 
@@ -649,7 +649,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated organizators of game {" + sUuid + "}");
+        RunTasks::AddPublicEvents("games", "Updated organizators of game {" + sUuid + "}");
         sOrganizatorsPrev = sOrganizators;
     }
 
@@ -662,7 +662,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated date start of game {" + sUuid + "} from [" + sDateStartPrev + "] to [" + sDateStart + "]");
+        RunTasks::AddPublicEvents("games", "Updated date start of game {" + sUuid + "} from [" + sDateStartPrev + "] to [" + sDateStart + "]");
         sDateStartPrev = sDateStart;
     }
 
@@ -675,7 +675,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated date stop of game {" + sUuid + "} from [" + sDateStopPrev + "] to [" + sDateStop + "]");
+        RunTasks::AddPublicEvents("games", "Updated date stop of game {" + sUuid + "} from [" + sDateStopPrev + "] to [" + sDateStop + "]");
         sDateStopPrev = sDateStop;
     }
 
@@ -688,7 +688,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
             return;
         }
-        RunTasks::AddPublicEvents(pRequest->server(), "quests", "Updated date stop of game {" + sUuid + "} from [" + sDateRestartPrev + "] to [" + sDateRestart + "]");
+        RunTasks::AddPublicEvents("games", "Updated date stop of game {" + sUuid + "} from [" + sDateRestartPrev + "] to [" + sDateRestart + "]");
         sDateRestartPrev = sDateRestart;
     }
 

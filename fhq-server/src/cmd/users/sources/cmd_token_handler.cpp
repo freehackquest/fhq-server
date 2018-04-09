@@ -76,7 +76,7 @@ void CmdTokenHandler::handle(ModelRequest *pRequest){
         pRequest->server()->setUserToken(pRequest->client(), new ModelUserToken(data));
         Log::info(TAG, "userid: " + QString::number(userid));
         // TODO redesign this
-        RunTasks::UpdateUserLocation(pRequest->server(), userid, lastip);
+        RunTasks::UpdateUserLocation(userid, lastip);
 	}else{
 		Log::err(TAG, "Invalid token " + token);
 		// ["error"]

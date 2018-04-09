@@ -113,7 +113,7 @@ void CmdUserUpdateHandler::handle(ModelRequest *pRequest){
 	}
 
     pUserToken->setNick(sNick);
-    RunTasks::AddPublicEvents(pRequest->server(), "users", "User #" + QString::number(nUserID) + "  " + sNick
+    RunTasks::AddPublicEvents("users", "User #" + QString::number(nUserID) + "  " + sNick
                               + " updated info");
 
     data["id"] = nUserID;

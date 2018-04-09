@@ -184,7 +184,7 @@ void CmdUserCreateHandler::handle(ModelRequest *pRequest){
 
     int nUserID = query_insert.lastInsertId().toInt();
 
-    RunTasks::AddPublicEvents(pRequest->server(), "users", "New user #" + QString::number(nUserID) + "  " + sNick);
+    RunTasks::AddPublicEvents("users", "New user #" + QString::number(nUserID) + "  " + sNick);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

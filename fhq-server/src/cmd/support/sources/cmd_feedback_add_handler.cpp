@@ -76,7 +76,7 @@ void CmdFeedbackAddHandler::handle(ModelRequest *pRequest){
         return;
     }
 
-    RunTasks::AddPublicEvents(pRequest->server(), "users", "Added feedback");
+    RunTasks::AddPublicEvents("users", "Added feedback");
 	
     QString sMailToAdmin = pSettings->getSettString("mail_system_message_admin_email");
     QString sSubject = "Feedback (FreeHackQuest 2017)";

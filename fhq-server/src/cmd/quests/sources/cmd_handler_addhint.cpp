@@ -74,6 +74,6 @@ void CmdHandlerAddHint::handle(ModelRequest *pRequest){
 		Log::err(TAG, query.lastError().text());
 	}
 
-    RunTasks::AddPublicEvents(pRequest->server(), "quests", "Added hint for quest #" + QString::number(nQuestId));
+    RunTasks::AddPublicEvents("quests", "Added hint for quest #" + QString::number(nQuestId));
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

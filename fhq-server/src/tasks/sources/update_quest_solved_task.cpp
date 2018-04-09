@@ -5,12 +5,12 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QEventLoop>
+#include <employ_database.h>
 
-UpdateQuestSolvedTask::UpdateQuestSolvedTask(IWebSocketServer *pWebSocketServer, int nQuestID){
-	m_pWebSocketServer = pWebSocketServer;
+UpdateQuestSolvedTask::UpdateQuestSolvedTask(int nQuestID){
     m_nQuestID = nQuestID;
     TAG = "UpdateQuestSolvedTask";
-};
+}
 
 UpdateQuestSolvedTask::~UpdateQuestSolvedTask(){
 	
@@ -18,7 +18,8 @@ UpdateQuestSolvedTask::~UpdateQuestSolvedTask(){
 
 void UpdateQuestSolvedTask::run(){
     Log::info(TAG, "questid " + QString::number(m_nQuestID));
-	QSqlDatabase db = *(m_pWebSocketServer->database());
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
     query.prepare("UPDATE quest q "

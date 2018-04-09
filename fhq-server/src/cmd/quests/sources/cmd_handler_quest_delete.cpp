@@ -107,7 +107,7 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest){
 	}
     pMemoryCacheServerInfo->decrementQuests();
 
-    RunTasks::AddPublicEvents(pRequest->server(), "quests", "Removed quest #" + QString::number(questid) + " " + sName + " (subject: " + sSubject + ")");
+    RunTasks::AddPublicEvents("quests", "Removed quest #" + QString::number(questid) + " " + sName + " (subject: " + sSubject + ")");
 
 	// todo recalculate rating/score for users how solved this quest
 

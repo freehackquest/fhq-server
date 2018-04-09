@@ -298,13 +298,6 @@ void WebSocketServer::sendToAll(QJsonObject obj){
 }
 
 // ---------------------------------------------------------------------
-// deprecated
-QSqlDatabase *WebSocketServer::database(){
-	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-	return pDatabase->database();
-}
-
-// ---------------------------------------------------------------------
 
 // TODO move to EmployUsers
 

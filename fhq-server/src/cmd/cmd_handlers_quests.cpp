@@ -461,11 +461,11 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
     pMemoryCacheServerInfo->incrementQuestsCompleted();
 
 
-    RunTasks::AddPublicEvents(pRequest->server(), "quests", "User #" + QString::number(nUserID) + "  " + sNick
+    RunTasks::AddPublicEvents("quests", "User #" + QString::number(nUserID) + "  " + sNick
                               + " passed quest #" + QString::number(nQuestID) + " " + sQuestName);
 
-    RunTasks::UpdateUserRating(pRequest->server(), nUserID);
-    RunTasks::UpdateQuestSolved(pRequest->server(), nQuestID);
+    RunTasks::UpdateUserRating(nUserID);
+    RunTasks::UpdateQuestSolved(nQuestID);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

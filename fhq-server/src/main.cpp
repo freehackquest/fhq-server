@@ -20,6 +20,7 @@
 #include <create_unit_tests.h>
 #include <employees.h>
 #include <employ_server_info.h>
+#include <employ_database.h>
 
 int main(int argc, char** argv) {
 	QCoreApplication a(argc, argv);
@@ -96,8 +97,9 @@ int main(int argc, char** argv) {
 
     QObject::connect(pServer, &WebSocketServer::closed, &a, &QCoreApplication::quit);
     
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     // TODO redesign to check config
-    QSqlDatabase *db = pServer->database();
+    QSqlDatabase *db = pDatabase->database();
     if (!db->open()){
 		return -1;
 	}
