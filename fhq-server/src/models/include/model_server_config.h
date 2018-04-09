@@ -4,7 +4,6 @@
 #include <iserver.h>
 
 #include <QString>
-#include <QJsonObject>
 #include <QSettings>
 
 class ModelServerConfig {
