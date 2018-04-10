@@ -2,8 +2,7 @@
 #define EMPLOY_SCOREBOARD_H
 
 #include <employees.h>
-#include <QVector>
-#include <QJsonArray>
+#include <json.hpp>
 
 class EmployScoreboard : public EmployBase {
     public:
@@ -13,22 +12,26 @@ class EmployScoreboard : public EmployBase {
 
        void loadSync();
        int count();
-       QJsonArray toJsonArray();
+       nlohmann::json toJson();
+       
+       void asyncUpdatedQuestScore(int nQuestID);
+       void asyncUpdatedUserRating(int nUserID);
+       void asyncUpdatedLeaksScore(int nUserID);
 
    private:
        struct User{
            int userid = 0;
-           QString logo = "";
-           QString nick = "";
-           QString university = "";
+           std::string logo = "";
+           std::string nick = "";
+           std::string university = "";
        };
 
        struct ScoreboardRow {
            int place = 0;
            int rating = 0;
-           QVector<User *> vUsers;
+           std::vector<User *> vUsers;
        };
-       QVector<ScoreboardRow *> m_vRows;
+       std::vector<ScoreboardRow *> m_vRows;
        int findScoreboardRowByRating(int rating);
 };
 

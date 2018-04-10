@@ -2,7 +2,8 @@
 #include <QJsonArray>
 #include <employ_scoreboard.h>
 
-CmdScoreboardHandler::CmdScoreboardHandler(){
+CmdScoreboardHandler::CmdScoreboardHandler()
+	: CmdHandlerBase("scoreboard", "Method return scoreboard"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -15,34 +16,9 @@ CmdScoreboardHandler::CmdScoreboardHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdScoreboardHandler::cmd(){
-	return "scoreboard";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdScoreboardHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdScoreboardHandler::inputs(){
-	return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdScoreboardHandler::description(){
-	return "Method return scoreboard";
-}
-
-// ---------------------------------------------------------------------
-
 void CmdScoreboardHandler::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
-
+    nlohmann::json jsonResponse;
 
     int nPage = jsonRequest["page"].toInt();
     jsonResponse["page"] = nPage;
@@ -61,7 +37,7 @@ void CmdScoreboardHandler::handle(ModelRequest *pRequest){
 		filters << "(u.nick like :nick)";
 		filter_values[":nick"] = "%" + user + "%";
 	}
-	
+
 	filters << "(rating > 0)";
 
 	QString where = filters.join(" AND "); 
@@ -69,18 +45,11 @@ void CmdScoreboardHandler::handle(ModelRequest *pRequest){
 		where = "WHERE " + where;
 	}
 
-	
-    IMemoryCache *pMemoryCache = pRequest->server()->findMemoryCache("scoreboard");
-	if(pMemoryCache == NULL){
-        pRequest->sendMessageError(cmd(), Errors::InternalServerError());
-		return;
-	}
-
     EmployScoreboard *pScoreboard = findEmploy<EmployScoreboard>();
     pScoreboard->loadSync();
 
     jsonResponse["count"] = pScoreboard->count();
-    jsonResponse["data"] = pScoreboard->toJsonArray();
+    jsonResponse["data"] = pScoreboard->toJson();
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
