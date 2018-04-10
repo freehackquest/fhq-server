@@ -1,8 +1,15 @@
-#include <cmd_scoreboard_handler.h>
-#include <QJsonArray>
+#include <cmd_handlers_users.h>
+#include <log.h>
+#include <runtasks.h>
+#include <log.h>
+#include <iostream>
+#include <employ_settings.h>
+#include <employ_database.h>
+#include <employ_server_info.h>
 #include <employ_scoreboard.h>
+#include <QtCore>
 
-CmdScoreboardHandler::CmdScoreboardHandler()
+CmdHandlerUsersScoreboard::CmdHandlerUsersScoreboard()
 	: CmdHandlerBase("scoreboard", "Method return scoreboard"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
@@ -16,7 +23,7 @@ CmdScoreboardHandler::CmdScoreboardHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdScoreboardHandler::handle(ModelRequest *pRequest){
+void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 

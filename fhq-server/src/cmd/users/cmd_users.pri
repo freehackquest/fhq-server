@@ -14,7 +14,6 @@ HEADERS += \
     $$PWD/include/cmd_sendchatmessage_handler.h \
     $$PWD/include/cmd_token_handler.h \
     $$PWD/include/cmd_getmap_handler.h \
-    $$PWD/include/cmd_scoreboard_handler.h \
     $$PWD/include/cmd_user_create_handler.h \
     $$PWD/include/cmd_user_delete_handler.h
 
@@ -31,6 +30,5 @@ SOURCES += \
     $$PWD/sources/cmd_sendchatmessage_handler.cpp \
     $$PWD/sources/cmd_token_handler.cpp \
     $$PWD/sources/cmd_getmap_handler.cpp \
-    $$PWD/sources/cmd_scoreboard_handler.cpp \
     $$PWD/sources/cmd_user_create_handler.cpp \
     $$PWD/sources/cmd_user_delete_handler.cpp
