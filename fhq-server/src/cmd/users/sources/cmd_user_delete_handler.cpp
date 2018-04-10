@@ -10,7 +10,7 @@ CmdUserDeleteHandler::CmdUserDeleteHandler()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("uuid").required().uuid_().description("User's uuid"));
+    m_vInputs.push_back(CmdInputDef("userid").required().integer_().description("User's id"));
     m_vInputs.push_back(CmdInputDef("password").required().string_().description("Admin's password"));
 }
 
@@ -60,15 +60,13 @@ void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
         }
     }
 
-    QString sUuid = jsonRequest["uuid"].toString().trimmed();
-
-    int nUserID = 0;
+    int sUserID = jsonRequest["userid"].toInt();
 
     // check if the user exists
     {
         QSqlQuery query(db);
-        query.prepare("SELECT * FROM users WHERE uuid = :uuid");
-        query.bindValue(":uuid", sUuid);
+        query.prepare("SELECT * FROM users WHERE id = :id");
+        query.bindValue(":id", sUserID);
 
         if(!query.exec()){
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
@@ -78,9 +76,6 @@ void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
         if(!query.next()) {
             pRequest->sendMessageError(cmd(), Error(404, "User not found"));
             return;
-        }else{
-            QSqlRecord record = query.record();
-            nUserID = record.value("id").toInt();
         }
     }
 
@@ -89,7 +84,7 @@ void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
     // delete from feedback
     {
         query_del.prepare("DELETE FROM feedback WHERE userid = :userid");
-        query_del.bindValue(":userid", nUserID);
+        query_del.bindValue(":userid", sUserID);
         if(!query_del.exec()){
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
             return;
@@ -99,7 +94,7 @@ void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
     // delete from feedback_msg
     {
         query_del.prepare("DELETE FROM feedback_msg WHERE userid = :userid");
-        query_del.bindValue(":userid", nUserID);
+        query_del.bindValue(":userid", sUserID);
         if(!query_del.exec()){
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
             return;
@@ -109,7 +104,7 @@ void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
     // delete from quest
     {
         query_del.prepare("DELETE FROM quest WHERE userid = :userid");
-        query_del.bindValue(":userid", nUserID);
+        query_del.bindValue(":userid", sUserID);
         if(!query_del.exec()){
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
             return;
@@ -119,7 +114,7 @@ void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
     // delete from users_games
     {
         query_del.prepare("DELETE FROM users_games WHERE userid = :userid");
-        query_del.bindValue(":userid", nUserID);
+        query_del.bindValue(":userid", sUserID);
         if(!query_del.exec()){
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
             return;
@@ -129,7 +124,7 @@ void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
     // delete from users_profile
     {
         query_del.prepare("DELETE FROM users_profile WHERE userid = :userid");
-        query_del.bindValue(":userid", nUserID);
+        query_del.bindValue(":userid", sUserID);
         if(!query_del.exec()){
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
             return;
@@ -139,7 +134,7 @@ void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
     // delete from users_quests
     {
         query_del.prepare("DELETE FROM users_quests WHERE userid = :userid");
-        query_del.bindValue(":userid", nUserID);
+        query_del.bindValue(":userid", sUserID);
         if(!query_del.exec()){
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
             return;
@@ -149,7 +144,7 @@ void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
     // delete from users_tokens
     {
         query_del.prepare("DELETE FROM users_tokens WHERE userid = :userid");
-        query_del.bindValue(":userid", nUserID);
+        query_del.bindValue(":userid", sUserID);
         if(!query_del.exec()){
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
             return;
@@ -159,7 +154,7 @@ void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
     // delete from users_tokens_invalid
     {
         query_del.prepare("DELETE FROM users_tokens_invalid WHERE userid = :userid");
-        query_del.bindValue(":userid", nUserID);
+        query_del.bindValue(":userid", sUserID);
         if(!query_del.exec()){
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
             return;
@@ -169,7 +164,7 @@ void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
     // delete from users_offers
     {
         query_del.prepare("DELETE FROM users_offers WHERE userid = :userid");
-        query_del.bindValue(":userid", nUserID);
+        query_del.bindValue(":userid", sUserID);
         if(!query_del.exec()){
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
             return;
@@ -179,7 +174,7 @@ void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
     // delete from quests_proposal
     {
         query_del.prepare("DELETE FROM quests_proposal WHERE userid = :userid");
-        query_del.bindValue(":userid", nUserID);
+        query_del.bindValue(":userid", sUserID);
         if(!query_del.exec()){
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
             return;
@@ -189,7 +184,7 @@ void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
     // delete from users_quests_answers
     {
         query_del.prepare("DELETE FROM users_quests_answers WHERE userid = :userid");
-        query_del.bindValue(":userid", nUserID);
+        query_del.bindValue(":userid", sUserID);
         if(!query_del.exec()){
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
             return;
@@ -198,8 +193,8 @@ void CmdUserDeleteHandler::handle(ModelRequest *pRequest){
 
     // delete from users
     {
-        query_del.prepare("DELETE FROM users WHERE uuid = :uuid");
-        query_del.bindValue(":uuid", sUuid);
+        query_del.prepare("DELETE FROM users WHERE id = :id");
+        query_del.bindValue(":id", sUserID);
         if(!query_del.exec()){
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
             return;
