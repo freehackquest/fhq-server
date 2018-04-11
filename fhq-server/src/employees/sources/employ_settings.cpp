@@ -13,7 +13,7 @@ REGISTRY_EMPLOY(EmploySettings)
 
 EmploySettings::EmploySettings()
     : EmployBase(EmploySettings::name(), {EmployDatabase::name()}){
-	TAG = QString(EmploySettings::name().c_str());
+    TAG = EmploySettings::name();
 }
 
 // ---------------------------------------------------------------------
@@ -21,10 +21,10 @@ EmploySettings::EmploySettings()
 bool EmploySettings::init(){
 	Log::info(TAG, "Start init settings");
 
-    QString sGroupProfile = "profile";
+    std::string sGroupProfile = "profile";
     addNewSetting(new ServerSettHelper(sGroupProfile, "profile_change_nick", true));
 
-    QString sGroupMail = "mail";
+    std::string sGroupMail = "mail";
     addNewSetting(new ServerSettHelper(sGroupMail, "mail_from", QString("fhqdebug@gmail.com")));
     addNewSetting(new ServerSettHelper(sGroupMail, "mail_host", QString("smtp.gmail.com")));
     addNewSetting(new ServerSettHelper(sGroupMail, "mail_port", 465));
@@ -35,11 +35,11 @@ bool EmploySettings::init(){
     addNewSetting(new ServerSettHelper(sGroupMail, "mail_system_message_admin_email", QString("")));
 
     // Google Map API
-    QString sGroupGoogleMap = "google_map";
+    std::string sGroupGoogleMap = "google_map";
     addNewSetting(new ServerSettHelper(sGroupGoogleMap, "google_map_api_key", QString("some")));
 
     // server folders
-    QString sGroupServerFolders = "server_folders";
+    std::string sGroupServerFolders = "server_folders";
     addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_games", QString("/var/www/html/fhq/files/games/")));
     addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_games_url", QString("https://freehackquest.com/files/games/")));
     addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_quests", QString("/var/www/html/fhq/files/quests/")));
@@ -47,7 +47,7 @@ bool EmploySettings::init(){
     addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_users", QString("/var/www/html/fhq/files/quests/")));
     addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_users_url", QString("https://freehackquest.com/files/quests/")));
 
-    QStringList listFoundInDatabase;
+    std::vector<std::string> vFoundInDatabase;
 
 	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
@@ -59,14 +59,14 @@ bool EmploySettings::init(){
         query.exec();
         while (query.next()) {
             QSqlRecord record = query.record();
-            QString sName = record.value("name").toString();
+            std::string sName = record.value("name").toString().toStdString();
             QString sValue = record.value("value").toString();
-            QString sType = record.value("type").toString();
-            QString sGroup = record.value("group").toString();
+            std::string sType = record.value("type").toString().toStdString();
+            std::string sGroup = record.value("group").toString().toStdString();
 
-            listFoundInDatabase << sName;
+            vFoundInDatabase.push_back(sName);
 
-            if(m_mapSettings.contains(sName)){
+            if(m_mapSettings.count(sName)){
                 ServerSettHelper *pServerSettHelper = m_mapSettings[sName];
                 if(sType != pServerSettHelper->type()){
                     Log::err(TAG, "Wrong type for setting '" + sName + "' (expected '" + pServerSettHelper->type() + "', but got: '" + sType + "'");
@@ -92,9 +92,12 @@ bool EmploySettings::init(){
     }
 
     // check string settings in database
-    foreach( QString sKey, m_mapSettings.keys()){
-        if(!listFoundInDatabase.contains(sKey)){
-            ServerSettHelper *pServerSettHelper = m_mapSettings.value(sKey);
+    std::map<std::string, ServerSettHelper*>::iterator it = m_mapSettings.begin();
+    for (; it!=m_mapSettings.end(); ++it){
+        std::string sName = it->first;
+        // ServerSettHelper *pServerSettHelper = it->second;
+        if(!m_mapSettings.count(sName)){
+            ServerSettHelper *pServerSettHelper = m_mapSettings.at(sName);
             initSettingDatabase(pServerSettHelper);
         }
     }
@@ -104,9 +107,9 @@ bool EmploySettings::init(){
 // ---------------------------------------------------------------------
 
 void EmploySettings::addNewSetting(ServerSettHelper* pServerSettHelper){
-    QString sName = pServerSettHelper->name();
-    if(!m_mapSettings.contains(sName)){
-        m_mapSettings[sName] = pServerSettHelper;
+    std::string sName = pServerSettHelper->name();
+    if(!m_mapSettings.count(sName)){
+        m_mapSettings.insert(std::pair<std::string, ServerSettHelper*>(sName,pServerSettHelper));
     }else{
         Log::warn(TAG, "Duplicate setting '" + sName + "'. Skip");
     }
@@ -115,11 +118,11 @@ void EmploySettings::addNewSetting(ServerSettHelper* pServerSettHelper){
 
 // ---------------------------------------------------------------------
 
-QString EmploySettings::getSettString(QString sName){
+QString EmploySettings::getSettString(const std::string &sName){
     QMutexLocker locker (&m_mtxServerSettings);
     QString sResult = "";
-    if(m_mapSettings.contains(sName)){
-        ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
+    if(m_mapSettings.count(sName)){
+        ServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
         if(!pServerSettHelper->isString()){
             Log::err(TAG, "Wrong type setting string (get): " + sName);
         }else{
@@ -133,10 +136,10 @@ QString EmploySettings::getSettString(QString sName){
 
 // ---------------------------------------------------------------------
 
-void EmploySettings::setSettString(QString sName, QString sValue){
+void EmploySettings::setSettString(const std::string &sName, QString sValue){
     QMutexLocker locker (&m_mtxServerSettings);
-    if(m_mapSettings.contains(sName)){
-        ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
+    if(m_mapSettings.count(sName)){
+        ServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
         if(!pServerSettHelper->isString()){
             Log::err(TAG, "Wrong type setting string (set): " + sName);
         }else{
@@ -150,11 +153,11 @@ void EmploySettings::setSettString(QString sName, QString sValue){
 
 // ---------------------------------------------------------------------
 
-QString EmploySettings::getSettPassword(QString sName){
+QString EmploySettings::getSettPassword(const std::string &sName){
     QMutexLocker locker (&m_mtxServerSettings);
     QString sResult = "";
-    if(m_mapSettings.contains(sName)){
-        ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
+    if(m_mapSettings.count(sName)){
+        ServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
         if(!pServerSettHelper->isPassword()){
             Log::err(TAG, "Wrong type setting password (get): " + sName);
         }else{
@@ -168,10 +171,10 @@ QString EmploySettings::getSettPassword(QString sName){
 
 // ---------------------------------------------------------------------
 
-void EmploySettings::setSettPassword(QString sName, QString sValue){
+void EmploySettings::setSettPassword(const std::string &sName, QString sValue){
     QMutexLocker locker (&m_mtxServerSettings);
-    if(m_mapSettings.contains(sName)){
-        ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
+    if(m_mapSettings.count(sName)){
+        ServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
         if(!pServerSettHelper->isPassword()){
             Log::err(TAG, "Wrong type setting string (set): " + sName);
         }else{
@@ -185,11 +188,11 @@ void EmploySettings::setSettPassword(QString sName, QString sValue){
 
 // ---------------------------------------------------------------------
 
-int EmploySettings::getSettInteger(QString sName){
+int EmploySettings::getSettInteger(const std::string &sName){
     QMutexLocker locker (&m_mtxServerSettings);
     int nResult = 0;
-    if(m_mapSettings.contains(sName)){
-        ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
+    if(m_mapSettings.count(sName)){
+        ServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
         if(!pServerSettHelper->isInteger()){
             Log::err(TAG, "Wrong type setting integer (get): " + sName);
         }else{
@@ -203,10 +206,10 @@ int EmploySettings::getSettInteger(QString sName){
 
 // ---------------------------------------------------------------------
 
-void EmploySettings::setSettInteger(QString sName, int nValue){
+void EmploySettings::setSettInteger(const std::string &sName, int nValue){
     QMutexLocker locker (&m_mtxServerSettings);
-    if(m_mapSettings.contains(sName)){
-        ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
+    if(m_mapSettings.count(sName)){
+        ServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
         if(!pServerSettHelper->isInteger()){
             Log::err(TAG, "Wrong type setting integer (set): " + sName);
         }else{
@@ -220,11 +223,11 @@ void EmploySettings::setSettInteger(QString sName, int nValue){
 
 // ---------------------------------------------------------------------
 
-bool EmploySettings::getSettBoolean(QString sName){
+bool EmploySettings::getSettBoolean(const std::string &sName){
     QMutexLocker locker (&m_mtxServerSettings);
     bool bResult = false;
-    if(m_mapSettings.contains(sName)){
-        ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
+    if(m_mapSettings.count(sName)){
+        ServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
         if(!pServerSettHelper->isBoolean()){
             Log::err(TAG, "Wrong type setting boolean (get): " + sName);
         }else{
@@ -238,10 +241,10 @@ bool EmploySettings::getSettBoolean(QString sName){
 
 // ---------------------------------------------------------------------
 
-void EmploySettings::setSettBoolean(QString sName, bool bValue){
+void EmploySettings::setSettBoolean(const std::string &sName, bool bValue){
     QMutexLocker locker (&m_mtxServerSettings);
-    if(m_mapSettings.contains(sName)){
-        ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
+    if(m_mapSettings.count(sName)){
+        ServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
         if(!pServerSettHelper->isBoolean()){
             Log::err(TAG, "Wrong type setting boolean (set): " + sName);
         }else{
@@ -255,17 +258,17 @@ void EmploySettings::setSettBoolean(QString sName, bool bValue){
 
 // ---------------------------------------------------------------------
 
-bool EmploySettings::hasSett(QString sName){
-    return m_mapSettings.contains(sName);
+bool EmploySettings::hasSett(const std::string &sName){
+    return m_mapSettings.count(sName) != 0;
 }
 
 // ---------------------------------------------------------------------
 
-QString EmploySettings::getSettType(QString sName){
-    if(m_mapSettings.contains(sName)){
-        return m_mapSettings[sName]->type();
+const std::string &EmploySettings::getSettType(const std::string &sName){
+    if(m_mapSettings.count(sName)){
+        return m_mapSettings.at(sName)->type();
     }
-    return "";
+    return SETT_TYPE_UNKNOWN;
 }
 
 // ---------------------------------------------------------------------
@@ -273,11 +276,13 @@ QString EmploySettings::getSettType(QString sName){
 nlohmann::json EmploySettings::toJson(){
     auto jsonSettings = nlohmann::json::array();
 
-    foreach( QString sName, m_mapSettings.keys()){
-        ServerSettHelper* pServerSettHelper = m_mapSettings.value(sName);
+    std::map<std::string, ServerSettHelper*>::iterator it = m_mapSettings.begin();
+    for (; it!=m_mapSettings.end(); ++it){
+        std::string sName = it->first;
+        ServerSettHelper *pServerSettHelper = it->second;
 
         nlohmann::json jsonSett;
-        jsonSett["name"] = pServerSettHelper->name().toStdString();
+        jsonSett["name"] = pServerSettHelper->name();
         if(pServerSettHelper->isBoolean()){
             jsonSett["value"] = pServerSettHelper->valueAsBoolean();
         }else if(pServerSettHelper->isString()){
@@ -290,8 +295,8 @@ nlohmann::json EmploySettings::toJson(){
             jsonSett["value"] = pServerSettHelper->valueAsString().toStdString();
         }
 
-        jsonSett["group"] = pServerSettHelper->group().toStdString();
-        jsonSett["type"] = pServerSettHelper->type().toStdString();
+        jsonSett["group"] = pServerSettHelper->group();
+        jsonSett["type"] = pServerSettHelper->type();
         jsonSettings.push_back(jsonSett);
     }
     return jsonSettings;
@@ -305,12 +310,12 @@ void EmploySettings::initSettingDatabase(ServerSettHelper *pServerSettHelper){
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("INSERT INTO settings (`name`, `value`, `group`, `type`) VALUES (:name, :value, :group, :type)");
-    query.bindValue(":name", pServerSettHelper->name());
+    query.bindValue(":name", QString(pServerSettHelper->name().c_str()));
     query.bindValue(":value", pServerSettHelper->valueAsString());
-    query.bindValue(":group", pServerSettHelper->group());
-    query.bindValue(":type", pServerSettHelper->type());
+    query.bindValue(":group", QString(pServerSettHelper->group().c_str()));
+    query.bindValue(":type", QString(pServerSettHelper->type().c_str()));
     if(!query.exec()){
-        Log::err(TAG, query.lastError().text());
+        Log::err(TAG, query.lastError().text().toStdString());
     }
 }
 
@@ -322,9 +327,9 @@ void EmploySettings::updateSettingDatabase(ServerSettHelper *pServerSettHelper){
     QSqlQuery query(db);
     query.prepare("UPDATE settings SET value = :value WHERE name = :name");
     query.bindValue(":value", pServerSettHelper->valueAsString());
-    query.bindValue(":name", pServerSettHelper->name());
+    query.bindValue(":name", QString(pServerSettHelper->name().c_str()));
     if(!query.exec()){
-        Log::err(TAG, query.lastError().text());
+        Log::err(TAG, query.lastError().text().toStdString());
     }
 }
 

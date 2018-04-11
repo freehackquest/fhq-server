@@ -8,11 +8,11 @@ class ServerSettHelper {
 
 public:
     ServerSettHelper();
-    ServerSettHelper(QString sGroup, QString sName, QString sValue, bool bPassword = false);
-    ServerSettHelper(QString sGroup, QString sName, bool bValue);
-    ServerSettHelper(QString sGroup, QString sName, int nValue);
+    ServerSettHelper(const std::string &sGroup, const std::string &sName, QString sValue, bool bPassword = false);
+    ServerSettHelper(const std::string &sGroup, const std::string &sName, bool bValue);
+    ServerSettHelper(const std::string &sGroup, const std::string &sName, int nValue);
 
-    QString name();
+    const std::string &name();
     QString valueAsString();
     QString valueAsPassword();
     int valueAsInteger();
@@ -21,28 +21,30 @@ public:
     void setValue(bool bValue);
     void setValue(int nValue);
 
-    QString group();
-    QString type();
+    const std::string &group();
+    const std::string &type();
     bool isBoolean();
     bool isString();
     bool isInteger();
     bool isPassword();
 
 private:
+    std::string TAG;
 
-    QString m_sName;
+    std::string m_sName;
     QString m_sValueAsString;
     int m_nValueAsInteger;
     bool m_bValueAsBoolean;
-    QString m_sType;
-    QString m_sGroup;
+    std::string m_sType;
+    std::string m_sGroup;
 
-    QString TAG;
+
 };
 
-static QString SETT_TYPE_STRING = "string";
-static QString SETT_TYPE_BOOLEAN = "boolean";
-static QString SETT_TYPE_INTEGER = "integer";
-static QString SETT_TYPE_PASSWORD = "password";
+static std::string SETT_TYPE_UNKNOWN = "unknown";
+static std::string SETT_TYPE_STRING = "string";
+static std::string SETT_TYPE_BOOLEAN = "boolean";
+static std::string SETT_TYPE_INTEGER = "integer";
+static std::string SETT_TYPE_PASSWORD = "password";
 
 #endif // SERVERSETT_HELPER_H

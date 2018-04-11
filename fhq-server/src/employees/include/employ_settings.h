@@ -13,17 +13,17 @@ public:
     static std::string name() { return "EmploySettings"; }
     virtual bool init();
 
-    QString getSettString(QString name);
-    void setSettString(QString sName, QString sValue);
-    QString getSettPassword(QString name);
-    void setSettPassword(QString sName, QString sValue);
-    int getSettInteger(QString sName);
-    void setSettInteger(QString sName, int nValue);
-    bool getSettBoolean(QString sName);
-    void setSettBoolean(QString sName, bool bValue);
+    QString getSettString(const std::string &name);
+    void setSettString(const std::string &sName, QString sValue);
+    QString getSettPassword(const std::string &name);
+    void setSettPassword(const std::string &sName, QString sValue);
+    int getSettInteger(const std::string &sName);
+    void setSettInteger(const std::string &sName, int nValue);
+    bool getSettBoolean(const std::string &sName);
+    void setSettBoolean(const std::string &sName, bool bValue);
 
-    bool hasSett(QString sName);
-    QString getSettType(QString sName);
+    bool hasSett(const std::string &sName);
+    const std::string &getSettType(const std::string &sName);
 
     nlohmann::json toJson();
 
@@ -33,10 +33,10 @@ private:
     void initSettingDatabase(ServerSettHelper* pServerSettHelper);
     void updateSettingDatabase(ServerSettHelper* pServerSettHelper);
 
-    QMap<QString, ServerSettHelper*> m_mapSettings;
+    std::map<std::string, ServerSettHelper*> m_mapSettings;
 
     QMutex m_mtxServerSettings;
-    QString TAG;
+    std::string TAG;
 };
 
 #endif // EMPLOY_SETTINGS_H

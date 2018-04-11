@@ -14,7 +14,7 @@ ServerSettHelper::ServerSettHelper(){
 
 // ---------------------------------------------------------------------
 
-ServerSettHelper::ServerSettHelper(QString sGroup, QString sName, QString sValue, bool bPassword) : ServerSettHelper(){
+ServerSettHelper::ServerSettHelper(const std::string &sGroup, const std::string &sName, QString sValue, bool bPassword) : ServerSettHelper(){
     m_sName = sName;
     m_sType = bPassword ? SETT_TYPE_PASSWORD : SETT_TYPE_STRING;
     m_sValueAsString = sValue;
@@ -25,7 +25,7 @@ ServerSettHelper::ServerSettHelper(QString sGroup, QString sName, QString sValue
 
 // ---------------------------------------------------------------------
 
-ServerSettHelper::ServerSettHelper(QString sGroup, QString sName, bool bValue) : ServerSettHelper(){
+ServerSettHelper::ServerSettHelper(const std::string &sGroup, const std::string &sName, bool bValue) : ServerSettHelper(){
     m_sName = sName;
     m_sType = SETT_TYPE_BOOLEAN;
     m_sValueAsString = bValue ? "yes" : "no";
@@ -36,7 +36,7 @@ ServerSettHelper::ServerSettHelper(QString sGroup, QString sName, bool bValue) :
 
 // ---------------------------------------------------------------------
 
-ServerSettHelper::ServerSettHelper(QString sGroup, QString sName, int nValue) : ServerSettHelper(){
+ServerSettHelper::ServerSettHelper(const std::string &sGroup, const std::string &sName, int nValue) : ServerSettHelper(){
     m_sName = sName;
     m_sType = SETT_TYPE_INTEGER;
     m_sValueAsString = QString::number(nValue);
@@ -47,7 +47,7 @@ ServerSettHelper::ServerSettHelper(QString sGroup, QString sName, int nValue) : 
 
 // ---------------------------------------------------------------------
 
-QString ServerSettHelper::name(){
+const std::string &ServerSettHelper::name(){
     return m_sName;
 }
 
@@ -97,13 +97,13 @@ void ServerSettHelper::setValue(int nValue){
 
 // ---------------------------------------------------------------------
 
-QString ServerSettHelper::group(){
+const std::string &ServerSettHelper::group(){
     return m_sGroup;
 }
 
 // ---------------------------------------------------------------------
 
-QString ServerSettHelper::type(){
+const std::string &ServerSettHelper::type(){
     return m_sType;
 }
 

@@ -241,15 +241,16 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest){
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
-    QString sName = jsonRequest["name"].toString();
+    std::string sName = jsonRequest["name"].toString().toStdString();
     QString sNewValue = jsonRequest["value"].toString();
 
     if(!pSettings->hasSett(sName)){
-        pRequest->sendMessageError(cmd(), Errors::NotFound("Setting with name: " + sName + " did not found"));
+        std::string sError = "Setting with name: " + sName + " did not found";
+        pRequest->sendMessageError(cmd(), Errors::NotFound(QString(sError.c_str())));
         return;
     }
 
-    QString sType = pSettings->getSettType(sName);
+    std::string sType = pSettings->getSettType(sName);
 
     if(sType == SETT_TYPE_STRING){
         pSettings->setSettString(sName, sNewValue);
