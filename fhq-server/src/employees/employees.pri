@@ -9,6 +9,7 @@ HEADERS += \
     $$PWD/include/employ_server_info.h \
     $$PWD/include/employ_database.h \
     $$PWD/include/employ_scoreboard.h \
+    $$PWD/include/employ_leaks.h \
 
 SOURCES += \
     $$PWD/employees.cpp \
@@ -17,3 +18,4 @@ SOURCES += \
     $$PWD/sources/employ_server_info.cpp \
     $$PWD/sources/employ_database.cpp \
     $$PWD/sources/employ_scoreboard.cpp \
+    $$PWD/sources/employ_leaks.cpp \
