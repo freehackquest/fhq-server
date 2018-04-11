@@ -21,13 +21,11 @@ class LXDContainer {
         bool start();
         bool stop();
         bool remove();
-        bool read_file(QFile & file);
+        bool read_file(std::string path, QFile & file);
         std::string exec(std::string);
 
 
     private:
-        std::string lxd_address;
-        std::string path_dir_lxc_ssl;
         std::string response;
         std::string name;
         std::string status;
