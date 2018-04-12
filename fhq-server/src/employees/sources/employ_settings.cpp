@@ -115,7 +115,6 @@ void EmploySettings::addNewSetting(ServerSettHelper* pServerSettHelper){
     }
 }
 
-
 // ---------------------------------------------------------------------
 
 QString EmploySettings::getSettString(const std::string &sName){
