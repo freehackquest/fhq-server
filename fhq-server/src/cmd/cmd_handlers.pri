@@ -1,4 +1,5 @@
 
+INCLUDEPATH += $$PWD/include
 INCLUDEPATH += $$PWD
 
 HEADERS += \
@@ -8,6 +9,7 @@ HEADERS += \
     $$PWD/cmd_handlers_server.h \
     $$PWD/cmd_handlers_users.h \
     $$PWD/cmd_handlers_quests.h \
+    $$PWD/include/cmd_handlers_mails.h \
 
 SOURCES += \
     $$PWD/cmd_handlers.cpp \
@@ -16,3 +18,4 @@ SOURCES += \
     $$PWD/cmd_handlers_server.cpp \
     $$PWD/cmd_handlers_users.cpp \
     $$PWD/cmd_handlers_quests.cpp \
+    $$PWD/sources/cmd_handlers_mails.cpp \

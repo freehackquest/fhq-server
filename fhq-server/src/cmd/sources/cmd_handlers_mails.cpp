@@ -1,9 +1,123 @@
-#include <cmd_handler_mails_list.h>
-#include <QJsonArray>
-#include <SmtpMime>
-// #include <memory_cache_serverinfo.h>
+#include <cmd_handlers_mails.h>
+#include <log.h>
+#include <runtasks.h>
+#include <log.h>
+#include <iostream>
 #include <employ_settings.h>
 #include <employ_database.h>
+#include <employ_server_info.h>
+#include <QtCore>
+#include <SmtpMime>
+
+/*****************************************
+ * Mail Info
+ *****************************************/
+
+
+CmdHandlerMailInfo::CmdHandlerMailInfo(){
+    TAG = "CmdHandlerMailInfo";
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
+}
+
+// ---------------------------------------------------------------------
+
+std::string CmdHandlerMailInfo::cmd(){
+        return "mail_info";
+}
+
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdHandlerMailInfo::access(){
+    return m_modelCommandAccess;
+}
+
+// ---------------------------------------------------------------------
+
+const std::vector<CmdInputDef> &CmdHandlerMailInfo::inputs(){
+    return m_vInputs;
+}
+
+// ---------------------------------------------------------------------
+
+std::string CmdHandlerMailInfo::description(){
+        return "Mails list";
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerMailInfo::handle(ModelRequest *pRequest){
+    // QJsonObject jsonRequest = pRequest->data();
+    // QJsonObject jsonResponse;
+
+    pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
+}
+
+/*****************************************
+ * Send Mail
+ *****************************************/
+
+
+CmdHandlerMailSend::CmdHandlerMailSend(){
+    TAG = "CmdHandlerMailSend";
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
+    m_vInputs.push_back(CmdInputDef("to").required().email_().description("E-mail of the recipient"));
+    m_vInputs.push_back(CmdInputDef("subject").required().string_().description("Subject of the message"));
+    m_vInputs.push_back(CmdInputDef("body").required().string_().description("Body of the message"));
+
+}
+
+// ---------------------------------------------------------------------
+
+std::string CmdHandlerMailSend::cmd(){
+        return "mail_send";
+}
+
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdHandlerMailSend::access(){
+    return m_modelCommandAccess;
+}
+
+// ---------------------------------------------------------------------
+
+const std::vector<CmdInputDef> &CmdHandlerMailSend::inputs(){
+    return m_vInputs;
+}
+
+// ---------------------------------------------------------------------
+
+std::string CmdHandlerMailSend::description(){
+        return "Mails list";
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerMailSend::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+
+    QString sEmail = jsonRequest["to"].toString();
+    QString sSubject = jsonRequest["subject"].toString();
+    QString sBody = jsonRequest["body"].toString();
+
+    RunTasks::MailSend(pRequest->server(), sEmail, sSubject, sBody);
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+/*****************************************
+ * MailsList
+ *****************************************/
 
 CmdHandlerMailsList::CmdHandlerMailsList(){
     TAG = "CmdHandlerMailsList";
@@ -35,7 +149,7 @@ const ModelCommandAccess & CmdHandlerMailsList::access(){
 // ---------------------------------------------------------------------
 
 const std::vector<CmdInputDef> &CmdHandlerMailsList::inputs(){
-	return m_vInputs;
+    return m_vInputs;
 }
 
 // ---------------------------------------------------------------------
