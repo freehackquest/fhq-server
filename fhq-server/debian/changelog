@@ -1,5 +1,5 @@
-fhq-server (0.2.0-0ppa0) xenial; urgency=low
+fhq-server (0.2.1-0ppa0) xenial; urgency=low
 
-  * Initial upload!
+  * Added all sources
 
- -- Free Hack Quest <freehackquest@gmail.com>  Sat, 24 Mar 2018 22:18:48 +0700
+ -- Free Hack Quest <freehackquest@gmail.com>  Sat, 14 Apr 2018 02:05:49 +0700
