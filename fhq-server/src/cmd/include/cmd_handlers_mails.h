@@ -7,20 +7,11 @@
  * This handler will be return info about mail
  * */
 
-class CmdHandlerMailInfo : public ICmdHandler {
+class CmdHandlerMailInfo : public CmdHandlerBase {
 
     public:
         CmdHandlerMailInfo();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdHandlerMailInfo)
@@ -29,20 +20,11 @@ REGISTRY_CMD(CmdHandlerMailInfo)
  * This handler will be send mail by admin
  * */
 
-class CmdHandlerMailSend : public ICmdHandler {
+class CmdHandlerMailSend : public CmdHandlerBase {
 
     public:
         CmdHandlerMailSend();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdHandlerMailSend)
@@ -51,20 +33,11 @@ REGISTRY_CMD(CmdHandlerMailSend)
  * This handler will be list of mails
  * */
 
-class CmdHandlerMailsList : public ICmdHandler {
+class CmdHandlerMailsList : public CmdHandlerBase {
 
     public:
         CmdHandlerMailsList();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdHandlerMailsList)

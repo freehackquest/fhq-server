@@ -14,7 +14,8 @@
  *****************************************/
 
 
-CmdHandlerMailInfo::CmdHandlerMailInfo(){
+CmdHandlerMailInfo::CmdHandlerMailInfo()
+    : CmdHandlerBase("mail_info", "This method Will be return info of mail"){
     TAG = "CmdHandlerMailInfo";
 
     m_modelCommandAccess.setAccessUnauthorized(false);
@@ -22,30 +23,6 @@ CmdHandlerMailInfo::CmdHandlerMailInfo(){
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerMailInfo::cmd(){
-        return "mail_info";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerMailInfo::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdHandlerMailInfo::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerMailInfo::description(){
-        return "Mails list";
 }
 
 // ---------------------------------------------------------------------
@@ -61,9 +38,8 @@ void CmdHandlerMailInfo::handle(ModelRequest *pRequest){
  * Send Mail
  *****************************************/
 
-
-CmdHandlerMailSend::CmdHandlerMailSend(){
-    TAG = "CmdHandlerMailSend";
+CmdHandlerMailSend::CmdHandlerMailSend()
+    : CmdHandlerBase("mail_send", "Mail Send"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -74,30 +50,6 @@ CmdHandlerMailSend::CmdHandlerMailSend(){
     m_vInputs.push_back(CmdInputDef("subject").required().string_().description("Subject of the message"));
     m_vInputs.push_back(CmdInputDef("body").required().string_().description("Body of the message"));
 
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerMailSend::cmd(){
-        return "mail_send";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerMailSend::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdHandlerMailSend::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerMailSend::description(){
-        return "Mails list";
 }
 
 // ---------------------------------------------------------------------
@@ -119,7 +71,8 @@ void CmdHandlerMailSend::handle(ModelRequest *pRequest){
  * MailsList
  *****************************************/
 
-CmdHandlerMailsList::CmdHandlerMailsList(){
+CmdHandlerMailsList::CmdHandlerMailsList()
+    : CmdHandlerBase("mails_list", "Mails list"){
     TAG = "CmdHandlerMailsList";
 
     m_modelCommandAccess.setAccessUnauthorized(false);
@@ -132,30 +85,6 @@ CmdHandlerMailsList::CmdHandlerMailsList(){
     m_vInputs.push_back(CmdInputDef("filter_message").string_().optional().description("Filter by message"));
     m_vInputs.push_back(CmdInputDef("onpage").integer_().optional().description("On page"));
     m_vInputs.push_back(CmdInputDef("page").integer_().optional().description("page"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerMailsList::cmd(){
-        return "mails_list";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerMailsList::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdHandlerMailsList::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerMailsList::description(){
-        return "Mails list";
 }
 
 // ---------------------------------------------------------------------
