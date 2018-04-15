@@ -2,8 +2,8 @@
 #include <log.h>
 #include <employ_database.h>
 
-CmdUserDeleteHandler::CmdUserDeleteHandler(){
-    TAG = "CmdUsersDeleteHandler";
+CmdUserDeleteHandler::CmdUserDeleteHandler()
+    : CmdHandlerBase("user_delete", "Method for deleting a user"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -12,30 +12,6 @@ CmdUserDeleteHandler::CmdUserDeleteHandler(){
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("uuid").required().uuid_().description("User's uuid"));
     m_vInputs.push_back(CmdInputDef("password").required().string_().description("Admin's password"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdUserDeleteHandler::cmd(){
-    return "user_delete";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdUserDeleteHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdUserDeleteHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdUserDeleteHandler::description(){
-    return "Method for deleting a user";
 }
 
 // ---------------------------------------------------------------------
