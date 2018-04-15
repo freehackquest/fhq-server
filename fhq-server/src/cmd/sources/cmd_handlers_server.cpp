@@ -33,10 +33,10 @@ void CmdHandlerServerApi::handle(ModelRequest *pRequest){
     result["ssl_port"] = m_pServerConfig->serverPort();*/
 
     auto jsonHandlers = nlohmann::json::array();
-    std::map<std::string, ICmdHandler *>::iterator it = g_pCmdHandlers->begin();
+    std::map<std::string, CmdHandlerBase *>::iterator it = g_pCmdHandlers->begin();
     while(it != g_pCmdHandlers->end()){
         std::string sCmd = it->first;
-        ICmdHandler *pHandler = g_pCmdHandlers->at(sCmd);
+        CmdHandlerBase *pHandler = g_pCmdHandlers->at(sCmd);
 
         nlohmann::json jsonHandler;
 
@@ -126,8 +126,6 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest){
             jsonCities.push_back(city);
         }
     }
-
-
 
     // TODO get from cache
     {

@@ -1,7 +1,7 @@
 #ifndef CMD_HADNLERS_MAILS_H
 #define CMD_HADNLERS_MAILS_H
 
-#include <cmd_handler_base.h>
+#include <cmd_handlers.h>
 
 /*!
  * This handler will be return info about mail

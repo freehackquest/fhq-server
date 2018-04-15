@@ -1,7 +1,7 @@
 #ifndef CMD_HANDLERS_QUESTS_H
 #define CMD_HANDLERS_QUESTS_H
 
-#include <cmd_handler_base.h>
+#include <cmd_handlers.h>
 
 // *********************************************
 // *************** List of Quests **************

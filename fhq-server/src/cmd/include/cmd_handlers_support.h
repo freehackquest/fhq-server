@@ -1,7 +1,7 @@
 #ifndef CMD_HADNLERS_SUPPORT_H
 #define CMD_HADNLERS_SUPPORT_H
 
-#include <cmd_handler_base.h>
+#include <cmd_handlers.h>
 
 /*!
  * This handler for add support

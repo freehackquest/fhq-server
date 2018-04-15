@@ -1501,7 +1501,6 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest){
 /*!
  * This handler will be prepare classbook proposal record
  * */
-
 CmdClassbookProposalPrepareMergeRecordHandler::CmdClassbookProposalPrepareMergeRecordHandler()
     : CmdHandlerBase("classbook_propasal_prepare_merge_record", "Prepare to merge updating requests"){
 

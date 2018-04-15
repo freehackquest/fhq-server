@@ -2,7 +2,6 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
-    $$PWD/icmdhandler.h \
     $$PWD/imemorycache.h \
     $$PWD/iserver.h \
     $$PWD/iupdate.h \

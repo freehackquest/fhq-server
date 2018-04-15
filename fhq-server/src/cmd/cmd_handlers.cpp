@@ -1,28 +1,96 @@
 #include <log.h>
 #include <cmd_handlers.h>
 
+// ****************************
+// **** CmdHandlerBase
+// ****************************
+
 // ---------------------------------------------------------------------
 
-std::map<std::string, ICmdHandler*> *g_pCmdHandlers = NULL;
+CmdHandlerBase::CmdHandlerBase(const std::string &sCmd, const std::string &sDescription){
+    m_sCmd = sCmd;
+    m_sDescription = sDescription;
+    TAG = "CmdHandlerBase(" + sCmd + ")";
 
-ICmdHandler * findCmdHandler(const std::string &cmd){
-    ICmdHandler *pCmdHandler = NULL;
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(false);
 
+    // can register in global variable
+    CmdHandlers::addHandler(sCmd, this);
+}
+
+// ---------------------------------------------------------------------
+
+std::string CmdHandlerBase::cmd(){
+    return m_sCmd;
+}
+
+// ---------------------------------------------------------------------
+
+std::string CmdHandlerBase::description(){
+    return m_sDescription;
+}
+
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdHandlerBase::access(){
+    return m_modelCommandAccess;
+}
+
+// ---------------------------------------------------------------------
+
+const std::vector<CmdInputDef> &CmdHandlerBase::inputs(){
+    return m_vInputs;
+}
+
+// ---------------------------------------------------------------------
+
+// ****************************
+// **** CmdHandlers Map
+// ****************************
+
+std::map<std::string, CmdHandlerBase*> *g_pCmdHandlers = NULL;
+
+// ****************************
+// **** CmdHandlers
+// ****************************
+
+void CmdHandlers::initGlobalVariables(){
     if(g_pCmdHandlers == NULL){
-        return NULL;
+        Log::info(std::string(), "Create handlers map");
+        g_pCmdHandlers = new std::map<std::string, CmdHandlerBase*>();
     }
+}
 
-    if(g_pCmdHandlers->count(cmd)){
-        pCmdHandler = g_pCmdHandlers->at(cmd);
+// ---------------------------------------------------------------------
+
+void CmdHandlers::addHandler(const std::string &sCmd, CmdHandlerBase* pCmdHandler){
+    CmdHandlers::initGlobalVariables();
+    if(g_pCmdHandlers->count(sCmd)){
+        Log::err(sCmd, "Already registered");
+    }else{
+        g_pCmdHandlers->insert(std::pair<std::string, CmdHandlerBase*>(sCmd,pCmdHandler));
+        Log::info(sCmd, "Registered");
+    }
+}
+
+// ---------------------------------------------------------------------
+
+CmdHandlerBase * CmdHandlers::findCmdHandler(const std::string &sCmd){
+    CmdHandlers::initGlobalVariables();
+    CmdHandlerBase *pCmdHandler = NULL;
+
+    if(g_pCmdHandlers->count(sCmd)){
+        pCmdHandler = g_pCmdHandlers->at(sCmd);
     }
 
     if(pCmdHandler == NULL){
-        Log::err("findCmdHandler", "Not found cmd_handler " + QString(cmd.c_str()));
+        Log::err(sCmd, "Not found");
     }
 
     return pCmdHandler;
 }
-
 
 // ---------------------------------------------------------------------
 

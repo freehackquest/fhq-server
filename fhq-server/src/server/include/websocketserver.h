@@ -13,6 +13,7 @@
 #include <QtNetwork/QSslError>
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 #include <error.h>
 #include <database_connection.h>
@@ -59,7 +60,7 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		void onSslErrors(const QList<QSslError> &errors);
 
 	private:
-        bool validateInputParameters(Error &error, ICmdHandler *pCmdHandler, QJsonObject &jsonRequest);
+        bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler, QJsonObject &jsonRequest);
 		
 		QWebSocketServer *m_pWebSocketServer;
 		QWebSocketServer *m_pWebSocketServerSSL;

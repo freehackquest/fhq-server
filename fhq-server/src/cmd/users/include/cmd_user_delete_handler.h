@@ -2,7 +2,7 @@
 #define CMD_USER_DELETE_HANDLER_H
 
 #include <iserver.h>
-#include <cmd_handler_base.h>
+#include <cmd_handlers.h>
 
 class CmdUserDeleteHandler : public CmdHandlerBase {
     public:

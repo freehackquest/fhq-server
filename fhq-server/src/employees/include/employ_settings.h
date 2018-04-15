@@ -6,6 +6,7 @@
 #include <serversetthelper.h>
 
 #include <QString>
+#include <QMutex>
 
 class EmploySettings : public EmployBase {
 public:

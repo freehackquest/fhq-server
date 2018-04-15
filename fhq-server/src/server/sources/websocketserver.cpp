@@ -158,7 +158,7 @@ void WebSocketServer::processTextMessage(QString message) {
 		return;
 	}
 
-    ICmdHandler *pCmdHandler = findCmdHandler(cmd);
+    CmdHandlerBase *pCmdHandler = CmdHandlers::findCmdHandler(cmd);
     if(pCmdHandler == NULL){
         Log::warn(TAG, "Unknown command: " + QString(cmd.c_str()));
         pModelRequest->sendMessageError(cmd, Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
@@ -317,7 +317,7 @@ IMemoryCache *WebSocketServer::findMemoryCache(QString name){
 // ---------------------------------------------------------------------
 
 // TODO move to EmployValidateInput
-bool WebSocketServer::validateInputParameters(Error &error, ICmdHandler *pCmdHandler, QJsonObject &jsonRequest){
+bool WebSocketServer::validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler, QJsonObject &jsonRequest){
     const std::vector<CmdInputDef> vInputs = pCmdHandler->inputs();
     for(unsigned int i = 0; i < vInputs.size(); i++){
 		CmdInputDef inDef = vInputs[i];

@@ -109,8 +109,6 @@ list (APPEND FHQSRV_SOURCES "src/3rdParty/smtp/mimecontentformatter.cpp")
 # cmd
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.cpp")
-list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handler_base.h")
-list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handler_base.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_users.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_users.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_classbook.h")

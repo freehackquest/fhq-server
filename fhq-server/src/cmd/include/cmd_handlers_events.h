@@ -1,7 +1,7 @@
 #ifndef CMD_HADNLERS_EVENTS_H
 #define CMD_HADNLERS_EVENTS_H
 
-#include <cmd_handler_base.h>
+#include <cmd_handlers.h>
 
 /*!
  * This handler will be create public event

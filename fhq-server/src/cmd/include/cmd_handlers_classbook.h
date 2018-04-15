@@ -1,7 +1,7 @@
 #ifndef CMD_HADNLERS_CLASSBOOK_H
 #define CMD_HADNLERS_CLASSBOOK_H
 
-#include <cmd_handler_base.h>
+#include <cmd_handlers.h>
 #include <QFile>
 
 /*!
