@@ -336,5 +336,24 @@ class CmdClassbookProposalPrepareMergeRecordHandler : public ICmdHandler {
 
 REGISTRY_CMD(CmdClassbookProposalPrepareMergeRecordHandler)
 
+/*!
+ * This handler will be return classbook content (duplicate handler ? )
+ * */
+
+class CmdClassbookHandler : public ICmdHandler {
+
+    public:
+        CmdClassbookHandler();
+        virtual std::string cmd();
+        virtual std::string description();
+        virtual const ModelCommandAccess &access();
+        virtual const std::vector<CmdInputDef> &inputs();
+        virtual void handle(ModelRequest *pRequest);
+
+    private:
+        QString TAG;
+        ModelCommandAccess m_modelCommandAccess;
+        std::vector<CmdInputDef> m_vInputs;
+};
 
 #endif // CMD_HADNLERS_CLASSBOOK_H

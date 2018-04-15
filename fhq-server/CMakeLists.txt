@@ -130,10 +130,6 @@ list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_support.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/users/include/cmd_user_delete_handler.h") # deprecated
 list (APPEND FHQSRV_SOURCES "src/cmd/users/sources/cmd_user_delete_handler.cpp") # deprecated
 
-# cmd / classbook
-list (APPEND FHQSRV_SOURCES "src/cmd/classbook/sources/cmd_classbook_handler.cpp")
-
-
 # models
 list (APPEND FHQSRV_SOURCES "src/models/include/serversetthelper.h")
 list (APPEND FHQSRV_SOURCES "src/models/include/cmd_input_def.h")
