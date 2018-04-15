@@ -7,7 +7,7 @@ Homepage: https://freehackquest.com
 
 Package: fhq-server
 Architecture: any
-Depends: libwebsockets8, libqt5websockets5, libcurl4-openssl-dev, zlibc, zlib1g
+Depends: libqt5websockets5, zlibc, zlib1g
 Description: FreeHackQuest Server
  This is an open source platform for competitions in computer security.
 
