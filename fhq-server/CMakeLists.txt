@@ -119,10 +119,16 @@ list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handler_base.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_games.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_server.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_users.cpp")
-list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_quests.h")
-list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_quests.cpp")
+list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_classbook.h")
+list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_classbook.cpp")
+list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_events.h")
+list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_events.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_mails.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_mails.cpp")
+list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_quests.h")
+list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_quests.cpp")
+list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_support.h")
+list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_support.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/users/include/cmd_user_delete_handler.h") # deprecated
 list (APPEND FHQSRV_SOURCES "src/cmd/users/sources/cmd_user_delete_handler.cpp") # deprecated
 

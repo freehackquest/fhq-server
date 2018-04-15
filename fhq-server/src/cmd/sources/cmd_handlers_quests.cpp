@@ -1374,7 +1374,6 @@ void CmdHandlerAddHint::handle(ModelRequest *pRequest){
 // ************ Quest AnswerList **************
 // *******************************************
 
-
 CmdHandlerAnswerList::CmdHandlerAnswerList()
     : CmdHandlerBase("answerlist", "Return user answers list"){
 
