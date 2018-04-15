@@ -469,7 +469,8 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
 // ************** Quest Create ***************
 // *******************************************
 
-CmdHandlerCreateQuest::CmdHandlerCreateQuest(){
+CmdHandlerCreateQuest::CmdHandlerCreateQuest()
+    : CmdHandlerBase("createquest", "Method will be create new quest"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -491,30 +492,6 @@ CmdHandlerCreateQuest::CmdHandlerCreateQuest(){
     m_vInputs.push_back(CmdInputDef("answer_format").string_().required().description("Answer format for the quest"));
     m_vInputs.push_back(CmdInputDef("state").string_().required().description("State of the quest, can be: open, broken, closed"));
     m_vInputs.push_back(CmdInputDef("description_state").string_().required().description("You can add some descriptions for quest state"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerCreateQuest::cmd(){
-    return "createquest";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerCreateQuest::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdHandlerCreateQuest::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerCreateQuest::description(){
-    return "Create the quest";
 }
 
 // ---------------------------------------------------------------------
@@ -643,7 +620,8 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest){
 // *******************************************
 
 
-CmdHandlerQuestDelete::CmdHandlerQuestDelete(){
+CmdHandlerQuestDelete::CmdHandlerQuestDelete()
+    : CmdHandlerBase("quest_delete", "Method for delete quest"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -651,30 +629,6 @@ CmdHandlerQuestDelete::CmdHandlerQuestDelete(){
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest ID"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerQuestDelete::cmd(){
-    return "quest_delete";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerQuestDelete::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdHandlerQuestDelete::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerQuestDelete::description(){
-    return "Method for delete quest";
 }
 
 // ---------------------------------------------------------------------
@@ -754,7 +708,8 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest){
 // *******************************************
 
 
-CmdHandlerQuestProposal::CmdHandlerQuestProposal(){
+CmdHandlerQuestProposal::CmdHandlerQuestProposal()
+    : CmdHandlerBase("quest_proposal", "Add quest proposal"){
     TAG = "CmdQuestProposalHandler";
 
     m_modelCommandAccess.setAccessUnauthorized(false);
@@ -773,30 +728,6 @@ CmdHandlerQuestProposal::CmdHandlerQuestProposal(){
     m_vInputs.push_back(CmdInputDef("subject").string_().required().description("Subject must be one from types (look types)"));
     m_vInputs.push_back(CmdInputDef("answer").string_().required().description("Answer for the quest"));
     m_vInputs.push_back(CmdInputDef("answer_format").string_().required().description("Answer format for the quest"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerQuestProposal::cmd(){
-        return "quest_proposal";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerQuestProposal::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdHandlerQuestProposal::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerQuestProposal::description(){
-        return "Add quest proposal ";
 }
 
 // ---------------------------------------------------------------------
@@ -936,8 +867,9 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest){
 // ************** Quest Statistics ***********
 // *******************************************
 
+CmdHandlerQuestStatistics::CmdHandlerQuestStatistics()
+    : CmdHandlerBase("quest_statistics", "Mehtod will be return quest public statistics"){
 
-CmdHandlerQuestStatistics::CmdHandlerQuestStatistics(){
     TAG = "CmdHandlerQuestStatistics";
 
     m_modelCommandAccess.setAccessUnauthorized(true);
@@ -946,30 +878,6 @@ CmdHandlerQuestStatistics::CmdHandlerQuestStatistics(){
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("questid").integer_().required().description("Quest ID"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerQuestStatistics::cmd(){
-    return "quest_statistics";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerQuestStatistics::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdHandlerQuestStatistics::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerQuestStatistics::description(){
-    return "Update the quest info";
 }
 
 // ---------------------------------------------------------------------
@@ -1084,7 +992,8 @@ void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest){
 // *******************************************
 
 
-CmdHandlerQuestUpdate::CmdHandlerQuestUpdate(){
+CmdHandlerQuestUpdate::CmdHandlerQuestUpdate()
+    : CmdHandlerBase("quest_update", "Update the quest info"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -1106,30 +1015,6 @@ CmdHandlerQuestUpdate::CmdHandlerQuestUpdate(){
     m_vInputs.push_back(CmdInputDef("answer_format").string_().optional().description("Answer format for the quest"));
     m_vInputs.push_back(CmdInputDef("state").string_().optional().description("State of the quest, can be: open, broken, closed"));
     m_vInputs.push_back(CmdInputDef("description_state").string_().optional().description("You can add some descriptions for quest state"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerQuestUpdate::cmd(){
-    return "quest_update";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerQuestUpdate::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdHandlerQuestUpdate::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerQuestUpdate::description(){
-    return "Update the quest info";
 }
 
 // ---------------------------------------------------------------------
@@ -1384,7 +1269,8 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
 // *******************************************
 
 
-CmdHandlerQuestsSubjects::CmdHandlerQuestsSubjects(){
+CmdHandlerQuestsSubjects::CmdHandlerQuestsSubjects()
+    : CmdHandlerBase("quests_subjects", "Method returned list of quests by subjects"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -1393,30 +1279,6 @@ CmdHandlerQuestsSubjects::CmdHandlerQuestsSubjects(){
     // validation and description input fields
     // m_vInputs.push_back(CmdInputDef("filter_text").string_().optional().description("Filter by user email or nick"));
     // m_vInputs.push_back(CmdInputDef("filter_role").string_().optional().description("Filter by user role"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerQuestsSubjects::cmd(){
-    return "quests_subjects";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerQuestsSubjects::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdHandlerQuestsSubjects::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerQuestsSubjects::description(){
-    return "Method returned list of games";
 }
 
 // ---------------------------------------------------------------------
@@ -1457,8 +1319,8 @@ void CmdHandlerQuestsSubjects::handle(ModelRequest *pRequest){
 // *******************************************
 
 
-CmdHandlerAddHint::CmdHandlerAddHint(){
-    TAG = "CmdHandlerAddHint";
+CmdHandlerAddHint::CmdHandlerAddHint()
+    : CmdHandlerBase("addhint", "Methid add hint to quest"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -1467,30 +1329,6 @@ CmdHandlerAddHint::CmdHandlerAddHint(){
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("quest id"));
     m_vInputs.push_back(CmdInputDef("hint").required().string_().description("hint text"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerAddHint::cmd(){
-    return "addhint";
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerAddHint::description(){
-    return "Methid add hint to quest";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerAddHint::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdHandlerAddHint::inputs(){
-    return m_vInputs;
 }
 
 // ---------------------------------------------------------------------
@@ -1525,7 +1363,7 @@ void CmdHandlerAddHint::handle(ModelRequest *pRequest){
     query.bindValue(":questid", nQuestId);
     query.bindValue(":text", QString(sHint.c_str()));
     if(!query.exec()){
-        Log::err(TAG, query.lastError().text());
+        Log::err(TAG, query.lastError().text().toStdString());
     }
 
     RunTasks::AddPublicEvents("quests", "Added hint for quest #" + QString::number(nQuestId));
@@ -1537,7 +1375,9 @@ void CmdHandlerAddHint::handle(ModelRequest *pRequest){
 // *******************************************
 
 
-CmdHandlerAnswerList::CmdHandlerAnswerList(){
+CmdHandlerAnswerList::CmdHandlerAnswerList()
+    : CmdHandlerBase("answerlist", "Return user answers list"){
+
     TAG = "CmdHandlerAnswerList";
 
     m_modelCommandAccess.setAccessUnauthorized(false);
@@ -1549,30 +1389,6 @@ CmdHandlerAnswerList::CmdHandlerAnswerList(){
     m_vInputs.push_back(CmdInputDef("onpage").required().integer_().description("How much rows on page"));
     m_vInputs.push_back(CmdInputDef("questid").optional().integer_().description("Filter for questid"));
     m_vInputs.push_back(CmdInputDef("userid").optional().integer_().description("Filter for userid"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerAnswerList::cmd(){
-    return "answerlist";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerAnswerList::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdHandlerAnswerList::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerAnswerList::description(){
-    return "Return user answer list";
 }
 
 // ---------------------------------------------------------------------
@@ -1732,7 +1548,8 @@ void CmdHandlerAnswerList::handle(ModelRequest *pRequest){
 // *******************************************
 
 
-CmdHandlerDeleteHint::CmdHandlerDeleteHint(){
+CmdHandlerDeleteHint::CmdHandlerDeleteHint()
+    : CmdHandlerBase("deletehint", "Method for delete hint from quest"){
     TAG = "CmdHandlerDeleteHint";
 
     m_modelCommandAccess.setAccessUnauthorized(false);
@@ -1741,30 +1558,6 @@ CmdHandlerDeleteHint::CmdHandlerDeleteHint(){
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("hintid").required().integer_().description("hint id"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerDeleteHint::cmd(){
-    return "deletehint";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerDeleteHint::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdHandlerDeleteHint::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerDeleteHint::description(){
-    return "Method for delete hint from quest";
 }
 
 // ---------------------------------------------------------------------
@@ -1794,8 +1587,8 @@ void CmdHandlerDeleteHint::handle(ModelRequest *pRequest){
 // **************** Quest Hints **************
 // *******************************************
 
-
-CmdHandlerHints::CmdHandlerHints(){
+CmdHandlerHints::CmdHandlerHints()
+    : CmdHandlerBase("hints", "Return list of hints"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -1803,30 +1596,6 @@ CmdHandlerHints::CmdHandlerHints(){
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest id"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerHints::cmd(){
-    return "hints";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerHints::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdHandlerHints::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerHints::description(){
-    return "Output: list of hints, Input: questid";
 }
 
 // ---------------------------------------------------------------------
@@ -1873,7 +1642,8 @@ void CmdHandlerHints::handle(ModelRequest *pRequest){
 // *******************************************
 
 
-CmdHandlerQuestsProposalList::CmdHandlerQuestsProposalList(){
+CmdHandlerQuestsProposalList::CmdHandlerQuestsProposalList()
+    : CmdHandlerBase("quests_proposal_list", "Quests proposal list"){
     TAG = "CmdHandlerQuestsProposalList";
 
     m_modelCommandAccess.setAccessUnauthorized(false);
@@ -1883,30 +1653,6 @@ CmdHandlerQuestsProposalList::CmdHandlerQuestsProposalList(){
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("onpage").integer_().optional().description("On page"));
     m_vInputs.push_back(CmdInputDef("page").integer_().optional().description("page"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerQuestsProposalList::cmd(){
-        return "quests_proposal_list";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerQuestsProposalList::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdHandlerQuestsProposalList::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerQuestsProposalList::description(){
-        return "Quests proposal list";
 }
 
 // ---------------------------------------------------------------------
@@ -2013,7 +1759,8 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest){
 // *******************************************
 
 
-CmdHandlerWriteUps::CmdHandlerWriteUps(){
+CmdHandlerWriteUps::CmdHandlerWriteUps()
+    : CmdHandlerBase("writeups", "This method will be returned list of writeups by questid"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -2021,30 +1768,6 @@ CmdHandlerWriteUps::CmdHandlerWriteUps(){
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest ID"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerWriteUps::cmd(){
-    return "writeups";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerWriteUps::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdHandlerWriteUps::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdHandlerWriteUps::description(){
-    return "This method will be returned list of writeups by questid";
 }
 
 // ---------------------------------------------------------------------

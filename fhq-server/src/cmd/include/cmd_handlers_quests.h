@@ -3,12 +3,11 @@
 
 #include <cmd_handler_base.h>
 
-/*********************************************
- * List of Quests
-**********************************************/
+// *********************************************
+// *************** List of Quests **************
+// *********************************************
 
 class CmdHandlerQuests : public CmdHandlerBase {
-	
 	public:
         CmdHandlerQuests();
         virtual void handle(ModelRequest *pRequest);
@@ -16,12 +15,11 @@ class CmdHandlerQuests : public CmdHandlerBase {
 
 REGISTRY_CMD(CmdHandlerQuests)
 
-/*********************************************
- * Quest Info
-**********************************************/
+// *********************************************
+// *************** Quest Info ******************
+// *********************************************
 
 class CmdHandlerQuest : public CmdHandlerBase {
-
     public:
         CmdHandlerQuest();
         virtual void handle(ModelRequest *pRequest);
@@ -36,7 +34,6 @@ REGISTRY_CMD(CmdHandlerQuest)
 // *******************************************
 
 class CmdHandlerQuestPass : public CmdHandlerBase {
-
     public:
         CmdHandlerQuestPass();
         virtual void handle(ModelRequest *pRequest);
@@ -48,20 +45,10 @@ REGISTRY_CMD(CmdHandlerQuestPass)
 // ************** Quest Create ***************
 // *******************************************
 
-class CmdHandlerCreateQuest : public ICmdHandler {
-
+class CmdHandlerCreateQuest : public CmdHandlerBase {
     public:
         CmdHandlerCreateQuest();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdHandlerCreateQuest)
@@ -70,20 +57,10 @@ REGISTRY_CMD(CmdHandlerCreateQuest)
 // ************** Quest Delete ***************
 // *******************************************
 
-class CmdHandlerQuestDelete : public ICmdHandler {
-
+class CmdHandlerQuestDelete : public CmdHandlerBase {
     public:
         CmdHandlerQuestDelete();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdHandlerQuestDelete)
@@ -92,20 +69,10 @@ REGISTRY_CMD(CmdHandlerQuestDelete)
 // ************** Quest Proposal ***************
 // *******************************************
 
-class CmdHandlerQuestProposal : public ICmdHandler {
-
+class CmdHandlerQuestProposal : public CmdHandlerBase {
     public:
         CmdHandlerQuestProposal();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdHandlerQuestProposal)
@@ -115,20 +82,10 @@ REGISTRY_CMD(CmdHandlerQuestProposal)
 // ************** Quest Statistics ***********
 // *******************************************
 
-class CmdHandlerQuestStatistics : public ICmdHandler {
-
+class CmdHandlerQuestStatistics : public CmdHandlerBase {
     public:
         CmdHandlerQuestStatistics();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdHandlerQuestStatistics)
@@ -137,20 +94,10 @@ REGISTRY_CMD(CmdHandlerQuestStatistics)
 // ************** Quest Update ***********
 // *******************************************
 
-class CmdHandlerQuestUpdate : public ICmdHandler {
-
+class CmdHandlerQuestUpdate : public CmdHandlerBase {
     public:
         CmdHandlerQuestUpdate();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdHandlerQuestUpdate)
@@ -160,20 +107,10 @@ REGISTRY_CMD(CmdHandlerQuestUpdate)
 // ************** Quests Subjects ************
 // *******************************************
 
-class CmdHandlerQuestsSubjects : public ICmdHandler {
-
+class CmdHandlerQuestsSubjects : public CmdHandlerBase {
     public:
         CmdHandlerQuestsSubjects();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdHandlerQuestsSubjects)
@@ -182,21 +119,10 @@ REGISTRY_CMD(CmdHandlerQuestsSubjects)
 // ************ Quest Hints Add **************
 // *******************************************
 
-class CmdHandlerAddHint : public ICmdHandler {
-
+class CmdHandlerAddHint : public CmdHandlerBase {
     public:
         CmdHandlerAddHint();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
-
 };
 
 REGISTRY_CMD(CmdHandlerAddHint)
@@ -205,20 +131,10 @@ REGISTRY_CMD(CmdHandlerAddHint)
 // ************ Quest AnswerList **************
 // *******************************************
 
-class CmdHandlerAnswerList : public ICmdHandler {
-
+class CmdHandlerAnswerList : public CmdHandlerBase {
     public:
         CmdHandlerAnswerList();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdHandlerAnswerList)
@@ -227,20 +143,10 @@ REGISTRY_CMD(CmdHandlerAnswerList)
 // *********** Quest Hints Delete ************
 // *******************************************
 
-class CmdHandlerDeleteHint : public ICmdHandler {
-
+class CmdHandlerDeleteHint : public CmdHandlerBase {
     public:
         CmdHandlerDeleteHint();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdHandlerDeleteHint)
@@ -249,20 +155,10 @@ REGISTRY_CMD(CmdHandlerDeleteHint)
 // **************** Quest Hints **************
 // *******************************************
 
-class CmdHandlerHints : public ICmdHandler {
-
+class CmdHandlerHints : public CmdHandlerBase {
     public:
         CmdHandlerHints();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdHandlerHints)
@@ -271,20 +167,10 @@ REGISTRY_CMD(CmdHandlerHints)
 // ********* Quests Proposal List ************
 // *******************************************
 
-class CmdHandlerQuestsProposalList : public ICmdHandler {
-
+class CmdHandlerQuestsProposalList : public CmdHandlerBase {
     public:
         CmdHandlerQuestsProposalList();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdHandlerQuestsProposalList)
@@ -293,20 +179,10 @@ REGISTRY_CMD(CmdHandlerQuestsProposalList)
 // ************ Quests WriteUps **************
 // *******************************************
 
-class CmdHandlerWriteUps : public ICmdHandler {
-
+class CmdHandlerWriteUps : public CmdHandlerBase {
     public:
         CmdHandlerWriteUps();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdHandlerWriteUps)
