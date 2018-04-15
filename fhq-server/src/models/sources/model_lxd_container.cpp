@@ -45,15 +45,7 @@ nlohmann::json LXDContainer::state(){
 }
 
 
-bool LXDContainer::create(){
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
-    std::string address = "/1.0/containers";
-    std::string settings = "{\"name\": \"" + prefix + name + "\", \"source\": {\"type\": \"image\", \"protocol\": \"simplestreams\", \"server\": \"https://cloud-images.ubuntu.com/daily\", \"alias\": \"16.04\"}}";
-    if (!pOrchestra->send_post_request(address, settings, response, error))
-        return false;
-
-    //Check response
-    auto res_json = nlohmann::json::parse(response);
+bool LXDContainer::check_response(nlohmann::json res_json){
     std::string metadata_error = res_json.at("metadata").at("err").get<std::string>();
     if ( (res_json.at("error").get<std::string>() != "") || (metadata_error != "") ){
         error = metadata_error;
@@ -61,20 +53,45 @@ bool LXDContainer::create(){
         return false;
     }
 
-    response = "";
-    std::string operation_id = res_json.at("operation").get<std::string>();
-    if ( (operation_id != "") && (!pOrchestra->send_get_request(operation_id + "/wait", response, error))){
-        Log::err(TAG, "Can\'t get operation " + error);
-        return false;
-    }
+    return true;
+}
 
+
+bool LXDContainer::check_async_response(nlohmann::json operation_json){
     //Check async operation
-    auto operation_json = nlohmann::json::parse(response);
-    metadata_error = operation_json.at("metadata").at("err").get<std::string>();
+    std::string metadata_error = operation_json.at("metadata").at("err").get<std::string>();
     if ( (operation_json.at("error").get<std::string>() != "") || (metadata_error != "")){
         error = metadata_error;
         Log::err(TAG, "Operation is failed " + error);
         return false;
+    }
+}
+
+
+bool LXDContainer::create(){
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    std::string address = "/1.0/containers";
+    std::string settings = "{\"name\": \"" + prefix + name + "\", \"source\": {\"type\": \"image\", \"protocol\": \"simplestreams\", \"server\": \"https://cloud-images.ubuntu.com/daily\", \"alias\": \"16.04\"}}";
+
+    if (!pOrchestra->send_post_request(address, settings, response, error))
+        return false;
+
+    //Check response
+    auto res_json = nlohmann::json::parse(response);
+    if (!check_response(res_json))
+        return false;
+
+    if (res_json.at("type").get<std::string>() == "async"){
+        response = "";
+        std::string operation_id = res_json.at("operation").get<std::string>();
+        if ( (operation_id != "") && (!pOrchestra->send_get_request(operation_id + "/wait", response, error))){
+            Log::err(TAG, "Can\'t get operation " + error);
+            return false;
+        }
+
+        auto operation_json = nlohmann::json::parse(response);
+        if (!check_async_response(operation_json))
+            return false;
     }
 
     return true;
@@ -85,13 +102,9 @@ bool LXDContainer::start(){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     std::string address = "/1.0/containers/" + name + "/state";
     std::string settings = "{\"action\": \"start\"}";
-    std::string res;
-    std::string err;
 
-    if (!pOrchestra->send_put_request(address, settings, res, err)){
-        error = err;
+    if (!pOrchestra->send_put_request(address, settings, response, error))
         return false;
-    }
 
 
     //TO DO

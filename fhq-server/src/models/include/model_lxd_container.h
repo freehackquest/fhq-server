@@ -33,6 +33,9 @@ class LXDContainer {
         std::string error;
         std::string prefix;
         std::string TAG = "EmployOrchestraContainer";
+
+        bool check_response(nlohmann::json res_json);
+        bool check_async_response(nlohmann::json operation_json);
 };
 
 #endif // MODEL_LXD_CONTAINER

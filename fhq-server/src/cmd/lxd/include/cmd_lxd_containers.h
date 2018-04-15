@@ -18,6 +18,10 @@ class CmdLXDContainersHandler : public ICmdHandler {
         QString TAG;
         ModelCommandAccess m_modelCommandAccess;
         std::vector<CmdInputDef> m_vInputs;
+
+        void create_container(std::string name, QJsonObject &jsonResponse);
+        void start_container(std::string name, QJsonObject &jsonResponse);
+        void stop_container(std::string name, QJsonObject &jsonResponse);
 };
 
 REGISTRY_CMD(CmdLXDContainersHandler)

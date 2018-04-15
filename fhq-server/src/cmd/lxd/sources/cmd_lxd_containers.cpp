@@ -7,6 +7,7 @@
 
 CmdLXDContainersHandler::CmdLXDContainersHandler(){
 
+    //Не забудь поменять на false
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
@@ -47,18 +48,45 @@ void CmdLXDContainersHandler::handle(ModelRequest *pRequest){
     QSqlDatabase db = *(pRequest->server()->database());
 
     string name = jsonRequest["name"].toString().trimmed().toStdString();
-    string error, response;
 
     //TO DO
     //Action switch
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
-    pOrchestra->initSettings();
-    if(jsonRequest["action"] == "create"){
-        LXDContainer container = pOrchestra->create_container(name);
-        if(!(container.get_error() == "")){
-            jsonResponse["error"] = QJsonValue(QString::fromStdString(container.get_error()));
-        }
-    }
+    std::string action = jsonRequest["action"].toString().toStdString();
+    if (action == "create")
+        create_container(name, jsonResponse);
+
+    if (action == "start")
+        start_container(name, jsonResponse);
+
+    if (action == "stop")
+        stop_container(name, jsonResponse);
+
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
+
+void CmdLXDContainersHandler::create_container(std::string name, QJsonObject &jsonResponse){
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    pOrchestra->initSettings();
+    LXDContainer container = pOrchestra->create_container(name);
+    if(!(container.get_error() == ""))
+        jsonResponse["error"] = QJsonValue(QString::fromStdString(container.get_error()));
+}
+
+
+void CmdLXDContainersHandler::start_container(std::string name, QJsonObject &jsonResponse){
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    pOrchestra->initSettings();
+    LXDContainer container = pOrchestra->find_container(name);
+    if (!container.start())
+        jsonResponse["error"] = QJsonValue(QString::fromStdString(container.get_error()));
+}
+
+
+void CmdLXDContainersHandler::stop_container(std::string name, QJsonObject &jsonResponse){
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    pOrchestra->initSettings();
+    LXDContainer container = pOrchestra->find_container(name);
+    if (!container.stop())
+        jsonResponse["error"] = QJsonValue(QString::fromStdString(container.get_error()));
+}
