@@ -18,20 +18,10 @@ REGISTRY_CMD(CmdHandlerUsersScoreboard)
 /*!
  * This handler will be return json map users
  * */
-class CmdGetMapHandler : public ICmdHandler {
-
+class CmdGetMapHandler : public CmdHandlerBase {
     public:
         CmdGetMapHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdGetMapHandler)
@@ -39,20 +29,10 @@ REGISTRY_CMD(CmdGetMapHandler)
 /*!
  * User login
  * */
-class CmdLoginHandler : public ICmdHandler {
-
+class CmdLoginHandler : public CmdHandlerBase {
     public:
         CmdLoginHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdLoginHandler)
@@ -60,44 +40,21 @@ REGISTRY_CMD(CmdLoginHandler)
 /*!
  * User registration
  * */
-
-class CmdRegistrationHandler : public ICmdHandler {
-
+class CmdRegistrationHandler : public CmdHandlerBase {
     public:
         CmdRegistrationHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdRegistrationHandler)
 
-
 /*!
  * Users chat
  * */
-
-class CmdSendChatMessageHandler : public ICmdHandler {
-
+class CmdSendChatMessageHandler : public CmdHandlerBase {
     public:
         CmdSendChatMessageHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdSendChatMessageHandler)
@@ -105,21 +62,10 @@ REGISTRY_CMD(CmdSendChatMessageHandler)
 /*!
  * User login by token
  * */
-
-class CmdTokenHandler : public ICmdHandler {
-
+class CmdTokenHandler : public CmdHandlerBase {
     public:
         CmdTokenHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdTokenHandler)
@@ -127,21 +73,10 @@ REGISTRY_CMD(CmdTokenHandler)
 /*!
  * User location update
  * */
-
-class CmdUpdateUserLocationHandler : public ICmdHandler {
-
+class CmdUpdateUserLocationHandler : public CmdHandlerBase {
     public:
         CmdUpdateUserLocationHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdUpdateUserLocationHandler)
@@ -149,21 +84,10 @@ REGISTRY_CMD(CmdUpdateUserLocationHandler)
 /*!
  * User change password
  * */
-
-class CmdUserChangePasswordHandler : public ICmdHandler {
-
+class CmdUserChangePasswordHandler : public CmdHandlerBase {
     public:
         CmdUserChangePasswordHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdUserChangePasswordHandler)
@@ -171,21 +95,10 @@ REGISTRY_CMD(CmdUserChangePasswordHandler)
 /*!
  * User create
  * */
-
-class CmdUserCreateHandler : public ICmdHandler {
-
+class CmdUserCreateHandler : public CmdHandlerBase {
     public:
         CmdUserCreateHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdUserCreateHandler)
@@ -193,21 +106,10 @@ REGISTRY_CMD(CmdUserCreateHandler)
 /*!
  * User info
  * */
-
-class CmdUserHandler : public ICmdHandler {
-
+class CmdUserHandler : public CmdHandlerBase {
     public:
         CmdUserHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdUserHandler)
@@ -215,21 +117,10 @@ REGISTRY_CMD(CmdUserHandler)
 /*!
  * User reset password
  * */
-
-class CmdUserResetPasswordHandler : public ICmdHandler {
-
+class CmdUserResetPasswordHandler : public CmdHandlerBase {
     public:
         CmdUserResetPasswordHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdUserResetPasswordHandler)
@@ -238,20 +129,11 @@ REGISTRY_CMD(CmdUserResetPasswordHandler)
  * User skill
  * */
 
-class CmdUserSkillsHandler : public ICmdHandler {
+class CmdUserSkillsHandler : public CmdHandlerBase {
 
     public:
         CmdUserSkillsHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdUserSkillsHandler)
@@ -259,21 +141,10 @@ REGISTRY_CMD(CmdUserSkillsHandler)
 /*!
  * User update
  * */
-
-class CmdUserUpdateHandler : public ICmdHandler {
-
+class CmdUserUpdateHandler : public CmdHandlerBase {
     public:
         CmdUserUpdateHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdUserUpdateHandler)
@@ -281,21 +152,10 @@ REGISTRY_CMD(CmdUserUpdateHandler)
 /*!
  * Users
  * */
-
-class CmdUsersHandler : public ICmdHandler {
-
+class CmdUsersHandler : public CmdHandlerBase {
     public:
         CmdUsersHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdUsersHandler)

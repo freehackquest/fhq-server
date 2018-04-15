@@ -72,35 +72,12 @@ void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest){
  * This handler will be return json map users
  * */
 
-CmdGetMapHandler::CmdGetMapHandler(){
+CmdGetMapHandler::CmdGetMapHandler()
+    : CmdHandlerBase("getmap", "Returned coordinate list"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
     m_modelCommandAccess.setAccessAdmin(true);
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdGetMapHandler::cmd(){
-    return "getmap";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdGetMapHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdGetMapHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdGetMapHandler::description(){
-    return "Returned coordinate list";
 }
 
 // ---------------------------------------------------------------------
@@ -144,8 +121,8 @@ void CmdGetMapHandler::handle(ModelRequest *pRequest){
  * */
 
 
-CmdLoginHandler::CmdLoginHandler(){
-    TAG = "CmdLoginHandler";
+CmdLoginHandler::CmdLoginHandler()
+    : CmdHandlerBase("login", "Method for login"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(false);
@@ -154,30 +131,6 @@ CmdLoginHandler::CmdLoginHandler(){
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("email").required().string_().description("E-mail"));
     m_vInputs.push_back(CmdInputDef("password").required().string_().description("Password"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdLoginHandler::cmd(){
-    return "login";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdLoginHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdLoginHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdLoginHandler::description(){
-    return "Method for login";
 }
 
 // ---------------------------------------------------------------------
@@ -202,7 +155,7 @@ void CmdLoginHandler::handle(ModelRequest *pRequest){
     query.bindValue(":pass", password_sha1);
 
     if(!query.exec()){
-        Log::err(TAG, query.lastError().text());
+        Log::err(TAG, query.lastError().text().toStdString());
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
@@ -238,7 +191,7 @@ void CmdLoginHandler::handle(ModelRequest *pRequest){
         query_token.bindValue(":data", data);
 
         if(!query_token.exec()){
-            Log::err(TAG, query_token.lastError().text());
+            Log::err(TAG, query_token.lastError().text().toStdString());
             pRequest->sendMessageError(cmd(), Error(500, query_token.lastError().text()));
             return;
         }
@@ -266,8 +219,8 @@ void CmdLoginHandler::handle(ModelRequest *pRequest){
  * */
 
 
-CmdRegistrationHandler::CmdRegistrationHandler(){
-    TAG = "CmdRegistrationHandler";
+CmdRegistrationHandler::CmdRegistrationHandler()
+    : CmdHandlerBase("registration", "Method for registration"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(false);
@@ -276,30 +229,6 @@ CmdRegistrationHandler::CmdRegistrationHandler(){
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("email").required().email_().description("E-mail"));
     m_vInputs.push_back(CmdInputDef("university").required().string_().description("University"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdRegistrationHandler::cmd(){
-    return "registration";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdRegistrationHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdRegistrationHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdRegistrationHandler::description(){
-    return "Method for registration";
 }
 
 // ---------------------------------------------------------------------
@@ -321,12 +250,12 @@ void CmdRegistrationHandler::handle(ModelRequest *pRequest){
     query.prepare("SELECT * FROM users WHERE email = :email");
     query.bindValue(":email", sEmail);
     if(!query.exec()){
-        Log::err(TAG, query.lastError().text());
+        Log::err(TAG, query.lastError().text().toStdString());
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
     if (query.next()) {
-        Log::err(TAG, "User already exists " + sEmail);
+        Log::err(TAG, "User already exists " + sEmail.toStdString());
         pRequest->sendMessageError(cmd(), Error(403, "This email already exists"));
         return;
     }
@@ -445,35 +374,12 @@ void CmdRegistrationHandler::handle(ModelRequest *pRequest){
  * */
 
 
-CmdSendChatMessageHandler::CmdSendChatMessageHandler(){
+CmdSendChatMessageHandler::CmdSendChatMessageHandler()
+    : CmdHandlerBase("sendchatmessage", "Method will be keep message and it sent to another users"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
     m_modelCommandAccess.setAccessAdmin(true);
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdSendChatMessageHandler::cmd(){
-    return "sendchatmessage";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdSendChatMessageHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdSendChatMessageHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdSendChatMessageHandler::description(){
-    return "Method will be keep message and it sent to another users";
 }
 
 // ---------------------------------------------------------------------
@@ -516,8 +422,8 @@ void CmdSendChatMessageHandler::handle(ModelRequest *pRequest){
  * */
 
 
-CmdTokenHandler::CmdTokenHandler(){
-    TAG = "CmdTokenHandler";
+CmdTokenHandler::CmdTokenHandler()
+    : CmdHandlerBase("token", "Method for login by token"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(false);
@@ -525,30 +431,6 @@ CmdTokenHandler::CmdTokenHandler(){
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("token").string_().optional().description("Auth token"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdTokenHandler::cmd(){
-    return "token";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdTokenHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdTokenHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdTokenHandler::description(){
-    return "Method for login by token";
 }
 
 // ---------------------------------------------------------------------
@@ -573,7 +455,7 @@ void CmdTokenHandler::handle(ModelRequest *pRequest){
     query.prepare("SELECT * FROM users_tokens WHERE token = :token");
     query.bindValue(":token", token);
     if(!query.exec()){
-        Log::err(TAG, query.lastError().text());
+        Log::err(TAG, query.lastError().text().toStdString());
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
@@ -586,11 +468,11 @@ void CmdTokenHandler::handle(ModelRequest *pRequest){
         QString end_date = record.value("end_date").toString();
         QString lastip = pRequest->client()->peerAddress().toString();
         pRequest->server()->setUserToken(pRequest->client(), new ModelUserToken(data));
-        Log::info(TAG, "userid: " + QString::number(userid));
+        Log::info(TAG, "userid: " + QString::number(userid).toStdString());
         // TODO redesign this
         RunTasks::UpdateUserLocation(userid, lastip);
     }else{
-        Log::err(TAG, "Invalid token " + token);
+        Log::err(TAG, "Invalid token " + token.toStdString());
         // ["error"]
         pRequest->sendMessageError(cmd(), Errors::InvalidToken());
         return;
@@ -604,7 +486,8 @@ void CmdTokenHandler::handle(ModelRequest *pRequest){
  * */
 
 
-CmdUpdateUserLocationHandler::CmdUpdateUserLocationHandler(){
+CmdUpdateUserLocationHandler::CmdUpdateUserLocationHandler()
+    : CmdHandlerBase("updateuserlocation", "This method will be try update user location by lastip"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -612,30 +495,6 @@ CmdUpdateUserLocationHandler::CmdUpdateUserLocationHandler(){
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("userid").required().integer_().description("User ID"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdUpdateUserLocationHandler::cmd(){
-    return "updateuserlocation";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdUpdateUserLocationHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdUpdateUserLocationHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdUpdateUserLocationHandler::description(){
-    return "This method will be try update user location by lastip";
 }
 
 // ---------------------------------------------------------------------
@@ -690,9 +549,8 @@ void CmdUpdateUserLocationHandler::handle(ModelRequest *pRequest){
  * User change password
  * */
 
-
-CmdUserChangePasswordHandler::CmdUserChangePasswordHandler(){
-    TAG = "CmdUserChangePasswordHandler";
+CmdUserChangePasswordHandler::CmdUserChangePasswordHandler()
+    : CmdHandlerBase("user_change_password", "This method for change user password"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(true);
@@ -701,30 +559,6 @@ CmdUserChangePasswordHandler::CmdUserChangePasswordHandler(){
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("password_old").required().string_().description("Old password"));
     m_vInputs.push_back(CmdInputDef("password_new").required().string_().description("New password"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdUserChangePasswordHandler::cmd(){
-    return "user_change_password";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdUserChangePasswordHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdUserChangePasswordHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdUserChangePasswordHandler::description(){
-    return "Return user answer list";
 }
 
 // ---------------------------------------------------------------------
@@ -792,9 +626,8 @@ void CmdUserChangePasswordHandler::handle(ModelRequest *pRequest){
  * User create
  * */
 
-
-CmdUserCreateHandler::CmdUserCreateHandler(){
-    TAG = "CmdUsersCreateHandler";
+CmdUserCreateHandler::CmdUserCreateHandler()
+    : CmdHandlerBase("user_create", "Method for creating a user"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -811,30 +644,6 @@ CmdUserCreateHandler::CmdUserCreateHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdUserCreateHandler::cmd(){
-    return "user_create";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdUserCreateHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdUserCreateHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdUserCreateHandler::description(){
-    return "Method for creating a user";
-}
-
-// ---------------------------------------------------------------------
-
 void CmdUserCreateHandler::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
@@ -845,7 +654,7 @@ void CmdUserCreateHandler::handle(ModelRequest *pRequest){
     QString sEmail = jsonRequest["email"].toString();
 
     if(!regexEmail.match(sEmail).hasMatch()){
-        Log::err(TAG, "Invalid email format " + sEmail);
+        Log::err(TAG, "Invalid email format " + sEmail.toStdString());
         pRequest->sendMessageError(cmd(), Error(400, "Expected email format"));
         return;
     }
@@ -855,12 +664,12 @@ void CmdUserCreateHandler::handle(ModelRequest *pRequest){
     query.prepare("SELECT * FROM users WHERE email = :email");
     query.bindValue(":email", sEmail);
     if(!query.exec()){
-        Log::err(TAG, query.lastError().text());
+        Log::err(TAG, query.lastError().text().toStdString());
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
     if (query.next()) {
-        Log::err(TAG, "User already exists " + sEmail);
+        Log::err(TAG, "User already exists " + sEmail.toStdString());
         pRequest->sendMessageError(cmd(), Error(403, "This email already exists"));
         return;
     }
@@ -868,7 +677,7 @@ void CmdUserCreateHandler::handle(ModelRequest *pRequest){
     QString sNick = jsonRequest["nick"].toString().trimmed();
 
     if(sNick.size() < 3 && sNick.size() > 128){
-        Log::err(TAG, "Invalid nick format " + sNick);
+        Log::err(TAG, "Invalid nick format " + sNick.toStdString());
         pRequest->sendMessageError(cmd(), Error(400, "Expected nick format"));
         return;
     }
@@ -887,7 +696,7 @@ void CmdUserCreateHandler::handle(ModelRequest *pRequest){
 
     QString sRole = jsonRequest.value("role").toString();
     if(sRole != "user" && sRole != "admin"){
-        Log::err(TAG, "Invalid role format " + sRole);
+        Log::err(TAG, "Invalid role format " + sRole.toStdString());
         pRequest->sendMessageError(cmd(), Error(400, "This role doesn't exist"));
         return;
     }
@@ -980,8 +789,8 @@ void CmdUserCreateHandler::handle(ModelRequest *pRequest){
  * */
 
 
-CmdUserHandler::CmdUserHandler(){
-    TAG = "CmdUserHandler";
+CmdUserHandler::CmdUserHandler()
+    : CmdHandlerBase("user", "Return user info"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -989,30 +798,6 @@ CmdUserHandler::CmdUserHandler(){
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("userid").optional().integer_().description("Id of user"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdUserHandler::cmd(){
-    return "user";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdUserHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdUserHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdUserHandler::description(){
-    return "Return user info";
 }
 
 // ---------------------------------------------------------------------
@@ -1112,8 +897,8 @@ void CmdUserHandler::handle(ModelRequest *pRequest){
  * User reset password
  * */
 
-CmdUserResetPasswordHandler::CmdUserResetPasswordHandler(){
-    TAG = "CmdUserResetPasswordHandler";
+CmdUserResetPasswordHandler::CmdUserResetPasswordHandler()
+    : CmdHandlerBase("user_reset_password", "Method for reset password"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(false);
@@ -1121,30 +906,6 @@ CmdUserResetPasswordHandler::CmdUserResetPasswordHandler(){
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("email").required().email_().description("E-mail"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdUserResetPasswordHandler::cmd(){
-    return "user_reset_password";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdUserResetPasswordHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdUserResetPasswordHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdUserResetPasswordHandler::description(){
-    return "Method for reset password";
 }
 
 // ---------------------------------------------------------------------
@@ -1162,7 +923,7 @@ void CmdUserResetPasswordHandler::handle(ModelRequest *pRequest){
     query.prepare("SELECT * FROM users WHERE email = :email");
     query.bindValue(":email", sEmail);
     if(!query.exec()){
-        Log::err(TAG, query.lastError().text());
+        Log::err(TAG, query.lastError().text().toStdString());
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
         return;
     }
@@ -1173,11 +934,10 @@ void CmdUserResetPasswordHandler::handle(ModelRequest *pRequest){
         nUserID = record.value("id").toInt();
         sNick = record.value("nick").toString().toHtmlEscaped();
     }else{
-        Log::err(TAG, "User not found" + sEmail);
+        Log::err(TAG, "User not found" + sEmail.toStdString());
         pRequest->sendMessageError(cmd(), Error(403, "This email not exists"));
         return;
     }
-
 
     // // generate random password
     const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
@@ -1221,8 +981,8 @@ void CmdUserResetPasswordHandler::handle(ModelRequest *pRequest){
  * User skill
  * */
 
-
-CmdUserSkillsHandler::CmdUserSkillsHandler(){
+CmdUserSkillsHandler::CmdUserSkillsHandler()
+    : CmdHandlerBase("user_skills", "Return user skills info"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -1230,30 +990,6 @@ CmdUserSkillsHandler::CmdUserSkillsHandler(){
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("userid").required().integer_().description("Id of user"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdUserSkillsHandler::cmd(){
-    return "user_skills";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdUserSkillsHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdUserSkillsHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdUserSkillsHandler::description(){
-    return "Return user skills info";
 }
 
 // ---------------------------------------------------------------------
@@ -1313,8 +1049,8 @@ void CmdUserSkillsHandler::handle(ModelRequest *pRequest){
  * User update
  * */
 
-
-CmdUserUpdateHandler::CmdUserUpdateHandler(){
+CmdUserUpdateHandler::CmdUserUpdateHandler()
+    : CmdHandlerBase("user_update", "Update user info"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(true);
@@ -1325,30 +1061,6 @@ CmdUserUpdateHandler::CmdUserUpdateHandler(){
     m_vInputs.push_back(CmdInputDef("nick").optional().string_().description("Nick of user"));
     m_vInputs.push_back(CmdInputDef("university").optional().string_().description("University of user"));
     m_vInputs.push_back(CmdInputDef("about").optional().string_().description("About of user"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdUserUpdateHandler::cmd(){
-    return "user_update";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdUserUpdateHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdUserUpdateHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdUserUpdateHandler::description(){
-    return "Update user info";
 }
 
 // ---------------------------------------------------------------------
@@ -1440,8 +1152,9 @@ void CmdUserUpdateHandler::handle(ModelRequest *pRequest){
  * Users
  * */
 
+CmdUsersHandler::CmdUsersHandler()
+    : CmdHandlerBase("users", "Method return list of users"){
 
-CmdUsersHandler::CmdUsersHandler(){
     TAG = "CmdUsersHandler";
 
     m_modelCommandAccess.setAccessUnauthorized(false);
@@ -1453,30 +1166,6 @@ CmdUsersHandler::CmdUsersHandler(){
     m_vInputs.push_back(CmdInputDef("filter_role").string_().optional().description("Filter by user role"));
     m_vInputs.push_back(CmdInputDef("onpage").integer_().optional().description("On page"));
     m_vInputs.push_back(CmdInputDef("page").integer_().optional().description("page"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdUsersHandler::cmd(){
-    return "users";
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdUsersHandler::description(){
-    return "Method return list of users";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdUsersHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdUsersHandler::inputs(){
-    return m_vInputs;
 }
 
 // ---------------------------------------------------------------------
