@@ -132,10 +132,6 @@ list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_support.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/users/include/cmd_user_delete_handler.h") # deprecated
 list (APPEND FHQSRV_SOURCES "src/cmd/users/sources/cmd_user_delete_handler.cpp") # deprecated
 
-# cmd /  support
-list (APPEND FHQSRV_SOURCES "src/cmd/support/include/cmd_feedback_add_handler.h")
-list (APPEND FHQSRV_SOURCES "src/cmd/support/sources/cmd_feedback_add_handler.cpp")
-
 # cmd / events
 list (APPEND FHQSRV_SOURCES "src/cmd/events/include/cmd_createpublicevent_handler.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/events/include/cmd_deletepublicevent_handler.h")

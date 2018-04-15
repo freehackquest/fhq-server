@@ -4,8 +4,15 @@
 #include <cmd_handler_base.h>
 
 /*!
- * This handler will be return info about mail
+ * This handler for add support
  * */
+class CmdHandlerFeedbackAdd : public CmdHandlerBase {
 
+    public:
+        CmdHandlerFeedbackAdd();
+        virtual void handle(ModelRequest *pRequest);
+};
+
+REGISTRY_CMD(CmdHandlerFeedbackAdd)
 
 #endif // CMD_HADNLERS_SUPPORT_H
