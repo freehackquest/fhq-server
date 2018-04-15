@@ -131,20 +131,12 @@ list (APPEND FHQSRV_SOURCES "src/cmd/users/include/cmd_user_delete_handler.h") #
 list (APPEND FHQSRV_SOURCES "src/cmd/users/sources/cmd_user_delete_handler.cpp") # deprecated
 
 # cmd / classbook
-list (APPEND FHQSRV_SOURCES "src/cmd/classbook/include/cmd_classbook_localization_add_record_handler.h")
-list (APPEND FHQSRV_SOURCES "src/cmd/classbook/include/cmd_classbook_localization_delete_record_handler.h")
-list (APPEND FHQSRV_SOURCES "src/cmd/classbook/include/cmd_classbook_localization_update_record_handler.h")
-list (APPEND FHQSRV_SOURCES "src/cmd/classbook/include/cmd_classbook_localization_info_handler.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/classbook/include/cmd_classbook_proposal_add_record_handler.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/classbook/include/cmd_classbook_proposal_delete_record_handler.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/classbook/include/cmd_classbook_proposal_info_handler.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/classbook/include/cmd_classbook_proposal_list_handler.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/classbook/include/cmd_classbook_proposal_prepare_merge_record.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/classbook/sources/cmd_classbook_handler.cpp")
-list (APPEND FHQSRV_SOURCES "src/cmd/classbook/sources/cmd_classbook_localization_add_record_handler.cpp")
-list (APPEND FHQSRV_SOURCES "src/cmd/classbook/sources/cmd_classbook_localization_delete_record_handler.cpp")
-list (APPEND FHQSRV_SOURCES "src/cmd/classbook/sources/cmd_classbook_localization_update_record_handler.cpp")
-list (APPEND FHQSRV_SOURCES "src/cmd/classbook/sources/cmd_classbook_localization_info_handler.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/classbook/sources/cmd_classbook_proposal_add_record_handler.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/classbook/sources/cmd_classbook_proposal_delete_record_handler.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/classbook/sources/cmd_classbook_proposal_info_handler.cpp")

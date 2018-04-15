@@ -133,4 +133,94 @@ class CmdClassbookUpdateRecordHandler : public ICmdHandler {
 
 REGISTRY_CMD(CmdClassbookUpdateRecordHandler)
 
+/*!
+ * This handler will be add classbook localization record
+ * */
+
+class CmdClassbookLocalizationAddRecordHandler : public ICmdHandler {
+
+    public:
+        CmdClassbookLocalizationAddRecordHandler();
+        virtual std::string cmd();
+        virtual std::string description();
+        virtual const ModelCommandAccess &access();
+        virtual const std::vector<CmdInputDef> &inputs();
+        virtual void handle(ModelRequest *pRequest);
+
+    private:
+        QString TAG;
+        ModelCommandAccess m_modelCommandAccess;
+        std::vector<CmdInputDef> m_vInputs;
+};
+
+REGISTRY_CMD(CmdClassbookLocalizationAddRecordHandler)
+
+/*!
+ * This handler will be delete classbook localization record
+ * */
+
+
+class CmdClassbookLocalizationDeleteRecordHandler : public ICmdHandler {
+
+    public:
+        CmdClassbookLocalizationDeleteRecordHandler();
+        virtual std::string cmd();
+        virtual std::string description();
+        virtual const ModelCommandAccess &access();
+        virtual const std::vector<CmdInputDef> &inputs();
+        virtual void handle(ModelRequest *pRequest);
+
+    private:
+        QString TAG;
+        ModelCommandAccess m_modelCommandAccess;
+        std::vector<CmdInputDef> m_vInputs;
+};
+
+REGISTRY_CMD(CmdClassbookLocalizationDeleteRecordHandler)
+
+/*!
+ * This handler will be info classbook localization record
+ * */
+
+class CmdClassbookLocalizationInfoHandler : public ICmdHandler {
+
+    public:
+        CmdClassbookLocalizationInfoHandler();
+        virtual std::string cmd();
+        virtual std::string description();
+        virtual const ModelCommandAccess &access();
+        virtual const std::vector<CmdInputDef> &inputs();
+        virtual void handle(ModelRequest *pRequest);
+
+    private:
+        QString TAG;
+        ModelCommandAccess m_modelCommandAccess;
+        std::vector<CmdInputDef> m_vInputs;
+};
+
+REGISTRY_CMD(CmdClassbookLocalizationInfoHandler)
+
+
+/*!
+ * This handler will be update classbook localization record
+ * */
+
+class CmdClassbookLocalizationUpdateRecordHandler : public ICmdHandler {
+
+    public:
+        CmdClassbookLocalizationUpdateRecordHandler();
+        virtual std::string cmd();
+        virtual std::string description();
+        virtual const ModelCommandAccess &access();
+        virtual const std::vector<CmdInputDef> &inputs();
+        virtual void handle(ModelRequest *pRequest);
+
+    private:
+        QString TAG;
+        ModelCommandAccess m_modelCommandAccess;
+        std::vector<CmdInputDef> m_vInputs;
+};
+
+REGISTRY_CMD(CmdClassbookLocalizationUpdateRecordHandler)
+
 #endif // CMD_HADNLERS_CLASSBOOK_H
