@@ -7,20 +7,10 @@
 /*!
  * This handler will be add classbook record
  * */
-class CmdClassbookAddRecordHandler : public ICmdHandler {
-
+class CmdClassbookAddRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookAddRecordHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdClassbookAddRecordHandler)
@@ -28,20 +18,10 @@ REGISTRY_CMD(CmdClassbookAddRecordHandler)
 /*!
  * This handler will be delete classbook record
  * */
-class CmdClassbookDeleteRecordHandler : public ICmdHandler {
-
+class CmdClassbookDeleteRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookDeleteRecordHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdClassbookDeleteRecordHandler)
@@ -49,21 +29,12 @@ REGISTRY_CMD(CmdClassbookDeleteRecordHandler)
 /*!
  * This handler will be export classbook record
  * */
-class CmdClassbookExportHandler : public ICmdHandler {
-
+class CmdClassbookExportHandler : public CmdHandlerBase {
     public:
         CmdClassbookExportHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
 
     private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
-
         void createHtml(QFile *file, QString lang, QSqlQuery query);
         void createMD(QFile *file , QString lang, QSqlQuery query);
 };
@@ -73,20 +44,10 @@ REGISTRY_CMD(CmdClassbookExportHandler)
 /*!
  * This handler will be return classbook record info
  * */
-class CmdClassbookInfoHandler : public ICmdHandler {
-
+class CmdClassbookInfoHandler : public CmdHandlerBase {
     public:
         CmdClassbookInfoHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdClassbookInfoHandler)
@@ -94,20 +55,10 @@ REGISTRY_CMD(CmdClassbookInfoHandler)
 /*!
  * This handler will be return classbook records list
  * */
-class CmdClassbookListHandler : public ICmdHandler {
-
+class CmdClassbookListHandler : public CmdHandlerBase {
     public:
         CmdClassbookListHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdClassbookListHandler)
@@ -115,20 +66,10 @@ REGISTRY_CMD(CmdClassbookListHandler)
 /*!
  * This handler will be update classbook record
  * */
-class CmdClassbookUpdateRecordHandler : public ICmdHandler {
-
+class CmdClassbookUpdateRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookUpdateRecordHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdClassbookUpdateRecordHandler)
@@ -137,20 +78,10 @@ REGISTRY_CMD(CmdClassbookUpdateRecordHandler)
  * This handler will be add classbook localization record
  * */
 
-class CmdClassbookLocalizationAddRecordHandler : public ICmdHandler {
-
+class CmdClassbookLocalizationAddRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookLocalizationAddRecordHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdClassbookLocalizationAddRecordHandler)
@@ -160,20 +91,10 @@ REGISTRY_CMD(CmdClassbookLocalizationAddRecordHandler)
  * */
 
 
-class CmdClassbookLocalizationDeleteRecordHandler : public ICmdHandler {
-
+class CmdClassbookLocalizationDeleteRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookLocalizationDeleteRecordHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdClassbookLocalizationDeleteRecordHandler)
@@ -182,20 +103,10 @@ REGISTRY_CMD(CmdClassbookLocalizationDeleteRecordHandler)
  * This handler will be info classbook localization record
  * */
 
-class CmdClassbookLocalizationInfoHandler : public ICmdHandler {
-
+class CmdClassbookLocalizationInfoHandler : public CmdHandlerBase {
     public:
         CmdClassbookLocalizationInfoHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdClassbookLocalizationInfoHandler)
@@ -205,20 +116,10 @@ REGISTRY_CMD(CmdClassbookLocalizationInfoHandler)
  * This handler will be update classbook localization record
  * */
 
-class CmdClassbookLocalizationUpdateRecordHandler : public ICmdHandler {
-
+class CmdClassbookLocalizationUpdateRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookLocalizationUpdateRecordHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdClassbookLocalizationUpdateRecordHandler)
@@ -227,20 +128,10 @@ REGISTRY_CMD(CmdClassbookLocalizationUpdateRecordHandler)
  * This handler will be add classbook proposal record
  * */
 
-class CmdClassbookProposalAddRecordHandler : public ICmdHandler {
-
+class CmdClassbookProposalAddRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookProposalAddRecordHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdClassbookProposalAddRecordHandler)
@@ -249,20 +140,10 @@ REGISTRY_CMD(CmdClassbookProposalAddRecordHandler)
  * This handler will be delete classbook proposal record
  * */
 
-class CmdClassbookProposalDeleteRecordHandler : public ICmdHandler {
-
+class CmdClassbookProposalDeleteRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookProposalDeleteRecordHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdClassbookProposalDeleteRecordHandler)
@@ -272,20 +153,10 @@ REGISTRY_CMD(CmdClassbookProposalDeleteRecordHandler)
  * */
 
 
-class CmdClassbookProposalInfoHandler : public ICmdHandler {
-
+class CmdClassbookProposalInfoHandler : public CmdHandlerBase {
     public:
         CmdClassbookProposalInfoHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdClassbookProposalInfoHandler)
@@ -295,20 +166,10 @@ REGISTRY_CMD(CmdClassbookProposalInfoHandler)
  * */
 
 
-class CmdClassbookProposalListHandler : public ICmdHandler {
-
+class CmdClassbookProposalListHandler : public CmdHandlerBase {
     public:
         CmdClassbookProposalListHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdClassbookProposalListHandler)
@@ -318,20 +179,10 @@ REGISTRY_CMD(CmdClassbookProposalListHandler)
  * */
 
 
-class CmdClassbookProposalPrepareMergeRecordHandler : public ICmdHandler {
-
+class CmdClassbookProposalPrepareMergeRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookProposalPrepareMergeRecordHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdClassbookProposalPrepareMergeRecordHandler)
@@ -340,20 +191,10 @@ REGISTRY_CMD(CmdClassbookProposalPrepareMergeRecordHandler)
  * This handler will be return classbook content (duplicate handler ? )
  * */
 
-class CmdClassbookHandler : public ICmdHandler {
-
+class CmdClassbookHandler : public CmdHandlerBase {
     public:
         CmdClassbookHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 #endif // CMD_HADNLERS_CLASSBOOK_H

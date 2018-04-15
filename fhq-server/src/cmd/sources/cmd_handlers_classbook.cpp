@@ -17,7 +17,8 @@
 // * This handler will be add classbook record
 // *******************************************
 
-CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler(){
+CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler()
+    : CmdHandlerBase("classbook_add_record", "Adds a new article with the specified name, content, and id."){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -29,31 +30,6 @@ CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler(){
     m_vInputs.push_back(CmdInputDef("content").required().string_().description("content of article"));
     m_vInputs.push_back(CmdInputDef("uuid").optional().uuid_().description("uuid of article"));
     m_vInputs.push_back(CmdInputDef("ordered").optional().integer_().description("order of article"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookAddRecordHandler::cmd(){
-    return "classbook_add_record";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdClassbookAddRecordHandler::access(){
-    return m_modelCommandAccess;
-}
-
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdClassbookAddRecordHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookAddRecordHandler::description(){
-    return "Adds a new article with the specified name, content, and id.";
 }
 
 // ---------------------------------------------------------------------
@@ -194,7 +170,8 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
 // * This handler will be delete classbook record
 // *******************************************
 
-CmdClassbookDeleteRecordHandler::CmdClassbookDeleteRecordHandler(){
+CmdClassbookDeleteRecordHandler::CmdClassbookDeleteRecordHandler()
+    : CmdHandlerBase("classbook_delete_record", "Delete a article with a given classbookid"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -202,30 +179,6 @@ CmdClassbookDeleteRecordHandler::CmdClassbookDeleteRecordHandler(){
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("id for classbook article"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookDeleteRecordHandler::cmd(){
-    return "classbook_delete_record";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdClassbookDeleteRecordHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdClassbookDeleteRecordHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookDeleteRecordHandler::description(){
-    return "Delete a article with a given classbookid";
 }
 
 // ---------------------------------------------------------------------
@@ -276,7 +229,8 @@ void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest){
 // * This handler will be export classbook record
 // *******************************************
 
-CmdClassbookExportHandler::CmdClassbookExportHandler(){
+CmdClassbookExportHandler::CmdClassbookExportHandler()
+    : CmdHandlerBase("classbook_export", "Export classbook's articles to html or markdown, optionally in zip archive."){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(true);
@@ -286,30 +240,6 @@ CmdClassbookExportHandler::CmdClassbookExportHandler(){
     m_vInputs.push_back(CmdInputDef("output").required().string_().description("The output file format"));
     m_vInputs.push_back(CmdInputDef("lang").required().string_().description("The output file format"));
     m_vInputs.push_back(CmdInputDef("zip").optional().bool_().description("Zipping the output"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookExportHandler::cmd(){
-    return "classbook_export";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdClassbookExportHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdClassbookExportHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookExportHandler::description(){
-    return "Export classbook's articles to html or markdown, optionally in zip archive.";
 }
 
 // ---------------------------------------------------------------------
@@ -492,7 +422,8 @@ void CmdClassbookExportHandler::createMD(QFile *file, QString lang, QSqlQuery qu
 // * This handler will be return classbook record info
 // *******************************************
 
-CmdClassbookInfoHandler::CmdClassbookInfoHandler(){
+CmdClassbookInfoHandler::CmdClassbookInfoHandler()
+    : CmdHandlerBase("classbook_info", "Return name and content, langs, path classbook article with a given id"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -501,28 +432,6 @@ CmdClassbookInfoHandler::CmdClassbookInfoHandler(){
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("id for the classbook article"));
     m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("Set lang for the article"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookInfoHandler::cmd(){
-    return "classbook_info";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdClassbookInfoHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdClassbookInfoHandler::inputs(){
-    return m_vInputs;
-};
-
-std::string CmdClassbookInfoHandler::description(){
-    return "Return name and content, langs, path classbook article with a given id";
 }
 
 // ---------------------------------------------------------------------
@@ -673,7 +582,8 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
 // *******************************************
 
 
-CmdClassbookListHandler::CmdClassbookListHandler(){
+CmdClassbookListHandler::CmdClassbookListHandler()
+    : CmdHandlerBase("classbook_list", "Return list of classbook articles with parentid, id, names, childs, proposals for a given parentid"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -683,30 +593,6 @@ CmdClassbookListHandler::CmdClassbookListHandler(){
     m_vInputs.push_back(CmdInputDef("parentid").required().integer_().description("parentid for classbook articles"));
     m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("lang for classbook articles"));
     m_vInputs.push_back(CmdInputDef("search").optional().string_().description("Search string for classbook articles"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookListHandler::cmd(){
-    return "classbook_list";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdClassbookListHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdClassbookListHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookListHandler::description(){
-    return "Return list of classbook articles with parentid, id, names, childs, proposals for a given parentid";
 }
 
 // ---------------------------------------------------------------------
@@ -884,7 +770,8 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest){
 // * This handler will be update classbook record
 // *******************************************
 
-CmdClassbookUpdateRecordHandler::CmdClassbookUpdateRecordHandler(){
+CmdClassbookUpdateRecordHandler::CmdClassbookUpdateRecordHandler()
+    : CmdHandlerBase("classbook_update_record", "Update a article with a given classbookid"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -896,30 +783,6 @@ CmdClassbookUpdateRecordHandler::CmdClassbookUpdateRecordHandler(){
     m_vInputs.push_back(CmdInputDef("content").optional().string_().description("content for classbook article"));
     m_vInputs.push_back(CmdInputDef("ordered").optional().integer_().description("ordered for classbook article"));
     m_vInputs.push_back(CmdInputDef("parentid").optional().integer_().description("parentid for classbook article"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookUpdateRecordHandler::cmd(){
-    return "classbook_update_record";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdClassbookUpdateRecordHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdClassbookUpdateRecordHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookUpdateRecordHandler::description(){
-    return "Update a article with a given classbookid";
 }
 
 // ---------------------------------------------------------------------
@@ -1055,7 +918,8 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
 // *******************************************
 
 
-CmdClassbookLocalizationAddRecordHandler::CmdClassbookLocalizationAddRecordHandler(){
+CmdClassbookLocalizationAddRecordHandler::CmdClassbookLocalizationAddRecordHandler()
+    : CmdHandlerBase("classbook_localization_add_record", "Add a new article localization for the English version"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -1066,30 +930,6 @@ CmdClassbookLocalizationAddRecordHandler::CmdClassbookLocalizationAddRecordHandl
     m_vInputs.push_back(CmdInputDef("lang").required().string_().description("Language"));
     m_vInputs.push_back(CmdInputDef("name").required().string_().description("Article name"));
     m_vInputs.push_back(CmdInputDef("content").required().string_().description("The content of the article"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookLocalizationAddRecordHandler::cmd(){
-    return "classbook_localization_add_record";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdClassbookLocalizationAddRecordHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdClassbookLocalizationAddRecordHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookLocalizationAddRecordHandler::description(){
-    return "Add a new article localization for the English version";
 }
 
 // ---------------------------------------------------------------------
@@ -1174,7 +1014,8 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest){
 // This handler will be delete classbook localization record
 // *******************************************
 
-CmdClassbookLocalizationDeleteRecordHandler::CmdClassbookLocalizationDeleteRecordHandler(){
+CmdClassbookLocalizationDeleteRecordHandler::CmdClassbookLocalizationDeleteRecordHandler()
+    : CmdHandlerBase("classbook_localization_delete_record", "Delete an article localization"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -1182,30 +1023,6 @@ CmdClassbookLocalizationDeleteRecordHandler::CmdClassbookLocalizationDeleteRecor
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbook_localizationid").required().integer_().description("Localization id"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookLocalizationDeleteRecordHandler::cmd(){
-    return "classbook_localization_delete_record";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdClassbookLocalizationDeleteRecordHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdClassbookLocalizationDeleteRecordHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookLocalizationDeleteRecordHandler::description(){
-    return "Delete an article localization";
 }
 
 // ---------------------------------------------------------------------
@@ -1244,7 +1061,8 @@ void CmdClassbookLocalizationDeleteRecordHandler::handle(ModelRequest *pRequest)
 // *******************************************
 
 
-CmdClassbookLocalizationInfoHandler::CmdClassbookLocalizationInfoHandler(){
+CmdClassbookLocalizationInfoHandler::CmdClassbookLocalizationInfoHandler()
+    : CmdHandlerBase("classbook_localization_info", "Find and display localization for an article by classbookid"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -1252,30 +1070,6 @@ CmdClassbookLocalizationInfoHandler::CmdClassbookLocalizationInfoHandler(){
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbook_localizationid").required().integer_().description("Localization id"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookLocalizationInfoHandler::cmd(){
-    return "classbook_localization_info";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdClassbookLocalizationInfoHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdClassbookLocalizationInfoHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookLocalizationInfoHandler::description(){
-    return "Find and display localization for an article by classbookid";
 }
 
 // ---------------------------------------------------------------------
@@ -1325,8 +1119,8 @@ void CmdClassbookLocalizationInfoHandler::handle(ModelRequest *pRequest){
 // This handler will be update classbook localization record
 // *******************************************
 
-
-CmdClassbookLocalizationUpdateRecordHandler::CmdClassbookLocalizationUpdateRecordHandler(){
+CmdClassbookLocalizationUpdateRecordHandler::CmdClassbookLocalizationUpdateRecordHandler()
+    : CmdHandlerBase("classbook_localization_update_record", "Update table with localization by classbookid"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -1336,30 +1130,6 @@ CmdClassbookLocalizationUpdateRecordHandler::CmdClassbookLocalizationUpdateRecor
     m_vInputs.push_back(CmdInputDef("classbook_localizationid").required().integer_().description("Localization id"));
     m_vInputs.push_back(CmdInputDef("name").required().string_().description("Article name"));
     m_vInputs.push_back(CmdInputDef("content").required().string_().description("The content of the article"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookLocalizationUpdateRecordHandler::cmd(){
-    return "classbook_localization_update_record";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdClassbookLocalizationUpdateRecordHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdClassbookLocalizationUpdateRecordHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookLocalizationUpdateRecordHandler::description(){
-    return "Update table with localization by classbookid";
 }
 
 // ---------------------------------------------------------------------
@@ -1423,7 +1193,8 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest)
  * This handler will be add classbook proposal record
  * */
 
-CmdClassbookProposalAddRecordHandler::CmdClassbookProposalAddRecordHandler(){
+CmdClassbookProposalAddRecordHandler::CmdClassbookProposalAddRecordHandler()
+    : CmdHandlerBase("classbook_proposal_add_record", "Propose an update of article"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(true);
@@ -1434,30 +1205,6 @@ CmdClassbookProposalAddRecordHandler::CmdClassbookProposalAddRecordHandler(){
     m_vInputs.push_back(CmdInputDef("lang").required().string_().description("Language"));
     m_vInputs.push_back(CmdInputDef("name").required().string_().description("Article name"));
     m_vInputs.push_back(CmdInputDef("content").required().string_().description("The content of the article"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookProposalAddRecordHandler::cmd(){
-    return "classbook_proposal_add_record";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdClassbookProposalAddRecordHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdClassbookProposalAddRecordHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookProposalAddRecordHandler::description(){
-    return "Propose an update of article";
 }
 
 // ---------------------------------------------------------------------
@@ -1557,7 +1304,8 @@ void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest){
  * This handler will be delete classbook proposal record
  * */
 
-CmdClassbookProposalDeleteRecordHandler::CmdClassbookProposalDeleteRecordHandler(){
+CmdClassbookProposalDeleteRecordHandler::CmdClassbookProposalDeleteRecordHandler()
+    : CmdHandlerBase("classbook_proposal_delete_record", "Delete a proposal of updating an article"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(true);
@@ -1565,30 +1313,6 @@ CmdClassbookProposalDeleteRecordHandler::CmdClassbookProposalDeleteRecordHandler
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbook_proposal_id").required().integer_().description("Proposal id"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookProposalDeleteRecordHandler::cmd(){
-    return "classbook_proposal_delete_record";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdClassbookProposalDeleteRecordHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdClassbookProposalDeleteRecordHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookProposalDeleteRecordHandler::description(){
-    return "Delete a proposal of updating an article";
 }
 
 // ---------------------------------------------------------------------
@@ -1626,7 +1350,8 @@ void CmdClassbookProposalDeleteRecordHandler::handle(ModelRequest *pRequest){
  * This handler will be info classbook proposal record
  * */
 
-CmdClassbookProposalInfoHandler::CmdClassbookProposalInfoHandler(){
+CmdClassbookProposalInfoHandler::CmdClassbookProposalInfoHandler()
+    : CmdHandlerBase("classbook_proposal_info", "Find and display all proposal data by id"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(true);
@@ -1634,30 +1359,6 @@ CmdClassbookProposalInfoHandler::CmdClassbookProposalInfoHandler(){
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbook_proposal_id").required().integer_().description("Proposal id"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookProposalInfoHandler::cmd(){
-    return "classbook_proposal_info";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdClassbookProposalInfoHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdClassbookProposalInfoHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookProposalInfoHandler::description(){
-    return "Find and display all proposal data by id";
 }
 
 // ---------------------------------------------------------------------
@@ -1707,7 +1408,8 @@ void CmdClassbookProposalInfoHandler::handle(ModelRequest *pRequest){
  * This handler will be list classbook proposal record
  * */
 
-CmdClassbookProposalListHandler::CmdClassbookProposalListHandler(){
+CmdClassbookProposalListHandler::CmdClassbookProposalListHandler()
+    : CmdHandlerBase("classbook_proposal_list", "Display list of proposals by classbookid"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(true);
@@ -1716,30 +1418,6 @@ CmdClassbookProposalListHandler::CmdClassbookProposalListHandler(){
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbookid").optional().integer_().description("Classbookid for an article"));
     m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("Language"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookProposalListHandler::cmd(){
-    return "classbook_proposal_list";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdClassbookProposalListHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdClassbookProposalListHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookProposalListHandler::description(){
-    return "Display list of proposals by classbookid";
 }
 
 // ---------------------------------------------------------------------
@@ -1824,7 +1502,8 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest){
  * This handler will be prepare classbook proposal record
  * */
 
-CmdClassbookProposalPrepareMergeRecordHandler::CmdClassbookProposalPrepareMergeRecordHandler(){
+CmdClassbookProposalPrepareMergeRecordHandler::CmdClassbookProposalPrepareMergeRecordHandler()
+    : CmdHandlerBase("classbook_propasal_prepare_merge_record", "Prepare to merge updating requests"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -1832,30 +1511,6 @@ CmdClassbookProposalPrepareMergeRecordHandler::CmdClassbookProposalPrepareMergeR
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("classbook_proposal_id").required().integer_().description("Proposal id"));
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookProposalPrepareMergeRecordHandler::cmd(){
-    return "classbook_propasal_prepare_merge_record";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdClassbookProposalPrepareMergeRecordHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdClassbookProposalPrepareMergeRecordHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookProposalPrepareMergeRecordHandler::description(){
-    return "Prepare to merge updating requests";
 }
 
 // ---------------------------------------------------------------------
@@ -1913,36 +1568,13 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
  * This handler will be return classbook content (duplicate handler ? )
  * */
 
-CmdClassbookHandler::CmdClassbookHandler(){
+CmdClassbookHandler::CmdClassbookHandler()
+    : CmdHandlerBase("classbook", "Return classbook contents"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
     m_modelCommandAccess.setAccessAdmin(true);
 
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookHandler::cmd(){
-    return "classbook";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdClassbookHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdClassbookHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdClassbookHandler::description(){
-    return "Return classbook contents";
 }
 
 // ---------------------------------------------------------------------
