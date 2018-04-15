@@ -11,6 +11,7 @@
 #include <quazip.h>
 #include <quazipfile.h>
 #include <quazipfileinfo.h>
+#include <utils_merge_text.h>
 
 // *******************************************
 // * This handler will be add classbook record
@@ -1416,3 +1417,497 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest)
     jsonResponse["data"] = data;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
+
+
+/*!
+ * This handler will be add classbook proposal record
+ * */
+
+CmdClassbookProposalAddRecordHandler::CmdClassbookProposalAddRecordHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
+    m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("Classbookid for an article"));
+    m_vInputs.push_back(CmdInputDef("lang").required().string_().description("Language"));
+    m_vInputs.push_back(CmdInputDef("name").required().string_().description("Article name"));
+    m_vInputs.push_back(CmdInputDef("content").required().string_().description("The content of the article"));
+}
+
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookProposalAddRecordHandler::cmd(){
+    return "classbook_proposal_add_record";
+}
+
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookProposalAddRecordHandler::access(){
+    return m_modelCommandAccess;
+}
+
+// ---------------------------------------------------------------------
+
+const std::vector<CmdInputDef> &CmdClassbookProposalAddRecordHandler::inputs(){
+    return m_vInputs;
+}
+
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookProposalAddRecordHandler::description(){
+    return "Propose an update of article";
+}
+
+// ---------------------------------------------------------------------
+
+void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+
+    QSqlDatabase db = *(pDatabase->database());
+
+    QJsonObject data;
+
+    QSqlQuery query(db);
+    int classbookid = jsonRequest["classbookid"].toInt();
+    QString lang = jsonRequest["lang"].toString().trimmed();
+    QString name = jsonRequest["name"].toString().trimmed();
+    QString content = jsonRequest["content"].toString().trimmed();
+
+    //obtain a current version of classbook name and content
+    if(lang=="en"){
+        query.prepare("SELECT name, content FROM classbook WHERE id = :classbookid");
+        query.bindValue(":classbookid", classbookid);
+    }
+    else {
+        query.prepare("SELECT name, content FROM classbook_localization WHERE lang = :lang");
+        query.bindValue(":lang", lang);
+    }
+    if(!query.exec()){
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        return;
+    }
+    if(!query.next()){
+        pRequest->sendMessageError(cmd(), Error(404, "This article or localization doesn't exist"));
+        return;
+    }
+    QSqlRecord record = query.record();
+    QString name_before = record.value("name").toString();
+    QString content_before = record.value("content").toString();
+
+    //Set md5_content hash
+    QString md5_content = QString(QCryptographicHash::hash(content.toUtf8(), QCryptographicHash::Md5).toHex());
+
+    //generate uuid
+    QString uuid = QUuid::createUuid().toString().replace("{", "").replace("}", "");
+
+    query.prepare("INSERT INTO classbook_proposal("
+                  "classbookid,"
+                  "uuid,"
+                  "lang,"
+                  "name,"
+                  "content,"
+                  "name_before,"
+                  "content_before,"
+                  "md5_content,"
+                  "created"
+                  ") "
+                  "VALUES("
+                  ":classbookid,"
+                  ":uuid,"
+                  ":lang,"
+                  ":name,"
+                  ":content,"
+                  ":name_before,"
+                  ":content_before,"
+                  ":md5_content,"
+                  "NOW()"
+                  ")");
+    query.bindValue(":classbookid", classbookid);
+    query.bindValue(":uuid", uuid);
+    query.bindValue(":lang", lang);
+    query.bindValue(":name", name);
+    query.bindValue(":content", content);
+    query.bindValue(":name_before", name_before);
+    query.bindValue(":content_before", content_before);
+    query.bindValue(":md5_content", md5_content);
+    if(!query.exec()){
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        return;
+    }
+    int rowid = query.lastInsertId().toInt();
+    data["classbookid"] = classbookid;
+    data["classbook_proposal_id"] = QJsonValue(rowid);
+    data["lang"] = lang;
+    data["name"] = name;
+    data["content"] = content;
+    data["name_before"] = name_before;
+    data["content_before"] = content_before;
+    data["md5_content"] = md5_content;
+
+    jsonResponse["data"] = data;
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+/*!
+ * This handler will be delete classbook proposal record
+ * */
+
+CmdClassbookProposalDeleteRecordHandler::CmdClassbookProposalDeleteRecordHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
+    m_vInputs.push_back(CmdInputDef("classbook_proposal_id").required().integer_().description("Proposal id"));
+}
+
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookProposalDeleteRecordHandler::cmd(){
+    return "classbook_proposal_delete_record";
+}
+
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookProposalDeleteRecordHandler::access(){
+    return m_modelCommandAccess;
+}
+
+// ---------------------------------------------------------------------
+
+const std::vector<CmdInputDef> &CmdClassbookProposalDeleteRecordHandler::inputs(){
+    return m_vInputs;
+}
+
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookProposalDeleteRecordHandler::description(){
+    return "Delete a proposal of updating an article";
+}
+
+// ---------------------------------------------------------------------
+
+void CmdClassbookProposalDeleteRecordHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+
+    QSqlDatabase db = *(pDatabase->database());
+
+    QSqlQuery query(db);
+    int classbook_proposal_id = jsonRequest["classbook_proposal_id"].toInt();
+    query.prepare("SELECT id FROM classbook_proposal WHERE id = :classbook_proposal_id");
+    query.bindValue(":classbook_proposal_id", jsonRequest["classbook_proposal_id"].toInt());
+    if(!query.exec()){
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        return;
+    }
+    if(!query.next()){
+        pRequest->sendMessageError(cmd(), Error(404, "This proposal doesn't exist"));
+        return;
+    }
+    query.prepare("DELETE FROM classbook_proposal WHERE id = :classbook_proposal_id");
+    query.bindValue(":classbook_proposal_id", classbook_proposal_id);
+    if(!query.exec()){
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        return;
+    }
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+/*!
+ * This handler will be info classbook proposal record
+ * */
+
+CmdClassbookProposalInfoHandler::CmdClassbookProposalInfoHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
+    m_vInputs.push_back(CmdInputDef("classbook_proposal_id").required().integer_().description("Proposal id"));
+}
+
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookProposalInfoHandler::cmd(){
+    return "classbook_proposal_info";
+}
+
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookProposalInfoHandler::access(){
+    return m_modelCommandAccess;
+}
+
+// ---------------------------------------------------------------------
+
+const std::vector<CmdInputDef> &CmdClassbookProposalInfoHandler::inputs(){
+    return m_vInputs;
+}
+
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookProposalInfoHandler::description(){
+    return "Find and display all proposal data by id";
+}
+
+// ---------------------------------------------------------------------
+
+void CmdClassbookProposalInfoHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+
+    QSqlDatabase db = *(pDatabase->database());
+
+    QJsonObject data;
+
+    QSqlQuery query(db);
+    int classbook_proposal_id = jsonRequest["classbook_proposal_id"].toInt();
+    query.prepare("SELECT id FROM classbook_proposal WHERE id = :classbook_proposal_id");
+    query.bindValue(":classbook_proposal_id", jsonRequest["classbook_proposal_id"].toInt());
+    if(!query.exec()){
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        return;
+    }
+    if(!query.next()){
+        pRequest->sendMessageError(cmd(), Error(404, "This proposal doesn't exist"));
+        return;
+    }
+
+    query.prepare("SELECT classbookid, lang, name, content FROM classbook_proposal WHERE id = :classbook_proposal_id");
+    query.bindValue(":classbook_proposal_id", classbook_proposal_id);
+    if (!query.exec()){
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        return;
+    }
+    query.next();
+    QSqlRecord record = query.record();
+    data["classbookid"] = record.value("classbookid").toInt();
+    data["id"] = classbook_proposal_id;
+    data["lang"] = record.value("lang").toString();
+    data["name"] = record.value("name").toString();
+    data["content"] = record.value("content").toString();
+
+
+    jsonResponse["data"] = data;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+/*!
+ * This handler will be list classbook proposal record
+ * */
+
+CmdClassbookProposalListHandler::CmdClassbookProposalListHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(true);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
+    m_vInputs.push_back(CmdInputDef("classbookid").optional().integer_().description("Classbookid for an article"));
+    m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("Language"));
+}
+
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookProposalListHandler::cmd(){
+    return "classbook_proposal_list";
+}
+
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookProposalListHandler::access(){
+    return m_modelCommandAccess;
+}
+
+// ---------------------------------------------------------------------
+
+const std::vector<CmdInputDef> &CmdClassbookProposalListHandler::inputs(){
+    return m_vInputs;
+}
+
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookProposalListHandler::description(){
+    return "Display list of proposals by classbookid";
+}
+
+// ---------------------------------------------------------------------
+
+void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+
+    QSqlDatabase db = *(pDatabase->database());
+
+    QSqlQuery query(db);
+
+    QJsonObject item;
+    QJsonArray data;
+
+    QString sQuery;
+    QMap<QString, QJsonValue> mapFilter;
+
+    //checkout and validation of classbookid
+    if(jsonRequest.contains("classbookid")){
+        query.prepare("SELECT id FROM classbook WHERE id = :classbookid");
+        query.bindValue(":classbookid", jsonRequest["classbookid"].toInt());
+        if(!query.exec()){
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            return;
+        }
+        if(!query.next()){
+            pRequest->sendMessageError(cmd(), Error(404, "This article doesn't exist"));
+            return;
+        }
+        mapFilter.insert("classbookid", jsonRequest["classbookid"].toInt());
+    }
+
+    //checkout of lang and generation of query's bone
+    if(jsonRequest.contains("lang")){
+        mapFilter.insert("lang", jsonRequest["lang"].toString().trimmed());
+        sQuery = "SELECT id, name FROM classbook_proposal";
+    }
+    else sQuery = "SELECT id, name, lang FROM classbook_proposal";
+
+    //generation of the rest of the query
+    if(mapFilter.size() > 0) sQuery += " WHERE ";
+    bool bFirst = true;
+    foreach(QString key, mapFilter.keys()){
+        if(!bFirst) sQuery += " AND ";
+        bFirst = false;
+        sQuery +=  key + " = :" + key;
+    }
+    query.prepare(sQuery);
+
+    //binding of values
+    foreach(QString key, mapFilter.keys()){
+        QMap<QString, QJsonValue>::const_iterator v = mapFilter.lowerBound(key);
+        if(key=="classbookid")
+            query.bindValue(":" + key, v.value().toInt());
+        else
+            query.bindValue(":" + key, v.value());
+    }
+    if (!query.exec()){
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        return;
+    }
+
+    while (query.next()) {
+        QSqlRecord record = query.record();
+        item["id"] = record.value("id").toInt();
+        item["classbookid"] = jsonRequest["classbookid"].toInt();
+        if(jsonRequest.contains("lang")){
+            item["lang"] = jsonRequest["lang"].toString().trimmed();
+        }
+        else item["lang"] = record.value("lang").toString().trimmed();
+        item["name"] = record.value("name").toString();
+        data.push_back(item);
+    }
+
+    jsonResponse["data"] = data;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+/*!
+ * This handler will be prepare classbook proposal record
+ * */
+
+CmdClassbookProposalPrepareMergeRecordHandler::CmdClassbookProposalPrepareMergeRecordHandler(){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
+    m_vInputs.push_back(CmdInputDef("classbook_proposal_id").required().integer_().description("Proposal id"));
+}
+
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookProposalPrepareMergeRecordHandler::cmd(){
+    return "classbook_propasal_prepare_merge_record";
+}
+
+// ---------------------------------------------------------------------
+
+const ModelCommandAccess & CmdClassbookProposalPrepareMergeRecordHandler::access(){
+    return m_modelCommandAccess;
+}
+
+// ---------------------------------------------------------------------
+
+const std::vector<CmdInputDef> &CmdClassbookProposalPrepareMergeRecordHandler::inputs(){
+    return m_vInputs;
+}
+
+// ---------------------------------------------------------------------
+
+std::string CmdClassbookProposalPrepareMergeRecordHandler::description(){
+    return "Prepare to merge updating requests";
+}
+
+// ---------------------------------------------------------------------
+
+void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+
+    QSqlDatabase db = *(pDatabase->database());
+
+    QJsonObject data;
+
+    QSqlQuery query(db);
+    QSqlRecord record = query.record();
+    int classbook_proposal_id = jsonRequest["classbook_proposal_id"].toInt();
+    query.prepare("SELECT id FROM classbook_proposal WHERE id = :classbook_proposal_id");
+    query.bindValue(":classbook_proposal_id", jsonRequest["classbook_proposal_id"].toInt());
+    if(!query.exec()){
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        return;
+    }
+    if(!query.next()){
+        pRequest->sendMessageError(cmd(), Error(404, "This proposal doesn't exist"));
+        return;
+    }
+
+    query.prepare("SELECT content FROM classbook WHERE id IN (SELECT classbookid FROM classbook_proposal WHERE id = :classbook_proposal_id");
+    query.bindValue(":classbook_proposal_id", classbook_proposal_id);
+    if (!query.exec()){
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        return;
+    }
+    QString curtxt = record.value("content").toString();
+
+    query.prepare("SELECT content, content_before FROM classbook_proposal WHERE id = :classbook_proposal_id");
+    query.bindValue(":classbook_proposal_id", classbook_proposal_id);
+    if (!query.exec()){
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        return;
+    }
+    QString txt1 = record.value("content").toString();
+    QString txt2 = record.value("content_before").toString();
+    std::vector<row *> arr1, arr2;
+    UtilsMergeText::merge(curtxt, txt1, txt2, arr1, arr2);
+
+    //TO DO final merge, lang checkout, update output (with data)
+
+    jsonResponse["data"] = data;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+
+

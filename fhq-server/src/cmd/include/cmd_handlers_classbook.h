@@ -223,4 +223,118 @@ class CmdClassbookLocalizationUpdateRecordHandler : public ICmdHandler {
 
 REGISTRY_CMD(CmdClassbookLocalizationUpdateRecordHandler)
 
+/*!
+ * This handler will be add classbook proposal record
+ * */
+
+class CmdClassbookProposalAddRecordHandler : public ICmdHandler {
+
+    public:
+        CmdClassbookProposalAddRecordHandler();
+        virtual std::string cmd();
+        virtual std::string description();
+        virtual const ModelCommandAccess &access();
+        virtual const std::vector<CmdInputDef> &inputs();
+        virtual void handle(ModelRequest *pRequest);
+
+    private:
+        QString TAG;
+        ModelCommandAccess m_modelCommandAccess;
+        std::vector<CmdInputDef> m_vInputs;
+};
+
+REGISTRY_CMD(CmdClassbookProposalAddRecordHandler)
+
+/*!
+ * This handler will be delete classbook proposal record
+ * */
+
+class CmdClassbookProposalDeleteRecordHandler : public ICmdHandler {
+
+    public:
+        CmdClassbookProposalDeleteRecordHandler();
+        virtual std::string cmd();
+        virtual std::string description();
+        virtual const ModelCommandAccess &access();
+        virtual const std::vector<CmdInputDef> &inputs();
+        virtual void handle(ModelRequest *pRequest);
+
+    private:
+        QString TAG;
+        ModelCommandAccess m_modelCommandAccess;
+        std::vector<CmdInputDef> m_vInputs;
+};
+
+REGISTRY_CMD(CmdClassbookProposalDeleteRecordHandler)
+
+/*!
+ * This handler will be info classbook proposal record
+ * */
+
+
+class CmdClassbookProposalInfoHandler : public ICmdHandler {
+
+    public:
+        CmdClassbookProposalInfoHandler();
+        virtual std::string cmd();
+        virtual std::string description();
+        virtual const ModelCommandAccess &access();
+        virtual const std::vector<CmdInputDef> &inputs();
+        virtual void handle(ModelRequest *pRequest);
+
+    private:
+        QString TAG;
+        ModelCommandAccess m_modelCommandAccess;
+        std::vector<CmdInputDef> m_vInputs;
+};
+
+REGISTRY_CMD(CmdClassbookProposalInfoHandler)
+
+/*!
+ * This handler will be list classbook proposal record
+ * */
+
+
+class CmdClassbookProposalListHandler : public ICmdHandler {
+
+    public:
+        CmdClassbookProposalListHandler();
+        virtual std::string cmd();
+        virtual std::string description();
+        virtual const ModelCommandAccess &access();
+        virtual const std::vector<CmdInputDef> &inputs();
+        virtual void handle(ModelRequest *pRequest);
+
+    private:
+        QString TAG;
+        ModelCommandAccess m_modelCommandAccess;
+        std::vector<CmdInputDef> m_vInputs;
+};
+
+REGISTRY_CMD(CmdClassbookProposalListHandler)
+
+/*!
+ * This handler will be prepare classbook proposal record
+ * */
+
+
+class CmdClassbookProposalPrepareMergeRecordHandler : public ICmdHandler {
+
+    public:
+        CmdClassbookProposalPrepareMergeRecordHandler();
+        virtual std::string cmd();
+        virtual std::string description();
+        virtual const ModelCommandAccess &access();
+        virtual const std::vector<CmdInputDef> &inputs();
+        virtual void handle(ModelRequest *pRequest);
+
+    private:
+        QString TAG;
+        ModelCommandAccess m_modelCommandAccess;
+        std::vector<CmdInputDef> m_vInputs;
+};
+
+REGISTRY_CMD(CmdClassbookProposalPrepareMergeRecordHandler)
+
+
 #endif // CMD_HADNLERS_CLASSBOOK_H
