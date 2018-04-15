@@ -131,16 +131,6 @@ list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_support.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/users/include/cmd_user_delete_handler.h") # deprecated
 list (APPEND FHQSRV_SOURCES "src/cmd/users/sources/cmd_user_delete_handler.cpp") # deprecated
 
-# cmd / events
-list (APPEND FHQSRV_SOURCES "src/cmd/events/include/cmd_createpublicevent_handler.h")
-list (APPEND FHQSRV_SOURCES "src/cmd/events/include/cmd_deletepublicevent_handler.h")
-list (APPEND FHQSRV_SOURCES "src/cmd/events/include/cmd_getpublicevent_handler.h")
-list (APPEND FHQSRV_SOURCES "src/cmd/events/include/cmd_publiceventslist_handler.h")
-list (APPEND FHQSRV_SOURCES "src/cmd/events/sources/cmd_createpublicevent_handler.cpp")
-list (APPEND FHQSRV_SOURCES "src/cmd/events/sources/cmd_deletepublicevent_handler.cpp")
-list (APPEND FHQSRV_SOURCES "src/cmd/events/sources/cmd_getpublicevent_handler.cpp")
-list (APPEND FHQSRV_SOURCES "src/cmd/events/sources/cmd_publiceventslist_handler.cpp")
-
 # cmd / classbook
 list (APPEND FHQSRV_SOURCES "src/cmd/classbook/include/cmd_classbook_localization_add_record_handler.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/classbook/include/cmd_classbook_localization_delete_record_handler.h")
@@ -262,6 +252,7 @@ list (APPEND FHQSRV_SOURCES "src/tasks/sources/mail_send_task.cpp")
 
 # updates
 list (APPEND FHQSRV_SOURCES "src/updates/create_list_updates.h")
+list (APPEND FHQSRV_SOURCES "src/updates/create_list_updates.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/include/database0060.h")
 list (APPEND FHQSRV_SOURCES "src/updates/include/update0061_0090.h")
 list (APPEND FHQSRV_SOURCES "src/updates/include/update0091.h")
@@ -271,7 +262,6 @@ list (APPEND FHQSRV_SOURCES "src/updates/include/update0094.h")
 list (APPEND FHQSRV_SOURCES "src/updates/include/update0095.h")
 list (APPEND FHQSRV_SOURCES "src/updates/include/update0096.h")
 list (APPEND FHQSRV_SOURCES "src/updates/include/update0097.h")
-list (APPEND FHQSRV_SOURCES "src/updates/create_list_updates.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/database0060.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/update0061_0090.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/update0091.cpp")
