@@ -1,22 +1,10 @@
 #include <update0092.h>
 
-Update0092::Update0092(){
-    TAG = "Update0092";
+Update0092::Update0092()
+    : UpdateBase("u0091", "u0092", "Created tables classbook_proposal, classbook_localization"){
 }
 
-QString Update0092::from_version(){
-    return "u0091";
-}
-
-QString Update0092::version(){
-    return "u0092";
-}
-
-QString Update0092::description(){
-    return "Created tables classbook_proposal, classbook_localization";
-}
-
-bool Update0092::update(QSqlDatabase &db, QString &error){
+bool Update0092::update(QSqlDatabase &db, std::string &error){
 
     {
         QSqlQuery query(db);
@@ -31,7 +19,7 @@ bool Update0092::update(QSqlDatabase &db, QString &error){
             "  PRIMARY KEY (`id`)"
             ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
         if(!query.exec()){
-            error = query.lastError().text();
+            error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
             return false;
         }
@@ -51,7 +39,7 @@ bool Update0092::update(QSqlDatabase &db, QString &error){
             "  PRIMARY KEY (`id`)"
             ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
         if(!query.exec()){
-            error = query.lastError().text();
+            error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
             return false;
         }

@@ -48,6 +48,14 @@ list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/users/include")
 # json
 list (APPEND FHQSRV_SOURCES "src/3rdParty/nlohmann/json.hpp")
 
+# interfaces
+list (APPEND FHQSRV_SOURCES "src/interfaces/imemorycache.h")
+list (APPEND FHQSRV_SOURCES "src/interfaces/iserver.h")
+list (APPEND FHQSRV_SOURCES "src/interfaces/iunittest.h")
+list (APPEND FHQSRV_SOURCES "src/interfaces/iuser.h")
+list (APPEND FHQSRV_SOURCES "src/interfaces/iusertoken.h")
+list (APPEND FHQSRV_SOURCES "src/interfaces/iwebsocketserver.h")
+
 # quazip
 list (APPEND FHQSRV_SOURCES "src/3rdParty/quazip-0.7.3/quazip/crypt.h")
 list (APPEND FHQSRV_SOURCES "src/3rdParty/quazip-0.7.3/quazip/ioapi.h")
@@ -214,8 +222,8 @@ list (APPEND FHQSRV_SOURCES "src/tasks/runtasks.cpp")
 list (APPEND FHQSRV_SOURCES "src/tasks/sources/mail_send_task.cpp")
 
 # updates
-list (APPEND FHQSRV_SOURCES "src/updates/create_list_updates.h")
-list (APPEND FHQSRV_SOURCES "src/updates/create_list_updates.cpp")
+list (APPEND FHQSRV_SOURCES "src/updates/updates.h")
+list (APPEND FHQSRV_SOURCES "src/updates/updates.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/include/database0060.h")
 list (APPEND FHQSRV_SOURCES "src/updates/include/update0061_0090.h")
 list (APPEND FHQSRV_SOURCES "src/updates/include/update0091.h")

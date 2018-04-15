@@ -1,22 +1,10 @@
 #include <update0097.h>
 
-Update0097::Update0097(){
-    TAG = "Update0097";
+Update0097::Update0097()
+    : UpdateBase("u0096", "u0097", "Add new table quests_proposal"){
 }
 
-QString Update0097::from_version(){
-    return "u0096";
-}
-
-QString Update0097::version(){
-    return "u0097";
-}
-
-QString Update0097::description(){
-    return "Add new table quests_proposal";
-}
-
-bool Update0097::update(QSqlDatabase &db, QString &error){
+bool Update0097::update(QSqlDatabase &db, std::string &error){
 	QSqlQuery query(db);
 	query.prepare(""
 		"CREATE TABLE IF NOT EXISTS `quests_proposal` ("
@@ -37,11 +25,10 @@ bool Update0097::update(QSqlDatabase &db, QString &error){
 		"  PRIMARY KEY (`id`)"
 		") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 	if(!query.exec()){
-		error = query.lastError().text();
-		Log::err(TAG, "The problem with creating a table " + error);
+        error = query.lastError().text().toStdString();
+        Log::err(TAG, "The problem with creating a table " + error);
 		return false;
 	}
-
     return true;
 }
 

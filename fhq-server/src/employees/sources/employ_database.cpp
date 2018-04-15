@@ -1,6 +1,6 @@
 #include <employ_server_config.h>
 #include <employ_database.h>
-#include <create_list_updates.h>
+#include <updates.h>
 #include <QThread>
 
 REGISTRY_EMPLOY(EmployDatabase)
@@ -25,10 +25,10 @@ bool EmployDatabase::init(){
 		return false;
 	}
 
-    if(!tryUpdateDatabase(m_pDBConnection->db())){
+    if(!Updates::updateDatabase(m_pDBConnection->db())){
         return false;
     }
-	
+
 	// TODO: redesign
 	// cleanup old user tokens
     /*{
