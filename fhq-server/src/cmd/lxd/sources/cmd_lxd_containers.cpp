@@ -1,7 +1,9 @@
 #include <cmd_lxd_containers.h>
+#include <employ_orchestra.h>
+#include <model_lxd_container.h>
 
 #include <string>
-
+#include <QJsonValue>
 
 CmdLXDContainersHandler::CmdLXDContainersHandler(){
 
@@ -49,6 +51,14 @@ void CmdLXDContainersHandler::handle(ModelRequest *pRequest){
 
     //TO DO
     //Action switch
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    pOrchestra->initSettings();
+    if(jsonRequest["action"] == "create"){
+        LXDContainer container = pOrchestra->create_container(name);
+        if(!(container.get_error() == "")){
+            jsonResponse["error"] = QJsonValue(QString::fromStdString(container.get_error()));
+        }
+    }
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 

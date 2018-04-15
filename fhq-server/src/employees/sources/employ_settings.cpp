@@ -5,6 +5,7 @@ REGISTRY_EMPLOY(EmploySettings)
 // ---------------------------------------------------------------------
 
 #include <log.h>
+#include <cstdlib>
 
 #include <QTextStream>
 #include <QFile>
@@ -55,7 +56,11 @@ void EmploySettings::initSettings(IWebSocketServer *pWebSocketServer){
 
     // LXD
     QString sGroupLXD = "lxd";
-    addNewSetting(new ServerSettHelper(sGroupLXD, "path_dir_lxc_ssl", QString("~/.config/lxc")));
+    if(const char* env_p = std::getenv("PWD")){
+        addNewSetting(new ServerSettHelper(sGroupLXD, "path_dir_lxc_ssl", QString(env_p) + "/.config/lxc"));
+    } else {
+        addNewSetting(new ServerSettHelper(sGroupLXD, "path_dir_lxc_ssl", QString("/root/.config/lxc")));
+    }
     addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_server_ip", QString("127.0.0.1")));
     addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_server_port", QString("8443")));
     addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_passwd", QString("freehackquest")));

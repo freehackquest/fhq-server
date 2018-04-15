@@ -9,7 +9,7 @@
 
 class LXDContainer {
     public:
-        LXDContainer(QJsonObject jsonData);
+        LXDContainer(std::string name_of_container);
         std::string get_name();
         std::string get_status();
         std::string get_IPv4();
@@ -17,12 +17,12 @@ class LXDContainer {
         std::string set_prefix();
 
         nlohmann::json state();
-        bool create(std::string name);
+        bool create();
         bool start();
         bool stop();
         bool remove();
         bool read_file(std::string path, QFile & file);
-        std::string exec(std::string);
+        std::string exec(std::string command);
 
 
     private:
@@ -32,6 +32,7 @@ class LXDContainer {
         std::string IPv4;
         std::string error;
         std::string prefix;
+        std::string TAG = "EmployOrchestraContainer";
 };
 
 #endif // MODEL_LXD_CONTAINER
