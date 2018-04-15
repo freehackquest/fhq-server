@@ -6,90 +6,46 @@
 /*!
  * This handler will be create public event
  * */
-
-class CmdCreatePublicEventHandler : public ICmdHandler {
-
+class CmdHandlerEventAdd : public CmdHandlerBase {
     public:
-        CmdCreatePublicEventHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
+        CmdHandlerEventAdd();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
-REGISTRY_CMD(CmdCreatePublicEventHandler)
+REGISTRY_CMD(CmdHandlerEventAdd)
 
 /*!
  * This handler will be delete public event
  * */
-
-class CmdDeletePublicEventHandler : public ICmdHandler {
-
+class CmdHandlerEventDelete : public CmdHandlerBase {
     public:
-        CmdDeletePublicEventHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
+        CmdHandlerEventDelete();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
-REGISTRY_CMD(CmdDeletePublicEventHandler)
+REGISTRY_CMD(CmdHandlerEventDelete)
 
 /*!
  * This handler will be retrun info about public event
  * */
-
-class CmdGetPublicEventHandler : public ICmdHandler {
-
+class CmdHandlerEventInfo : public CmdHandlerBase {
     public:
-        CmdGetPublicEventHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
+        CmdHandlerEventInfo();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
-REGISTRY_CMD(CmdGetPublicEventHandler)
+REGISTRY_CMD(CmdHandlerEventInfo)
 
 /*!
  * This handler will be retrun list of public events
  * */
-
-class CmdPublicEventsListHandler : public ICmdHandler {
-
+class CmdHandlerEventsList : public CmdHandlerBase {
     public:
-        CmdPublicEventsListHandler();
-        virtual std::string cmd();
-        virtual std::string description();
-        virtual const ModelCommandAccess &access();
-        virtual const std::vector<CmdInputDef> &inputs();
+        CmdHandlerEventsList();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
-REGISTRY_CMD(CmdPublicEventsListHandler)
+REGISTRY_CMD(CmdHandlerEventsList)
 
 
 #endif // CMD_HADNLERS_EVENTS_H

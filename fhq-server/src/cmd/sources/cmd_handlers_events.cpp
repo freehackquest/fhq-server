@@ -13,7 +13,8 @@
 // * Create public events
 // *****************************************
 
-CmdCreatePublicEventHandler::CmdCreatePublicEventHandler(){
+CmdHandlerEventAdd::CmdHandlerEventAdd()
+    : CmdHandlerBase("createpublicevent", "Create the public event"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -34,31 +35,7 @@ CmdCreatePublicEventHandler::CmdCreatePublicEventHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdCreatePublicEventHandler::cmd(){
-    return "createpublicevent";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdCreatePublicEventHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdCreatePublicEventHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdCreatePublicEventHandler::description(){
-    return "Create the public event";
-}
-
-// ---------------------------------------------------------------------
-
-void CmdCreatePublicEventHandler::handle(ModelRequest *pRequest){
+void CmdHandlerEventAdd::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
@@ -85,7 +62,8 @@ void CmdCreatePublicEventHandler::handle(ModelRequest *pRequest){
 // *****************************************
 
 
-CmdDeletePublicEventHandler::CmdDeletePublicEventHandler(){
+CmdHandlerEventDelete::CmdHandlerEventDelete()
+    : CmdHandlerBase("deletepublicevent", "Delete public event"){
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
@@ -98,34 +76,7 @@ CmdDeletePublicEventHandler::CmdDeletePublicEventHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdDeletePublicEventHandler::cmd(){
-    return "deletepublicevent";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdDeletePublicEventHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdDeletePublicEventHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdDeletePublicEventHandler::description(){
-    return
-        "Delete public event\n"
-        " Input params: \n"
-        "   * eventid \n";
-}
-
-// ---------------------------------------------------------------------
-
-void CmdDeletePublicEventHandler::handle(ModelRequest *pRequest){
+void CmdHandlerEventDelete::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
@@ -161,8 +112,8 @@ void CmdDeletePublicEventHandler::handle(ModelRequest *pRequest){
 // * get public event
 // *****************************************
 
-
-CmdGetPublicEventHandler::CmdGetPublicEventHandler(){
+CmdHandlerEventInfo::CmdHandlerEventInfo()
+    : CmdHandlerBase("getpublicevent", "Return public event info by id"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -174,34 +125,7 @@ CmdGetPublicEventHandler::CmdGetPublicEventHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdGetPublicEventHandler::cmd(){
-    return "getpublicevent";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdGetPublicEventHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdGetPublicEventHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdGetPublicEventHandler::description(){
-    return
-        "Return public event info by id\n"
-        " Input params: \n"
-        "   * eventid \n";
-}
-
-// ---------------------------------------------------------------------
-
-void CmdGetPublicEventHandler::handle(ModelRequest *pRequest){
+void CmdHandlerEventInfo::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
@@ -237,7 +161,8 @@ void CmdGetPublicEventHandler::handle(ModelRequest *pRequest){
 // *****************************************
 
 
-CmdPublicEventsListHandler::CmdPublicEventsListHandler(){
+CmdHandlerEventsList::CmdHandlerEventsList()
+    : CmdHandlerBase("publiceventslist", "Return list of public events"){
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
@@ -250,37 +175,7 @@ CmdPublicEventsListHandler::CmdPublicEventsListHandler(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdPublicEventsListHandler::cmd(){
-    return "publiceventslist";
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdPublicEventsListHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdPublicEventsListHandler::inputs(){
-    return m_vInputs;
-}
-
-// ---------------------------------------------------------------------
-
-std::string CmdPublicEventsListHandler::description(){
-    return
-        "Return list of public events (news)\n"
-        " Input params: \n"
-        "   * page \n"
-        "   * onpage  \n"
-        "   * type  \n"
-        "   * search   \n";
-}
-
-// ---------------------------------------------------------------------
-
-void CmdPublicEventsListHandler::handle(ModelRequest *pRequest){
+void CmdHandlerEventsList::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
