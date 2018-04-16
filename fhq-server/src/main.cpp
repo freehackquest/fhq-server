@@ -25,14 +25,14 @@
 int main(int argc, char** argv) {
 	QCoreApplication a(argc, argv);
 	QString TAG = "main";
-	Log::setdir("/var/log/freehackquest-backend");
+	Log::setdir("/var/log/fhq-server");
 	
-	a.setApplicationName("freehackquest-backend");
+	a.setApplicationName("fhq-server");
     a.setApplicationVersion(VERSION_STRING);
     
     
     QCommandLineParser parser;
-    parser.setApplicationDescription("freehackquest-backend");
+    parser.setApplicationDescription("fhq-server");
     
     parser.addHelpOption();
     
