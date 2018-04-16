@@ -58,7 +58,7 @@ std::map<std::string, CmdHandlerBase*> *g_pCmdHandlers = NULL;
 
 void CmdHandlers::initGlobalVariables(){
     if(g_pCmdHandlers == NULL){
-        Log::info(std::string(), "Create handlers map");
+        // Log::info(std::string(), "Create handlers map");
         g_pCmdHandlers = new std::map<std::string, CmdHandlerBase*>();
     }
 }
@@ -71,7 +71,7 @@ void CmdHandlers::addHandler(const std::string &sCmd, CmdHandlerBase* pCmdHandle
         Log::err(sCmd, "Already registered");
     }else{
         g_pCmdHandlers->insert(std::pair<std::string, CmdHandlerBase*>(sCmd,pCmdHandler));
-        Log::info(sCmd, "Registered");
+        // Log::info(sCmd, "Registered");
     }
 }
 

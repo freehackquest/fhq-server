@@ -9,7 +9,7 @@ Requires=mysql.service
 WorkingDirectory=/usr/share/fhq-server
 User=root
 Group=root
-ExecStart=/bin/sh -c '/usr/bin/fhq-server > /var/log/fhq-server/access.log 2> /var/log/fhq-server/error.log'
+ExecStart=/bin/sh -c '/usr/bin/fhq-server -s > /var/log/fhq-server/access.log 2> /var/log/fhq-server/error.log'
 
 TimeoutSec=30
 Restart=always

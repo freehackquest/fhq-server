@@ -272,6 +272,38 @@ const std::string &EmploySettings::getSettType(const std::string &sName){
 
 // ---------------------------------------------------------------------
 
+const std::map<std::string, ServerSettHelper*> &EmploySettings::listSettings(){
+	return m_mapSettings;
+}
+
+// ---------------------------------------------------------------------
+
+void EmploySettings::printSettings(){
+	std::map<std::string, ServerSettHelper*>::iterator it = m_mapSettings.begin();
+    for (; it!=m_mapSettings.end(); ++it){
+        std::string sName = it->first;
+        ServerSettHelper *pServerSettHelper = it->second;
+
+		std::cout << " * [" << pServerSettHelper->name() << "] => [";
+        if(pServerSettHelper->isBoolean()){
+			std::cout << pServerSettHelper->valueAsBoolean() ? "true" : "false";
+        }else if(pServerSettHelper->isString()){
+			std::cout << pServerSettHelper->valueAsString().toStdString();
+        }else if(pServerSettHelper->isInteger()){
+			std::cout << pServerSettHelper->valueAsInteger();
+        }else if(pServerSettHelper->isPassword()){
+			std::cout << pServerSettHelper->valueAsString().toStdString();
+        }else{
+			std::cout << pServerSettHelper->valueAsString().toStdString();
+        }
+        std::cout << "]\n";
+
+        // jsonSett["group"] = pServerSettHelper->group();
+        // jsonSett["type"] = pServerSettHelper->type();
+    }
+}
+// ---------------------------------------------------------------------
+
 nlohmann::json EmploySettings::toJson(){
     auto jsonSettings = nlohmann::json::array();
 

@@ -26,6 +26,8 @@ public:
     bool hasSett(const std::string &sName);
     const std::string &getSettType(const std::string &sName);
 
+	const std::map<std::string, ServerSettHelper*> &listSettings();
+	void printSettings();
     nlohmann::json toJson();
 
 private:

@@ -116,12 +116,12 @@ void Log::initGlobalVariables(){
     // create deque if not created
     if(g_LAST_LOG_MESSAGES == NULL){
         g_LAST_LOG_MESSAGES = new std::deque<std::string>();
-        std::cout << Log::currentTime() + ", " + Log::threadId() + " Init last messages deque\r\n";
+        // std::cout << Log::currentTime() + ", " + Log::threadId() + " Init last messages deque\r\n";
     }
     // create mutex if not created
     if(g_LOG_MUTEX == NULL){
         g_LOG_MUTEX = new std::mutex();
-        std::cout << Log::currentTime() + ", " + Log::threadId() + " Init mutex for log\r\n";
+        // std::cout << Log::currentTime() + ", " + Log::threadId() + " Init mutex for log\r\n";
     }
 }
 

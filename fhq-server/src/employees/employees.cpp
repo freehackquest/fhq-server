@@ -13,11 +13,11 @@ std::vector<std::string> *g_pInitEmployees = NULL;
 
 void Employees::initGlobalVariables(){
     if(g_pEmployees == NULL){
-        Log::info(std::string(), "Create employees map");
+        // Log::info(std::string(), "Create employees map");
         g_pEmployees = new std::map<std::string, EmployBase*>();
     }
     if(g_pInitEmployees == NULL){
-		Log::info(std::string(), "Create init employees vector");
+		// Log::info(std::string(), "Create init employees vector");
 		g_pInitEmployees = new std::vector<std::string>();
 	}
 }
@@ -30,7 +30,7 @@ void Employees::addEmploy(const std::string &sName, EmployBase* pEmploy){
         Log::err(sName, "Already registered");
     }else{
         g_pEmployees->insert(std::pair<std::string, EmployBase*>(sName,pEmploy));
-        Log::info(sName, "Registered");
+        // Log::info(sName, "Registered");
     }
 }
 

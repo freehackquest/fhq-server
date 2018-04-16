@@ -48,7 +48,7 @@ std::vector<UpdateBase*> *g_pUpdates = NULL;
 
 void Updates::initGlobalVariables(){
     if(g_pUpdates == NULL){
-        Log::info(std::string(), "Create list updates");
+        // Log::info(std::string(), "Create list updates");
         g_pUpdates = new std::vector<UpdateBase*>();
     }
 }
