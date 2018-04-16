@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -d build ]; then
+if [ ! -d build ]; then
 	mkdir -p build
 fi
 
