@@ -1,8 +1,8 @@
 TEMPLATE = app
 TARGET = fhq-server
 
-VERSION = 0.1.19
-DEFINES += VERSION_STRING=\\\"0.1.19\\\"
+VERSION = 0.2.2
+DEFINES += VERSION_STRING=\\\"0.2.2\\\"
 
 CONFIG   += console
 CONFIG   += release
