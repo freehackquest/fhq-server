@@ -46,20 +46,34 @@ void EmployOrchestra::initSettings(){
 
 }
 
-LXDContainer EmployOrchestra::create_container(std::string name){
+bool EmployOrchestra::create_container(std::string name, std::string &error){
     Log::info(TAG, "Starting creation container " + name);
     LXDContainer container = LXDContainer(name);
+
     if(container.create()){
         Log::info(TAG, "Created container " + name);
     }
 
+    if(!(container.get_error() == "")){
+        error = container.get_error();
+        return false;
+    }
+
+    containers_map.insert(std::make_pair(name, &container));
+    return true;
+}
+
+LXDContainer * EmployOrchestra::get_container(std::string name){
+    LXDContainer * container = containers_map[name];
     return container;
 }
 
-LXDContainer EmployOrchestra::find_container(std::string name){
+bool EmployOrchestra::find_container(std::string name){
+    if (containers_map.find(name) == containers_map.end())
+        return false;
 
+    return true;
 }
-
 
 // ---------------------------------------------------------------------
 
@@ -103,7 +117,6 @@ bool EmployOrchestra::send_post_request(std::string address, std::string setting
         return false;
     }
 
-    Log::info(TAG, response);
     curl_easy_cleanup(hnd);
     hnd = NULL;
 
@@ -130,7 +143,7 @@ bool EmployOrchestra::send_put_request(std::string address, std::string settings
     curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYHOST, 0L);
     curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "PUT");
     curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
-    //curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
+    curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
     //Saving response
     curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, write_to_string);
     curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &response);

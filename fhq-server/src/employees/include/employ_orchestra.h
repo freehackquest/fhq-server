@@ -17,8 +17,9 @@ public:
 
     void initSettings();
 
-    LXDContainer create_container(std::string name);
-    LXDContainer find_container(std::string name);
+    LXDContainer * get_container(std::string name);
+    bool create_container(std::string name, std::string &error);
+    bool find_container(std::string name);
     bool remove_container(std::string name);
     bool send_post_request(std::string address, std::string settings, std::string & response, std::string & error);
     bool send_put_request(std::string address, std::string settings, std::string & response, std::string & error);

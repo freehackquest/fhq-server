@@ -49,7 +49,7 @@ bool LXDContainer::check_response(nlohmann::json res_json){
     std::string metadata_error = res_json.at("metadata").at("err").get<std::string>();
     if ( (res_json.at("error").get<std::string>() != "") || (metadata_error != "") ){
         error = metadata_error;
-        Log::err(TAG, "Failed create : " + error);
+        Log::err(TAG, "Failed : " + error);
         return false;
     }
 
@@ -103,12 +103,34 @@ bool LXDContainer::start(){
     std::string address = "/1.0/containers/" + name + "/state";
     std::string settings = "{\"action\": \"start\"}";
 
+    Log::info(TAG, "Send put request name:" + name + " address:" + address );
     if (!pOrchestra->send_put_request(address, settings, response, error))
         return false;
 
+    Log::info(TAG, "Recive put request");
 
-    //TO DO
-    //Check response
+    auto res_json = nlohmann::json::parse(response);
+
+    Log::info(TAG, "string to json");
+    if (!check_response(res_json))
+        return false;
+
+    Log::info(TAG, "Checked response");
+
+    if (res_json.at("type").get<std::string>() == "async"){
+        response = "";
+        std::string operation_id = res_json.at("operation").get<std::string>();
+        if ( (operation_id != "") && (!pOrchestra->send_get_request(operation_id + "/wait", response, error))){
+            Log::err(TAG, "Can\'t get operation " + error);
+            return false;
+        }
+
+        auto operation_json = nlohmann::json::parse(response);
+        if (!check_async_response(operation_json))
+            return false;
+    }
+
+    Log::info(TAG, "Check async response");
     return true;
 
 }
@@ -117,17 +139,27 @@ bool LXDContainer::stop(){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     std::string address = "/1.0/containers/" + name + "/state";
     std::string settings = "{\"action\": \"stop\"}";
-    std::string res;
-    std::string err;
 
-    if (!pOrchestra->send_put_request(address, settings, res, err)){
-        error = err;
+    if (!pOrchestra->send_put_request(address, settings, response, error)){
         return false;
     }
 
+    auto res_json = nlohmann::json::parse(response);
+    if (!check_response(res_json))
+        return false;
 
-    //TO DO
-    //Check response
+    if (res_json.at("type").get<std::string>() == "async"){
+        response = "";
+        std::string operation_id = res_json.at("operation").get<std::string>();
+        if ( (operation_id != "") && (!pOrchestra->send_get_request(operation_id + "/wait", response, error))){
+            Log::err(TAG, "Can\'t get operation " + error);
+            return false;
+        }
+
+        auto operation_json = nlohmann::json::parse(response);
+        if (!check_async_response(operation_json))
+            return false;
+    }
     return true;
 }
 

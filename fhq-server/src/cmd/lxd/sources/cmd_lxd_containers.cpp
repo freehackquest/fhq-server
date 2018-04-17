@@ -8,7 +8,7 @@
 CmdLXDContainersHandler::CmdLXDContainersHandler(){
 
     //Не забудь поменять на false
-    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
 
@@ -68,25 +68,35 @@ void CmdLXDContainersHandler::handle(ModelRequest *pRequest){
 void CmdLXDContainersHandler::create_container(std::string name, QJsonObject &jsonResponse){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     pOrchestra->initSettings();
-    LXDContainer container = pOrchestra->create_container(name);
-    if(!(container.get_error() == ""))
-        jsonResponse["error"] = QJsonValue(QString::fromStdString(container.get_error()));
+    std::string error;
+    if (!pOrchestra->create_container(name, error)){
+        jsonResponse["error"] = QJsonValue(QString::fromStdString(error));
+        return;
+    }
 }
 
 
 void CmdLXDContainersHandler::start_container(std::string name, QJsonObject &jsonResponse){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     pOrchestra->initSettings();
-    LXDContainer container = pOrchestra->find_container(name);
-    if (!container.start())
-        jsonResponse["error"] = QJsonValue(QString::fromStdString(container.get_error()));
+
+    LXDContainer * container;
+    if (pOrchestra->find_container(name))
+        container = pOrchestra->get_container(name);
+
+    if (!container->start())
+        jsonResponse["error"] = QJsonValue(QString::fromStdString(container->get_error()));
 }
 
 
 void CmdLXDContainersHandler::stop_container(std::string name, QJsonObject &jsonResponse){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     pOrchestra->initSettings();
-    LXDContainer container = pOrchestra->find_container(name);
-    if (!container.stop())
-        jsonResponse["error"] = QJsonValue(QString::fromStdString(container.get_error()));
+
+    LXDContainer * container;
+    if (pOrchestra->find_container(name))
+        container = pOrchestra->get_container(name);
+
+    if (!container->stop())
+        jsonResponse["error"] = QJsonValue(QString::fromStdString(container->get_error()));
 }
