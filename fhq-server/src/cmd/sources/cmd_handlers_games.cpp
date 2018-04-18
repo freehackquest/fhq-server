@@ -10,10 +10,11 @@
 #include <quazipfileinfo.h>
 #include <log.h>
 #include <iostream>
-#include <employ_settings.h>
 #include <employ_database.h>
+#include <employ_settings.h>
+#include <employ_images.h>
 #include <QFile>
-#include <QImage>
+#include <fstream>
 
 /*********************************************
  * Create Game
@@ -745,6 +746,7 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
     }
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
+    EmployImages *pImages = findEmploy<EmployImages>();
 
     QString sBasePath = pSettings->getSettString("server_folder_games");
 
@@ -754,6 +756,7 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
 
     QString sImagePngBase64 = jsonRequest["image_png_base64"].toString();
     baImagePNGBase64.append(sImagePngBase64);
+    // TODO replace decode base64 to std
     QByteArray baImagePNG = QByteArray::fromBase64(baImagePNGBase64); // .fromBase64(baImagePNGBase64);
 
     if(baImagePNG.size() == 0){
@@ -761,25 +764,26 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
         return;
     }
 
-    QImage img = QImage::fromData(baImagePNG,"PNG");
-    if(img.height() == 0 && img.width() == 0){
+    std::string sourceImageFile = std::tmpnam(nullptr);
+    std::cout << "temporary file name: " << sourceImageFile << '\n';
+
+    int nLen = baImagePNG.size();
+
+    FILE * pFile;
+    pFile = fopen (sourceImageFile.c_str(), "wb");
+    fwrite (baImagePNG.constData(), sizeof(char), nLen, pFile);
+    fclose (pFile);
+
+    std::string targetImageFile = sFilename.toStdString();
+    if(!pImages->doThumbnailImagePng(sourceImageFile, targetImageFile, 100, 100)){
         pRequest->sendMessageError(cmd(), Error(400, "Could not decode bytearray to png"));
+        // cleanup - redesign try finnaly
+        remove( sourceImageFile.c_str());
         return;
     }
 
-    // TODO resize icon of game
-
-    QFile file(sFilename);
-
-    if(file.exists()){
-        if(!file.remove()){
-            pRequest->sendMessageError(cmd(), Error(403, "Could not remove old file"));
-            return;
-        }
-    }
-    if(!img.save(sFilename)){
-        pRequest->sendMessageError(cmd(), Error(403, "Could not save new file"));
-        return;
+    if( remove( sourceImageFile.c_str() ) != 0 ){
+        Log::err(TAG, "Could not delete file " + sourceImageFile);
     }
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);

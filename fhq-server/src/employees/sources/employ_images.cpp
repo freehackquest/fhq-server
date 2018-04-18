@@ -80,7 +80,7 @@ void avarage_color(avrgClr &a){
 	}
 }
 
-bool EmployImages::doThumbnailImagePng(const std::string &sourceFilepath, const std::string &targetFilepath, int width_resize, int height_resize){
+bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const std::string &targetImageFile, int width_resize, int height_resize){
 	// TODO keep proportional (will be got from web)
 
 	Log::info(TAG, "doThumbnailImagePng");
@@ -102,9 +102,9 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceFilepath, const 
 		char header[8];    // 8 is the maximum size that can be checked
 
         /* open file and test for it being a png */
-        FILE *fp = fopen(sourceFilepath.c_str(), "rb");
+        FILE *fp = fopen(sourceImageFile.c_str(), "rb");
         if (!fp){
-			Log::err(TAG, "[read_png_file] File " + sourceFilepath + " could not be opened for reading");
+            Log::err(TAG, "[read_png_file] File " + sourceImageFile + " could not be opened for reading");
 			return false;
 		}
         fread(header, 1, 8, fp);
@@ -221,9 +221,9 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceFilepath, const 
 	// write file
 	{
 		/* create file */
-		FILE *fp = fopen(targetFilepath.c_str(), "wb");
+        FILE *fp = fopen(targetImageFile.c_str(), "wb");
 		if (!fp){
-			Log::err(TAG, "[write_png_file] File " + targetFilepath + " could not be opened for writing");
+            Log::err(TAG, "[write_png_file] File " + targetImageFile + " could not be opened for writing");
 			return false;
 		}
 
@@ -292,6 +292,7 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceFilepath, const 
 		free(row_pointers_resize);
 		fclose(fp);
 	}
+    return true;
 }
 
 // ---------------------------------------------------------------------
