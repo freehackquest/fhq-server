@@ -25,4 +25,6 @@ After install please try [CONFIGURING](install/CONFIGURING.md)
 
 * Contains source code to compile: [SmtpClient-for-Qt](https://github.com/bluetiger9/SmtpClient-for-Qt)
 * For Json: [Json](https://github.com/nlohmann/json)
-* Using libzip for a working with zip-archives [https://libzip.org/](https://libzip.org/)
+* Used libzip for a working with zip-archives [https://libzip.org/](https://libzip.org/)
+* Used libzip for a processing png-images [http://libpng.org/](http://libpng.org/)
+

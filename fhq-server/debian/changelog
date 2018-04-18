@@ -1,5 +1,7 @@
-fhq-server (0.2.2-0ppa0) xenial; urgency=low
+fhq-server (0.2.3-0ppa0) xenial; urgency=low
 
-  * Fixed dependencies
+  * Fixed requariments
+  * Removed QtGui requariment
+  * Use libpng
 
- -- Free Hack Quest <freehackquest@gmail.com>  Mon, 16 Apr 2018 10:22:35 +0700
+ -- Free Hack Quest <freehackquest@gmail.com>  Wed, 18 Apr 2018 22:01:32 +0700
