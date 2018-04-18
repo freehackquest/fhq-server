@@ -15,7 +15,7 @@ class CmdLXDContainersHandler : public ICmdHandler {
         virtual void handle(ModelRequest *pRequest);
 
     private:
-        QString TAG;
+        std::string TAG;
         ModelCommandAccess m_modelCommandAccess;
         std::vector<CmdInputDef> m_vInputs;
 

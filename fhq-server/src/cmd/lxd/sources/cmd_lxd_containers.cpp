@@ -15,6 +15,8 @@ CmdLXDContainersHandler::CmdLXDContainersHandler(){
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
     m_vInputs.push_back(CmdInputDef("action").string_().required().description("Actions: create, start, stop and delete container"));
+
+    TAG = "LXD_HANDLER";
 }
 
 // ---------------------------------------------------------------------
@@ -67,10 +69,20 @@ void CmdLXDContainersHandler::handle(ModelRequest *pRequest){
 
 void CmdLXDContainersHandler::create_container(std::string name, QJsonObject &jsonResponse){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
-    pOrchestra->initSettings();
+
+    //Переместить в Orchestra
+    if (!pOrchestra->initSettings())
+        return;
+
     std::string error;
+    if (pOrchestra->find_container(name)){
+        jsonResponse["error"] = QJsonValue("Container already exists");
+        Log::err(TAG, "Container already exists");
+        return;
+    }
     if (!pOrchestra->create_container(name, error)){
         jsonResponse["error"] = QJsonValue(QString::fromStdString(error));
+        Log::err(TAG, "Can\'t create container");
         return;
     }
 }
@@ -78,11 +90,17 @@ void CmdLXDContainersHandler::create_container(std::string name, QJsonObject &js
 
 void CmdLXDContainersHandler::start_container(std::string name, QJsonObject &jsonResponse){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
-    pOrchestra->initSettings();
+    if (!pOrchestra->initSettings())
+        return;
 
     LXDContainer * container;
-    if (pOrchestra->find_container(name))
-        container = pOrchestra->get_container(name);
+    if (!pOrchestra->find_container(name)){
+       jsonResponse["error"] = QJsonValue("Can\'t find container " + QString::fromStdString(name));
+       Log::err(TAG, "Can\'t find container" + name);
+       return;
+    }
+
+    container = pOrchestra->get_container(name);
 
     if (!container->start())
         jsonResponse["error"] = QJsonValue(QString::fromStdString(container->get_error()));
@@ -91,11 +109,16 @@ void CmdLXDContainersHandler::start_container(std::string name, QJsonObject &jso
 
 void CmdLXDContainersHandler::stop_container(std::string name, QJsonObject &jsonResponse){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
-    pOrchestra->initSettings();
+    if (!pOrchestra->initSettings())
+        return;
 
     LXDContainer * container;
-    if (pOrchestra->find_container(name))
-        container = pOrchestra->get_container(name);
+    if (!pOrchestra->find_container(name)){
+       jsonResponse["error"] = QJsonValue("Can\'t find container");
+       return;
+    }
+
+    container = pOrchestra->get_container(name);
 
     if (!container->stop())
         jsonResponse["error"] = QJsonValue(QString::fromStdString(container->get_error()));
