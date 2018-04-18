@@ -136,7 +136,6 @@ void WebSocketServer::processTextMessage(QString message) {
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
 
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    Log::info(TAG, "[WS] <<< " + message);
 
     nlohmann::json jsonRequest_ = nlohmann::json::parse(message.toStdString());
 
@@ -152,7 +151,9 @@ void WebSocketServer::processTextMessage(QString message) {
 	}
 	
     std::string cmd = pModelRequest->command();
-	
+
+    Log::info(TAG.toStdString(), "[WS] <<< " + cmd);
+
     if(!pModelRequest->hasM()){
 		this->sendMessageError(pClient, cmd, "", Errors::NotFound("requare parameter 'm' - messageid"));
 		return;
@@ -276,6 +277,7 @@ void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &c
     jsonResponse["result"] = QJsonValue("FAIL");
     jsonResponse["error"] = QJsonValue(error.message());
     jsonResponse["code"] = QJsonValue(error.codeError());
+    Log::err(TAG.toStdString(), "WS-ERROR >>> " + cmd + ": messsage: " + error.message().toStdString());
     this->sendMessage(pClient, jsonResponse);
 	return;
 }
