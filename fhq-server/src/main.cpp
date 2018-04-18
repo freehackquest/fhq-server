@@ -22,6 +22,7 @@
 #include <employ_server_info.h>
 #include <employ_database.h>
 #include <employ_settings.h>
+#include <employ_images.h>
 
 void print_help(std::vector<std::string> &vArgs){
 	std::cout
@@ -120,6 +121,15 @@ int main(int argc, char** argv) {
 		Employees::init({});
 		EmploySettings *pSettings = findEmploy<EmploySettings>();
 		pSettings->printSettings();
+		std::cout << "\n * Done\n\n";
+		return 0;
+	}else if(hasArgs(vArgs, "--test-png")){
+		std::cout << "\n * Test png\n\n";
+		// Employees::init({});
+		EmployImages *pImages = new EmployImages();
+		// EmployImages *pImages = findEmploy<EmployImages>();
+		pImages->doThumbnailImagePng("test.png", "test_100x100.png", 100, 100);
+		pImages->doThumbnailImagePng("test_alpha.png", "test_alpha_100x100.png", 100, 100);
 		std::cout << "\n * Done\n\n";
 		return 0;
 	}else if(hasArgs(vArgs, "--server") || hasArgs(vArgs, "-s")){

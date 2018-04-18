@@ -192,6 +192,8 @@ list (APPEND FHQSRV_SOURCES "src/server/sources/log.cpp")
 # employees
 list (APPEND FHQSRV_SOURCES "src/employees/employees.h")
 list (APPEND FHQSRV_SOURCES "src/employees/employees.cpp")
+list (APPEND FHQSRV_SOURCES "src/employees/include/employ_images.h")
+list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_images.cpp")
 list (APPEND FHQSRV_SOURCES "src/employees/include/employ_settings.h")
 list (APPEND FHQSRV_SOURCES "src/employees/include/employ_server_config.h")
 list (APPEND FHQSRV_SOURCES "src/employees/include/employ_server_info.h")
@@ -263,6 +265,15 @@ if ( ZLIB_FOUND )
 endif( ZLIB_FOUND )
 
 
+# LIBPNG
+find_package(PNG REQUIRED)
+if (NOT PNG_FOUND)
+    message(FATAL_ERROR "You don't seem to have libpng development libraries installed (apt isntall libpng-dev)")
+else ()
+	list (APPEND FHQSRV_INCLUDE_DIRS ${PNG_INCLUDE_DIR})
+    list (APPEND FHQSRV_LIBRARIES ${PNG_LIBRARY})
+endif ()
+
 include_directories(${FHQSRV_INCLUDE_DIRS})
 
 find_package (Qt5Core)
@@ -275,7 +286,6 @@ add_executable (fhq-server ${FHQSRV_SOURCES})
 
 qt5_use_modules(fhq-server Core Network Sql WebSockets Gui)
 target_link_libraries(fhq-server ${FHQSRV_LIBRARIES} )
-
 
 # target_link_libraries(fhq-server Qt5::Core)
 
