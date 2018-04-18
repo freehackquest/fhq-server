@@ -15,7 +15,7 @@ public:
     static std::string getEmployName() { return "EmployOrchestra"; }
     virtual void test();
 
-    void initSettings();
+    bool initSettings();
 
     LXDContainer * get_container(std::string name);
     bool create_container(std::string name, std::string &error);
@@ -26,13 +26,16 @@ public:
     bool send_get_request(std::string address, std::string & response, std::string & error);
 
 private:
-    std::map<std::string, LXDContainer * > containers_map;
+    std::map<std::string, LXDContainer *> containers_map;
     std::list<std::string> names;
     std::string path_dir_lxc_ssl;
     std::string lxd_address;
     std::string TAG;
 
     bool pull_container_names();
+    bool check_response(nlohmann::json res_json, std::string error);
+    bool check_async_response(nlohmann::json operation_json, std::string error);
+    std::string extract_keys(std::map<std::string, LXDContainer *> const& input_map);
 };
 
 #endif // EMPLOY_ORCHESTRA

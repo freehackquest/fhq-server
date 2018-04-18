@@ -6,6 +6,8 @@ REGISTRY_EMPLOY(EmployOrchestra)
 // ---------------------------------------------------------------------
 
 #include <log.h>
+#include <vector>
+#include <utility>
 
 #include <QTextStream>
 #include <QFile>
@@ -23,7 +25,7 @@ void EmployOrchestra::test(){
 
 // ---------------------------------------------------------------------
 
-void EmployOrchestra::initSettings(){
+bool EmployOrchestra::initSettings(){
     TAG = "EmployOrchestra";
 
     Log::info(TAG, "Start init settings");
@@ -41,9 +43,11 @@ void EmployOrchestra::initSettings(){
     //
 
 
-    //TO DO
     //Pull existing containers
+    if (!pull_container_names())
+        return false;
 
+    return true;
 }
 
 bool EmployOrchestra::create_container(std::string name, std::string &error){
@@ -104,7 +108,7 @@ bool EmployOrchestra::send_post_request(std::string address, std::string setting
     curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYHOST, 0L);
     curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "POST");
     curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
-    //curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
+    curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
     //Saving response
     curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, write_to_string);
     curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &response);
@@ -143,7 +147,7 @@ bool EmployOrchestra::send_put_request(std::string address, std::string settings
     curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYHOST, 0L);
     curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "PUT");
     curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
-    curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
+    //curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
     //Saving response
     curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, write_to_string);
     curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &response);
@@ -151,7 +155,7 @@ bool EmployOrchestra::send_put_request(std::string address, std::string settings
     ret = curl_easy_perform(hnd);
 
     if(ret != CURLE_OK) {
-        Log::err(TAG, "Failed send POST request " + std::string(errorBuffer));
+        Log::err(TAG, "Failed send PUT request " + std::string(errorBuffer));
         error = std::string(errorBuffer);
         return false;
     }
@@ -189,7 +193,7 @@ bool EmployOrchestra::send_get_request(std::string address, std::string &respons
     ret = curl_easy_perform(hnd);
 
     if(ret != CURLE_OK) {
-        Log::err(TAG, "Failed send POST request " + std::string(errorBuffer));
+        Log::err(TAG, "Failed send GET request " + std::string(errorBuffer));
         error = std::string(errorBuffer);
         return false;
     }
@@ -201,51 +205,84 @@ bool EmployOrchestra::send_get_request(std::string address, std::string &respons
 }
 
 bool EmployOrchestra::pull_container_names(){
-    CURLcode ret;
-    CURL *hnd;
-    std::string readBuffer;
+    std::string address = "/1.0/containers";
+    std::string response, error;
 
-    hnd = curl_easy_init();
-    curl_easy_setopt(hnd, CURLOPT_URL, "https://127.0.0.1:8443/1.0/containers");
-    curl_easy_setopt(hnd, CURLOPT_NOPROGRESS, 1L);
-    curl_easy_setopt(hnd, CURLOPT_USERAGENT, "curl/7.47.0");
-    curl_easy_setopt(hnd, CURLOPT_MAXREDIRS, 50L);
-    curl_easy_setopt(hnd, CURLOPT_SSLCERT, "/home/sergo/.config/lxc/client.crt");
-    curl_easy_setopt(hnd, CURLOPT_SSLKEY, "/home/sergo/.config/lxc/client.key");
-    curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYPEER, 0L);
-    curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYHOST, 0L);
-    curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
-    //Saving response
-    curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, write_to_string);
-    curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &readBuffer);
-    curl_easy_setopt(hnd, CURLOPT_ERRORBUFFER, errorBuffer);
-
-    ret = curl_easy_perform(hnd);
-
-    if(ret != CURLE_OK) {
-        fprintf(stderr, "Failed to listing container [%s]\n", errorBuffer);
+    if (!send_get_request(address, response, error)){
+        Log::err(TAG, "Can't pull container names " + error);
+        return false;
+    }
+    auto res_json = nlohmann::json::parse(response);
+    if (!check_response(res_json, error)){
+        Log::err(TAG, "Can't pull container names " + error);
         return false;
     }
 
-    QJsonDocument response = QJsonDocument::fromJson(QString::fromStdString(readBuffer).toUtf8());
+    if (res_json.find("metadata") == res_json.end())
+        return false;
 
-    if(response.isObject()){
-        QJsonObject res = response.object();
-        if(res.contains("metadata")){
-            QJsonArray metadata = res.value("metadata").toArray();
+    auto container_names = res_json.at("metadata").get<std::vector<std::string>>();
+    for (auto it: container_names){
+        std::string str = std::string(it);
+        std::string name = str.substr(15);
 
-            foreach (const QJsonValue & value, metadata) {
-                names.push_back(value.toString().toStdString());
-            }
+        if (name.length() > 4)
+            continue;
+
+        if (name.substr(1, 4) == "fhq-"){
+            names.push_back(name.substr(4));
+            Log::info(TAG, "name :: " + name.substr(5));
         }
     }
 
+    for (auto name : names){
+        LXDContainer container = LXDContainer(name);
+        containers_map.insert( make_pair(name, &container) );
 
-    curl_easy_cleanup(hnd);
-    hnd = NULL;
+    }
+
+    Log::info(TAG, "Keys : " + extract_keys(containers_map));
     return true;
 }
 
 // ---------------------------------------------------------------------
 
+bool EmployOrchestra::check_response(nlohmann::json res_json, std::string error){
+    std::string metadata_error;
+    if (res_json.at("metadata").find("err") != res_json.at("metadata").end())
+        metadata_error = res_json.at("metadata").at("err").get<std::string>();
+    if ( (res_json.at("error").get<std::string>() != "") || (metadata_error != "") ){
+        error = metadata_error;
+        Log::err(TAG, "Failed : " + error);
+        return false;
+    }
+    if (res_json.is_array())
+        Log::info(TAG, "Parsed json ");
 
+    return true;
+}
+
+
+bool EmployOrchestra::check_async_response(nlohmann::json operation_json, std::string error){
+    //Check async operation
+    std::string metadata_error;
+    if (operation_json.at("metadata").find("err") != operation_json.at("metadata").end())
+        metadata_error = operation_json.at("metadata").at("err").get<std::string>();
+    if ( (operation_json.at("error").get<std::string>() != "") || (metadata_error != "")){
+        error = metadata_error;
+        Log::err(TAG, "Operation is failed " + error);
+        return false;
+    }
+
+    return true;
+}
+
+
+std::string EmployOrchestra::extract_keys(std::map<std::string, LXDContainer *> const& input_map) {
+  std::string retval;
+  for (auto const& element : input_map) {
+    retval += element.first;
+    retval += " ";
+  }
+  return retval;
+}

@@ -46,7 +46,9 @@ nlohmann::json LXDContainer::state(){
 
 
 bool LXDContainer::check_response(nlohmann::json res_json){
-    std::string metadata_error = res_json.at("metadata").at("err").get<std::string>();
+    std::string metadata_error;
+    if (res_json.at("metadata").find("err") != res_json.at("metadata").end())
+        metadata_error = res_json.at("metadata").at("err").get<std::string>();
     if ( (res_json.at("error").get<std::string>() != "") || (metadata_error != "") ){
         error = metadata_error;
         Log::err(TAG, "Failed : " + error);
@@ -59,7 +61,9 @@ bool LXDContainer::check_response(nlohmann::json res_json){
 
 bool LXDContainer::check_async_response(nlohmann::json operation_json){
     //Check async operation
-    std::string metadata_error = operation_json.at("metadata").at("err").get<std::string>();
+    std::string metadata_error;
+    if (operation_json.at("metadata").find("err") != operation_json.at("metadata").end())
+        metadata_error = operation_json.at("metadata").at("err").get<std::string>();
     if ( (operation_json.at("error").get<std::string>() != "") || (metadata_error != "")){
         error = metadata_error;
         Log::err(TAG, "Operation is failed " + error);
