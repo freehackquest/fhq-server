@@ -277,14 +277,13 @@ endif ()
 include_directories(${FHQSRV_INCLUDE_DIRS})
 
 find_package (Qt5Core)
-find_package (Qt5Gui)
 find_package (Qt5Sql)
 find_package (Qt5Network)
 find_package (Qt5WebSockets)
 
 add_executable (fhq-server ${FHQSRV_SOURCES})
 
-qt5_use_modules(fhq-server Core Network Sql WebSockets Gui)
+qt5_use_modules(fhq-server Core Network Sql WebSockets)
 target_link_libraries(fhq-server ${FHQSRV_LIBRARIES} )
 
 # target_link_libraries(fhq-server Qt5::Core)
