@@ -1,0 +1,40 @@
+
+Template: fhq-server/reconfigure-database
+Type: multiselect
+Choices: mysql-server
+Description: Web server to reconfigure automatically:
+ Please choose the web server that should be automatically configured
+ to run phpMyAdmin.
+
+Template: fhq-server/setup-dbhost
+Type: string
+Default: localhost
+Description: Database hostname for a connection to mysql-server:
+ Please setup host
+
+Template: fhq-server/setup-dbrootpassword
+Type: password
+Default:
+Description: Database root password for create empty database:
+ The setup system for phpMyAdmin may be used, after installation, from
+
+Template: fhq-server/setup-dbname
+Type: string
+Default: fhq
+Description: Database name for a connection to mysql-server:
+ Please setup databasename
+
+
+Template: fhq-server/setup-dbusername
+Type: string
+Default: fhq_u
+Description: Database username for a connection to mysql-server:
+ Please setup databasename
+
+
+Template: fhq-server/setup-dbuserpassword
+Type: password
+Default: fhq_pwd_db
+Description: Database user password Password for web-based setup system:
+ The setup system for phpMyAdmin may be used, after installation, from
+
