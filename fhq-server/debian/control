@@ -1,9 +1,9 @@
 Source: fhq-server
 Section: devel
-Version: 0.2.3
+Version: 0.2.4
 Priority: optional
 Maintainer: Free Hack Quest <freehackquest@gmail.com>
-Build-Depends: cmake, build-essential, libcurl4-openssl-dev, qtbase5-dev, zlib1g-dev, qt5-default, libqt5websockets5, libqt5websockets5-dev, libqt5sql5-mysql
+Build-Depends: cmake, build-essential, libcurl4-openssl-dev, qtbase5-dev, zlib1g-dev, qt5-default, libqt5websockets5, libqt5websockets5-dev, libqt5sql5-mysql, libpng-dev
 Homepage: https://freehackquest.com
 
 Package: fhq-server
