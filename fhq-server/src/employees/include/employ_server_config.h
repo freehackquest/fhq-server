@@ -32,13 +32,21 @@ class EmployServerConfig : public EmployBase {
         
 	private:
 		std::string TAG;
+		bool parseConfig(const std::string &sConfigFile);
+		bool fileExists(const std::string &sFilename);
+		void string_trim(std::string &sLine);
+		std::map<std::string,std::string> m_mapConfigValues;
 		
-		QString readStringFromSettings(QSettings &sett, QString settName, QString defaultValue);
-		int readIntFromSettings(QSettings &sett, QString settName, int defaultValue);
-		bool readBoolFromSettings(QSettings &sett, QString settName, bool defaultValue);
+		std::string getStringValueFromConfig(const std::string &sName, const std::string &defaultValue);
+		int getIntValueFromConfig(const std::string &sName, int defaultValue);
+		bool getBoolValueFromConfig(const std::string &sName, bool defaultValue);
+		
+		QString readStringFromSettings(QSettings &sett, QString settName, QString defaultValue); // deprecated
+		int readIntFromSettings(QSettings &sett, QString settName, int defaultValue); // deprecated
+		bool readBoolFromSettings(QSettings &sett, QString settName, bool defaultValue); // deprecated
 
 		// settings
-        QString m_sFilename;
+        std::string m_sFilename;
         bool m_bDatabase_usemysql;
 		QString m_sDatabase_host;
 		QString m_sDatabase_name;

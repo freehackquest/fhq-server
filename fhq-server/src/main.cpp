@@ -19,6 +19,7 @@
 #include <utils_create_config.h>
 #include <create_unit_tests.h>
 #include <employees.h>
+#include <employ_server_config.h>
 #include <employ_server_info.h>
 #include <employ_database.h>
 #include <employ_settings.h>
@@ -32,6 +33,7 @@ void print_help(std::vector<std::string> &vArgs){
 		<< "\t --show-handlers, -sh                   Show handlers\n"
 		<< "\t --show-employees, -se                  Show employees\n"
 		<< "\t --prepare-deb, -pd                     Prepare Deb Package\n"
+		<< "\t --check-server-config, -csc            Check server config\n"
 		<< "\t --create-config-linux, -ccl            Create config file for Linux: /etc/fhq-server/conf.ini \n"
 		<< "\t --check-database-connection, -cdc      Check database conenction\n"
 		<< "\t --server, -s                           Start server\n"
@@ -104,6 +106,15 @@ int main(int argc, char** argv) {
 		return 0;
 	}else if(hasArgs(vArgs, "--create-config-linux") || hasArgs(vArgs, "-ccl")){
 		UtilsCreateConfig::forLinux();
+		return 0;
+	}else if(hasArgs(vArgs, "--check-server-config") || hasArgs(vArgs, "-csc")){
+		std::cout << "\n * Check Server Config\n\n";
+		EmployServerConfig *pConfig = new EmployServerConfig();
+		if(!pConfig->init()){
+			std::cout << "\n * FAIL\n\n";
+		}else{
+			std::cout << "\n * Success\n\n";
+		}
 		return 0;
 	}else if(hasArgs(vArgs, "--check-database-connection") || hasArgs(vArgs, "-cdc")){
 		std::cout << "\n * Check Database Connection\n\n";
