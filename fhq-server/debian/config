@@ -6,18 +6,16 @@ set -e
 
 if [ -f /usr/share/dbconfig-common/dpkg/config.mysql ]; then
         . /usr/share/dbconfig-common/dpkg/config.mysql
-        dbc_go fhq-server $@
+        # dbc_go fhq-server $@
 fi
 
 db_version 2.0
 
-db_input high fhq-server/reconfigure-database || true
+# db_input high fhq-server/reconfigure-database || true
 db_input high fhq-server/setup-dbhost || true
 db_input high fhq-server/setup-dbrootpassword || true
 db_input high fhq-server/setup-dbname || true
 db_input high fhq-server/setup-dbusername || true
-db_get fhq-server/setup-dbusername
-dbc_dbuser=${RET:-localhost}
 db_input high fhq-server/setup-dbuserpassword || true
 
 # if [ ! -f /etc/fhq-server/htpasswd.setup ]; then

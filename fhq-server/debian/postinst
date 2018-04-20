@@ -26,30 +26,50 @@ case "$1" in
 
   configure)
   
-	dbc_generate_include_owner="root:root"
-	dbc_generate_include_perms="0640"
-	dbc_mysql_createdb_encoding="UTF8"
+	# dbc_generate_include_owner="root:root"
+	# dbc_generate_include_perms="0640"
+	# dbc_mysql_createdb_encoding="UTF8"
 	
-	dbc_generate_include=php:/etc/fhq-server/conf.php
+	# dbc_generate_include=php:/etc/fhq-server/conf.php
 	# dbc_generate_include=template:/etc/fhq-server/conf.tmpl
 	# dbc_generate_include_args="-U -o template_infile='/usr/share/fhq-server/conf.tmpl'"
 
-	db_version 3.0
+	db_version 2.0
 	
 	db_get fhq-server/setup-dbhost
 	setup_dbhost=${RET:-localhost}
+	db_get fhq-server/setup-dbrootpassword
+	setup_dbrootpassword=${RET}
+	
+	db_get fhq-server/setup-dbrootpassword
+	setup_dbrootpassword=${RET}
+		
+	# if [ $setup_dbrootpassword == "" ]; then
+	#	db_get fhq-server/setup-dbrootpassword
+	#	setup_dbrootpassword=${RET}
+	# fi
+	
+	CHECK_CONNECT=$(mysql -h $setup_dbhost -u root -p $setup_dbrootpassword --batch --silent -e 'SHOW DATABASES;' | wc -l)
+	echo "-h $setup_dbhost -u root -p $setup_dbrootpassword"
+	echo $CHECK_CONNECT
+	
 	db_get fhq-server/setup-dbname
-	dbc_dbname=${RET:-fhq}
+	setup_dbname=${RET:-fhq}
 	db_get fhq-server/setup-dbusername
-	dbc_dbuser=${RET:-fhq_u}
-	
-	# db_get fhq-server/setup-dbuserpassword
-	# setup_dbuserpassword=${RET}
-	
-	. /usr/share/dbconfig-common/dpkg/postinst.mysql
-	
-	dbc_go fhq-server $@
+	setup_dbusername=${RET:-fhq_u}
+	db_get fhq-server/setup-dbuserpassword
+	setup_dbuserpassword=${RET:-fhq_pwd_db}
 
+	# DB_FOUND=$(mysql -uroot -proot --batch --silent -e 'SHOW DATABASES;' 2> /dev/null | grep -E "^\n$setup_dbname$" | wc -l)
+	
+	sed -i -E "s/^[ ]*host[ ]*=(.+)\$/host=$setup_dbhost/" /etc/fhq-server/conf.ini
+	sed -i -E "s/^[ ]*name[ ]*=(.+)\$/name=$setup_dbname/" /etc/fhq-server/conf.ini
+	sed -i -E "s/^[ ]*user[ ]*=(.+)\$/user=$setup_dbusername/" /etc/fhq-server/conf.ini
+	sed -i -E "s/^[ ]*password[ ]*=(.+)\$/password=$setup_dbuserpassword/" /etc/fhq-server/conf.ini
+	
+	# . /usr/share/dbconfig-common/dpkg/postinst.mysql
+	
+	# dbc_go $setup_dbname $@
 
 	db_reset fhq-server/setup-dbhost || true
 	db_reset fhq-server/setup-dbrootpassword || true
@@ -71,6 +91,14 @@ case "$1" in
 	  systemctl daemon-reload
 	  systemctl enable fhq-server.service  >/dev/null 2>&1 || true
 	  systemctl restart fhq-server.service  >/dev/null 2>&1 || true
+	fi
+	
+	if [ ! -d /var/log/fhq-server ]; then
+		mkdir /var/log/fhq-server
+	fi
+	
+	if [ ! -d /usr/share/fhq-server ]; then
+		mkdir /usr/share/fhq-server
 	fi
 	
 	# Fix permissions
