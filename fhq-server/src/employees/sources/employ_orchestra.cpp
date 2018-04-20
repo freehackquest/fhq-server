@@ -6,8 +6,6 @@ REGISTRY_EMPLOY(EmployOrchestra)
 // ---------------------------------------------------------------------
 
 #include <log.h>
-#include <vector>
-#include <utility>
 
 #include <QTextStream>
 #include <QFile>
@@ -108,7 +106,7 @@ bool EmployOrchestra::send_post_request(std::string address, std::string setting
     curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYHOST, 0L);
     curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "POST");
     curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
-    curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
+    //curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
     //Saving response
     curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, write_to_string);
     curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &response);
@@ -117,7 +115,7 @@ bool EmployOrchestra::send_post_request(std::string address, std::string setting
 
     if(ret != CURLE_OK) {
         Log::err(TAG, " Failed send POST request with error " + std::string(errorBuffer));
-        error = errorBuffer;
+        error = std::string(errorBuffer);
         return false;
     }
 
@@ -226,38 +224,42 @@ bool EmployOrchestra::pull_container_names(){
         std::string str = std::string(it);
         std::string name = str.substr(15);
 
-        if (name.length() > 4)
+        if (name.length() <= 4)
             continue;
 
-        if (name.substr(1, 4) == "fhq-"){
-            names.push_back(name.substr(4));
-            Log::info(TAG, "name :: " + name.substr(5));
-        }
+        if (name.substr(1, 4) == "fhq-")
+            names.push_back(name.substr(5));
     }
 
     for (auto name : names){
-        LXDContainer container = LXDContainer(name);
-        containers_map.insert( make_pair(name, &container) );
+        //Log::info(TAG, "Insert " + name);
+        LXDContainer *pContainer = new LXDContainer(name);
+        containers_map.insert( std::pair<std::string, LXDContainer *>(name, pContainer) );
 
     }
 
-    Log::info(TAG, "Keys : " + extract_keys(containers_map));
     return true;
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployOrchestra::check_response(nlohmann::json res_json, std::string error){
-    std::string metadata_error;
-    if (res_json.at("metadata").find("err") != res_json.at("metadata").end())
-        metadata_error = res_json.at("metadata").at("err").get<std::string>();
-    if ( (res_json.at("error").get<std::string>() != "") || (metadata_error != "") ){
-        error = metadata_error;
-        Log::err(TAG, "Failed : " + error);
+    if (res_json.at("error").get<std::string>() != ""){
+        error = res_json.at("error").get<std::string>();
+        Log::err(TAG, "Failed check response: " + error);
         return false;
     }
-    if (res_json.is_array())
-        Log::info(TAG, "Parsed json ");
+
+    std::string metadata_error;
+    if (res_json.find("metadata") != res_json.end())
+        if (res_json.at("metadata").find("err") != res_json.at("metadata").end())
+            metadata_error = res_json.at("metadata").at("err").get<std::string>();
+
+    if (metadata_error != ""){
+        error = metadata_error.c_str();
+        Log::err(TAG, "Failed check response: " + error);
+        return false;
+    }
 
     return true;
 }
@@ -265,24 +267,20 @@ bool EmployOrchestra::check_response(nlohmann::json res_json, std::string error)
 
 bool EmployOrchestra::check_async_response(nlohmann::json operation_json, std::string error){
     //Check async operation
-    std::string metadata_error;
-    if (operation_json.at("metadata").find("err") != operation_json.at("metadata").end())
-        metadata_error = operation_json.at("metadata").at("err").get<std::string>();
-    if ( (operation_json.at("error").get<std::string>() != "") || (metadata_error != "")){
-        error = metadata_error;
+    if (operation_json.at("error").get<std::string>() != ""){
+        error = operation_json.at("error").get<std::string>();
         Log::err(TAG, "Operation is failed " + error);
         return false;
     }
 
-    return true;
-}
+    std::string metadata_error;
+    if (operation_json.find("metadata") != operation_json.end())
+        if (operation_json.at("metadata").find("err") != operation_json.at("metadata").end())
+            metadata_error = operation_json.at("metadata").at("err").get<std::string>();
 
-
-std::string EmployOrchestra::extract_keys(std::map<std::string, LXDContainer *> const& input_map) {
-  std::string retval;
-  for (auto const& element : input_map) {
-    retval += element.first;
-    retval += " ";
-  }
-  return retval;
+    if (metadata_error != ""){
+        error = metadata_error.c_str();
+        Log::err(TAG, "Operation is failed " + error);
+        return false;
+    }
 }
