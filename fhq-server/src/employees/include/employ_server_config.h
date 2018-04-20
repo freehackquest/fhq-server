@@ -2,8 +2,6 @@
 #define EMPLOY_SERVER_CONFIG_H
 
 #include <employees.h>
-#include <QString>
-#include <QSettings>
 
 class EmployServerConfig : public EmployBase {
     public:
@@ -12,23 +10,19 @@ class EmployServerConfig : public EmployBase {
         virtual bool init();
         
         // configs
-        QString databaseHost();
-		QString databaseName();
-		QString databaseUser();
-		QString databasePassword();
+        std::string databaseHost();
+        int databasePort();
+        std::string databaseName();
+        std::string databaseUser();
+        std::string databasePassword();
 		bool databaseUseMySQL();
-		QString databasePath();
-
-		QString emailUsername();
-		QString emailPassword();
-		QString emailSmtpHost();
-		int emailSmtpPort();
+        std::string databasePath();
 
 		bool serverSslOn();
 		int serverPort();
 		int serverSslPort();
-		QString serverSslKeyFile();
-		QString serverSslCertFile();
+        std::string serverSslKeyFile();
+        std::string serverSslCertFile();
         
 	private:
 		std::string TAG;
@@ -37,28 +31,27 @@ class EmployServerConfig : public EmployBase {
 		void string_trim(std::string &sLine);
 		std::map<std::string,std::string> m_mapConfigValues;
 		
-		std::string getStringValueFromConfig(const std::string &sName, const std::string &defaultValue);
-		int getIntValueFromConfig(const std::string &sName, int defaultValue);
-		bool getBoolValueFromConfig(const std::string &sName, bool defaultValue);
-		
-		QString readStringFromSettings(QSettings &sett, QString settName, QString defaultValue); // deprecated
-		int readIntFromSettings(QSettings &sett, QString settName, int defaultValue); // deprecated
-		bool readBoolFromSettings(QSettings &sett, QString settName, bool defaultValue); // deprecated
+        std::string getStringValueFromConfig(const std::string &sParamName, const std::string &defaultValue);
+        int getIntValueFromConfig(const std::string &sParamName, int defaultValue);
+        bool getBoolValueFromConfig(const std::string &sParamName, bool defaultValue);
 
-		// settings
         std::string m_sFilename;
+
+        // database settings
         bool m_bDatabase_usemysql;
-		QString m_sDatabase_host;
-		QString m_sDatabase_name;
-		QString m_sDatabase_user;
-		QString m_sDatabase_password;
-		QString m_sDatabase_path;
+        std::string m_sDatabase_host;
+        int m_nDatabase_port;
+        std::string m_sDatabase_name;
+        std::string m_sDatabase_user;
+        std::string m_sDatabase_password;
+        std::string m_sDatabase_path;
 		
+        // server settings
 		bool m_bServer_ssl_on;
 		int m_nServer_port;
 		int m_nServer_ssl_port;
-		QString m_sServer_ssl_key_file;
-		QString m_sServer_ssl_cert_file;
+        std::string m_sServer_ssl_key_file;
+        std::string m_sServer_ssl_cert_file;
 };
 
 #endif // EMPLOY_SERVER_CONFIG_H

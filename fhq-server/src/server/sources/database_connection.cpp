@@ -40,10 +40,10 @@ bool DatabaseConnection::connect(){
 	EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
 	
 	m_pDatabase = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL", m_sNameConnection));
-	m_pDatabase->setHostName(pServerConfig->databaseHost());
-	m_pDatabase->setDatabaseName(pServerConfig->databaseName());
-	m_pDatabase->setUserName(pServerConfig->databaseUser());
-	m_pDatabase->setPassword(pServerConfig->databasePassword());
+    m_pDatabase->setHostName(QString(pServerConfig->databaseHost().c_str()));
+    m_pDatabase->setDatabaseName(QString(pServerConfig->databaseName().c_str()));
+    m_pDatabase->setUserName(QString(pServerConfig->databaseUser().c_str()));
+    m_pDatabase->setPassword(QString(pServerConfig->databasePassword().c_str()));
 	if (!m_pDatabase->open()){
 		Log::err(TAG, "Failed to connect." + m_pDatabase->lastError().text());
 		m_pDatabase = NULL;

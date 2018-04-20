@@ -42,19 +42,19 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 	m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::SecureMode, this);
 	
     if (m_pWebSocketServer->listen(QHostAddress::Any, pServerConfig->serverPort())) {
-		Log::info(TAG, "freehackquest-backend listening on port" + QString::number(pServerConfig->serverPort()));
+        Log::info(TAG, "fhq-server listening on port " + QString::number(pServerConfig->serverPort()));
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnection);
         connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &WebSocketServer::closed);
     }else{
-		Log::err(TAG, "freehackquest-backend can not listening on port " + QString::number(pServerConfig->serverPort()));
+        Log::err(TAG, "fhq-server can not listening on port " + QString::number(pServerConfig->serverPort()));
 		m_bFailed = true;
 		return;
 	}
 
 	if(pServerConfig->serverSslOn()){
 		QSslConfiguration sslConfiguration;
-		QFile certFile(pServerConfig->serverSslCertFile());
-		QFile keyFile(pServerConfig->serverSslKeyFile());
+        QFile certFile(QString(pServerConfig->serverSslCertFile().c_str()));
+        QFile keyFile(QString(pServerConfig->serverSslKeyFile().c_str()));
 		certFile.open(QIODevice::ReadOnly);
 		keyFile.open(QIODevice::ReadOnly);
 		QSslCertificate certificate(&certFile, QSsl::Pem);
@@ -72,7 +72,7 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 			connect(m_pWebSocketServerSSL, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnectionSSL);
 			connect(m_pWebSocketServerSSL, &QWebSocketServer::sslErrors, this, &WebSocketServer::onSslErrors);
 		}else{
-			Log::err(TAG, "freehackquest-backend can not listening (via ssl) on port" + QString::number(pServerConfig->serverSslPort()));
+            Log::err(TAG, "fhq-server can not listening (via ssl) on port " + QString::number(pServerConfig->serverSslPort()));
 			m_bFailed = true;
 			return;
 		}

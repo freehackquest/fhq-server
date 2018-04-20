@@ -295,7 +295,7 @@ install(
         ${CMAKE_INSTALL_PREFIX}/bin
 )
 
-install(FILES install_files/conf.ini.example DESTINATION /etc/fhq-server COMPONENT config)
+install(FILES install_files/fhq-server.conf.sample DESTINATION /etc/fhq-server COMPONENT config)
 install(FILES install_files/fhq-server.service DESTINATION /etc/systemd/system COMPONENT config)
 install(DIRECTORY DESTINATION /usr/share/fhq-server)
 install(DIRECTORY DESTINATION /var/log/fhq-server)

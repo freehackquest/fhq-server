@@ -1,6 +1,5 @@
 #include <employ_server_config.h>
 #include <log.h>
-#include <QFile>
 #include <sys/stat.h>
 #include <fstream>
 #include <regex>        // regex, sregex_token_iterator
@@ -21,6 +20,7 @@ EmployServerConfig::EmployServerConfig()
 	// sql
     m_bDatabase_usemysql = true;
     m_sDatabase_host = "localhost";
+    m_nDatabase_port = 3306;
 	m_sDatabase_name = "freehackquest";
 	m_sDatabase_user = "freehackquest_u";
 	m_sDatabase_password = "freehackquest_p";
@@ -40,10 +40,10 @@ EmployServerConfig::EmployServerConfig()
 bool EmployServerConfig::init(){
 	
 	std::vector<std::string> vSearchConfigFile;
-	vSearchConfigFile.push_back("conf.ini");
-	vSearchConfigFile.push_back("/etc/freehackquest-backend/conf.ini");
-	vSearchConfigFile.push_back("/etc/fhq-server/conf.ini");
-	vSearchConfigFile.push_back("etc/freehackquest-backend/conf.ini");
+    vSearchConfigFile.push_back("fhq-server.conf");
+    // vSearchConfigFile.push_back("/etc/freehackquest-backend/conf.ini");
+    // vSearchConfigFile.push_back("/etc/fhq-server/conf.ini");
+    // vSearchConfigFile.push_back("etc/freehackquest-backend/conf.ini");
 	vSearchConfigFile.push_back("/etc/fhq-server/fhq-server.conf");
 
     for(int i = 0; i < vSearchConfigFile.size(); i++){
@@ -64,28 +64,29 @@ bool EmployServerConfig::init(){
 
 	EmployServerConfig::parseConfig(m_sFilename);
 
-    QSettings sett(QString(m_sFilename.c_str()), QSettings::IniFormat);
-
-    m_bDatabase_usemysql = readBoolFromSettings(sett, "DATABASE/usemysql", m_bDatabase_usemysql);
+    m_bDatabase_usemysql = this->getBoolValueFromConfig("usemysql", m_bDatabase_usemysql);
     if(m_bDatabase_usemysql){
-		m_sDatabase_host = readStringFromSettings(sett, "DATABASE/host", m_sDatabase_host);
-		m_sDatabase_name = readStringFromSettings(sett, "DATABASE/name", m_sDatabase_name);
-		m_sDatabase_user = readStringFromSettings(sett, "DATABASE/user", m_sDatabase_user);
-		m_sDatabase_password = readStringFromSettings(sett, "DATABASE/password", m_sDatabase_password);
+        m_sDatabase_host = this->getStringValueFromConfig("dbhost", m_sDatabase_host);
+        m_nDatabase_port = this->getIntValueFromConfig("dbport", m_nDatabase_port);
+        m_sDatabase_name = this->getStringValueFromConfig("dbname", m_sDatabase_name);
+        m_sDatabase_user = this->getStringValueFromConfig("dbuser", m_sDatabase_user);
+        m_sDatabase_password = this->getStringValueFromConfig("dbpass", m_sDatabase_password);
 
-		Log::info(TAG, "Database_host: " + m_sDatabase_host.toStdString());
-		Log::info(TAG, "Database name: " + m_sDatabase_name.toStdString());
-		Log::info(TAG, "Database user: " + m_sDatabase_user.toStdString());
+        Log::info(TAG, "Database_host: " + m_sDatabase_host);
+        Log::info(TAG, "Database name: " + m_sDatabase_name);
+        Log::info(TAG, "Database user: " + m_sDatabase_user);
 	}else{
-		m_sDatabase_path = readStringFromSettings(sett, "DATABASE/path", m_sDatabase_path);
-		Log::info(TAG, "Database: using " + m_sDatabase_path.toStdString());
+        m_sDatabase_path = this->getStringValueFromConfig("dbpath", m_sDatabase_path);
+        Log::info(TAG, "Database: using " + m_sDatabase_path);
 	}
 
-	m_nServer_port = readIntFromSettings(sett, "SERVER/port", m_nServer_port);
-	m_bServer_ssl_on = readBoolFromSettings(sett, "SERVER/ssl_on", m_bServer_ssl_on);
-	m_nServer_ssl_port = readIntFromSettings(sett, "SERVER/ssl_port", m_nServer_ssl_port);
-	m_sServer_ssl_key_file = readStringFromSettings(sett, "SERVER/ssl_key_file", m_sServer_ssl_key_file);
-	m_sServer_ssl_cert_file = readStringFromSettings(sett, "SERVER/ssl_cert_file", m_sServer_ssl_cert_file);
+    m_nServer_port = this->getIntValueFromConfig("port", m_nServer_port);
+    m_bServer_ssl_on = this->getBoolValueFromConfig("ssl_on", m_bServer_ssl_on);
+    if(m_bServer_ssl_on){
+        m_nServer_ssl_port = this->getIntValueFromConfig("SERVER/ssl_port", m_nServer_ssl_port);
+        m_sServer_ssl_key_file = this->getStringValueFromConfig("ssl_key_file", m_sServer_ssl_key_file);
+        m_sServer_ssl_cert_file = this->getStringValueFromConfig("ssl_cert_file", m_sServer_ssl_cert_file);
+    }
     return true;
 }
 
@@ -164,87 +165,73 @@ bool EmployServerConfig::fileExists(const std::string &sFilename){
 
 // ---------------------------------------------------------------------
 
-std::string EmployServerConfig::getStringValueFromConfig(const std::string &sName, const std::string &defaultValue){
+std::string EmployServerConfig::getStringValueFromConfig(const std::string &sParamName, const std::string &defaultValue){
 	std::string sResult = defaultValue;
-	/*if(sett.contains(settName)){
-		sResult = sett.value(settName, sResult).toString();
-	}else{
-        Log::warn(TAG, settName.toStdString() + " - not found in " + m_sFilename + "\n\t Will be used default value: " + defaultValue.toStdString());
-	}*/
-	// TODO
+
+    if(m_mapConfigValues.count(sParamName)){
+        sResult = m_mapConfigValues.at(sParamName);
+    }else{
+        Log::warn(TAG, sParamName + " - not found in " + m_sFilename + "\n\t Will be used default value: " + defaultValue);
+    }
 	return sResult;
 }
 
 // ---------------------------------------------------------------------
 
-int EmployServerConfig::getIntValueFromConfig(const std::string &sName, int defaultValue){
+int EmployServerConfig::getIntValueFromConfig(const std::string &sParamName, int defaultValue){
+    int nResult = defaultValue;
+    if(m_mapConfigValues.count(sParamName)){
+        std::string sParamValue = m_mapConfigValues.at(sParamName);
+        std::istringstream isBuffer(sParamValue);
+        isBuffer >> nResult;
+    }else{
+        Log::warn(TAG, sParamName + " - not found in " + m_sFilename + "\n\t Will be used default value: " + std::to_string(defaultValue));
+    }
+    return nResult;
 }
 
 // ---------------------------------------------------------------------
 
-bool EmployServerConfig::getBoolValueFromConfig(const std::string &sName, bool defaultValue){
+bool EmployServerConfig::getBoolValueFromConfig(const std::string &sParamName, bool defaultValue){
+    bool bResult = defaultValue;
+
+    if(m_mapConfigValues.count(sParamName)){
+        std::string sParamValue = m_mapConfigValues.at(sParamName);
+        std::transform(sParamValue.begin(), sParamValue.end(), sParamValue.begin(), ::tolower);
+        bResult = (sParamValue == "yes" || sParamValue == "no");
+    }else{
+        Log::warn(TAG, sParamName + " - not found in " + m_sFilename + "\n\t Will be used default value: " + (defaultValue ? "yes" : "no"));
+    }
+    return bResult;
 }
 
 // ---------------------------------------------------------------------
 
-// deprecated
-QString EmployServerConfig::readStringFromSettings(QSettings &sett, QString settName, QString defaultValue){
-	QString sResult = defaultValue;
-	if(sett.contains(settName)){
-		sResult = sett.value(settName, sResult).toString();
-	}else{
-        Log::warn(TAG, settName.toStdString() + " - not found in " + m_sFilename + "\n\t Will be used default value: " + defaultValue.toStdString());
-	}
-	return sResult;
-}
-
-// ---------------------------------------------------------------------
-
-// deprecated
-int EmployServerConfig::readIntFromSettings(QSettings &sett, QString settName, int defaultValue){
-	int nResult = defaultValue;
-	if(sett.contains(settName)){
-		nResult = sett.value(settName, nResult).toInt();
-	}else{
-        Log::warn(TAG, settName.toStdString() + " - not found in " + m_sFilename + "\n\t Will be used default value: " + QString::number(defaultValue).toStdString());
-	}
-	return nResult;
-}
-
-// ---------------------------------------------------------------------
-
-// deprecated
-bool EmployServerConfig::readBoolFromSettings(QSettings &sett, QString settName, bool defaultValue){
-	bool bResult = defaultValue;
-	if(sett.contains(settName)){
-		bResult = sett.value(settName, bResult).toBool();
-	}else{
-        Log::warn(TAG, settName.toStdString() + " - not found in " + m_sFilename + "\n\t Will be used default value: " + (defaultValue ? "true" : "false"));
-	}
-	return bResult;
-}
-
-// ---------------------------------------------------------------------
-
-QString EmployServerConfig::databaseHost(){
+std::string EmployServerConfig::databaseHost(){
 	return m_sDatabase_host;
 }
 
 // ---------------------------------------------------------------------
 
-QString EmployServerConfig::databaseName(){
+int EmployServerConfig::databasePort(){
+    return m_nDatabase_port;
+}
+
+// ---------------------------------------------------------------------
+
+std::string EmployServerConfig::databaseName(){
 	return m_sDatabase_name;
 }
 
 // ---------------------------------------------------------------------
 
-QString EmployServerConfig::databaseUser(){
+std::string EmployServerConfig::databaseUser(){
 	return m_sDatabase_user;
 }
 
 // ---------------------------------------------------------------------
 
-QString EmployServerConfig::databasePassword(){
+std::string EmployServerConfig::databasePassword(){
 	return m_sDatabase_password;
 }
 
@@ -256,7 +243,7 @@ bool EmployServerConfig::databaseUseMySQL(){
 
 // ---------------------------------------------------------------------
 
-QString EmployServerConfig::databasePath(){
+std::string EmployServerConfig::databasePath(){
 	return m_sDatabase_path;
 }
 
@@ -280,13 +267,13 @@ int EmployServerConfig::serverSslPort(){
 
 // ---------------------------------------------------------------------
 
-QString EmployServerConfig::serverSslKeyFile(){
+std::string EmployServerConfig::serverSslKeyFile(){
 	return m_sServer_ssl_key_file;
 }
 
 // ---------------------------------------------------------------------
 
-QString EmployServerConfig::serverSslCertFile(){
+std::string EmployServerConfig::serverSslCertFile(){
 	return m_sServer_ssl_cert_file;
 }
 

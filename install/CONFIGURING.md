@@ -41,11 +41,12 @@ Default ports:
 * 1234 - ws (http)
 * 4613 - wss (https)
 
+
 ```
-$ sudo cp ../fhq-server/install_files/conf.ini.example /etc/fhq-server/conf.ini
+$ sudo cp ../fhq-server/install_files/fhq-server.conf.sample /etc/fhq-server/fhq-server.conf
 ```
 
 ### Edit config 
 
-Please look and change file /etc/fhq-server/conf.ini
+Please look and change file /etc/fhq-server/fhq-server.conf
 
