@@ -29,9 +29,11 @@ void print_help(std::vector<std::string> &vArgs){
 	std::cout
 		<< "Usage: " << vArgs.at(0) << "   [PARAMS]\n"
 		<< "\t --help, -h                             This help \n"
+		<< "\t --version, -v                          Print version \n"
 		<< "\t --run-unit-tests, -rut                 Run unit tests\n"
 		<< "\t --show-handlers, -sh                   Show handlers\n"
 		<< "\t --show-employees, -se                  Show employees\n"
+		<< "\t --show-settings, -ss                   Show settings\n"
 		<< "\t --prepare-deb, -pd                     Prepare Deb Package\n"
 		<< "\t --check-server-config, -csc            Check server config\n"
 		<< "\t --create-config-linux, -ccl            Create config file for Linux: /etc/fhq-server/conf.ini \n"
