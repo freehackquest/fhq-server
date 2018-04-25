@@ -12,8 +12,9 @@ class EmployDatabase : public EmployBase {
        static std::string name() { return "EmployDatabase"; }
        virtual bool init();
        QSqlDatabase *database();
-       
+       bool manualCreateDatabase(const std::string& sRootPassword, std::string& sError);
 	private:
+		std::string TAG;
         // db two connections
 		QMutex m_mtxSwapConenctions;
 		QMap<long long, DatabaseConnection *> m_mDatabaseConnections;

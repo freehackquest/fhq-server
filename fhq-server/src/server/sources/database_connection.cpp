@@ -42,6 +42,7 @@ bool DatabaseConnection::connect(){
 	m_pDatabase = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL", m_sNameConnection));
     m_pDatabase->setHostName(QString(pServerConfig->databaseHost().c_str()));
     m_pDatabase->setDatabaseName(QString(pServerConfig->databaseName().c_str()));
+    m_pDatabase->setPort(pServerConfig->databasePort());
     m_pDatabase->setUserName(QString(pServerConfig->databaseUser().c_str()));
     m_pDatabase->setPassword(QString(pServerConfig->databasePassword().c_str()));
 	if (!m_pDatabase->open()){

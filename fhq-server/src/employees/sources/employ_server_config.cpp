@@ -72,7 +72,8 @@ bool EmployServerConfig::init(){
         m_sDatabase_user = this->getStringValueFromConfig("dbuser", m_sDatabase_user);
         m_sDatabase_password = this->getStringValueFromConfig("dbpass", m_sDatabase_password);
 
-        Log::info(TAG, "Database_host: " + m_sDatabase_host);
+        Log::info(TAG, "Database host: " + m_sDatabase_host);
+        Log::info(TAG, "Database port: " + std::to_string(m_nDatabase_port));
         Log::info(TAG, "Database name: " + m_sDatabase_name);
         Log::info(TAG, "Database user: " + m_sDatabase_user);
 	}else{
