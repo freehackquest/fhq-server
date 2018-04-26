@@ -98,3 +98,7 @@ bool ModelRequest::hasCommand(){
 }
 
 // ---------------------------------------------------------------------
+
+// bool ModelRequest::validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler){
+	
+// }
