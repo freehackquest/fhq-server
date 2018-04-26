@@ -8,9 +8,18 @@ ModelCommandInputDef::ModelCommandInputDef(){
 
 // ---------------------------------------------------------------------
 
-CmdInputDef *ModelCommandInputDef::defineString(const std::string &sName, const std::string &sDescription){
+CmdInputDef *ModelCommandInputDef::requiredString(const std::string &sName, const std::string &sDescription){
     CmdInputDef *pStringDef = new CmdInputDef(sName);
-    pStringDef->string_().description(sDescription);
+    pStringDef->string_().description(sDescription).required();
+    m_vInputsDef.insert(std::pair<std::string, CmdInputDef*>(sName,pStringDef));
+    return pStringDef;
+}
+
+// ---------------------------------------------------------------------
+
+CmdInputDef *ModelCommandInputDef::optionalString(const std::string &sName, const std::string &sDescription){
+    CmdInputDef *pStringDef = new CmdInputDef(sName);
+    pStringDef->string_().description(sDescription).optional();
     m_vInputsDef.insert(std::pair<std::string, CmdInputDef*>(sName,pStringDef));
     return pStringDef;
 }

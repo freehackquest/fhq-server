@@ -8,7 +8,8 @@ class ModelCommandInputDef {
     public:
         ModelCommandInputDef();
 
-        CmdInputDef *defineString(const std::string &sName, const std::string &sDescription);
+        CmdInputDef *requiredString(const std::string &sName, const std::string &sDescription);
+        CmdInputDef *optionalString(const std::string &sName, const std::string &sDescription);
         CmdInputDef *defineBoolean(const std::string &sName, const std::string &sDescription);
         CmdInputDef *defineEnum(const std::string &sName, const std::string &sDescription);
         CmdInputDef *defineUUID(const std::string &sName, const std::string &sDescription);
