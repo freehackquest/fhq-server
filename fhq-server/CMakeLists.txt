@@ -137,6 +137,8 @@ list (APPEND FHQSRV_SOURCES "src/cmd/users/include/cmd_user_delete_handler.h") #
 list (APPEND FHQSRV_SOURCES "src/cmd/users/sources/cmd_user_delete_handler.cpp") # deprecated
 
 # models
+list (APPEND FHQSRV_SOURCES "src/models/include/model_database_connection.h")
+list (APPEND FHQSRV_SOURCES "src/models/sources/model_database_connection.cpp")
 list (APPEND FHQSRV_SOURCES "src/models/include/serversetthelper.h")
 list (APPEND FHQSRV_SOURCES "src/models/include/cmd_input_def.h")
 list (APPEND FHQSRV_SOURCES "src/models/include/model_leak.h")
@@ -178,13 +180,11 @@ list (APPEND FHQSRV_SOURCES "src/unit_tests/sources/unit_test_merge_text.cpp")
 list (APPEND FHQSRV_SOURCES "src/unit_tests/create_unit_tests.cpp")
 
 # server
-list (APPEND FHQSRV_SOURCES "src/server/include/database_connection.h")
 list (APPEND FHQSRV_SOURCES "src/server/include/errors.h")
 list (APPEND FHQSRV_SOURCES "src/server/include/error.h")
 list (APPEND FHQSRV_SOURCES "src/server/include/log.h")
 list (APPEND FHQSRV_SOURCES "src/server/include/websocketserver.h")
 list (APPEND FHQSRV_SOURCES "src/server/sources/websocketserver.cpp")
-list (APPEND FHQSRV_SOURCES "src/server/sources/database_connection.cpp")
 list (APPEND FHQSRV_SOURCES "src/server/sources/errors.cpp")
 list (APPEND FHQSRV_SOURCES "src/server/sources/error.cpp")
 list (APPEND FHQSRV_SOURCES "src/server/sources/log.cpp")

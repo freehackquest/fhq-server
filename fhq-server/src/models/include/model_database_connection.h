@@ -1,5 +1,5 @@
-#ifndef SERVER_DATABASE_CONNECTION_H
-#define SERVER_DATABASE_CONNECTION_H
+#ifndef MODEL_DATABASE_CONNECTION_H
+#define MODEL_DATABASE_CONNECTION_H
 
 #include <QString>
 #include <QJsonObject>
@@ -7,10 +7,10 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 
-class DatabaseConnection {
+class ModelDatabaseConnection {
 	public:
-		DatabaseConnection(QString sNameConnection);
-		void swap(DatabaseConnection *pDatabaseConnection);
+		ModelDatabaseConnection(QString sNameConnection);
+		void swap(ModelDatabaseConnection *pDatabaseConnection);
 		QString nameConnection();
 		void setNameConnection(QString sNameConnection);
 		bool connect();
@@ -20,11 +20,11 @@ class DatabaseConnection {
 		bool isOutdated();
 		
 	private:
+		std::string TAG;
 		qint64 m_nOutdatedAfter; // in mseconds
 		qint64 m_nOpened;
 		QString m_sNameConnection;
 		QSqlDatabase *m_pDatabase;
-		QString TAG;
 };
 
-#endif // SERVER_DATABASE_CONNECTION_H
+#endif // MODEL_DATABASE_CONNECTION_H

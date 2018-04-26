@@ -18,8 +18,8 @@ bool EmployDatabase::init(){
 	// EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
 	
 	
-	m_pDBConnection = new DatabaseConnection("qt_sql_default_connection_1");
-	m_pDBConnection_older = new DatabaseConnection("qt_sql_default_connection_2");
+	m_pDBConnection = new ModelDatabaseConnection("qt_sql_default_connection_1");
+	m_pDBConnection_older = new ModelDatabaseConnection("qt_sql_default_connection_2");
 	
 	if(!m_pDBConnection->connect()){
 		return false;
@@ -169,8 +169,8 @@ QSqlDatabase *EmployDatabase::database(){
 	
 	
 	if(m_mDatabaseConnections.contains(nThreadID)){
-		DatabaseConnection *pDBConnection = m_mDatabaseConnections[nThreadID];
-		DatabaseConnection *pDBConnection_older = m_mDatabaseConnections_older[nThreadID];
+		ModelDatabaseConnection *pDBConnection = m_mDatabaseConnections[nThreadID];
+		ModelDatabaseConnection *pDBConnection_older = m_mDatabaseConnections_older[nThreadID];
 		
 		if(pDBConnection->isOutdated()){
 			pDBConnection_older->close();
@@ -180,8 +180,8 @@ QSqlDatabase *EmployDatabase::database(){
 		return pDBConnection->db();
 	}
 
-	DatabaseConnection *pDBConnection = new DatabaseConnection("qt_sql_default_connection_1_" + QString::number(nThreadID));
-	DatabaseConnection *pDBConnection_older = new DatabaseConnection("qt_sql_default_connection_2_" + QString::number(nThreadID));
+	ModelDatabaseConnection *pDBConnection = new ModelDatabaseConnection("qt_sql_default_connection_1_" + QString::number(nThreadID));
+	ModelDatabaseConnection *pDBConnection_older = new ModelDatabaseConnection("qt_sql_default_connection_2_" + QString::number(nThreadID));
 	m_mDatabaseConnections[nThreadID] = pDBConnection;
 	m_mDatabaseConnections_older[nThreadID] = pDBConnection_older;
 	pDBConnection->connect();

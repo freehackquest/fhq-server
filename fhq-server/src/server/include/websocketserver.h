@@ -16,7 +16,6 @@
 #include <cmd_handlers.h>
 
 #include <error.h>
-#include <database_connection.h>
 
 // QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 // QT_FORWARD_DECLARE_CLASS(QWebSocket)

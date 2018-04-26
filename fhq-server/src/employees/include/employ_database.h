@@ -1,7 +1,7 @@
 #ifndef EMPLOY_DATABASE_H
 #define EMPLOY_DATABASE_H
 
-#include <database_connection.h>
+#include <model_database_connection.h>
 #include <employees.h>
 
 #include <QMutex>
@@ -17,10 +17,10 @@ class EmployDatabase : public EmployBase {
 		std::string TAG;
         // db two connections
 		QMutex m_mtxSwapConenctions;
-		QMap<long long, DatabaseConnection *> m_mDatabaseConnections;
-		QMap<long long, DatabaseConnection *> m_mDatabaseConnections_older;
-		DatabaseConnection *m_pDBConnection;
-		DatabaseConnection *m_pDBConnection_older;
+		QMap<long long, ModelDatabaseConnection *> m_mDatabaseConnections;
+		QMap<long long, ModelDatabaseConnection *> m_mDatabaseConnections_older;
+		ModelDatabaseConnection *m_pDBConnection;
+		ModelDatabaseConnection *m_pDBConnection_older;
 };
 
 #endif // EMPLOY_DATABASE_H
