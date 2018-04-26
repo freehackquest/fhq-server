@@ -17,12 +17,6 @@ ppa_name_ = "";
 if dist_name_ == "1":
 	dist_name_ = "xenial";
 	ppa_name_ = "0ppa0";
-elif dist_name_ == "2":
-	dist_name_ = "yakkety";
-	ppa_name_ = "0ppa1";
-elif dist_name_ == "3":
-	dist_name_ = "zesty";
-	ppa_name_ = "0ppa2";
 elif dist_name_ == "4":
 	dist_name_ = "artful";
 	ppa_name_ = "0ppa3";
@@ -70,7 +64,7 @@ f.close()
 
 
 subprocess.call("./clean_sources_ppa.sh");
-os.system("cd ../../ && tar -acf fhq-server_" + new_version+ ".orig.tar.gz fhq-server");
+os.system("cd ../../ && tar -acf fhq-server_" + new_version+ "-" + ppa_name_ + ".orig.tar.gz fhq-server");
 os.system("cd ../../fhq-server && debuild -S -sa");
 
 
@@ -78,4 +72,4 @@ sys.stdout.write("Are you want try upload source package to ppa.launchpad? [y/n]
 ask_upload_ = raw_input().lower()
 
 if ask_upload_ == "y":
-	os.system("cd ../../ && dput ppa:freehackquest/fhq-server fhq-server_" + new_version + "-0ppa0_source.changes");
+	os.system("cd ../../ && dput ppa:freehackquest/fhq-server fhq-server_" + new_version + "-" + ppa_name_ + "_source.changes");
