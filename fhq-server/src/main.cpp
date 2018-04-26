@@ -62,7 +62,10 @@ int main(int argc, char** argv) {
 		vArgs.push_back(std::string(argv[i]));
 	}
 
-	if(hasArgs(vArgs, "--help") || hasArgs(vArgs, "-h")) {
+	if(vArgs.size() > 3) {
+		print_help(vArgs);
+		return 0;
+	} else if(hasArgs(vArgs, "--help") || hasArgs(vArgs, "-h")) {
 		print_help(vArgs);
 		return 0;
 	}else if(hasArgs(vArgs, "--run-unit-tests") || hasArgs(vArgs, "-rut")){

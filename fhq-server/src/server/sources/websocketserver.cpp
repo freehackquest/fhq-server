@@ -291,7 +291,7 @@ void WebSocketServer::sendToAll(QJsonObject obj){
 
 // ---------------------------------------------------------------------
 
-// TODO move to EmployUsers
+// TODO move to EmployWsServer
 
 void WebSocketServer::setUserToken(QWebSocket *pClient, IUserToken *pUserToken){
 	m_tokens[pClient] = pUserToken;
@@ -302,15 +302,6 @@ void WebSocketServer::setUserToken(QWebSocket *pClient, IUserToken *pUserToken){
 IUserToken * WebSocketServer::getUserToken(QWebSocket *pClient){
 	if(m_tokens.contains(pClient)){
 		return m_tokens[pClient];
-	}
-	return NULL;
-}
-
-// ---------------------------------------------------------------------
-
-IMemoryCache *WebSocketServer::findMemoryCache(QString name){
-	if(m_mapMemoryCache.contains(name)){
-		return m_mapMemoryCache[name];
 	}
 	return NULL;
 }

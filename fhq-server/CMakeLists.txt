@@ -49,7 +49,6 @@ list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/users/include")
 list (APPEND FHQSRV_SOURCES "src/3rdParty/nlohmann/json.hpp")
 
 # interfaces
-list (APPEND FHQSRV_SOURCES "src/interfaces/imemorycache.h")
 list (APPEND FHQSRV_SOURCES "src/interfaces/iserver.h")
 list (APPEND FHQSRV_SOURCES "src/interfaces/iunittest.h")
 list (APPEND FHQSRV_SOURCES "src/interfaces/iuser.h")

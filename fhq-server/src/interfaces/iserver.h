@@ -6,7 +6,6 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
-#include <imemorycache.h>
 #include <iusertoken.h>
 #include <iuser.h>
 #include <iwebsocketserver.h>

@@ -45,7 +45,6 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		virtual void sendToAll(QJsonObject obj);
 		virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken);
 		virtual IUserToken * getUserToken(QWebSocket *pClient);
-		virtual IMemoryCache *findMemoryCache(QString name);
 
 	Q_SIGNALS:
 		void closed();
@@ -65,7 +64,6 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		QWebSocketServer *m_pWebSocketServerSSL;
 		QList<QWebSocket *> m_clients;
 		QMap<QWebSocket *, IUserToken *> m_tokens;
-		QMap<QString, IMemoryCache *> m_mapMemoryCache;
 
 		bool m_bFailed;
 		QString TAG;
