@@ -14,9 +14,8 @@
 #include <log.h>
 
 #include <employ_server_config.h>
-#include <employ_database.h>
-#include <employ_settings.h>
 #include <employ_server_info.h>
+#include <employ_ws_server.h>
 #include <model_request.h>
 #include <cmd_handlers.h>
 
@@ -29,7 +28,7 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 	TAG = "WebSocketServer";
 
 	m_bFailed = false;
-	if(!Employees::init({})){
+	if(!Employees::init({"start_ws_server"})){
 		m_bFailed = true;
         return;
 	}
@@ -318,7 +317,6 @@ IMemoryCache *WebSocketServer::findMemoryCache(QString name){
 
 // ---------------------------------------------------------------------
 
-// TODO move to EmployValidateInput
 bool WebSocketServer::validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler, QJsonObject &jsonRequest){
     const std::vector<CmdInputDef> vInputs = pCmdHandler->inputs();
     for(unsigned int i = 0; i < vInputs.size(); i++){

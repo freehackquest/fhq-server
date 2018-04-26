@@ -208,6 +208,8 @@ list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_server_info.cpp")
 list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_database.cpp")
 list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_scoreboard.cpp")
 list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_leaks.cpp")
+list (APPEND FHQSRV_SOURCES "src/employees/include/employ_ws_server.h")
+list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_ws_server.cpp")
 
 # tasks
 list (APPEND FHQSRV_SOURCES "src/tasks/include/add_public_events_task.h")
