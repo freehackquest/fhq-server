@@ -1,0 +1,2 @@
+fhq-server.conf.example etc/fhq-server
+fhq-server.service etc/systemd/system

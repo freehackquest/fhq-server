@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(fhq-server)
 
-add_definitions(-DVERSION_STRING="0.2.5")
+add_definitions(-DVERSION_STRING="0.2.9")
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD 11)
@@ -298,7 +298,7 @@ install(
         ${CMAKE_INSTALL_PREFIX}/bin
 )
 
-install(FILES install_files/fhq-server.conf.sample DESTINATION /etc/fhq-server COMPONENT config)
-install(FILES install_files/fhq-server.service DESTINATION /etc/systemd/system COMPONENT config)
-install(DIRECTORY DESTINATION /usr/share/fhq-server)
-install(DIRECTORY DESTINATION /var/log/fhq-server)
+install(FILES install_files/fhq-server.conf.sample DESTINATION ${CMAKE_INSTALL_PREFIX}/../etc/fhq-server COMPONENT config)
+install(FILES install_files/fhq-server.service DESTINATION ${CMAKE_INSTALL_PREFIX}/../etc/systemd/system COMPONENT config)
+install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/share/fhq-server)
+install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/log/fhq-server)
