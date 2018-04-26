@@ -12,17 +12,23 @@ print ("Welcome to preapre ppa package...")
 
 print("\nPlease choose dist name:\n\t1. xenial\n\t2. yakkety\n\t3. zesty\n\t4. artful\n\t5. bionic");
 dist_name_ = raw_input()
+ppa_name_ = "";
 
 if dist_name_ == "1":
 	dist_name_ = "xenial";
+	ppa_name_ = "0ppa0";
 elif dist_name_ == "2":
 	dist_name_ = "yakkety";
+	ppa_name_ = "0ppa1";
 elif dist_name_ == "3":
 	dist_name_ = "zesty";
+	ppa_name_ = "0ppa2";
 elif dist_name_ == "4":
 	dist_name_ = "artful";
+	ppa_name_ = "0ppa3";
 elif dist_name_ == "5":
 	dist_name_ = "bionic";
+	ppa_name_ = "0ppa4";
 else:
 	print("Wrong dist name... ");
 	exit(0);
@@ -50,7 +56,7 @@ f.close()
 # Prepare changelog
 changelog="../../fhq-server/debian/changelog"
 f = open(changelog,'w')
-f.write("fhq-server (" + new_version + "-0ppa0) " + dist_name_ + "; urgency=low\n\n")
+f.write("fhq-server (" + new_version + "-" + ppa_name_ + ") " + dist_name_ + "; urgency=low\n\n")
 changelog_message = raw_input("Changelog message (or empty - end): ");
 while changelog_message != "":
 	f.write("  * " + changelog_message + "\n");

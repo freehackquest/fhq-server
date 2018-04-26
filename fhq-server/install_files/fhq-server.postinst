@@ -40,10 +40,6 @@ case "$1" in
                 mkdir /usr/share/fhq-server
         fi
 
-        # Fix permissions
-        chown fhq-server /var/log/fhq-server
-        chown fhq-server /usr/share/fhq-server
-
         # Add fhq-server user
         if ! id fhq-server > /dev/null 2>&1 ; then
                 adduser --system --home "/usr/share/fhq-server" --no-create-home \
@@ -51,6 +47,10 @@ case "$1" in
                         --gecos 'fhq-server' \
                         fhq-server
         fi
+        
+        # Fix permissions
+        chown fhq-server /var/log/fhq-server
+        chown fhq-server /usr/share/fhq-server
 
 	db_version 2.0
 
