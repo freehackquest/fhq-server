@@ -87,6 +87,8 @@ bool LXDContainer::check_async_response(nlohmann::json operation_json){
         Log::err(TAG, "Operation is failed " + error);
         return false;
     }
+
+    return true;
 }
 
 
@@ -117,7 +119,6 @@ bool LXDContainer::create(){
         if (!check_async_response(operation_json))
             return false;
     }
-
     Log::info(TAG, "Created container " + full_name());
     return true;
 
@@ -128,7 +129,7 @@ bool LXDContainer::start(){
     std::string address = "/1.0/containers/" + full_name() + "/state";
     std::string settings = "{\"action\": \"start\"}";
     std::string response;
-
+    Log::info(TAG, "Before send put request");
     if (!pOrchestra->send_put_request(address, settings, response, error))
         return false;
 
@@ -136,7 +137,7 @@ bool LXDContainer::start(){
     response = "";
     if (!check_response(res_json))
         return false;
-    Log::info(TAG, "Async response " + res_json.dump());
+    //Log::info(TAG, "Async response " + res_json.dump());
     if (res_json.at("type").get<std::string>() == "async"){
         std::string operation_id = res_json.at("operation").get<std::string>();
         if ( (operation_id != "") && (!pOrchestra->send_get_request(operation_id + "/wait", response, error))){
@@ -145,6 +146,11 @@ bool LXDContainer::start(){
         }
 
         auto operation_json = nlohmann::json::parse(response);
+        if (check_async_response(operation_json)){
+            Log::info(TAG, "Good check response");
+        } else {
+            Log::info(TAG, "Bad check response " + operation_json.dump());
+        }
         if (!check_async_response(operation_json))
             return false;
     }
@@ -169,7 +175,6 @@ bool LXDContainer::stop(){
     if (!check_response(res_json))
         return false;
 
-
     if (res_json.at("type").get<std::string>() == "async"){
         response = "";
         std::string operation_id = res_json.at("operation").get<std::string>();
@@ -187,6 +192,34 @@ bool LXDContainer::stop(){
 }
 
 bool LXDContainer::remove(){
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    std::string address = "/1.0/containers/" + full_name();
+    std::string response;
+
+    if (!pOrchestra->send_delete_request(address, response, error)){
+        return false;
+    }
+
+    auto res_json = nlohmann::json::parse(response);
+    response = "";
+    if (!check_response(res_json))
+        return false;
+
+
+    if (res_json.at("type").get<std::string>() == "async"){
+        response = "";
+        std::string operation_id = res_json.at("operation").get<std::string>();
+        if ( (operation_id != "") && (!pOrchestra->send_get_request(operation_id + "/wait", response, error))){
+            Log::err(TAG, "Can\'t get operation " + error);
+            return false;
+        }
+
+        auto operation_json = nlohmann::json::parse(response);
+        if (!check_async_response(operation_json))
+            return false;
+    }
+    Log::info(TAG, "Deleted container " + full_name());
+    return true;
 }
 
 std::string LXDContainer::exec(std::string command){

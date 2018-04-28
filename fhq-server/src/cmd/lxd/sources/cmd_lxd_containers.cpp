@@ -8,7 +8,7 @@
 CmdLXDContainersHandler::CmdLXDContainersHandler(){
 
     //Не забудь поменять на false
-    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
 
@@ -62,6 +62,9 @@ void CmdLXDContainersHandler::handle(ModelRequest *pRequest){
 
     if (action == "stop")
         stop_container(name, jsonResponse);
+
+    if (action == "delete")
+        delete_container(name, jsonResponse);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -122,4 +125,19 @@ void CmdLXDContainersHandler::stop_container(std::string name, QJsonObject &json
 
     if (!container->stop())
         jsonResponse["error"] = QJsonValue(QString::fromStdString(container->get_error()));
+}
+
+void CmdLXDContainersHandler::delete_container(std::string name, QJsonObject &jsonResponse){
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    if (!pOrchestra->initSettings())
+        return;
+
+    if (!pOrchestra->find_container(name)){
+       jsonResponse["error"] = QJsonValue("Can\'t find container");
+       return;
+    }
+
+    std::string error;
+    if (!pOrchestra->remove_container(name, error))
+        jsonResponse["error"] = QJsonValue(QString::fromStdString(error));
 }

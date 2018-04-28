@@ -22,6 +22,7 @@ class CmdLXDContainersHandler : public ICmdHandler {
         void create_container(std::string name, QJsonObject &jsonResponse);
         void start_container(std::string name, QJsonObject &jsonResponse);
         void stop_container(std::string name, QJsonObject &jsonResponse);
+        void delete_container(std::string name, QJsonObject &jsonResponse);
 };
 
 REGISTRY_CMD(CmdLXDContainersHandler)
