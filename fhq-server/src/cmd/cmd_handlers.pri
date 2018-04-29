@@ -4,7 +4,7 @@ INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/cmd_handlers.h \
-    $$PWD/cmd_handlers_users.h \
+    $$PWD/include/cmd_handlers_users.h \
     $$PWD/include/cmd_handlers_classbook.h \
     $$PWD/include/cmd_handlers_events.h \
     $$PWD/include/cmd_handlers_games.h \
@@ -15,7 +15,7 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/cmd_handlers.cpp \
-    $$PWD/cmd_handlers_users.cpp \
+    $$PWD/sources/cmd_handlers_users.cpp \
     $$PWD/sources/cmd_handlers_classbook.cpp \
     $$PWD/sources/cmd_handlers_events.cpp \
     $$PWD/sources/cmd_handlers_games.cpp \

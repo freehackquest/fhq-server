@@ -43,7 +43,6 @@ list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/classbook/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/events/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/quests/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/support/include")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/users/include")
 
 # json
 list (APPEND FHQSRV_SOURCES "src/3rdParty/nlohmann/json.hpp")
@@ -116,8 +115,8 @@ list (APPEND FHQSRV_SOURCES "src/3rdParty/smtp/mimecontentformatter.cpp")
 # cmd
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.cpp")
-list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_users.h")
-list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_users.cpp")
+list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_users.h")
+list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_users.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_classbook.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_classbook.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_events.h")
@@ -132,8 +131,6 @@ list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_server.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_server.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_support.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_support.cpp")
-list (APPEND FHQSRV_SOURCES "src/cmd/users/include/cmd_user_delete_handler.h") # deprecated
-list (APPEND FHQSRV_SOURCES "src/cmd/users/sources/cmd_user_delete_handler.cpp") # deprecated
 
 # models
 list (APPEND FHQSRV_SOURCES "src/models/include/model_database_connection.h")
