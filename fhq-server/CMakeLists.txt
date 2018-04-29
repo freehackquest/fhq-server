@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(fhq-server)
 
-add_definitions(-DVERSION_STRING="0.2.2")
+add_definitions(-DVERSION_STRING="0.2.15")
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD 11)
@@ -43,13 +43,11 @@ list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/classbook/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/events/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/quests/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/support/include")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/users/include")
 
 # json
 list (APPEND FHQSRV_SOURCES "src/3rdParty/nlohmann/json.hpp")
 
 # interfaces
-list (APPEND FHQSRV_SOURCES "src/interfaces/imemorycache.h")
 list (APPEND FHQSRV_SOURCES "src/interfaces/iserver.h")
 list (APPEND FHQSRV_SOURCES "src/interfaces/iunittest.h")
 list (APPEND FHQSRV_SOURCES "src/interfaces/iuser.h")
@@ -117,8 +115,8 @@ list (APPEND FHQSRV_SOURCES "src/3rdParty/smtp/mimecontentformatter.cpp")
 # cmd
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.cpp")
-list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_users.h")
-list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_users.cpp")
+list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_users.h")
+list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_users.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_classbook.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_classbook.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_events.h")
@@ -133,10 +131,10 @@ list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_server.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_server.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_support.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_support.cpp")
-list (APPEND FHQSRV_SOURCES "src/cmd/users/include/cmd_user_delete_handler.h") # deprecated
-list (APPEND FHQSRV_SOURCES "src/cmd/users/sources/cmd_user_delete_handler.cpp") # deprecated
 
 # models
+list (APPEND FHQSRV_SOURCES "src/models/include/model_database_connection.h")
+list (APPEND FHQSRV_SOURCES "src/models/sources/model_database_connection.cpp")
 list (APPEND FHQSRV_SOURCES "src/models/include/serversetthelper.h")
 list (APPEND FHQSRV_SOURCES "src/models/include/cmd_input_def.h")
 list (APPEND FHQSRV_SOURCES "src/models/include/model_leak.h")
@@ -178,13 +176,11 @@ list (APPEND FHQSRV_SOURCES "src/unit_tests/sources/unit_test_merge_text.cpp")
 list (APPEND FHQSRV_SOURCES "src/unit_tests/create_unit_tests.cpp")
 
 # server
-list (APPEND FHQSRV_SOURCES "src/server/include/database_connection.h")
 list (APPEND FHQSRV_SOURCES "src/server/include/errors.h")
 list (APPEND FHQSRV_SOURCES "src/server/include/error.h")
 list (APPEND FHQSRV_SOURCES "src/server/include/log.h")
 list (APPEND FHQSRV_SOURCES "src/server/include/websocketserver.h")
 list (APPEND FHQSRV_SOURCES "src/server/sources/websocketserver.cpp")
-list (APPEND FHQSRV_SOURCES "src/server/sources/database_connection.cpp")
 list (APPEND FHQSRV_SOURCES "src/server/sources/errors.cpp")
 list (APPEND FHQSRV_SOURCES "src/server/sources/error.cpp")
 list (APPEND FHQSRV_SOURCES "src/server/sources/log.cpp")
@@ -192,6 +188,10 @@ list (APPEND FHQSRV_SOURCES "src/server/sources/log.cpp")
 # employees
 list (APPEND FHQSRV_SOURCES "src/employees/employees.h")
 list (APPEND FHQSRV_SOURCES "src/employees/employees.cpp")
+list (APPEND FHQSRV_SOURCES "src/employees/include/employ_images.h")
+list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_images.cpp")
+list (APPEND FHQSRV_SOURCES "src/employees/include/employ_quests.h")
+list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_quests.cpp")
 list (APPEND FHQSRV_SOURCES "src/employees/include/employ_settings.h")
 list (APPEND FHQSRV_SOURCES "src/employees/include/employ_server_config.h")
 list (APPEND FHQSRV_SOURCES "src/employees/include/employ_server_info.h")
@@ -204,6 +204,8 @@ list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_server_info.cpp")
 list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_database.cpp")
 list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_scoreboard.cpp")
 list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_leaks.cpp")
+list (APPEND FHQSRV_SOURCES "src/employees/include/employ_ws_server.h")
+list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_ws_server.cpp")
 
 # tasks
 list (APPEND FHQSRV_SOURCES "src/tasks/include/add_public_events_task.h")
@@ -263,19 +265,26 @@ if ( ZLIB_FOUND )
 endif( ZLIB_FOUND )
 
 
+# LIBPNG
+find_package(PNG REQUIRED)
+if (NOT PNG_FOUND)
+    message(FATAL_ERROR "You don't seem to have libpng development libraries installed (apt isntall libpng-dev)")
+else ()
+	list (APPEND FHQSRV_INCLUDE_DIRS ${PNG_INCLUDE_DIR})
+    list (APPEND FHQSRV_LIBRARIES ${PNG_LIBRARY})
+endif ()
+
 include_directories(${FHQSRV_INCLUDE_DIRS})
 
 find_package (Qt5Core)
-find_package (Qt5Gui)
 find_package (Qt5Sql)
 find_package (Qt5Network)
 find_package (Qt5WebSockets)
 
 add_executable (fhq-server ${FHQSRV_SOURCES})
 
-qt5_use_modules(fhq-server Core Network Sql WebSockets Gui)
+qt5_use_modules(fhq-server Core Network Sql WebSockets)
 target_link_libraries(fhq-server ${FHQSRV_LIBRARIES} )
-
 
 # target_link_libraries(fhq-server Qt5::Core)
 
@@ -285,3 +294,9 @@ install(
     RUNTIME DESTINATION
         ${CMAKE_INSTALL_PREFIX}/bin
 )
+
+# install(FILES install_files/fhq-server.conf.sample DESTINATION ${CMAKE_INSTALL_PREFIX}/../etc/fhq-server COMPONENT config)
+# install(FILES install_files/fhq-server.service DESTINATION ${CMAKE_INSTALL_PREFIX}/../etc/systemd/system COMPONENT config)
+# install(FILES install_files/fhq-server.postinst DESTINATION ${CMAKE_INSTALL_PREFIX}/../var/lib/dpkg/info COMPONENT config)
+# install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/share/fhq-server)
+# install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/log/fhq-server)
