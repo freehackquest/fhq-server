@@ -17,6 +17,15 @@ binary-indep:
 binary-arch:
 	cd $(BUILDDIR); cmake -P cmake_install.cmake
 	mkdir debian/tmp/DEBIAN
+	mkdir -p debian/tmp/etc/fhq-server
+	mkdir -p debian/tmp/etc/systemd/system
+	mkdir -p debian/tmp/var/log/fhq-server
+	mkdir -p debian/tmp/usr/share/fhq-server
+	pwd
+	cp install_files/fhq-server.conf.sample debian/tmp/etc/fhq-server/fhq-server.conf
+	cp install_files/fhq-server.service debian/tmp/etc/systemd/system
+	cp install_files/fhq-server.postinst debian/tmp/DEBIAN/postinst
+	cp install_files/fhq-server.config debian/tmp/DEBIAN/config
 	dpkg-gencontrol -pfhq-server
 	dpkg --build debian/tmp ..
 

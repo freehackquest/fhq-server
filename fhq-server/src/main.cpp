@@ -1,12 +1,14 @@
+#include <iostream>
+#include <string>
+#include <unistd.h> // getpass
+
 // #include <stdio.h>
 // #include <stdlib.h>
 // #include <string.h>
 // #include <signal.h>
-#include <iostream>
 // #include <sys/stat.h>
 // #include <sys/types.h>
 // #include <sys/time.h>
-// #include <unistd.h>
 // #include <errno.h>
 // #include <fcntl.h>
 // #include <syslog.h>
@@ -19,20 +21,26 @@
 #include <utils_create_config.h>
 #include <create_unit_tests.h>
 #include <employees.h>
+#include <employ_server_config.h>
 #include <employ_server_info.h>
 #include <employ_database.h>
 #include <employ_settings.h>
+#include <employ_images.h>
 
 void print_help(std::vector<std::string> &vArgs){
 	std::cout
-		<< "Usage: " << vArgs.at(0) << "   [PARAMS]\n"
+		<< "Usage: " << vArgs.at(0) << "   [PARAM]\n"
 		<< "\t --help, -h                             This help \n"
+		<< "\t --version, -v                          Print version \n"
 		<< "\t --run-unit-tests, -rut                 Run unit tests\n"
 		<< "\t --show-handlers, -sh                   Show handlers\n"
 		<< "\t --show-employees, -se                  Show employees\n"
+		<< "\t --show-settings, -ss                   Show settings\n"
 		<< "\t --prepare-deb, -pd                     Prepare Deb Package\n"
+		<< "\t --check-server-config, -csc            Check server config\n"
 		<< "\t --create-config-linux, -ccl            Create config file for Linux: /etc/fhq-server/conf.ini \n"
 		<< "\t --check-database-connection, -cdc      Check database conenction\n"
+		<< "\t --manual-create-database, -mcd         Manual create database\n"
 		<< "\t --server, -s                           Start server\n"
 		<< "\n";
 }
@@ -54,7 +62,10 @@ int main(int argc, char** argv) {
 		vArgs.push_back(std::string(argv[i]));
 	}
 
-	if(hasArgs(vArgs, "--help") || hasArgs(vArgs, "-h")) {
+	if(vArgs.size() > 3) {
+		print_help(vArgs);
+		return 0;
+	} else if(hasArgs(vArgs, "--help") || hasArgs(vArgs, "-h")) {
 		print_help(vArgs);
 		return 0;
 	}else if(hasArgs(vArgs, "--run-unit-tests") || hasArgs(vArgs, "-rut")){
@@ -104,6 +115,15 @@ int main(int argc, char** argv) {
 	}else if(hasArgs(vArgs, "--create-config-linux") || hasArgs(vArgs, "-ccl")){
 		UtilsCreateConfig::forLinux();
 		return 0;
+	}else if(hasArgs(vArgs, "--check-server-config") || hasArgs(vArgs, "-csc")){
+		std::cout << "\n * Check Server Config\n\n";
+		EmployServerConfig *pConfig = new EmployServerConfig();
+		if(!pConfig->init()){
+			std::cout << "\n * FAIL\n\n";
+		}else{
+			std::cout << "\n * Success\n\n";
+		}
+		return 0;
 	}else if(hasArgs(vArgs, "--check-database-connection") || hasArgs(vArgs, "-cdc")){
 		std::cout << "\n * Check Database Connection\n\n";
 		Employees::init({});
@@ -120,6 +140,41 @@ int main(int argc, char** argv) {
 		Employees::init({});
 		EmploySettings *pSettings = findEmploy<EmploySettings>();
 		pSettings->printSettings();
+		std::cout << "\n * Done\n\n";
+		return 0;
+	}else if(hasArgs(vArgs, "--test-png")){
+		std::cout << "\n * Test png\n\n";
+		// Employees::init({});
+		EmployImages *pImages = new EmployImages();
+		// EmployImages *pImages = findEmploy<EmployImages>();
+		pImages->doThumbnailImagePng("test.png", "test_100x100.png", 100, 100);
+		pImages->doThumbnailImagePng("test_alpha.png", "test_alpha_100x100.png", 100, 100);
+		std::cout << "\n * Done\n\n";
+		return 0;
+	}else if(hasArgs(vArgs, "--manual-create-database") || hasArgs(vArgs, "-mcd")){
+		std::cout << "\n * Manual create database\n\n";
+		EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
+		if(!pServerConfig->init()){
+			std::cout << "\n * Failed on init server config\n\n";
+			return -1;
+		}
+		EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+		
+		// enter mysql root password
+		char *pPassword=getpass("Enter MySQL root password: ");
+		std::string sRootPassword(pPassword);
+		std::string sError = "";
+		if(!pDatabase->manualCreateDatabase(sRootPassword, sError)){
+			std::cout << "\n * Failed: " << sError << "\n\n";
+			return -1;
+		}
+		
+		// init database
+		if(!pDatabase->init()){
+			std::cout << "\n * Failed on init database structure\n\n";
+			return -1;
+		}
+		
 		std::cout << "\n * Done\n\n";
 		return 0;
 	}else if(hasArgs(vArgs, "--server") || hasArgs(vArgs, "-s")){

@@ -16,7 +16,6 @@
 #include <cmd_handlers.h>
 
 #include <error.h>
-#include <database_connection.h>
 
 // QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 // QT_FORWARD_DECLARE_CLASS(QWebSocket)
@@ -46,7 +45,6 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		virtual void sendToAll(QJsonObject obj);
 		virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken);
 		virtual IUserToken * getUserToken(QWebSocket *pClient);
-		virtual IMemoryCache *findMemoryCache(QString name);
 
 	Q_SIGNALS:
 		void closed();
@@ -60,13 +58,10 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		void onSslErrors(const QList<QSslError> &errors);
 
 	private:
-        bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler, QJsonObject &jsonRequest);
-		
 		QWebSocketServer *m_pWebSocketServer;
 		QWebSocketServer *m_pWebSocketServerSSL;
 		QList<QWebSocket *> m_clients;
 		QMap<QWebSocket *, IUserToken *> m_tokens;
-		QMap<QString, IMemoryCache *> m_mapMemoryCache;
 
 		bool m_bFailed;
 		QString TAG;

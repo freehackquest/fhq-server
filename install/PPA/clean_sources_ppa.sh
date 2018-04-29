@@ -8,5 +8,5 @@ rm -f ../../fhq-server/CMakeLists.txt.user
 rm -f ../../fhq-server/debian/files
 rm -rf ../../fhq-server/build
 rm -rf ../../fhq-server/tmp
-rm -rf ../../fhq-server_0*
+rm ../../fhq-server_*
 

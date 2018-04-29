@@ -1,5 +1,5 @@
-fhq-server (0.2.2-0ppa0) xenial; urgency=low
+fhq-server (0.2.15-0ppa0) xenial; urgency=low
 
-  * Fixed dependencies
+  * Added fhq-server.config for postinst script
 
- -- Free Hack Quest <freehackquest@gmail.com>  Mon, 16 Apr 2018 10:22:35 +0700
+ -- Free Hack Quest <freehackquest@gmail.com>  Fri, 27 Apr 2018 01:28:59 +0700

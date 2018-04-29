@@ -115,7 +115,13 @@ nlohmann::json CmdInputDef::toJson(){
 
 // ---------------------------------------------------------------------
 
-std::string CmdInputDef::getName(){
+const std::string &CmdInputDef::getName(){
+	return m_sName;
+}
+
+// ---------------------------------------------------------------------
+
+const std::string &CmdInputDef::getName() const {
 	return m_sName;
 }
 
