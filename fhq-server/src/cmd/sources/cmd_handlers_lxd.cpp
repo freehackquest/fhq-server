@@ -1,53 +1,39 @@
-#include <cmd_lxd_containers.h>
+#include <cmd_handlers_lxd.h>
+#include <log.h>
+#include <runtasks.h>
+#include <log.h>
+#include <iostream>
+#include <employ_settings.h>
+#include <employ_database.h>
 #include <employ_orchestra.h>
-#include <model_lxd_container.h>
 
-#include <string>
-#include <QJsonValue>
+/*********************************************
+ * Any actions with the container. Actions: create, start, stop and delete container
+**********************************************/
 
-CmdLXDContainersHandler::CmdLXDContainersHandler(){
+CmdHandlerLXDContainers::CmdHandlerLXDContainers()
+	: CmdHandlerBase("lxd_containers", "Any actions with the container. Actions: create, start, stop and delete container"){
 
-    //Не забудь поменять на false
+	TAG = "LXD_HANDLER";
+
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
 
-    // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
+	// validation and description input fields
+	m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
     m_vInputs.push_back(CmdInputDef("action").string_().required().description("Actions: create, start, stop and delete container"));
-
-    TAG = "LXD_HANDLER";
 }
 
 // ---------------------------------------------------------------------
 
-std::string CmdLXDContainersHandler::cmd(){
-    return "lxd_containers";
-}
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdLXDContainersHandler::access(){
-    return m_modelCommandAccess;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<CmdInputDef> &CmdLXDContainersHandler::inputs(){
-    return m_vInputs;
-}
-
-std::string CmdLXDContainersHandler::description(){
-    return "Any actions with the container. Actions: create, start, stop and delete container";
-}
-
-// ---------------------------------------------------------------------
-
-void CmdLXDContainersHandler::handle(ModelRequest *pRequest){
+void CmdHandlerLXDContainers::handle(ModelRequest *pRequest){
     using namespace std;
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QSqlDatabase db = *(pRequest->server()->database());
+    QSqlDatabase db = *(pDatabase->database());
 
     string name = jsonRequest["name"].toString().trimmed().toStdString();
 
@@ -69,12 +55,13 @@ void CmdLXDContainersHandler::handle(ModelRequest *pRequest){
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
+// ---------------------------------------------------------------------
 
-void CmdLXDContainersHandler::create_container(std::string name, QJsonObject &jsonResponse){
+void CmdHandlerLXDContainers::create_container(std::string name, QJsonObject &jsonResponse){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
 
     //Переместить в Orchestra
-    if (!pOrchestra->initSettings())
+    if (!pOrchestra->init())
         return;
 
     std::string error;
@@ -90,10 +77,11 @@ void CmdLXDContainersHandler::create_container(std::string name, QJsonObject &js
     }
 }
 
+// ---------------------------------------------------------------------
 
-void CmdLXDContainersHandler::start_container(std::string name, QJsonObject &jsonResponse){
+void CmdHandlerLXDContainers::start_container(std::string name, QJsonObject &jsonResponse){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
-    if (!pOrchestra->initSettings())
+    if (!pOrchestra->init())
         return;
 
     LXDContainer * container;
@@ -109,10 +97,11 @@ void CmdLXDContainersHandler::start_container(std::string name, QJsonObject &jso
         jsonResponse["error"] = QJsonValue(QString::fromStdString(container->get_error()));
 }
 
+// ---------------------------------------------------------------------
 
-void CmdLXDContainersHandler::stop_container(std::string name, QJsonObject &jsonResponse){
+void CmdHandlerLXDContainers::stop_container(std::string name, QJsonObject &jsonResponse){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
-    if (!pOrchestra->initSettings())
+    if (!pOrchestra->init())
         return;
 
     LXDContainer * container;
@@ -127,9 +116,11 @@ void CmdLXDContainersHandler::stop_container(std::string name, QJsonObject &json
         jsonResponse["error"] = QJsonValue(QString::fromStdString(container->get_error()));
 }
 
-void CmdLXDContainersHandler::delete_container(std::string name, QJsonObject &jsonResponse){
+// ---------------------------------------------------------------------
+
+void CmdHandlerLXDContainers::delete_container(std::string name, QJsonObject &jsonResponse){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
-    if (!pOrchestra->initSettings())
+    if (!pOrchestra->init())
         return;
 
     if (!pOrchestra->find_container(name)){
@@ -141,3 +132,38 @@ void CmdLXDContainersHandler::delete_container(std::string name, QJsonObject &js
     if (!pOrchestra->remove_container(name, error))
         jsonResponse["error"] = QJsonValue(QString::fromStdString(error));
 }
+
+
+/*********************************************
+ * Get information about the orhestra, containers.
+**********************************************/
+
+CmdHandlerLXDInfo::CmdHandlerLXDInfo()
+    : CmdHandlerBase("lxd_info", "Get information about the orhestra, containers."){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
+    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
+    m_vInputs.push_back(CmdInputDef("get").string_().required().description("Requested information"));
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerLXDInfo::handle(ModelRequest *pRequest){
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
+    QSqlDatabase db = *(pDatabase->database());
+
+    std::string name = jsonRequest["name"].toString().trimmed().toStdString();
+    std::string error, response;
+
+    //TO DO
+    //Action switch
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
