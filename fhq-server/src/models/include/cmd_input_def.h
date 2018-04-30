@@ -34,7 +34,8 @@ class CmdInputDef {
 		CmdInputDef & maxval(int maxval);
         nlohmann::json toJson();
 		
-        std::string getName();
+        const std::string &getName();
+        const std::string &getName() const;
 		bool isRequired();
 		bool isInteger();
 		bool isEnum();

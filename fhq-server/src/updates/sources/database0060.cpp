@@ -1,23 +1,11 @@
 #include <database0060.h>
-#include <QSqlQuery>
 
-Database0060::Database0060(){
-    TAG = "Database0060";
+Database0060::Database0060()
+    : UpdateBase("", "u0060", "Init database 0060") {
+
 }
 
-QString Database0060::from_version(){
-	return "";
-}
-
-QString Database0060::version(){
-	return "u0060";
-}
-
-QString Database0060::description(){
-	return "Init database 0060";
-}
-
-bool Database0060::update(QSqlDatabase &db, QString &error){
+bool Database0060::update(QSqlDatabase &db, std::string &error){
 	
 	{
 		// Table structure for table `email_delivery`
@@ -34,7 +22,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
@@ -53,7 +41,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
@@ -73,7 +61,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
@@ -113,7 +101,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  KEY `date_restart` (`date_restart`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
@@ -133,7 +121,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  KEY `message` (`message`(255))"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
@@ -166,7 +154,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  PRIMARY KEY (`idquest`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
@@ -188,7 +176,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
@@ -211,7 +199,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
@@ -234,7 +222,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
@@ -257,7 +245,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
@@ -276,7 +264,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  UNIQUE KEY `iduser` (`iduser`,`idquest`)"
 			") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
@@ -301,7 +289,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
@@ -314,7 +302,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
             "('39A551F4-3BF0-A1C8-8686-06A5C510DDA3', 'admin', '06976539736714f7eaaa9409a643855029717a9d', 'admin', 'Admin', 'files/users/0.png', '1970-01-01 00:00:00', '2015-04-12 23:49:58', '127.0.0.1', 'activated')"
 		);
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with data insertion " + error);
 			return false;
 		}
@@ -333,7 +321,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
@@ -360,7 +348,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  KEY `client` (`client`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
@@ -380,7 +368,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
@@ -397,7 +385,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  UNIQUE KEY `userid` (`userid`,`questid`)"
 			") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
@@ -419,7 +407,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}
@@ -441,7 +429,7 @@ bool Database0060::update(QSqlDatabase &db, QString &error){
 			"  PRIMARY KEY (`id`)"
 			") ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 		if(!query.exec()){
-			error = query.lastError().text();
+			error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
 			return false;
 		}

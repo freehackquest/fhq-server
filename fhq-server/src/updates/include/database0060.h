@@ -1,19 +1,15 @@
 #ifndef DATABASE_0060_H
 #define DATABASE_0060_H
 
-#include <iupdate.h>
+#include <updates.h>
 
-class Database0060 : public IUpdate {
+class Database0060 : public UpdateBase {
 	
     public:
         Database0060();
-        virtual QString from_version();
-        virtual QString version();
-        virtual QString description();
-        virtual bool update(QSqlDatabase &db, QString &error);
-
-    private:
-        QString TAG;
+        virtual bool update(QSqlDatabase &db, std::string &error);
 };
+
+REGISTRY_UPDATE(Database0060)
 
 #endif // DATABASE_0060_H

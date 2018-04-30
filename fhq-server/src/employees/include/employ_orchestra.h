@@ -10,12 +10,12 @@
 #include <curl/curl.h>
 
 
-class EmployOrchestra : public IEmploy {
+class EmployOrchestra : public EmployBase {
 public:
-    static std::string getEmployName() { return "EmployOrchestra"; }
-    virtual void test();
+    EmployOrchestra();
+    static std::string name() { return "EmployOrchestra"; }
+    virtual bool init();
 
-    bool initSettings();
     bool create_container(std::string name, std::string &error);
     bool find_container(std::string name);
     bool remove_container(std::string name, std::string error);

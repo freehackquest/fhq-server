@@ -7,7 +7,7 @@
 class UpdateMaxScoreGameTask : public QRunnable {
 	void run();
 	public:
-		UpdateMaxScoreGameTask(IWebSocketServer *pWebSocketServer, int gameid);
+        UpdateMaxScoreGameTask(int gameid);
 		~UpdateMaxScoreGameTask();
 	private:
 		int m_nGameID;

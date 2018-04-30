@@ -3,7 +3,7 @@ INCLUDEPATH += $$PWD/include
 INCLUDEPATH += $$PWD
 
 HEADERS += \
-    $$PWD/create_list_updates.h \
+    $$PWD/updates.h \
     $$PWD/include/database0060.h \
     $$PWD/include/update0061_0090.h \
     $$PWD/include/update0091.h \
@@ -16,7 +16,7 @@ HEADERS += \
 
 
 SOURCES += \
-    $$PWD/create_list_updates.cpp \
+    $$PWD/updates.cpp \
     $$PWD/sources/database0060.cpp \
     $$PWD/sources/update0061_0090.cpp \
     $$PWD/sources/update0091.cpp \

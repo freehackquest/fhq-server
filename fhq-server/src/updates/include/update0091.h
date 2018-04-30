@@ -1,19 +1,17 @@
 #ifndef UPDATE_0091_H
 #define UPDATE_0091_H
 
-#include <iupdate.h>
+#include <updates.h>
 
-class Update0091 : public IUpdate {
+// ----------- UPDATE 0091 ---------------
+
+class Update0091 : public UpdateBase {
 
     public:
         Update0091();
-        virtual QString from_version();
-        virtual QString version();
-        virtual QString description();
-        virtual bool update(QSqlDatabase &db, QString &error);
-
-    private:
-        QString TAG;
+        virtual bool update(QSqlDatabase &db, std::string &error);
 };
+
+REGISTRY_UPDATE(Update0091)
 
 #endif // UPDATE0091_H

@@ -17,14 +17,14 @@ REGISTRY_EMPLOY(EmployOrchestra)
 
 // ---------------------------------------------------------------------
 
-void EmployOrchestra::test(){
+EmployOrchestra::EmployOrchestra()
+    : EmployBase(EmployOrchestra::name(), {EmploySettings::name()}) {
 
 }
 
-
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::initSettings(){
+bool EmployOrchestra::init(){
     TAG = "EmployOrchestra";
 
     Log::info(TAG, "Start init settings");
@@ -53,6 +53,8 @@ bool EmployOrchestra::initSettings(){
     return true;
 }
 
+// ---------------------------------------------------------------------
+
 bool EmployOrchestra::create_container(std::string name, std::string &error){
     Log::info(TAG, "Starting creation container " + name);
     LXDContainer *pContainer = new LXDContainer(name);
@@ -70,10 +72,14 @@ bool EmployOrchestra::create_container(std::string name, std::string &error){
     return true;
 }
 
+// ---------------------------------------------------------------------
+
 LXDContainer * EmployOrchestra::get_container(std::string name){
     LXDContainer * container = containers_map[name];
     return container;
 }
+
+// ---------------------------------------------------------------------
 
 bool EmployOrchestra::find_container(std::string name){
     if (containers_map.find(name) == containers_map.end())
@@ -88,6 +94,8 @@ static size_t write_to_string(void *ptr, size_t size, size_t count, void *stream
   ((std::string*)stream)->append((char*)ptr, 0, size*count);
   return size*count;
 }
+
+// ---------------------------------------------------------------------
 
 static char errorBuffer[CURL_ERROR_SIZE];
 
@@ -130,6 +138,8 @@ bool EmployOrchestra::send_post_request(std::string address, std::string setting
     return true;
 }
 
+// ---------------------------------------------------------------------
+
 bool EmployOrchestra::send_put_request(std::string address, std::string settings, std::string &response, std::string & error){
     CURLcode ret;
     CURL *hnd;
@@ -169,6 +179,8 @@ bool EmployOrchestra::send_put_request(std::string address, std::string settings
     return true;
 }
 
+// ---------------------------------------------------------------------
+
 bool EmployOrchestra::send_get_request(std::string address, std::string &response, std::string & error){
 
     CURLcode ret;
@@ -207,6 +219,8 @@ bool EmployOrchestra::send_get_request(std::string address, std::string &respons
     return true;
 }
 
+// ---------------------------------------------------------------------
+
 bool EmployOrchestra::send_delete_request(std::string address, std::string &response, std::string & error){
 
     CURLcode ret;
@@ -244,6 +258,8 @@ bool EmployOrchestra::send_delete_request(std::string address, std::string &resp
 
     return true;
 }
+
+// ---------------------------------------------------------------------
 
 bool EmployOrchestra::pull_container_names(){
     std::string address = "/1.0/containers";
@@ -314,6 +330,7 @@ bool EmployOrchestra::check_response(nlohmann::json res_json, std::string error)
     return true;
 }
 
+// ---------------------------------------------------------------------
 
 bool EmployOrchestra::check_async_response(nlohmann::json operation_json, std::string error){
     //Check async operation
@@ -336,6 +353,7 @@ bool EmployOrchestra::check_async_response(nlohmann::json operation_json, std::s
     return true;
 }
 
+// ---------------------------------------------------------------------
 
 bool EmployOrchestra::remove_container(std::string name, std::string error){
     LXDContainer * container;
@@ -353,6 +371,7 @@ bool EmployOrchestra::remove_container(std::string name, std::string error){
     return false;
 }
 
+// ---------------------------------------------------------------------
 
 std::list<std::string> EmployOrchestra::registry_names(){
     std::list<std::string> container_names;
@@ -360,6 +379,8 @@ std::list<std::string> EmployOrchestra::registry_names(){
         container_names.push_back(it->first);
     return container_names;
 }
+
+// ---------------------------------------------------------------------
 
 bool EmployOrchestra::set_trusted(std::string password, std::string & error){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
@@ -376,6 +397,8 @@ bool EmployOrchestra::set_trusted(std::string password, std::string & error){
 
     return true;
 }
+
+// ---------------------------------------------------------------------
 
 bool EmployOrchestra::connect_with_lxd(std::string lxd_passwd){
     std::string error;
@@ -395,6 +418,8 @@ bool EmployOrchestra::connect_with_lxd(std::string lxd_passwd){
 
     return trusted;
 }
+
+// ---------------------------------------------------------------------
 
 bool EmployOrchestra::check_trust_certs(std::string & error){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();

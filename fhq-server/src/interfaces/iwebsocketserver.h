@@ -9,7 +9,6 @@
 #include <QSqlRecord>
 #include <QMap>
 
-#include <imemorycache.h>
 #include <iusertoken.h>
 #include <error.h>
 #include <errors.h>
@@ -22,10 +21,8 @@ class IWebSocketServer {
         virtual void sendMessageError(QWebSocket *pClient, const std::string &cmd, QString m, Error error) = 0;
 		virtual void sendToAll(QJsonObject obj) = 0;
 		virtual int getConnectedUsers() = 0;
-		virtual QSqlDatabase *database() = 0;
 		virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken) = 0;
 		virtual IUserToken * getUserToken(QWebSocket *pClient) = 0;
-		virtual IMemoryCache *findMemoryCache(QString name) = 0;
 };
 
 #endif // INTERFACES_IWEBSOCKETSERVER_H

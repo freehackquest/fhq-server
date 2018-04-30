@@ -6,7 +6,7 @@
 ## copy (or replace) fhq-server.service
 
 ```
-$ sudo cp ./SYSTEMD/fhq-server.service  /etc/systemd/system/fhq-server.service
+$ sudo cp ../fhq-server/install_files/fhq-server.service  /etc/systemd/system/fhq-server.service
 ```
 
 ## Create directories
@@ -19,7 +19,7 @@ $ sudo mkdir /usr/share/fhq-server
 ## Copy config
 
 ```
-$ sudo cp ../backend/fhq-server.conf.example ./etc/fhq-server/conf.ini
+$ sudo cp ../fhq-server/install_files/fhq-server.conf.example /etc/fhq-server/conf.ini
 ```
 
 ## Reload and restart

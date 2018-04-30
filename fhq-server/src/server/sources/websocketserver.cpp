@@ -11,13 +11,14 @@
 #include <QtNetwork/QSslKey>
 
 #include <SmtpMime>
-#include <create_list_updates.h>
-#include <create_memory_cache.h>
 #include <log.h>
 
-#include <employ_settings.h>
+#include <employ_server_config.h>
+#include <employ_server_info.h>
+#include <employ_ws_server.h>
 #include <model_request.h>
 #include <cmd_handlers.h>
+
 
 // QT_USE_NAMESPACE
 
@@ -25,68 +26,34 @@
 
 WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 	TAG = "WebSocketServer";
-	m_pServerConfig = new ModelServerConfig();
-    m_bFailed = false;
 
-    if(!m_pServerConfig->load()){
+	m_bFailed = false;
+	if(!Employees::init({"start_ws_server"})){
 		m_bFailed = true;
-		return;
-	}
-
-	m_pDBConnection = new DatabaseConnection("qt_sql_default_connection_1");
-	m_pDBConnection_older = new DatabaseConnection("qt_sql_default_connection_2");
-	
-	if(!m_pDBConnection->connect(m_pServerConfig)){
-		m_bFailed = true;
-		return;
-	}
-
-    if(!tryUpdateDatabase(m_pDBConnection->db())){
-        m_bFailed = true;
         return;
-    }
-
-	// TODO: redesign
-	// cleanup old user tokens
-    /*{
-		QSqlDatabase db = *(m_pDBConnection->db());
-		QSqlQuery query(db);
-		query.prepare("DELETE FROM users_tokens WHERE end_date < NOW()");
-		query.exec();
-    }*/
-
-	create_memory_cache(m_mapMemoryCache, this);
-
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
-    pSettings->initSettings(this);
-
-	{
-		// init memory cache server info
-		m_pMemoryCacheServerInfo = NULL;
-		IMemoryCache *pMemoryCache = findMemoryCache("serverinfo");
-		if(pMemoryCache != NULL){
-			m_pMemoryCacheServerInfo = dynamic_cast<MemoryCacheServerInfo*>(pMemoryCache);
-            m_pMemoryCacheServerInfo->initCounters();
-		}
 	}
+	
+	EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
+    EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
+
 	
 	m_pWebSocketServer = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::NonSecureMode, this);
 	m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::SecureMode, this);
 	
-    if (m_pWebSocketServer->listen(QHostAddress::Any, m_pServerConfig->serverPort())) {
-		Log::info(TAG, "freehackquest-backend listening on port" + QString::number(m_pServerConfig->serverPort()));
+    if (m_pWebSocketServer->listen(QHostAddress::Any, pServerConfig->serverPort())) {
+        Log::info(TAG, "fhq-server listening on port " + QString::number(pServerConfig->serverPort()));
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnection);
         connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &WebSocketServer::closed);
     }else{
-		Log::err(TAG, "freehackquest-backend can not listening on port " + QString::number(m_pServerConfig->serverPort()));
+        Log::err(TAG, "fhq-server can not listening on port " + QString::number(pServerConfig->serverPort()));
 		m_bFailed = true;
 		return;
 	}
 
-	if(m_pServerConfig->serverSslOn()){
+	if(pServerConfig->serverSslOn()){
 		QSslConfiguration sslConfiguration;
-		QFile certFile(m_pServerConfig->serverSslCertFile());
-		QFile keyFile(m_pServerConfig->serverSslKeyFile());
+        QFile certFile(QString(pServerConfig->serverSslCertFile().c_str()));
+        QFile keyFile(QString(pServerConfig->serverSslKeyFile().c_str()));
 		certFile.open(QIODevice::ReadOnly);
 		keyFile.open(QIODevice::ReadOnly);
 		QSslCertificate certificate(&certFile, QSsl::Pem);
@@ -99,17 +66,17 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 		sslConfiguration.setProtocol(QSsl::TlsV1SslV3);
 		m_pWebSocketServerSSL->setSslConfiguration(sslConfiguration);
 		
-		if (m_pWebSocketServerSSL->listen(QHostAddress::Any, m_pServerConfig->serverSslPort())) {
-			Log::info(TAG, "freehackquest-backend listening (via ssl) on port" + QString::number(m_pServerConfig->serverSslPort()));
+		if (m_pWebSocketServerSSL->listen(QHostAddress::Any, pServerConfig->serverSslPort())) {
+			Log::info(TAG, "freehackquest-backend listening (via ssl) on port" + QString::number(pServerConfig->serverSslPort()));
 			connect(m_pWebSocketServerSSL, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnectionSSL);
 			connect(m_pWebSocketServerSSL, &QWebSocketServer::sslErrors, this, &WebSocketServer::onSslErrors);
 		}else{
-			Log::err(TAG, "freehackquest-backend can not listening (via ssl) on port" + QString::number(m_pServerConfig->serverSslPort()));
+            Log::err(TAG, "fhq-server can not listening (via ssl) on port " + QString::number(pServerConfig->serverSslPort()));
 			m_bFailed = true;
 			return;
 		}
 	}
-    m_pMemoryCacheServerInfo->serverStarted();
+    pServerInfo->serverStarted();
     // TODO save in database information about server started
 }
 
@@ -165,8 +132,10 @@ void WebSocketServer::onNewConnectionSSL(){
 // ---------------------------------------------------------------------
 
 void WebSocketServer::processTextMessage(QString message) {
+    EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
+    EmployWsServer *pWsServer = findEmploy<EmployWsServer>();
+
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    Log::info(TAG, "[WS] <<< " + message);
 
     nlohmann::json jsonRequest_ = nlohmann::json::parse(message.toStdString());
 
@@ -182,22 +151,22 @@ void WebSocketServer::processTextMessage(QString message) {
 	}
 	
     std::string cmd = pModelRequest->command();
-	
+
+    Log::info(TAG.toStdString(), "[WS] <<< " + cmd);
+
     if(!pModelRequest->hasM()){
 		this->sendMessageError(pClient, cmd, "", Errors::NotFound("requare parameter 'm' - messageid"));
 		return;
 	}
 
-    ICmdHandler *pCmdHandler = findCmdHandler(cmd);
+    CmdHandlerBase *pCmdHandler = CmdHandlers::findCmdHandler(cmd);
     if(pCmdHandler == NULL){
         Log::warn(TAG, "Unknown command: " + QString(cmd.c_str()));
         pModelRequest->sendMessageError(cmd, Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
         return;
     }
-	
-	if(m_pMemoryCacheServerInfo != NULL){
-        m_pMemoryCacheServerInfo->incrementRequests(QString(cmd.c_str()));
-	}
+
+    pServerInfo->incrementRequests(cmd);
 	
 	// check access
     const ModelCommandAccess access = pCmdHandler->access();
@@ -222,8 +191,9 @@ void WebSocketServer::processTextMessage(QString message) {
 	}
 
 	// allow access
+	// TODO move to ModelRequest
 	Error error = Errors::NoneError();
-    if(this->validateInputParameters(error, pCmdHandler, jsonRequest)){
+    if(pWsServer->validateInputParameters(error, pCmdHandler, jsonRequest)){
         pCmdHandler->handle(pModelRequest);
 	}else{
         pModelRequest->sendMessageError(pCmdHandler->cmd(), error);
@@ -308,6 +278,7 @@ void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &c
     jsonResponse["result"] = QJsonValue("FAIL");
     jsonResponse["error"] = QJsonValue(error.message());
     jsonResponse["code"] = QJsonValue(error.codeError());
+    Log::err(TAG.toStdString(), "WS-ERROR >>> " + cmd + ": messsage: " + error.message().toStdString());
     this->sendMessage(pClient, jsonResponse);
 	return;
 }
@@ -322,36 +293,7 @@ void WebSocketServer::sendToAll(QJsonObject obj){
 
 // ---------------------------------------------------------------------
 
-QSqlDatabase *WebSocketServer::database(){
-	// swap connection
-	QMutexLocker locker (&m_mtxSwapConenctions);
-	
-	long long nThreadID = (long long)QThread::currentThreadId();
-	
-	
-	if(m_mDatabaseConnections.contains(nThreadID)){
-		DatabaseConnection *pDBConnection = m_mDatabaseConnections[nThreadID];
-		DatabaseConnection *pDBConnection_older = m_mDatabaseConnections_older[nThreadID];
-		
-		if(pDBConnection->isOutdated()){
-			pDBConnection_older->close();
-			pDBConnection_older->swap(pDBConnection);
-			pDBConnection->connect(m_pServerConfig);
-		}
-		return pDBConnection->db();
-	}
-
-	DatabaseConnection *pDBConnection = new DatabaseConnection("qt_sql_default_connection_1_" + QString::number(nThreadID));
-	DatabaseConnection *pDBConnection_older = new DatabaseConnection("qt_sql_default_connection_2_" + QString::number(nThreadID));
-	m_mDatabaseConnections[nThreadID] = pDBConnection;
-	m_mDatabaseConnections_older[nThreadID] = pDBConnection_older;
-	pDBConnection->connect(m_pServerConfig);
-	return pDBConnection->db();
-}
-
-// ---------------------------------------------------------------------
-
-// TODO move to EmployUsers
+// TODO move to EmployWsServer
 
 void WebSocketServer::setUserToken(QWebSocket *pClient, IUserToken *pUserToken){
 	m_tokens[pClient] = pUserToken;
@@ -364,83 +306,6 @@ IUserToken * WebSocketServer::getUserToken(QWebSocket *pClient){
 		return m_tokens[pClient];
 	}
 	return NULL;
-}
-
-// ---------------------------------------------------------------------
-
-IMemoryCache *WebSocketServer::findMemoryCache(QString name){
-	if(m_mapMemoryCache.contains(name)){
-		return m_mapMemoryCache[name];
-	}
-	return NULL;
-}
-
-// ---------------------------------------------------------------------
-
-// TODO move to EmployValidateInput
-bool WebSocketServer::validateInputParameters(Error &error, ICmdHandler *pCmdHandler, QJsonObject &jsonRequest){
-    const std::vector<CmdInputDef> vInputs = pCmdHandler->inputs();
-    for(unsigned int i = 0; i < vInputs.size(); i++){
-		CmdInputDef inDef = vInputs[i];
-        QString sParamName = QString(inDef.getName().c_str());
-        if(inDef.isRequired() && !jsonRequest.contains(sParamName)){
-			error = Errors::ParamExpected(sParamName);
-			return false;
-		}
-		
-        if(jsonRequest.contains(sParamName)){
-			if(inDef.isInteger()){
-                QJsonValueRef vParam = jsonRequest[sParamName];
-				if(!vParam.isDouble()){
-					error = Errors::ParamMustBeInteger(sParamName);
-					return false;
-				}
-                int val = jsonRequest[sParamName].toInt();
-				if(inDef.isMinVal() && val < inDef.getMinVal()){
-					error = Errors::ParamMustBeMoreThen(sParamName, inDef.getMinVal());
-					return false;
-				}
-				if(inDef.isMaxVal() && val > inDef.getMaxVal()){
-					error = Errors::ParamMustBeLessThen(sParamName, inDef.getMaxVal());
-					return false;
-				}
-			}
-			
-			if(inDef.isEnum()){
-                QString val = jsonRequest[sParamName].toString().trimmed();
-				QStringList eList = inDef.getEnumList();
-				if(!eList.contains(val)){
-					error = Errors::ParamExpectedValueOneFrom(sParamName,eList);
-					return false;
-				}
-			}
-			
-			if(inDef.isUUID()){
-                QString val = jsonRequest[sParamName].toString();
-                QRegularExpression rx("[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}");
-                if(!rx.isValid()){
-					Log::err(TAG, "validateInputParameters, " + rx.errorString());
-				}
-                if(!rx.match(val).hasMatch()){
-					error = Errors::ParamExpectedUUID(sParamName);
-					return false;
-				}
-			}
-
-            if(inDef.isEmail()){
-                QString val = jsonRequest[sParamName].toString();
-                QRegularExpression rx("^[0-9a-zA-Z]{1}[0-9a-zA-Z-._]*[0-9a-zA-Z]{1}@[0-9a-zA-Z]{1}[-.0-9a-zA-Z]*[0-9a-zA-Z]{1}\\.[a-zA-Z]{2,6}$");
-                if(!rx.isValid()){
-                    Log::err(TAG, "validateInputParameters, " + rx.errorString());
-                }
-                if(!rx.match(val).hasMatch()){
-                    error = Errors::ParamMustBeEmail(sParamName);
-                    return false;
-                }
-            }
-		}
-	}
-	return true;
 }
 
 // ---------------------------------------------------------------------

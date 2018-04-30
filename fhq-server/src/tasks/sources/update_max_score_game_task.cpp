@@ -5,21 +5,23 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QEventLoop>
+#include <employ_database.h>
 
-UpdateMaxScoreGameTask::UpdateMaxScoreGameTask(IWebSocketServer *pWebSocketServer, int gameid){
+UpdateMaxScoreGameTask::UpdateMaxScoreGameTask(int gameid){
 	TAG = "UpdateMaxScoreGameTask";
 	m_nGameID = gameid;
-	m_pWebSocketServer = pWebSocketServer;
-};
+}
 
 UpdateMaxScoreGameTask::~UpdateMaxScoreGameTask(){
 	
 }
 
 void UpdateMaxScoreGameTask::run(){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
 	Log::info(TAG, "gameid " + QString::number(m_nGameID));
 		
-	QSqlDatabase db = *(m_pWebSocketServer->database());
+    QSqlDatabase db = *(pDatabase->database());
 	QSqlQuery query(db);
 	query.prepare("UPDATE games SET maxscore = (SELECT SUM(score) FROM quest WHERE state = :state AND gameid = :gameid) WHERE id = :id");
 	query.bindValue(":state", "open");

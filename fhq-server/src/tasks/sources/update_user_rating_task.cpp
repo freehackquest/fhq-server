@@ -5,12 +5,12 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QEventLoop>
+#include <employ_database.h>
 
-UpdateUserRatingTask::UpdateUserRatingTask(IWebSocketServer *pWebSocketServer, int nUserID){
-	m_pWebSocketServer = pWebSocketServer;
+UpdateUserRatingTask::UpdateUserRatingTask(int nUserID){
     m_nUserID = nUserID;
     TAG = "UpdateUserRatingTask";
-};
+}
 
 UpdateUserRatingTask::~UpdateUserRatingTask(){
 	
@@ -18,7 +18,8 @@ UpdateUserRatingTask::~UpdateUserRatingTask(){
 
 void UpdateUserRatingTask::run(){
     Log::info(TAG, "userid " + QString::number(m_nUserID));
-	QSqlDatabase db = *(m_pWebSocketServer->database());
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare(""
                 "SELECT "

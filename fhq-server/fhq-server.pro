@@ -1,8 +1,8 @@
 TEMPLATE = app
 TARGET = fhq-server
 
-VERSION = 0.1.19
-DEFINES += VERSION_STRING=\\\"0.1.19\\\"
+VERSION = 0.2.2
+DEFINES += VERSION_STRING=\\\"0.2.2\\\"
 
 CONFIG   += console
 CONFIG   += release
@@ -30,15 +30,8 @@ include(src/models/models.pri)
 include(src/interfaces/interfaces.pri)
 include(src/utils/utils.pri)
 include(src/cmd/cmd_handlers.pri)
-include(src/cmd/classbook/cmd_classbook.pri)
-include(src/cmd/events/cmd_events.pri)
-include(src/cmd/quests/cmd_quests.pri)
-include(src/cmd/mails/cmd_mails.pri)
-include(src/cmd/users/cmd_users.pri)
-include(src/cmd/support/cmd_support.pri)
 include(src/cmd/lxd/cmd_lxd.pri)
 include(src/updates/updates.pri)
-include(src/cache/cache.pri)
 include(src/server/server.pri)
 include(src/tasks/tasks.pri)
 include(src/unit_tests/unit_tests.pri)

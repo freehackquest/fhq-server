@@ -1,5 +1,6 @@
 #include <mail_send_task.h>
 #include <employ_settings.h>
+#include <employ_database.h>
 #include <log.h>
 
 MailSendTask::MailSendTask(IWebSocketServer *pWebSocketServer,  QString to, QString subject, QString content){
@@ -15,9 +16,10 @@ MailSendTask::~MailSendTask(){
 }
 
 void MailSendTask::run(){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
-    QSqlDatabase db = *(m_pWebSocketServer->database());
+    QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
 
     QString sMailHost = pSettings->getSettString("mail_host");

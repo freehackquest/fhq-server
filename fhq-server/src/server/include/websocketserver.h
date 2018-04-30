@@ -13,11 +13,9 @@
 #include <QtNetwork/QSslError>
 
 #include <iserver.h>
+#include <cmd_handlers.h>
 
 #include <error.h>
-#include <model_server_config.h>
-#include <database_connection.h>
-#include <memory_cache_serverinfo.h>
 
 // QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 // QT_FORWARD_DECLARE_CLASS(QWebSocket)
@@ -45,10 +43,8 @@ class WebSocketServer : public QObject, public IWebSocketServer {
         virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse);
         virtual void sendMessageError(QWebSocket *pClient, const std::string &cmd, QString m, Error error);
 		virtual void sendToAll(QJsonObject obj);
-		virtual QSqlDatabase *database();
 		virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken);
 		virtual IUserToken * getUserToken(QWebSocket *pClient);
-		virtual IMemoryCache *findMemoryCache(QString name);
 
 	Q_SIGNALS:
 		void closed();
@@ -62,24 +58,12 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		void onSslErrors(const QList<QSslError> &errors);
 
 	private:
-        bool validateInputParameters(Error &error, ICmdHandler *pCmdHandler, QJsonObject &jsonRequest);
-		
 		QWebSocketServer *m_pWebSocketServer;
 		QWebSocketServer *m_pWebSocketServerSSL;
 		QList<QWebSocket *> m_clients;
 		QMap<QWebSocket *, IUserToken *> m_tokens;
-		QMap<QString, IMemoryCache *> m_mapMemoryCache;
-		MemoryCacheServerInfo *m_pMemoryCacheServerInfo;
 
 		bool m_bFailed;
-		ModelServerConfig* m_pServerConfig;
-		
-		// db two connections
-		QMutex m_mtxSwapConenctions;
-		QMap<long long, DatabaseConnection *> m_mDatabaseConnections;
-		QMap<long long, DatabaseConnection *> m_mDatabaseConnections_older;
-		DatabaseConnection *m_pDBConnection;
-		DatabaseConnection *m_pDBConnection_older;
 		QString TAG;
 };
 

@@ -5,9 +5,9 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QEventLoop>
+#include <employ_database.h>
 
-AddPublicEventsTask::AddPublicEventsTask(IWebSocketServer *pWebSocketServer, QString type, QString message){
-	m_pWebSocketServer = pWebSocketServer;
+AddPublicEventsTask::AddPublicEventsTask(QString type, QString message){
 	m_sType = type;
 	m_sMessage = message;
 	TAG = "AddPublicEventsTask";
@@ -19,7 +19,8 @@ AddPublicEventsTask::~AddPublicEventsTask(){
 
 void AddPublicEventsTask::run(){
 	Log::info(TAG, "message " + m_sMessage);
-	QSqlDatabase db = *(m_pWebSocketServer->database());
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
 	QSqlQuery query(db);
 	query.prepare("INSERT INTO public_events(type,dt,message) VALUES(:type,NOW(),:message)");
 	query.bindValue(":type", m_sType);
