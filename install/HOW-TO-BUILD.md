@@ -14,10 +14,27 @@ $ sudo apt install zlibc zlib1g zlib1g-dev
 $ sudo apt install libpng-dev
 ```
 
-## Building
+## Building CMake
+
 ```
-$ cd ..
-$ qmake && make
+$ cd fhq-server
+$ mkdir -p build
+$ cd build
+$ cmake ..
+$ make
+```
+
+Or simple:
+
+```
+$ cd fhq-server
+$ ./build_simple.sh
+```
+
+## Clean
+
+```
+$ ./clean.sh
 ```
 
 ## Install 
