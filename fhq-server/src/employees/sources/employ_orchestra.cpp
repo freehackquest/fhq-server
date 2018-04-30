@@ -19,17 +19,26 @@ REGISTRY_EMPLOY(EmployOrchestra)
 
 EmployOrchestra::EmployOrchestra()
     : EmployBase(EmployOrchestra::name(), {EmploySettings::name()}) {
-
+    TAG = "EmployOrchestra";
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployOrchestra::init(){
-    TAG = "EmployOrchestra";
+    Log::info(TAG, "Nothing");
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+bool EmployOrchestra::initConnection(){
 
     Log::info(TAG, "Start init settings");
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
+
+    // TODO
+
     path_dir_lxc_ssl = pSettings->getSettString("path_dir_lxc_ssl").toStdString();
     std::string lxd_server_ip = pSettings->getSettString("lxd_server_ip").toStdString();
     std::string lxd_server_port = pSettings->getSettString("lxd_server_port").toStdString();
@@ -52,6 +61,8 @@ bool EmployOrchestra::init(){
     Log::info(TAG, "Pulled containers");
     return true;
 }
+
+// ---------------------------------------------------------------------
 
 // ---------------------------------------------------------------------
 

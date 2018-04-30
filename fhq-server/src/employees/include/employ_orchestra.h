@@ -16,6 +16,7 @@ public:
     static std::string name() { return "EmployOrchestra"; }
     virtual bool init();
 
+    bool initConnection();
     bool create_container(std::string name, std::string &error);
     bool find_container(std::string name);
     bool remove_container(std::string name, std::string error);

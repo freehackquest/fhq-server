@@ -61,7 +61,7 @@ void CmdHandlerLXDContainers::create_container(std::string name, QJsonObject &js
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
 
     //Переместить в Orchestra
-    if (!pOrchestra->init())
+    if (!pOrchestra->initConnection())
         return;
 
     std::string error;
@@ -81,7 +81,7 @@ void CmdHandlerLXDContainers::create_container(std::string name, QJsonObject &js
 
 void CmdHandlerLXDContainers::start_container(std::string name, QJsonObject &jsonResponse){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
-    if (!pOrchestra->init())
+    if (!pOrchestra->initConnection())
         return;
 
     LXDContainer * container;
@@ -101,7 +101,7 @@ void CmdHandlerLXDContainers::start_container(std::string name, QJsonObject &jso
 
 void CmdHandlerLXDContainers::stop_container(std::string name, QJsonObject &jsonResponse){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
-    if (!pOrchestra->init())
+    if (!pOrchestra->initConnection())
         return;
 
     LXDContainer * container;
@@ -120,8 +120,9 @@ void CmdHandlerLXDContainers::stop_container(std::string name, QJsonObject &json
 
 void CmdHandlerLXDContainers::delete_container(std::string name, QJsonObject &jsonResponse){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
-    if (!pOrchestra->init())
+    if (!pOrchestra->initConnection()){
         return;
+    }
 
     if (!pOrchestra->find_container(name)){
        jsonResponse["error"] = QJsonValue("Can\'t find container");
