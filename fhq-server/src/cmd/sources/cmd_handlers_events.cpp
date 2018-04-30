@@ -185,7 +185,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest){
     int nPage = jsonRequest["page"].toInt();
     jsonResponse["page"] = nPage;
 
-    int nOnPage = jsonRequest["onpage"].toInt();;
+    int nOnPage = jsonRequest["onpage"].toInt();
     if(nOnPage > 50){
         pRequest->sendMessageError(cmd(), Errors::OnPageCouldNotBeMoreThen50());
         return;
@@ -194,7 +194,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest){
 
     QStringList filters;
     QMap<QString,QString> filter_values;
-
+		
     if(jsonRequest.contains("type")){
         QString type = jsonRequest["type"].toString().trimmed();
         if(type != ""){
@@ -209,6 +209,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest){
             filters << "(e.message LIKE :search)";
             filter_values[":search"] = "%" + search + "%";
         }
+        jsonResponse["search"] = search;
     }
 
     QString where = filters.join(" AND ");
