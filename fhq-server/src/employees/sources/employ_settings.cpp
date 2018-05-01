@@ -106,11 +106,12 @@ bool EmploySettings::init(){
     std::map<std::string, ServerSettHelper*>::iterator it = m_mapSettings.begin();
     for (; it!=m_mapSettings.end(); ++it){
         std::string sName = it->first;
-        // ServerSettHelper *pServerSettHelper = it->second;
-        if(!vFoundInDatabase.contains(sName)){
-            ServerSettHelper *pServerSettHelper = m_mapSettings.at(sName);
+        
+        if(std::find(vFoundInDatabase.begin(), vFoundInDatabase.end(), sName) == vFoundInDatabase.end()) {
+			// not found in database
+			ServerSettHelper *pServerSettHelper = m_mapSettings.at(sName);
             initSettingDatabase(pServerSettHelper);
-        }
+		}
     }
     return true;
 }
