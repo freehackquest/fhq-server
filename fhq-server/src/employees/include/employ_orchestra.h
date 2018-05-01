@@ -27,11 +27,13 @@ public:
 
     std::list<std::string> registry_names();
     LXDContainer * get_container(std::string name);
+    std::string lastError();
 
 private:
     std::map<std::string, LXDContainer *> containers_map;
     std::string path_dir_lxc_ssl;
     std::string lxd_address;
+    std::string m_sLastError;
     std::string TAG;
 
     bool trusted;

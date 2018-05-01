@@ -33,13 +33,21 @@ class CmdHandlerLXDInfo : public CmdHandlerBase {
     public:
         CmdHandlerLXDInfo();
         virtual void handle(ModelRequest *pRequest);
-
-    private:
-        QString TAG;
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
 };
 
 REGISTRY_CMD(CmdHandlerLXDInfo)
+
+/*********************************************
+ * Get information about all containers.
+**********************************************/
+
+class CmdHandlerLXDList : public CmdHandlerBase {
+
+    public:
+        CmdHandlerLXDList();
+        virtual void handle(ModelRequest *pRequest);
+};
+
+REGISTRY_CMD(CmdHandlerLXDList)
 
 #endif // CMD_HADNLERS_LXD_H
