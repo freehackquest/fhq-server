@@ -107,7 +107,7 @@ bool EmploySettings::init(){
     for (; it!=m_mapSettings.end(); ++it){
         std::string sName = it->first;
         // ServerSettHelper *pServerSettHelper = it->second;
-        if(!m_mapSettings.count(sName)){
+        if(!vFoundInDatabase.contains(sName)){
             ServerSettHelper *pServerSettHelper = m_mapSettings.at(sName);
             initSettingDatabase(pServerSettHelper);
         }
