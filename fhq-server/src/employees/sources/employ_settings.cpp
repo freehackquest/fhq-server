@@ -49,11 +49,7 @@ bool EmploySettings::init(){
 
     // LXD
     std::string  sGroupLXD = "lxd";
-    if(const char* env_p = std::getenv("PWD")){
-        addNewSetting(new ServerSettHelper(sGroupLXD, "path_dir_lxc_ssl", QString(env_p) + "/.config/lxc"));
-    } else {
-        addNewSetting(new ServerSettHelper(sGroupLXD, "path_dir_lxc_ssl", QString("/root/.config/lxc")));
-    }
+    addNewSetting(new ServerSettHelper(sGroupLXD, "path_dir_lxc_ssl", "/etc/fhq-server/lxd"));
     addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_server_ip", QString("127.0.0.1")));
     addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_server_port", QString("8443")));
     addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_passwd", QString("freehackquest")));
@@ -106,11 +102,12 @@ bool EmploySettings::init(){
     std::map<std::string, ServerSettHelper*>::iterator it = m_mapSettings.begin();
     for (; it!=m_mapSettings.end(); ++it){
         std::string sName = it->first;
-        // ServerSettHelper *pServerSettHelper = it->second;
-        if(!m_mapSettings.count(sName)){
-            ServerSettHelper *pServerSettHelper = m_mapSettings.at(sName);
+        
+        if(std::find(vFoundInDatabase.begin(), vFoundInDatabase.end(), sName) == vFoundInDatabase.end()) {
+			// not found in database
+			ServerSettHelper *pServerSettHelper = m_mapSettings.at(sName);
             initSettingDatabase(pServerSettHelper);
-        }
+		}
     }
     return true;
 }

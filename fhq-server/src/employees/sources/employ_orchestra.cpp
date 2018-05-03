@@ -45,6 +45,7 @@ bool EmployOrchestra::initConnection(){
 
     if (!connect_with_lxd(lxd_passwd.toStdString())){
         Log::err(TAG, "Can't set trusted connection");
+        m_sLastError = "Can't set trusted connection";
         return false;
     }
 
@@ -54,13 +55,19 @@ bool EmployOrchestra::initConnection(){
 
     Log::info(TAG, "Pull containers");
     //Pull existing containers
-    if (!pull_container_names())
+    if (!pull_container_names()){
+
         return false;
+    }
     Log::info(TAG, "Pulled containers");
     return true;
 }
 
 // ---------------------------------------------------------------------
+
+std::string EmployOrchestra::lastError(){
+    return m_sLastError;
+}
 
 // ---------------------------------------------------------------------
 
@@ -137,6 +144,7 @@ bool EmployOrchestra::send_post_request(std::string sUrl, std::string sData, nlo
     ret = curl_easy_perform(hnd);
 
     if(ret != CURLE_OK) {
+        m_sLastError = " Failed send POST request with error " + std::string(errorBuffer);
         Log::err(TAG, " Failed send POST request with error " + std::string(errorBuffer));
         sError = std::string(errorBuffer);
         return false;
@@ -180,6 +188,7 @@ bool EmployOrchestra::send_put_request(std::string sUrl, std::string sData, nloh
     ret = curl_easy_perform(hnd);
 
     if(ret != CURLE_OK) {
+        m_sLastError = " Failed send POST request with error " + std::string(errorBuffer);
         Log::err(TAG, "Failed send PUT request " + std::string(errorBuffer));
         sError = std::string(errorBuffer);
         return false;
@@ -222,6 +231,7 @@ bool EmployOrchestra::send_get_request(std::string sUrl, nlohmann::json &jsonRes
     ret = curl_easy_perform(hnd);
 
     if(ret != CURLE_OK) {
+        m_sLastError = " Failed send POST request with error " + std::string(errorBuffer);
         Log::err(TAG, "Failed send GET request " + std::string(errorBuffer));
         sError = std::string(errorBuffer);
         return false;
@@ -264,6 +274,7 @@ bool EmployOrchestra::send_delete_request(std::string sUrl, nlohmann::json & jso
     ret = curl_easy_perform(hnd);
 
     if(ret != CURLE_OK) {
+        m_sLastError = " Failed send POST request with error " + std::string(errorBuffer);
         Log::err(TAG, "Failed send DELETE request " + std::string(errorBuffer));
         sError = std::string(errorBuffer);
         return false;
@@ -332,6 +343,7 @@ bool EmployOrchestra::check_response(nlohmann::json res_json, std::string error)
     if (res_json.at("error").get<std::string>() != ""){
         error = res_json.at("error").get<std::string>();
         Log::err(TAG, "Failed check response: " + error);
+        m_sLastError = "Failed check response: " + error;
         return false;
     }
 
@@ -343,6 +355,7 @@ bool EmployOrchestra::check_response(nlohmann::json res_json, std::string error)
     if (metadata_error != ""){
         error = metadata_error.c_str();
         Log::err(TAG, "Failed check response: " + error);
+        m_sLastError = "Failed check response: " + error;
         return false;
     }
 
@@ -356,6 +369,7 @@ bool EmployOrchestra::check_async_response(nlohmann::json operation_json, std::s
     if (operation_json.at("error").get<std::string>() != ""){
         error = operation_json.at("error").get<std::string>();
         Log::err(TAG, "Operation is failed " + error);
+        m_sLastError = "Operation is failed " + error;
         return false;
     }
 
@@ -367,6 +381,7 @@ bool EmployOrchestra::check_async_response(nlohmann::json operation_json, std::s
     if (metadata_error != ""){
         error = metadata_error.c_str();
         Log::err(TAG, "Operation is failed " + error);
+        m_sLastError = "Operation is failed " + error;
         return false;
     }
     return true;
@@ -386,6 +401,7 @@ bool EmployOrchestra::remove_container(std::string name, std::string & sError){
     }
 
     Log::err(TAG, "Don't delete container " + container->full_name());
+    m_sLastError = "Don't delete container " + container->full_name();
     sError = container->get_error();
     return false;
 }
@@ -402,6 +418,7 @@ std::list<std::string> EmployOrchestra::registry_names(){
 // ---------------------------------------------------------------------
 
 bool EmployOrchestra::set_trusted(std::string password, std::string & error){
+    // std::cout << "[set_trusted] response: " << "\n";
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0/certificates";
     std::string sData = "{\"type\": \"client\", \"password\": \"" + password + "\"}";
@@ -423,15 +440,18 @@ bool EmployOrchestra::connect_with_lxd(std::string lxd_passwd){
     trusted = check_trust_certs(error);
 
     if (error != ""){
+        m_sLastError = "Can't get info about client cert";
         Log::err(TAG, "Can't get info about client cert");
         return false;
     }
 
     if (!trusted){
-        if (!set_trusted(lxd_passwd, error))
+        if (!set_trusted(lxd_passwd, error)){
+            m_sLastError = "Can't set trusted certs" + error;
             Log::err(TAG, "Can't set trusted certs" + error);
-        else
+        }else{
             trusted = true;
+        }
     }
 
     return trusted;

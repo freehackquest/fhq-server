@@ -156,15 +156,53 @@ CmdHandlerLXDInfo::CmdHandlerLXDInfo()
 void CmdHandlerLXDInfo::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-
-    QSqlDatabase db = *(pDatabase->database());
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    if (!pOrchestra->initConnection()){
+        return;
+	}
+        
+    // EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    // QSqlDatabase db = *(pDatabase->database());
 
     std::string name = jsonRequest["name"].toString().trimmed().toStdString();
     std::string error, response;
 
     //TO DO
     //Action switch
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+
+/*********************************************
+ * Get information about all containers.
+**********************************************/
+
+CmdHandlerLXDList::CmdHandlerLXDList()
+    : CmdHandlerBase("lxd_list", "Get information about all containers."){
+
+    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerLXDList::handle(ModelRequest *pRequest){
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    if (!pOrchestra->initConnection()){
+        pRequest->sendMessageError(cmd(), Error(500, QString(pOrchestra->lastError().c_str())));
+        return;
+    }
+
+    std::list<std::string> vList = pOrchestra->registry_names();
+
+    auto jsonNameContainers = nlohmann::json::array();
+    for (auto const& i : vList) {
+        jsonNameContainers.push_back(std::string(i));
+    }
+
+    nlohmann::json jsonResponse;
+    jsonResponse["data"] = vList;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
