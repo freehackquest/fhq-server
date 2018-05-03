@@ -30,7 +30,7 @@ class LXDContainer {
         std::string name;
         std::string status;
         std::string IPv4;
-        std::string error;
+        std::string m_sError;
         std::string prefix;
         std::string TAG = "EmployOrchestraContainer";
 

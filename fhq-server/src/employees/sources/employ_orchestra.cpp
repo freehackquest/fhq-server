@@ -37,12 +37,10 @@ bool EmployOrchestra::initConnection(){
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
-    // TODO
-
-    path_dir_lxc_ssl = pSettings->getSettString("path_dir_lxc_ssl").toStdString();
+    sPathDirLxcSSL = pSettings->getSettString("path_dir_lxc_ssl").toStdString();
     std::string lxd_server_ip = pSettings->getSettString("lxd_server_ip").toStdString();
     std::string lxd_server_port = pSettings->getSettString("lxd_server_port").toStdString();
-    lxd_address = "https://" + lxd_server_ip + ":" + lxd_server_port;
+    sLxdAddress = "https://" + lxd_server_ip + ":" + lxd_server_port;
     QString lxd_passwd = pSettings->getSettString("lxd_passwd");
 
     if (!connect_with_lxd(lxd_passwd.toStdString())){
@@ -66,20 +64,20 @@ bool EmployOrchestra::initConnection(){
 
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::create_container(std::string name, std::string &error){
-    Log::info(TAG, "Starting creation container " + name);
-    LXDContainer *pContainer = new LXDContainer(name);
+bool EmployOrchestra::create_container(std::string sName, std::string &sError){
+    Log::info(TAG, "Starting creation container " + sName);
+    LXDContainer *pContainer = new LXDContainer(sName);
 
     if(pContainer->create()){
-        Log::info(TAG, "Created container " + name);
+        Log::info(TAG, "Created container " + sName);
     }
 
     if(pContainer->get_error() != ""){
-        error = pContainer->get_error();
+        sError = pContainer->get_error();
         return false;
     }
 
-    containers_map.insert( std::pair<std::string, LXDContainer *>(name, pContainer) );
+    containers_map.insert( std::pair<std::string, LXDContainer *>(sName, pContainer) );
     return true;
 }
 
@@ -110,21 +108,21 @@ static size_t write_to_string(void *ptr, size_t size, size_t count, void *stream
 
 static char errorBuffer[CURL_ERROR_SIZE];
 
-bool EmployOrchestra::send_post_request(std::string address, std::string settings, std::string &response, std::string & error){
+bool EmployOrchestra::send_post_request(std::string sUrl, std::string sData, nlohmann::json & jsonResponse, std::string & sError){
     CURLcode ret;
     CURL *hnd;
 
     hnd = curl_easy_init();
-    std::string hostname = lxd_address + address;
+    std::string hostname = sLxdAddress + sUrl;
     curl_easy_setopt(hnd, CURLOPT_URL, hostname.c_str());
     curl_easy_setopt(hnd, CURLOPT_NOPROGRESS, 1L);
-    curl_easy_setopt(hnd, CURLOPT_POSTFIELDS, settings.c_str());
-    curl_easy_setopt(hnd, CURLOPT_POSTFIELDSIZE_LARGE, (curl_off_t)settings.size());
+    curl_easy_setopt(hnd, CURLOPT_POSTFIELDS, sData.c_str());
+    curl_easy_setopt(hnd, CURLOPT_POSTFIELDSIZE_LARGE, (curl_off_t)sData.size());
     curl_easy_setopt(hnd, CURLOPT_USERAGENT, "curl/7.47.0");
     curl_easy_setopt(hnd, CURLOPT_MAXREDIRS, 50L);
-    std::string ssl_crt = path_dir_lxc_ssl + "/client.crt";
+    std::string ssl_crt = sPathDirLxcSSL + "/client.crt";
     curl_easy_setopt(hnd, CURLOPT_SSLCERT, ssl_crt.c_str());
-    std::string ssl_key = path_dir_lxc_ssl + "/client.key";
+    std::string ssl_key = sPathDirLxcSSL + "/client.key";
     curl_easy_setopt(hnd, CURLOPT_SSLKEY, ssl_key.c_str());
     curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYPEER, 0L);
     curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYHOST, 0L);
@@ -132,17 +130,19 @@ bool EmployOrchestra::send_post_request(std::string address, std::string setting
     curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
     //curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
     //Saving response
+    std::string sResponse;
     curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, write_to_string);
-    curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &response);
+    curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &sResponse);
     curl_easy_setopt(hnd, CURLOPT_ERRORBUFFER, errorBuffer);
     ret = curl_easy_perform(hnd);
 
     if(ret != CURLE_OK) {
         Log::err(TAG, " Failed send POST request with error " + std::string(errorBuffer));
-        error = std::string(errorBuffer);
+        sError = std::string(errorBuffer);
         return false;
     }
 
+    jsonResponse = nlohmann::json::parse(sResponse);
     curl_easy_cleanup(hnd);
     hnd = NULL;
 
@@ -151,21 +151,21 @@ bool EmployOrchestra::send_post_request(std::string address, std::string setting
 
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::send_put_request(std::string address, std::string settings, std::string &response, std::string & error){
+bool EmployOrchestra::send_put_request(std::string sUrl, std::string sData, nlohmann::json & jsonResponse, std::string & sError){
     CURLcode ret;
     CURL *hnd;
 
     hnd = curl_easy_init();
-    std::string hostname = lxd_address + address;
+    std::string hostname = sLxdAddress + sUrl;
     curl_easy_setopt(hnd, CURLOPT_URL, hostname.c_str());
     curl_easy_setopt(hnd, CURLOPT_NOPROGRESS, 1L);
-    curl_easy_setopt(hnd, CURLOPT_POSTFIELDS, settings.c_str());
-    curl_easy_setopt(hnd, CURLOPT_POSTFIELDSIZE_LARGE, (curl_off_t)settings.size());
+    curl_easy_setopt(hnd, CURLOPT_POSTFIELDS, sData.c_str());
+    curl_easy_setopt(hnd, CURLOPT_POSTFIELDSIZE_LARGE, (curl_off_t)sData.size());
     curl_easy_setopt(hnd, CURLOPT_USERAGENT, "curl/7.47.0");
     curl_easy_setopt(hnd, CURLOPT_MAXREDIRS, 50L);
-    std::string ssl_crt = path_dir_lxc_ssl + "/client.crt";
+    std::string ssl_crt = sPathDirLxcSSL + "/client.crt";
     curl_easy_setopt(hnd, CURLOPT_SSLCERT, ssl_crt.c_str());
-    std::string ssl_key = path_dir_lxc_ssl + "/client.key";
+    std::string ssl_key = sPathDirLxcSSL + "/client.key";
     curl_easy_setopt(hnd, CURLOPT_SSLKEY, ssl_key.c_str());
     curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYPEER, 0L);
     curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYHOST, 0L);
@@ -173,6 +173,7 @@ bool EmployOrchestra::send_put_request(std::string address, std::string settings
     curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
     //curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
     //Saving response
+    std::string response;
     curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, write_to_string);
     curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &response);
     curl_easy_setopt(hnd, CURLOPT_ERRORBUFFER, errorBuffer);
@@ -180,10 +181,11 @@ bool EmployOrchestra::send_put_request(std::string address, std::string settings
 
     if(ret != CURLE_OK) {
         Log::err(TAG, "Failed send PUT request " + std::string(errorBuffer));
-        error = std::string(errorBuffer);
+        sError = std::string(errorBuffer);
         return false;
     }
 
+    jsonResponse = nlohmann::json::parse(response);
     curl_easy_cleanup(hnd);
     hnd = NULL;
 
@@ -192,20 +194,20 @@ bool EmployOrchestra::send_put_request(std::string address, std::string settings
 
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::send_get_request(std::string address, std::string &response, std::string & error){
+bool EmployOrchestra::send_get_request(std::string sUrl, nlohmann::json &jsonResponse, std::string & sError){
 
     CURLcode ret;
     CURL *hnd;
 
     hnd = curl_easy_init();
-    std::string hostname = lxd_address + address;
+    std::string hostname = sLxdAddress + sUrl;
     curl_easy_setopt(hnd, CURLOPT_URL, hostname.c_str());
     curl_easy_setopt(hnd, CURLOPT_NOPROGRESS, 1L);
     curl_easy_setopt(hnd, CURLOPT_USERAGENT, "curl/7.47.0");
     curl_easy_setopt(hnd, CURLOPT_MAXREDIRS, 50L);
-    std::string ssl_crt = path_dir_lxc_ssl + "/client.crt";
+    std::string ssl_crt = sPathDirLxcSSL + "/client.crt";
     curl_easy_setopt(hnd, CURLOPT_SSLCERT, ssl_crt.c_str());
-    std::string ssl_key = path_dir_lxc_ssl + "/client.key";
+    std::string ssl_key = sPathDirLxcSSL + "/client.key";
     curl_easy_setopt(hnd, CURLOPT_SSLKEY, ssl_key.c_str());
     curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYPEER, 0L);
     curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYHOST, 0L);
@@ -213,6 +215,7 @@ bool EmployOrchestra::send_get_request(std::string address, std::string &respons
     curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
     //curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
     //Saving response
+    std::string response;
     curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, write_to_string);
     curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &response);
     curl_easy_setopt(hnd, CURLOPT_ERRORBUFFER, errorBuffer);
@@ -220,10 +223,11 @@ bool EmployOrchestra::send_get_request(std::string address, std::string &respons
 
     if(ret != CURLE_OK) {
         Log::err(TAG, "Failed send GET request " + std::string(errorBuffer));
-        error = std::string(errorBuffer);
+        sError = std::string(errorBuffer);
         return false;
     }
 
+    jsonResponse = nlohmann::json::parse(response);
     curl_easy_cleanup(hnd);
     hnd = NULL;
 
@@ -232,20 +236,20 @@ bool EmployOrchestra::send_get_request(std::string address, std::string &respons
 
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::send_delete_request(std::string address, std::string &response, std::string & error){
+bool EmployOrchestra::send_delete_request(std::string sUrl, nlohmann::json & jsonResponse, std::string & sError){
 
     CURLcode ret;
     CURL *hnd;
 
     hnd = curl_easy_init();
-    std::string hostname = lxd_address + address;
+    std::string hostname = sLxdAddress + sUrl;
     curl_easy_setopt(hnd, CURLOPT_URL, hostname.c_str());
     curl_easy_setopt(hnd, CURLOPT_NOPROGRESS, 1L);
     curl_easy_setopt(hnd, CURLOPT_USERAGENT, "curl/7.47.0");
     curl_easy_setopt(hnd, CURLOPT_MAXREDIRS, 50L);
-    std::string ssl_crt = path_dir_lxc_ssl + "/client.crt";
+    std::string ssl_crt = sPathDirLxcSSL + "/client.crt";
     curl_easy_setopt(hnd, CURLOPT_SSLCERT, ssl_crt.c_str());
-    std::string ssl_key = path_dir_lxc_ssl + "/client.key";
+    std::string ssl_key = sPathDirLxcSSL + "/client.key";
     curl_easy_setopt(hnd, CURLOPT_SSLKEY, ssl_key.c_str());
     curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYPEER, 0L);
     curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYHOST, 0L);
@@ -253,6 +257,7 @@ bool EmployOrchestra::send_delete_request(std::string address, std::string &resp
     curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
     //curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
     //Saving response
+    std::string response;
     curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, write_to_string);
     curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &response);
     curl_easy_setopt(hnd, CURLOPT_ERRORBUFFER, errorBuffer);
@@ -260,9 +265,11 @@ bool EmployOrchestra::send_delete_request(std::string address, std::string &resp
 
     if(ret != CURLE_OK) {
         Log::err(TAG, "Failed send DELETE request " + std::string(errorBuffer));
-        error = std::string(errorBuffer);
+        sError = std::string(errorBuffer);
         return false;
     }
+
+    jsonResponse = nlohmann::json::parse(response);
 
     curl_easy_cleanup(hnd);
     hnd = NULL;
@@ -273,25 +280,26 @@ bool EmployOrchestra::send_delete_request(std::string address, std::string &resp
 // ---------------------------------------------------------------------
 
 bool EmployOrchestra::pull_container_names(){
-    std::string address = "/1.0/containers";
-    std::string response, error;
+    std::string sUrl = "/1.0/containers";
+    std::string sError;
+    nlohmann::json jsonResponse;
 
-    if (!send_get_request(address, response, error)){
-        Log::err(TAG, "Can't pull container names " + error);
-        return false;
-    }
-    auto res_json = nlohmann::json::parse(response);
-    if (!check_response(res_json, error)){
-        Log::err(TAG, "Can't pull container names " + error);
+    if (!send_get_request(sUrl, jsonResponse, sError)){
+        Log::err(TAG, "Can't pull container names " + sError);
         return false;
     }
 
-    if (res_json.find("metadata") == res_json.end())
+    if (!check_response(jsonResponse, sError)){
+        Log::err(TAG, "Can't pull container names " + sError);
+        return false;
+    }
+
+    if (jsonResponse.find("metadata") == jsonResponse.end())
         return false;
 
-    auto container_names = res_json.at("metadata").get<std::vector<std::string>>();
-    std::list<std::string> names;
-    std::list<std::string> registry = registry_names();
+    auto container_names = jsonResponse.at("metadata").get<std::vector<std::string>>();
+    std::list<std::string> listNames;
+    std::list<std::string> listRegistry = registry_names();
 
     for (auto it: container_names){
         std::string str = std::string(it);
@@ -301,13 +309,13 @@ bool EmployOrchestra::pull_container_names(){
             continue;
 
         if (name.substr(1, 4) == "fhq-"){
-            auto exists = std::find(registry.begin(), registry.end(), name.substr(5));
-            if (exists == registry.end())
-                names.push_back(name.substr(5));
+            auto exists = std::find(listRegistry.begin(), listRegistry.end(), name.substr(5));
+            if (exists == listRegistry.end())
+                listNames.push_back(name.substr(5));
         }
     }
 
-    for (auto name : names){
+    for (auto name : listNames){
         LXDContainer *pContainer = new LXDContainer(name);
         containers_map.insert( std::pair<std::string, LXDContainer *>(name, pContainer) );
 
@@ -366,7 +374,7 @@ bool EmployOrchestra::check_async_response(nlohmann::json operation_json, std::s
 
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::remove_container(std::string name, std::string error){
+bool EmployOrchestra::remove_container(std::string name, std::string & sError){
     LXDContainer * container;
     container = get_container(name);
     if ( container->remove() ){
@@ -378,7 +386,7 @@ bool EmployOrchestra::remove_container(std::string name, std::string error){
     }
 
     Log::err(TAG, "Don't delete container " + container->full_name());
-    error = container->get_error();
+    sError = container->get_error();
     return false;
 }
 
@@ -395,15 +403,14 @@ std::list<std::string> EmployOrchestra::registry_names(){
 
 bool EmployOrchestra::set_trusted(std::string password, std::string & error){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
-    std::string address = "/1.0/certificates";
-    std::string settings = "{\"type\": \"client\", \"password\": \"" + password + "\"}";
-    std::string response;
+    std::string sUrl = "/1.0/certificates";
+    std::string sData = "{\"type\": \"client\", \"password\": \"" + password + "\"}";
+    nlohmann::json jsonResponse;
 
-    if (!pOrchestra->send_post_request(address, settings, response, error))
+    if (!pOrchestra->send_post_request(sUrl, sData, jsonResponse, error))
         return false;
 
-    auto res_json = nlohmann::json::parse(response);
-    if (!check_response(res_json, error))
+    if (!check_response(jsonResponse, error))
         return false;
 
     return true;
@@ -434,17 +441,16 @@ bool EmployOrchestra::connect_with_lxd(std::string lxd_passwd){
 
 bool EmployOrchestra::check_trust_certs(std::string & error){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
-    std::string address = "/1.0";
-    std::string response;
+    std::string sUrl = "/1.0";
+    nlohmann::json jsonResponse;
 
-    if (!pOrchestra->send_get_request(address, response, error))
+    if (!pOrchestra->send_get_request(sUrl, jsonResponse, error))
         return false;
 
-    auto res_json = nlohmann::json::parse(response);
-    if (!check_response(res_json, error))
+    if (!check_response(jsonResponse, error))
         return false;
 
-    if ( (res_json["metadata"]["auth"].is_string()) && (res_json["metadata"]["auth"] == "trusted" ))
+    if ( (jsonResponse["metadata"]["auth"].is_string()) && (jsonResponse["metadata"]["auth"] == "trusted" ))
         return true;
     else
         return false;

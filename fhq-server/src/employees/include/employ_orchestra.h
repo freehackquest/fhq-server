@@ -17,21 +17,21 @@ public:
     virtual bool init();
 
     bool initConnection();
-    bool create_container(std::string name, std::string &error);
-    bool find_container(std::string name);
-    bool remove_container(std::string name, std::string error);
-    bool send_post_request(std::string address, std::string settings, std::string & response, std::string & error);
-    bool send_put_request(std::string address, std::string settings, std::string & response, std::string & error);
-    bool send_get_request(std::string address, std::string & response, std::string & error);
-    bool send_delete_request(std::string address, std::string &response, std::string & error);
+    bool create_container(std::string sName, std::string &sError);
+    bool find_container(std::string sName);
+    bool remove_container(std::string sName, std::string &sError);
+    bool send_post_request(std::string sUrl, std::string sData, nlohmann::json &jsonResponse, std::string & sError);
+    bool send_put_request(std::string sUrl, std::string sData, nlohmann::json & jsonResponse, std::string & sError);
+    bool send_get_request(std::string sUrl, nlohmann::json &jsonResponse, std::string & sError);
+    bool send_delete_request(std::string sUrl, nlohmann::json &jsonResponse, std::string & sError);
 
     std::list<std::string> registry_names();
-    LXDContainer * get_container(std::string name);
+    LXDContainer * get_container(std::string sName);
 
 private:
     std::map<std::string, LXDContainer *> containers_map;
-    std::string path_dir_lxc_ssl;
-    std::string lxd_address;
+    std::string sPathDirLxcSSL;
+    std::string sLxdAddress;
     std::string TAG;
 
     bool trusted;
