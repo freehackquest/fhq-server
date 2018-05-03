@@ -30,13 +30,13 @@ public:
     std::string lastError();
 
 private:
-    std::map<std::string, LXDContainer *> containers_map;
-    std::string sPathDirLxcSSL;
-    std::string sLxdAddress;
+    std::map<std::string, LXDContainer *> m_mapContainers;
+    std::string m_sPathDirLxcSSL;
+    std::string m_sLxdAddress;
     std::string m_sLastError;
     std::string TAG;
 
-    bool trusted;
+    bool m_bTrusted;
 
     bool pull_container_names();
     bool check_response(nlohmann::json res_json, std::string error);
