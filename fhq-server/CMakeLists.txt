@@ -235,6 +235,7 @@ list (APPEND FHQSRV_SOURCES "src/updates/include/update0094.h")
 list (APPEND FHQSRV_SOURCES "src/updates/include/update0095.h")
 list (APPEND FHQSRV_SOURCES "src/updates/include/update0096.h")
 list (APPEND FHQSRV_SOURCES "src/updates/include/update0097.h")
+list (APPEND FHQSRV_SOURCES "src/updates/include/update0098.h")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/database0060.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/update0061_0090.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/update0091.cpp")
@@ -244,6 +245,7 @@ list (APPEND FHQSRV_SOURCES "src/updates/sources/update0094.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/update0095.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/update0096.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/update0097.cpp")
+list (APPEND FHQSRV_SOURCES "src/updates/sources/update0098.cpp")
 
 
 # main
