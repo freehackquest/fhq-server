@@ -45,51 +45,6 @@ nlohmann::json LXDContainer::state(){
 
 }
 
-
-bool LXDContainer::check_response(nlohmann::json res_json){
-    if (res_json.at("error").get<std::string>() != ""){
-        m_sError = res_json.at("error").get<std::string>();
-        Log::err(TAG, "Failed check response: " + m_sError);
-        return false;
-    }
-
-    std::string metadata_error;
-    if (res_json.find("metadata") != res_json.end())
-        if (res_json.at("metadata").find("err") != res_json.at("metadata").end())
-            metadata_error = res_json.at("metadata").at("err").get<std::string>();
-
-    if (metadata_error != ""){
-        m_sError = metadata_error.c_str();
-        Log::err(TAG, "Failed check response: " + m_sError);
-        return false;
-    }
-    return true;
-}
-
-
-bool LXDContainer::check_async_response(nlohmann::json operation_json){
-    //Check async operation
-    if (operation_json.at("error").get<std::string>() != ""){
-        m_sError = operation_json.at("error").get<std::string>();
-        Log::err(TAG, "Operation is failed " + m_sError);
-        return false;
-    }
-
-    std::string metadata_error;
-    if (operation_json.find("metadata") != operation_json.end())
-        if (operation_json.at("metadata").find("err") != operation_json.at("metadata").end())
-            metadata_error = operation_json.at("metadata").at("err").get<std::string>();
-
-    if (metadata_error != ""){
-        m_sError = metadata_error.c_str();
-        Log::err(TAG, "Operation is failed " + m_sError);
-        return false;
-    }
-
-    return true;
-}
-
-
 bool LXDContainer::create(){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0/containers";
@@ -99,20 +54,13 @@ bool LXDContainer::create(){
     if (!pOrchestra->send_post_request(sUrl, sData, jsonResponse, m_sError))
         return false;
 
-    //Check response
-    if (!check_response(jsonResponse))
-        return false;
-
     if (jsonResponse.at("type").get<std::string>() == "async"){
         nlohmann::json jsonAsyncResponse;
         std::string operation_id = jsonResponse.at("operation").get<std::string>();
         if ( (operation_id != "") && (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))){
-            Log::err(TAG, "Can\'t get operation " + m_sError);
+            Log::err(TAG, "The asynchronous " + m_sError);
             return false;
         }
-
-        if (!check_async_response(jsonAsyncResponse))
-            return false;
     }
     Log::info(TAG, "Created container " + full_name());
     return true;
@@ -128,24 +76,13 @@ bool LXDContainer::start(){
     if (!pOrchestra->send_put_request(sUrl, sData, jsonResponse, m_sError))
         return false;
 
-    if (!check_response(jsonResponse))
-        return false;
-    //Log::info(TAG, "Async response " + res_json.dump());
     if (jsonResponse.at("type").get<std::string>() == "async"){
         std::string operation_id = jsonResponse.at("operation").get<std::string>();
         nlohmann::json jsonAsyncResponse;
         if ( (operation_id != "") && (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))){
-            Log::err(TAG, "Can\'t get operation " + m_sError);
+            Log::err(TAG, "The asynchronous " + m_sError);
             return false;
         }
-
-        if (check_async_response(jsonAsyncResponse)){
-            Log::info(TAG, "Good check response");
-        } else {
-            Log::info(TAG, "Bad check response " + jsonAsyncResponse.dump());
-        }
-        if (!check_async_response(jsonAsyncResponse))
-            return false;
     }
 
     Log::info(TAG, "Started container " + full_name());
@@ -163,19 +100,13 @@ bool LXDContainer::stop(){
         return false;
     }
 
-    if (!check_response(jsonResponse))
-        return false;
-
     if (jsonResponse.at("type").get<std::string>() == "async"){
         nlohmann::json jsonAsyncResponse;
         std::string operation_id = jsonResponse.at("operation").get<std::string>();
         if ( (operation_id != "") && (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))){
-            Log::err(TAG, "Can\'t get operation " + m_sError);
+            Log::err(TAG, "The asynchronous " + m_sError);
             return false;
         }
-
-        if (!check_async_response(jsonAsyncResponse))
-            return false;
     }
     Log::info(TAG, "Stoped container " + full_name());
     return true;
@@ -190,19 +121,13 @@ bool LXDContainer::remove(){
         return false;
     }
 
-    if (!check_response(jsonResponse))
-        return false;
-
     if (jsonResponse.at("type").get<std::string>() == "async"){
         nlohmann::json jsonAsyncResponse;
         std::string operation_id = jsonResponse.at("operation").get<std::string>();
         if ( (operation_id != "") && (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))){
-            Log::err(TAG, "Can\'t get operation " + m_sError);
+            Log::err(TAG, "The asynchronous " + m_sError);
             return false;
         }
-
-        if (!check_async_response(jsonAsyncResponse))
-            return false;
     }
     Log::info(TAG, "Deleted container " + full_name());
     return true;
@@ -221,9 +146,6 @@ bool LXDContainer::read_file(std::string path, QFile & file)
 
     if (!pOrchestra->send_get_request(sUrl, jsonResponse, m_sError))
         return false;
-
-    //TO DO
-    //Check response
 
     return true;
 }

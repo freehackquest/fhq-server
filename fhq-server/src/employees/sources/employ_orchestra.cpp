@@ -49,17 +49,11 @@ bool EmployOrchestra::initConnection(){
         return false;
     }
 
-    //TO DO
-    //Connect to LXD in first time for add SSL cert
-    //
-
-    Log::info(TAG, "Pull containers");
     //Pull existing containers
     if (!pull_container_names()){
 
         return false;
     }
-    Log::info(TAG, "Pulled containers");
     return true;
 }
 
@@ -151,9 +145,14 @@ bool EmployOrchestra::send_post_request(std::string sUrl, std::string sData, nlo
     }
 
     jsonResponse = nlohmann::json::parse(sResponse);
+
     curl_easy_cleanup(hnd);
     hnd = NULL;
 
+    if (!check_response(jsonResponse, sError)){
+        m_sLastError = sError;
+        return false;
+    }
     return true;
 }
 
@@ -198,6 +197,10 @@ bool EmployOrchestra::send_put_request(std::string sUrl, std::string sData, nloh
     curl_easy_cleanup(hnd);
     hnd = NULL;
 
+    if (!check_response(jsonResponse, sError)){
+        m_sLastError = sError;
+        return false;
+    }
     return true;
 }
 
@@ -241,6 +244,10 @@ bool EmployOrchestra::send_get_request(std::string sUrl, nlohmann::json &jsonRes
     curl_easy_cleanup(hnd);
     hnd = NULL;
 
+    if (!check_response(jsonResponse, sError)){
+        m_sLastError = sError;
+        return false;
+    }
     return true;
 }
 
@@ -285,6 +292,10 @@ bool EmployOrchestra::send_delete_request(std::string sUrl, nlohmann::json & jso
     curl_easy_cleanup(hnd);
     hnd = NULL;
 
+    if (!check_response(jsonResponse, sError)){
+        m_sLastError = sError;
+        return false;
+    }
     return true;
 }
 
@@ -299,14 +310,6 @@ bool EmployOrchestra::pull_container_names(){
         Log::err(TAG, "Can't pull container names " + sError);
         return false;
     }
-
-    if (!check_response(jsonResponse, sError)){
-        Log::err(TAG, "Can't pull container names " + sError);
-        return false;
-    }
-
-    if (jsonResponse.find("metadata") == jsonResponse.end())
-        return false;
 
     auto container_names = jsonResponse.at("metadata").get<std::vector<std::string>>();
     std::list<std::string> listNames;
@@ -339,51 +342,28 @@ bool EmployOrchestra::pull_container_names(){
 
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::check_response(nlohmann::json res_json, std::string error){
-    if (res_json.at("error").get<std::string>() != ""){
-        error = res_json.at("error").get<std::string>();
-        Log::err(TAG, "Failed check response: " + error);
-        m_sLastError = "Failed check response: " + error;
+bool EmployOrchestra::check_response(nlohmann::json jsonResponse, std::string &sError){
+    std::string error;
+
+    if (jsonResponse.at("error").get<std::string>() != ""){
+        error = jsonResponse.at("error").get<std::string>();
+        sError = "request failed: " + error;
+        Log::err(TAG, sError);
         return false;
     }
 
     std::string metadata_error;
-    if (res_json.find("metadata") != res_json.end())
-        if (res_json.at("metadata").find("err") != res_json.at("metadata").end())
-            metadata_error = res_json.at("metadata").at("err").get<std::string>();
+    if (jsonResponse.find("metadata") != jsonResponse.end())
+        if (jsonResponse.at("metadata").find("err") != jsonResponse.at("metadata").end())
+            metadata_error = jsonResponse.at("metadata").at("err").get<std::string>();
 
     if (metadata_error != ""){
         error = metadata_error.c_str();
-        Log::err(TAG, "Failed check response: " + error);
-        m_sLastError = "Failed check response: " + error;
+        sError = "request failed: " + sError;
+        Log::err(TAG, sError);
         return false;
     }
 
-    return true;
-}
-
-// ---------------------------------------------------------------------
-
-bool EmployOrchestra::check_async_response(nlohmann::json operation_json, std::string error){
-    //Check async operation
-    if (operation_json.at("error").get<std::string>() != ""){
-        error = operation_json.at("error").get<std::string>();
-        Log::err(TAG, "Operation is failed " + error);
-        m_sLastError = "Operation is failed " + error;
-        return false;
-    }
-
-    std::string metadata_error;
-    if (operation_json.find("metadata") != operation_json.end())
-        if (operation_json.at("metadata").find("err") != operation_json.at("metadata").end())
-            metadata_error = operation_json.at("metadata").at("err").get<std::string>();
-
-    if (metadata_error != ""){
-        error = metadata_error.c_str();
-        Log::err(TAG, "Operation is failed " + error);
-        m_sLastError = "Operation is failed " + error;
-        return false;
-    }
     return true;
 }
 
@@ -427,9 +407,6 @@ bool EmployOrchestra::set_trusted(std::string password, std::string & error){
     if (!pOrchestra->send_post_request(sUrl, sData, jsonResponse, error))
         return false;
 
-    if (!check_response(jsonResponse, error))
-        return false;
-
     return true;
 }
 
@@ -465,9 +442,6 @@ bool EmployOrchestra::check_trust_certs(std::string & error){
     nlohmann::json jsonResponse;
 
     if (!pOrchestra->send_get_request(sUrl, jsonResponse, error))
-        return false;
-
-    if (!check_response(jsonResponse, error))
         return false;
 
     if ( (jsonResponse["metadata"]["auth"].is_string()) && (jsonResponse["metadata"]["auth"] == "trusted" ))

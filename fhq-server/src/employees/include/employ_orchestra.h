@@ -18,6 +18,7 @@ public:
 
     bool initConnection();
     bool create_container(std::string sName, std::string &sError);
+    bool check_response(nlohmann::json jsonResponse, std::string &sError);
     bool find_container(std::string sName);
     bool remove_container(std::string sName, std::string &sError);
     bool send_post_request(std::string sUrl, std::string sData, nlohmann::json &jsonResponse, std::string & sError);
@@ -39,8 +40,6 @@ private:
     bool m_bTrusted;
 
     bool pull_container_names();
-    bool check_response(nlohmann::json res_json, std::string error);
-    bool check_async_response(nlohmann::json operation_json, std::string error);
     bool set_trusted(std::string password, std::string & error);
     bool check_trust_certs(std::string &error);
     bool connect_with_lxd(std::string lxd_passwd);
