@@ -49,7 +49,7 @@ bool EmploySettings::init(){
 
     // LXD
     std::string  sGroupLXD = "lxd";
-    addNewSetting(new ServerSettHelper(sGroupLXD, "path_dir_lxc_ssl", "/etc/fhq-server/lxd"));
+    addNewSetting(new ServerSettHelper(sGroupLXD, "path_dir_lxc_ssl", QString("/etc/fhq-server/lxd")));
     addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_server_ip", QString("127.0.0.1")));
     addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_server_port", QString("8443")));
     addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_passwd", QString("freehackquest")));

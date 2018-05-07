@@ -16,10 +16,10 @@ class CmdHandlerLXDContainers : public CmdHandlerBase {
     private:
         std::string TAG;
 
-        void create_container(std::string name, QJsonObject &jsonResponse);
-        void start_container(std::string name, QJsonObject &jsonResponse);
-        void stop_container(std::string name, QJsonObject &jsonResponse);
-        void delete_container(std::string name, QJsonObject &jsonResponse);
+        void create_container(std::string name, std::string  &sError, int &nErrorCode);
+        void start_container(std::string name, std::string &sError, int &nErrorCode);
+        void stop_container(std::string name, std::string &sError, int &nErrorCode);
+        void delete_container(std::string name, std::string &sError, int &nErrorCode);
 };
 
 REGISTRY_CMD(CmdHandlerLXDContainers)

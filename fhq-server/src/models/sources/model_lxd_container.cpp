@@ -183,10 +183,10 @@ bool LXDContainer::stop(){
 
 bool LXDContainer::remove(){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
-    std::string address = "/1.0/containers/" + full_name();
+    std::string sUrl = "/1.0/containers/" + full_name();
     nlohmann::json jsonResponse;
 
-    if (!pOrchestra->send_delete_request(address, jsonResponse, m_sError)){
+    if (!pOrchestra->send_delete_request(sUrl, jsonResponse, m_sError)){
         return false;
     }
 

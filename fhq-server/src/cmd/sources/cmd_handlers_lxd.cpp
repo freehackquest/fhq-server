@@ -36,102 +36,130 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest){
     QSqlDatabase db = *(pDatabase->database());
 
     string name = jsonRequest["name"].toString().trimmed().toStdString();
-
-    //TO DO
-    //Action switch
     std::string action = jsonRequest["action"].toString().toStdString();
+
+    std::string sError;
+    int nErrorCode;
+
     if (action == "create")
-        create_container(name, jsonResponse);
+        create_container(name, sError, nErrorCode);
 
     if (action == "start")
-        start_container(name, jsonResponse);
+        start_container(name, sError, nErrorCode);
 
     if (action == "stop")
-        stop_container(name, jsonResponse);
+        stop_container(name, sError, nErrorCode);
 
     if (action == "delete")
-        delete_container(name, jsonResponse);
+        delete_container(name, sError, nErrorCode);
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    if (sError == "")
+        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    else
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, QString::fromStdString(sError)));
 }
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLXDContainers::create_container(std::string name, QJsonObject &jsonResponse){
+void CmdHandlerLXDContainers::create_container(std::string name, std::string &sError, int &nErrorCode){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
 
     //Переместить в Orchestra
-    if (!pOrchestra->initConnection())
-        return;
-
-    std::string error;
-    if (pOrchestra->find_container(name)){
-        jsonResponse["error"] = QJsonValue("Container already exists");
-        Log::err(TAG, "Container already exists");
-        return;
-    }
-    if (!pOrchestra->create_container(name, error)){
-        jsonResponse["error"] = QJsonValue(QString::fromStdString(error));
-        Log::err(TAG, "Can\'t create container");
-        return;
-    }
-}
-
-// ---------------------------------------------------------------------
-
-void CmdHandlerLXDContainers::start_container(std::string name, QJsonObject &jsonResponse){
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
-    if (!pOrchestra->initConnection())
-        return;
-
-    LXDContainer * container;
-    if (!pOrchestra->find_container(name)){
-       jsonResponse["error"] = QJsonValue("Can\'t find container " + QString::fromStdString(name));
-       Log::err(TAG, "Can\'t find container" + name);
-       return;
-    }
-
-    container = pOrchestra->get_container(name);
-
-    if (!container->start())
-        jsonResponse["error"] = QJsonValue(QString::fromStdString(container->get_error()));
-}
-
-// ---------------------------------------------------------------------
-
-void CmdHandlerLXDContainers::stop_container(std::string name, QJsonObject &jsonResponse){
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
-    if (!pOrchestra->initConnection())
-        return;
-
-    LXDContainer * container;
-    if (!pOrchestra->find_container(name)){
-       jsonResponse["error"] = QJsonValue("Can\'t find container");
-       return;
-    }
-
-    container = pOrchestra->get_container(name);
-
-    if (!container->stop())
-        jsonResponse["error"] = QJsonValue(QString::fromStdString(container->get_error()));
-}
-
-// ---------------------------------------------------------------------
-
-void CmdHandlerLXDContainers::delete_container(std::string name, QJsonObject &jsonResponse){
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()){
+        sError = "Can\'t connect to LXD server";
+        nErrorCode = 502;
+        return;
+    }
+
+    if (pOrchestra->find_container(name)){
+        sError = "Container " + name + " already exists";
+        nErrorCode = 409;
+        Log::err(TAG, sError);
+        return;
+    }
+    if (!pOrchestra->create_container(name, sError)){
+        sError = "Can\'t create container";
+        nErrorCode = 500;
+        Log::err(TAG, sError);
+        return;
+    }
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerLXDContainers::start_container(std::string name, std::string &sError, int &nErrorCode){
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+
+    if (!pOrchestra->initConnection()){
+        sError = "Can\'t connect to LXD server";
+        nErrorCode = 502;
+        return;
+    }
+
+    LXDContainer * pContainer;
+    if (!pOrchestra->find_container(name)){
+       sError = "Not found container " + name;
+       nErrorCode = 404;
+       Log::err(TAG, sError);
+       return;
+    }
+
+    pContainer = pOrchestra->get_container(name);
+
+    if (!pContainer->start()){
+        sError = pContainer->get_error();
+        nErrorCode = 500;
+    }
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerLXDContainers::stop_container(std::string name, std::string &sError, int &nErrorCode){
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+
+    if (!pOrchestra->initConnection()){
+        sError = "Can\'t connect to LXD server";
+        nErrorCode = 502;
+        return;
+    }
+
+    LXDContainer * pContainer;
+    if (!pOrchestra->find_container(name)){
+        sError = "Not found container " + name;
+        nErrorCode = 404;
+        Log::err(TAG, sError);
+        return;
+    }
+
+    pContainer = pOrchestra->get_container(name);
+
+    if (!pContainer->stop()){
+        sError = pContainer->get_error();
+        nErrorCode = 500;
+    }
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerLXDContainers::delete_container(std::string name, std::string &sError, int &nErrorCode){
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+
+    if (!pOrchestra->initConnection()){
+        sError = "Can\'t connect to LXD server";
+        nErrorCode = 502;
         return;
     }
 
     if (!pOrchestra->find_container(name)){
-       jsonResponse["error"] = QJsonValue("Can\'t find container");
+        sError = "Not found container " + name;
+        nErrorCode = 404;
+        Log::err(TAG, sError);
        return;
     }
 
-    std::string error;
-    if (!pOrchestra->remove_container(name, error))
-        jsonResponse["error"] = QJsonValue(QString::fromStdString(error));
+    if (!pOrchestra->remove_container(name, sError))
+        nErrorCode = 500;
+        return;
 }
 
 
