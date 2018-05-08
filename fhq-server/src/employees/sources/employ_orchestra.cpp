@@ -84,17 +84,10 @@ bool EmployOrchestra::create_container(std::string sName, std::string &sError){
 
 // ---------------------------------------------------------------------
 
-LXDContainer * EmployOrchestra::get_container(std::string name){
-    LXDContainer * container = m_mapContainers[name];
-    return container;
-}
-
-// ---------------------------------------------------------------------
-
-bool EmployOrchestra::find_container(std::string name){
+bool EmployOrchestra::find_container(std::string name, LXDContainer *&pContainer){
     if (m_mapContainers.find(name) == m_mapContainers.end())
         return false;
-
+    pContainer = m_mapContainers[name];
     return true;
 }
 
@@ -370,19 +363,25 @@ bool EmployOrchestra::check_response(nlohmann::json jsonResponse, std::string &s
 // ---------------------------------------------------------------------
 
 bool EmployOrchestra::remove_container(std::string name, std::string & sError){
-    LXDContainer * container;
-    container = get_container(name);
-    if ( container->remove() ){
+    LXDContainer * pContainer;
+
+    if (!find_container(name, pContainer)){
+        sError = "Not found container " + name;
+        Log::err(TAG, sError);
+       return false;
+    }
+
+    if ( pContainer->remove() ){
         m_mapContainers.erase(name);
         // bad alloc for
         //delete container;
-        Log::info(TAG, "Deleted container " + container->full_name());
+        Log::info(TAG, "Deleted container " + pContainer->full_name());
         return true;
     }
 
-    Log::err(TAG, "Don't delete container " + container->full_name());
-    m_sLastError = "Don't delete container " + container->full_name();
-    sError = container->get_error();
+    Log::err(TAG, "Don't delete container " + pContainer->full_name());
+    m_sLastError = "Don't delete container " + pContainer->full_name();
+    sError = pContainer->get_error();
     return false;
 }
 
@@ -399,12 +398,11 @@ std::list<std::string> EmployOrchestra::registry_names(){
 
 bool EmployOrchestra::set_trusted(std::string password, std::string & error){
     // std::cout << "[set_trusted] response: " << "\n";
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0/certificates";
     std::string sData = "{\"type\": \"client\", \"password\": \"" + password + "\"}";
     nlohmann::json jsonResponse;
 
-    if (!pOrchestra->send_post_request(sUrl, sData, jsonResponse, error))
+    if (!send_post_request(sUrl, sData, jsonResponse, error))
         return false;
 
     return true;
@@ -437,11 +435,10 @@ bool EmployOrchestra::connect_with_lxd(std::string lxd_passwd){
 // ---------------------------------------------------------------------
 
 bool EmployOrchestra::check_trust_certs(std::string & error){
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0";
     nlohmann::json jsonResponse;
 
-    if (!pOrchestra->send_get_request(sUrl, jsonResponse, error))
+    if (!send_get_request(sUrl, jsonResponse, error))
         return false;
 
     if ( (jsonResponse["metadata"]["auth"].is_string()) && (jsonResponse["metadata"]["auth"] == "trusted" ))

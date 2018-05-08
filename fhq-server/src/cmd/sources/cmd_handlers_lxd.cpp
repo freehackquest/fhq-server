@@ -63,6 +63,7 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest){
 
 void CmdHandlerLXDContainers::create_container(std::string name, std::string &sError, int &nErrorCode){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    LXDContainer * pContainer;
 
     //Переместить в Orchestra
     if (!pOrchestra->initConnection()){
@@ -71,7 +72,7 @@ void CmdHandlerLXDContainers::create_container(std::string name, std::string &sE
         return;
     }
 
-    if (pOrchestra->find_container(name)){
+    if (pOrchestra->find_container(name, pContainer)){
         sError = "Container " + name + " already exists";
         nErrorCode = 409;
         Log::err(TAG, sError);
@@ -97,14 +98,12 @@ void CmdHandlerLXDContainers::start_container(std::string name, std::string &sEr
     }
 
     LXDContainer * pContainer;
-    if (!pOrchestra->find_container(name)){
+    if (!pOrchestra->find_container(name, pContainer)){
        sError = "Not found container " + name;
        nErrorCode = 404;
        Log::err(TAG, sError);
        return;
     }
-
-    pContainer = pOrchestra->get_container(name);
 
     if (!pContainer->start()){
         sError = pContainer->get_error();
@@ -124,14 +123,12 @@ void CmdHandlerLXDContainers::stop_container(std::string name, std::string &sErr
     }
 
     LXDContainer * pContainer;
-    if (!pOrchestra->find_container(name)){
+    if (!pOrchestra->find_container(name, pContainer)){
         sError = "Not found container " + name;
         nErrorCode = 404;
         Log::err(TAG, sError);
         return;
     }
-
-    pContainer = pOrchestra->get_container(name);
 
     if (!pContainer->stop()){
         sError = pContainer->get_error();
@@ -143,6 +140,7 @@ void CmdHandlerLXDContainers::stop_container(std::string name, std::string &sErr
 
 void CmdHandlerLXDContainers::delete_container(std::string name, std::string &sError, int &nErrorCode){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    LXDContainer *pContainer;
 
     if (!pOrchestra->initConnection()){
         sError = "Can\'t connect to LXD server";
@@ -150,7 +148,7 @@ void CmdHandlerLXDContainers::delete_container(std::string name, std::string &sE
         return;
     }
 
-    if (!pOrchestra->find_container(name)){
+    if (!pOrchestra->find_container(name, pContainer)){
         sError = "Not found container " + name;
         nErrorCode = 404;
         Log::err(TAG, sError);

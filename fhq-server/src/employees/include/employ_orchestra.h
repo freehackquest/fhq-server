@@ -19,7 +19,7 @@ public:
     bool initConnection();
     bool create_container(std::string sName, std::string &sError);
     bool check_response(nlohmann::json jsonResponse, std::string &sError);
-    bool find_container(std::string sName);
+    bool find_container(std::string sName, LXDContainer *&pContainer);
     bool remove_container(std::string sName, std::string &sError);
     bool send_post_request(std::string sUrl, std::string sData, nlohmann::json &jsonResponse, std::string & sError);
     bool send_put_request(std::string sUrl, std::string sData, nlohmann::json & jsonResponse, std::string & sError);
@@ -27,7 +27,6 @@ public:
     bool send_delete_request(std::string sUrl, nlohmann::json &jsonResponse, std::string & sError);
 
     std::list<std::string> registry_names();
-    LXDContainer * get_container(std::string sName);
     std::string lastError();
 
 private:
