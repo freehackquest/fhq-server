@@ -48,10 +48,20 @@ nlohmann::json LXDContainer::state(){
 bool LXDContainer::create(){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0/containers";
-    std::string sData = "{\"name\": \"" + full_name() + "\", \"source\": {\"type\": \"image\", \"protocol\": \"simplestreams\", \"server\": \"https://cloud-images.ubuntu.com/daily\", \"alias\": \"16.04\"}}";
+    auto jsonData = R"(
+    {
+        "name": "full_name",
+        "source": {
+            "type": "image",
+            "protocol": "simplestreams",
+            "server": "https://cloud-images.ubuntu.com/daily",
+            "alias": "16.04"
+        }
+    })"_json;
+    jsonData["name"] = full_name();
     nlohmann::json jsonResponse;
 
-    if (!pOrchestra->send_post_request(sUrl, sData, jsonResponse, m_sError))
+    if (!pOrchestra->send_post_request(sUrl, jsonData, jsonResponse, m_sError))
         return false;
 
     if (jsonResponse.at("type").get<std::string>() == "async"){
@@ -70,10 +80,14 @@ bool LXDContainer::create(){
 bool LXDContainer::start(){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0/containers/" + full_name() + "/state";
-    std::string sData = "{\"action\": \"start\"}";
+    auto jsonData = R"(
+        {
+            "action": "start"
+        }
+    )"_json;
     nlohmann::json jsonResponse;
 
-    if (!pOrchestra->send_put_request(sUrl, sData, jsonResponse, m_sError))
+    if (!pOrchestra->send_put_request(sUrl, jsonData, jsonResponse, m_sError))
         return false;
 
     if (jsonResponse.at("type").get<std::string>() == "async"){
@@ -93,10 +107,14 @@ bool LXDContainer::start(){
 bool LXDContainer::stop(){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0/containers/" + full_name() + "/state";
-    std::string sData = "{\"action\": \"stop\"}";
+    auto jsonData = R"(
+        {
+            "action": "stop"
+        }
+    )"_json;
     nlohmann::json jsonResponse;
 
-    if (!pOrchestra->send_put_request(sUrl, sData, jsonResponse, m_sError)){
+    if (!pOrchestra->send_put_request(sUrl, jsonData, jsonResponse, m_sError)){
         return false;
     }
 

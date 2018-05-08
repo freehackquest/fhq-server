@@ -102,10 +102,11 @@ static size_t write_to_string(void *ptr, size_t size, size_t count, void *stream
 
 static char errorBuffer[CURL_ERROR_SIZE];
 
-bool EmployOrchestra::send_post_request(std::string sUrl, std::string sData, nlohmann::json & jsonResponse, std::string & sError){
+bool EmployOrchestra::send_post_request(std::string sUrl, nlohmann::json jsonData, nlohmann::json & jsonResponse, std::string & sError){
     CURLcode ret;
     CURL *hnd;
 
+    std::string sData = jsonData.dump();
     hnd = curl_easy_init();
     std::string hostname = m_sLxdAddress + sUrl;
     curl_easy_setopt(hnd, CURLOPT_URL, hostname.c_str());
@@ -151,10 +152,11 @@ bool EmployOrchestra::send_post_request(std::string sUrl, std::string sData, nlo
 
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::send_put_request(std::string sUrl, std::string sData, nlohmann::json & jsonResponse, std::string & sError){
+bool EmployOrchestra::send_put_request(std::string sUrl, nlohmann::json jsonData, nlohmann::json & jsonResponse, std::string &sError){
     CURLcode ret;
     CURL *hnd;
 
+    std::string sData = jsonData.dump();
     hnd = curl_easy_init();
     std::string hostname = m_sLxdAddress + sUrl;
     curl_easy_setopt(hnd, CURLOPT_URL, hostname.c_str());
@@ -399,10 +401,15 @@ std::list<std::string> EmployOrchestra::registry_names(){
 bool EmployOrchestra::set_trusted(std::string password, std::string & error){
     // std::cout << "[set_trusted] response: " << "\n";
     std::string sUrl = "/1.0/certificates";
-    std::string sData = "{\"type\": \"client\", \"password\": \"" + password + "\"}";
+    auto jsonData = R"(
+    {
+        "type": "client",
+        "password": "change it"
+    })"_json;
+    jsonData["password"] = password;
     nlohmann::json jsonResponse;
 
-    if (!send_post_request(sUrl, sData, jsonResponse, error))
+    if (!send_post_request(sUrl, jsonData, jsonResponse, error))
         return false;
 
     return true;
