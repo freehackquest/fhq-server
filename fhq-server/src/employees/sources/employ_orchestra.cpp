@@ -352,7 +352,7 @@ bool EmployOrchestra::check_response(nlohmann::json jsonResponse, std::string &s
 
     if (metadata_error != ""){
         error = metadata_error.c_str();
-        sError = "request failed: " + sError;
+        sError = "request failed: " + error;
         Log::err(TAG, sError);
         return false;
     }
