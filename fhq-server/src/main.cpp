@@ -26,49 +26,38 @@
 #include <employ_database.h>
 #include <employ_settings.h>
 #include <employ_images.h>
-
-void print_help(std::vector<std::string> &vArgs){
-	std::cout
-		<< "Usage: " << vArgs.at(0) << "   [PARAM]\n"
-		<< "\t --help, -h                             This help \n"
-		<< "\t --version, -v                          Print version \n"
-		<< "\t --run-unit-tests, -rut                 Run unit tests\n"
-		<< "\t --show-handlers, -sh                   Show handlers\n"
-		<< "\t --show-employees, -se                  Show employees\n"
-		<< "\t --show-settings, -ss                   Show settings\n"
-		<< "\t --prepare-deb, -pd                     Prepare Deb Package\n"
-		<< "\t --check-server-config, -csc            Check server config\n"
-		<< "\t --create-config-linux, -ccl            Create config file for Linux: /etc/fhq-server/conf.ini \n"
-		<< "\t --check-database-connection, -cdc      Check database conenction\n"
-		<< "\t --manual-create-database, -mcd         Manual create database\n"
-		<< "\t --server, -s                           Start server\n"
-		<< "\n";
-}
-
-bool hasArgs(std::vector<std::string> &vArgs, std::string s){
-	return std::find(vArgs.begin(), vArgs.end(), s) != vArgs.end();
-}
+#include <model_help_args.h>
 
 int main(int argc, char** argv) {
 	QCoreApplication a(argc, argv);
 	std::string TAG = "MAIN";
 	Log::setdir("/var/log/fhq-server");
-	
+
+	HelpArgs helpArgs(argc, argv);
+	helpArgs.addHelp(HelpArg("help", "-h", "This help"));
+	helpArgs.addHelp(HelpArg("version", "-v", "Print version"));
+	helpArgs.addHelp(HelpArg("run-unit-tests", "-rut", "Run unit tests"));
+	helpArgs.addHelp(HelpArg("show-handlers", "-sh", "Show handlers"));
+	helpArgs.addHelp(HelpArg("show-employees", "-se", "Show employees"));
+	helpArgs.addHelp(HelpArg("show-settings", "-ss", "Show settings"));
+	helpArgs.addHelp(HelpArg("prepare-deb", "-pd", "Prepare Deb Package"));
+	helpArgs.addHelp(HelpArg("check-server-config", "-csc", "Check server config"));
+	helpArgs.addHelp(HelpArg("make-config-linux", "-mcl", "Create config file for Linux: /etc/fhq-server/fhq-server.conf"));
+	helpArgs.addHelp(HelpArg("check-database-connection", "-cdc", "Check database conenction"));
+	helpArgs.addHelp(HelpArg("manual-create-database", "-mcd", "Manual create database"));
+	helpArgs.addHelp(HelpArg("start", "-s", "Start server"));
+
+
 	a.setApplicationName("fhq-server");
     a.setApplicationVersion(VERSION_STRING);
-    
-    std::vector<std::string> vArgs;
-    for(int i = 0; i < argc; i++){
-		vArgs.push_back(std::string(argv[i]));
-	}
 
-	if(vArgs.size() > 3) {
-		print_help(vArgs);
+	if(argc > 3) {
+		helpArgs.printHelp();
 		return 0;
-	} else if(hasArgs(vArgs, "--help") || hasArgs(vArgs, "-h")) {
-		print_help(vArgs);
+	} else if(helpArgs.has("help") || helpArgs.has("-h")) {
+		helpArgs.printHelp();
 		return 0;
-	}else if(hasArgs(vArgs, "--run-unit-tests") || hasArgs(vArgs, "-rut")){
+	}else if(helpArgs.has("run-unit-tests") || helpArgs.has("-rut")){
 		QMap<QString, IUnitTest *> mapUnitTests;
 		create_unit_tests(mapUnitTests);
 		foreach( QString name, mapUnitTests.keys()){
@@ -81,7 +70,7 @@ int main(int argc, char** argv) {
 			}
 		}
 		return 0;
-	}else if(hasArgs(vArgs, "--show-handlers") || hasArgs(vArgs, "-sh")){
+	}else if(helpArgs.has("show-handlers") || helpArgs.has("-sh")){
 		std::cout << "\n\n * CmdHandlers (" << g_pCmdHandlers->size() << "):\n";
 		std::map<std::string, CmdHandlerBase*>::iterator it = g_pCmdHandlers->begin();
 		for (; it!=g_pCmdHandlers->end(); ++it){
@@ -91,7 +80,7 @@ int main(int argc, char** argv) {
 		}
 		std::cout << "\n\n";
 		return 0;
-	}else if(hasArgs(vArgs, "--show-employees") || hasArgs(vArgs, "-se")){
+	}else if(helpArgs.has("show-employees") || helpArgs.has("-se")){
 		std::cout << " * Employees (" << g_pEmployees->size() << "):\n";
 		std::map<std::string, EmployBase*>::iterator it = g_pEmployees->begin();
 		for (; it!=g_pEmployees->end(); ++it){
@@ -106,16 +95,16 @@ int main(int argc, char** argv) {
 			std::cout << " |  \n";
 		}
 		return 0;
-	}else if(hasArgs(vArgs, "--version") || hasArgs(vArgs, "-v")){
+	}else if(helpArgs.has("version") || helpArgs.has("-v")){
 		std::cout << QCoreApplication::applicationName().toStdString() << "-" << QCoreApplication::applicationVersion().toStdString() << "\n";
 		return 0;
-	}else if(hasArgs(vArgs, "--prepare-deb") || hasArgs(vArgs, "-pd")){
+	}else if(helpArgs.has("--prepare-deb") || helpArgs.has("-pd")){
 		UtilsPrepareDebPackage::prepare("","tmpdeb");
 		return 0;
-	}else if(hasArgs(vArgs, "--create-config-linux") || hasArgs(vArgs, "-ccl")){
+	}else if(helpArgs.has("make-config-linux") || helpArgs.has("-mcl")){
 		UtilsCreateConfig::forLinux();
 		return 0;
-	}else if(hasArgs(vArgs, "--check-server-config") || hasArgs(vArgs, "-csc")){
+	}else if(helpArgs.has("check-server-config") || helpArgs.has("-csc")){
 		std::cout << "\n * Check Server Config\n\n";
 		EmployServerConfig *pConfig = new EmployServerConfig();
 		if(!pConfig->init()){
@@ -124,7 +113,7 @@ int main(int argc, char** argv) {
 			std::cout << "\n * Success\n\n";
 		}
 		return 0;
-	}else if(hasArgs(vArgs, "--check-database-connection") || hasArgs(vArgs, "-cdc")){
+	}else if(helpArgs.has("check-database-connection") || helpArgs.has("-cdc")){
 		std::cout << "\n * Check Database Connection\n\n";
 		Employees::init({});
 		EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
@@ -135,14 +124,15 @@ int main(int argc, char** argv) {
 		}
 		std::cout << "\n * Success\n\n";
 		return 0;
-	}else if(hasArgs(vArgs, "--show-settings") || hasArgs(vArgs, "-ss")){
-		std::cout << "\n * Show settings\n\n";
+	}else if(helpArgs.has("show-settings") || helpArgs.has("-ss")){
 		Employees::init({});
 		EmploySettings *pSettings = findEmploy<EmploySettings>();
+		
+		std::cout << "\n * Show settings\n\n";
 		pSettings->printSettings();
 		std::cout << "\n * Done\n\n";
 		return 0;
-	}else if(hasArgs(vArgs, "--test-png")){
+	}else if(helpArgs.has("test-png")){
 		std::cout << "\n * Test png\n\n";
 		// Employees::init({});
 		EmployImages *pImages = new EmployImages();
@@ -151,7 +141,7 @@ int main(int argc, char** argv) {
 		pImages->doThumbnailImagePng("test_alpha.png", "test_alpha_100x100.png", 100, 100);
 		std::cout << "\n * Done\n\n";
 		return 0;
-	}else if(hasArgs(vArgs, "--manual-create-database") || hasArgs(vArgs, "-mcd")){
+	}else if(helpArgs.has("manual-create-database") || helpArgs.has("-mcd")){
 		std::cout << "\n * Manual create database\n\n";
 		EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
 		if(!pServerConfig->init()){
@@ -177,7 +167,7 @@ int main(int argc, char** argv) {
 		
 		std::cout << "\n * Done\n\n";
 		return 0;
-	}else if(hasArgs(vArgs, "--server") || hasArgs(vArgs, "-s")){
+	}else if(helpArgs.has("start") || helpArgs.has("-s")){
 		QThreadPool::globalInstance()->setMaxThreadCount(5);
 		WebSocketServer *pServer = new WebSocketServer();
 		if(pServer->isFailed()){
@@ -195,6 +185,6 @@ int main(int argc, char** argv) {
 		return a.exec();
 	}
 
-	print_help(vArgs);
+	helpArgs.printHelp();
 	return 0;
 }

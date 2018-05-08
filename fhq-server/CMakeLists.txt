@@ -135,6 +135,8 @@ list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_support.cpp")
 # models
 list (APPEND FHQSRV_SOURCES "src/models/include/model_database_connection.h")
 list (APPEND FHQSRV_SOURCES "src/models/sources/model_database_connection.cpp")
+list (APPEND FHQSRV_SOURCES "src/models/include/model_help_args.h")
+list (APPEND FHQSRV_SOURCES "src/models/sources/model_help_args.cpp")
 list (APPEND FHQSRV_SOURCES "src/models/include/serversetthelper.h")
 list (APPEND FHQSRV_SOURCES "src/models/include/cmd_input_def.h")
 list (APPEND FHQSRV_SOURCES "src/models/include/model_leak.h")
