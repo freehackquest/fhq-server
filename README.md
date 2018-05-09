@@ -11,13 +11,16 @@ Frontend for FreeHackQuest here: [frontend](https://github.com/freehackquest/fro
 	* [INITD](install/INITD.md)
 
 
-## (Ubuntu 16.04) Install from ppa:
+## (Ubuntu) Install from ppa:
 
 ```
 $ sudo add-apt-repository ppa:freehackquest/fhq-server
 $ sudo apt update
 $ sudo apt install fhq-server
 ```
+More details here:
+
+[https://launchpad.net/~freehackquest/+archive/ubuntu/fhq-server](https://launchpad.net/~freehackquest/+archive/ubuntu/fhq-server)
 
 After install please try [CONFIGURING](install/CONFIGURING.md)
 
