@@ -22,8 +22,6 @@ More details here:
 
 [https://launchpad.net/~freehackquest/+archive/ubuntu/fhq-server](https://launchpad.net/~freehackquest/+archive/ubuntu/fhq-server)
 
-After install please try [CONFIGURING](install/CONFIGURING.md)
-
 ## 3rdParty
 
 * Contains source code to compile: [SmtpClient-for-Qt](https://github.com/bluetiger9/SmtpClient-for-Qt)
