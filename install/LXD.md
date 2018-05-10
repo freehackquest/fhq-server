@@ -36,4 +36,4 @@ $ fhq-server -mclxd
 
 ## Enable LXD mode
 
-In the administrator interface settings, change the configuration of the `lxd_mode` to `enable`.
+In the administrator interface settings, change the configuration of the `lxd_mode` to `enabled`.
