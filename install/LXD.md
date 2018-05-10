@@ -18,7 +18,7 @@ On ask: "Would you like LXD to be available over the network (yes/no)?": *yes*
 
 After this:
 
- - Please open fhq-web-admin and change password for lxd to your password 
+ - Please open fhq-web-admin and change `lxd_mode` to `enabled` 
 
 ## Generate cerfiticates:
 
@@ -33,7 +33,3 @@ Help: Next command for registry certificate in lxd (It is necessary to enter a p
 ```
 $ fhq-server -mclxd
 ```
-
-## Enable LXD mode
-
-In the administrator interface settings, change the configuration of the `lxd_mode` to `enabled`.
