@@ -16,7 +16,7 @@ CmdHandlerLXDContainers::CmdHandlerLXDContainers()
 
 	TAG = "LXD_HANDLER";
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
 

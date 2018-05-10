@@ -1,5 +1,6 @@
 #include <employ_orchestra.h>
 #include <employ_settings.h>
+#include <utils_lxd.h>
 
 REGISTRY_EMPLOY(EmployOrchestra)
 
@@ -25,7 +26,23 @@ EmployOrchestra::EmployOrchestra()
 // ---------------------------------------------------------------------
 
 bool EmployOrchestra::init(){
-    Log::info(TAG, "Nothing");
+    Log::info(TAG, "Start init settings");
+
+    EmploySettings *pSettings = findEmploy<EmploySettings>();
+    std::string lxd_mode = pSettings->getSettString("lxd_mode").toStdString();
+    if (lxd_mode != "enabled")
+        return true;
+
+    m_sPathDirLxcSSL = pSettings->getSettString("path_dir_lxc_ssl").toStdString();
+    std::string lxd_server_ip = pSettings->getSettString("lxd_server_ip").toStdString();
+    std::string lxd_server_port = pSettings->getSettString("lxd_server_port").toStdString();
+    m_sLxdAddress = "https://" + lxd_server_ip + ":" + lxd_server_port;
+    std::string sError;
+    m_bTrusted = UtilsLXDAuth::check_trust_certs(sError);
+    if (!m_bTrusted){
+        Log::err(TAG, "SSL certificates are not trusted. Please configure the connection with the LXD. Type ./fhq-server -mclxd");
+        return false;
+    }
     return true;
 }
 
@@ -33,27 +50,11 @@ bool EmployOrchestra::init(){
 
 bool EmployOrchestra::initConnection(){
 
-    Log::info(TAG, "Start init settings");
-
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
-
-    m_sPathDirLxcSSL = pSettings->getSettString("path_dir_lxc_ssl").toStdString();
-    std::string lxd_server_ip = pSettings->getSettString("lxd_server_ip").toStdString();
-    std::string lxd_server_port = pSettings->getSettString("lxd_server_port").toStdString();
-    m_sLxdAddress = "https://" + lxd_server_ip + ":" + lxd_server_port;
-    QString lxd_passwd = pSettings->getSettString("lxd_passwd");
-
-    if (!connect_with_lxd(lxd_passwd.toStdString())){
-        Log::err(TAG, "Can't set trusted connection");
-        m_sLastError = "Can't set trusted connection";
-        return false;
-    }
+    Log::info(TAG, "Start init connection");
 
     //Pull existing containers
-    if (!pull_container_names()){
-
+    if (m_bTrusted && !pull_container_names())
         return false;
-    }
     return true;
 }
 
