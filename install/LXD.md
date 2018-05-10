@@ -28,13 +28,12 @@ $ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/fhq-serv
 
 ```
 
-Help: Next command for registry certificate in lxd (or will be authomaticly by fhq server): 
+Help: Next command for registry certificate in lxd (It is necessary to enter a password from the LXD.): 
 
 ```
-curl --insecure \
-	-X POST \
-	-d '{"type": "client", "password": "your_password","name":"client_cert"}' \
-	--cert /etc/fhq-server/lxd/client.crt \
-	--key /etc/fhq-server/lxd/client.key \
-	--url "https://127.0.0.1:8443/1.0/certificates"
+$ fhq-server -mclxd
 ```
+
+## Enable LXD mode
+
+In the administrator interface settings, change the configuration of the `lxd_mode` to `enable`.
