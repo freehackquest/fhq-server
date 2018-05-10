@@ -133,6 +133,8 @@ list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_support.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_support.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_lxd.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_lxd.cpp")
+list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_leaks.h")
+list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_leaks.cpp")
 
 # models
 list (APPEND FHQSRV_SOURCES "src/models/include/model_database_connection.h")
