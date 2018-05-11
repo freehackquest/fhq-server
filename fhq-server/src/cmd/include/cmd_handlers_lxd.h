@@ -33,6 +33,7 @@ class CmdHandlerLXDInfo : public CmdHandlerBase {
     public:
         CmdHandlerLXDInfo();
         virtual void handle(ModelRequest *pRequest);
+        bool get_state(std::string sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState);
 };
 
 REGISTRY_CMD(CmdHandlerLXDInfo)

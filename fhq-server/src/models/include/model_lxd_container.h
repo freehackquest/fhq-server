@@ -17,7 +17,7 @@ class LXDContainer {
         std::string set_prefix();
         std::string full_name();
 
-        nlohmann::json state();
+        bool state(nlohmann::json &jsonState);
         bool create();
         bool start();
         bool stop();
