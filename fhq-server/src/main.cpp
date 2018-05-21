@@ -19,6 +19,7 @@
 #include <websocketserver.h>
 #include <utils_prepare_deb_package.h>
 #include <utils_create_config.h>
+#include <utils_lxd.h>
 #include <create_unit_tests.h>
 #include <employees.h>
 #include <employ_server_config.h>
@@ -45,7 +46,8 @@ int main(int argc, char** argv) {
 	helpArgs.addHelp(HelpArg("make-config-linux", "-mcl", "Create config file for Linux: /etc/fhq-server/fhq-server.conf"));
 	helpArgs.addHelp(HelpArg("check-database-connection", "-cdc", "Check database conenction"));
 	helpArgs.addHelp(HelpArg("manual-create-database", "-mcd", "Manual create database"));
-	helpArgs.addHelp(HelpArg("start", "-s", "Start server"));
+    helpArgs.addHelp(HelpArg("manual-configure-lxd", "-mclxd", "Manual configure HTTPS connection with LXD. You need generated SSL cert and key in /etc/fhq-server/lxd"));
+    helpArgs.addHelp(HelpArg("start", "-s", "Start server"));
 
 
 	a.setApplicationName("fhq-server");
@@ -167,6 +169,26 @@ int main(int argc, char** argv) {
 		
 		std::cout << "\n * Done\n\n";
 		return 0;
+    } else if(helpArgs.has("manual-configure-lxd") || helpArgs.has("-mclxd")){
+        std::string sError;
+        Employees::init({});
+        if (UtilsLXDAuth::check_trust_certs(sError))
+            std::cout << "\nGOOD HTTPS connection with LXD\n\n";
+        else if (sError != ""){
+            Log::err(TAG, "\nBAD HTTPS connection with LXD\n\n: " + sError);
+            return -1;
+        }
+        else {
+            char *pPassword=getpass("\nPlease enter your password for LXD:");
+            std::string sPass(pPassword);
+            if (UtilsLXDAuth::connect_with_lxd(sPass, sError))
+                std::cout << "\nWell, you added your certificates to LXD.\n\n";
+            else {
+                std::cout << "\nBad, I can not make certificates trusted. Maybe the password was wrong? \nError:" + sError + "\n\n";
+                return -1;
+            }
+        }
+        return 0;
 	}else if(helpArgs.has("start") || helpArgs.has("-s")){
 		QThreadPool::globalInstance()->setMaxThreadCount(5);
 		WebSocketServer *pServer = new WebSocketServer();
@@ -183,7 +205,7 @@ int main(int argc, char** argv) {
 			return -1;
 		}
 		return a.exec();
-	}
+    }
 
 	helpArgs.printHelp();
 	return 0;

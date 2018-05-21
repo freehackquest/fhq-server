@@ -18,7 +18,7 @@ On ask: "Would you like LXD to be available over the network (yes/no)?": *yes*
 
 After this:
 
- - Please open fhq-web-admin and change password for lxd to your password 
+ - Please open fhq-web-admin and change `lxd_mode` to `enabled` 
 
 ## Generate cerfiticates:
 
@@ -28,13 +28,8 @@ $ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/fhq-serv
 
 ```
 
-Help: Next command for registry certificate in lxd (or will be authomaticly by fhq server): 
+Help: Next command for registry certificate in lxd (It is necessary to enter a password from the LXD.): 
 
 ```
-curl --insecure \
-	-X POST \
-	-d '{"type": "client", "password": "your_password","name":"client_cert"}' \
-	--cert /etc/fhq-server/lxd/client.crt \
-	--key /etc/fhq-server/lxd/client.key \
-	--url "https://127.0.0.1:8443/1.0/certificates"
+$ fhq-server -mclxd
 ```

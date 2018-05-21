@@ -39,9 +39,6 @@ private:
     bool m_bTrusted;
 
     bool pull_container_names();
-    bool set_trusted(std::string password, std::string & error);
-    bool check_trust_certs(std::string &error);
-    bool connect_with_lxd(std::string lxd_passwd);
 };
 
 #endif // EMPLOY_ORCHESTRA

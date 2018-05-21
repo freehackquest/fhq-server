@@ -26,23 +26,14 @@ std::string LXDContainer::full_name(){
     return prefix + name;
 }
 
-nlohmann::json LXDContainer::state(){
-    //TO DO return value
-
+bool LXDContainer::state(nlohmann::json &jsonState){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0/containers/" + full_name() + "/state";
-    nlohmann::json jsonResponse;
 
-    if (!pOrchestra->send_get_request(sUrl, jsonResponse, m_sError)){
+    if (!pOrchestra->send_get_request(sUrl, jsonState, m_sError)){
         return false;
     }
-
-
-    //TO DO
-    //Check response
-
-    return jsonResponse;
-
+    return true;
 }
 
 bool LXDContainer::create(){

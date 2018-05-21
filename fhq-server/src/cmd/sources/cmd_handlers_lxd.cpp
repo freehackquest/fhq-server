@@ -16,7 +16,7 @@ CmdHandlerLXDContainers::CmdHandlerLXDContainers()
 
 	TAG = "LXD_HANDLER";
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
 
@@ -155,9 +155,10 @@ void CmdHandlerLXDContainers::delete_container(std::string name, std::string &sE
        return;
     }
 
-    if (!pOrchestra->remove_container(name, sError))
+    if (!pOrchestra->remove_container(name, sError)){
         nErrorCode = 500;
         return;
+    }
 }
 
 
@@ -168,13 +169,13 @@ void CmdHandlerLXDContainers::delete_container(std::string name, std::string &sE
 CmdHandlerLXDInfo::CmdHandlerLXDInfo()
     : CmdHandlerBase("lxd_info", "Get information about the orhestra, containers."){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
+    m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
-    m_vInputs.push_back(CmdInputDef("get").string_().required().description("Requested information"));
+    m_vInputs.push_back(CmdInputDef("get").string_().optional().description("Requested information"));
 }
 
 // ---------------------------------------------------------------------
@@ -182,22 +183,39 @@ CmdHandlerLXDInfo::CmdHandlerLXDInfo()
 void CmdHandlerLXDInfo::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
-    if (!pOrchestra->initConnection()){
-        return;
-	}
-        
-    // EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-    // QSqlDatabase db = *(pDatabase->database());
+    std::string sError;
+    int nErrorCode;
+    std::string sName = jsonRequest["name"].toString().trimmed().toStdString();
+    nlohmann::json jsonState;
 
-    std::string name = jsonRequest["name"].toString().trimmed().toStdString();
-    std::string error, response;
-
-    //TO DO
-    //Action switch
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    if (get_state(sName, sError, nErrorCode, jsonState)){
+        jsonResponse["state"] = QJsonValue(QString::fromStdString(jsonState.dump()));
+        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    } else
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, QString::fromStdString(sError)));
 }
 
+bool CmdHandlerLXDInfo::get_state(std::string sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState){
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    if (!pOrchestra->initConnection()){
+        return false;
+    }
+
+    LXDContainer *pContainer;
+    if (!pOrchestra->find_container(sName, pContainer)){
+        sError = "Not found container " + sName;
+        nErrorCode = 404;
+        Log::err(TAG, sError);
+        return false;
+    }
+
+    if (!pContainer->state(jsonState)){
+        nErrorCode = 500;
+        sError = pContainer->get_error();
+        return false;
+    }
+    return true;
+}
 
 /*********************************************
  * Get information about all containers.
