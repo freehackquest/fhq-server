@@ -22,37 +22,37 @@ bool EmploySettings::init(){
 	Log::info(TAG, "Start init settings");
 
     std::string sGroupProfile = "profile";
-    addNewSetting(new ServerSettHelper(sGroupProfile, "profile_change_nick", true));
+    addNewSetting(new ModelServerSettHelper(sGroupProfile, "profile_change_nick", true));
 
     std::string sGroupMail = "mail";
-    addNewSetting(new ServerSettHelper(sGroupMail, "mail_from", QString("freehackquest@gmail.com")));
-    addNewSetting(new ServerSettHelper(sGroupMail, "mail_host", QString("smtp.gmail.com")));
-    addNewSetting(new ServerSettHelper(sGroupMail, "mail_port", 465));
-    addNewSetting(new ServerSettHelper(sGroupMail, "mail_username", QString("freehackquest@gmail.com")));
-    addNewSetting(new ServerSettHelper(sGroupMail, "mail_password", QString("some"), true));
-    addNewSetting(new ServerSettHelper(sGroupMail, "mail_auth", true));
-    addNewSetting(new ServerSettHelper(sGroupMail, "mail_allow", true));
-    addNewSetting(new ServerSettHelper(sGroupMail, "mail_system_message_admin_email", QString("")));
+    addNewSetting(new ModelServerSettHelper(sGroupMail, "mail_from", QString("freehackquest@gmail.com")));
+    addNewSetting(new ModelServerSettHelper(sGroupMail, "mail_host", QString("smtp.gmail.com")));
+    addNewSetting(new ModelServerSettHelper(sGroupMail, "mail_port", 465));
+    addNewSetting(new ModelServerSettHelper(sGroupMail, "mail_username", QString("freehackquest@gmail.com")));
+    addNewSetting(new ModelServerSettHelper(sGroupMail, "mail_password", QString("some"), true));
+    addNewSetting(new ModelServerSettHelper(sGroupMail, "mail_auth", true));
+    addNewSetting(new ModelServerSettHelper(sGroupMail, "mail_allow", true));
+    addNewSetting(new ModelServerSettHelper(sGroupMail, "mail_system_message_admin_email", QString("")));
 
     // Google Map API
     std::string sGroupGoogleMap = "google_map";
-    addNewSetting(new ServerSettHelper(sGroupGoogleMap, "google_map_api_key", QString("some")));
+    addNewSetting(new ModelServerSettHelper(sGroupGoogleMap, "google_map_api_key", QString("some")));
 
     // server folders
     std::string sGroupServerFolders = "server_folders";
-    addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_games", QString("/var/www/html/fhq/files/games/")));
-    addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_games_url", QString("https://freehackquest.com/files/games/")));
-    addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_quests", QString("/var/www/html/fhq/files/quests/")));
-    addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_quests_url", QString("https://freehackquest.com/files/quests/")));
-    addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_users", QString("/var/www/html/fhq/files/quests/")));
-    addNewSetting(new ServerSettHelper(sGroupServerFolders, "server_folder_users_url", QString("https://freehackquest.com/files/quests/")));
+    addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_games", QString("/var/www/html/fhq/files/games/")));
+    addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_games_url", QString("https://freehackquest.com/files/games/")));
+    addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_quests", QString("/var/www/html/fhq/files/quests/")));
+    addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_quests_url", QString("https://freehackquest.com/files/quests/")));
+    addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_users", QString("/var/www/html/fhq/files/quests/")));
+    addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_users_url", QString("https://freehackquest.com/files/quests/")));
 
     // LXD
     std::string  sGroupLXD = "lxd";
-    addNewSetting(new ServerSettHelper(sGroupLXD, "path_dir_lxc_ssl", QString("/etc/fhq-server/lxd")));
-    addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_server_ip", QString("127.0.0.1")));
-    addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_server_port", QString("8443")));
-    addNewSetting(new ServerSettHelper(sGroupLXD, "lxd_mode", QString("disabled")));
+    addNewSetting(new ModelServerSettHelper(sGroupLXD, "path_dir_lxc_ssl", QString("/etc/fhq-server/lxd")));
+    addNewSetting(new ModelServerSettHelper(sGroupLXD, "lxd_server_ip", QString("127.0.0.1")));
+    addNewSetting(new ModelServerSettHelper(sGroupLXD, "lxd_server_port", QString("8443")));
+    addNewSetting(new ModelServerSettHelper(sGroupLXD, "lxd_mode", QString("disabled")));
 
     std::vector<std::string> vFoundInDatabase;
 
@@ -74,7 +74,7 @@ bool EmploySettings::init(){
             vFoundInDatabase.push_back(sName);
 
             if(m_mapSettings.count(sName)){
-                ServerSettHelper *pServerSettHelper = m_mapSettings[sName];
+                ModelServerSettHelper *pServerSettHelper = m_mapSettings[sName];
                 if(sType != pServerSettHelper->type()){
                     Log::err(TAG, "Wrong type for setting '" + sName + "' (expected '" + pServerSettHelper->type() + "', but got: '" + sType + "'");
                     // TODO change type of setting or remove
@@ -99,13 +99,13 @@ bool EmploySettings::init(){
     }
 
     // check string settings in database
-    std::map<std::string, ServerSettHelper*>::iterator it = m_mapSettings.begin();
+    std::map<std::string, ModelServerSettHelper*>::iterator it = m_mapSettings.begin();
     for (; it!=m_mapSettings.end(); ++it){
         std::string sName = it->first;
         
         if(std::find(vFoundInDatabase.begin(), vFoundInDatabase.end(), sName) == vFoundInDatabase.end()) {
 			// not found in database
-			ServerSettHelper *pServerSettHelper = m_mapSettings.at(sName);
+			ModelServerSettHelper *pServerSettHelper = m_mapSettings.at(sName);
             initSettingDatabase(pServerSettHelper);
 		}
     }
@@ -114,10 +114,10 @@ bool EmploySettings::init(){
 
 // ---------------------------------------------------------------------
 
-void EmploySettings::addNewSetting(ServerSettHelper* pServerSettHelper){
+void EmploySettings::addNewSetting(ModelServerSettHelper* pServerSettHelper){
     std::string sName = pServerSettHelper->name();
     if(!m_mapSettings.count(sName)){
-        m_mapSettings.insert(std::pair<std::string, ServerSettHelper*>(sName,pServerSettHelper));
+        m_mapSettings.insert(std::pair<std::string, ModelServerSettHelper*>(sName,pServerSettHelper));
     }else{
         Log::warn(TAG, "Duplicate setting '" + sName + "'. Skip");
     }
@@ -129,7 +129,7 @@ QString EmploySettings::getSettString(const std::string &sName){
     QMutexLocker locker (&m_mtxServerSettings);
     QString sResult = "";
     if(m_mapSettings.count(sName)){
-        ServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
+        ModelServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
         if(!pServerSettHelper->isString()){
             Log::err(TAG, "Wrong type setting string (get): " + sName);
         }else{
@@ -146,7 +146,7 @@ QString EmploySettings::getSettString(const std::string &sName){
 void EmploySettings::setSettString(const std::string &sName, QString sValue){
     QMutexLocker locker (&m_mtxServerSettings);
     if(m_mapSettings.count(sName)){
-        ServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
+        ModelServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
         if(!pServerSettHelper->isString()){
             Log::err(TAG, "Wrong type setting string (set): " + sName);
         }else{
@@ -164,7 +164,7 @@ QString EmploySettings::getSettPassword(const std::string &sName){
     QMutexLocker locker (&m_mtxServerSettings);
     QString sResult = "";
     if(m_mapSettings.count(sName)){
-        ServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
+        ModelServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
         if(!pServerSettHelper->isPassword()){
             Log::err(TAG, "Wrong type setting password (get): " + sName);
         }else{
@@ -181,7 +181,7 @@ QString EmploySettings::getSettPassword(const std::string &sName){
 void EmploySettings::setSettPassword(const std::string &sName, QString sValue){
     QMutexLocker locker (&m_mtxServerSettings);
     if(m_mapSettings.count(sName)){
-        ServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
+        ModelServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
         if(!pServerSettHelper->isPassword()){
             Log::err(TAG, "Wrong type setting string (set): " + sName);
         }else{
@@ -199,7 +199,7 @@ int EmploySettings::getSettInteger(const std::string &sName){
     QMutexLocker locker (&m_mtxServerSettings);
     int nResult = 0;
     if(m_mapSettings.count(sName)){
-        ServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
+        ModelServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
         if(!pServerSettHelper->isInteger()){
             Log::err(TAG, "Wrong type setting integer (get): " + sName);
         }else{
@@ -216,7 +216,7 @@ int EmploySettings::getSettInteger(const std::string &sName){
 void EmploySettings::setSettInteger(const std::string &sName, int nValue){
     QMutexLocker locker (&m_mtxServerSettings);
     if(m_mapSettings.count(sName)){
-        ServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
+        ModelServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
         if(!pServerSettHelper->isInteger()){
             Log::err(TAG, "Wrong type setting integer (set): " + sName);
         }else{
@@ -234,7 +234,7 @@ bool EmploySettings::getSettBoolean(const std::string &sName){
     QMutexLocker locker (&m_mtxServerSettings);
     bool bResult = false;
     if(m_mapSettings.count(sName)){
-        ServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
+        ModelServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
         if(!pServerSettHelper->isBoolean()){
             Log::err(TAG, "Wrong type setting boolean (get): " + sName);
         }else{
@@ -251,7 +251,7 @@ bool EmploySettings::getSettBoolean(const std::string &sName){
 void EmploySettings::setSettBoolean(const std::string &sName, bool bValue){
     QMutexLocker locker (&m_mtxServerSettings);
     if(m_mapSettings.count(sName)){
-        ServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
+        ModelServerSettHelper* pServerSettHelper = m_mapSettings.at(sName);
         if(!pServerSettHelper->isBoolean()){
             Log::err(TAG, "Wrong type setting boolean (set): " + sName);
         }else{
@@ -280,17 +280,17 @@ const std::string &EmploySettings::getSettType(const std::string &sName){
 
 // ---------------------------------------------------------------------
 
-const std::map<std::string, ServerSettHelper*> &EmploySettings::listSettings(){
+const std::map<std::string, ModelServerSettHelper*> &EmploySettings::listSettings(){
 	return m_mapSettings;
 }
 
 // ---------------------------------------------------------------------
 
 void EmploySettings::printSettings(){
-	std::map<std::string, ServerSettHelper*>::iterator it = m_mapSettings.begin();
+	std::map<std::string, ModelServerSettHelper*>::iterator it = m_mapSettings.begin();
     for (; it!=m_mapSettings.end(); ++it){
         std::string sName = it->first;
-        ServerSettHelper *pServerSettHelper = it->second;
+        ModelServerSettHelper *pServerSettHelper = it->second;
 
 		std::cout << " * [" << pServerSettHelper->name() << "] => [";
         if(pServerSettHelper->isBoolean()){
@@ -315,10 +315,10 @@ void EmploySettings::printSettings(){
 nlohmann::json EmploySettings::toJson(){
     auto jsonSettings = nlohmann::json::array();
 
-    std::map<std::string, ServerSettHelper*>::iterator it = m_mapSettings.begin();
+    std::map<std::string, ModelServerSettHelper*>::iterator it = m_mapSettings.begin();
     for (; it!=m_mapSettings.end(); ++it){
         std::string sName = it->first;
-        ServerSettHelper *pServerSettHelper = it->second;
+        ModelServerSettHelper *pServerSettHelper = it->second;
 
         nlohmann::json jsonSett;
         jsonSett["name"] = pServerSettHelper->name();
@@ -343,7 +343,7 @@ nlohmann::json EmploySettings::toJson(){
 
 // ---------------------------------------------------------------------
 
-void EmploySettings::initSettingDatabase(ServerSettHelper *pServerSettHelper){
+void EmploySettings::initSettingDatabase(ModelServerSettHelper *pServerSettHelper){
     Log::info(TAG, "Init settings to database: " + pServerSettHelper->name());
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
@@ -360,7 +360,7 @@ void EmploySettings::initSettingDatabase(ServerSettHelper *pServerSettHelper){
 
 // ---------------------------------------------------------------------
 
-void EmploySettings::updateSettingDatabase(ServerSettHelper *pServerSettHelper){
+void EmploySettings::updateSettingDatabase(ModelServerSettHelper *pServerSettHelper){
 	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);

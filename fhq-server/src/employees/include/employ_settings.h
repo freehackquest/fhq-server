@@ -3,7 +3,7 @@
 
 #include <employees.h>
 #include <iserver.h>
-#include <serversetthelper.h>
+#include <model_server_sett_helper.h>
 
 #include <QString>
 #include <QMutex>
@@ -26,17 +26,17 @@ public:
     bool hasSett(const std::string &sName);
     const std::string &getSettType(const std::string &sName);
 
-	const std::map<std::string, ServerSettHelper*> &listSettings();
+	const std::map<std::string, ModelServerSettHelper*> &listSettings();
 	void printSettings();
     nlohmann::json toJson();
 
 private:
 
-    void addNewSetting(ServerSettHelper* pServerSettHelper);
-    void initSettingDatabase(ServerSettHelper* pServerSettHelper);
-    void updateSettingDatabase(ServerSettHelper* pServerSettHelper);
+    void addNewSetting(ModelServerSettHelper* pServerSettHelper);
+    void initSettingDatabase(ModelServerSettHelper* pServerSettHelper);
+    void updateSettingDatabase(ModelServerSettHelper* pServerSettHelper);
 
-    std::map<std::string, ServerSettHelper*> m_mapSettings;
+    std::map<std::string, ModelServerSettHelper*> m_mapSettings;
 
     QMutex m_mtxServerSettings;
     std::string TAG;

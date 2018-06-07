@@ -1,16 +1,16 @@
-#ifndef SERVERSETT_HELPER_H
-#define SERVERSETT_HELPER_H
+#ifndef MODEL_SERVER_SETT_HELPER_H
+#define MODEL_SERVER_SETT_HELPER_H
 
 #include <iserver.h>
 #include <log.h>
 
-class ServerSettHelper {
+class ModelServerSettHelper {
 
 public:
-    ServerSettHelper();
-    ServerSettHelper(const std::string &sGroup, const std::string &sName, QString sValue, bool bPassword = false);
-    ServerSettHelper(const std::string &sGroup, const std::string &sName, bool bValue);
-    ServerSettHelper(const std::string &sGroup, const std::string &sName, int nValue);
+    ModelServerSettHelper();
+    ModelServerSettHelper(const std::string &sGroup, const std::string &sName, QString sValue, bool bPassword = false);
+    ModelServerSettHelper(const std::string &sGroup, const std::string &sName, bool bValue);
+    ModelServerSettHelper(const std::string &sGroup, const std::string &sName, int nValue);
 
     const std::string &name();
     QString valueAsString();
@@ -38,7 +38,6 @@ private:
     std::string m_sType;
     std::string m_sGroup;
 
-
 };
 
 static std::string SETT_TYPE_UNKNOWN = "unknown";
@@ -47,4 +46,4 @@ static std::string SETT_TYPE_BOOLEAN = "boolean";
 static std::string SETT_TYPE_INTEGER = "integer";
 static std::string SETT_TYPE_PASSWORD = "password";
 
-#endif // SERVERSETT_HELPER_H
+#endif // MODEL_SERVER_SETT_HELPER_H

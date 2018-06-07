@@ -3,7 +3,6 @@
 
 #include <employees.h>
 #include <iserver.h>
-#include <serversetthelper.h>
 
 class EmployImages : public EmployBase {
 private:

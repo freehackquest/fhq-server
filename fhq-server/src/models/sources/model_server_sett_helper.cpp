@@ -1,4 +1,4 @@
-#include <serversetthelper.h>
+#include <model_server_sett_helper.h>
 
 #include <log.h>
 
@@ -8,13 +8,13 @@
 #include <QDateTime>
 #include <QDir>
 
-ServerSettHelper::ServerSettHelper(){
-       TAG = "ServerSettHelper";
+ModelServerSettHelper::ModelServerSettHelper(){
+       TAG = "ModelServerSettHelper";
 }
 
 // ---------------------------------------------------------------------
 
-ServerSettHelper::ServerSettHelper(const std::string &sGroup, const std::string &sName, QString sValue, bool bPassword) : ServerSettHelper(){
+ModelServerSettHelper::ModelServerSettHelper(const std::string &sGroup, const std::string &sName, QString sValue, bool bPassword) : ModelServerSettHelper(){
     m_sName = sName;
     m_sType = bPassword ? SETT_TYPE_PASSWORD : SETT_TYPE_STRING;
     m_sValueAsString = sValue;
@@ -25,7 +25,7 @@ ServerSettHelper::ServerSettHelper(const std::string &sGroup, const std::string 
 
 // ---------------------------------------------------------------------
 
-ServerSettHelper::ServerSettHelper(const std::string &sGroup, const std::string &sName, bool bValue) : ServerSettHelper(){
+ModelServerSettHelper::ModelServerSettHelper(const std::string &sGroup, const std::string &sName, bool bValue) : ModelServerSettHelper(){
     m_sName = sName;
     m_sType = SETT_TYPE_BOOLEAN;
     m_sValueAsString = bValue ? "yes" : "no";
@@ -36,7 +36,7 @@ ServerSettHelper::ServerSettHelper(const std::string &sGroup, const std::string 
 
 // ---------------------------------------------------------------------
 
-ServerSettHelper::ServerSettHelper(const std::string &sGroup, const std::string &sName, int nValue) : ServerSettHelper(){
+ModelServerSettHelper::ModelServerSettHelper(const std::string &sGroup, const std::string &sName, int nValue) : ModelServerSettHelper(){
     m_sName = sName;
     m_sType = SETT_TYPE_INTEGER;
     m_sValueAsString = QString::number(nValue);
@@ -47,87 +47,87 @@ ServerSettHelper::ServerSettHelper(const std::string &sGroup, const std::string 
 
 // ---------------------------------------------------------------------
 
-const std::string &ServerSettHelper::name(){
+const std::string &ModelServerSettHelper::name(){
     return m_sName;
 }
 
 // ---------------------------------------------------------------------
 
-QString ServerSettHelper::valueAsString(){
+QString ModelServerSettHelper::valueAsString(){
     return m_sValueAsString;
 }
 
 // ---------------------------------------------------------------------
 
-QString ServerSettHelper::valueAsPassword(){
+QString ModelServerSettHelper::valueAsPassword(){
     return m_sValueAsString;
 }
 
 // ---------------------------------------------------------------------
 
-int ServerSettHelper::valueAsInteger(){
+int ModelServerSettHelper::valueAsInteger(){
     return m_nValueAsInteger;
 }
 
 // ---------------------------------------------------------------------
 
-bool ServerSettHelper::valueAsBoolean(){
+bool ModelServerSettHelper::valueAsBoolean(){
     return m_bValueAsBoolean;
 }
 
 // ---------------------------------------------------------------------
 
-void ServerSettHelper::setValue(QString sValue){
+void ModelServerSettHelper::setValue(QString sValue){
     m_sValueAsString = sValue;
 }
 
 // ---------------------------------------------------------------------
 
-void ServerSettHelper::setValue(bool bValue){
+void ModelServerSettHelper::setValue(bool bValue){
     m_bValueAsBoolean = bValue;
     m_sValueAsString = bValue ? "yes" : "no";
 }
 
 // ---------------------------------------------------------------------
 
-void ServerSettHelper::setValue(int nValue){
+void ModelServerSettHelper::setValue(int nValue){
     m_nValueAsInteger = nValue;
     m_sValueAsString = QString::number(nValue);
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &ServerSettHelper::group(){
+const std::string &ModelServerSettHelper::group(){
     return m_sGroup;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &ServerSettHelper::type(){
+const std::string &ModelServerSettHelper::type(){
     return m_sType;
 }
 
 // ---------------------------------------------------------------------
 
-bool ServerSettHelper::isString(){
+bool ModelServerSettHelper::isString(){
     return m_sType == SETT_TYPE_STRING;
 }
 
 // ---------------------------------------------------------------------
 
-bool ServerSettHelper::isBoolean(){
+bool ModelServerSettHelper::isBoolean(){
     return m_sType == SETT_TYPE_BOOLEAN;
 }
 
 // ---------------------------------------------------------------------
 
-bool ServerSettHelper::isInteger(){
+bool ModelServerSettHelper::isInteger(){
     return m_sType == SETT_TYPE_INTEGER;
 }
 
 // ---------------------------------------------------------------------
 
-bool ServerSettHelper::isPassword(){
+bool ModelServerSettHelper::isPassword(){
     return m_sType == SETT_TYPE_PASSWORD;
 }
 
