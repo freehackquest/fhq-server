@@ -16,6 +16,7 @@ class FHQCliRecvThread(Thread):
     __sendCommandQueue = Queue.Queue();
     __cmd_results = {};
     do_run = True;
+    __connecting = False;
     __url = None;
     __messageId = 0;
     
@@ -24,14 +25,17 @@ class FHQCliRecvThread(Thread):
         self.__url = url;
     
     def run(self):
+        self.__connecting = True
         print('[FHQCliThread] Connecting to ' + self.__url)
         try:
             self.__ws = websocket.create_connection(self.__url)
         except:
             print('Failed connect to ' + self.__url)
             self.__ws = None
+            self.__connecting = False
             return
         # self.__ws.setblocking(0)
+        self.__connecting = False
         print('[FHQCliThread] Connected');
         while(self.do_run):
             while not self.__sendCommandQueue.empty():
@@ -74,7 +78,7 @@ class FHQCliRecvThread(Thread):
         self.__cmd_results.pop(cmd_m, None)
     
     def hasConnection(self):
-        return self.__ws != None
+        return self.__connecting or self.__ws != None
 
 class FHQCli:
     # __ws = None;
@@ -112,14 +116,17 @@ class FHQCli:
         cmd_result = {};
         while True:
             counter_time = counter_time + 1;
+            if not self.__recvThread.hasConnection():
+                return None
             if self.__recvThread.hasCmdResult(cmd_m):
                 cmd_result = self.__recvThread.getCmdResult(cmd_m);
                 self.__recvThread.removeCmdResult(cmd_m);
-                break;
+                return cmd_result
             if counter_time > max_time:
                 cmd_result = None
                 break;
             time.sleep(0.2)
+            # print('__looper ....')
         return cmd_result;
     
     # Access unauthorized no
