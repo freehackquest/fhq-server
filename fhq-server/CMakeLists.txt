@@ -160,6 +160,8 @@ list (APPEND FHQSRV_SOURCES "src/models/sources/model_lxd_container.cpp")
 
 # utils
 list (APPEND FHQSRV_SOURCES "src/utils/utils.h")
+list (APPEND FHQSRV_SOURCES "src/utils/include/utils_export_list_of_handlers.h")
+list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_export_list_of_handlers.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/include/utils_levenshtein.h")
 list (APPEND FHQSRV_SOURCES "src/utils/include/utils_prepare_deb_package.h")
 list (APPEND FHQSRV_SOURCES "src/utils/include/utils_static_analizing_text.h")

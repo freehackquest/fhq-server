@@ -28,6 +28,9 @@
 #include <employ_settings.h>
 #include <employ_images.h>
 #include <model_help_args.h>
+#include <iomanip>
+#include <algorithm>
+#include <utils_export_list_of_handlers.h>
 
 int main(int argc, char** argv) {
 	QCoreApplication a(argc, argv);
@@ -73,14 +76,7 @@ int main(int argc, char** argv) {
 		}
 		return 0;
 	}else if(helpArgs.has("show-handlers") || helpArgs.has("-sh")){
-		std::cout << "\n\n * CmdHandlers (" << g_pCmdHandlers->size() << "):\n";
-		std::map<std::string, CmdHandlerBase*>::iterator it = g_pCmdHandlers->begin();
-		for (; it!=g_pCmdHandlers->end(); ++it){
-			std::string sCmd = it->first;
-			CmdHandlerBase* pCmdHandlerBase = it->second;
-			std::cout << " |--- * " << sCmd << "\n";
-		}
-		std::cout << "\n\n";
+	    UtilsExportListOfHandlers::print();
 		return 0;
 	}else if(helpArgs.has("show-employees") || helpArgs.has("-se")){
 		std::cout << " * Employees (" << g_pEmployees->size() << "):\n";
