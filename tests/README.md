@@ -1,5 +1,12 @@
 # Tests for fhq-server
 
+
+## Install python requirements
+
+	`sudo pip install -r requirements.txt`
+
+
+
 ## Set the settings
 
 Create test database by sql-queries:
