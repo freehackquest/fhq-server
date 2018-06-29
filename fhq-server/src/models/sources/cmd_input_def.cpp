@@ -115,6 +115,18 @@ nlohmann::json CmdInputDef::toJson(){
 
 // ---------------------------------------------------------------------
 
+const std::string &CmdInputDef::getType(){
+	return m_sType;
+}
+
+// ---------------------------------------------------------------------
+
+const std::string &CmdInputDef::getType() const{
+	return m_sType;
+}
+
+// ---------------------------------------------------------------------
+
 const std::string &CmdInputDef::getName(){
 	return m_sName;
 }
@@ -123,6 +135,30 @@ const std::string &CmdInputDef::getName(){
 
 const std::string &CmdInputDef::getName() const {
 	return m_sName;
+}
+
+// ---------------------------------------------------------------------
+
+const std::string &CmdInputDef::getRestrict(){
+	return m_sRestrict;
+}
+
+// ---------------------------------------------------------------------
+
+const std::string &CmdInputDef::getRestrict() const{
+	return m_sRestrict;
+}
+
+// ---------------------------------------------------------------------
+
+const std::string &CmdInputDef::getDescription(){
+	return m_sDescription;
+}
+
+// ---------------------------------------------------------------------
+
+const std::string &CmdInputDef::getDescription() const{
+	return m_sDescription;
 }
 
 // ---------------------------------------------------------------------
