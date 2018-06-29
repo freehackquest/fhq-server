@@ -31,6 +31,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <utils_export_list_of_handlers.h>
+#include <utils_export_client_library_python.h>
 
 int main(int argc, char** argv) {
 	QCoreApplication a(argc, argv);
@@ -42,6 +43,7 @@ int main(int argc, char** argv) {
 	helpArgs.addHelp(HelpArg("version", "-v", "Print version"));
 	helpArgs.addHelp(HelpArg("run-unit-tests", "-rut", "Run unit tests"));
 	helpArgs.addHelp(HelpArg("show-handlers", "-sh", "Show handlers"));
+	helpArgs.addHelp(HelpArg("export-cli-library-python", "-eclp", "Export client library for python"));
 	helpArgs.addHelp(HelpArg("show-employees", "-se", "Show employees"));
 	helpArgs.addHelp(HelpArg("show-settings", "-ss", "Show settings"));
 	helpArgs.addHelp(HelpArg("prepare-deb", "-pd", "Prepare Deb Package"));
@@ -78,6 +80,9 @@ int main(int argc, char** argv) {
 	}else if(helpArgs.has("show-handlers") || helpArgs.has("-sh")){
 	    UtilsExportListOfHandlers::print();
 		return 0;
+	}else if(helpArgs.has("export-cli-library-python") || helpArgs.has("-eclp")){
+        UtilsExportClientLibraryPython::exportLib();
+        return 0;
 	}else if(helpArgs.has("show-employees") || helpArgs.has("-se")){
 		std::cout << " * Employees (" << g_pEmployees->size() << "):\n";
 		std::map<std::string, EmployBase*>::iterator it = g_pEmployees->begin();
