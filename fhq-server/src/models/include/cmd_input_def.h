@@ -7,14 +7,6 @@
 /*! 
  * Helper api methods description for input params in handlers
  * */
-
-static const std::string CMD_INPUT_DEF_TYPE_STRING = "string";
-static const std::string CMD_INPUT_DEF_TYPE_BOOL = "boolean";
-static const std::string CMD_INPUT_DEF_TYPE_ENUM = "enum";
-static const std::string CMD_INPUT_DEF_TYPE_UUID = "uuid";
-static const std::string CMD_INPUT_DEF_TYPE_INTEGER = "integer";
-static const std::string CMD_INPUT_DEF_TYPE_EMAIL = "email";
-static const std::string CMD_INPUT_DEF_TYPE_ANY = "any";
 	
 class CmdInputDef {
 	public:
@@ -68,6 +60,14 @@ class CmdInputDef {
 		bool m_bSettedMinVal;
 		int m_nMaxVal;
 		bool m_bSettedMaxVal;
+
+		std::string CMD_INPUT_DEF_TYPE_INTEGER = "integer";
+		std::string CMD_INPUT_DEF_TYPE_STRING = "string";
+		std::string CMD_INPUT_DEF_TYPE_BOOL = "boolean";
+		std::string CMD_INPUT_DEF_TYPE_ENUM = "enum";
+		std::string CMD_INPUT_DEF_TYPE_UUID = "uuid";
+		std::string CMD_INPUT_DEF_TYPE_EMAIL = "email";
+		std::string CMD_INPUT_DEF_TYPE_ANY = "any";
 };
 
 #endif // CMD_INPUT_DEF_H

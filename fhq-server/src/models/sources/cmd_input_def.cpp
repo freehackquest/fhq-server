@@ -1,6 +1,7 @@
 #include <cmd_input_def.h>
-#include <QJsonDocument>
-#include <QJsonObject>
+#include <iostream>
+
+// ---------------------------------------------------------------------
 
 CmdInputDef::CmdInputDef(const std::string &name){
 	m_sName = name;
@@ -30,14 +31,14 @@ CmdInputDef & CmdInputDef::required(){
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::string_(){
-	m_sType = CMD_INPUT_DEF_TYPE_STRING;
+	m_sType = std::string(CMD_INPUT_DEF_TYPE_STRING);
 	return *this;
 }
 
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::enum_(QStringList list){
-	m_sType = CMD_INPUT_DEF_TYPE_ENUM;
+	m_sType = std::string(CMD_INPUT_DEF_TYPE_ENUM);
 	m_lstEnums = list;
 	return *this;
 }
@@ -52,28 +53,28 @@ CmdInputDef & CmdInputDef::integer_(){
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::uuid_(){
-	m_sType = CMD_INPUT_DEF_TYPE_UUID;
+	m_sType = std::string(CMD_INPUT_DEF_TYPE_UUID);
 	return *this;
 }
 
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::bool_(){
-	m_sType = CMD_INPUT_DEF_TYPE_BOOL;
+	m_sType = std::string(CMD_INPUT_DEF_TYPE_BOOL);
 	return *this;
 }
 
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::email_(){
-    m_sType = CMD_INPUT_DEF_TYPE_EMAIL;
+    m_sType = std::string(CMD_INPUT_DEF_TYPE_EMAIL);
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::any_(){
-    m_sType = CMD_INPUT_DEF_TYPE_ANY;
+    m_sType = std::string(CMD_INPUT_DEF_TYPE_ANY);
     return *this;
 }
 
