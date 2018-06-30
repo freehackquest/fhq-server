@@ -62,3 +62,4 @@ tmpdeb
 install/DOXYGEN/html/*
 CMakeLists.txt.user
 .vscode
+fhq-server/libfhqcli-py
