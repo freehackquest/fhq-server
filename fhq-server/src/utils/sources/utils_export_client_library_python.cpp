@@ -162,6 +162,7 @@ void UtilsExportClientLibraryPython::exportSetupPy(){
         .add("author_email='freehackquest@gmail.com',")
         .add("description='FreeHackQuest Python Client Library for fhq-server',")
         .add("long_description=long_description,")
+        .add("long_description_content_type='text/markdown',")
         .add("url='https://github.com/freehackquest/libfhqcli-py',")
         .add("packages=setuptools.find_packages(),")
         .sub("classifiers=(")
