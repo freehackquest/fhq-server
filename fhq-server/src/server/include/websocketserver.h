@@ -52,7 +52,7 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 	private Q_SLOTS:
 		void onNewConnection();
 		void onNewConnectionSSL();
-		void processTextMessage(QString message);
+        void processTextMessage(const QString &message);
 		void processBinaryMessage(QByteArray message);
 		void socketDisconnected();
 		void onSslErrors(const QList<QSslError> &errors);

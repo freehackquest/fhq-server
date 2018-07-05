@@ -15,6 +15,7 @@ class Errors {
 		static Error LostDatabaseConnection();
 
 		static Error NotImplementedYet();
+        static Error NotImplementedYet(const QString &comments);
 		static Error InternalServerError();
 		static Error ParamExpected(QString param_name);
 		static Error ParamMustBeInteger(QString param_name);

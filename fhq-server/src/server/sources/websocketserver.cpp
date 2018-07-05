@@ -131,74 +131,84 @@ void WebSocketServer::onNewConnectionSSL(){
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::processTextMessage(QString message) {
+void WebSocketServer::processTextMessage(const QString &message) {
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
     EmployWsServer *pWsServer = findEmploy<EmployWsServer>();
 
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
 
-    nlohmann::json jsonRequest_ = nlohmann::json::parse(message.toStdString());
+    try {
+        if(!nlohmann::json::accept(message.toStdString())){
+            this->sendMessageError(pClient, "error", "", Errors::NotImplementedYet("Not JSON data"));
+            return;
+        }
 
-    QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8()); // TODO deprecated
-    QJsonObject jsonRequest = doc.object(); // TODO deprecated
+        nlohmann::json jsonRequest_ = nlohmann::json::parse(message.toStdString());
 
-    ModelRequest *pModelRequest = new ModelRequest(pClient, this, jsonRequest, jsonRequest_);
+        QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8()); // TODO deprecated
+        QJsonObject jsonRequest = doc.object(); // TODO deprecated
 
-    if(!pModelRequest->hasCommand()){
-		this->sendMessageError(pClient, "error", "", Errors::NotFound("requare parameter 'cmd'"));
-		// pModelRequestData->sendError(Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
-		return;
-	}
-	
-    std::string cmd = pModelRequest->command();
+        ModelRequest *pModelRequest = new ModelRequest(pClient, this, jsonRequest, jsonRequest_);
 
-    Log::info(TAG.toStdString(), "[WS] <<< " + cmd);
+        if(!pModelRequest->hasCommand()){
+            this->sendMessageError(pClient, "error", "", Errors::NotFound("requare parameter 'cmd'"));
+            // pModelRequestData->sendError(Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
+            return;
+        }
 
-    if(!pModelRequest->hasM()){
-		this->sendMessageError(pClient, cmd, "", Errors::NotFound("requare parameter 'm' - messageid"));
-		return;
-	}
+        std::string cmd = pModelRequest->command();
 
-    CmdHandlerBase *pCmdHandler = CmdHandlers::findCmdHandler(cmd);
-    if(pCmdHandler == NULL){
-        Log::warn(TAG, "Unknown command: " + QString(cmd.c_str()));
-        pModelRequest->sendMessageError(cmd, Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
-        return;
+        Log::info(TAG.toStdString(), "[WS] <<< " + cmd);
+
+        if(!pModelRequest->hasM()){
+            this->sendMessageError(pClient, cmd, "", Errors::NotFound("requare parameter 'm' - messageid"));
+            return;
+        }
+
+        CmdHandlerBase *pCmdHandler = CmdHandlers::findCmdHandler(cmd);
+        if(pCmdHandler == NULL){
+            Log::warn(TAG, "Unknown command: " + QString(cmd.c_str()));
+            pModelRequest->sendMessageError(cmd, Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
+            return;
+        }
+
+        pServerInfo->incrementRequests(cmd);
+
+        // check access
+        const ModelCommandAccess access = pCmdHandler->access();
+        if(!access.accessUnauthorized()){
+            IUserToken *pUserToken = getUserToken(pClient);
+            if(pUserToken == NULL){
+                pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::NotAuthorizedRequest());
+                return;
+            }
+
+            // access user
+            if(pUserToken->isUser() && !access.accessUser()){
+                pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::AccessDenyForUser());
+                return;
+            }
+
+            // access admin
+            if(pUserToken->isAdmin() && !access.accessAdmin()){
+                pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::AccessDenyForAdmin());
+                return;
+            }
+        }
+
+        // allow access
+        // TODO move to ModelRequest
+        Error error = Errors::NoneError();
+        if(pWsServer->validateInputParameters(error, pCmdHandler, jsonRequest)){
+            pCmdHandler->handle(pModelRequest);
+        }else{
+            pModelRequest->sendMessageError(pCmdHandler->cmd(), error);
+            return;
+        }
+    } catch (const std::exception &e) {
+        this->sendMessageError(pClient, "", "", Errors::InternalServerError());
+        Log::err(TAG, e.what());
     }
-
-    pServerInfo->incrementRequests(cmd);
-	
-	// check access
-    const ModelCommandAccess access = pCmdHandler->access();
-    if(!access.accessUnauthorized()){
-		IUserToken *pUserToken = getUserToken(pClient);
-		if(pUserToken == NULL){
-            pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::NotAuthorizedRequest());
-			return;
-		}
-		
-		// access user
-        if(pUserToken->isUser() && !access.accessUser()){
-            pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::AccessDenyForUser());
-			return;
-		}
-		
-		// access admin
-        if(pUserToken->isAdmin() && !access.accessAdmin()){
-            pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::AccessDenyForAdmin());
-			return;
-		}
-	}
-
-	// allow access
-	// TODO move to ModelRequest
-	Error error = Errors::NoneError();
-    if(pWsServer->validateInputParameters(error, pCmdHandler, jsonRequest)){
-        pCmdHandler->handle(pModelRequest);
-	}else{
-        pModelRequest->sendMessageError(pCmdHandler->cmd(), error);
-		return;
-	}
 }
 
 // ---------------------------------------------------------------------
