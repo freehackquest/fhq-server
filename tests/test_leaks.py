@@ -6,19 +6,12 @@ import fhqtest
 
 fhqtest.init_enviroment();
 
-'''
-
-'''
-
-
-
-'''
-gameid - integer, required; Id of the game
-name - string, required; Visible part of the content
-content - string, required; Content of the leak
-score - integer, required; Price of the leak
-'''
-
-# fhqtest.admin_session.leaks_add()
+print(fhqtest.game)
+leak1 = fhqtest.admin_session.leaks_add({
+    "game_uuid": fhqtest.game_uuid,
+    "name": "test_leak1",
+    "content": "some_secret_content",
+    "score": 100
+})
 
 fhqtest.deinit_enviroment();

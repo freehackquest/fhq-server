@@ -9,7 +9,6 @@ loggined = False
 game_uuid = "00000000-0000-0000-0000-000000000000"
 game = None;
 
-
 def alert(check, msg):
     if(check == True):
         print("Error: " + msg)
@@ -27,7 +26,6 @@ def init_enviroment():
     loggined = True
     game = admin_session.game_info({"uuid": game_uuid})
     alert(resp == None, 'Could not get test game (2)');
-    print(game);
     if game['result'] == 'FAIL':
         game = admin_session.game_create({
             "uuid": game_uuid,
@@ -43,6 +41,7 @@ def init_enviroment():
         });
         alert(game == None, 'Could not send message (2)');
         alert(game['result'] == 'FAIL', 'Could not create test game ' + str(resp));
+    game = game['data']
 
 def deinit_enviroment():
     global admin_session

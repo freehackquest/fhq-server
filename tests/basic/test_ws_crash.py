@@ -30,5 +30,5 @@ def test_ws_json():
   print("Test WS Json")
   asyncio.get_event_loop().run_until_complete(json_send())
 
-# test_ws_crash()
+test_ws_crash()
 test_ws_json()
