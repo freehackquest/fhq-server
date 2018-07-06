@@ -43,6 +43,14 @@ Error Errors::NotImplementedYet(){
 
 // ---------------------------------------------------------------------
 
+Error Errors::NotImplementedYet(const QString &comments)
+{
+    Error error(404, "Not implemented yet: " + comments);
+    return error;
+}
+
+// ---------------------------------------------------------------------
+
 Error Errors::NoneError(){
 	Error error(404, "none");
 	return error;
