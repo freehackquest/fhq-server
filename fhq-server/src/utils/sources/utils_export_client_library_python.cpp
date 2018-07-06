@@ -453,7 +453,7 @@ void UtilsExportClientLibraryPython::export__init__py(){
         for(int i = 0; i < vVin.size(); i++){
             std::string nameIn = std::string(vVin[i].getName());
             builder
-            .sub("if req['" + nameIn + "'] != None: ")
+            .sub("if '" + nameIn + "' in req: ")
                 .add("requestJson['" + nameIn + "'] = req['" + nameIn + "']")
                 .end();
         }
