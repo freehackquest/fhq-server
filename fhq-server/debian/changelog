@@ -1,5 +1,8 @@
-fhq-server (0.2.15-0ppa0) xenial; urgency=low
+fhq-server (0.2.16-0ppa4) bionic; urgency=low
 
-  * Added fhq-server.config for postinst script
+  * Fixed crash
+  * Added leaks handlers
+  * Added lxd container handlers
+  * Added generator python lib cli
 
- -- Free Hack Quest <freehackquest@gmail.com>  Fri, 27 Apr 2018 01:28:59 +0700
+ -- Free Hack Quest <freehackquest@gmail.com>  Sat, 07 Jul 2018 03:02:13 +0700

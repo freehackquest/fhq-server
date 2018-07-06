@@ -10,7 +10,7 @@ import sys
 print ("Welcome to preapre ppa package...")
 
 
-print("\nPlease choose dist name:\n\t1. xenial\n\t2. yakkety\n\t3. zesty\n\t4. artful\n\t5. bionic");
+print("\nPlease choose dist name:\n\t1. xenial\n\t4. artful\n\t5. bionic");
 dist_name_ = raw_input()
 ppa_name_ = "";
 
