@@ -41,6 +41,8 @@ def init_enviroment():
         });
         alert(game == None, 'Could not send message (2)');
         alert(game['result'] == 'FAIL', 'Could not create test game ' + str(resp));
+        game = admin_session.game_info({"uuid": game_uuid})
+
     game = game['data']
 
 def deinit_enviroment():
@@ -49,7 +51,7 @@ def deinit_enviroment():
     global game_uuid
 
     # try remove all test objects
-    if loggined:
+    if loggined == True:
         admin_session.game_delete({"uuid": game_uuid, "admin_password": "admin"})
 
     admin_session.close();
