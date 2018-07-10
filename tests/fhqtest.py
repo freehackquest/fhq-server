@@ -9,10 +9,47 @@ loggined = False
 game_uuid = "00000000-0000-0000-0000-000000000000"
 game = None;
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+def print_header(msg):
+    global bcolors
+    print(bcolors.HEADER + "OK: " + msg + bcolors.ENDC)
+
+def print_success(msg):
+    global bcolors
+    print(bcolors.OKGREEN + "OK: " + msg + bcolors.ENDC)
+
+def print_bold(msg):
+    global bcolors
+    print(bcolors.BOLD + msg + bcolors.ENDC)
+
+def log_warn(msg):
+    global bcolors
+    print(bcolors.WARNING + "Warning: " + msg + bcolors.ENDC + "\n")
+
+def log_err(msg):
+    global bcolors
+    print(bcolors.FAIL + "Error: " + msg + bcolors.ENDC + "\n")
+
 def alert(check, msg):
     if(check == True):
-        print("Error: " + msg)
+        log_err(msg);
+        raise Exception(msg);
         sys.exit(0)
+
+def check_response(resp, msg_success):
+    if(resp['result'] == 'FAIL'):
+        log_err(resp['error']);
+    else:
+        print_success(msg_success)
 
 def init_enviroment():
     global admin_session
