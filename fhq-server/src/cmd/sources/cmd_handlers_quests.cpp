@@ -90,7 +90,7 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest){
     }
 
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
 	while (query.next()) {
@@ -182,7 +182,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest){
         query.bindValue(":userid", nUserID);
         query.bindValue(":questid", nQuestID);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -224,7 +224,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest){
                 query_game.prepare("SELECT * FROM games WHERE id = :id");
                 query_game.bindValue(":id", nGameID);
                 if(!query_game.exec()){
-                    pRequest->sendMessageError(cmd(), Error(500, query_game.lastError().text()));
+                    pRequest->sendMessageError(cmd(), Error(500, query_game.lastError().text().toStdString()));
                     return;
                 }
                 if (query_game.next()) {
@@ -248,7 +248,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest){
                 query_files.prepare("SELECT * FROM quests_files WHERE questid = :questid");
                 query_files.bindValue(":questid", nQuestID);
                 if(!query_files.exec()){
-                    pRequest->sendMessageError(cmd(), Error(500, query_files.lastError().text()));
+                    pRequest->sendMessageError(cmd(), Error(500, query_files.lastError().text().toStdString()));
                     return;
                 }
                 while (query_files.next()) {
@@ -272,7 +272,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest){
                 query_hints.prepare("SELECT * FROM quests_hints WHERE questid = :questid");
                 query_hints.bindValue(":questid", nQuestID);
                 if(!query_hints.exec()){
-                    pRequest->sendMessageError(cmd(), Error(500, query_hints.lastError().text()));
+                    pRequest->sendMessageError(cmd(), Error(500, query_hints.lastError().text().toStdString()));
                     return;
                 }
                 while (query_hints.next()) {
@@ -342,7 +342,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
         query.prepare("SELECT * FROM quest WHERE idquest = :questid");
         query.bindValue(":questid", nQuestID);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -363,7 +363,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
         query.prepare("SELECT * FROM games WHERE id = :gameid AND (NOW() < date_stop OR NOW() > date_restart)");
         query.bindValue(":gameid", nGameID);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -380,7 +380,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
         query.bindValue(":questid", nQuestID);
         query.bindValue(":userid", nUserID);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {
@@ -400,7 +400,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
         query.bindValue(":questid", nQuestID);
         query.bindValue(":userid", nUserID);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {
@@ -430,14 +430,14 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
         query.bindValue(":levenshtein", nLevenshtein);
 
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         pServerInfo->incrementQuestsAttempt();
     }
 
     if(!bPassed){
-        pRequest->sendMessageError(cmd(), Error(403, "Answer incorrect. Levenshtein distance: " + QString::number(nLevenshtein)));
+        pRequest->sendMessageError(cmd(), Error(403, "Answer incorrect. Levenshtein distance: " + QString::number(nLevenshtein).toStdString()));
         return;
     }
 
@@ -449,7 +449,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
         query.bindValue(":userid", nUserID);
         query.bindValue(":questid", nQuestID);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -512,7 +512,7 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest){
         query.bindValue(":uuid", sUUID);
         query.exec();
         if (query.next()) {
-            pRequest->sendMessageError(cmd(), Error(403, "Quest with uuid {" + sUUID + "} already exists"));
+            pRequest->sendMessageError(cmd(), Error(403, "Quest with uuid {" + sUUID.toStdString() + "} already exists"));
             return;
         }
     }
@@ -600,7 +600,7 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest){
     query.bindValue(":count_user_solved", 0);
 
     if (!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     pServerInfo->incrementQuests();
@@ -649,7 +649,7 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest){
         query.prepare("SELECT * FROM quest WHERE idquest = :questid");
         query.bindValue(":questid", questid);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {
@@ -667,7 +667,7 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest){
         query.prepare("DELETE FROM quest WHERE idquest = :questid");
         query.bindValue(":questid", questid);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -678,7 +678,7 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest){
         query.prepare("DELETE FROM users_quests_answers WHERE questid = :questid");
         query.bindValue(":questid", questid);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -689,7 +689,7 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest){
         query.prepare("DELETE FROM users_quests WHERE questid = :questid");
         query.bindValue(":questid", questid);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -842,7 +842,7 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest){
     query.bindValue(":confirmed", 0);
 
     if (!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     // pMemoryCacheServerInfo->incrementQuests();
@@ -899,7 +899,7 @@ void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest){
         query.prepare("SELECT * FROM quest WHERE idquest = :questid");
         query.bindValue(":questid", nQuestID);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -922,7 +922,7 @@ void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest){
         query.bindValue(":passed", "No");
         query.bindValue(":role", "user");
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -943,7 +943,7 @@ void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest){
         query.bindValue(":passed", "Yes");
         query.bindValue(":role", "user");
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -966,7 +966,7 @@ void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest){
         query.bindValue(":questid", nQuestID);
 
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         QJsonArray users;
@@ -1045,7 +1045,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
         query.prepare("SELECT * FROM quest WHERE idquest = :questid");
         query.bindValue(":questid", nQuestID);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {
@@ -1076,7 +1076,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
             query.bindValue(":name", sName);
             query.bindValue(":questid", nQuestID);
             if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
                 return;
             }
             sNamePrev = sName;
@@ -1104,7 +1104,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
             query.bindValue(":gameid", nGameID);
             query.bindValue(":questid", nQuestID);
             if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::UpdateMaxScoreGame(nGameID);
@@ -1123,7 +1123,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
             query.bindValue(":subject", sSubject);
             query.bindValue(":questid", nQuestID);
             if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::AddPublicEvents("quests", "Updated subject of quest #" + QString::number(nQuestID) + " " + sNamePrev);
@@ -1140,7 +1140,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
             query.bindValue(":text", sText);
             query.bindValue(":questid", nQuestID);
             if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::AddPublicEvents("quests", "Updated text of quest #" + QString::number(nQuestID) + " " + sNamePrev);
@@ -1156,7 +1156,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
             query.bindValue(":score", nScore);
             query.bindValue(":questid", nQuestID);
             if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::AddPublicEvents("quests", "Updated score of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from " + QString::number(nScorePrev) + " to " + QString::number(nScore));
@@ -1174,7 +1174,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
             query.bindValue(":answer", sAnswer);
             query.bindValue(":questid", nQuestID);
             if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::AddPublicEvents("quests", "Updated answer of quest #" + QString::number(nQuestID) + " " + sNamePrev);
@@ -1190,7 +1190,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
             query.bindValue(":author", sAuthor);
             query.bindValue(":questid", nQuestID);
             if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::AddPublicEvents("quests", "Updated author of quest #" + QString::number(nQuestID) + " " + sNamePrev);
@@ -1206,7 +1206,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
             query.bindValue(":answer_format", sAnswerFormat);
             query.bindValue(":questid", nQuestID);
             if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::AddPublicEvents("quests", "Updated answer format of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sAnswerFormatPrev + "] to [" + sAnswerFormat + "]");
@@ -1222,7 +1222,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
             query.bindValue(":state", sState);
             query.bindValue(":questid", nQuestID);
             if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::AddPublicEvents("quests", "Updated state of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sStatePrev + "] to [" + sState + "]");
@@ -1238,7 +1238,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
             query.bindValue(":copyright", sCopyright);
             query.bindValue(":questid", nQuestID);
             if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::AddPublicEvents("quests", "Updated copyright of quest #" + QString::number(nQuestID) + " " + sNamePrev + " from [" + sCopyrightPrev + "] to [" + sCopyright + "]");
@@ -1254,7 +1254,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
             query.bindValue(":description_state", sDescriptionState);
             query.bindValue(":questid", nQuestID);
             if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
                 return;
             }
             // nothing to inform
@@ -1297,7 +1297,7 @@ void CmdHandlerQuestsSubjects::handle(ModelRequest *pRequest){
     query.bindValue(":state", "open");
 
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -1692,7 +1692,7 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest){
             query.bindValue(key, filter_values.value(key));
         }
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         if(query.next()) {

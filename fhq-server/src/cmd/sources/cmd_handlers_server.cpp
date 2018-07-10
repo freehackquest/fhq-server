@@ -115,7 +115,7 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest){
         query.bindValue(":morethan", nMoreThen);
         query.bindValue(":citieslimit", nCitiesLimit);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         while(query.next()) {
@@ -133,7 +133,7 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest){
         query.prepare("SELECT u.nick, u.university, u.rating FROM users u WHERE u.role = :role ORDER BY u.rating DESC LIMIT 0,10");
         query.bindValue(":role", "user");
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         int nPlace = 1;
