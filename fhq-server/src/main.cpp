@@ -18,7 +18,6 @@
 #include <utils_logger.h>
 #include <websocketserver.h>
 #include <utils_prepare_deb_package.h>
-#include <utils_create_config.h>
 #include <utils_lxd.h>
 #include <create_unit_tests.h>
 #include <employees.h>
@@ -103,9 +102,6 @@ int main(int argc, char** argv) {
 		return 0;
 	}else if(helpArgs.has("--prepare-deb") || helpArgs.has("-pd")){
 		UtilsPrepareDebPackage::prepare("","tmpdeb");
-		return 0;
-	}else if(helpArgs.has("make-config-linux") || helpArgs.has("-mcl")){
-		UtilsCreateConfig::forLinux();
 		return 0;
 	}else if(helpArgs.has("check-server-config") || helpArgs.has("-csc")){
 		std::cout << "\n * Check Server Config\n\n";
