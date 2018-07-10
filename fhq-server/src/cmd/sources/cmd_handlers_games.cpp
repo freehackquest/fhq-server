@@ -470,6 +470,7 @@ void CmdHandlerGameInfo::handle(ModelRequest *pRequest){
 
     if (query.next()) {
         QSqlRecord record = query.record();
+        data["id"] = record.value("id").toInt(); // deprecated
         data["uuid"] = record.value("uuid").toString().toStdString();
         data["title"] = record.value("title").toString().toStdString();
         data["type_game"] = record.value("type_game").toString().toStdString();

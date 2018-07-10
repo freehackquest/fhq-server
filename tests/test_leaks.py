@@ -6,12 +6,14 @@ import fhqtest
 
 fhqtest.init_enviroment();
 
+leak_uuid1 = "00000000-0000-0000-0000-000000000000";
+
 # print(fhqtest.game)
 print("Try create leak...")
 leak1 = fhqtest.admin_session.leaks_add({
     "gameid": 0,
     "game_uuid": fhqtest.game_uuid,
-    "leak_uuid": fhqtest.game_uuid,
+    "uuid": fhqtest.game_uuid,
     "name": "test_leak1",
     "content": "some_secret_content",
     "score": 100

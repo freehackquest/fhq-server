@@ -136,8 +136,8 @@ CmdHandlerLeaksAdd::CmdHandlerLeaksAdd()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
+    m_vInputs.push_back(CmdInputDef("uuid").required().uuid_().description("UUID of the leak"));
     m_vInputs.push_back(CmdInputDef("game_uuid").required().uuid_().description("UUID of the game"));
-    m_vInputs.push_back(CmdInputDef("leak_uuid").required().uuid_().description("UUID of the leak"));
     m_vInputs.push_back(CmdInputDef("name").required().string_().description("Visible part of the content"));
     m_vInputs.push_back(CmdInputDef("content").required().string_().description("Content of the leak"));
     m_vInputs.push_back(CmdInputDef("score").required().integer_().description("Price of the leak"));
@@ -148,56 +148,19 @@ CmdHandlerLeaksAdd::CmdHandlerLeaksAdd()
 void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest){
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
-    // game_uuid - new leak uuid
-    // TODO trim
-    std::string sGameUuid = "";
-    if(jsonRequest["game_uuid"].is_string()){
-        sGameUuid = jsonRequest["game_uuid"];
-    }
+    ModelLeak *pModelLeak = new ModelLeak();
+    pModelLeak->fillFrom(jsonRequest);
 
-    // leak_uuid - new leak uuid
-    // TODO trim
-    std::string sLeakUuid = "";
-    if(jsonRequest["leak_uuid"].is_string()){
-        sLeakUuid = jsonRequest["leak_uuid"];
-    }
-
-    // name
-    // TODO trim
-    std::string sName = "";
-    if(jsonRequest["name"].is_string()){
-        sName = jsonRequest["name"];
-    }
-
-    // content 
-    // TODO trim
-    std::string sContent = "";
-    if(jsonRequest["content"].is_string()){
-        sContent = jsonRequest["content"];
-    }
-
-    // score
-    int nScore = 0;
-    if(jsonRequest["score"].is_number_integer()){
-        nScore = jsonRequest.at("score");
-    }
-    if(nScore <= 0){
+    if(pModelLeak->score() <= 0){
         // todo this check move to cmd input def
         pRequest->sendMessageError(cmd(), Error(400, "Score must be more then 0"));
         return;
     }
 
-    ModelLeak *pModelLeak = new ModelLeak();
-    pModelLeak->setUuid(sLeakUuid);
-    pModelLeak->setGameUuid(sGameUuid);
-    pModelLeak->setName(sName);
-    pModelLeak->setContent(sContent);
-    pModelLeak->setScore(nScore);
-    pModelLeak->setSold(0);
-
     EmployLeaks *pEmployLeaks = findEmploy<EmployLeaks>();
     std::string sError = "";
     int nResult = pEmployLeaks->addLeak(pModelLeak, sError);
+
     if(nResult == EmployLeaks::DATABASE_ERROR){
         pRequest->sendMessageError(cmd(), Error(500, sError));
         delete pModelLeak;
@@ -210,119 +173,21 @@ void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest){
         return;
     }
 
+    if(nResult == EmployLeaks::GAME_NOT_FOUND){
+        pRequest->sendMessageError(cmd(), Errors::NotFound("Game does not exists with this uuid"));
+        delete pModelLeak;
+        return;
+    }
 
     if(nResult == EmployLeaks::OK){
         nlohmann::json jsonResponse;
         jsonResponse["data"] = pModelLeak->toJson();
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
         return;
+    }else{
+        pRequest->sendMessageError(cmd(), Error(500, "Server error"));
+        delete pModelLeak;
     }
-
-    pRequest->sendMessageError(cmd(), Error(500, "Something wrong"));
-
-
-
-
-
-    /*
-
-
-    pLeaks->addLeak()
-
-
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-    QSqlDatabase db = *(pDatabase->database());
-
-    // check the game
-    {
-        QSqlQuery query(db);
-        query.prepare("SELECT id,uuid FROM games WHERE uuid = :game_uuid");
-        query.bindValue(":game_uuid", QString(sGameUuid.c_str()));
-        if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-            return;
-        }
-        if (!query.next()){
-            pRequest->sendMessageError(cmd(), Errors::NotFound("Game does not exists with this uuid"));
-            return;
-        }
-
-        QSqlRecord record = query.record();
-        nGameId = record.value("id").toInt();
-    }
-    
-    // check the leak (possible raise condition)
-    {
-        QSqlQuery query(db);
-        query.prepare("SELECT id FROM leaks WHERE uuid = :leak_uuid");
-        query.bindValue(":leak_uuid", QString(sLeakUuid.c_str()));
-        // TODO use define ?
-        if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-            return;
-        }
-        if (query.next()){
-            pRequest->sendMessageError(cmd(), Error(403, "Leak already exists with this uuid"));
-            return;
-        }
-    }
-
-    // insert new leak
-    {
-        QSqlQuery query(db);
-        query.prepare(
-            "INSERT INTO leaks( "
-            " uuid, gameid, name, "
-            " content, score, sold, "
-            " created, updated "
-            ") "
-            "VALUES( "
-            " :uuid, :gameid, :name,"
-            " :content, :score, :sold, "
-            " NOW(), NOW()"
-            ");");
-        query.bindValue(":uuid", QString(sLeakUuid.c_str()));
-        query.bindValue(":gameid", nGameId);
-        query.bindValue(":name", QString(sName.c_str()));
-        query.bindValue(":content", QString(sContent.c_str()));
-        query.bindValue(":score", nScore);
-        query.bindValue(":sold", 0);
-
-        if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-            return;
-        }
-    }
-
-    // get leak for return
-    nlohmann::json jsonLeak;
-    {
-        QSqlQuery query(db);
-        query.prepare("SELECT * FROM leaks WHERE uuid = :leak_uuid");
-        query.bindValue(":leak_uuid", QString(sLeakUuid.c_str()));
-        if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-            return;
-        }
-        if (!query.next()){
-            pRequest->sendMessageError(cmd(), Errors::NotFound("game with this uuid"));
-            return;
-        }
-
-        QSqlRecord record = query.record();
-        jsonLeak["uuid"] = record.value("uuid").toString().toStdString();
-        jsonLeak["gameid"] = record.value("gameid").toInt();
-        // TODO game uuid
-        jsonLeak["score"] = record.value("score").toInt();
-        jsonLeak["sold"] = record.value("sold").toInt();
-        jsonLeak["name"] = record.value("name").toString().toHtmlEscaped().toStdString();
-        jsonLeak["content"] = record.value("content").toString().toHtmlEscaped().toStdString();
-    }
-
-    nlohmann::json jsonResponse;
-    jsonResponse["data"] = jsonLeak;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
-    */
 }
 
 /*********************************************

@@ -12,6 +12,8 @@ class ModelLeak {
         void setId(int nId);
         const std::string &uuid();
         void setUuid(std::string sUuid);
+        int gameId(); // deprecated
+        void setGameId(int nGameId); // deprecated
         const std::string &gameUuid();
         void setGameUuid(std::string nGameUuid);
         const std::string &name();
@@ -28,10 +30,11 @@ class ModelLeak {
         void setSold(int nSold);
         
         nlohmann::json toJson();
-        
+        void fillFrom(nlohmann::json &jsonLeak);
     private:
         std::string TAG;
         int m_nId;
+        int m_nGameId; // deprecated
         std::string m_sUuid;
         std::string m_sGameUuid;
         std::string m_sName;
