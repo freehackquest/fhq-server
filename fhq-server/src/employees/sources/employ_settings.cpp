@@ -1,11 +1,11 @@
 #include <employ_settings.h>
 #include <employ_database.h>
-#include <log.h>
-#include <QTextStream>
-#include <QFile>
-#include <QByteArray>
-#include <QDateTime>
-#include <QDir>
+#include <utils_logger.h>
+// #include <QTextStream>
+// #include <QFile>
+// #include <QByteArray>
+// #include <QDateTime>
+// #include <QDir>
 
 REGISTRY_EMPLOY(EmploySettings)
 

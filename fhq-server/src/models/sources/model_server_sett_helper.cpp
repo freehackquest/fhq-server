@@ -1,7 +1,6 @@
 #include <model_server_sett_helper.h>
 
-#include <log.h>
-
+#include <utils_logger.h>
 #include <QTextStream>
 #include <QFile>
 #include <QByteArray>

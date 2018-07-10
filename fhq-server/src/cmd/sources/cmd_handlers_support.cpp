@@ -1,7 +1,6 @@
 #include <cmd_handlers_support.h>
-#include <log.h>
+#include <utils_logger.h>
 #include <runtasks.h>
-#include <log.h>
 #include <iostream>
 #include <employ_settings.h>
 #include <employ_database.h>
@@ -55,7 +54,7 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest){
     query.bindValue(":text", sText);
     query.bindValue(":userid", nUserID);
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
 

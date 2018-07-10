@@ -1,7 +1,6 @@
 #include <cmd_handlers_events.h>
-#include <log.h>
 #include <runtasks.h>
-#include <log.h>
+#include <utils_logger.h>
 #include <iostream>
 #include <employ_settings.h>
 #include <employ_database.h>

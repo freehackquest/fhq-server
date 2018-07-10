@@ -1,15 +1,15 @@
 #ifndef ERROR_H
 #define ERROR_H
 
-#include <QString>
+#include <string>
 
 class Error {
 	public:
-		Error(int codeError, QString message);
+        Error(int nCodeError, const std::string &sMessage);
 		int codeError();
-		QString message();
+        std::string message();
 	private:
-		QString m_sMessage;
+        std::string m_sMessage;
 		int m_nCodeError;
 };
 

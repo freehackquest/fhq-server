@@ -1,7 +1,6 @@
 #include <cmd_handlers_classbook.h>
-#include <log.h>
+#include <utils_logger.h>
 #include <runtasks.h>
-#include <log.h>
 #include <iostream>
 #include <employ_settings.h>
 #include <employ_database.h>
@@ -109,7 +108,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
                     QSqlRecord record = query.record();
                     ordered = record.value("ordered").toInt() + 1;
                 } else {
-                    pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+                    pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
                     return;
                 }
             } else {
@@ -150,7 +149,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
     query.bindValue(":content", content);
     query.bindValue(":md5_content", md5_content);
     if (!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -634,7 +633,7 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest){
         }
 
         if (!query1.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query1.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query1.lastError().text().toStdString()));
             return;
         }
         while (query1.next()) {
@@ -837,7 +836,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
         query.bindValue(":classbookid", classbookid);
         query.bindValue(":parentid", parentid);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -850,7 +849,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
         query.bindValue(":classbookid", classbookid);
         query.bindValue(":name", name);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -865,7 +864,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
         query.bindValue(":content", content);
         query.bindValue(":md5_content", md5_content);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -878,7 +877,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
         query.bindValue(":classbookid", classbookid);
         query.bindValue(":ordered", ordered);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -887,7 +886,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
     query.prepare("UPDATE classbook SET updated = NOW() WHERE id=:classbookid");
     query.bindValue(":classbookid", classbookid);
     if (!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -951,7 +950,7 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest){
     query.bindValue(":lang", jsonRequest["lang"].toString().trimmed());
     query.bindValue(":classbookid", classbookid);
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     if(query.next()){
@@ -995,7 +994,7 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest){
     query.bindValue(":content", content);
     query.bindValue(":md5_content", md5_content);
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     int rowid = query.lastInsertId().toInt();
@@ -1039,7 +1038,7 @@ void CmdClassbookLocalizationDeleteRecordHandler::handle(ModelRequest *pRequest)
     query.prepare("SELECT id FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", jsonRequest["classbook_localizationid"].toInt());
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     if(!query.next()){
@@ -1049,7 +1048,7 @@ void CmdClassbookLocalizationDeleteRecordHandler::handle(ModelRequest *pRequest)
     query.prepare("DELETE FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", classbook_localizationid);
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -1088,7 +1087,7 @@ void CmdClassbookLocalizationInfoHandler::handle(ModelRequest *pRequest){
     query.prepare("SELECT id FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", classbook_localizationid);
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     if(!query.next()){
@@ -1099,7 +1098,7 @@ void CmdClassbookLocalizationInfoHandler::handle(ModelRequest *pRequest){
     query.prepare("SELECT classbookid, lang, name, content FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", classbook_localizationid);
     if (!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     query.next();
@@ -1148,7 +1147,7 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest)
     query.prepare("SELECT id FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", classbook_localizationid);
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     if(!query.next()){
@@ -1169,7 +1168,7 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest)
     query.bindValue(":content", content);
     query.bindValue(":md5_content", md5_content);
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     query.prepare("SELECT classbookid, lang FROM classbook_localization WHERE id=:id");
@@ -1234,7 +1233,7 @@ void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest){
         query.bindValue(":lang", lang);
     }
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     if(!query.next()){
@@ -1282,7 +1281,7 @@ void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest){
     query.bindValue(":content_before", content_before);
     query.bindValue(":md5_content", md5_content);
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     int rowid = query.lastInsertId().toInt();
@@ -1329,7 +1328,7 @@ void CmdClassbookProposalDeleteRecordHandler::handle(ModelRequest *pRequest){
     query.prepare("SELECT id FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", jsonRequest["classbook_proposal_id"].toInt());
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     if(!query.next()){
@@ -1339,7 +1338,7 @@ void CmdClassbookProposalDeleteRecordHandler::handle(ModelRequest *pRequest){
     query.prepare("DELETE FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", classbook_proposal_id);
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -1377,7 +1376,7 @@ void CmdClassbookProposalInfoHandler::handle(ModelRequest *pRequest){
     query.prepare("SELECT id FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", jsonRequest["classbook_proposal_id"].toInt());
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     if(!query.next()){
@@ -1388,7 +1387,7 @@ void CmdClassbookProposalInfoHandler::handle(ModelRequest *pRequest){
     query.prepare("SELECT classbookid, lang, name, content FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", classbook_proposal_id);
     if (!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     query.next();
@@ -1442,7 +1441,7 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest){
         query.prepare("SELECT id FROM classbook WHERE id = :classbookid");
         query.bindValue(":classbookid", jsonRequest["classbookid"].toInt());
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         if(!query.next()){
@@ -1478,7 +1477,7 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest){
             query.bindValue(":" + key, v.value());
     }
     if (!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -1530,7 +1529,7 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
     query.prepare("SELECT id FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", jsonRequest["classbook_proposal_id"].toInt());
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     if(!query.next()){
@@ -1541,7 +1540,7 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
     query.prepare("SELECT content FROM classbook WHERE id IN (SELECT classbookid FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", classbook_proposal_id);
     if (!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     QString curtxt = record.value("content").toString();
@@ -1549,7 +1548,7 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
     query.prepare("SELECT content, content_before FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", classbook_proposal_id);
     if (!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     QString txt1 = record.value("content").toString();

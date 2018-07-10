@@ -1,14 +1,20 @@
 #include <error.h>
 
-Error::Error(int codeError, QString message){
-	m_nCodeError = codeError;
-	m_sMessage = message;
+// ---------------------------------------------------------------------
+
+Error::Error(int nCodeError, const std::string &sMessage){
+    m_nCodeError = nCodeError;
+    m_sMessage = sMessage;
 }
+
+// ---------------------------------------------------------------------
 
 int Error::codeError(){
 	return m_nCodeError;
 }
 
-QString Error::message(){
+// ---------------------------------------------------------------------
+
+std::string Error::message(){
 	return m_sMessage;
 }

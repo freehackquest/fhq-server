@@ -1,5 +1,5 @@
 #include <cmd_handlers_games.h>
-#include <log.h>
+#include <utils_logger.h>
 #include <runtasks.h>
 #include <QJsonArray>
 #include <QCryptographicHash>
@@ -8,7 +8,6 @@
 #include <quazip.h>
 #include <quazipfile.h>
 #include <quazipfileinfo.h>
-#include <log.h>
 #include <iostream>
 #include <employ_database.h>
 #include <employ_settings.h>
@@ -60,7 +59,7 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
         query.bindValue(":uuid", sUUID);
         query.exec();
         if (query.next()) {
-            pRequest->sendMessageError(cmd(), Error(403, "Game with uuid {" + sUUID + "} already exists"));
+            pRequest->sendMessageError(cmd(), Error(403, "Game with uuid {" + sUUID.toStdString() + "} already exists"));
             return;
         }
     }
@@ -128,7 +127,7 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
     query.bindValue(":maxscore", 0);
 
     if (!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -178,7 +177,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         query.prepare("SELECT * FROM users WHERE id = :userid");
         query.bindValue(":userid", nUserID);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -212,7 +211,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         query.bindValue(":uuid", sUuid);
 
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -231,7 +230,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         query_del.prepare("DELETE FROM users_games WHERE gameid = :gameid");
         query_del.bindValue(":gameid", nGameID);
         if(!query_del.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -242,7 +241,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         query_del.prepare("DELETE FROM users_quests_answers WHERE questid IN (SELECT idquest FROM quest q WHERE q.gameid = :gameid)");
         query_del.bindValue(":gameid", nGameID);
         if(!query_del.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -253,7 +252,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         query_del.prepare("DELETE FROM users_quests WHERE questid IN (SELECT idquest FROM quest q WHERE q.gameid = :gameid)");
         query_del.bindValue(":gameid", nGameID);
         if(!query_del.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -264,7 +263,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         query_del.prepare("DELETE FROM quest WHERE gameid = :gameid");
         query_del.bindValue(":gameid", nGameID);
         if(!query_del.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -275,7 +274,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         query_del.prepare("DELETE FROM games WHERE id = :gameid");
         query_del.bindValue(":gameid", nGameID);
         if(!query_del.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -316,7 +315,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest){
     query.bindValue(":gameuuid", sUuid);
 
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -465,7 +464,7 @@ void CmdHandlerGameInfo::handle(ModelRequest *pRequest){
     query.bindValue(":gameuuid", sUuid);
 
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -555,7 +554,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
         query.bindValue(":gameuuid", sUuid);
 
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -582,7 +581,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
         query.bindValue(":name", sName);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         RunTasks::AddPublicEvents("games", "Updated name of game {" + sUuid + "} from [" + sNamePrev + "] to [" + sName + "]");
@@ -595,7 +594,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
         query.bindValue(":type_game", sType);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         RunTasks::AddPublicEvents("games", "Updated type of game {" + sUuid + "} from [" + sTypePrev + "] to [" + sType + "]");
@@ -608,7 +607,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
         query.bindValue(":description", sDescription);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         RunTasks::AddPublicEvents("games", "Updated description of the game {" + sUuid + "}");
@@ -621,7 +620,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
         query.bindValue(":state", sState);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         RunTasks::AddPublicEvents("games", "Updated state of game {" + sUuid + "} from [" + sStatePrev + "] to [" + sState + "]");
@@ -634,7 +633,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
         query.bindValue(":form", sForm);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         RunTasks::AddPublicEvents("games", "Updated form of game {" + sUuid + "} from [" + sFormPrev + "] to [" + sForm + "]");
@@ -647,7 +646,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
         query.bindValue(":organizators", sOrganizators);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         RunTasks::AddPublicEvents("games", "Updated organizators of game {" + sUuid + "}");
@@ -660,7 +659,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
         query.bindValue(":date_start", sDateStart);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         RunTasks::AddPublicEvents("games", "Updated date start of game {" + sUuid + "} from [" + sDateStartPrev + "] to [" + sDateStart + "]");
@@ -673,7 +672,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
         query.bindValue(":date_stop", sDateStop);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         RunTasks::AddPublicEvents("games", "Updated date stop of game {" + sUuid + "} from [" + sDateStopPrev + "] to [" + sDateStop + "]");
@@ -686,7 +685,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
         query.bindValue(":date_restart", sDateRestart);
         query.bindValue(":gameuuid", sUuid);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         RunTasks::AddPublicEvents("games", "Updated date stop of game {" + sUuid + "} from [" + sDateRestartPrev + "] to [" + sDateRestart + "]");
@@ -733,7 +732,7 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
         query.bindValue(":gameid", nGameID);
 
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -827,7 +826,7 @@ void CmdHandlerGames::handle(ModelRequest *pRequest){
     query.prepare("SELECT * FROM games ORDER BY games.date_start");
 
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
 

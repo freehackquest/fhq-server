@@ -6,7 +6,7 @@ REGISTRY_EMPLOY(EmployOrchestra)
 
 // ---------------------------------------------------------------------
 
-#include <log.h>
+#include <utils_logger.h>
 #include <algorithm>
 
 #include <QTextStream>

@@ -11,7 +11,7 @@
 #include <QtNetwork/QSslKey>
 
 #include <SmtpMime>
-#include <log.h>
+#include <utils_logger.h>
 
 #include <employ_server_config.h>
 #include <employ_server_info.h>
@@ -286,9 +286,9 @@ void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &c
     jsonResponse["cmd"] = QJsonValue(QString(cmd.c_str()));
     jsonResponse["m"] = QJsonValue(m);
     jsonResponse["result"] = QJsonValue("FAIL");
-    jsonResponse["error"] = QJsonValue(error.message());
+    jsonResponse["error"] = QJsonValue(QString(error.message().c_str()));
     jsonResponse["code"] = QJsonValue(error.codeError());
-    Log::err(TAG.toStdString(), "WS-ERROR >>> " + cmd + ": messsage: " + error.message().toStdString());
+    Log::err(TAG.toStdString(), "WS-ERROR >>> " + cmd + ": messsage: " + error.message());
     this->sendMessage(pClient, jsonResponse);
 	return;
 }

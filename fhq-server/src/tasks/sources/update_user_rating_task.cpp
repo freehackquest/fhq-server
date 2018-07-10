@@ -1,5 +1,5 @@
 #include <update_user_rating_task.h>
-#include <log.h>
+#include <utils_logger.h>
 #include <QThread>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>

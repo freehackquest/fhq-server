@@ -45,7 +45,7 @@ Error Errors::NotImplementedYet(){
 
 Error Errors::NotImplementedYet(const QString &comments)
 {
-    Error error(404, "Not implemented yet: " + comments);
+    Error error(404, "Not implemented yet: " + comments.toStdString());
     return error;
 }
 
@@ -59,7 +59,7 @@ Error Errors::NoneError(){
 // ---------------------------------------------------------------------
 
 Error Errors::NotFound(QString what){
-	Error error(404, "Not found " + what);
+    Error error(404, "Not found " + what.toStdString());
 	return error;
 }
 
@@ -122,21 +122,21 @@ Error Errors::EventNotFound(){
 // ---------------------------------------------------------------------
 
 Error Errors::ParamExpected(QString param_name){
-	Error error(400, "Parameter '" + param_name + "' expected");
+    Error error(400, "Parameter '" + param_name.toStdString() + "' expected");
 	return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::ParamMustBeInteger(QString param_name){
-	Error error(400, "Parameter '" + param_name + "' must be integer");
+    Error error(400, "Parameter '" + param_name.toStdString() + "' must be integer");
 	return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::ParamMustBeEmail(QString param_name){
-    Error error(400, "Parameter '" + param_name + "' must be email type");
+    Error error(400, "Parameter '" + param_name.toStdString() + "' must be email type");
     return error;
 }
 
@@ -144,28 +144,28 @@ Error Errors::ParamMustBeEmail(QString param_name){
 
 
 Error Errors::ParamExpectedValueOneFrom(QString param_name, QStringList eList){
-	Error error(400, "Parameter '" + param_name + "' expected values one from [" + eList.join(",") + "]");
+    Error error(400, "Parameter '" + param_name.toStdString() + "' expected values one from [" + eList.join(",").toStdString() + "]");
 	return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::ParamExpectedUUID(QString param_name){
-	Error error(400, "Parameter '" + param_name + "' expected uuid regexp: /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i");
+    Error error(400, "Parameter '" + param_name.toStdString() + "' expected uuid regexp: /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i");
 	return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::ParamMustBeLessThen(QString param_name, int maxval){
-	Error error(400, "Parameter '" + param_name + "' must be less then " + QString::number(maxval));
+    Error error(400, "Parameter '" + param_name.toStdString() + "' must be less then " + QString::number(maxval).toStdString());
 	return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::ParamMustBeMoreThen(QString param_name, int minval){
-	Error error(400, "Parameter '" + param_name + "' must be more then " + QString::number(minval));
+    Error error(400, "Parameter '" + param_name.toStdString() + "' must be more then " + QString::number(minval).toStdString());
 	return error;
 }
 
@@ -179,7 +179,7 @@ Error Errors::InvalidToken(){
 // ---------------------------------------------------------------------
 
 Error Errors::DatabaseError(QString text){
-	Error error(500, "Database error. " + text);
+    Error error(500, "Database error. " + text.toStdString());
 	return error;
 }
 

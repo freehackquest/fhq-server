@@ -1,7 +1,6 @@
 #include <cmd_handlers_lxd.h>
-#include <log.h>
+#include <utils_logger.h>
 #include <runtasks.h>
-#include <log.h>
 #include <iostream>
 #include <employ_settings.h>
 #include <employ_database.h>
@@ -56,7 +55,7 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest){
     if (sError == "")
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     else
-        pRequest->sendMessageError(cmd(), Error(nErrorCode, QString::fromStdString(sError)));
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
 }
 
 // ---------------------------------------------------------------------
@@ -192,7 +191,7 @@ void CmdHandlerLXDInfo::handle(ModelRequest *pRequest){
         jsonResponse["state"] = QJsonValue(QString::fromStdString(jsonState.dump()));
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     } else
-        pRequest->sendMessageError(cmd(), Error(nErrorCode, QString::fromStdString(sError)));
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
 }
 
 bool CmdHandlerLXDInfo::get_state(std::string sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState){
@@ -234,7 +233,7 @@ CmdHandlerLXDList::CmdHandlerLXDList()
 void CmdHandlerLXDList::handle(ModelRequest *pRequest){
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()){
-        pRequest->sendMessageError(cmd(), Error(500, QString(pOrchestra->lastError().c_str())));
+        pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
         return;
     }
 

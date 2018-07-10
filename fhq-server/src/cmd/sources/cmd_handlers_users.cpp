@@ -1,7 +1,6 @@
 #include <cmd_handlers_users.h>
-#include <log.h>
+#include <utils_logger.h>
 #include <runtasks.h>
-#include <log.h>
 #include <iostream>
 #include <employ_settings.h>
 #include <employ_database.h>
@@ -154,7 +153,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest){
 
     if(!query.exec()){
         Log::err(TAG, query.lastError().text().toStdString());
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     if (query.next()) {
@@ -190,7 +189,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest){
 
         if(!query_token.exec()){
             Log::err(TAG, query_token.lastError().text().toStdString());
-            pRequest->sendMessageError(cmd(), Error(500, query_token.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_token.lastError().text().toStdString()));
             return;
         }
 
@@ -248,7 +247,7 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest){
     query.bindValue(":email", sEmail);
     if(!query.exec()){
         Log::err(TAG, query.lastError().text().toStdString());
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     if (query.next()) {
@@ -347,7 +346,7 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest){
     query_insert.bindValue(":about", "");
 
     if(!query_insert.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query_insert.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query_insert.lastError().text().toStdString()));
         return;
     }
 
@@ -451,7 +450,7 @@ void CmdHandlerToken::handle(ModelRequest *pRequest){
     query.bindValue(":token", token);
     if(!query.exec()){
         Log::err(TAG, query.lastError().text().toStdString());
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     if (query.next()) {
@@ -571,7 +570,7 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest){
     query.prepare("SELECT * FROM users WHERE id = :userid");
     query.bindValue(":userid", nUserID);
     if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -608,7 +607,7 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest){
     query_update.bindValue(":email", sEmail);
 
     if(!query_update.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query_update.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query_update.lastError().text().toStdString()));
         return;
     }
 
@@ -658,7 +657,7 @@ void CmdHandlerUserCreate::handle(ModelRequest *pRequest){
     query.bindValue(":email", sEmail);
     if(!query.exec()){
         Log::err(TAG, query.lastError().text().toStdString());
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     if (query.next()) {
@@ -766,7 +765,7 @@ void CmdHandlerUserCreate::handle(ModelRequest *pRequest){
     query_insert.bindValue(":about", "");
 
     if(!query_insert.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query_insert.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query_insert.lastError().text().toStdString()));
         return;
     }
 
@@ -916,7 +915,7 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest){
     query.bindValue(":email", sEmail);
     if(!query.exec()){
         Log::err(TAG, query.lastError().text().toStdString());
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     int nUserID = 0;
@@ -952,7 +951,7 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest){
     query_update.bindValue(":email", sEmail);
 
     if(!query_update.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query_update.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query_update.lastError().text().toStdString()));
         return;
     }
 
@@ -1119,7 +1118,7 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest){
         query.bindValue(":about", sAbout);
         query.bindValue(":userid", nUserID);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         };
     }
@@ -1174,7 +1173,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         query.prepare("SELECT * FROM users WHERE id = :userid");
         query.bindValue(":userid", nAdminUserID);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -1208,7 +1207,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         query.bindValue(":id", nUserID);
 
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -1225,7 +1224,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         query_del.prepare("DELETE FROM feedback WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if(!query_del.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1235,7 +1234,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         query_del.prepare("DELETE FROM feedback_msg WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if(!query_del.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1245,7 +1244,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         query_del.prepare("DELETE FROM quest WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if(!query_del.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1255,7 +1254,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         query_del.prepare("DELETE FROM users_games WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if(!query_del.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1265,7 +1264,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         query_del.prepare("DELETE FROM users_profile WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if(!query_del.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1275,7 +1274,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         query_del.prepare("DELETE FROM users_quests WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if(!query_del.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1285,7 +1284,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         query_del.prepare("DELETE FROM users_tokens WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if(!query_del.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1295,7 +1294,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         query_del.prepare("DELETE FROM users_tokens_invalid WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if(!query_del.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1305,7 +1304,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         query_del.prepare("DELETE FROM users_offers WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if(!query_del.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1315,7 +1314,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         query_del.prepare("DELETE FROM quests_proposal WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if(!query_del.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1325,7 +1324,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         query_del.prepare("DELETE FROM users_quests_answers WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if(!query_del.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1335,7 +1334,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         query_del.prepare("DELETE FROM users WHERE id = :id");
         query_del.bindValue(":id", nUserID);
         if(!query_del.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1418,7 +1417,7 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest){
             query.bindValue(key, filter_values.value(key));
         }
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         if(query.next()) {

@@ -160,6 +160,8 @@ list (APPEND FHQSRV_SOURCES "src/models/sources/model_lxd_container.cpp")
 
 # utils
 list (APPEND FHQSRV_SOURCES "src/utils/utils.h")
+list (APPEND FHQSRV_SOURCES "src/utils/include/utils_logger.h")
+list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_logger.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/include/utils_export_list_of_handlers.h")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_export_list_of_handlers.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/include/utils_export_client_library_python.h")
@@ -167,15 +169,11 @@ list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_export_client_library_pytho
 list (APPEND FHQSRV_SOURCES "src/utils/include/utils_levenshtein.h")
 list (APPEND FHQSRV_SOURCES "src/utils/include/utils_prepare_deb_package.h")
 list (APPEND FHQSRV_SOURCES "src/utils/include/utils_static_analizing_text.h")
-list (APPEND FHQSRV_SOURCES "src/utils/include/utils_create_config.h")
-list (APPEND FHQSRV_SOURCES "src/utils/include/utils_ini_parser.h")
 list (APPEND FHQSRV_SOURCES "src/utils/include/utils_merge_text.h")
 list (APPEND FHQSRV_SOURCES "src/utils/include/utils_lxd.h")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_levenshtein.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_prepare_deb_package.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_static_analizing_text.cpp")
-list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_create_config.cpp")
-list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_ini_parser.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_merge_text.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_lxd.cpp")
 
@@ -192,12 +190,10 @@ list (APPEND FHQSRV_SOURCES "src/unit_tests/create_unit_tests.cpp")
 # server
 list (APPEND FHQSRV_SOURCES "src/server/include/errors.h")
 list (APPEND FHQSRV_SOURCES "src/server/include/error.h")
-list (APPEND FHQSRV_SOURCES "src/server/include/log.h")
 list (APPEND FHQSRV_SOURCES "src/server/include/websocketserver.h")
 list (APPEND FHQSRV_SOURCES "src/server/sources/websocketserver.cpp")
 list (APPEND FHQSRV_SOURCES "src/server/sources/errors.cpp")
 list (APPEND FHQSRV_SOURCES "src/server/sources/error.cpp")
-list (APPEND FHQSRV_SOURCES "src/server/sources/log.cpp")
 
 # employees
 list (APPEND FHQSRV_SOURCES "src/employees/employees.h")

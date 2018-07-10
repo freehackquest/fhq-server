@@ -77,7 +77,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
             query.bindValue(key, filter_values.value(key));
         }
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {
@@ -99,7 +99,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
             query.bindValue(key, filter_values.value(key));
         }
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         while (query.next()) {
@@ -239,7 +239,7 @@ void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest){
         query.prepare("SELECT id,uuid FROM games WHERE uuid = :game_uuid");
         query.bindValue(":game_uuid", QString(sGameUuid.c_str()));
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (!query.next()){
@@ -258,7 +258,7 @@ void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest){
         query.bindValue(":leak_uuid", QString(sLeakUuid.c_str()));
         // TODO use define ?
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()){
@@ -289,7 +289,7 @@ void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest){
         query.bindValue(":sold", 0);
 
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -301,7 +301,7 @@ void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest){
         query.prepare("SELECT * FROM leaks WHERE uuid = :leak_uuid");
         query.bindValue(":leak_uuid", QString(sLeakUuid.c_str()));
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (!query.next()){
@@ -361,7 +361,7 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest){
         query.prepare("SELECT id FROM leaks WHERE id = :id");
         query.bindValue(":id", id);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (!query.next()){
@@ -377,7 +377,7 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest){
         query.bindValue(":name", sName);
         query.bindValue(":id", id);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -389,7 +389,7 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest){
         query.bindValue(":content", sContent);
         query.bindValue(":id", id);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -401,7 +401,7 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest){
         query.bindValue(":score", nScore);
         query.bindValue(":id", id);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -442,7 +442,7 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest){
         query.prepare("SELECT id FROM leaks WHERE id = :id");
         query.bindValue(":id", id);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (!query.next()){
@@ -456,7 +456,7 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest){
         query.prepare("DELETE FROM users_leaks WHERE leakid = :id");
         query.bindValue(":id", id);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -466,7 +466,7 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest){
         query.prepare("DELETE FROM leaks_files WHERE leakid = :id");
         query.bindValue(":id", id);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -476,7 +476,7 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest){
         query.prepare("DELETE FROM leaks WHERE id = :id");
         query.bindValue(":id", id);
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -517,7 +517,7 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest){
         query.prepare("SELECT id FROM leaks WHERE id = :id");
         query.bindValue(":id", id);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (!query.next()){
@@ -535,7 +535,7 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest){
         query.prepare("SELECT score FROM leaks WHERE id = :id");
         query.bindValue(":id", id);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (!query.next()){
@@ -555,7 +555,7 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest){
         query.bindValue(":score", nScore);
         query.bindValue(":id", nUserID);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -577,7 +577,7 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest){
     query.bindValue(":userid", nUserID);
     query.bindValue(":grade", -1);
     if (!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -586,7 +586,7 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest){
         query.prepare("UPDATE leaks SET sold = sold + 1 WHERE id = :id");
         query.bindValue(":id", id);
         if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
