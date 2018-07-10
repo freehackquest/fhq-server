@@ -1,5 +1,5 @@
 #include <cmd_handlers_games.h>
-#include <log.h>
+#include <utils_logger.h>
 #include <runtasks.h>
 #include <QJsonArray>
 #include <QCryptographicHash>
@@ -8,7 +8,6 @@
 #include <quazip.h>
 #include <quazipfile.h>
 #include <quazipfileinfo.h>
-#include <log.h>
 #include <iostream>
 #include <employ_database.h>
 #include <employ_settings.h>

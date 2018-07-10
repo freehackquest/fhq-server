@@ -1,7 +1,7 @@
 #include <mail_send_task.h>
 #include <employ_settings.h>
 #include <employ_database.h>
-#include <log.h>
+#include <utils_logger.h>
 
 MailSendTask::MailSendTask(IWebSocketServer *pWebSocketServer,  QString to, QString subject, QString content){
     TAG = "MailSendTask";

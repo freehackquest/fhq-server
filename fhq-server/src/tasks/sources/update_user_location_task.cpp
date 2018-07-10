@@ -4,7 +4,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QEventLoop>
-#include <log.h>
+#include <utils_logger.h>
 #include <employ_database.h>
 
 UpdateUserLocationTask::UpdateUserLocationTask(int userid, QString lastip){

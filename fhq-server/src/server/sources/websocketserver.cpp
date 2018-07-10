@@ -11,7 +11,7 @@
 #include <QtNetwork/QSslKey>
 
 #include <SmtpMime>
-#include <log.h>
+#include <utils_logger.h>
 
 #include <employ_server_config.h>
 #include <employ_server_info.h>

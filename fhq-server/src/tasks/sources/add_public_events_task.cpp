@@ -1,5 +1,5 @@
 #include "add_public_events_task.h"
-#include <log.h>
+#include <utils_logger.h>
 #include <QThread>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>

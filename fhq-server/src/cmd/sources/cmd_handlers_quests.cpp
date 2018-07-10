@@ -1,6 +1,6 @@
 #include <cmd_handlers_quests.h>
 #include <runtasks.h>
-#include <log.h>
+#include <utils_logger.h>
 #include <utils.h>
 #include <employ_settings.h>
 #include <QCryptographicHash>

@@ -1,5 +1,5 @@
 #include <employ_images.h>
-#include <log.h>
+#include <utils_logger.h>
 #define PNG_DEBUG 3
 #include <png.h>
 
