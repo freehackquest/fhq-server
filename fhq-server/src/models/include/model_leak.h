@@ -12,8 +12,10 @@ class ModelLeak {
         void setId(int nId);
         const std::string &uuid();
         void setUuid(std::string sUuid);
-        int gameId();
-        void setGameId(int nGameId);
+        int gameId(); // deprecated
+        void setGameId(int nGameId); // deprecated
+        const std::string &gameUuid();
+        void setGameUuid(std::string nGameUuid);
         const std::string &name();
         void setName(std::string sName);
         const std::string &content();
@@ -33,7 +35,8 @@ class ModelLeak {
         std::string TAG;
         int m_nId;
         std::string m_sUuid;
-        int m_nGameId;
+        std::string m_sGameUuid;
+        int m_nGameId; // deprecated
         std::string m_sName;
         std::string m_sContent;
         int m_nScore;

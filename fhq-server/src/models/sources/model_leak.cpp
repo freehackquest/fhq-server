@@ -33,14 +33,26 @@ void ModelLeak::setUuid(std::string sUuid){
 
 // ---------------------------------------------------------------------
 
-int ModelLeak::gameId(){
+int ModelLeak::gameId(){ // deprecated
 	return m_nGameId;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelLeak::setGameId(int nGameId){
+void ModelLeak::setGameId(int nGameId){ // deprecated
 	m_nGameId = nGameId;
+}
+
+// ---------------------------------------------------------------------
+
+const std::string &ModelLeak::gameUuid(){
+	return m_sGameUuid;
+}
+
+// ---------------------------------------------------------------------
+
+void ModelLeak::setGameUuid(std::string sGameUuid){
+	m_sGameUuid = sGameUuid;
 }
 
 // ---------------------------------------------------------------------
