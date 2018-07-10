@@ -1,6 +1,7 @@
 #include <cmd_handlers_leaks.h>
 #include <iostream>
 #include <employ_database.h>
+#include <employ_leaks.h>
 #include <QJsonArray>
 #include <QUuid>
 
@@ -145,8 +146,6 @@ CmdHandlerLeaksAdd::CmdHandlerLeaksAdd()
 // ---------------------------------------------------------------------
 
 void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest){
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
     // game_uuid - new leak uuid
@@ -188,8 +187,50 @@ void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest){
         return;
     }
 
-    int nGameId = 0;
+    ModelLeak *pModelLeak = new ModelLeak();
+    pModelLeak->setUuid(sLeakUuid);
+    pModelLeak->setGameUuid(sGameUuid);
+    pModelLeak->setName(sName);
+    pModelLeak->setContent(sContent);
+    pModelLeak->setScore(nScore);
+    pModelLeak->setSold(0);
 
+    EmployLeaks *pEmployLeaks = findEmploy<EmployLeaks>();
+    std::string sError = "";
+    int nResult = pEmployLeaks->addLeak(pModelLeak, sError);
+    if(nResult == EmployLeaks::DATABASE_ERROR){
+        pRequest->sendMessageError(cmd(), Error(500, sError));
+        delete pModelLeak;
+        return;
+    }
+
+    if(nResult == EmployLeaks::ALREADY_EXISTS){
+        pRequest->sendMessageError(cmd(), Error(403, "Leak already exists with this uuid"));
+        delete pModelLeak;
+        return;
+    }
+
+
+    if(nResult == EmployLeaks::OK){
+        nlohmann::json jsonResponse;
+        jsonResponse["data"] = pModelLeak->toJson();
+        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+        return;
+    }
+
+    pRequest->sendMessageError(cmd(), Error(500, "Something wrong"));
+
+
+
+
+
+    /*
+
+
+    pLeaks->addLeak()
+
+
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
 
     // check the game
@@ -281,6 +322,7 @@ void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest){
     nlohmann::json jsonResponse;
     jsonResponse["data"] = jsonLeak;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    */
 }
 
 /*********************************************

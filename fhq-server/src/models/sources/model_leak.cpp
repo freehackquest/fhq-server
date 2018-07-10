@@ -33,18 +33,6 @@ void ModelLeak::setUuid(std::string sUuid){
 
 // ---------------------------------------------------------------------
 
-int ModelLeak::gameId(){ // deprecated
-	return m_nGameId;
-}
-
-// ---------------------------------------------------------------------
-
-void ModelLeak::setGameId(int nGameId){ // deprecated
-	m_nGameId = nGameId;
-}
-
-// ---------------------------------------------------------------------
-
 const std::string &ModelLeak::gameUuid(){
 	return m_sGameUuid;
 }
@@ -131,6 +119,13 @@ void ModelLeak::setSold(int nSold){
 
 nlohmann::json toJson(){
 	nlohmann::json jsonLeak;
-	// TODO fill jsonLeak
+    jsonLeak["uuid"] = m_sUuid;
+    jsonLeak["gameuuid"] = m_sGameUuid;
+    jsonLeak["score"] = m_nScore;
+    jsonLeak["sold"] = m_nSold;
+    jsonLeak["name"] = m_sName;
+    jsonLeak["content"] = m_sContent;
 	return jsonLeak;
 }
+
+// ---------------------------------------------------------------------
