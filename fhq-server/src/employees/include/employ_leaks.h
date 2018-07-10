@@ -23,6 +23,7 @@ class EmployLeaks : public EmployBase {
         nlohmann::json toJson();
 
     private:
+        std::string TAG;
         std::vector<ModelLeak*> m_vectCacheLeaks;
         std::map<std::string, ModelLeak*> m_mapCacheLeaks;
 };

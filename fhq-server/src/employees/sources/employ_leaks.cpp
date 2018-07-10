@@ -16,6 +16,7 @@ int EmployLeaks::DATABASE_ERROR = 3;
 
 EmployLeaks::EmployLeaks()
     : EmployBase(EmployLeaks::name(), {EmployDatabase::name()}) {
+    TAG = EmployLeaks::name();
     m_mapCacheLeaks.clear();
     m_vectCacheLeaks.clear();
 }
@@ -23,8 +24,39 @@ EmployLeaks::EmployLeaks()
 // ---------------------------------------------------------------------
 
 bool EmployLeaks::init(){
-	
-	// TODO load leaks from files or database
+    // load list of leaks to cache
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
+
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM leaks");
+    if (!query.exec()){
+        Log::err(TAG, query.lastError().text().toStdString());
+        return false;
+    }
+    while (query.next()) {
+        QSqlRecord record = query.record();
+        ModelLeak* pModelLeak = new ModelLeak();
+        QJsonObject leak;
+        pModelLeak->setId(record.value("id").toInt());
+        std::string sUuid = record.value("uuid").toString().toStdString();
+        pModelLeak->setUuid(sUuid);
+        pModelLeak->setGameId(record.value("gameid").toInt());
+        // TODO game_uuid
+        pModelLeak->setName(record.value("name").toString().toStdString());
+        pModelLeak->setContent(record.value("content").toString().toStdString());
+        pModelLeak->setScore(record.value("score").toInt());
+        pModelLeak->setSold(record.value("sold").toInt());
+
+        // TODO created & updated
+        // leak["created"] = record.value("created").toString().toHtmlEscaped();
+        // leak["updated"] = record.value("updated").toString().toHtmlEscaped();
+        if(m_mapCacheLeaks.count(sUuid)){
+            Log::err(TAG, "Inconsistent list leaks in database uuid: " + sUuid);
+        }else{
+            m_mapCacheLeaks.insert(std::pair<std::string, ModelLeak*>(sUuid,pModelLeak));
+        }
+    }
     return true;
 }
 
@@ -39,12 +71,9 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
         return EmployLeaks::ALREADY_EXISTS;
 	}
 
-    m_mapCacheLeaks.insert(std::pair<std::string, ModelLeak*>(sUuid,pModelLeak));
-
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
 
-    int nGameId = 0;
     // check the game
     {
         QSqlQuery query(db);
@@ -59,8 +88,7 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
         }
 
         QSqlRecord record = query.record();
-        nGameId = record.value("id").toInt();
-        pModelLeak->setGameId(nGameId);
+        pModelLeak->setGameId(record.value("id").toInt());
     }
 
     {
@@ -88,7 +116,8 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
             return EmployLeaks::DATABASE_ERROR;
         }
     }
-
+    // TODO set id
+    m_mapCacheLeaks.insert(std::pair<std::string, ModelLeak*>(sUuid,pModelLeak));
     return EmployLeaks::OK;
 }
 
