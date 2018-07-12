@@ -48,6 +48,9 @@ try:
         fhqtest.log_err("Game has wrong name");
     else:
         fhqtest.print_success("Game name ok");
+    
+    gameid = game1['id']
+    print("gameid: " + str(gameid))
 
     # list of games
     fhqtest.print_bold("Get list of games... ")
@@ -77,8 +80,20 @@ try:
         fhqtest.log_err("Game has wrong name");
     else:
         fhqtest.print_success("Game name ok");
+    
 
     # TODO upload log for test game
+    f = open("files/game1.png", 'r')
+    image_png_base64 = f.read()
+    f.close()
+    image_png_base64 = base64.b64encode(image_png_base64);
+    game_img = fhqtest.admin_session.game_update_logo({
+        # "uuid": game_uuid1 # wrong must be uuid
+        "gameid": gameid,
+        "image_png_base64": image_png_base64
+    });
+    fhqtest.alert(game_img == None, 'Could not get response');
+    fhqtest.check_response(game_img, "Game Logo updated")
 
     # export
     game_exp = fhqtest.admin_session.game_export({"uuid": game_uuid1});
@@ -88,16 +103,23 @@ try:
     f = open(game_exp['data']['zipfile_name'], 'w')
     f.write(game_zip)
     f.close()
-    print(game_exp)
+    # print(game_exp)
 
-    # TODO remove game
+    # remove game
     fhqtest.print_bold("Remove game by uuid... ")
     resp = fhqtest.admin_session.game_delete({ "uuid": game_uuid1, "admin_password": fhqtest.admin_password })
     fhqtest.check_response(resp, "Game removed")
   
     # TODO import
+    fhqtest.print_bold("Test game import... ")
+    # game1 = fhqtest.admin_session.game_import({ "uuid": game_uuid1 });
+    fhqtest.log_warn("Not implemneted yet");
+    
 
     # TODO remove again
+    fhqtest.print_bold("Remove game by uuid... ")
+    resp = fhqtest.admin_session.game_delete({ "uuid": game_uuid1, "admin_password": fhqtest.admin_password })
+    fhqtest.check_response(resp, "Game removed")
 
 except Exception as e:
     fhqtest.log_err(str(e));
