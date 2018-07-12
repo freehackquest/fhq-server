@@ -8,6 +8,8 @@ admin_session = None
 loggined = False
 game_uuid = "00000000-0000-0000-0000-000000000000"
 game = None;
+admin_email = "admin"
+admin_password = "admin"
 
 class bcolors:
     HEADER = '\033[95m'
@@ -55,8 +57,11 @@ def init_enviroment():
     global admin_session
     global game
     global game_uuid
+    global admin_email
+    global admin_password
+    
     admin_session = libfhqcli.FHQCli("ws://localhost:1234/");
-    resp = admin_session.login({"email": "admin", "password": "admin"});
+    resp = admin_session.login({"email": admin_email, "password": admin_password});
     alert(resp == None, 'Could not login as admin (1)');
     alert(resp['result'] == 'FAIL', 'Could not login as admin (2)');
     
