@@ -5,6 +5,14 @@
 
 ModelLeak::ModelLeak(){
     TAG = "ModelLeak";
+    m_nId = 0;
+    m_sUuid = "";
+    m_sGameUuid = "";
+    m_nGameId = 0;
+    m_sName = "";
+    m_sContent = "";
+    m_nScore = 0;
+    m_nSold = 0;
 }
 
 // ---------------------------------------------------------------------
@@ -33,18 +41,6 @@ void ModelLeak::setUuid(std::string sUuid){
 
 // ---------------------------------------------------------------------
 
-int ModelLeak::gameId(){ // deprecated
-	return m_nGameId;
-}
-
-// ---------------------------------------------------------------------
-
-void ModelLeak::setGameId(int nGameId){ // deprecated
-	m_nGameId = nGameId;
-}
-
-// ---------------------------------------------------------------------
-
 const std::string &ModelLeak::gameUuid(){
 	return m_sGameUuid;
 }
@@ -53,6 +49,18 @@ const std::string &ModelLeak::gameUuid(){
 
 void ModelLeak::setGameUuid(std::string sGameUuid){
 	m_sGameUuid = sGameUuid;
+}
+
+// ---------------------------------------------------------------------
+
+int ModelLeak::gameId(){ // deprecated
+    return m_nGameId;
+}
+
+// ---------------------------------------------------------------------
+
+void ModelLeak::setGameId(int nGameId){ // deprecated
+    m_nGameId = nGameId;
 }
 
 // ---------------------------------------------------------------------
@@ -129,8 +137,50 @@ void ModelLeak::setSold(int nSold){
 
 // ---------------------------------------------------------------------
 
-nlohmann::json toJson(){
+nlohmann::json ModelLeak::toJson(){
 	nlohmann::json jsonLeak;
-	// TODO fill jsonLeak
+    jsonLeak["uuid"] = m_sUuid;
+    jsonLeak["gameid"] = m_nGameId; // deprecated
+    jsonLeak["game_uuid"] = m_sGameUuid;
+    jsonLeak["score"] = m_nScore;
+    jsonLeak["sold"] = m_nSold;
+    jsonLeak["name"] = m_sName;
+    jsonLeak["content"] = m_sContent;
 	return jsonLeak;
 }
+
+// ---------------------------------------------------------------------
+
+void ModelLeak::fillFrom(nlohmann::json &jsonLeak){
+    // TODO trim
+    if(jsonLeak["game_uuid"].is_string()){
+        m_sGameUuid = jsonLeak["game_uuid"];
+    }
+
+    // leak_uuid - new leak uuid
+    if(jsonLeak["uuid"].is_string()){
+        m_sUuid = jsonLeak["uuid"];
+    }
+
+    // TODO trim
+    if(jsonLeak["name"].is_string()){
+        m_sName = jsonLeak["name"];
+    }
+
+    // TODO trim
+    if(jsonLeak["content"].is_string()){
+        m_sContent = jsonLeak["content"];
+    }
+
+    // score
+    if(jsonLeak["score"].is_number_integer()){
+        m_nScore = jsonLeak.at("score");
+    }
+
+    // sold
+    if(jsonLeak["sold"].is_number_integer()){
+        m_nSold = jsonLeak.at("sold");
+    }
+}
+
+// ---------------------------------------------------------------------

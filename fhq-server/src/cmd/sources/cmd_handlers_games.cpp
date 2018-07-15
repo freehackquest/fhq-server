@@ -99,7 +99,7 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
         "	)"
         "	VALUES("
         "		:uuid,"
-        "		:title,"
+        "		:name,"
         "		:type_game,"
         "		NOW(),"
         "		NOW(),"
@@ -114,7 +114,7 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
         "		:maxscore"
         "	)");
     query.bindValue(":uuid", sUUID);
-    query.bindValue(":title", sName);
+    query.bindValue(":name", sName);
     query.bindValue(":type_game", sType);
     query.bindValue(":date_start", sDateStart);
     query.bindValue(":date_stop", sDateStop);
@@ -325,7 +325,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest){
         QSqlRecord record = query.record();
         nGameID  = record.value("id").toInt();
         jsonGame["uuid"] = record.value("uuid").toString().toStdString();
-        jsonGame["title"] = record.value("title").toString().toStdString();
+        jsonGame["name"] = record.value("title").toString().toStdString();
         jsonGame["type_game"] = record.value("type_game").toString().toStdString();
         jsonGame["date_start"] = record.value("date_start").toString().toStdString();
         jsonGame["date_stop"] = record.value("date_stop").toString().toStdString();
@@ -470,8 +470,9 @@ void CmdHandlerGameInfo::handle(ModelRequest *pRequest){
 
     if (query.next()) {
         QSqlRecord record = query.record();
+        data["local_id"] = record.value("id").toInt(); // deprecated
         data["uuid"] = record.value("uuid").toString().toStdString();
-        data["title"] = record.value("title").toString().toStdString();
+        data["name"] = record.value("title").toString().toStdString();
         data["type_game"] = record.value("type_game").toString().toStdString();
         data["date_start"] = record.value("date_start").toString().toStdString();
         data["date_stop"] = record.value("date_stop").toString().toStdString();
@@ -710,7 +711,7 @@ CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("gameid").integer_().required().description("GameID"));
+    m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
     m_vInputs.push_back(CmdInputDef("image_png_base64").string_().required().description("Image PNG in Base64"));
 }
 
@@ -722,14 +723,14 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
-
-    int nGameID = jsonRequest["gameid"].toInt();
+    QString sUuid = jsonRequest["uuid"].toString();
+    int nGameID = 0;
 
     QSqlDatabase db = *(pDatabase->database());
     {
         QSqlQuery query(db);
-        query.prepare("SELECT * FROM games WHERE id = :gameid");
-        query.bindValue(":gameid", nGameID);
+        query.prepare("SELECT * FROM games WHERE uuid = :uuid");
+        query.bindValue(":uuid", sUuid);
 
         if(!query.exec()){
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
@@ -737,7 +738,8 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
         }
 
         if (query.next()) {
-            // nothing
+            QSqlRecord record = query.record();
+            nGameID = record.value("id").toInt();
         } else {
             pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
             return;
@@ -774,6 +776,7 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
     fclose (pFile);
 
     std::string targetImageFile = sFilename.toStdString();
+    // Log::info(TAG, "targetImageFile " + targetImageFile);
     if(!pImages->doThumbnailImagePng(sourceImageFile, targetImageFile, 100, 100)){
         pRequest->sendMessageError(cmd(), Error(400, "Could not decode bytearray to png"));
         // cleanup - redesign try finnaly
@@ -785,7 +788,12 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
         Log::err(TAG, "Could not delete file " + sourceImageFile);
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    if (FILE *file = fopen(targetImageFile.c_str(), "r")) {
+        fclose(file);
+        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    } else {
+        pRequest->sendMessageError(cmd(), Error(500, "Problem with creation file"));
+    }
 }
 
 
@@ -834,9 +842,9 @@ void CmdHandlerGames::handle(ModelRequest *pRequest){
         QSqlRecord record = query.record();
         nlohmann::json jsonGame;
         int nGameID = record.value("id").toInt();
-        jsonGame["id"] = nGameID;
+        jsonGame["local_id"] = nGameID; // deprecated
         jsonGame["uuid"] = record.value("uuid").toString().toStdString();
-        jsonGame["title"] = record.value("title").toString().toStdString();
+        jsonGame["name"] = record.value("title").toString().toStdString();
         jsonGame["type_game"] = record.value("type_game").toString().toStdString();
         jsonGame["date_start"] = record.value("date_start").toString().toStdString();
         jsonGame["date_stop"] = record.value("date_stop").toString().toStdString();

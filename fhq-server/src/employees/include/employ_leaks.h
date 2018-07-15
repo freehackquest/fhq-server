@@ -5,19 +5,27 @@
 #include <model_leak.h>
 
 class EmployLeaks : public EmployBase {
-	public:
-		EmployLeaks();
-		static std::string name() { return "EmployLeaks"; }
-		virtual bool init();
+    public:
+        // small enum
+        static int OK;
+        static int GAME_NOT_FOUND;
+        static int ALREADY_EXISTS;
+        static int DATABASE_ERROR;
 
-		bool addLeak(ModelLeak* pModelLeak);
-		const ModelLeak* findLeakById(int nId);
-		bool removeLeak(int nId);
-		bool updateLeak(ModelLeak* pModelLeak);
-		nlohmann::json toJson();
+        EmployLeaks();
+        static std::string name() { return "EmployLeaks"; }
+        virtual bool init();
 
-	private:
-		std::map<int, ModelLeak*> m_vCacheLeaks;
+        int addLeak(ModelLeak* pModelLeak, std::string &sError);
+        const ModelLeak* findLeakByUuid(std::string sUuid);
+        int removeLeak(std::string sUuid);
+        int updateLeak(ModelLeak* pModelLeak);
+        nlohmann::json toJson();
+
+    private:
+        std::string TAG;
+        std::vector<ModelLeak*> m_vectCacheLeaks;
+        std::map<std::string, ModelLeak*> m_mapCacheLeaks;
 };
 
 #endif // EMPLOY_LEAKS_H
