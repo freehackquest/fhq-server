@@ -7,6 +7,18 @@
 #include <utils_logger.h>
 
 // ---------------------------------------------------------------------
+// employ enum code returns
+
+class Employ {
+    static int OK;
+    static int DATABASE_ERROR;
+    static int ALREADY_EXISTS;
+    static int GAME_NOT_FOUND;
+    static int QUEST_NOT_FOUND;
+    static int LEAK_NOT_FOUND;
+};
+
+// ---------------------------------------------------------------------
 // base employ class
 
 class EmployBase {
@@ -16,6 +28,7 @@ public:
         const std::vector<std::string> &vLoadAfter);
     virtual bool init() = 0;
     const std::vector<std::string> &loadAfter();
+
 private:
     std::string TAG;
     std::string m_sName;
