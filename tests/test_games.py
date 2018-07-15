@@ -98,8 +98,7 @@ try:
         fhqtest.log_err("Game Logo wrong size, current " + str(img_len) + ", but expected 17045");
     image_png_base64 = base64.b64encode(image_png_base64);
     game_img = fhqtest.admin_session.game_update_logo({
-        # "uuid": game_uuid1 # wrong must be uuid
-        "gameid": gameid, # wrong gameid
+        "uuid": game_uuid1, # wrong must be uuid
         "image_png_base64": image_png_base64
     });
     fhqtest.alert(game_img == None, 'Could not get response');

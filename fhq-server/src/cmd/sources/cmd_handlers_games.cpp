@@ -711,7 +711,7 @@ CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("gameid").integer_().required().description("GameID"));
+    m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
     m_vInputs.push_back(CmdInputDef("image_png_base64").string_().required().description("Image PNG in Base64"));
 }
 
@@ -723,14 +723,14 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
-
-    int nGameID = jsonRequest["gameid"].toInt();
+    QString sUuid = jsonRequest["uuid"].toString();
+    int nGameID = 0;
 
     QSqlDatabase db = *(pDatabase->database());
     {
         QSqlQuery query(db);
-        query.prepare("SELECT * FROM games WHERE id = :gameid");
-        query.bindValue(":gameid", nGameID);
+        query.prepare("SELECT * FROM games WHERE uuid = :uuid");
+        query.bindValue(":uuid", sUuid);
 
         if(!query.exec()){
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
@@ -738,7 +738,8 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
         }
 
         if (query.next()) {
-            // nothing
+            QSqlRecord record = query.record();
+            nGameID = record.value("id").toInt();
         } else {
             pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
             return;
@@ -775,6 +776,7 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
     fclose (pFile);
 
     std::string targetImageFile = sFilename.toStdString();
+    // Log::info(TAG, "targetImageFile " + targetImageFile);
     if(!pImages->doThumbnailImagePng(sourceImageFile, targetImageFile, 100, 100)){
         pRequest->sendMessageError(cmd(), Error(400, "Could not decode bytearray to png"));
         // cleanup - redesign try finnaly
@@ -786,7 +788,12 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
         Log::err(TAG, "Could not delete file " + sourceImageFile);
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    if (FILE *file = fopen(targetImageFile.c_str(), "r")) {
+        fclose(file);
+        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    } else {
+        pRequest->sendMessageError(cmd(), Error(500, "Problem with creation file"));
+    }
 }
 
 
