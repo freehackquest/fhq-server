@@ -42,11 +42,14 @@ bool EmploySettings::init(){
     std::string sGroupServerFolders = "server_folders";
     addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_public", QString("/usr/share/fhq-server/public/")));
     addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_public_url", QString("https://freehackquest.com/public/")));
-    addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_games", QString("/var/www/html/fhq/files/games/")));
-    addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_games_url", QString("https://freehackquest.com/files/games/")));
+
+    // deprecated
     addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_quests", QString("/var/www/html/fhq/files/quests/")));
+    // deprecated
     addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_quests_url", QString("https://freehackquest.com/files/quests/")));
+    // deprecated
     addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_users", QString("/var/www/html/fhq/files/quests/")));
+    // deprecated (moved to public)
     addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_users_url", QString("https://freehackquest.com/files/quests/")));
 
     // LXD

@@ -344,7 +344,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest){
     QString sGameLogoFilename = "";
     {
         EmploySettings *pSettings = findEmploy<EmploySettings>();
-        QString sBasePath = pSettings->getSettString("server_folder_games");
+        QString sBasePath = pSettings->getSettString("server_folder_public") + "games/";
         sGameLogoFilename = sBasePath + QString::number(nGameID) + ".png";
     }
 
@@ -749,7 +749,7 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
     EmploySettings *pSettings = findEmploy<EmploySettings>();
     EmployImages *pImages = findEmploy<EmployImages>();
 
-    QString sBasePath = pSettings->getSettString("server_folder_games");
+    QString sBasePath = pSettings->getSettString("server_folder_public") + "games/";
 
     QString sFilename = sBasePath + QString::number(nGameID) + ".png";
 
@@ -824,7 +824,7 @@ void CmdHandlerGames::handle(ModelRequest *pRequest){
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
-    QString base_url = pSettings->getSettString("server_folder_games_url");
+    QString base_url = pSettings->getSettString("server_folder_public_url") + "games/";
 
     auto jsonGames = nlohmann::json::array();
 
