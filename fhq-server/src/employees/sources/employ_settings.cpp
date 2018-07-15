@@ -40,6 +40,8 @@ bool EmploySettings::init(){
 
     // server folders
     std::string sGroupServerFolders = "server_folders";
+    addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_public", QString("/usr/share/fhq-server/public/")));
+    addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_public_url", QString("https://freehackquest.com/public/")));
     addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_games", QString("/var/www/html/fhq/files/games/")));
     addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_games_url", QString("https://freehackquest.com/files/games/")));
     addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_quests", QString("/var/www/html/fhq/files/quests/")));
