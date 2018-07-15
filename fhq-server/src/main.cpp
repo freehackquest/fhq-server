@@ -51,6 +51,8 @@ int main(int argc, char** argv) {
 	helpArgs.addHelp(HelpArg("check-database-connection", "-cdc", "Check database conenction"));
 	helpArgs.addHelp(HelpArg("manual-create-database", "-mcd", "Manual create database"));
     helpArgs.addHelp(HelpArg("manual-configure-lxd", "-mclxd", "Manual configure HTTPS connection with LXD. You need generated SSL cert and key in /etc/fhq-server/lxd"));
+    helpArgs.addHelp(HelpArg("lxd-enable", "-uplxd", "Enable lxd mode"));
+    helpArgs.addHelp(HelpArg("lxd-disable", "-downlxd", "Disable lxd mode"));
     helpArgs.addHelp(HelpArg("start", "-s", "Start server"));
 
 
@@ -185,6 +187,21 @@ int main(int argc, char** argv) {
                 return -1;
             }
         }
+        return 0;
+    } else if(helpArgs.has("lxd-enable") || helpArgs.has("-uplxd") || helpArgs.has("lxd-disable") || helpArgs.has("-downlxd")){
+        Employees::init({});
+        EmploySettings *pSettings = findEmploy<EmploySettings>();
+        std::string lxd_mode;
+        if (helpArgs.has("lxd-enable") || helpArgs.has("-uplxd"))
+            lxd_mode = "enabled";
+        else if (helpArgs.has("lxd-disable") || helpArgs.has("-downlxd"))
+            lxd_mode = "disabled";
+        else {
+            std::cout << "\nError with command lxd-enable or lxd-disable\n";
+            return -1;
+        }
+        pSettings->setSettString("lxd_mode", QString::fromStdString(lxd_mode));
+        std::cout << "\nCurrent LXD mode: " << pSettings->getSettString("lxd_mode").toStdString() << "\n";
         return 0;
 	}else if(helpArgs.has("start") || helpArgs.has("-s")){
 		QThreadPool::globalInstance()->setMaxThreadCount(5);
