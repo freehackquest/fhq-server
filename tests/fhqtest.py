@@ -35,11 +35,11 @@ def print_bold(msg):
 
 def log_warn(msg):
     global bcolors
-    print(bcolors.WARNING + "Warning: " + msg + bcolors.ENDC + "\n")
+    print(bcolors.WARNING + "Warning: " + msg + bcolors.ENDC)
 
 def log_err(msg):
     global bcolors
-    print(bcolors.FAIL + "Error: " + msg + bcolors.ENDC + "\n")
+    print(bcolors.FAIL + "ERROR: " + msg + bcolors.ENDC)
 
 def alert(check, msg):
     if(check == True):

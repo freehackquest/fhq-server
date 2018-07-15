@@ -99,7 +99,7 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
         "	)"
         "	VALUES("
         "		:uuid,"
-        "		:title,"
+        "		:name,"
         "		:type_game,"
         "		NOW(),"
         "		NOW(),"
@@ -114,7 +114,7 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
         "		:maxscore"
         "	)");
     query.bindValue(":uuid", sUUID);
-    query.bindValue(":title", sName);
+    query.bindValue(":name", sName);
     query.bindValue(":type_game", sType);
     query.bindValue(":date_start", sDateStart);
     query.bindValue(":date_stop", sDateStop);
@@ -325,7 +325,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest){
         QSqlRecord record = query.record();
         nGameID  = record.value("id").toInt();
         jsonGame["uuid"] = record.value("uuid").toString().toStdString();
-        jsonGame["title"] = record.value("title").toString().toStdString();
+        jsonGame["name"] = record.value("title").toString().toStdString();
         jsonGame["type_game"] = record.value("type_game").toString().toStdString();
         jsonGame["date_start"] = record.value("date_start").toString().toStdString();
         jsonGame["date_stop"] = record.value("date_stop").toString().toStdString();
@@ -470,9 +470,9 @@ void CmdHandlerGameInfo::handle(ModelRequest *pRequest){
 
     if (query.next()) {
         QSqlRecord record = query.record();
-        data["id"] = record.value("id").toInt(); // deprecated
+        data["local_id"] = record.value("id").toInt(); // deprecated
         data["uuid"] = record.value("uuid").toString().toStdString();
-        data["title"] = record.value("title").toString().toStdString();
+        data["name"] = record.value("title").toString().toStdString();
         data["type_game"] = record.value("type_game").toString().toStdString();
         data["date_start"] = record.value("date_start").toString().toStdString();
         data["date_stop"] = record.value("date_stop").toString().toStdString();
@@ -835,9 +835,9 @@ void CmdHandlerGames::handle(ModelRequest *pRequest){
         QSqlRecord record = query.record();
         nlohmann::json jsonGame;
         int nGameID = record.value("id").toInt();
-        jsonGame["id"] = nGameID;
+        jsonGame["local_id"] = nGameID; // deprecated
         jsonGame["uuid"] = record.value("uuid").toString().toStdString();
-        jsonGame["title"] = record.value("title").toString().toStdString();
+        jsonGame["name"] = record.value("title").toString().toStdString();
         jsonGame["type_game"] = record.value("type_game").toString().toStdString();
         jsonGame["date_start"] = record.value("date_start").toString().toStdString();
         jsonGame["date_stop"] = record.value("date_stop").toString().toStdString();
