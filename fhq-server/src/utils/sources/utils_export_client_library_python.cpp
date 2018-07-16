@@ -285,6 +285,7 @@ void UtilsExportClientLibraryPython::export__init__py(){
     .add("")
     .sub("class FHQCliRecvThread(Thread):")
         .add("__ws = None;")
+        .add("__cli_version = '" + QCoreApplication::applicationVersion().toStdString() + "';")
         .add("__sendCommandQueue = Queue.Queue();")
         .add("__cmd_results = {};")
         .add("do_run = True;")
@@ -449,6 +450,18 @@ void UtilsExportClientLibraryPython::export__init__py(){
         .sub("def " + sCmd + "(self, req):")
             .add("if not self.__recvThread.hasConnection(): return None")
             .add("requestJson = self.__recvThread.generateBaseCommand('" + sCmd + "')");
+
+        // check required
+        for(int i = 0; i < vVin.size(); i++){
+            CmdInputDef inDef = vVin[i];
+            if(inDef.isRequired()){
+                std::string nameIn = std::string(vVin[i].getName());
+                builder
+                .sub("if '" + nameIn + "' not in req: ")
+                    .add("raise Exception('Parameter \"" + nameIn + "\" expected (lib)')")
+                    .end();
+            }
+        }
 
         for(int i = 0; i < vVin.size(); i++){
             std::string nameIn = std::string(vVin[i].getName());
