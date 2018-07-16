@@ -7,23 +7,24 @@
 
 class EmployServerInfo : public EmployBase {
     public:
-       EmployServerInfo();
-       static std::string name() { return "EmployServerInfo"; }
-       virtual bool init();
+        EmployServerInfo();
+        static std::string name() { return "EmployServerInfo"; }
+        virtual bool init();
 
-       void incrementRequests(const std::string &cmd);
-       void serverStarted();
-       int countQuests();
-       int countQuestsAttempt();
-       int countQuestsCompleted();
-       void incrementQuests();
-       void decrementQuests();
-       void incrementQuestsAttempt();
-       void incrementQuestsCompleted();
-       void initCounters();
+        void incrementRequests(const std::string &cmd);
+        void serverStarted();
+        int countQuests();
+        int countQuestsAttempt();
+        int countQuestsCompleted();
+        void incrementQuests();
+        void decrementQuests();
+        void incrementQuestsAttempt();
+        void incrementQuestsCompleted();
+        void initCounters();
+        nlohmann::json developers();
 
-       QDateTime getServerStart();
-       nlohmann::json toJson();
+        QDateTime getServerStart();
+        nlohmann::json toJson();
 
    private:
 

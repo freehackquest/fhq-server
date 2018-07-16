@@ -151,6 +151,7 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest){
     jsonResponse["quests"] = jsonQuests;
     jsonResponse["winners"] = jsonWinners;
     jsonResponse["cities"] = jsonCities;
+    jsonResponse["developers"] = pServerInfo->developers();
     jsonResponse["connectedusers"] = pRequest->server()->getConnectedUsers();
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

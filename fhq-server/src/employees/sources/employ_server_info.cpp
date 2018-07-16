@@ -155,3 +155,31 @@ void EmployServerInfo::incrementQuestsCompleted(){
 }
 
 // ---------------------------------------------------------------------
+
+nlohmann::json EmployServerInfo::developers(){
+    auto jsonDevelopers = nlohmann::json::array();
+
+    nlohmann::json jsonDev1;
+    jsonDev1["name"] = "Evgenii Sopov";
+    jsonDev1["email"] = "mrseakg@gmail.com";
+    jsonDevelopers.push_back(jsonDev1);
+
+    nlohmann::json jsonDev2;
+    jsonDev2["name"] = "Igor Polyakov";
+    jsonDev2["email"] = "?";
+    jsonDevelopers.push_back(jsonDev2);
+
+    nlohmann::json jsonDev3;
+    jsonDev3["name"] = "Sergey Ushev";
+    jsonDev3["email"] = "?";
+    jsonDevelopers.push_back(jsonDev3);
+
+    nlohmann::json jsonDev4;
+    jsonDev4["name"] = "Danil Dudkin";
+    jsonDev4["email"] = "?";
+    jsonDevelopers.push_back(jsonDev4);
+
+    return jsonDevelopers;
+}
+
+// ---------------------------------------------------------------------
