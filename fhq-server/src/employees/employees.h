@@ -10,6 +10,7 @@
 // employ enum code returns
 
 class Employ {
+public:
     static int OK;
     static int DATABASE_ERROR;
     static int ALREADY_EXISTS;

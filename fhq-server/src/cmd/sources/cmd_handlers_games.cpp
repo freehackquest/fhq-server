@@ -280,6 +280,17 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
     }
 
     // delete game logo if exists
+    std::string sGameLogoFilename = "";
+    {
+        EmploySettings *pSettings = findEmploy<EmploySettings>();
+        QString sBasePath = pSettings->getSettString(EmploySettings::SERVER_FOLDER_PUBLIC);
+        sGameLogoFilename = sBasePath.toStdString() + "games/" + std::to_string(nGameID) + ".png";
+        if( remove( sGameLogoFilename.c_str() ) != 0 ){
+            Log::err(TAG, "Could not delete file " + sGameLogoFilename);
+        }
+    }
+
+    // remove()
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

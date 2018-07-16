@@ -14,6 +14,8 @@ public:
     static std::string name() { return "EmploySettings"; }
     virtual bool init();
 
+    static std::string SERVER_FOLDER_PUBLIC;
+
     QString getSettString(const std::string &name);
     void setSettString(const std::string &sName, QString sValue);
     QString getSettPassword(const std::string &name);

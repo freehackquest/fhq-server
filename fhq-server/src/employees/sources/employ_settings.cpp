@@ -11,6 +11,10 @@ REGISTRY_EMPLOY(EmploySettings)
 
 // ---------------------------------------------------------------------
 
+std::string EmploySettings::SERVER_FOLDER_PUBLIC = "server_folder_public";
+
+// ---------------------------------------------------------------------
+
 EmploySettings::EmploySettings()
     : EmployBase(EmploySettings::name(), {EmployDatabase::name()}){
     TAG = EmploySettings::name();
@@ -40,7 +44,7 @@ bool EmploySettings::init(){
 
     // server folders
     std::string sGroupServerFolders = "server_folders";
-    addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_public", QString("/usr/share/fhq-server/public/")));
+    addNewSetting(new ModelServerSettHelper(sGroupServerFolders, EmploySettings::SERVER_FOLDER_PUBLIC, QString("/usr/share/fhq-server/public/")));
     addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_public_url", QString("https://freehackquest.com/public/")));
 
     // deprecated
