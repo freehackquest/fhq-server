@@ -12,6 +12,7 @@ class RunTasks {
         static void UpdateUserRating(int nUserID);
         static void UpdateQuestSolved(int nQuestID);
         static void MailSend(IWebSocketServer *pWebSocketServer,  QString to, QString subject, QString content);
+        static void NotifyToAll(const nlohmann::json &jsonMessage);
 };
 
 #endif // RUNTASKS_H

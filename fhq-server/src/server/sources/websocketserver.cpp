@@ -36,7 +36,7 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 	
 	EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
-
+    EmployWsServer *pWsServer = findEmploy<EmployWsServer>();
 	
 	m_pWebSocketServer = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::NonSecureMode, this);
 	m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::SecureMode, this);
@@ -78,6 +78,8 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 		}
 	}
     pServerInfo->serverStarted();
+    pWsServer->setServer(this); // temporary
+
     // TODO save in database information about server started
 }
 
@@ -279,7 +281,6 @@ void WebSocketServer::sendMessage(QWebSocket *pClient, QJsonObject obj){
 		// Log::info(TAG, QDateTime::currentDateTimeUtc().toString() + " [WS] >>> " + message);
         if(m_clients.contains(pClient)){
             try{
-
                 pClient->sendTextMessage(message);
             }catch(...){
                 Log::err(TAG, "Could not send message <<< " + message);
@@ -323,10 +324,18 @@ void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &c
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendToAll(QJsonObject obj){
+void WebSocketServer::sendToAll(QJsonObject obj){ // deprecated
 	for(int i = 0; i < m_clients.size(); i++){
 		this->sendMessage(m_clients.at(i), obj);
 	}
+}
+
+// ---------------------------------------------------------------------
+
+void WebSocketServer::sendToAll(const nlohmann::json& jsonMessage){
+    for(int i = 0; i < m_clients.size(); i++){
+        this->sendMessage(m_clients.at(i), jsonMessage);
+    }
 }
 
 // ---------------------------------------------------------------------

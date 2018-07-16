@@ -12,6 +12,7 @@
 #include <employ_database.h>
 #include <employ_settings.h>
 #include <employ_images.h>
+#include <employ_notify.h>
 #include <QFile>
 #include <fstream>
 
@@ -222,7 +223,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         }else{
             QSqlRecord record = query.record();
             nGameID = record.value("id").toInt();
-            sName = record.value("name").toString().toStdString();
+            sName = record.value("title").toString().toStdString();
         }
     }
 
@@ -291,9 +292,10 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
             Log::err(TAG, "Could not delete file " + sGameLogoFilename);
         }
     }
-    std::string sEventMessage = "Removed [game#" + sUuid.toStdString() + "] " + sName;
-    RunTasks::AddPublicEvents("games", QString(sEventMessage.c_str()));
 
+    EmployNotify *pNotify = findEmploy<EmployNotify>();
+    ModelNotification notification("games", "Removed [game#" + sUuid.toStdString() + "] " + sName);
+    pNotify->sendNotification(notification);
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 

@@ -7,6 +7,8 @@
 class ModelNotification {
     public:
         ModelNotification(const std::string &sType, const std::string &sMessage);
+        std::string type();
+        std::string message();
         nlohmann::json toJson();
     private:
         std::string TAG;

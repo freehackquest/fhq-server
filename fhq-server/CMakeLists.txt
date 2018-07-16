@@ -207,6 +207,8 @@ list (APPEND FHQSRV_SOURCES "src/employees/include/employ_images.h")
 list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_images.cpp")
 list (APPEND FHQSRV_SOURCES "src/employees/include/employ_games.h")
 list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_games.cpp")
+list (APPEND FHQSRV_SOURCES "src/employees/include/employ_notify.h")
+list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_notify.cpp")
 list (APPEND FHQSRV_SOURCES "src/employees/include/employ_quests.h")
 list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_quests.cpp")
 list (APPEND FHQSRV_SOURCES "src/employees/include/employ_settings.h")
@@ -227,20 +229,25 @@ list (APPEND FHQSRV_SOURCES "src/employees/include/employ_orchestra.h")
 list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_orchestra.cpp")
 
 # tasks
+list (APPEND FHQSRV_SOURCES "src/tasks/runtasks.h")
+list (APPEND FHQSRV_SOURCES "src/tasks/runtasks.cpp")
+list (APPEND FHQSRV_SOURCES "src/tasks/include/mail_send_task.h")
+list (APPEND FHQSRV_SOURCES "src/tasks/sources/mail_send_task.cpp")
+list (APPEND FHQSRV_SOURCES "src/tasks/include/notify_to_all_task.h")
+list (APPEND FHQSRV_SOURCES "src/tasks/sources/notify_to_all_task.cpp")
+
 list (APPEND FHQSRV_SOURCES "src/tasks/include/add_public_events_task.h")
 list (APPEND FHQSRV_SOURCES "src/tasks/include/update_max_score_game_task.h")
 list (APPEND FHQSRV_SOURCES "src/tasks/include/update_quest_solved_task.h")
 list (APPEND FHQSRV_SOURCES "src/tasks/include/update_user_location_task.h")
 list (APPEND FHQSRV_SOURCES "src/tasks/include/update_user_rating_task.h")
-list (APPEND FHQSRV_SOURCES "src/tasks/runtasks.h")
-list (APPEND FHQSRV_SOURCES "src/tasks/include/mail_send_task.h")
 list (APPEND FHQSRV_SOURCES "src/tasks/sources/add_public_events_task.cpp")
 list (APPEND FHQSRV_SOURCES "src/tasks/sources/update_max_score_game_task.cpp")
 list (APPEND FHQSRV_SOURCES "src/tasks/sources/update_quest_solved_task.cpp")
 list (APPEND FHQSRV_SOURCES "src/tasks/sources/update_user_rating_task.cpp")
 list (APPEND FHQSRV_SOURCES "src/tasks/sources/update_user_location_task.cpp")
-list (APPEND FHQSRV_SOURCES "src/tasks/runtasks.cpp")
-list (APPEND FHQSRV_SOURCES "src/tasks/sources/mail_send_task.cpp")
+
+
 
 # updates
 list (APPEND FHQSRV_SOURCES "src/updates/updates.h")

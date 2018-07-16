@@ -14,13 +14,25 @@ REGISTRY_EMPLOY(EmployWsServer)
 EmployWsServer::EmployWsServer()
     : EmployBase(EmployWsServer::name(), {"start_ws_server", EmployServerConfig::name(), EmployServerInfo::name()}) {
 	TAG = EmployWsServer::name();
+    m_pWebSocketServer = NULL;
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployWsServer::init(){
-
     return true;
+}
+
+// ---------------------------------------------------------------------
+
+void EmployWsServer::setServer(IWebSocketServer *pWebSocketServer){
+    m_pWebSocketServer = pWebSocketServer;
+}
+
+// ---------------------------------------------------------------------
+
+void EmployWsServer::sendToAll(const nlohmann::json& jsonMessage){
+    m_pWebSocketServer->sendToAll(jsonMessage);
 }
 
 // ---------------------------------------------------------------------

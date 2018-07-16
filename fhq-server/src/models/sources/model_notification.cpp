@@ -11,6 +11,18 @@ ModelNotification::ModelNotification(const std::string &sType, const std::string
 
 // ---------------------------------------------------------------------
 
+std::string ModelNotification::type(){
+    return m_sType;
+}
+
+// ---------------------------------------------------------------------
+
+std::string ModelNotification::message(){
+    return m_sMessage;
+}
+
+// ---------------------------------------------------------------------
+
 nlohmann::json ModelNotification::toJson(){
     nlohmann::json jsonNotification;
     jsonNotification["type"] = m_sType;
