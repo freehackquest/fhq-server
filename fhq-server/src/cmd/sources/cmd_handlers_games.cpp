@@ -134,7 +134,7 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
     int rowid = query.lastInsertId().toInt();
     jsonResponse["questid"] = rowid;
 
-    RunTasks::AddPublicEvents("games", "New game #" + QString::number(rowid) + " " + sName);
+    RunTasks::AddPublicEvents("games", "New [game#" + sUUID + "] " + sName);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -203,6 +203,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
     }
 
     int nGameID = 0;
+    std::string sName = "";
 
     // check existing game
     {
@@ -221,6 +222,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         }else{
             QSqlRecord record = query.record();
             nGameID = record.value("id").toInt();
+            sName = record.value("name").toString().toStdString();
         }
     }
 
@@ -289,8 +291,8 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
             Log::err(TAG, "Could not delete file " + sGameLogoFilename);
         }
     }
-
-    // remove()
+    std::string sEventMessage = "Removed [game#" + sUuid.toStdString() + "] " + sName;
+    RunTasks::AddPublicEvents("games", QString(sEventMessage.c_str()));
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
