@@ -279,6 +279,8 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         }
     }
 
+    // delete game logo if exists
+
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 

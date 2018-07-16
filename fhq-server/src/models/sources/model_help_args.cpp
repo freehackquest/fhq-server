@@ -78,6 +78,7 @@ void HelpArgs::printHelp(){
 	}
 	nMaxSize += 4;
 
+    std::cout << " " << FHQSRV_APP_NAME << "-" << FHQSRV_VERSION << "\n";
 	std::cout << "Usage: " << m_vArgs.at(0) << "   [PARAM]\n";
 	for(int i = 0; i < m_vHelpArgs.size(); i++){
 		HelpArg ha = m_vHelpArgs[i];

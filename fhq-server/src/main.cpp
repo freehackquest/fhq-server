@@ -55,10 +55,6 @@ int main(int argc, char** argv) {
     helpArgs.addHelp(HelpArg("lxd-disable", "-downlxd", "Disable lxd mode"));
     helpArgs.addHelp(HelpArg("start", "-s", "Start server"));
 
-
-	a.setApplicationName("fhq-server");
-    a.setApplicationVersion(VERSION_STRING);
-
 	if(argc > 3) {
 		helpArgs.printHelp();
 		return 0;
@@ -100,7 +96,7 @@ int main(int argc, char** argv) {
 		}
 		return 0;
 	}else if(helpArgs.has("version") || helpArgs.has("-v")){
-		std::cout << QCoreApplication::applicationName().toStdString() << "-" << QCoreApplication::applicationVersion().toStdString() << "\n";
+        std::cout << FHQSRV_APP_NAME << "-" << FHQSRV_VERSION << "\n";
 		return 0;
 	}else if(helpArgs.has("--prepare-deb") || helpArgs.has("-pd")){
 		UtilsPrepareDebPackage::prepare("","tmpdeb");
@@ -128,18 +124,8 @@ int main(int argc, char** argv) {
 	}else if(helpArgs.has("show-settings") || helpArgs.has("-ss")){
 		Employees::init({});
 		EmploySettings *pSettings = findEmploy<EmploySettings>();
-		
 		std::cout << "\n * Show settings\n\n";
 		pSettings->printSettings();
-		std::cout << "\n * Done\n\n";
-		return 0;
-	}else if(helpArgs.has("test-png")){
-		std::cout << "\n * Test png\n\n";
-		// Employees::init({});
-		EmployImages *pImages = new EmployImages();
-		// EmployImages *pImages = findEmploy<EmployImages>();
-		pImages->doThumbnailImagePng("test.png", "test_100x100.png", 100, 100);
-		pImages->doThumbnailImagePng("test_alpha.png", "test_alpha_100x100.png", 100, 100);
 		std::cout << "\n * Done\n\n";
 		return 0;
 	}else if(helpArgs.has("manual-create-database") || helpArgs.has("-mcd")){

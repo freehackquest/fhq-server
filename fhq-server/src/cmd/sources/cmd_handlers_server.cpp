@@ -56,7 +56,7 @@ void CmdHandlerServerApi::handle(ModelRequest *pRequest){
         it++;
     }
     jsonResponse["data"] = jsonHandlers;
-    jsonResponse["version"] = QCoreApplication::applicationVersion().toStdString();
+    jsonResponse["version"] = FHQSRV_VERSION;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 

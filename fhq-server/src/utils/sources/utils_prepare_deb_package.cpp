@@ -13,7 +13,7 @@ void UtilsPrepareDebPackage::prepare(QString /*repo*/, QString tmpdeb){
 	if(file.exists()) file.remove();
 	if(file.open(QIODevice::ReadWrite)){
 		QTextStream stream(&file);
-		stream << "Source: " << QCoreApplication::applicationName() << endl;
+        stream << "Source: " << FHQSRV_APP_NAME << endl;
 		stream << "Section: misc" << endl;
 		stream << "Priority: optional" << endl;
 		// TODO redesign in static method
@@ -33,8 +33,8 @@ void UtilsPrepareDebPackage::prepare(QString /*repo*/, QString tmpdeb){
 		stream << "Depends: " << depends.join(", ") << endl;
 		
 		// Version
-		stream << "Version: " << QCoreApplication::applicationVersion() << endl;
-		std::cout << "Version: " << QCoreApplication::applicationVersion().toStdString() << "\n";
+        stream << "Version: " << FHQSRV_VERSION << endl;
+        std::cout << "Version: " << FHQSRV_VERSION << "\n";
 		
 		 // TODO calculate correct installed size
 		stream << "Installed-Size: 1024" << endl;
@@ -42,8 +42,8 @@ void UtilsPrepareDebPackage::prepare(QString /*repo*/, QString tmpdeb){
 		
 		
 		// Package
-		stream << "Package: " << QCoreApplication::applicationName() << endl;
-		std::cout << "Package: " + QCoreApplication::applicationName().toStdString() + "\n";
+        stream << "Package: " << FHQSRV_APP_NAME << endl;
+        std::cout << "Package: " << std::string(FHQSRV_APP_NAME) << "\n";
 		
 		// Architecture
 		if(QSysInfo::currentCpuArchitecture() == "x86_64"){
