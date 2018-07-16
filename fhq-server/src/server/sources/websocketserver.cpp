@@ -1,5 +1,6 @@
 #include <websocketserver.h>
 
+#include <QtCore> // TODO remove
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QDateTime>
@@ -96,6 +97,18 @@ bool WebSocketServer::isFailed(){
 
 // ---------------------------------------------------------------------
 
+void WebSocketServer::sendServerMessage(QWebSocket *pSocket){
+    nlohmann::json jsonServer;
+    jsonServer["cmd"] = "server";
+    jsonServer["m"] = "s0";
+    jsonServer["app"] = "fhq-server";
+    jsonServer["version"] = QCoreApplication::applicationVersion().toStdString();
+    // TODO developers list
+    sendMessage(pSocket, jsonServer);
+}
+
+// ---------------------------------------------------------------------
+
 /*! 
  *  Handling new connection by ws://
  */
@@ -110,6 +123,7 @@ void WebSocketServer::onNewConnection()
     connect(pSocket, &QWebSocket::disconnected, this, &WebSocketServer::socketDisconnected);
 
     m_clients << pSocket;
+    sendServerMessage(pSocket);
 }
 
 // ---------------------------------------------------------------------
@@ -127,6 +141,7 @@ void WebSocketServer::onNewConnectionSSL(){
     connect(pSocket, &QWebSocket::disconnected, this, &WebSocketServer::socketDisconnected);
 
     m_clients << pSocket;
+    sendServerMessage(pSocket);
 }
 
 // ---------------------------------------------------------------------
@@ -158,12 +173,13 @@ void WebSocketServer::processTextMessage(const QString &message) {
 
         std::string cmd = pModelRequest->command();
 
-        Log::info(TAG.toStdString(), "[WS] <<< " + cmd);
-
         if(!pModelRequest->hasM()){
+            Log::info(TAG.toStdString(), "[WS] >>> " + cmd);
             this->sendMessageError(pClient, cmd, "", Errors::NotFound("requare parameter 'm' - messageid"));
             return;
         }
+
+        Log::info(TAG.toStdString(), "[WS] >>> " + cmd + ":" + pModelRequest->m());
 
         CmdHandlerBase *pCmdHandler = CmdHandlers::findCmdHandler(cmd);
         if(pCmdHandler == NULL){
@@ -251,14 +267,19 @@ int WebSocketServer::getConnectedUsers(){
 // deprecated
 void WebSocketServer::sendMessage(QWebSocket *pClient, QJsonObject obj){
 	 if (pClient) {
+	    std::string cmd = obj["cmd"].toString().toStdString();
+	    std::string m = obj["m"].toString().toStdString();
+
 		QJsonDocument doc(obj);
 		QString message = doc.toJson(QJsonDocument::Compact);
+		Log::info(TAG.toStdString(), "[WS] <<< " + cmd + ":" + m);
 		// Log::info(TAG, QDateTime::currentDateTimeUtc().toString() + " [WS] >>> " + message);
         if(m_clients.contains(pClient)){
             try{
+
                 pClient->sendTextMessage(message);
             }catch(...){
-                Log::err(TAG, "Could not send message >>> " + message);
+                Log::err(TAG, "Could not send message <<< " + message);
             }
         }
     }
@@ -268,14 +289,18 @@ void WebSocketServer::sendMessage(QWebSocket *pClient, QJsonObject obj){
 
 void WebSocketServer::sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse){
     if (pClient) {
-       std::string message = jsonResponse.dump();
-       if(m_clients.contains(pClient)){
-           try{
-               pClient->sendTextMessage(QString(message.c_str()));
-           }catch(...){
-               Log::err(TAG.toStdString(), "Could not send message >>> " + message);
-           }
-       }
+        std::string cmd = jsonResponse["cmd"];
+        std::string m = jsonResponse["m"];
+        std::string message = jsonResponse.dump();
+
+        Log::info(TAG.toStdString(), "[WS] <<< " + cmd + ":" + m);
+        if(m_clients.contains(pClient)){
+            try{
+                pClient->sendTextMessage(QString(message.c_str()));
+            }catch(...){
+                Log::err(TAG.toStdString(), "Could not send message <<< " + message);
+            }
+        }
    }
 }
 

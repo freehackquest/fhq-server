@@ -50,6 +50,7 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 		void closed();
 
 	private Q_SLOTS:
+		void sendServerMessage(QWebSocket *pSocket);
 		void onNewConnection();
 		void onNewConnectionSSL();
         void processTextMessage(const QString &message);
