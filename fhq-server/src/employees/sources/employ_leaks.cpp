@@ -6,12 +6,6 @@
 
 REGISTRY_EMPLOY(EmployLeaks)
 
-
-int EmployLeaks::OK = 0;
-int EmployLeaks::GAME_NOT_FOUND = 1;
-int EmployLeaks::ALREADY_EXISTS = 2;
-int EmployLeaks::DATABASE_ERROR = 3;
-
 // ---------------------------------------------------------------------
 
 EmployLeaks::EmployLeaks()
@@ -68,12 +62,13 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
 
     if(m_mapCacheLeaks.count(sUuid)){
         // pError = new Error(403, "Leak already exists with this uuid");
-        return EmployLeaks::ALREADY_EXISTS;
+        return Employ::ALREADY_EXISTS;
 	}
 
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
 
+    // TODO refactor on employ games
     // check the game
     {
         QSqlQuery query(db);
@@ -81,10 +76,10 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
         query.bindValue(":game_uuid", QString(sGameUuid.c_str()));
         if (!query.exec()){
             sError = query.lastError().text().toStdString();
-            return EmployLeaks::DATABASE_ERROR;
+            return Employ::DATABASE_ERROR;
         }
         if (!query.next()){
-            return EmployLeaks::GAME_NOT_FOUND;
+            return Employ::GAME_NOT_FOUND;
         }
 
         QSqlRecord record = query.record();
@@ -113,12 +108,12 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
 
         if (!query.exec()){
             sError = query.lastError().text().toStdString();
-            return EmployLeaks::DATABASE_ERROR;
+            return Employ::DATABASE_ERROR;
         }
     }
     // TODO set id
     m_mapCacheLeaks.insert(std::pair<std::string, ModelLeak*>(sUuid,pModelLeak));
-    return EmployLeaks::OK;
+    return Employ::OK;
 }
 
 // ---------------------------------------------------------------------

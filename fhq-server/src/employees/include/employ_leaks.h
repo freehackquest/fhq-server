@@ -6,12 +6,6 @@
 
 class EmployLeaks : public EmployBase {
     public:
-        // small enum
-        static int OK;
-        static int GAME_NOT_FOUND;
-        static int ALREADY_EXISTS;
-        static int DATABASE_ERROR;
-
         EmployLeaks();
         static std::string name() { return "EmployLeaks"; }
         virtual bool init();
