@@ -11,6 +11,8 @@ class EmployGames : public EmployBase {
         static std::string name() { return "EmployGames"; }
         virtual bool init();
 
+        ModelGame* findGameByLocalId(int nLocalId);
+        ModelGame* findGameByUuid(const std::string &sUuid);
         EmployResult addGame(ModelGame* pModelGame, std::string &sError);
         EmployResult removeGame(const std::string &sUuid);
 

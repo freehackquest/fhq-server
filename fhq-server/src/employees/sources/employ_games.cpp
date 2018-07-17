@@ -20,6 +20,7 @@ EmployGames::EmployGames()
 // ---------------------------------------------------------------------
 
 bool EmployGames::init(){
+    // TODO mutex
     // check the access to games folder
     EmploySettings *pSettings = findEmploy<EmploySettings>();
     QString sBasePath = pSettings->getSettString("server_folder_public");
@@ -72,7 +73,29 @@ bool EmployGames::init(){
 
 // ---------------------------------------------------------------------
 
+ModelGame* EmployGames::findGameByLocalId(int nLocalId){
+    // TODO mutex
+    for(int i = 0; i < m_vectCacheGame.size(); i++){
+        if(m_vectCacheGame[i]->localId() == nLocalId){
+            return m_vectCacheGame[i];
+        }
+    }
+    return NULL;
+}
+
+// ---------------------------------------------------------------------
+
+ModelGame* EmployGames::findGameByUuid(const std::string &sUuid){
+    if(!m_mapCacheGames.count(sUuid)){
+        return NULL;
+    }
+    return m_mapCacheGames.at(sUuid);
+}
+
+// ---------------------------------------------------------------------
+
 EmployResult EmployGames::addGame(ModelGame* pModelGame, std::string &sError){
+    // TODO mutex
     std::string sUuid = pModelGame->uuid();
 
     if(m_mapCacheGames.count(sUuid)){
@@ -144,6 +167,7 @@ EmployResult EmployGames::addGame(ModelGame* pModelGame, std::string &sError){
 // ---------------------------------------------------------------------
 
 EmployResult EmployGames::removeGame(const std::string &sUuid){
+    // TODO mutex
     if(!m_mapCacheGames.count(sUuid)){
         return EmployResult::GAME_NOT_FOUND;
     }

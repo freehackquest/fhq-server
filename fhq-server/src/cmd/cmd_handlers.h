@@ -17,6 +17,9 @@ class CmdHandlerBase {
         virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest) = 0;
 
+        // virtual void success(nlohmann::json jsonResponse);
+        // virtual void error(int nCode, const std::string &sErrorMessage);
+
     protected:
         std::string TAG;
         std::string m_sCmd;

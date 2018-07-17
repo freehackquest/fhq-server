@@ -1,5 +1,6 @@
 #include <utils_logger.h>
 #include <cmd_handlers.h>
+#include <employ_ws_server.h>
 
 // ****************************
 // **** CmdHandlerBase
@@ -46,6 +47,24 @@ const std::vector<CmdInputDef> &CmdHandlerBase::inputs(){
 
 // ---------------------------------------------------------------------
 
+/*
+void CmdHandlerBase::success(nlohmann::json jsonResponse){
+    EmployWsServer *pEmployWsServer = findEmploy<EmployWsServer>();
+    // TODO sendMessageSuccess
+    // and remove from ModelRequests
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerBase::error(int nCode, const std::string &sErrorMessage){
+    EmployWsServer *pEmployWsServer = findEmploy<EmployWsServer>();
+    // TODO sendMessageError
+    // and remove from ModelRequests
+
+}
+// ---------------------------------------------------------------------
+*/
+
 // ****************************
 // **** CmdHandlers Map
 // ****************************
@@ -91,6 +110,4 @@ CmdHandlerBase * CmdHandlers::findCmdHandler(const std::string &sCmd){
 
     return pCmdHandler;
 }
-
-// ---------------------------------------------------------------------
 

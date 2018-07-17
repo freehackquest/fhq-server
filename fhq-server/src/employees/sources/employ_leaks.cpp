@@ -1,5 +1,7 @@
 #include <employ_leaks.h>
 #include <employ_database.h>
+#include <employ_games.h>
+#include <employ_notify.h>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -9,7 +11,7 @@ REGISTRY_EMPLOY(EmployLeaks)
 // ---------------------------------------------------------------------
 
 EmployLeaks::EmployLeaks()
-    : EmployBase(EmployLeaks::name(), {EmployDatabase::name()}) {
+    : EmployBase(EmployLeaks::name(), {EmployDatabase::name(), EmployNotify::name(), EmployGames::name()}) {
     TAG = EmployLeaks::name();
     m_mapCacheLeaks.clear();
     m_vectCacheLeaks.clear();
@@ -20,6 +22,8 @@ EmployLeaks::EmployLeaks()
 bool EmployLeaks::init(){
     // load list of leaks to cache
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployGames *pEmployGames = findEmploy<EmployGames>();
+
     QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
@@ -35,8 +39,14 @@ bool EmployLeaks::init(){
         pModelLeak->setLocalId(record.value("id").toInt());
         std::string sUuid = record.value("uuid").toString().toStdString();
         pModelLeak->setUuid(sUuid);
-        pModelLeak->setGameId(record.value("gameid").toInt());
-        // TODO game_uuid
+        int nGameId = record.value("gameid").toInt();
+        pModelLeak->setGameId(nGameId);
+        ModelGame *pModelGame = pEmployGames->findGameByLocalId(nGameId);
+        if(pModelGame != NULL){
+            pModelLeak->setGameUuid(pModelGame->uuid());
+        }else{
+            Log::err(TAG, "Game not found by localId: " + std::to_string(nGameId));
+        }
         pModelLeak->setName(record.value("name").toString().toStdString());
         pModelLeak->setContent(record.value("content").toString().toStdString());
         pModelLeak->setScore(record.value("score").toInt());
@@ -59,18 +69,28 @@ bool EmployLeaks::init(){
 int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
     std::string sUuid = pModelLeak->uuid();
     std::string sGameUuid = pModelLeak->gameUuid();
+    std::string sName = pModelLeak->name();
 
     if(m_mapCacheLeaks.count(sUuid)){
         // pError = new Error(403, "Leak already exists with this uuid");
         return EmployResult::ALREADY_EXISTS;
 	}
 
+    EmployGames *pEmployGames = findEmploy<EmployGames>();
+
+    ModelGame *pModelGame = pEmployGames->findGameByUuid(sGameUuid);
+    if(pModelGame == NULL){
+        return EmployResult::GAME_NOT_FOUND;
+    }
+    pModelLeak->setGameId(pModelGame->localId());
+
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
 
     // TODO refactor on employ games
+
     // check the game
-    {
+   /* {
         QSqlQuery query(db);
         query.prepare("SELECT id,uuid FROM games WHERE uuid = :game_uuid");
         query.bindValue(":game_uuid", QString(sGameUuid.c_str()));
@@ -84,7 +104,7 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
 
         QSqlRecord record = query.record();
         pModelLeak->setGameId(record.value("id").toInt());
-    }
+    }*/
 
     {
         QSqlQuery query(db);
@@ -101,7 +121,7 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
             ");");
         query.bindValue(":uuid", QString(sUuid.c_str()));
         query.bindValue(":gameid", pModelLeak->gameId());
-        query.bindValue(":name", QString(pModelLeak->name().c_str()));
+        query.bindValue(":name", QString(sName.c_str()));
         query.bindValue(":content", QString(pModelLeak->content().c_str()));
         query.bindValue(":score", pModelLeak->score());
         query.bindValue(":sold", pModelLeak->sold());
@@ -114,8 +134,11 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
         pModelLeak->setLocalId(rowid);
     }
 
-    // TODO set id
     m_mapCacheLeaks.insert(std::pair<std::string, ModelLeak*>(sUuid,pModelLeak));
+
+    EmployNotify *pEmployNotify = findEmploy<EmployNotify>();
+    pEmployNotify->notifyInfo("leaks", "New [leak#" + sUuid + "] " + sName);
+
     return EmployResult::OK;
 }
 
