@@ -32,7 +32,7 @@ bool EmployLeaks::init(){
         QSqlRecord record = query.record();
         ModelLeak* pModelLeak = new ModelLeak();
         QJsonObject leak;
-        pModelLeak->setId(record.value("id").toInt());
+        pModelLeak->setLocalId(record.value("id").toInt());
         std::string sUuid = record.value("uuid").toString().toStdString();
         pModelLeak->setUuid(sUuid);
         pModelLeak->setGameId(record.value("gameid").toInt());
@@ -110,7 +110,10 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
             sError = query.lastError().text().toStdString();
             return Employ::DATABASE_ERROR;
         }
+        int rowid = query.lastInsertId().toInt();
+        pModelLeak->setLocalId(rowid);
     }
+
     // TODO set id
     m_mapCacheLeaks.insert(std::pair<std::string, ModelLeak*>(sUuid,pModelLeak));
     return Employ::OK;

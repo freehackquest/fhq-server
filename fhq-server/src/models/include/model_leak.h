@@ -8,8 +8,8 @@ class ModelLeak {
     public:
         ModelLeak();
         
-        int id();
-        void setId(int nId);
+        int localId();
+        void setLocalId(int nId);
         const std::string &uuid();
         void setUuid(std::string sUuid);
         int gameId(); // deprecated
@@ -33,7 +33,7 @@ class ModelLeak {
         void fillFrom(nlohmann::json &jsonLeak);
     private:
         std::string TAG;
-        int m_nId;
+        int m_nLocalId;
         int m_nGameId; // deprecated
         std::string m_sUuid;
         std::string m_sGameUuid;

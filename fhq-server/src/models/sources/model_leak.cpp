@@ -5,7 +5,7 @@
 
 ModelLeak::ModelLeak(){
     TAG = "ModelLeak";
-    m_nId = 0;
+    m_nLocalId = 0;
     m_sUuid = "";
     m_sGameUuid = "";
     m_nGameId = 0;
@@ -17,14 +17,14 @@ ModelLeak::ModelLeak(){
 
 // ---------------------------------------------------------------------
 
-int ModelLeak::id(){
-	return m_nId;
+int ModelLeak::localId(){
+    return m_nLocalId;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelLeak::setId(int nId){
-	m_nId = nId;
+void ModelLeak::setLocalId(int nLocalId){
+    m_nLocalId = nLocalId;
 }
 
 // ---------------------------------------------------------------------
