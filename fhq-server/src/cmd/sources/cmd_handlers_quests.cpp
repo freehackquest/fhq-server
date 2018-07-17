@@ -6,6 +6,7 @@
 #include <QCryptographicHash>
 #include <employ_database.h>
 #include <employ_server_info.h>
+#include <employ_notify.h>
 
 // *******************************************
 // *************** Quest List ****************
@@ -455,9 +456,10 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
     }
     pServerInfo->incrementQuestsCompleted();
 
+    EmployNotify *pEmployNotify = findEmploy<EmployNotify>();
 
-    RunTasks::AddPublicEvents("quests", "User #" + QString::number(nUserID) + "  " + sNick
-                              + " passed quest #" + QString::number(nQuestID) + " " + sQuestName);
+    pEmployNotify->notifyInfo("quests", "User #" + std::to_string(nUserID) + "  " + sNick.toStdString()
+                              + " passed quest #" + std::to_string(nQuestID) + " " + sQuestName.toStdString());
 
     RunTasks::UpdateUserRating(nUserID);
     RunTasks::UpdateQuestSolved(nQuestID);
