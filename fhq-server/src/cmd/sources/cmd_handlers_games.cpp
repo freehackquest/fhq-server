@@ -12,6 +12,7 @@
 #include <employ_database.h>
 #include <employ_settings.h>
 #include <employ_images.h>
+#include <employ_games.h>
 #include <employ_notify.h>
 #include <QFile>
 #include <fstream>
@@ -45,8 +46,45 @@ CmdHandlerGameCreate::CmdHandlerGameCreate()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-    
+    EmployGames *pEmployGames = findEmploy<EmployGames>();
+
+    nlohmann::json jsonRequest = pRequest->jsonRequest();
+    ModelGame *pModelGame = new ModelGame();
+    pModelGame->fillFrom(jsonRequest);
+
+    std::string sError = "";
+    EmployResult result = pEmployGames->addGame(pModelGame, sError);
+    switch(result){
+
+    case EmployResult::DATABASE_ERROR:
+        delete pModelGame;
+        pRequest->sendMessageError(cmd(), Error(500, sError));
+        return;
+
+    case EmployResult::ALREADY_EXISTS:
+        delete pModelGame;
+        pRequest->sendMessageError(cmd(), Error(403, "Game already exists with this uuid"));
+        return;
+
+    case EmployResult::ERROR_NAME_IS_EMPTY:
+        delete pModelGame;
+        pRequest->sendMessageError(cmd(), Error(400, "Game has empty name"));
+        return;
+
+    case EmployResult::OK:
+        nlohmann::json jsonResponse;
+        jsonResponse["data"] = pModelGame->toJson();
+        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+        return;
+    }
+
+    // default
+    delete pModelGame;
+    pRequest->sendMessageError(cmd(), Error(500, "Server error"));
+
+   /*
+
+
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 	
@@ -137,7 +175,7 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
 
     RunTasks::AddPublicEvents("games", "New [game#" + sUUID + "] " + sName);
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);*/
 }
 
 /*********************************************
@@ -226,6 +264,9 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
             sName = record.value("title").toString().toStdString();
         }
     }
+
+    EmployGames *pEmployGames = findEmploy<EmployGames>();
+    pEmployGames->removeGame(sUuid.toStdString()); // TODO just removed from cache
 
     // delete from users_games
     {

@@ -6,15 +6,6 @@
 
 // ---------------------------------------------------------------------
 
-int Employ::OK = 0;
-int Employ::DATABASE_ERROR = 1;
-int Employ::ALREADY_EXISTS = 2;
-int Employ::GAME_NOT_FOUND = 3;
-int Employ::QUEST_NOT_FOUND = 4;
-int Employ::LEAK_NOT_FOUND = 5;
-
-// ---------------------------------------------------------------------
-
 std::map<std::string, EmployBase*> *g_pEmployees = NULL;
 std::vector<std::string> *g_pInitEmployees = NULL;
 

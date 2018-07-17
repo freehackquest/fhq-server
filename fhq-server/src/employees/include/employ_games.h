@@ -11,6 +11,9 @@ class EmployGames : public EmployBase {
         static std::string name() { return "EmployGames"; }
         virtual bool init();
 
+        EmployResult addGame(ModelGame* pModelGame, std::string &sError);
+        EmployResult removeGame(const std::string &sUuid);
+
     private:
         std::string TAG;
         std::vector<ModelGame*> m_vectCacheGame;

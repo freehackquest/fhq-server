@@ -7,16 +7,16 @@
 #include <utils_logger.h>
 
 // ---------------------------------------------------------------------
-// employ enum code returns
+// employ enum code results
 
-class Employ {
-public:
-    static int OK;
-    static int DATABASE_ERROR;
-    static int ALREADY_EXISTS;
-    static int GAME_NOT_FOUND;
-    static int QUEST_NOT_FOUND;
-    static int LEAK_NOT_FOUND;
+enum EmployResult {
+    OK,
+    DATABASE_ERROR,
+    ALREADY_EXISTS,
+    GAME_NOT_FOUND,
+    QUEST_NOT_FOUND,
+    LEAK_NOT_FOUND,
+    ERROR_NAME_IS_EMPTY,
 };
 
 // ---------------------------------------------------------------------

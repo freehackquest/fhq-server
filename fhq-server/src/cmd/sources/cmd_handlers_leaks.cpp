@@ -161,25 +161,25 @@ void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest){
     std::string sError = "";
     int nResult = pEmployLeaks->addLeak(pModelLeak, sError);
 
-    if(nResult == Employ::DATABASE_ERROR){
+    if(nResult == EmployResult::DATABASE_ERROR){
         pRequest->sendMessageError(cmd(), Error(500, sError));
         delete pModelLeak;
         return;
     }
 
-    if(nResult == Employ::ALREADY_EXISTS){
+    if(nResult == EmployResult::ALREADY_EXISTS){
         pRequest->sendMessageError(cmd(), Error(403, "Leak already exists with this uuid"));
         delete pModelLeak;
         return;
     }
 
-    if(nResult == Employ::GAME_NOT_FOUND){
+    if(nResult == EmployResult::GAME_NOT_FOUND){
         pRequest->sendMessageError(cmd(), Errors::NotFound("Game does not exists with this uuid"));
         delete pModelLeak;
         return;
     }
 
-    if(nResult == Employ::OK){
+    if(nResult == EmployResult::OK){
         nlohmann::json jsonResponse;
         jsonResponse["data"] = pModelLeak->toJson();
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
