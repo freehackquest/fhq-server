@@ -77,6 +77,10 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 			return;
 		}
 	}
+    connect(this, &WebSocketServer::sig_sendToAll, this, &WebSocketServer::slot_sendToAll);
+
+    // connect(this, SIGNAL(sig_sendToAll(nlohmann::json)), this, SLOT(slot_sendToAll(nlohmann::json)));
+
     pServerInfo->serverStarted();
     pWsServer->setServer(this); // temporary
 
@@ -333,6 +337,17 @@ void WebSocketServer::sendToAll(QJsonObject obj){ // deprecated
 // ---------------------------------------------------------------------
 
 void WebSocketServer::sendToAll(const nlohmann::json& jsonMessage){
+    std::string message = jsonMessage.dump();
+    emit sig_sendToAll(QString(message.c_str()));
+}
+
+// ---------------------------------------------------------------------
+// slot
+void WebSocketServer::slot_sendToAll(QString message){
+    if(!nlohmann::json::accept(message.toStdString())){
+        return;
+    }
+    nlohmann::json jsonMessage = nlohmann::json::parse(message.toStdString());
     for(int i = 0; i < m_clients.size(); i++){
         this->sendMessage(m_clients.at(i), jsonMessage);
     }

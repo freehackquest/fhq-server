@@ -35,5 +35,5 @@ void EmployNotify::sendNotification(ModelNotification &modelNotification){
     jsonMessage["cmd"] = "notify";
     jsonMessage["m"] = "s0";
 
-    // RunTasks::NotifyToAll(jsonMessage);
+    RunTasks::NotifyToAll(jsonMessage);
 }

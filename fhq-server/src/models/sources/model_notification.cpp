@@ -3,9 +3,12 @@
 
 // ---------------------------------------------------------------------
 
-ModelNotification::ModelNotification(const std::string &sType, const std::string &sMessage){
+ModelNotification::ModelNotification(const std::string &sType,
+                                     const std::string &sSection,
+                                     const std::string &sMessage){
     TAG = "ModelNotification";
     m_sType = sType;
+    m_sSection = sSection;
     m_sMessage = sMessage;
 }
 
@@ -26,7 +29,8 @@ std::string ModelNotification::message(){
 nlohmann::json ModelNotification::toJson(){
     nlohmann::json jsonNotification;
     jsonNotification["type"] = m_sType;
-    jsonNotification["name"] = m_sMessage;
+    jsonNotification["section"] = m_sSection;
+    jsonNotification["message"] = m_sMessage;
     return jsonNotification;
 }
 

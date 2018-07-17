@@ -49,17 +49,20 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 
 	Q_SIGNALS:
 		void closed();
+        void sig_sendToAll(QString jsonMessage);
 
 	private Q_SLOTS:
-		void sendServerMessage(QWebSocket *pSocket);
 		void onNewConnection();
 		void onNewConnectionSSL();
         void processTextMessage(const QString &message);
 		void processBinaryMessage(QByteArray message);
 		void socketDisconnected();
 		void onSslErrors(const QList<QSslError> &errors);
+        void slot_sendToAll(QString jsonMessage);
 
 	private:
+        void sendServerMessage(QWebSocket *pSocket);
+
 		QWebSocketServer *m_pWebSocketServer;
 		QWebSocketServer *m_pWebSocketServerSSL;
 		QList<QWebSocket *> m_clients;

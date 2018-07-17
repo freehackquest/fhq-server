@@ -294,7 +294,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
     }
 
     EmployNotify *pNotify = findEmploy<EmployNotify>();
-    ModelNotification notification("games", "Removed [game#" + sUuid.toStdString() + "] " + sName);
+    ModelNotification notification("warning", "games", "Removed [game#" + sUuid.toStdString() + "] " + sName);
     pNotify->sendNotification(notification);
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
