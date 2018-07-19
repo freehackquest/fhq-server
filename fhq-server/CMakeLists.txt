@@ -19,6 +19,7 @@ set (FHQSRV_SOURCES "")
 
 # include header dirs
 list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/nlohmann")
+list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/smallsha1")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/quazip-0.7.3/quazip")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/smtp")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/unit_tests/include")
@@ -47,6 +48,12 @@ list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/support/include")
 
 # json
 list (APPEND FHQSRV_SOURCES "src/3rdParty/nlohmann/json.hpp")
+
+# small sha1
+list (APPEND FHQSRV_SOURCES "src/3rdParty/smallsha1/sha1.h")
+list (APPEND FHQSRV_SOURCES "src/3rdParty/smallsha1/sha1.cpp")
+list (APPEND FHQSRV_SOURCES "src/3rdParty/smallsha1/sha1_wrapper.h")
+list (APPEND FHQSRV_SOURCES "src/3rdParty/smallsha1/sha1_wrapper.cpp")
 
 # interfaces
 list (APPEND FHQSRV_SOURCES "src/interfaces/iserver.h")

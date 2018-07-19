@@ -2,7 +2,6 @@
 #include <utils_logger.h>
 #include <runtasks.h>
 #include <QJsonArray>
-#include <QCryptographicHash>
 #include <QTemporaryDir>
 #include <QDataStream>
 #include <quazip.h>
@@ -14,6 +13,7 @@
 #include <employ_images.h>
 #include <employ_games.h>
 #include <employ_notify.h>
+#include <sha1_wrapper.h>
 #include <QFile>
 #include <fstream>
 
@@ -138,7 +138,8 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         }
 
         QString sAdminPasswordHash = sEmail.toUpper() + sAdminPassword;
-        sAdminPasswordHash = QString("%1").arg(QString(QCryptographicHash::hash(sAdminPasswordHash.toUtf8(),QCryptographicHash::Sha1).toHex()));
+        std::string _sAdminPasswordHash = sha1::calc_string_to_hex(sAdminPasswordHash.toStdString());
+        sAdminPasswordHash = QString(_sAdminPasswordHash.c_str());
 
         if(sAdminPasswordHash != sPass){
             pRequest->sendMessageError(cmd(), Error(401, "Wrong password"));

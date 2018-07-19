@@ -8,7 +8,7 @@
 #include <employ_scoreboard.h>
 #include <QtCore>
 #include <model_usertoken.h>
-#include <QCryptographicHash>
+#include <sha1_wrapper.h>
 #include <QUuid>
 
 /*********************************************
@@ -142,8 +142,8 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest){
     QString password = jsonRequest["password"].toString();
 
     QString password_sha1 = email.toUpper() + password;
-
-    password_sha1 = QString("%1").arg(QString(QCryptographicHash::hash(password_sha1.toUtf8(),QCryptographicHash::Sha1).toHex()));
+    std::string _password_sha1 = sha1::calc_string_to_hex(password_sha1.toStdString());
+    password_sha1 = QString(_password_sha1.c_str());
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
@@ -267,7 +267,8 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest){
     }
 
     QString sPassword_sha1 = sEmail.toUpper() + sPassword;
-    sPassword_sha1 = QString("%1").arg(QString(QCryptographicHash::hash(sPassword_sha1.toUtf8(),QCryptographicHash::Sha1).toHex()));
+    std::string _password_sha1 = sha1::calc_string_to_hex(sPassword_sha1.toStdString());
+    sPassword_sha1 = QString(_password_sha1.c_str());
 
     // generate random nick
     const QString possibleCharacters2("ABCDEFH0123456789");
@@ -590,7 +591,9 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest){
     QString sNewPassword = jsonRequest["password_new"].toString();
 
     QString sOldPassword_sha1 = sEmail.toUpper() + sOldPassword;
-    sOldPassword_sha1 = QString("%1").arg(QString(QCryptographicHash::hash(sOldPassword_sha1.toUtf8(),QCryptographicHash::Sha1).toHex()));
+    
+    std::string _sOldPassword_sha1 = sha1::calc_string_to_hex(sOldPassword_sha1.toStdString());
+    sOldPassword_sha1 = QString(_sOldPassword_sha1.c_str());
 
     if(sOldPassword_sha1 != sPass){
         pRequest->sendMessageError(cmd(), Error(401, "Wrong password"));
@@ -598,7 +601,9 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest){
     }
 
     QString sNewPassword_sha1 = sEmail.toUpper() + sNewPassword;
-    sNewPassword_sha1 = QString("%1").arg(QString(QCryptographicHash::hash(sNewPassword_sha1.toUtf8(),QCryptographicHash::Sha1).toHex()));
+
+    std::string _sNewPassword_sha1 = sha1::calc_string_to_hex(sNewPassword_sha1.toStdString());
+    sNewPassword_sha1 = QString(_sNewPassword_sha1.c_str());
 
     QSqlQuery query_update(db);
     query_update.prepare("UPDATE users SET pass = :pass WHERE id = :userid AND email = :email");
@@ -684,7 +689,9 @@ void CmdHandlerUserCreate::handle(ModelRequest *pRequest){
     }
 
     QString sPassword_sha1 = sEmail.toUpper() + sPassword;
-    sPassword_sha1 = QString("%1").arg(QString(QCryptographicHash::hash(sPassword_sha1.toUtf8(),QCryptographicHash::Sha1).toHex()));
+
+    std::string _sPassword_sha1 = sha1::calc_string_to_hex(sPassword_sha1.toStdString());
+    sPassword_sha1 = QString(_sPassword_sha1.c_str());
 
     QString sRole = jsonRequest.value("role").toString();
     if(sRole != "user" && sRole != "admin"){
@@ -941,7 +948,8 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest){
     }
 
     QString sPassword_sha1 = sEmail.toUpper() + sPassword;
-    sPassword_sha1 = QString("%1").arg(QString(QCryptographicHash::hash(sPassword_sha1.toUtf8(),QCryptographicHash::Sha1).toHex()));
+    std::string _sPassword_sha1 = sha1::calc_string_to_hex(sPassword_sha1.toStdString());
+    sPassword_sha1 = QString(_sPassword_sha1.c_str());
 
     QSqlQuery query_update(db);
     query_update.prepare("UPDATE users SET pass = :pass WHERE id = :userid AND email = :email;");
@@ -1190,7 +1198,8 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         }
 
         QString sAdminPasswordHash = sEmail.toUpper() + sAdminPassword;
-        sAdminPasswordHash = QString("%1").arg(QString(QCryptographicHash::hash(sAdminPasswordHash.toUtf8(),QCryptographicHash::Sha1).toHex()));
+        std::string _sAdminPasswordHash = sha1::calc_string_to_hex(sAdminPasswordHash.toStdString());
+        sAdminPasswordHash = QString(_sAdminPasswordHash.c_str());
 
         if(sAdminPasswordHash != sPass){
             pRequest->sendMessageError(cmd(), Error(401, "Wrong password"));
