@@ -82,16 +82,21 @@ if version_logs['version'] != '':
 # Prepare changelog
 changelog="../../fhq-server/debian/changelog"
 f = open(changelog,'w')
-
+li_count = 0;
 for li in changelog_list:
+	if li_count != 0:
+		f.write("\n")
+		f.write("\n")
+	li_count = li_count + 1
 	f.write("fhq-server (" + li['version'] + "-" + ppa_name_ + ") " + dist_name_ + "; urgency=low\n\n")
 	for li_log in li['logs']:
 		li_log = li_log.strip()
 		if li_log != '':
 			f.write("  * " + li_log + "\n");
 	f.write("\n")
+	#if li['dt'] == '?':
+	#	li['dt'] = subprocess.Popen(['date', '-R'], stdout=subprocess.PIPE).communicate()[0]
 	f.write(" -- Free Hack Quest <freehackquest@gmail.com>  " + li['dt']) # 2 space!!!
-	f.write("\n")
 f.close()
 
 '''
