@@ -4,13 +4,13 @@
 #include <string>
 
 class Error {
-	public:
+    public:
         Error(int nCodeError, const std::string &sMessage);
-		int codeError();
+        int codeError();
         std::string message();
-	private:
+    private:
         std::string m_sMessage;
-		int m_nCodeError;
+        int m_nCodeError;
 };
 
 #endif // ERROR_H

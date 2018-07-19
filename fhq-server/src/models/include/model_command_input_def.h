@@ -8,7 +8,7 @@ class ModelCommandInputDef {
     public:
         ModelCommandInputDef();
 
-		// string
+        // string
         CmdInputDef &requiredString(const std::string &sName, const std::string &sDescription);
         CmdInputDef &optionalString(const std::string &sName, const std::string &sDescription);
         

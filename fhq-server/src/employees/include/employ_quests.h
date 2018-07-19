@@ -10,8 +10,8 @@ class EmployQuests : public EmployBase {
        virtual bool init();
 
    private:
-		std::string TAG;
-		std::map<std::string, int> m_mapQuestsSubjects;
+        std::string TAG;
+        std::map<std::string, int> m_mapQuestsSubjects;
 
 };
 

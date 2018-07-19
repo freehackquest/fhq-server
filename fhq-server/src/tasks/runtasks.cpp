@@ -11,7 +11,7 @@
 
 void RunTasks::AddPublicEvents(QString type, QString message){
     AddPublicEventsTask *pAddPublicEventsTask = new AddPublicEventsTask(type, message);
-	QThreadPool::globalInstance()->start(pAddPublicEventsTask);
+    QThreadPool::globalInstance()->start(pAddPublicEventsTask);
 }
 
 void RunTasks::UpdateMaxScoreGame(int gameid){
@@ -26,7 +26,7 @@ void RunTasks::UpdateQuestSolved(int nQuestID){
 
 void RunTasks::UpdateUserLocation(int userid, QString lastip){
     UpdateUserLocationTask *pUpdateUserLocationTask = new UpdateUserLocationTask(userid, lastip);
-	QThreadPool::globalInstance()->start(pUpdateUserLocationTask);
+    QThreadPool::globalInstance()->start(pUpdateUserLocationTask);
 }
 
 void RunTasks::UpdateUserRating(int nUserID){

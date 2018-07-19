@@ -5,7 +5,7 @@
 #include <QString>
 
 class RunTasks {
-	public:
+    public:
         static void AddPublicEvents(QString type, QString message);
         static void UpdateUserLocation(int userid, QString lastip);
         static void UpdateMaxScoreGame(int gameid);

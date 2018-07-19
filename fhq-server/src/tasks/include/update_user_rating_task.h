@@ -5,16 +5,16 @@
 #include <iserver.h>
 
 class UpdateUserRatingTask : public QRunnable {
-	
-	void run();
+    
+    void run();
 
-	public:
+    public:
         UpdateUserRatingTask(int nUserID);
         ~UpdateUserRatingTask();
-	private:
+    private:
         int m_nUserID;
-		QString TAG;
-		IWebSocketServer *m_pWebSocketServer;
+        QString TAG;
+        IWebSocketServer *m_pWebSocketServer;
 };
 
 #endif // UPDATE_USER_RATING_TASK_H

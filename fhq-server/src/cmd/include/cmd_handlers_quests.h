@@ -8,7 +8,7 @@
 // *********************************************
 
 class CmdHandlerQuests : public CmdHandlerBase {
-	public:
+    public:
         CmdHandlerQuests();
         virtual void handle(ModelRequest *pRequest);
 };

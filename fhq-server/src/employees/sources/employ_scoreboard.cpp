@@ -71,7 +71,7 @@ nlohmann::json EmployScoreboard::toJson(){
     auto jsonScoreboard = nlohmann::json::array();
     
     for(unsigned int i = 0; i < m_vRows.size(); i++){
-		nlohmann::json jsonRow;
+        nlohmann::json jsonRow;
         jsonRow["rating"] = m_vRows[i]->rating;
         jsonRow["place"] = m_vRows[i]->place;
         
@@ -100,21 +100,21 @@ int EmployScoreboard::count(){
 // ---------------------------------------------------------------------
 
 void EmployScoreboard::asyncUpdatedQuestScore(int /*nQuestID*/){
-	// TODO
-	// When quest score changed
+    // TODO
+    // When quest score changed
 }
 
 // ---------------------------------------------------------------------
 
 void EmployScoreboard::asyncUpdatedUserRating(int /*nUserID*/){
-	// TODO
-	// When user score changed
+    // TODO
+    // When user score changed
 }
        
 // ---------------------------------------------------------------------
 
 void EmployScoreboard::asyncUpdatedLeaksScore(int /*nLeakID*/){
-	// TODO
-	// When leak score changed
+    // TODO
+    // When leak score changed
 }
        

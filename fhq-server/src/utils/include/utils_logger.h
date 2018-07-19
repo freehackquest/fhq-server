@@ -11,7 +11,7 @@
 
 
 class Log {
-	public:
+    public:
         static void info(QString tag, QString msg);  // depricated
         static void info(const std::string &sTag, const std::string &sMessage);
         static void err(QString tag, QString msg); // depricated
@@ -25,7 +25,7 @@ class Log {
         static std::string currentTime();
         static std::string threadId();
 
-	private:
+    private:
         static void add(const std::string &sType, const std::string &sTag, const std::string &sMessage);
 };
 

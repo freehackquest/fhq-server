@@ -9,36 +9,36 @@
 // ---------------------------------------------------------------------
 
 Error Errors::NotAuthorizedRequest(){
-	Error error(401, "Not Authorized Request");
-	return error;
+    Error error(401, "Not Authorized Request");
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::AccessDenyForUser(){
-	Error error(400, "Access deny for user");
-	return error;
+    Error error(400, "Access deny for user");
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::AccessDenyForTester(){
-	Error error(400, "Access deny for tester");
-	return error;
+    Error error(400, "Access deny for tester");
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::AccessDenyForAdmin(){
-	Error error(400, "Access deny for admin");
-	return error;
+    Error error(400, "Access deny for admin");
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::NotImplementedYet(){
-	Error error(404, "Not implemented yet");
-	return error;
+    Error error(404, "Not implemented yet");
+    return error;
 }
 
 // ---------------------------------------------------------------------
@@ -52,85 +52,85 @@ Error Errors::NotImplementedYet(const QString &comments)
 // ---------------------------------------------------------------------
 
 Error Errors::NoneError(){
-	Error error(404, "none");
-	return error;
+    Error error(404, "none");
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::NotFound(QString what){
     Error error(404, "Not found " + what.toStdString());
-	return error;
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::LostDatabaseConnection(){
-	Error error(500, "Lost Database Connection");
-	return error;
+    Error error(500, "Lost Database Connection");
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::QuestIDMustBeNotZero(){
-	Error error(400, "Parameter 'questid' must be not zero");
-	return error;
+    Error error(400, "Parameter 'questid' must be not zero");
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::HintIDMustBeNotZero(){
-	Error error(400, "Parameter 'hintid' must be not zero");
-	return error;
+    Error error(400, "Parameter 'hintid' must be not zero");
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::UserIDMustBeNotZero(){
-	Error error(400, "Parameter 'userid' must be not zero");
-	return error;
+    Error error(400, "Parameter 'userid' must be not zero");
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::ParamTableMustBeActiveOrBackup(){
-	Error error(400, "Parameter 'table' must be 'active' or 'backup'");
-	return error;
+    Error error(400, "Parameter 'table' must be 'active' or 'backup'");
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::OnPageCouldNotBeMoreThen50(){
-	Error error(400, "Parameter 'onpage' could not be more then 50");
-	return error;
+    Error error(400, "Parameter 'onpage' could not be more then 50");
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::InternalServerError(){
-	Error error(500, "Internal Server Error");
-	return error;
+    Error error(500, "Internal Server Error");
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::EventNotFound(){
-	Error error(404, "Event not found");
-	return error;
+    Error error(404, "Event not found");
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::ParamExpected(QString param_name){
     Error error(400, "Parameter '" + param_name.toStdString() + "' expected");
-	return error;
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::ParamMustBeInteger(QString param_name){
     Error error(400, "Parameter '" + param_name.toStdString() + "' must be integer");
-	return error;
+    return error;
 }
 
 // ---------------------------------------------------------------------
@@ -145,42 +145,42 @@ Error Errors::ParamMustBeEmail(QString param_name){
 
 Error Errors::ParamExpectedValueOneFrom(QString param_name, QStringList eList){
     Error error(400, "Parameter '" + param_name.toStdString() + "' expected values one from [" + eList.join(",").toStdString() + "]");
-	return error;
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::ParamExpectedUUID(QString param_name){
     Error error(400, "Parameter '" + param_name.toStdString() + "' expected uuid regexp: /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i");
-	return error;
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::ParamMustBeLessThen(QString param_name, int maxval){
     Error error(400, "Parameter '" + param_name.toStdString() + "' must be less then " + QString::number(maxval).toStdString());
-	return error;
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::ParamMustBeMoreThen(QString param_name, int minval){
     Error error(400, "Parameter '" + param_name.toStdString() + "' must be more then " + QString::number(minval).toStdString());
-	return error;
+    return error;
 }
 
 // ---------------------------------------------------------------------
-		
+        
 Error Errors::InvalidToken(){
-	Error error(401, "Invalid token");
-	return error;
+    Error error(401, "Invalid token");
+    return error;
 }
 
 // ---------------------------------------------------------------------
 
 Error Errors::DatabaseError(QString text){
     Error error(500, "Database error. " + text.toStdString());
-	return error;
+    return error;
 }
 
 // ---------------------------------------------------------------------

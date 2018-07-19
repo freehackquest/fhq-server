@@ -15,7 +15,7 @@ class EmployWsServer : public EmployBase {
        bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler, QJsonObject &jsonRequest);
 
    private:
-		std::string TAG;
+        std::string TAG;
 };
 
 #endif // EMPLOY_WS_SERVER_H

@@ -13,7 +13,7 @@ UpdateUserRatingTask::UpdateUserRatingTask(int nUserID){
 }
 
 UpdateUserRatingTask::~UpdateUserRatingTask(){
-	
+    
 }
 
 void UpdateUserRatingTask::run(){

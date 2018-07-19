@@ -4,10 +4,10 @@
 #include <QString>
 
 class IUnitTest {
-	public:
-		virtual QString name() = 0;
-		virtual void init() = 0;
-		virtual bool run() = 0;
+    public:
+        virtual QString name() = 0;
+        virtual void init() = 0;
+        virtual bool run() = 0;
 };
 
 #endif // IUNIT_TEST_H

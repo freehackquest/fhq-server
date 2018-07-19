@@ -9,27 +9,27 @@ Update0061::Update0061()
 }
 
 bool Update0061::update(QSqlDatabase &db, std::string &error){
-	QSqlQuery query(db);
-	query.prepare("SELECT idquest FROM quest LEFT JOIN users_quests ON users_quests.questid = quest.idquest WHERE for_person <> 0 AND isnull( dt_passed )");
-	if(!query.exec()){
+    QSqlQuery query(db);
+    query.prepare("SELECT idquest FROM quest LEFT JOIN users_quests ON users_quests.questid = quest.idquest WHERE for_person <> 0 AND isnull( dt_passed )");
+    if(!query.exec()){
         error = query.lastError().text().toStdString();
         Log::err(TAG, "The problem with data selection " + error);
-		return false;
-	}
+        return false;
+    }
 
-	while (query.next()) {
-		QSqlRecord record = query.record();
-		int questid = record.value("idquest").toInt();
-		QSqlQuery query2(db);
-		query2.prepare("DELETE FROM quest WHERE idquest = :questid");
-		query2.bindValue(":questid", questid);
-		if(!query2.exec()){
+    while (query.next()) {
+        QSqlRecord record = query.record();
+        int questid = record.value("idquest").toInt();
+        QSqlQuery query2(db);
+        query2.prepare("DELETE FROM quest WHERE idquest = :questid");
+        query2.bindValue(":questid", questid);
+        if(!query2.exec()){
             error = query2.lastError().text().toStdString();
             Log::err(TAG, "The problem with deleting data " + error);
-			return false;
-		}
-	}
-	return true;
+            return false;
+        }
+    }
+    return true;
 }
 
 // ----------- UPDATE 0062 ---------------
@@ -174,11 +174,11 @@ bool Update0068::update(QSqlDatabase &db, std::string &error){
     QSqlQuery query(db);
     query.prepare(
         "CREATE TABLE IF NOT EXISTS `quests_hints` ("
-        "	  `id` int(11) NOT NULL AUTO_INCREMENT,"
-        "	  `questid` int(11) NOT NULL,"
-        "	  `text` varchar(4048) NOT NULL,"
-        "	  `dt` datetime NOT NULL,"
-        "	  PRIMARY KEY (`id`)"
+        "      `id` int(11) NOT NULL AUTO_INCREMENT,"
+        "      `questid` int(11) NOT NULL,"
+        "      `text` varchar(4048) NOT NULL,"
+        "      `dt` datetime NOT NULL,"
+        "      PRIMARY KEY (`id`)"
         ") ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
     if(!query.exec()){
         error = query.lastError().text().toStdString();
@@ -238,14 +238,14 @@ bool Update0071::update(QSqlDatabase &db, std::string &error){
     QSqlQuery query(db);
     query.prepare(
         "CREATE TABLE IF NOT EXISTS `classbook` ("
-        "	  `id` int(11) NOT NULL AUTO_INCREMENT,"
-        "	  `parentid` int(11) NOT NULL,"
-        "	  `uuid` varchar(128) NOT NULL,"
-        "	  `parentuuid` varchar(128) NOT NULL,"
-        "	  `name_ru` varchar(128) NOT NULL,"
-        "	  `name_en` varchar(128) NOT NULL,"
-        "	  `dt` datetime NOT NULL,"
-        "	  PRIMARY KEY (`id`)"
+        "      `id` int(11) NOT NULL AUTO_INCREMENT,"
+        "      `parentid` int(11) NOT NULL,"
+        "      `uuid` varchar(128) NOT NULL,"
+        "      `parentuuid` varchar(128) NOT NULL,"
+        "      `name_ru` varchar(128) NOT NULL,"
+        "      `name_en` varchar(128) NOT NULL,"
+        "      `dt` datetime NOT NULL,"
+        "      PRIMARY KEY (`id`)"
         ") ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
     if(!query.exec()){
         error = query.lastError().text().toStdString();
@@ -265,11 +265,11 @@ bool Update0072::update(QSqlDatabase &db, std::string &error){
     QSqlQuery query(db);
     query.prepare(
         "CREATE TABLE IF NOT EXISTS `chatmessages` ("
-        "	  `id` int(11) NOT NULL AUTO_INCREMENT,"
-        "	  `user` varchar(128) NOT NULL,"
-        "	  `message` varchar(255) NOT NULL,"
-        "	  `dt` datetime NOT NULL,"
-        "	  PRIMARY KEY (`id`)"
+        "      `id` int(11) NOT NULL AUTO_INCREMENT,"
+        "      `user` varchar(128) NOT NULL,"
+        "      `message` varchar(255) NOT NULL,"
+        "      `dt` datetime NOT NULL,"
+        "      PRIMARY KEY (`id`)"
         ") ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
     if(!query.exec()){
         error = query.lastError().text().toStdString();
@@ -289,11 +289,11 @@ bool Update0073::update(QSqlDatabase &db, std::string &error){
     QSqlQuery query(db);
     query.prepare(
         "CREATE TABLE IF NOT EXISTS `users_captcha` ("
-        "	  `id` int(11) NOT NULL AUTO_INCREMENT,"
-        "	  `captcha_uuid` varchar(127) NOT NULL,"
-        "	  `captcha_val` varchar(127) NOT NULL,"
-        "	  `dt_expired` datetime NOT NULL,"
-        "	  PRIMARY KEY (`id`)"
+        "      `id` int(11) NOT NULL AUTO_INCREMENT,"
+        "      `captcha_uuid` varchar(127) NOT NULL,"
+        "      `captcha_val` varchar(127) NOT NULL,"
+        "      `dt_expired` datetime NOT NULL,"
+        "      PRIMARY KEY (`id`)"
         ") ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
     if(!query.exec()){
         error = query.lastError().text().toStdString();
@@ -330,13 +330,13 @@ bool Update0075::update(QSqlDatabase &db, std::string &error){
     QSqlQuery query(db);
     query.prepare(
         "CREATE TABLE IF NOT EXISTS `quests_writeups` ("
-        "	  `id` int(11) NOT NULL AUTO_INCREMENT,"
-        "	  `questid` int(11) NOT NULL,"
-        "	  `type` varchar(64) NOT NULL,"
-        "	  `link` varchar(1024) NOT NULL,"
-        "	  `text` varchar(4048) NOT NULL,"
-        "	  `dt` datetime NOT NULL,"
-        "	  PRIMARY KEY (`id`)"
+        "      `id` int(11) NOT NULL AUTO_INCREMENT,"
+        "      `questid` int(11) NOT NULL,"
+        "      `type` varchar(64) NOT NULL,"
+        "      `link` varchar(1024) NOT NULL,"
+        "      `text` varchar(4048) NOT NULL,"
+        "      `dt` datetime NOT NULL,"
+        "      PRIMARY KEY (`id`)"
         ") ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
     if(!query.exec()){
         error = query.lastError().text().toStdString();
@@ -599,15 +599,15 @@ bool Update0083::update(QSqlDatabase &db, std::string &error){
     QSqlQuery query(db);
     query.prepare(
         "CREATE TABLE IF NOT EXISTS `users_offers` ("
-        "	  `id` int(11) NOT NULL AUTO_INCREMENT,"
-        "	  `userid` int(11) NOT NULL,"
-        "	  `data` text NOT NULL,"
-        "	  `type` varchar(255) NOT NULL,"
-        "	  `scomment` varchar(255) NOT NULL,"
-        "	  `status` varchar(255) NOT NULL,"
-        "	  `created` datetime NOT NULL,"
-        "	  `updated` datetime NOT NULL,"
-        "	  PRIMARY KEY (`id`)"
+        "      `id` int(11) NOT NULL AUTO_INCREMENT,"
+        "      `userid` int(11) NOT NULL,"
+        "      `data` text NOT NULL,"
+        "      `type` varchar(255) NOT NULL,"
+        "      `scomment` varchar(255) NOT NULL,"
+        "      `status` varchar(255) NOT NULL,"
+        "      `created` datetime NOT NULL,"
+        "      `updated` datetime NOT NULL,"
+        "      PRIMARY KEY (`id`)"
         ") ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
     if(!query.exec()){
         error = query.lastError().text().toStdString();
@@ -627,10 +627,10 @@ bool Update0084::update(QSqlDatabase &db, std::string &error){
     QSqlQuery query(db);
     query.prepare(
         "CREATE TABLE IF NOT EXISTS `settings` ("
-        "	  `id` int(11) NOT NULL AUTO_INCREMENT,"
-        "	  `name` varchar(128) NOT NULL,"
-        "	  `value` varchar(255) NOT NULL,"
-        "	  PRIMARY KEY (`id`)"
+        "      `id` int(11) NOT NULL AUTO_INCREMENT,"
+        "      `name` varchar(128) NOT NULL,"
+        "      `value` varchar(255) NOT NULL,"
+        "      PRIMARY KEY (`id`)"
         ") ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
     if(!query.exec()){
         error = query.lastError().text().toStdString();

@@ -8,9 +8,9 @@
 **********************************************/
 
 class CmdHandlerUsersScoreboard : public CmdHandlerBase {
-	
-	public:
-		CmdHandlerUsersScoreboard();
+    
+    public:
+        CmdHandlerUsersScoreboard();
         virtual void handle(ModelRequest *pRequest);
 };
 

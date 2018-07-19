@@ -11,16 +11,16 @@
 **********************************************/
 
 CmdHandlerLXDContainers::CmdHandlerLXDContainers()
-	: CmdHandlerBase("lxd_containers", "Any actions with the container. Actions: create, start, stop and delete container"){
+    : CmdHandlerBase("lxd_containers", "Any actions with the container. Actions: create, start, stop and delete container"){
 
-	TAG = "LXD_HANDLER";
+    TAG = "LXD_HANDLER";
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
 
-	// validation and description input fields
-	m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
+    // validation and description input fields
+    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
     m_vInputs.push_back(CmdInputDef("action").string_().required().description("Actions: create, start, stop and delete container"));
 }
 

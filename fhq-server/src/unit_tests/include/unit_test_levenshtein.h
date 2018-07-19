@@ -5,9 +5,9 @@
 
 class UnitTestLevenshtein : public IUnitTest {
 public:
-	virtual QString name();
-	virtual void init();
-	virtual bool run();
+    virtual QString name();
+    virtual void init();
+    virtual bool run();
 };
 
 #endif // UNIT_TEST_LEVENSHTEIN_H

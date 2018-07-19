@@ -7,7 +7,7 @@
 
 
 class Update0061 : public UpdateBase {
-	
+    
     public:
         Update0061();
         virtual bool update(QSqlDatabase &db, std::string &error);

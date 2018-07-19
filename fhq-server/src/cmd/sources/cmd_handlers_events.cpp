@@ -193,7 +193,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest){
 
     QStringList filters;
     QMap<QString,QString> filter_values;
-		
+        
     if(jsonRequest.contains("type")){
         QString type = jsonRequest["type"].toString().trimmed();
         if(type != ""){

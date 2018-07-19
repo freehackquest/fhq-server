@@ -15,7 +15,7 @@ CmdHandlerLeaksList::CmdHandlerLeaksList()
     m_modelCommandAccess.setAccessUser(true);
     m_modelCommandAccess.setAccessAdmin(true);
 
-	// validation and description input fields
+    // validation and description input fields
     m_vInputs.push_back(CmdInputDef("page").required().integer_().description("Number of page"));
     m_vInputs.push_back(CmdInputDef("onpage").required().integer_().description("How much rows in one page"));
 }

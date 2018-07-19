@@ -19,7 +19,7 @@ class ModelCommandAccess {
         void setAccessUser(bool bNewValue);
         void setAccessAdmin(bool bNewValue);
 
-	private:
+    private:
         bool m_bAccessUnauthorized;
         bool m_bAccessUser;
         bool m_bAccessAdmin;

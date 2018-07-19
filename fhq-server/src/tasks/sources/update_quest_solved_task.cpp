@@ -13,7 +13,7 @@ UpdateQuestSolvedTask::UpdateQuestSolvedTask(int nQuestID){
 }
 
 UpdateQuestSolvedTask::~UpdateQuestSolvedTask(){
-	
+    
 }
 
 void UpdateQuestSolvedTask::run(){
@@ -33,7 +33,7 @@ void UpdateQuestSolvedTask::run(){
     query.bindValue(":questid", m_nQuestID);
     query.bindValue(":questid2", m_nQuestID);
 
-	if(!query.exec()){
-		Log::err(TAG, query.lastError().text());
+    if(!query.exec()){
+        Log::err(TAG, query.lastError().text());
     }
 }

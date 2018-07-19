@@ -29,42 +29,42 @@
  */
  
 class WebSocketServer : public QObject, public IWebSocketServer {
-	
-	private:
-		Q_OBJECT
-	public:
-		explicit WebSocketServer(QObject *parent = Q_NULLPTR);
-		~WebSocketServer();
+    
+    private:
+        Q_OBJECT
+    public:
+        explicit WebSocketServer(QObject *parent = Q_NULLPTR);
+        ~WebSocketServer();
         bool isFailed();
 
-		// IWebSocketServer
-		virtual int getConnectedUsers();
+        // IWebSocketServer
+        virtual int getConnectedUsers();
         virtual void sendMessage(QWebSocket *pClient, QJsonObject obj); // deprecated
         virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse);
         virtual void sendMessageError(QWebSocket *pClient, const std::string &cmd, QString m, Error error);
-		virtual void sendToAll(QJsonObject obj);
-		virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken);
-		virtual IUserToken * getUserToken(QWebSocket *pClient);
+        virtual void sendToAll(QJsonObject obj);
+        virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken);
+        virtual IUserToken * getUserToken(QWebSocket *pClient);
 
-	Q_SIGNALS:
-		void closed();
+    Q_SIGNALS:
+        void closed();
 
-	private Q_SLOTS:
-		void onNewConnection();
-		void onNewConnectionSSL();
+    private Q_SLOTS:
+        void onNewConnection();
+        void onNewConnectionSSL();
         void processTextMessage(const QString &message);
-		void processBinaryMessage(QByteArray message);
-		void socketDisconnected();
-		void onSslErrors(const QList<QSslError> &errors);
+        void processBinaryMessage(QByteArray message);
+        void socketDisconnected();
+        void onSslErrors(const QList<QSslError> &errors);
 
-	private:
-		QWebSocketServer *m_pWebSocketServer;
-		QWebSocketServer *m_pWebSocketServerSSL;
-		QList<QWebSocket *> m_clients;
-		QMap<QWebSocket *, IUserToken *> m_tokens;
+    private:
+        QWebSocketServer *m_pWebSocketServer;
+        QWebSocketServer *m_pWebSocketServerSSL;
+        QList<QWebSocket *> m_clients;
+        QMap<QWebSocket *, IUserToken *> m_tokens;
 
-		bool m_bFailed;
-		QString TAG;
+        bool m_bFailed;
+        QString TAG;
 };
 
 #endif //WEBSOCKETSERVER_H

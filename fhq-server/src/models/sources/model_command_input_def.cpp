@@ -117,6 +117,6 @@ CmdInputDef &ModelCommandInputDef::optionalInteger(const std::string &sName, con
 // ---------------------------------------------------------------------
 
 void ModelCommandInputDef::push_back(const CmdInputDef &cmdInputDef){
-	std::string sName = cmdInputDef.getName();
-	m_vInputsDef.insert(std::pair<std::string, CmdInputDef>(sName,cmdInputDef));
+    std::string sName = cmdInputDef.getName();
+    m_vInputsDef.insert(std::pair<std::string, CmdInputDef>(sName,cmdInputDef));
 }

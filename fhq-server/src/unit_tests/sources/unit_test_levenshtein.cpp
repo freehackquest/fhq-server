@@ -4,7 +4,7 @@
 #include <iostream>
 
 QString UnitTestLevenshtein::name(){
-	return "UnitTestLevenshtein";
+    return "UnitTestLevenshtein";
 }
 
 void UnitTestLevenshtein::init(){

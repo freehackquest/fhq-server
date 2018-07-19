@@ -9,10 +9,10 @@
 #include <QChar>
 
 class UnitTestStaticAnalizingText : public IUnitTest {
-	public:
-		virtual QString name();
-		virtual void init();
-		virtual bool run();
+    public:
+        virtual QString name();
+        virtual void init();
+        virtual bool run();
 };
 
 #endif // UNIT_TEST_STATIC_ANALIZING_TEXT_H
