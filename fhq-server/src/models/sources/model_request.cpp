@@ -4,15 +4,15 @@
 // ---------------------------------------------------------------------
 
 ModelRequest::ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject jsonData, nlohmann::json &jsonRequest_){
-	m_pClient = pClient;
-	m_pServer = pWebSocketServer;
+    m_pClient = pClient;
+    m_pServer = pWebSocketServer;
     m_jsonObject = jsonData; // todo deprecated
     m_jsonRequest = jsonRequest_;
 
     if(m_jsonRequest["cmd"].is_string()){
         m_sCommand = m_jsonRequest["cmd"];
     }
-	
+
     if(m_jsonRequest["m"].is_string()){
         m_sMessageId = m_jsonRequest["m"];
     }
@@ -21,7 +21,7 @@ ModelRequest::ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServ
 // ---------------------------------------------------------------------
 
 QWebSocket *ModelRequest::client(){
-	return m_pClient;
+    return m_pClient;
 }
 
 // ---------------------------------------------------------------------
@@ -33,7 +33,7 @@ IWebSocketServer *ModelRequest::server(){
 // ---------------------------------------------------------------------
 
 QJsonObject ModelRequest::data(){ // deprecated
-	return m_jsonObject;
+    return m_jsonObject;
 }
 
 // ---------------------------------------------------------------------
@@ -45,7 +45,7 @@ const nlohmann::json& ModelRequest::jsonRequest(){
 // ---------------------------------------------------------------------
 
 std::string ModelRequest::m(){
-	return m_sMessageId;
+    return m_sMessageId;
 }
 
 // ---------------------------------------------------------------------
@@ -82,23 +82,23 @@ void ModelRequest::sendMessageSuccess(const std::string &cmd, QJsonObject jsonRe
 // ---------------------------------------------------------------------
 
 bool ModelRequest::hasM(){
-	return m_sMessageId != "";
+    return m_sMessageId != "";
 }
 
 // ---------------------------------------------------------------------
 
 std::string ModelRequest::command(){
-	return m_sCommand;
+    return m_sCommand;
 }
 
 // ---------------------------------------------------------------------
 
 bool ModelRequest::hasCommand(){
-	return m_sCommand != "";
+    return m_sCommand != "";
 }
 
 // ---------------------------------------------------------------------
 
 // bool ModelRequest::validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler){
-	
+
 // }

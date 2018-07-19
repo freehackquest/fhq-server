@@ -26,57 +26,57 @@
 // ---------------------------------------------------------------------
 
 WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
-	TAG = "WebSocketServer";
+    TAG = "WebSocketServer";
 
-	m_bFailed = false;
-	if(!Employees::init({"start_ws_server"})){
-		m_bFailed = true;
+    m_bFailed = false;
+    if(!Employees::init({"start_ws_server"})){
+        m_bFailed = true;
         return;
-	}
-	
-	EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
+    }
+
+    EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
     EmployWsServer *pWsServer = findEmploy<EmployWsServer>();
-	
-	m_pWebSocketServer = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::NonSecureMode, this);
-	m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::SecureMode, this);
-	
+
+    m_pWebSocketServer = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::NonSecureMode, this);
+    m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::SecureMode, this);
+
     if (m_pWebSocketServer->listen(QHostAddress::Any, pServerConfig->serverPort())) {
         Log::info(TAG, "fhq-server listening on port " + QString::number(pServerConfig->serverPort()));
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnection);
         connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &WebSocketServer::closed);
     }else{
         Log::err(TAG, "fhq-server can not listening on port " + QString::number(pServerConfig->serverPort()));
-		m_bFailed = true;
-		return;
-	}
+        m_bFailed = true;
+        return;
+    }
 
-	if(pServerConfig->serverSslOn()){
-		QSslConfiguration sslConfiguration;
+    if(pServerConfig->serverSslOn()){
+        QSslConfiguration sslConfiguration;
         QFile certFile(QString(pServerConfig->serverSslCertFile().c_str()));
         QFile keyFile(QString(pServerConfig->serverSslKeyFile().c_str()));
-		certFile.open(QIODevice::ReadOnly);
-		keyFile.open(QIODevice::ReadOnly);
-		QSslCertificate certificate(&certFile, QSsl::Pem);
-		QSslKey sslKey(&keyFile, QSsl::Rsa, QSsl::Pem);
-		certFile.close();
-		keyFile.close();
-		sslConfiguration.setPeerVerifyMode(QSslSocket::VerifyNone);
-		sslConfiguration.setLocalCertificate(certificate);
-		sslConfiguration.setPrivateKey(sslKey);
-		sslConfiguration.setProtocol(QSsl::TlsV1SslV3);
-		m_pWebSocketServerSSL->setSslConfiguration(sslConfiguration);
-		
-		if (m_pWebSocketServerSSL->listen(QHostAddress::Any, pServerConfig->serverSslPort())) {
-			Log::info(TAG, "freehackquest-backend listening (via ssl) on port" + QString::number(pServerConfig->serverSslPort()));
-			connect(m_pWebSocketServerSSL, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnectionSSL);
-			connect(m_pWebSocketServerSSL, &QWebSocketServer::sslErrors, this, &WebSocketServer::onSslErrors);
-		}else{
+        certFile.open(QIODevice::ReadOnly);
+        keyFile.open(QIODevice::ReadOnly);
+        QSslCertificate certificate(&certFile, QSsl::Pem);
+        QSslKey sslKey(&keyFile, QSsl::Rsa, QSsl::Pem);
+        certFile.close();
+        keyFile.close();
+        sslConfiguration.setPeerVerifyMode(QSslSocket::VerifyNone);
+        sslConfiguration.setLocalCertificate(certificate);
+        sslConfiguration.setPrivateKey(sslKey);
+        sslConfiguration.setProtocol(QSsl::TlsV1SslV3);
+        m_pWebSocketServerSSL->setSslConfiguration(sslConfiguration);
+
+        if (m_pWebSocketServerSSL->listen(QHostAddress::Any, pServerConfig->serverSslPort())) {
+            Log::info(TAG, "freehackquest-backend listening (via ssl) on port" + QString::number(pServerConfig->serverSslPort()));
+            connect(m_pWebSocketServerSSL, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnectionSSL);
+            connect(m_pWebSocketServerSSL, &QWebSocketServer::sslErrors, this, &WebSocketServer::onSslErrors);
+        }else{
             Log::err(TAG, "fhq-server can not listening (via ssl) on port " + QString::number(pServerConfig->serverSslPort()));
-			m_bFailed = true;
-			return;
-		}
-	}
+            m_bFailed = true;
+            return;
+        }
+    }
     connect(this, &WebSocketServer::sig_sendToAll, this, &WebSocketServer::slot_sendToAll);
 
     // connect(this, SIGNAL(sig_sendToAll(nlohmann::json)), this, SLOT(slot_sendToAll(nlohmann::json)));
@@ -118,15 +118,15 @@ void WebSocketServer::sendServerMessage(QWebSocket *pSocket){
 
 // ---------------------------------------------------------------------
 
-/*! 
+/*!
  *  Handling new connection by ws://
  */
- 
+
 void WebSocketServer::onNewConnection()
 {
     QWebSocket *pSocket = m_pWebSocketServer->nextPendingConnection();
-	Log::info(TAG, "NewConnection " + pSocket->peerAddress().toString() + " " + QString::number(pSocket->peerPort()));
-        
+    Log::info(TAG, "NewConnection " + pSocket->peerAddress().toString() + " " + QString::number(pSocket->peerPort()));
+
     connect(pSocket, &QWebSocket::textMessageReceived, this, &WebSocketServer::processTextMessage);
     connect(pSocket, &QWebSocket::binaryMessageReceived, this, &WebSocketServer::processBinaryMessage);
     connect(pSocket, &QWebSocket::disconnected, this, &WebSocketServer::socketDisconnected);
@@ -137,14 +137,14 @@ void WebSocketServer::onNewConnection()
 
 // ---------------------------------------------------------------------
 
-/*! 
+/*!
  *  Handling new connection by wss://
  */
 
 void WebSocketServer::onNewConnectionSSL(){
-	QWebSocket *pSocket = m_pWebSocketServerSSL->nextPendingConnection();
-	Log::info(TAG, "NewConnectionSSL " + pSocket->peerAddress().toString() + " " + QString::number(pSocket->peerPort()));
-        
+    QWebSocket *pSocket = m_pWebSocketServerSSL->nextPendingConnection();
+    Log::info(TAG, "NewConnectionSSL " + pSocket->peerAddress().toString() + " " + QString::number(pSocket->peerPort()));
+
     connect(pSocket, &QWebSocket::textMessageReceived, this, &WebSocketServer::processTextMessage);
     connect(pSocket, &QWebSocket::binaryMessageReceived, this, &WebSocketServer::processBinaryMessage);
     connect(pSocket, &QWebSocket::disconnected, this, &WebSocketServer::socketDisconnected);
@@ -251,9 +251,9 @@ void WebSocketServer::processBinaryMessage(QByteArray /*message*/) {
 
 void WebSocketServer::socketDisconnected() {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-	Log::info(TAG, "socketDisconnected:" + QString::number((quint64)pClient, 16));
+    Log::info(TAG, "socketDisconnected:" + QString::number((quint64)pClient, 16));
     if (pClient) {
-		m_tokens.remove(pClient);
+        m_tokens.remove(pClient);
         m_clients.removeAll(pClient);
         pClient->deleteLater();
     }
@@ -262,27 +262,27 @@ void WebSocketServer::socketDisconnected() {
 // ---------------------------------------------------------------------
 
 void WebSocketServer::onSslErrors(const QList<QSslError> &){
-	Log::err(TAG, "Ssl errors occurred");
+    Log::err(TAG, "Ssl errors occurred");
 }
 
 // ---------------------------------------------------------------------
 
 int WebSocketServer::getConnectedUsers(){
-	return m_clients.length();
+    return m_clients.length();
 }
 
 // ---------------------------------------------------------------------
 
 // deprecated
 void WebSocketServer::sendMessage(QWebSocket *pClient, QJsonObject obj){
-	 if (pClient) {
-	    std::string cmd = obj["cmd"].toString().toStdString();
-	    std::string m = obj["m"].toString().toStdString();
+     if (pClient) {
+        std::string cmd = obj["cmd"].toString().toStdString();
+        std::string m = obj["m"].toString().toStdString();
 
-		QJsonDocument doc(obj);
-		QString message = doc.toJson(QJsonDocument::Compact);
-		Log::info(TAG.toStdString(), "[WS] <<< " + cmd + ":" + m);
-		// Log::info(TAG, QDateTime::currentDateTimeUtc().toString() + " [WS] >>> " + message);
+        QJsonDocument doc(obj);
+        QString message = doc.toJson(QJsonDocument::Compact);
+        Log::info(TAG.toStdString(), "[WS] <<< " + cmd + ":" + m);
+        // Log::info(TAG, QDateTime::currentDateTimeUtc().toString() + " [WS] >>> " + message);
         if(m_clients.contains(pClient)){
             try{
                 pClient->sendTextMessage(message);
@@ -323,15 +323,15 @@ void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &c
     jsonResponse["code"] = QJsonValue(error.codeError());
     Log::err(TAG.toStdString(), "WS-ERROR >>> " + cmd + ": messsage: " + error.message());
     this->sendMessage(pClient, jsonResponse);
-	return;
+    return;
 }
 
 // ---------------------------------------------------------------------
 
 void WebSocketServer::sendToAll(QJsonObject obj){ // deprecated
-	for(int i = 0; i < m_clients.size(); i++){
-		this->sendMessage(m_clients.at(i), obj);
-	}
+    for(int i = 0; i < m_clients.size(); i++){
+        this->sendMessage(m_clients.at(i), obj);
+    }
 }
 
 // ---------------------------------------------------------------------
@@ -358,16 +358,16 @@ void WebSocketServer::slot_sendToAll(QString message){
 // TODO move to EmployWsServer
 
 void WebSocketServer::setUserToken(QWebSocket *pClient, IUserToken *pUserToken){
-	m_tokens[pClient] = pUserToken;
+    m_tokens[pClient] = pUserToken;
 }
 
 // ---------------------------------------------------------------------
 
 IUserToken * WebSocketServer::getUserToken(QWebSocket *pClient){
-	if(m_tokens.contains(pClient)){
-		return m_tokens[pClient];
-	}
-	return NULL;
+    if(m_tokens.contains(pClient)){
+        return m_tokens[pClient];
+    }
+    return NULL;
 }
 
 // ---------------------------------------------------------------------
