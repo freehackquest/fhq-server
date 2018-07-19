@@ -1,44 +1,29 @@
 #include <model_usertoken.h>
 #include <utils_logger.h>
-#include <QJsonDocument>
-#include <QJsonObject>
 
 ModelUserToken::ModelUserToken(){
     TAG = "ModelUserToken";
 }
 
-ModelUserToken::ModelUserToken(QJsonObject obj){
+ModelUserToken::ModelUserToken(nlohmann::json const& obj){
     this->fillFromJson(obj);
     TAG = "ModelUserToken";
 }
 
 ModelUserToken::ModelUserToken(QString json){
-    QJsonDocument doc = QJsonDocument::fromJson(json.toUtf8());
-    this->fillFromJson(doc.object());
+    this->fillFromJson(nlohmann::json::parse(json.toStdString()));
     TAG = "ModelUserToken";
 }
 
-void ModelUserToken::fillFromJson(QJsonObject obj){
+void ModelUserToken::fillFromJson(const nlohmann::json &obj){
 
-    if(obj.contains("user")){
-        QJsonObject user = obj["user"].toObject();
-        if(user.contains("role")){
-            m_sRole = user["role"].toString();
-        }
+    if(obj.find("user") != obj.end()){
+        nlohmann::json user = obj.at("user");
 
-        if(user.contains("id")){
-            m_nUserID = user["id"].toString().toInt();
-        }else{
-            m_nUserID = -1;
-        }
-
-        if(user.contains("email")){
-            m_sEmail = user["email"].toString();
-        }
-
-        if(user.contains("nick")){
-            m_sNick = user["nick"].toString();
-        }
+        m_sRole   = obj.value("role", m_sRole);
+        m_nUserID = obj.value("id", -1);
+        m_sEmail  = obj.value("email", m_sEmail);
+        m_sNick   = obj.value("nick", m_sNick);
     }
 }
 
@@ -59,11 +44,11 @@ bool ModelUserToken::hasRole(){
 }
 
 QString ModelUserToken::nick(){
-    return m_sNick;
+    return QString::fromStdString(m_sNick);
 }
 
 void ModelUserToken::setNick(QString sNick){
-    m_sNick = sNick;
+    m_sNick = sNick.toStdString();
 }
 
 int ModelUserToken::userid(){
@@ -71,7 +56,7 @@ int ModelUserToken::userid(){
 }
 
 QString ModelUserToken::email(){
-    return m_sEmail;
+    return QString::fromStdString(m_sEmail);
 }
 
 

@@ -3,7 +3,7 @@
 
 class IUserToken {
     public:
-        virtual void fillFromJson(QJsonObject obj) = 0;
+        virtual void fillFromJson(nlohmann::json const& obj) = 0;
         virtual bool isAdmin() = 0;
         virtual bool isUser() = 0;
         virtual bool isTester() = 0;

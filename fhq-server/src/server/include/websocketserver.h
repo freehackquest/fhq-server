@@ -39,10 +39,8 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 
         // IWebSocketServer
         virtual int getConnectedUsers();
-        virtual void sendMessage(QWebSocket *pClient, QJsonObject obj); // deprecated
         virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse);
         virtual void sendMessageError(QWebSocket *pClient, const std::string &cmd, QString m, Error error);
-        virtual void sendToAll(QJsonObject obj);
         virtual void sendToAll(const nlohmann::json& jsonMessage);
         virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken);
         virtual IUserToken * getUserToken(QWebSocket *pClient);

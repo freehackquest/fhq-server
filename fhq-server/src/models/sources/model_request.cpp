@@ -3,10 +3,9 @@
 
 // ---------------------------------------------------------------------
 
-ModelRequest::ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, QJsonObject jsonData, nlohmann::json &jsonRequest_){
+ModelRequest::ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_){
     m_pClient = pClient;
     m_pServer = pWebSocketServer;
-    m_jsonObject = jsonData; // todo deprecated
     m_jsonRequest = jsonRequest_;
 
     if(m_jsonRequest["cmd"].is_string()){
@@ -28,12 +27,6 @@ QWebSocket *ModelRequest::client(){
 
 IWebSocketServer *ModelRequest::server(){
     return m_pServer;
-}
-
-// ---------------------------------------------------------------------
-
-QJsonObject ModelRequest::data(){ // deprecated
-    return m_jsonObject;
 }
 
 // ---------------------------------------------------------------------
@@ -66,16 +59,6 @@ void ModelRequest::sendMessageSuccess(const std::string &cmd, nlohmann::json& js
     jsonResponse["cmd"] = cmd;
     jsonResponse["m"] = m_sMessageId;
     jsonResponse["result"] = "DONE";
-    m_pServer->sendMessage(m_pClient, jsonResponse);
-}
-
-// ---------------------------------------------------------------------
-
-// deprecated
-void ModelRequest::sendMessageSuccess(const std::string &cmd, QJsonObject jsonResponse){
-    jsonResponse["cmd"] = QJsonValue(QString(cmd.c_str()));
-    jsonResponse["m"] = QJsonValue(QString(m_sMessageId.c_str()));
-    jsonResponse["result"] = QJsonValue("DONE");
     m_pServer->sendMessage(m_pClient, jsonResponse);
 }
 

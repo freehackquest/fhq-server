@@ -2,18 +2,17 @@
 #define MODEL_USERTOKEN_H
 
 #include <iserver.h>
-
+#include <json.hpp>
 #include <QString>
-#include <QJsonObject>
 
 class ModelUserToken : public IUserToken {
     public:
         ModelUserToken();
-        ModelUserToken(QJsonObject obj);
+        ModelUserToken(nlohmann::json const& obj);
         ModelUserToken(QString json);
 
         // IUserToken
-        virtual void fillFromJson(QJsonObject obj);
+        virtual void fillFromJson(nlohmann::json const& obj) override;
         virtual bool isAdmin();
         virtual bool isUser();
         virtual bool isTester();
@@ -23,9 +22,9 @@ class ModelUserToken : public IUserToken {
         virtual QString email();
         virtual int userid();
     private:
-        QString m_sRole;
-        QString m_sEmail;
-        QString m_sNick;
+        std::string m_sRole;
+        std::string m_sEmail;
+        std::string m_sNick;
         int m_nUserID;
         QString TAG;
 };

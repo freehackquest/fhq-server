@@ -30,13 +30,13 @@ CmdHandlerUsersScoreboard::CmdHandlerUsersScoreboard()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest){
-    QJsonObject jsonRequest = pRequest->data();
+    auto &&jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    int nPage = jsonRequest["page"].toInt();
+    int nPage = jsonRequest.get<int>();
     jsonResponse["page"] = nPage;
 
-    int nOnPage = jsonRequest["onpage"].toInt();
+    int nOnPage = jsonRequest.get<int>();
     if(nOnPage > 50){
         pRequest->sendMessageError(cmd(), Errors::OnPageCouldNotBeMoreThen50());
     }
@@ -45,8 +45,8 @@ void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest){
     QStringList filters;
     QMap<QString,QString> filter_values;
 
-    if(jsonRequest.contains("user")){
-        QString user = jsonRequest["user"].toString().trimmed();
+    if(jsonRequest.find("user") != jsonRequest.end()){
+        QString user = QString::fromStdString(jsonRequest.at("user").get<std::string>()).trimmed();
         filters << "(u.nick like :nick)";
         filter_values[":nick"] = "%" + user + "%";
     }
@@ -84,12 +84,12 @@ CmdHandlerGetMap::CmdHandlerGetMap()
 void CmdHandlerGetMap::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+//    QJsonObject jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
-    QJsonArray coords;
+    nlohmann::json coords;
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("SELECT COUNT(*) as cnt, latitude, longitude FROM `users` GROUP BY latitude, longitude");
@@ -99,10 +99,10 @@ void CmdHandlerGetMap::handle(ModelRequest *pRequest){
         double lat = record.value("latitude").toDouble();
         double lon = record.value("longitude").toDouble();
         int count = record.value("cnt").toInt();
-        if(lat == 0 && lon == 0){
+        if(lat == 0. && lon == 0.){
             continue;
         }
-        QJsonObject item;
+        nlohmann::json item;
         item["lat"] = lat;
         item["lng"] = lon;
         item["count"] = count;
@@ -110,7 +110,7 @@ void CmdHandlerGetMap::handle(ModelRequest *pRequest){
     }
 
     jsonResponse["data"] = coords;
-    jsonResponse["google_map_api_key"] = pSettings->getSettString("google_map_api_key");
+    jsonResponse["google_map_api_key"] = pSettings->getSettString("google_map_api_key").toStdString();
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -135,11 +135,11 @@ CmdHandlerLogin::CmdHandlerLogin()
 void CmdHandlerLogin::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    auto const & jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
 
-    QString email = jsonRequest["email"].toString();
-    QString password = jsonRequest["password"].toString();
+    QString email = QString::fromStdString( jsonRequest.at("email").get_ref<std::string const&>() );
+    QString password = QString::fromStdString( jsonRequest.at("password").get_ref<std::string const&>() );
 
     QString password_sha1 = email.toUpper() + password;
     std::string _password_sha1 = sha1::calc_string_to_hex(password_sha1.toStdString());
@@ -164,17 +164,16 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest){
         QString nick = record.value("nick").toString();
         QString role = record.value("role").toString();
 
-        QJsonObject user;
-        user["id"] = QString::number(userid);
+        nlohmann::json user;
+        user["id"] = QString::number(userid).toStdString();
         user["email"] = email;
         user["nick"] = nick;
         user["role"] = role;
 
-        QJsonObject user_token;
+        nlohmann::json user_token;
         user_token["user"] = user;
 
-        QJsonDocument doc(user_token);
-        QString data = doc.toJson(QJsonDocument::Compact);
+        QString data = QString::fromStdString( user_token.dump() );
 
         QString token = QUuid::createUuid().toString();
         token = token.mid(1,token.length()-2);
