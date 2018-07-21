@@ -188,6 +188,7 @@ list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_prepare_deb_package.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_static_analizing_text.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_merge_text.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_lxd.cpp")
+list (APPEND FHQSRV_SOURCES "src/utils/include/utils_qt_legacy_support.h")
 
 # unit_tests
 list (APPEND FHQSRV_SOURCES "src/unit_tests/include/unit_test_levenshtein.h")
@@ -294,7 +295,7 @@ list (APPEND FHQSRV_SOURCES "src/main.cpp")
 # ZLIB
 find_package( ZLIB REQUIRED )
 if ( ZLIB_FOUND )
-	list (APPEND FHQSRV_INCLUDE_DIRS ${ZLIB_INCLUDE_DIRS})
+    list (APPEND FHQSRV_INCLUDE_DIRS ${ZLIB_INCLUDE_DIRS})
     include_directories( ${ZLIB_INCLUDE_DIRS} )
     list (APPEND FHQSRV_LIBRARIES ${ZLIB_LIBRARIES})
 endif( ZLIB_FOUND )

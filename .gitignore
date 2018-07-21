@@ -54,6 +54,7 @@ freehackquest-backend.pro.user
 .qmake.stash
 .DS_Store
 fhq-server/build
+fhq-server/builds
 fhq-server/fhq-server
 fhq-server/debian/files
 fhq-server/fhq-server.pro.user

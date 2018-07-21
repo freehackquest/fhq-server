@@ -1,5 +1,6 @@
 #include <cmd_handlers_users.h>
 #include <utils_logger.h>
+#include <utils_qt_legacy_support.h>
 #include <runtasks.h>
 #include <iostream>
 #include <employ_settings.h>
@@ -33,10 +34,10 @@ void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest){
     auto &&jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    int nPage = jsonRequest.get<int>();
+    int nPage = jsonRequest.at("page");
     jsonResponse["page"] = nPage;
 
-    int nOnPage = jsonRequest.get<int>();
+    int nOnPage = jsonRequest.at("onpage");
     if(nOnPage > 50){
         pRequest->sendMessageError(cmd(), Errors::OnPageCouldNotBeMoreThen50());
     }
@@ -46,7 +47,8 @@ void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest){
     QMap<QString,QString> filter_values;
 
     if(jsonRequest.find("user") != jsonRequest.end()){
-        QString user = QString::fromStdString(jsonRequest.at("user").get<std::string>()).trimmed();
+        QString user = jsonRequest.at("user");
+        user = user.trimmed();
         filters << "(u.nick like :nick)";
         filter_values[":nick"] = "%" + user + "%";
     }
@@ -110,7 +112,7 @@ void CmdHandlerGetMap::handle(ModelRequest *pRequest){
     }
 
     jsonResponse["data"] = coords;
-    jsonResponse["google_map_api_key"] = pSettings->getSettString("google_map_api_key").toStdString();
+    jsonResponse["google_map_api_key"] = pSettings->getSettString("google_map_api_key");
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -138,8 +140,8 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest){
     auto const & jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    QString email = QString::fromStdString( jsonRequest.at("email").get_ref<std::string const&>() );
-    QString password = QString::fromStdString( jsonRequest.at("password").get_ref<std::string const&>() );
+    QString email = jsonRequest.at("email");
+    QString password = jsonRequest.at("password");
 
     QString password_sha1 = email.toUpper() + password;
     std::string _password_sha1 = sha1::calc_string_to_hex(password_sha1.toStdString());
@@ -165,7 +167,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest){
         QString role = record.value("role").toString();
 
         nlohmann::json user;
-        user["id"] = QString::number(userid).toStdString();
+        user["id"] = QString::number(userid);
         user["email"] = email;
         user["nick"] = nick;
         user["role"] = role;
@@ -173,7 +175,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest){
         nlohmann::json user_token;
         user_token["user"] = user;
 
-        QString data = QString::fromStdString( user_token.dump() );
+        QString data = user_token;
 
         QString token = QUuid::createUuid().toString();
         token = token.mid(1,token.length()-2);
@@ -231,14 +233,14 @@ CmdHandlerRegistration::CmdHandlerRegistration()
 void CmdHandlerRegistration::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    const auto &jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
 
     //EmploySettings *pSettings = findEmploy<EmploySettings>();
 
-    QString sEmail = jsonRequest["email"].toString();
+    QString sEmail = jsonRequest.at("email");
 
-    QString sUniversity = jsonRequest["university"].toString();
+    QString sUniversity = jsonRequest.at("university");
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
@@ -382,8 +384,8 @@ CmdHandlerSendChatMessage::CmdHandlerSendChatMessage()
 void CmdHandlerSendChatMessage::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    const auto & jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
 
     IUserToken *pUserToken = pRequest->userToken();
     QString username = "";
@@ -399,14 +401,14 @@ void CmdHandlerSendChatMessage::handle(ModelRequest *pRequest){
     QSqlQuery query(db);
     query.prepare("INSERT INTO chatmessages(user, message, dt) VALUES(:user,:message, NOW())");
     query.bindValue(":user", username);
-    query.bindValue(":message", jsonRequest["message"].toString());
+    query.bindValue(":message", jsonRequest.at("message"));
     query.exec();
 
-    QJsonObject jsonData2;
-    jsonData2["cmd"] = QJsonValue("chat");
-    jsonData2["type"] = jsonRequest["type"];
+    nlohmann::json jsonData2;
+    jsonData2["cmd"] = "chat";
+    jsonData2["type"] = jsonRequest.at("type");
     jsonData2["user"] = username;
-    jsonData2["message"] = jsonRequest["message"];
+    jsonData2["message"] = jsonRequest.at("message");
     jsonData2["dt"] = QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss");
 
     pRequest->server()->sendToAll(jsonData2);
@@ -432,17 +434,17 @@ CmdHandlerToken::CmdHandlerToken()
 void CmdHandlerToken::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    const auto & jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
 
-    QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
+    nlohmann::json jsonData;
+    jsonData["cmd"] = nlohmann::json(cmd());
 
-    if(!jsonRequest.contains("token")){
+    if(jsonRequest.find("token") == jsonRequest.end()){
         pRequest->sendMessageError(cmd(), Errors::NotFound("requred parameter token"));
         return;
     }
-    QString token = jsonRequest["token"].toString();
+    QString token = jsonRequest.at("token");
     QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
@@ -495,12 +497,12 @@ CmdHandlerUpdateUserLocation::CmdHandlerUpdateUserLocation()
 void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    const auto & jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
 
     // bool bConvert = false;
 
-    int userid = jsonRequest["userid"].toInt();
+    int userid = jsonRequest.at("userid");
 
     // TODO redesign
     if(userid == 0){
@@ -558,8 +560,8 @@ CmdHandlerUserChangePassword::CmdHandlerUserChangePassword()
 void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    const auto& jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
 
     IUserToken *pUserToken = pRequest->userToken();
     int nUserID = pUserToken->userid();
@@ -586,8 +588,8 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest){
         return;
     }
 
-    QString sOldPassword = jsonRequest["password_old"].toString();
-    QString sNewPassword = jsonRequest["password_new"].toString();
+    QString sOldPassword = jsonRequest.at("password_old");
+    QString sNewPassword = jsonRequest.at("password_new");
 
     QString sOldPassword_sha1 = sEmail.toUpper() + sOldPassword;
 
@@ -643,11 +645,11 @@ CmdHandlerUserCreate::CmdHandlerUserCreate()
 void CmdHandlerUserCreate::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    const auto& jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
 
     QRegularExpression regexEmail("^[0-9a-zA-Z-._@]{3,128}$");
-    QString sEmail = jsonRequest["email"].toString();
+    QString sEmail = jsonRequest.at("email");
 
     if(!regexEmail.match(sEmail).hasMatch()){
         Log::err(TAG, "Invalid email format " + sEmail.toStdString());
@@ -670,7 +672,7 @@ void CmdHandlerUserCreate::handle(ModelRequest *pRequest){
         return;
     }
 
-    QString sNick = jsonRequest["nick"].toString().trimmed();
+    QString sNick = jsonRequest.at("nick");
 
     if(sNick.size() < 3 && sNick.size() > 128){
         Log::err(TAG, "Invalid nick format " + sNick.toStdString());
@@ -679,7 +681,7 @@ void CmdHandlerUserCreate::handle(ModelRequest *pRequest){
     }
 
     QRegularExpression regexPassword("^[0-9a-zA-Z]{3,128}$");
-    QString sPassword = jsonRequest["password"].toString();
+    QString sPassword = jsonRequest.at("password");
 
     if(!regexPassword.match(sPassword).hasMatch()){
         Log::err(TAG, "Invalid password format");
@@ -692,18 +694,14 @@ void CmdHandlerUserCreate::handle(ModelRequest *pRequest){
     std::string _sPassword_sha1 = sha1::calc_string_to_hex(sPassword_sha1.toStdString());
     sPassword_sha1 = QString(_sPassword_sha1.c_str());
 
-    QString sRole = jsonRequest.value("role").toString();
+    QString sRole = jsonRequest.at("role");
     if(sRole != "user" && sRole != "admin"){
         Log::err(TAG, "Invalid role format " + sRole.toStdString());
         pRequest->sendMessageError(cmd(), Error(400, "This role doesn't exist"));
         return;
     }
 
-    QString sUniversity;
-    if(jsonRequest.contains("university"))
-        sUniversity = jsonRequest.value("university").toString();
-    else
-        sUniversity = "";
+    QString sUniversity = QString::fromStdString(jsonRequest.value("university", std::string{}));
 
     QSqlQuery query_insert(db);
     query_insert.prepare(""
@@ -802,12 +800,12 @@ CmdHandlerUser::CmdHandlerUser()
 void CmdHandlerUser::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    const auto & jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
 
     IUserToken *pUserToken = pRequest->userToken();
 
-    if(!jsonRequest.contains("userid") && pUserToken == NULL){
+    if(jsonRequest.find("userid") != jsonRequest.end() && pUserToken == NULL){
         pRequest->sendMessageError(cmd(), Errors::NotAuthorizedRequest());
         return;
     }
@@ -820,8 +818,8 @@ void CmdHandlerUser::handle(ModelRequest *pRequest){
         bCurrentUserOrAdmin = true;
     }
 
-    if(jsonRequest.contains("userid")){
-        int nUserID_ = jsonRequest["userid"].toInt();
+    if(jsonRequest.find("userid") != jsonRequest.end()){
+        int nUserID_ = jsonRequest.at("userid").get<int>();
         if(nUserID_ != nUserID){
             bCurrentUserOrAdmin = false;
             if(pUserToken != NULL){
@@ -831,8 +829,8 @@ void CmdHandlerUser::handle(ModelRequest *pRequest){
         nUserID = nUserID_;
     }
 
-    QJsonObject data;
-    QJsonObject profile;
+    nlohmann::json data;
+    nlohmann::json profile;
     QSqlDatabase db = *(pDatabase->database());
 
     {
@@ -878,7 +876,7 @@ void CmdHandlerUser::handle(ModelRequest *pRequest){
             QSqlRecord record = query.record();
             QString name = record.value("name").toString();
             QString value = record.value("value").toString();
-            profile[name] = value;
+            profile[name.toStdString()] = value;
 
             // TODO clenup 'template' from user profiles
         }
@@ -910,10 +908,10 @@ CmdHandlerUserResetPassword::CmdHandlerUserResetPassword()
 void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    const auto& jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
 
-    QString sEmail = jsonRequest["email"].toString();
+    QString sEmail = jsonRequest.at("email");
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
@@ -994,12 +992,12 @@ CmdHandlerUserSkills::CmdHandlerUserSkills()
 void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    const auto& jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
 
 
-    QJsonObject skills_max;
-    QJsonObject skills_user;
+    nlohmann::json skills_max;
+    nlohmann::json skills_user;
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -1014,12 +1012,12 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
         while(query.next()) {
             QSqlRecord record = query.record();
             QString subject = record.value("subject").toString();
-            skills_max[subject] = record.value("sum_subject").toInt();
+            skills_max[subject.toStdString()] = record.value("sum_subject").toInt();
         }
     }
 
 
-    int nUserID = jsonRequest["userid"].toInt();
+    int nUserID = jsonRequest.at("userid");
     {
         QSqlQuery query(db);
         query.prepare("SELECT uq.userid, q.subject, SUM( q.score ) as sum_score FROM users_quests uq INNER JOIN quest q ON uq.questid = q.idquest WHERE ! ISNULL( q.subject ) AND uq.userid = :userid GROUP BY uq.userid, q.subject");
@@ -1032,7 +1030,7 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
         while(query.next()) {
             QSqlRecord record = query.record();
             QString subject = record.value("subject").toString();
-            skills_user[subject] = record.value("sum_score").toInt();
+            skills_user[subject.toStdString()] = record.value("sum_score").toInt();
         }
     }
 
@@ -1065,14 +1063,13 @@ CmdHandlerUserUpdate::CmdHandlerUserUpdate()
 void CmdHandlerUserUpdate::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
-    QJsonObject data;
+    const auto& jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
+    nlohmann::json data;
 
     IUserToken *pUserToken = pRequest->userToken();
     int nUserIDFromToken = pUserToken->userid();
-    int nUserID = jsonRequest["userid"].toInt();
-
+    int nUserID = jsonRequest.at("userid");
     if(nUserIDFromToken != nUserID && !pUserToken->isAdmin()){
         pRequest->sendMessageError(cmd(), Error(403, "Deny change inmormation about user"));
         return;
@@ -1104,16 +1101,17 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest){
         }
     }
 
-    if(jsonRequest.contains("nick")){
-        sNick = jsonRequest["nick"].toString();
+
+    if(jsonRequest.find("nick") != jsonRequest.end()){
+        sNick = jsonRequest.at("nick").get<QString>();
     }
 
-    if(jsonRequest.contains("university")){
-        sUniversity = jsonRequest["university"].toString();
+    if(jsonRequest.find("university") != jsonRequest.end()){
+        sUniversity = jsonRequest.at("university").get<QString>();
     }
 
-    if(jsonRequest.contains("about")){
-        sAbout = jsonRequest["about"].toString();
+    if(jsonRequest.find("about") != jsonRequest.end()){
+        sAbout = jsonRequest.at("about").get<QString>();
     }
 
     // update
@@ -1164,10 +1162,10 @@ CmdHandlerUserDelete::CmdHandlerUserDelete()
 void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    const auto& jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
 
-    QString sAdminPassword = jsonRequest["password"].toString();
+    QString sAdminPassword = jsonRequest.at("password");
 
     IUserToken *pUserToken = pRequest->userToken();
     int nAdminUserID = pUserToken->userid();
@@ -1206,7 +1204,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         }
     }
 
-    int nUserID = jsonRequest["userid"].toInt();
+    int nUserID = jsonRequest.at("userid");
 
     // check if the user exists
     {
@@ -1375,8 +1373,8 @@ CmdHandlerUsers::CmdHandlerUsers()
 void CmdHandlerUsers::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    const auto& jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
 
 
     QStringList filters;
@@ -1386,31 +1384,31 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest){
     int nOnPage = 5;
     int nCount = 0;
 
-    if(jsonRequest.contains("filter_text")){
-        QString text = jsonRequest["filter_text"].toString().trimmed();
+    if(jsonRequest.find("filter_text") != jsonRequest.end()){
+        QString text = jsonRequest.at("filter_text");
         if(text != ""){
             filters << "(email LIKE :email OR nick LIKE :nick)";
             filter_values[":email"] = "%" + text + "%";
             filter_values[":nick"] = "%" + text + "%";
         }
     }
-    if(jsonRequest.contains("filter_role")){
-        QString role = jsonRequest["filter_role"].toString().trimmed();
+    if(jsonRequest.find("filter_role") != jsonRequest.end()){
+        QString role = QString::fromStdString( jsonRequest["filter_role"].get_ref<std::string const&>() ).trimmed();
         if(role != ""){
             filters << "role = :role";
             filter_values[":role"] = role;
         }
     }
 
-    if(jsonRequest.contains("page")){
-        nPage = jsonRequest["page"].toInt();
+    if(jsonRequest.find("page") != jsonRequest.end()){
+        nPage = jsonRequest.at("page");
     }
 
-    if(jsonRequest.contains("onpage")){
-        nOnPage = jsonRequest["onpage"].toInt();
+    if(jsonRequest.find("onpage") != jsonRequest.end()){
+        nOnPage = jsonRequest.at("onpage");
     }
 
-    QJsonArray users;
+    nlohmann::json users;
     QSqlDatabase db = *(pDatabase->database());
     QString where = filters.join(" AND ");
     if(where.length() > 0){
@@ -1457,7 +1455,7 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest){
             QString sRegion = record.value("region").toString().toHtmlEscaped();
             QString sCity = record.value("city").toString().toHtmlEscaped();
             QString sRole = record.value("role").toString().toHtmlEscaped();
-            QJsonObject user;
+            nlohmann::json user;
             user["id"] = userid;
             user["uuid"] = sUuid;
             user["nick"] = sNick;

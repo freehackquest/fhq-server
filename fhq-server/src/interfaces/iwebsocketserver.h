@@ -1,16 +1,18 @@
 #ifndef INTERFACES_IWEBSOCKETSERVER_H
 #define INTERFACES_IWEBSOCKETSERVER_H
 
+#include <QJsonDocument> // depricated
+#include <QJsonObject>
 #include <QWebSocket>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QMap>
+#include <json.hpp>
 
 #include <iusertoken.h>
 #include <error.h>
 #include <errors.h>
-#include <json.hpp>
 
 class IWebSocketServer {
     public:

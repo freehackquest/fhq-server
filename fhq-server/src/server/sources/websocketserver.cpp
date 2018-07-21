@@ -11,6 +11,7 @@
 
 #include <SmtpMime>
 #include <utils_logger.h>
+#include <utils_qt_legacy_support.h>
 
 #include <employ_server_config.h>
 #include <employ_server_info.h>

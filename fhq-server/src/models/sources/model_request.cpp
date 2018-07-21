@@ -1,5 +1,9 @@
 #include <model_request.h>
 #include <iostream>
+#include <QJsonDocument>
+#include <QJsonObject>
+
+#include <utils_qt_legacy_support.h>
 
 // ---------------------------------------------------------------------
 
@@ -49,8 +53,24 @@ IUserToken *ModelRequest::userToken(){
 
 // ---------------------------------------------------------------------
 
+QJsonObject ModelRequest::data(){ // deprecated
+    QString s = m_jsonRequest;
+    return QJsonDocument::fromJson(s.toUtf8()).object();
+}
+
+// ---------------------------------------------------------------------
+
 void ModelRequest::sendMessageError(const std::string &cmd, Error error){
     m_pServer->sendMessageError(m_pClient,cmd,QString(m_sMessageId.c_str()),error);
+}
+
+// ---------------------------------------------------------------------
+
+void ModelRequest::sendMessageSuccess(const std::string &cmd, const QJsonObject &jsonResponse)
+{
+    QJsonDocument doc(jsonResponse);
+    nlohmann::json j = QString(doc.toJson());
+    sendMessageSuccess(cmd, j);
 }
 
 // ---------------------------------------------------------------------
