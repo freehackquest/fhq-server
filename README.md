@@ -1,4 +1,5 @@
 # FreeHackQuest Backend
+[![Build Status](https://travis-ci.org/IgorPolyakov/backend.svg?branch=master)](https://travis-ci.org/IgorPolyakov/backend)
 
 Backend for FreeHackQuest on Qt and WebSockets
 Frontend for FreeHackQuest here: [frontend](https://github.com/freehackquest/frontend)
@@ -28,4 +29,3 @@ More details here:
 * For Json: [Json](https://github.com/nlohmann/json)
 * Used libzip for a working with zip-archives [https://libzip.org/](https://libzip.org/)
 * Used libzip for a processing png-images [http://libpng.org/](http://libpng.org/)
-

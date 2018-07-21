@@ -1,5 +1,5 @@
 
-# Uplaoding to ppa
+# Uploading to ppa
 
 Base information got from here: http://simmesimme.github.io/lessons/2011/11/02/ppa-launchpad-cmake
 
