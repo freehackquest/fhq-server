@@ -1,6 +1,6 @@
 # Doxygen generate documentation
 
-## requariments
+## requirements
 
 ```
 $ sudo apt install doxygen graphviz

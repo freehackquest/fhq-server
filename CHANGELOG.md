@@ -5,7 +5,7 @@ This file is used to list changes made in each version of the fhq-server.
 # Notice
 
 1. For date of version please use `date -R`
-2. Please use current format, becouse it will be used for ppa/debian changelog
+2. Please use current format, because it will be used for ppa/debian changelog
 
 ## [0.2.17] (?)
 
@@ -15,7 +15,7 @@ This file is used to list changes made in each version of the fhq-server.
 - Implemented addGame by employ with cache
 - Renamed methods id to localId for ModelLeak
 - Improved ModelGame
-- redesing answers in employ leaks
+- redesign answers in employ leaks
 - Fixed send to all by another thread
 - Prepare employ for notifies
 - Added to event that game was removed
