@@ -10,17 +10,12 @@ branches:
 
 matrix:
   include:
-    - dist: bionic
-    - dist: artful
     - dist: xenial
 
 # Install dependencies
 before_install:
-- sudo apt-get install -y g++ libcurl4-openssl-dev libpng-dev libqt5sql5-mysql libqt5websockets5 libqt5websockets5-dev libwebsockets-dev make qt5-default qtchooser zlib1g zlib1g-dev zlibc
-
-addons:
-  apt:
-    update: true
+  - sudo apt-get update -qq
+  - sudo apt-get install -y g++ libcurl4-openssl-dev libpng-dev libqt5sql5-mysql libqt5websockets5 libqt5websockets5-dev libwebsockets-dev make qt5-default qtchooser zlib1g zlib1g-dev zlibc
 
 # Build your code e.g. by calling make
 script:
