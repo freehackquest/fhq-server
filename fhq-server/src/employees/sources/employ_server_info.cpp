@@ -171,12 +171,12 @@ nlohmann::json EmployServerInfo::developers(){
 
     nlohmann::json jsonDev3;
     jsonDev3["name"] = "Sergey Ushev";
-    jsonDev3["email"] = "?";
+    jsonDev3["email"] = "sergo.moreno@gmail.com";
     jsonDevelopers.push_back(jsonDev3);
 
     nlohmann::json jsonDev4;
     jsonDev4["name"] = "Danil Dudkin";
-    jsonDev4["email"] = "?";
+    jsonDev4["email"] = "shikamaru740@gmail.com";
     jsonDevelopers.push_back(jsonDev4);
 
     return jsonDevelopers;
