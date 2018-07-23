@@ -20,14 +20,21 @@
 // rdv: remove this when replace qstring with std::string when working with nlohmann::json
 inline void to_json(nlohmann::json & j, const QString& str)
 {
-    j = str.toStdString();
+    auto test = nlohmann::json::parse( str.toStdString(), nullptr, false);
+    if (test.is_discarded() || test.is_null()){
+        j = str.toStdString();
+        return;
+    }
+    else {
+        j = std::move(test);
+    }
 }
 
 //--------------------------------
 
 inline void from_json(const nlohmann::json & j, QString& str)
 {
-    str = QString::fromStdString( j.get_ref<std::string const&>() );
+    str = QString::fromStdString( j.dump() );
 }
 
 //--------------------------------
