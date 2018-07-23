@@ -94,8 +94,11 @@ ModelGame* EmployGames::findGameByUuid(const std::string &sUuid){
 
 // ---------------------------------------------------------------------
 
-EmployResult EmployGames::addGame(ModelGame* pModelGame, std::string &sError){
+EmployResult EmployGames::addGame(const ModelGame &modelGame, std::string &sError){
     // TODO mutex
+
+    ModelGame *pModelGame = modelGame.clone(); // clone of original game
+
     std::string sUuid = pModelGame->uuid();
 
     if(m_mapCacheGames.count(sUuid)){

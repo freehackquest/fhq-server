@@ -20,7 +20,7 @@ ModelGame::ModelGame(){
 
 // ---------------------------------------------------------------------
 
-int ModelGame::localId(){
+int ModelGame::localId() const{
     return m_nLocalId;
 }
 
@@ -32,7 +32,7 @@ void ModelGame::setLocalId(int nLocalId){
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::uuid(){
+const std::string &ModelGame::uuid() const{
 	return m_sUuid;
 }
 
@@ -44,7 +44,7 @@ void ModelGame::setUuid(std::string sUuid){
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::name(){
+const std::string &ModelGame::name() const{
     return m_sName;
 }
 
@@ -56,7 +56,7 @@ void ModelGame::setName(std::string sName){
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::description(){
+const std::string &ModelGame::description() const{
     return m_sDescription;
 }
 
@@ -68,7 +68,7 @@ void ModelGame::setDescription(std::string sDescription){
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::state(){
+const std::string &ModelGame::state() const{
     return m_sState;
 }
 
@@ -80,7 +80,7 @@ void ModelGame::setState(std::string sState){
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::form(){
+const std::string &ModelGame::form() const{
     return m_sForm;
 }
 
@@ -92,7 +92,7 @@ void ModelGame::setForm(std::string sForm){
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::type(){
+const std::string &ModelGame::type() const{
     return m_sType;
 }
 
@@ -104,7 +104,7 @@ void ModelGame::setType(std::string sType){
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::dateStart(){
+const std::string &ModelGame::dateStart() const{
     return m_sDateStart;
 }
 
@@ -116,7 +116,7 @@ void ModelGame::setDateStart(std::string sDateStart){
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::dateStop(){
+const std::string &ModelGame::dateStop() const{
     return m_sDateStop;
 }
 
@@ -128,7 +128,7 @@ void ModelGame::setDateStop(std::string sDateStop){
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::dateRestart(){
+const std::string &ModelGame::dateRestart() const{
     return m_sDateRestart;
 }
 
@@ -140,7 +140,7 @@ void ModelGame::setDateRestart(std::string sDateRestart){
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::organizators(){
+const std::string &ModelGame::organizators() const{
     return m_sOrganizators;
 }
 
@@ -152,7 +152,7 @@ void ModelGame::setOrganizators(std::string sOrganizators){
 
 // ---------------------------------------------------------------------
 
-int ModelGame::maxScore(){
+int ModelGame::maxScore() const{
     return m_nMaxScore;
 }
 
@@ -160,6 +160,24 @@ int ModelGame::maxScore(){
 
 void ModelGame::setMaxScore(int nMaxScore){
     m_nMaxScore = nMaxScore;
+}
+
+// ---------------------------------------------------------------------
+
+ModelGame *ModelGame::clone() const{
+    ModelGame *pModel = new ModelGame();
+    pModel->setLocalId(this->localId());
+    pModel->setUuid(this->uuid());
+    pModel->setName(this->name());
+    pModel->setDescription(this->description());
+    pModel->setState(this->state());
+    pModel->setType(this->type());
+    pModel->setDateStart(this->dateStart());
+    pModel->setDateStop(this->dateStop());
+    pModel->setDateRestart(this->dateRestart());
+    pModel->setOrganizators(this->organizators());
+    pModel->setMaxScore(this->maxScore());
+    return pModel;
 }
 
 // ---------------------------------------------------------------------
@@ -182,7 +200,7 @@ nlohmann::json ModelGame::toJson(){
 
 // ---------------------------------------------------------------------
 
-void ModelGame::fillFrom(nlohmann::json &jsonGame){
+void ModelGame::fillFrom(const nlohmann::json &jsonGame){
     // TODO trim
     if(jsonGame["name"].is_string()){
         m_sName = jsonGame["name"];
@@ -230,3 +248,5 @@ void ModelGame::fillFrom(nlohmann::json &jsonGame){
 }
 
 // ---------------------------------------------------------------------
+
+

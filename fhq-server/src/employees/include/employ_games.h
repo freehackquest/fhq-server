@@ -13,7 +13,7 @@ class EmployGames : public EmployBase {
 
         ModelGame* findGameByLocalId(int nLocalId);
         ModelGame* findGameByUuid(const std::string &sUuid);
-        EmployResult addGame(ModelGame* pModelGame, std::string &sError);
+        EmployResult addGame(const ModelGame &modelGame, std::string &sError);
         EmployResult removeGame(const std::string &sUuid);
 
     private:

@@ -49,37 +49,34 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
     EmployGames *pEmployGames = findEmploy<EmployGames>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
-    ModelGame *pModelGame = new ModelGame();
-    pModelGame->fillFrom(jsonRequest);
+
+    ModelGame pModelGame;
+    pModelGame.fillFrom(jsonRequest);
 
     std::string sError = "";
     EmployResult result = pEmployGames->addGame(pModelGame, sError);
     switch(result){
 
     case EmployResult::DATABASE_ERROR:
-        delete pModelGame;
         pRequest->sendMessageError(cmd(), Error(500, sError));
         return;
 
     case EmployResult::ALREADY_EXISTS:
-        delete pModelGame;
         pRequest->sendMessageError(cmd(), Error(403, "Game already exists with this uuid"));
         return;
 
     case EmployResult::ERROR_NAME_IS_EMPTY:
-        delete pModelGame;
         pRequest->sendMessageError(cmd(), Error(400, "Game has empty name"));
         return;
 
     case EmployResult::OK:
         nlohmann::json jsonResponse;
-        jsonResponse["data"] = pModelGame->toJson();
+        jsonResponse["data"] = pEmployGames->findGameByUuid(pModelGame.uuid())->toJson();
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
         return;
     }
 
     // default
-    delete pModelGame;
     pRequest->sendMessageError(cmd(), Error(500, "Server error"));
 }
 

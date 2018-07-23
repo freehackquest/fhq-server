@@ -6,35 +6,41 @@
 
 class ModelGame {
     public:
+        static std::vector<std::string> TYPES;
+        static std::vector<std::string> FORMS;
+        static std::vector<std::string> STATES;
+
         ModelGame();
         
-        int localId();
+        int localId() const;
         void setLocalId(int nLocalId);
-        const std::string &uuid();
+        const std::string &uuid() const;
         void setUuid(std::string sUuid);
-        const std::string &name();
+        const std::string &name() const;
         void setName(std::string sName);
-        const std::string &description();
+        const std::string &description() const;
         void setDescription(std::string sDescription);
-        const std::string &state();
+        const std::string &state() const;
         void setState(std::string sState);
-        const std::string &form();
+        const std::string &form() const;
         void setForm(std::string sForm);
-        const std::string &type();
+        const std::string &type() const;
         void setType(std::string sType);
-        const std::string &dateStart();
+        const std::string &dateStart() const;
         void setDateStart(std::string sDateStart);
-        const std::string &dateStop();
+        const std::string &dateStop() const;
         void setDateStop(std::string sDateStop);
-        const std::string &dateRestart();
+        const std::string &dateRestart() const;
         void setDateRestart(std::string sDateRestart);
-        const std::string &organizators();
+        const std::string &organizators() const;
         void setOrganizators(std::string sOrganizators);
-        int maxScore();
+        int maxScore() const;
         void setMaxScore(int nMaxScore);
-        
+
+        ModelGame *clone() const;
         nlohmann::json toJson();
-        void fillFrom(nlohmann::json &jsonGame);
+        void fillFrom(const nlohmann::json &jsonGame);
+
     private:
         std::string TAG;
         int m_nLocalId; // deprecated
