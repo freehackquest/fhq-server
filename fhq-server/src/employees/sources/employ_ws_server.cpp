@@ -7,6 +7,8 @@
 #include <QSqlRecord>
 #include <QRegularExpression>
 
+#include <utils_qt_legacy_support.h>
+
 #include <regex>
 
 REGISTRY_EMPLOY(EmployWsServer)
@@ -46,20 +48,21 @@ bool EmployWsServer::validateInputParameters(Error &error, CmdHandlerBase *pCmdH
         for(auto inDef : pCmdHandler->inputs()){ // TODO: when metheds 'is*' are marked as 'const', then add && to inDeff
             QString sParamName = QString::fromStdString(inDef.getName());
             auto itJsonParamName = jsonMessage.find(inDef.getName());
+            const auto endJson = jsonMessage.end();
 
-            if(inDef.isRequired() && itJsonParamName == jsonMessage.end()){
+            if(inDef.isRequired() && itJsonParamName == endJson){
                 error = Errors::ParamExpected(sParamName);
                 return false;
             }
 
-            if(itJsonParamName != jsonMessage.end()){
+            if(itJsonParamName != endJson){
                 if(inDef.isInteger()){
-                    if(!jsonMessage.is_number()){
+                    if(!itJsonParamName->is_number()){
                         error = Errors::ParamMustBeInteger(sParamName);
                         return false;
                     }
 
-                    int val = itJsonParamName->get<int>();
+                    int val = *itJsonParamName;
                     if(inDef.isMinVal() && val < inDef.getMinVal()){
                         error = Errors::ParamMustBeMoreThen(sParamName, inDef.getMinVal());
                         return false;
@@ -71,7 +74,7 @@ bool EmployWsServer::validateInputParameters(Error &error, CmdHandlerBase *pCmdH
                 }
 
                 if(inDef.isEnum()){
-                    QString val = QString::fromStdString( itJsonParamName->get_ref<std::string const&>() );
+                    QString val = *itJsonParamName;
                     QStringList eList = inDef.getEnumList();
                     if(!eList.contains(val)){
                         error = Errors::ParamExpectedValueOneFrom(sParamName,eList);

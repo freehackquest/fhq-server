@@ -54,7 +54,7 @@ IUserToken *ModelRequest::userToken(){
 // ---------------------------------------------------------------------
 
 QJsonObject ModelRequest::data(){ // deprecated
-    QString s = m_jsonRequest;
+    QString s = QString::fromStdString( m_jsonRequest.dump() );
     return QJsonDocument::fromJson(s.toUtf8()).object();
 }
 
@@ -69,7 +69,7 @@ void ModelRequest::sendMessageError(const std::string &cmd, Error error){
 void ModelRequest::sendMessageSuccess(const std::string &cmd, const QJsonObject &jsonResponse)
 {
     QJsonDocument doc(jsonResponse);
-    nlohmann::json j = QString(doc.toJson());
+    nlohmann::json j = nlohmann::json::parse(doc.toJson().toStdString());
     sendMessageSuccess(cmd, j);
 }
 

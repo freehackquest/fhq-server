@@ -160,7 +160,9 @@ void WebSocketServer::processTextMessage(const QString &message) {
 
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
 
+#if defined(NDEBUG) || defined (FORCE_EXCEPTIONS)
     try {
+#endif
         if(!nlohmann::json::accept(message.toStdString())){
             this->sendMessageError(pClient, "error", "", Errors::NotImplementedYet("Not JSON data"));
             return;
@@ -226,10 +228,12 @@ void WebSocketServer::processTextMessage(const QString &message) {
             pModelRequest->sendMessageError(pCmdHandler->cmd(), error);
             return;
         }
+#if defined(NDEBUG) || defined (FORCE_EXCEPTIONS)
     } catch (const std::exception &e) {
         this->sendMessageError(pClient, "", "", Errors::InternalServerError());
         Log::err(TAG, e.what());
     }
+#endif
 }
 
 // ---------------------------------------------------------------------
