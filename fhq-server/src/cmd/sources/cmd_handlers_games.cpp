@@ -468,15 +468,15 @@ CmdHandlerGameUpdate::CmdHandlerGameUpdate()
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
-    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Name of the Game"));
-    m_vInputs.push_back(CmdInputDef("description").string_().required().description("Description of the Game"));
-    m_vInputs.push_back(CmdInputDef("state").string_().required().description("State of the game"));
-    m_vInputs.push_back(CmdInputDef("form").string_().required().description("Form of the game"));
-    m_vInputs.push_back(CmdInputDef("type").string_().required().description("Type of the game"));
-    m_vInputs.push_back(CmdInputDef("date_start").string_().required().description("Date start"));
-    m_vInputs.push_back(CmdInputDef("date_stop").string_().required().description("Date stop"));
-    m_vInputs.push_back(CmdInputDef("date_restart").string_().required().description("Date restart"));
-    m_vInputs.push_back(CmdInputDef("organizators").string_().required().description("Organizators"));
+    m_vInputs.push_back(CmdInputDef("name").string_().optional().description("Name of the Game"));
+    m_vInputs.push_back(CmdInputDef("description").string_().optional().description("Description of the Game"));
+    m_vInputs.push_back(CmdInputDef("state").string_().optional().description("State of the game"));
+    m_vInputs.push_back(CmdInputDef("form").string_().optional().description("Form of the game"));
+    m_vInputs.push_back(CmdInputDef("type").string_().optional().description("Type of the game"));
+    m_vInputs.push_back(CmdInputDef("date_start").string_().optional().description("Date start"));
+    m_vInputs.push_back(CmdInputDef("date_stop").string_().optional().description("Date stop"));
+    m_vInputs.push_back(CmdInputDef("date_restart").string_().optional().description("Date restart"));
+    m_vInputs.push_back(CmdInputDef("organizators").string_().optional().description("Organizators"));
 }
 
 // ---------------------------------------------------------------------
@@ -488,17 +488,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
     nlohmann::json jsonResponse;
 
     // QJsonObject data;
-
     QString sUuid = jsonRequest["uuid"].toString().trimmed();
-    QString sName = jsonRequest["name"].toString().trimmed();
-    QString sDescription = jsonRequest["description"].toString().trimmed();
-    QString sState = jsonRequest["state"].toString().trimmed();
-    QString sForm = jsonRequest["form"].toString().trimmed();
-    QString sType = jsonRequest["type"].toString().trimmed();
-    QString sDateStart = jsonRequest["date_start"].toString().trimmed();
-    QString sDateStop = jsonRequest["date_stop"].toString().trimmed();
-    QString sDateRestart = jsonRequest["date_restart"].toString().trimmed();
-    QString sOrganizators = jsonRequest["organizators"].toString().trimmed();
 
 
     // original values
@@ -540,121 +530,152 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
         }
     }
 
-    if(sNamePrev != sName){
-        QSqlQuery query(db);
-        query.prepare("UPDATE games SET title = :name WHERE uuid = :gameuuid");
-        query.bindValue(":name", sName);
-        query.bindValue(":gameuuid", sUuid);
-        if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-            return;
+    if(jsonRequest.contains("name")){
+        QString sName = jsonRequest["name"].toString().trimmed();
+        if(sNamePrev != sName){
+            QSqlQuery query(db);
+            query.prepare("UPDATE games SET title = :name WHERE uuid = :gameuuid");
+            query.bindValue(":name", sName);
+            query.bindValue(":gameuuid", sUuid);
+            if (!query.exec()){
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+                return;
+            }
+            RunTasks::AddPublicEvents("games", "Updated name of game {" + sUuid + "} from [" + sNamePrev + "] to [" + sName + "]");
+            sNamePrev = sName;
         }
-        RunTasks::AddPublicEvents("games", "Updated name of game {" + sUuid + "} from [" + sNamePrev + "] to [" + sName + "]");
-        sNamePrev = sName;
     }
 
-    if(sTypePrev != sType){
-        QSqlQuery query(db);
-        query.prepare("UPDATE games SET type_game = :type_game WHERE uuid = :gameuuid");
-        query.bindValue(":type_game", sType);
-        query.bindValue(":gameuuid", sUuid);
-        if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-            return;
+    if(jsonRequest.contains("type")){
+        QString sType = jsonRequest["type"].toString().trimmed();
+        if(sTypePrev != sType){
+            QSqlQuery query(db);
+            query.prepare("UPDATE games SET type_game = :type_game WHERE uuid = :gameuuid");
+            query.bindValue(":type_game", sType);
+            query.bindValue(":gameuuid", sUuid);
+            if (!query.exec()){
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+                return;
+            }
+            RunTasks::AddPublicEvents("games", "Updated type of game {" + sUuid + "} from [" + sTypePrev + "] to [" + sType + "]");
+            sTypePrev = sType;
         }
-        RunTasks::AddPublicEvents("games", "Updated type of game {" + sUuid + "} from [" + sTypePrev + "] to [" + sType + "]");
-        sTypePrev = sType;
     }
 
-    if(sDescriptionPrev != sDescription){
-        QSqlQuery query(db);
-        query.prepare("UPDATE games SET description = :description WHERE uuid = :gameuuid");
-        query.bindValue(":description", sDescription);
-        query.bindValue(":gameuuid", sUuid);
-        if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-            return;
+    if(jsonRequest.contains("description")){
+        QString sDescription = jsonRequest["description"].toString().trimmed();
+        if(sDescriptionPrev != sDescription){
+            QSqlQuery query(db);
+            query.prepare("UPDATE games SET description = :description WHERE uuid = :gameuuid");
+            query.bindValue(":description", sDescription);
+            query.bindValue(":gameuuid", sUuid);
+            if (!query.exec()){
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+                return;
+            }
+            RunTasks::AddPublicEvents("games", "Updated description of the game {" + sUuid + "}");
+            sDescriptionPrev = sDescription;
         }
-        RunTasks::AddPublicEvents("games", "Updated description of the game {" + sUuid + "}");
-        sDescriptionPrev = sDescription;
     }
 
-    if(sStatePrev != sState){
-        QSqlQuery query(db);
-        query.prepare("UPDATE games SET `state` = :state WHERE uuid = :gameuuid");
-        query.bindValue(":state", sState);
-        query.bindValue(":gameuuid", sUuid);
-        if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-            return;
+
+
+    if(jsonRequest.contains("state")){
+        QString sState = jsonRequest["state"].toString().trimmed();
+        if(sStatePrev != sState){
+            QSqlQuery query(db);
+            query.prepare("UPDATE games SET `state` = :state WHERE uuid = :gameuuid");
+            query.bindValue(":state", sState);
+            query.bindValue(":gameuuid", sUuid);
+            if (!query.exec()){
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+                return;
+            }
+            RunTasks::AddPublicEvents("games", "Updated state of game {" + sUuid + "} from [" + sStatePrev + "] to [" + sState + "]");
+            sStatePrev = sState;
         }
-        RunTasks::AddPublicEvents("games", "Updated state of game {" + sUuid + "} from [" + sStatePrev + "] to [" + sState + "]");
-        sStatePrev = sState;
     }
 
-    if(sFormPrev != sForm){
-        QSqlQuery query(db);
-        query.prepare("UPDATE games SET `form` = :form WHERE uuid = :gameuuid");
-        query.bindValue(":form", sForm);
-        query.bindValue(":gameuuid", sUuid);
-        if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-            return;
+
+    if(jsonRequest.contains("form")){
+        QString sForm = jsonRequest["form"].toString().trimmed();
+        if(sFormPrev != sForm){
+            QSqlQuery query(db);
+            query.prepare("UPDATE games SET `form` = :form WHERE uuid = :gameuuid");
+            query.bindValue(":form", sForm);
+            query.bindValue(":gameuuid", sUuid);
+            if (!query.exec()){
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+                return;
+            }
+            RunTasks::AddPublicEvents("games", "Updated form of game {" + sUuid + "} from [" + sFormPrev + "] to [" + sForm + "]");
+            sFormPrev = sForm;
         }
-        RunTasks::AddPublicEvents("games", "Updated form of game {" + sUuid + "} from [" + sFormPrev + "] to [" + sForm + "]");
-        sFormPrev = sForm;
     }
 
-    if(sOrganizatorsPrev != sOrganizators){
-        QSqlQuery query(db);
-        query.prepare("UPDATE games SET `organizators` = :organizators WHERE uuid = :gameuuid");
-        query.bindValue(":organizators", sOrganizators);
-        query.bindValue(":gameuuid", sUuid);
-        if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-            return;
+    if(jsonRequest.contains("organizators")){
+        QString sOrganizators = jsonRequest["organizators"].toString().trimmed();
+        if(sOrganizatorsPrev != sOrganizators){
+            QSqlQuery query(db);
+            query.prepare("UPDATE games SET `organizators` = :organizators WHERE uuid = :gameuuid");
+            query.bindValue(":organizators", sOrganizators);
+            query.bindValue(":gameuuid", sUuid);
+            if (!query.exec()){
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+                return;
+            }
+            RunTasks::AddPublicEvents("games", "Updated organizators of game {" + sUuid + "}");
+            sOrganizatorsPrev = sOrganizators;
         }
-        RunTasks::AddPublicEvents("games", "Updated organizators of game {" + sUuid + "}");
-        sOrganizatorsPrev = sOrganizators;
     }
 
-    if(sDateStartPrev != sDateStart){
-        QSqlQuery query(db);
-        query.prepare("UPDATE games SET `date_start` = :date_start WHERE uuid = :gameuuid");
-        query.bindValue(":date_start", sDateStart);
-        query.bindValue(":gameuuid", sUuid);
-        if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-            return;
+    if(jsonRequest.contains("date_start")){
+        QString sDateStart = jsonRequest["date_start"].toString().trimmed();
+        if(sDateStartPrev != sDateStart){
+            QSqlQuery query(db);
+            query.prepare("UPDATE games SET `date_start` = :date_start WHERE uuid = :gameuuid");
+            query.bindValue(":date_start", sDateStart);
+            query.bindValue(":gameuuid", sUuid);
+            if (!query.exec()){
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+                return;
+            }
+            RunTasks::AddPublicEvents("games", "Updated date start of game {" + sUuid + "} from [" + sDateStartPrev + "] to [" + sDateStart + "]");
+            sDateStartPrev = sDateStart;
         }
-        RunTasks::AddPublicEvents("games", "Updated date start of game {" + sUuid + "} from [" + sDateStartPrev + "] to [" + sDateStart + "]");
-        sDateStartPrev = sDateStart;
     }
 
-    if(sDateStopPrev != sDateStop){
-        QSqlQuery query(db);
-        query.prepare("UPDATE games SET `date_stop` = :date_stop WHERE uuid = :gameuuid");
-        query.bindValue(":date_stop", sDateStop);
-        query.bindValue(":gameuuid", sUuid);
-        if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-            return;
+
+    if(jsonRequest.contains("date_stop")){
+        QString sDateStop = jsonRequest["date_stop"].toString().trimmed();
+        if(sDateStopPrev != sDateStop){
+            QSqlQuery query(db);
+            query.prepare("UPDATE games SET `date_stop` = :date_stop WHERE uuid = :gameuuid");
+            query.bindValue(":date_stop", sDateStop);
+            query.bindValue(":gameuuid", sUuid);
+            if (!query.exec()){
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+                return;
+            }
+            RunTasks::AddPublicEvents("games", "Updated date stop of game {" + sUuid + "} from [" + sDateStopPrev + "] to [" + sDateStop + "]");
+            sDateStopPrev = sDateStop;
         }
-        RunTasks::AddPublicEvents("games", "Updated date stop of game {" + sUuid + "} from [" + sDateStopPrev + "] to [" + sDateStop + "]");
-        sDateStopPrev = sDateStop;
     }
 
-    if(sDateRestartPrev != sDateRestart){
-        QSqlQuery query(db);
-        query.prepare("UPDATE games SET `date_restart` = :date_restart WHERE uuid = :gameuuid");
-        query.bindValue(":date_restart", sDateRestart);
-        query.bindValue(":gameuuid", sUuid);
-        if (!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-            return;
+    if(jsonRequest.contains("date_restart")){
+        QString sDateRestart = jsonRequest["date_restart"].toString().trimmed();
+        if(sDateRestartPrev != sDateRestart){
+            QSqlQuery query(db);
+            query.prepare("UPDATE games SET `date_restart` = :date_restart WHERE uuid = :gameuuid");
+            query.bindValue(":date_restart", sDateRestart);
+            query.bindValue(":gameuuid", sUuid);
+            if (!query.exec()){
+                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+                return;
+            }
+            RunTasks::AddPublicEvents("games", "Updated date stop of game {" + sUuid + "} from [" + sDateRestartPrev + "] to [" + sDateRestart + "]");
+            sDateRestartPrev = sDateRestart;
         }
-        RunTasks::AddPublicEvents("games", "Updated date stop of game {" + sUuid + "} from [" + sDateRestartPrev + "] to [" + sDateRestart + "]");
-        sDateRestartPrev = sDateRestart;
     }
 
     // jsonResponse["data"] = data;

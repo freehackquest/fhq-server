@@ -64,3 +64,4 @@ CMakeLists.txt.user
 .vscode
 fhq-server/libfhqcli-py
 tests/libfhqcli.py
+tests/libfhqcli/*
