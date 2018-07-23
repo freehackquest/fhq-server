@@ -1,5 +1,13 @@
 #include <model_game.h>
+#include <utils_logger.h>
 #include <iostream>
+#include <algorithm>
+
+// ---------------------------------------------------------------------
+
+std::vector<std::string> ModelGame::TYPES = {"jeopardy"};
+std::vector<std::string> ModelGame::FORMS = {"online", "offline"};
+std::vector<std::string> ModelGame::STATES = {"original", "copy", "unlicensed_copy"};
 
 // ---------------------------------------------------------------------
 
@@ -74,7 +82,10 @@ const std::string &ModelGame::state() const{
 
 // ---------------------------------------------------------------------
 
-void ModelGame::setState(std::string sState){
+void ModelGame::setState(const std::string &sState){
+    if(std::find(ModelGame::STATES.begin(), ModelGame::STATES.end(), sState) == ModelGame::STATES.end()) {
+        Log::err(TAG, "Game state unknown: [" + sState + "]");
+    }
     m_sState = sState;
 }
 
@@ -87,6 +98,9 @@ const std::string &ModelGame::form() const{
 // ---------------------------------------------------------------------
 
 void ModelGame::setForm(std::string sForm){
+    if(std::find(ModelGame::FORMS.begin(), ModelGame::FORMS.end(), sForm) == ModelGame::FORMS.end()) {
+        Log::err(TAG, "Game form unknown: [" + sForm + "]");
+    }
     m_sForm = sForm;
 }
 
@@ -99,6 +113,9 @@ const std::string &ModelGame::type() const{
 // ---------------------------------------------------------------------
 
 void ModelGame::setType(std::string sType){
+    if(std::find(ModelGame::TYPES.begin(), ModelGame::TYPES.end(), sType) == ModelGame::TYPES.end()) {
+        Log::err(TAG, "Game type unknown: [" + sType + "]");
+    }
     m_sType = sType;
 }
 
@@ -164,6 +181,22 @@ void ModelGame::setMaxScore(int nMaxScore){
 
 // ---------------------------------------------------------------------
 
+void ModelGame::copy(const ModelGame &modelGame){
+    this->setLocalId(modelGame.localId());
+    this->setUuid(modelGame.uuid());
+    this->setName(modelGame.name());
+    this->setDescription(modelGame.description());
+    this->setState(modelGame.state());
+    this->setType(modelGame.type());
+    this->setDateStart(modelGame.dateStart());
+    this->setDateStop(modelGame.dateStop());
+    this->setDateRestart(modelGame.dateRestart());
+    this->setOrganizators(modelGame.organizators());
+    this->setMaxScore(modelGame.maxScore());
+}
+
+// ---------------------------------------------------------------------
+
 ModelGame *ModelGame::clone() const{
     ModelGame *pModel = new ModelGame();
     pModel->setLocalId(this->localId());
@@ -201,49 +234,70 @@ nlohmann::json ModelGame::toJson(){
 // ---------------------------------------------------------------------
 
 void ModelGame::fillFrom(const nlohmann::json &jsonGame){
-    // TODO trim
-    if(jsonGame["name"].is_string()){
-        m_sName = jsonGame["name"];
-    }
+    // TODO local_id ?
+    // TODO maxScore ?
 
     // uuid
-    if(jsonGame["uuid"].is_string()){
-        m_sUuid = jsonGame["uuid"];
+    try {
+        setUuid(jsonGame.at("uuid").get<std::string>()); // TODO trim
+    } catch ( std::exception const&) {
+        // nothing
     }
 
-    // TODO trim
-    if(jsonGame["description"].is_string()){
-        m_sDescription = jsonGame["description"];
+    // name, optional
+    try {
+        setName(jsonGame.at("name").get<std::string>()); // TODO trim
+    } catch ( std::exception const&) {
+        // nothing
     }
 
-    // TODO trim
-    if(jsonGame["state"].is_string()){
-        m_sState = jsonGame["state"];
+    // description, optional
+    try {
+        setDescription(jsonGame.at("description").get<std::string>()); // TODO trim
+    } catch ( std::exception const& e ) {
+        // nothing
     }
 
-    // TODO trim
-    if(jsonGame["type"].is_string()){
-        m_sType = jsonGame["type"];
+    // state, optional
+    try {
+        setState(jsonGame.at("description").get<std::string>()); // TODO trim
+    } catch ( std::exception const&) {
+        // nothing
     }
 
-    // TODO trim
-    if(jsonGame["date_start"].is_string()){
-        m_sDateStart = jsonGame["date_start"];
+    // type, optional
+    try {
+        setType(jsonGame.at("type").get<std::string>()); // TODO trim
+    } catch ( std::exception const&) {
+        // nothing
     }
 
-    // TODO trim
-    if(jsonGame["date_stop"].is_string()){
-        m_sDateStop = jsonGame["date_stop"];
+    // date_start, optional
+    try {
+        setDateStart(jsonGame.at("date_start").get<std::string>()); // TODO trim
+    } catch ( std::exception const&) {
+        // nothing
     }
 
-    // TODO trim
-    if(jsonGame["date_restart"].is_string()){
-        m_sDateRestart = jsonGame["date_restart"];
+    // date_stop, optional
+    try {
+        setDateStop(jsonGame.at("date_stop").get<std::string>()); // TODO trim
+    } catch ( std::exception const&) {
+        // nothing
     }
 
-    // TODO trim
-    if(jsonGame["organizators"].is_string()){
-        m_sOrganizators = jsonGame["organizators"];
+    // date_restart, optional
+    try {
+        setDateRestart(jsonGame.at("date_restart").get<std::string>()); // TODO trim
+    } catch ( std::exception const&) {
+        // nothing
+    }
+
+    // organizators, optional
+    try {
+        setOrganizators(jsonGame.at("organizators").get<std::string>()); // TODO trim
+    } catch ( std::exception const& ) {
+        // nothing
     }
 }
 

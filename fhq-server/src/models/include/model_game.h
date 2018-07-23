@@ -21,7 +21,7 @@ class ModelGame {
         const std::string &description() const;
         void setDescription(std::string sDescription);
         const std::string &state() const;
-        void setState(std::string sState);
+        void setState(const std::string &sState);
         const std::string &form() const;
         void setForm(std::string sForm);
         const std::string &type() const;
@@ -37,6 +37,7 @@ class ModelGame {
         int maxScore() const;
         void setMaxScore(int nMaxScore);
 
+        void copy(const ModelGame &modelGame);
         ModelGame *clone() const;
         nlohmann::json toJson();
         void fillFrom(const nlohmann::json &jsonGame);

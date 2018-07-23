@@ -71,7 +71,8 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
 
     case EmployResult::OK:
         nlohmann::json jsonResponse;
-        jsonResponse["data"] = pEmployGames->findGameByUuid(pModelGame.uuid())->toJson();
+        pEmployGames->findGame(pModelGame.uuid(), pModelGame);
+        jsonResponse["data"] = pModelGame.toJson();
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
         return;
     }
@@ -263,40 +264,16 @@ CmdHandlerGameExport::CmdHandlerGameExport()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameExport::handle(ModelRequest *pRequest){
-	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    // EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployGames *pEmployGames = findEmploy<EmployGames>();
 	
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
     QString sUuid = jsonRequest["uuid"].toString();
-    QSqlDatabase db = *(pDatabase->database());
 
-    QSqlQuery query(db);
-    query.prepare("SELECT * FROM games WHERE uuid = :gameuuid");
-    query.bindValue(":gameuuid", sUuid);
-
-    if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-        return;
-    }
-
-    nlohmann::json jsonGame;
-    int nGameID = 0;
-    if (query.next()) {
-        QSqlRecord record = query.record();
-        nGameID  = record.value("id").toInt();
-        jsonGame["uuid"] = record.value("uuid").toString().toStdString();
-        jsonGame["name"] = record.value("title").toString().toStdString();
-        jsonGame["type_game"] = record.value("type_game").toString().toStdString();
-        jsonGame["date_start"] = record.value("date_start").toString().toStdString();
-        jsonGame["date_stop"] = record.value("date_stop").toString().toStdString();
-        jsonGame["date_restart"] = record.value("date_restart").toString().toStdString();
-        jsonGame["description"] = record.value("description").toString().toStdString();
-        jsonGame["state"] = record.value("state").toString().toStdString();
-        jsonGame["form"] = record.value("form").toString().toStdString();
-        jsonGame["organizators"] = record.value("organizators").toString().toStdString();
-        jsonGame["maxscore"] = record.value("maxscore").toInt();
-    } else {
+    ModelGame modelGame;
+    if(!pEmployGames->findGame(sUuid.toStdString(), modelGame)){
         pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
         return;
     }
@@ -306,7 +283,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest){
     {
         EmploySettings *pSettings = findEmploy<EmploySettings>();
         QString sBasePath = pSettings->getSettString("server_folder_public") + "games/";
-        sGameLogoFilename = sBasePath + QString::number(nGameID) + ".png";
+        sGameLogoFilename = sBasePath + QString::number(modelGame.localId()) + ".png";
     }
 
     QString tmpDir = QDir::tempPath();
@@ -336,7 +313,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest){
     // pack json file
     {
         export_zipfile.open(QIODevice::WriteOnly, QuaZipNewInfo(sUuid.toLower() + ".json"));
-        std::string message = jsonGame.dump();
+        std::string message = modelGame.toJson().dump();
         export_zipfile.write(QString(message.c_str()).toUtf8());
         export_zipfile.close();
     }
@@ -410,45 +387,20 @@ CmdHandlerGameInfo::CmdHandlerGameInfo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameInfo::handle(ModelRequest *pRequest){
-	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-	
+    EmployGames *pEmployGames = findEmploy<EmployGames>();
+
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
-    nlohmann::json data;
 
     QString sUuid = jsonRequest["uuid"].toString().trimmed();
 
-    QSqlDatabase db = *(pDatabase->database());
-
-    QSqlQuery query(db);
-    query.prepare("SELECT * FROM games WHERE uuid = :gameuuid");
-    query.bindValue(":gameuuid", sUuid);
-
-    if(!query.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-        return;
-    }
-
-    if (query.next()) {
-        QSqlRecord record = query.record();
-        data["local_id"] = record.value("id").toInt(); // deprecated
-        data["uuid"] = record.value("uuid").toString().toStdString();
-        data["name"] = record.value("title").toString().toStdString();
-        data["type_game"] = record.value("type_game").toString().toStdString();
-        data["date_start"] = record.value("date_start").toString().toStdString();
-        data["date_stop"] = record.value("date_stop").toString().toStdString();
-        data["date_restart"] = record.value("date_restart").toString().toStdString();
-        data["description"] = record.value("description").toString().toStdString();
-        data["state"] = record.value("state").toString().toStdString();
-        data["form"] = record.value("form").toString().toStdString();
-        data["organizators"] = record.value("organizators").toString().toStdString();
-        data["maxscore"] = record.value("maxscore").toInt();
-    } else {
+    ModelGame modelGame;
+    if(!pEmployGames->findGame(sUuid.toStdString(), modelGame)){
         pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
         return;
     }
 
-    jsonResponse["data"] = data;
+    jsonResponse["data"] = modelGame.toJson();
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -479,204 +431,43 @@ CmdHandlerGameUpdate::CmdHandlerGameUpdate()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
-	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-	
-    QJsonObject jsonRequest = pRequest->data();
-    nlohmann::json jsonResponse;
+    EmployGames *pEmployGames = findEmploy<EmployGames>();
 
-    // QJsonObject data;
-    QString sUuid = jsonRequest["uuid"].toString().trimmed();
+    ModelGame updatedModelGame;
+    updatedModelGame.fillFrom(pRequest->jsonRequest());
 
-
-    // original values
-    QString sNamePrev = "";
-    QString sTypePrev = "";
-    QString sDescriptionPrev = "";
-    QString sStatePrev = "";
-    QString sFormPrev = "";
-    QString sOrganizatorsPrev = "";
-    QString sDateStartPrev = "";
-    QString sDateStopPrev = "";
-    QString sDateRestartPrev = "";
-
-    QSqlDatabase db = *(pDatabase->database());
-    {
-        QSqlQuery query(db);
-        query.prepare("SELECT * FROM games WHERE uuid = :gameuuid");
-        query.bindValue(":gameuuid", sUuid);
-
-        if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-            return;
-        }
-
-        if (query.next()) {
-            QSqlRecord record = query.record();
-            sNamePrev = record.value("title").toString();
-            sTypePrev = record.value("type_game").toString();
-            sDescriptionPrev = record.value("description").toString();
-            sStatePrev = record.value("state").toString();
-            sFormPrev = record.value("form").toString();
-            sOrganizatorsPrev = record.value("organizators").toString();
-            sDateStartPrev = record.value("date_start").toString();
-            sDateStopPrev = record.value("date_stop").toString();
-            sDateRestartPrev = record.value("date_restart").toString();
-        } else {
-            pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
-            return;
-        }
+    ModelGame modelGame;
+    if(!pEmployGames->findGame(updatedModelGame.uuid(), modelGame)){
+        pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
+        return;
     }
 
-    if(jsonRequest.contains("name")){
-        QString sName = jsonRequest["name"].toString().trimmed();
-        if(sNamePrev != sName){
-            QSqlQuery query(db);
-            query.prepare("UPDATE games SET title = :name WHERE uuid = :gameuuid");
-            query.bindValue(":name", sName);
-            query.bindValue(":gameuuid", sUuid);
-            if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-                return;
-            }
-            RunTasks::AddPublicEvents("games", "Updated name of game {" + sUuid + "} from [" + sNamePrev + "] to [" + sName + "]");
-            sNamePrev = sName;
-        }
+    updatedModelGame.copy(modelGame);
+    updatedModelGame.fillFrom(pRequest->jsonRequest()); // will be replaced values for existing fields
+
+    std::string sError = "";
+    EmployResult result = pEmployGames->updateGame(updatedModelGame, sError);
+
+    switch(result){
+
+    case EmployResult::DATABASE_ERROR:
+        pRequest->sendMessageError(cmd(), Error(500, sError));
+        return;
+
+    case EmployResult::GAME_NOT_FOUND:
+        pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
+        return;
+
+    case EmployResult::OK:
+        nlohmann::json jsonResponse;
+        pEmployGames->findGame(modelGame.uuid(), modelGame);
+        jsonResponse["data"] = modelGame.toJson();
+        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+        return;
     }
 
-    if(jsonRequest.contains("type")){
-        QString sType = jsonRequest["type"].toString().trimmed();
-        if(sTypePrev != sType){
-            QSqlQuery query(db);
-            query.prepare("UPDATE games SET type_game = :type_game WHERE uuid = :gameuuid");
-            query.bindValue(":type_game", sType);
-            query.bindValue(":gameuuid", sUuid);
-            if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-                return;
-            }
-            RunTasks::AddPublicEvents("games", "Updated type of game {" + sUuid + "} from [" + sTypePrev + "] to [" + sType + "]");
-            sTypePrev = sType;
-        }
-    }
-
-    if(jsonRequest.contains("description")){
-        QString sDescription = jsonRequest["description"].toString().trimmed();
-        if(sDescriptionPrev != sDescription){
-            QSqlQuery query(db);
-            query.prepare("UPDATE games SET description = :description WHERE uuid = :gameuuid");
-            query.bindValue(":description", sDescription);
-            query.bindValue(":gameuuid", sUuid);
-            if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-                return;
-            }
-            RunTasks::AddPublicEvents("games", "Updated description of the game {" + sUuid + "}");
-            sDescriptionPrev = sDescription;
-        }
-    }
-
-
-
-    if(jsonRequest.contains("state")){
-        QString sState = jsonRequest["state"].toString().trimmed();
-        if(sStatePrev != sState){
-            QSqlQuery query(db);
-            query.prepare("UPDATE games SET `state` = :state WHERE uuid = :gameuuid");
-            query.bindValue(":state", sState);
-            query.bindValue(":gameuuid", sUuid);
-            if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-                return;
-            }
-            RunTasks::AddPublicEvents("games", "Updated state of game {" + sUuid + "} from [" + sStatePrev + "] to [" + sState + "]");
-            sStatePrev = sState;
-        }
-    }
-
-
-    if(jsonRequest.contains("form")){
-        QString sForm = jsonRequest["form"].toString().trimmed();
-        if(sFormPrev != sForm){
-            QSqlQuery query(db);
-            query.prepare("UPDATE games SET `form` = :form WHERE uuid = :gameuuid");
-            query.bindValue(":form", sForm);
-            query.bindValue(":gameuuid", sUuid);
-            if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-                return;
-            }
-            RunTasks::AddPublicEvents("games", "Updated form of game {" + sUuid + "} from [" + sFormPrev + "] to [" + sForm + "]");
-            sFormPrev = sForm;
-        }
-    }
-
-    if(jsonRequest.contains("organizators")){
-        QString sOrganizators = jsonRequest["organizators"].toString().trimmed();
-        if(sOrganizatorsPrev != sOrganizators){
-            QSqlQuery query(db);
-            query.prepare("UPDATE games SET `organizators` = :organizators WHERE uuid = :gameuuid");
-            query.bindValue(":organizators", sOrganizators);
-            query.bindValue(":gameuuid", sUuid);
-            if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-                return;
-            }
-            RunTasks::AddPublicEvents("games", "Updated organizators of game {" + sUuid + "}");
-            sOrganizatorsPrev = sOrganizators;
-        }
-    }
-
-    if(jsonRequest.contains("date_start")){
-        QString sDateStart = jsonRequest["date_start"].toString().trimmed();
-        if(sDateStartPrev != sDateStart){
-            QSqlQuery query(db);
-            query.prepare("UPDATE games SET `date_start` = :date_start WHERE uuid = :gameuuid");
-            query.bindValue(":date_start", sDateStart);
-            query.bindValue(":gameuuid", sUuid);
-            if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-                return;
-            }
-            RunTasks::AddPublicEvents("games", "Updated date start of game {" + sUuid + "} from [" + sDateStartPrev + "] to [" + sDateStart + "]");
-            sDateStartPrev = sDateStart;
-        }
-    }
-
-
-    if(jsonRequest.contains("date_stop")){
-        QString sDateStop = jsonRequest["date_stop"].toString().trimmed();
-        if(sDateStopPrev != sDateStop){
-            QSqlQuery query(db);
-            query.prepare("UPDATE games SET `date_stop` = :date_stop WHERE uuid = :gameuuid");
-            query.bindValue(":date_stop", sDateStop);
-            query.bindValue(":gameuuid", sUuid);
-            if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-                return;
-            }
-            RunTasks::AddPublicEvents("games", "Updated date stop of game {" + sUuid + "} from [" + sDateStopPrev + "] to [" + sDateStop + "]");
-            sDateStopPrev = sDateStop;
-        }
-    }
-
-    if(jsonRequest.contains("date_restart")){
-        QString sDateRestart = jsonRequest["date_restart"].toString().trimmed();
-        if(sDateRestartPrev != sDateRestart){
-            QSqlQuery query(db);
-            query.prepare("UPDATE games SET `date_restart` = :date_restart WHERE uuid = :gameuuid");
-            query.bindValue(":date_restart", sDateRestart);
-            query.bindValue(":gameuuid", sUuid);
-            if (!query.exec()){
-                pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-                return;
-            }
-            RunTasks::AddPublicEvents("games", "Updated date stop of game {" + sUuid + "} from [" + sDateRestartPrev + "] to [" + sDateRestart + "]");
-            sDateRestartPrev = sDateRestart;
-        }
-    }
-
-    // jsonResponse["data"] = data;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    // default
+    pRequest->sendMessageError(cmd(), Error(500, "Server error"));
 }
 
 
@@ -700,33 +491,18 @@ CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
-	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-	
-    QJsonObject jsonRequest = pRequest->data();
-    nlohmann::json jsonResponse;
+    EmployGames *pEmployGames = findEmploy<EmployGames>();
 
-    QString sUuid = jsonRequest["uuid"].toString();
-    int nGameID = 0;
-
-    QSqlDatabase db = *(pDatabase->database());
-    {
-        QSqlQuery query(db);
-        query.prepare("SELECT * FROM games WHERE uuid = :uuid");
-        query.bindValue(":uuid", sUuid);
-
-        if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
-            return;
-        }
-
-        if (query.next()) {
-            QSqlRecord record = query.record();
-            nGameID = record.value("id").toInt();
-        } else {
-            pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
-            return;
-        }
+    ModelGame modelGame;
+    modelGame.fillFrom(pRequest->jsonRequest());
+    if(!pEmployGames->findGame(modelGame.uuid(), modelGame)){
+        pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
+        return;
     }
+
+    int nGameID = modelGame.localId();
+
+    nlohmann::json jsonResponse;
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
     EmployImages *pImages = findEmploy<EmployImages>();
@@ -737,7 +513,9 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
 
     QByteArray baImagePNGBase64;
 
-    QString sImagePngBase64 = jsonRequest["image_png_base64"].toString();
+    // TODO can be crash
+    nlohmann::json jsonRequest = pRequest->jsonRequest();
+    QString sImagePngBase64 = QString::fromStdString(jsonRequest["image_png_base64"]);
     baImagePNGBase64.append(sImagePngBase64);
     // TODO replace decode base64 to std
     QByteArray baImagePNG = QByteArray::fromBase64(baImagePNGBase64); // .fromBase64(baImagePNGBase64);

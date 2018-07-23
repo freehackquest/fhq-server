@@ -6,6 +6,7 @@
 #include <sys/time.h>
 #include <time.h>
 #include <math.h>
+#include <sstream>
 
 // Last log messages
 std::deque<std::string> *g_LAST_LOG_MESSAGES = NULL;

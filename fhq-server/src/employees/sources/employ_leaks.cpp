@@ -41,9 +41,9 @@ bool EmployLeaks::init(){
         pModelLeak->setUuid(sUuid);
         int nGameId = record.value("gameid").toInt();
         pModelLeak->setGameId(nGameId);
-        ModelGame *pModelGame = pEmployGames->findGameByLocalId(nGameId);
-        if(pModelGame != NULL){
-            pModelLeak->setGameUuid(pModelGame->uuid());
+        ModelGame modelGame;
+        if(pEmployGames->findGame(nGameId, modelGame)){
+            pModelLeak->setGameUuid(modelGame.uuid());
         }else{
             Log::err(TAG, "Game not found by localId: " + std::to_string(nGameId));
         }
@@ -76,35 +76,18 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
         return EmployResult::ALREADY_EXISTS;
 	}
 
-    EmployGames *pEmployGames = findEmploy<EmployGames>();
 
-    ModelGame *pModelGame = pEmployGames->findGameByUuid(sGameUuid);
-    if(pModelGame == NULL){
+    // check the game
+    EmployGames *pEmployGames = findEmploy<EmployGames>();
+    ModelGame modelGame;
+    if(!pEmployGames->findGame(sGameUuid, modelGame)){
         return EmployResult::GAME_NOT_FOUND;
     }
-    pModelLeak->setGameId(pModelGame->localId());
+
+    pModelLeak->setGameId(modelGame.localId());
 
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
-
-    // TODO refactor on employ games
-
-    // check the game
-   /* {
-        QSqlQuery query(db);
-        query.prepare("SELECT id,uuid FROM games WHERE uuid = :game_uuid");
-        query.bindValue(":game_uuid", QString(sGameUuid.c_str()));
-        if (!query.exec()){
-            sError = query.lastError().text().toStdString();
-            return EmployResult::DATABASE_ERROR;
-        }
-        if (!query.next()){
-            return EmployResult::GAME_NOT_FOUND;
-        }
-
-        QSqlRecord record = query.record();
-        pModelLeak->setGameId(record.value("id").toInt());
-    }*/
 
     {
         QSqlQuery query(db);
