@@ -17,13 +17,13 @@ ModelUserToken::ModelUserToken(QString json){
 
 void ModelUserToken::fillFromJson(const nlohmann::json &obj){
 
-    if(obj.find("user") != obj.end()){
-        nlohmann::json user = obj.at("user");
+    auto itUser = obj.find("user");
+    if(itUser != obj.end()){
 
-        m_sRole   = obj.value("role", m_sRole);
-        m_nUserID = obj.value("id", -1);
-        m_sEmail  = obj.value("email", m_sEmail);
-        m_sNick   = obj.value("nick", m_sNick);
+        m_sRole   = itUser->value("role", m_sRole);
+        m_nUserID = itUser->value("id", -1);
+        m_sEmail  = itUser->value("email", m_sEmail);
+        m_sNick   = itUser->value("nick", m_sNick);
     }
 }
 
