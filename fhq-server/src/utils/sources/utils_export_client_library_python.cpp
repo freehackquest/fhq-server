@@ -13,6 +13,7 @@
 #include <fstream>
 #include <iomanip> // put_time
 #include <ctime>
+#include <sstream>
 
 // ---------------------------------------------------------------------
 

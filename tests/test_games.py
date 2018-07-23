@@ -27,9 +27,9 @@ try:
         "uuid": game_uuid1,
         "name": "game1",
         "description": "game_description",
-        "state": "", # TODO not has list of states
-        "form": "", # TODO not has list of form
-        "type": "online", # TODO not has list of type
+        "state": "original", # TODO not has list of states
+        "form": "online", # TODO not has list of form
+        "type": "jeopardy", # TODO not has list of type
         "date_start": "2000-01-01 00:00:00",
         "date_stop": "2001-01-01 00:00:00",
         "date_restart": "2011-01-01 00:00:00",

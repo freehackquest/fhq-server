@@ -73,40 +73,40 @@ bool EmployGames::init(){
 
 // ---------------------------------------------------------------------
 
-ModelGame* EmployGames::findGameByLocalId(int nLocalId){
+bool EmployGames::findGame(int nLocalId, ModelGame &modelGame){
     // TODO mutex
-    for(int i = 0; i < m_vectCacheGame.size(); i++){
+    for(int i = 0; i < m_vectCacheGame.size(); i++){ // TODO create map with index
         if(m_vectCacheGame[i]->localId() == nLocalId){
-            return m_vectCacheGame[i];
+            modelGame.copy(*m_vectCacheGame[i]);
+            return true;
         }
     }
-    return NULL;
+    return false;
 }
 
 // ---------------------------------------------------------------------
 
-ModelGame* EmployGames::findGameByUuid(const std::string &sUuid){
+bool EmployGames::findGame(const std::string &sUuid, ModelGame &modelGame){
     if(!m_mapCacheGames.count(sUuid)){
-        return NULL;
+        return false;
     }
-    return m_mapCacheGames.at(sUuid);
+    modelGame.copy(*m_mapCacheGames.at(sUuid));
+    return true;
 }
 
 // ---------------------------------------------------------------------
 
-EmployResult EmployGames::addGame(ModelGame* pModelGame, std::string &sError){
+EmployResult EmployGames::addGame(const ModelGame &modelGame, std::string &sError){
     // TODO mutex
-    std::string sUuid = pModelGame->uuid();
-
-    if(m_mapCacheGames.count(sUuid)){
+    if(m_mapCacheGames.count(modelGame.uuid())){
         return EmployResult::ALREADY_EXISTS;
     }
 
-    if(pModelGame->name().length() == 0){
+    if(modelGame.name().length() == 0){
         return EmployResult::ERROR_NAME_IS_EMPTY;
     }
 
-    std::string sName = pModelGame->name();
+    ModelGame *pModelGame = modelGame.clone(); // clone of original game
 
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
@@ -134,8 +134,8 @@ EmployResult EmployGames::addGame(ModelGame* pModelGame, std::string &sError){
             "		NOW(),"
             "		NOW()"
             "	)");
-        query.bindValue(":uuid", QString(sUuid.c_str()));
-        query.bindValue(":name", QString(sName.c_str()));
+        query.bindValue(":uuid", QString::fromStdString(pModelGame->uuid()));
+        query.bindValue(":name", QString(pModelGame->name().c_str()));
         query.bindValue(":type_game", QString(pModelGame->type().c_str()));
         query.bindValue(":date_start", QString(pModelGame->dateStart().c_str()));
         query.bindValue(":date_stop", QString(pModelGame->dateStop().c_str()));
@@ -148,6 +148,7 @@ EmployResult EmployGames::addGame(ModelGame* pModelGame, std::string &sError){
         query.bindValue(":maxscore", 0);
 
         if (!query.exec()){
+            delete pModelGame;
             sError = query.lastError().text().toStdString();
             return EmployResult::DATABASE_ERROR;
         }
@@ -156,11 +157,168 @@ EmployResult EmployGames::addGame(ModelGame* pModelGame, std::string &sError){
         pModelGame->setLocalId(rowid);
     }
 
-    m_mapCacheGames.insert(std::pair<std::string, ModelGame*>(sUuid,pModelGame));
+    m_mapCacheGames.insert(std::pair<std::string, ModelGame*>(pModelGame->uuid(),pModelGame));
     m_vectCacheGame.push_back(pModelGame);
 
     EmployNotify *pEmployNotify = findEmploy<EmployNotify>();
-    pEmployNotify->notifyInfo("games", "New [game#" + sUuid + "] " + sName);
+    pEmployNotify->notifyInfo("games", "New [game#" + pModelGame->uuid() + "] " + pModelGame->name());
+    return EmployResult::OK;
+}
+
+// ---------------------------------------------------------------------
+
+EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sError) {
+    // TODO mutex
+
+    std::string sUuid = modelGame.uuid();
+
+    if(!m_mapCacheGames.count(sUuid)){
+        return EmployResult::GAME_NOT_FOUND;
+    }
+
+
+    ModelGame *pOrigModelGame = m_mapCacheGames[sUuid];
+
+    EmployNotify *pEmployNotify = findEmploy<EmployNotify>();
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
+
+    // game name
+    if(pOrigModelGame->name() != modelGame.name()){
+        QSqlQuery query(db);
+        query.prepare("UPDATE games SET title = :name WHERE uuid = :gameuuid");
+        query.bindValue(":name", QString::fromStdString(modelGame.name()));
+        query.bindValue(":gameuuid", QString::fromStdString(sUuid));
+        if (!query.exec()){
+            sError = query.lastError().text().toStdString();
+            return EmployResult::DATABASE_ERROR;
+        }
+        ModelNotification notification("info", "games", "Updated name of game [game#" + sUuid + "] from [" + pOrigModelGame->name() + "] to [" + modelGame.name() + "]");
+        pOrigModelGame->setName(modelGame.name());
+        pEmployNotify->sendNotification(notification);
+    }
+
+    // game type
+    if(pOrigModelGame->type() != modelGame.type()){
+        QSqlQuery query(db);
+        query.prepare("UPDATE games SET type_game = :type_game WHERE uuid = :gameuuid");
+        query.bindValue(":type_game", QString::fromStdString(modelGame.type()));
+        query.bindValue(":gameuuid", QString::fromStdString(sUuid));
+        if (!query.exec()){
+            sError = query.lastError().text().toStdString();
+            return EmployResult::DATABASE_ERROR;
+        }
+        ModelNotification notification("info", "games", "Updated type of game {" + sUuid + "} from [" + pOrigModelGame->type() + "] to [" + modelGame.type() + "]");
+        pOrigModelGame->setType(modelGame.type());
+        pEmployNotify->sendNotification(notification);
+    }
+
+    // description
+    if(pOrigModelGame->description() != modelGame.description()){
+        QSqlQuery query(db);
+        query.prepare("UPDATE games SET description = :description WHERE uuid = :gameuuid");
+        query.bindValue(":description", QString::fromStdString(modelGame.description()));
+        query.bindValue(":gameuuid", QString::fromStdString(sUuid));
+        if (!query.exec()){
+            sError = query.lastError().text().toStdString();
+            return EmployResult::DATABASE_ERROR;
+        }
+        ModelNotification notification("info", "games", "Updated description of the game {" + sUuid + "}");
+        pOrigModelGame->setDescription(modelGame.description());
+        pEmployNotify->sendNotification(notification);
+    }
+
+    // state
+    if(pOrigModelGame->state() != modelGame.state()){
+        QSqlQuery query(db);
+        query.prepare("UPDATE games SET `state` = :state WHERE uuid = :gameuuid");
+        query.bindValue(":state", QString::fromStdString(modelGame.state()));
+        query.bindValue(":gameuuid", QString::fromStdString(sUuid));
+        if (!query.exec()){
+            sError = query.lastError().text().toStdString();
+            return EmployResult::DATABASE_ERROR;
+        }
+        ModelNotification notification("info", "games", "Updated state of game {" + sUuid + "} from [" + pOrigModelGame->state() + "] to [" + modelGame.state() + "]");
+        pOrigModelGame->setState(modelGame.state());
+        pEmployNotify->sendNotification(notification);
+    }
+
+    // form
+    if(pOrigModelGame->form() != modelGame.form()){
+        QSqlQuery query(db);
+        query.prepare("UPDATE games SET `form` = :form WHERE uuid = :gameuuid");
+        query.bindValue(":form", QString::fromStdString(modelGame.form()));
+        query.bindValue(":gameuuid", QString::fromStdString(sUuid));
+        if (!query.exec()){
+            sError = query.lastError().text().toStdString();
+            return EmployResult::DATABASE_ERROR;
+        }
+        ModelNotification notification("info", "games", "Updated form of game {" + sUuid + "} from [" + pOrigModelGame->form() + "] to [" + modelGame.form() + "]");
+        pOrigModelGame->setForm(modelGame.form());
+        pEmployNotify->sendNotification(notification);
+    }
+
+    // organizators
+    if(pOrigModelGame->organizators() != modelGame.organizators()){
+        QSqlQuery query(db);
+        query.prepare("UPDATE games SET `organizators` = :organizators WHERE uuid = :gameuuid");
+        query.bindValue(":organizators", QString::fromStdString(modelGame.organizators()));
+        query.bindValue(":gameuuid", QString::fromStdString(sUuid));
+        if (!query.exec()){
+            sError = query.lastError().text().toStdString();
+            return EmployResult::DATABASE_ERROR;
+        }
+        ModelNotification notification("info", "games", "Updated organizators of game {" + sUuid + "}");
+        pOrigModelGame->setOrganizators(modelGame.organizators());
+        pEmployNotify->sendNotification(notification);
+    }
+
+    // date_start
+    if(pOrigModelGame->dateStart() != modelGame.dateStart()){
+        QSqlQuery query(db);
+        query.prepare("UPDATE games SET `date_start` = :date_start WHERE uuid = :gameuuid");
+        query.bindValue(":date_start", QString::fromStdString(modelGame.dateStart()));
+        query.bindValue(":gameuuid", QString::fromStdString(sUuid));
+        if (!query.exec()){
+            sError = query.lastError().text().toStdString();
+            return EmployResult::DATABASE_ERROR;
+        }
+        ModelNotification notification("info", "games", "Updated date start of game {" + sUuid + "} from [" + pOrigModelGame->dateStart() + "] to [" + modelGame.dateStart() + "]");
+        pOrigModelGame->setDateStart(modelGame.dateStart());
+        pEmployNotify->sendNotification(notification);
+    }
+
+    // date_stop
+    if(pOrigModelGame->dateStop() != modelGame.dateStop()){
+        QSqlQuery query(db);
+        query.prepare("UPDATE games SET `date_stop` = :date_stop WHERE uuid = :gameuuid");
+        query.bindValue(":date_stop", QString::fromStdString(modelGame.dateStop()));
+        query.bindValue(":gameuuid", QString::fromStdString(sUuid));
+        if (!query.exec()){
+            sError = query.lastError().text().toStdString();
+            return EmployResult::DATABASE_ERROR;
+        }
+        ModelNotification notification("info", "games", "Updated date stop of game {" + sUuid + "} from [" + pOrigModelGame->dateStop() + "] to [" + modelGame.dateStop() + "]");
+        pOrigModelGame->setDateStop(modelGame.dateStop());
+        pEmployNotify->sendNotification(notification);
+    }
+
+    // date_restart
+    if(pOrigModelGame->dateRestart() != modelGame.dateRestart()){
+        QSqlQuery query(db);
+        query.prepare("UPDATE games SET `date_restart` = :date_restart WHERE uuid = :gameuuid");
+        query.bindValue(":date_restart", QString::fromStdString(modelGame.dateRestart()));
+        query.bindValue(":gameuuid", QString::fromStdString(sUuid));
+        if (!query.exec()){
+            sError = query.lastError().text().toStdString();
+            return EmployResult::DATABASE_ERROR;
+        }
+        ModelNotification notification("info", "games", "Updated date restart of game {" + sUuid + "} from [" + pOrigModelGame->dateRestart() + "] to [" + modelGame.dateRestart() + "]");
+        pOrigModelGame->setDateRestart(modelGame.dateRestart());
+        pEmployNotify->sendNotification(notification);
+    }
+
+
     return EmployResult::OK;
 }
 
