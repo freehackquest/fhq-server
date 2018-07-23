@@ -34,7 +34,12 @@ inline void to_json(nlohmann::json & j, const QString& str)
 
 inline void from_json(const nlohmann::json & j, QString& str)
 {
-    str = QString::fromStdString( j.dump() );
+    if(j.type() == nlohmann::json::value_t::string){
+        str = QString::fromStdString( j.get_ref<std::string const&>() );
+    }
+    else {
+        str = QString::fromStdString( j.dump() );
+    }
 }
 
 //--------------------------------
