@@ -1,5 +1,5 @@
 # FreeHackQuest Backend
-[![Build Status](https://travis-ci.org/IgorPolyakov/backend.svg?branch=master)](https://travis-ci.org/IgorPolyakov/backend)
+[![Build Status](https://travis-ci.org/freehackquest/backend.svg?branch=master)](https://travis-ci.org/freehackquest/backend)
 
 Backend for FreeHackQuest on Qt and WebSockets
 Frontend for FreeHackQuest here: [frontend](https://github.com/freehackquest/frontend)
