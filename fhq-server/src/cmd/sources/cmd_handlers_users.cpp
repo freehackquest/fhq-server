@@ -31,7 +31,7 @@ CmdHandlerUsersScoreboard::CmdHandlerUsersScoreboard()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest){
-    auto &&jsonRequest = pRequest->jsonRequest();
+    const auto &jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     int nPage = jsonRequest.at("page");

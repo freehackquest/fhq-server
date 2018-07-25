@@ -66,8 +66,7 @@ void ModelRequest::sendMessageError(const std::string &cmd, Error error){
 
 // ---------------------------------------------------------------------
 
-void ModelRequest::sendMessageSuccess(const std::string &cmd, const QJsonObject &jsonResponse)
-{
+void ModelRequest::sendMessageSuccess(const std::string &cmd, const QJsonObject &jsonResponse){
     QJsonDocument doc(jsonResponse);
     nlohmann::json j = nlohmann::json::parse(doc.toJson().toStdString());
     sendMessageSuccess(cmd, j);

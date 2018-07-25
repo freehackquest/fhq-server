@@ -18,26 +18,22 @@
 //--------------------------------
 
 // rdv: remove this when replace qstring with std::string when working with nlohmann::json
-inline void to_json(nlohmann::json & j, const QString& str)
-{
+inline void to_json(nlohmann::json & j, const QString& str) {
     auto test = nlohmann::json::parse( str.toStdString(), nullptr, false);
     if (test.is_discarded() || test.is_null()){
         j = str.toStdString();
         return;
-    }
-    else {
+    } else {
         j = std::move(test);
     }
 }
 
 //--------------------------------
 
-inline void from_json(const nlohmann::json & j, QString& str)
-{
+inline void from_json(const nlohmann::json & j, QString& str) {
     if(j.type() == nlohmann::json::value_t::string){
         str = QString::fromStdString( j.get_ref<std::string const&>() );
-    }
-    else {
+    } else {
         str = QString::fromStdString( j.dump() );
     }
 }
@@ -45,8 +41,7 @@ inline void from_json(const nlohmann::json & j, QString& str)
 //--------------------------------
 
 // rdv: remove this when get rid of QSql
-inline void to_json(nlohmann::json & j, const QVariant& vr)
-{
+inline void to_json(nlohmann::json & j, const QVariant& vr) {
 
     switch (vr.type()) {
 
@@ -63,15 +58,38 @@ inline void to_json(nlohmann::json & j, const QVariant& vr)
         j = vr.toDouble();
         return;
     default:
-        throw std::runtime_error ("to_json(nlohmann::json & j, const QVariant& vr): not implemented");
+        throw std::runtime_error ("to_json(nlohmann::json & j, const QVariant& vr): not implemented{vr.type = "
+                                        + std::string(vr.typeName()) + "}" );
     }
 }
 
 //--------------------------------
 
-inline void from_json(const nlohmann::json & j, QVariant& str)
-{
-    str = QString::fromStdString( j.get_ref<std::string const&>() );
+inline void from_json(const nlohmann::json & j, QVariant& vr) {
+
+    using value_t = nlohmann::json::value_t;
+    switch (j.type()) {
+    case value_t::object:
+    case value_t::array:
+    case value_t::string:
+        vr = j.get<QString>();
+        break;
+    case value_t::boolean:
+        vr = j.get<bool>();
+        break;
+    case value_t::number_integer:
+        vr = j.get<int>();
+        break;
+    case value_t::number_unsigned:
+        vr = j.get<uint>();
+        break;
+    case value_t::number_float:
+        vr = j.get<double>();
+        break;
+    default:
+        throw std::runtime_error ("from_json(nlohmann::json & j, const QVariant& vr): not implemented{j.type: "
+                                        + std::string(j.type_name()) +  "}");
+    }
 }
 
 //--------------------------------
