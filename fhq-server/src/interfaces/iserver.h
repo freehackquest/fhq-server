@@ -5,6 +5,7 @@
 #include <QVariant>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <json.hpp>
 
 #include <iusertoken.h>
 #include <iuser.h>
