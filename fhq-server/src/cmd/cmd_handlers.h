@@ -13,6 +13,9 @@ class CmdHandlerBase {
         CmdHandlerBase(const std::string &sCmd, const std::string &sDescription);
         virtual std::string cmd();
         virtual std::string description();
+        std::string activatedFromVersion();
+        std::string deprecatedFromVersion();
+
         virtual const ModelCommandAccess &access();
         virtual const std::vector<CmdInputDef> &inputs();
         virtual void handle(ModelRequest *pRequest) = 0;
@@ -21,11 +24,22 @@ class CmdHandlerBase {
         // virtual void error(int nCode, const std::string &sErrorMessage);
 
     protected:
+        void setAccessUnauthorized(bool bAccess);
+        void setAccessUser(bool bAccess);
+        void setAccessAdmin(bool bAccess);
+        void setActivatedFromVersion(const std::string &sActivatedFromVersion);
+        void setDeprecatedFromVersion(const std::string &sDeprecatedFromVersion);
+
         std::string TAG;
         std::string m_sCmd;
         std::string m_sDescription;
+
         ModelCommandAccess m_modelCommandAccess;
         std::vector<CmdInputDef> m_vInputs;
+
+    private:
+        std::string m_sActivatedFromVersion;
+        std::string m_sDeprecatedFromVersion;
 };
 
 extern std::map<std::string, CmdHandlerBase*> *g_pCmdHandlers;

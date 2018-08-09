@@ -12,7 +12,7 @@ std::vector<std::string> ModelGame::STATES = {"original", "copy", "unlicensed_co
 // ---------------------------------------------------------------------
 
 ModelGame::ModelGame(){
-    TAG = "ModelLeak";
+    TAG = "ModelGame";
     m_nLocalId = 0;
     m_sUuid = "";
     m_sName = "";
