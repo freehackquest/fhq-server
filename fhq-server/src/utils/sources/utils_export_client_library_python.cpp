@@ -438,7 +438,14 @@ void UtilsExportClientLibraryPython::export__init__py(){
         .add("# Access unauthorized " + std::string(pCmdHandlerBase->access().accessUnauthorized() ? "yes" : "no"))
         .add("# Acess user " + std::string(pCmdHandlerBase->access().accessUser() ? "yes" : "no"))
         .add("# Access admin " + std::string(pCmdHandlerBase->access().accessAdmin() ? "yes" : "no"));
-
+        
+        if(pCmdHandlerBase->activatedFromVersion() != ""){
+            builder.add("# Activated From Version: " + pCmdHandlerBase->activatedFromVersion());
+        }
+        
+        if(pCmdHandlerBase->deprecatedFromVersion() != ""){
+            builder.add("# Deprecated From Version: " + pCmdHandlerBase->deprecatedFromVersion());
+        }
         
         std::vector<CmdInputDef> vVin = pCmdHandlerBase->inputs();
         for(int i = 0; i < vVin.size(); i++){
