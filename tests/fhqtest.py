@@ -7,9 +7,15 @@ import libfhqcli
 admin_session = None
 loggined = False
 game_uuid = "00000000-0000-0000-0000-000000000000"
+USER1_UUID = "00000000-0000-0000-0000-000000000001"
+USER2_UUID = "00000000-0000-0000-0000-000000000002"
+USER3_UUID = "00000000-0000-0000-0000-000000000003"
 game = None;
-admin_email = "admin"
-admin_password = "admin"
+admin_email = "admin" # deprecated
+admin_password = "admin" # deprecated
+ADMIN_EMAIL = "admin"
+ADMIN_PASSWORD = "admin"
+TEST_SERVER = "ws://localhost:1234/"
 
 class bcolors:
     HEADER = '\033[95m'
@@ -57,11 +63,15 @@ def init_enviroment():
     global admin_session
     global game
     global game_uuid
-    global admin_email
-    global admin_password
+    global user1_uuid
+    global user2_uuid
+    global user3_uuid
+    global ADMIN_EMAIL
+    global ADMIN_PASSWORD
+    global TEST_SERVER
     
-    admin_session = libfhqcli.FHQCli("ws://localhost:1234/");
-    resp = admin_session.login({"email": admin_email, "password": admin_password});
+    admin_session = libfhqcli.FHQCli(TEST_SERVER);
+    resp = admin_session.login({"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD});
     alert(resp == None, 'Could not login as admin (1)');
     alert(resp['result'] == 'FAIL', 'Could not login as admin (2)');
     
@@ -73,9 +83,9 @@ def init_enviroment():
             "uuid": game_uuid,
             "name": "test",
             "description": "test",
-            "state": "",
-            "form": "",
-            "type": "",
+            "state": "official",
+            "form": "online",
+            "type": "jeopardy",
             "date_start": "2000-01-01 00:00:00",
             "date_stop": "2001-01-01 00:00:00",
             "date_restart": "2002-01-01 00:00:00",
