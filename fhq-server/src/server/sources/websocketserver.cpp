@@ -11,7 +11,6 @@
 
 #include <SmtpMime>
 #include <utils_logger.h>
-#include <utils_qt_legacy_support.h>
 
 #include <employ_server_config.h>
 #include <employ_server_info.h>
@@ -159,43 +158,41 @@ void WebSocketServer::processTextMessage(const QString &message) {
     EmployWsServer *pWsServer = findEmploy<EmployWsServer>();
 
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-
-#if defined(NDEBUG) || defined (FORCE_EXCEPTIONS)
-    try {
-#endif
+    std::string sCmd = "";
+    std::string sM = "";
+    try{
         if(!nlohmann::json::accept(message.toStdString())){
-            this->sendMessageError(pClient, "error", "", Errors::NotImplementedYet("Not JSON data"));
+            this->sendMessageError(pClient, sCmd, sM, Errors::NotImplementedYet("Not JSON data"));
             return;
         }
 
         nlohmann::json jsonRequest_ = nlohmann::json::parse(message.toStdString());
-
         ModelRequest *pModelRequest = new ModelRequest(pClient, this, jsonRequest_);
-
+        
         if(!pModelRequest->hasCommand()){
-            this->sendMessageError(pClient, "error", "", Errors::NotFound("requare parameter 'cmd'"));
+            this->sendMessageError(pClient, sCmd, sM, Errors::NotFound("requare parameter 'cmd'"));
             // pModelRequestData->sendError(Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
             return;
         }
 
-        std::string cmd = pModelRequest->command();
-
+        sCmd = pModelRequest->command();
         if(!pModelRequest->hasM()){
-            Log::info(TAG.toStdString(), "[WS] >>> " + cmd);
-            this->sendMessageError(pClient, cmd, "", Errors::NotFound("requare parameter 'm' - messageid"));
+            Log::info(TAG.toStdString(), "[WS] >>> " + sCmd);
+            this->sendMessageError(pClient, sCmd, sM, Errors::NotFound("requare parameter 'm' - messageid"));
             return;
         }
+        sM = pModelRequest->m();
 
-        Log::info(TAG.toStdString(), "[WS] >>> " + cmd + ":" + pModelRequest->m());
+        Log::info(TAG.toStdString(), "[WS] >>> " + sCmd + ":" + sM);
 
-        CmdHandlerBase *pCmdHandler = CmdHandlers::findCmdHandler(cmd);
+        CmdHandlerBase *pCmdHandler = CmdHandlers::findCmdHandler(sCmd);
         if(pCmdHandler == NULL){
-            Log::warn(TAG, "Unknown command: " + QString(cmd.c_str()));
-            pModelRequest->sendMessageError(cmd, Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
+            Log::warn(TAG.toStdString(), "Unknown command: " + sCmd);
+            pModelRequest->sendMessageError(sCmd, Errors::NotFound("command '" + QString::fromStdString(sCmd) + "'"));
             return;
         }
 
-        pServerInfo->incrementRequests(cmd);
+        pServerInfo->incrementRequests(sCmd);
 
         // check access
         const ModelCommandAccess access = pCmdHandler->access();
@@ -222,18 +219,15 @@ void WebSocketServer::processTextMessage(const QString &message) {
         // allow access
         // TODO move to ModelRequest
         Error error = Errors::NoneError();
-        if(pWsServer->validateInputParameters(error, pCmdHandler, jsonRequest_)){
-            pCmdHandler->handle(pModelRequest);
-        }else{
+        if(!pWsServer->validateInputParameters(error, pCmdHandler, jsonRequest_)){
             pModelRequest->sendMessageError(pCmdHandler->cmd(), error);
             return;
         }
-#if defined(NDEBUG) || defined (FORCE_EXCEPTIONS)
+        pCmdHandler->handle(pModelRequest);
     } catch (const std::exception &e) {
-        this->sendMessageError(pClient, "", "", Errors::InternalServerError());
+        this->sendMessageError(pClient, sCmd, sM, Errors::InternalServerError());
         Log::err(TAG, e.what());
     }
-#endif
 }
 
 // ---------------------------------------------------------------------
@@ -282,24 +276,28 @@ void WebSocketServer::sendMessage(QWebSocket *pClient, const nlohmann::json& jso
         Log::info(TAG.toStdString(), "[WS] <<< " + cmd + ":" + m);
         if(m_clients.contains(pClient)){
             try{
-                pClient->sendTextMessage(QString(message.c_str()));
+                pClient->sendTextMessage(QString::fromStdString(message));
             }catch(...){
                 Log::err(TAG.toStdString(), "Could not send message <<< " + message);
             }
+        }else{
+            Log::warn(TAG.toStdString(), "Could not send message, client disappeared");
         }
+   }else{
+        Log::warn(TAG.toStdString(), "Client is wrong");
    }
 }
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &cmd, QString m, Error error){
+void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string &sM, Error error){
     nlohmann::json jsonResponse;
-    jsonResponse["cmd"] = cmd;
-    jsonResponse["m"] = m;
+    jsonResponse["cmd"] = sCmd;
+    jsonResponse["m"] = sM;
     jsonResponse["result"] = "FAIL";
     jsonResponse["error"] = error.message();
     jsonResponse["code"] = error.codeError();
-    Log::err(TAG.toStdString(), "WS-ERROR >>> " + cmd + ": messsage: " + error.message());
+    Log::err(TAG.toStdString(), "WS-ERROR >>> " + sCmd + ":" + sM + ", messsage: " + error.message());
     this->sendMessage(pClient, jsonResponse);
     return;
 }

@@ -5,25 +5,58 @@ ModelUserToken::ModelUserToken(){
     TAG = "ModelUserToken";
 }
 
-ModelUserToken::ModelUserToken(nlohmann::json const& obj){
-    this->fillFromJson(obj);
-    TAG = "ModelUserToken";
+ModelUserToken::ModelUserToken(nlohmann::json const& obj) : ModelUserToken() {
+    this->fillFrom(obj);
 }
 
-ModelUserToken::ModelUserToken(QString json){
-    this->fillFromJson(nlohmann::json::parse(json.toStdString()));
-    TAG = "ModelUserToken";
+ModelUserToken::ModelUserToken(QString json) : ModelUserToken(){
+    this->fillFrom(nlohmann::json::parse(json.toStdString()));
 }
 
-void ModelUserToken::fillFromJson(const nlohmann::json &obj){
+void ModelUserToken::fillFrom(const nlohmann::json &obj){
+    if(obj.find("user") != obj.end()){
+        nlohmann::json user = obj.at("user");
+       
+        // user.role
+        try {
+            m_sRole = user.at("role").get<std::string>();
+        } catch (const std::exception &e) {
+            Log::err(TAG, "JSON: " + obj.dump());
+            Log::err(TAG, "Something wrong param user.role in struct. " + std::string(e.what()));
+            m_sRole = "";
+        }
 
-    auto itUser = obj.find("user");
-    if(itUser != obj.end()){
+        // TODO check allow roles
 
-        m_sRole   = itUser->value("role", m_sRole);
-        m_nUserID = itUser->value("id", -1);
-        m_sEmail  = itUser->value("email", m_sEmail);
-        m_sNick   = itUser->value("nick", m_sNick);
+        // user.id
+        try {
+            m_nUserID = user.at("id").get<int>();
+        } catch (const std::exception &e) {
+            Log::err(TAG, "JSON: " + obj.dump());
+            Log::err(TAG, "Something wrong param user.id in struct. " + std::string(e.what()));
+            m_nUserID = -1;
+        }
+        
+        // user.email
+        try {
+            m_sEmail = user.at("email").get<std::string>();
+        } catch (const std::exception &e) {
+            Log::err(TAG, "JSON: " + obj.dump());
+            Log::err(TAG, "Something wrong param user.email in struct. " + std::string(e.what()));
+            m_sEmail = "";
+        }
+
+        // user.nick
+        try {
+            m_sNick = user.at("nick").get<std::string>();
+        } catch (const std::exception &e) {
+            Log::err(TAG, "JSON: " + obj.dump());
+            Log::err(TAG, "Something wrong param user.nick in struct. " + std::string(e.what()));
+            m_sNick = "";
+        }
+        
+    }else{
+        Log::warn(TAG, "Not found param 'user' in struct");
     }
 }
 

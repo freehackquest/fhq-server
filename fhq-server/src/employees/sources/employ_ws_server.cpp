@@ -7,8 +7,6 @@
 #include <QSqlRecord>
 #include <QRegularExpression>
 
-#include <utils_qt_legacy_support.h>
-
 #include <regex>
 
 REGISTRY_EMPLOY(EmployWsServer)
@@ -74,7 +72,7 @@ bool EmployWsServer::validateInputParameters(Error &error, CmdHandlerBase *pCmdH
                 }
 
                 if(inDef.isEnum()){
-                    QString val = *itJsonParamName;
+                    QString val = QString::fromStdString(*itJsonParamName);
                     QStringList eList = inDef.getEnumList();
                     if(!eList.contains(val)){
                         error = Errors::ParamExpectedValueOneFrom(sParamName,eList);

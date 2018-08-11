@@ -188,7 +188,6 @@ list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_prepare_deb_package.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_static_analizing_text.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_merge_text.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_lxd.cpp")
-list (APPEND FHQSRV_SOURCES "src/utils/include/utils_qt_legacy_support.h")
 
 # unit_tests
 list (APPEND FHQSRV_SOURCES "src/unit_tests/include/unit_test_levenshtein.h")

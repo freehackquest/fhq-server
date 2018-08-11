@@ -101,19 +101,19 @@ class CmdHandlerUserChangePassword : public CmdHandlerBase {
 REGISTRY_CMD(CmdHandlerUserChangePassword)
 
 /*********************************************
- * User create
+ * Add new user
 **********************************************/
 
-class CmdHandlerUserCreate : public CmdHandlerBase {
+class CmdHandlerUsersAdd : public CmdHandlerBase {
     public:
-        CmdHandlerUserCreate();
+        CmdHandlerUsersAdd();
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUserCreate)
+REGISTRY_CMD(CmdHandlerUsersAdd)
 
 /*********************************************
- * User info
+ * User info (deprecated)
 **********************************************/
 
 class CmdHandlerUser : public CmdHandlerBase {
@@ -123,6 +123,18 @@ class CmdHandlerUser : public CmdHandlerBase {
 };
 
 REGISTRY_CMD(CmdHandlerUser)
+
+/*********************************************
+ * User info
+**********************************************/
+
+class CmdHandlerUsersInfo : public CmdHandlerBase {
+    public:
+        CmdHandlerUsersInfo();
+        virtual void handle(ModelRequest *pRequest);
+};
+
+REGISTRY_CMD(CmdHandlerUsersInfo)
 
 /*********************************************
  * User reset password

@@ -3,8 +3,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-#include <utils_qt_legacy_support.h>
-
 // ---------------------------------------------------------------------
 
 ModelRequest::ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_){
@@ -61,7 +59,7 @@ QJsonObject ModelRequest::data(){ // deprecated
 // ---------------------------------------------------------------------
 
 void ModelRequest::sendMessageError(const std::string &cmd, Error error){
-    m_pServer->sendMessageError(m_pClient,cmd,QString(m_sMessageId.c_str()),error);
+    m_pServer->sendMessageError(m_pClient,cmd,m_sMessageId,error);
 }
 
 // ---------------------------------------------------------------------
