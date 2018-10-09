@@ -32,7 +32,7 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest){
     using namespace std;
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    auto *pDatabase = findEmploy<EmployDatabase>();
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -40,11 +40,13 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest){
     std::string action = jsonRequest["action"].toString().toStdString();
 
     std::string sError;
-    int nErrorCode;
+    int nErrorCode = 500;
     std::vector<std::string> actions = {"create", "start", "stop", "delete"};
 
-    if (std::find(actions.begin(), actions.end(), action) == actions.end())
+    if (std::find(actions.begin(), actions.end(), action) == actions.end()) {
         sError = "Несуществующая операция. Возможные операции: create, start, stop, delete";
+        nErrorCode = 404;
+    }
 
     if (action == "create")
         create_container(name, sError, nErrorCode);
@@ -58,7 +60,7 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest){
     if (action == "delete")
         delete_container(name, sError, nErrorCode);
 
-    if (sError == "")
+    if (sError.empty())
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     else
         pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
@@ -67,7 +69,7 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest){
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDContainers::create_container(std::string name, std::string &sError, int &nErrorCode){
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
     LXDContainer * pContainer;
 
     //Переместить в Orchestra
@@ -94,7 +96,7 @@ void CmdHandlerLXDContainers::create_container(std::string name, std::string &sE
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDContainers::start_container(std::string name, std::string &sError, int &nErrorCode){
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()){
         sError = "Can\'t connect to LXD server";
@@ -119,7 +121,7 @@ void CmdHandlerLXDContainers::start_container(std::string name, std::string &sEr
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDContainers::stop_container(std::string name, std::string &sError, int &nErrorCode){
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()){
         sError = "Can\'t connect to LXD server";
@@ -144,7 +146,7 @@ void CmdHandlerLXDContainers::stop_container(std::string name, std::string &sErr
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDContainers::delete_container(std::string name, std::string &sError, int &nErrorCode){
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
     LXDContainer *pContainer;
 
     if (!pOrchestra->initConnection()){
@@ -201,7 +203,7 @@ void CmdHandlerLXDInfo::handle(ModelRequest *pRequest){
 }
 
 bool CmdHandlerLXDInfo::get_state(std::string sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState){
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()){
         return false;
     }
@@ -237,7 +239,7 @@ CmdHandlerLXDList::CmdHandlerLXDList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDList::handle(ModelRequest *pRequest){
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()){
         pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
         return;

@@ -1,3 +1,5 @@
+#include <utility>
+
 #include <utils_lxd.h>
 #include <json.hpp>
 #include <employ_orchestra.h>
@@ -7,7 +9,7 @@
 bool UtilsLXDAuth::check_trust_certs(std::string &sError){
     std::string sUrl = "/1.0";
     nlohmann::json jsonResponse;
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()){
         sError = "Can\'t connect to LXD server";
@@ -17,23 +19,19 @@ bool UtilsLXDAuth::check_trust_certs(std::string &sError){
     if (!pOrchestra->send_get_request(sUrl, jsonResponse, sError))
         return false;
 
-    if ( (jsonResponse["metadata"]["auth"].is_string()) && (jsonResponse["metadata"]["auth"] == "trusted" ))
-        return true;
-    else
-        return false;
+    return (jsonResponse["metadata"]["auth"].is_string()) && (jsonResponse["metadata"]["auth"] == "trusted" );
 }
 
 bool UtilsLXDAuth::connect_with_lxd(std::string sPass,  std::string &sError){
     bool bTrusted = check_trust_certs(sError);
 
-    if (sError != ""){
-        bTrusted = "Can't get info about client cert";
+    if (!sError.empty()){
         Log::err(std::string("UtilsLXDAuth"), "Can't get info about client cert");
         return false;
     }
 
     if (!bTrusted){
-        if (!set_trusted(sPass, sError)){
+        if (!set_trusted(std::move(sPass), sError)){
             Log::err("UtilsLXDAuth", "Can't set trusted certs" + sError);
         }else{
             bTrusted = true;
@@ -53,15 +51,13 @@ bool UtilsLXDAuth::set_trusted(std::string sPass, std::string &sError){
     })"_json;
     jsonData["password"] = sPass;
     nlohmann::json jsonResponse;
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()){
         sError = "Can\'t connect to LXD server";
         return false;
     }
 
-    if (!pOrchestra->send_post_request(sUrl, jsonData, jsonResponse, sError))
-        return false;
+    return pOrchestra->send_post_request(sUrl, jsonData, jsonResponse, sError);
 
-    return true;
 }

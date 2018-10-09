@@ -28,7 +28,7 @@ EmployOrchestra::EmployOrchestra()
 bool EmployOrchestra::init(){
     Log::info(TAG, "Start init settings");
 
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
+    auto *pSettings = findEmploy<EmploySettings>();
     std::string lxd_mode = pSettings->getSettString("lxd_mode").toStdString();
     if (lxd_mode != "enabled")
         return true;
@@ -53,9 +53,7 @@ bool EmployOrchestra::initConnection(){
     Log::info(TAG, "Start init connection");
 
     //Pull existing containers
-    if (m_bTrusted && !pull_container_names())
-        return false;
-    return true;
+    return !(m_bTrusted && !pull_container_names());
 }
 
 // ---------------------------------------------------------------------
@@ -74,7 +72,7 @@ bool EmployOrchestra::create_container(std::string sName, std::string &sError){
         Log::info(TAG, "Created container " + sName);
     }
 
-    if(pContainer->get_error() != ""){
+    if(!pContainer->get_error().empty()){
         sError = pContainer->get_error();
         return false;
     }
@@ -142,7 +140,6 @@ bool EmployOrchestra::send_post_request(std::string sUrl, nlohmann::json jsonDat
     jsonResponse = nlohmann::json::parse(sResponse);
 
     curl_easy_cleanup(hnd);
-    hnd = NULL;
 
     if (!check_response(jsonResponse, sError)){
         m_sLastError = sError;
@@ -191,7 +188,6 @@ bool EmployOrchestra::send_put_request(std::string sUrl, nlohmann::json jsonData
 
     jsonResponse = nlohmann::json::parse(response);
     curl_easy_cleanup(hnd);
-    hnd = NULL;
 
     if (!check_response(jsonResponse, sError)){
         m_sLastError = sError;
@@ -238,7 +234,6 @@ bool EmployOrchestra::send_get_request(std::string sUrl, nlohmann::json &jsonRes
 
     jsonResponse = nlohmann::json::parse(response);
     curl_easy_cleanup(hnd);
-    hnd = NULL;
 
     if (!check_response(jsonResponse, sError)){
         m_sLastError = sError;
@@ -286,7 +281,6 @@ bool EmployOrchestra::send_delete_request(std::string sUrl, nlohmann::json & jso
     jsonResponse = nlohmann::json::parse(response);
 
     curl_easy_cleanup(hnd);
-    hnd = NULL;
 
     if (!check_response(jsonResponse, sError)){
         m_sLastError = sError;
@@ -311,7 +305,7 @@ bool EmployOrchestra::pull_container_names(){
     std::list<std::string> listNames;
     std::list<std::string> listRegistry = registry_names();
 
-    for (auto it: container_names){
+    for (const auto &it: container_names){
         std::string str = std::string(it);
         std::string name = str.substr(15);
 
@@ -341,7 +335,7 @@ bool EmployOrchestra::pull_container_names(){
 bool EmployOrchestra::check_response(nlohmann::json jsonResponse, std::string &sError){
     std::string error;
 
-    if (jsonResponse.at("error").get<std::string>() != ""){
+    if (!jsonResponse.at("error").get<std::string>().empty()){
         error = jsonResponse.at("error").get<std::string>();
         sError = "request failed: " + error;
         Log::err(TAG, sError);
@@ -353,8 +347,8 @@ bool EmployOrchestra::check_response(nlohmann::json jsonResponse, std::string &s
         if (jsonResponse.at("metadata").find("err") != jsonResponse.at("metadata").end())
             metadata_error = jsonResponse.at("metadata").at("err").get<std::string>();
 
-    if (metadata_error != ""){
-        error = metadata_error.c_str();
+    if (!metadata_error.empty()){
+        error = metadata_error;
         sError = "request failed: " + error;
         Log::err(TAG, sError);
         return false;
@@ -392,8 +386,8 @@ bool EmployOrchestra::remove_container(std::string name, std::string & sError){
 
 std::list<std::string> EmployOrchestra::registry_names(){
     std::list<std::string> container_names;
-    for (std::map<std::string, LXDContainer *>::iterator it=m_mapContainers.begin(); it!=m_mapContainers.end(); ++it)
-        container_names.push_back(it->first);
+    for (auto &m_mapContainer : m_mapContainers)
+        container_names.push_back(m_mapContainer.first);
     return container_names;
 }
 
