@@ -5,6 +5,8 @@
 #include <employ_settings.h>
 #include <employ_database.h>
 #include <employ_orchestra.h>
+#include <vector>
+#include <algorithm>
 
 /*********************************************
  * Any actions with the container. Actions: create, start, stop and delete container
@@ -39,6 +41,10 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest){
 
     std::string sError;
     int nErrorCode;
+    std::vector<std::string> actions = {"create", "start", "stop", "delete"};
+
+    if (std::find(actions.begin(), actions.end(), action) == actions.end())
+        sError = "Несуществующая операция. Возможные операции: create, start, stop, delete";
 
     if (action == "create")
         create_container(name, sError, nErrorCode);
