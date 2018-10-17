@@ -1,77 +1,95 @@
 #include <model_usertoken.h>
 #include <utils_logger.h>
-#include <QJsonDocument>
-#include <QJsonObject>
 
 ModelUserToken::ModelUserToken(){
-	TAG = "ModelUserToken";
-}
-
-ModelUserToken::ModelUserToken(QJsonObject obj){
-	this->fillFromJson(obj);
     TAG = "ModelUserToken";
 }
 
-ModelUserToken::ModelUserToken(QString json){
-	QJsonDocument doc = QJsonDocument::fromJson(json.toUtf8());
-	this->fillFromJson(doc.object());
-    TAG = "ModelUserToken";
+ModelUserToken::ModelUserToken(nlohmann::json const& obj) : ModelUserToken() {
+    this->fillFrom(obj);
 }
 
-void ModelUserToken::fillFromJson(QJsonObject obj){
-	
-	if(obj.contains("user")){
-		QJsonObject user = obj["user"].toObject();
-		if(user.contains("role")){
-			m_sRole = user["role"].toString();
-		}
-		
-		if(user.contains("id")){
-			m_nUserID = user["id"].toString().toInt();
-		}else{
-			m_nUserID = -1;
-		}
-		
-		if(user.contains("email")){
-			m_sEmail = user["email"].toString();
-		}
-		
-		if(user.contains("nick")){
-			m_sNick = user["nick"].toString();
-		}
-	}
+ModelUserToken::ModelUserToken(QString json) : ModelUserToken(){
+    this->fillFrom(nlohmann::json::parse(json.toStdString()));
+}
+
+void ModelUserToken::fillFrom(const nlohmann::json &obj){
+    if(obj.find("user") != obj.end()){
+        nlohmann::json user = obj.at("user");
+       
+        // user.role
+        try {
+            m_sRole = user.at("role").get<std::string>();
+        } catch (const std::exception &e) {
+            Log::err(TAG, "JSON: " + obj.dump());
+            Log::err(TAG, "Something wrong param user.role in struct. " + std::string(e.what()));
+            m_sRole = "";
+        }
+
+        // TODO check allow roles
+
+        // user.id
+        try {
+            m_nUserID = user.at("id").get<int>();
+        } catch (const std::exception &e) {
+            Log::err(TAG, "JSON: " + obj.dump());
+            Log::err(TAG, "Something wrong param user.id in struct. " + std::string(e.what()));
+            m_nUserID = -1;
+        }
+        
+        // user.email
+        try {
+            m_sEmail = user.at("email").get<std::string>();
+        } catch (const std::exception &e) {
+            Log::err(TAG, "JSON: " + obj.dump());
+            Log::err(TAG, "Something wrong param user.email in struct. " + std::string(e.what()));
+            m_sEmail = "";
+        }
+
+        // user.nick
+        try {
+            m_sNick = user.at("nick").get<std::string>();
+        } catch (const std::exception &e) {
+            Log::err(TAG, "JSON: " + obj.dump());
+            Log::err(TAG, "Something wrong param user.nick in struct. " + std::string(e.what()));
+            m_sNick = "";
+        }
+        
+    }else{
+        Log::warn(TAG, "Not found param 'user' in struct");
+    }
 }
 
 bool ModelUserToken::isAdmin(){
-	return m_sRole == "admin";
+    return m_sRole == "admin";
 }
 
 bool ModelUserToken::isUser(){
-	return m_sRole == "user";
+    return m_sRole == "user";
 }
 
 bool ModelUserToken::isTester(){
-	return m_sRole == "tester";
+    return m_sRole == "tester";
 }
 
 bool ModelUserToken::hasRole(){
-	return m_sRole != "";
+    return m_sRole != "";
 }
 
 QString ModelUserToken::nick(){
-	return m_sNick;
+    return QString::fromStdString(m_sNick);
 }
 
 void ModelUserToken::setNick(QString sNick){
-    m_sNick = sNick;
+    m_sNick = sNick.toStdString();
 }
 
 int ModelUserToken::userid(){
-	return m_nUserID;
+    return m_nUserID;
 }
 
 QString ModelUserToken::email(){
-	return m_sEmail;
+    return QString::fromStdString(m_sEmail);
 }
 
 

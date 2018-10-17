@@ -23,6 +23,18 @@ CmdHandlerBase::CmdHandlerBase(const std::string &sCmd, const std::string &sDesc
 
 // ---------------------------------------------------------------------
 
+std::string CmdHandlerBase::activatedFromVersion(){
+    return m_sActivatedFromVersion;
+}
+
+// ---------------------------------------------------------------------
+
+std::string CmdHandlerBase::deprecatedFromVersion(){
+    return m_sDeprecatedFromVersion;
+}
+
+// ---------------------------------------------------------------------
+
 std::string CmdHandlerBase::cmd(){
     return m_sCmd;
 }
@@ -35,8 +47,38 @@ std::string CmdHandlerBase::description(){
 
 // ---------------------------------------------------------------------
 
+void CmdHandlerBase::setAccessUnauthorized(bool bAccess){
+    m_modelCommandAccess.setAccessUnauthorized(bAccess);
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerBase::setAccessUser(bool bAccess){
+    m_modelCommandAccess.setAccessUser(bAccess);
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerBase::setAccessAdmin(bool bAccess){
+    m_modelCommandAccess.setAccessAdmin(bAccess);
+}
+
+// ---------------------------------------------------------------------
+
 const ModelCommandAccess & CmdHandlerBase::access(){
     return m_modelCommandAccess;
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerBase::setActivatedFromVersion(const std::string &sActivatedFromVersion){
+    m_sActivatedFromVersion = sActivatedFromVersion;
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerBase::setDeprecatedFromVersion(const std::string &sDeprecatedFromVersion){
+    m_sDeprecatedFromVersion = sDeprecatedFromVersion;
 }
 
 // ---------------------------------------------------------------------

@@ -27,49 +27,47 @@
  *  Processing income messages.
  *  Control database connections
  */
- 
+
 class WebSocketServer : public QObject, public IWebSocketServer {
-	
-	private:
-		Q_OBJECT
-	public:
-		explicit WebSocketServer(QObject *parent = Q_NULLPTR);
-		~WebSocketServer();
+
+    private:
+        Q_OBJECT
+    public:
+        explicit WebSocketServer(QObject *parent = Q_NULLPTR);
+        ~WebSocketServer();
         bool isFailed();
 
-		// IWebSocketServer
-		virtual int getConnectedUsers();
-        virtual void sendMessage(QWebSocket *pClient, QJsonObject obj); // deprecated
+        // IWebSocketServer
+        virtual int getConnectedUsers();
         virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse);
-        virtual void sendMessageError(QWebSocket *pClient, const std::string &cmd, QString m, Error error);
-		virtual void sendToAll(QJsonObject obj);
+        virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, Error error);
         virtual void sendToAll(const nlohmann::json& jsonMessage);
-		virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken);
-		virtual IUserToken * getUserToken(QWebSocket *pClient);
+        virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken);
+        virtual IUserToken * getUserToken(QWebSocket *pClient);
 
-	Q_SIGNALS:
-		void closed();
+    Q_SIGNALS:
+        void closed();
         void sig_sendToAll(QString jsonMessage);
 
-	private Q_SLOTS:
-		void onNewConnection();
-		void onNewConnectionSSL();
+    private Q_SLOTS:
+        void onNewConnection();
+        void onNewConnectionSSL();
         void processTextMessage(const QString &message);
-		void processBinaryMessage(QByteArray message);
-		void socketDisconnected();
-		void onSslErrors(const QList<QSslError> &errors);
+        void processBinaryMessage(QByteArray message);
+        void socketDisconnected();
+        void onSslErrors(const QList<QSslError> &errors);
         void slot_sendToAll(QString jsonMessage);
 
-	private:
+    private:
         void sendServerMessage(QWebSocket *pSocket);
 
-		QWebSocketServer *m_pWebSocketServer;
-		QWebSocketServer *m_pWebSocketServerSSL;
-		QList<QWebSocket *> m_clients;
-		QMap<QWebSocket *, IUserToken *> m_tokens;
+        QWebSocketServer *m_pWebSocketServer;
+        QWebSocketServer *m_pWebSocketServerSSL;
+        QList<QWebSocket *> m_clients;
+        QMap<QWebSocket *, IUserToken *> m_tokens;
 
-		bool m_bFailed;
-		QString TAG;
+        bool m_bFailed;
+        QString TAG;
 };
 
 #endif //WEBSOCKETSERVER_H
