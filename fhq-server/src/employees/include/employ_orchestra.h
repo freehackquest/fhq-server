@@ -8,6 +8,7 @@
 #include <string>
 #include <map>
 #include <curl/curl.h>
+#include <future>
 
 
 class EmployOrchestra : public EmployBase {

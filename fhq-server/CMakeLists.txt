@@ -13,7 +13,7 @@ include_directories(${Qt5Core_INCLUDE_DIRS})
 
 set (FHQSRV_LIBRARIES "")
 set (FHQSRV_INCLUDE_DIRS "")
-set (FHQSRV_SOURCES "")
+set (FHQSRV_SOURCES "" src/tasks/include/lxd_async_operation_task.h src/tasks/sources/lxd_async_operation_task.cpp)
 
 # Sources
 
