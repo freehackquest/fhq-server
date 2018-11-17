@@ -39,6 +39,12 @@ void EmployWsServer::sendToAll(const nlohmann::json& jsonMessage){
 
 // ---------------------------------------------------------------------
 
+void EmployWsServer::sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) {
+    m_pWebSocketServer->sendToOne(pClient, jsonMessage);
+}
+
+// ---------------------------------------------------------------------
+
 bool EmployWsServer::validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler, const nlohmann::json &jsonMessage){
     try {
 

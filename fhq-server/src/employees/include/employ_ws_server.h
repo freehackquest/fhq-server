@@ -15,6 +15,7 @@ public:
     bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler, const nlohmann::json& jsonMessage);
     void setServer(IWebSocketServer *pWebSocketServer);
     void sendToAll(const nlohmann::json& jsonMessage);
+    void sendToOne(QWebSocket *pClient, const nlohmann::json& jsonMessage);
 
 private:
     std::string TAG;
