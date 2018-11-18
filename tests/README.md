@@ -2,13 +2,14 @@
 
 ## Developer info
 
+(!) Please replace %YOUR_ROOT_OF_PROJECT% to you folder.
+
 ### Refresh libfhqcli library
 
 This operation will be need when changed some logic for handlers
 
 ```
-$ cd ~/develop/freehackquest/backend.git
-$ cd fhq-server
+$ cd %YOUR_ROOT_OF_PROJECT%/fhq-server
 $ ./build_simple.sh
 $ ./fhq-server -eclp # export python library
 $ cp -rf libfhqcli-py/libfhqcli/ ../tests/
@@ -29,8 +30,7 @@ Or more informartion you can find in file `fhqtest.py`
 ## Run use python2
 
 ```
-$ cd ~/develop/freehackquest/backend.git
-$ cd tests/
+$ cd %YOUR_ROOT_OF_PROJECT%/tests/
 $ pip install -r requirements.txt
 $ python2 test_games.py
 ```
@@ -38,8 +38,7 @@ $ python2 test_games.py
 ## Run use python3 
 
 ```
-$ cd ~/develop/freehackquest/backend.git
-$ cd tests/
-$ pip install -r requirements.txt
+$ cd %YOUR_ROOT_OF_PROJECT%/tests/
+$ pip3 install -r requirements.txt
 $ python3 test_games.py
 ```
