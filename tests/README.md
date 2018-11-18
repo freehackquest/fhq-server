@@ -1,37 +1,45 @@
 # Tests for fhq-server
 
+## Developer info
 
-## Install python requirements
+### Refresh libfhqcli library
 
-	`sudo pip install -r requirements.txt`
+This operation will be need when changed some logic for handlers
 
+```
+$ cd ~/develop/freehackquest/backend.git
+$ cd fhq-server
+$ ./build_simple.sh
+$ ./fhq-server -eclp # export python library
+$ cp -rf libfhqcli-py/libfhqcli/ ../tests/
+```
 
+### Look which users will need for tests
 
-## Set the settings
+Information for tests:
 
-Create test database by sql-queries:
+```
+ADMIN_EMAIL = "admin"
+ADMIN_PASSWORD = "admin"
+TEST_SERVER = "ws://localhost:1234/"
+```
 
-	> CREATE DATABASE `test` CHARACTER SET utf8 COLLATE utf8_general_ci;
-	> GRANT ALL PRIVILEGES ON test.* TO 'freehackquest_u'@'localhost' WITH GRANT OPTION;
-	> FLUSH PRIVILEGES;
+Or more informartion you can find in file `fhqtest.py`
 
-Change the name of the database for the tests in file /etc/freehackquest-backend/conf.ini
+## Run use python2
 
-	name=test
+```
+$ cd ~/develop/freehackquest/backend.git
+$ cd tests/
+$ pip install -r requirements.txt
+$ python2 test_games.py
+```
 
-And if not exists test account "admin" with password "admin" then change settings for connection in file backend-tests/classbook/lib.py
+## Run use python3 
 
-## Requirements
-
-Tests are only run with python 3.6.
-Install pytest
-
-	$ sudo apt install python-pip python3-pytest
-	$ pip3 install asyncio
-	$ pip3 install websockets
-	$ pip3 install PyMySQL
-
-## Run tests
-
-	$ cd tests
-	$ python3 -m pytest .
+```
+$ cd ~/develop/freehackquest/backend.git
+$ cd tests/
+$ pip install -r requirements.txt
+$ python3 test_games.py
+```
