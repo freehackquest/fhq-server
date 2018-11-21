@@ -12,6 +12,9 @@ matrix:
   include:
     - dist: xenial
 
+services:
+  - mysql
+
 # Install dependencies
 before_install:
   - sudo apt-get update -qq
