@@ -51,7 +51,10 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
         }
     }
 
-    if(jsonRequest.contains("search")){
+    IUserToken *pUserToken = pRequest->userToken();
+    bool bAdmin = false;
+    if(pUserToken != NULL) bAdmin = pUserToken->isAdmin();
+    if(jsonRequest.contains("search") && bAdmin){
         QString search = jsonRequest["search"].toString().trimmed();
         if(search != ""){
             filters << "(l.message LIKE :search)";
@@ -70,7 +73,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
     //count leaks
     {
         QSqlQuery query(db);
-        query.prepare("SELECT count(*) as cnt FROM leaks l "
+        query.prepare("SELECT count(*) as cnt FROM leaks l"
             " " + where
         );
         foreach(QString key, filter_values.keys() ){
@@ -109,8 +112,6 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
             leak["uuid"] = record.value("uuid").toString().toHtmlEscaped();
             leak["gameid"] = record.value("gameid").toInt();
             leak["name"] = record.value("name").toString().toHtmlEscaped();
-            leak["name"] = record.value("name").toString().toHtmlEscaped();
-            leak["content"] = record.value("content").toString().toHtmlEscaped();
             leak["score"] = record.value("score").toInt();
             leak["created"] = record.value("created").toString().toHtmlEscaped();
             leak["updated"] = record.value("updated").toString().toHtmlEscaped();
@@ -287,6 +288,7 @@ CmdHandlerLeaksDelete::CmdHandlerLeaksDelete()
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("id").required().integer_().description("Leak id"));
+    //TODO admin password
 }
 
 // ---------------------------------------------------------------------

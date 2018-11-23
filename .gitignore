@@ -66,3 +66,6 @@ CMakeLists.txt.user
 fhq-server/libfhqcli-py
 tests/libfhqcli.py
 tests/libfhqcli/*
+
+fhq-server-build/
+tests/get-pip.py
