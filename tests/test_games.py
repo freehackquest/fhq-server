@@ -73,6 +73,24 @@ try:
     else:
         fhqtest.print_success("Game organizators ok")
 
+    fhqtest.print_bold("Check form... ")
+    if game2['form'] != 'online':
+        fhqtest.log_err("Game has wrong form expected 'online' got '" + game2['form'] + "'")
+    else:
+        fhqtest.print_success("Game form ok")
+    
+    fhqtest.print_bold("Check state... ")
+    if game2['state'] != 'original':
+        fhqtest.log_err("Game has wrong state expected 'original' got '" + game2['state'] + "'")
+    else:
+        fhqtest.print_success("Game state ok")
+
+    fhqtest.print_bold("Check type... ")
+    if game2['type'] != 'jeopardy':
+        fhqtest.log_err("Game has wrong form expected 'jeopardy' got '" + game2['type'] + "'")
+    else:
+        fhqtest.print_success("Game type ok")
+
     fhqtest.print_bold("Check description... ")
     if game2['description'] != game_description:
         fhqtest.log_err("Game has wrong description expected '" + game_description + "' got '" + game2['description'] + "'")

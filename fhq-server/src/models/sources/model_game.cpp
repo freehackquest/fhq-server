@@ -188,6 +188,7 @@ void ModelGame::copy(const ModelGame &modelGame){
     this->setName(modelGame.name());
     this->setDescription(modelGame.description());
     this->setState(modelGame.state());
+    this->setForm(modelGame.form());
     this->setType(modelGame.type());
     this->setDateStart(modelGame.dateStart());
     this->setDateStop(modelGame.dateStop());
@@ -205,6 +206,7 @@ ModelGame *ModelGame::clone() const{
     pModel->setName(this->name());
     pModel->setDescription(this->description());
     pModel->setState(this->state());
+    pModel->setForm(this->form());
     pModel->setType(this->type());
     pModel->setDateStart(this->dateStart());
     pModel->setDateStop(this->dateStop());
@@ -224,6 +226,7 @@ nlohmann::json ModelGame::toJson(){
     jsonGame["description"] = m_sDescription;
     jsonGame["state"] = m_sState;
     jsonGame["type"] = m_sType;
+    jsonGame["form"] = m_sForm;
     jsonGame["date_start"] = m_sDateStart;
     jsonGame["date_stop"] = m_sDateStop;
     jsonGame["date_restart"] = m_sDateRestart;
@@ -262,6 +265,13 @@ void ModelGame::fillFrom(const nlohmann::json &jsonGame){
     // state, optional
     try {
         setState(jsonGame.at("state").get<std::string>()); // TODO trim
+    } catch ( std::exception const&) {
+        // nothing
+    }
+
+    // form, optional
+    try {
+        setForm(jsonGame.at("form").get<std::string>()); // TODO trim
     } catch ( std::exception const&) {
         // nothing
     }
