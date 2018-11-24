@@ -260,7 +260,7 @@ void ModelGame::fillFrom(const nlohmann::json &jsonGame){
 
     // state, optional
     try {
-        setState(jsonGame.at("description").get<std::string>()); // TODO trim
+        setState(jsonGame.at("state").get<std::string>()); // TODO trim
     } catch ( std::exception const&) {
         // nothing
     }
