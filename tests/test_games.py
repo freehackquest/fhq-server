@@ -29,9 +29,9 @@ try:
             raise ValueError('Could not delete prevously game')
     fhqtest.print_success("Cleaned")
 
-    game_name = fhqtest.generate_random(300)
+    game_name = fhqtest.generate_random(255)
     game_description = fhqtest.generate_random(300)
-    game_teams = fhqtest.generate_random(300)
+    game_teams = fhqtest.generate_random(255)
 
     # test create game
     fhqtest.print_bold("Try create game...")
@@ -49,6 +49,9 @@ try:
     })
     fhqtest.alert(game2 == None, 'Could not get response (2)')
     fhqtest.check_response(game2, "Game succesfull created")
+
+    if game2['result'] == 'FAIL':
+        raise ValueError('Could not create game')
 
     # test find game
     fhqtest.print_bold("Find game by uuid... ")
@@ -103,7 +106,7 @@ try:
     '''
     Update game name
     '''
-    game_name = fhqtest.generate_random(300)
+    game_name = fhqtest.generate_random(255)
     fhqtest.print_bold("Update game... ")
     game_updt = fhqtest.admin_session.game_update({
         "uuid": fhqtest.GAME_UUID2,
