@@ -76,11 +76,10 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
         return EmployResult::ALREADY_EXISTS;
 	}
 
-
     // check the game
     EmployGames *pEmployGames = findEmploy<EmployGames>();
     ModelGame modelGame;
-    if(!pEmployGames->findGame(sGameUuid, modelGame)){
+    if (!pEmployGames->findGame(sGameUuid, modelGame)) {
         return EmployResult::GAME_NOT_FOUND;
     }
 
