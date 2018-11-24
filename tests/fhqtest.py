@@ -4,6 +4,8 @@
 import sys
 import os
 import libfhqcli
+import string
+import random
 
 admin_session = None
 loggined = False
@@ -55,6 +57,9 @@ def alert(check, msg):
         log_err(msg)
         raise Exception(msg)
         sys.exit(0)
+
+def generate_random(size): 
+    return ''.join(random.choice(string.ascii_uppercase + string.digits + ' _+=\'"~@!#?/<>') for _ in range(size))
 
 def check_response(resp, msg_success):
     if(resp['result'] == 'FAIL'):
