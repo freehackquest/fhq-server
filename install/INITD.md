@@ -1,7 +1,7 @@
 # systemd
 
-* [CONFIGURING](install/CONFIGURING.md)
-* [HOW-TO-BUILD](install/HOW-TO-BUILD.md)
+* [CONFIGURING](CONFIGURING.md)
+* [HOW-TO-BUILD](HOW-TO-BUILD.md)
 
 
 ## Copy init.d script:
@@ -35,5 +35,3 @@ $ sudo crontab -e
 ```
 
 And add to cron line: `* * * * * cd /usr/share/fhq-server/ && ./check-backend.sh`
-
-

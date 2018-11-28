@@ -1,7 +1,7 @@
 # SYSTEMD
 
-* [CONFIGURING](install/CONFIGURING.md)
-* [HOW-TO-BUILD](install/HOW-TO-BUILD.md)
+* [CONFIGURING](CONFIGURING.md)
+* [HOW-TO-BUILD](HOW-TO-BUILD.md)
 
 ## copy (or replace) fhq-server.service
 

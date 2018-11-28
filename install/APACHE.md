@@ -1,7 +1,7 @@
 # APACHE
 
-* [CONFIGURING](install/CONFIGURING.md)
-* [HOW-TO-BUILD](install/HOW-TO-BUILD.md)
+* [CONFIGURING](CONFIGURING.md)
+* [HOW-TO-BUILD](HOW-TO-BUILD.md)
 
 
 ## Configure proxing websockets
@@ -21,9 +21,9 @@ $ sudo a2enmod headers
 
 ```
 <VirtualHost *:80>
-	
+
 	...
-	
+
 	ProxyRequests Off
 	ProxyPreserveHost On
 	ProxyVia full
@@ -39,13 +39,13 @@ $ sudo a2enmod headers
 ```
 <VirtualHost *:443>
 	...
-	
+
 	SSLProxyEngine on
 	ProxyRequests Off
 	ProxyPreserveHost On
 	ProxyVia full
 
 	ProxyPass "/api-wss/" "wss://localhost:4613/"
-	
+
 </VirtualHost>
 ```
