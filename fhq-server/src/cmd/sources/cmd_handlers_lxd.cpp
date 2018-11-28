@@ -45,21 +45,24 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest) {
     std::vector<std::string> actions = {"create", "start", "stop", "delete"};
 
     if (std::find(actions.begin(), actions.end(), action) == actions.end()) {
-        sError = "Несуществующая операция. Возможные операции: create, start, stop, delete";
+        sError = "Non-existent operation. Possible operations: create, start, stop, delete.";
         nErrorCode = 404;
     }
+
+    if (!sError.empty())
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
 
     if (action == "create")
         RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::create_container, name, cmd(), pRequest);
 
     if (action == "start")
-        start_container(name, sError, nErrorCode);
+        RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::start_container, name, cmd(), pRequest);
 
     if (action == "stop")
-        stop_container(name, sError, nErrorCode);
+        RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::stop_container, name, cmd(), pRequest);
 
     if (action == "delete")
-        delete_container(name, sError, nErrorCode);
+        RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::delete_container, name, cmd(), pRequest);
 }
 
 // ---------------------------------------------------------------------
