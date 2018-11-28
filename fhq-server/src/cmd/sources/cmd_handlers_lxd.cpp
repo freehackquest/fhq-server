@@ -60,13 +60,6 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest) {
 
     if (action == "delete")
         delete_container(name, sError, nErrorCode);
-
-    jsonResponse["status"] = "Операция началась";
-
-    if (sError.empty())
-        pRequest->sendMessageSuccess(cmd(), jsonResponse);
-    else
-        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
 }
 
 // ---------------------------------------------------------------------

@@ -9,28 +9,37 @@
 
 LXDAsyncOperationTask::LXDAsyncOperationTask(void (*func)(std::string, std::string &, int &),
                                              std::string sName, std::string sCMD, ModelRequest *pRequest) {
-    TAG = "LXDAsyncOperationTask";
-    m_func = func;
-    m_pRequest = pRequest->client();
-    m_sName = std::move(sName);
-    m_sCMD = std::move(sCMD);
+	TAG = "LXDAsyncOperationTask";
+	m_func = func;
+	m_pRequestClient = pRequest->client();
+	m_sName = std::move(sName);
+	m_sCMD = std::move(sCMD);
+	m_sM = pRequest->m();
 }
 
 LXDAsyncOperationTask::~LXDAsyncOperationTask() = default;
 
 void LXDAsyncOperationTask::run() {
-    nlohmann::json jsonResponse;
-    std::string sError;
-    int nErrorCode = 500;
-    m_func(m_sName, sError, nErrorCode);
+	nlohmann::json jsonResponse;
+	jsonResponse["cmd"] = m_sCMD;
+	jsonResponse["m"] = m_sM;
+	std::string sError;
+	int nErrorCode = 500;
 
-    if (sError.empty()) {
-        jsonResponse = R"({"status": "DONE", "cmd": "lxd_containers", "m": "2323")";
-    } else {
-        jsonResponse = R"({"status": 500, "cmd": "lxd_containers", "m": "2323"})"_json;
-    }
-//    else
-//        m_pRequest->sendMessageError(m_sCMD, Error(nErrorCode, sError));
-    auto *pWsServer = findEmploy<EmployWsServer>();
-    pWsServer->sendToOne(m_pRequest, jsonResponse);
+	auto *pWsServer = findEmploy<EmployWsServer>();
+	auto jsonPrepare = jsonResponse;
+	jsonPrepare["status"] = "The operation began";
+	pWsServer->sendToOne(m_pRequestClient, jsonPrepare);
+
+	m_func(m_sName, sError, nErrorCode);
+
+	if (sError.empty()) {
+		jsonResponse["result"] = "DONE";
+	} else {
+		jsonResponse["result"] = "FAIL";
+		jsonResponse["error"] = sError;
+		jsonResponse["code"] = nErrorCode;
+	}
+
+	pWsServer->sendToOne(m_pRequestClient, jsonResponse);
 }

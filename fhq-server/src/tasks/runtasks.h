@@ -6,7 +6,7 @@
 #include <model_request.h>
 
 class RunTasks {
-	public:
+    public:
         static void AddPublicEvents(QString type, QString message);
         static void UpdateUserLocation(int userid, QString lastip);
         static void UpdateMaxScoreGame(int gameid);

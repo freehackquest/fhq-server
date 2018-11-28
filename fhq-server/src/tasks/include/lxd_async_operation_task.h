@@ -24,8 +24,8 @@ private:
     std::string m_sCMD;
     std::string TAG;
     std::string m_sName;
-    QWebSocket *m_pRequest;
-    nlohmann::json m_jsonMessage;
+    std::string m_sM;
+    QWebSocket *m_pRequestClient;
 };
 
 
