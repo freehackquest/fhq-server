@@ -1,4 +1,4 @@
-fhq-server (0.2.17-0ppa4) bionic; urgency=low
+fhq-server (0.2.17-ppa-ubuntu-16-04-xenial) xenial; urgency=low
 
   * server Cookbook Changelog
   * server.
@@ -35,9 +35,9 @@ fhq-server (0.2.17-0ppa4) bionic; urgency=low
   * Start redesign leaks
   * Minor changes in model_leak
 
- -- Free Hack Quest <freehackquest@gmail.com>  ?
+ -- Free Hack Quest <freehackquest@gmail.com>  Fri, 30 Nov 2018 00:18:41 +0700
 
-fhq-server (0.2.16-0ppa4) bionic; urgency=low
+fhq-server (0.2.16-ppa-ubuntu-16-04-xenial) xenial; urgency=low
 
   * Fixed crash
   * Added leaks handlers
@@ -46,7 +46,7 @@ fhq-server (0.2.16-0ppa4) bionic; urgency=low
 
  -- Free Hack Quest <freehackquest@gmail.com>  Sat, 07 Jul 2018 03:02:13 +0700
 
-fhq-server (0.2.15-0ppa4) bionic; urgency=low
+fhq-server (0.2.15-ppa-ubuntu-16-04-xenial) xenial; urgency=low
 
   * Added postinst script
 

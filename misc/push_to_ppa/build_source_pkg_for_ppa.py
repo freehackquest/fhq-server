@@ -9,23 +9,55 @@ import sys
 
 print ("Welcome to preapre ppa package...")
 
+dists = []
 
-print("\nPlease choose dist name:\n\t1. xenial\n\t4. artful\n\t5. bionic");
-dist_name_ = raw_input()
-ppa_name_ = "";
+'''
+# Not supported qt5:
+dists.append({
+	"dist_name": "trusty",
+	"ppa_name_suffix": "ppa-ubuntu-14-04-trusty",
+	"end": "April 2019",
+	"version": "14.04 LTS"
+})
+'''
 
-if dist_name_ == "1":
-	dist_name_ = "xenial";
-	ppa_name_ = "0ppa0";
-elif dist_name_ == "4":
-	dist_name_ = "artful";
-	ppa_name_ = "0ppa3";
-elif dist_name_ == "5":
-	dist_name_ = "bionic";
-	ppa_name_ = "0ppa4";
-else:
-	print("Wrong dist name... ");
-	exit(0);
+dists.append({
+	"dist_name": "xenial",
+	"ppa_name_suffix": "ppa-ubuntu-16-04-xenial",
+	"end": "April 2021",
+	"version": "16.04 LTS"
+})
+
+dists.append({
+	"dist_name": "bionic",
+	"ppa_name_suffix": "ppa-ubuntu-18-04-bionic",
+	"end": "April 2023",
+	"version": "18.04 LTS"
+})
+
+dists.append({
+	"dist_name": "cosmic",
+	"ppa_name_suffix": "ppa-ubuntu-18-10-cosmic",
+	"end": "July 2019",
+	"version": "18.10"
+})
+
+print("Please choose dist name:")
+
+i = 0
+for d in dists:
+	print('    ' + str(i) + '. ' + d['dist_name'] + ' (' + d['version'] + '), date end: ' + d['end'])
+	i = i + 1
+
+dist_num_ = raw_input("Enter number of dist: ")
+dist_num_ = int(dist_num_)
+if dist_num_ >= len(dists):
+	print("Wrong dist number")
+	exit(1)
+
+dist_name_ = dists[dist_num_]['dist_name']
+ppa_name_ = dists[dist_num_]['ppa_name_suffix']
+
 print("Dist Name: " + dist_name_)
 
 cmakelist="../../fhq-server/CMakeLists.txt"
@@ -33,7 +65,6 @@ f = open(cmakelist,'r')
 filedata = f.read()
 f.close()
 
-# add_definitions(-DVERSION_STRING="0.2.4")
 m = re.search('DFHQSRV_VERSION=\"(.+)\"', filedata)
 if m:
     current_version = m.group(1)
