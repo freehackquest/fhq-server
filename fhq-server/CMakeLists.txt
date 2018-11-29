@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(fhq-server)
 
-add_definitions(-DFHQSRV_VERSION="0.2.16")
+add_definitions(-DFHQSRV_VERSION="0.2.17")
 add_definitions(-DFHQSRV_APP_NAME="fhq-server")
 
 set(CMAKE_AUTOMOC ON)
