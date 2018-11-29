@@ -28,5 +28,7 @@ More details here:
 
 * Contains source code to compile: [SmtpClient-for-Qt](https://github.com/bluetiger9/SmtpClient-for-Qt)
 * For Json: [Json](https://github.com/nlohmann/json)
-* Used libzip for a working with zip-archives [https://libzip.org/](https://libzip.org/)
-* Used libzip for a processing png-images [http://libpng.org/](http://libpng.org/)
+* Used libcurl for a working with http/https/smtp: [https://curl.haxx.se/](https://curl.haxx.se/)
+* Used libopenssl for a working with https requests: [https://www.openssl.org/](https://www.openssl.org/)
+* Used libzip for a working with zip-archives: [https://libzip.org/](https://libzip.org/)
+* Used libpng for a processing png-images: [http://libpng.org/](http://libpng.org/)
