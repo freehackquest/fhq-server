@@ -187,3 +187,34 @@ QSqlDatabase *EmployDatabase::database(){
 	pDBConnection->connect();
 	return pDBConnection->db();
 }
+
+// ---------------------------------------------------------------------
+// TODO: it's will be worked only first 8 hours
+// - need close connection after hour
+// - control of count of connections (must be < 100)
+
+MYSQL *EmployDatabase::db() {
+	std::string sThreadId = Log::threadId();
+    MYSQL *pDatabase = NULL;
+    std::map<std::string,MYSQL *>::iterator it;
+    it = m_mapConnections.find(sThreadId);
+    if (it == m_mapConnections.end()) {
+		EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
+		
+        pDatabase = mysql_init(NULL);
+        if (!mysql_real_connect(pDatabase, 
+                pServerConfig->databaseHost().c_str(),
+                pServerConfig->databaseUser().c_str(),
+                pServerConfig->databasePassword().c_str(),
+                pServerConfig->databaseName().c_str(), 
+				pServerConfig->databasePort(), NULL, 0)) {
+            Log::err(TAG, std::string(mysql_error(pDatabase)));
+            Log::err(TAG, "Failed to connect.");
+            return NULL;
+        }
+        m_mapConnections[sThreadId] = pDatabase;
+    }else{
+        pDatabase = it->second;
+    }
+    return pDatabase;
+}

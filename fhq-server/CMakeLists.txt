@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(fhq-server)
 
-add_definitions(-DFHQSRV_VERSION="0.2.16")
+add_definitions(-DFHQSRV_VERSION="0.2.17")
 add_definitions(-DFHQSRV_APP_NAME="fhq-server")
 
 set(CMAKE_AUTOMOC ON)
@@ -20,6 +20,7 @@ set (FHQSRV_SOURCES "" src/tasks/include/lxd_async_operation_task.h src/tasks/so
 # include header dirs
 list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/nlohmann")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/smallsha1")
+list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/md5")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/quazip-0.7.3/quazip")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/smtp")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/unit_tests/include")
@@ -48,6 +49,10 @@ list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/support/include")
 
 # json
 list (APPEND FHQSRV_SOURCES "src/3rdParty/nlohmann/json.hpp")
+
+# small md5
+list (APPEND FHQSRV_SOURCES "src/3rdParty/md5/md5.h")
+list (APPEND FHQSRV_SOURCES "src/3rdParty/md5/md5.cpp")
 
 # small sha1
 list (APPEND FHQSRV_SOURCES "src/3rdParty/smallsha1/sha1.h")
@@ -285,21 +290,31 @@ list (APPEND FHQSRV_SOURCES "src/updates/sources/update0098.cpp")
 list (APPEND FHQSRV_SOURCES "src/main.cpp")
 
 
+############################
+#####
 #foreach (_headerFile ${FHQSRV_HEADERS})
 #    get_filename_component(_dir ${_headerFile} PATH)
 #    list (APPEND FHQSRV_INCLUDE_DIRS ${_dir})
 #endforeach()
 #list(REMOVE_DUPLICATES FHQSRV_INCLUDE_DIRS)
+#####
+############################
 
-# ZLIB
+
+############################
+##### ZLIB
 find_package( ZLIB REQUIRED )
 if ( ZLIB_FOUND )
     list (APPEND FHQSRV_INCLUDE_DIRS ${ZLIB_INCLUDE_DIRS})
     include_directories( ${ZLIB_INCLUDE_DIRS} )
     list (APPEND FHQSRV_LIBRARIES ${ZLIB_LIBRARIES})
 endif( ZLIB_FOUND )
+#####
+############################
 
-# LIBPNG
+
+############################
+##### LIBPNG
 find_package(PNG REQUIRED)
 if (NOT PNG_FOUND)
     message(FATAL_ERROR "You don't seem to have libpng development libraries installed (apt isntall libpng-dev)")
@@ -307,8 +322,11 @@ else ()
     list (APPEND FHQSRV_INCLUDE_DIRS ${PNG_INCLUDE_DIR})
     list (APPEND FHQSRV_LIBRARIES ${PNG_LIBRARY})
 endif ()
+#####
+############################
 
-# CURL
+############################
+##### CURL
 FIND_PACKAGE(CURL)
 IF(CURL_FOUND)
   list (APPEND FHQSRV_INCLUDE_DIRS ${CURL_INCLUDE_DIR})
@@ -316,6 +334,29 @@ IF(CURL_FOUND)
 ELSE(CURL_FOUND)
   MESSAGE(FATAL_ERROR "Could not find the CURL library and development files.")
 ENDIF(CURL_FOUND)
+#####
+############################
+
+
+############################
+##### mysql 
+# Find and make sure the system have the header file
+find_path(MYSQL_HEADER mysql/mysql.h)
+if(MYSQL_HEADER STREQUAL "MYSQL_HEADER-NOTFOUND")
+    message(FATAL_ERROR "Could not find the mysql/mysql.h header file: (ubuntu: apt install libmysqlclient-dev) or (debian: apt install default-libmariadbclient-dev and link: ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/mariadb.pc /usr/lib/x86_64-linux-gnu/pkgconfig/mysqlclient.pc)")
+endif()
+
+include(FindPkgConfig)
+pkg_check_modules(LIBMYSQLCLIENT REQUIRED mysqlclient)
+
+foreach(FLAG ${LIBMYSQLCLIENT_CFLAGS_OTHER})
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${FLAG}")
+endforeach()
+
+list (APPEND FHQSRV_INCLUDE_DIRS ${LIBMYSQLCLIENT_LIBRARY_DIRS})
+list (APPEND FHQSRV_LIBRARIES ${LIBMYSQLCLIENT_LIBRARIES})
+#####
+############################
 
 include_directories(${FHQSRV_INCLUDE_DIRS})
 

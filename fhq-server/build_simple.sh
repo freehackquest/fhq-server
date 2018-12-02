@@ -1,9 +1,9 @@
 #!/bin/bash
 
-if [ ! -d build ]; then
-	mkdir -p build
+if [ ! -d tmp ]; then
+	mkdir -p tmp
 fi
 
-cd build
+cd tmp
 cmake ..
 make

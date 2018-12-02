@@ -1,8 +1,8 @@
 
 # CREATE_DEB Package Self
 
-* [CONFIGURING](install/CONFIGURING.md)
-* [HOW-TO-BUILD](install/HOW-TO-BUILD.md)
+* [CONFIGURING](CONFIGURING.md)
+* [HOW-TO-BUILD](HOW-TO-BUILD.md)
 
 ## What change files
 

@@ -11,6 +11,7 @@
 #include <quazipfile.h>
 #include <quazipfileinfo.h>
 #include <utils_merge_text.h>
+#include <md5.h>
 
 // *******************************************
 // * This handler will be add classbook record
@@ -75,7 +76,8 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
     }
 
     //Set md5_content hash
-    QString md5_content = QString(QCryptographicHash::hash(content.toUtf8(), QCryptographicHash::Md5).toHex());
+    std::string sContentMd5_ = md5(content.toStdString());
+    QString sContentMd5 = QString::fromStdString(sContentMd5_);
 
     //Find parentuuid from database
     QString parentuuid = "00000000-0000-0000-0000-000000000000";
@@ -147,7 +149,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
     query.bindValue(":parentuuid", parentuuid);
     query.bindValue(":name", name);
     query.bindValue(":content", content);
-    query.bindValue(":md5_content", md5_content);
+    query.bindValue(":md5_content", sContentMd5);
     if (!query.exec()){
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
@@ -159,7 +161,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
     data["parentid"] = parentid;
     data["name"] = name;
     data["content"] = content;
-    data["md5_content"] = md5_content;
+    data["md5_content"] = sContentMd5;
 
     jsonResponse["data"] = data;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -856,9 +858,10 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
 
     //UPDATE content for article
     QString content;
-    if(jsonRequest.contains("content")){
+    if (jsonRequest.contains("content")) {
         content = jsonRequest.value("content").toString().trimmed().toHtmlEscaped();
-        QString md5_content = QString(QCryptographicHash::hash(content.toUtf8(), QCryptographicHash::Md5).toHex());
+        std::string sContentMd5_ = md5(content.toStdString());
+        QString md5_content = QString::fromStdString(sContentMd5_);
         query.prepare("UPDATE classbook SET content=:content, md5_content=:md5_content WHERE id=:classbookid");
         query.bindValue(":classbookid", classbookid);
         query.bindValue(":content", content);
@@ -962,7 +965,8 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest){
     QString content = jsonRequest["content"].toString().trimmed();
 
     //Set md5_content hash
-    QString md5_content = QString(QCryptographicHash::hash(content.toUtf8(), QCryptographicHash::Md5).toHex());
+    std::string sContentMd5_ = md5(content.toStdString());
+    QString md5_content = QString::fromStdString(sContentMd5_);
 
     //generate uuid
     QString uuid = QUuid::createUuid().toString().replace("{", "").replace("}", "");
@@ -1159,7 +1163,8 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest)
     QString content = jsonRequest["content"].toString().trimmed();
 
     //Set md5_content hash
-    QString md5_content = QString(QCryptographicHash::hash(content.toUtf8(), QCryptographicHash::Md5).toHex());
+    std::string sContentMd5_ = md5(content.toStdString());
+    QString md5_content = QString::fromStdString(sContentMd5_);
 
     query.prepare("UPDATE classbook_localization SET name = :name, content = :content, md5_content = :md5_content, updated = NOW() "
                   "WHERE id = :classbook_localizationid");
@@ -1245,7 +1250,8 @@ void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest){
     QString content_before = record.value("content").toString();
 
     //Set md5_content hash
-    QString md5_content = QString(QCryptographicHash::hash(content.toUtf8(), QCryptographicHash::Md5).toHex());
+    std::string sContentMd5_ = md5(content.toStdString());
+    QString md5_content = QString::fromStdString(sContentMd5_);
 
     //generate uuid
     QString uuid = QUuid::createUuid().toString().replace("{", "").replace("}", "");

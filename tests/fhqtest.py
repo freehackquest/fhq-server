@@ -2,20 +2,25 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import os
 import libfhqcli
+import string
+import random
 
 admin_session = None
 loggined = False
-game_uuid = "00000000-0000-0000-0000-000000000000"
+GAME_UUID1 = "00000000-0000-0000-1000-000000000001"
+GAME_UUID2 = "00000000-0000-0000-1000-000000000002"
 USER1_UUID = "00000000-0000-0000-0000-000000000001"
 USER2_UUID = "00000000-0000-0000-0000-000000000002"
 USER3_UUID = "00000000-0000-0000-0000-000000000003"
-game = None;
+GAME1 = None
 admin_email = "admin" # deprecated
 admin_password = "admin" # deprecated
 ADMIN_EMAIL = "admin"
 ADMIN_PASSWORD = "admin"
 TEST_SERVER = "ws://localhost:1234/"
+TMP_DIR = "./tmp"
 
 class bcolors:
     HEADER = '\033[95m'
@@ -49,20 +54,21 @@ def log_err(msg):
 
 def alert(check, msg):
     if(check == True):
-        log_err(msg);
-        raise Exception(msg);
+        log_err(msg)
+        raise Exception(msg)
         sys.exit(0)
+
+def generate_random(size): 
+    return ''.join(random.choice(string.ascii_uppercase + string.digits + ' _+=\'"~@!#?/<>') for _ in range(size))
 
 def check_response(resp, msg_success):
     if(resp['result'] == 'FAIL'):
-        log_err(resp['error']);
+        log_err(resp['error'])
     else:
         print_success(msg_success)
 
 def init_enviroment():
     global admin_session
-    global game
-    global game_uuid
     global user1_uuid
     global user2_uuid
     global user3_uuid
@@ -70,17 +76,20 @@ def init_enviroment():
     global ADMIN_PASSWORD
     global TEST_SERVER
     
-    admin_session = libfhqcli.FHQCli(TEST_SERVER);
-    resp = admin_session.login({"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD});
-    alert(resp == None, 'Could not login as admin (1)');
-    alert(resp['result'] == 'FAIL', 'Could not login as admin (2)');
+    if not os.path.exists(TMP_DIR):
+        os.makedirs(TMP_DIR)
+
+    admin_session = libfhqcli.FHQCli(TEST_SERVER)
+    resp = admin_session.login({"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD})
+    alert(resp == None, 'Could not login as admin (1)')
+    alert(resp['result'] == 'FAIL', 'Could not login as admin (2)')
     
-    loggined = True
-    game = admin_session.game_info({"uuid": game_uuid})
+    # loggined = True
+    GAME1 = admin_session.game_info({"uuid": GAME_UUID1})
     alert(resp == None, 'Could not get test game (2)');
-    if game['result'] == 'FAIL':
-        game = admin_session.game_create({
-            "uuid": game_uuid,
+    if GAME1['result'] == 'FAIL':
+        GAME1 = admin_session.game_create({
+            "uuid": GAME_UUID1,
             "name": "test",
             "description": "test",
             "state": "official",
@@ -90,20 +99,18 @@ def init_enviroment():
             "date_stop": "2001-01-01 00:00:00",
             "date_restart": "2002-01-01 00:00:00",
             "organizators": "test"
-        });
-        alert(game == None, 'Could not send message (2)');
-        alert(game['result'] == 'FAIL', 'Could not create test game ' + str(resp));
-        game = admin_session.game_info({"uuid": game_uuid})
+        })
+        alert(GAME1 == None, 'Could not send message (2)')
+        alert(GAME1['result'] == 'FAIL', 'Could not create test game ' + str(resp))
+        GAME1 = admin_session.game_info({"uuid": GAME_UUID1})
 
-    game = game['data']
+    GAME1 = GAME1['data']
 
 def deinit_enviroment():
     global admin_session
-    global game
-    global game_uuid
 
     # try remove all test objects
     if loggined == True:
-        admin_session.game_delete({"uuid": game_uuid, "admin_password": "admin"})
+        admin_session.game_delete({"uuid": GAME_UUID1, "admin_password": "admin"})
 
-    admin_session.close();
+    admin_session.close()

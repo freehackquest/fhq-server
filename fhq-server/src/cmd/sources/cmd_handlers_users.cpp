@@ -166,7 +166,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest){
         QString role = record.value("role").toString();
 
         nlohmann::json user;
-        user["id"] = std::to_string(nUserId);
+        user["id"] = nUserId;
         user["email"] = email.toStdString();
         user["nick"] = nick.toStdString();
         user["role"] = role.toStdString();

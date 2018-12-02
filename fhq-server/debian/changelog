@@ -1,4 +1,43 @@
-fhq-server (0.2.16-0ppa4) bionic; urgency=low
+fhq-server (0.2.17-ppa-ubuntu-16-04-xenial) xenial; urgency=low
+
+  * server Cookbook Changelog
+  * server.
+  * R`
+  * Replaced QCryptographicHas to smallsha1 implementation
+  * Added notification on users quest passed
+  * Redesign in EmployLeak for using EmployGame
+  * Implemented addGame by employ with cache
+  * Renamed methods id to localId for ModelLeak
+  * Improved ModelGame
+  * redesign answers in employ leaks
+  * Fixed send to all by another thread
+  * Prepare employ for notifies
+  * Added to event that game was removed
+  * Added model notification
+  * Fixed #111 Game remove - must be cleanup logo
+  * Added list of server developers
+  * Removed QCode::AppVersion from code
+  * Added version and handle required params on cli side
+  * Added first message from server: version
+  * Changed folder from files/games to public/games
+  * Fixed #108 Add employ games with check settings for public/files folder icon games
+  * Prepare employ_games
+  * Fixed #103 Game update logo must be work by uuid
+  * Fixed title -> name #105
+  * Add help func lxd in cli #94
+  * Added test for upload logo game
+  * Added test_games
+  * Implemented load leaks from database on start server to cache
+  * Redesign leaks_Add
+  * Removed unused files
+  * Moved log to utils_logger
+  * Redesign class error
+  * Start redesign leaks
+  * Minor changes in model_leak
+
+ -- Free Hack Quest <freehackquest@gmail.com>  Fri, 30 Nov 2018 00:18:41 +0700
+
+fhq-server (0.2.16-ppa-ubuntu-16-04-xenial) xenial; urgency=low
 
   * Fixed crash
   * Added leaks handlers
@@ -6,3 +45,9 @@ fhq-server (0.2.16-0ppa4) bionic; urgency=low
   * Added generator python lib cli
 
  -- Free Hack Quest <freehackquest@gmail.com>  Sat, 07 Jul 2018 03:02:13 +0700
+
+fhq-server (0.2.15-ppa-ubuntu-16-04-xenial) xenial; urgency=low
+
+  * Added postinst script
+
+ -- Free Hack Quest <freehackquest@gmail.com>  Fri, 27 Apr 2018 02:02:57 +0700

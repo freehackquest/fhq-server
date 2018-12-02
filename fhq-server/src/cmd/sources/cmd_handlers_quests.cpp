@@ -2,8 +2,8 @@
 #include <runtasks.h>
 #include <utils_logger.h>
 #include <utils.h>
+#include <md5.h>
 #include <employ_settings.h>
-#include <QCryptographicHash>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <employ_notify.h>
@@ -590,7 +590,8 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest){
     query.bindValue(":name", sName);
     query.bindValue(":text", sText);
     query.bindValue(":answer", sAnswer);
-    QString sAnswerUpperMd5 = QString(QCryptographicHash::hash(sAnswer.toUpper().toUtf8(),QCryptographicHash::Md5).toHex());
+    std::string sAnswerUpperMd5_ = md5(sAnswer.toUpper().toStdString());
+    QString sAnswerUpperMd5 = QString::fromStdString(sAnswerUpperMd5_);
     query.bindValue(":answer_upper_md5", sAnswerUpperMd5);
     query.bindValue(":answer_format", sAnswerFormat);
     query.bindValue(":score", nScore);
