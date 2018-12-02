@@ -28,7 +28,7 @@ void LXDAsyncOperationTask::run() {
 
 	auto *pWsServer = findEmploy<EmployWsServer>();
 	auto jsonPrepare = jsonResponse;
-	jsonPrepare["status"] = "Operation began";
+	jsonPrepare["result"] = "Operation began";
 	pWsServer->sendToOne(m_pRequestClient, jsonPrepare);
 
 	m_func(m_sName, sError, nErrorCode);
