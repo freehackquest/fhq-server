@@ -1,5 +1,7 @@
 #include <utility>
 
+#include <utility>
+
 #include <utils_lxd.h>
 #include <json.hpp>
 #include <employ_orchestra.h>
@@ -22,7 +24,7 @@ bool UtilsLXDAuth::check_trust_certs(std::string &sError){
     return (jsonResponse["metadata"]["auth"].is_string()) && (jsonResponse["metadata"]["auth"] == "trusted" );
 }
 
-bool UtilsLXDAuth::connect_with_lxd(std::string sPass,  std::string &sError){
+bool UtilsLXDAuth::connect_with_lxd(const std::string &sPass, std::string &sError){
     bool bTrusted = check_trust_certs(sError);
 
     if (!sError.empty()){
@@ -31,7 +33,7 @@ bool UtilsLXDAuth::connect_with_lxd(std::string sPass,  std::string &sError){
     }
 
     if (!bTrusted){
-        if (!set_trusted(std::move(sPass), sError)){
+        if (!set_trusted(sPass, sError)){
             Log::err("UtilsLXDAuth", "Can't set trusted certs" + sError);
         }else{
             bTrusted = true;
@@ -41,8 +43,7 @@ bool UtilsLXDAuth::connect_with_lxd(std::string sPass,  std::string &sError){
     return bTrusted;
 }
 
-bool UtilsLXDAuth::set_trusted(std::string sPass, std::string &sError){
-    // std::cout << "[set_trusted] response: " << "\n";
+bool UtilsLXDAuth::set_trusted(const std::string &sPass, std::string &sError){
     std::string sUrl = "/1.0/certificates";
     auto jsonData = R"(
     {

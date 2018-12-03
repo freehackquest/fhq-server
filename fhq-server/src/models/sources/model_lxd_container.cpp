@@ -3,8 +3,8 @@
 #include <model_lxd_container.h>
 #include <employ_orchestra.h>
 
-LXDContainer::LXDContainer(std::string name_of_container){
-    name = std::move(name_of_container);
+LXDContainer::LXDContainer(const std::string &name_of_container){
+    name = name_of_container;
     prefix = "fhq-";
 }
 

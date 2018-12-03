@@ -9,7 +9,7 @@
 
 class LXDContainer {
     public:
-    explicit LXDContainer(std::string name_of_container);
+    explicit LXDContainer(const std::string &name_of_container);
         std::string get_name();
         std::string get_status();
         std::string get_IPv4();

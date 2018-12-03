@@ -49,20 +49,21 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest) {
         nErrorCode = 404;
     }
 
-    if (!sError.empty())
+    if (!sError.empty()) {
         pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
-
-    if (action == "create")
+    }
+    if (action == "create") {
         RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::create_container, name, cmd(), pRequest);
-
-    if (action == "start")
+    }
+    if (action == "start") {
         RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::start_container, name, cmd(), pRequest);
-
-    if (action == "stop")
+    }
+    if (action == "stop"){
         RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::stop_container, name, cmd(), pRequest);
-
-    if (action == "delete")
+    }
+    if (action == "delete") {
         RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::delete_container, name, cmd(), pRequest);
+    }
 }
 
 // ---------------------------------------------------------------------
