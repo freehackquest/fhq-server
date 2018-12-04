@@ -42,12 +42,14 @@ class WebSocketServer : public QObject, public IWebSocketServer {
         virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse);
         virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, Error error);
         virtual void sendToAll(const nlohmann::json& jsonMessage);
+        void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) override;
         virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken);
         virtual IUserToken * getUserToken(QWebSocket *pClient);
 
     Q_SIGNALS:
         void closed();
         void sig_sendToAll(QString jsonMessage);
+        void signal_sendToOne(QWebSocket *pClient, QString jsonMessage);
 
     private Q_SLOTS:
         void onNewConnection();
@@ -57,6 +59,7 @@ class WebSocketServer : public QObject, public IWebSocketServer {
         void socketDisconnected();
         void onSslErrors(const QList<QSslError> &errors);
         void slot_sendToAll(QString jsonMessage);
+        void slot_sendToOne(QWebSocket *pClient, QString message);
 
     private:
         void sendServerMessage(QWebSocket *pSocket);

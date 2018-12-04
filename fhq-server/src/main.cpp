@@ -140,7 +140,7 @@ int main(int argc, char** argv) {
         // enter mysql root password
         char *pPassword=getpass("Enter MySQL root password: ");
         std::string sRootPassword(pPassword);
-        std::string sError = "";
+        std::string sError;
         if(!pDatabase->manualCreateDatabase(sRootPassword, sError)){
             std::cout << "\n * Failed: " << sError << "\n\n";
             return -1;
@@ -159,7 +159,7 @@ int main(int argc, char** argv) {
         Employees::init({});
         if (UtilsLXDAuth::check_trust_certs(sError))
             std::cout << "\nGOOD HTTPS connection with LXD\n\n";
-        else if (sError != ""){
+        else if (!sError.empty()){
             Log::err(TAG, "\nBAD HTTPS connection with LXD\n\n: " + sError);
             return -1;
         }

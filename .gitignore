@@ -36,6 +36,7 @@ Makefile
 tmp/*
 tmpdeb/*
 conf.ini
+cmake-build-debug/
 freehackquest-backend
 
 var/log/freehackquest-backend/errors/*

@@ -253,11 +253,13 @@ list (APPEND FHQSRV_SOURCES "src/tasks/include/update_max_score_game_task.h")
 list (APPEND FHQSRV_SOURCES "src/tasks/include/update_quest_solved_task.h")
 list (APPEND FHQSRV_SOURCES "src/tasks/include/update_user_location_task.h")
 list (APPEND FHQSRV_SOURCES "src/tasks/include/update_user_rating_task.h")
+list (APPEND FHQSRV_SOURCES "src/tasks/include/lxd_async_operation_task.h")
 list (APPEND FHQSRV_SOURCES "src/tasks/sources/add_public_events_task.cpp")
 list (APPEND FHQSRV_SOURCES "src/tasks/sources/update_max_score_game_task.cpp")
 list (APPEND FHQSRV_SOURCES "src/tasks/sources/update_quest_solved_task.cpp")
 list (APPEND FHQSRV_SOURCES "src/tasks/sources/update_user_rating_task.cpp")
 list (APPEND FHQSRV_SOURCES "src/tasks/sources/update_user_location_task.cpp")
+list (APPEND FHQSRV_SOURCES "src/tasks/sources/lxd_async_operation_task.cpp")
 
 
 

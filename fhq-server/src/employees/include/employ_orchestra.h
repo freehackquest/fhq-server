@@ -8,13 +8,15 @@
 #include <string>
 #include <map>
 #include <curl/curl.h>
+#include <future>
 
 
 class EmployOrchestra : public EmployBase {
 public:
     EmployOrchestra();
     static std::string name() { return "EmployOrchestra"; }
-    virtual bool init();
+
+    bool init() override;
 
     bool initConnection();
     bool create_container(std::string sName, std::string &sError);

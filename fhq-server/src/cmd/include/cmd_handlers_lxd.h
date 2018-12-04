@@ -16,10 +16,10 @@ class CmdHandlerLXDContainers : public CmdHandlerBase {
     private:
         std::string TAG;
 
-        void create_container(std::string name, std::string  &sError, int &nErrorCode);
-        void start_container(std::string name, std::string &sError, int &nErrorCode);
-        void stop_container(std::string name, std::string &sError, int &nErrorCode);
-        void delete_container(std::string name, std::string &sError, int &nErrorCode);
+    static void create_container(std::string name, std::string  &sError, int &nErrorCode);
+    static void start_container(std::string name, std::string &sError, int &nErrorCode);
+    static void stop_container(std::string name, std::string &sError, int &nErrorCode);
+    static void delete_container(std::string name, std::string &sError, int &nErrorCode);
 };
 
 REGISTRY_CMD(CmdHandlerLXDContainers)

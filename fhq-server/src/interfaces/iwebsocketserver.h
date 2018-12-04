@@ -21,6 +21,7 @@ class IWebSocketServer {
         virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, Error error) = 0;
 //	virtual void sendToAll(QJsonObject obj) = 0;
         virtual void sendToAll(const nlohmann::json& jsonMessage) = 0;
+        virtual void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) = 0;
         virtual int getConnectedUsers() = 0;
         virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken) = 0;
         virtual IUserToken * getUserToken(QWebSocket *pClient) = 0;

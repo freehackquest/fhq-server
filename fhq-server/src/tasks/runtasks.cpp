@@ -9,40 +9,47 @@
 
 #include <QRunnable>
 #include <QThreadPool>
+#include <include/lxd_async_operation_task.h>
 
-void RunTasks::AddPublicEvents(QString type, QString message){
+void RunTasks::AddPublicEvents(QString type, QString message) {
     AddPublicEventsTask *pAddPublicEventsTask = new AddPublicEventsTask(type, message);
-	QThreadPool::globalInstance()->start(pAddPublicEventsTask);
+    QThreadPool::globalInstance()->start(pAddPublicEventsTask);
 }
 
-void RunTasks::UpdateMaxScoreGame(int gameid){
+void RunTasks::UpdateMaxScoreGame(int gameid) {
     UpdateMaxScoreGameTask *pUpdateMaxScoreGameTask = new UpdateMaxScoreGameTask(gameid);
     QThreadPool::globalInstance()->start(pUpdateMaxScoreGameTask);
 }
 
-void RunTasks::UpdateQuestSolved(int nQuestID){
+void RunTasks::UpdateQuestSolved(int nQuestID) {
     UpdateQuestSolvedTask *pUpdateQuestSolvedTask = new UpdateQuestSolvedTask(nQuestID);
     QThreadPool::globalInstance()->start(pUpdateQuestSolvedTask);
 }
 
-void RunTasks::UpdateUserLocation(int userid, QString lastip){
+void RunTasks::UpdateUserLocation(int userid, QString lastip) {
     UpdateUserLocationTask *pUpdateUserLocationTask = new UpdateUserLocationTask(userid, lastip);
-	QThreadPool::globalInstance()->start(pUpdateUserLocationTask);
+    QThreadPool::globalInstance()->start(pUpdateUserLocationTask);
 }
 
-void RunTasks::UpdateUserRating(int nUserID){
+void RunTasks::UpdateUserRating(int nUserID) {
     UpdateUserRatingTask *pUpdateUserRatingTask = new UpdateUserRatingTask(nUserID);
     QThreadPool::globalInstance()->start(pUpdateUserRatingTask);
 }
 
-void RunTasks::MailSend(IWebSocketServer *pWebSocketServer,  QString to, QString subject, QString content){
+void RunTasks::MailSend(IWebSocketServer *pWebSocketServer, QString to, QString subject, QString content) {
     MailSendTask *pMailSendTask = new MailSendTask(pWebSocketServer, to, subject, content);
     QThreadPool::globalInstance()->start(pMailSendTask);
 }
 
-void RunTasks::NotifyToAll(const nlohmann::json &jsonMessage){
+void RunTasks::NotifyToAll(const nlohmann::json &jsonMessage) {
     NotifyToAllTask *pNotifyToAllTask = new NotifyToAllTask(jsonMessage);
     QThreadPool::globalInstance()->start(pNotifyToAllTask);
+}
+
+void RunTasks::LXDAsyncOperation(void (*func)(std::string, std::string &, int &),
+                                 std::string sName, std::string sCMD, ModelRequest *pRequest) {
+    LXDAsyncOperationTask *pLXDAsyncTask = new LXDAsyncOperationTask(func, std::move(sName), std::move(sCMD), pRequest);
+    QThreadPool::globalInstance()->start(pLXDAsyncTask);
 }
 
 
