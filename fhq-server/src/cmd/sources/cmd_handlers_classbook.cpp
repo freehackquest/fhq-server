@@ -6,7 +6,6 @@
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <QtCore>
-#include <SmtpMime>
 #include <quazip.h>
 #include <quazipfile.h>
 #include <quazipfileinfo.h>

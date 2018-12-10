@@ -12,10 +12,11 @@ class RunTasks {
         static void UpdateMaxScoreGame(int gameid);
         static void UpdateUserRating(int nUserID);
         static void UpdateQuestSolved(int nQuestID);
-        static void MailSend(IWebSocketServer *pWebSocketServer,  QString to, QString subject, QString content);
+        static void MailSend(const std::string &sTo, const std::string &sSubject, const std::string &sContent);
         static void NotifyToAll(const nlohmann::json &jsonMessage);
         static void LXDAsyncOperation(void (*func)(std::string, std::string &, int &),
                                       std::string sName, std::string sCMD, ModelRequest *pRequest);
+        static void waitForDone();
 };
 
 #endif // RUNTASKS_H

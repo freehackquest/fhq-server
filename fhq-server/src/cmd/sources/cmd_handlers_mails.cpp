@@ -6,7 +6,6 @@
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <QtCore>
-#include <SmtpMime>
 
 /*****************************************
  * Mail Info
@@ -57,11 +56,11 @@ void CmdHandlerMailSend::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
 
-    QString sEmail = jsonRequest["to"].toString();
-    QString sSubject = jsonRequest["subject"].toString();
-    QString sBody = jsonRequest["body"].toString();
+    std::string sEmail = jsonRequest["to"].toString().toStdString();
+    std::string sSubject = jsonRequest["subject"].toString().toStdString();
+    std::string sBody = jsonRequest["body"].toString().toStdString();
 
-    RunTasks::MailSend(pRequest->server(), sEmail, sSubject, sBody);
+    RunTasks::MailSend(sEmail, sSubject, sBody);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

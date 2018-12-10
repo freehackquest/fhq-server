@@ -355,12 +355,12 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest){
 
     RunTasks::AddPublicEvents("users", "New user #" + QString::number(nUserID) + "  " + sNick);
 
-    QString sSubject = "Registration on FreeHackQuest";
-    QString sContext = "Welcome to FreeHackQuest 2017!\n"
-                       "You login: " + sEmail + "\n"
-                       "You password: " + sPassword + "\n";
+    std::string sSubject = "Registration on FreeHackQuest";
+    std::string sContext = "Welcome to FreeHackQuest!\n"
+                       "You login: " + sEmail.toStdString() + "\n"
+                       "You password: " + sPassword.toStdString() + "\n";
 
-    RunTasks::MailSend(pRequest->server(), sEmail, sSubject, sContext);
+    RunTasks::MailSend(sEmail.toStdString(), sSubject, sContext);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
     RunTasks::UpdateUserLocation(nUserID, sLastIP);
@@ -1079,12 +1079,12 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest){
 
     RunTasks::AddPublicEvents("users", "User comeback #" + QString::number(nUserID) + "  " + sNick);
 
-    QString sSubject = "Reset Password from FreeHackQuest";
-    QString sContext = "Welcome back to FreeHackQuest!\n"
-                       "You login: " + sEmail + "\n"
-                       "You password: " + sPassword + "\n";
+    std::string sSubject = "Reset Password from FreeHackQuest";
+    std::string sContext = "Welcome back to FreeHackQuest!\n"
+                       "You login: " + sEmail.toStdString() + "\n"
+                       "You password: " + sPassword.toStdString() + "\n";
 
-    RunTasks::MailSend(pRequest->server(), sEmail, sSubject, sContext);
+    RunTasks::MailSend(sEmail.toStdString(), sSubject, sContext);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

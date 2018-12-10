@@ -1,4 +1,5 @@
 #include <runtasks.h>
+#include <utils_logger.h>
 #include <add_public_events_task.h>
 #include <mail_send_task.h>
 #include <notify_to_all_task.h>
@@ -36,8 +37,8 @@ void RunTasks::UpdateUserRating(int nUserID) {
     QThreadPool::globalInstance()->start(pUpdateUserRatingTask);
 }
 
-void RunTasks::MailSend(IWebSocketServer *pWebSocketServer, QString to, QString subject, QString content) {
-    MailSendTask *pMailSendTask = new MailSendTask(pWebSocketServer, to, subject, content);
+void RunTasks::MailSend(const std::string &sTo, const std::string &sSubject, const std::string &sContent) {
+    MailSendTask *pMailSendTask = new MailSendTask(sTo, sSubject, sContent);
     QThreadPool::globalInstance()->start(pMailSendTask);
 }
 
@@ -51,5 +52,12 @@ void RunTasks::LXDAsyncOperation(void (*func)(std::string, std::string &, int &)
     LXDAsyncOperationTask *pLXDAsyncTask = new LXDAsyncOperationTask(func, std::move(sName), std::move(sCMD), pRequest);
     QThreadPool::globalInstance()->start(pLXDAsyncTask);
 }
+
+void RunTasks::waitForDone() {
+    while (!QThreadPool::globalInstance()->waitForDone(1000)) {
+        Log::info(std::string("RunTasks"), "Wait tasks for done...");
+    }
+}
+
 
 

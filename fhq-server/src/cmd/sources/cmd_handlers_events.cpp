@@ -6,7 +6,6 @@
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <QtCore>
-#include <SmtpMime>
 
 // *****************************************
 // * Create public events

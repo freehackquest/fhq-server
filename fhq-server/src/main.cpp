@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <utils_export_list_of_handlers.h>
 #include <utils_export_client_library_python.h>
+#include <runtasks.h>
 
 int main(int argc, char** argv) {
     QCoreApplication a(argc, argv);
@@ -45,6 +46,7 @@ int main(int argc, char** argv) {
     helpArgs.addHelp(HelpArg("export-cli-library-python", "-eclp", "Export client library for python"));
     helpArgs.addHelp(HelpArg("show-employees", "-se", "Show employees"));
     helpArgs.addHelp(HelpArg("show-settings", "-ss", "Show settings"));
+    helpArgs.addHelp(HelpArg("send-test-mail", "-stm", "Send test mail"));
     helpArgs.addHelp(HelpArg("prepare-deb", "-pd", "Prepare Deb Package"));
     helpArgs.addHelp(HelpArg("check-server-config", "-csc", "Check server config"));
     helpArgs.addHelp(HelpArg("make-config-linux", "-mcl", "Create config file for Linux: /etc/fhq-server/fhq-server.conf"));
@@ -121,12 +123,22 @@ int main(int argc, char** argv) {
         }
         std::cout << "\n * Success\n\n";
         return 0;
-    }else if(helpArgs.has("show-settings") || helpArgs.has("-ss")){
+    } else if(helpArgs.has("show-settings") || helpArgs.has("-ss")){
         Employees::init({});
         EmploySettings *pSettings = findEmploy<EmploySettings>();
         std::cout << "\n * Show settings\n\n";
         pSettings->printSettings();
         std::cout << "\n * Done\n\n";
+        return 0;
+    } else if(helpArgs.has("send-test-mail") || helpArgs.has("-stm")){
+        Employees::init({});
+        EmploySettings *pSettings = findEmploy<EmploySettings>();
+        std::cout << "\n * Send test mail\n\n";
+        std::string sTo = pSettings->getSettString("mail_system_message_admin_email").toStdString();
+        std::string sSubject = "Test Mail";
+        std::string sContent = "Welcome to Free Hack Quest!\r\n\r\nHow are you?";
+        RunTasks::MailSend(sTo, sSubject, sContent);
+        RunTasks::waitForDone();
         return 0;
     }else if(helpArgs.has("manual-create-database") || helpArgs.has("-mcd")){
         std::cout << "\n * Manual create database\n\n";

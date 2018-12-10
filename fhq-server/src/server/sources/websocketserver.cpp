@@ -9,7 +9,6 @@
 #include <QtNetwork/QSslCertificate>
 #include <QtNetwork/QSslKey>
 
-#include <SmtpMime>
 #include <utils_logger.h>
 
 #include <employ_server_config.h>
@@ -17,7 +16,6 @@
 #include <employ_ws_server.h>
 #include <model_request.h>
 #include <cmd_handlers.h>
-
 
 // QT_USE_NAMESPACE
 

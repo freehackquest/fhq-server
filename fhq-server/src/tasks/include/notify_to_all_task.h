@@ -2,7 +2,6 @@
 #define NOTIFY_TO_ALL_TASK_H
 
 #include <QRunnable>
-#include <SmtpMime>
 #include <iserver.h>
 
 class NotifyToAllTask : public QRunnable {

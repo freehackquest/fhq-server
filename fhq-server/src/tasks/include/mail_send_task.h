@@ -2,22 +2,28 @@
 #define MAIL_SEND_TASK_H
 
 #include <QRunnable>
-#include <SmtpMime>
-#include <iserver.h>
+#include <string>
+#include <vector>
 
 class MailSendTask : public QRunnable {
 
     void run();
 
     public:
-        MailSendTask(IWebSocketServer *pWebSocketServer,  QString to, QString subject, QString content);
+        MailSendTask(const std::string &sTo, const std::string &sSubject, const std::string &sContent);
         ~MailSendTask();
+        bool hasPayloadLine();
+        std::string nextPayloadLine();
     private:
-        QString TAG;
-        QString m_to;
-        QString m_subject;
-        QString m_content;
-        IWebSocketServer *m_pWebSocketServer;
+        std::string generateDateTime();
+        std::string generateMessageID();
+
+        std::string TAG;
+        std::string m_sTo;
+        std::string m_sSubject;
+        std::string m_sContent;
+        std::vector<std::string> m_vPayloadText;
+        int m_nLineRead;
 };
 
 #endif // MAIL_SEND_TASK_H

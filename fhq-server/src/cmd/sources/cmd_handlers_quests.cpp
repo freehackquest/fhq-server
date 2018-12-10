@@ -854,14 +854,14 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest){
     int nQuestProposalId = query.lastInsertId().toInt();
     jsonResponse["questid"] = QJsonValue(nQuestProposalId);
 
-    QString sMailToAdmin = pSettings->getSettString("mail_system_message_admin_email");
-    QString sMessageSubject = "Quest Proposal (FreeHackQuest)";
-    QString sContext = "Quest Proposal \n"
-                       "UserID: " + QString::number(nUserID) + "\n"
-                       "From: " + sUserEmail + "\n"
-                       "QuestProposalId: #" + QString::number(nQuestProposalId) + "\n";
+    std::string sMailToAdmin = pSettings->getSettString("mail_system_message_admin_email").toStdString();
+    std::string sMessageSubject = "Quest Proposal (FreeHackQuest)";
+    std::string sContext = "Quest Proposal \n"
+                       "UserID: " + QString::number(nUserID).toStdString() + "\n"
+                       "From: " + sUserEmail.toStdString() + "\n"
+                       "QuestProposalId: #" + QString::number(nQuestProposalId).toStdString() + "\n";
 
-    RunTasks::MailSend(pRequest->server(), sMailToAdmin, sMessageSubject, sContext);
+    RunTasks::MailSend(sMailToAdmin, sMessageSubject, sContext);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

@@ -6,7 +6,6 @@
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <QtCore>
-#include <SmtpMime>
 
 // ******************************
 // * This handler for add support
@@ -60,14 +59,14 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest){
 
     RunTasks::AddPublicEvents("users", "Added feedback");
 
-    QString sMailToAdmin = pSettings->getSettString("mail_system_message_admin_email");
-    QString sSubject = "Feedback (FreeHackQuest 2017)";
-    QString sContext = "Feedback \n"
-                       "Type: " + sType + "\n"
-                       "From: " + sEmail + "\n"
-                       "Text: \n" + sText + "\n";
+    std::string sMailToAdmin = pSettings->getSettString("mail_system_message_admin_email").toStdString();
+    std::string sSubject = "Feedback (FreeHackQuest 2017)";
+    std::string sContext = "Feedback \n"
+                       "Type: " + sType.toStdString() + "\n"
+                       "From: " + sEmail.toStdString() + "\n"
+                       "Text: \n" + sText.toStdString() + "\n";
 
-    RunTasks::MailSend(pRequest->server(), sMailToAdmin, sSubject, sContext);
+    RunTasks::MailSend(sMailToAdmin, sSubject, sContext);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
