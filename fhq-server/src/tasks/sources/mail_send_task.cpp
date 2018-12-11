@@ -119,7 +119,7 @@ void MailSendTask::run(){
     long nMailPort = pSettings->getSettInteger("mail_port");
     std::string sMailPassword = pSettings->getSettPassword("mail_password").toStdString();
     std::string sMailFrom = pSettings->getSettString("mail_from").toStdString();
-    // std::string sMailSignatureText = pSettings->getSettString("mail_signature_text").toStdString();
+    std::string sMailSignatureText = pSettings->getSettString("mail_signature_text").toStdString();
 
     // write info about message into DB
     QSqlDatabase db = *(pDatabase->database());
@@ -172,14 +172,13 @@ void MailSendTask::run(){
         trim(_sContentTextLine);
         m_vPayloadText.push_back(_sContentTextLine);
     }
-
-    /*m_vPayloadText.push_back("");
+    m_vPayloadText.push_back("");
     std::stringstream _sSignText(sMailSignatureText.c_str());
     std::string _sSignTextLine;
     while (std::getline(_sSignText, _sSignTextLine, '\n')) {
         trim(_sSignTextLine);
         m_vPayloadText.push_back(_sSignTextLine);
-    }*/
+    }
 
     m_nLineRead = 0;
 

@@ -37,7 +37,17 @@ bool EmploySettings::init(){
     addNewSetting(new ModelServerSettHelper(sGroupMail, "mail_auth", true));
     addNewSetting(new ModelServerSettHelper(sGroupMail, "mail_allow", true));
     addNewSetting(new ModelServerSettHelper(sGroupMail, "mail_system_message_admin_email", QString("")));
-
+    addNewSetting(new ModelServerSettHelper(sGroupMail, "mail_signature_text", QString(
+        "---\r\n"
+        "With thanks,\r\n"
+        "FreeHackQuest Team\r\n"
+        "\r\n"
+        "Write message via e-mail to freehackquest@gmail.com\r\n"
+        "Contact by Telegram: https://t.me/freehackquest\r\n"
+        "Follow in Twitter: https://twitter.com/freehackquest\r\n"
+        "Google+ Community: https://plus.google.com/communities/107112500285357136727\r\n"
+    )));
+    
     // Google Map API
     std::string sGroupGoogleMap = "google_map";
     addNewSetting(new ModelServerSettHelper(sGroupGoogleMap, "google_map_api_key", QString("some")));
