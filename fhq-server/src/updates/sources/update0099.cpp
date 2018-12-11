@@ -8,9 +8,8 @@ bool Update0099::update(QSqlDatabase &db, std::string &error){
 
     {
         QSqlQuery query(db);
-        query.prepare(""
-            "ALTER TABLE settings MODIFY COLUMN value VARCHAR(1024);"
-        if(!query.exec()){
+        query.prepare("ALTER TABLE settings MODIFY COLUMN value VARCHAR(1024);");
+        if (!query.exec()) {
             error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with creating a table " + error);
             return false;

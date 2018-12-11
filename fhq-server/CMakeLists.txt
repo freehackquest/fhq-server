@@ -258,6 +258,7 @@ list (APPEND FHQSRV_SOURCES "src/updates/sources/update0095.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/update0096.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/update0097.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/update0098.cpp")
+list (APPEND FHQSRV_SOURCES "src/updates/sources/update0099.cpp")
 
 
 # main
