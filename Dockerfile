@@ -1,16 +1,27 @@
 FROM debian:9.5
 
-RUN apt-get update && apt-get install -y \
+# basic libs
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
     make cmake \
     g++ \
     pkg-config \
     libcurl4-openssl-dev \
     zlibc zlib1g zlib1g-dev \
     libpng-dev \
-    default-libmysqlclient-dev
-    
-RUN apt-get install -y libqt5sql5-mysql libqt5websockets5 libqt5websockets5-dev \
-    libwebsockets-dev make qt5-default qtchooser
+    default-libmysqlclient-dev \ 
+    libwebsockets-dev \
+    apt-utils
+
+# install qt5\
+
+RUN apt-get install -y \
+    libqt5sql5-mysql \
+    libqt5websockets5 \
+    libqt5websockets5-dev \
+    qt5-default \
+    qtchooser
 
 # Fix for building on debian system (mysqlclient library)
 RUN ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/mariadb.pc /usr/lib/x86_64-linux-gnu/pkgconfig/mysqlclient.pc
@@ -30,10 +41,28 @@ COPY --from=0 /root/sources/fhq-server /usr/bin/fhq-server
 RUN mkdir -p /usr/share/fhq-server/public/games 
 RUN mkdir -p /var/log/fhq-server
 
-RUN apt-get update && apt-get install -y libcurl3 zlibc zlib1g libpng16-16 libmariadbclient18
+RUN apt-get update && \
+    apt-get install -y \
+    libcurl3 \
+    zlibc \
+    zlib1g \
+    libpng16-16 \
+    libmariadbclient18 \
+    libpthread-stubs0-dev \
+    locales
 
-RUN apt-get install -y libqt5sql5-mysql
-RUN apt-get install -y libqt5websockets5
+# RUN locale-gen en_US.UTF-8
+RUN sed -i -e "s/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" /etc/locale.gen && \
+    echo 'LANG="en_US.UTF-8"'>/etc/default/locale && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale LANG=en_US.UTF-8
+# RUN update-locale LANG=en_US.UTF-8
+
+RUN apt-get install -y \
+    libqt5sql5-mysql \
+    libqt5websockets5 \
+    libqt5core5a \
+    libqt5concurrent5
 
 # RUN apt-get install -y qt5-default qtchooser \
 
