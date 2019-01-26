@@ -7,13 +7,13 @@
 #include <include/employ_ws_server.h>
 
 
-LXDAsyncOperationTask::LXDAsyncOperationTask(void (*func)(std::string, std::string &, int &),
-                                             std::string sName, std::string sCMD, ModelRequest *pRequest) {
+LXDAsyncOperationTask::LXDAsyncOperationTask(void (*func)(const std::string&, std::string &, int &),
+                                             const std::string& sName, const std::string& sCMD, ModelRequest *pRequest) {
 	TAG = "LXDAsyncOperationTask";
 	m_func = func;
 	m_pRequestClient = pRequest->client();
-	m_sName = std::move(sName);
-	m_sCMD = std::move(sCMD);
+	m_sName = sName;
+	m_sCMD = sCMD;
 	m_sM = pRequest->m();
 }
 

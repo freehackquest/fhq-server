@@ -65,7 +65,7 @@ std::string EmployOrchestra::lastError() {
 
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::create_container(std::string sName, std::string &sError) {
+bool EmployOrchestra::create_container(const std::string &sName, std::string &sError) {
     Log::info(TAG, "Starting creation container " + sName);
     LXDContainer *pContainer = new LXDContainer(sName);
 
@@ -84,7 +84,7 @@ bool EmployOrchestra::create_container(std::string sName, std::string &sError) {
 
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::find_container(std::string name, LXDContainer *&pContainer) {
+bool EmployOrchestra::find_container(const std::string &name, LXDContainer *&pContainer) {
     if (m_mapContainers.find(name) == m_mapContainers.end())
         return false;
     pContainer = m_mapContainers[name];
@@ -102,7 +102,8 @@ static size_t write_to_string(void *ptr, size_t size, size_t count, void *stream
 
 static char errorBuffer[CURL_ERROR_SIZE];
 
-bool EmployOrchestra::send_post_request(std::string sUrl, nlohmann::json jsonData, nlohmann::json &jsonResponse,
+bool EmployOrchestra::send_post_request(const std::string &sUrl, const nlohmann::json &jsonData,
+                                        nlohmann::json &jsonResponse,
                                         std::string &sError) {
     CURLcode ret;
     CURL *hnd;
@@ -152,7 +153,8 @@ bool EmployOrchestra::send_post_request(std::string sUrl, nlohmann::json jsonDat
 
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::send_put_request(std::string sUrl, nlohmann::json jsonData, nlohmann::json &jsonResponse,
+bool EmployOrchestra::send_put_request(const std::string &sUrl, const nlohmann::json &jsonData,
+                                       nlohmann::json &jsonResponse,
                                        std::string &sError) {
     CURLcode ret;
     CURL *hnd;
@@ -201,7 +203,7 @@ bool EmployOrchestra::send_put_request(std::string sUrl, nlohmann::json jsonData
 
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::send_get_request(std::string sUrl, nlohmann::json &jsonResponse, std::string &sError) {
+bool EmployOrchestra::send_get_request(const std::string &sUrl, nlohmann::json &jsonResponse, std::string &sError) {
 
     CURLcode ret;
     CURL *hnd;
@@ -247,7 +249,7 @@ bool EmployOrchestra::send_get_request(std::string sUrl, nlohmann::json &jsonRes
 
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::send_delete_request(std::string sUrl, nlohmann::json &jsonResponse, std::string &sError) {
+bool EmployOrchestra::send_delete_request(const std::string &sUrl, nlohmann::json &jsonResponse, std::string &sError) {
 
     CURLcode ret;
     CURL *hnd;
@@ -335,7 +337,7 @@ bool EmployOrchestra::pull_container_names() {
 
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::check_response(nlohmann::json jsonResponse, std::string &sError) {
+bool EmployOrchestra::check_response(const nlohmann::json &jsonResponse, std::string &sError) {
     std::string error;
 
     if (!jsonResponse.at("error").get<std::string>().empty()) {
@@ -362,7 +364,7 @@ bool EmployOrchestra::check_response(nlohmann::json jsonResponse, std::string &s
 
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::remove_container(std::string name, std::string &sError) {
+bool EmployOrchestra::remove_container(const std::string &name, std::string &sError) {
     LXDContainer *pContainer;
 
     if (!find_container(name, pContainer)) {

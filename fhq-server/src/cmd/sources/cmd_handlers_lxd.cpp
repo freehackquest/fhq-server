@@ -58,7 +58,7 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest) {
     if (action == "start") {
         RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::start_container, name, cmd(), pRequest);
     }
-    if (action == "stop"){
+    if (action == "stop") {
         RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::stop_container, name, cmd(), pRequest);
     }
     if (action == "delete") {
@@ -68,7 +68,7 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest) {
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLXDContainers::create_container(std::string name, std::string &sError, int &nErrorCode) {
+void CmdHandlerLXDContainers::create_container(const std::string &name, std::string &sError, int &nErrorCode) {
     auto *pOrchestra = findEmploy<EmployOrchestra>();
     LXDContainer *pContainer;
 
@@ -93,7 +93,7 @@ void CmdHandlerLXDContainers::create_container(std::string name, std::string &sE
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLXDContainers::start_container(std::string name, std::string &sError, int &nErrorCode) {
+void CmdHandlerLXDContainers::start_container(const std::string &name, std::string &sError, int &nErrorCode) {
     auto *pOrchestra = findEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()) {
@@ -117,7 +117,7 @@ void CmdHandlerLXDContainers::start_container(std::string name, std::string &sEr
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLXDContainers::stop_container(std::string name, std::string &sError, int &nErrorCode) {
+void CmdHandlerLXDContainers::stop_container(const std::string &name, std::string &sError, int &nErrorCode) {
     auto *pOrchestra = findEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()) {
@@ -141,7 +141,7 @@ void CmdHandlerLXDContainers::stop_container(std::string name, std::string &sErr
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLXDContainers::delete_container(std::string name, std::string &sError, int &nErrorCode) {
+void CmdHandlerLXDContainers::delete_container(const std::string &name, std::string &sError, int &nErrorCode) {
     auto *pOrchestra = findEmploy<EmployOrchestra>();
     LXDContainer *pContainer;
 
