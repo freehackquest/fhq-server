@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  fhqserver_db:
+    image: mysql:5.7
+    volumes:
+      - "./dckr_mysql:/var/lib/mysql"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: KzhyntJxwt
+      MYSQL_DATABASE: fhqserver
+      MYSQL_USER: fhqserver
+      MYSQL_PASSWORD: fhqserver
+    networks:
+      - fhqserver_net
+
+  fhqserver:
+    build: .
+    depends_on:
+      - fhqserver_db
+    image: freehackquest/fhq-server:latest
+    volumes:
+      - "./dckr_fhqserver/data:/usr/share/fhq-server"
+      - "./dckr_fhqserver/conf.d:/etc/fhq-server"
+      - "./dckr_fhqserver/logs:/var/log/fhq-server"
+    ports:
+      - "1234:1234"
+      - "4613:4613"
+    restart: always
+    networks:
+      - fhqserver_net
+
+networks:
+  fhqserver_net:
+    driver: bridge

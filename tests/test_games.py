@@ -253,6 +253,8 @@ try:
     resp = fhqtest.admin_session.game_delete({ "uuid": fhqtest.GAME_UUID2, "admin_password": fhqtest.admin_password })
     fhqtest.check_response(resp, "Game removed")
 
+    fhqtest.check_response(resp, "TODO Game import")
+
     '''
     # TODO import
     fhqtest.print_bold("Test game import... ")

@@ -69,3 +69,24 @@ private:
     int m_nSize;
 }
 ```
+
+
+# https://tproger.ru/translations/stanford-cpp-style-guide/
+
+
+
+```
+// bad
+if (size == 0) return;
+else
+    for (int i = 0; i < 10; i++) cout << "ok" << endl;
+
+// nice
+if (size == 0) {
+    return;
+} else {
+    for (int i = 0; i < 10; i++) {
+        cout << "ok" << endl;
+    }
+}
+```
