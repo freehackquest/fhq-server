@@ -42,9 +42,6 @@ list (APPEND FHQSRV_INCLUDE_DIRS "src/updates/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/classbook/include")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/events/include")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/quests/include")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/support/include")
 
 # json
 list (APPEND FHQSRV_SOURCES "src/3rdParty/nlohmann/json.hpp")
@@ -98,6 +95,8 @@ list (APPEND FHQSRV_SOURCES "src/3rdParty/quazip-0.7.3/quazip/unzip.c")
 list (APPEND FHQSRV_SOURCES "src/3rdParty/quazip-0.7.3/quazip/zip.c")
 
 # cmd
+list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_quests_writeups.h")
+list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_quests_writeups.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_users.h")
