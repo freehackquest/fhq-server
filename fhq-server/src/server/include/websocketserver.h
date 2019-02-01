@@ -38,13 +38,13 @@ class WebSocketServer : public QObject, public IWebSocketServer {
         bool isFailed();
 
         // IWebSocketServer
-        virtual int getConnectedUsers();
-        virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse);
-        virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, Error error);
-        virtual void sendToAll(const nlohmann::json& jsonMessage);
+        virtual int getConnectedUsers() override;
+        virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse) override;
+        virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, Error error) override;
+        virtual void sendToAll(const nlohmann::json& jsonMessage) override;
         void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) override;
-        virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken);
-        virtual IUserToken * getUserToken(QWebSocket *pClient);
+        virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken) override;
+        virtual IUserToken * getUserToken(QWebSocket *pClient) override;
 
     Q_SIGNALS:
         void closed();

@@ -54,31 +54,36 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
     pModelGame.fillFrom(jsonRequest);
 
     std::string sError = "";
-    EmployResult result = pEmployGames->addGame(pModelGame, sError);
-    switch(result){
+    EmployResult nResult = pEmployGames->addGame(pModelGame, sError);
+    switch (nResult) {
 
-    case EmployResult::DATABASE_ERROR:
-        pRequest->sendMessageError(cmd(), Error(500, sError));
-        return;
+        case EmployResult::DATABASE_ERROR: {
+            pRequest->sendMessageError(cmd(), Error(500, sError));
+            break;
+        }
 
-    case EmployResult::ALREADY_EXISTS:
-        pRequest->sendMessageError(cmd(), Error(403, "Game already exists with this uuid"));
-        return;
+        case EmployResult::ALREADY_EXISTS: {
+            pRequest->sendMessageError(cmd(), Error(403, "Game already exists with this uuid"));
+            break;
+        }
 
-    case EmployResult::ERROR_NAME_IS_EMPTY:
-        pRequest->sendMessageError(cmd(), Error(400, "Game has empty name"));
-        return;
+        case EmployResult::ERROR_NAME_IS_EMPTY: {
+            pRequest->sendMessageError(cmd(), Error(400, "Game has empty name"));
+            break;
+        }
 
-    case EmployResult::OK:
-        nlohmann::json jsonResponse;
-        pEmployGames->findGame(pModelGame.uuid(), pModelGame);
-        jsonResponse["data"] = pModelGame.toJson();
-        pRequest->sendMessageSuccess(cmd(), jsonResponse);
-        return;
+        case EmployResult::OK: {
+            nlohmann::json jsonResponse;
+            pEmployGames->findGame(pModelGame.uuid(), pModelGame);
+            jsonResponse["data"] = pModelGame.toJson();
+            pRequest->sendMessageSuccess(cmd(), jsonResponse);
+            break;
+        }
+
+        default: {
+            pRequest->sendMessageError(cmd(), Error(500, "Server error"));
+        }
     }
-
-    // default
-    pRequest->sendMessageError(cmd(), Error(500, "Server error"));
 }
 
 /*********************************************
@@ -446,28 +451,33 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
     updatedModelGame.fillFrom(pRequest->jsonRequest()); // will be replaced values for existing fields
 
     std::string sError = "";
-    EmployResult result = pEmployGames->updateGame(updatedModelGame, sError);
+    EmployResult nResult = pEmployGames->updateGame(updatedModelGame, sError);
 
-    switch(result){
+    switch (nResult) {
 
-    case EmployResult::DATABASE_ERROR:
-        pRequest->sendMessageError(cmd(), Error(500, sError));
-        return;
+        case EmployResult::DATABASE_ERROR: {
+            pRequest->sendMessageError(cmd(), Error(500, sError));
+            break;
+        }
+        
 
-    case EmployResult::GAME_NOT_FOUND:
-        pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
-        return;
+        case EmployResult::GAME_NOT_FOUND: {
+            pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
+            break;
+        }
 
-    case EmployResult::OK:
-        nlohmann::json jsonResponse;
-        pEmployGames->findGame(modelGame.uuid(), modelGame);
-        jsonResponse["data"] = modelGame.toJson();
-        pRequest->sendMessageSuccess(cmd(), jsonResponse);
-        return;
+        case EmployResult::OK: {
+            nlohmann::json jsonResponse;
+            pEmployGames->findGame(modelGame.uuid(), modelGame);
+            jsonResponse["data"] = modelGame.toJson();
+            pRequest->sendMessageSuccess(cmd(), jsonResponse);
+            break;
+        }
+
+        default: {
+            pRequest->sendMessageError(cmd(), Error(500, "Server error"));
+        }
     }
-
-    // default
-    pRequest->sendMessageError(cmd(), Error(500, "Server error"));
 }
 
 
@@ -520,32 +530,34 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
     // TODO replace decode base64 to std
     QByteArray baImagePNG = QByteArray::fromBase64(baImagePNGBase64); // .fromBase64(baImagePNGBase64);
 
-    if(baImagePNG.size() == 0){
+    if (baImagePNG.size() == 0) {
         pRequest->sendMessageError(cmd(), Error(400, "Could not decode base64"));
         return;
     }
 
-    std::string sourceImageFile = std::tmpnam(nullptr);
-    std::cout << "temporary file name: " << sourceImageFile << '\n';
-
-    int nLen = baImagePNG.size();
-
     FILE * pFile;
-    pFile = fopen (sourceImageFile.c_str(), "wb");
+    char *sSIF = new char[L_tmpnam];
+    strcpy(sSIF, "/tmp/fileXXXXXX");
+    int fd = mkstemp(sSIF);
+    std::string sSourceImageFile(sSIF);
+    std::cout << "temporary file name: " << sSourceImageFile << '\n';
+    
+    int nLen = baImagePNG.size();
+    pFile = fdopen(fd, "wb");
     fwrite (baImagePNG.constData(), sizeof(char), nLen, pFile);
     fclose (pFile);
 
     std::string targetImageFile = sFilename.toStdString();
     // Log::info(TAG, "targetImageFile " + targetImageFile);
-    if(!pImages->doThumbnailImagePng(sourceImageFile, targetImageFile, 100, 100)){
+    if(!pImages->doThumbnailImagePng(sSourceImageFile, targetImageFile, 100, 100)){
         pRequest->sendMessageError(cmd(), Error(400, "Could not decode bytearray to png"));
         // cleanup - redesign try finnaly
-        remove( sourceImageFile.c_str());
+        remove( sSourceImageFile.c_str());
         return;
     }
 
-    if( remove( sourceImageFile.c_str() ) != 0 ){
-        Log::err(TAG, "Could not delete file " + sourceImageFile);
+    if( remove( sSourceImageFile.c_str() ) != 0 ){
+        Log::err(TAG, "Could not delete file " + sSourceImageFile);
     }
 
     if (FILE *file = fopen(targetImageFile.c_str(), "r")) {
