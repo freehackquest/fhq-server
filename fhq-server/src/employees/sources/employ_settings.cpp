@@ -312,18 +312,18 @@ void EmploySettings::printSettings(){
         ModelServerSettHelper *pServerSettHelper = it->second;
 
 		std::cout << " * [" << pServerSettHelper->name() << "] => [";
-        if(pServerSettHelper->isBoolean()){
-			std::cout << pServerSettHelper->valueAsBoolean() ? "true" : "false";
-        }else if(pServerSettHelper->isString()){
+        if (pServerSettHelper->isBoolean()) {
+			std::cout << (pServerSettHelper->valueAsBoolean() ? "true" : "false");
+        } else if (pServerSettHelper->isString()) {
 			std::cout << pServerSettHelper->valueAsString().toStdString();
-        }else if(pServerSettHelper->isInteger()){
+        } else if (pServerSettHelper->isInteger()) {
 			std::cout << pServerSettHelper->valueAsInteger();
-        }else if(pServerSettHelper->isPassword()){
+        } else if (pServerSettHelper->isPassword()) {
 			std::cout << pServerSettHelper->valueAsString().toStdString();
-        }else{
+        } else {
 			std::cout << pServerSettHelper->valueAsString().toStdString();
         }
-        std::cout << "]\n";
+        std::cout << "]" << std::endl;
 
         // jsonSett["group"] = pServerSettHelper->group();
         // jsonSett["type"] = pServerSettHelper->type();
