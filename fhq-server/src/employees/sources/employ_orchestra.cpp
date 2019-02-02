@@ -67,7 +67,7 @@ std::string EmployOrchestra::lastError() {
 
 bool EmployOrchestra::create_container(const std::string &sName, std::string &sError) {
     Log::info(TAG, "Starting creation container " + sName);
-    LXDContainer *pContainer = new LXDContainer(sName);
+    auto *pContainer = new LXDContainer(sName);
 
     if (pContainer->create()) {
         Log::info(TAG, "Created container " + sName);
@@ -325,7 +325,7 @@ bool EmployOrchestra::pull_container_names() {
     }
 
     for (auto name : listNames) {
-        LXDContainer *pContainer = new LXDContainer(name);
+        auto *pContainer = new LXDContainer(name);
         m_mapContainers.insert(std::pair<std::string, LXDContainer *>(name, pContainer));
 
     }
@@ -375,9 +375,8 @@ bool EmployOrchestra::remove_container(const std::string &name, std::string &sEr
 
     if (pContainer->remove()) {
         m_mapContainers.erase(name);
-        // bad alloc for
-        //delete container;
         Log::info(TAG, "Deleted container " + pContainer->full_name());
+        delete pContainer;
         return true;
     }
 
