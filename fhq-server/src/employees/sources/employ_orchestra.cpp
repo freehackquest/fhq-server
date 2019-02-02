@@ -67,7 +67,7 @@ std::string EmployOrchestra::lastError() {
 
 bool EmployOrchestra::create_container(const std::string &sName, std::string &sError) {
     Log::info(TAG, "Starting creation container " + sName);
-    auto *pContainer = new LXDContainer(sName);
+    auto *const pContainer = new LXDContainer(sName);
 
     if (pContainer->create()) {
         Log::info(TAG, "Created container " + sName);
@@ -390,8 +390,8 @@ bool EmployOrchestra::remove_container(const std::string &name, std::string &sEr
 
 std::list<std::string> EmployOrchestra::registry_names() {
     std::list<std::string> container_names;
-    for (auto &m_mapContainer : m_mapContainers)
-        container_names.push_back(m_mapContainer.first);
+    for (const auto &container : m_mapContainers)
+        container_names.push_back(container.first);
     return container_names;
 }
 

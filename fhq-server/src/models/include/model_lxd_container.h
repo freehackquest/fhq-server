@@ -10,11 +10,11 @@
 class LXDContainer {
     public:
     explicit LXDContainer(const std::string &name_of_container);
-        std::string get_name();
-        std::string get_status();
-        std::string get_IPv4();
-        std::string get_error();
-        std::string full_name();
+        std::string get_name() const ;
+        std::string get_status() const ;
+        std::string get_IPv4() const ;
+        std::string get_error() const ;
+        std::string full_name() const ;
 
         bool state(nlohmann::json &jsonState);
         bool create();

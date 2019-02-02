@@ -8,23 +8,23 @@ LXDContainer::LXDContainer(const std::string &name_of_container){
     prefix = "fhq-";
 }
 
-std::string LXDContainer::get_name(){
+std::string LXDContainer::get_name() const {
     return name;
 }
 
-std::string LXDContainer::get_status(){
+std::string LXDContainer::get_status() const {
     return status;
 }
 
-std::string LXDContainer::get_IPv4(){
+std::string LXDContainer::get_IPv4() const {
     return IPv4;
 }
 
-std::string LXDContainer::get_error(){
+std::string LXDContainer::get_error() const {
     return m_sError;
 }
 
-std::string LXDContainer::full_name(){
+std::string LXDContainer::full_name() const {
     return prefix + name;
 }
 
