@@ -3,13 +3,41 @@
 
 #include <cmd_handlers.h>
 
-// *******************************************
-// ************ Quests WriteUps **************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quests WriteUps
 
-class CmdHandlerQuestsWriteUps : public CmdHandlerBase {
+class CmdHandlerQuestsWriteUpsList : public CmdHandlerBase {
     public:
-        CmdHandlerQuestsWriteUps();
+        CmdHandlerQuestsWriteUpsList();
+        virtual void handle(ModelRequest *pRequest);
+};
+
+// ---------------------------------------------------------------------
+// Quests WriteUps Proposal
+
+class CmdHandlerQuestsWriteUpsProposal : public CmdHandlerBase {
+    public:
+        CmdHandlerQuestsWriteUpsProposal();
+        virtual void handle(ModelRequest *pRequest);
+    private:
+        std::string m_sLinkPrefix;
+};
+
+// ---------------------------------------------------------------------
+// Quests WriteUps Update
+
+class CmdHandlerQuestsWriteUpsUpdate : public CmdHandlerBase {
+    public:
+        CmdHandlerQuestsWriteUpsUpdate();
+        virtual void handle(ModelRequest *pRequest);
+};
+
+// ---------------------------------------------------------------------
+// Quests WriteUps Delete
+
+class CmdHandlerQuestsWriteUpsDelete : public CmdHandlerBase {
+    public:
+        CmdHandlerQuestsWriteUpsDelete();
         virtual void handle(ModelRequest *pRequest);
 };
 

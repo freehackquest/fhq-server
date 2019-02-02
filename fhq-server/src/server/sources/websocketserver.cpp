@@ -195,21 +195,21 @@ void WebSocketServer::processTextMessage(const QString &message) {
 
         // check access
         const ModelCommandAccess access = pCmdHandler->access();
-        if(!access.accessUnauthorized()){
+        if (!access.accessUnauthorized()) {
             IUserToken *pUserToken = getUserToken(pClient);
-            if(pUserToken == NULL){
+            if (pUserToken == NULL) {
                 pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::NotAuthorizedRequest());
                 return;
             }
 
             // access user
-            if(pUserToken->isUser() && !access.accessUser()){
+            if (pUserToken->isUser() && !access.accessUser()) {
                 pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::AccessDenyForUser());
                 return;
             }
 
             // access admin
-            if(pUserToken->isAdmin() && !access.accessAdmin()){
+            if (pUserToken->isAdmin() && !access.accessAdmin()) {
                 pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::AccessDenyForAdmin());
                 return;
             }

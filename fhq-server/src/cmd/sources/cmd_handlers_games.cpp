@@ -362,8 +362,8 @@ CmdHandlerGameImport::CmdHandlerGameImport()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameImport::handle(ModelRequest *pRequest){
-    QJsonObject jsonRequest = pRequest->data();
-    nlohmann::json jsonResponse;
+    // nlohmann::json jsonRequest = pRequest->jsonRequest();
+    // nlohmann::json jsonResponse;
 
     pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
     return;
