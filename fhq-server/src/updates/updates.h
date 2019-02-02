@@ -12,6 +12,7 @@
 #include <QSqlRecord>
 #include <QSqlError>
 
+// deprecated
 class UpdateBase {
 
     public:
@@ -28,8 +29,10 @@ class UpdateBase {
         std::string m_sDescription;
 };
 
+// deprecated
 extern std::vector<UpdateBase*> *g_pUpdates;
 
+// deprecated
 class Updates {
     public:
         static void initGlobalVariables();

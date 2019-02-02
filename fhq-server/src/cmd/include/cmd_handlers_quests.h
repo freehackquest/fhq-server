@@ -175,16 +175,4 @@ class CmdHandlerQuestsProposalList : public CmdHandlerBase {
 
 REGISTRY_CMD(CmdHandlerQuestsProposalList)
 
-// *******************************************
-// ************ Quests WriteUps **************
-// *******************************************
-
-class CmdHandlerWriteUps : public CmdHandlerBase {
-    public:
-        CmdHandlerWriteUps();
-        virtual void handle(ModelRequest *pRequest);
-};
-
-REGISTRY_CMD(CmdHandlerWriteUps)
-
 #endif // CMD_HANDLERS_QUESTS_H

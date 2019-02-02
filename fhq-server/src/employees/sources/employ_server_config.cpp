@@ -3,6 +3,9 @@
 #include <sys/stat.h>
 #include <fstream>
 #include <regex>        // regex, sregex_token_iterator
+#include <string>
+#include <sstream>
+#include <iostream>
 
 REGISTRY_EMPLOY(EmployServerConfig)
 
@@ -65,7 +68,7 @@ bool EmployServerConfig::init(){
 	EmployServerConfig::parseConfig(m_sFilename);
 
     m_bDatabase_usemysql = this->getBoolValueFromConfig("usemysql", m_bDatabase_usemysql);
-    if(m_bDatabase_usemysql){
+    if (m_bDatabase_usemysql) {
         m_sDatabase_host = this->getStringValueFromConfig("dbhost", m_sDatabase_host);
         m_nDatabase_port = this->getIntValueFromConfig("dbport", m_nDatabase_port);
         m_sDatabase_name = this->getStringValueFromConfig("dbname", m_sDatabase_name);
@@ -76,14 +79,14 @@ bool EmployServerConfig::init(){
         Log::info(TAG, "Database port: " + std::to_string(m_nDatabase_port));
         Log::info(TAG, "Database name: " + m_sDatabase_name);
         Log::info(TAG, "Database user: " + m_sDatabase_user);
-	}else{
+	} else {
         m_sDatabase_path = this->getStringValueFromConfig("dbpath", m_sDatabase_path);
         Log::info(TAG, "Database: using " + m_sDatabase_path);
 	}
 
     m_nServer_port = this->getIntValueFromConfig("port", m_nServer_port);
     m_bServer_ssl_on = this->getBoolValueFromConfig("ssl_on", m_bServer_ssl_on);
-    if(m_bServer_ssl_on){
+    if (m_bServer_ssl_on) {
         m_nServer_ssl_port = this->getIntValueFromConfig("SERVER/ssl_port", m_nServer_ssl_port);
         m_sServer_ssl_key_file = this->getStringValueFromConfig("ssl_key_file", m_sServer_ssl_key_file);
         m_sServer_ssl_cert_file = this->getStringValueFromConfig("ssl_cert_file", m_sServer_ssl_cert_file);
@@ -96,7 +99,7 @@ bool EmployServerConfig::init(){
 bool EmployServerConfig::parseConfig(const std::string &sConfigFile){
 	std::ifstream isConfigFile( sConfigFile );
 	int nLineNumber = 0;
-	for( std::string sLine; getline( isConfigFile, sLine ); ){
+	for (std::string sLine; getline(isConfigFile, sLine);) {
 		nLineNumber++;
 		std::string sOrigLine = sLine;
 		std::size_t nFoundComment = sLine.find("#");

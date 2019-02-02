@@ -2,7 +2,7 @@
 
 
 // ****************************
-// **** CmdHandlerBase
+// **** UpdateBase - deprecated
 // ****************************
 
 // ---------------------------------------------------------------------
@@ -37,13 +37,13 @@ const std::string &UpdateBase::description(){
 // ---------------------------------------------------------------------
 
 // ****************************
-// **** CmdHandlers Map
+// **** g_pUpdates - deprecated
 // ****************************
 
 std::vector<UpdateBase*> *g_pUpdates = NULL;
 
 // ****************************
-// **** Updates
+// **** Updates - deprecated
 // ****************************
 
 void Updates::initGlobalVariables(){

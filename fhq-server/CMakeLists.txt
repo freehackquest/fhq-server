@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(fhq-server)
 
-add_definitions(-DFHQSRV_VERSION="0.2.17")
+add_definitions(-DFHQSRV_VERSION="0.2.18")
 add_definitions(-DFHQSRV_APP_NAME="fhq-server")
 
 set (CMAKE_AUTOMOC ON)
@@ -42,9 +42,6 @@ list (APPEND FHQSRV_INCLUDE_DIRS "src/updates/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/classbook/include")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/events/include")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/quests/include")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/support/include")
 
 # json
 list (APPEND FHQSRV_SOURCES "src/3rdParty/nlohmann/json.hpp")
@@ -98,6 +95,8 @@ list (APPEND FHQSRV_SOURCES "src/3rdParty/quazip-0.7.3/quazip/unzip.c")
 list (APPEND FHQSRV_SOURCES "src/3rdParty/quazip-0.7.3/quazip/zip.c")
 
 # cmd
+list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_quests_writeups.h")
+list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_quests_writeups.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_users.h")
@@ -148,6 +147,12 @@ list (APPEND FHQSRV_SOURCES "src/models/include/model_lxd_container.h")
 list (APPEND FHQSRV_SOURCES "src/models/sources/model_lxd_container.cpp")
 
 # utils
+list (APPEND FHQSRV_SOURCES "src/utils/fs.h")
+list (APPEND FHQSRV_SOURCES "src/utils/fs.cpp")
+list (APPEND FHQSRV_SOURCES "src/utils/str.h")
+list (APPEND FHQSRV_SOURCES "src/utils/str.cpp")
+list (APPEND FHQSRV_SOURCES "src/utils/ts.h")
+list (APPEND FHQSRV_SOURCES "src/utils/ts.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/utils.h")
 list (APPEND FHQSRV_SOURCES "src/utils/include/utils_logger.h")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_logger.cpp")
@@ -234,8 +239,9 @@ list (APPEND FHQSRV_SOURCES "src/tasks/sources/update_user_location_task.cpp")
 list (APPEND FHQSRV_SOURCES "src/tasks/sources/lxd_async_operation_task.cpp")
 
 
-
-# updates
+# updates - deprecated
+list (APPEND FHQSRV_SOURCES "src/updates/update0100.h")
+list (APPEND FHQSRV_SOURCES "src/updates/update0100.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/updates.h")
 list (APPEND FHQSRV_SOURCES "src/updates/updates.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/include/database0060.h")
@@ -259,6 +265,7 @@ list (APPEND FHQSRV_SOURCES "src/updates/sources/update0096.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/update0097.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/update0098.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/update0099.cpp")
+
 
 
 # main
