@@ -1,4 +1,4 @@
-#include <utils_export_client_library_python.h>
+#include <export_libfhqcli_py.h>
 
 #include <iostream>
 #include <iomanip>
@@ -116,17 +116,17 @@ public:
 
 // ---------------------------------------------------------------------
 
-void UtilsExportClientLibraryPython::exportLib(){
+void ExportLibFHQCliPy::exportLib(){
 
-    UtilsExportClientLibraryPython::exportPrepareDirs();
-    UtilsExportClientLibraryPython::export__init__py();
-    UtilsExportClientLibraryPython::exportSetupPy();
-    UtilsExportClientLibraryPython::exportAPImd();
+    ExportLibFHQCliPy::exportPrepareDirs();
+    ExportLibFHQCliPy::export__init__py();
+    ExportLibFHQCliPy::exportSetupPy();
+    ExportLibFHQCliPy::exportAPImd();
 }
 
 // ---------------------------------------------------------------------
 
-void UtilsExportClientLibraryPython::exportPrepareDirs(){
+void ExportLibFHQCliPy::exportPrepareDirs(){
     int status;
     std::cout << " * mkdir libfhqcli-py" << std::endl;
     status = mkdir("libfhqcli-py", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -139,7 +139,7 @@ void UtilsExportClientLibraryPython::exportPrepareDirs(){
 
 // ---------------------------------------------------------------------
 
-void UtilsExportClientLibraryPython::exportSetupPy(){
+void ExportLibFHQCliPy::exportSetupPy(){
     std::ofstream setupPy;
     std::cout << " * write code to libfhqcli-py/libfhqcli/setup.py " << std::endl;
     setupPy.open ("libfhqcli-py/setup.py");
@@ -182,7 +182,7 @@ void UtilsExportClientLibraryPython::exportSetupPy(){
 
 // ---------------------------------------------------------------------
 
-void UtilsExportClientLibraryPython::exportAPImd(){
+void ExportLibFHQCliPy::exportAPImd(){
     
     std::ofstream apimd;
     std::cout << " * write file to libfhqcli-py/API.md" << std::endl;
@@ -258,7 +258,7 @@ void UtilsExportClientLibraryPython::exportAPImd(){
 
 // ---------------------------------------------------------------------
 
-void UtilsExportClientLibraryPython::export__init__py(){
+void ExportLibFHQCliPy::export__init__py(){
     std::ofstream __init__;
     std::cout << " * write code to libfhqcli-py/libfhqcli/__init__.py " << std::endl;
     __init__.open ("libfhqcli-py/libfhqcli/__init__.py");

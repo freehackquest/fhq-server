@@ -30,7 +30,8 @@
 #include <iomanip>
 #include <algorithm>
 #include <utils_export_list_of_handlers.h>
-#include <utils_export_client_library_python.h>
+#include <export_libfhqcli_web_js.h>
+#include <export_libfhqcli_py.h>
 #include <runtasks.h>
 
 int main(int argc, char** argv) {
@@ -43,7 +44,8 @@ int main(int argc, char** argv) {
     helpArgs.addHelp(HelpArg("version", "-v", "Print version"));
     helpArgs.addHelp(HelpArg("run-unit-tests", "-rut", "Run unit tests"));
     helpArgs.addHelp(HelpArg("show-handlers", "-sh", "Show handlers"));
-    helpArgs.addHelp(HelpArg("export-cli-library-python", "-eclp", "Export client library for python"));
+    helpArgs.addHelp(HelpArg("export-libfhqcli-py", "-exlp", "Export libfhqcli-py (python)"));
+    helpArgs.addHelp(HelpArg("export-libfhqcli-web-javascript", "-exlwjs", "Export libfhqcli-web-js (javascript)"));
     helpArgs.addHelp(HelpArg("show-employees", "-se", "Show employees"));
     helpArgs.addHelp(HelpArg("show-settings", "-ss", "Show settings"));
     helpArgs.addHelp(HelpArg("send-test-mail", "-stm", "Send test mail"));
@@ -79,8 +81,11 @@ int main(int argc, char** argv) {
     }else if(helpArgs.has("show-handlers") || helpArgs.has("-sh")){
         UtilsExportListOfHandlers::print();
         return 0;
-    }else if(helpArgs.has("export-cli-library-python") || helpArgs.has("-eclp")){
-        UtilsExportClientLibraryPython::exportLib();
+    }else if(helpArgs.has("export-libfhqcli-py") || helpArgs.has("-exlp")){
+        ExportLibFHQCliPy::exportLib();
+        return 0;
+    }else if(helpArgs.has("export-libfhqcli-web-javascript") || helpArgs.has("-exlwjs")){
+        ExportLibFHQCliWebJS::exportLib();
         return 0;
     }else if(helpArgs.has("show-employees") || helpArgs.has("-se")){
         std::cout << " * Employees (" << g_pEmployees->size() << "):\n";

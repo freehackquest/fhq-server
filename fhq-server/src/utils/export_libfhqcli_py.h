@@ -1,7 +1,7 @@
-#ifndef UTILS_EXPORT_CLIENT_LIBRARY_PYTHON_H
-#define UTILS_EXPORT_CLIENT_LIBRARY_PYTHON_H
+#ifndef EXPORT_LIBFHQCLI_PY_H
+#define EXPORT_LIBFHQCLI_PY_H
 
-class UtilsExportClientLibraryPython {
+class ExportLibFHQCliPy {
     public:
         static void exportLib();
     private:
@@ -11,4 +11,4 @@ class UtilsExportClientLibraryPython {
         static void exportPrepareDirs();
 };
 
-#endif // UTILS_EXPORT_CLIENT_LIBRARY_PYTHON_H
+#endif // EXPORT_LIBFHQCLI_PY_H
