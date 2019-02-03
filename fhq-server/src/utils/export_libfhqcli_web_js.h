@@ -10,6 +10,7 @@ class ExportLibFHQCliWebJS {
         static void exportPackageJson(const std::string &sBasicDir);
         static void exportAPImd(const std::string &sBasicDir);
         static void exportLibfhqcliWebJSFile(const std::string &sBasicDir);
+        static void exportSampleHtmlFile(const std::string &sBasicDir);
         static void exportPrepareDirs(const std::string &sBasicDir);
 };
 

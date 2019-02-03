@@ -131,6 +131,7 @@ void ExportLibFHQCliWebJS::exportLib(){
 
     ExportLibFHQCliWebJS::exportPrepareDirs(sBasicDir);
     ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(sBasicDir);
+    ExportLibFHQCliWebJS::exportSampleHtmlFile(sBasicDir);
     ExportLibFHQCliWebJS::exportPackageJson(sBasicDir);
     ExportLibFHQCliWebJS::exportAPImd(sBasicDir);
 }
@@ -140,7 +141,6 @@ void ExportLibFHQCliWebJS::exportLib(){
 void ExportLibFHQCliWebJS::exportPrepareDirs(const std::string &sBasicDir) {
     std::vector<std::string> vDirs;
     vDirs.push_back(sBasicDir);
-    vDirs.push_back(sBasicDir + "/libfhqcli");
     vDirs.push_back(sBasicDir + "/dist");
     
     for (int i = 0; i < vDirs.size(); i++) {
@@ -184,15 +184,20 @@ void ExportLibFHQCliWebJS::exportPackageJson(const std::string &sBasicDir) {
             .add("\"library\",")
             .add("\"fhq\",")
             .add("\"freehackquest\",")
-            .add("\"websocket\",")
+            .add("\"websocket\"")
             .end()
         .add("],")
         .sub("\"bugs\": {")
             .add("\"url\": \"https://github.com/freehackquest/libfhqcli-web-js/issues\"")
             .end()
         .add("},")
-        .add("\"author\": \"FreeHackQuest Teams\",")
-        .add("\"license\": \"MIT\"")
+        .add("\"author\": \"FreeHackQuest Team\",")
+        .add("\"license\": \"MIT\",")
+        .sub("\"licenses\": [{")
+            .add("\"type\": \"MIT\",")
+            .add("\"url\": \"https://github.com/freehackquest/libfhqcli-web-js/blob/master/LICENSE\"")
+            .end()
+        .add("}]")
         .end()
     .add("}");
     builder.print(packageJson);
@@ -279,7 +284,34 @@ void ExportLibFHQCliWebJS::exportAPImd(const std::string &sBasicDir){
 
 // ---------------------------------------------------------------------
 
+void ExportLibFHQCliWebJS::exportSampleHtmlFile(const std::string &sBasicDir) {
+    std::string sFilename = sBasicDir + "/sample.html";
+    std::ofstream sample_html;
+    std::cout << " * write code to " << sFilename << std::endl;
+    sample_html.open(sFilename);
+    sample_html
+        << "<html>\r\n"
+        << "<head>\r\n"
+        << "    <script>\r\n"
+        << "        window.fhq = window.fhq || {};\r\n"
+        << "        window.fhq.ws = window.fhq.ws || {};\r\n"
+        << "        fhq.ws.base_url = 'ws://' + window.location.hostname + ':1234/api-ws/';\r\n"
+        << "    </script>\r\n"
+        << "    <script src='dist/libfhqcli-web.js'></script>\r\n"
+        << "</head>\r\n"
+        << "<body>\r\n"
+        << "</body>\r\n"
+        << "</html>\r\n";
+    sample_html.close();
+    std::cout << "\t> OK" << std::endl;
+}
+
+// ---------------------------------------------------------------------
+
 void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir){
+
+
+
 
     std::string sFilename = sBasicDir + "/dist/libfhqcli-web.js";
     std::ofstream libfhqcli_web_js_file;
