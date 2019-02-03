@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <websocketserver.h>
 #include <employees.h>
-#include <QtCore> // TODO remove
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <memory>
@@ -14,10 +13,11 @@
 #include <iomanip> // put_time
 #include <ctime>
 #include <sstream>
+#include <fs.h>
 
 // ---------------------------------------------------------------------
 
-class JSCodeLine{
+class JSCodeLine {
     
     JSCodeLine *m_pParent;
     std::string m_sLine;
@@ -25,51 +25,51 @@ class JSCodeLine{
 
 public:
     
-    JSCodeLine(){
-        m_pParent = NULL;
+    JSCodeLine() {
+        m_pParent = nullptr;
         m_sLine = "";
     }
 
-    JSCodeLine(JSCodeLine *parent, const std::string &sLine){
+    JSCodeLine(JSCodeLine *parent, const std::string &sLine) {
         m_pParent = parent;
         m_sLine = sLine;
     }
 
     ~JSCodeLine(){
-        if(m_pParent == NULL){
+        if (m_pParent == nullptr) {
             std::cout << "destruct root \n";
-        }else{
+        } else {
             std::cout << "destruct something else [" << m_sLine << "]\n";
         }
     }
 
-    JSCodeLine *addLine(const std::string &sLine){
+    JSCodeLine *addLine(const std::string &sLine) {
         JSCodeLine *pJSCodeLine = new JSCodeLine(this,sLine);
         m_vLines.push_back(pJSCodeLine);
         return pJSCodeLine;
     }
 
-    JSCodeLine *getParent(){
+    JSCodeLine *getParent() {
         return m_pParent;
     }
 
-    std::string getLine(){
+    std::string getLine() {
         return m_sLine;
     }
 
-    JSCodeLine *findRoot(){
-        if(m_pParent == NULL){
+    JSCodeLine *findRoot() {
+        if (m_pParent == nullptr) {
             return this;
         }
         return m_pParent->findRoot();
     }
 
-    void print(std::ofstream &__init__, std::string intent = ""){
-        if(m_pParent != NULL){
+    void print(std::ofstream &__init__, std::string intent = "") {
+        if (m_pParent != nullptr) {
             __init__ << intent << m_sLine << std::endl;
             intent += "  ";
         }
-        for(int i = 0; i < m_vLines.size(); i++){
+        for (int i = 0; i < m_vLines.size(); i++) {
             m_vLines[i]->print(__init__, intent);
         }
     }
@@ -80,7 +80,7 @@ public:
 class JSCodeBuilder {
 
 private:
-    JSCodeLine *m_pCurr = NULL;
+    JSCodeLine *m_pCurr = nullptr;
 
 public:
     JSCodeBuilder(){
@@ -101,9 +101,9 @@ public:
     }
     JSCodeBuilder &end(){
         JSCodeLine *p = m_pCurr->getParent();
-        if(p != NULL){
+        if (p != nullptr) {
             m_pCurr = p;
-        }else{
+        } else {
             std::cout << "Wrong called end function" << std::endl;
         }
         return *this;
@@ -127,32 +127,39 @@ public:
 // ---------------------------------------------------------------------
 
 void ExportLibFHQCliWebJS::exportLib(){
+    std::string sBasicDir = "./libfhqcli-web-js";
 
-    ExportLibFHQCliWebJS::exportPrepareDirs();
-    ExportLibFHQCliWebJS::export__init__py();
-    ExportLibFHQCliWebJS::exportPackageJson();
-    ExportLibFHQCliWebJS::exportAPImd();
+    ExportLibFHQCliWebJS::exportPrepareDirs(sBasicDir);
+    ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(sBasicDir);
+    ExportLibFHQCliWebJS::exportPackageJson(sBasicDir);
+    ExportLibFHQCliWebJS::exportAPImd(sBasicDir);
 }
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliWebJS::exportPrepareDirs(){
-    int status;
-    std::cout << " * mkdir libfhqcli-js" << std::endl;
-    status = mkdir("libfhqcli-js", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    std::cout << "\t> OK" << std::endl;
-
-    std::cout << " * mkdir libfhqcli-js/libfhqcli" << std::endl;
-    status = mkdir("libfhqcli-js/libfhqcli", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    std::cout << "\t> OK" << std::endl;
+void ExportLibFHQCliWebJS::exportPrepareDirs(const std::string &sBasicDir) {
+    std::vector<std::string> vDirs;
+    vDirs.push_back(sBasicDir);
+    vDirs.push_back(sBasicDir + "/libfhqcli");
+    vDirs.push_back(sBasicDir + "/dist");
+    
+    for (int i = 0; i < vDirs.size(); i++) {
+        std::string sDir = vDirs[i];
+        if (!FS::dirExists(sDir)) {
+            std::cout << " * mkdir " << sDir << std::endl
+                << (FS::makeDir(sDir) ? "\t> OK" : "\t> FAILED") << std::endl;
+        } else {
+            std::cout << " * Directory already exists " << sDir << std::endl;
+        }
+    }
 }
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliWebJS::exportPackageJson(){
+void ExportLibFHQCliWebJS::exportPackageJson(const std::string &sBasicDir) {
     std::ofstream packageJson;
-    std::cout << " * write code to libfhqcli-js/package.json " << std::endl;
-    packageJson.open ("libfhqcli-js/package.json");
+    std::cout << " * write code to " << sBasicDir << "/package.json " << std::endl;
+    packageJson.open (sBasicDir + "/package.json");
 
     std::time_t t = std::time(nullptr);
     std::stringstream buffer;
@@ -163,13 +170,13 @@ void ExportLibFHQCliWebJS::exportPackageJson(){
     JSCodeBuilder builder;
     builder
     .sub("{")
-        .add("\"name\": \"libfhqcli-js\",")
+        .add("\"name\": \"libfhqcli-web-js\",")
         .add("\"version\": \"" + std::string(FHQSRV_VERSION) + "\",")
-        .add("\"description\": \"FreeHackQuest JavaScript Client Library for fhq-server\",")
-        .add("\"main\": \"dist/libfhqcli.js\",")
+        .add("\"description\": \"FreeHackQuest JavaScript Web Client Library for fhq-server\",")
+        .add("\"main\": \"dist/libfhqcli-web.js\",")
         .sub("\"repository\": {")
             .add("\"type\": \"git\",")
-            .add("\"url\": \"https://github.com/freehackquest/libfhqcli-js.git\"")
+            .add("\"url\": \"https://github.com/freehackquest/libfhqcli-web-js.git\"")
             .end()
         .add("},")
         .sub("\"keywords\": [")
@@ -181,7 +188,7 @@ void ExportLibFHQCliWebJS::exportPackageJson(){
             .end()
         .add("],")
         .sub("\"bugs\": {")
-            .add("\"url\": \"https://github.com/jquery/jquery/issues\"")
+            .add("\"url\": \"https://github.com/freehackquest/libfhqcli-web-js/issues\"")
             .end()
         .add("},")
         .add("\"author\": \"FreeHackQuest Teams\",")
@@ -196,11 +203,11 @@ void ExportLibFHQCliWebJS::exportPackageJson(){
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliWebJS::exportAPImd(){
+void ExportLibFHQCliWebJS::exportAPImd(const std::string &sBasicDir){
     
     std::ofstream apimd;
-    std::cout << " * write file to libfhqcli-js/API.md" << std::endl;
-    apimd.open("libfhqcli-js/API.md");
+    std::cout << " * write file to " + sBasicDir + "/API.md" << std::endl;
+    apimd.open(sBasicDir + "/API.md");
 
     std::time_t t = std::time(nullptr);
     std::stringstream buffer;
@@ -272,369 +279,202 @@ void ExportLibFHQCliWebJS::exportAPImd(){
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliWebJS::export__init__py(){
+void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir){
 
-    /*
-if(!window.fhq) window.fhq = {};
-if(!window.fhq.ws) window.fhq.ws = {};
-fhq.ws.lastm = 0;
-
-// WebSocket protocol
-
-window.fhq.ws.handlerReceivedChatMessage = function(response){
-	fhq.handlerReceivedChatMessage(response);
-};
-window.fhq.ws.listeners = {}
-window.fhq.ws.addListener = function(m, d){
-	fhq.ws.listeners[m] = d;
-}
-
-fhq.ws.handleCommand = function(response){
-	if(fhq.ws.listeners[response.m]){
-		if(response['error']){
-			setTimeout(function(){
-				fhq.ws.listeners[response.m].reject(response);
-				delete fhq.ws.listeners[response.m];
-			},1);
-		} else {
-			setTimeout(function(){
-				fhq.ws.listeners[response.m].resolve(response);
-				delete fhq.ws.listeners[response.m];
-			},1);
-		}
-	}else if(response.cmd == "server"){
-		console.warn("App: " + response.app);
-		console.warn("Version: " + response.version);
-		console.warn("All: ", response);
-	}else if(response.cmd == "notify"){
-        fhq.ui.showNotification(response.type, response.section, response.message);
-	}else if(response.cmd == "chat"){
-		fhq.ws.handlerReceivedChatMessage(response);
-	}else{
-		console.error("Not found handler for '" + response.cmd + "/" + response.m + "'");
-	}
-};
-
-window.fhq.ws.WSState = "?";
-
-window.fhq.ws.getWSState = function(){
-	return fhq.ws.WSState;
-}
-
-window.fhq.ws.setWSState = function(s){
-	fhq.ws.WSState = s;
-	var el = document.getElementById('websocket_state');
-	if(el){
-		document.getElementById('websocket_state').innerHTML = s;
-	}
-}
-window.fhq.ws.onconnect = function(){
-	
-};
-
-window.fhq.ws.initWebsocket = function(){
-
-	fhq.ws.socket = new WebSocket(fhq.ws.base_url);
-	window.fhq.ws.socket.onopen = function() {
-		console.log('WS Opened');
-		setTimeout(window.fhq.ws.onconnect,1);
-		fhq.ws.setWSState("OK");
-		fhq.ws.token();
-	};
-
-	window.fhq.ws.socket.onclose = function(event) {
-		console.log('Closed');
-		
-		if(fhq.ui && fhq.ui.onwsclose){
-			fhq.ui.onwsclose();
-		}
-		
-		if (event.wasClean) {
-			fhq.ws.setWSState("CLOSED");
-		} else {
-			fhq.ws.setWSState("BROKEN");
-			setTimeout(function(){
-				fhq.ws.setWSState("RECONN");
-				fhq.ws.initWebsocket();
-			}, 10000);
-		  // Try reconnect after 5 sec
-		}
-		console.log('Code: ' + event.code + ' Reason: ' + event.reason);
-	};
-	fhq.ws.socket.onmessage = function(event) {
-		// console.log('Received: ' + event.data);
-		try{
-			var response = JSON.parse(event.data);
-			fhq.ws.handleCommand(response);
-		}catch(e){
-			console.error(e);
-		}
-		
-	};
-	fhq.ws.socket.onerror = function(error) {
-		console.log('Error: ' + error.message);
-	};
-}
-
-fhq.ws.initWebsocket();
-
-window.fhq.ws.send = function(obj, def){
-	var d = def || $.Deferred();
-	fhq.ws.lastm++;
-	obj.m = "m" + fhq.ws.lastm;
-	fhq.ws.listeners[obj.m] = d;
-	try{
-		if(fhq.ws.socket.readyState == 0){
-			setTimeout(function(){
-				fhq.ws.send(obj, d);
-			},1000);
-		}else{
-			// console.log("ReadyState " + fhq.ws.socket.readyState);
-			// console.log("Send " + JSON.stringify(obj));
-			fhq.ws.socket.send(JSON.stringify(obj));
-		}
-	}catch(e){
-		console.error(e);
-	}
-	return d;
-}
-
-*/
-
-    std::ofstream __init__;
-    std::cout << " * write code to libfhqcli-js/libfhqcli/__init__.py " << std::endl;
-    __init__.open ("libfhqcli-js/libfhqcli/__init__.py");
+    std::string sFilename = sBasicDir + "/dist/libfhqcli-web.js";
+    std::ofstream libfhqcli_web_js_file;
+    std::cout << " * write code to " << sFilename << std::endl;
+    libfhqcli_web_js_file.open(sFilename);
 
     std::time_t t = std::time(nullptr);
     std::stringstream buffer;
     buffer << std::put_time(std::gmtime(&t), "%d %b %Y");
-
     // now the result is in `buffer.str()`.
 
-    JSCodeBuilder builder;
-    builder
-    .add("# -*- coding: utf-8 -*-")
-    .add("### This file was automatically generated by fhq-server")
-    .add("### Version: " + std::string(FHQSRV_VERSION))
-    .add("### Date: " + buffer.str())
-    .add("")
-    .add("import json")
-    .add("import functools")
-    .add("import websocket")
-    .add("import time")
-    .sub("try:")
-        .add("import Queue as queue")
-        .end()
-    .sub("except ImportError:")
-        .add("import queue")
-        .end()
-    .add("import select")
-    .add("from threading import Thread")
-    .add("")
-    .sub("class FHQCliRecvThread(Thread):")
-        .add("__ws = None")
-        .add("__cli_version = '" + std::string(FHQSRV_VERSION) + "'")
-        .add("__sendCommandQueue = queue.Queue()")
-        .add("__cmd_results = {}")
-        .add("do_run = True")
-        .add("__connecting = False")
-        .add("__url = None")
-        .add("__messageId = 0")
-        .add("")
-        .sub("def __init__(self, url):")
-            .add("Thread.__init__(self)")
-            .add("self.__url = url")
-            .end()
-        .add("")
-        .sub("def run(self):")
-            .add("self.__connecting = True")
-            .add("print('[FHQCliThread] Connecting to ' + self.__url)")
-            .sub("try:")
-                .add("self.__ws = websocket.create_connection(self.__url)")
-                .end()
-            .sub("except:")
-                .add("print('Failed connect to ' + self.__url)")
-                .add("self.__ws = None")
-                .add("self.__connecting = False")
-                .add("return")
-                .end()
-            .add("# self.__ws.setblocking(0)")
-            .add("self.__connecting = False")
-            .add("print('[FHQCliThread] Connected')")
-            .sub("while(self.do_run):")
-                .sub("while not self.__sendCommandQueue.empty():")
-                    .add("requestJson = self.__sendCommandQueue.get()")
-                    .add("requestText = json.dumps(requestJson)")
-                    .add("# print('requestText: ' + requestText)")
-                    .add("self.__ws.send(requestText)")
-                    .end()
-                .add("ready = select.select([self.__ws], [], [], 0.1)")
-                .sub("if ready[0]:")
-                    .add("responseText =  self.__ws.recv()")
-                    .add("responseJson = json.loads(responseText)")
-                    .add("cmd_m = responseJson['m']")
-                    .add("self.__cmd_results[cmd_m] = json.loads(responseText)")
-                    .add("# print(responseText)")
-                    .end()
-                .add("time.sleep(0.5)")
-                .end()
-            .add("print('[FHQCliThread] Stopping...')")
-            .add("self.__ws.close()")
-            .add("self.__ws = None")
-            .add("print('[FHQCliThread] Stopped')")
-            .end()
-        .add("")
-        .sub("def addToSendQueue(self, requestJson):")
-            .add("self.__sendCommandQueue.put(requestJson)")
-            .add("return requestJson['m']")
-            .end()
-        .add("")
-        .sub("def generateBaseCommand(self, cmd):")
-            .add("self.__messageId = self.__messageId + 1")
-            .add("requestJson = {}")
-            .add("msgId = 'm' + str(self.__messageId)")
-            .add("requestJson['m'] = msgId")
-            .add("requestJson['cmd'] = cmd")
-            .add("return requestJson")
-            .end()
-        .add("")
-        .sub("def hasCmdResult(self, cmd_m):")
-            .add("return cmd_m in self.__cmd_results")
-            .end()
-        .add("")
-        .sub("def getCmdResult(self, cmd_m):")
-            .add("return self.__cmd_results[cmd_m]")
-            .end()
-        .add("")
-        .sub("def removeCmdResult(self, cmd_m):")
-            .add("self.__cmd_results.pop(cmd_m, None)")
-            .end()
-        .add("")
-        .sub("def hasConnection(self):")
-            .add("return self.__connecting or self.__ws != None")
-            .end()
-        .end()
-    .add("")
-    .sub("class FHQCli:")
-        .add("# __ws = None")
-        .add("__url = 'ws://localhost:1234/'")
-        .add("__recvThread = None")
-        .sub("def __init__(self, url):")
-            .add("self.__url = url")
-            .add("self.connect()")
-            .end()
-        .add("")
-        .sub("def __enter__(self):")
-            .add("return self")
-            .end()
-        .add("")
-        .sub("def __exit__(self, exc_type, exc_value, traceback):")
-            .add("self.__recvThread.do_run = False")
-            .end()
-        .add("")
-        .sub("def close(self):")
-            .add("self.__recvThread.do_run = False")
-            .end()
-        .add("")
-        .sub("def setUrl(self, url):")
-            .add("self.__url = url")
-            .end()
-        .add("")
-        .sub("def getUrl(self):")
-            .add("return self.__url")
-            .end()
-        .add("")
-        .sub("def connect(self):")
-            .add("self.__recvThread = FHQCliRecvThread(self.__url)")
-            .add("self.__recvThread.start()")
-            .add("# self.__recvThread.join()")
-            .add("# print('FHQCli: Thread started')")
-            .add("return True")
-            .end()
-        .add("")
-        .sub("def __looper(self, cmd_m):")
-            .add("max_time = 5*10; # 5 seconds")
-            .add("counter_time = 0")
-            .add("cmd_result = {}")
-            .sub("while True:")
-                .add("counter_time = counter_time + 1")
-                .sub("if not self.__recvThread.hasConnection():")
-                    .add("return None")
-                    .end()
-                .sub("if self.__recvThread.hasCmdResult(cmd_m):")
-                    .add("cmd_result = self.__recvThread.getCmdResult(cmd_m)")
-                    .add("self.__recvThread.removeCmdResult(cmd_m)")
-                    .add("return cmd_result")
-                    .end()
-                .sub("if counter_time > max_time:")
-                    .add("cmd_result = None")
-                    .add("break")
-                    .end()
-                .add("# print('__looper ....')")
-                .add("time.sleep(0.2)")
-                .end()
-            .add("return cmd_result")
-            .end()
-        .add("");
+    libfhqcli_web_js_file
+        << "// This file was automatically generated by fhq-server \r\n"
+        << "// Version: " << std::string(FHQSRV_VERSION) << "\r\n"
+        << "// Date: " << buffer.str() << " \r\n\r\n"
+
+        << "if (!window.fhq) window.fhq = {};\r\n"
+        << "if (!window.fhq.ws) window.fhq.ws = {};\r\n"
+        << "fhq.ws.lastm = 0;\r\n"
+        << "\r\n"
+        << "// WebSocket protocol\r\n"
+        << "\r\n"
+        << "window.fhq.ws.handlerReceivedChatMessage = function(response){\r\n"
+        << "	fhq.handlerReceivedChatMessage(response);\r\n"
+        << "};\r\n"
+        << "window.fhq.ws.listeners = {}\r\n"
+        << "window.fhq.ws.addListener = function(m, d) {\r\n"
+        << "	fhq.ws.listeners[m] = d;\r\n"
+        << "}\r\n"
+        << "\r\n"
+        << "fhq.ws.handleCommand = function(response) {\r\n"
+        << "	if (fhq.ws.listeners[response.m]) {\r\n"
+        << "		if (response['error']) {\r\n"
+        << "			setTimeout(function(){\r\n"
+        << "				fhq.ws.listeners[response.m].reject(response);\r\n"
+        << "				delete fhq.ws.listeners[response.m];\r\n"
+        << "			},1);\r\n"
+        << "		} else {\r\n"
+        << "			setTimeout(function(){\r\n"
+        << "				fhq.ws.listeners[response.m].resolve(response);\r\n"
+        << "				delete fhq.ws.listeners[response.m];\r\n"
+        << "			},1);\r\n"
+        << "		}\r\n"
+        << "	} else if(response.cmd === 'server') {\r\n"
+        << "		console.warn('App: ' + response.app);\r\n"
+        << "		console.warn('Version: ' + response.version);\r\n"
+        << "		console.warn('All: ', response);\r\n"
+        << "	} else if(response.cmd === 'notify') {\r\n"
+        << "        fhq.ui.showNotification(response.type, response.section, response.message);\r\n"
+        << "	} else if(response.cmd === 'chat') {\r\n"
+        << "		fhq.ws.handlerReceivedChatMessage(response);\r\n"
+        << "	} else {\r\n"
+        << "		console.error('Not found handler for [' + response.cmd + '/' + response.m + ']');\r\n"
+        << "	}\r\n"
+        << "};\r\n"
+        << "\r\n"
+        << "window.fhq.ws.WSState = '?';\r\n"
+        << "\r\n"
+        << "window.fhq.ws.getWSState = function(){\r\n"
+        << "	return fhq.ws.WSState;\r\n"
+        << "}\r\n"
+        << "\r\n"
+        << "window.fhq.ws.setWSState = function(s){\r\n"
+        << "	fhq.ws.WSState = s;\r\n"
+        << "	var el = document.getElementById('websocket_state');\r\n"
+        << "	if(el){\r\n"
+        << "		document.getElementById('websocket_state').innerHTML = s;\r\n"
+        << "	}\r\n"
+        << "}\r\n"
+        << "window.fhq.ws.onconnect = function(){\r\n"
+        << "	\r\n"
+        << "};\r\n"
+        << "\r\n"
+        << "window.fhq.ws.initWebsocket = function(){\r\n"
+        << "\r\n"
+        << "	fhq.ws.socket = new WebSocket(fhq.ws.base_url);\r\n"
+        << "	window.fhq.ws.socket.onopen = function() {\r\n"
+        << "		console.log('WS Opened');\r\n"
+        << "		setTimeout(window.fhq.ws.onconnect,1);\r\n"
+        << "		fhq.ws.setWSState('OK');\r\n"
+        << "		fhq.ws.token();\r\n"
+        << "	};\r\n"
+        << "\r\n"
+        << "	window.fhq.ws.socket.onclose = function(event) {\r\n"
+        << "		console.log('Closed');\r\n"
+        << "		\r\n"
+        << "		if(fhq.ui && fhq.ui.onwsclose){\r\n"
+        << "			fhq.ui.onwsclose();\r\n"
+        << "		}\r\n"
+        << "		\r\n"
+        << "		if (event.wasClean) {\r\n"
+        << "			fhq.ws.setWSState('CLOSED');\r\n"
+        << "		} else {\r\n"
+        << "			fhq.ws.setWSState('BROKEN');\r\n"
+        << "			setTimeout(function(){\r\n"
+        << "				fhq.ws.setWSState('RECONN');\r\n"
+        << "				fhq.ws.initWebsocket();\r\n"
+        << "			}, 10000);\r\n"
+        << "		  // Try reconnect after 5 sec\r\n"
+        << "		}\r\n"
+        << "		console.log('Code: ' + event.code + ' Reason: ' + event.reason);\r\n"
+        << "	};\r\n"
+        << "	fhq.ws.socket.onmessage = function(event) {\r\n"
+        << "		// console.log('Received: ' + event.data);\r\n"
+        << "		try{\r\n"
+        << "			var response = JSON.parse(event.data);\r\n"
+        << "			fhq.ws.handleCommand(response);\r\n"
+        << "		}catch(e){\r\n"
+        << "			console.error(e);\r\n"
+        << "		}\r\n"
+        << "		\r\n"
+        << "	};\r\n"
+        << "	fhq.ws.socket.onerror = function(error) {\r\n"
+        << "		console.log('Error: ' + error.message);\r\n"
+        << "	};\r\n"
+        << "}\r\n"
+        << "\r\n"
+        << "fhq.ws.initWebsocket();\r\n"
+        << "\r\n"
+        << "window.fhq.ws.send = function(obj, def){\r\n"
+        << "	var d = def || $.Deferred();\r\n"
+        << "	fhq.ws.lastm++;\r\n"
+        << "	obj.m = 'm' + fhq.ws.lastm;\r\n"
+        << "	fhq.ws.listeners[obj.m] = d;\r\n"
+        << "	try{\r\n"
+        << "		if(fhq.ws.socket.readyState == 0){\r\n"
+        << "			setTimeout(function(){\r\n"
+        << "				fhq.ws.send(obj, d);\r\n"
+        << "			},1000);\r\n"
+        << "		}else{\r\n"
+        << "			// console.log('ReadyState ' + fhq.ws.socket.readyState);\r\n"
+        << "			// console.log('Send ' + JSON.stringify(obj));\r\n"
+        << "			fhq.ws.socket.send(JSON.stringify(obj));\r\n"
+        << "		}\r\n"
+        << "	}catch(e){\r\n"
+        << "		console.error(e);\r\n"
+        << "	}\r\n"
+        << "	return d;\r\n"
+        << "}\r\n\r\n";
+
 
     std::map<std::string, CmdHandlerBase*>::iterator it = g_pCmdHandlers->begin();
     for (; it!=g_pCmdHandlers->end(); ++it){
         std::string sCmd = it->first;
         CmdHandlerBase* pCmdHandlerBase = it->second;
-        builder
-        .add("# Access unauthorized " + std::string(pCmdHandlerBase->access().accessUnauthorized() ? "yes" : "no"))
-        .add("# Acess user " + std::string(pCmdHandlerBase->access().accessUser() ? "yes" : "no"))
-        .add("# Access admin " + std::string(pCmdHandlerBase->access().accessAdmin() ? "yes" : "no"));
+
+        libfhqcli_web_js_file
+            << "// Access unauthorized: " << (pCmdHandlerBase->access().accessUnauthorized() ? "yes" : "no") << "\r\n"
+            << "// Access user: " << (pCmdHandlerBase->access().accessUser() ? "yes" : "no") << "\r\n"
+            << "// Access admin: " << (pCmdHandlerBase->access().accessAdmin() ? "yes" : "no") << "\r\n";
         
         if(pCmdHandlerBase->activatedFromVersion() != ""){
-            builder.add("# Activated From Version: " + pCmdHandlerBase->activatedFromVersion());
+            libfhqcli_web_js_file 
+                << "// Activated From Version: " << pCmdHandlerBase->activatedFromVersion() << "\r\n";
         }
         
         if(pCmdHandlerBase->deprecatedFromVersion() != ""){
-            builder.add("# Deprecated From Version: " + pCmdHandlerBase->deprecatedFromVersion());
+            libfhqcli_web_js_file
+                << "// Deprecated From Version: " + pCmdHandlerBase->deprecatedFromVersion() << "\r\n";
         }
         
         std::vector<CmdInputDef> vVin = pCmdHandlerBase->inputs();
+        if (vVin.size() > 0) {
+            libfhqcli_web_js_file 
+                <<  "// Input params:\r\n"; 
+        }
         for(int i = 0; i < vVin.size(); i++){
             CmdInputDef inDef = vVin[i];
             std::string nameIn = std::string(inDef.getName());
-            builder.add("# " + nameIn + " - " + inDef.getType() + ", " + inDef.getRestrict() + " (" + inDef.getDescription() + ")" );
+            libfhqcli_web_js_file 
+                <<  "// * " + nameIn + " - " + inDef.getType() + ", " + inDef.getRestrict() + " (" + inDef.getDescription() + ") \r\n";
         }
-
-        builder
-        .sub("def " + sCmd + "(self, req):")
-            .add("if not self.__recvThread.hasConnection(): return None")
-            .add("requestJson = self.__recvThread.generateBaseCommand('" + sCmd + "')");
+        libfhqcli_web_js_file 
+            << "fhq.ws." << sCmd << " = function(params) {\r\n"
+            << "    params = params || {};\r\n"
+            << "    params.cmd = '" << sCmd << "';\r\n";
 
         // check required
-        for(int i = 0; i < vVin.size(); i++){
+        for (int i = 0; i < vVin.size(); i++) {
             CmdInputDef inDef = vVin[i];
             if(inDef.isRequired()){
                 std::string nameIn = std::string(vVin[i].getName());
-                builder
-                .sub("if '" + nameIn + "' not in req: ")
-                    .add("raise Exception('Parameter \"" + nameIn + "\" expected (lib)')")
-                    .end();
+                libfhqcli_web_js_file 
+                    << "    if (!params['" + nameIn + "']) {\r\n"
+                    << "         console.error('Parameter \"" << nameIn << "\" expected (lib)');\r\n"
+                    << "    }\r\n";
             }
         }
 
-        for(int i = 0; i < vVin.size(); i++){
-            std::string nameIn = std::string(vVin[i].getName());
-            builder
-            .sub("if '" + nameIn + "' in req: ")
-                .add("requestJson['" + nameIn + "'] = req['" + nameIn + "']")
-                .end();
-        }
-
-        builder
-            .add("cmd_m = self.__recvThread.addToSendQueue(requestJson)")
-            .add("return self.__looper(cmd_m)")
-            .end()
-        .add("");
+        libfhqcli_web_js_file 
+            << "    return fhq.ws.send(params);\r\n"
+            << "}\r\n\r\n";
     }
-    builder.end();
-    builder.print(__init__);
-    __init__.close();
+
+    libfhqcli_web_js_file.close();
     std::cout << "\t> OK" << std::endl;
 }
 

@@ -67,7 +67,7 @@ install/DOXYGEN/html/*
 CMakeLists.txt.user
 .vscode
 fhq-server/libfhqcli-py
-fhq-server/libfhqcli-js
+fhq-server/libfhqcli-web-js
 tests/libfhqcli.py
 tests/libfhqcli/*
 
