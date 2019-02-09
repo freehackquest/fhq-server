@@ -41,7 +41,8 @@ bool EmployOrchestra::init() {
     m_bTrusted = UtilsLXDAuth::check_trust_certs(sError);
     if (!m_bTrusted) {
         Log::err(TAG,
-                 "SSL certificates are not trusted. Please configure the connection with the LXD. Type ./fhq-server -mclxd");
+                 "SSL certificates are not trusted.\nPlease configure the connection with the LXD. "
+                 "Type ./fhq-server -mclxd");
         return false;
     }
     return true;
@@ -141,7 +142,6 @@ bool EmployOrchestra::send_post_request(const std::string &sUrl, const nlohmann:
     }
 
     jsonResponse = nlohmann::json::parse(sResponse);
-
     curl_easy_cleanup(hnd);
 
     if (!check_response(jsonResponse, sError)) {
@@ -284,7 +284,6 @@ bool EmployOrchestra::send_delete_request(const std::string &sUrl, nlohmann::jso
     }
 
     jsonResponse = nlohmann::json::parse(response);
-
     curl_easy_cleanup(hnd);
 
     if (!check_response(jsonResponse, sError)) {

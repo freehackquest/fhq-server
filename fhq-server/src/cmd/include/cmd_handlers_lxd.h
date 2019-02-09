@@ -51,4 +51,20 @@ class CmdHandlerLXDList : public CmdHandlerBase {
 
 REGISTRY_CMD(CmdHandlerLXDList)
 
+/*********************************************
+ * Execute the command in container.
+**********************************************/
+
+class CmdHandlerLXDExec : public CmdHandlerBase {
+
+public:
+    CmdHandlerLXDExec();
+    void handle(ModelRequest *pRequest) override;
+
+    static bool exec_command(const std::string &sName, const std::string &sCommand, std::string &sError,
+                                int &nErrorCode, std::string &sOutput);
+};
+
+REGISTRY_CMD(CmdHandlerLXDExec)
+
 #endif // CMD_HADNLERS_LXD_H

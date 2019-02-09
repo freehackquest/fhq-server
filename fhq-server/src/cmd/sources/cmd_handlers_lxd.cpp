@@ -252,3 +252,66 @@ void CmdHandlerLXDList::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
+
+CmdHandlerLXDExec::CmdHandlerLXDExec()
+        : CmdHandlerBase("lxd_exec", "Exec command in the container with name.") {
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
+    m_vInputs.push_back(CmdInputDef("command").string_().required().description("Name of execution command"));
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    if (!pOrchestra->initConnection()) {
+        pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
+        return;
+    }
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+    std::string sError;
+    int nErrorCode = 500;
+    std::string name = jsonRequest["name"].toString().toStdString();
+    std::string command = jsonRequest["command"].toString().toStdString();
+    std::string sOutput;
+
+    bool done = exec_command(name, command, sError, nErrorCode, sOutput);
+    if (done){
+        jsonResponse["container"] = QString::fromStdString(name);
+        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+        return;
+    }
+    pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+}
+
+bool CmdHandlerLXDExec::exec_command(const std::string &sName, const std::string &sCommand, std::string &sError,
+                                    int &nErrorCode, std::string &sOutput) {
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
+
+    if (!pOrchestra->initConnection()) {
+        sError = "Can\'t connect to LXD server";
+        nErrorCode = 502;
+        return false;
+    }
+
+    LXDContainer *pContainer;
+    if (!pOrchestra->find_container(sName, pContainer)) {
+        sError = "Not found container " + sName;
+        nErrorCode = 404;
+        return false;
+    }
+
+    if (!pContainer->exec(sCommand)) {
+        sError = pContainer->get_error();
+        nErrorCode = 500;
+        return false;
+    }
+
+    sOutput = pContainer->get_result();
+    return true;
+}
