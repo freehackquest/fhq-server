@@ -147,6 +147,10 @@ list (APPEND FHQSRV_SOURCES "src/models/include/model_lxd_container.h")
 list (APPEND FHQSRV_SOURCES "src/models/sources/model_lxd_container.cpp")
 
 # utils
+list (APPEND FHQSRV_SOURCES "src/utils/export_libfhqcli_py.h")
+list (APPEND FHQSRV_SOURCES "src/utils/export_libfhqcli_py.cpp")
+list (APPEND FHQSRV_SOURCES "src/utils/export_libfhqcli_web_js.h")
+list (APPEND FHQSRV_SOURCES "src/utils/export_libfhqcli_web_js.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/fs.h")
 list (APPEND FHQSRV_SOURCES "src/utils/fs.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/str.h")
@@ -158,8 +162,6 @@ list (APPEND FHQSRV_SOURCES "src/utils/include/utils_logger.h")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_logger.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/include/utils_export_list_of_handlers.h")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_export_list_of_handlers.cpp")
-list (APPEND FHQSRV_SOURCES "src/utils/include/utils_export_client_library_python.h")
-list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_export_client_library_python.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/include/utils_levenshtein.h")
 list (APPEND FHQSRV_SOURCES "src/utils/include/utils_prepare_deb_package.h")
 list (APPEND FHQSRV_SOURCES "src/utils/include/utils_static_analizing_text.h")
@@ -265,8 +267,6 @@ list (APPEND FHQSRV_SOURCES "src/updates/sources/update0096.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/update0097.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/update0098.cpp")
 list (APPEND FHQSRV_SOURCES "src/updates/sources/update0099.cpp")
-
-
 
 # main
 list (APPEND FHQSRV_SOURCES "src/main.cpp")
