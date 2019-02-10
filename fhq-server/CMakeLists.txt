@@ -37,6 +37,8 @@ list (APPEND FHQSRV_INCLUDE_DIRS "src/tasks")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/updates")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/tasks/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/tasks")
+list (APPEND FHQSRV_INCLUDE_DIRS "src/storages")
+list (APPEND FHQSRV_INCLUDE_DIRS "src/storages/updates")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/updates")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/updates/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd")
@@ -146,6 +148,18 @@ list (APPEND FHQSRV_SOURCES "src/models/sources/model_command_access.cpp")
 list (APPEND FHQSRV_SOURCES "src/models/include/model_lxd_container.h")
 list (APPEND FHQSRV_SOURCES "src/models/sources/model_lxd_container.cpp")
 
+# storages
+list (APPEND FHQSRV_SOURCES "src/storages/storage.h")
+list (APPEND FHQSRV_SOURCES "src/storages/storage.cpp")
+list (APPEND FHQSRV_SOURCES "src/storages/storages.h")
+list (APPEND FHQSRV_SOURCES "src/storages/storages.cpp")
+
+
+# TODO include only if libmysqlclient exists 
+list (APPEND FHQSRV_INCLUDE_DIRS "src/storages/mysql")
+list (APPEND FHQSRV_SOURCES "src/storages/mysql/mysql_storage.cpp")
+list (APPEND FHQSRV_SOURCES "src/storages/mysql/mysql_storage.h")
+
 # utils
 list (APPEND FHQSRV_SOURCES "src/utils/export_libfhqcli_py.h")
 list (APPEND FHQSRV_SOURCES "src/utils/export_libfhqcli_py.cpp")
@@ -240,6 +254,9 @@ list (APPEND FHQSRV_SOURCES "src/tasks/sources/update_user_rating_task.cpp")
 list (APPEND FHQSRV_SOURCES "src/tasks/sources/update_user_location_task.cpp")
 list (APPEND FHQSRV_SOURCES "src/tasks/sources/lxd_async_operation_task.cpp")
 
+# updates
+list (APPEND FHQSRV_SOURCES "src/storages/updates/db0060.h")
+list (APPEND FHQSRV_SOURCES "src/storages/updates/db0060.cpp")
 
 # updates - deprecated
 list (APPEND FHQSRV_SOURCES "src/updates/update0100.h")
