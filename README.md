@@ -12,7 +12,6 @@ Frontend for FreeHackQuest here: [frontend](https://github.com/freehackquest/fro
 	* [SYSTEMD](install/SYSTEMD.md)
 	* [INITD](install/INITD.md)
 
-
 ## (Ubuntu) Install from ppa:
 
 ```
@@ -24,9 +23,13 @@ More details here:
 
 [https://launchpad.net/~freehackquest/+archive/ubuntu/fhq-server](https://launchpad.net/~freehackquest/+archive/ubuntu/fhq-server)
 
+## Client libraries
+
+* [npm javascript](https://www.npmjs.com/package/libfhqcli-web-js)
+* [python](https://pypi.org/project/libfhqcli/)
+
 ## 3rdParty
 
-* Contains source code to compile: [SmtpClient-for-Qt](https://github.com/bluetiger9/SmtpClient-for-Qt)
 * For Json: [Json](https://github.com/nlohmann/json)
 * Used libcurl for a working with http/https/smtp: [https://curl.haxx.se/](https://curl.haxx.se/)
 * Used libopenssl for a working with https requests: [https://www.openssl.org/](https://www.openssl.org/)
