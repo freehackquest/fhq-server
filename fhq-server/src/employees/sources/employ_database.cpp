@@ -193,28 +193,26 @@ QSqlDatabase *EmployDatabase::database(){
 // - need close connection after hour
 // - control of count of connections (must be < 100)
 
-MYSQL *EmployDatabase::db() {
+Storage *EmployDatabase::storage() {
 	std::string sThreadId = Log::threadId();
-    MYSQL *pDatabase = NULL;
-    std::map<std::string,MYSQL *>::iterator it;
-    it = m_mapConnections.find(sThreadId);
-    if (it == m_mapConnections.end()) {
+    Storage *pStorage = nullptr;
+    std::map<std::string,Storage *>::iterator it;
+    it = m_mapStorageConnections.find(sThreadId);
+    if (it == m_mapStorageConnections.end()) {
 		EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
-		
-        pDatabase = mysql_init(NULL);
-        if (!mysql_real_connect(pDatabase, 
-                pServerConfig->databaseHost().c_str(),
-                pServerConfig->databaseUser().c_str(),
-                pServerConfig->databasePassword().c_str(),
-                pServerConfig->databaseName().c_str(), 
-				pServerConfig->databasePort(), NULL, 0)) {
-            Log::err(TAG, std::string(mysql_error(pDatabase)));
-            Log::err(TAG, "Failed to connect.");
-            return NULL;
-        }
-        m_mapConnections[sThreadId] = pDatabase;
-    }else{
-        pDatabase = it->second;
+		std::string sFilepathConfig = "";
+        pStorage = Storages::create("mysql");
+		if (!pStorage->applyConfigFromFile(sFilepathConfig)) {
+			delete pStorage;
+			return nullptr;
+		}
+		if (!pStorage->connect()) {
+			delete pStorage;
+			return nullptr;
+		}
+        m_mapStorageConnections[sThreadId] = pStorage;
+    } else {
+        pStorage = it->second;
     }
-    return pDatabase;
+    return pStorage;
 }

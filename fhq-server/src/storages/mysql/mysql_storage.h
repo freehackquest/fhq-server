@@ -10,6 +10,7 @@ class MySqlStorage : public Storage {
         MySqlStorage();
         static std::string type() { return "mysql"; };
         virtual bool applyConfigFromFile(const std::string &sFilePath);
+        virtual bool connect();
         virtual std::string lastVersion();
         virtual bool insertUpdateInfo(const std::string &sVersion, const std::string &sDescription);
         virtual void clean();
@@ -22,6 +23,8 @@ class MySqlStorage : public Storage {
         std::string m_sDatabaseUser;
         std::string m_sDatabasePass;
         int m_nDatabasePort;
+
+        MYSQL *m_pDatabase;
 };
 
 #endif // MYSQL_STORAGE_H

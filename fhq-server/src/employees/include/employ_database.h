@@ -6,6 +6,7 @@
 
 #include <QMutex>
 #include <mysql/mysql.h>
+#include <storages.h>
 
 class EmployDatabase : public EmployBase {
     public:
@@ -14,13 +15,14 @@ class EmployDatabase : public EmployBase {
        virtual bool init();
        QSqlDatabase *database();
        bool manualCreateDatabase(const std::string& sRootPassword, std::string& sError);
-       MYSQL *db();
+       // MYSQL *db();
+       Storage *storage();
 
 	private:
 		std::string TAG;
 
-        // new
-        std::map<std::string, MYSQL *> m_mapConnections;
+        // new new
+        std::map<std::string, Storage *> m_mapStorageConnections;
 
         // db two connections
 		QMutex m_mtxSwapConenctions;

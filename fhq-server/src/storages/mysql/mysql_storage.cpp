@@ -14,6 +14,7 @@ MySqlStorage::MySqlStorage() {
     m_sDatabaseUser = "";
     m_sDatabasePass = "";
     m_nDatabasePort = 3306;
+    m_pDatabase = nullptr;
 }
 
 // ----------------------------------------------------------------------
@@ -21,6 +22,24 @@ MySqlStorage::MySqlStorage() {
 bool MySqlStorage::applyConfigFromFile(const std::string &sFilePath) {
     // TODO
     return false;
+}
+
+// ----------------------------------------------------------------------
+
+bool MySqlStorage::connect() {
+    m_pDatabase = mysql_init(NULL);
+    if (!mysql_real_connect(m_pDatabase, 
+            m_sDatabaseHost.c_str(),
+            m_sDatabaseUser.c_str(),
+            m_sDatabasePass.c_str(),
+            m_sDatabaseName.c_str(), 
+            m_nDatabasePort, NULL, 0)) {
+        Log::err(TAG, std::string(mysql_error(m_pDatabase)));
+        Log::err(TAG, "Failed to connect.");
+        m_pDatabase = nullptr;
+        return false;
+    }
+    return true;
 }
 
 // ----------------------------------------------------------------------

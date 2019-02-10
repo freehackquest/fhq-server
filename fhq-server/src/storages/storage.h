@@ -60,6 +60,7 @@ class Storage {
         // Storage(const std::string &sType);
         static std::string type() { return "unknown"; };
         virtual bool applyConfigFromFile(const std::string &sFilePath) = 0;
+        virtual bool connect() = 0;
         virtual void clean() = 0;
         virtual std::string lastVersion() = 0;
         virtual bool insertUpdateInfo(const std::string &sVersion, const std::string &sDescription) = 0;
