@@ -3,14 +3,19 @@
 #include <vector>
 #include <iostream>
 
-QString UnitTestLevenshtein::name(){
-	return "UnitTestLevenshtein";
+REGISTRY_UNIT_TEST(UnitTestLevenshtein)
+
+
+UnitTestLevenshtein::UnitTestLevenshtein()
+    : UnitTestBase("UnitTestLevenshtein") {
+    //
 }
 
-void UnitTestLevenshtein::init(){
+void UnitTestLevenshtein::init() {
+    // nothing
 }
 
-bool UnitTestLevenshtein::run(){
+bool UnitTestLevenshtein::run() {
 
     struct LTest {
         LTest(QString s1, QString s2, int n) : s1(s1), s2(s2), n(n) {}

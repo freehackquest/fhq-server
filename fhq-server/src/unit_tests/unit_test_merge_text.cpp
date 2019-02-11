@@ -5,9 +5,13 @@
 #include <QFile>
 #include <QTextStream>
 #include <iostream>
+#include <QString>
 
-QString UnitTestMergeText::name(){
-    return "UnitTestMergeText";
+REGISTRY_UNIT_TEST(UnitTestMergeText)
+
+UnitTestMergeText::UnitTestMergeText()
+    : UnitTestBase("UnitTestMergeText") {
+    // 
 }
 
 void UnitTestMergeText::init(){

@@ -16,10 +16,13 @@ class StorageStructColumn {
         StorageStructColumn &datetime();
         StorageStructColumn &number();
         StorageStructColumn &primaryKey();
-        
+
+        std::string columnName();        
         bool isAutoIncrement();
+        bool isPrimaryKey();
 
     private:
+        std::string TAG;
         std::string m_sColumnName;
         std::string m_sType;
         int m_nTypeSize;
@@ -44,13 +47,21 @@ class StorageStruct {
         StorageStruct(const std::string &sTableName, StorageStructTableMode nMode);
         std::string tableName();
         StorageStructTableMode mode();
-        void addColumn(StorageStructColumn &column);
-        void alterColumn(const std::string &sColumnName);
-        void dropColumn(const std::string &sColumnName);
+        bool addColumn(StorageStructColumn &column);
+        bool alterColumn(StorageStructColumn &column);
+        bool dropColumn(const std::string &sColumnName);
+        const std::vector<StorageStructColumn> &listAddColumns();
+        const std::vector<StorageStructColumn> &listAlterColumns();
+        const std::vector<std::string> &listDropColumns();
+
     private:
+        std::string TAG;
         std::string m_sTableName;
-        std::vector<StorageStructColumn> m_vAddColumns;
         StorageStructTableMode m_nMode;
+        std::vector<StorageStructColumn> m_vAddColumns;
+        std::vector<StorageStructColumn> m_vAlterColumns;
+        std::vector<std::string> m_vDropColumns;
+        
 };
 
 // ---------------------------------------------------------------------
@@ -64,6 +75,7 @@ class Storage {
         virtual void clean() = 0;
         virtual std::string lastVersion() = 0;
         virtual bool insertUpdateInfo(const std::string &sVersion, const std::string &sDescription) = 0;
+        virtual std::vector<std::string> prepareSqlQueries(StorageStruct &storageStruct) = 0;
         virtual bool applyStruct(StorageStruct &storageStruct) = 0;
 };
 

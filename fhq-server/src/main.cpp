@@ -19,7 +19,7 @@
 #include <websocketserver.h>
 #include <utils_prepare_deb_package.h>
 #include <utils_lxd.h>
-#include <create_unit_tests.h>
+#include <unit_tests.h>
 #include <employees.h>
 #include <employ_server_config.h>
 #include <employ_server_info.h>
@@ -65,17 +65,9 @@ int main(int argc, char** argv) {
     } else if(helpArgs.has("help") || helpArgs.has("-h")) {
         helpArgs.printHelp();
         return 0;
-    }else if(helpArgs.has("run-unit-tests") || helpArgs.has("-rut")){
-        QMap<QString, IUnitTest *> mapUnitTests;
-        create_unit_tests(mapUnitTests);
-        foreach( QString name, mapUnitTests.keys()){
-            IUnitTest *pUnitTest = mapUnitTests.value(name);
-            Log::info(TAG,  "Run test  " + name.toStdString());
-            if(pUnitTest->run()){
-                Log::info(TAG,  "Test passed");
-            }else{
-                Log::err(TAG,  "Test failed");
-            }
+    } else if(helpArgs.has("run-unit-tests") || helpArgs.has("-rut")) {
+        if (!UnitTests::runUnitTests()) {
+            return -1;
         }
         return 0;
     }else if(helpArgs.has("show-handlers") || helpArgs.has("-sh")){

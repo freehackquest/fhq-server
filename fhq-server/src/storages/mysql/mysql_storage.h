@@ -14,6 +14,7 @@ class MySqlStorage : public Storage {
         virtual std::string lastVersion();
         virtual bool insertUpdateInfo(const std::string &sVersion, const std::string &sDescription);
         virtual void clean();
+        virtual std::vector<std::string> prepareSqlQueries(StorageStruct &storageStruct);
         virtual bool applyStruct(StorageStruct &storageStruct);
 
     private:

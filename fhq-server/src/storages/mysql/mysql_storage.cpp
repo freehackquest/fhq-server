@@ -83,7 +83,54 @@ void MySqlStorage::clean() {
 
 // ----------------------------------------------------------------------
 
+std::vector<std::string> MySqlStorage::prepareSqlQueries(StorageStruct &storageStruct) {
+    std::vector<std::string> vRet;
+    if (storageStruct.mode() == StorageStructTableMode::ALTER) {
+        // drop columns
+        std::vector<std::string> vDropColumns = storageStruct.listDropColumns();
+        for (int i = 0; i < vDropColumns.size(); i++) {
+            vRet.push_back("ALTER TABLE " + storageStruct.tableName() + " DROP COLUMN " + vDropColumns[i] + ";");
+        }
+        
+        // add columns
+        std::vector<StorageStructColumn> vAddColumns = storageStruct.listAddColumns();
+        for (int i = 0; i < vAddColumns.size(); i++) {
+            vRet.push_back("ALTER TABLE " + storageStruct.tableName() + " ADD COLUMN " + vAddColumns[i].columnName());
+        }
+
+        // alter columns
+        std::vector<StorageStructColumn> vAlterColumns = storageStruct.listAlterColumns();
+        for (int i = 0; i < vAlterColumns.size(); i++) {
+            vRet.push_back("ALTER TABLE " + storageStruct.tableName() + " MODIFY " + vAddColumns[i].columnName());
+        }
+    } else if (storageStruct.mode() == StorageStructTableMode::DROP) {
+        vRet.push_back("DROP TABLE IF EXISTS " + storageStruct.tableName() + ";");
+    } else if (storageStruct.mode() == StorageStructTableMode::CREATE) {
+        std::string sQuery = "";
+        sQuery += "CREATE TABLE IF NOT EXISTS " + storageStruct.tableName() + " (";
+        std::string sPrimaryKeyColumnName = "";
+        // add columns
+        std::vector<StorageStructColumn> vAddColumns = storageStruct.listAddColumns();
+        for (int i = 0; i < vAddColumns.size(); i++) {
+            StorageStructColumn c = vAddColumns[i];
+            sQuery += "  " + c.columnName() + " ,";
+            if (c.isPrimaryKey()) {
+                sPrimaryKeyColumnName = c.columnName();
+            }
+        }
+        sQuery += " PRIMARY KEY (" + sPrimaryKeyColumnName + ")";
+        sQuery += ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+        vRet.push_back(sQuery);
+    }
+    return vRet;
+}
+
+// ----------------------------------------------------------------------
+
 bool MySqlStorage::applyStruct(StorageStruct &storageStruct) {
     // TODO make from struct to sql query/queries
     return false;
 }
+
+// ----------------------------------------------------------------------
+
