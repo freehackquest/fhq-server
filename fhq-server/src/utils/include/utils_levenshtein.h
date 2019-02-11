@@ -1,11 +1,11 @@
 #ifndef UTILS_LEVENSHTEIN_H
 #define UTILS_LEVENSHTEIN_H
 
-#include <QString>
+#include <string>
 
 class UtilsLevenshtein {
     public:
-        static int distance(const QString &str1, const QString &str2);
+        static int distance(const std::string &str1, const std::string &str2);
 };
 
 #endif

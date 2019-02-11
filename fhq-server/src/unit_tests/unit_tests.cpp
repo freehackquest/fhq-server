@@ -52,7 +52,7 @@ bool UnitTests::runUnitTests() {
         std::string sTestName = pUnitTest->name();
         Log::info("runUnitTests",  "Run test " + sTestName);
         if (pUnitTest->run()) {
-            Log::info(sTestName,  "Test passed"); // TODO Log::ok
+            Log::ok(sTestName,  "Test passed");
             nSuccess++;
         } else {
             Log::err(sTestName,  "Test failed");

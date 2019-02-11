@@ -5,7 +5,7 @@
 
 class UnitTestLevenshtein : public UnitTestBase {
     public:
-		UnitTestLevenshtein();
+        UnitTestLevenshtein();
         virtual void init();
         virtual bool run();
 };

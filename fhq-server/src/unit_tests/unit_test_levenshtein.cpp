@@ -18,9 +18,9 @@ void UnitTestLevenshtein::init() {
 bool UnitTestLevenshtein::run() {
 
     struct LTest {
-        LTest(QString s1, QString s2, int n) : s1(s1), s2(s2), n(n) {}
-        QString s1;
-        QString s2;
+        LTest(std::string s1, std::string s2, int n) : s1(s1), s2(s2), n(n) {}
+        std::string s1;
+        std::string s2;
         int n;
     };
 
@@ -33,13 +33,13 @@ bool UnitTestLevenshtein::run() {
     tests.push_back(new LTest("!@#$%^&*()_+", "!@#%$^&*()+", 3));
 
     unsigned int nSuccess = 0;
-    for(unsigned int i = 0; i < tests.size(); i++){
-        QString s1 = tests[i]->s1;
-        QString s2 = tests[i]->s2;
+    for (unsigned int i = 0; i < tests.size(); i++) {
+        std::string s1 = tests[i]->s1;
+        std::string s2 = tests[i]->s2;
         int n = tests[i]->n;
         int n1 = UtilsLevenshtein::distance(s1, s2);
         if (n1 != n) {
-            std::cout << "Test levenshtein distance between " << s1.toStdString() << " and " << s2.toStdString() << "\n"
+            std::cout << "Test levenshtein distance between " << s1 << " and " << s2 << "\n"
                       << " (expected " << n << ", but got " << n1 << ")";
         }else{
             nSuccess++;

@@ -9,7 +9,8 @@ class UnitTestMergeText : public UnitTestBase {
         virtual void init();
         virtual bool run();
     private:
-        QString loadFileFromRes(QString res_name);
+        std::string text001();
+        std::string text002();
 };
 
 #endif // UNIT_TEST_MERGE_TEXT_H
