@@ -15,17 +15,25 @@ EmployDatabase::EmployDatabase()
 // ---------------------------------------------------------------------
 
 bool EmployDatabase::init(){
-	// EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
+	EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
 	
-	
+	m_sStorageType = pServerConfig->storageType();
+	if (!Storages::support(m_sStorageType)) {
+		Log::err(TAG, "Not support storage " + m_sStorageType);
+		return false;
+	}
+	m_pStorage = Storages::create(m_sStorageType);
+	// m_pStorage->applyConfigFromFile(); // TODO
+
+	// deprecated
 	m_pDBConnection = new ModelDatabaseConnection("qt_sql_default_connection_1");
 	m_pDBConnection_older = new ModelDatabaseConnection("qt_sql_default_connection_2");
 	
-	if(!m_pDBConnection->connect()){
+	if (!m_pDBConnection->connect()) {
 		return false;
 	}
 
-    if(!Updates::updateDatabase(m_pDBConnection->db())){
+    if (!Updates::updateDatabase(m_pDBConnection->db())) {
         return false;
     }
 
@@ -47,7 +55,15 @@ bool EmployDatabase::init(){
 
 bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std::string& sError){
 	EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
-	
+	m_sStorageType = pServerConfig->storageType();
+	if (!Storages::support(m_sStorageType)) {
+		Log::err(TAG, "Not support storage " + m_sStorageType);
+		return false;
+	}
+	m_pStorage = Storages::create(m_sStorageType);
+
+	// m_pStorage->connect()
+
 	QSqlDatabase *pDatabase = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL", "manualCreateDatabase"));
 	
 	pDatabase->setHostName(QString(pServerConfig->databaseHost().c_str()));

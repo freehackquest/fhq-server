@@ -1,5 +1,10 @@
 #include <storage.h>
-#include <utils_logger.h>
+#include <logger.h>
+#include <ts.h>
+
+// ***********************
+// *** StorageStructColumn
+// ***********************
 
 // ---------------------------------------------------------------------
 
@@ -89,6 +94,18 @@ std::string StorageStructColumn::columnName() {
 
 // ---------------------------------------------------------------------
 
+std::string StorageStructColumn::columnType() {
+    return m_sType;
+}
+
+// ---------------------------------------------------------------------
+
+int StorageStructColumn::columnTypeSize() {
+    return m_nTypeSize;
+}
+
+// ---------------------------------------------------------------------
+
 bool StorageStructColumn::isAutoIncrement() {
     return m_bAutoIncrement;
 }
@@ -98,6 +115,18 @@ bool StorageStructColumn::isAutoIncrement() {
 bool StorageStructColumn::isPrimaryKey() {
     return m_bPrimaryKey;
 }
+
+// ---------------------------------------------------------------------
+
+bool StorageStructColumn::isNotNull() {
+    return m_bNotNull;
+}
+
+// ---------------------------------------------------------------------
+
+// ***********************
+// *** StorageStruct
+// ***********************
 
 // ---------------------------------------------------------------------
 
@@ -190,9 +219,40 @@ const std::vector<StorageStructColumn> &StorageStruct::listAlterColumns() {
 
 // ---------------------------------------------------------------------
 
-
 const std::vector<std::string> &StorageStruct::listDropColumns() {
     return m_vDropColumns;
+}
+
+// ---------------------------------------------------------------------
+
+// ***********************
+// *** StorageConnection
+// ***********************
+
+StorageConnection::StorageConnection() {
+    m_nCreated = TS::currentTime_milliseconds();
+    TAG = "StorageConnection";
+}
+
+// ---------------------------------------------------------------------
+
+long StorageConnection::created() {
+    return m_nCreated;
+}
+
+// ---------------------------------------------------------------------
+
+bool Storage::applyStruct(StorageStruct &storageStruct) {
+    std::vector<std::string> v = this->prepareSqlQueries(storageStruct);
+    StorageConnection *pConn = this->connect();
+    for (int i = 0; i < v.size(); i++) {
+        if (!pConn->executeQuery(v[i])) {
+            delete pConn;
+            return false;        
+        }
+    }
+    delete pConn;
+    return true;
 }
 
 // ---------------------------------------------------------------------

@@ -111,7 +111,8 @@ bool StorageUpdates::apply(Storage *pStorage){
     StorageUpdates::initGlobalVariables();
     std::string TAG = "StorageUpdates::apply";
 
-    std::string sLastVersion = pStorage->lastVersion();
+    StorageConnection *pConn = pStorage->connect(); 
+    std::string sLastVersion = pConn->lastDatabaseVersion();
 
     Log::info(TAG, "Last Version -> " + sLastVersion);
 
@@ -129,7 +130,7 @@ bool StorageUpdates::apply(Storage *pStorage){
                     Log::err(TAG, "Error on install update " + error);
                     return false;
                 }
-                pStorage->insertUpdateInfo(pUpdate->version(), pUpdate->description());
+                pConn->insertUpdateInfo(pUpdate->version(), pUpdate->description());
             }
         }
     }

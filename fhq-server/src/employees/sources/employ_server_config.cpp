@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <storages.h>
 
 REGISTRY_EMPLOY(EmployServerConfig)
 
@@ -21,6 +22,7 @@ EmployServerConfig::EmployServerConfig()
 	m_bDatabase_usemysql = true;
 
 	// sql
+	m_sStorageType = "mysql"; // default
     m_bDatabase_usemysql = true;
     m_sDatabase_host = "localhost";
     m_nDatabase_port = 3306;
@@ -41,7 +43,8 @@ EmployServerConfig::EmployServerConfig()
 // ---------------------------------------------------------------------
 
 bool EmployServerConfig::init(){
-	
+	// TODO: redesign find folder with configs
+
 	std::vector<std::string> vSearchConfigFile;
     vSearchConfigFile.push_back("fhq-server.conf");
     // vSearchConfigFile.push_back("/etc/freehackquest-backend/conf.ini");
@@ -66,6 +69,13 @@ bool EmployServerConfig::init(){
 	}
 
 	EmployServerConfig::parseConfig(m_sFilename);
+
+	m_sStorageType = this->getStringValueFromConfig("storage_type", m_sStorageType);
+	// TODO check support
+	if (!Storages::support(m_sStorageType)) {
+		Log::err(TAG, "Not support storage " + m_sStorageType);
+		return false;
+	}
 
     m_bDatabase_usemysql = this->getBoolValueFromConfig("usemysql", m_bDatabase_usemysql);
     if (m_bDatabase_usemysql) {
@@ -141,6 +151,7 @@ bool EmployServerConfig::parseConfig(const std::string &sConfigFile){
 }
 
 // ---------------------------------------------------------------------
+// TODO redesign to str.h
 
 void EmployServerConfig::string_trim(std::string &sLine){
 	// trim trailing spaces
@@ -161,6 +172,7 @@ void EmployServerConfig::string_trim(std::string &sLine){
 }
 
 // ---------------------------------------------------------------------
+// TODO redesign fs.h
 
 bool EmployServerConfig::fileExists(const std::string &sFilename){
 	struct stat buffer;   
@@ -211,7 +223,13 @@ bool EmployServerConfig::getBoolValueFromConfig(const std::string &sParamName, b
 
 // ---------------------------------------------------------------------
 
-std::string EmployServerConfig::databaseHost(){
+std::string EmployServerConfig::storageType() {
+	return m_sStorageType;
+}
+
+// ---------------------------------------------------------------------
+
+std::string EmployServerConfig::databaseHost() {
 	return m_sDatabase_host;
 }
 

@@ -41,12 +41,12 @@ bool UnitTestStorageStruct::run() {
         bTestSuccess = false;
     } else {
         bTestSuccess = compareS(bTestSuccess, vQueries1[0], 
-            "CREATE TABLE IF NOT EXISTS test_tbl1 ("
-			"  id int(11) NOT NULL AUTO_INCREMENT,"
-			"  filed1 varchar(255) NOT NULL,"
-			"  filed2 text NOT NULL,"
-			"  filed3 DATETIME NOT NULL,"
-			"  PRIMARY KEY (id)"
+            "CREATE TABLE IF NOT EXISTS test_tbl1 (\r\n"
+			"  id INT NOT NULL AUTO_INCREMENT,\r\n"
+			"  filed1 VARCHAR(255) NOT NULL,\r\n"
+			"  filed2 TEXT NOT NULL,\r\n"
+			"  filed3 DATETIME NOT NULL,\r\n"
+			"  PRIMARY KEY (id)\r\n"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
     }
 
@@ -74,7 +74,7 @@ bool UnitTestStorageStruct::run() {
         bTestSuccess = compareS(bTestSuccess, vQueries3[0], "ALTER TABLE test_tbl3 DROP COLUMN filed2;");
         bTestSuccess = compareS(bTestSuccess, vQueries3[1], "ALTER TABLE test_tbl3 DROP COLUMN filed3;");
         bTestSuccess = compareS(bTestSuccess, vQueries3[2], "ALTER TABLE test_tbl3 ADD COLUMN filed5 VARCHAR(123) NOT NULL;");
-        bTestSuccess = compareS(bTestSuccess, vQueries3[3], "ALTER TABLE test_tbl3 MODIFY filed3 VARCHAR(124) NOT NULL;");
+        bTestSuccess = compareS(bTestSuccess, vQueries3[3], "ALTER TABLE test_tbl3 MODIFY filed1 VARCHAR(124) NOT NULL;");
     }
 
     return bTestSuccess;

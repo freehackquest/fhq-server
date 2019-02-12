@@ -10,6 +10,7 @@ class EmployServerConfig : public EmployBase {
         virtual bool init();
         
         // configs
+        std::string storageType();
         std::string databaseHost();
         int databasePort();
         std::string databaseName();
@@ -38,6 +39,7 @@ class EmployServerConfig : public EmployBase {
         std::string m_sFilename;
 
         // database settings
+        std::string m_sStorageType;
         bool m_bDatabase_usemysql;
         std::string m_sDatabase_host;
         int m_nDatabase_port;

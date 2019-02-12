@@ -20,7 +20,8 @@ class EmployDatabase : public EmployBase {
 
 	private:
 		std::string TAG;
-
+        std::string m_sStorageType;
+        Storage *m_pStorage;
         // new new
         std::map<std::string, Storage *> m_mapStorageConnections;
 

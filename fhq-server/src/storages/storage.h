@@ -17,9 +17,12 @@ class StorageStructColumn {
         StorageStructColumn &number();
         StorageStructColumn &primaryKey();
 
-        std::string columnName();        
+        std::string columnName();
+        std::string columnType();
+        int columnTypeSize();
         bool isAutoIncrement();
         bool isPrimaryKey();
+        bool isNotNull();
 
     private:
         std::string TAG;
@@ -66,17 +69,36 @@ class StorageStruct {
 
 // ---------------------------------------------------------------------
 
+class StorageConnection {
+    public:
+        StorageConnection();
+        virtual bool executeQuery(const std::string &sQuery) = 0; // TODO redesign in future
+        virtual std::string lastDatabaseVersion() = 0;
+        virtual bool insertUpdateInfo(const std::string &sVersion, const std::string &sDescription) = 0;
+        
+        long created();
+
+    protected:
+        std::string TAG;
+
+    private:
+        long m_nCreated;
+};
+
+// ---------------------------------------------------------------------
+
 class Storage {
     public:
         // Storage(const std::string &sType);
         static std::string type() { return "unknown"; };
         virtual bool applyConfigFromFile(const std::string &sFilePath) = 0;
-        virtual bool connect() = 0;
+        virtual StorageConnection *connect() = 0;
         virtual void clean() = 0;
-        virtual std::string lastVersion() = 0;
-        virtual bool insertUpdateInfo(const std::string &sVersion, const std::string &sDescription) = 0;
+
         virtual std::vector<std::string> prepareSqlQueries(StorageStruct &storageStruct) = 0;
-        virtual bool applyStruct(StorageStruct &storageStruct) = 0;
+        bool applyStruct(StorageStruct &storageStruct);
 };
+
+// ---------------------------------------------------------------------
 
 #endif // STORAGE_H
