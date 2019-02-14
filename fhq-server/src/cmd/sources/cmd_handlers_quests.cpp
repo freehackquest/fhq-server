@@ -415,7 +415,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
 
     bool bPassed = sQuestAnswer.toUpper() == sUserAnswer.toUpper();
     QString sPassed = bPassed ? "Yes" : "No";
-    int nLevenshtein = UtilsLevenshtein::distance(sUserAnswer.toUpper(), sQuestAnswer.toUpper());
+    int nLevenshtein = UtilsLevenshtein::distance(sUserAnswer.toUpper().toStdString(), sQuestAnswer.toUpper().toStdString());
 
 
     // insert to user tries

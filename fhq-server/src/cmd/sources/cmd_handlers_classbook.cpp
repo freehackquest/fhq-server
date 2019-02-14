@@ -1548,7 +1548,7 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
-    QString curtxt = record.value("content").toString();
+    std::string curtxt = record.value("content").toString().toStdString();
 
     query.prepare("SELECT content, content_before FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", classbook_proposal_id);
@@ -1556,9 +1556,9 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
-    QString txt1 = record.value("content").toString();
-    QString txt2 = record.value("content_before").toString();
-    std::vector<row *> arr1, arr2;
+    std::string txt1 = record.value("content").toString().toStdString();
+    std::string txt2 = record.value("content_before").toString().toStdString();
+    std::vector<UtilsMergeTextRow *> arr1, arr2;
     UtilsMergeText::merge(curtxt, txt1, txt2, arr1, arr2);
 
     //TO DO final merge, lang checkout, update output (with data)

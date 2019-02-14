@@ -15,17 +15,27 @@ EmployDatabase::EmployDatabase()
 // ---------------------------------------------------------------------
 
 bool EmployDatabase::init(){
-	// EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
+	EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
 	
-	
-	m_pDBConnection = new ModelDatabaseConnection("qt_sql_default_connection_1");
-	m_pDBConnection_older = new ModelDatabaseConnection("qt_sql_default_connection_2");
-	
-	if(!m_pDBConnection->connect()){
+	m_sStorageType = pServerConfig->storageType();
+	if (!Storages::support(m_sStorageType)) {
+		Log::err(TAG, "Not support storage " + m_sStorageType);
+		return false;
+	}
+	m_pStorage = Storages::create(m_sStorageType);
+	if (!m_pStorage->applyConfigFromFile(pServerConfig->filepathConf())) {
 		return false;
 	}
 
-    if(!Updates::updateDatabase(m_pDBConnection->db())){
+	// deprecated
+	m_pDBConnection = new ModelDatabaseConnection("qt_sql_default_connection_1");
+	m_pDBConnection_older = new ModelDatabaseConnection("qt_sql_default_connection_2");
+	
+	if (!m_pDBConnection->connect()) {
+		return false;
+	}
+
+    if (!Updates::updateDatabase(m_pDBConnection->db())) {
         return false;
     }
 
@@ -47,7 +57,15 @@ bool EmployDatabase::init(){
 
 bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std::string& sError){
 	EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
-	
+	m_sStorageType = pServerConfig->storageType();
+	if (!Storages::support(m_sStorageType)) {
+		Log::err(TAG, "Not support storage " + m_sStorageType);
+		return false;
+	}
+	m_pStorage = Storages::create(m_sStorageType);
+
+	// m_pStorage->connect()
+
 	QSqlDatabase *pDatabase = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL", "manualCreateDatabase"));
 	
 	pDatabase->setHostName(QString(pServerConfig->databaseHost().c_str()));
@@ -163,8 +181,8 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
 
 QSqlDatabase *EmployDatabase::database(){
 	// swap connection
-	QMutexLocker locker (&m_mtxSwapConenctions);
-	
+	std::lock_guard<std::mutex> lock(m_mtxSwapConenctions);
+
 	long long nThreadID = (long long)QThread::currentThreadId();
 	
 	
@@ -193,28 +211,26 @@ QSqlDatabase *EmployDatabase::database(){
 // - need close connection after hour
 // - control of count of connections (must be < 100)
 
-MYSQL *EmployDatabase::db() {
+Storage *EmployDatabase::storage() {
 	std::string sThreadId = Log::threadId();
-    MYSQL *pDatabase = NULL;
-    std::map<std::string,MYSQL *>::iterator it;
-    it = m_mapConnections.find(sThreadId);
-    if (it == m_mapConnections.end()) {
+    Storage *pStorage = nullptr;
+    std::map<std::string,Storage *>::iterator it;
+    it = m_mapStorageConnections.find(sThreadId);
+    if (it == m_mapStorageConnections.end()) {
 		EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
-		
-        pDatabase = mysql_init(NULL);
-        if (!mysql_real_connect(pDatabase, 
-                pServerConfig->databaseHost().c_str(),
-                pServerConfig->databaseUser().c_str(),
-                pServerConfig->databasePassword().c_str(),
-                pServerConfig->databaseName().c_str(), 
-				pServerConfig->databasePort(), NULL, 0)) {
-            Log::err(TAG, std::string(mysql_error(pDatabase)));
-            Log::err(TAG, "Failed to connect.");
-            return NULL;
-        }
-        m_mapConnections[sThreadId] = pDatabase;
-    }else{
-        pDatabase = it->second;
+		std::string sFilepathConfig = "";
+        pStorage = Storages::create("mysql");
+		if (!pStorage->applyConfigFromFile(sFilepathConfig)) {
+			delete pStorage;
+			return nullptr;
+		}
+		if (!pStorage->connect()) {
+			delete pStorage;
+			return nullptr;
+		}
+        m_mapStorageConnections[sThreadId] = pStorage;
+    } else {
+        pStorage = it->second;
     }
-    return pDatabase;
+    return pStorage;
 }
