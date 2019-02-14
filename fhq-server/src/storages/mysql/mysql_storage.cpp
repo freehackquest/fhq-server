@@ -1,7 +1,7 @@
 #include <mysql_storage.h>
 #include <utils_logger.h>
 #include <mysql/mysql.h>
-// #include <conf_file_parser.h>
+#include <parse_config.h>
 // #include <fs.h>
 // #include <ts.h>
 
@@ -123,8 +123,46 @@ MySqlStorage::MySqlStorage() {
 // ----------------------------------------------------------------------
 
 bool MySqlStorage::applyConfigFromFile(const std::string &sFilePath) {
-    // TODO
-    return false;
+    ParseConfig parseConfig(sFilePath);
+	parseConfig.load();
+    if (!parseConfig.has("dbhost")) {
+        Log::err(TAG, "Not found 'dbhost' in " + sFilePath);
+        return false;
+    }
+
+    if (!parseConfig.has("dbport")) {
+        Log::err(TAG, "Not found 'dbport' in " + sFilePath);
+        return false;
+    }
+
+    if (!parseConfig.has("dbname")) {
+        Log::err(TAG, "Not found 'dbname' in " + sFilePath);
+        return false;
+    }
+
+    if (!parseConfig.has("dbuser")) {
+        Log::err(TAG, "Not found 'dbuser' in " + sFilePath);
+        return false;
+    }
+
+    if (!parseConfig.has("dbpass")) {
+        Log::err(TAG, "Not found 'dbpass' in " + sFilePath);
+        return false;
+    }
+
+    m_sDatabaseHost = parseConfig.stringValue("dbhost", m_sDatabaseHost);
+    m_nDatabasePort = parseConfig.intValue("dbport", m_nDatabasePort);
+    m_sDatabaseName = parseConfig.stringValue("dbname", m_sDatabaseName);
+    m_sDatabaseUser = parseConfig.stringValue("dbuser", m_sDatabaseUser);
+    m_sDatabasePass = parseConfig.stringValue("dbpass", m_sDatabasePass);
+
+    Log::info(TAG, "Database host: " + m_sDatabaseHost);
+    Log::info(TAG, "Database port: " + std::to_string(m_nDatabasePort));
+    Log::info(TAG, "Database name: " + m_sDatabaseName);
+    Log::info(TAG, "Database user: " + m_sDatabaseUser);
+    Log::info(TAG, "Database passord: (hided)");
+
+    return true;
 }
 
 // ----------------------------------------------------------------------

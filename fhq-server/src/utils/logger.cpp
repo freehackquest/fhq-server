@@ -194,7 +194,6 @@ void Log::add(Color::Modifier &clr, const std::string &sType, const std::string 
     std::lock_guard<std::mutex> lock(*g_LOG_MUTEX);
     Color::Modifier def(Color::FG_DEFAULT);
 
-    
     std::string sLogMessage = TS::currentTime_logformat() + ", " + Log::threadId() + " [" + sType + "] " + sTag + ": " + sMessage;
     std::cout << clr << sLogMessage << def << std::endl;
 

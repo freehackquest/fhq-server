@@ -11,6 +11,7 @@ class EmployServerConfig : public EmployBase {
         
         // configs
         std::string storageType();
+        std::string filepathConf();
         std::string databaseHost();
         int databasePort();
         std::string databaseName();
@@ -27,16 +28,8 @@ class EmployServerConfig : public EmployBase {
         
 	private:
 		std::string TAG;
-		bool parseConfig(const std::string &sConfigFile);
-		bool fileExists(const std::string &sFilename);
-		void string_trim(std::string &sLine);
-		std::map<std::string,std::string> m_mapConfigValues;
-		
-        std::string getStringValueFromConfig(const std::string &sParamName, const std::string &defaultValue);
-        int getIntValueFromConfig(const std::string &sParamName, int defaultValue);
-        bool getBoolValueFromConfig(const std::string &sParamName, bool defaultValue);
 
-        std::string m_sFilename;
+        std::string m_sFilepathConf;
 
         // database settings
         std::string m_sStorageType;

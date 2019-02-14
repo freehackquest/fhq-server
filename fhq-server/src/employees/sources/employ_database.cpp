@@ -23,7 +23,9 @@ bool EmployDatabase::init(){
 		return false;
 	}
 	m_pStorage = Storages::create(m_sStorageType);
-	// m_pStorage->applyConfigFromFile(); // TODO
+	if (!m_pStorage->applyConfigFromFile(pServerConfig->filepathConf())) {
+		return false;
+	}
 
 	// deprecated
 	m_pDBConnection = new ModelDatabaseConnection("qt_sql_default_connection_1");
@@ -179,8 +181,8 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
 
 QSqlDatabase *EmployDatabase::database(){
 	// swap connection
-	QMutexLocker locker (&m_mtxSwapConenctions);
-	
+	std::lock_guard<std::mutex> lock(m_mtxSwapConenctions);
+
 	long long nThreadID = (long long)QThread::currentThreadId();
 	
 	

@@ -34,8 +34,8 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
     EmployWsServer *pWsServer = findEmploy<EmployWsServer>();
 
-    m_pWebSocketServer = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::NonSecureMode, this);
-    m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("freehackquest-backend"), QWebSocketServer::SecureMode, this);
+    m_pWebSocketServer = new QWebSocketServer(QStringLiteral("fhq-server"), QWebSocketServer::NonSecureMode, this);
+    m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("fhq-server"), QWebSocketServer::SecureMode, this);
 
     if (m_pWebSocketServer->listen(QHostAddress::Any, pServerConfig->serverPort())) {
         Log::info(TAG, "fhq-server listening on port " + QString::number(pServerConfig->serverPort()));
@@ -64,7 +64,7 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
         m_pWebSocketServerSSL->setSslConfiguration(sslConfiguration);
 
         if (m_pWebSocketServerSSL->listen(QHostAddress::Any, pServerConfig->serverSslPort())) {
-            Log::info(TAG, "freehackquest-backend listening (via ssl) on port" + QString::number(pServerConfig->serverSslPort()));
+            Log::info(TAG, "fhq-server listening (via ssl) on port" + QString::number(pServerConfig->serverSslPort()));
             connect(m_pWebSocketServerSSL, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnectionSSL);
             connect(m_pWebSocketServerSSL, &QWebSocketServer::sslErrors, this, &WebSocketServer::onSslErrors);
         }else{
