@@ -7,8 +7,9 @@
 
 REGISTRY_STORAGE(MySqlStorage)
 
-MySqlStorageConnection::MySqlStorageConnection(MYSQL *pConn) : StorageConnection() {
+MySqlStorageConnection::MySqlStorageConnection(MYSQL *pConn, Storage *pStorage) : StorageConnection() {
     m_pConnection = pConn;
+    m_pStorage = pStorage;
     TAG = "MySqlStorageConenction";
 }
 
@@ -16,18 +17,6 @@ MySqlStorageConnection::MySqlStorageConnection(MYSQL *pConn) : StorageConnection
 
 MySqlStorageConnection::~MySqlStorageConnection() {
     // TODO disconnect
-}
-
-// ----------------------------------------------------------------------
-
-std::string MySqlStorageConnection::escapeString(const std::string &sValue) {
-    // char *to;
-    // mysql_real_escape_string_quote
-    // unsigned long len = mysql_real_escape_string_quote(m_pConnection, to, sValue.c_str(),sValue.length(),'"');
-    // std::string sResult = "\"" + std::string(to,len) + "\"";
-    Log::err(TAG, "TODO escapeString");
-    std::string sResult = "\"" + sValue + "\"";
-    return sResult;
 }
 
 // ----------------------------------------------------------------------
@@ -104,7 +93,7 @@ std::string MySqlStorageConnection::lastDatabaseVersion() {
 
 bool MySqlStorageConnection::insertUpdateInfo(const std::string &sVersion, const std::string &sDescription) {
     std::string sInsertNewVersion = "INSERT INTO updates(version, description, datetime_update) "
-        " VALUES(" + escapeString(sVersion) + ", " + escapeString(sDescription) + ",NOW());";
+        " VALUES(" + m_pStorage->prepareStringValue(sVersion) + ", " + m_pStorage->prepareStringValue(sDescription) + ",NOW());";
     if (mysql_query(m_pConnection, sInsertNewVersion.c_str())) {
         Log::err(TAG, "Could not insert row to updates: " + std::string(mysql_error(m_pConnection)));
         return false;
@@ -182,7 +171,7 @@ StorageConnection * MySqlStorage::connect() {
         Log::err(TAG, std::string(mysql_error(pDatabase)));
         Log::err(TAG, "Failed to connect.");
     } else {
-        pConn = new MySqlStorageConnection(pDatabase);
+        pConn = new MySqlStorageConnection(pDatabase, this);
     }
     return pConn;
 }
@@ -235,6 +224,29 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(StorageStruct &storageS
         vRet.push_back(sQuery);
     }
     return vRet;
+}
+
+// ----------------------------------------------------------------------
+
+std::string MySqlStorage::prepareStringValue(const std::string &sValue) {
+    // escaping simbols  NUL (ASCII 0), \n, \r, \, ', ", и Control-Z.
+    std::string sResult;
+    sResult.reserve(sValue.size()*2);
+    sResult.push_back('"');
+    for (int i = 0; i < sValue.size(); i++) {
+        char c = sValue[i];
+        if (c == '\n' || c == '\r' || c == '\\' || c == '"' || c == '\'') {
+            sResult.push_back('\\');
+            sResult.push_back(c);
+        } else if (c == 0) {
+            sResult.push_back('\\');
+            sResult.push_back('0');
+        } else {
+            sResult.push_back(c);
+        }
+    }
+    sResult.push_back('"');
+    return sResult;
 }
 
 // ----------------------------------------------------------------------

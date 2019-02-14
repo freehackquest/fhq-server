@@ -7,14 +7,14 @@
 
 class MySqlStorageConnection : public StorageConnection {
     public:
-        MySqlStorageConnection(MYSQL *pConn);
+        MySqlStorageConnection(MYSQL *pConn, Storage *pStorage);
         ~MySqlStorageConnection();
         virtual bool executeQuery(const std::string &sQuery);
         virtual std::string lastDatabaseVersion();
         virtual bool insertUpdateInfo(const std::string &sVersion, const std::string &sDescription);
     private:
         MYSQL *m_pConnection;
-        std::string escapeString(const std::string &sValue);
+        Storage *m_pStorage;
 };
 
 class MySqlStorage : public Storage {
@@ -25,6 +25,7 @@ class MySqlStorage : public Storage {
         virtual StorageConnection *connect();
         virtual void clean();
         virtual std::vector<std::string> prepareSqlQueries(StorageStruct &storageStruct);
+        virtual std::string prepareStringValue(const std::string &sValue);
 
     private:
         std::string generateLineColumnForSql(StorageStructColumn &c);

@@ -189,14 +189,8 @@ list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_static_analizing_text.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_lxd.cpp")
 
 # unit_tests
-list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_levenshtein.h")
-list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_levenshtein.cpp")
 list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_merge_text.h")
 list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_merge_text.cpp")
-list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_static_analizing_text.h")
-list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_static_analizing_text.cpp")
-list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_storage_struct.h")
-list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_storage_struct.cpp")
 list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_tests.h")
 list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_tests.cpp")
 

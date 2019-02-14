@@ -16,72 +16,73 @@ REGISTRY_EMPLOY(EmployServerConfig)
 
 EmployServerConfig::EmployServerConfig()
     : EmployBase(EmployServerConfig::name(), {}){
-	
-	TAG = EmployServerConfig::name();
-	
-	// default settings
-	m_bServer_ssl_on = false;
-	m_bDatabase_usemysql = true;
+    
+    TAG = EmployServerConfig::name();
+    
+    // default settings
+    m_bServer_ssl_on = false;
+    m_bDatabase_usemysql = true;
 
-	// sql
-	m_sStorageType = "mysql"; // default
+    // sql
+    m_sStorageType = "mysql"; // default
     m_bDatabase_usemysql = true;
     m_sDatabase_host = "localhost";
     m_nDatabase_port = 3306;
-	m_sDatabase_name = "freehackquest";
-	m_sDatabase_user = "freehackquest_u";
-	m_sDatabase_password = "freehackquest_p";
+    m_sDatabase_name = "freehackquest";
+    m_sDatabase_user = "freehackquest_u";
+    m_sDatabase_password = "freehackquest_p";
 
-	// local nosql
+    // local nosql
     m_sDatabase_path = "/var/lib/fhq-server/data";
 
-	m_nServer_port = 1234;
-	m_bServer_ssl_on = false;
-	m_nServer_ssl_port = 4613;
-	m_sServer_ssl_key_file = "/etc/ssl/private/localhost.key";
-	m_sServer_ssl_cert_file = "/etc/ssl/certs/localhost.pem";
+    m_nServer_port = 1234;
+    m_bServer_ssl_on = false;
+    m_nServer_ssl_port = 4613;
+    m_sServer_ssl_key_file = "/etc/ssl/private/localhost.key";
+    m_sServer_ssl_cert_file = "/etc/ssl/certs/localhost.pem";
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployServerConfig::init(){
-	// TODO: redesign find folder with configs
+    // TODO: redesign find folder with configs
 
-	std::vector<std::string> vSearchConfigFile;
+    std::vector<std::string> vSearchConfigFile;
     vSearchConfigFile.push_back("fhq-server.conf");
     // vSearchConfigFile.push_back("/etc/freehackquest-backend/conf.ini");
     // vSearchConfigFile.push_back("/etc/fhq-server/conf.ini");
     // vSearchConfigFile.push_back("etc/freehackquest-backend/conf.ini");
-	vSearchConfigFile.push_back("/etc/fhq-server/fhq-server.conf");
+    vSearchConfigFile.push_back("/etc/fhq-server/fhq-server.conf");
 
     for (int i = 0; i < vSearchConfigFile.size(); i++) {
         std::string tmp = vSearchConfigFile[i];
         if (FS::fileExists(tmp)) {
             m_sFilepathConf = tmp;
-			Log::info(TAG, "Found config file " + tmp);
+            Log::info(TAG, "Found config file " + tmp);
             break;
         } else {
-			Log::warn(TAG, "Not found possible config file " + tmp);
+            Log::warn(TAG, "Not found possible config file " + tmp);
         }
     }
     
     if (m_sFilepathConf == "") {
         Log::err(TAG, "Not found config file");
-		return false;
-	}
+        return false;
+    }
 
-	ParseConfig parseConfig(m_sFilepathConf);
-	parseConfig.load();
+    ParseConfig parseConfig(m_sFilepathConf);
+    parseConfig.load();
 
-	m_sStorageType = parseConfig.stringValue("storage_type", m_sStorageType);
-	// TODO check support
-	if (!Storages::support(m_sStorageType)) {
-		Log::err(TAG, "Not support storage " + m_sStorageType);
-		return false;
-	}
+    m_sStorageType = parseConfig.stringValue("storage_type", m_sStorageType);
+    // TODO check support
+    if (!Storages::support(m_sStorageType)) {
+        Log::err(TAG, "Not support storage " + m_sStorageType);
+        return false;
+    }
 
     m_bDatabase_usemysql = parseConfig.boolValue("usemysql", m_bDatabase_usemysql);
     if (m_bDatabase_usemysql) {
+        // Deprecated
         m_sDatabase_host = parseConfig.stringValue("dbhost", m_sDatabase_host);
         m_nDatabase_port = parseConfig.intValue("dbport", m_nDatabase_port);
         m_sDatabase_name = parseConfig.stringValue("dbname", m_sDatabase_name);
@@ -92,10 +93,10 @@ bool EmployServerConfig::init(){
         Log::info(TAG, "Database port: " + std::to_string(m_nDatabase_port));
         Log::info(TAG, "Database name: " + m_sDatabase_name);
         Log::info(TAG, "Database user: " + m_sDatabase_user);
-	} else {
+    } else {
         m_sDatabase_path = parseConfig.stringValue("dbpath", m_sDatabase_path);
         Log::info(TAG, "Database: using " + m_sDatabase_path);
-	}
+    }
 
     m_nServer_port = parseConfig.intValue("port", m_nServer_port);
     m_bServer_ssl_on = parseConfig.boolValue("ssl_on", m_bServer_ssl_on);
@@ -110,19 +111,19 @@ bool EmployServerConfig::init(){
 // ---------------------------------------------------------------------
 
 std::string EmployServerConfig::filepathConf() {
-	return m_sFilepathConf;
+    return m_sFilepathConf;
 }
 
 // ---------------------------------------------------------------------
 
 std::string EmployServerConfig::storageType() {
-	return m_sStorageType;
+    return m_sStorageType;
 }
 
 // ---------------------------------------------------------------------
 
 std::string EmployServerConfig::databaseHost() {
-	return m_sDatabase_host;
+    return m_sDatabase_host;
 }
 
 // ---------------------------------------------------------------------
@@ -134,61 +135,61 @@ int EmployServerConfig::databasePort(){
 // ---------------------------------------------------------------------
 
 std::string EmployServerConfig::databaseName(){
-	return m_sDatabase_name;
+    return m_sDatabase_name;
 }
 
 // ---------------------------------------------------------------------
 
 std::string EmployServerConfig::databaseUser(){
-	return m_sDatabase_user;
+    return m_sDatabase_user;
 }
 
 // ---------------------------------------------------------------------
 
 std::string EmployServerConfig::databasePassword(){
-	return m_sDatabase_password;
+    return m_sDatabase_password;
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployServerConfig::databaseUseMySQL(){
-	return m_bDatabase_usemysql;
+    return m_bDatabase_usemysql;
 }
 
 // ---------------------------------------------------------------------
 
 std::string EmployServerConfig::databasePath(){
-	return m_sDatabase_path;
+    return m_sDatabase_path;
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployServerConfig::serverSslOn(){
-	return m_bServer_ssl_on;
+    return m_bServer_ssl_on;
 }
 
 // ---------------------------------------------------------------------
 
 int EmployServerConfig::serverPort(){
-	return m_nServer_port;
+    return m_nServer_port;
 }
 
 // ---------------------------------------------------------------------
 
 int EmployServerConfig::serverSslPort(){
-	return m_nServer_ssl_port;
+    return m_nServer_ssl_port;
 }
 
 // ---------------------------------------------------------------------
 
 std::string EmployServerConfig::serverSslKeyFile(){
-	return m_sServer_ssl_key_file;
+    return m_sServer_ssl_key_file;
 }
 
 // ---------------------------------------------------------------------
 
 std::string EmployServerConfig::serverSslCertFile(){
-	return m_sServer_ssl_cert_file;
+    return m_sServer_ssl_cert_file;
 }
 
 // ---------------------------------------------------------------------

@@ -94,6 +94,7 @@ class Storage {
         virtual bool applyConfigFromFile(const std::string &sFilePath) = 0;
         virtual StorageConnection *connect() = 0;
         virtual void clean() = 0;
+        virtual std::string prepareStringValue(const std::string &sValue) = 0;
 
         virtual std::vector<std::string> prepareSqlQueries(StorageStruct &storageStruct) = 0;
         bool applyStruct(StorageStruct &storageStruct);
