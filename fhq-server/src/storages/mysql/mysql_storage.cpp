@@ -21,9 +21,12 @@ MySqlStorageConnection::~MySqlStorageConnection() {
 // ----------------------------------------------------------------------
 
 std::string MySqlStorageConnection::escapeString(const std::string &sValue) {
-    char *to;
-    unsigned long len = mysql_real_escape_string_quote(m_pConnection, to, sValue.c_str(),sValue.length(),'"');
-    std::string sResult = "\"" + std::string(to,len) + "\"";
+    // char *to;
+    // mysql_real_escape_string_quote
+    // unsigned long len = mysql_real_escape_string_quote(m_pConnection, to, sValue.c_str(),sValue.length(),'"');
+    // std::string sResult = "\"" + std::string(to,len) + "\"";
+    Log::err(TAG, "TODO escapeString");
+    std::string sResult = "\"" + sValue + "\"";
     return sResult;
 }
 
