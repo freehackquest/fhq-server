@@ -4,6 +4,7 @@
 #include <employees.h>
 #include <QMutex>
 #include <QDateTime>
+#include <QMap>
 
 class EmployServerInfo : public EmployBase {
     public:
@@ -31,7 +32,7 @@ class EmployServerInfo : public EmployBase {
        QMap<std::string, int> m_requestsCounter;
        QMutex m_mtxIncrementRequests;
 
-       QString TAG;
+       std::string TAG;
        QDateTime m_dtServerStarted;
        int m_nCountQuests;
        int m_nCountQuestsAttempt;

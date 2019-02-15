@@ -13,11 +13,11 @@ UpdateQuestSolvedTask::UpdateQuestSolvedTask(int nQuestID){
 }
 
 UpdateQuestSolvedTask::~UpdateQuestSolvedTask(){
-	
+
 }
 
 void UpdateQuestSolvedTask::run(){
-    Log::info(TAG, "questid " + QString::number(m_nQuestID));
+    Log::info(TAG, "questid " + std::to_string(m_nQuestID));
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
 
@@ -33,7 +33,7 @@ void UpdateQuestSolvedTask::run(){
     query.bindValue(":questid", m_nQuestID);
     query.bindValue(":questid2", m_nQuestID);
 
-	if(!query.exec()){
-		Log::err(TAG, query.lastError().text());
+    if(!query.exec()){
+        Log::err(TAG, query.lastError().text().toStdString());
     }
 }

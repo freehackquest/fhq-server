@@ -4,6 +4,7 @@
 #include <storages.h>
 #include <map>
 #include <mysql/mysql.h>
+#include <mutex>
 
 class MySqlStorageConnection : public StorageConnection {
     public:
@@ -14,6 +15,7 @@ class MySqlStorageConnection : public StorageConnection {
         virtual bool insertUpdateInfo(const std::string &sVersion, const std::string &sDescription);
     private:
         MYSQL *m_pConnection;
+        std::mutex m_mtxConn;
         Storage *m_pStorage;
 };
 

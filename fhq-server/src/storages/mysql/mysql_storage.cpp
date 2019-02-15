@@ -16,16 +16,23 @@ MySqlStorageConnection::MySqlStorageConnection(MYSQL *pConn, Storage *pStorage) 
 // ----------------------------------------------------------------------
 
 MySqlStorageConnection::~MySqlStorageConnection() {
-    // TODO disconnect
+    mysql_close(m_pConnection);
+    delete m_pConnection;
 }
 
 // ----------------------------------------------------------------------
 
 bool MySqlStorageConnection::executeQuery(const std::string &sQuery) {
+    // TODO statistics time
+    std::lock_guard<std::mutex> lock(m_mtxConn);
+    // Log::info(TAG, "Try " + sQuery);
     if (mysql_query(m_pConnection, sQuery.c_str())) {
-        std::string sError2(mysql_error(m_pConnection));
-        Log::err(TAG, "Problem on executeQuery " + sError2 + "\r\nQuery: " + sQuery);
+        Log::err(TAG, "Problem on executeQuery \r\nQuery: " + sQuery);
+        std::string sError(mysql_error(m_pConnection));
+        Log::err(TAG, "executeQuery error " + sError);
         return false;
+    } else {
+        // Log::ok(TAG, "" + sQuery);
     }
     return true;
 }
@@ -33,49 +40,36 @@ bool MySqlStorageConnection::executeQuery(const std::string &sQuery) {
 // ----------------------------------------------------------------------
 
 std::string MySqlStorageConnection::lastDatabaseVersion() {
-    /*
-    std::string sQuery = "SELECT id, version FROM db_updates ORDER BY id DESC LIMIT 0,1";
-    int nCurrVersion = 0;
-    if (mysql_query(pConn, sQuery.c_str())) {
-        std::string sError(mysql_error(pConn));
-        if (sError.find("db_updates' doesn't exist") != std::string::npos) {
-            Log::info(TAG, "Creating table db_updates .... ");
-            std::string sTableDbUpdates = 
-                "CREATE TABLE IF NOT EXISTS db_updates ("
-			    "  id int(11) NOT NULL AUTO_INCREMENT,"
-                "  version INT DEFAULT NULL,"
-                "  dt datetime DEFAULT NULL,"
-                "  PRIMARY KEY (id)"
-                ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
-            if (mysql_query(pConn, sTableDbUpdates.c_str())) {
-                std::string sError2(mysql_error(pConn));
-                Log::err(TAG, "Problem on create table db_updates " + sError2);
-                return false;
-            } else {
-                Log::ok(TAG, "Table db_updates success created");
-                nCurrVersion = 1;
-            }
-        } else {
-            Log::err(TAG, "Problem with database " + sError);
-            return false;
-        }
-    } else {
-        MYSQL_RES *pRes = mysql_use_result(pConn);
-        MYSQL_ROW row;
-        if ((row = mysql_fetch_row(pRes)) != NULL) {
-            nCurrVersion = std::stol(std::string(row[1]));
-        } else {
-            nCurrVersion = 1;
-        }
-        mysql_free_result(pRes);
-    }
-    */
+    std::lock_guard<std::mutex> lock(m_mtxConn);
 
     std::string sLastVersion = "";
     std::string sQuery = "SELECT version FROM updates ORDER BY id DESC LIMIT 0,1";
 
     if (mysql_query(m_pConnection, sQuery.c_str())) {
-        Log::err(TAG, "Error SELECT version FROM updates: " + std::string(mysql_error(m_pConnection)));
+        std::string sError(mysql_error(m_pConnection));
+        if (sError.find("updates' doesn't exist") != std::string::npos) {
+            Log::warn(TAG, "Creating table updates .... ");
+            std::string sTableDbUpdates = 
+                "CREATE TABLE IF NOT EXISTS updates ("
+                "  id INT NOT NULL AUTO_INCREMENT,"
+                "  version varchar(255) DEFAULT NULL,"
+                "  description text,"
+                "  datetime_update datetime DEFAULT NULL,"
+                "  PRIMARY KEY (`id`)"
+                ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+            if (mysql_query(m_pConnection, sTableDbUpdates.c_str())) {
+                std::string sError2(mysql_error(m_pConnection));
+                Log::err(TAG, "Problem on create table updates " + sError2);
+                return "error";
+            } else {
+                Log::ok(TAG, "Table updates success created");
+                sLastVersion = "";
+                return "";
+            }
+        } else {
+            Log::err(TAG, "Problem with database " + sError);
+            return "error";
+        }
     } else {
         MYSQL_RES *pRes = mysql_use_result(m_pConnection);
         MYSQL_ROW row;
@@ -85,13 +79,13 @@ std::string MySqlStorageConnection::lastDatabaseVersion() {
         }
         mysql_free_result(pRes);
     }
-    delete m_pConnection;
     return sLastVersion;
 }
 
 // ----------------------------------------------------------------------
 
 bool MySqlStorageConnection::insertUpdateInfo(const std::string &sVersion, const std::string &sDescription) {
+    std::lock_guard<std::mutex> lock(m_mtxConn);
     std::string sInsertNewVersion = "INSERT INTO updates(version, description, datetime_update) "
         " VALUES(" + m_pStorage->prepareStringValue(sVersion) + ", " + m_pStorage->prepareStringValue(sDescription) + ",NOW());";
     if (mysql_query(m_pConnection, sInsertNewVersion.c_str())) {
@@ -152,7 +146,7 @@ bool MySqlStorage::applyConfigFromFile(const std::string &sFilePath) {
     Log::info(TAG, "Database port: " + std::to_string(m_nDatabasePort));
     Log::info(TAG, "Database name: " + m_sDatabaseName);
     Log::info(TAG, "Database user: " + m_sDatabaseUser);
-    Log::info(TAG, "Database passord: (hided)");
+    Log::info(TAG, "Database password: (hided)");
 
     return true;
 }
@@ -168,7 +162,7 @@ StorageConnection * MySqlStorage::connect() {
             m_sDatabasePass.c_str(),
             m_sDatabaseName.c_str(), 
             m_nDatabasePort, NULL, 0)) {
-        Log::err(TAG, std::string(mysql_error(pDatabase)));
+        Log::err(TAG, "Connect error: " + std::string(mysql_error(pDatabase)));
         Log::err(TAG, "Failed to connect.");
     } else {
         pConn = new MySqlStorageConnection(pDatabase, this);
@@ -209,17 +203,33 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(StorageStruct &storageS
     } else if (storageStruct.mode() == StorageStructTableMode::CREATE) {
         std::string sQuery = "";
         sQuery += "CREATE TABLE IF NOT EXISTS " + storageStruct.tableName() + " (\r\n";
-        std::string sPrimaryKeyColumnName = "";
+        std::vector<std::string> vCreateTableContent;
+        std::vector<std::string> vCreateTableContentIndexes;
+
         // add columns
         std::vector<StorageStructColumn> vAddColumns = storageStruct.listAddColumns();
         for (int i = 0; i < vAddColumns.size(); i++) {
             StorageStructColumn c = vAddColumns[i];
-            sQuery += "  " + generateLineColumnForSql(c) + ",\r\n";
+            vCreateTableContent.push_back(this->generateLineColumnForSql(c));
+
+            // sQuery += "  " + generateLineColumnForSql(c) + ",\r\n";
             if (c.isPrimaryKey()) {
-                sPrimaryKeyColumnName = c.columnName();
+                vCreateTableContentIndexes.push_back("PRIMARY KEY (" + c.columnName() + ")");
+            }
+            if (c.isEnableIndex()) {
+                vCreateTableContentIndexes.push_back("KEY idx_" + c.columnName() + " (" + c.columnName() + ")");
             }
         }
-        sQuery += "  PRIMARY KEY (" + sPrimaryKeyColumnName + ")\r\n";
+
+        for (int i = 0; i < vCreateTableContentIndexes.size(); i++) {
+            vCreateTableContent.push_back(vCreateTableContentIndexes[i]);
+        }
+        int nSize = vCreateTableContent.size();
+        for (int i = 0; i < nSize; i++) {
+            sQuery += "  " + vCreateTableContent[i];
+            sQuery += (nSize-1 != i) ? "," : "";
+            sQuery += "\r\n";
+        }
         sQuery += ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
         vRet.push_back(sQuery);
     }
@@ -275,6 +285,11 @@ std::string MySqlStorage::generateLineColumnForSql(StorageStructColumn &c) {
     if (c.isAutoIncrement()) {
         sSqlColumn += " AUTO_INCREMENT";
     }
+
+    if (c.columnDefaultValue() != "") {
+        sSqlColumn += " DEFAULT " + c.columnDefaultValue();
+    }
+
     return sSqlColumn;
 }
 

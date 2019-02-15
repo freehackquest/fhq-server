@@ -2,6 +2,9 @@
 #include <employ_database.h>
 #include <QSqlQuery>
 #include <QSqlRecord>
+#include <QMap>
+#include <QString>
+#include <QVariant>
 
 REGISTRY_EMPLOY(EmployScoreboard)
 

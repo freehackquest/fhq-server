@@ -28,7 +28,7 @@ bool UnitTestStorageStruct::run() {
 		.number().autoIncrement().primaryKey().notNull());
 
 	test_tbl1.addColumn(StorageStructColumn("filed1")
-		.string(255).notNull());
+		.string(255).notNull().enableIndex());
 
 	test_tbl1.addColumn(StorageStructColumn("filed2")
 		.text().notNull());
@@ -46,7 +46,8 @@ bool UnitTestStorageStruct::run() {
 			"  filed1 VARCHAR(255) NOT NULL,\r\n"
 			"  filed2 TEXT NOT NULL,\r\n"
 			"  filed3 DATETIME NOT NULL,\r\n"
-			"  PRIMARY KEY (id)\r\n"
+			"  PRIMARY KEY (id),\r\n"
+            "  KEY idx_filed1 (filed1)\r\n"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
     }
 

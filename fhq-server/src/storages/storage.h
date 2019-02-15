@@ -16,23 +16,32 @@ class StorageStructColumn {
         StorageStructColumn &datetime();
         StorageStructColumn &number();
         StorageStructColumn &primaryKey();
+        StorageStructColumn &defaultValue(const std::string& sDefault);
+        StorageStructColumn &enableIndex();
 
         std::string columnName();
         std::string columnType();
+        bool isDefaultValue();
+        std::string columnDefaultValue();
+
         int columnTypeSize();
         bool isAutoIncrement();
         bool isPrimaryKey();
         bool isNotNull();
+        bool isEnableIndex();
 
     private:
         std::string TAG;
         std::string m_sColumnName;
         std::string m_sType;
+        std::string m_sDefaultValue;
         int m_nTypeSize;
 
         bool m_bAutoIncrement;
         bool m_bNotNull;
         bool m_bPrimaryKey;
+        bool m_bDefaultValue;
+        bool m_bEnableIndex;
 };
 
 // ---------------------------------------------------------------------
@@ -89,6 +98,7 @@ class StorageConnection {
 
 class Storage {
     public:
+        Storage();
         // Storage(const std::string &sType);
         static std::string type() { return "unknown"; };
         virtual bool applyConfigFromFile(const std::string &sFilePath) = 0;
@@ -97,7 +107,10 @@ class Storage {
         virtual std::string prepareStringValue(const std::string &sValue) = 0;
 
         virtual std::vector<std::string> prepareSqlQueries(StorageStruct &storageStruct) = 0;
-        bool applyStruct(StorageStruct &storageStruct);
+        bool applyStruct(StorageConnection *pConn, StorageStruct &storageStruct);
+    
+    protected:
+        std::string TAG;
 };
 
 // ---------------------------------------------------------------------

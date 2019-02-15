@@ -7,8 +7,6 @@ add_definitions(-DAPP_NAME="unit-tests")
 set (CMAKE_AUTOMOC ON)
 set (CMAKE_CXX_STANDARD 11)
 set (EXECUTABLE_OUTPUT_PATH ${unit-tests_SOURCE_DIR})
-set (QTCORE_LIBRARIES ${Qt5Core_LIBRARIES})
-include_directories(${Qt5Core_INCLUDE_DIRS})
 
 set (UNIT_TESTS_LIBRARIES "")
 set (UNIT_TESTS_INCLUDE_DIRS "")
@@ -161,18 +159,9 @@ list (APPEND UNIT_TESTS_LIBRARIES ${LIBMYSQLCLIENT_LIBRARIES})
 ############################
 
 include_directories(${UNIT_TESTS_INCLUDE_DIRS})
-
-find_package (Qt5Core)
-find_package (Qt5Sql)
-find_package (Qt5Network)
-find_package (Qt5WebSockets)
-
 add_executable (unit-tests ${UNIT_TESTS_SOURCES})
 
-qt5_use_modules(unit-tests Core Network Sql WebSockets)
 target_link_libraries(unit-tests ${UNIT_TESTS_LIBRARIES} )
-
-# target_link_libraries(unit-tests Qt5::Core)
 
 install(
     TARGETS

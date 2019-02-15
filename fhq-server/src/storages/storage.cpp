@@ -18,6 +18,8 @@ StorageStructColumn::StorageStructColumn(const std::string &sColumnName) {
     m_nTypeSize = 0;
     m_sType = "";
     m_bPrimaryKey = false;
+    m_sDefaultValue = "";
+    m_bEnableIndex = false;
 }
 
 // ---------------------------------------------------------------------
@@ -88,6 +90,21 @@ StorageStructColumn &StorageStructColumn::primaryKey() {
 
 // ---------------------------------------------------------------------
 
+StorageStructColumn &StorageStructColumn::defaultValue(const std::string& sDefaultValue) {
+    m_sDefaultValue = sDefaultValue;
+    m_bDefaultValue = true;
+    return *this;
+}
+
+// ---------------------------------------------------------------------
+
+StorageStructColumn &StorageStructColumn::enableIndex() {
+    m_bEnableIndex = true;
+    return *this;
+}
+
+// ---------------------------------------------------------------------
+
 std::string StorageStructColumn::columnName() {
     return m_sColumnName;
 }
@@ -96,6 +113,18 @@ std::string StorageStructColumn::columnName() {
 
 std::string StorageStructColumn::columnType() {
     return m_sType;
+}
+
+// ---------------------------------------------------------------------
+
+std::string StorageStructColumn::columnDefaultValue() {
+    return m_sDefaultValue;
+}
+
+// ---------------------------------------------------------------------
+
+bool StorageStructColumn::isDefaultValue() {
+    return m_bDefaultValue;
 }
 
 // ---------------------------------------------------------------------
@@ -120,6 +149,12 @@ bool StorageStructColumn::isPrimaryKey() {
 
 bool StorageStructColumn::isNotNull() {
     return m_bNotNull;
+}
+
+// ---------------------------------------------------------------------
+
+bool StorageStructColumn::isEnableIndex() {
+    return m_bEnableIndex;
 }
 
 // ---------------------------------------------------------------------
@@ -242,16 +277,23 @@ long StorageConnection::created() {
 
 // ---------------------------------------------------------------------
 
-bool Storage::applyStruct(StorageStruct &storageStruct) {
+// ***********************
+// *** Storage
+// ***********************
+
+Storage::Storage() {
+    TAG = "Storage";
+}
+
+bool Storage::applyStruct(StorageConnection *pConn, StorageStruct &storageStruct) {
+    // TODO merge structs
     std::vector<std::string> v = this->prepareSqlQueries(storageStruct);
-    StorageConnection *pConn = this->connect();
     for (int i = 0; i < v.size(); i++) {
-        if (!pConn->executeQuery(v[i])) {
-            delete pConn;
+        std::string sQuery = v[i];
+        if (!pConn->executeQuery(sQuery)) {
             return false;        
         }
     }
-    delete pConn;
     return true;
 }
 

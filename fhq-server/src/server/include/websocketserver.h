@@ -63,6 +63,7 @@ class WebSocketServer : public QObject, public IWebSocketServer {
 
     private:
         void sendServerMessage(QWebSocket *pSocket);
+        void logSocketError(QAbstractSocket::SocketError socketError);
 
         QWebSocketServer *m_pWebSocketServer;
         QWebSocketServer *m_pWebSocketServerSSL;
@@ -70,7 +71,7 @@ class WebSocketServer : public QObject, public IWebSocketServer {
         QMap<QWebSocket *, IUserToken *> m_tokens;
 
         bool m_bFailed;
-        QString TAG;
+        std::string TAG;
 };
 
 #endif //WEBSOCKETSERVER_H
