@@ -49,69 +49,41 @@ bool StorageStruct0060::apply(Storage *pStorage, std::string &error){
 		return false;
 	}
 
-	/*
 
+	StorageStruct games("games", StorageStructTableMode::CREATE);
+	games.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
+	games.addColumn(StorageStructColumn("uuid").string(255).notNull().enableUniqueIndex("idx_game_uuid"));
+	games.addColumn(StorageStructColumn("title").string(255).notNull());
+	games.addColumn(StorageStructColumn("logo").string(255).notNull());
+	games.addColumn(StorageStructColumn("type_game").string(255).notNull());
+	games.addColumn(StorageStructColumn("date_create").datetime().notNull().enableIndex());
+	games.addColumn(StorageStructColumn("date_start").datetime().notNull().enableIndex());
+	games.addColumn(StorageStructColumn("date_stop").datetime().notNull().enableIndex());
+	games.addColumn(StorageStructColumn("date_change").datetime().notNull().enableIndex());
+	games.addColumn(StorageStructColumn("owner").number().notNull().enableIndex());
+	games.addColumn(StorageStructColumn("date_restart").datetime().notNull().enableIndex());
+	games.addColumn(StorageStructColumn("description").text().notNull());
+	games.addColumn(StorageStructColumn("organizators").string(255).notNull().defaultValue("''"));
+	games.addColumn(StorageStructColumn("state").string(255).notNull().defaultValue("'copy'"));
+	games.addColumn(StorageStructColumn("form").string(255).notNull().defaultValue("'online'"));
+	games.addColumn(StorageStructColumn("rules").text().notNull());
+	games.addColumn(StorageStructColumn("maxscore").number().notNull().defaultValue("0"));
 
-	{
-		// Table structure for table `games`
-		QSqlQuery query(db);
-		query.prepare(""
-			"CREATE TABLE IF NOT EXISTS `games` ("
-			"  `id` int(11) NOT NULL AUTO_INCREMENT,"
-			"  `uuid` varchar(255) DEFAULT NULL,"
-			"  `title` varchar(255) DEFAULT NULL,"
-			"  `logo` varchar(255) DEFAULT NULL,"
-			"  `type_game` varchar(255) DEFAULT NULL,"
-			"  `date_create` datetime DEFAULT NULL,"
-			"  `date_start` datetime DEFAULT NULL,"
-			"  `date_stop` datetime DEFAULT NULL,"
-			"  `date_change` datetime DEFAULT NULL,"
-			"  `owner` int(11) DEFAULT NULL,"
-			"  `date_restart` datetime DEFAULT NULL,"
-			"  `description` text,"
-			"  `organizators` varchar(255) DEFAULT '',"
-			"  `state` varchar(255) DEFAULT 'copy',"
-			"  `form` varchar(255) DEFAULT 'online',"
-			"  `rules` text,"
-			"  `maxscore` int(11) DEFAULT '0',"
-			"  PRIMARY KEY (`id`),"
-			"  UNIQUE KEY `uuid_game` (`uuid`),"
-			"  UNIQUE KEY `uuid_game_2` (`uuid`),"
-			"  KEY `date_create` (`date_create`),"
-			"  KEY `date_start` (`date_start`),"
-			"  KEY `date_stop` (`date_stop`),"
-			"  KEY `date_change` (`date_change`),"
-			"  KEY `owner` (`owner`),"
-			"  KEY `date_restart` (`date_restart`)"
-			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		if(!query.exec()){
-			error = query.lastError().text().toStdString();
-            Log::err(TAG, "The problem with creating a table " + error);
-			return false;
-		}
+	if (!pStorage->applyStruct(pConn, games)) {
+		error = "could not create table 'games'";
+		return false;
 	}
- 
 
-	{
-		// Table structure for table `public_events`
-		QSqlQuery query(db);
-		query.prepare(""
-			"CREATE TABLE IF NOT EXISTS `public_events` ("
-			"  `id` int(11) NOT NULL AUTO_INCREMENT,"
-			"  `type` varchar(255) NOT NULL,"
-			"  `dt` datetime NOT NULL,"
-			"  `message` varchar(2048) DEFAULT '',"
-			"  PRIMARY KEY (`id`),"
-			"  KEY `message` (`message`(255))"
-			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		if(!query.exec()){
-			error = query.lastError().text().toStdString();
-            Log::err(TAG, "The problem with creating a table " + error);
-			return false;
-		}
+	StorageStruct public_events("public_events", StorageStructTableMode::CREATE);
+	public_events.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
+	public_events.addColumn(StorageStructColumn("type").string(255).notNull());
+	public_events.addColumn(StorageStructColumn("dt").datetime().notNull());
+	public_events.addColumn(StorageStructColumn("message").string(2048).notNull().enableIndex());
+	if (!pStorage->applyStruct(pConn, public_events)) {
+		error = "could not create table 'public_events'";
+		return false;
 	}
-	*/
-	
+
 	StorageStruct quest("quest", StorageStructTableMode::CREATE);
 	quest.addColumn(StorageStructColumn("idquest").number().autoIncrement().primaryKey().notNull());
 	quest.addColumn(StorageStructColumn("name").string(300).notNull());
@@ -158,7 +130,7 @@ bool StorageStruct0060::apply(Storage *pStorage, std::string &error){
 	tryanswer.addColumn(StorageStructColumn("answer_real").text().notNull());
 	tryanswer.addColumn(StorageStructColumn("passed").string(10).notNull());
 	tryanswer.addColumn(StorageStructColumn("datetime_try").datetime().notNull());
-	tryanswer.addColumn(StorageStructColumn("levenshtein").number().notNull());
+	tryanswer.addColumn(StorageStructColumn("levenshtein").number().notNull().defaultValue("100"));
 	if (!pStorage->applyStruct(pConn, tryanswer)) {
 		error = "could not create table 'tryanswer'";
 		return false;
@@ -178,25 +150,15 @@ bool StorageStruct0060::apply(Storage *pStorage, std::string &error){
 		return false;
 	}
 
-/*
-	{
-		// Table structure for table `userquest`
-		QSqlQuery query(db);
-		query.prepare(""
-			"CREATE TABLE IF NOT EXISTS `userquest` ("
-			"  `iduser` int(10) NOT NULL,"
-			"  `idquest` int(10) NOT NULL,"
-			"  `stopdate` datetime NOT NULL,"
-			"  `startdate` datetime NOT NULL,"
-			"  UNIQUE KEY `iduser` (`iduser`,`idquest`)"
-			") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-		if(!query.exec()){
-			error = query.lastError().text().toStdString();
-            Log::err(TAG, "The problem with creating a table " + error);
-			return false;
-		}
+	StorageStruct userquest("userquest", StorageStructTableMode::CREATE);
+	userquest.addColumn(StorageStructColumn("iduser").number().notNull().enableUniqueIndex("idx_userquest"));
+	userquest.addColumn(StorageStructColumn("idquest").number().notNull().enableUniqueIndex("idx_userquest"));
+	userquest.addColumn(StorageStructColumn("stopdate").datetime().notNull());
+	userquest.addColumn(StorageStructColumn("startdate").datetime().notNull());
+	if (!pStorage->applyStruct(pConn, userquest)) {
+		error = "could not create table 'userquest'";
+		return false;
 	}
-*/
 
 	StorageStruct users("users", StorageStructTableMode::CREATE);
 	users.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
@@ -269,84 +231,43 @@ bool StorageStruct0060::apply(Storage *pStorage, std::string &error){
 		return false;
 	}
 
-	/*StorageStruct users_quests("users_quests", StorageStructTableMode::CREATE);
-	users_quests.addColumn(StorageStructColumn("userid").number().notNull());
-	users_quests.addColumn(StorageStructColumn("questid").number().notNull());
+	StorageStruct users_quests("users_quests", StorageStructTableMode::CREATE);
+	users_quests.addColumn(StorageStructColumn("userid").number().notNull().enableUniqueIndex("idx_user_quest"));
+	users_quests.addColumn(StorageStructColumn("questid").number().notNull().enableUniqueIndex("idx_user_quest"));
 	users_quests.addColumn(StorageStructColumn("name").string(255).notNull());
 	users_quests.addColumn(StorageStructColumn("value").string(255).notNull());
 	users_quests.addColumn(StorageStructColumn("date_change").datetime().notNull());
 	if (!pStorage->applyStruct(pConn, users_quests)) {
 		error = "could not create table 'users_quests'";
 		return false;
-	}*/
-
-/*
-	{
-		// Table structure for table `users_quests`
-		QSqlQuery query(db);
-		query.prepare(""
-			"CREATE TABLE IF NOT EXISTS `users_quests` ("
-			"  `userid` int(11) DEFAULT NULL,"
-			"  `questid` int(11) DEFAULT NULL,"
-			"  `dt_passed` datetime NOT NULL,"
-			"  UNIQUE KEY `userid` (`userid`,`questid`)"
-			") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-		if(!query.exec()){
-			error = query.lastError().text().toStdString();
-            Log::err(TAG, "The problem with creating a table " + error);
-			return false;
-		}
 	}
- */
 
-/*
-
-	{
-		// Table structure for table `users_tokens`
-		QSqlQuery query(db);
-		query.prepare(""
-			"CREATE TABLE IF NOT EXISTS `users_tokens` ("
-			"  `id` int(11) NOT NULL AUTO_INCREMENT,"
-			"  `userid` int(11) NOT NULL,"
-			"  `token` varchar(255) NOT NULL,"
-			"  `status` varchar(255) NOT NULL,"
-			"  `data` varchar(4048) NOT NULL,"
-			"  `start_date` datetime NOT NULL,"
-			"  `end_date` datetime NOT NULL,"
-			"  PRIMARY KEY (`id`)"
-			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		if (!query.exec()) {
-			error = query.lastError().text().toStdString();
-            Log::err(TAG, "The problem with creating a table " + error);
-			return false;
-		}
+	StorageStruct users_tokens("users_tokens", StorageStructTableMode::CREATE);
+	users_tokens.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
+	users_tokens.addColumn(StorageStructColumn("userid").number().notNull());
+	users_tokens.addColumn(StorageStructColumn("token").string(255).notNull());
+	users_tokens.addColumn(StorageStructColumn("status").string(255).notNull());
+	users_tokens.addColumn(StorageStructColumn("data").string(4048).notNull());
+	users_tokens.addColumn(StorageStructColumn("start_date").datetime().notNull());
+	users_tokens.addColumn(StorageStructColumn("end_date").datetime().notNull());
+	if (!pStorage->applyStruct(pConn, users_tokens)) {
+		error = "could not create table 'users_tokens'";
+		return false;
 	}
- */
 
-/*
-
-	{
-		// Table structure for table `users_tokens_invalid`
-		QSqlQuery query(db);
-		query.prepare(""
-			"CREATE TABLE IF NOT EXISTS `users_tokens_invalid` ("
-			"  `id` int(11) NOT NULL AUTO_INCREMENT,"
-			"  `userid` int(11) NOT NULL,"
-			"  `token` varchar(255) NOT NULL,"
-			"  `status` varchar(255) NOT NULL,"
-			"  `data` varchar(4048) NOT NULL,"
-			"  `start_date` datetime NOT NULL,"
-			"  `end_date` datetime NOT NULL,"
-			"  PRIMARY KEY (`id`)"
-			") ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-		if(!query.exec()){
-			error = query.lastError().text().toStdString();
-            Log::err(TAG, "The problem with creating a table " + error);
-			return false;
-		}
+	StorageStruct users_tokens_invalid("users_tokens_invalid", StorageStructTableMode::CREATE);
+	users_tokens_invalid.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
+	users_tokens_invalid.addColumn(StorageStructColumn("userid").number().notNull());
+	users_tokens_invalid.addColumn(StorageStructColumn("token").string(255).notNull());
+	users_tokens_invalid.addColumn(StorageStructColumn("status").string(255).notNull());
+	users_tokens_invalid.addColumn(StorageStructColumn("data").string(4048).notNull());
+	users_tokens_invalid.addColumn(StorageStructColumn("start_date").datetime().notNull());
+	users_tokens_invalid.addColumn(StorageStructColumn("end_date").datetime().notNull());
+	if (!pStorage->applyStruct(pConn, users_tokens_invalid)) {
+		error = "could not create table 'users_tokens'";
+		return false;
 	}
-	return true;
-	*/
+
 	delete pConn;
 	Log::info(TAG, "exit");
 	return false;
