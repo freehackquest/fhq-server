@@ -36,6 +36,21 @@ bool UnitTestStorageStruct::run() {
 	test_tbl1.addColumn(StorageStructColumn("filed3")
 		.datetime().notNull());
 
+	test_tbl1.addColumn(StorageStructColumn("filed4")
+		.string(2000).notNull().enableIndex());
+
+    test_tbl1.addColumn(StorageStructColumn("filed5")
+		.number().notNull().enableUniqueIndex("idx_f5_and_f7"));
+
+    test_tbl1.addColumn(StorageStructColumn("filed6")
+		.number().notNull().enableUniqueIndex("idx_f6_and_f8"));
+
+    test_tbl1.addColumn(StorageStructColumn("filed7")
+		.number().notNull().enableUniqueIndex("idx_f5_and_f7"));
+
+    test_tbl1.addColumn(StorageStructColumn("filed8")
+		.number().notNull().enableUniqueIndex("idx_f6_and_f8"));
+
     std::vector<std::string> vQueries1 = pStorage->prepareSqlQueries(test_tbl1);
     if (!compareN("vQueries1", vQueries1.size(), 1)) {
         bTestSuccess = false;
@@ -46,8 +61,16 @@ bool UnitTestStorageStruct::run() {
 			"  filed1 VARCHAR(255) NOT NULL,\r\n"
 			"  filed2 TEXT NOT NULL,\r\n"
 			"  filed3 DATETIME NOT NULL,\r\n"
+            "  filed4 VARCHAR(2000) NOT NULL,\r\n"
+            "  filed5 INT NOT NULL,\r\n"
+            "  filed6 INT NOT NULL,\r\n"
+            "  filed7 INT NOT NULL,\r\n"
+            "  filed8 INT NOT NULL,\r\n"
 			"  PRIMARY KEY (id),\r\n"
-            "  KEY idx_filed1 (filed1)\r\n"
+            "  KEY idx_filed1 (filed1),\r\n"
+            "  KEY idx_filed4 (filed4(255)),\r\n"
+            "  UNIQUE KEY idx_f5_and_f7 (filed5,filed7),\r\n"
+            "  UNIQUE KEY idx_f6_and_f8 (filed6,filed8)\r\n"
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
     }
 

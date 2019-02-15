@@ -205,6 +205,7 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(StorageStruct &storageS
         sQuery += "CREATE TABLE IF NOT EXISTS " + storageStruct.tableName() + " (\r\n";
         std::vector<std::string> vCreateTableContent;
         std::vector<std::string> vCreateTableContentIndexes;
+        std::vector<std::string> vCreateTableContentUniqueIndexes;
 
         // add columns
         std::vector<StorageStructColumn> vAddColumns = storageStruct.listAddColumns();
@@ -216,8 +217,36 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(StorageStruct &storageS
             if (c.isPrimaryKey()) {
                 vCreateTableContentIndexes.push_back("PRIMARY KEY (" + c.columnName() + ")");
             }
+
             if (c.isEnableIndex()) {
-                vCreateTableContentIndexes.push_back("KEY idx_" + c.columnName() + " (" + c.columnName() + ")");
+                std::string sIndexLine = "KEY idx_" + c.columnName() + " (" + c.columnName();
+                if (c.columnType() == "string" && c.columnTypeSize() > 255) {
+                    sIndexLine += "(" + std::to_string(255) + ")";
+                }
+                sIndexLine += ")";
+                vCreateTableContentIndexes.push_back(sIndexLine);
+            }
+
+            if (c.isEnableUniqueIndex()) {
+                std::string sPrefix = "UNIQUE KEY " + c.nameOfUniqueIndex();
+                int nFound = -1;
+                for (int i = 0; i < vCreateTableContentIndexes.size(); i++) {
+                    if (vCreateTableContentIndexes[i].rfind(sPrefix, 0) == 0) {
+                        nFound = i;
+                        break;
+                    }
+                }
+                if (nFound == -1) {
+                    vCreateTableContentIndexes.push_back("UNIQUE KEY " + c.nameOfUniqueIndex() + " (" + c.columnName());
+                } else {
+                    vCreateTableContentIndexes[nFound] += "," + c.columnName();
+                }
+            }
+        }
+        // close uniq indexes
+        for (int i = 0; i < vCreateTableContentIndexes.size(); i++) {
+            if (vCreateTableContentIndexes[i].rfind("UNIQUE KEY ", 0) == 0) {
+                vCreateTableContentIndexes[i] += ")";
             }
         }
 

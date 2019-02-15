@@ -18,6 +18,7 @@ class StorageStructColumn {
         StorageStructColumn &primaryKey();
         StorageStructColumn &defaultValue(const std::string& sDefault);
         StorageStructColumn &enableIndex();
+        StorageStructColumn &enableUniqueIndex(const std::string& sIndexName);
 
         std::string columnName();
         std::string columnType();
@@ -29,6 +30,8 @@ class StorageStructColumn {
         bool isPrimaryKey();
         bool isNotNull();
         bool isEnableIndex();
+        bool isEnableUniqueIndex();
+        std::string nameOfUniqueIndex();
 
     private:
         std::string TAG;
@@ -42,6 +45,16 @@ class StorageStructColumn {
         bool m_bPrimaryKey;
         bool m_bDefaultValue;
         bool m_bEnableIndex;
+        bool m_bEnableUniqueIndex;
+        std::string m_sNameOfUniqueIndex;
+};
+
+// ---------------------------------------------------------------------
+
+// TODO redesign
+
+class StorageStructColumnIndex {
+
 };
 
 // ---------------------------------------------------------------------

@@ -20,6 +20,7 @@ StorageStructColumn::StorageStructColumn(const std::string &sColumnName) {
     m_bPrimaryKey = false;
     m_sDefaultValue = "";
     m_bEnableIndex = false;
+    m_bEnableUniqueIndex = false;
 }
 
 // ---------------------------------------------------------------------
@@ -105,6 +106,14 @@ StorageStructColumn &StorageStructColumn::enableIndex() {
 
 // ---------------------------------------------------------------------
 
+StorageStructColumn &StorageStructColumn::enableUniqueIndex(const std::string& sIndexName) {
+    m_sNameOfUniqueIndex = sIndexName;
+    m_bEnableUniqueIndex = true;
+    return *this;
+}
+
+// ---------------------------------------------------------------------
+
 std::string StorageStructColumn::columnName() {
     return m_sColumnName;
 }
@@ -155,6 +164,18 @@ bool StorageStructColumn::isNotNull() {
 
 bool StorageStructColumn::isEnableIndex() {
     return m_bEnableIndex;
+}
+
+// ---------------------------------------------------------------------
+
+bool StorageStructColumn::isEnableUniqueIndex() {
+    return m_bEnableUniqueIndex;
+}
+
+// ---------------------------------------------------------------------
+
+std::string StorageStructColumn::nameOfUniqueIndex() {
+    return m_sNameOfUniqueIndex;
 }
 
 // ---------------------------------------------------------------------
