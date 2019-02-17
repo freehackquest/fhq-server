@@ -376,38 +376,51 @@ CmdHandlerSendChatMessage::CmdHandlerSendChatMessage()
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
     m_modelCommandAccess.setAccessAdmin(true);
+
+    // validation and description input fields
+    m_vInputs.push_back(CmdInputDef("type").required().string_().description("Type"));
+    m_vInputs.push_back(CmdInputDef("message").required().string_().description("Message"));
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerSendChatMessage::handle(ModelRequest *pRequest){
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-
-    const auto & jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     IUserToken *pUserToken = pRequest->userToken();
-    QString username = "";
-    if(pUserToken != NULL){
-        username = pUserToken->nick();
-    }else{
-        username = "Guest";
+    std::string sUsername = "";
+    if (pUserToken != NULL) {
+        sUsername = pUserToken->nick().toStdString();
+    } else {
+        sUsername = "Guest";
+    }
+
+    std::string sMessage = "";
+    if (jsonRequest["message"].is_string()) {
+        sMessage = jsonRequest["message"];
+    }
+
+    std::string sType = "";
+    if (jsonRequest["type"].is_string()) {
+        sType = jsonRequest["type"];
     }
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("INSERT INTO chatmessages(user, message, dt) VALUES(:user,:message, NOW())");
-    query.bindValue(":user", username);
-    query.bindValue(":message", QString::fromStdString(jsonRequest.at("message")));
+    query.bindValue(":user", QString::fromStdString(sUsername));
+    query.bindValue(":message", QString::fromStdString(sMessage));
     query.exec();
 
     nlohmann::json jsonData2;
     jsonData2["cmd"] = "chat";
-    jsonData2["type"] = jsonRequest.at("type");
-    jsonData2["user"] = username.toStdString();
-    jsonData2["message"] = jsonRequest.at("message");
+    jsonData2["type"] = sType;
+    jsonData2["user"] = sUsername;
+    jsonData2["message"] = sMessage;
     jsonData2["dt"] = QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss").toStdString();
 
     pRequest->server()->sendToAll(jsonData2);

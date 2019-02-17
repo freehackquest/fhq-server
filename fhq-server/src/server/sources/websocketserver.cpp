@@ -272,21 +272,28 @@ int WebSocketServer::getConnectedUsers(){
 
 void WebSocketServer::sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse){
     if (pClient) {
-        std::string cmd = jsonResponse["cmd"];
-        std::string m = jsonResponse["m"];
-        std::string message = jsonResponse.dump();
+        std::string sCmd = "";
+        if (jsonResponse.find("cmd") != jsonResponse.end() && jsonResponse["cmd"].is_string()) {
+            sCmd = jsonResponse["cmd"];
+        }
+        std::string sM = "";
+        
+        if (jsonResponse.find("m") != jsonResponse.end() && jsonResponse["m"].is_string()) {
+            sM = jsonResponse["m"];
+        }
+        std::string sMessage = jsonResponse.dump();
 
-        Log::info(TAG, "[WS] <<< " + cmd + ":" + m);
-        if(m_clients.contains(pClient)){
-            try{
-                pClient->sendTextMessage(QString::fromStdString(message));
-            }catch(...){
-                Log::err(TAG, "Could not send message <<< " + message);
+        Log::info(TAG, "[WS] <<< " + sCmd + ":" + sM);
+        if (m_clients.contains(pClient)) {
+            try {
+                pClient->sendTextMessage(QString::fromStdString(sMessage));
+            } catch(...) {
+                Log::err(TAG, "Could not send message <<< " + sMessage);
             }
-        }else{
+        } else {
             Log::warn(TAG, "Could not send message, client disappeared");
         }
-   }else{
+   } else {
         Log::warn(TAG, "Client is wrong");
    }
 }
@@ -322,10 +329,11 @@ void WebSocketServer::sendToOne(QWebSocket *pClient, const nlohmann::json &jsonM
 // ---------------------------------------------------------------------
 // slot
 void WebSocketServer::slot_sendToAll(QString message){
-    if(!nlohmann::json::accept(message.toStdString())){
+    std::string sMsg = message.toStdString();
+    if(!nlohmann::json::accept(sMsg)){
         return;
     }
-    nlohmann::json jsonMessage = nlohmann::json::parse(message.toStdString());
+    nlohmann::json jsonMessage = nlohmann::json::parse(sMsg);
     for(int i = 0; i < m_clients.size(); i++){
         this->sendMessage(m_clients.at(i), jsonMessage);
     }
