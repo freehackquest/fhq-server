@@ -96,6 +96,8 @@ list (APPEND FHQSRV_SOURCES "src/3rdParty/quazip-0.7.3/quazip/unzip.c")
 list (APPEND FHQSRV_SOURCES "src/3rdParty/quazip-0.7.3/quazip/zip.c")
 
 # cmd
+list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_communication.h")
+list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_communication.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_quests_writeups.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_quests_writeups.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.h")
