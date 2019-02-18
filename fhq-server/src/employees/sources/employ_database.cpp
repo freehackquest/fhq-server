@@ -39,9 +39,9 @@ bool EmployDatabase::init(){
 		return false;
 	}
 
-	// if (!Updates::updateDatabase(m_pDBConnection->db())) {
-    //     return false;
-    // }
+	if (!Updates::updateDatabase(m_pDBConnection->db())) {
+         return false;
+    }
 
 	// TODO: redesign
 	// cleanup old user tokens

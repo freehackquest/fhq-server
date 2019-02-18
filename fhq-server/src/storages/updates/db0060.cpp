@@ -177,20 +177,14 @@ bool StorageStruct0060::apply(Storage *pStorage, std::string &error){
 		return false;
 	}
 
-/*
-	{
-		QSqlQuery query(db);
-		query.prepare(
-			"INSERT INTO `users` (`uuid`, `email`, `pass`, `role`, `nick`, `logo`, `dt_create`, `dt_last_login`, `last_ip`, `status`) VALUES"
-            "('39A551F4-3BF0-A1C8-8686-06A5C510DDA3', 'admin', '06976539736714f7eaaa9409a643855029717a9d', 'admin', 'Admin', 'files/users/0.png', '1970-01-01 00:00:00', '2015-04-12 23:49:58', '127.0.0.1', 'activated')"
-		);
-		if(!query.exec()){
-			error = query.lastError().text().toStdString();
-            Log::err(TAG, "The problem with data insertion " + error);
-			return false;
-		}
+	// TODO redesign
+	if (!pConn->executeQuery("INSERT INTO users(uuid, email, pass, role, nick, logo, dt_create, dt_last_login, last_ip, status) "
+			" VALUES ("
+            " '39A551F4-3BF0-A1C8-8686-06A5C510DDA3',"
+			" 'admin', '06976539736714f7eaaa9409a643855029717a9d', 'admin', 'Admin', 'files/users/0.png', '1970-01-01 00:00:00', '2015-04-12 23:49:58', '127.0.0.1', 'activated')")) {
+		error = "could not insert default 'admin' to 'users'";
+		return false;
 	}
- */
 
 	StorageStruct users_games("users_games", StorageStructTableMode::CREATE);
 	users_games.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
@@ -234,9 +228,7 @@ bool StorageStruct0060::apply(Storage *pStorage, std::string &error){
 	StorageStruct users_quests("users_quests", StorageStructTableMode::CREATE);
 	users_quests.addColumn(StorageStructColumn("userid").number().notNull().enableUniqueIndex("idx_user_quest"));
 	users_quests.addColumn(StorageStructColumn("questid").number().notNull().enableUniqueIndex("idx_user_quest"));
-	users_quests.addColumn(StorageStructColumn("name").string(255).notNull());
-	users_quests.addColumn(StorageStructColumn("value").string(255).notNull());
-	users_quests.addColumn(StorageStructColumn("date_change").datetime().notNull());
+	users_quests.addColumn(StorageStructColumn("dt_passed").datetime().notNull());
 	if (!pStorage->applyStruct(pConn, users_quests)) {
 		error = "could not create table 'users_quests'";
 		return false;
@@ -270,5 +262,5 @@ bool StorageStruct0060::apply(Storage *pStorage, std::string &error){
 
 	delete pConn;
 	Log::info(TAG, "exit");
-	return false;
+	return true;
 }

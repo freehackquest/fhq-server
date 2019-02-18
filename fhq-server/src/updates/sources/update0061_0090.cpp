@@ -404,7 +404,8 @@ bool Update0077::update(QSqlDatabase &db, std::string &error){
         if(!query.exec()){
             error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with altering the table " + error);
-            return false;
+            // skip
+            // return false;
         }
     }
 
@@ -414,7 +415,8 @@ bool Update0077::update(QSqlDatabase &db, std::string &error){
         if(!query.exec()){
             error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with altering the table " + error);
-            return false;
+            // skip
+            // return false;
         }
     }
 
@@ -424,7 +426,8 @@ bool Update0077::update(QSqlDatabase &db, std::string &error){
         if(!query.exec()){
             error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with altering the table " + error);
-            return false;
+            // skip
+            // return false;
         }
     }
 
@@ -434,7 +437,8 @@ bool Update0077::update(QSqlDatabase &db, std::string &error){
         if(!query.exec()){
             error = query.lastError().text().toStdString();
             Log::err(TAG, "The problem with altering the table " + error);
-            return false;
+            // skip
+            // return false;
         }
     }
     return true;
