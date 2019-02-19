@@ -13,7 +13,7 @@ class AddPublicEventsTask : public QRunnable {
 	private:
 		QString m_sMessage;
 		QString m_sType;
-		QString TAG;
+		std::string TAG;
 };
 
 #endif // ADD_PUBLIC_EVENTS_TASK_H

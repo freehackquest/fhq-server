@@ -367,53 +367,6 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest){
 }
 
 /*********************************************
- * Users chat
-**********************************************/
-
-CmdHandlerSendChatMessage::CmdHandlerSendChatMessage()
-    : CmdHandlerBase("sendchatmessage", "Method will be keep message and it sent to another users"){
-
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
-}
-
-// ---------------------------------------------------------------------
-
-void CmdHandlerSendChatMessage::handle(ModelRequest *pRequest){
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-
-    const auto & jsonRequest = pRequest->jsonRequest();
-    nlohmann::json jsonResponse;
-
-    IUserToken *pUserToken = pRequest->userToken();
-    QString username = "";
-    if(pUserToken != NULL){
-        username = pUserToken->nick();
-    }else{
-        username = "Guest";
-    }
-
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
-
-    QSqlDatabase db = *(pDatabase->database());
-    QSqlQuery query(db);
-    query.prepare("INSERT INTO chatmessages(user, message, dt) VALUES(:user,:message, NOW())");
-    query.bindValue(":user", username);
-    query.bindValue(":message", QString::fromStdString(jsonRequest.at("message")));
-    query.exec();
-
-    nlohmann::json jsonData2;
-    jsonData2["cmd"] = "chat";
-    jsonData2["type"] = jsonRequest.at("type");
-    jsonData2["user"] = username.toStdString();
-    jsonData2["message"] = jsonRequest.at("message");
-    jsonData2["dt"] = QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss").toStdString();
-
-    pRequest->server()->sendToAll(jsonData2);
-}
-
-/*********************************************
  * User login by token
 **********************************************/
 

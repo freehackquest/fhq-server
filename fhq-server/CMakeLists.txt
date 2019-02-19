@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(fhq-server)
 
-add_definitions(-DFHQSRV_VERSION="0.2.18")
+add_definitions(-DFHQSRV_VERSION="0.2.19")
 add_definitions(-DFHQSRV_APP_NAME="fhq-server")
 
 set (CMAKE_AUTOMOC ON)
@@ -96,6 +96,8 @@ list (APPEND FHQSRV_SOURCES "src/3rdParty/quazip-0.7.3/quazip/unzip.c")
 list (APPEND FHQSRV_SOURCES "src/3rdParty/quazip-0.7.3/quazip/zip.c")
 
 # cmd
+list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_communication.h")
+list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_communication.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_quests_writeups.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_quests_writeups.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.h")
@@ -189,14 +191,8 @@ list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_static_analizing_text.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_lxd.cpp")
 
 # unit_tests
-list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_levenshtein.h")
-list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_levenshtein.cpp")
 list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_merge_text.h")
 list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_merge_text.cpp")
-list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_static_analizing_text.h")
-list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_static_analizing_text.cpp")
-list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_storage_struct.h")
-list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_storage_struct.cpp")
 list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_tests.h")
 list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_tests.cpp")
 

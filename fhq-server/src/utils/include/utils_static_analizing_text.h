@@ -1,15 +1,12 @@
 #ifndef UTILS_STATIC_ANALIZING_TEXT_H
 #define UTILS_STATIC_ANALIZING_TEXT_H
 
-#include <QString>
-#include <QMap>
-#include <QChar>
-#include <QRegularExpression>
-#include <QDebug>
+#include <string>
+#include <map>
 
 class UtilsStaticAnalizingText {
     public:
-        static QMap<QChar, double> calc(const QString &text);
+        static std::map<char, double> calc(const std::string &text);
     private:
         static double calcWeightOfOneChar(int strLen); 
 };

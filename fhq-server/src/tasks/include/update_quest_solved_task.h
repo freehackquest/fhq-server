@@ -5,14 +5,15 @@
 #include <iserver.h>
 
 class UpdateQuestSolvedTask : public QRunnable {
-	
-	void run();
-	public:
+    void run();
+    
+    public:
         UpdateQuestSolvedTask(int m_nQuestID);
         ~UpdateQuestSolvedTask();
-	private:
+
+    private:
         int m_nQuestID;
-		QString TAG;
+        std::string TAG;
 };
 
 #endif // UPDATE_QUEST_SOLVED_TASK_H

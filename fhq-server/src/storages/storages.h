@@ -58,6 +58,8 @@ class StorageUpdateBase {
 
     protected:
         std::string TAG;
+        
+    private:
         std::string m_sFromVersion;
         std::string m_sVersion;
         std::string m_sDescription;

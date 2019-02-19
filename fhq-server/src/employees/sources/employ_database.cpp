@@ -14,7 +14,7 @@ EmployDatabase::EmployDatabase()
 
 // ---------------------------------------------------------------------
 
-bool EmployDatabase::init(){
+bool EmployDatabase::init() {
 	EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
 	
 	m_sStorageType = pServerConfig->storageType();
@@ -27,6 +27,10 @@ bool EmployDatabase::init(){
 		return false;
 	}
 
+	if (!StorageUpdates::apply(m_pStorage)) {
+		return false;
+	}
+
 	// deprecated
 	m_pDBConnection = new ModelDatabaseConnection("qt_sql_default_connection_1");
 	m_pDBConnection_older = new ModelDatabaseConnection("qt_sql_default_connection_2");
@@ -35,18 +39,18 @@ bool EmployDatabase::init(){
 		return false;
 	}
 
-    if (!Updates::updateDatabase(m_pDBConnection->db())) {
-        return false;
+	if (!Updates::updateDatabase(m_pDBConnection->db())) {
+         return false;
     }
 
 	// TODO: redesign
 	// cleanup old user tokens
-    /*{
-		QSqlDatabase db = *(m_pDBConnection->db());
-		QSqlQuery query(db);
-		query.prepare("DELETE FROM users_tokens WHERE end_date < NOW()");
-		query.exec();
-    }*/
+    // {
+	//	QSqlDatabase db = *(m_pDBConnection->db());
+	//	QSqlQuery query(db);
+	//	query.prepare("DELETE FROM users_tokens WHERE end_date < NOW()");
+	//	query.exec();
+    // }
 	
 	
     // TODO

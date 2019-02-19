@@ -1,8 +1,6 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <QString>
-#include <QAbstractSocket>
 #include <stdio.h>
 #include <iostream>
 #include <mutex>
@@ -35,12 +33,8 @@ namespace Color {
 
 class Log {
     public:
-        static void info(QString tag, QString msg);  // depricated
         static void info(const std::string &sTag, const std::string &sMessage);
-        static void err(QString tag, QString msg); // depricated
         static void err(const std::string &sTag, const std::string &sMessage);
-        static void err(QString tag, QAbstractSocket::SocketError socketError); // Move from here
-        static void warn(QString tag, QString msg);  // depricated
         static void warn(const std::string &sTag, const std::string &sMessage);
         static void ok(const std::string &sTag, const std::string &sMessage);
         static void setdir(const std::string &sDirectoryPath);

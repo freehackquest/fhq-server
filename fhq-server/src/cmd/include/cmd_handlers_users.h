@@ -52,17 +52,6 @@ class CmdHandlerRegistration : public CmdHandlerBase {
 
 REGISTRY_CMD(CmdHandlerRegistration)
 
-/*********************************************
- * Users chat
-**********************************************/
-
-class CmdHandlerSendChatMessage : public CmdHandlerBase {
-    public:
-        CmdHandlerSendChatMessage();
-        virtual void handle(ModelRequest *pRequest);
-};
-
-REGISTRY_CMD(CmdHandlerSendChatMessage)
 
 /*********************************************
  * User login by token

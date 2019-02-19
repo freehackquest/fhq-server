@@ -5,16 +5,16 @@
 #include <iserver.h>
 
 class UpdateUserLocationTask : public QRunnable {
-	
-	void run();
-	public:
+    
+    void run();
+    public:
         UpdateUserLocationTask(int userid, QString lastip);
-		~UpdateUserLocationTask();
-	private:
-		int m_nUserID;
-		QString mLastIP;
-		QString TAG;
-		
+        ~UpdateUserLocationTask();
+    private:
+        int m_nUserID;
+        QString mLastIP;
+        std::string TAG;
+        
 };
 
 #endif // UPDATE_USER_LOCATION_TASK_H

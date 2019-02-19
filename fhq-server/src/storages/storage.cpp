@@ -18,6 +18,9 @@ StorageStructColumn::StorageStructColumn(const std::string &sColumnName) {
     m_nTypeSize = 0;
     m_sType = "";
     m_bPrimaryKey = false;
+    m_sDefaultValue = "";
+    m_bEnableIndex = false;
+    m_bEnableUniqueIndex = false;
 }
 
 // ---------------------------------------------------------------------
@@ -88,6 +91,29 @@ StorageStructColumn &StorageStructColumn::primaryKey() {
 
 // ---------------------------------------------------------------------
 
+StorageStructColumn &StorageStructColumn::defaultValue(const std::string& sDefaultValue) {
+    m_sDefaultValue = sDefaultValue;
+    m_bDefaultValue = true;
+    return *this;
+}
+
+// ---------------------------------------------------------------------
+
+StorageStructColumn &StorageStructColumn::enableIndex() {
+    m_bEnableIndex = true;
+    return *this;
+}
+
+// ---------------------------------------------------------------------
+
+StorageStructColumn &StorageStructColumn::enableUniqueIndex(const std::string& sIndexName) {
+    m_sNameOfUniqueIndex = sIndexName;
+    m_bEnableUniqueIndex = true;
+    return *this;
+}
+
+// ---------------------------------------------------------------------
+
 std::string StorageStructColumn::columnName() {
     return m_sColumnName;
 }
@@ -96,6 +122,18 @@ std::string StorageStructColumn::columnName() {
 
 std::string StorageStructColumn::columnType() {
     return m_sType;
+}
+
+// ---------------------------------------------------------------------
+
+std::string StorageStructColumn::columnDefaultValue() {
+    return m_sDefaultValue;
+}
+
+// ---------------------------------------------------------------------
+
+bool StorageStructColumn::isDefaultValue() {
+    return m_bDefaultValue;
 }
 
 // ---------------------------------------------------------------------
@@ -124,6 +162,24 @@ bool StorageStructColumn::isNotNull() {
 
 // ---------------------------------------------------------------------
 
+bool StorageStructColumn::isEnableIndex() {
+    return m_bEnableIndex;
+}
+
+// ---------------------------------------------------------------------
+
+bool StorageStructColumn::isEnableUniqueIndex() {
+    return m_bEnableUniqueIndex;
+}
+
+// ---------------------------------------------------------------------
+
+std::string StorageStructColumn::nameOfUniqueIndex() {
+    return m_sNameOfUniqueIndex;
+}
+
+// ---------------------------------------------------------------------
+
 // ***********************
 // *** StorageStruct
 // ***********************
@@ -148,13 +204,13 @@ StorageStruct::StorageStruct(const std::string &sTableName, StorageStructTableMo
 
 // ---------------------------------------------------------------------
 
-std::string StorageStruct::tableName() {
+std::string StorageStruct::tableName() const {
     return m_sTableName;
 }
 
 // ---------------------------------------------------------------------
 
-StorageStructTableMode StorageStruct::mode() {
+StorageStructTableMode StorageStruct::mode() const {
     return m_nMode;
 }
 
@@ -206,21 +262,98 @@ bool StorageStruct::dropColumn(const std::string &sColumnName) {
 
 // ---------------------------------------------------------------------
 
-const std::vector<StorageStructColumn> &StorageStruct::listAddColumns() {
+const std::vector<StorageStructColumn> &StorageStruct::listAddColumns() const {
     return m_vAddColumns;
 }
 
 // ---------------------------------------------------------------------
 
 
-const std::vector<StorageStructColumn> &StorageStruct::listAlterColumns() {
+const std::vector<StorageStructColumn> &StorageStruct::listAlterColumns() const {
     return m_vAlterColumns;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<std::string> &StorageStruct::listDropColumns() {
+const std::vector<std::string> &StorageStruct::listDropColumns() const {
     return m_vDropColumns;
+}
+
+// ---------------------------------------------------------------------
+
+bool StorageStruct::mergeWith(const StorageStruct &storageStruct) {
+    if (m_nMode != StorageStructTableMode::CREATE) {
+        Log::err(TAG, "Could not merge if current define mode is not CREATE");
+        return false;
+    };
+
+    if (storageStruct.mode() == StorageStructTableMode::CREATE) {
+        Log::err(TAG, "Could not merge if target define mode is CREATE");
+        return false;
+    };
+
+    if (storageStruct.tableName() != m_sTableName) {
+        Log::err(TAG, "Could not merge current '" + m_sTableName + "' and got '" + storageStruct.tableName() + "'");
+        return false;
+    };
+
+    // TODO check indexes
+    std::vector<std::string> vDropColumns = storageStruct.listDropColumns();
+    for (int i = 0; i < vDropColumns.size(); i++) {
+        bool bFound = false;    
+        std::string sColumnName = vDropColumns[i];
+        for (int i = 0; i < m_vAddColumns.size(); i++) {
+            if (m_vAddColumns[i].columnName() == sColumnName) {
+                m_vAddColumns.erase(m_vAddColumns.begin() + i);
+                bFound = true;
+                break;
+            }
+        }
+        if (!bFound) {
+            Log::err(TAG, "Not found column " + sColumnName + " in table " + m_sTableName);
+            return false;
+        }
+    }
+
+    // TODO check indexes
+    std::vector<StorageStructColumn> vAddColumns = storageStruct.listAddColumns();
+    for (int i = 0; i < vAddColumns.size(); i++) {
+        bool bFound = false;
+        StorageStructColumn c = vAddColumns[i];
+        for (int i = 0; i < m_vAddColumns.size(); i++) {
+            if (m_vAddColumns[i].columnName() == c.columnName()) {
+                bFound = true;
+            }
+        }
+        if (bFound) {
+            Log::err(TAG, "Column already defined " + c.columnName() + " in table " + m_sTableName);
+            return false;
+        } else {
+            m_vAddColumns.push_back(c);
+        }
+    }
+
+    // TODO check indexes
+    std::vector<StorageStructColumn> vAlterColumns = storageStruct.listAlterColumns();
+    for (int i = 0; i < vAlterColumns.size(); i++) {
+        bool bFound = false;
+        StorageStructColumn c = vAlterColumns[i];
+        for (int i = 0; i < m_vAddColumns.size(); i++) {
+            if (m_vAddColumns[i].columnName() == c.columnName()) {
+                if (m_vAddColumns[i].isEnableIndex()) {
+                    c.enableIndex();
+                }
+                m_vAddColumns[i] = c;
+                bFound = true;
+            }
+        }
+        if (!bFound) {
+            Log::err(TAG, "Problem with alter column '" + c.columnName() + "'. It's not defined in table '" + m_sTableName + "'");
+            return false;
+        }
+    }
+
+    return true;
 }
 
 // ---------------------------------------------------------------------
@@ -242,16 +375,54 @@ long StorageConnection::created() {
 
 // ---------------------------------------------------------------------
 
-bool Storage::applyStruct(StorageStruct &storageStruct) {
+// ***********************
+// *** Storage
+// ***********************
+
+Storage::Storage() {
+    TAG = "Storage";
+}
+
+bool Storage::applyStruct(StorageConnection *pConn, StorageStruct &storageStruct) {
+    // TODO merge structs
     std::vector<std::string> v = this->prepareSqlQueries(storageStruct);
-    StorageConnection *pConn = this->connect();
     for (int i = 0; i < v.size(); i++) {
-        if (!pConn->executeQuery(v[i])) {
-            delete pConn;
-            return false;        
+        std::string sQuery = v[i];
+        if (!pConn->executeQuery(sQuery)) {
+            return false;
         }
     }
-    delete pConn;
+
+    std::string sTableName = storageStruct.tableName();
+    if (storageStruct.mode() == StorageStructTableMode::CREATE) {
+        if (m_mapStructs.count(sTableName)) {
+            Log::err(TAG, "Struct '" + sTableName + "' already defined");
+            Log::warn(TAG, "TODO need drop table");
+            return false;
+        } else {
+            m_mapStructs.insert( std::pair<std::string,StorageStruct>(sTableName,storageStruct) );
+        }
+    }
+
+    if (storageStruct.mode() == StorageStructTableMode::ALTER) {
+        if (!m_mapStructs.count(sTableName)) {
+            Log::err(TAG, "Not found table '" + sTableName + "'");
+            return false;
+        } else {
+            m_mapStructs.find(sTableName)->second.mergeWith(storageStruct);
+        }
+    }
+
+    if (storageStruct.mode() == StorageStructTableMode::DROP) {
+        if (!m_mapStructs.count(sTableName)) {
+            Log::err(TAG, "Not found table '" + sTableName + "'");
+            return false;
+        } else {
+            m_mapStructs.erase(sTableName);
+        }
+        
+    }
+
     return true;
 }
 

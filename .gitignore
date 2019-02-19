@@ -1,5 +1,6 @@
 dckr_mysql/*
-
+unit-tests/tmp/*
+unit-tests/unit-tests
 # Compiled Object files
 *.slo
 *.lo

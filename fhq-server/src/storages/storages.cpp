@@ -111,7 +111,13 @@ bool StorageUpdates::apply(Storage *pStorage){
     StorageUpdates::initGlobalVariables();
     std::string TAG = "StorageUpdates::apply";
 
-    StorageConnection *pConn = pStorage->connect(); 
+    StorageConnection *pConn = pStorage->connect();
+    if (pConn == nullptr) {
+        Log::err(TAG, "Could not connect to database");
+        return false;
+    } else {
+        Log::ok(TAG, "Successfully connection to database");
+    }
     std::string sLastVersion = pConn->lastDatabaseVersion();
 
     Log::info(TAG, "Last Version -> " + sLastVersion);
@@ -119,15 +125,16 @@ bool StorageUpdates::apply(Storage *pStorage){
     bool bHasUpdates = true;
     while (bHasUpdates) {
         bHasUpdates = false;
-        for(int i = 0; i < g_pStorageUpdates->size(); i++){
+        for (int i = 0; i < g_pStorageUpdates->size(); i++){
             StorageUpdateBase* pUpdate = g_pStorageUpdates->at(i);
             if (sLastVersion == pUpdate->from_version()) {
                 Log::info(TAG, "Installing update " + pUpdate->from_version() + " -> " + pUpdate->version() + ": " + pUpdate->description());
                 sLastVersion = pUpdate->version();
                 bHasUpdates = true;
-                std::string error;
+                std::string error = "";
                 if (!pUpdate->apply(pStorage, error)) {
                     Log::err(TAG, "Error on install update " + error);
+                    delete pConn;
                     return false;
                 }
                 pConn->insertUpdateInfo(pUpdate->version(), pUpdate->description());

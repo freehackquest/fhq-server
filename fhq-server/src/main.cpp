@@ -103,15 +103,18 @@ int main(int argc, char** argv) {
     }else if(helpArgs.has("check-server-config") || helpArgs.has("-csc")){
         std::cout << "\n * Check Server Config\n\n";
         EmployServerConfig *pConfig = new EmployServerConfig();
-        if(!pConfig->init()){
+        if (!pConfig->init()) {
             std::cout << "\n * FAIL\n\n";
-        }else{
+        } else {
             std::cout << "\n * Success\n\n";
         }
         return 0;
-    }else if(helpArgs.has("check-database-connection") || helpArgs.has("-cdc")){
+    } else if (helpArgs.has("check-database-connection") || helpArgs.has("-cdc")) {
         std::cout << "\n * Check Database Connection\n\n";
-        Employees::init({});
+        if (!Employees::init({})) {
+            Log::err(TAG, "Could not init database module");
+            return -1;
+        }
         EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
         QSqlDatabase *db = pDatabase->database();
         if (!db->open()){

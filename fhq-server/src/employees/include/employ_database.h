@@ -6,6 +6,7 @@
 
 #include <storages.h>
 #include <mutex>
+#include <QMap>
 
 class EmployDatabase : public EmployBase {
     public:
