@@ -24,9 +24,18 @@ before_install:
 
 # Build your code e.g. by calling make
 script:
-  - cd fhq-server
+  - echo "Build unit tests"
+  - cd unit-tests
   - mkdir -p build
   - cd build
+  - cmake ..
+  - make
+  - cd ..
+  - echo "TODO run unit tests"
+  - cd ..
+  - cd fhq-server
+  - mkdir -p tmp
+  - cd tmp
   - cmake ..
   - make
   - cd ..
@@ -34,6 +43,7 @@ script:
   - echo "usemysql=yes" > fhq-server.conf
   - echo "dbhost=127.0.0.1" >> fhq-server.conf
   - echo "dbname=fhq_test" >> fhq-server.conf
+  - echo "dbport=3306" >> fhq-server.conf
   - echo "dbuser=travis" >> fhq-server.conf
   - echo "dbpass=" >> fhq-server.conf
   - echo "port = 1234" >> fhq-server.conf

@@ -14,7 +14,7 @@ EmployDatabase::EmployDatabase()
 
 // ---------------------------------------------------------------------
 
-bool EmployDatabase::init(){
+bool EmployDatabase::init() {
 	EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
 	
 	m_sStorageType = pServerConfig->storageType();

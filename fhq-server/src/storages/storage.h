@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 // ---------------------------------------------------------------------
 
@@ -70,14 +71,15 @@ enum StorageStructTableMode {
 class StorageStruct {
     public:
         StorageStruct(const std::string &sTableName, StorageStructTableMode nMode);
-        std::string tableName();
-        StorageStructTableMode mode();
+        std::string tableName() const;
+        StorageStructTableMode mode() const;
         bool addColumn(StorageStructColumn &column);
         bool alterColumn(StorageStructColumn &column);
         bool dropColumn(const std::string &sColumnName);
-        const std::vector<StorageStructColumn> &listAddColumns();
-        const std::vector<StorageStructColumn> &listAlterColumns();
-        const std::vector<std::string> &listDropColumns();
+        const std::vector<StorageStructColumn> &listAddColumns() const;
+        const std::vector<StorageStructColumn> &listAlterColumns() const;
+        const std::vector<std::string> &listDropColumns() const;
+        bool mergeWith(const StorageStruct &storageStruct);
 
     private:
         std::string TAG;
@@ -124,6 +126,9 @@ class Storage {
     
     protected:
         std::string TAG;
+
+    private:
+        std::map<std::string, StorageStruct> m_mapStructs;
 };
 
 // ---------------------------------------------------------------------
