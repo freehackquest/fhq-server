@@ -93,6 +93,27 @@ class StorageStruct {
 
 // ---------------------------------------------------------------------
 
+class StorageInsert {
+    public:
+        StorageInsert(const std::string &sTableName);
+        std::string tableName() const;
+
+        void bindValue(const std::string &sColumnName, const std::string &sValue);
+        void bindValue(const std::string &sColumnName, int nValue);
+        std::map<std::string, std::string> stringValues() const;
+        std::map<std::string, int> intValues() const;
+        bool isValid(const StorageStruct &storageStruct) const;
+
+    private:
+        bool exists(const std::string &sColumnName);
+        std::string TAG;
+        std::string m_sTableName;
+        std::map<std::string, std::string> m_mapStringValues;
+        std::map<std::string, int> m_mapIntValues;
+};
+
+// ---------------------------------------------------------------------
+
 class StorageConnection {
     public:
         StorageConnection();
@@ -123,7 +144,10 @@ class Storage {
 
         virtual std::vector<std::string> prepareSqlQueries(StorageStruct &storageStruct) = 0;
         bool applyStruct(StorageConnection *pConn, StorageStruct &storageStruct);
-    
+
+        virtual std::vector<std::string> prepareSqlQueries(const StorageInsert &storageInsert) = 0;
+        bool insertRow(StorageConnection *pConn, const StorageInsert &storageInsert);
+
     protected:
         std::string TAG;
 

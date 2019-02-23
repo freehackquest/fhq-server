@@ -118,6 +118,26 @@ bool UnitTestStorageStruct::run() {
 			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
     }
 
+    StorageInsert tbl1_ins("test_tbl1");
+    tbl1_ins.bindValue("filed3", "some"); // TODO datetime
+    tbl1_ins.bindValue("filed4", "some");
+    tbl1_ins.bindValue("filed5", 123);
+    tbl1_ins.bindValue("filed6", 321);
+    tbl1_ins.bindValue("filed7", 456);
+    tbl1_ins.bindValue("filed8", 654);
+    tbl1_ins.bindValue("filed9", 789);
+    if (!tbl1_ins.isValid(test_tbl1)) {
+        bTestSuccess = false;
+    }
+    std::vector<std::string> vQueries1_ins = pStorage->prepareSqlQueries(tbl1_ins);
+    if (!compareN("vQueries1_ins", vQueries1_ins.size(), 1)) {
+        bTestSuccess = false;
+    } else {
+        bTestSuccess = compareS(bTestSuccess, vQueries1_ins[0], "INSERT INTO test_tbl1"
+            "(filed3, filed4, filed5, filed6, filed7, filed8, filed9) "
+            "VALUES(\"some\", \"some\", 123, 321, 456, 654, 789);");
+    }
+
     StorageStruct test_tbl2("test_tbl2", StorageStructTableMode::DROP);
 
     std::vector<std::string> vQueries2 = pStorage->prepareSqlQueries(test_tbl2);

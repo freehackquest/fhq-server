@@ -268,6 +268,42 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(StorageStruct &storageS
 
 // ----------------------------------------------------------------------
 
+std::vector<std::string> MySqlStorage::prepareSqlQueries(const StorageInsert &storageInsert) {
+    std::vector<std::string> vRet;
+    std::string sSql = "";
+    std::string sValues = "";
+
+    std::map<std::string, std::string> mapCopy1 = storageInsert.stringValues();
+    for (std::map<std::string, std::string>::iterator it = mapCopy1.begin(); it != mapCopy1.end(); ++it) {
+        if (sSql.length() > 0) {
+            sSql += ", ";
+        }
+        sSql += it->first;
+
+        if (sValues.length() > 0) {
+            sValues += ", ";
+        }
+        sValues += this->prepareStringValue(it->second);
+    }
+
+    std::map<std::string, int> mapCopy2 = storageInsert.intValues();
+    for (std::map<std::string, int>::iterator it = mapCopy2.begin(); it != mapCopy2.end(); ++it) {
+        if (sSql.length() > 0) {
+            sSql += ", ";
+        }
+        sSql += it->first;
+
+        if (sValues.length() > 0) {
+            sValues += ", ";
+        }
+        sValues += std::to_string(it->second);
+    }
+    vRet.push_back("INSERT INTO " + storageInsert.tableName() + "(" + sSql + ") VALUES(" + sValues + ");");
+    return vRet;
+}
+
+// ----------------------------------------------------------------------
+
 std::string MySqlStorage::prepareStringValue(const std::string &sValue) {
     // escaping simbols  NUL (ASCII 0), \n, \r, \, ', ", и Control-Z.
     std::string sResult;
