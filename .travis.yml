@@ -52,3 +52,6 @@ script:
   - echo "ssl_key_file = " >> fhq-server.conf
   - echo "ssl_cert_file = " >> fhq-server.conf
   - ./fhq-server -cdc
+  - cd ../tests
+  - ./update_libfhqcli.sh
+  - python run_tests.py # run tests

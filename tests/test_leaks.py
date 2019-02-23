@@ -19,7 +19,7 @@ try:
 	leaks = fhqtest.admin_session.leaks_list({"page": 0, "onpage": 10})
 	for leak in leaks["data"]:
 		fhqtest.admin_session.leaks_delete({"id": leak["id"]})
-		print("Leak with id #" + str(leak["id"]) + " was succesfully delited!")
+		print("Leak with id #" + str(leak["id"]) + " was succesfully deleted!")
 
 	fhqtest.print_success("Cleaned")
 
