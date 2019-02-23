@@ -22,7 +22,7 @@ before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `fhq_test` CHARACTER SET utf8 COLLATE utf8_general_ci;'
 
 install:
-  - pip install websocket
+  - pip install --user websocket
 
 # Build your code e.g. by calling make
 script:
