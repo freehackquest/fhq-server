@@ -54,4 +54,6 @@ script:
   - ./fhq-server -cdc
   - cd ../tests
   - ./update_libfhqcli.sh
+  - pip install websocket
+  - pip install websocket
   - python run_tests.py # run tests
