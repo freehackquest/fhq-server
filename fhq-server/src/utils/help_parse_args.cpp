@@ -34,31 +34,31 @@ HelpParseArg::HelpParseArg() {
 
 // ---------------------------------------------------------------------
 
-std::string HelpParseArg::name(){
+std::string HelpParseArg::name() {
      return m_sName;
 }
 
 // ---------------------------------------------------------------------
 
-std::string HelpParseArg::alias(){
+std::string HelpParseArg::alias() {
      return m_sAlias;
 }
 
 // ---------------------------------------------------------------------
 
-std::string HelpParseArg::description(){
+std::string HelpParseArg::description() {
     return m_sDescription;
 }
 
 // ---------------------------------------------------------------------
 
-bool HelpParseArg::isOption(){
+bool HelpParseArg::isOption() {
     return m_bIsOption;
 }
 
 // ---------------------------------------------------------------------
 
-HelpParseArgs::HelpParseArgs(int argc, char** argv){
+HelpParseArgs::HelpParseArgs(int argc, char** argv) {
     for(int i = 0; i < argc; i++){
         m_vArgs.push_back(std::string(argv[i]));
     }
@@ -122,7 +122,7 @@ bool HelpParseArgs::has(const std::string &sName){
         }
     }
     if (pHpa == NULL) {
-        std::cout << "Error: Not defined attribute \n";
+        std::cout << "Error: Not defined attribute for '" << sName << "'\n";
         // Log::err(TAG, "Not defined attribute");
         return false;
     }

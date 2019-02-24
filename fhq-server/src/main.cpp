@@ -28,7 +28,7 @@
 #include <employ_images.h>
 #include <model_help_args.h>
 #include <help_parse_args.h>
-
+#include <sstream>
 #include <iomanip>
 #include <algorithm>
 #include <utils_export_list_of_handlers.h>
@@ -53,6 +53,7 @@ int main(int argc, char** argv) {
     helpArgs.addHelp("export-libfhqcli-web-javascript", "-exlwjs", HelpParseArgType::SINGLE_OPTION, "Export libfhqcli-web-js (javascript)");
     helpArgs.addHelp("show-employees", "-se", HelpParseArgType::SINGLE_OPTION, "Show employees");
     helpArgs.addHelp("show-settings", "-ss", HelpParseArgType::SINGLE_OPTION, "Show settings");
+    helpArgs.addHelp("set-setting", "-set", HelpParseArgType::PARAMETER, "Set setting value like 'mail_username=some@where.org'");
     helpArgs.addHelp("send-test-mail", "-stm", HelpParseArgType::SINGLE_OPTION, "Send test mail");
     helpArgs.addHelp("prepare-deb", "-pd", HelpParseArgType::SINGLE_OPTION, "Prepare Deb Package");
     helpArgs.addHelp("check-server-config", "-csc", HelpParseArgType::SINGLE_OPTION, "Check server config");
@@ -72,16 +73,16 @@ int main(int argc, char** argv) {
             return -1;
         }
         return 0;
-    }else if(helpArgs.has("show-handlers") || helpArgs.has("-sh")){
+    } else if (helpArgs.has("show-handlers")) {
         UtilsExportListOfHandlers::print();
         return 0;
-    }else if(helpArgs.has("export-libfhqcli-py") || helpArgs.has("-exlp")){
+    } else if (helpArgs.has("export-libfhqcli-py")) {
         ExportLibFHQCliPy::exportLib();
         return 0;
-    }else if(helpArgs.has("export-libfhqcli-web-javascript") || helpArgs.has("-exlwjs")){
+    } else if (helpArgs.has("export-libfhqcli-web-javascript")) {
         ExportLibFHQCliWebJS::exportLib();
         return 0;
-    }else if(helpArgs.has("show-employees") || helpArgs.has("-se")){
+    } else if (helpArgs.has("show-employees")) {
         std::cout << " * Employees (" << g_pEmployees->size() << "):\n";
         std::map<std::string, EmployBase*>::iterator it = g_pEmployees->begin();
         for (; it!=g_pEmployees->end(); ++it){
@@ -96,13 +97,13 @@ int main(int argc, char** argv) {
             std::cout << " |  \n";
         }
         return 0;
-    }else if(helpArgs.has("version") || helpArgs.has("-v")){
+    } else if (helpArgs.has("version")) {
         std::cout << FHQSRV_APP_NAME << "-" << FHQSRV_VERSION << "\n";
         return 0;
-    }else if(helpArgs.has("--prepare-deb") || helpArgs.has("-pd")){
+    } else if (helpArgs.has("prepare-deb")) {
         UtilsPrepareDebPackage::prepare("","tmpdeb");
         return 0;
-    }else if(helpArgs.has("check-server-config") || helpArgs.has("-csc")){
+    } else if (helpArgs.has("check-server-config")) {
         std::cout << "\n * Check Server Config\n\n";
         EmployServerConfig *pConfig = new EmployServerConfig();
         if (!pConfig->init()) {
@@ -111,7 +112,7 @@ int main(int argc, char** argv) {
             std::cout << "\n * Success\n\n";
         }
         return 0;
-    } else if (helpArgs.has("check-database-connection") || helpArgs.has("-cdc")) {
+    } else if (helpArgs.has("check-database-connection")) {
         std::cout << "\n * Check Database Connection\n\n";
         if (!Employees::init({})) {
             Log::err(TAG, "Could not init database module");
@@ -125,14 +126,48 @@ int main(int argc, char** argv) {
         }
         std::cout << "\n * Success\n\n";
         return 0;
-    } else if(helpArgs.has("show-settings") || helpArgs.has("-ss")){
+    } else if (helpArgs.has("show-settings")) {
         Employees::init({});
         EmploySettings *pSettings = findEmploy<EmploySettings>();
         std::cout << "\n * Show settings\n\n";
         pSettings->printSettings();
         std::cout << "\n * Done\n\n";
         return 0;
-    } else if(helpArgs.has("send-test-mail") || helpArgs.has("-stm")){
+    } else if (helpArgs.has("set-setting")) {
+        Employees::init({});
+        EmploySettings *pSettings = findEmploy<EmploySettings>();
+        std::string sSetting = helpArgs.option("set-setting");
+        std::cout << "\n Try set setting " << sSetting << " \n\n";
+        std::string sSettName = "";
+        std::istringstream f(sSetting);
+        getline(f, sSettName, '=');
+        if (sSettName.length() == sSetting.length()) {
+            Log::err(TAG, "Could not split by '=' for a '" + sSetting + "'");
+            return -1;
+        }
+        std::string sSettValue = sSetting.substr(sSettName.length()+1);
+        if (!pSettings->hasSett(sSettName)) {
+            Log::err(TAG, "Not support settings with name '" + sSettName + "'");
+            return -1;
+        }
+        std::string sSettType = pSettings->getSettType(sSettName);
+        if (sSettType == "string" || sSettType == "password") {
+            pSettings->setSettString(sSettName, QString::fromStdString(sSettValue));
+        } else if (sSettType == "boolean") {
+            if (sSettValue != "true" && sSettValue != "yes" && sSettValue != "false" && sSettValue != "no") {
+                Log::err(TAG, "Expected value boolean (true|yes|false|no), but got '" + sSettValue + "' for '" + sSettName + "'");
+                return -1;
+            }
+            pSettings->setSettBoolean(sSettName, sSettValue == "true" || sSettValue == "yes");
+        } else if (sSettType == "integer") {
+            int nSettValue = std::stoi(sSettValue);
+            pSettings->setSettInteger(sSettName, nSettValue);
+        } else {
+            Log::err(TAG, "Not support settings datatype with name '" + sSettName + "'");
+            return -1;
+        }
+        return 0;
+    } else if (helpArgs.has("send-test-mail")) {
         Employees::init({});
         EmploySettings *pSettings = findEmploy<EmploySettings>();
         std::cout << "\n * Send test mail\n\n";
@@ -142,7 +177,7 @@ int main(int argc, char** argv) {
         RunTasks::MailSend(sTo, sSubject, sContent);
         RunTasks::waitForDone();
         return 0;
-    }else if(helpArgs.has("manual-create-database") || helpArgs.has("-mcd")){
+    } else if (helpArgs.has("manual-create-database")) {
         std::cout << "\n * Manual create database\n\n";
         EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
         if(!pServerConfig->init()){
@@ -168,7 +203,7 @@ int main(int argc, char** argv) {
 
         std::cout << "\n * Done\n\n";
         return 0;
-    } else if(helpArgs.has("manual-configure-lxd") || helpArgs.has("-mclxd")){
+    } else if (helpArgs.has("manual-configure-lxd")) {
         std::string sError;
         Employees::init({});
         if (UtilsLXDAuth::check_trust_certs(sError))
@@ -188,15 +223,15 @@ int main(int argc, char** argv) {
             }
         }
         return 0;
-    } else if(helpArgs.has("lxd-enable") || helpArgs.has("-uplxd") || helpArgs.has("lxd-disable") || helpArgs.has("-downlxd")){
+    } else if (helpArgs.has("lxd-enable") || helpArgs.has("lxd-disable")) {
         Employees::init({});
         EmploySettings *pSettings = findEmploy<EmploySettings>();
         std::string lxd_mode;
-        if (helpArgs.has("lxd-enable") || helpArgs.has("-uplxd"))
+        if (helpArgs.has("lxd-enable")) {
             lxd_mode = "enabled";
-        else if (helpArgs.has("lxd-disable") || helpArgs.has("-downlxd"))
+        } else if (helpArgs.has("lxd-disable")) {
             lxd_mode = "disabled";
-        else {
+        } else {
             std::cout << "\nError with command lxd-enable or lxd-disable\n";
             return -1;
         }

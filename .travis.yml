@@ -34,6 +34,7 @@ script:
   - ./build_simple.sh
   - ./fhq-server version
   - echo "usemysql=yes" > fhq-server.conf
+  - echo "storage_type=mysql" >> fhq-server.conf
   - echo "dbhost=127.0.0.1" >> fhq-server.conf
   - echo "dbname=fhq_test" >> fhq-server.conf
   - echo "dbport=3306" >> fhq-server.conf
@@ -45,6 +46,8 @@ script:
   - echo "ssl_key_file = " >> fhq-server.conf
   - echo "ssl_cert_file = " >> fhq-server.conf
   - ./fhq-server -cdc
+  - mkdir -p public/games
+  - ./fhq-server -set "server_folder_public=`pwd`/public/"
   - cd ../tests
   - ./update_libfhqcli.sh
   - python run_tests.py # run tests
