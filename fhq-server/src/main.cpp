@@ -27,6 +27,8 @@
 #include <employ_settings.h>
 #include <employ_images.h>
 #include <model_help_args.h>
+#include <help_parse_args.h>
+
 #include <iomanip>
 #include <algorithm>
 #include <utils_export_list_of_handlers.h>
@@ -39,33 +41,33 @@ int main(int argc, char** argv) {
     std::string TAG = "MAIN";
     Log::setdir("/var/log/fhq-server");
 
-    HelpArgs helpArgs(argc, argv);
-    helpArgs.addHelp(HelpArg("help", "-h", "This help"));
-    helpArgs.addHelp(HelpArg("version", "-v", "Print version"));
-    helpArgs.addHelp(HelpArg("run-unit-tests", "-rut", "Run unit tests"));
-    helpArgs.addHelp(HelpArg("show-handlers", "-sh", "Show handlers"));
-    helpArgs.addHelp(HelpArg("export-libfhqcli-py", "-exlp", "Export libfhqcli-py (python)"));
-    helpArgs.addHelp(HelpArg("export-libfhqcli-web-javascript", "-exlwjs", "Export libfhqcli-web-js (javascript)"));
-    helpArgs.addHelp(HelpArg("show-employees", "-se", "Show employees"));
-    helpArgs.addHelp(HelpArg("show-settings", "-ss", "Show settings"));
-    helpArgs.addHelp(HelpArg("send-test-mail", "-stm", "Send test mail"));
-    helpArgs.addHelp(HelpArg("prepare-deb", "-pd", "Prepare Deb Package"));
-    helpArgs.addHelp(HelpArg("check-server-config", "-csc", "Check server config"));
-    helpArgs.addHelp(HelpArg("make-config-linux", "-mcl", "Create config file for Linux: /etc/fhq-server/fhq-server.conf"));
-    helpArgs.addHelp(HelpArg("check-database-connection", "-cdc", "Check database conenction"));
-    helpArgs.addHelp(HelpArg("manual-create-database", "-mcd", "Manual create database"));
-    helpArgs.addHelp(HelpArg("manual-configure-lxd", "-mclxd", "Manual configure HTTPS connection with LXD. You need generated SSL cert and key in /etc/fhq-server/lxd"));
-    helpArgs.addHelp(HelpArg("lxd-enable", "-uplxd", "Enable lxd mode"));
-    helpArgs.addHelp(HelpArg("lxd-disable", "-downlxd", "Disable lxd mode"));
-    helpArgs.addHelp(HelpArg("start", "-s", "Start server"));
+    HelpParseArgs helpArgs(argc, argv);
+    helpArgs.setAppName(FHQSRV_APP_NAME);
+    helpArgs.setAppVersion(FHQSRV_VERSION);
 
-    if(argc > 3) {
+    helpArgs.addHelp("help", "-h", HelpParseArgType::SINGLE_OPTION, "This help");
+    helpArgs.addHelp("version", "-v", HelpParseArgType::SINGLE_OPTION, "Print version");
+    helpArgs.addHelp("run-unit-tests", "-rut", HelpParseArgType::SINGLE_OPTION, "Run unit tests (deprecated)");
+    helpArgs.addHelp("show-handlers", "-sh", HelpParseArgType::SINGLE_OPTION, "Show handlers");
+    helpArgs.addHelp("export-libfhqcli-py", "-exlp", HelpParseArgType::SINGLE_OPTION, "Export libfhqcli-py (python)");
+    helpArgs.addHelp("export-libfhqcli-web-javascript", "-exlwjs", HelpParseArgType::SINGLE_OPTION, "Export libfhqcli-web-js (javascript)");
+    helpArgs.addHelp("show-employees", "-se", HelpParseArgType::SINGLE_OPTION, "Show employees");
+    helpArgs.addHelp("show-settings", "-ss", HelpParseArgType::SINGLE_OPTION, "Show settings");
+    helpArgs.addHelp("send-test-mail", "-stm", HelpParseArgType::SINGLE_OPTION, "Send test mail");
+    helpArgs.addHelp("prepare-deb", "-pd", HelpParseArgType::SINGLE_OPTION, "Prepare Deb Package");
+    helpArgs.addHelp("check-server-config", "-csc", HelpParseArgType::SINGLE_OPTION, "Check server config");
+    helpArgs.addHelp("make-config-linux", "-mcl", HelpParseArgType::SINGLE_OPTION, "Create config file for Linux: /etc/fhq-server/fhq-server.conf");
+    helpArgs.addHelp("check-database-connection", "-cdc", HelpParseArgType::SINGLE_OPTION, "Check database conenction");
+    helpArgs.addHelp("manual-create-database", "-mcd", HelpParseArgType::SINGLE_OPTION, "Manual create database");
+    helpArgs.addHelp("manual-configure-lxd", "-mclxd", HelpParseArgType::SINGLE_OPTION, "Manual configure HTTPS connection with LXD. \n You need generated SSL cert and key in /etc/fhq-server/lxd");
+    helpArgs.addHelp("lxd-enable", "-uplxd", HelpParseArgType::SINGLE_OPTION, "Enable lxd mode");
+    helpArgs.addHelp("lxd-disable", "-downlxd", HelpParseArgType::SINGLE_OPTION, "Disable lxd mode");
+    helpArgs.addHelp("start", "-s", HelpParseArgType::SINGLE_OPTION, "Start server");
+    
+    if (helpArgs.has("help")) {
         helpArgs.printHelp();
         return 0;
-    } else if(helpArgs.has("help") || helpArgs.has("-h")) {
-        helpArgs.printHelp();
-        return 0;
-    } else if(helpArgs.has("run-unit-tests") || helpArgs.has("-rut")) {
+    } else if (helpArgs.has("run-unit-tests")) {
         if (!UnitTests::runUnitTests()) {
             return -1;
         }
