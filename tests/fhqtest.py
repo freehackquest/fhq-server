@@ -19,7 +19,7 @@ admin_email = "admin" # deprecated
 admin_password = "admin" # deprecated
 ADMIN_EMAIL = "admin"
 ADMIN_PASSWORD = "admin"
-TEST_SERVER = "ws://localhost:1234/"
+TEST_SERVER = "ws://127.0.0.1:1234/"
 TMP_DIR = "./tmp"
 
 class bcolors:
