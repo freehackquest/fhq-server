@@ -6,6 +6,7 @@ import os
 import subprocess
 import fhqtest
 import signal
+import time
 
 fhqtest.print_header(" > > > TESTS: begin ")
 
@@ -15,6 +16,9 @@ print(wd)
 os.chdir(wd + "/../fhq-server")
 p_fhq_server = subprocess.Popen([wd + '/../fhq-server/fhq-server', 'start'])
 os.chdir(wd)
+
+print("Wait 5 seconds before start")
+time.sleep(5)
 
 try:
     def run_test(file_name):
