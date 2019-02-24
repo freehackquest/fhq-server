@@ -2,39 +2,6 @@
 #define UPDATE_0061_0090_H
 #include <updates.h>
 
-
-// ----------- UPDATE 0061 ---------------
-
-
-class Update0061 : public UpdateBase {
-	
-    public:
-        Update0061();
-        virtual bool update(QSqlDatabase &db, std::string &error);
-};
-
-REGISTRY_UPDATE(Update0061)
-
-// ----------- UPDATE 0062 ---------------
-
-class Update0062 : public UpdateBase {
-    public:
-        Update0062();
-        virtual bool update(QSqlDatabase &db, std::string &error);
-};
-
-REGISTRY_UPDATE(Update0062)
-
-// ----------- UPDATE 0063 ---------------
-
-class Update0063 : public UpdateBase {
-    public:
-        Update0063();
-        virtual bool update(QSqlDatabase &db, std::string &error);
-};
-
-REGISTRY_UPDATE(Update0063)
-
 // ----------- UPDATE 0064 ---------------
 
 class Update0064 : public UpdateBase {

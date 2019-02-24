@@ -567,4 +567,5 @@ bool Storage::insertRow(StorageConnection *pConn, const StorageInsert &storageIn
             return false;
         }
     }
+    return true;
 }

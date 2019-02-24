@@ -1,11 +1,11 @@
-#include <db0060.h>
+#include <updates_init_database.h>
 
-StorageStruct0060::StorageStruct0060()
-    : StorageUpdateBase("", "u0060", "Init database 0060") {
+UpdatesInitDatabase::UpdatesInitDatabase()
+    : StorageUpdateBase("", "u0063", "Init database 0063") {
 
 }
 
-bool StorageStruct0060::apply(Storage *pStorage, std::string &error){
+bool UpdatesInitDatabase::apply(Storage *pStorage, std::string &error){
 
 	StorageConnection *pConn = pStorage->connect();
 	if (pConn == nullptr) {
@@ -150,16 +150,6 @@ bool StorageStruct0060::apply(Storage *pStorage, std::string &error){
 		return false;
 	}
 
-	StorageStruct userquest("userquest", StorageStructTableMode::CREATE);
-	userquest.addColumn(StorageStructColumn("iduser").number().notNull().enableUniqueIndex("idx_userquest"));
-	userquest.addColumn(StorageStructColumn("idquest").number().notNull().enableUniqueIndex("idx_userquest"));
-	userquest.addColumn(StorageStructColumn("stopdate").datetime().notNull());
-	userquest.addColumn(StorageStructColumn("startdate").datetime().notNull());
-	if (!pStorage->applyStruct(pConn, userquest)) {
-		error = "could not create table 'userquest'";
-		return false;
-	}
-
 	StorageStruct users("users", StorageStructTableMode::CREATE);
 	users.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
 	users.addColumn(StorageStructColumn("uuid").string(255).notNull());
@@ -177,14 +167,36 @@ bool StorageStruct0060::apply(Storage *pStorage, std::string &error){
 		return false;
 	}
 
+	StorageInsert addDefailtAdmin("users");
+	addDefailtAdmin.bindValue("uuid", "39A551F4-3BF0-A1C8-8686-06A5C510DDA3");
+	addDefailtAdmin.bindValue("email", "admin");
+	addDefailtAdmin.bindValue("pass", "06976539736714f7eaaa9409a643855029717a9d"); // admin
+	addDefailtAdmin.bindValue("role", "admin");
+	addDefailtAdmin.bindValue("nick", "Admin");
+	addDefailtAdmin.bindValue("logo", "files/users/0.png");
+	addDefailtAdmin.bindValue("dt_create", "1970-01-01 00:00:00");
+	addDefailtAdmin.bindValue("dt_last_login", "2015-04-12 23:49:58");
+	addDefailtAdmin.bindValue("last_ip", "127.0.0.1");
+	addDefailtAdmin.bindValue("status", "activated");
+
+	if (!addDefailtAdmin.isValid(users)) {
+        error = "Insert not valid";
+		return false;
+    }
+
+	if (!pStorage->insertRow(pConn, addDefailtAdmin)) {
+		error = "could not insert default user admin";
+		return false;
+	}
+
 	// TODO redesign
-	if (!pConn->executeQuery("INSERT INTO users(uuid, email, pass, role, nick, logo, dt_create, dt_last_login, last_ip, status) "
+	/*if (!pConn->executeQuery("INSERT INTO users(uuid, email, pass, role, nick, logo, dt_create, dt_last_login, last_ip, status) "
 			" VALUES ("
             " '39A551F4-3BF0-A1C8-8686-06A5C510DDA3',"
 			" 'admin', '06976539736714f7eaaa9409a643855029717a9d', 'admin', 'Admin', 'files/users/0.png', '1970-01-01 00:00:00', '2015-04-12 23:49:58', '127.0.0.1', 'activated')")) {
 		error = "could not insert default 'admin' to 'users'";
 		return false;
-	}
+	}*/
 
 	StorageStruct users_games("users_games", StorageStructTableMode::CREATE);
 	users_games.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());

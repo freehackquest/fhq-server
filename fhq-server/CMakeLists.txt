@@ -254,8 +254,8 @@ list (APPEND FHQSRV_SOURCES "src/tasks/sources/update_user_location_task.cpp")
 list (APPEND FHQSRV_SOURCES "src/tasks/sources/lxd_async_operation_task.cpp")
 
 # updates
-list (APPEND FHQSRV_SOURCES "src/storages/updates/db0060.h")
-list (APPEND FHQSRV_SOURCES "src/storages/updates/db0060.cpp")
+list (APPEND FHQSRV_SOURCES "src/storages/updates/updates_init_database.h")
+list (APPEND FHQSRV_SOURCES "src/storages/updates/updates_init_database.cpp")
 
 # updates - deprecated
 list (APPEND FHQSRV_SOURCES "src/updates/update0100.h")
