@@ -42,7 +42,7 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest) {
 
     std::string sError;
     int nErrorCode = 500;
-    std::vector<std::string> actions = {"create", "start", "stop", "delete"};
+    const std::vector<std::string> actions = {"create", "start", "stop", "delete"};
 
     if (std::find(actions.begin(), actions.end(), action) == actions.end()) {
         sError = "Non-existent operation. Possible operations: create, start, stop, delete.";
@@ -252,6 +252,7 @@ void CmdHandlerLXDList::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
+// ---------------------------------------------------------------------
 
 CmdHandlerLXDExec::CmdHandlerLXDExec()
         : CmdHandlerBase("lxd_exec", "Exec command in the container with name.") {
@@ -264,7 +265,6 @@ CmdHandlerLXDExec::CmdHandlerLXDExec()
     m_vInputs.push_back(CmdInputDef("command").string_().required().description("Name of execution command"));
 }
 
-// ---------------------------------------------------------------------
 
 void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
     auto *pOrchestra = findEmploy<EmployOrchestra>();
@@ -314,4 +314,96 @@ bool CmdHandlerLXDExec::exec_command(const std::string &sName, const std::string
 
     sOutput = pContainer->get_result();
     return true;
+}
+
+// ---------------------------------------------------------------------
+
+CmdHandlerLXDFile::CmdHandlerLXDFile()
+        : CmdHandlerBase("lxd_file", "Pull, push, delete file inside the container.") {
+
+    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUser(false);
+    m_modelCommandAccess.setAccessAdmin(true);
+
+    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
+    m_vInputs.push_back(CmdInputDef("action").string_().required().description("Action with files: pull, push or delete"));
+    m_vInputs.push_back(CmdInputDef("path").string_().required().description("Path to file inside the container"));
+}
+
+void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    if (!pOrchestra->initConnection()) {
+        pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
+        return;
+    }
+    QJsonObject jsonRequest = pRequest->data();
+    QJsonObject jsonResponse;
+    std::string sError;
+    int nErrorCode = 500;
+    std::string name = jsonRequest["name"].toString().toStdString();
+    std::string action = jsonRequest["action"].toString().toStdString();
+    std::string path = jsonRequest["path"].toString().toStdString();
+    std::string sb64File;
+
+    const std::vector<std::string> actions = {"pull", "push", "delete"};
+    if (std::find(actions.begin(), actions.end(), action) == actions.end()) {
+        sError = "Non-existent operation. Possible operations: pull, push, delete.";
+        nErrorCode = 404;
+    }
+
+    LXDContainer *pContainer;
+    if (!pOrchestra->find_container(name, pContainer)) {
+        sError = "Not found container " + name;
+        nErrorCode = 404;
+    }
+
+    bool isDirectory = false;
+
+    if (path.back() == '/') {
+        isDirectory = true;
+        sError = path + " is the directory!";
+        nErrorCode = 400;
+    }
+
+    if (!isDirectory && action == "pull"){
+        pull_file(pContainer, path, sb64File, sError, nErrorCode, isDirectory);
+    } else if (action == "push"){
+        sb64File = jsonRequest["file_base64"].toString().toStdString();
+        push_file(pContainer, path, sb64File, sError, nErrorCode);
+    }
+
+    if (sError.empty() && !isDirectory){
+        jsonResponse["container"] = QString::fromStdString(name);
+        jsonResponse["path"] = QString::fromStdString(path);
+        jsonResponse["file_base64"] = QString::fromStdString(sb64File);
+        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    } else {
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+    }
+}
+
+void CmdHandlerLXDFile::pull_file(LXDContainer *pContainer, const std::string &sPath, std::string &sb64File,
+                                 std::string &sError, int &nErrorCode, bool &isDirectory) {
+    std::string sRawData;
+
+    if (!pContainer->read_file(sPath, sRawData)) {
+        sError = pContainer->get_error();
+        nErrorCode = 500;
+    }
+
+    if (nlohmann::json::accept(std::begin(sRawData), std::end(sRawData))){
+        auto jsonResponce = nlohmann::json::parse(sRawData);
+        if (jsonResponce.find("metadata") != jsonResponce.end() && jsonResponce.find("status") != jsonResponce.end()){
+            isDirectory = true;
+            sError = sPath + " is the directory!";
+            nErrorCode = 400;
+            return;
+        }
+    }
+    sb64File = QByteArray::fromStdString(sRawData).toBase64().toStdString();
+}
+
+bool CmdHandlerLXDFile::push_file(LXDContainer *pContainer, const std::string &sPath, const std::string &sb64File,
+                                  std::string &sError, int &nErrorCode) {
+    return false;
 }

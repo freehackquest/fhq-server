@@ -2,6 +2,7 @@
 #define CMD_HADNLERS_LXD_H
 
 #include <cmd_handlers.h>
+#include <include/model_lxd_container.h>
 
 /*********************************************
  * Any actions with the container. Actions: create, start, stop and delete container
@@ -66,5 +67,26 @@ public:
 };
 
 REGISTRY_CMD(CmdHandlerLXDExec)
+
+/*********************************************
+ * Donwload file or directory from the container.
+**********************************************/
+
+class CmdHandlerLXDFile : public CmdHandlerBase {
+
+public:
+    CmdHandlerLXDFile();
+    void handle(ModelRequest *pRequest) override;
+
+    void pull_file(LXDContainer *pContainer, const std::string &sPath, std::string &sb64File,
+                             std::string &sError, int &nErrorCode, bool &isDirectory);
+    bool push_file(LXDContainer *pContainer, const std::string &sPath, const std::string &sb64File,
+                          std::string &sError, int &nErrorCode);
+    static bool delete_file(const std::string &sName, const std::string& sPath, std::string &s_b64Zip);
+
+};
+
+REGISTRY_CMD(CmdHandlerLXDFile)
+
 
 #endif // CMD_HADNLERS_LXD_H

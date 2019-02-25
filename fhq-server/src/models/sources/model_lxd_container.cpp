@@ -197,13 +197,11 @@ bool LXDContainer::exec(const std::string &sCommand) {
 }
 
 
-bool LXDContainer::read_file(std::string path, QFile &file) {
+bool LXDContainer::read_file(std::string sPath, std::string &sRawData) {
     auto *pOrchestra = findEmploy<EmployOrchestra>();
-    auto sUrl = "/1.0/containers/" + full_name() + "/files?path=" + path;
-    nlohmann::json jsonResponse;
+    auto sUrl = "/1.0/containers/" + full_name() + "/files?path=" + sPath;
 
-    return pOrchestra->send_get_request(sUrl, jsonResponse, m_sError);
-
+    return pOrchestra->send_get_request(sUrl, sRawData, m_sError);
 }
 
 std::string LXDContainer::get_result() const {
