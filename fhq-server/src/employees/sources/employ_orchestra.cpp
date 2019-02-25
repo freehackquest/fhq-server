@@ -203,8 +203,8 @@ bool EmployOrchestra::send_put_request(const std::string &sUrl, const nlohmann::
 
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::send_get_request(const std::string &sUrl, nlohmann::json &jsonResponse, std::string &sError) {
-
+bool EmployOrchestra::send_get_request_raw(const std::string &sUrl, std::string &sResponse, std::string &sError) {
+    // Without additional checks of response
     CURLcode ret;
     CURL *hnd;
 
@@ -224,9 +224,8 @@ bool EmployOrchestra::send_get_request(const std::string &sUrl, nlohmann::json &
     curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
     //curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
     //Saving response
-    std::string response;
     curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, write_to_string);
-    curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &response);
+    curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &sResponse);
     curl_easy_setopt(hnd, CURLOPT_ERRORBUFFER, errorBuffer);
     ret = curl_easy_perform(hnd);
 
@@ -237,14 +236,29 @@ bool EmployOrchestra::send_get_request(const std::string &sUrl, nlohmann::json &
         return false;
     }
 
-    jsonResponse = nlohmann::json::parse(response);
     curl_easy_cleanup(hnd);
+    return true;
+}
+
+bool EmployOrchestra::send_get_request(const std::string &sUrl, nlohmann::json &jsonResponse, std::string &sError) {
+
+    std::string sResponse;
+    if (!send_get_request_raw(sUrl, sResponse, sError)){
+        m_sLastError = sError;
+        return false;
+    }
+
+    jsonResponse = nlohmann::json::parse(sResponse);
 
     if (!check_response(jsonResponse, sError)) {
         m_sLastError = sError;
         return false;
     }
     return true;
+}
+
+bool EmployOrchestra::send_get_request(const std::string &sUrl, std::string &sResponse, std::string &sError) {
+    return send_get_request_raw(sUrl, sResponse, sError);
 }
 
 // ---------------------------------------------------------------------

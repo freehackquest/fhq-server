@@ -28,6 +28,8 @@ public:
     bool send_put_request(const std::string &sUrl, const nlohmann::json &jsonData, nlohmann::json &jsonResponse,
                           std::string &sError);
     bool send_get_request(const std::string &sUrl, nlohmann::json &jsonResponse, std::string &sError);
+    bool send_get_request(const std::string &sUrl, std::string &sResponse, std::string &sError);
+    bool send_get_request_raw(const std::string &sUrl, std::string &sResponse, std::string &sError);
     bool send_delete_request(const std::string &sUrl, nlohmann::json &jsonResponse, std::string &sError);
 
     std::list<std::string> registry_names();
