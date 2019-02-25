@@ -197,11 +197,28 @@ bool LXDContainer::exec(const std::string &sCommand) {
 }
 
 
-bool LXDContainer::read_file(std::string sPath, std::string &sRawData) {
+bool LXDContainer::read_file(const std::string &sPath, std::string &sRawData) {
     auto *pOrchestra = findEmploy<EmployOrchestra>();
     auto sUrl = "/1.0/containers/" + full_name() + "/files?path=" + sPath;
 
     return pOrchestra->send_get_request(sUrl, sRawData, m_sError);
+}
+
+bool LXDContainer::push_file(const std::string &sPath, const std::string &sRawData) {
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    auto sUrl = "/1.0/containers/" + full_name() + "/files?path=" + sPath;
+    std::string sResponse;
+
+    if (!pOrchestra->send_post_request_file(sUrl, sRawData, sResponse, m_sError)) {
+        return false;
+    }
+
+    if (nlohmann::json::accept(sResponse)){
+        m_sError = "Response is json";
+        return false;
+    }
+
+    return true;
 }
 
 std::string LXDContainer::get_result() const {

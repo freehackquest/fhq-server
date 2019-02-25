@@ -23,7 +23,8 @@ public:
     bool start();
     bool stop();
     bool remove();
-    bool read_file(std::string sPath, std::string &sRawData);
+    bool read_file(const std::string &sPath, std::string &sRawData);
+    bool push_file(const std::string &sPath, const std::string &sRawData);
     bool exec(const std::string &sCommand);
 
     std::vector<std::string> split(const std::string& str);

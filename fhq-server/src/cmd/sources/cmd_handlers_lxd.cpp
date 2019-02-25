@@ -321,7 +321,7 @@ bool CmdHandlerLXDExec::exec_command(const std::string &sName, const std::string
 CmdHandlerLXDFile::CmdHandlerLXDFile()
         : CmdHandlerBase("lxd_file", "Pull, push, delete file inside the container.") {
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
 
@@ -375,7 +375,12 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
     if (sError.empty() && !isDirectory){
         jsonResponse["container"] = QString::fromStdString(name);
         jsonResponse["path"] = QString::fromStdString(path);
-        jsonResponse["file_base64"] = QString::fromStdString(sb64File);
+
+        if (action == "pull") {
+            jsonResponse["file_base64"] = QString::fromStdString(sb64File);
+        } else if (action == "push") {
+            jsonResponse["status"] = "Success";
+        }
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     } else {
         pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
@@ -405,5 +410,6 @@ void CmdHandlerLXDFile::pull_file(LXDContainer *pContainer, const std::string &s
 
 bool CmdHandlerLXDFile::push_file(LXDContainer *pContainer, const std::string &sPath, const std::string &sb64File,
                                   std::string &sError, int &nErrorCode) {
-    return false;
+    QByteArray RawData = QByteArray::fromBase64(QByteArray::fromStdString(sb64File));
+    return pContainer->push_file(sPath, RawData.toStdString());
 }

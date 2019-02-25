@@ -103,6 +103,51 @@ static size_t write_to_string(void *ptr, size_t size, size_t count, void *stream
 
 static char errorBuffer[CURL_ERROR_SIZE];
 
+bool EmployOrchestra::send_post_request_file(const std::string &sUrl, const std::string &sFile,
+                                             std::string &sResponse,
+                                             std::string &sError) {
+    CURLcode ret;
+    CURL *hnd;
+
+    struct curl_slist *slist1;
+    slist1 = nullptr;
+    slist1 = curl_slist_append(slist1, "Content-Type: application/octet-stream");
+    std::string hostname = m_sLxdAddress + sUrl;
+
+    hnd = curl_easy_init();
+    curl_easy_setopt(hnd, CURLOPT_URL, hostname.c_str());
+    curl_easy_setopt(hnd, CURLOPT_NOPROGRESS, 1L);
+    curl_easy_setopt(hnd, CURLOPT_POSTFIELDS, sFile.c_str());
+    curl_easy_setopt(hnd, CURLOPT_POSTFIELDSIZE_LARGE, (curl_off_t) sFile.size());
+    curl_easy_setopt(hnd, CURLOPT_HTTPHEADER, slist1);
+    curl_easy_setopt(hnd, CURLOPT_USERAGENT, "curl/7.47.0");
+    curl_easy_setopt(hnd, CURLOPT_MAXREDIRS, 50L);
+    std::string ssl_crt = m_sPathDirLxcSSL + "/client.crt";
+    curl_easy_setopt(hnd, CURLOPT_SSLCERT, ssl_crt.c_str());
+    std::string ssl_key = m_sPathDirLxcSSL + "/client.key";
+    curl_easy_setopt(hnd, CURLOPT_SSLKEY, ssl_key.c_str());
+    curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYPEER, 0L);
+    curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYHOST, 0L);
+    curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "POST");
+    curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
+    //curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
+    //Saving response
+    curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, write_to_string);
+    curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &sResponse);
+    curl_easy_setopt(hnd, CURLOPT_ERRORBUFFER, errorBuffer);
+    ret = curl_easy_perform(hnd);
+
+    if (ret != CURLE_OK) {
+        m_sLastError = " Failed send POST request with error " + std::string(errorBuffer);
+        Log::err(TAG, " Failed send POST request with error " + std::string(errorBuffer));
+        sError = std::string(errorBuffer);
+        return false;
+    }
+
+    curl_easy_cleanup(hnd);
+    return true;
+}
+
 bool EmployOrchestra::send_post_request(const std::string &sUrl, const nlohmann::json &jsonData,
                                         nlohmann::json &jsonResponse,
                                         std::string &sError) {
