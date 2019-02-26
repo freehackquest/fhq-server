@@ -45,7 +45,7 @@ void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest){
     QStringList filters;
     QMap<QString,QString> filter_values;
 
-    if(jsonRequest.find("user") != jsonRequest.end()){
+    if (jsonRequest.find("user") != jsonRequest.end()) {
         QString user = QString::fromStdString(jsonRequest.at("user"));
         user = user.trimmed();
         filters << "(u.nick like :nick)";
@@ -871,11 +871,11 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     IUserToken *pUserToken = pRequest->userToken();
 
-    if(!jsonRequest.contains("userid") && pUserToken == NULL){
+    if (!jsonRequest.contains("userid") && pUserToken == NULL) {
         pRequest->sendMessageError(cmd(), Errors::NotAuthorizedRequest());
         return;
     }
@@ -899,8 +899,8 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
         nUserID = nUserID_;
     }
 
-    QJsonObject data;
-    QJsonObject profile;
+    nlohmann::json jsonData;
+    nlohmann::json jsonProfile;
     QSqlDatabase db = *(pDatabase->database());
 
     {
@@ -911,24 +911,24 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
 
         if (query.next()) {
             QSqlRecord record = query.record();
-            data["id"] = record.value("id").toInt();
-            data["uuid"] = record.value("uuid").toString();
-            data["nick"] = record.value("nick").toString().toHtmlEscaped();
-            data["role"] = record.value("role").toString();
-            data["logo"] = record.value("logo").toString().toHtmlEscaped();
-            data["about"] = record.value("about").toString().toHtmlEscaped();
-            data["status"] = record.value("status").toString();
-            data["rating"] = record.value("rating").toString();
-            data["university"] = record.value("university").toString().toHtmlEscaped();
+            jsonData["id"] = record.value("id").toInt();
+            jsonData["uuid"] = record.value("uuid").toString().toStdString();
+            jsonData["nick"] = record.value("nick").toString().toHtmlEscaped().toStdString();
+            jsonData["role"] = record.value("role").toString().toStdString();
+            jsonData["logo"] = record.value("logo").toString().toHtmlEscaped().toStdString();
+            jsonData["about"] = record.value("about").toString().toHtmlEscaped().toStdString();
+            jsonData["status"] = record.value("status").toString().toStdString();
+            jsonData["rating"] = record.value("rating").toString().toStdString();
+            jsonData["university"] = record.value("university").toString().toHtmlEscaped().toStdString();
 
             if(bCurrentUserOrAdmin){
-                data["email"] = record.value("email").toString();
-                data["dt_create"] = record.value("dt_create").toString();
-                data["dt_last_login"] = record.value("dt_last_login").toString();
-                data["last_ip"] = record.value("last_ip").toString();
-                data["country"] = record.value("country").toString();
-                data["region"] = record.value("region").toString();
-                data["city"] = record.value("city").toString();
+                jsonData["email"] = record.value("email").toString().toStdString();
+                jsonData["dt_create"] = record.value("dt_create").toString().toStdString();
+                jsonData["dt_last_login"] = record.value("dt_last_login").toString().toStdString();
+                jsonData["last_ip"] = record.value("last_ip").toString().toStdString();
+                jsonData["country"] = record.value("country").toString().toStdString();
+                jsonData["region"] = record.value("region").toString().toStdString();
+                jsonData["city"] = record.value("city").toString().toStdString();
             }
         }else{
             pRequest->sendMessageError(cmd(), Errors::NotFound("user"));
@@ -944,16 +944,16 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
 
         while (query.next()) {
             QSqlRecord record = query.record();
-            QString name = record.value("name").toString();
-            QString value = record.value("value").toString();
-            profile[name] = value;
+            std::string sName = record.value("name").toString().toStdString();
+            std::string sValue = record.value("value").toString().toStdString();
+            jsonProfile[sName] = sValue;
 
             // TODO clenup 'template' from user profiles
         }
     }
 
-    jsonResponse["data"] = data;
-    jsonResponse["profile"] = profile;
+    jsonResponse["data"] = jsonData;
+    jsonResponse["profile"] = jsonProfile;
     jsonResponse["access"] = bCurrentUserOrAdmin;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

@@ -270,6 +270,7 @@ try:
 except Exception as e:
     fhqtest.log_err(str(e))
     traceback.print_exc(file=sys.stdout)
+    exit(-1)
 finally:
     fhqtest.print_header(" < < < " + test_name + ": end ")
     fhqtest.deinit_enviroment()

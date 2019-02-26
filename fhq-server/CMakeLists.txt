@@ -126,8 +126,6 @@ list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_leaks.cpp")
 # models
 list (APPEND FHQSRV_SOURCES "src/models/include/model_database_connection.h")
 list (APPEND FHQSRV_SOURCES "src/models/sources/model_database_connection.cpp")
-list (APPEND FHQSRV_SOURCES "src/models/include/model_help_args.h")
-list (APPEND FHQSRV_SOURCES "src/models/sources/model_help_args.cpp")
 list (APPEND FHQSRV_SOURCES "src/models/include/model_server_sett_helper.h")
 list (APPEND FHQSRV_SOURCES "src/models/sources/model_server_sett_helper.cpp")
 list (APPEND FHQSRV_SOURCES "src/models/include/cmd_input_def.h")
@@ -168,6 +166,8 @@ list (APPEND FHQSRV_SOURCES "src/utils/export_libfhqcli_web_js.h")
 list (APPEND FHQSRV_SOURCES "src/utils/export_libfhqcli_web_js.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/fs.h")
 list (APPEND FHQSRV_SOURCES "src/utils/fs.cpp")
+list (APPEND FHQSRV_SOURCES "src/utils/help_parse_args.h")
+list (APPEND FHQSRV_SOURCES "src/utils/help_parse_args.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/logger.h")
 list (APPEND FHQSRV_SOURCES "src/utils/logger.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/parse_config.h")
@@ -189,12 +189,6 @@ list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_levenshtein.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_prepare_deb_package.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_static_analizing_text.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_lxd.cpp")
-
-# unit_tests
-list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_merge_text.h")
-list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_test_merge_text.cpp")
-list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_tests.h")
-list (APPEND FHQSRV_SOURCES "src/unit_tests/unit_tests.cpp")
 
 # server
 list (APPEND FHQSRV_SOURCES "src/server/include/errors.h")
@@ -254,8 +248,8 @@ list (APPEND FHQSRV_SOURCES "src/tasks/sources/update_user_location_task.cpp")
 list (APPEND FHQSRV_SOURCES "src/tasks/sources/lxd_async_operation_task.cpp")
 
 # updates
-list (APPEND FHQSRV_SOURCES "src/storages/updates/db0060.h")
-list (APPEND FHQSRV_SOURCES "src/storages/updates/db0060.cpp")
+list (APPEND FHQSRV_SOURCES "src/storages/updates/updates_init_database.h")
+list (APPEND FHQSRV_SOURCES "src/storages/updates/updates_init_database.cpp")
 
 # updates - deprecated
 list (APPEND FHQSRV_SOURCES "src/updates/update0100.h")

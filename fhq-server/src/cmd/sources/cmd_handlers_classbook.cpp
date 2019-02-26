@@ -37,17 +37,16 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
-    int parentid = jsonRequest["parentid"].toInt();
+    int nParentId = jsonRequest["parentid"].toInt();
 
     //Check parentid in database
     QSqlQuery query(db);
-    if(parentid !=0){
+    if (nParentId != 0) {
         query.prepare("SELECT name FROM classbook WHERE id=:parentid");
-        query.bindValue(":parentid", parentid);
+        query.bindValue(":parentid", nParentId);
         query.exec();
         if (!query.next()){
             pRequest->sendMessageError(cmd(), Errors::NotFound("article with this id"));
@@ -55,8 +54,8 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
         }
     }
 
-    QString name = jsonRequest["name"].toString().trimmed().toHtmlEscaped();
-    QString content = jsonRequest["content"].toString().trimmed().toHtmlEscaped();
+    QString sName = jsonRequest["name"].toString().trimmed().toHtmlEscaped();
+    QString sContent = jsonRequest["content"].toString().trimmed().toHtmlEscaped();
 
     //Set uuid from request if available, else generate uuid
     QString uuid;
@@ -75,14 +74,13 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
     }
 
     //Set md5_content hash
-    std::string sContentMd5_ = md5(content.toStdString());
-    QString sContentMd5 = QString::fromStdString(sContentMd5_);
+    std::string sContentMd5 = md5(sContent.toStdString());
 
     //Find parentuuid from database
     QString parentuuid = "00000000-0000-0000-0000-000000000000";
-    if(parentid != 0){
-        query.prepare("SELECT uuid FROM classbook WHERE id=:parentid");
-        query.bindValue(":parentid", parentid);
+    if (nParentId != 0) {
+        query.prepare("SELECT uuid FROM classbook WHERE id = :parentid");
+        query.bindValue(":parentid", nParentId);
         query.exec();
         query.next();
         QSqlRecord record = query.record();
@@ -95,15 +93,15 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
         ordered = jsonRequest["ordered"].toInt();
     } else {
         query.prepare("SELECT MAX(ordered) AS max FROM classbook WHERE parentid=:parentid");
-        query.bindValue(":parentid", parentid);
+        query.bindValue(":parentid", nParentId);
         query.exec();
         QSqlRecord record = query.record();
         if (!record.value("max").isNull())
             ordered = record.value("max").toInt() + 1;
         else {
-            if (parentid != 0){
+            if (nParentId != 0){
                 query.prepare("SELECT ordered FROM classbook WHERE id=:parentid");
-                query.bindValue(":parentid", parentid);
+                query.bindValue(":parentid", nParentId);
                 query.exec();
                 if (query.next()){
                     QSqlRecord record = query.record();
@@ -142,27 +140,28 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
                   "NOW(),"
                   "NOW()"
                   ")");
-    query.bindValue(":parentid", parentid);
+    query.bindValue(":parentid", nParentId);
     query.bindValue(":ordered", ordered);
     query.bindValue(":uuid", uuid);
     query.bindValue(":parentuuid", parentuuid);
-    query.bindValue(":name", name);
-    query.bindValue(":content", content);
-    query.bindValue(":md5_content", sContentMd5);
+    query.bindValue(":name", sName);
+    query.bindValue(":content", sContent);
+    query.bindValue(":md5_content", QString::fromStdString(sContentMd5));
     if (!query.exec()){
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
 
-    QJsonObject data;
-    int rowid = query.lastInsertId().toInt();
-    data["classbookid"] = QJsonValue(rowid);
-    data["parentid"] = parentid;
-    data["name"] = name;
-    data["content"] = content;
-    data["md5_content"] = sContentMd5;
+    nlohmann::json jsonResponse;
+    nlohmann::json jsonData;
+    int nRowId = query.lastInsertId().toInt();
+    jsonData["classbookid"] = nRowId;
+    jsonData["parentid"] = nParentId;
+    jsonData["name"] = sName.toStdString();
+    jsonData["content"] = sContent.toStdString();
+    jsonData["md5_content"] = sContentMd5;
 
-    jsonResponse["data"] = data;
+    jsonResponse["data"] = jsonData;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -187,7 +186,7 @@ void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -222,6 +221,7 @@ void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest){
         }
     }
 
+    nlohmann::json jsonResponse;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -248,7 +248,7 @@ void CmdClassbookExportHandler::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
@@ -301,20 +301,22 @@ void CmdClassbookExportHandler::handle(ModelRequest *pRequest){
             return;
         }
         QByteArray baZip = fileZip.readAll();
-        QJsonObject jsonData;
-        jsonData["zipfile_base64"] = QString(baZip.toBase64());
-        jsonData["zipfile_name"] = name;
+        nlohmann::json jsonData;
+        jsonData["zipfile_base64"] = QString(baZip.toBase64()).toStdString();
+        jsonData["zipfile_name"] = name.toStdString();
         jsonResponse["data"] = jsonData;
         fileZip.close();
         fileZip.remove();
     } else {
-        jsonResponse["data"] = QString::fromUtf8(file.readAll());
+        jsonResponse["data"] = QString::fromUtf8(file.readAll()).toStdString();
     }
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
     file.close();
     file.remove();
 }
+
+// ---------------------------------------------------------------------
 
 void CmdClassbookExportHandler::createHtml(QFile *file, QString lang, QSqlQuery query){
     QTextStream out(file);
@@ -370,6 +372,8 @@ void CmdClassbookExportHandler::createHtml(QFile *file, QString lang, QSqlQuery 
     }
     out << "</body></html>" << endl;
 }
+
+// ---------------------------------------------------------------------
 
 void CmdClassbookExportHandler::createMD(QFile *file, QString lang, QSqlQuery query){
     QTextStream out(file);
@@ -439,14 +443,13 @@ CmdClassbookInfoHandler::CmdClassbookInfoHandler()
 void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
     int classbookid = jsonRequest["classbookid"].toInt();
 
     QSqlQuery query(db);
-    QJsonObject info;
+    nlohmann::json jsonInfo;
 
     //GET parentid and uuid for the article
     query.prepare("SELECT parentid, uuid FROM classbook WHERE id=:classbookid");
@@ -454,9 +457,9 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
     query.exec();
     if (query.next()) {
         QSqlRecord record = query.record();
-        info["classbookid"] = classbookid;
-        info["parentid"] = record.value("parentid").toInt();
-        info["uuid"] = record.value("uuid").toString();
+        jsonInfo["classbookid"] = classbookid;
+        jsonInfo["parentid"] = record.value("parentid").toInt();
+        jsonInfo["uuid"] = record.value("uuid").toString().toStdString();
     } else {
         pRequest->sendMessageError(cmd(), Errors::NotFound("the article"));
         return;
@@ -485,9 +488,9 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
         query.exec();
         if (query.next()) {
             QSqlRecord record = query.record();
-            info["lang"] = QJsonValue(lang);
-            info["name"] = record.value("name").toString();
-            info["content"] = record.value("content").toString();
+            jsonInfo["lang"] = lang.toStdString();
+            jsonInfo["name"] = record.value("name").toString().toStdString();
+            jsonInfo["content"] = record.value("content").toString().toStdString();
         } else {
             //GET default localization for the article
             query.prepare("SELECT name, content FROM classbook WHERE id=:classbookid");
@@ -495,9 +498,9 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
             query.exec();
             if (query.next()) {
                 QSqlRecord record = query.record();
-                info["lang"] = QJsonValue("en");
-                info["name"] = record.value("name").toString();
-                info["content"] = record.value("content").toString();
+                jsonInfo["lang"] = "en";
+                jsonInfo["name"] = record.value("name").toString().toStdString();
+                jsonInfo["content"] = record.value("content").toString().toStdString();
             } else {
                 pRequest->sendMessageError(cmd(), Errors::NotFound("the article"));
                 return;
@@ -510,9 +513,9 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
         query.exec();
         if (query.next()) {
             QSqlRecord record = query.record();
-            info["lang"] = QJsonValue(lang);
-            info["name"] = record.value("name").toString();
-            info["content"] = record.value("content").toString();
+            jsonInfo["lang"] = lang.toStdString();
+            jsonInfo["name"] = record.value("name").toString().toStdString();
+            jsonInfo["content"] = record.value("content").toString().toStdString();
         } else {
             pRequest->sendMessageError(cmd(), Errors::NotFound("the article"));
             return;
@@ -520,60 +523,62 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
     }
 
     //FIND langs for the article
-    QJsonObject langs;
+
+    nlohmann::json jsonLangs;
     query.prepare("SELECT id, lang FROM classbook_localization WHERE classbookid=:classbookid");
     query.bindValue(":classbookid", classbookid);
     query.exec();
     if (query.next()) {
         QSqlRecord record = query.record();
-        QString local_lang;
-        local_lang = record.value("lang").toString();
-        langs[local_lang] = record.value("id").toInt();
+        std::string local_lang = record.value("lang").toString().toStdString();
+        jsonLangs[local_lang] = record.value("id").toInt();
     }
-    info["langs"] = langs;
+    jsonInfo["langs"] = jsonLangs;
 
     //FIND parents for the article
-    QJsonArray parents;
+    auto jsonParents = nlohmann::json::array();
     QSet<int> set_of_parent;
-    int parentid = info.value("parentid").toInt();
+    int nParentId = jsonInfo["parentid"];
     for (int i=0; i < 5; ++i){
         //END IT root article
-        if (parentid==0){
-            QJsonObject parent;
-            parent["classbookid"] = 0;
-            parent["parentid"] = 0;
-            parent["name"] = "Root";
-            parents.push_back(parent);
+        if (nParentId==0){
+            nlohmann::json jsonParent;
+            jsonParent["classbookid"] = 0;
+            jsonParent["parentid"] = 0;
+            jsonParent["name"] = "Root";
+            jsonParents.push_back(jsonParent);
             break;
         }
         //CONTINUE if already have a article in parents
-        if (set_of_parent.contains(parentid)){
+        if (set_of_parent.contains(nParentId)){
             continue;
         }
         query.prepare("SELECT id, name, parentid FROM classbook WHERE id=:parentid");
-        query.bindValue(":parentid", parentid);
+        query.bindValue(":parentid", nParentId);
         query.exec();
         if (query.next()) {
             QSqlRecord record = query.record();
-            QJsonObject parent;
-            parent["classbookid"] = record.value("id").toInt();
-            if (classbookid == parent["classbookid"].toInt()){
+            nlohmann::json jsonParent;
+            int nClassBookId_ = record.value("id").toInt();
+            jsonParent["classbookid"] = nClassBookId_;
+            if (classbookid == nClassBookId_){
                 continue;
             }
-            parentid = record.value("parentid").toInt();
-            parent["parentid"] = parentid;
-            parent["name"] = record.value("name").toString();
-            parents.push_back(parent);
-            set_of_parent.insert(parent["classbookid"].toInt());
+            nParentId = record.value("parentid").toInt();
+            jsonParent["parentid"] = nParentId;
+            jsonParent["name"] = record.value("name").toString().toStdString();
+            jsonParents.push_back(jsonParent);
+            set_of_parent.insert(nClassBookId_);
         } else {
             pRequest->sendMessageError(cmd(), Error(404, "Error in PATHFINDER. Not found the article with a given classbookid"));
             return;
         }
     }
     //ADD parents to response
-    info["parents"] = parents;
+    jsonInfo["parents"] = jsonParents;
 
-    jsonResponse["data"] = info;
+    nlohmann::json jsonResponse;
+    jsonResponse["data"] = jsonInfo;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -600,13 +605,13 @@ CmdClassbookListHandler::CmdClassbookListHandler()
 void CmdClassbookListHandler::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
 
     int parentid = jsonRequest["parentid"].toInt();
-    QJsonArray data;
+    auto jsonData = nlohmann::json::array();
 
     if (jsonRequest.contains("search") && !jsonRequest.value("search").toString().isEmpty()){
         QString search = jsonRequest.value("search").toString();
@@ -639,18 +644,19 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest){
         }
         while (query1.next()) {
             QSqlRecord record = query1.record();
-            QJsonObject item;
+            nlohmann::json jsonItem;
+            
             int classbookid;
-            item["parentid"] = parentid;
+            jsonItem["parentid"] = parentid;
             classbookid = record.value("id").toInt();
-            item["classbookid"] = classbookid;
+            jsonItem["classbookid"] = classbookid;
             if (lang != "en"){
                 query.prepare("SELECT classbookid, name FROM classbook_localization "
                                   "WHERE lang=:lang AND (name LIKE '%:search%' OR content LIKE '%:search%')");
                 query.bindValue(":search", search);
                 query.bindValue(":lang", lang);
             }
-            item["name"] = record.value("name").toString();
+            jsonItem["name"] = record.value("name").toString().toStdString();
 
             //COUNT childs for an article
             QSqlQuery query_childs(db);
@@ -662,7 +668,88 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest){
                 QSqlRecord record_childs = query_childs.record();
                 childs = record_childs.value("childs").toInt();
             }
-            item["childs"] = QJsonValue(childs);
+            jsonItem["childs"] = childs;
+
+            //COUNT proposals for an article
+            QSqlQuery query_proposals(db);
+            query_proposals.prepare("SELECT COUNT(id) AS proposals FROM classbook_proposal "
+                                    "WHERE classbookid = :classbookid AND lang = :lang");
+            query_proposals.bindValue(":classbookid", classbookid);
+            query_proposals.bindValue(":lang", lang);
+            query_proposals.exec();
+            int proposals = 0;
+            if (query_proposals.next()){
+                QSqlRecord record_proposals = query_proposals.record();
+                proposals = record_proposals.value("proposals").toInt();
+            }
+            jsonItem["proposals"] = proposals;
+
+            jsonData.push_back(jsonItem);
+        }
+
+    } else {
+        //CHECK exist parentid in DB
+        query.prepare("SELECT name FROM classbook WHERE id =:parentid");
+        query.bindValue(":parentid", parentid);
+        query.exec();
+        if (!query.next() && parentid != 0){
+            pRequest->sendMessageError(cmd(), Error(404, "Not found the article with a given parentid"));
+            return;
+        }
+
+
+        //SET lang
+        QString lang;
+        if (jsonRequest.contains("lang")){
+            lang = jsonRequest.value("lang").toString().trimmed();
+            QList<QString> allow_lang = {"en", "ru","de"};
+            if(!allow_lang.contains(lang)){
+                pRequest->sendMessageError(cmd(), Error(404, "Language is'not support"));
+                return;
+            }
+        } else {
+            lang = "en";
+        }
+
+        query.prepare("SELECT id, name FROM classbook WHERE parentid =:parentid ORDER BY ordered");
+        query.bindValue(":parentid", parentid);
+        query.exec();
+        while (query.next()) {
+            QSqlRecord record = query.record();
+            nlohmann::json jsonItem;
+            int classbookid;
+            jsonItem["parentid"] = parentid;
+            classbookid = record.value("id").toInt();
+            jsonItem["classbookid"] = classbookid;
+
+            //GET name with the lang
+            if (lang == "en"){
+                jsonItem["name"] = record.value("name").toString().toStdString();
+            } else {
+                QSqlQuery query_lang(db);
+                query_lang.prepare("SELECT name FROM classbook_localization WHERE classbookid=:classbookid AND lang=:lang");
+                query_lang.bindValue(":classbookid", classbookid);
+                query_lang.bindValue(":lang", lang);
+                query_lang.exec();
+                if (query_lang.next()){
+                    QSqlRecord record_lang = query_lang.record();
+                    jsonItem["name"] = record_lang.value("name").toString().toStdString();
+                } else {
+                    jsonItem["name"] = record.value("name").toString().toStdString();
+                }
+            }
+
+            //COUNT childs for an article
+            QSqlQuery query_childs(db);
+            query_childs.prepare("SELECT COUNT(id) AS childs FROM classbook WHERE parentid =:classbookid");
+            query_childs.bindValue(":classbookid", classbookid);
+            query_childs.exec();
+            int childs = 0;
+            if (query_childs.next()){
+                QSqlRecord record_childs = query_childs.record();
+                childs = record_childs.value("childs").toInt();
+            }
+            jsonItem["childs"] = childs;
 
             //COUNT proposals for an article
             QSqlQuery query_proposals(db);
@@ -676,93 +763,13 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest){
                 QSqlRecord record_proposals = query_proposals.record();
                 proposals = record_proposals.value("proposals").toInt();
             }
-            item["proposals"] = QJsonValue(proposals);
+            jsonItem["proposals"] = proposals;
 
-            data.push_back(item);
+            jsonData.push_back(jsonItem);
         }
-
-    } else {
-    //CHECK exist parentid in DB
-    query.prepare("SELECT name FROM classbook WHERE id =:parentid");
-    query.bindValue(":parentid", parentid);
-    query.exec();
-    if (!query.next() && parentid != 0){
-        pRequest->sendMessageError(cmd(), Error(404, "Not found the article with a given parentid"));
-        return;
     }
 
-
-    //SET lang
-    QString lang;
-    if (jsonRequest.contains("lang")){
-        lang = jsonRequest.value("lang").toString().trimmed();
-        QList<QString> allow_lang = {"en", "ru","de"};
-        if(!allow_lang.contains(lang)){
-            pRequest->sendMessageError(cmd(), Error(404, "Language is'not support"));
-            return;
-        }
-    } else {
-        lang = "en";
-    }
-
-    query.prepare("SELECT id, name FROM classbook WHERE parentid =:parentid ORDER BY ordered");
-    query.bindValue(":parentid", parentid);
-    query.exec();
-    while (query.next()) {
-        QSqlRecord record = query.record();
-        QJsonObject item;
-        int classbookid;
-        item["parentid"] = parentid;
-        classbookid = record.value("id").toInt();
-        item["classbookid"] = classbookid;
-
-        //GET name with the lang
-        if (lang == "en"){
-            item["name"] = record.value("name").toString();
-        } else {
-            QSqlQuery query_lang(db);
-            query_lang.prepare("SELECT name FROM classbook_localization WHERE classbookid=:classbookid AND lang=:lang");
-            query_lang.bindValue(":classbookid", classbookid);
-            query_lang.bindValue(":lang", lang);
-            query_lang.exec();
-            if (query_lang.next()){
-                QSqlRecord record_lang = query_lang.record();
-                item["name"] = record_lang.value("name").toString();
-            } else {
-                item["name"] = record.value("name").toString();
-            }
-        }
-
-        //COUNT childs for an article
-        QSqlQuery query_childs(db);
-        query_childs.prepare("SELECT COUNT(id) AS childs FROM classbook WHERE parentid =:classbookid");
-        query_childs.bindValue(":classbookid", classbookid);
-        query_childs.exec();
-        int childs = 0;
-        if (query_childs.next()){
-            QSqlRecord record_childs = query_childs.record();
-            childs = record_childs.value("childs").toInt();
-        }
-        item["childs"] = QJsonValue(childs);
-
-        //COUNT proposals for an article
-        QSqlQuery query_proposals(db);
-        query_proposals.prepare("SELECT COUNT(id) AS proposals FROM classbook_proposal "
-                                "WHERE classbookid =:classbookid AND lang=:lang");
-        query_proposals.bindValue(":classbookid", classbookid);
-        query_proposals.bindValue(":lang", lang);
-        query_proposals.exec();
-        int proposals = 0;
-        if (query_proposals.next()){
-            QSqlRecord record_proposals = query_proposals.record();
-            proposals = record_proposals.value("proposals").toInt();
-        }
-        item["proposals"] = QJsonValue(proposals);
-
-        data.push_back(item);
-    }}
-
-    jsonResponse["data"] = data;
+    jsonResponse["data"] = jsonData;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -790,7 +797,7 @@ CmdClassbookUpdateRecordHandler::CmdClassbookUpdateRecordHandler()
 void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -893,24 +900,24 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
     }
 
     //GET article info
-    QJsonObject info;
+    nlohmann::json jsonInfo;
     query.prepare("SELECT id, name, content, md5_content, ordered, parentid FROM classbook WHERE id=:classbookid");
     query.bindValue(":classbookid", classbookid);
     query.exec();
     if (query.next()) {
         QSqlRecord record = query.record();
-        info["classbookid"] = classbookid;
-        info["parentid"] = record.value("parentid").toInt();
-        info["name"] = record.value("name").toString();
-        info["content"] = record.value("content").toString();
-        info["md5_content"] = record.value("md5_content").toString();
-        info["ordered"] = record.value("ordered").toInt();
+        jsonInfo["classbookid"] = classbookid;
+        jsonInfo["parentid"] = record.value("parentid").toInt();
+        jsonInfo["name"] = record.value("name").toString().toStdString();
+        jsonInfo["content"] = record.value("content").toString().toStdString();
+        jsonInfo["md5_content"] = record.value("md5_content").toString().toStdString();
+        jsonInfo["ordered"] = record.value("ordered").toInt();
     } else {
         pRequest->sendMessageError(cmd(), Errors::NotFound("article"));
         return;
     }
 
-    jsonResponse["data"] = QJsonValue(info);
+    jsonResponse["data"] = jsonInfo;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -938,13 +945,13 @@ CmdClassbookLocalizationAddRecordHandler::CmdClassbookLocalizationAddRecordHandl
 void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     int classbookid = jsonRequest["classbookid"].toInt();
 
     QSqlDatabase db = *(pDatabase->database());
 
-    QJsonObject data;
+    nlohmann::json jsonData;
 
     QSqlQuery query(db);
     QString lang = jsonRequest["lang"].toString().trimmed();
@@ -1001,14 +1008,14 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest){
         return;
     }
     int rowid = query.lastInsertId().toInt();
-    data["classbookid"] = classbookid;
-    data["classbook_localizationid"] = QJsonValue(rowid);
-    data["lang"] = lang;
-    data["name"] = name;
-    data["content"] = content;
-    data["md5_content"] = md5_content;
+    jsonData["classbookid"] = classbookid;
+    jsonData["classbook_localizationid"] = rowid;
+    jsonData["lang"] = lang.toStdString();
+    jsonData["name"] = name.toStdString();
+    jsonData["content"] = content.toStdString();
+    jsonData["md5_content"] = md5_content.toStdString();
 
-    jsonResponse["data"] = data;
+    jsonResponse["data"] = jsonData;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -1032,7 +1039,7 @@ CmdClassbookLocalizationDeleteRecordHandler::CmdClassbookLocalizationDeleteRecor
 void CmdClassbookLocalizationDeleteRecordHandler::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -1079,11 +1086,11 @@ CmdClassbookLocalizationInfoHandler::CmdClassbookLocalizationInfoHandler()
 void CmdClassbookLocalizationInfoHandler::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
-    QJsonObject data;
+    nlohmann::json jsonData;
 
     QSqlQuery query(db);
     int classbook_localizationid = jsonRequest["classbook_localizationid"].toInt();
@@ -1106,14 +1113,14 @@ void CmdClassbookLocalizationInfoHandler::handle(ModelRequest *pRequest){
     }
     query.next();
     QSqlRecord record = query.record();
-    data["classbookid"] = record.value("classbookid").toInt();
-    data["classbook_localizationid"] = classbook_localizationid;
-    data["lang"] = record.value("lang").toString();
-    data["name"] = record.value("name").toString();
-    data["content"] = record.value("content").toString();
+    jsonData["classbookid"] = record.value("classbookid").toInt();
+    jsonData["classbook_localizationid"] = classbook_localizationid;
+    jsonData["lang"] = record.value("lang").toString().toStdString();
+    jsonData["name"] = record.value("name").toString().toStdString();
+    jsonData["content"] = record.value("content").toString().toStdString();
 
 
-    jsonResponse["data"] = data;
+    jsonResponse["data"] = jsonData;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -1139,11 +1146,11 @@ CmdClassbookLocalizationUpdateRecordHandler::CmdClassbookLocalizationUpdateRecor
 void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
-    QJsonObject data;
+    nlohmann::json jsonData;
 
     QSqlQuery query(db);
     int classbook_localizationid = jsonRequest["classbook_localizationid"].toInt();
@@ -1178,16 +1185,16 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest)
     query.prepare("SELECT classbookid, lang FROM classbook_localization WHERE id=:id");
     query.bindValue(":id", classbook_localizationid);
     query.exec();
-    query.next();
+    query.next(); // TODO if no next
     QSqlRecord record = query.record();
-    data["classbookid"] = record.value("classbookid").toInt();
-    data["classbook_localizationid"] = classbook_localizationid;
-    data["lang"] = record.value("lang").toString();
-    data["name"] = name;
-    data["content"] = content;
-    data["md5_content"] = md5_content;
+    jsonData["classbookid"] = record.value("classbookid").toInt();
+    jsonData["classbook_localizationid"] = classbook_localizationid;
+    jsonData["lang"] = record.value("lang").toString().toStdString();
+    jsonData["name"] = name.toStdString();
+    jsonData["content"] = content.toStdString();
+    jsonData["md5_content"] = md5_content.toStdString();
 
-    jsonResponse["data"] = data;
+    jsonResponse["data"] = jsonData;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -1215,11 +1222,11 @@ CmdClassbookProposalAddRecordHandler::CmdClassbookProposalAddRecordHandler()
 void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
-    QJsonObject data;
+    nlohmann::json  jsonData;
 
     QSqlQuery query(db);
     int classbookid = jsonRequest["classbookid"].toInt();
@@ -1290,16 +1297,16 @@ void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest){
         return;
     }
     int rowid = query.lastInsertId().toInt();
-    data["classbookid"] = classbookid;
-    data["classbook_proposal_id"] = QJsonValue(rowid);
-    data["lang"] = lang;
-    data["name"] = name;
-    data["content"] = content;
-    data["name_before"] = name_before;
-    data["content_before"] = content_before;
-    data["md5_content"] = md5_content;
+    jsonData["classbookid"] = classbookid;
+    jsonData["classbook_proposal_id"] = rowid;
+    jsonData["lang"] = lang.toStdString();
+    jsonData["name"] = name.toStdString();
+    jsonData["content"] = content.toStdString();
+    jsonData["name_before"] = name_before.toStdString();
+    jsonData["content_before"] = content_before.toStdString();
+    jsonData["md5_content"] = md5_content.toStdString();
 
-    jsonResponse["data"] = data;
+    jsonResponse["data"] = jsonData;
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -1324,7 +1331,7 @@ CmdClassbookProposalDeleteRecordHandler::CmdClassbookProposalDeleteRecordHandler
 void CmdClassbookProposalDeleteRecordHandler::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -1370,11 +1377,11 @@ CmdClassbookProposalInfoHandler::CmdClassbookProposalInfoHandler()
 void CmdClassbookProposalInfoHandler::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
-    QJsonObject data;
+    nlohmann::json jsonData;
 
     QSqlQuery query(db);
     int classbook_proposal_id = jsonRequest["classbook_proposal_id"].toInt();
@@ -1397,14 +1404,13 @@ void CmdClassbookProposalInfoHandler::handle(ModelRequest *pRequest){
     }
     query.next();
     QSqlRecord record = query.record();
-    data["classbookid"] = record.value("classbookid").toInt();
-    data["id"] = classbook_proposal_id;
-    data["lang"] = record.value("lang").toString();
-    data["name"] = record.value("name").toString();
-    data["content"] = record.value("content").toString();
+    jsonData["classbookid"] = record.value("classbookid").toInt();
+    jsonData["id"] = classbook_proposal_id;
+    jsonData["lang"] = record.value("lang").toString().toStdString();
+    jsonData["name"] = record.value("name").toString().toStdString();
+    jsonData["content"] = record.value("content").toString().toStdString();
 
-
-    jsonResponse["data"] = data;
+    jsonResponse["data"] = jsonData;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -1429,14 +1435,13 @@ CmdClassbookProposalListHandler::CmdClassbookProposalListHandler()
 void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
 
-    QJsonObject item;
-    QJsonArray data;
+    auto jsonData = nlohmann::json::array();
 
     QString sQuery;
     QMap<QString, QJsonValue> mapFilter;
@@ -1488,17 +1493,18 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest){
 
     while (query.next()) {
         QSqlRecord record = query.record();
-        item["id"] = record.value("id").toInt();
-        item["classbookid"] = jsonRequest["classbookid"].toInt();
+        nlohmann::json jsonItem;
+        jsonItem["id"] = record.value("id").toInt();
+        jsonItem["classbookid"] = jsonRequest["classbookid"].toInt();
         if(jsonRequest.contains("lang")){
-            item["lang"] = jsonRequest["lang"].toString().trimmed();
+            jsonItem["lang"] = jsonRequest["lang"].toString().trimmed().toStdString();
         }
-        else item["lang"] = record.value("lang").toString().trimmed();
-        item["name"] = record.value("name").toString();
-        data.push_back(item);
+        else jsonItem["lang"] = record.value("lang").toString().trimmed().toStdString();
+        jsonItem["name"] = record.value("name").toString().toStdString();
+        jsonData.push_back(jsonItem);
     }
 
-    jsonResponse["data"] = data;
+    jsonResponse["data"] = jsonData;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -1522,11 +1528,11 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
-    QJsonObject data;
+    nlohmann::json jsonData;
 
     QSqlQuery query(db);
     QSqlRecord record = query.record();
@@ -1563,7 +1569,7 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
 
     //TO DO final merge, lang checkout, update output (with data)
 
-    jsonResponse["data"] = data;
+    jsonResponse["data"] = jsonData;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -1585,11 +1591,11 @@ CmdClassbookHandler::CmdClassbookHandler()
 void CmdClassbookHandler::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
-    QJsonArray contents;
+    auto jsonContents = nlohmann::json::array();
 
     QSqlQuery query(db);
     query.prepare("SELECT * FROM classbook ORDER BY id ASC");
@@ -1597,18 +1603,18 @@ void CmdClassbookHandler::handle(ModelRequest *pRequest){
     while (query.next()) {
         QSqlRecord record = query.record();
         QString uuid = record.value("uuid").toString();
-        QJsonObject jsonItem;
+        nlohmann::json jsonItem;
         jsonItem["id"] = record.value("id").toInt();
         jsonItem["parentid"] = record.value("parentid").toInt();
-        jsonItem["uuid"] = uuid;
-        jsonItem["parentuuid"] = record.value("parentuuid").toString();
-        jsonItem["name_ru"] = record.value("name_ru").toString();
-        jsonItem["name_en"] = record.value("name_en").toString();
-        jsonItem["name"] = record.value("name_en").toString();
-        jsonItem["link"] = QJsonValue("files/classbook/" + uuid + "_en.md");
-        contents.push_back(jsonItem);
+        jsonItem["uuid"] = uuid.toStdString();
+        jsonItem["parentuuid"] = record.value("parentuuid").toString().toStdString();
+        jsonItem["name_ru"] = record.value("name_ru").toString().toStdString();
+        jsonItem["name_en"] = record.value("name_en").toString().toStdString();
+        jsonItem["name"] = record.value("name_en").toString().toStdString();
+        jsonItem["link"] = QString("files/classbook/" + uuid + "_en.md").toStdString();
+        jsonContents.push_back(jsonItem);
     }
 
-    jsonResponse["items"] = contents;
+    jsonResponse["items"] = jsonContents;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

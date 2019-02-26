@@ -6,6 +6,7 @@ import os
 import libfhqcli
 import string
 import random
+import socket
 
 admin_session = None
 loggined = False
@@ -19,7 +20,7 @@ admin_email = "admin" # deprecated
 admin_password = "admin" # deprecated
 ADMIN_EMAIL = "admin"
 ADMIN_PASSWORD = "admin"
-TEST_SERVER = "ws://localhost:1234/"
+TEST_SERVER = "ws://127.0.0.1:1234/"
 TMP_DIR = "./tmp"
 
 class bcolors:
@@ -57,6 +58,11 @@ def alert(check, msg):
         log_err(msg)
         raise Exception(msg)
         sys.exit(0)
+
+def check_port(host, port):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    result = sock.connect_ex((host,port))
+    return result == 0
 
 def generate_random(size): 
     return ''.join(random.choice(string.ascii_uppercase + string.digits + ' _+=\'"~@!#?/<>') for _ in range(size))

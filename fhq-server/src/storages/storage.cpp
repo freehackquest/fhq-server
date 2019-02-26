@@ -1,6 +1,7 @@
 #include <storage.h>
 #include <logger.h>
 #include <ts.h>
+#include <algorithm>
 
 // ***********************
 // *** StorageStructColumn
@@ -359,6 +360,125 @@ bool StorageStruct::mergeWith(const StorageStruct &storageStruct) {
 // ---------------------------------------------------------------------
 
 // ***********************
+// *** StorageInsert
+// ***********************
+
+StorageInsert::StorageInsert(const std::string &sTableName) {
+    TAG = "StorageInsert";
+    m_sTableName = sTableName;
+}
+
+// ---------------------------------------------------------------------
+
+std::string StorageInsert::tableName() const {
+    return m_sTableName;
+}
+
+// ---------------------------------------------------------------------
+
+void StorageInsert::bindValue(const std::string &sColumnName, const std::string &sValue) {
+    if (this->exists(sColumnName)) {
+        Log::warn(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
+        return;
+    }
+    m_mapStringValues.insert( std::pair<std::string,std::string>(sColumnName,sValue) );
+}
+
+// ---------------------------------------------------------------------
+
+void StorageInsert::bindValue(const std::string &sColumnName, int nValue) {
+    if (this->exists(sColumnName)) {
+        Log::warn(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
+        return;
+    }
+    m_mapIntValues.insert( std::pair<std::string,int>(sColumnName,nValue) );
+}
+
+// ---------------------------------------------------------------------
+
+std::map<std::string, std::string> StorageInsert::stringValues() const {
+    return m_mapStringValues;
+}
+
+// ---------------------------------------------------------------------
+
+std::map<std::string, int> StorageInsert::intValues() const {
+    return m_mapIntValues;
+}
+
+// ---------------------------------------------------------------------
+
+bool StorageInsert::exists(const std::string &sColumnName) {
+    return m_mapIntValues.count(sColumnName) || m_mapStringValues.count(sColumnName);
+}
+
+// ---------------------------------------------------------------------
+
+bool StorageInsert::isValid(const StorageStruct &storageStruct) const {
+    if (storageStruct.tableName() != m_sTableName) {
+        Log::err(TAG, "Expeceted '" + m_sTableName + "', but got '" + storageStruct.tableName() + "'");
+        return false;
+    }
+
+    std::vector<StorageStructColumn> vColumns = storageStruct.listAddColumns();
+    std::vector<std::string> vCurrentColumns;
+
+    // string values
+    std::map<std::string, std::string> mapCopy1 = m_mapStringValues;
+    for (std::map<std::string, std::string>::iterator it = mapCopy1.begin(); it != mapCopy1.end(); ++it) {
+        bool bFound = false;
+        std::string sColumnName = it->first;
+        vCurrentColumns.push_back(sColumnName);
+        for (int i = 0; i < vColumns.size(); i++) {
+            if (vColumns[i].columnName() == it->first) {
+                bFound = true;
+                if (vColumns[i].columnType() != "string" && vColumns[i].columnType() != "datetime") {
+                    Log::err(TAG, "In struct '" + m_sTableName + "' column '" + sColumnName + "' must be string");
+                    return false;
+                }
+            }
+        }
+        if (!bFound) {
+            Log::err(TAG, "Struct '" + m_sTableName + "' has not column '" + sColumnName + "'");
+            return false;
+        }
+    }
+
+    // int values
+    std::map<std::string, int> mapCopy2 = m_mapIntValues;
+    for (std::map<std::string, int>::iterator it = mapCopy2.begin(); it != mapCopy2.end(); ++it) {
+        bool bFound = false;
+        std::string sColumnName = it->first;
+        vCurrentColumns.push_back(sColumnName);
+        for (int i = 0; i < vColumns.size(); i++) {
+            if (vColumns[i].columnName() == it->first) {
+                bFound = true;
+                if (vColumns[i].columnType() != "number") {
+                    Log::err(TAG, "In struct '" + m_sTableName + "' column '" + sColumnName + "' must be number");
+                    return false;
+                }
+            }
+        }
+        if (!bFound) {
+            Log::err(TAG, "Struct '" + m_sTableName + "' has not column '" + sColumnName + "'");
+            return false;
+        }
+    }
+
+    for (int i = 0; i < vColumns.size(); i++) {
+        if (!vColumns[i].isAutoIncrement() && vColumns[i].isNotNull()) {
+            if(std::find(vCurrentColumns.begin(), vCurrentColumns.end(), vColumns[i].columnName()) == vCurrentColumns.end()) {
+                Log::err(TAG, "Missing require field '" + m_sTableName + "." + vColumns[i].columnName() + "'");
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+// ***********************
 // *** StorageConnection
 // ***********************
 
@@ -384,7 +504,6 @@ Storage::Storage() {
 }
 
 bool Storage::applyStruct(StorageConnection *pConn, StorageStruct &storageStruct) {
-    // TODO merge structs
     std::vector<std::string> v = this->prepareSqlQueries(storageStruct);
     for (int i = 0; i < v.size(); i++) {
         std::string sQuery = v[i];
@@ -427,3 +546,26 @@ bool Storage::applyStruct(StorageConnection *pConn, StorageStruct &storageStruct
 }
 
 // ---------------------------------------------------------------------
+
+bool Storage::insertRow(StorageConnection *pConn, const StorageInsert &storageInsert) {
+
+    std::string sTableName = storageInsert.tableName();
+    std::map<std::string,StorageStruct>::iterator it = m_mapStructs.find(sTableName);
+    if (it == m_mapStructs.end()) {
+        Log::err(TAG, "Struct '" + sTableName + "' not found");
+        return false;
+    }
+
+    if (!storageInsert.isValid(it->second)) {
+        return false;
+    }
+
+    std::vector<std::string> v = this->prepareSqlQueries(storageInsert);
+    for (int i = 0; i < v.size(); i++) {
+        std::string sQuery = v[i];
+        if (!pConn->executeQuery(sQuery)) {
+            return false;
+        }
+    }
+    return true;
+}
