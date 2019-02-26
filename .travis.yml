@@ -24,7 +24,6 @@ before_install:
 install:
   - pip install --user websocket-client
   - pip install --user websocket
-  - pip install --user functools
   
 # Build your code e.g. by calling make
 script:
