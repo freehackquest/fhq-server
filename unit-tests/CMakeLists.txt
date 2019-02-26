@@ -75,12 +75,6 @@ list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/sources/utils_levenshte
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/include/utils_static_analizing_text.h")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/sources/utils_static_analizing_text.cpp")
 
-# unit_tests - deprecated
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/unit_tests/unit_test_merge_text.h")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/unit_tests/unit_test_merge_text.cpp")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/unit_tests/unit_tests.h")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/unit_tests/unit_tests.cpp")
-
 # unit_tests
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_levenshtein.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_levenshtein.cpp")
@@ -88,6 +82,10 @@ list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_sha1.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_sha1.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_md5.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_md5.cpp")
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_merge_text.h")
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_merge_text.cpp")
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_tests.h")
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_tests.cpp")
 # list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_base64.h")
 # list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_base64.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_static_analizing_text.h")

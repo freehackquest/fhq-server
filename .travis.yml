@@ -29,7 +29,7 @@ script:
   - echo "Build unit tests"
   - cd unit-tests
   - ./build_simple.sh
-  - echo "TODO run unit tests"
+  - ./unit-tests
   - cd ../fhq-server
   - ./build_simple.sh
   - ./fhq-server version

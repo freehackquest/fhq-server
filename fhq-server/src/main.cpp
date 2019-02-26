@@ -19,7 +19,6 @@
 #include <websocketserver.h>
 #include <utils_prepare_deb_package.h>
 #include <utils_lxd.h>
-#include <unit_tests.h>
 #include <employees.h>
 #include <employ_server_config.h>
 #include <employ_server_info.h>
@@ -47,7 +46,6 @@ int main(int argc, char** argv) {
 
     helpArgs.addHelp("help", "-h", HelpParseArgType::SINGLE_OPTION, "This help");
     helpArgs.addHelp("version", "-v", HelpParseArgType::SINGLE_OPTION, "Print version");
-    helpArgs.addHelp("run-unit-tests", "-rut", HelpParseArgType::SINGLE_OPTION, "Run unit tests (deprecated)");
     helpArgs.addHelp("show-handlers", "-sh", HelpParseArgType::SINGLE_OPTION, "Show handlers");
     helpArgs.addHelp("export-libfhqcli-py", "-exlp", HelpParseArgType::SINGLE_OPTION, "Export libfhqcli-py (python)");
     helpArgs.addHelp("export-libfhqcli-web-javascript", "-exlwjs", HelpParseArgType::SINGLE_OPTION, "Export libfhqcli-web-js (javascript)");
@@ -67,11 +65,6 @@ int main(int argc, char** argv) {
     
     if (helpArgs.has("help")) {
         helpArgs.printHelp();
-        return 0;
-    } else if (helpArgs.has("run-unit-tests")) {
-        if (!UnitTests::runUnitTests()) {
-            return -1;
-        }
         return 0;
     } else if (helpArgs.has("show-handlers")) {
         UtilsExportListOfHandlers::print();
