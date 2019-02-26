@@ -59,7 +59,7 @@ bool UnitTests::runUnitTests() {
         }
     }
     Log::info("runUnitTests",  "Passed tests " + std::to_string(nSuccess) + " / " + std::to_string(nAll));
-    return nSuccess != nAll;
+    return nSuccess == nAll;
 }
 
 // ---------------------------------------------------------------------
