@@ -10,7 +10,7 @@ import time
 
 
 fhqtest.print_header(" > > > TESTS: begin ")
-'''
+
 fhqtest.print_bold("Start fhq-server... ")
 wd = os.getcwd()
 print(wd)
@@ -35,8 +35,6 @@ if not result_check_port:
     exit(-1)
 else:
     print("Port available... OK!")
-time.sleep(5)
-'''
 
 try:
     def run_test(file_name):
