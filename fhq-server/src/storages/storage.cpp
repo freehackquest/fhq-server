@@ -487,6 +487,10 @@ StorageConnection::StorageConnection() {
     TAG = "StorageConnection";
 }
 
+StorageConnection::~StorageConnection() {
+    // Nothing
+}
+
 // ---------------------------------------------------------------------
 
 long StorageConnection::created() {

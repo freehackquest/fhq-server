@@ -9,7 +9,7 @@
 class MySqlStorageConnection : public StorageConnection {
     public:
         MySqlStorageConnection(MYSQL *pConn, Storage *pStorage);
-        ~MySqlStorageConnection();
+        virtual ~MySqlStorageConnection();
         virtual bool executeQuery(const std::string &sQuery);
         virtual std::string lastDatabaseVersion();
         virtual bool insertUpdateInfo(const std::string &sVersion, const std::string &sDescription);

@@ -117,6 +117,7 @@ class StorageInsert {
 class StorageConnection {
     public:
         StorageConnection();
+        virtual ~StorageConnection();
         virtual bool executeQuery(const std::string &sQuery) = 0; // TODO redesign in future
         virtual std::string lastDatabaseVersion() = 0;
         virtual bool insertUpdateInfo(const std::string &sVersion, const std::string &sDescription) = 0;
