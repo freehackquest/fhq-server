@@ -51,6 +51,9 @@ bool UnitTestStorageStruct::run() {
     test_tbl1.addColumn(StorageStructColumn("filed8")
 		.number().notNull().enableUniqueIndex("idx_f6_and_f8"));
 
+    test_tbl1.addColumn(StorageStructColumn("filed9")
+		.doubleNumber().defaultValue("0.0"));
+
     std::vector<std::string> vQueries1 = pStorage->prepareSqlQueries(test_tbl1);
     if (!compareN("vQueries1", vQueries1.size(), 1)) {
         bTestSuccess = false;
@@ -66,6 +69,7 @@ bool UnitTestStorageStruct::run() {
             "  filed6 INT NOT NULL,\r\n"
             "  filed7 INT NOT NULL,\r\n"
             "  filed8 INT NOT NULL,\r\n"
+            "  filed9 DOUBLE DEFAULT 0.0,\r\n"
 			"  PRIMARY KEY (id),\r\n"
             "  KEY idx_filed1 (filed1),\r\n"
             "  KEY idx_filed4 (filed4(255)),\r\n"
@@ -78,7 +82,7 @@ bool UnitTestStorageStruct::run() {
     StorageStruct modify_test_tbl1("test_tbl1", StorageStructTableMode::ALTER);
     modify_test_tbl1.dropColumn("filed1");
     modify_test_tbl1.dropColumn("filed2");
-    modify_test_tbl1.addColumn(StorageStructColumn("filed9").number().notNull());
+    modify_test_tbl1.addColumn(StorageStructColumn("filed10").number().notNull());
     modify_test_tbl1.alterColumn(StorageStructColumn("filed4").string(1500).notNull());
 
     std::vector<std::string> vQueries1_1 = pStorage->prepareSqlQueries(modify_test_tbl1);
@@ -87,7 +91,7 @@ bool UnitTestStorageStruct::run() {
     } else {
         bTestSuccess = compareS(bTestSuccess, vQueries1_1[0], "ALTER TABLE test_tbl1 DROP COLUMN filed1;");
         bTestSuccess = compareS(bTestSuccess, vQueries1_1[1], "ALTER TABLE test_tbl1 DROP COLUMN filed2;");
-        bTestSuccess = compareS(bTestSuccess, vQueries1_1[2], "ALTER TABLE test_tbl1 ADD COLUMN filed9 INT NOT NULL;");
+        bTestSuccess = compareS(bTestSuccess, vQueries1_1[2], "ALTER TABLE test_tbl1 ADD COLUMN filed10 INT NOT NULL;");
         bTestSuccess = compareS(bTestSuccess, vQueries1_1[3], "ALTER TABLE test_tbl1 MODIFY filed4 VARCHAR(1500) NOT NULL;");
     }
 
@@ -110,7 +114,8 @@ bool UnitTestStorageStruct::run() {
             "  filed6 INT NOT NULL,\r\n"
             "  filed7 INT NOT NULL,\r\n"
             "  filed8 INT NOT NULL,\r\n"
-            "  filed9 INT NOT NULL,\r\n"
+            "  filed9 DOUBLE DEFAULT 0.0,\r\n"
+            "  filed10 INT NOT NULL,\r\n"
 			"  PRIMARY KEY (id),\r\n"
             "  KEY idx_filed4 (filed4(255)),\r\n"
             "  UNIQUE KEY idx_f5_and_f7 (filed5,filed7),\r\n"
@@ -119,13 +124,14 @@ bool UnitTestStorageStruct::run() {
     }
 
     StorageInsert tbl1_ins("test_tbl1");
-    tbl1_ins.bindValue("filed3", "some"); // TODO datetime
+    tbl1_ins.bindValue("filed3", "so\"me"); // TODO datetime
     tbl1_ins.bindValue("filed4", "some");
     tbl1_ins.bindValue("filed5", 123);
     tbl1_ins.bindValue("filed6", 321);
     tbl1_ins.bindValue("filed7", 456);
     tbl1_ins.bindValue("filed8", 654);
-    tbl1_ins.bindValue("filed9", 789);
+    tbl1_ins.bindValue("filed9", 555.0);
+    tbl1_ins.bindValue("filed10", 789);
     if (!tbl1_ins.isValid(test_tbl1)) {
         bTestSuccess = false;
     }
@@ -134,8 +140,8 @@ bool UnitTestStorageStruct::run() {
         bTestSuccess = false;
     } else {
         bTestSuccess = compareS(bTestSuccess, vQueries1_ins[0], "INSERT INTO test_tbl1"
-            "(filed3, filed4, filed5, filed6, filed7, filed8, filed9) "
-            "VALUES(\"some\", \"some\", 123, 321, 456, 654, 789);");
+            "(filed3, filed4, filed5, filed6, filed7, filed8, filed9, filed10) "
+            "VALUES(\"so\\\"me\", \"some\", 123, 321, 456, 654, 555.000000, 789);");
     }
 
     StorageStruct test_tbl2("test_tbl2", StorageStructTableMode::DROP);

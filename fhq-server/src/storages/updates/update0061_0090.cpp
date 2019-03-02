@@ -2,168 +2,6 @@
 #include <QSqlQuery>
 #include <QUuid>
 
-// ----------- UPDATE 0064 ---------------
-
-Update0064::Update0064()
-    : UpdateBase("u0063", "u0064", "Remove personal quests which passed"){
-}
-
-bool Update0064::update(QSqlDatabase &db, std::string &error){
-    QSqlQuery query(db);
-    query.prepare("SELECT idquest FROM quest LEFT JOIN users_quests ON users_quests.questid = quest.idquest WHERE for_person <> 0");
-    if(!query.exec()){
-        error = query.lastError().text().toStdString();
-        Log::err(TAG, "The problem with data selection " + error);
-        return false;
-    }
-
-    while (query.next()) {
-        QSqlRecord record = query.record();
-        int questid = record.value("idquest").toInt();
-        QSqlQuery query2(db);
-        query2.prepare("DELETE FROM quest WHERE idquest = :questid");
-        query2.bindValue(":questid", questid);
-        query2.exec();
-        if(!query2.exec()){
-            error = query2.lastError().text().toStdString();
-            Log::err(TAG, "The problem with deleting data " + error);
-            return false;
-        }
-    }
-    return true;
-}
-
-// ----------- UPDATE 0065 ---------------
-
-Update0065::Update0065()
-    : UpdateBase("u0064", "u0065", "Update quests uuid"){
-}
-
-bool Update0065::update(QSqlDatabase &db, std::string &error){
-    QSqlQuery query(db);
-    query.prepare("SELECT idquest FROM quest WHERE isnull(quest_uuid)");
-    if(!query.exec()){
-        error = query.lastError().text().toStdString();
-        Log::err(TAG, "The problem with data selection " + error);
-        return false;
-    }
-
-    while (query.next()) {
-        QSqlRecord record = query.record();
-        int questid = record.value("idquest").toInt();
-        QString questuuid = QUuid::createUuid().toString();
-        questuuid = questuuid.mid(1,questuuid.length()-2);
-        QSqlQuery query2(db);
-        query2.prepare("UPDATE quest SET quest_uuid = :questuuid WHERE idquest = :questid AND isnull(quest_uuid)");
-        query2.bindValue(":questuuid", questuuid);
-        query2.bindValue(":questid", questid);
-        if(!query2.exec()){
-            error = query2.lastError().text().toStdString();
-            Log::err(TAG, "The problem with updating the data " + error);
-            return false;
-        }
-    }
-    return true;
-}
-
-// ----------- UPDATE 0066 ---------------
-
-Update0066::Update0066()
-    : UpdateBase("u0065", "u0066", "Drop column quest.for_person"){
-}
-
-bool Update0066::update(QSqlDatabase &db, std::string &error){
-    QSqlQuery query(db);
-    query.prepare("ALTER TABLE quest DROP COLUMN for_person");
-    if(!query.exec()){
-        error = query.lastError().text().toStdString();
-        Log::err(TAG, "The problem with altering the table " + error);
-        return false;
-    }
-    return true;
-}
-
-// ----------- UPDATE 0067 ---------------
-
-Update0067::Update0067()
-    : UpdateBase("u0066", "u0067", "Added column copyright to quest"){
-}
-
-bool Update0067::update(QSqlDatabase &db, std::string &error){
-    QSqlQuery query(db);
-    query.prepare("ALTER TABLE quest ADD COLUMN copyright VARCHAR(255);");
-    if(!query.exec()){
-        error = query.lastError().text().toStdString();
-        Log::err(TAG, "The problem with altering the table " + error);
-        return false;
-    }
-    return true;
-}
-
-// ----------- UPDATE 0068 ---------------
-
-Update0068::Update0068()
-    : UpdateBase("u0067", "u0068", "Added table hints"){
-}
-
-bool Update0068::update(QSqlDatabase &db, std::string &error){
-    QSqlQuery query(db);
-    query.prepare(
-        "CREATE TABLE IF NOT EXISTS `quests_hints` ("
-        "	  `id` int(11) NOT NULL AUTO_INCREMENT,"
-        "	  `questid` int(11) NOT NULL,"
-        "	  `text` varchar(4048) NOT NULL,"
-        "	  `dt` datetime NOT NULL,"
-        "	  PRIMARY KEY (`id`)"
-        ") ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-    if(!query.exec()){
-        error = query.lastError().text().toStdString();
-        Log::err(TAG, "The problem with creating a table " + error);
-        return false;
-    }
-    return true;
-}
-
-// ----------- UPDATE 0069 ---------------
-
-Update0069::Update0069()
-    : UpdateBase("u0068", "u0069", "Add columns to users"){
-}
-
-bool Update0069::update(QSqlDatabase &db, std::string &error){
-    QSqlQuery query(db);
-    query.prepare("ALTER TABLE `users` "
-        "ADD COLUMN `country` VARCHAR(255) DEFAULT '',"
-        "ADD COLUMN `region` VARCHAR(255) DEFAULT '',"
-        "ADD COLUMN `city` VARCHAR(255) DEFAULT '',"
-        "ADD COLUMN `latitude` DOUBLE  DEFAULT 0.0,"
-        "ADD COLUMN `longitude` DOUBLE  DEFAULT 0.0"
-        ";");
-    if(!query.exec()){
-        error = query.lastError().text().toStdString();
-        Log::err(TAG, "The problem with altering the table " + error);
-        return false;
-    }
-    return true;
-}
-
-// ----------- UPDATE 0070 ---------------
-
-Update0070::Update0070()
-    : UpdateBase("u0069", "u0070", "Removed table users_ips"){
-}
-
-bool Update0070::update(QSqlDatabase &db, std::string &error){
-    QSqlQuery query(db);
-    query.prepare("DROP TABLE `users_ips`;");
-    if(!query.exec()){
-        error = query.lastError().text().toStdString();
-        Log::err(TAG, "The problem with removing the table " + error);
-        return false;
-    }
-    return true;
-}
-
 // ----------- UPDATE 0071 ---------------
 
 Update0071::Update0071()
@@ -339,7 +177,7 @@ bool Update0077::update(QSqlDatabase &db, std::string &error){
         query.prepare("ALTER TABLE `updates` DROP COLUMN from_version;");
         if(!query.exec()){
             error = query.lastError().text().toStdString();
-            Log::err(TAG, "The problem with altering the table " + error);
+            Log::warn(TAG, "The problem with altering the table " + error);
             // skip
             // return false;
         }
@@ -350,7 +188,7 @@ bool Update0077::update(QSqlDatabase &db, std::string &error){
         query.prepare("ALTER TABLE `updates` DROP COLUMN name;");
         if(!query.exec()){
             error = query.lastError().text().toStdString();
-            Log::err(TAG, "The problem with altering the table " + error);
+            Log::warn(TAG, "The problem with altering the table " + error);
             // skip
             // return false;
         }
@@ -361,7 +199,7 @@ bool Update0077::update(QSqlDatabase &db, std::string &error){
         query.prepare("ALTER TABLE `updates` DROP COLUMN result;");
         if(!query.exec()){
             error = query.lastError().text().toStdString();
-            Log::err(TAG, "The problem with altering the table " + error);
+            Log::warn(TAG, "The problem with altering the table " + error);
             // skip
             // return false;
         }
@@ -372,7 +210,7 @@ bool Update0077::update(QSqlDatabase &db, std::string &error){
         query.prepare("ALTER TABLE `updates` DROP COLUMN userid;");
         if(!query.exec()){
             error = query.lastError().text().toStdString();
-            Log::err(TAG, "The problem with altering the table " + error);
+            Log::warn(TAG, "The problem with altering the table " + error);
             // skip
             // return false;
         }
