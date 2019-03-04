@@ -517,7 +517,7 @@ bool StorageInsert::isValid(const StorageStruct &storageStruct) const {
             StorageStructColumn st = vColumns[y];
             if (st.columnName() == val.getColumnName()) {
                 if (val.getColumnType() == StorageStructColumnType::STRING
-                    && (st.columnType() == "string" || st.columnType() == "datetime")) {
+                    && (st.columnType() == "string" || st.columnType() == "datetime" || st.columnType() == "text")) {
                     bFound = true;
                     break;
                 } else if (val.getColumnType() == StorageStructColumnType::NUMBER && st.columnType() == "number") {

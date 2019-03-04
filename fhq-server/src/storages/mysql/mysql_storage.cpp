@@ -185,25 +185,25 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(StorageStruct &storageS
         // drop columns
         std::vector<std::string> vDropColumns = storageStruct.listDropColumns();
         for (int i = 0; i < vDropColumns.size(); i++) {
-            vRet.push_back("ALTER TABLE " + storageStruct.tableName() + " DROP COLUMN " + vDropColumns[i] + ";");
+            vRet.push_back("ALTER TABLE `" + storageStruct.tableName() + "` DROP COLUMN `" + vDropColumns[i] + "`;");
         }
         
         // add columns
         std::vector<StorageStructColumn> vAddColumns = storageStruct.listAddColumns();
         for (int i = 0; i < vAddColumns.size(); i++) {
-            vRet.push_back("ALTER TABLE " + storageStruct.tableName() + " ADD COLUMN " + generateLineColumnForSql(vAddColumns[i]) + ";");
+            vRet.push_back("ALTER TABLE `" + storageStruct.tableName() + "` ADD COLUMN " + generateLineColumnForSql(vAddColumns[i]) + ";");
         }
 
         // alter columns
         std::vector<StorageStructColumn> vAlterColumns = storageStruct.listAlterColumns();
         for (int i = 0; i < vAlterColumns.size(); i++) {
-            vRet.push_back("ALTER TABLE " + storageStruct.tableName() + " MODIFY " + generateLineColumnForSql(vAlterColumns[i]) + ";");
+            vRet.push_back("ALTER TABLE `" + storageStruct.tableName() + "` MODIFY " + generateLineColumnForSql(vAlterColumns[i]) + ";");
         }
     } else if (storageStruct.mode() == StorageStructTableMode::DROP) {
-        vRet.push_back("DROP TABLE IF EXISTS " + storageStruct.tableName() + ";");
+        vRet.push_back("DROP TABLE IF EXISTS `" + storageStruct.tableName() + "`;");
     } else if (storageStruct.mode() == StorageStructTableMode::CREATE) {
         std::string sQuery = "";
-        sQuery += "CREATE TABLE IF NOT EXISTS " + storageStruct.tableName() + " (\r\n";
+        sQuery += "CREATE TABLE IF NOT EXISTS `" + storageStruct.tableName() + "` (\r\n";
         std::vector<std::string> vCreateTableContent;
         std::vector<std::string> vCreateTableContentIndexes;
         std::vector<std::string> vCreateTableContentUniqueIndexes;

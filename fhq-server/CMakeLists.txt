@@ -250,8 +250,6 @@ list (APPEND FHQSRV_SOURCES "src/tasks/sources/lxd_async_operation_task.cpp")
 # updates
 list (APPEND FHQSRV_SOURCES "src/storages/updates/updates_init_database.h")
 list (APPEND FHQSRV_SOURCES "src/storages/updates/updates_init_database.cpp")
-list (APPEND FHQSRV_SOURCES "src/storages/updates/update0061_0090.cpp")
-list (APPEND FHQSRV_SOURCES "src/storages/updates/update0061_0090.h")
 list (APPEND FHQSRV_SOURCES "src/storages/updates/update0091.cpp")
 list (APPEND FHQSRV_SOURCES "src/storages/updates/update0091.h")
 list (APPEND FHQSRV_SOURCES "src/storages/updates/update0092.cpp")

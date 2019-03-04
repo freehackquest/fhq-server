@@ -1,7 +1,7 @@
 #include <updates_init_database.h>
 
 UpdatesInitDatabase::UpdatesInitDatabase()
-    : StorageUpdateBase("", "u0077", "Init database u0077") {
+    : StorageUpdateBase("", "u0090", "Init database u0090") {
 
 }
 
@@ -83,24 +83,23 @@ bool UpdatesInitDatabase::apply(Storage *pStorage, std::string &error){
 	{
 		StorageStruct quest("quest", StorageStructTableMode::CREATE);
 		quest.addColumn(StorageStructColumn("idquest").number().autoIncrement().primaryKey().notNull());
+		quest.addColumn(StorageStructColumn("uuid").string(255).notNull());
 		quest.addColumn(StorageStructColumn("name").string(300).notNull());
 		quest.addColumn(StorageStructColumn("text").string(4048).notNull());
 		quest.addColumn(StorageStructColumn("answer").text().notNull());
 		quest.addColumn(StorageStructColumn("score").number().notNull().defaultValue("0"));
-		quest.addColumn(StorageStructColumn("min_score").number().notNull().defaultValue("0"));
-		quest.addColumn(StorageStructColumn("idauthor").number().notNull().defaultValue("0"));
 		quest.addColumn(StorageStructColumn("author").string(50).notNull());
 		quest.addColumn(StorageStructColumn("subject").string(128).notNull());
 		quest.addColumn(StorageStructColumn("answer_upper_md5").string(128).notNull());
 		quest.addColumn(StorageStructColumn("gameid").number().notNull().defaultValue("0"));
 		quest.addColumn(StorageStructColumn("state").string(50).notNull());
 		quest.addColumn(StorageStructColumn("description_state").string(4048).notNull());
-		quest.addColumn(StorageStructColumn("quest_uuid").string(255).notNull());
 		quest.addColumn(StorageStructColumn("date_change").datetime().notNull());
 		quest.addColumn(StorageStructColumn("date_create").datetime().notNull());
 		quest.addColumn(StorageStructColumn("userid").number().notNull().defaultValue("0"));
 		quest.addColumn(StorageStructColumn("count_user_solved").number().notNull().defaultValue("0"));
 		quest.addColumn(StorageStructColumn("copyright").string(255));
+		quest.addColumn(StorageStructColumn("answer_format").string(255).defaultValue("''"));
 		vTables.push_back(quest);
 	}
 
@@ -127,29 +126,16 @@ bool UpdatesInitDatabase::apply(Storage *pStorage, std::string &error){
 	}
 
 	{
-		StorageStruct tryanswer("tryanswer", StorageStructTableMode::CREATE);
-		tryanswer.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
-		tryanswer.addColumn(StorageStructColumn("iduser").number().notNull());
-		tryanswer.addColumn(StorageStructColumn("idquest").number().notNull());
-		tryanswer.addColumn(StorageStructColumn("answer_try").text().notNull());
-		tryanswer.addColumn(StorageStructColumn("answer_real").text().notNull());
-		tryanswer.addColumn(StorageStructColumn("passed").string(10).notNull());
-		tryanswer.addColumn(StorageStructColumn("datetime_try").datetime().notNull());
-		tryanswer.addColumn(StorageStructColumn("levenshtein").number().notNull().defaultValue("100"));
-		vTables.push_back(tryanswer);
-	}
-
-	{
-		StorageStruct tryanswer_backup("tryanswer_backup", StorageStructTableMode::CREATE);
-		tryanswer_backup.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
-		tryanswer_backup.addColumn(StorageStructColumn("iduser").number().notNull());
-		tryanswer_backup.addColumn(StorageStructColumn("idquest").number().notNull());
-		tryanswer_backup.addColumn(StorageStructColumn("answer_try").text().notNull());
-		tryanswer_backup.addColumn(StorageStructColumn("answer_real").text().notNull());
-		tryanswer_backup.addColumn(StorageStructColumn("passed").string(10).notNull());
-		tryanswer_backup.addColumn(StorageStructColumn("datetime_try").datetime().notNull());
-		tryanswer_backup.addColumn(StorageStructColumn("levenshtein").number().notNull().defaultValue("100"));
-		vTables.push_back(tryanswer_backup);
+		StorageStruct users_quests_answers("users_quests_answers", StorageStructTableMode::CREATE);
+		users_quests_answers.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
+		users_quests_answers.addColumn(StorageStructColumn("userid").number().notNull());
+		users_quests_answers.addColumn(StorageStructColumn("questid").number().notNull());
+		users_quests_answers.addColumn(StorageStructColumn("user_answer").string(255).notNull());
+		users_quests_answers.addColumn(StorageStructColumn("quest_answer").string(255).notNull());
+		users_quests_answers.addColumn(StorageStructColumn("passed").string(10).notNull());
+		users_quests_answers.addColumn(StorageStructColumn("dt").datetime().notNull());
+		users_quests_answers.addColumn(StorageStructColumn("levenshtein").number().notNull().defaultValue("100"));
+		vTables.push_back(users_quests_answers);
 	}
 
 	{
@@ -171,6 +157,8 @@ bool UpdatesInitDatabase::apply(Storage *pStorage, std::string &error){
 		users.addColumn(StorageStructColumn("latitude").doubleNumber().defaultValue("0.0"));
 		users.addColumn(StorageStructColumn("longitude").doubleNumber().defaultValue("0.0"));
 		users.addColumn(StorageStructColumn("rating").number().defaultValue("0"));
+		users.addColumn(StorageStructColumn("about").text().notNull());
+		users.addColumn(StorageStructColumn("university").string(255).defaultValue("''"));
 		vTables.push_back(users);
 	}
 
@@ -269,6 +257,28 @@ bool UpdatesInitDatabase::apply(Storage *pStorage, std::string &error){
 		vTables.push_back(quests_writeups);
 	}
 
+	{
+		StorageStruct users_offers("users_offers", StorageStructTableMode::CREATE);
+		users_offers.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
+		users_offers.addColumn(StorageStructColumn("userid").number().notNull());
+		users_offers.addColumn(StorageStructColumn("data").text().notNull());
+		users_offers.addColumn(StorageStructColumn("type").string(255).notNull());
+		users_offers.addColumn(StorageStructColumn("scomment").string(1024).notNull());
+		users_offers.addColumn(StorageStructColumn("status").string(255).notNull());
+		users_offers.addColumn(StorageStructColumn("created").datetime().notNull());
+		users_offers.addColumn(StorageStructColumn("updated").datetime().notNull());
+		vTables.push_back(users_offers);
+	}
+
+	{
+		StorageStruct settings("settings", StorageStructTableMode::CREATE);
+		settings.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
+		settings.addColumn(StorageStructColumn("name").string(128).notNull());
+		settings.addColumn(StorageStructColumn("value").string(255).notNull());
+		settings.addColumn(StorageStructColumn("group").string(255).notNull().defaultValue("''"));
+		settings.addColumn(StorageStructColumn("type").string(255).notNull().defaultValue("'string'"));
+		vTables.push_back(settings);
+	}
 
 	for (int i = 0; i < vTables.size(); i++) {
 		StorageStruct st = vTables[i];
@@ -295,6 +305,8 @@ bool UpdatesInitDatabase::apply(Storage *pStorage, std::string &error){
 		addDefailtAdmin.bindValue("dt_last_login", "2015-04-12 23:49:58");
 		addDefailtAdmin.bindValue("last_ip", "127.0.0.1");
 		addDefailtAdmin.bindValue("status", "activated");
+		addDefailtAdmin.bindValue("about", "");
+		addDefailtAdmin.bindValue("university", "");
 		vInserts.push_back(addDefailtAdmin);
 	}
 	
