@@ -1,7 +1,7 @@
 #include <updates_init_database.h>
 
 UpdatesInitDatabase::UpdatesInitDatabase()
-    : StorageUpdateBase("", "u0090", "Init database u0090") {
+    : StorageUpdateBase("", "u0097", "Init database u0097") {
 
 }
 
@@ -54,7 +54,6 @@ bool UpdatesInitDatabase::apply(Storage *pStorage, std::string &error){
 		games.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
 		games.addColumn(StorageStructColumn("uuid").string(255).notNull().enableUniqueIndex("idx_game_uuid"));
 		games.addColumn(StorageStructColumn("title").string(255).notNull());
-		games.addColumn(StorageStructColumn("logo").string(255).notNull());
 		games.addColumn(StorageStructColumn("type_game").string(255).notNull());
 		games.addColumn(StorageStructColumn("date_create").datetime().notNull().enableIndex());
 		games.addColumn(StorageStructColumn("date_start").datetime().notNull().enableIndex());
@@ -114,7 +113,6 @@ bool UpdatesInitDatabase::apply(Storage *pStorage, std::string &error){
 		quests_files.addColumn(StorageStructColumn("filepath").string(255).notNull());
 		vTables.push_back(quests_files);
 	}
-
 	
 	{
 		StorageStruct quests_hints("quests_hints", StorageStructTableMode::CREATE);
@@ -123,6 +121,25 @@ bool UpdatesInitDatabase::apply(Storage *pStorage, std::string &error){
 		quests_hints.addColumn(StorageStructColumn("text").string(4048).notNull());
 		quests_hints.addColumn(StorageStructColumn("dt").datetime().notNull());
 		vTables.push_back(quests_hints);
+	}
+
+	{
+		StorageStruct quests_proposal("quests_proposal", StorageStructTableMode::CREATE);
+		quests_proposal.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
+		quests_proposal.addColumn(StorageStructColumn("userid").number().notNull());
+		quests_proposal.addColumn(StorageStructColumn("gameid").number().notNull());
+		quests_proposal.addColumn(StorageStructColumn("name").string(255).notNull());
+		quests_proposal.addColumn(StorageStructColumn("text").string(4048).notNull());
+		quests_proposal.addColumn(StorageStructColumn("answer").string(128).notNull());
+		quests_proposal.addColumn(StorageStructColumn("score").number().notNull());
+		quests_proposal.addColumn(StorageStructColumn("author").string(128).notNull());
+		quests_proposal.addColumn(StorageStructColumn("subject").string(128).notNull());
+		quests_proposal.addColumn(StorageStructColumn("copyright").text().notNull());
+		quests_proposal.addColumn(StorageStructColumn("answer_format").text().notNull());
+		quests_proposal.addColumn(StorageStructColumn("created").datetime().notNull());
+		quests_proposal.addColumn(StorageStructColumn("updated").datetime().notNull());
+		quests_proposal.addColumn(StorageStructColumn("confirmed").string(128).notNull());
+		vTables.push_back(quests_proposal);
 	}
 
 	{
@@ -220,12 +237,44 @@ bool UpdatesInitDatabase::apply(Storage *pStorage, std::string &error){
 		StorageStruct classbook("classbook", StorageStructTableMode::CREATE);
 		classbook.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
 		classbook.addColumn(StorageStructColumn("parentid").number().notNull());
+		classbook.addColumn(StorageStructColumn("classbookid").number().notNull());
 		classbook.addColumn(StorageStructColumn("uuid").string(128).notNull());
 		classbook.addColumn(StorageStructColumn("parentuuid").string(128).notNull());
-		classbook.addColumn(StorageStructColumn("name_ru").string(128).notNull());
-		classbook.addColumn(StorageStructColumn("name_en").string(128).notNull());
-		classbook.addColumn(StorageStructColumn("dt").datetime().notNull());
+		classbook.addColumn(StorageStructColumn("name").string(128).notNull());
+		classbook.addColumn(StorageStructColumn("content").text().notNull());
+		classbook.addColumn(StorageStructColumn("md5_content").string(32).notNull());
+		classbook.addColumn(StorageStructColumn("created").datetime().notNull());
+		classbook.addColumn(StorageStructColumn("updated").datetime().notNull());
 		vTables.push_back(classbook);
+	}
+
+	{
+		StorageStruct classbook_proposal("classbook_proposal", StorageStructTableMode::CREATE);
+		classbook_proposal.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
+		classbook_proposal.addColumn(StorageStructColumn("classbookid").number().notNull());
+		classbook_proposal.addColumn(StorageStructColumn("uuid").string(128).notNull());
+		classbook_proposal.addColumn(StorageStructColumn("lang").string(8).notNull());
+		classbook_proposal.addColumn(StorageStructColumn("name").string(128).notNull());
+		classbook_proposal.addColumn(StorageStructColumn("content").text().notNull());
+		classbook_proposal.addColumn(StorageStructColumn("name_before").string(128).notNull());
+		classbook_proposal.addColumn(StorageStructColumn("content_before").text().notNull());
+		classbook_proposal.addColumn(StorageStructColumn("md5_content").string(32).notNull());
+		classbook_proposal.addColumn(StorageStructColumn("created").datetime().notNull());
+		vTables.push_back(classbook_proposal);
+	}
+
+	{
+		StorageStruct classbook_localization("classbook_localization", StorageStructTableMode::CREATE);
+		classbook_localization.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
+		classbook_localization.addColumn(StorageStructColumn("classbookid").number().notNull());
+		classbook_localization.addColumn(StorageStructColumn("uuid").string(128).notNull());
+		classbook_localization.addColumn(StorageStructColumn("lang").string(8).notNull());
+		classbook_localization.addColumn(StorageStructColumn("name").string(128).notNull());
+		classbook_localization.addColumn(StorageStructColumn("content").text().notNull());
+		classbook_localization.addColumn(StorageStructColumn("md5_content").string(32).notNull());
+		classbook_localization.addColumn(StorageStructColumn("created").datetime().notNull());
+		classbook_localization.addColumn(StorageStructColumn("updated").datetime().notNull());
+		vTables.push_back(classbook_localization);
 	}
 
 	{
@@ -274,11 +323,46 @@ bool UpdatesInitDatabase::apply(Storage *pStorage, std::string &error){
 		StorageStruct settings("settings", StorageStructTableMode::CREATE);
 		settings.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
 		settings.addColumn(StorageStructColumn("name").string(128).notNull());
-		settings.addColumn(StorageStructColumn("value").string(255).notNull());
+		settings.addColumn(StorageStructColumn("value").string(1024).notNull());
 		settings.addColumn(StorageStructColumn("group").string(255).notNull().defaultValue("''"));
 		settings.addColumn(StorageStructColumn("type").string(255).notNull().defaultValue("'string'"));
 		vTables.push_back(settings);
 	}
+
+	{
+		StorageStruct leaks("leaks", StorageStructTableMode::CREATE);
+		leaks.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
+		leaks.addColumn(StorageStructColumn("uuid").string(255).notNull());
+		leaks.addColumn(StorageStructColumn("gameid").number().notNull());
+		leaks.addColumn(StorageStructColumn("name").string(255).notNull());
+		leaks.addColumn(StorageStructColumn("content").string(4096).notNull());
+		leaks.addColumn(StorageStructColumn("score").number().notNull());
+		leaks.addColumn(StorageStructColumn("created").datetime().notNull());
+		leaks.addColumn(StorageStructColumn("updated").datetime().notNull());
+		leaks.addColumn(StorageStructColumn("sold").number().notNull());
+		vTables.push_back(leaks);
+    }
+
+    {
+		StorageStruct users_leaks("users_leaks", StorageStructTableMode::CREATE);
+		users_leaks.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
+		users_leaks.addColumn(StorageStructColumn("leakid").number().notNull());
+		users_leaks.addColumn(StorageStructColumn("userid").number().notNull());
+		users_leaks.addColumn(StorageStructColumn("grade").number().notNull());
+		users_leaks.addColumn(StorageStructColumn("dt").datetime().notNull());
+		vTables.push_back(users_leaks);
+    }
+
+    {
+		StorageStruct leaks_files("leaks_files", StorageStructTableMode::CREATE);
+		leaks_files.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
+		leaks_files.addColumn(StorageStructColumn("uuid").string(255).notNull());
+		leaks_files.addColumn(StorageStructColumn("leakid").number().notNull());
+		leaks_files.addColumn(StorageStructColumn("filename_orig").string(255).notNull());
+		leaks_files.addColumn(StorageStructColumn("md5").string(255).notNull());
+		leaks_files.addColumn(StorageStructColumn("size").number().notNull());
+		vTables.push_back(leaks_files);
+    }
 
 	for (int i = 0; i < vTables.size(); i++) {
 		StorageStruct st = vTables[i];

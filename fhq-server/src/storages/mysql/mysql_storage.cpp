@@ -308,7 +308,10 @@ std::string MySqlStorage::prepareStringValue(const std::string &sValue) {
         if (c == '\n') {
             sResult.push_back('\\');
             sResult.push_back('n');
-        } else if (c == '\n' || c == '\r' || c == '\\' || c == '"' || c == '\'') {
+        } else if (c == '\r') {
+            sResult.push_back('\\');
+            sResult.push_back('r');
+        } else if (c == '\\' || c == '"' || c == '\'') {
             sResult.push_back('\\');
             sResult.push_back(c);
         } else if (c == 0) {

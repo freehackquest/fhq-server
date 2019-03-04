@@ -29,7 +29,7 @@ bool UnitTestStorageEscapes::run() {
     std::vector<LTest *> tests;
     tests.push_back(new LTest("\'\"", "\\\'\\\""));
     tests.push_back(new LTest("test usually string 12 34", "test usually string 12 34"));
-    tests.push_back(new LTest("test1 \r\n text2", "test1 \\\r\\\n text2"));
+    tests.push_back(new LTest("test1 \r\n text2", "test1 \\r\\n text2"));
     tests.push_back(new LTest("test1 \0 text2", "test1 "));
 
     unsigned int nSuccess = 0;

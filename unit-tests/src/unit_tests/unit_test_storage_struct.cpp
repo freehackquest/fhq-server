@@ -59,17 +59,17 @@ bool UnitTestStorageStruct::run() {
         bTestSuccess = false;
     } else {
         bTestSuccess = compareS(bTestSuccess, vQueries1[0], 
-            "CREATE TABLE IF NOT EXISTS test_tbl1 (\r\n"
-			"  id INT NOT NULL AUTO_INCREMENT,\r\n"
-			"  filed1 VARCHAR(255) NOT NULL,\r\n"
-			"  filed2 TEXT NOT NULL,\r\n"
-			"  filed3 DATETIME NOT NULL,\r\n"
-            "  filed4 VARCHAR(2000) NOT NULL,\r\n"
-            "  filed5 INT NOT NULL,\r\n"
-            "  filed6 INT NOT NULL,\r\n"
-            "  filed7 INT NOT NULL,\r\n"
-            "  filed8 INT NOT NULL,\r\n"
-            "  filed9 DOUBLE DEFAULT 0.0,\r\n"
+            "CREATE TABLE IF NOT EXISTS `test_tbl1` (\r\n"
+			"  `id` INT NOT NULL AUTO_INCREMENT,\r\n"
+			"  `filed1` VARCHAR(255) NOT NULL,\r\n"
+			"  `filed2` TEXT NOT NULL,\r\n"
+			"  `filed3` DATETIME NOT NULL,\r\n"
+            "  `filed4` VARCHAR(2000) NOT NULL,\r\n"
+            "  `filed5` INT NOT NULL,\r\n"
+            "  `filed6` INT NOT NULL,\r\n"
+            "  `filed7` INT NOT NULL,\r\n"
+            "  `filed8` INT NOT NULL,\r\n"
+            "  `filed9` DOUBLE DEFAULT 0.0,\r\n"
 			"  PRIMARY KEY (id),\r\n"
             "  KEY idx_filed1 (filed1),\r\n"
             "  KEY idx_filed4 (filed4(255)),\r\n"
@@ -89,10 +89,10 @@ bool UnitTestStorageStruct::run() {
     if (!compareN("vQueries1_1", vQueries1_1.size(), 4)) {
         bTestSuccess = false;
     } else {
-        bTestSuccess = compareS(bTestSuccess, vQueries1_1[0], "ALTER TABLE test_tbl1 DROP COLUMN filed1;");
-        bTestSuccess = compareS(bTestSuccess, vQueries1_1[1], "ALTER TABLE test_tbl1 DROP COLUMN filed2;");
-        bTestSuccess = compareS(bTestSuccess, vQueries1_1[2], "ALTER TABLE test_tbl1 ADD COLUMN filed10 INT NOT NULL;");
-        bTestSuccess = compareS(bTestSuccess, vQueries1_1[3], "ALTER TABLE test_tbl1 MODIFY filed4 VARCHAR(1500) NOT NULL;");
+        bTestSuccess = compareS(bTestSuccess, vQueries1_1[0], "ALTER TABLE `test_tbl1` DROP COLUMN `filed1`;");
+        bTestSuccess = compareS(bTestSuccess, vQueries1_1[1], "ALTER TABLE `test_tbl1` DROP COLUMN `filed2`;");
+        bTestSuccess = compareS(bTestSuccess, vQueries1_1[2], "ALTER TABLE `test_tbl1` ADD COLUMN `filed10` INT NOT NULL;");
+        bTestSuccess = compareS(bTestSuccess, vQueries1_1[3], "ALTER TABLE `test_tbl1` MODIFY `filed4` VARCHAR(1500) NOT NULL;");
     }
 
     // TEST merge structs
@@ -106,16 +106,16 @@ bool UnitTestStorageStruct::run() {
         bTestSuccess = false;
     } else {
         bTestSuccess = compareS(bTestSuccess, vQueries1_2[0],
-            "CREATE TABLE IF NOT EXISTS test_tbl1 (\r\n"
-			"  id INT NOT NULL AUTO_INCREMENT,\r\n"
-			"  filed3 DATETIME NOT NULL,\r\n"
-            "  filed4 VARCHAR(1500) NOT NULL,\r\n"
-            "  filed5 INT NOT NULL,\r\n"
-            "  filed6 INT NOT NULL,\r\n"
-            "  filed7 INT NOT NULL,\r\n"
-            "  filed8 INT NOT NULL,\r\n"
-            "  filed9 DOUBLE DEFAULT 0.0,\r\n"
-            "  filed10 INT NOT NULL,\r\n"
+            "CREATE TABLE IF NOT EXISTS `test_tbl1` (\r\n"
+			"  `id` INT NOT NULL AUTO_INCREMENT,\r\n"
+			"  `filed3` DATETIME NOT NULL,\r\n"
+            "  `filed4` VARCHAR(1500) NOT NULL,\r\n"
+            "  `filed5` INT NOT NULL,\r\n"
+            "  `filed6` INT NOT NULL,\r\n"
+            "  `filed7` INT NOT NULL,\r\n"
+            "  `filed8` INT NOT NULL,\r\n"
+            "  `filed9` DOUBLE DEFAULT 0.0,\r\n"
+            "  `filed10` INT NOT NULL,\r\n"
 			"  PRIMARY KEY (id),\r\n"
             "  KEY idx_filed4 (filed4(255)),\r\n"
             "  UNIQUE KEY idx_f5_and_f7 (filed5,filed7),\r\n"
@@ -150,7 +150,7 @@ bool UnitTestStorageStruct::run() {
     if (!compareN("vQueries2", vQueries2.size(), 1)) {
         bTestSuccess = false;
     } else {
-        bTestSuccess = compareS(bTestSuccess, vQueries2[0], "DROP TABLE IF EXISTS test_tbl2;");
+        bTestSuccess = compareS(bTestSuccess, vQueries2[0], "DROP TABLE IF EXISTS `test_tbl2`;");
     }
 
     // Test Later table
@@ -165,10 +165,10 @@ bool UnitTestStorageStruct::run() {
     if (!compareN("vQueries3", vQueries3.size(), 4)) {
         bTestSuccess = false;
     } else {
-        bTestSuccess = compareS(bTestSuccess, vQueries3[0], "ALTER TABLE test_tbl3 DROP COLUMN filed2;");
-        bTestSuccess = compareS(bTestSuccess, vQueries3[1], "ALTER TABLE test_tbl3 DROP COLUMN filed3;");
-        bTestSuccess = compareS(bTestSuccess, vQueries3[2], "ALTER TABLE test_tbl3 ADD COLUMN filed5 VARCHAR(123) NOT NULL;");
-        bTestSuccess = compareS(bTestSuccess, vQueries3[3], "ALTER TABLE test_tbl3 MODIFY filed1 VARCHAR(124) NOT NULL;");
+        bTestSuccess = compareS(bTestSuccess, vQueries3[0], "ALTER TABLE `test_tbl3` DROP COLUMN `filed2`;");
+        bTestSuccess = compareS(bTestSuccess, vQueries3[1], "ALTER TABLE `test_tbl3` DROP COLUMN `filed3`;");
+        bTestSuccess = compareS(bTestSuccess, vQueries3[2], "ALTER TABLE `test_tbl3` ADD COLUMN `filed5` VARCHAR(123) NOT NULL;");
+        bTestSuccess = compareS(bTestSuccess, vQueries3[3], "ALTER TABLE `test_tbl3` MODIFY `filed1` VARCHAR(124) NOT NULL;");
     }
 
     return bTestSuccess;
