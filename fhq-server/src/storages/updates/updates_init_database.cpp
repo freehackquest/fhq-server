@@ -1,7 +1,7 @@
 #include <updates_init_database.h>
 
 UpdatesInitDatabase::UpdatesInitDatabase()
-    : StorageUpdateBase("", "u0097", "Init database u0097") {
+    : StorageUpdateBase("", "u0099", "Init database u0099") {
 
 }
 
