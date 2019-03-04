@@ -1,7 +1,7 @@
 #include <updates_init_database.h>
 
 UpdatesInitDatabase::UpdatesInitDatabase()
-    : StorageUpdateBase("", "u0070", "Init database u0070") {
+    : StorageUpdateBase("", "u0077", "Init database u0077") {
 
 }
 
@@ -34,10 +34,9 @@ bool UpdatesInitDatabase::apply(Storage *pStorage, std::string &error){
 		feedback.addColumn(StorageStructColumn("type").string(255).notNull().defaultValue("''"));
 		feedback.addColumn(StorageStructColumn("text").string(255).notNull());
 		feedback.addColumn(StorageStructColumn("userid").number().notNull().defaultValue("0"));
+		feedback.addColumn(StorageStructColumn("from").string(255).notNull().defaultValue("''"));
 		vTables.push_back(feedback);
 	}
-
-	
 
 	{
 		StorageStruct feedback_msg("feedback_msg", StorageStructTableMode::CREATE);
@@ -171,6 +170,7 @@ bool UpdatesInitDatabase::apply(Storage *pStorage, std::string &error){
 		users.addColumn(StorageStructColumn("city").string(255).defaultValue("''"));
 		users.addColumn(StorageStructColumn("latitude").doubleNumber().defaultValue("0.0"));
 		users.addColumn(StorageStructColumn("longitude").doubleNumber().defaultValue("0.0"));
+		users.addColumn(StorageStructColumn("rating").number().defaultValue("0"));
 		vTables.push_back(users);
 	}
 
@@ -227,6 +227,48 @@ bool UpdatesInitDatabase::apply(Storage *pStorage, std::string &error){
 		users_tokens_invalid.addColumn(StorageStructColumn("end_date").datetime().notNull());
 		vTables.push_back(users_tokens_invalid);
 	}
+
+	{
+		StorageStruct classbook("classbook", StorageStructTableMode::CREATE);
+		classbook.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
+		classbook.addColumn(StorageStructColumn("parentid").number().notNull());
+		classbook.addColumn(StorageStructColumn("uuid").string(128).notNull());
+		classbook.addColumn(StorageStructColumn("parentuuid").string(128).notNull());
+		classbook.addColumn(StorageStructColumn("name_ru").string(128).notNull());
+		classbook.addColumn(StorageStructColumn("name_en").string(128).notNull());
+		classbook.addColumn(StorageStructColumn("dt").datetime().notNull());
+		vTables.push_back(classbook);
+	}
+
+	{
+		StorageStruct chatmessages("chatmessages", StorageStructTableMode::CREATE);
+		chatmessages.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
+		chatmessages.addColumn(StorageStructColumn("user").string(128).notNull());
+		chatmessages.addColumn(StorageStructColumn("message").string(255).notNull());
+		chatmessages.addColumn(StorageStructColumn("dt").datetime().notNull());
+		vTables.push_back(chatmessages);
+	}
+
+	{
+		StorageStruct users_captcha("users_captcha", StorageStructTableMode::CREATE);
+		users_captcha.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
+		users_captcha.addColumn(StorageStructColumn("captcha_uuid").string(127).notNull());
+		users_captcha.addColumn(StorageStructColumn("captcha_val").string(127).notNull());
+		users_captcha.addColumn(StorageStructColumn("dt_expired").datetime().notNull());
+		vTables.push_back(users_captcha);
+	}
+
+	{
+		StorageStruct quests_writeups("quests_writeups", StorageStructTableMode::CREATE);
+		quests_writeups.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
+		quests_writeups.addColumn(StorageStructColumn("questid").number().notNull());
+		quests_writeups.addColumn(StorageStructColumn("type").string(64).notNull());
+		quests_writeups.addColumn(StorageStructColumn("link").string(1024).notNull());
+		quests_writeups.addColumn(StorageStructColumn("text").string(4048).notNull());
+		quests_writeups.addColumn(StorageStructColumn("dt").datetime().notNull());
+		vTables.push_back(quests_writeups);
+	}
+
 
 	for (int i = 0; i < vTables.size(); i++) {
 		StorageStruct st = vTables[i];

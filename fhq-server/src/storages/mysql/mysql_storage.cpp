@@ -305,7 +305,10 @@ std::string MySqlStorage::prepareStringValue(const std::string &sValue) {
     sResult.push_back('"');
     for (int i = 0; i < sValue.size(); i++) {
         char c = sValue[i];
-        if (c == '\n' || c == '\r' || c == '\\' || c == '"' || c == '\'') {
+        if (c == '\n') {
+            sResult.push_back('\\');
+            sResult.push_back('n');
+        } else if (c == '\n' || c == '\r' || c == '\\' || c == '"' || c == '\'') {
             sResult.push_back('\\');
             sResult.push_back(c);
         } else if (c == 0) {
@@ -324,7 +327,7 @@ std::string MySqlStorage::prepareStringValue(const std::string &sValue) {
 std::string MySqlStorage::generateLineColumnForSql(StorageStructColumn &c) {
     std::string sSqlColumn = "";
 
-    sSqlColumn += c.columnName();
+    sSqlColumn += "`" + c.columnName() + "`";
     
     if (c.columnType() == "number") {
         sSqlColumn += " INT";
