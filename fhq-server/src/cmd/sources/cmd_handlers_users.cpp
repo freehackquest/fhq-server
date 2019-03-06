@@ -1477,7 +1477,7 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest){
         nOnPage = jsonRequest.at("onpage");
     }
 
-    nlohmann::json users;
+    auto jsonUsers = nlohmann::json::array();
     QSqlDatabase db = *(pDatabase->database());
     QString where = filters.join(" AND ");
     if(where.length() > 0){
@@ -1488,14 +1488,14 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest){
     {
         QSqlQuery query(db);
         query.prepare("SELECT COUNT(*) cnt FROM users " + where);
-        foreach(QString key, filter_values.keys() ){
+        foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
-        if(!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
-        if(query.next()) {
+        if (query.next()) {
             QSqlRecord record = query.record();
             nCount = record.value("cnt").toInt();
         }
@@ -1538,11 +1538,11 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest){
             user["region"] = sRegion.toStdString();
             user["city"] = sCity.toStdString();
             user["role"] = sRole.toStdString();
-            users.push_back(user);
+            jsonUsers.push_back(user);
         }
     }
 
-    jsonResponse["data"] = users;
+    jsonResponse["data"] = jsonUsers;
     jsonResponse["onpage"] = nOnPage;
     jsonResponse["page"] = nPage;
     jsonResponse["count"] = nCount;
