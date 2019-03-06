@@ -252,8 +252,6 @@ list (APPEND FHQSRV_SOURCES "src/storages/updates/updates_init_database.h")
 list (APPEND FHQSRV_SOURCES "src/storages/updates/updates_init_database.cpp")
 list (APPEND FHQSRV_SOURCES "src/storages/updates/update0100.h")
 list (APPEND FHQSRV_SOURCES "src/storages/updates/update0100.cpp")
-list (APPEND FHQSRV_SOURCES "src/storages/updates/updates.h")
-list (APPEND FHQSRV_SOURCES "src/storages/updates/updates.cpp")
 # main
 list (APPEND FHQSRV_SOURCES "src/main.cpp")
 

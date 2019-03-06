@@ -581,45 +581,74 @@ Storage::Storage() {
     TAG = "Storage";
 }
 
+// ---------------------------------------------------------------------
+
+bool Storage::addStruct(StorageStruct &storageStruct) {
+    std::string sTableName = storageStruct.tableName();
+    std::map<std::string,StorageStruct>::iterator it = m_mapStructs.find(sTableName);
+
+    if (storageStruct.mode() == StorageStructTableMode::CREATE) {
+        if (it != m_mapStructs.end()) {
+            Log::err(TAG, "Struct '" + sTableName + "' already defined");
+            Log::warn(TAG, "TODO need drop table");
+            return false;
+        }
+        m_mapStructs.insert( std::pair<std::string,StorageStruct>(sTableName,storageStruct) );
+    } else  if (storageStruct.mode() == StorageStructTableMode::ALTER) {
+        if (it == m_mapStructs.end()) {
+            Log::err(TAG, "Not found table '" + sTableName + "'");
+            return false;
+        }
+        m_mapStructs.find(sTableName)->second.mergeWith(storageStruct);
+    } else if (storageStruct.mode() == StorageStructTableMode::DROP) {
+        if (it == m_mapStructs.end()) {
+            Log::err(TAG, "Not found table '" + sTableName + "'");
+            return false;
+        }
+        m_mapStructs.erase(sTableName);
+    } else {
+        Log::err(TAG, "Unknown operation with table");
+        return false;
+    }
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
 bool Storage::applyStruct(StorageConnection *pConn, StorageStruct &storageStruct) {
+    std::string sTableName = storageStruct.tableName();
+    std::string sStartApply = "";
+    std::string sAppliedSuccess = "";
+    std::string sAppliedFailed = "";
+    if (storageStruct.mode() == StorageStructTableMode::CREATE) {
+        sStartApply = "Creating table " + sTableName;
+        sAppliedSuccess = "Created table " +  sTableName;
+        sAppliedFailed = "Could not create table " +  sTableName;
+    } else if (storageStruct.mode() == StorageStructTableMode::DROP) {
+        sStartApply = "Dropping";
+        sAppliedSuccess = "Dropped table " +  sTableName;
+        sAppliedFailed = "Could not drop table " +  sTableName;
+    } else if (storageStruct.mode() == StorageStructTableMode::ALTER) {
+        sStartApply = "Altering table " +  sTableName;
+        sAppliedSuccess = "Altered table " +  sTableName;
+        sAppliedFailed = "Could not alter table " +  sTableName;
+    }
+    
+    Log::info(TAG, sStartApply);
     std::vector<std::string> v = this->prepareSqlQueries(storageStruct);
     for (int i = 0; i < v.size(); i++) {
         std::string sQuery = v[i];
         if (!pConn->executeQuery(sQuery)) {
+            Log::err(TAG, sAppliedFailed + "\n    query -> " + sQuery);
             return false;
         }
     }
-
-    std::string sTableName = storageStruct.tableName();
-    if (storageStruct.mode() == StorageStructTableMode::CREATE) {
-        if (m_mapStructs.count(sTableName)) {
-            Log::err(TAG, "Struct '" + sTableName + "' already defined");
-            Log::warn(TAG, "TODO need drop table");
-            return false;
-        } else {
-            m_mapStructs.insert( std::pair<std::string,StorageStruct>(sTableName,storageStruct) );
-        }
+    
+    if (!this->addStruct(storageStruct)) {
+        Log::err(TAG, sAppliedFailed);
+        return false;
     }
-
-    if (storageStruct.mode() == StorageStructTableMode::ALTER) {
-        if (!m_mapStructs.count(sTableName)) {
-            Log::err(TAG, "Not found table '" + sTableName + "'");
-            return false;
-        } else {
-            m_mapStructs.find(sTableName)->second.mergeWith(storageStruct);
-        }
-    }
-
-    if (storageStruct.mode() == StorageStructTableMode::DROP) {
-        if (!m_mapStructs.count(sTableName)) {
-            Log::err(TAG, "Not found table '" + sTableName + "'");
-            return false;
-        } else {
-            m_mapStructs.erase(sTableName);
-        }
-        
-    }
-
+    Log::ok(TAG, sAppliedSuccess);
     return true;
 }
 

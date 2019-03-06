@@ -54,10 +54,12 @@ class StorageUpdateBase {
         const std::string &from_version();
         const std::string &version();
         const std::string &description();
-        virtual bool apply(Storage *pStorage, std::string &error) = 0;
+        const std::vector<StorageStruct> &listOfStructChanges();
+        virtual bool custom(Storage *pStorage, StorageConnection *pConn, std::string &error) = 0;
 
     protected:
         std::string TAG;
+        std::vector<StorageStruct> m_vStructChanges;
         
     private:
         std::string m_sFromVersion;
@@ -72,6 +74,7 @@ extern std::vector<StorageUpdateBase*> *g_pStorageUpdates;
 class StorageUpdates {
     public:
         static void initGlobalVariables();
+        static StorageUpdateBase* findUpdateFromVersion(const std::string &sFromVersion);
         static bool apply(Storage *pStorage);
 };
 

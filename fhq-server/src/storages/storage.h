@@ -178,6 +178,7 @@ class Storage {
         virtual std::string prepareStringValue(const std::string &sValue) = 0;
 
         virtual std::vector<std::string> prepareSqlQueries(StorageStruct &storageStruct) = 0;
+        bool addStruct(StorageStruct &storageStruct);
         bool applyStruct(StorageConnection *pConn, StorageStruct &storageStruct);
 
         virtual std::vector<std::string> prepareSqlQueries(const StorageInsert &storageInsert) = 0;

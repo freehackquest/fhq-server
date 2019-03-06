@@ -1,31 +1,20 @@
 #include <update0100.h>
 
-REGISTRY_UPDATE(Update0100)
+REGISTRY_STORAGE_UPDATE(Update0100)
 
 Update0100::Update0100()
-    : UpdateBase("u0099", "u0100", "Update table quests_writeups"){
+    : StorageUpdateBase("u0099", "u0100", "Update table quests_writeups") {
+    
+    // fill the array with struct changes
+    StorageStruct quests_writeups("quests_writeups", StorageStructTableMode::ALTER);
+    quests_writeups.addColumn(StorageStructColumn("approve").number().notNull().defaultValue("1"));
+    quests_writeups.addColumn(StorageStructColumn("userid").number().notNull().defaultValue("0"));
+    m_vStructChanges.push_back(quests_writeups);
+
+    // will be automaticly applied by update algorithm
 }
 
-bool Update0100::update(QSqlDatabase &db, std::string &error){
-
-    {
-        QSqlQuery query(db);
-        query.prepare("ALTER TABLE quests_writeups ADD COLUMN approve INT DEFAULT 1;");
-        if (!query.exec()) {
-            error = query.lastError().text().toStdString();
-            Log::err(TAG, "The problem with update (1) " + error);
-            return false;
-        }
-    }
-
-    {
-        QSqlQuery query(db);
-        query.prepare("ALTER TABLE quests_writeups ADD COLUMN userid INT DEFAULT 0;");
-        if (!query.exec()) {
-            error = query.lastError().text().toStdString();
-            Log::err(TAG, "The problem with update (2) " + error);
-            return false;
-        }
-    }
+bool Update0100::custom(Storage *pStorage, StorageConnection *pConn, std::string &error) {
+    // here you can migrate data of correction if not just return true;
     return true;
 }

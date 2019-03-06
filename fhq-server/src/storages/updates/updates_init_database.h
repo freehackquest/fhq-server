@@ -7,9 +7,7 @@ class UpdatesInitDatabase : public StorageUpdateBase {
 	
     public:
         UpdatesInitDatabase();
-        virtual bool apply(Storage *pStorage, std::string &error);
+        virtual bool custom(Storage *pStorage, StorageConnection *pConn, std::string &error);
 };
-
-REGISTRY_STORAGE_UPDATE(UpdatesInitDatabase)
 
 #endif // UPDATES_INIT_DATABASE_H
