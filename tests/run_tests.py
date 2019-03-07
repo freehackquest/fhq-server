@@ -46,6 +46,8 @@ try:
     # run_test('test_users.py')
     run_test('test_games.py')
     run_test('test_leaks.py')
+
+    run_test('test_stats.py')
     
 except Exception as e:
     fhqtest.log_err(str(e))
