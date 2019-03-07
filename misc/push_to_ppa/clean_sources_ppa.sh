@@ -9,6 +9,6 @@ rm -f ../../fhq-server/debian/files
 rm -rf ../../fhq-server/build
 rm -rf ../../fhq-server/.vscode
 rm -rf ../../fhq-server/libfhqcli-py
+rm -rf ../../fhq-server/libfhqcli-web-js
 rm -rf ../../fhq-server/tmp
 rm ../../fhq-server_*
-
