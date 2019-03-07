@@ -170,7 +170,7 @@ print( " -> DONE ")
 
 print( " -> Prepare tar.gz source package ")
 
-os.system("tar -acf fhq-server_" + current_version + "-" + ppa_name_ + ".orig.tar.gz fhq-server")
+os.system("cd ./ && tar -acf fhq-server_" + current_version + "-" + ppa_name_ + ".orig.tar.gz fhq-server")
 os.system("cd ./fhq-server && debuild -S -sa")
 
 print( " -> DONE ")

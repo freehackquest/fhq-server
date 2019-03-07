@@ -7,7 +7,7 @@ import subprocess
 import fhqtest
 import signal
 import time
-
+import traceback
 
 fhqtest.print_header(" > > > TESTS: begin ")
 
@@ -47,6 +47,7 @@ try:
     run_test('test_games.py')
     run_test('test_leaks.py')
 
+    # last step
     run_test('test_stats.py')
     
 except Exception as e:
