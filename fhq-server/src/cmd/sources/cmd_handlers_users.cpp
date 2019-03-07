@@ -1517,7 +1517,7 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest){
             QString sNick = record.value("nick").toString().toHtmlEscaped();
             QString sUniversity = record.value("university").toString().toHtmlEscaped();
             int nRating = record.value("rating").toInt();
-            QString sCreated = record.value("dt_created").toString().toHtmlEscaped();
+            QString sCreated = record.value("dt_create").toString().toHtmlEscaped();
             QString sDTLastLogin = record.value("dt_last_login").toString().toHtmlEscaped();
             QString sLastIP = record.value("last_ip").toString().toHtmlEscaped();
             QString sCountry = record.value("country").toString().toHtmlEscaped();
