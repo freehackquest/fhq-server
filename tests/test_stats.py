@@ -39,7 +39,7 @@ try:
         else:
             fhqtest.print_success(s)
 
-    fhqtest.print_bold("API Coverage " + str(called_cmd_count*100/all_cmd_count) + "%")
+    fhqtest.print_bold("***********\n*API Coverage " + str(called_cmd_count*100/all_cmd_count) + "%\n***********")
 
 except Exception as e:
     fhqtest.log_err(str(e))

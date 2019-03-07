@@ -31,13 +31,13 @@ try:
 
     fhqtest.print_bold("Clean up test data... ")
     users = fhqtest.admin_session.users({"onpage": 10, "page": 0, "filter_text": "user1"})
-    pprint(users)
     users_count = users["count"]
     for usr in users["data"]:
         if usr['email'] == "user1":
             user1 = usr
         if usr['created'] == '':
             fhqtest.log_err("Field created could not be empty for user #" + str(usr['id']))
+            exit(-1)
 
     users = fhqtest.admin_session.users({"onpage": 10, "page": 0, "filter_text": "user2"})
     users_count = users["count"]
@@ -46,6 +46,7 @@ try:
             user2 = usr
         if usr['created'] == '':
             fhqtest.log_err("Field created could not be empty for user #" + str(usr['id']))
+            exit(-1)
 
     users = fhqtest.admin_session.users({"onpage": 10, "page": 0, "filter_text": "user3"})
     users_count = users["count"]
@@ -54,6 +55,7 @@ try:
             user3 = usr
         if usr['created'] == '':
             fhqtest.log_err("Field created could not be empty for user #" + str(usr['id']))
+            exit(-1)
 
     users = fhqtest.admin_session.users({"onpage": 10, "page": 0, "filter_text": "user3_test"})
     users_count = users["count"]
@@ -62,9 +64,14 @@ try:
             user3_test = usr
         if usr['created'] == '':
             fhqtest.log_err("Field created could not be empty for user #" + str(usr['id']))
+            exit(-1)
 
     if user1 != None:
-        fhqtest.admin_session.user_delete({"userid": user1['id'], "password": fhqtest.ADMIN_PASSWORD})
+        user1_delete = fhqtest.admin_session.user_delete({
+            "userid": user1['id'], 
+            "password": fhqtest.ADMIN_PASSWORD
+        })
+        fhqtest.check_response(user1_delete, "User1 succesfull removed")
         user1 = None
 
     if user2 != None:
@@ -117,7 +124,7 @@ try:
     fhqtest.alert(user3 == None, 'Could not get response (users_add/user3)');
     fhqtest.check_response(user1, "User3 succesfull created")
 
-    fhqtest.print_bold("Check unique user by email...")
+    fhqtest.print_bold("Check unique user3 by email...")
     user3_again = fhqtest.admin_session.users_add({
         "uuid": fhqtest.USER3_UUID,
         "email": "user3",
@@ -154,32 +161,51 @@ try:
     fhqtest.print_bold("Update user country... ")
     fhqtest.alert(user_found["country"] != "", 'User country must be empty ')
 
-    user2_update = fhqtest.admin_session.user_update({"userid": user_found["id"], "country": "Some country"})
+    user2_update = fhqtest.admin_session.user_update({
+        "userid": user_found["id"],
+        "country": "Some country",
+        "university": "Some university",
+    })
     fhqtest.alert(user2_update == None, 'Could not find user2')
     fhqtest.check_response(user2_update, "User2 succesfull updated")
     user2_update = user2_update["data"]
     if "country" not in user2_update:
         fhqtest.log_err("Not found field 'country' in response after user update")
+        exit(-1)
     elif user2_update["country"] != "Some country":
         fhqtest.log_err("Field 'country' expected value of 'Some country'")
+        exit(-1)
     if "university" not in user2_update:
         fhqtest.log_err("Not found field 'university' in response after user update")
+        exit(-1)
+    elif  user2_update["university"] != "Some university":
+        fhqtest.log_err("Field 'university' expected value of 'Some university'")
+        exit(-1)
     if "nick" not in user2_update:
         fhqtest.log_err("Not found field 'nick' in response after user update")
+        exit(-1)
     if "about" not in user2_update:
         fhqtest.log_err("Not found field 'about' in response after user update")
+        exit(-1)
     if "created" not in user2_update:
         fhqtest.log_err("Not found field 'created' in response after user update")
+        exit(-1)
     if "region" not in user2_update:
         fhqtest.log_err("Not found field 'region' in response after user update")
+        exit(-1)
     if "email" not in user2_update:
         fhqtest.log_err("Not found field 'email' in response after user update")
+        exit(-1)
     if "role" not in user2_update:
         fhqtest.log_err("Not found field 'role' in response after user update")
-    if "updated" not in user2_update:
-        fhqtest.log_err("Not found field 'updated' in response after user update")
+        exit(-1)
+    # TODO
+    # if "updated" not in user2_update:
+    #     fhqtest.log_err("Not found field 'updated' in response after user update")
+    #     exit(-1)
     if "uuid" not in user2_update:
         fhqtest.log_err("Not found field 'uuid' in response after user update")
+        exit(-1)
 
     fhqtest.print_bold("Login by user2... ")
     user2_session = libfhqcli.FHQCli(fhqtest.TEST_SERVER)
@@ -190,6 +216,56 @@ try:
         fhqtest.print_success("User2 login success - OK")
         user2_session.close()
         user2_session = None
+
+
+    # deprecated method
+    user2_found1 = fhqtest.admin_session.user({"userid": user_found["id"]})
+    fhqtest.alert(user2_found1 == None, 'Could not get user2')
+    fhqtest.check_response(user2_found1, "User2 succesfull got (1)")
+    user2_found1 = user2_found1['data']
+    if "email" not in user2_found1:
+        fhqtest.log_err("Not found field 'email' in response user2_found1")
+        exit(-1)
+    elif user2_found1['email'] != 'user2':
+        fhqtest.log_err("Expected field 'email' value 'user2', but got '" + user2_found1['email'] + "'")
+        exit(-1)
+
+    # TODO
+    user2_found2 = fhqtest.admin_session.users_info({"uuid": user_found["id"]})
+    fhqtest.alert(user2_found2 == None, 'Could not get user2')
+    fhqtest.check_response(user2_found2, "User2 succesfull got (2)")
+    if "email" not in user2_found1:
+        fhqtest.log_err("Not found field 'email' in response user2_found1")
+        exit(-1)
+    elif user2_found1['email'] != 'user2':
+        fhqtest.log_err("Expected field 'email' value 'user2', but got '" + user2_found1['email'] + "'")
+        exit(-1)
+
+    '''curr_user = fhqtest.admin_session.users_info({})
+    fhqtest.alert(curr_user == None, 'Could not get user2')
+    fhqtest.check_response(curr_user, "User2 succesfull got (2)")
+    if "email" not in curr_user:
+        fhqtest.log_err("Not found field 'email' in response curr_user")
+        exit(-1)
+    elif curr_user['email'] != 'user2':
+        fhqtest.log_err("Expected field 'email' value 'user2', but got '" + curr_user['email'] + "'")
+        exit(-1)'''
+
+
+    user2_skills = fhqtest.admin_session.user_skills({"userid": user_found["id"], "password": fhqtest.ADMIN_PASSWORD})
+    fhqtest.alert(user2_skills == None, 'Could not get user skills')
+    fhqtest.check_response(user2_skills, "User2 succesfull got skills")
+    pprint(user2_skills)
+
+    user3_remove = fhqtest.admin_session.user_delete({"userid": user3['data']['userid'], "password": fhqtest.ADMIN_PASSWORD})
+    fhqtest.alert(user3_remove == None, 'Could not remove user')
+    fhqtest.check_response(user3_remove, "User3 succesfull removed")
+
+    user2_remove = fhqtest.admin_session.user_delete({"userid": user_found["id"], "password": fhqtest.ADMIN_PASSWORD})
+    fhqtest.alert(user3_remove == None, 'Could not remove user')
+    fhqtest.check_response(user3_remove, "User3 succesfull removed")
+
+
 
     # test user_change_password
 
