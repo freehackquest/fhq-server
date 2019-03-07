@@ -98,7 +98,7 @@ def init_enviroment():
             "uuid": GAME_UUID1,
             "name": "test",
             "description": "test",
-            "state": "official",
+            "state": "original",
             "form": "online",
             "type": "jeopardy",
             "date_start": "2000-01-01 00:00:00",

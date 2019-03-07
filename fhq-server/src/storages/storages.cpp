@@ -94,7 +94,11 @@ const std::string &StorageUpdateBase::description(){
     return m_sDescription;
 }
 
+// ---------------------------------------------------------------------
 
+const std::vector<StorageStruct> &StorageUpdateBase::listOfStructChanges() {
+    return m_vStructChanges;
+}
 
 // ---------------------------------------------------------------------
 
@@ -103,6 +107,24 @@ void StorageUpdates::initGlobalVariables(){
         // Log::info(std::string(), "Create list updates");
         g_pStorageUpdates = new std::vector<StorageUpdateBase*>();
     }
+}
+
+// ---------------------------------------------------------------------
+
+StorageUpdateBase* StorageUpdates::findUpdateFromVersion(const std::string &sFromVersion) {
+    std::string TAG = "StorageUpdates::findUpdateFromVersion";
+    StorageUpdateBase* pRet = nullptr;
+    for (int i = 0; i < g_pStorageUpdates->size(); i++){
+        StorageUpdateBase* pUpdate = g_pStorageUpdates->at(i);
+        if (sFromVersion == pUpdate->from_version()) {
+            if (pRet == nullptr) {
+                pRet = pUpdate;
+            } else {
+                Log::warn(TAG, "Already defined update with from_version " + sFromVersion);
+            }
+        }
+    }
+    return pRet;
 }
 
 // ---------------------------------------------------------------------
@@ -118,27 +140,64 @@ bool StorageUpdates::apply(Storage *pStorage){
     } else {
         Log::ok(TAG, "Successfully connection to database");
     }
+
+    std::string sFirstVersion = "";
     std::string sLastVersion = pConn->lastDatabaseVersion();
+    Log::info(TAG, "Last Version -> '" + sLastVersion + "'");
 
-    Log::info(TAG, "Last Version -> " + sLastVersion);
-
+    // restore struct of storage before sLastVersion
     bool bHasUpdates = true;
     while (bHasUpdates) {
         bHasUpdates = false;
-        for (int i = 0; i < g_pStorageUpdates->size(); i++){
-            StorageUpdateBase* pUpdate = g_pStorageUpdates->at(i);
-            if (sLastVersion == pUpdate->from_version()) {
-                Log::info(TAG, "Installing update " + pUpdate->from_version() + " -> " + pUpdate->version() + ": " + pUpdate->description());
-                sLastVersion = pUpdate->version();
+        StorageUpdateBase* pUpdate = StorageUpdates::findUpdateFromVersion(sFirstVersion);
+        if (pUpdate != nullptr) {
+            if (sFirstVersion != sLastVersion) {
+                sFirstVersion = pUpdate->version();
+                Log::info(TAG, "Add struct from '" + pUpdate->from_version() + "' -> '" + pUpdate->version() + "'");
                 bHasUpdates = true;
                 std::string error = "";
-                if (!pUpdate->apply(pStorage, error)) {
-                    Log::err(TAG, "Error on install update " + error);
+                std::vector<StorageStruct> vStructChanges = pUpdate->listOfStructChanges();
+                for (int i = 0; i < vStructChanges.size(); i++) {
+                    StorageStruct st = vStructChanges[i];
+                    if (!pStorage->addStruct(st)) {
+                        error = " Problem with add struct '" + st.tableName() + "'";
+                        Log::err(TAG, error);
+                        delete pConn;
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+
+    // apply new updates
+    bHasUpdates = true;
+    while (bHasUpdates) {
+        bHasUpdates = false;
+        StorageUpdateBase* pUpdate = StorageUpdates::findUpdateFromVersion(sLastVersion);
+        if (pUpdate != nullptr) {
+            Log::info(TAG, "Installing update '" + pUpdate->from_version() + "' -> '" + pUpdate->version() + "': " + pUpdate->description());
+            sLastVersion = pUpdate->version();
+            bHasUpdates = true;
+            std::string error = "";
+            std::vector<StorageStruct> vStructChanges = pUpdate->listOfStructChanges();
+
+            // Apply struct
+            for (int i = 0; i < vStructChanges.size(); i++) {
+                StorageStruct st = vStructChanges[i];
+                if (!pStorage->applyStruct(pConn, st)) {
+                    error = "Problem with table '" + st.tableName() + "' in version " + pUpdate->version();
                     delete pConn;
                     return false;
                 }
-                pConn->insertUpdateInfo(pUpdate->version(), pUpdate->description());
             }
+
+            if (!pUpdate->custom(pStorage, pConn, error)) {
+                Log::err(TAG, "Error on install custom update: \n\t -> " + error);
+                delete pConn;
+                return false;
+            }
+            pConn->insertUpdateInfo(pUpdate->version(), pUpdate->description());
         }
     }
 

@@ -12,6 +12,8 @@ set (UNIT_TESTS_LIBRARIES "")
 set (UNIT_TESTS_INCLUDE_DIRS "")
 set (UNIT_TESTS_SOURCES "")
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../fhq-server/cmake/") 
+
 # Sources
 
 # include header dirs
@@ -50,11 +52,6 @@ list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/storage.h")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/storage.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/storages.h")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/storages.cpp")
-
-# TODO include only if libmysqlclient exists 
-list (APPEND UNIT_TESTS_INCLUDE_DIRS "src/storages/mysql")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/mysql/mysql_storage.cpp")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/mysql/mysql_storage.h")
 
 # utils
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/fs.h")
@@ -138,21 +135,33 @@ ENDIF(CURL_FOUND)
 
 ############################
 ##### mysql 
-# Find and make sure the system have the header file
-find_path(MYSQL_HEADER mysql/mysql.h)
-if(MYSQL_HEADER STREQUAL "MYSQL_HEADER-NOTFOUND")
-    message(FATAL_ERROR "Could not find the mysql/mysql.h header file: (ubuntu: apt install libmysqlclient-dev) or (debian: apt install default-libmariadbclient-dev and link: ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/mariadb.pc /usr/lib/x86_64-linux-gnu/pkgconfig/mysqlclient.pc)")
-endif()
+FIND_PACKAGE(MYSQL)
+IF(MYSQL_FOUND)
+  list (APPEND UNIT_TESTS_INCLUDE_DIRS ${MYSQL_INCLUDE_DIR})
+  list (APPEND UNIT_TESTS_LIBRARIES ${MYSQL_LIBRARY})
+  list (APPEND UNIT_TESTS_INCLUDE_DIRS "src/storages/mysql")
+  list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/mysql/mysql_storage.cpp")
+  list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/mysql/mysql_storage.h")
+ELSE(MYSQL_FOUND)
+  MESSAGE(WARNING "Could not find library for MySQL. If not need just ignore this message.")
+ENDIF(MYSQL_FOUND)
+#####
+############################
 
-include(FindPkgConfig)
-pkg_check_modules(LIBMYSQLCLIENT REQUIRED mysqlclient)
 
-foreach(FLAG ${LIBMYSQLCLIENT_CFLAGS_OTHER})
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${FLAG}")
-endforeach()
+############################
+##### PostgreSQL
 
-list (APPEND UNIT_TESTS_INCLUDE_DIRS ${LIBMYSQLCLIENT_LIBRARY_DIRS})
-list (APPEND UNIT_TESTS_LIBRARIES ${LIBMYSQLCLIENT_LIBRARIES})
+# FIND_PACKAGE(PostgreSQL)
+# IF(PostgreSQL_FOUND)
+#  list (APPEND UNIT_TESTS_INCLUDE_DIRS ${PostgreSQL_INCLUDE_DIR})
+#   list (APPEND UNIT_TESTS_LIBRARIES ${PostgreSQL_LIBRARIES})
+#   list (APPEND UNIT_TESTS_INCLUDE_DIRS "src/storages/postgresql")
+#   list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/postgresql/postgresql_storage.cpp")
+#   list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/postgresql/postgresql_storage.h")
+# ELSE(PostgreSQL_FOUND)
+#   MESSAGE(WARNING "Could not find library for PostgreSQL. If it's not need for you just ignore this message.")
+# ENDIF(PostgreSQL_FOUND)
 #####
 ############################
 

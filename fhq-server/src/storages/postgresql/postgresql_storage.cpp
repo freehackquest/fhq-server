@@ -1,28 +1,28 @@
-#include <mysql_storage.h>
+#include <postgresql_storage.h>
 #include <utils_logger.h>
 #include <mysql/mysql.h>
 #include <parse_config.h>
 // #include <fs.h>
 // #include <ts.h>
 
-REGISTRY_STORAGE(MySqlStorage)
+REGISTRY_STORAGE(PostgreSqlStorage)
 
-MySqlStorageConnection::MySqlStorageConnection(MYSQL *pConn, Storage *pStorage) : StorageConnection() {
+PostgreSqlStorageConnection::PostgreSqlStorageConnection(MYSQL *pConn, Storage *pStorage) : StorageConnection() {
     m_pConnection = pConn;
     m_pStorage = pStorage;
-    TAG = "MySqlStorageConenction";
+    TAG = "PostgreSqlStorageConenction";
 }
 
 // ----------------------------------------------------------------------
 
-MySqlStorageConnection::~MySqlStorageConnection() {
+PostgreSqlStorageConnection::~PostgreSqlStorageConnection() {
     mysql_close(m_pConnection);
-    // delete m_pConnection;
+    delete m_pConnection;
 }
 
 // ----------------------------------------------------------------------
 
-bool MySqlStorageConnection::executeQuery(const std::string &sQuery) {
+bool PostgreSqlStorageConnection::executeQuery(const std::string &sQuery) {
     // TODO statistics time
     std::lock_guard<std::mutex> lock(m_mtxConn);
     // Log::info(TAG, "Try " + sQuery);
@@ -39,7 +39,7 @@ bool MySqlStorageConnection::executeQuery(const std::string &sQuery) {
 
 // ----------------------------------------------------------------------
 
-std::string MySqlStorageConnection::lastDatabaseVersion() {
+std::string PostgreSqlStorageConnection::lastDatabaseVersion() {
     std::lock_guard<std::mutex> lock(m_mtxConn);
 
     std::string sLastVersion = "";
@@ -84,7 +84,7 @@ std::string MySqlStorageConnection::lastDatabaseVersion() {
 
 // ----------------------------------------------------------------------
 
-bool MySqlStorageConnection::insertUpdateInfo(const std::string &sVersion, const std::string &sDescription) {
+bool PostgreSqlStorageConnection::insertUpdateInfo(const std::string &sVersion, const std::string &sDescription) {
     std::lock_guard<std::mutex> lock(m_mtxConn);
     std::string sInsertNewVersion = "INSERT INTO updates(version, description, datetime_update) "
         " VALUES(" + m_pStorage->prepareStringValue(sVersion) + ", " + m_pStorage->prepareStringValue(sDescription) + ",NOW());";
@@ -97,8 +97,8 @@ bool MySqlStorageConnection::insertUpdateInfo(const std::string &sVersion, const
 
 // ----------------------------------------------------------------------
 
-MySqlStorage::MySqlStorage() {
-    TAG = "MySqlStorage";
+PostgreSqlStorage::PostgreSqlStorage() {
+    TAG = "PostgreSqlStorage";
     m_sDatabaseHost = "";
     m_sDatabaseName = "";
     m_sDatabaseUser = "";
@@ -108,7 +108,7 @@ MySqlStorage::MySqlStorage() {
 
 // ----------------------------------------------------------------------
 
-bool MySqlStorage::applyConfigFromFile(const std::string &sFilePath) {
+bool PostgreSqlStorage::applyConfigFromFile(const std::string &sFilePath) {
     ParseConfig parseConfig(sFilePath);
 	parseConfig.load();
 
@@ -154,8 +154,8 @@ bool MySqlStorage::applyConfigFromFile(const std::string &sFilePath) {
 
 // ----------------------------------------------------------------------
 
-StorageConnection * MySqlStorage::connect() {
-    MySqlStorageConnection *pConn = nullptr;
+StorageConnection * PostgreSqlStorage::connect() {
+    PostgreSqlStorageConnection *pConn = nullptr;
     MYSQL *pDatabase = mysql_init(NULL);
     if (!mysql_real_connect(pDatabase, 
             m_sDatabaseHost.c_str(),
@@ -166,44 +166,44 @@ StorageConnection * MySqlStorage::connect() {
         Log::err(TAG, "Connect error: " + std::string(mysql_error(pDatabase)));
         Log::err(TAG, "Failed to connect.");
     } else {
-        pConn = new MySqlStorageConnection(pDatabase, this);
+        pConn = new PostgreSqlStorageConnection(pDatabase, this);
     }
     return pConn;
 }
 
 // ----------------------------------------------------------------------
 
-void MySqlStorage::clean() {
+void PostgreSqlStorage::clean() {
 
 }
 
 // ----------------------------------------------------------------------
 
-std::vector<std::string> MySqlStorage::prepareSqlQueries(StorageStruct &storageStruct) {
+std::vector<std::string> PostgreSqlStorage::prepareSqlQueries(StorageStruct &storageStruct) {
     std::vector<std::string> vRet;
     if (storageStruct.mode() == StorageStructTableMode::ALTER) {
         // drop columns
         std::vector<std::string> vDropColumns = storageStruct.listDropColumns();
         for (int i = 0; i < vDropColumns.size(); i++) {
-            vRet.push_back("ALTER TABLE `" + storageStruct.tableName() + "` DROP COLUMN `" + vDropColumns[i] + "`;");
+            vRet.push_back("ALTER TABLE " + storageStruct.tableName() + " DROP COLUMN " + vDropColumns[i] + ";");
         }
         
         // add columns
         std::vector<StorageStructColumn> vAddColumns = storageStruct.listAddColumns();
         for (int i = 0; i < vAddColumns.size(); i++) {
-            vRet.push_back("ALTER TABLE `" + storageStruct.tableName() + "` ADD COLUMN " + generateLineColumnForSql(vAddColumns[i]) + ";");
+            vRet.push_back("ALTER TABLE " + storageStruct.tableName() + " ADD COLUMN " + generateLineColumnForSql(vAddColumns[i]) + ";");
         }
 
         // alter columns
         std::vector<StorageStructColumn> vAlterColumns = storageStruct.listAlterColumns();
         for (int i = 0; i < vAlterColumns.size(); i++) {
-            vRet.push_back("ALTER TABLE `" + storageStruct.tableName() + "` MODIFY " + generateLineColumnForSql(vAlterColumns[i]) + ";");
+            vRet.push_back("ALTER TABLE " + storageStruct.tableName() + " MODIFY " + generateLineColumnForSql(vAlterColumns[i]) + ";");
         }
     } else if (storageStruct.mode() == StorageStructTableMode::DROP) {
-        vRet.push_back("DROP TABLE IF EXISTS `" + storageStruct.tableName() + "`;");
+        vRet.push_back("DROP TABLE IF EXISTS " + storageStruct.tableName() + ";");
     } else if (storageStruct.mode() == StorageStructTableMode::CREATE) {
         std::string sQuery = "";
-        sQuery += "CREATE TABLE IF NOT EXISTS `" + storageStruct.tableName() + "` (\r\n";
+        sQuery += "CREATE TABLE IF NOT EXISTS " + storageStruct.tableName() + " (\r\n";
         std::vector<std::string> vCreateTableContent;
         std::vector<std::string> vCreateTableContentIndexes;
         std::vector<std::string> vCreateTableContentUniqueIndexes;
@@ -268,29 +268,35 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(StorageStruct &storageS
 
 // ----------------------------------------------------------------------
 
-std::vector<std::string> MySqlStorage::prepareSqlQueries(const StorageInsert &storageInsert) {
+std::vector<std::string> PostgreSqlStorage::prepareSqlQueries(const StorageInsert &storageInsert) {
     std::vector<std::string> vRet;
     std::string sSql = "";
     std::string sValues = "";
 
-    std::vector<StorageColumnValue> values = storageInsert.values();
-    for (int i = 0; i < values.size(); i++) {
-        StorageColumnValue v = values[i];
-        sSql += (sSql.length() > 0 ? ", " : "");
-        sSql += v.getColumnName();
-        sValues += (sValues.length() > 0 ? ", " : "");
-        
-        if (v.getColumnType() == StorageStructColumnType::STRING) {
-            sValues += this->prepareStringValue(v.getString());
-        } else if (v.getColumnType() == StorageStructColumnType::DATETIME) {
-            sValues += this->prepareStringValue(v.getString());
-        } else if (v.getColumnType() == StorageStructColumnType::NUMBER) {
-            sValues += std::to_string(v.getInt());
-        } else if (v.getColumnType() == StorageStructColumnType::DOUBLE_NUMBER) {
-            sValues += std::to_string(v.getDouble());
-        } else {
-            Log::err(TAG, "Unknown type " + std::to_string(v.getColumnType()));
+    std::map<std::string, std::string> mapCopy1 = storageInsert.stringValues();
+    for (std::map<std::string, std::string>::iterator it = mapCopy1.begin(); it != mapCopy1.end(); ++it) {
+        if (sSql.length() > 0) {
+            sSql += ", ";
         }
+        sSql += it->first;
+
+        if (sValues.length() > 0) {
+            sValues += ", ";
+        }
+        sValues += this->prepareStringValue(it->second);
+    }
+
+    std::map<std::string, int> mapCopy2 = storageInsert.intValues();
+    for (std::map<std::string, int>::iterator it = mapCopy2.begin(); it != mapCopy2.end(); ++it) {
+        if (sSql.length() > 0) {
+            sSql += ", ";
+        }
+        sSql += it->first;
+
+        if (sValues.length() > 0) {
+            sValues += ", ";
+        }
+        sValues += std::to_string(it->second);
     }
     vRet.push_back("INSERT INTO " + storageInsert.tableName() + "(" + sSql + ") VALUES(" + sValues + ");");
     return vRet;
@@ -298,20 +304,14 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(const StorageInsert &st
 
 // ----------------------------------------------------------------------
 
-std::string MySqlStorage::prepareStringValue(const std::string &sValue) {
+std::string PostgreSqlStorage::prepareStringValue(const std::string &sValue) {
     // escaping simbols  NUL (ASCII 0), \n, \r, \, ', ", и Control-Z.
     std::string sResult;
     sResult.reserve(sValue.size()*2);
     sResult.push_back('"');
     for (int i = 0; i < sValue.size(); i++) {
         char c = sValue[i];
-        if (c == '\n') {
-            sResult.push_back('\\');
-            sResult.push_back('n');
-        } else if (c == '\r') {
-            sResult.push_back('\\');
-            sResult.push_back('r');
-        } else if (c == '\\' || c == '"' || c == '\'') {
+        if (c == '\n' || c == '\r' || c == '\\' || c == '"' || c == '\'') {
             sResult.push_back('\\');
             sResult.push_back(c);
         } else if (c == 0) {
@@ -327,10 +327,10 @@ std::string MySqlStorage::prepareStringValue(const std::string &sValue) {
 
 // ----------------------------------------------------------------------
 
-std::string MySqlStorage::generateLineColumnForSql(StorageStructColumn &c) {
+std::string PostgreSqlStorage::generateLineColumnForSql(StorageStructColumn &c) {
     std::string sSqlColumn = "";
 
-    sSqlColumn += "`" + c.columnName() + "`";
+    sSqlColumn += c.columnName();
     
     if (c.columnType() == "number") {
         sSqlColumn += " INT";
@@ -340,8 +340,6 @@ std::string MySqlStorage::generateLineColumnForSql(StorageStructColumn &c) {
         sSqlColumn += " TEXT";
     } else if (c.columnType() == "datetime") {
         sSqlColumn += " DATETIME";
-    } else if (c.columnType() == "doubleNumber") {
-        sSqlColumn += " DOUBLE";
     } else {
         Log::err(TAG, "Unknown columnType " + c.columnType());
     }

@@ -7,6 +7,17 @@
 
 // ---------------------------------------------------------------------
 
+enum StorageStructColumnType {
+    DATETIME,
+    STRING,
+    NUMBER,
+    DOUBLE_NUMBER
+};
+
+// TODO cast to string
+
+// ---------------------------------------------------------------------
+
 class StorageStructColumn {
     public:
         StorageStructColumn(const std::string &sColumnName);
@@ -16,6 +27,7 @@ class StorageStructColumn {
         StorageStructColumn &text();
         StorageStructColumn &datetime();
         StorageStructColumn &number();
+        StorageStructColumn &doubleNumber();
         StorageStructColumn &primaryKey();
         StorageStructColumn &defaultValue(const std::string& sDefault);
         StorageStructColumn &enableIndex();
@@ -93,6 +105,29 @@ class StorageStruct {
 
 // ---------------------------------------------------------------------
 
+class StorageColumnValue {
+    public:
+        StorageColumnValue(const std::string &sColumnName, StorageStructColumnType nType);
+        void setValue(std::string sValue);
+        void setValue(int nValue);
+        void setValue(double nValue);
+        std::string getColumnName();
+        StorageStructColumnType getColumnType();
+        std::string getString();
+        int getInt();
+        double getDouble();
+
+    private:
+        std::string m_sColumnName;
+        StorageStructColumnType m_nColumnType;
+
+        std::string m_sStringValue;
+        int m_nIntValue;
+        double m_nDoubleValue;
+};
+
+// ---------------------------------------------------------------------
+
 class StorageInsert {
     public:
         StorageInsert(const std::string &sTableName);
@@ -100,16 +135,15 @@ class StorageInsert {
 
         void bindValue(const std::string &sColumnName, const std::string &sValue);
         void bindValue(const std::string &sColumnName, int nValue);
-        std::map<std::string, std::string> stringValues() const;
-        std::map<std::string, int> intValues() const;
+        void bindValue(const std::string &sColumnName, double nValue);
+        std::vector<StorageColumnValue> values() const;
         bool isValid(const StorageStruct &storageStruct) const;
 
     private:
         bool exists(const std::string &sColumnName);
         std::string TAG;
         std::string m_sTableName;
-        std::map<std::string, std::string> m_mapStringValues;
-        std::map<std::string, int> m_mapIntValues;
+        std::vector<StorageColumnValue> m_vValues;
 };
 
 // ---------------------------------------------------------------------
@@ -117,6 +151,7 @@ class StorageInsert {
 class StorageConnection {
     public:
         StorageConnection();
+        virtual ~StorageConnection();
         virtual bool executeQuery(const std::string &sQuery) = 0; // TODO redesign in future
         virtual std::string lastDatabaseVersion() = 0;
         virtual bool insertUpdateInfo(const std::string &sVersion, const std::string &sDescription) = 0;
@@ -143,6 +178,7 @@ class Storage {
         virtual std::string prepareStringValue(const std::string &sValue) = 0;
 
         virtual std::vector<std::string> prepareSqlQueries(StorageStruct &storageStruct) = 0;
+        bool addStruct(StorageStruct &storageStruct);
         bool applyStruct(StorageConnection *pConn, StorageStruct &storageStruct);
 
         virtual std::vector<std::string> prepareSqlQueries(const StorageInsert &storageInsert) = 0;

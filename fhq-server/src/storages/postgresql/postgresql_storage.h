@@ -6,10 +6,10 @@
 #include <mysql/mysql.h>
 #include <mutex>
 
-class MySqlStorageConnection : public StorageConnection {
+class PostgreSqlStorageConnection : public StorageConnection {
     public:
-        MySqlStorageConnection(MYSQL *pConn, Storage *pStorage);
-        virtual ~MySqlStorageConnection();
+        PostgreSqlStorageConnection(MYSQL *pConn, Storage *pStorage);
+        virtual ~PostgreSqlStorageConnection();
         virtual bool executeQuery(const std::string &sQuery);
         virtual std::string lastDatabaseVersion();
         virtual bool insertUpdateInfo(const std::string &sVersion, const std::string &sDescription);
@@ -19,9 +19,9 @@ class MySqlStorageConnection : public StorageConnection {
         Storage *m_pStorage;
 };
 
-class MySqlStorage : public Storage {
+class PostgreSqlStorage : public Storage {
     public:
-        MySqlStorage();
+        PostgreSqlStorage();
         static std::string type() { return "mysql"; };
         virtual bool applyConfigFromFile(const std::string &sFilePath);
         virtual StorageConnection *connect();

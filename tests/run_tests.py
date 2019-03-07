@@ -43,9 +43,11 @@ try:
         if p_test.returncode != 0:
             sys.exit(-1)
 
-    # run_test('test_users.py')
+    run_test('test_users.py')
     run_test('test_games.py')
     run_test('test_leaks.py')
+
+    run_test('test_stats.py')
     
 except Exception as e:
     fhqtest.log_err(str(e))

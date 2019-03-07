@@ -1,7 +1,9 @@
 #include <employ_server_config.h>
 #include <employ_database.h>
-#include <updates.h>
 #include <QThread>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QVariant>
 
 REGISTRY_EMPLOY(EmployDatabase)
 
@@ -38,10 +40,6 @@ bool EmployDatabase::init() {
 	if (!m_pDBConnection->connect()) {
 		return false;
 	}
-
-	if (!Updates::updateDatabase(m_pDBConnection->db())) {
-         return false;
-    }
 
 	// TODO: redesign
 	// cleanup old user tokens
