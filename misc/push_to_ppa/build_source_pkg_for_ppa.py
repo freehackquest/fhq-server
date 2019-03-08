@@ -32,7 +32,7 @@ dists.append({
 
 dists.append({
 	"dist_name": "bionic",
-	"ppa_name_suffix": "ppa-ubuntu-18-04-bionic",
+	"ppa_name_suffix": "ppa-ubuntu-18-04-bionic-1",
 	"end": "April 2023",
 	"version": "18.04 LTS"
 })
@@ -73,10 +73,11 @@ os.mkdir('./fhq-server')
 onlyfiles = [f for f in os.listdir('./') if os.path.isfile(os.path.join('./', f))]
 
 for f in onlyfiles:
-	m = re.search(r'fhq-server_(\d+\.\d+\.\d+)-.*\.orig.tar.gz', f)
+	m = re.search(r'^fhq-server_(\d+\.\d+\.\d+)-ppa-ubuntu.*(\.orig\.tar\.gz|source\.changes|_source\.build|_source.ppa.upload|\.tar\.gz|_source\.buildinfo|\.dsc)$', f)
 	if m:
 		print('Remove file ' + f)
 		os.remove(f)
+
 
 def copytree(src, dst, symlinks=False, ignore=None):
     for item in os.listdir(src):
@@ -93,6 +94,16 @@ shutil.copytree('./install_files', './fhq-server/install_files', symlinks=False,
 shutil.copytree('../../web-admin', './fhq-server/install_files/web-admin', symlinks=False, ignore=None)
 shutil.copytree('./debian', './fhq-server/debian', symlinks=False, ignore=None)
 shutil.copy2('../../fhq-server/CMakeLists.txt', './fhq-server/CMakeLists.txt')
+
+dist_debian_folder = './debian_' + dist_name_
+
+if os.path.exists(dist_debian_folder):
+	onlyfiles = [f for f in os.listdir(dist_debian_folder) if os.path.isfile(os.path.join(dist_debian_folder, f))]
+	for f in onlyfiles:
+		f_src = dist_debian_folder + '/' + f
+		f_dst = './fhq-server/debian/' + f
+		shutil.copy2(f_src, f_dst)
+		print("!!! Replaced file " + f_dst + " from " + f_src)
 
 print( " -> DONE ")
 

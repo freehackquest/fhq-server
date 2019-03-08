@@ -1,0 +1,13 @@
+Source: fhq-server
+Section: devel
+Priority: optional
+Maintainer: Free Hack Quest <freehackquest@gmail.com>
+Build-Depends: cmake, build-essential, pkg-config, libcurl4-openssl-dev, libmysqlclient-dev, qtbase5-dev, zlib1g-dev, qt5-default, libqt5websockets5, libqt5websockets5-dev, libqt5sql5-mysql, libpng-dev
+Homepage: https://freehackquest.com
+
+Package: fhq-server
+Architecture: any
+Depends: mysql-server, libmysqlclient20, libqt5websockets5, zlibc, zlib1g, libpng16-16, libqt5sql5, libqt5sql5-mysql, debconf (>= 0.2.1), libcurl4, dbconfig-common
+Description: FreeHackQuest Server
+ This is an open source platform for competitions in computer security.
+
