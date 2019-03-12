@@ -43,6 +43,7 @@ try:
         if p_test.returncode != 0:
             sys.exit(-1)
 
+    # run_test('test_web_server.py')
     run_test('test_users.py')
     run_test('test_games.py')
     run_test('test_leaks.py')
