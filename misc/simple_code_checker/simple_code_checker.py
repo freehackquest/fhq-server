@@ -62,6 +62,12 @@ warnings = {
     'check_line_tabs': 0
 }
 
+# TODO: check int nNumber 
+# TODO: search TODO in line
+# TODO: check if() - must contains space
+# TODO check the if () {} - figure brakets
+# TODO: auto - is great evil !!!
+
 def check_line_tabs(filepath, line_number, l):
     global warnings
     if re.match(r'\t+', l):
