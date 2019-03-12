@@ -98,6 +98,8 @@ list (APPEND FHQSRV_SOURCES "src/3rdParty/quazip-0.7.3/quazip/unzip.c")
 list (APPEND FHQSRV_SOURCES "src/3rdParty/quazip-0.7.3/quazip/zip.c")
 
 # cmd
+list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_classbook.h")
+list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_classbook.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_communication.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_communication.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_quests_writeups.h")
@@ -106,8 +108,6 @@ list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_users.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_users.cpp")
-list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_classbook.h")
-list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_classbook.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_events.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_events.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_games.h")
@@ -270,6 +270,9 @@ list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_server.cpp")
 list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_server.h")
 list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_thread_worker.cpp")
 list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_thread_worker.h")
+# list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_admin_folder.cpp")
+# list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_admin_folder.h")
+
 
 # main
 list (APPEND FHQSRV_SOURCES "src/main.cpp")

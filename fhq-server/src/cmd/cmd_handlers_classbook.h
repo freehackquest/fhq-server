@@ -35,8 +35,8 @@ class CmdClassbookExportHandler : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 
     private:
-        void createHtml(QFile *file, QString lang, QSqlQuery query);
-        void createMD(QFile *file , QString lang, QSqlQuery query);
+        void createHtml(QFile *file, const std::string &sLang, QSqlQuery query);
+        void createMD(QFile *file, const std::string &sLang, QSqlQuery query);
 };
 
 REGISTRY_CMD(CmdClassbookExportHandler)
