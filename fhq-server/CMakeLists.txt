@@ -270,8 +270,8 @@ list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_server.cpp")
 list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_server.h")
 list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_thread_worker.cpp")
 list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_thread_worker.h")
-# list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_admin_folder.cpp")
-# list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_admin_folder.h")
+list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_admin_folder.cpp")
+list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_admin_folder.h")
 
 
 # main

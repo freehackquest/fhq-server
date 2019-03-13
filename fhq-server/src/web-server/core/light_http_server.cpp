@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <light_http_handlers.h>
+#include <thread>
+
 // ----------------------------------------------------------------------
 // LightHttpServer
 
@@ -22,7 +24,10 @@ LightHttpServer::LightHttpServer() {
 
 // ----------------------------------------------------------------------
 
-void LightHttpServer::start(int nPort) {
+void LightHttpServer::startSync(int nPort, int nMaxWorkers) {
+	if (nMaxWorkers > 0) {
+		m_nMaxWorkers = nMaxWorkers;
+	}
 	m_nSockFd = socket(AF_INET, SOCK_STREAM, 0);
 	if(m_nSockFd <= 0){
 		Log::err(TAG, "Failed to establish socket connection");
@@ -65,10 +70,15 @@ void LightHttpServer::start(int nPort) {
 
 		// pthread_create(&m_serverThread, NULL, &newRequest, (void *)pInfo);
 		// std::cout << "wait \n";
-		usleep(100);
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 }
 
+// ----------------------------------------------------------------------
+
+void LightHttpServer::start(int nPort, int nMaxWorkers) {
+	this->startSync(nPort, nMaxWorkers);
+}
 // ----------------------------------------------------------------------
 
 LightHttpHandlers *LightHttpServer::handlers() {

@@ -45,10 +45,13 @@ class LightHttpResponse {
         void sendEmpty();
         void sendOptions(const std::string &sOptions);
         void sendDontUnderstand();
+        void sendFile(const std::string &sFilePath);
+		void sendBuffer(const std::string &sFilePath, const char *pBuffer, const int nBufferSize);
 
     private:
         std::string prepareHeaders(int nLength);
-        
+        std::string detectTypeOfFile(const std::string &sFilePath);
+
         std::string TAG;
 
         int m_nSockFd;

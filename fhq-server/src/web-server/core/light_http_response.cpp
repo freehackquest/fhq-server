@@ -131,6 +131,37 @@ std::string LightHttpResponse::prepareHeaders(int nLength) {
 
 // ----------------------------------------------------------------------
 
+std::string LightHttpResponse::detectTypeOfFile(const std::string &sFilePath) {
+    // TODO cache: check file in cache 
+	std::string sFileExt = sFilePath.substr(sFilePath.find_last_of(".") + 1);
+
+	std::string sType = "application/octet-stream";
+	if (sFileExt == "json"){
+		sType = "application/json";
+	} else if (sFileExt == "css") {
+		sType = "text/css"; 
+	} else if (sFileExt == "js") {
+		sType = "text/javascript";
+	} else if (sFileExt == "html") {
+		sType = "text/html";
+	} else if (sFileExt == "gif") {
+		sType = "image/gif";
+	} else if (sFileExt == "ico") {
+		sType = "image/x-icon";
+	} else if (sFileExt == "xml") {
+		sType = "application/xml";
+	} else if (sFileExt == "png") {
+		sType = "application/xml";
+	} else if (sFileExt == "jpg" || sFileExt == "jpeg") {
+		sType = "image/jpeg";
+	} else if (sFileExt == "svg") {
+		sType = "image/svg+xml";
+	}
+    return sType;
+}
+
+// ----------------------------------------------------------------------
+
 void LightHttpResponse::sendText(const std::string &sBody) {
     m_sDataType = "text/html";
     
@@ -192,7 +223,63 @@ void LightHttpResponse::sendDontUnderstand() {
 	close(m_nSockFd);
 }
 
+// ----------------------------------------------------------------------
 
+void LightHttpResponse::sendFile(const std::string &sFilePath) {
 
+	// read data from file
+	std::ifstream f(sFilePath, std::ios::binary | std::ios::ate);
+	std::streamsize nSize = f.tellg();
+	f.seekg(0, std::ios::beg);
+	char *pData = new char[nSize];
+	// std::vector<char> buffer(size);
+	if (nSize > 10*1024*1024) {
+        this->payloadTooLarge();
+		this->sendEmpty();
+		delete[] pData;
+		return;
+	}
+
+	if (!f.read(pData, nSize)) {
+        this->forbidden();
+		this->sendEmpty();
+		delete[] pData;
+		return;
+		// std::cout << sFilePath << "\n filesize: " << nSize << " bytes\n";
+	}
+
+    this->sendBuffer(sFilePath, pData, nSize);
+	delete[] pData;
+}
+
+// ----------------------------------------------------------------------
+
+void LightHttpResponse::sendBuffer(const std::string &sFilePath, const char *pBuffer, const int nBufferSize) {
+    	
+	// TODO cache: check file in cache 
+	m_sDataType = detectTypeOfFile(sFilePath);
+    
+	std::string sResponse = prepareHeaders(nBufferSize)
+		+ "\r\n";
+
+	if(m_bClosed) {
+		Log::warn(TAG, "Already sended response");
+		// delete[] pData;
+		return;
+	}
+	m_bClosed = true;
+	#if __APPLE__
+		send(m_nSockFd, sResponse.c_str(), sResponse.length(),SO_NOSIGPIPE);
+		send(m_nSockFd, pData, nSize, SO_NOSIGPIPE);
+	// #if
+	// TARGET_OS_MAC 
+
+	#else
+		send(m_nSockFd, sResponse.c_str(), sResponse.length(), MSG_CONFIRM);
+		send(m_nSockFd, pBuffer, nBufferSize, MSG_CONFIRM);
+	#endif
+	
+	close(m_nSockFd);
+}
 
 // ----------------------------------------------------------------------

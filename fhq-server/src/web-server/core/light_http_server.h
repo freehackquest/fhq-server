@@ -25,7 +25,8 @@ class LightHttpServer {
 	public:
 
 		LightHttpServer();
-		void start(int nPort);
+		void startSync(int nPort, int nMaxWorkers);
+		void start(int nPort, int nMaxWorkers);
 		// void start(int nPort);
 		void stop();
 
