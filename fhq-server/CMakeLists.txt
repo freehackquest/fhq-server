@@ -44,6 +44,8 @@ list (APPEND FHQSRV_INCLUDE_DIRS "src/storages/updates/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/classbook/include")
+list (APPEND FHQSRV_INCLUDE_DIRS "src/web-server")
+list (APPEND FHQSRV_INCLUDE_DIRS "src/web-server/core")
 
 # json
 list (APPEND FHQSRV_SOURCES "src/3rdParty/nlohmann/json.hpp")
@@ -96,6 +98,8 @@ list (APPEND FHQSRV_SOURCES "src/3rdParty/quazip-0.7.3/quazip/unzip.c")
 list (APPEND FHQSRV_SOURCES "src/3rdParty/quazip-0.7.3/quazip/zip.c")
 
 # cmd
+list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_classbook.h")
+list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_classbook.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_communication.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_communication.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_quests_writeups.h")
@@ -104,8 +108,6 @@ list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_users.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_users.cpp")
-list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_classbook.h")
-list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_classbook.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_events.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_events.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_games.h")
@@ -252,6 +254,26 @@ list (APPEND FHQSRV_SOURCES "src/storages/updates/updates_init_database.h")
 list (APPEND FHQSRV_SOURCES "src/storages/updates/updates_init_database.cpp")
 list (APPEND FHQSRV_SOURCES "src/storages/updates/update0100.h")
 list (APPEND FHQSRV_SOURCES "src/storages/updates/update0100.cpp")
+
+# web-server
+list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_deque_requests.cpp")
+list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_deque_requests.h")
+list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_handler_base.cpp")
+list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_handler_base.h")
+list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_handlers.cpp")
+list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_handlers.h")
+list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_request.cpp")
+list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_request.h")
+list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_response.cpp")
+list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_response.h")
+list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_server.cpp")
+list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_server.h")
+list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_thread_worker.cpp")
+list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_thread_worker.h")
+list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_admin_folder.cpp")
+list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_admin_folder.h")
+
+
 # main
 list (APPEND FHQSRV_SOURCES "src/main.cpp")
 
@@ -334,7 +356,7 @@ find_package (Qt5WebSockets)
 add_executable (fhq-server ${FHQSRV_SOURCES})
 
 qt5_use_modules(fhq-server Core Network Sql WebSockets)
-target_link_libraries(fhq-server ${FHQSRV_LIBRARIES} )
+target_link_libraries(fhq-server -lpthread ${FHQSRV_LIBRARIES} )
 
 # target_link_libraries(fhq-server Qt5::Core)
 

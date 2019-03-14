@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Admin FHQ</title>
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<link rel="shortcut icon" href="favicon.ico"></link>
+	<link rel="icon" href="favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" /> 
+
+	<script src="./js/libs/jquery-3.1.0.min.js"></script>
+	<script src="./js/libs/popper.min.js"></script>
+	<script src="./js/libs/bootstrap.min.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css?ver=1"/>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-grid.min.css?ver=1"/>
+	<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css?ver=1"/>
+	<link rel="stylesheet" type="text/css" href="css/simplemde.min.css?ver=1"/>
+	<link rel="stylesheet" type="text/css" href="index.css"/>
+
+	<script src="fhq.ws.config.js"></script>
+	<script src="./js/fhq.admin.localization.js"></script>
+	<script src="./js/fhq.admin.js"></script>
+	<script src="./js/fhq.admin.users.js"></script>
+	<script src="./js/fhq.admin.users_answers.js"></script>
+	<script src="./js/fhq.admin.games.js"></script>
+	<script src="./js/fhq.admin.mails.js"></script>
+	<script src="./js/fhq.admin.settings.js"></script>
+	<script src="./js/fhq.admin.quests.js"></script>
+	<script src="./js/fhq.admin.quests_proposal.js"></script>
+	<script src="./js/fhq.admin.orchestra.js"></script>
+	<script src="./js/fhq.admin.version.js"></script>
+	<script src="./js/fhq.ws.admin.js"></script>
+
+</head>
+<body bgcolor="#04141d">
+<div>
+	<div class="menu-logo"><div class="menu-logo2"></div></div>
+	<div class="menu-panel">
+		<div class="btn btn-secondary menu-itm" onclick="fhq.pages.users()">
+			<div class="menu-itm-short-name">Us</div>
+			<div class="menu-itm-full-name"><div>Users</div></div>
+		</div>
+		<div class="btn btn-secondary menu-itm" onclick="fhq.pages.users_answers()">
+			<div class="menu-itm-short-name">UA</div>
+			<div class="menu-itm-full-name"><div>Users<br>Answers</div></div>
+		</div>
+		<div class="btn btn-secondary menu-itm" onclick="fhq.pages.games()">
+			<div class="menu-itm-short-name">Ga</div>
+			<div class="menu-itm-full-name"><div>Games</div></div>
+		</div>
+        <div class="btn btn-secondary menu-itm" onclick="fhq.pages.quests()">
+			<div class="menu-itm-short-name">Qu</div>
+			<div class="menu-itm-full-name"><div>Quests</div></div>
+		</div>
+        <div class="btn btn-secondary menu-itm" onclick="fhq.pages.quests_proposal()">
+			<div class="menu-itm-short-name">QP</div>
+			<div class="menu-itm-full-name"><div>Quests<br>Proposals</div></div>
+		</div>
+        <div class="btn btn-secondary menu-itm" onclick="fhq.pages.mails()">
+			<div class="menu-itm-short-name">Ma</div>
+			<div class="menu-itm-full-name"><div>Mails</div></div>
+		</div>
+        <div class="btn btn-secondary menu-itm" onclick="fhq.pages.orchestra();">
+			<div class="menu-itm-short-name">Or</div>
+			<div class="menu-itm-full-name"><div>Orchestra</div></div>
+		</div>
+        <div class="btn btn-secondary menu-itm" onclick="fhq.pages.settings()">
+			<div class="menu-itm-short-name">Se</div>
+			<div class="menu-itm-full-name"><div>Settings</div></div>
+		</div>
+        <div class="btn btn-secondary menu-itm" onclick="fhq.logout()" href="">
+			<div class="menu-itm-short-name">Lo</div>
+			<div class="menu-itm-full-name"><div>Logout</div></div>
+		</div>
+	</div>
+	<div id="page_name"></div>
+
+  <div class="content-wrapper">
+    <section class="content" id="page_content">
+    </section>
+  </div>
+</div>
+
+<!-- Modal --> 
+<div class="modal fade" id="modalSignIn" tabindex="-1" role="dialog" aria-labelledby="modalSignIn" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<h5 class="modal-title">Sign-in (Only admin)</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		  <span aria-hidden="true">&times;</span>
+		</button>
+	  </div>
+	  <div class="modal-body">
+			<div class="form-group">
+				<label for="signinEmailInput" id="signinEmailCaption">Email address</label>
+				<input type="email" class="form-control" id="signinEmailInput" aria-describedby="emailHelp" placeholder="Enter email">
+			</div>
+			<div class="form-group">
+				<label for="signinPasswordInput" id="signinPasswordCaption">Password</label>
+				<input type="password" class="form-control" id="signinPasswordInput" placeholder="Enter password">
+			</div>
+			<div class="alert alert-danger" id="signinErrorMessage" color="#ff0000"></div>
+	  </div>
+	  <div class="modal-footer">
+		<button type="button" class="btn btn-primary" id="modalSignIn_go" onclick="fhq.signin();">Sign-in</button>
+		<button type="button" class="btn btn-secondary" id="modalSignIn_cansel" data-dismiss="modal">Close</button>
+	  </div>
+	</div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalSettings" tabindex="-1" role="dialog" aria-labelledby="modalSettings" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<h5 class="modal-title" id="exampleModalLabel">Change setting</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		  <span aria-hidden="true">&times;</span>
+		</button>
+	  </div>
+	  <div class="modal-body">
+		...
+	  </div>
+	  <div class="modal-footer">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		<button type="button" class="btn btn-primary save-setting">Save</button>
+	  </div>
+	</div>
+  </div>
+</div>
+		
+<!-- Modal -->
+<div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-labelledby="modalInfo" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<h5 class="modal-title" id="modalInfoTitle">Info</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		  <span aria-hidden="true">&times;</span>
+		</button>
+	  </div>
+	  <div class="modal-body" id="modalInfoBody">
+		...
+	  </div>
+	  <div class="modal-footer" id="modalInfoButtons">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		<button type="button" class="btn btn-primary save-setting">Save</button>
+	  </div>
+	</div>
+  </div>
+</div>
+		
+		
+<div class="fhq-page-loader">
+	<div class="fhq-page-loader-tbl">
+		<div class="fhq-page-loader-cell">
+		</div>
+	</div>
+</div>
+
+</body>
+</html>

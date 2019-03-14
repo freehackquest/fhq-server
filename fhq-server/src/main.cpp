@@ -34,6 +34,10 @@
 #include <export_libfhqcli_web_js.h>
 #include <export_libfhqcli_py.h>
 #include <runtasks.h>
+#include <light_http_server.h>
+#include <http_handler_web_admin_folder.h>
+
+LightHttpServer g_httpServer;
 
 int main(int argc, char** argv) {
     QCoreApplication a(argc, argv);
@@ -231,7 +235,7 @@ int main(int argc, char** argv) {
         pSettings->setSettString("lxd_mode", QString::fromStdString(lxd_mode));
         std::cout << "\nCurrent LXD mode: " << pSettings->getSettString("lxd_mode").toStdString() << "\n";
         return 0;
-    }else if(helpArgs.has("start") || helpArgs.has("-s")){
+    } else if(helpArgs.has("start") || helpArgs.has("-s")) {
         QThreadPool::globalInstance()->setMaxThreadCount(5);
         WebSocketServer *pServer = new WebSocketServer();
         if(pServer->isFailed()){
@@ -246,6 +250,18 @@ int main(int argc, char** argv) {
         if (!db->open()){
             return -1;
         }
+
+        EmployServerConfig *pConfig = findEmploy<EmployServerConfig>();
+
+        // start web server
+        
+        Log::info(TAG, "Starting web-server on " + std::to_string(pConfig->webPort())
+             + " with " + std::to_string(pConfig->webMaxThreads()) + " worker threads");
+        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebAdminFolder(pConfig->webAdminFolder()));
+        g_httpServer.setPort(pConfig->webPort());
+        g_httpServer.setMaxWorkers(pConfig->webMaxThreads());
+        g_httpServer.start(); // will be block thread*/
+
         return a.exec();
     }
 

@@ -26,6 +26,10 @@ class EmployServerConfig : public EmployBase {
         std::string serverSslKeyFile();
         std::string serverSslCertFile();
         
+        int webPort();
+        int webMaxThreads();
+        std::string webAdminFolder();
+
 	private:
 		std::string TAG;
 
@@ -47,6 +51,11 @@ class EmployServerConfig : public EmployBase {
 		int m_nServer_ssl_port;
         std::string m_sServer_ssl_key_file;
         std::string m_sServer_ssl_cert_file;
+
+        // web config
+        int m_nWeb_port;
+        int m_nWeb_max_threads;
+        std::string m_sWeb_admin_folder;
 };
 
 #endif // EMPLOY_SERVER_CONFIG_H

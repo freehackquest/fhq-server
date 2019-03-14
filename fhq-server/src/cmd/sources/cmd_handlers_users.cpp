@@ -873,12 +873,12 @@ CmdHandlerUsersInfo::CmdHandlerUsersInfo()
 void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
+    nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     IUserToken *pUserToken = pRequest->userToken();
 
-    if (!jsonRequest.contains("userid") && pUserToken == NULL) {
+     if (jsonRequest.find("userid") == jsonRequest.end() && pUserToken == NULL) {
         pRequest->sendMessageError(cmd(), Errors::NotAuthorizedRequest());
         return;
     }
@@ -886,13 +886,13 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
     bool bCurrentUserOrAdmin = false;
 
     int nUserID = 0;
-    if(pUserToken != NULL){
+    if (pUserToken != NULL) {
         nUserID = pUserToken->userid();
         bCurrentUserOrAdmin = true;
     }
 
-    if(jsonRequest.contains("userid")){
-        int nUserID_ = jsonRequest["userid"].toInt();
+    if (jsonRequest.find("userid") != jsonRequest.end()) {
+        int nUserID_ = jsonRequest.at("userid").get<int>();
         if(nUserID_ != nUserID){
             bCurrentUserOrAdmin = false;
             if(pUserToken != NULL){

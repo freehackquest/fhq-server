@@ -35,9 +35,9 @@ FROM debian:9.5
 LABEL "maintainer"="FreeHackQuest Team <freehackquest@gmail.com>"
 LABEL "repository"="https://github.com/freehackquest/fhq-server"
 
-EXPOSE 1234 4613
 COPY --from=0 /root/sources/fhq-server /usr/bin/fhq-server
-
+RUN mkdir -p /usr/share/fhq-server
+COPY ./web-admin /usr/share/fhq-server/web-admin
 RUN mkdir -p /usr/share/fhq-server/public/games 
 RUN mkdir -p /var/log/fhq-server
 
@@ -68,4 +68,9 @@ RUN apt-get install -y \
 
 RUN apt-get clean
 
+# 1234 - ws
+# 4613 - wss
+# 7080 - http port (without ssl)
+
+EXPOSE 1234 4613 7080
 CMD fhq-server start

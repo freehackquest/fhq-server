@@ -40,6 +40,11 @@ EmployServerConfig::EmployServerConfig()
     m_nServer_ssl_port = 4613;
     m_sServer_ssl_key_file = "/etc/ssl/private/localhost.key";
     m_sServer_ssl_cert_file = "/etc/ssl/certs/localhost.pem";
+
+    // web - default options
+    m_nWeb_port = 7080;
+    m_nWeb_max_threads = 4;
+    m_sWeb_admin_folder = "/usr/share/fhq-server/web-admin";
 }
 
 // ---------------------------------------------------------------------
@@ -104,6 +109,24 @@ bool EmployServerConfig::init(){
         m_nServer_ssl_port = parseConfig.intValue("SERVER/ssl_port", m_nServer_ssl_port);
         m_sServer_ssl_key_file = parseConfig.stringValue("ssl_key_file", m_sServer_ssl_key_file);
         m_sServer_ssl_cert_file = parseConfig.stringValue("ssl_cert_file", m_sServer_ssl_cert_file);
+    }
+
+    m_nWeb_port = parseConfig.intValue("web_port", m_nWeb_port);
+    m_nWeb_max_threads = parseConfig.intValue("web_max_threads", m_nWeb_max_threads);
+    if (m_nWeb_max_threads <= 0) {
+        Log::err(TAG, "Wrong option 'web_max_threads', values must be more then 0");
+        return false;
+    }
+
+    if (m_nWeb_max_threads > 100) {
+        Log::err(TAG, "Wrong option 'web_max_threads', values must be less then 0");
+        return false;
+    }
+
+    m_sWeb_admin_folder = parseConfig.stringValue("web_admin_folder", m_sWeb_admin_folder);
+    if (!FS::dirExists(m_sWeb_admin_folder)) {
+        Log::err(TAG, "Wrong option 'web_admin_folder', because folder '" + m_sWeb_admin_folder + "' does not exists");
+        return false;
     }
     return true;
 }
@@ -190,6 +213,24 @@ std::string EmployServerConfig::serverSslKeyFile(){
 
 std::string EmployServerConfig::serverSslCertFile(){
     return m_sServer_ssl_cert_file;
+}
+
+// ---------------------------------------------------------------------
+
+int EmployServerConfig::webPort() {
+    return m_nWeb_port;
+}
+
+// ---------------------------------------------------------------------
+
+int EmployServerConfig::webMaxThreads() {
+    return m_nWeb_max_threads;
+}
+
+// ---------------------------------------------------------------------
+
+std::string EmployServerConfig::webAdminFolder() {
+    return m_sWeb_admin_folder;
 }
 
 // ---------------------------------------------------------------------

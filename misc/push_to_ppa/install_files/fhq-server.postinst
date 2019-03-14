@@ -40,6 +40,10 @@ case "$1" in
                 mkdir /usr/share/fhq-server
         fi
 
+        if [ ! -d /usr/share/fhq-server/public/games ]; then
+                mkdir -p /usr/share/fhq-server/public/games
+        fi
+
         # Add fhq-server user
         if ! id fhq-server > /dev/null 2>&1 ; then
                 adduser --system --home "/usr/share/fhq-server" --no-create-home \
@@ -49,8 +53,8 @@ case "$1" in
         fi
         
         # Fix permissions
-        chown fhq-server /var/log/fhq-server
-        chown fhq-server /usr/share/fhq-server
+        chown fhq-server -R /var/log/fhq-server
+        chown fhq-server -R /usr/share/fhq-server
 
 	db_version 2.0
 
