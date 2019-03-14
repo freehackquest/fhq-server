@@ -48,7 +48,7 @@ script:
   - echo "ssl_key_file = " >> fhq-server.conf
   - echo "ssl_cert_file = " >> fhq-server.conf
   - echo "web_port = 1234" >> fhq-server.conf
-  - echo "web_admin_folder = ./web-admin" >> fhq-server.conf
+  - echo "web_admin_folder = ../web-admin" >> fhq-server.conf
   - echo "web_max_threads = 1" >> fhq-server.conf
   - ./fhq-server -cdc
   - mkdir -p public/games
