@@ -258,7 +258,9 @@ int main(int argc, char** argv) {
         Log::info(TAG, "Starting web-server on " + std::to_string(pConfig->webPort())
              + " with " + std::to_string(pConfig->webMaxThreads()) + " worker threads");
         g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebAdminFolder(pConfig->webAdminFolder()));
-        g_httpServer.start(pConfig->webPort(), pConfig->webMaxThreads()); // will be block thread*/
+        g_httpServer.setPort(pConfig->webPort());
+        g_httpServer.setMaxWorkers(pConfig->webMaxThreads());
+        g_httpServer.start(); // will be block thread*/
 
         return a.exec();
     }

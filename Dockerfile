@@ -70,7 +70,7 @@ RUN apt-get clean
 
 # 1234 - ws
 # 4613 - wss
-# 7080 - web port 
+# 7080 - http port (without ssl)
 
 EXPOSE 1234 4613 7080
 CMD fhq-server start

@@ -25,9 +25,10 @@ class LightHttpServer {
 	public:
 
 		LightHttpServer();
-		void startSync(int nPort, int nMaxWorkers);
-		void start(int nPort, int nMaxWorkers);
-		// void start(int nPort);
+		void setPort(int nPort);
+		void setMaxWorkers(int nMaxWorkers);
+		void startSync();
+		void start();
 		void stop();
 
 		LightHttpHandlers *handlers();
@@ -36,12 +37,15 @@ class LightHttpServer {
 		std::string TAG;
 		LightHttpDequeRequests *m_pDeque;
 		LightHttpHandlers *m_pHandlers;
+		bool m_bStop;
 
 		int m_nMaxWorkers;
+		int m_nPort;
 		std::vector<LightHttpThreadWorker *> m_vWorkers;
 
 		int m_nSockFd;
-		struct sockaddr_in m_serverAddress;	
+		struct sockaddr_in m_serverAddress;
+		pthread_t m_serverThread;
 };
 
 #endif // LIGHT_HTTP_SERVER_H

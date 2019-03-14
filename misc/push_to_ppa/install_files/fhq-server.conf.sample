@@ -18,4 +18,5 @@ ssl_cert_file = /etc/ssl/certs/localhost.pem
 
 # Web Configuration
 web_port = 7080
-web_folder = /usr/share/fhq-server/web-admin
+web_max_threads = 4
+web_admin_folder = /usr/share/fhq-server/web-admin
