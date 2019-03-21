@@ -28,7 +28,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     int nPage = jsonRequest["page"].toInt();
     jsonResponse["page"] = nPage;
@@ -60,7 +60,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
             filters << "(l.message LIKE :search)";
             filter_values[":search"] = "%" + search + "%";
         }
-        jsonResponse["search"] = search;
+        jsonResponse["search"] = search.toStdString();
     }
 
     QString where = filters.join(" AND ");
@@ -90,7 +90,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
     }
 
     //data
-    QJsonArray leakslist;
+    auto jsonLeaksList = nlohmann::json::array();
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM leaks l"
@@ -107,21 +107,21 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
         }
         while (query.next()) {
             QSqlRecord record = query.record();
-            QJsonObject leak;
-            leak["id"] = record.value("id").toInt();
-            leak["uuid"] = record.value("uuid").toString().toHtmlEscaped();
-            leak["gameid"] = record.value("gameid").toInt();
-            leak["name"] = record.value("name").toString().toHtmlEscaped();
-            leak["score"] = record.value("score").toInt();
-            leak["created"] = record.value("created").toString().toHtmlEscaped();
-            leak["updated"] = record.value("updated").toString().toHtmlEscaped();
-            leak["sold"] = record.value("sold").toInt();
+            nlohmann::json jsonLeak;
+            jsonLeak["id"] = record.value("id").toInt();
+            jsonLeak["uuid"] = record.value("uuid").toString().toHtmlEscaped().toStdString();
+            jsonLeak["gameid"] = record.value("gameid").toInt();
+            jsonLeak["name"] = record.value("name").toString().toHtmlEscaped().toStdString();
+            jsonLeak["score"] = record.value("score").toInt();
+            jsonLeak["created"] = record.value("created").toString().toHtmlEscaped().toStdString();
+            jsonLeak["updated"] = record.value("updated").toString().toHtmlEscaped().toStdString();
+            jsonLeak["sold"] = record.value("sold").toInt();
 
-            leakslist.push_back(leak);
+            jsonLeaksList.push_back(jsonLeak);
         }
     }
 
-    jsonResponse["data"] = leakslist;
+    jsonResponse["data"] = jsonLeaksList;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -216,7 +216,7 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -298,7 +298,7 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -373,7 +373,7 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
