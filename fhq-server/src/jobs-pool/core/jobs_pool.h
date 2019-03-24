@@ -5,6 +5,7 @@
 #include <mutex>
 #include <deque>
 #include <thread>
+#include <vector>
 
 class JobAsync {
     public:
@@ -69,44 +70,47 @@ class JobsThreadWorker {
 
 // ---------------------------------------------------------------------
 
-extern JobAsyncDeque *g_pJobsShort;
-extern JobAsyncDeque *g_pJobsLong;
-extern JobAsyncDeque *g_pJobsDelay;
-extern JobAsyncDeque *g_pJobsCron;
+extern JobAsyncDeque *g_pJobsFastPool;
+extern std::vector<JobsThreadWorker *> *g_vJobsFastWorkers;
+extern int g_nMaxJobFastWorker;
+
+extern JobAsyncDeque *g_pJobsLongPool; // TODO
+extern JobAsyncDeque *g_pJobsDelay; // TODO
+extern JobAsyncDeque *g_pJobsCron; // TODO
+// TODO control thread will be add delay and cron jobs to long
+
 // TODO statistics
 // TODO max thread different workers
-
-/*
-long task - длинный по времени работы таск (отдельные треды или даже один отдельный тред)
-short task - в обычном режиме короткие по времени обработки таски без лишних ожиданий.
-delayed task - отложенный таск 
-cron task - запускается с определнной переодичностью, по расписанию по сути.
-*/
 
 class JobsPool {
     public:
         static void initGlobalVariables();
 
-        static void addJobLong( // доллгие работы если их нет то выполняем короткие
+        static void addJobSlow(
             JobAsync *pJobAsync,
             JobPromise *pJobPromise = nullptr
         );
-        static void addJobShort( // две очереди для быстрых работ (сразу собирать статистику)
+
+        static void addJobFast(
             JobAsync *pJobAsync,
             JobPromise *pJobPromise = nullptr
         );
-        static void addJobDelay( // здесь создается отдельная long job
+
+        static void addJobDelay(
             int nMilliseconds,
             JobAsync *pJobAsync,
             JobPromise *pJobPromise = nullptr
         );
-        static void addJobCron( // отдельный тред для cron
+
+        static void addJobCron( 
             JobSchedule *pJobSchedule,
             JobAsync *pJobAsync,
             JobPromise *pJobPromise = nullptr
         );
 
-        static void stopAll();
+        static void stop();
+        static void start();
+        static void cleanup();
 };
 
 // ---------------------------------------------------------------------

@@ -111,3 +111,93 @@ void JobsThreadWorker::run() {
         }
     }
 }
+
+// ----------------------------------------------------------------------
+
+JobAsyncDeque *g_pJobsFastPool = nullptr;
+std::vector<JobsThreadWorker *> *g_vJobsFastWorkers = nullptr;
+int g_nMaxJobFastWorker = 2;
+
+void JobsPool::initGlobalVariables() {
+    if (g_pJobsFastPool == nullptr) {
+        g_pJobsFastPool = new JobAsyncDeque();
+    }
+    if (g_vJobsFastWorkers == nullptr) {
+        g_vJobsFastWorkers = new std::vector<JobsThreadWorker *>();
+        // 2 threads default
+        for (int i = 0; i < g_nMaxJobFastWorker; i++) {
+            g_vJobsFastWorkers->push_back(new JobsThreadWorker("fast-worker" + std::to_string(i), g_pJobsFastPool));
+        }
+    }
+}
+
+// ----------------------------------------------------------------------
+
+void JobsPool::addJobFast( // две очереди для быстрых работ (сразу собирать статистику)
+    JobAsync *pJobAsync,
+    JobPromise *pJobPromise
+) {
+    JobsPool::initGlobalVariables();
+    g_pJobsFastPool->push(pJobAsync);
+}
+
+// ----------------------------------------------------------------------
+
+void JobsPool::addJobSlow( // долгие работы если их нет то выполняем короткие
+    JobAsync *pJobAsync,
+    JobPromise *pJobPromise
+) {
+    JobsPool::initGlobalVariables();
+    Log::warn("JobsPool", "addJobSlow not implemented yet");
+    // g_pJobsLong->push(pJobAsync);
+}
+
+// ----------------------------------------------------------------------
+
+void JobsPool::addJobDelay( // здесь создается отдельная long job
+    int nMilliseconds,
+    JobAsync *pJobAsync,
+    JobPromise *pJobPromise
+) {
+    JobsPool::initGlobalVariables();
+    Log::warn("JobsPool", "addJobDelay not implemented yet");
+    // g_pJobsShort->push(pJobAsync);
+}
+
+// ----------------------------------------------------------------------
+
+void JobsPool::addJobCron( // отдельный тред для cron
+    JobSchedule *pJobSchedule,
+    JobAsync *pJobAsync,
+    JobPromise *pJobPromise
+) {
+    JobsPool::initGlobalVariables();
+    Log::warn("JobsPool", "addJobCron not implemented yet");
+    // g_pJobsShort->push(pJobAsync);
+}
+
+// ----------------------------------------------------------------------
+
+void JobsPool::stop() {
+    JobsPool::initGlobalVariables();
+    for (int i = 0; i < g_vJobsFastWorkers->size(); i++) {
+        g_vJobsFastWorkers->at(i)->stop();
+    }
+}
+
+// ----------------------------------------------------------------------
+
+void JobsPool::start() {
+    JobsPool::initGlobalVariables();
+    for (int i = 0; i < g_vJobsFastWorkers->size(); i++) {
+        g_vJobsFastWorkers->at(i)->start();
+    }
+}
+
+// ----------------------------------------------------------------------
+
+void JobsPool::cleanup() {
+    g_pJobsFastPool->cleanup();
+}
+
+// ----------------------------------------------------------------------
