@@ -12,7 +12,7 @@
 #include <thread>
 #include <algorithm>
 #include <fs.h>
-#include <ts.h>
+#include <fallen.h>
 #include <str.h>
 
 // ----------------------------------------------------------------------
@@ -48,8 +48,8 @@ LightHttpResponse::LightHttpResponse(int nSockFd) {
     m_nSockFd = nSockFd;
 	m_bClosed = false;
 	noCache();
-	long nSec = TS::currentTime_seconds();
-	m_sLastModified = TS::formatTimeForWeb(nSec);
+	long nSec = Fallen::currentTime_seconds();
+	m_sLastModified = Fallen::formatTimeForWeb(nSec);
     m_nResponseCode = 500;
     m_sDataType = "text/html";
 }
@@ -295,8 +295,8 @@ LightHttpRequest::LightHttpRequest(int nSockFd, const std::string &sAddress) {
 	m_sRequest = "";
 	m_nParserState = EnumParserState::START;
 	TAG = "LightHttpRequest";
-	long nSec = TS::currentTime_seconds();
-	m_sLastModified = TS::formatTimeForWeb(nSec);
+	long nSec = Fallen::currentTime_seconds();
+	m_sLastModified = Fallen::formatTimeForWeb(nSec);
 	m_nContentLength = 0;
 }
 

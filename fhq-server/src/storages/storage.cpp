@@ -1,6 +1,6 @@
 #include <storage.h>
 #include <logger.h>
-#include <ts.h>
+#include <fallen.h>
 #include <algorithm>
 
 // ***********************
@@ -557,7 +557,7 @@ bool StorageInsert::isValid(const StorageStruct &storageStruct) const {
 // ***********************
 
 StorageConnection::StorageConnection() {
-    m_nCreated = TS::currentTime_milliseconds();
+    m_nCreated = Fallen::currentTime_milliseconds();
     TAG = "StorageConnection";
 }
 
