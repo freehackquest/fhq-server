@@ -9,8 +9,227 @@
 #include <regex>        // regex, sregex_token_iterator
 #include <stdio.h>
 #include <math.h>
-#include <light_http_handlers.h>
 #include <thread>
+#include <algorithm>
+
+// ----------------------------------------------------------------------
+// LightHttpDequeRequests
+
+LightHttpRequest *LightHttpDequeRequests::popRequest(){
+	std::lock_guard<std::mutex> guard(this->m_mtxDequeRequests);
+	LightHttpRequest *pRequest = nullptr;
+	int nSize = m_dequeRequests.size();
+	if (nSize > 0) {
+		pRequest = m_dequeRequests.back();
+		m_dequeRequests.pop_back();
+	}
+	return pRequest;
+}
+
+// ----------------------------------------------------------------------
+
+void LightHttpDequeRequests::pushRequest(LightHttpRequest *pRequest){
+	std::lock_guard<std::mutex> guard(this->m_mtxDequeRequests);
+	if (m_dequeRequests.size() > 20) {
+		Log::warn(TAG, " deque more than " + std::to_string(m_dequeRequests.size()));
+	}
+	m_dequeRequests.push_front(pRequest);
+}
+
+// ----------------------------------------------------------------------
+
+void LightHttpDequeRequests::cleanup(){
+	std::lock_guard<std::mutex> guard(this->m_mtxDequeRequests);
+	while (m_dequeRequests.size() > 0) {
+		delete m_dequeRequests.back();
+		m_dequeRequests.pop_back();
+	}
+}
+
+
+// ----------------------------------------------------------------------
+// LightHttpHandlers
+
+// ---------------------------------------------------------------------
+
+LightHttpHandlers::LightHttpHandlers() {
+    TAG = "LightHttpHandlers";
+}
+
+// ---------------------------------------------------------------------
+
+void LightHttpHandlers::add(LightHttpHandlerBase *pHandler) {
+    m_pHandlers.push_back(pHandler);
+}
+
+// ---------------------------------------------------------------------
+
+void LightHttpHandlers::remove(const std::string &sName) {
+    std::vector<LightHttpHandlerBase *>::iterator it = m_pHandlers.begin();
+    for (it = m_pHandlers.end(); it != m_pHandlers.begin(); it--) {
+        LightHttpHandlerBase *pHandler = *it;
+        if (pHandler->name() == sName) {
+            m_pHandlers.erase(it);
+        }
+    }
+}
+
+// ---------------------------------------------------------------------
+
+bool LightHttpHandlers::find(const std::string &sName, LightHttpHandlerBase *pHandler) {
+    std::vector<LightHttpHandlerBase *>::iterator it = m_pHandlers.begin();
+    for (it = m_pHandlers.begin(); it != m_pHandlers.end(); ++it) {
+        LightHttpHandlerBase *p = *it;
+        if (p->name() == sName) {
+            pHandler = p;
+            return true;
+        }
+    }
+    return false;
+}
+
+// ---------------------------------------------------------------------
+
+bool LightHttpHandlers::handle(const std::string &sWorkerId, LightHttpRequest *pRequest) {
+    std::string _tag = TAG + "-" + sWorkerId;
+
+    for (int i = 0; i < m_pHandlers.size(); i++) {
+        if (m_pHandlers[i]->canHandle(sWorkerId, pRequest)) {
+            if (m_pHandlers[i]->handle(sWorkerId, pRequest)) {
+                return true;
+            } else {
+                Log::warn("LightHttpHandlers", m_pHandlers[i]->name() + " - could not handle request '" + pRequest->requestPath() + "'");
+            }
+        }
+    }
+    return false;
+}
+
+// ----------------------------------------------------------------------
+// LightHttpThreadWorker
+
+void* processRequest(void *arg) {
+	LightHttpThreadWorker *pWorker = (LightHttpThreadWorker *)arg;
+	pthread_detach(pthread_self());
+    pWorker->run();
+	return 0;
+}
+
+// ----------------------------------------------------------------------
+
+LightHttpThreadWorker::LightHttpThreadWorker(const std::string &sName, LightHttpDequeRequests *pDeque, LightHttpHandlers *pHandlers) {
+    TAG = "LightHttpThreadWorker-" + sName;
+    m_pDeque = pDeque;
+    m_bStop = false;
+    m_sName = sName;
+    m_pHandlers = pHandlers;
+}
+
+// ----------------------------------------------------------------------
+
+void LightHttpThreadWorker::start() {
+    m_bStop = false;
+    pthread_create(&m_serverThread, NULL, &processRequest, (void *)this);
+}
+
+// ----------------------------------------------------------------------
+
+void LightHttpThreadWorker::stop() {
+    m_bStop = true;
+}
+
+// ----------------------------------------------------------------------
+
+void LightHttpThreadWorker::run() {
+    const int nMaxPackageSize = 4096;
+    while(1) {
+		if (m_bStop) return;
+        LightHttpRequest *pInfo = m_pDeque->popRequest();
+		bool bExists = pInfo != nullptr;
+        // TODO refactor
+		if (bExists) {
+            int nSockFd = pInfo->sockFd();
+
+            // set timeout options
+            struct timeval timeout;
+            timeout.tv_sec = 1; // 1 seconds timeout
+            timeout.tv_usec = 0;
+            setsockopt(nSockFd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+
+            struct sockaddr_in addr;
+            socklen_t addr_size = sizeof(struct sockaddr_in);
+            int res = getpeername(nSockFd, (struct sockaddr *)&addr, &addr_size);
+            char *clientip = new char[20];
+            memset(clientip, 0, 20);
+            strcpy(clientip, inet_ntoa(addr.sin_addr));
+            Log::info(TAG, "IP-address: " + std::string(clientip));
+
+            LightHttpResponse *pResponse = new LightHttpResponse(nSockFd);
+            int n;
+            // int newsockfd = (long)arg;
+            char msg[nMaxPackageSize];
+
+            std::string sRequest;
+            
+            // std::cout << nSockFd  << ": address = " << info->address() << "\n";
+            // read data from socket
+            bool bErrorRead = false;
+            while(1) { // problem can be here
+                // std::cout << nSockFd  << ": wait recv...\n";
+                memset(msg, 0, nMaxPackageSize);
+
+                n = recv(nSockFd, msg, nMaxPackageSize, 0);
+                // std::cout << "N: " << n << std::endl;
+                if (n == -1) {
+                    bErrorRead = true;
+                    std::cout << nSockFd  << ": error read... \n";
+                    break;
+                }
+                if (n == 0) {
+                    //close(nSockFd);
+                    break;
+                }
+                Log::info(TAG, "Readed " + std::to_string(n) + " bytes...");
+                msg[n] = 0;
+                //send(newsockfd,msg,n,0);
+                sRequest = std::string(msg);
+
+                std::string sRecv(msg);
+                pInfo->appendRecieveRequest(sRecv);
+
+                if (pInfo->isEnoughAppendReceived()) {
+                    break;
+                }
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+            Log::info(TAG, "\nRequest: \n>>>\n" + sRequest + "\n<<<");
+
+            if (bErrorRead) {
+                pResponse->sendDontUnderstand();
+            } else if (pInfo->requestType() == "OPTIONS") {
+                pResponse->ok().sendOptions("OPTIONS, GET, POST");
+            } else if (pInfo->requestType() != "GET" && pInfo->requestType() != "POST") {
+                pResponse->notImplemented().sendEmpty();
+            } else {
+                if (!m_pHandlers->handle(m_sName, pInfo)) {
+                    pResponse->notFound().sendEmpty();
+                } else {
+                    // TODO resp internal error
+                    // this->response(LightHttpResponse::RESP_INTERNAL_SERVER_ERROR);     
+                }
+            }
+			delete pInfo;
+            delete pResponse;
+		}
+
+		if (!bExists) {
+            if (m_bStop) return;
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            if (m_bStop) return;
+		}
+	}
+}
+
 
 // ----------------------------------------------------------------------
 // LightHttpServer

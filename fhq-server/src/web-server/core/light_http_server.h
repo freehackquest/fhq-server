@@ -16,10 +16,60 @@
 #include <map>
 #include <deque>
 #include <mutex>
+#include <vector>
 #include <light_http_request.h>
-#include <light_http_handlers.h>
-#include <light_http_deque_requests.h>
-#include <light_http_thread_worker.h>
+#include <light_http_response.h>
+#include <light_http_handler_base.h>
+
+// ---------------------------------------------------------------------
+
+class LightHttpDequeRequests {
+	public:
+        LightHttpRequest *popRequest();
+		void pushRequest(LightHttpRequest *pRequest);
+		void cleanup();
+
+	private:
+		std::string TAG;
+
+		std::mutex m_mtxDequeRequests;
+		std::deque<LightHttpRequest *> m_dequeRequests;
+};
+
+// ---------------------------------------------------------------------
+
+class LightHttpHandlers {
+    public:
+        LightHttpHandlers();
+        void add(LightHttpHandlerBase *pHandler);
+        void remove(const std::string &sName);
+        bool find(const std::string &sName, LightHttpHandlerBase *pHandler);
+        bool handle(const std::string &sWorkerId, LightHttpRequest *pRequest);
+    private:
+        std::string TAG;
+        std::vector<LightHttpHandlerBase *> m_pHandlers;
+};
+
+// ---------------------------------------------------------------------
+
+class LightHttpThreadWorker {
+	public:
+
+		LightHttpThreadWorker(const std::string &sName, LightHttpDequeRequests *pDeque, LightHttpHandlers *pHandlers);
+
+		void start();
+		void stop();
+		void run();		
+	private:
+		std::string TAG;
+		std::string m_sName;
+		LightHttpDequeRequests *m_pDeque;
+		LightHttpHandlers *m_pHandlers;
+		bool m_bStop;
+		pthread_t m_serverThread;
+};
+
+// ---------------------------------------------------------------------
 
 class LightHttpServer {
 	public:
