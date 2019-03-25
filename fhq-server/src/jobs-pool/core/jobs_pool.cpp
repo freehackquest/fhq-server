@@ -15,19 +15,6 @@ const std::string &JobAsync::name() {
 
 // ---------------------------------------------------------------------
 
-void JobPromise::reject(const std::string &sError) {
-    // TODO logging
-    onFail(sError);
-}
-
-// ---------------------------------------------------------------------
-
-void JobPromise::resolve() {
-    onDone();
-}
-
-// ---------------------------------------------------------------------
-
 JobAsync *JobAsyncDeque::pop(){
     std::lock_guard<std::mutex> guard(this->m_mtxJobsAsyncDeque);
     JobAsync *pJobAsync = nullptr;
@@ -82,6 +69,7 @@ JobsThreadWorker::JobsThreadWorker(const std::string &sName, JobAsyncDeque *pDeq
     TAG = "JobsThreadWorker-" + sName;
     m_pDeque = pDeque;
     m_bStop = false;
+    m_bBuzy = false;
     m_sName = sName;
 }
 
@@ -100,23 +88,35 @@ void JobsThreadWorker::stop() {
 
 // ----------------------------------------------------------------------
 
-void JobsThreadWorker::run() {
-    const int nMaxPackageSize = 4096;
-    while(1) {
-        if (m_bStop) return;
-        JobAsync *pRunnable = m_pDeque->pop();
-        bool bExists = pRunnable != nullptr;
-        // TODO refactor
-        if (bExists) {
-            pRunnable->run(TAG);
-            delete pRunnable;
-        }
+bool JobsThreadWorker::isBuzy() {
+    return m_bBuzy;
+}
 
-        if (!bExists) {
-            if (m_bStop) return;
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            if (m_bStop) return;
+// ----------------------------------------------------------------------
+
+void JobsThreadWorker::run() {
+    while(1) {
+        if (m_bStop) {
+            m_bBuzy = false;
+            return;
         }
+        JobAsync *pJobAsync = m_pDeque->pop();
+        while (pJobAsync != nullptr) {
+            m_bBuzy = true;
+            pJobAsync->run(TAG);
+            delete pJobAsync;
+            pJobAsync = m_pDeque->pop();
+            if (m_bStop) {
+                m_bBuzy = false;
+                return;
+            }
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        if (m_bStop) {
+            m_bBuzy = false;
+            return;
+        }
+        m_bBuzy = false;
     }
 }
 
@@ -141,20 +141,17 @@ void JobsPool::initGlobalVariables() {
 
 // ----------------------------------------------------------------------
 
-void JobsPool::addJobFast( // две очереди для быстрых работ (сразу собирать статистику)
-    JobAsync *pJobAsync,
-    JobPromise *pJobPromise
-) {
+ // Two queue for fast jobs 
+void JobsPool::addJobFast(JobAsync *pJobAsync) {
     JobsPool::initGlobalVariables();
     g_pJobsFastPool->push(pJobAsync);
 }
 
 // ----------------------------------------------------------------------
 
-void JobsPool::addJobSlow( // долгие работы если их нет то выполняем короткие
-    JobAsync *pJobAsync,
-    JobPromise *pJobPromise
-) {
+// Long time jobs like a send a lot of emails and etc...
+// better keep this list of jobs to storage
+void JobsPool::addJobSlow(JobAsync *pJobAsync) {
     JobsPool::initGlobalVariables();
     Log::warn("JobsPool", "addJobSlow not implemented yet");
     // g_pJobsLong->push(pJobAsync);
@@ -162,11 +159,8 @@ void JobsPool::addJobSlow( // долгие работы если их нет т�
 
 // ----------------------------------------------------------------------
 
-void JobsPool::addJobDelay( // здесь создается отдельная long job
-    int nMilliseconds,
-    JobAsync *pJobAsync,
-    JobPromise *pJobPromise
-) {
+// jobs with delay
+void JobsPool::addJobDelay(int nMilliseconds, JobAsync *pJobAsync) {
     JobsPool::initGlobalVariables();
     Log::warn("JobsPool", "addJobDelay not implemented yet");
     // g_pJobsShort->push(pJobAsync);
@@ -174,11 +168,8 @@ void JobsPool::addJobDelay( // здесь создается отдельная 
 
 // ----------------------------------------------------------------------
 
-void JobsPool::addJobCron( // отдельный тред для cron
-    JobSchedule *pJobSchedule,
-    JobAsync *pJobAsync,
-    JobPromise *pJobPromise
-) {
+// jobs by cron, for example every 5 minutes execute some job
+void JobsPool::addJobCron(JobSchedule *pJobSchedule, JobAsync *pJobAsync) {
     JobsPool::initGlobalVariables();
     Log::warn("JobsPool", "addJobCron not implemented yet");
     // g_pJobsShort->push(pJobAsync);
@@ -209,11 +200,18 @@ void JobsPool::start() {
 void JobsPool::waitForDone() {
     // TODO when job in progress need wait deque for progress jobs ?
     JobsPool::initGlobalVariables();
-    while(1) {
-        if (g_pJobsFastPool->isEmpty()) {
-            break;
-        }
+    bool bBuzy = true;
+    while(bBuzy) {
+        bBuzy = false;
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        if (!g_pJobsFastPool->isEmpty()) {
+            bBuzy = true;
+        }
+        for (int i = 0; i < g_vJobsFastWorkers->size(); i++) {
+            if (g_vJobsFastWorkers->at(i)->isBuzy()) {
+                bBuzy = true;
+            }
+        }
     }
 }
 

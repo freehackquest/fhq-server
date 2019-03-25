@@ -19,17 +19,6 @@ class JobAsync {
 
 // ---------------------------------------------------------------------
 
-class JobPromise {
-    public:
-        void resolve();
-        void reject(const std::string &sError);
-    protected:
-        virtual void onDone() = 0;
-        virtual void onFail(const std::string &sError) = 0;
-};
-
-// ---------------------------------------------------------------------
-
 class JobSchedule {
     public:
         // TODO
@@ -60,11 +49,13 @@ class JobsThreadWorker {
 
         void start();
         void stop();
+        bool isBuzy();
         void run();    
     private:
         std::string TAG;
         std::string m_sName;
         JobAsyncDeque *m_pDeque;
+        bool m_bBuzy;
         bool m_bStop;
         pthread_t m_threadWorker;
 };
@@ -87,27 +78,10 @@ class JobsPool {
     public:
         static void initGlobalVariables();
 
-        static void addJobSlow(
-            JobAsync *pJobAsync,
-            JobPromise *pJobPromise = nullptr
-        );
-
-        static void addJobFast(
-            JobAsync *pJobAsync,
-            JobPromise *pJobPromise = nullptr
-        );
-
-        static void addJobDelay(
-            int nMilliseconds,
-            JobAsync *pJobAsync,
-            JobPromise *pJobPromise = nullptr
-        );
-
-        static void addJobCron( 
-            JobSchedule *pJobSchedule,
-            JobAsync *pJobAsync,
-            JobPromise *pJobPromise = nullptr
-        );
+        static void addJobSlow(JobAsync *pJobAsync);
+        static void addJobFast(JobAsync *pJobAsync);
+        static void addJobDelay(int nMilliseconds, JobAsync *pJobAsync);
+        static void addJobCron(JobSchedule *pJobSchedule,JobAsync *pJobAsync);
 
         static void stop();
         static void start();
