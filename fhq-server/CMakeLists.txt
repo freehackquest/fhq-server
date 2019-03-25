@@ -261,12 +261,6 @@ list (APPEND FHQSRV_SOURCES "src/storages/updates/update0100.h")
 list (APPEND FHQSRV_SOURCES "src/storages/updates/update0100.cpp")
 
 # web-server
-list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_handler_base.cpp")
-list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_handler_base.h")
-list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_request.cpp")
-list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_request.h")
-list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_response.cpp")
-list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_response.h")
 list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_server.cpp")
 list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_server.h")
 list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_admin_folder.cpp")
