@@ -61,6 +61,14 @@ void JobAsyncDeque::cleanup(){
 
 // ----------------------------------------------------------------------
 
+bool JobAsyncDeque::isEmpty() {
+    std::lock_guard<std::mutex> guard(this->m_mtxJobsAsyncDeque);
+    bool bRet = m_dequeJobsAsync.size() == 0;
+    return bRet;
+}
+
+// ----------------------------------------------------------------------
+
 void* processJobsThreadWorker(void *arg) {
     JobsThreadWorker *pWorker = (JobsThreadWorker *)arg;
     pthread_detach(pthread_self());
@@ -192,12 +200,29 @@ void JobsPool::start() {
     for (int i = 0; i < g_vJobsFastWorkers->size(); i++) {
         g_vJobsFastWorkers->at(i)->start();
     }
+    // TODO slow
+    // TODO thread for cron and delay
+}
+
+// ----------------------------------------------------------------------
+
+void JobsPool::waitForDone() {
+    // TODO when job in progress need wait deque for progress jobs ?
+    JobsPool::initGlobalVariables();
+    while(1) {
+        if (g_pJobsFastPool->isEmpty()) {
+            break;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
 }
 
 // ----------------------------------------------------------------------
 
 void JobsPool::cleanup() {
     g_pJobsFastPool->cleanup();
+    // TODO slow
+    // TODO thread for cron and delay
 }
 
 // ----------------------------------------------------------------------

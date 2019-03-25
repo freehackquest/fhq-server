@@ -42,6 +42,7 @@ class JobAsyncDeque {
         JobAsync *pop();
         void push(JobAsync *pJobAsync);
         void cleanup();
+        bool isEmpty();
 
     private:
         std::string TAG;
@@ -110,6 +111,7 @@ class JobsPool {
 
         static void stop();
         static void start();
+        static void waitForDone();
         static void cleanup();
 };
 

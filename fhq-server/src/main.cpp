@@ -36,6 +36,7 @@
 #include <runtasks.h>
 #include <light_http_server.h>
 #include <http_handler_web_admin_folder.h>
+#include <jobs_pool.h>
 
 LightHttpServer g_httpServer;
 
