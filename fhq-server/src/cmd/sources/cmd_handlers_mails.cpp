@@ -54,7 +54,7 @@ CmdHandlerMailSend::CmdHandlerMailSend()
 
 void CmdHandlerMailSend::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     std::string sEmail = jsonRequest["to"].toString().toStdString();
     std::string sSubject = jsonRequest["subject"].toString().toStdString();
@@ -91,7 +91,7 @@ void CmdHandlerMailsList::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QStringList filters;
     QMap<QString,QString> filter_values;
@@ -157,7 +157,7 @@ void CmdHandlerMailsList::handle(ModelRequest *pRequest){
     }
 
     // emails
-    QJsonArray emails;
+    auto jsonEmails = nlohmann::json::array();
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM email_delivery ed " + where + " ORDER BY ed.dt DESC LIMIT " + QString::number(nPage*nOnPage) + "," + QString::number(nOnPage));
@@ -167,20 +167,20 @@ void CmdHandlerMailsList::handle(ModelRequest *pRequest){
         query.exec();
         while (query.next()) {
             QSqlRecord record = query.record();
-            QJsonObject email;
+            nlohmann::json jsonEmail;
 
-            email["id"] = record.value("id").toInt();
-            email["email"] = record.value("to_email").toString();
-            email["subject"] = record.value("subject").toString().toHtmlEscaped();
-            email["message"] = record.value("message").toString().toHtmlEscaped();
-            email["priority"] = record.value("priority").toString().toHtmlEscaped();
-            email["status"] = record.value("status").toString().toHtmlEscaped();
-            email["dt"] = record.value("dt").toString().toHtmlEscaped();
-            emails.push_back(email);
+            jsonEmail["id"] = record.value("id").toInt();
+            jsonEmail["email"] = record.value("to_email").toString().toStdString();
+            jsonEmail["subject"] = record.value("subject").toString().toHtmlEscaped().toStdString();
+            jsonEmail["message"] = record.value("message").toString().toHtmlEscaped().toStdString();
+            jsonEmail["priority"] = record.value("priority").toString().toHtmlEscaped().toStdString();
+            jsonEmail["status"] = record.value("status").toString().toHtmlEscaped().toStdString();
+            jsonEmail["dt"] = record.value("dt").toString().toHtmlEscaped().toStdString();
+            jsonEmails.push_back(jsonEmail);
         }
     }
 
-    jsonResponse["data"] = emails;
+    jsonResponse["data"] = jsonEmails;
     jsonResponse["onpage"] = nOnPage;
     jsonResponse["page"] = nPage;
     jsonResponse["count"] = nCount;

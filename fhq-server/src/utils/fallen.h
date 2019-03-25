@@ -1,10 +1,9 @@
-#ifndef TS_H
-#define TS_H
-
+#ifndef FALLEN_H
+#define FALLEN_H
 #include <string>
+#include <vector>
 
-class TS {
-
+class Fallen {
     public:
         static long currentTime_milliseconds();
         static long currentTime_seconds();
@@ -15,4 +14,4 @@ class TS {
         static std::string formatTimeUTC(int nTimeInSec);
 };
 
-#endif // TS_H
+#endif // FALLEN_H

@@ -1,4 +1,9 @@
-#include "ts.h"
+#include "fallen.h"
+#include <dirent.h>
+#include <sys/stat.h>
+#include <iostream>
+#include <sstream>
+#include <fstream>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <time.h>
@@ -6,24 +11,22 @@
 #include <math.h>
 #include <chrono>
 
-// ---------------------------------------------------------------------
-
-long TS::currentTime_milliseconds() {
+long Fallen::currentTime_milliseconds() {
     long nTimeStart = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     return nTimeStart;
 }
 
 // ---------------------------------------------------------------------
 
-long TS::currentTime_seconds() {
+long Fallen::currentTime_seconds() {
     long nTimeStart = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     return nTimeStart;
 }
 
 // ---------------------------------------------------------------------
 
-std::string TS::currentTime_logformat(){
-    long nTimeStart = TS::currentTime_milliseconds();
+std::string Fallen::currentTime_logformat(){
+    long nTimeStart = Fallen::currentTime_milliseconds();
     std::string sMilliseconds = std::to_string(int(nTimeStart % 1000));
     nTimeStart = nTimeStart / 1000;
 
@@ -40,7 +43,7 @@ std::string TS::currentTime_logformat(){
 
 // ---------------------------------------------------------------------
 
-std::string TS::formatTimeForWeb(long nTimeInSec) {
+std::string Fallen::formatTimeForWeb(long nTimeInSec) {
     std::time_t tm_ = long(nTimeInSec);
     // struct tm tstruct = *localtime(&tm_);
     struct tm tstruct = *gmtime ( &tm_ );
@@ -56,14 +59,14 @@ std::string TS::formatTimeForWeb(long nTimeInSec) {
 
 // ---------------------------------------------------------------------
 
-std::string TS::currentTime_forFilename() {
-    long nTimeStart = TS::currentTime_seconds();
-    return TS::formatTimeForFilename(nTimeStart);
+std::string Fallen::currentTime_forFilename() {
+    long nTimeStart = Fallen::currentTime_seconds();
+    return Fallen::formatTimeForFilename(nTimeStart);
 }
 
 // ---------------------------------------------------------------------
 
-std::string TS::formatTimeForFilename(long nTimeInSec) {
+std::string Fallen::formatTimeForFilename(long nTimeInSec) {
     std::time_t tm_ = long(nTimeInSec);
     // struct tm tstruct = *localtime(&tm_);
     struct tm tstruct = *gmtime ( &tm_ );
@@ -77,7 +80,7 @@ std::string TS::formatTimeForFilename(long nTimeInSec) {
 
 // ---------------------------------------------------------------------
 
-std::string TS::formatTimeUTC(int nTimeInSec) {
+std::string Fallen::formatTimeUTC(int nTimeInSec) {
     // datetime
     std::time_t tm_ = long(nTimeInSec);
     // struct tm tstruct = *localtime(&tm_);

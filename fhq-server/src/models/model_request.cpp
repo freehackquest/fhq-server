@@ -5,12 +5,12 @@
 
 // ---------------------------------------------------------------------
 
-ModelRequest::ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_){
+ModelRequest::ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_) {
     m_pClient = pClient;
     m_pServer = pWebSocketServer;
     m_jsonRequest = jsonRequest_;
 
-    if(m_jsonRequest["cmd"].is_string()){
+    if(m_jsonRequest["cmd"].is_string()) {
         m_sCommand = m_jsonRequest["cmd"];
     }
 
@@ -21,19 +21,19 @@ ModelRequest::ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServ
 
 // ---------------------------------------------------------------------
 
-QWebSocket *ModelRequest::client(){
+QWebSocket *ModelRequest::client() {
     return m_pClient;
 }
 
 // ---------------------------------------------------------------------
 
-IWebSocketServer *ModelRequest::server(){
+IWebSocketServer *ModelRequest::server() {
     return m_pServer;
 }
 
 // ---------------------------------------------------------------------
 
-const nlohmann::json& ModelRequest::jsonRequest(){
+const nlohmann::json& ModelRequest::jsonRequest() {
     return m_jsonRequest;
 }
 
@@ -45,34 +45,26 @@ std::string ModelRequest::m(){
 
 // ---------------------------------------------------------------------
 
-IUserToken *ModelRequest::userToken(){
+IUserToken *ModelRequest::userToken() {
     return m_pServer->getUserToken(m_pClient);
 }
 
 // ---------------------------------------------------------------------
 
-QJsonObject ModelRequest::data(){ // deprecated
+QJsonObject ModelRequest::data() { // deprecated
     QString s = QString::fromStdString( m_jsonRequest.dump() );
     return QJsonDocument::fromJson(s.toUtf8()).object();
 }
 
 // ---------------------------------------------------------------------
 
-void ModelRequest::sendMessageError(const std::string &cmd, Error error){
+void ModelRequest::sendMessageError(const std::string &cmd, Error error) {
     m_pServer->sendMessageError(m_pClient,cmd,m_sMessageId,error);
 }
 
 // ---------------------------------------------------------------------
 
-void ModelRequest::sendMessageSuccess(const std::string &cmd, const QJsonObject &jsonResponse){
-    QJsonDocument doc(jsonResponse);
-    nlohmann::json j = nlohmann::json::parse(doc.toJson().toStdString());
-    sendMessageSuccess(cmd, j);
-}
-
-// ---------------------------------------------------------------------
-
-void ModelRequest::sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse){
+void ModelRequest::sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse) {
     jsonResponse["cmd"] = cmd;
     jsonResponse["m"] = m_sMessageId;
     jsonResponse["result"] = "DONE";
@@ -87,13 +79,13 @@ bool ModelRequest::hasM(){
 
 // ---------------------------------------------------------------------
 
-std::string ModelRequest::command(){
+std::string ModelRequest::command() {
     return m_sCommand;
 }
 
 // ---------------------------------------------------------------------
 
-bool ModelRequest::hasCommand(){
+bool ModelRequest::hasCommand() {
     return m_sCommand != "";
 }
 

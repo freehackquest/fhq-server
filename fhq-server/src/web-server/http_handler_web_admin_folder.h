@@ -1,7 +1,7 @@
 #ifndef HTTP_HANDLER_WEB_FOLDER_H
 #define HTTP_HANDLER_WEB_FOLDER_H
 
-#include <light_http_handler_base.h>
+#include <light_http_server.h>
 
 class HttpHandlerWebAdminFolder : LightHttpHandlerBase {
     public:

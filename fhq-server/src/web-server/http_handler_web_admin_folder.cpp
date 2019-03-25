@@ -1,7 +1,6 @@
 #include "http_handler_web_admin_folder.h"
 #include <utils_logger.h>
 #include <fs.h>
-#include <light_http_response.h>
 
 // ----------------------------------------------------------------------
 

@@ -26,6 +26,7 @@ list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/utils")
 list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/utils/include")
 list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/storages")
 list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/storages/mysql")
+list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/jobs-pool/core")
 list (APPEND UNIT_TESTS_INCLUDE_DIRS "src/unit_tests")
 
 # json
@@ -53,7 +54,13 @@ list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/storage.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/storages.h")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/storages.cpp")
 
+# jobs-pool
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/jobs-pool/core/jobs_pool.h")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/jobs-pool/core/jobs_pool.cpp")
+
 # utils
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/fallen.h")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/fallen.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/fs.h")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/fs.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/logger.h")
@@ -62,8 +69,6 @@ list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/parse_config.h")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/parse_config.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/str.h")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/str.cpp")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/ts.h")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/ts.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/utils_merge_text.h")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/utils_merge_text.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/utils.h")
@@ -73,6 +78,8 @@ list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/include/utils_static_an
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/sources/utils_static_analizing_text.cpp")
 
 # unit_tests
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_jobs_pool.h")
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_jobs_pool.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_levenshtein.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_levenshtein.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_sha1.h")
@@ -168,7 +175,7 @@ ENDIF(MYSQL_FOUND)
 include_directories(${UNIT_TESTS_INCLUDE_DIRS})
 add_executable (unit-tests ${UNIT_TESTS_SOURCES})
 
-target_link_libraries(unit-tests ${UNIT_TESTS_LIBRARIES} )
+target_link_libraries(unit-tests -lpthread ${UNIT_TESTS_LIBRARIES} )
 
 install(
     TARGETS
