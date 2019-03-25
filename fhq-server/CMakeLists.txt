@@ -163,6 +163,8 @@ list (APPEND FHQSRV_SOURCES "src/storages/mysql/mysql_storage.cpp")
 list (APPEND FHQSRV_SOURCES "src/storages/mysql/mysql_storage.h")
 
 # utils
+list (APPEND FHQSRV_SOURCES "src/utils/fallen.h")
+list (APPEND FHQSRV_SOURCES "src/utils/fallen.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/export_libfhqcli_py.h")
 list (APPEND FHQSRV_SOURCES "src/utils/export_libfhqcli_py.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/export_libfhqcli_web_js.h")
