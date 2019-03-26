@@ -17,15 +17,16 @@ services:
   fhq_server:
     depends_on:
       - fhq_db
-    image: freehackquest/fhq-server:0.2.17
+    image: freehackquest/fhq-server:latest
     volumes:
-      - "./fhq_data:/usr/share/fhq-server"
+      - "./fhq_data:/usr/share/fhq-server/public"
       - "./fhq_conf:/etc/fhq-server"
       - "./fhq_logs:/var/log/fhq-server"
       
     ports:
       - "1234:1234"
       - "4613:4613"
+      - "7080:7080"
     restart: always
     links:
       - "fhq_db"

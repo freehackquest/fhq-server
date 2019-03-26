@@ -7,6 +7,13 @@ This file is used to list changes made in each version of the fhq-server.
 1. For date of version please use `date -R`
 2. Please use current format, because it will be used for ppa/debian changelog
 
+## [0.2.21] (?)
+
+- Code refactoring
+- Prepare jobs_pool mechanizm
+- Integrated light web-server
+- Added web-admin sources
+
 ## [0.2.20] (Fri, 08 Mar 2019 00:04:42 +0700)
 
 - Code refactoring

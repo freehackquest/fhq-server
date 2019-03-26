@@ -5,3 +5,4 @@ cd ../fhq-server
 cd ../tests
 rm -rf libfhqcli
 cp -r ../fhq-server/libfhqcli-py/libfhqcli libfhqcli
+rm -rf ../fhq-server/libfhqcli-py
