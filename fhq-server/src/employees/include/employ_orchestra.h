@@ -23,6 +23,8 @@ public:
     bool check_response(const nlohmann::json &jsonResponse, std::string &sError);
     bool find_container(const std::string &sName, LXDContainer *&pContainer);
     bool remove_container(const std::string &sName, std::string &sError);
+    bool get_all_profiles(std::vector<std::string> &vecProfiles, std::string &sError);
+    bool find_profile(const std::string& sName, std::string& sError);
     bool send_post_request_file(const std::string &sUrl, const std::string &sFile, std::string &sResponse,
                                 std::string &sError);
     bool send_post_request(const std::string &sUrl, const nlohmann::json &jsonData, nlohmann::json &jsonResponse,

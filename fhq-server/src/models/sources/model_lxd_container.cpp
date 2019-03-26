@@ -228,3 +228,27 @@ std::string LXDContainer::get_result() const {
 std::string LXDContainer::get_port() {
     return m_sPort;
 }
+
+
+// TODO Возможно, можно открыть порт прикрепив к нему профиль с девайсом типа прокси на нужный порт.
+
+bool LXDContainer::open_port(const std::string &sPort, const std::string &sProto) {
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    auto sUrl = "/1.0/profiles";
+    nlohmann::json jsonResponse;
+
+    if (!pOrchestra->send_get_request(sUrl, jsonResponse, m_sError)) {
+        return false;
+    }
+
+    if (jsonResponse.is_array()) {
+        std::cout << jsonResponse.dump(2) << std::endl;
+    }
+
+    return true;
+}
+
+bool LXDContainer::open_port(const int &nPort, const std::string &sProto) {
+    auto sPort = std::to_string(nPort);
+    return open_port(sPort, sProto);
+}

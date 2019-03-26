@@ -25,6 +25,8 @@ public:
     bool remove();
     bool read_file(const std::string &sPath, std::string &sRawData);
     bool push_file(const std::string &sPath, const std::string &sRawData);
+    bool open_port(const std::string &sPort, const std::string &sProto);
+    bool open_port(const int &nPort, const std::string &sProto);
     bool exec(const std::string &sCommand);
 
     std::vector<std::string> split(const std::string& str);
@@ -35,6 +37,7 @@ private:
     std::string status;
     std::string IPv4;
     std::string prefix;
+    // TODO ADD nErrorCode
     std::string m_sError;
     std::string m_sResult;
     std::string m_sPort;

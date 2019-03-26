@@ -94,6 +94,35 @@ bool EmployOrchestra::find_container(const std::string &name, LXDContainer *&pCo
 
 // ---------------------------------------------------------------------
 
+bool EmployOrchestra::get_all_profiles(std::vector<std::string> &vecProfiles, std::string &sError) {
+    const std::string sUrl = "/1.0/profiles";
+    nlohmann::json jsonReponse;
+
+    if (!send_get_request(sUrl, jsonReponse, sError))
+        return false;
+
+    if (!jsonReponse.is_array()){
+        return false;
+    }
+
+    vecProfiles = jsonReponse.get<std::vector<std::string>>();
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+bool EmployOrchestra::find_profile(const std::string &sName, std::string &sError) {
+    std::vector<std::string> vecProfiles;
+
+    if (!get_all_profiles(vecProfiles, sError)){
+        return false;
+    }
+
+    return !(std::find(vecProfiles.begin(), vecProfiles.end(), sName) == vecProfiles.end());
+}
+
+// ---------------------------------------------------------------------
+
 static size_t write_to_string(void *ptr, size_t size, size_t count, void *stream) {
     ((std::string *) stream)->append((char *) ptr, 0, size * count);
     return size * count;

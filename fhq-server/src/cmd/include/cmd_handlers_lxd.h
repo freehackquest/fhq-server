@@ -69,7 +69,7 @@ public:
 REGISTRY_CMD(CmdHandlerLXDExec)
 
 /*********************************************
- * Donwload file or directory from the container.
+ * Action with files in container.
 **********************************************/
 
 class CmdHandlerLXDFile : public CmdHandlerBase {
@@ -88,5 +88,18 @@ public:
 
 REGISTRY_CMD(CmdHandlerLXDFile)
 
+/*********************************************
+ * Open container port.
+**********************************************/
+
+class CmdHandlerLXDOpenPort : public CmdHandlerBase {
+
+public:
+    CmdHandlerLXDOpenPort();
+    void handle(ModelRequest *pRequest) override;
+
+};
+
+REGISTRY_CMD(CmdHandlerLXDOpenPort)
 
 #endif // CMD_HADNLERS_LXD_H
