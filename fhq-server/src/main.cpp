@@ -31,6 +31,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <export_list_of_handlers.h>
+#include <export_struct_of_storage.h>
 #include <export_libfhqcli_web_js.h>
 #include <export_libfhqcli_py.h>
 #include <runtasks.h>
@@ -52,6 +53,7 @@ int main(int argc, char** argv) {
     helpArgs.addHelp("help", "-h", HelpParseArgType::SINGLE_OPTION, "This help");
     helpArgs.addHelp("version", "-v", HelpParseArgType::SINGLE_OPTION, "Print version");
     helpArgs.addHelp("show-handlers", "-sh", HelpParseArgType::SINGLE_OPTION, "Show handlers");
+    helpArgs.addHelp("show-storage-struct", "-sh-ss", HelpParseArgType::SINGLE_OPTION, "Show Storage Struct");
     helpArgs.addHelp("export-libfhqcli-py", "-exlp", HelpParseArgType::SINGLE_OPTION, "Export libfhqcli-py (python)");
     helpArgs.addHelp("export-libfhqcli-web-javascript", "-exlwjs", HelpParseArgType::SINGLE_OPTION, "Export libfhqcli-web-js (javascript)");
     helpArgs.addHelp("show-employees", "-se", HelpParseArgType::SINGLE_OPTION, "Show employees");
@@ -72,7 +74,10 @@ int main(int argc, char** argv) {
         helpArgs.printHelp();
         return 0;
     } else if (helpArgs.has("show-handlers")) {
-        UtilsExportListOfHandlers::print();
+        ExportListOfHandlers::print();
+        return 0;
+    } else if (helpArgs.has("show-storage-struct")) {
+        ExportStructOfStorage::print();
         return 0;
     } else if (helpArgs.has("export-libfhqcli-py")) {
         ExportLibFHQCliPy::exportLib();

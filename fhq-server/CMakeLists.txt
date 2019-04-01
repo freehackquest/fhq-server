@@ -170,6 +170,8 @@ list (APPEND FHQSRV_SOURCES "src/exports/export_libfhqcli_web_js.h")
 list (APPEND FHQSRV_SOURCES "src/exports/export_libfhqcli_web_js.cpp")
 list (APPEND FHQSRV_SOURCES "src/exports/export_list_of_handlers.h")
 list (APPEND FHQSRV_SOURCES "src/exports/export_list_of_handlers.cpp")
+list (APPEND FHQSRV_SOURCES "src/exports/export_struct_of_storage.h")
+list (APPEND FHQSRV_SOURCES "src/exports/export_struct_of_storage.cpp")
 
 # utils
 list (APPEND FHQSRV_SOURCES "src/utils/fallen.h")
