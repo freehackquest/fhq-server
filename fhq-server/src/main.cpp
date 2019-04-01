@@ -30,7 +30,7 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
-#include <utils_export_list_of_handlers.h>
+#include <export_list_of_handlers.h>
 #include <export_libfhqcli_web_js.h>
 #include <export_libfhqcli_py.h>
 #include <runtasks.h>
