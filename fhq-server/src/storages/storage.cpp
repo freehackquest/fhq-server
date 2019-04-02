@@ -678,3 +678,7 @@ bool Storage::insertRow(StorageConnection *pConn, const StorageInsert &storageIn
 }
 
 // ---------------------------------------------------------------------
+
+std::map<std::string, StorageStruct> Storage::storageStruct() {
+    return m_mapStructs;
+}

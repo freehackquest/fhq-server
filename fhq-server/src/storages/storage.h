@@ -183,7 +183,9 @@ class Storage {
 
         virtual std::vector<std::string> prepareSqlQueries(const StorageInsert &storageInsert) = 0;
         bool insertRow(StorageConnection *pConn, const StorageInsert &storageInsert);
-
+        
+        std::map<std::string, StorageStruct> storageStruct();
+        
     protected:
         std::string TAG;
 
