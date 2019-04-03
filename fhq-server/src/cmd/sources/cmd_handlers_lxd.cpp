@@ -171,7 +171,7 @@ void CmdHandlerLXDContainers::delete_container(const std::string &name, std::str
 CmdHandlerLXDInfo::CmdHandlerLXDInfo()
         : CmdHandlerBase("lxd_info", "Get information about the orhestra, containers.") {
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
 
@@ -257,7 +257,7 @@ void CmdHandlerLXDList::handle(ModelRequest *pRequest) {
 CmdHandlerLXDExec::CmdHandlerLXDExec()
         : CmdHandlerBase("lxd_exec", "Exec command in the container with name.") {
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
 
@@ -419,7 +419,7 @@ bool CmdHandlerLXDFile::push_file(LXDContainer *pContainer, const std::string &s
 CmdHandlerLXDOpenPort::CmdHandlerLXDOpenPort()
         : CmdHandlerBase("lxd_open_port", "Opens the container port.") {
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
+    m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
 
@@ -472,54 +472,9 @@ void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
         return;
     }
 
-    // TODO Move it to container model.
-    //Check for the existence of a port profile.
-    // If exist, then return with error message.
-    if (pOrchestra->find_profile(sProto + "-port-" + std::to_string(nPort), sError)){
-        nlohmann::json jsonProfile;
-        if (!pOrchestra->send_get_request("/1.0/profiles/" + sName, jsonProfile, sError)){
-            nErrorCode = 500;
-        }
-
-        if (!sError.empty()) {
-            pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
-            return;
-        }
-
-        if (!jsonProfile["used_by"].get<std::vector<std::string>>().empty()) {
-            sError = sProto + " port " + std::to_string(nPort) + " already used.";
-            pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
-            return;
-        }
-    }
-
-    // Create port's profile.
-    nlohmann::json jsonPortProfile = R"(
-        {
-            "name": "my-profilename",
-            "description": "Profile for open container port.",
-            "devices": {
-                "port": {
-                    "connect": "tcp:localhost:5003",
-                    "listen": "tcp:0.0.0.0:5003",
-                    "type": "proxy"
-                }
-            },
-            "used_by": []
-        }
-    )"_json;
-    jsonPortProfile["name"] = sProto + "-port-" + std::to_string(nPort);
-    jsonPortProfile["devices"]["port"]["connect"] = sProto + ":localhost:" + std::to_string(nPort);
-    jsonPortProfile["devices"]["port"]["listen"] = sProto + ":0.0.0.0:" + std::to_string(nPort);
-    jsonPortProfile["used_by"].push_back("/1.0/containers/" + pContainer->full_name());
-    std::cout << jsonPortProfile.dump(2);
-    nlohmann::json jsonProfileResponse;
-    if (!pOrchestra->send_post_request("/1.0/profiles", jsonPortProfile, jsonProfileResponse, sError)){
-        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
-        return;
-    };
-    // TODO Профиль создается, но не прикрепляется к контейнеру
-    std::cout << "End crete prfole\n";
+   if (!pContainer->open_port(nPort, sProto)){
+       sError = pContainer->get_error();
+   }
 
     if (!sError.empty()) {
         pRequest->sendMessageSuccess(cmd(), jsonResponse);

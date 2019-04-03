@@ -230,7 +230,6 @@ std::string LXDContainer::get_port() {
 }
 
 
-// TODO Возможно, можно открыть порт прикрепив к нему профиль с девайсом типа прокси на нужный порт.
 
 bool LXDContainer::open_port(const std::string &sPort, const std::string &sProto) {
     auto *pOrchestra = findEmploy<EmployOrchestra>();
