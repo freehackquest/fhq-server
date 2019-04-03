@@ -29,6 +29,8 @@ public:
                                 std::string &sError);
     bool send_post_request(const std::string &sUrl, const nlohmann::json &jsonData, nlohmann::json &jsonResponse,
                            std::string &sError);
+    bool send_patch_request(const std::string &sUrl, const nlohmann::json &jsonData, nlohmann::json &jsonResponse,
+                           std::string &sError);
     bool send_put_request(const std::string &sUrl, const nlohmann::json &jsonData, nlohmann::json &jsonResponse,
                           std::string &sError);
     bool send_get_request(const std::string &sUrl, nlohmann::json &jsonResponse, std::string &sError);
