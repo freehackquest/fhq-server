@@ -38,18 +38,12 @@ fhq.exportQuest = function(questid){
 	});
 }
 
-fhq.pages['quests'] = function(){
+fhq.pages['quests'] = function() {
 	window.fhq.changeLocationState({'quests':''});
+	$('.nav-item .nav-link').removeClass("active");
+	$('#menu_quests').addClass("active");
 	fhq.showLoader();
-	$('#page_name').html('<div class="header-name">Quests</div>'
-		+ '<div class="header-btn" id="quest_create"><i class="fa fa-plus"></i></div>'
-		+ '<div class="header-btn" id="quest_import"><i class="fa fa-upload"></i></div>'
-	);
-
-	$('#quest_create').unbind().bind('click', fhq.pages['quest_create']);
-	$('#quest_import').unbind().bind('click', function(){
-		alert("TODO");
-	});
+	$('#page_name').html('Quests');
 
 	var el = $("#page_content");
 	el.html('Loading...')
@@ -64,15 +58,21 @@ fhq.pages['quests'] = function(){
 		page = parseInt(fhq.pageParams['page'], 10);
 	}
 	
-	
-	
 	window.fhq.changeLocationState({'quests': '', 'onpage': onpage, 'page': page});
 
 	fhq.ws.quests({'onpage': onpage, 'page': page}).done(function(r){
 		fhq.hideLoader();
 		console.log(r);
 		el.html('');
-		
+		el.append(''
+			+ '<div class="btn btn-primary" id="quest_create"><i class="fa fa-plus"></i> New quest</div> '
+			+ '<div class="btn btn-primary" id="quest_import"><i class="fa fa-upload"></i> Import (TODO)</div>'
+		);
+
+		$('#quest_create').unbind().bind('click', fhq.pages['quest_create']);
+		$('#quest_import').unbind().bind('click', function(){
+			alert("TODO");
+		});
 				
 		el.append('<hr>');
 
@@ -90,7 +90,6 @@ fhq.pages['quests'] = function(){
 			+ '		</tbody>'
 			+ '</table>'
 		)
-
 
 		for(var i in r.data){
 			var q = r.data[i];
@@ -149,13 +148,7 @@ fhq.pages['quests'] = function(){
 }
 
 fhq.pages['quest_create'] = function(){
-	$('#page_name').html('<div class="header-name">Quest Create</div>'
-		+ '<div class="header-btn" id="quest_create"><i class="fa fa-check"></i></div>'
-		+ '<div class="header-btn" id="quest_create_close"><i class="fa fa-times"></i></div>'
-	);
-
-	$('#quest_create').unbind().bind('click', fhq.createQuest);
-	$('#quest_create_close').unbind().bind('click', fhq.pages['quests']);
+	$('#page_name').html('Quest Create');
 	
 	var el = $('#page_content');
 	el.html('');
@@ -266,11 +259,17 @@ fhq.pages['quest_create'] = function(){
 		+ '			</div>'
 		+ '		</div>'
 		+ '</div>'
+		+ '<div class="btn btn-danger" id="quest_create"><i class="fa fa-check"></i> Create</div> '
+		+ '<div class="btn btn-primary" id="quest_create_close"><i class="fa fa-times"></i> Cancel</div> '
 	);
-	
+
+	$('#quest_create').unbind().bind('click', fhq.createQuest);
+	$('#quest_create_close').unbind().bind('click', fhq.pages['quests']);
+
 	fhq.ws.games().done(function(r){
-		for(var i in r.data){
-			$('#newquest_gameid').append('<option value="' + r.data[i]["id"] + '">' + r.data[i]["title"] + '</option>');
+		console.log(r);
+		for(var i in r.data) {
+			$('#newquest_gameid').append('<option value="' + r.data[i]["local_id"] + '">' + r.data[i]["name"] + '</option>');
 		}
 	})
 }
