@@ -16,6 +16,7 @@ CmdHandlerQuestsWriteUpsList::CmdHandlerQuestsWriteUpsList()
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
     m_modelCommandAccess.setAccessAdmin(true);
+    setActivatedFromVersion("0.2.18");
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest ID"));
@@ -101,6 +102,7 @@ CmdHandlerQuestsWriteUpsProposal::CmdHandlerQuestsWriteUpsProposal()
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(true);
     m_modelCommandAccess.setAccessAdmin(true);
+    setActivatedFromVersion("0.2.18");
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest ID"));
@@ -199,6 +201,7 @@ CmdHandlerQuestsWriteUpsUpdate::CmdHandlerQuestsWriteUpsUpdate()
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
+    setActivatedFromVersion("0.2.18");
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("writeupid").required().integer_().description("WriteUp ID"));
@@ -281,6 +284,7 @@ CmdHandlerQuestsWriteUpsDelete::CmdHandlerQuestsWriteUpsDelete()
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
+    setActivatedFromVersion("0.2.18");
 
     // validation and description input fields
     m_vInputs.push_back(CmdInputDef("writeupid").required().integer_().description("WriteUp ID"));

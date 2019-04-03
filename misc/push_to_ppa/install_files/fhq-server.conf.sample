@@ -1,0 +1,22 @@
+# fhq-server config
+
+## Database Configuration
+storage_type=mysql
+usemysql=yes
+dbhost=localhost
+dbport=3306
+dbname=fhqserver
+dbuser=fhqserver
+dbpass=fhqserver
+
+## Server configurations
+port = 1234
+ssl_on = no
+ssl_port = 4613
+ssl_key_file = /etc/ssl/private/localhost.key
+ssl_cert_file = /etc/ssl/certs/localhost.pem
+
+# Web Configuration
+web_port = 7080
+web_max_threads = 4
+web_admin_folder = /usr/share/fhq-server/web-admin

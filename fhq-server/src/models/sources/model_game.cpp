@@ -84,7 +84,7 @@ const std::string &ModelGame::state() const{
 // ---------------------------------------------------------------------
 
 void ModelGame::setState(const std::string &sState){
-    if(std::find(ModelGame::STATES.begin(), ModelGame::STATES.end(), sState) == ModelGame::STATES.end()) {
+    if (std::find(ModelGame::STATES.begin(), ModelGame::STATES.end(), sState) == ModelGame::STATES.end()) {
         Log::err(TAG, "Game state unknown: [" + sState + "]");
     }
     m_sState = sState;

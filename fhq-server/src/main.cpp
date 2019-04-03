@@ -19,7 +19,6 @@
 #include <websocketserver.h>
 #include <utils_prepare_deb_package.h>
 #include <utils_lxd.h>
-#include <create_unit_tests.h>
 #include <employees.h>
 #include <employ_server_config.h>
 #include <employ_server_info.h>
@@ -27,62 +26,66 @@
 #include <employ_settings.h>
 #include <employ_images.h>
 #include <model_help_args.h>
+#include <help_parse_args.h>
+#include <sstream>
 #include <iomanip>
 #include <algorithm>
-#include <utils_export_list_of_handlers.h>
-#include <utils_export_client_library_python.h>
+#include <export_list_of_handlers.h>
+#include <export_struct_of_storage.h>
+#include <export_libfhqcli_web_js.h>
+#include <export_libfhqcli_py.h>
 #include <runtasks.h>
+#include <light_http_server.h>
+#include <http_handler_web_admin_folder.h>
+#include <jobs_pool.h>
+
+LightHttpServer g_httpServer;
 
 int main(int argc, char** argv) {
     QCoreApplication a(argc, argv);
     std::string TAG = "MAIN";
     Log::setdir("/var/log/fhq-server");
 
-    HelpArgs helpArgs(argc, argv);
-    helpArgs.addHelp(HelpArg("help", "-h", "This help"));
-    helpArgs.addHelp(HelpArg("version", "-v", "Print version"));
-    helpArgs.addHelp(HelpArg("run-unit-tests", "-rut", "Run unit tests"));
-    helpArgs.addHelp(HelpArg("show-handlers", "-sh", "Show handlers"));
-    helpArgs.addHelp(HelpArg("export-cli-library-python", "-eclp", "Export client library for python"));
-    helpArgs.addHelp(HelpArg("show-employees", "-se", "Show employees"));
-    helpArgs.addHelp(HelpArg("show-settings", "-ss", "Show settings"));
-    helpArgs.addHelp(HelpArg("send-test-mail", "-stm", "Send test mail"));
-    helpArgs.addHelp(HelpArg("prepare-deb", "-pd", "Prepare Deb Package"));
-    helpArgs.addHelp(HelpArg("check-server-config", "-csc", "Check server config"));
-    helpArgs.addHelp(HelpArg("make-config-linux", "-mcl", "Create config file for Linux: /etc/fhq-server/fhq-server.conf"));
-    helpArgs.addHelp(HelpArg("check-database-connection", "-cdc", "Check database conenction"));
-    helpArgs.addHelp(HelpArg("manual-create-database", "-mcd", "Manual create database"));
-    helpArgs.addHelp(HelpArg("manual-configure-lxd", "-mclxd", "Manual configure HTTPS connection with LXD. You need generated SSL cert and key in /etc/fhq-server/lxd"));
-    helpArgs.addHelp(HelpArg("lxd-enable", "-uplxd", "Enable lxd mode"));
-    helpArgs.addHelp(HelpArg("lxd-disable", "-downlxd", "Disable lxd mode"));
-    helpArgs.addHelp(HelpArg("start", "-s", "Start server"));
+    HelpParseArgs helpArgs(argc, argv);
+    helpArgs.setAppName(FHQSRV_APP_NAME);
+    helpArgs.setAppVersion(FHQSRV_VERSION);
 
-    if(argc > 3) {
+    helpArgs.addHelp("help", "-h", HelpParseArgType::SINGLE_OPTION, "This help");
+    helpArgs.addHelp("version", "-v", HelpParseArgType::SINGLE_OPTION, "Print version");
+    helpArgs.addHelp("show-handlers", "-sh", HelpParseArgType::SINGLE_OPTION, "Show handlers");
+    helpArgs.addHelp("show-storage-struct", "-sh-ss", HelpParseArgType::SINGLE_OPTION, "Show Storage Struct");
+    helpArgs.addHelp("export-libfhqcli-py", "-exlp", HelpParseArgType::SINGLE_OPTION, "Export libfhqcli-py (python)");
+    helpArgs.addHelp("export-libfhqcli-web-javascript", "-exlwjs", HelpParseArgType::SINGLE_OPTION, "Export libfhqcli-web-js (javascript)");
+    helpArgs.addHelp("show-employees", "-se", HelpParseArgType::SINGLE_OPTION, "Show employees");
+    helpArgs.addHelp("show-settings", "-ss", HelpParseArgType::SINGLE_OPTION, "Show settings");
+    helpArgs.addHelp("set-setting", "-set", HelpParseArgType::PARAMETER, "Set setting value like 'mail_username=some@where.org'");
+    helpArgs.addHelp("send-test-mail", "-stm", HelpParseArgType::SINGLE_OPTION, "Send test mail");
+    helpArgs.addHelp("prepare-deb", "-pd", HelpParseArgType::SINGLE_OPTION, "Prepare Deb Package");
+    helpArgs.addHelp("check-server-config", "-csc", HelpParseArgType::SINGLE_OPTION, "Check server config");
+    helpArgs.addHelp("make-config-linux", "-mcl", HelpParseArgType::SINGLE_OPTION, "Create config file for Linux: /etc/fhq-server/fhq-server.conf");
+    helpArgs.addHelp("check-database-connection", "-cdc", HelpParseArgType::SINGLE_OPTION, "Check database conenction");
+    helpArgs.addHelp("manual-create-database", "-mcd", HelpParseArgType::SINGLE_OPTION, "Manual create database");
+    helpArgs.addHelp("manual-configure-lxd", "-mclxd", HelpParseArgType::SINGLE_OPTION, "Manual configure HTTPS connection with LXD. \n You need generated SSL cert and key in /etc/fhq-server/lxd");
+    helpArgs.addHelp("lxd-enable", "-uplxd", HelpParseArgType::SINGLE_OPTION, "Enable lxd mode");
+    helpArgs.addHelp("lxd-disable", "-downlxd", HelpParseArgType::SINGLE_OPTION, "Disable lxd mode");
+    helpArgs.addHelp("start", "-s", HelpParseArgType::SINGLE_OPTION, "Start server");
+    
+    if (helpArgs.has("help")) {
         helpArgs.printHelp();
         return 0;
-    } else if(helpArgs.has("help") || helpArgs.has("-h")) {
-        helpArgs.printHelp();
+    } else if (helpArgs.has("show-handlers")) {
+        ExportListOfHandlers::print();
         return 0;
-    }else if(helpArgs.has("run-unit-tests") || helpArgs.has("-rut")){
-        QMap<QString, IUnitTest *> mapUnitTests;
-        create_unit_tests(mapUnitTests);
-        foreach( QString name, mapUnitTests.keys()){
-            IUnitTest *pUnitTest = mapUnitTests.value(name);
-            Log::info(TAG,  "Run test  " + name.toStdString());
-            if(pUnitTest->run()){
-                Log::info(TAG,  "Test passed");
-            }else{
-                Log::err(TAG,  "Test failed");
-            }
-        }
+    } else if (helpArgs.has("show-storage-struct")) {
+        ExportStructOfStorage::print();
         return 0;
-    }else if(helpArgs.has("show-handlers") || helpArgs.has("-sh")){
-        UtilsExportListOfHandlers::print();
+    } else if (helpArgs.has("export-libfhqcli-py")) {
+        ExportLibFHQCliPy::exportLib();
         return 0;
-    }else if(helpArgs.has("export-cli-library-python") || helpArgs.has("-eclp")){
-        UtilsExportClientLibraryPython::exportLib();
+    } else if (helpArgs.has("export-libfhqcli-web-javascript")) {
+        ExportLibFHQCliWebJS::exportLib();
         return 0;
-    }else if(helpArgs.has("show-employees") || helpArgs.has("-se")){
+    } else if (helpArgs.has("show-employees")) {
         std::cout << " * Employees (" << g_pEmployees->size() << "):\n";
         std::map<std::string, EmployBase*>::iterator it = g_pEmployees->begin();
         for (; it!=g_pEmployees->end(); ++it){
@@ -97,24 +100,27 @@ int main(int argc, char** argv) {
             std::cout << " |  \n";
         }
         return 0;
-    }else if(helpArgs.has("version") || helpArgs.has("-v")){
+    } else if (helpArgs.has("version")) {
         std::cout << FHQSRV_APP_NAME << "-" << FHQSRV_VERSION << "\n";
         return 0;
-    }else if(helpArgs.has("--prepare-deb") || helpArgs.has("-pd")){
+    } else if (helpArgs.has("prepare-deb")) {
         UtilsPrepareDebPackage::prepare("","tmpdeb");
         return 0;
-    }else if(helpArgs.has("check-server-config") || helpArgs.has("-csc")){
+    } else if (helpArgs.has("check-server-config")) {
         std::cout << "\n * Check Server Config\n\n";
         EmployServerConfig *pConfig = new EmployServerConfig();
-        if(!pConfig->init()){
+        if (!pConfig->init()) {
             std::cout << "\n * FAIL\n\n";
-        }else{
+        } else {
             std::cout << "\n * Success\n\n";
         }
         return 0;
-    }else if(helpArgs.has("check-database-connection") || helpArgs.has("-cdc")){
+    } else if (helpArgs.has("check-database-connection")) {
         std::cout << "\n * Check Database Connection\n\n";
-        Employees::init({});
+        if (!Employees::init({})) {
+            Log::err(TAG, "Could not init database module");
+            return -1;
+        }
         EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
         QSqlDatabase *db = pDatabase->database();
         if (!db->open()){
@@ -123,14 +129,48 @@ int main(int argc, char** argv) {
         }
         std::cout << "\n * Success\n\n";
         return 0;
-    } else if(helpArgs.has("show-settings") || helpArgs.has("-ss")){
+    } else if (helpArgs.has("show-settings")) {
         Employees::init({});
         EmploySettings *pSettings = findEmploy<EmploySettings>();
         std::cout << "\n * Show settings\n\n";
         pSettings->printSettings();
         std::cout << "\n * Done\n\n";
         return 0;
-    } else if(helpArgs.has("send-test-mail") || helpArgs.has("-stm")){
+    } else if (helpArgs.has("set-setting")) {
+        Employees::init({});
+        EmploySettings *pSettings = findEmploy<EmploySettings>();
+        std::string sSetting = helpArgs.option("set-setting");
+        std::cout << "\n Try set setting " << sSetting << " \n\n";
+        std::string sSettName = "";
+        std::istringstream f(sSetting);
+        getline(f, sSettName, '=');
+        if (sSettName.length() == sSetting.length()) {
+            Log::err(TAG, "Could not split by '=' for a '" + sSetting + "'");
+            return -1;
+        }
+        std::string sSettValue = sSetting.substr(sSettName.length()+1);
+        if (!pSettings->hasSett(sSettName)) {
+            Log::err(TAG, "Not support settings with name '" + sSettName + "'");
+            return -1;
+        }
+        std::string sSettType = pSettings->getSettType(sSettName);
+        if (sSettType == "string" || sSettType == "password") {
+            pSettings->setSettString(sSettName, QString::fromStdString(sSettValue));
+        } else if (sSettType == "boolean") {
+            if (sSettValue != "true" && sSettValue != "yes" && sSettValue != "false" && sSettValue != "no") {
+                Log::err(TAG, "Expected value boolean (true|yes|false|no), but got '" + sSettValue + "' for '" + sSettName + "'");
+                return -1;
+            }
+            pSettings->setSettBoolean(sSettName, sSettValue == "true" || sSettValue == "yes");
+        } else if (sSettType == "integer") {
+            int nSettValue = std::stoi(sSettValue);
+            pSettings->setSettInteger(sSettName, nSettValue);
+        } else {
+            Log::err(TAG, "Not support settings datatype with name '" + sSettName + "'");
+            return -1;
+        }
+        return 0;
+    } else if (helpArgs.has("send-test-mail")) {
         Employees::init({});
         EmploySettings *pSettings = findEmploy<EmploySettings>();
         std::cout << "\n * Send test mail\n\n";
@@ -140,7 +180,7 @@ int main(int argc, char** argv) {
         RunTasks::MailSend(sTo, sSubject, sContent);
         RunTasks::waitForDone();
         return 0;
-    }else if(helpArgs.has("manual-create-database") || helpArgs.has("-mcd")){
+    } else if (helpArgs.has("manual-create-database")) {
         std::cout << "\n * Manual create database\n\n";
         EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
         if(!pServerConfig->init()){
@@ -166,7 +206,7 @@ int main(int argc, char** argv) {
 
         std::cout << "\n * Done\n\n";
         return 0;
-    } else if(helpArgs.has("manual-configure-lxd") || helpArgs.has("-mclxd")){
+    } else if (helpArgs.has("manual-configure-lxd")) {
         std::string sError;
         Employees::init({});
         if (UtilsLXDAuth::check_trust_certs(sError))
@@ -186,22 +226,22 @@ int main(int argc, char** argv) {
             }
         }
         return 0;
-    } else if(helpArgs.has("lxd-enable") || helpArgs.has("-uplxd") || helpArgs.has("lxd-disable") || helpArgs.has("-downlxd")){
+    } else if (helpArgs.has("lxd-enable") || helpArgs.has("lxd-disable")) {
         Employees::init({});
         EmploySettings *pSettings = findEmploy<EmploySettings>();
         std::string lxd_mode;
-        if (helpArgs.has("lxd-enable") || helpArgs.has("-uplxd"))
+        if (helpArgs.has("lxd-enable")) {
             lxd_mode = "enabled";
-        else if (helpArgs.has("lxd-disable") || helpArgs.has("-downlxd"))
+        } else if (helpArgs.has("lxd-disable")) {
             lxd_mode = "disabled";
-        else {
+        } else {
             std::cout << "\nError with command lxd-enable or lxd-disable\n";
             return -1;
         }
         pSettings->setSettString("lxd_mode", QString::fromStdString(lxd_mode));
         std::cout << "\nCurrent LXD mode: " << pSettings->getSettString("lxd_mode").toStdString() << "\n";
         return 0;
-    }else if(helpArgs.has("start") || helpArgs.has("-s")){
+    } else if(helpArgs.has("start") || helpArgs.has("-s")) {
         QThreadPool::globalInstance()->setMaxThreadCount(5);
         WebSocketServer *pServer = new WebSocketServer();
         if(pServer->isFailed()){
@@ -216,6 +256,18 @@ int main(int argc, char** argv) {
         if (!db->open()){
             return -1;
         }
+
+        EmployServerConfig *pConfig = findEmploy<EmployServerConfig>();
+
+        // start web server
+        
+        Log::info(TAG, "Starting web-server on " + std::to_string(pConfig->webPort())
+             + " with " + std::to_string(pConfig->webMaxThreads()) + " worker threads");
+        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebAdminFolder(pConfig->webAdminFolder()));
+        g_httpServer.setPort(pConfig->webPort());
+        g_httpServer.setMaxWorkers(pConfig->webMaxThreads());
+        g_httpServer.start(); // will be block thread*/
+
         return a.exec();
     }
 

@@ -45,7 +45,7 @@ void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest){
     QStringList filters;
     QMap<QString,QString> filter_values;
 
-    if(jsonRequest.find("user") != jsonRequest.end()){
+    if (jsonRequest.find("user") != jsonRequest.end()) {
         QString user = QString::fromStdString(jsonRequest.at("user"));
         user = user.trimmed();
         filters << "(u.nick like :nick)";
@@ -367,53 +367,6 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest){
 }
 
 /*********************************************
- * Users chat
-**********************************************/
-
-CmdHandlerSendChatMessage::CmdHandlerSendChatMessage()
-    : CmdHandlerBase("sendchatmessage", "Method will be keep message and it sent to another users"){
-
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
-}
-
-// ---------------------------------------------------------------------
-
-void CmdHandlerSendChatMessage::handle(ModelRequest *pRequest){
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-
-    const auto & jsonRequest = pRequest->jsonRequest();
-    nlohmann::json jsonResponse;
-
-    IUserToken *pUserToken = pRequest->userToken();
-    QString username = "";
-    if(pUserToken != NULL){
-        username = pUserToken->nick();
-    }else{
-        username = "Guest";
-    }
-
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
-
-    QSqlDatabase db = *(pDatabase->database());
-    QSqlQuery query(db);
-    query.prepare("INSERT INTO chatmessages(user, message, dt) VALUES(:user,:message, NOW())");
-    query.bindValue(":user", username);
-    query.bindValue(":message", QString::fromStdString(jsonRequest.at("message")));
-    query.exec();
-
-    nlohmann::json jsonData2;
-    jsonData2["cmd"] = "chat";
-    jsonData2["type"] = jsonRequest.at("type");
-    jsonData2["user"] = username.toStdString();
-    jsonData2["message"] = jsonRequest.at("message");
-    jsonData2["dt"] = QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss").toStdString();
-
-    pRequest->server()->sendToAll(jsonData2);
-}
-
-/*********************************************
  * User login by token
 **********************************************/
 
@@ -647,7 +600,6 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     const auto& jsonRequest = pRequest->jsonRequest();
-    nlohmann::json jsonResponse;
 
     QRegularExpression regexEmail("^[0-9a-zA-Z-._@]{3,128}$");
     QString sEmail = QString::fromStdString(jsonRequest.at("email"));
@@ -779,11 +731,14 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest){
         pRequest->sendMessageError(cmd(), Error(500, query_insert.lastError().text().toStdString()));
         return;
     }
-
+    
     int nUserID = query_insert.lastInsertId().toInt();
 
+    nlohmann::json jsonResponse;
+    nlohmann::json jsonData;
+    jsonData["userid"] = nUserID;
+    jsonResponse["data"] = jsonData;
     RunTasks::AddPublicEvents("users", "New user #" + QString::number(nUserID) + "  " + sNick);
-
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -808,7 +763,7 @@ CmdHandlerUser::CmdHandlerUser()
 void CmdHandlerUser::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto & jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     IUserToken *pUserToken = pRequest->userToken();
@@ -909,6 +864,7 @@ CmdHandlerUsersInfo::CmdHandlerUsersInfo()
     setActivatedFromVersion("0.2.17");
 
     // validation and description input fields
+    // TODO change to uuid
     m_vInputs.push_back(CmdInputDef("uuid").optional().integer_().description("Global unique identify of user"));
 }
 
@@ -917,12 +873,12 @@ CmdHandlerUsersInfo::CmdHandlerUsersInfo()
 void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
 
     IUserToken *pUserToken = pRequest->userToken();
 
-    if(!jsonRequest.contains("userid") && pUserToken == NULL){
+     if (jsonRequest.find("userid") == jsonRequest.end() && pUserToken == NULL) {
         pRequest->sendMessageError(cmd(), Errors::NotAuthorizedRequest());
         return;
     }
@@ -930,13 +886,13 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
     bool bCurrentUserOrAdmin = false;
 
     int nUserID = 0;
-    if(pUserToken != NULL){
+    if (pUserToken != NULL) {
         nUserID = pUserToken->userid();
         bCurrentUserOrAdmin = true;
     }
 
-    if(jsonRequest.contains("userid")){
-        int nUserID_ = jsonRequest["userid"].toInt();
+    if (jsonRequest.find("userid") != jsonRequest.end()) {
+        int nUserID_ = jsonRequest.at("userid").get<int>();
         if(nUserID_ != nUserID){
             bCurrentUserOrAdmin = false;
             if(pUserToken != NULL){
@@ -946,8 +902,8 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
         nUserID = nUserID_;
     }
 
-    QJsonObject data;
-    QJsonObject profile;
+    nlohmann::json jsonData;
+    nlohmann::json jsonProfile;
     QSqlDatabase db = *(pDatabase->database());
 
     {
@@ -958,24 +914,24 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
 
         if (query.next()) {
             QSqlRecord record = query.record();
-            data["id"] = record.value("id").toInt();
-            data["uuid"] = record.value("uuid").toString();
-            data["nick"] = record.value("nick").toString().toHtmlEscaped();
-            data["role"] = record.value("role").toString();
-            data["logo"] = record.value("logo").toString().toHtmlEscaped();
-            data["about"] = record.value("about").toString().toHtmlEscaped();
-            data["status"] = record.value("status").toString();
-            data["rating"] = record.value("rating").toString();
-            data["university"] = record.value("university").toString().toHtmlEscaped();
+            jsonData["id"] = record.value("id").toInt();
+            jsonData["uuid"] = record.value("uuid").toString().toStdString();
+            jsonData["nick"] = record.value("nick").toString().toHtmlEscaped().toStdString();
+            jsonData["role"] = record.value("role").toString().toStdString();
+            jsonData["logo"] = record.value("logo").toString().toHtmlEscaped().toStdString();
+            jsonData["about"] = record.value("about").toString().toHtmlEscaped().toStdString();
+            jsonData["status"] = record.value("status").toString().toStdString();
+            jsonData["rating"] = record.value("rating").toString().toStdString();
+            jsonData["university"] = record.value("university").toString().toHtmlEscaped().toStdString();
 
             if(bCurrentUserOrAdmin){
-                data["email"] = record.value("email").toString();
-                data["dt_create"] = record.value("dt_create").toString();
-                data["dt_last_login"] = record.value("dt_last_login").toString();
-                data["last_ip"] = record.value("last_ip").toString();
-                data["country"] = record.value("country").toString();
-                data["region"] = record.value("region").toString();
-                data["city"] = record.value("city").toString();
+                jsonData["email"] = record.value("email").toString().toStdString();
+                jsonData["dt_create"] = record.value("dt_create").toString().toStdString();
+                jsonData["dt_last_login"] = record.value("dt_last_login").toString().toStdString();
+                jsonData["last_ip"] = record.value("last_ip").toString().toStdString();
+                jsonData["country"] = record.value("country").toString().toStdString();
+                jsonData["region"] = record.value("region").toString().toStdString();
+                jsonData["city"] = record.value("city").toString().toStdString();
             }
         }else{
             pRequest->sendMessageError(cmd(), Errors::NotFound("user"));
@@ -991,16 +947,16 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
 
         while (query.next()) {
             QSqlRecord record = query.record();
-            QString name = record.value("name").toString();
-            QString value = record.value("value").toString();
-            profile[name] = value;
+            std::string sName = record.value("name").toString().toStdString();
+            std::string sValue = record.value("value").toString().toStdString();
+            jsonProfile[sName] = sValue;
 
             // TODO clenup 'template' from user profiles
         }
     }
 
-    jsonResponse["data"] = data;
-    jsonResponse["profile"] = profile;
+    jsonResponse["data"] = jsonData;
+    jsonResponse["profile"] = jsonProfile;
     jsonResponse["access"] = bCurrentUserOrAdmin;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -1113,8 +1069,8 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
     nlohmann::json jsonResponse;
 
 
-    nlohmann::json skills_max;
-    nlohmann::json skills_user;
+    nlohmann::json jsonSkillsMax;
+    nlohmann::json jsonSkillsUser;
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -1126,10 +1082,10 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
             return;
         };
 
-        while(query.next()) {
+        while (query.next()) {
             QSqlRecord record = query.record();
             QString subject = record.value("subject").toString();
-            skills_max[subject.toStdString()] = record.value("sum_subject").toInt();
+            jsonSkillsMax[subject.toStdString()] = record.value("sum_subject").toInt();
         }
     }
 
@@ -1139,7 +1095,7 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
         QSqlQuery query(db);
         query.prepare("SELECT uq.userid, q.subject, SUM( q.score ) as sum_score FROM users_quests uq INNER JOIN quest q ON uq.questid = q.idquest WHERE ! ISNULL( q.subject ) AND uq.userid = :userid GROUP BY uq.userid, q.subject");
         query.bindValue(":userid", nUserID);
-        if(!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Errors::DatabaseError(query.lastError().text()));
             return;
         };
@@ -1147,12 +1103,12 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
         while(query.next()) {
             QSqlRecord record = query.record();
             QString subject = record.value("subject").toString();
-            skills_user[subject.toStdString()] = record.value("sum_score").toInt();
+            jsonSkillsUser[subject.toStdString()] = record.value("sum_score").toInt();
         }
     }
 
-    jsonResponse["skills_max"] = skills_max;
-    jsonResponse["skills_user"] = skills_user;
+    jsonResponse["skills_max"] = jsonSkillsMax;
+    jsonResponse["skills_user"] = jsonSkillsUser;
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -1173,6 +1129,7 @@ CmdHandlerUserUpdate::CmdHandlerUserUpdate()
     m_vInputs.push_back(CmdInputDef("nick").optional().string_().description("Nick of user"));
     m_vInputs.push_back(CmdInputDef("university").optional().string_().description("University of user"));
     m_vInputs.push_back(CmdInputDef("about").optional().string_().description("About of user"));
+    m_vInputs.push_back(CmdInputDef("country").optional().string_().description("Country of user"));
 }
 
 // ---------------------------------------------------------------------
@@ -1195,6 +1152,13 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest){
     QString sNick = "";
     QString sUniversity = "";
     QString sAbout = "";
+    std::string sCountry = "";
+    QString sCreated = "";
+    QString sRegion = "";
+    QString sEmail = "";
+    QString sRole = "";
+    QString sUpdated = "";
+    QString sUuid = "";
 
     QSqlDatabase db = *(pDatabase->database());
     {
@@ -1215,28 +1179,48 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest){
             sNick = record.value("nick").toString();
             sUniversity = record.value("university").toString();
             sAbout = record.value("about").toString();
+            sCountry = record.value("country").toString().toStdString();
+            sCreated = record.value("dt_create").toString();
+            sRegion = record.value("region").toString();
+            sEmail = record.value("email").toString();
+            sRole = record.value("role").toString();
+            sUuid = record.value("uuid").toString();
         }
     }
 
-    if(jsonRequest.find("nick") != jsonRequest.end()){
+    if (jsonRequest.find("nick") != jsonRequest.end()) {
         sNick = QString::fromStdString(jsonRequest.at("nick").get<std::string>());
     }
 
-    if(jsonRequest.find("university") != jsonRequest.end()){
+    if (jsonRequest.find("university") != jsonRequest.end()) {
         sUniversity = QString::fromStdString(jsonRequest.at("university").get<std::string>());
     }
 
-    if(jsonRequest.find("about") != jsonRequest.end()){
+    if (jsonRequest.find("about") != jsonRequest.end()) {
         sAbout = QString::fromStdString(jsonRequest.at("about").get<std::string>());
+    }
+    std::string s = jsonRequest.dump();
+    Log::warn(TAG, "jsonRequest " + s);
+    if (jsonRequest.find("country") != jsonRequest.end()) {
+        
+        sCountry = jsonRequest["country"];
     }
 
     // update
     {
         QSqlQuery query(db);
-        query.prepare("UPDATE users SET nick = :nick, university = :university, about = :about WHERE id = :userid");
+        query.prepare("UPDATE users SET "
+            " nick = :nick, "
+            " university = :university, "
+            " about = :about, "
+            " country = :country "
+            " WHERE "
+            " id = :userid");
+
         query.bindValue(":nick", sNick);
         query.bindValue(":university", sUniversity);
         query.bindValue(":about", sAbout);
+        query.bindValue(":country", QString::fromStdString(sCountry));
         query.bindValue(":userid", nUserID);
         if(!query.exec()){
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
@@ -1252,6 +1236,13 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest){
     data["nick"] = sNick.toHtmlEscaped().toStdString();
     data["university"] = sUniversity.toHtmlEscaped().toStdString();
     data["about"] = sAbout.toHtmlEscaped().toStdString();
+    data["country"] = QString::fromStdString(sCountry).toHtmlEscaped().toStdString();
+    data["created"] = sCreated.toHtmlEscaped().toStdString();
+    data["region"] = sRegion.toHtmlEscaped().toStdString();
+    data["email"] = sEmail.toHtmlEscaped().toStdString();
+    data["role"] = sRole.toHtmlEscaped().toStdString();
+    data["uuid"] = sUuid.toHtmlEscaped().toStdString();
+
     jsonResponse["data"] = data;
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -1524,7 +1515,7 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest){
         nOnPage = jsonRequest.at("onpage");
     }
 
-    nlohmann::json users;
+    auto jsonUsers = nlohmann::json::array();
     QSqlDatabase db = *(pDatabase->database());
     QString where = filters.join(" AND ");
     if(where.length() > 0){
@@ -1535,14 +1526,14 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest){
     {
         QSqlQuery query(db);
         query.prepare("SELECT COUNT(*) cnt FROM users " + where);
-        foreach(QString key, filter_values.keys() ){
+        foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
-        if(!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
-        if(query.next()) {
+        if (query.next()) {
             QSqlRecord record = query.record();
             nCount = record.value("cnt").toInt();
         }
@@ -1564,7 +1555,7 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest){
             QString sNick = record.value("nick").toString().toHtmlEscaped();
             QString sUniversity = record.value("university").toString().toHtmlEscaped();
             int nRating = record.value("rating").toInt();
-            QString sCreated = record.value("dt_created").toString().toHtmlEscaped();
+            QString sCreated = record.value("dt_create").toString().toHtmlEscaped();
             QString sDTLastLogin = record.value("dt_last_login").toString().toHtmlEscaped();
             QString sLastIP = record.value("last_ip").toString().toHtmlEscaped();
             QString sCountry = record.value("country").toString().toHtmlEscaped();
@@ -1585,11 +1576,11 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest){
             user["region"] = sRegion.toStdString();
             user["city"] = sCity.toStdString();
             user["role"] = sRole.toStdString();
-            users.push_back(user);
+            jsonUsers.push_back(user);
         }
     }
 
-    jsonResponse["data"] = users;
+    jsonResponse["data"] = jsonUsers;
     jsonResponse["onpage"] = nOnPage;
     jsonResponse["page"] = nPage;
     jsonResponse["count"] = nCount;

@@ -30,7 +30,7 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 

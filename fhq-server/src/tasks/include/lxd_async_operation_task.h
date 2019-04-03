@@ -6,7 +6,7 @@
 #define FHQ_SERVER_LXDASYNCOPERATIONTASK_H
 
 #include <QRunnable>
-#include <include/model_request.h>
+#include <model_request.h>
 
 class LXDAsyncOperationTask : public QRunnable {
 

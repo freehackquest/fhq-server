@@ -138,7 +138,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -189,38 +189,38 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest){
 
         if (query.next()) {
             QSqlRecord record = query.record();
-            QJsonObject quest;
-            quest["id"] = record.value("idquest").toInt();
+            nlohmann::json jsonQuest;
+            jsonQuest["id"] = record.value("idquest").toInt();
             int nGameID = record.value("gameid").toInt();
             QString sState = record.value("state").toString();
             QString sPassed = record.value("dt_passed2").toString();
 
-            if(sState == "open" || bAdmin){
-                quest["gameid"] = nGameID;
-                quest["name"] = record.value("name").toString();
-                quest["text"] = record.value("text").toString();
-                quest["answer_format"] = record.value("answer_format").toString();
-                quest["score"] = record.value("score").toInt();
-                quest["subject"] = record.value("subject").toString();
-                quest["copyright"] = record.value("copyright").toString();
-                quest["state"] = record.value("state").toString();
-                quest["author"] = record.value("author").toString();
-                quest["count_user_solved"] = record.value("count_user_solved").toString();
+            if (sState == "open" || bAdmin) {
+                jsonQuest["gameid"] = nGameID;
+                jsonQuest["name"] = record.value("name").toString().toStdString();
+                jsonQuest["text"] = record.value("text").toString().toStdString();
+                jsonQuest["answer_format"] = record.value("answer_format").toString().toStdString();
+                jsonQuest["score"] = record.value("score").toInt();
+                jsonQuest["subject"] = record.value("subject").toString().toStdString();
+                jsonQuest["copyright"] = record.value("copyright").toString().toStdString();
+                jsonQuest["state"] = record.value("state").toString().toStdString();
+                jsonQuest["author"] = record.value("author").toString().toStdString();
+                jsonQuest["count_user_solved"] = record.value("count_user_solved").toString().toStdString();
             }
 
             // user completed quest
-            quest["completed"] = !record.isNull("dt_passed2");
-            quest["dt_passed"] = sPassed;
+            jsonQuest["completed"] = !record.isNull("dt_passed2");
+            jsonQuest["dt_passed"] = sPassed.toStdString();
 
-            if(bAdmin){
-                quest["answer"] = record.value("answer").toString();
-                quest["description_state"] = record.value("description_state").toString();
+            if (bAdmin) {
+                jsonQuest["answer"] = record.value("answer").toString().toStdString();
+                jsonQuest["description_state"] = record.value("description_state").toString().toStdString();
             }
-            jsonResponse["quest"] = quest;
+            jsonResponse["quest"] = jsonQuest;
 
             // game info
             {
-                QJsonObject game;
+                nlohmann::json jsonGame;
                 QSqlQuery query_game(db);
                 query_game.prepare("SELECT * FROM games WHERE id = :id");
                 query_game.bindValue(":id", nGameID);
@@ -231,20 +231,20 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest){
                 if (query_game.next()) {
                     QSqlRecord record_game = query_game.record();
                     int nGameID = record_game.value("id").toInt();
-                    game["id"] = nGameID;
-                    game["title"] = record_game.value("title").toString();
-                    game["logo"] = sBaseGamesURL + QString::number(nGameID) + ".png";
+                    jsonGame["id"] = nGameID;
+                    jsonGame["title"] = record_game.value("title").toString().toStdString();
+                    jsonGame["logo"] = QString(sBaseGamesURL + QString::number(nGameID) + ".png").toStdString();
                 }else{
                     pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
                     return;
                 }
-                jsonResponse["game"] = game;
+                jsonResponse["game"] = jsonGame;
             }
 
 
             // files
             {
-                QJsonArray files;
+                auto jsonFiles = nlohmann::json::array();
                 QSqlQuery query_files(db);
                 query_files.prepare("SELECT * FROM quests_files WHERE questid = :questid");
                 query_files.bindValue(":questid", nQuestID);
@@ -254,36 +254,37 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest){
                 }
                 while (query_files.next()) {
                     QSqlRecord record_game = query_files.record();
-                    QJsonObject fileinfo;
-                    fileinfo["id"] = record_game.value("id").toInt();
-                    fileinfo["uuid"] = record_game.value("uuid").toInt();
-                    fileinfo["filename"] = record_game.value("filename").toString();
-                    fileinfo["size"] = record_game.value("size").toString();
-                    fileinfo["dt"] = record_game.value("dt").toString();
-                    fileinfo["filepath"] = record_game.value("filepath").toString();
-                    files.append(fileinfo);
+                    nlohmann::json jsonFileInfo;
+                    jsonFileInfo["id"] = record_game.value("id").toInt();
+                    jsonFileInfo["uuid"] = record_game.value("uuid").toInt();
+                    jsonFileInfo["filename"] = record_game.value("filename").toString().toStdString();
+                    jsonFileInfo["size"] = record_game.value("size").toString().toStdString();
+                    jsonFileInfo["dt"] = record_game.value("dt").toString().toStdString();
+                    jsonFileInfo["filepath"] = record_game.value("filepath").toString().toStdString();
+                    jsonFiles.push_back(jsonFileInfo);
                 }
-                jsonResponse["files"] = files;
+                jsonResponse["files"] = jsonFiles;
             }
 
             // hints
             {
-                QJsonArray hints;
+                auto jsonHints = nlohmann::json::array();
+
                 QSqlQuery query_hints(db);
                 query_hints.prepare("SELECT * FROM quests_hints WHERE questid = :questid");
                 query_hints.bindValue(":questid", nQuestID);
-                if(!query_hints.exec()){
+                if (!query_hints.exec()) {
                     pRequest->sendMessageError(cmd(), Error(500, query_hints.lastError().text().toStdString()));
                     return;
                 }
                 while (query_hints.next()) {
                     QSqlRecord record_game = query_hints.record();
-                    QJsonObject hint;
-                    hint["id"] = record_game.value("id").toInt();
-                    hint["text"] = record_game.value("text").toString();
-                    hints.append(hint);
+                    nlohmann::json jsonHint;
+                    jsonHint["id"] = record_game.value("id").toInt();
+                    jsonHint["text"] = record_game.value("text").toString().toStdString();
+                    jsonHints.push_back(jsonHint);
                 }
-                jsonResponse["hints"] = hints;
+                jsonResponse["hints"] = jsonHints;
             }
 
         }else{
@@ -319,7 +320,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -415,7 +416,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
 
     bool bPassed = sQuestAnswer.toUpper() == sUserAnswer.toUpper();
     QString sPassed = bPassed ? "Yes" : "No";
-    int nLevenshtein = UtilsLevenshtein::distance(sUserAnswer.toUpper(), sQuestAnswer.toUpper());
+    int nLevenshtein = UtilsLevenshtein::distance(sUserAnswer.toUpper().toStdString(), sQuestAnswer.toUpper().toStdString());
 
 
     // insert to user tries
@@ -503,7 +504,7 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest){
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -610,7 +611,7 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest){
 
 
     int rowid = query.lastInsertId().toInt();
-    jsonResponse["questid"] = QJsonValue(rowid);
+    jsonResponse["questid"] = rowid;
 
     RunTasks::AddPublicEvents("quests", "New quest #" + QString::number(rowid) + " " + sName + " (subject: " + sSubject + ")");
     RunTasks::UpdateMaxScoreGame(nGameID);
@@ -641,7 +642,7 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest){
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     int questid = jsonRequest["questid"].toInt();
     QString sName = "";
@@ -702,7 +703,7 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest){
 
     // todo recalculate rating/score for users how solved this quest
 
-    jsonResponse["subject"] = sSubject;
+    jsonResponse["subject"] = sSubject.toStdString();
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -739,7 +740,7 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 
@@ -852,7 +853,7 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest){
 
 
     int nQuestProposalId = query.lastInsertId().toInt();
-    jsonResponse["questid"] = QJsonValue(nQuestProposalId);
+    jsonResponse["questid"] = nQuestProposalId;
 
     std::string sMailToAdmin = pSettings->getSettString("mail_system_message_admin_email").toStdString();
     std::string sMessageSubject = "Quest Proposal (FreeHackQuest)";
@@ -889,8 +890,7 @@ void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
-
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -972,17 +972,17 @@ void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest){
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
-        QJsonArray users;
+        auto jsonUsers = nlohmann::json::array();
         while(query.next()) {
             QSqlRecord record = query.record();
-            QJsonObject user;
-            user["userid"] = record.value("id").toInt();
-            user["logo"] = record.value("logo").toString().toHtmlEscaped();
-            user["nick"] = record.value("nick").toString().toHtmlEscaped();
-            user["university"] = record.value("university").toString().toHtmlEscaped();
-            users.append(user);
+            nlohmann::json jsonUser;
+            jsonUser["userid"] = record.value("id").toInt();
+            jsonUser["logo"] = record.value("logo").toString().toHtmlEscaped().toStdString();
+            jsonUser["nick"] = record.value("nick").toString().toHtmlEscaped().toStdString();
+            jsonUser["university"] = record.value("university").toString().toHtmlEscaped().toStdString();
+            jsonUsers.push_back(jsonUser);
         }
-        jsonResponse["users"] = users;
+        jsonResponse["users"] = jsonUsers;
     }
 
     // TODO check this
@@ -1026,7 +1026,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -1290,9 +1290,10 @@ void CmdHandlerQuestsSubjects::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
-    QJsonArray subjects;
+    auto jsonSubjects = nlohmann::json::array();
+
     QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
@@ -1306,13 +1307,13 @@ void CmdHandlerQuestsSubjects::handle(ModelRequest *pRequest){
 
     while (query.next()) {
         QSqlRecord record = query.record();
-        QJsonObject subject;
-        subject["subject"] = record.value("subject").toString();
-        subject["count"] = record.value("cnt").toInt();
-        subjects.push_back(subject);
+        nlohmann::json jsonSubject;
+        jsonSubject["subject"] = record.value("subject").toString().toStdString();
+        jsonSubject["count"] = record.value("cnt").toInt();
+        jsonSubjects.push_back(jsonSubject);
     }
 
-    jsonResponse["data"] = subjects;
+    jsonResponse["data"] = jsonSubjects;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 
 }
@@ -1340,7 +1341,7 @@ void CmdHandlerAddHint::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
-    QJsonObject jsonResponse; // TODO redesign to nlohmann::json
+    nlohmann::json jsonResponse; // TODO redesign to nlohmann::json
 
     // get quest id
     int nQuestId = 0;
@@ -1399,7 +1400,7 @@ void CmdHandlerAnswerList::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     int nPage = jsonRequest["page"].toInt();
     jsonResponse["page"] = nPage;
@@ -1484,7 +1485,7 @@ void CmdHandlerAnswerList::handle(ModelRequest *pRequest){
     }
 
     // data
-    QJsonArray answerlist;
+    auto jsonAnswerList = nlohmann::json::array();
     {
         QSqlQuery query(db);
         query.prepare("SELECT "
@@ -1512,36 +1513,36 @@ void CmdHandlerAnswerList::handle(ModelRequest *pRequest){
         foreach(QString key, filter_values.keys() ){
             query.bindValue(key, filter_values.value(key));
         }
-        query.exec();
+        query.exec(); // TODO check error database
         while (query.next()) {
             QSqlRecord record = query.record();
-            QJsonObject answer;
-            answer["dt"] = record.value("dt").toString();
-            answer["user_answer"] = record.value("user_answer").toString().toHtmlEscaped(); // TODO htmlspecialchars
-            answer["quest_answer"] = record.value("quest_answer").toString().toHtmlEscaped(); // TODO htmlspecialchars
-            answer["levenshtein"] = record.value("levenshtein").toInt();
-            answer["passed"] = record.value("passed").toString();
+            nlohmann::json jsonAnswer;
+            jsonAnswer["dt"] = record.value("dt").toString().toStdString();
+            jsonAnswer["user_answer"] = record.value("user_answer").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
+            jsonAnswer["quest_answer"] = record.value("quest_answer").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
+            jsonAnswer["levenshtein"] = record.value("levenshtein").toInt();
+            jsonAnswer["passed"] = record.value("passed").toString().toStdString();
 
-            QJsonObject quest; // TODO deprecated
-            quest["id"] = record.value("questid").toInt();
-            quest["name"] = record.value("name").toString().toHtmlEscaped();
-            quest["score"] = record.value("score").toInt();
-            quest["subject"] = record.value("subject").toString();
-            quest["count_user_solved"] = record.value("count_user_solved").toInt();
-            answer["quest"] = quest;
+            nlohmann::json jsonQuest; // TODO deprecated
+            jsonQuest["id"] = record.value("questid").toInt();
+            jsonQuest["name"] = record.value("name").toString().toHtmlEscaped().toStdString();
+            jsonQuest["score"] = record.value("score").toInt();
+            jsonQuest["subject"] = record.value("subject").toString().toStdString();
+            jsonQuest["count_user_solved"] = record.value("count_user_solved").toInt();
+            jsonAnswer["quest"] = jsonQuest;
 
-            QJsonObject user; // TODO deprecated
-            user["id"] = record.value("userid").toInt();
-            user["logo"] = record.value("logo").toString();
-            user["nick"] = record.value("nick").toString().toHtmlEscaped();
-            user["email"] = record.value("email").toString().toHtmlEscaped();
-            answer["user"] = user;
+            nlohmann::json jsonUser; // TODO deprecated
+            jsonUser["id"] = record.value("userid").toInt();
+            jsonUser["logo"] = record.value("logo").toString().toStdString();
+            jsonUser["nick"] = record.value("nick").toString().toHtmlEscaped().toStdString();
+            jsonUser["email"] = record.value("email").toString().toHtmlEscaped().toStdString();
+            jsonAnswer["user"] = jsonUser;
 
-            answerlist.push_back(answer);
+            jsonAnswerList.push_back(jsonAnswer);
         }
     }
 
-    jsonResponse["data"] = answerlist;
+    jsonResponse["data"] = jsonAnswerList;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -1568,7 +1569,7 @@ void CmdHandlerDeleteHint::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     int hintid = jsonRequest["hintid"].toInt();
     if(hintid == 0){
@@ -1606,7 +1607,7 @@ void CmdHandlerHints::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     int questid = jsonRequest["questid"].toInt();
     if(questid == 0){
@@ -1614,7 +1615,7 @@ void CmdHandlerHints::handle(ModelRequest *pRequest){
         return;
     }
 
-    QJsonArray hints;
+    auto jsonHints = nlohmann::json::array();
     QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
@@ -1627,15 +1628,15 @@ void CmdHandlerHints::handle(ModelRequest *pRequest){
         int questid2 = record.value("questid").toInt();
         QString text = record.value("text").toString();
         QString dt = record.value("dt").toString();
-        QJsonObject hint;
-        hint["id"] = hintid;
-        hint["questid"] = questid2;
-        hint["text"] = text;
-        hint["dt"] = dt;
-        hints.push_back(hint);
+        nlohmann::json jsonHint;
+        jsonHint["id"] = hintid;
+        jsonHint["questid"] = questid2;
+        jsonHint["text"] = text.toStdString(); // TODO escape html
+        jsonHint["dt"] = dt.toStdString();
+        jsonHints.push_back(jsonHint);
     }
 
-    jsonResponse["data"] = hints;
+    jsonResponse["data"] = jsonHints;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -1663,7 +1664,7 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QStringList filters;
     QMap<QString,QString> filter_values;
@@ -1705,7 +1706,7 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest){
     }
 
     // quests_proposal
-    QJsonArray quests_proposal;
+    auto jsonQuestsProposal = nlohmann::json::array();
     {
         QSqlQuery query(db);
         query.prepare("SELECT qp.*, u.nick, u.email, g.title as game_title  FROM quests_proposal qp "
@@ -1731,24 +1732,24 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest){
             QString sCreated = record.value("created").toString();
             QString sSubject = record.value("subject").toString().toHtmlEscaped();
 
-            QJsonObject quest_proposal;
-            quest_proposal["id"] = nID;
-            quest_proposal["userid"] = nUserID;
-            quest_proposal["nick"] = sNick;
-            quest_proposal["email"] = sEmail;
-            quest_proposal["gameid"] = nGameID;
-            quest_proposal["game_title"] = sGameTitle;
-            quest_proposal["name"] = sName;
-            quest_proposal["score"] = nScore;
-            quest_proposal["created"] = sCreated;
-            quest_proposal["subject"] = sSubject;
-            quest_proposal["confirmed"] = nConfirmed;
+            nlohmann::json jsonQuestProposal;
+            jsonQuestProposal["id"] = nID;
+            jsonQuestProposal["userid"] = nUserID;
+            jsonQuestProposal["nick"] = sNick.toStdString();
+            jsonQuestProposal["email"] = sEmail.toStdString();
+            jsonQuestProposal["gameid"] = nGameID;
+            jsonQuestProposal["game_title"] = sGameTitle.toStdString();
+            jsonQuestProposal["name"] = sName.toStdString();
+            jsonQuestProposal["score"] = nScore;
+            jsonQuestProposal["created"] = sCreated.toStdString();
+            jsonQuestProposal["subject"] = sSubject.toStdString();
+            jsonQuestProposal["confirmed"] = nConfirmed;
 
-            quests_proposal.push_back(quest_proposal);
+            jsonQuestsProposal.push_back(jsonQuestProposal);
         }
     }
 
-    jsonResponse["data"] = quests_proposal;
+    jsonResponse["data"] = jsonQuestsProposal;
     jsonResponse["onpage"] = nOnPage;
     jsonResponse["page"] = nPage;
     jsonResponse["count"] = nCount;

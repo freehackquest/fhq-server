@@ -1,8 +1,10 @@
 #!/bin/bash
 
-mkdir -p fhq-config
+mkdir -p dckr_data
 
 docker run --name=fhq-server \
     -p 1234:1234 \
     -p 4613:4613 \
-    -v `pwd`/fhq-config:/usr/share/fhq-server freehackquest/fhq-server:0.2.17
+    -p 7080:7080 \
+    -v `pwd`/dckr_fhqserver/data/public:/usr/share/fhq-server/public \
+    freehackquest/fhq-server:0.2.17

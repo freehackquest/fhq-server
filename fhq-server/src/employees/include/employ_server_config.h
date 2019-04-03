@@ -10,6 +10,8 @@ class EmployServerConfig : public EmployBase {
         virtual bool init();
         
         // configs
+        std::string storageType();
+        std::string filepathConf();
         std::string databaseHost();
         int databasePort();
         std::string databaseName();
@@ -24,20 +26,17 @@ class EmployServerConfig : public EmployBase {
         std::string serverSslKeyFile();
         std::string serverSslCertFile();
         
+        int webPort();
+        int webMaxThreads();
+        std::string webAdminFolder();
+
 	private:
 		std::string TAG;
-		bool parseConfig(const std::string &sConfigFile);
-		bool fileExists(const std::string &sFilename);
-		void string_trim(std::string &sLine);
-		std::map<std::string,std::string> m_mapConfigValues;
-		
-        std::string getStringValueFromConfig(const std::string &sParamName, const std::string &defaultValue);
-        int getIntValueFromConfig(const std::string &sParamName, int defaultValue);
-        bool getBoolValueFromConfig(const std::string &sParamName, bool defaultValue);
 
-        std::string m_sFilename;
+        std::string m_sFilepathConf;
 
         // database settings
+        std::string m_sStorageType;
         bool m_bDatabase_usemysql;
         std::string m_sDatabase_host;
         int m_nDatabase_port;
@@ -52,6 +51,11 @@ class EmployServerConfig : public EmployBase {
 		int m_nServer_ssl_port;
         std::string m_sServer_ssl_key_file;
         std::string m_sServer_ssl_cert_file;
+
+        // web config
+        int m_nWeb_port;
+        int m_nWeb_max_threads;
+        std::string m_sWeb_admin_folder;
 };
 
 #endif // EMPLOY_SERVER_CONFIG_H

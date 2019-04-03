@@ -37,7 +37,7 @@ void CmdHandlerEventAdd::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     QString type = jsonRequest["type"].toString().trimmed();
     QString message = jsonRequest["message"].toString().trimmed();
@@ -78,13 +78,13 @@ void CmdHandlerEventDelete::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonData;
-    jsonData["cmd"] = QJsonValue(QString(cmd().c_str()));
+    nlohmann::json jsonResponse;
+    
 
     int nEventId = jsonRequest["eventid"].toInt();
-    jsonData["eventid"] = nEventId;
+    jsonResponse["eventid"] = nEventId;
 
-    QJsonObject event;
+    nlohmann::json jsonEvent;
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
@@ -100,10 +100,9 @@ void CmdHandlerEventDelete::handle(ModelRequest *pRequest){
     query2.prepare("DELETE FROM public_events WHERE id = :eventid");
     query2.bindValue(":eventid", nEventId);
     query2.exec();
-
-    jsonData["result"] = QJsonValue("DONE");
-    jsonData["data"] = event;
-    pRequest->sendMessageSuccess(cmd(), jsonData);
+    
+    jsonResponse["data"] = jsonEvent;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 // *****************************************
@@ -127,12 +126,12 @@ void CmdHandlerEventInfo::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
     int nEventId = jsonRequest["eventid"].toInt();
     jsonResponse["eventid"] = nEventId;
 
-    QJsonObject event;
+    nlohmann::json jsonEvent;
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
@@ -141,16 +140,16 @@ void CmdHandlerEventInfo::handle(ModelRequest *pRequest){
     query.exec();
     if (query.next()) {
         QSqlRecord record = query.record();
-        event["dt"] = record.value("dt").toString();
-        event["id"] = record.value("id").toInt();
-        event["type"] = record.value("type").toString().toHtmlEscaped(); // TODO htmlspecialchars
-        event["message"] = record.value("message").toString().toHtmlEscaped(); // TODO htmlspecialchars
+        jsonEvent["dt"] = record.value("dt").toString().toStdString();
+        jsonEvent["id"] = record.value("id").toInt();
+        jsonEvent["type"] = record.value("type").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
+        jsonEvent["message"] = record.value("message").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
     }else{
         pRequest->sendMessageError(cmd(), Errors::EventNotFound());
         return;
     }
 
-    jsonResponse["data"] = event;
+    jsonResponse["data"] = jsonEvent;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -177,7 +176,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
 
 
     int nPage = jsonRequest["page"].toInt();
@@ -207,7 +206,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest){
             filters << "(e.message LIKE :search)";
             filter_values[":search"] = "%" + search + "%";
         }
-        jsonResponse["search"] = search;
+        jsonResponse["search"] = search.toStdString();
     }
 
     QString where = filters.join(" AND ");
@@ -234,7 +233,8 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest){
     }
 
     // data
-    QJsonArray publiceventslist;
+    auto jsonPublicEventsList = nlohmann::json::array();
+
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM public_events e"
@@ -248,16 +248,16 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest){
         query.exec();
         while (query.next()) {
             QSqlRecord record = query.record();
-            QJsonObject event;
-            event["dt"] = record.value("dt").toString();
-            event["id"] = record.value("id").toInt();
-            event["type"] = record.value("type").toString().toHtmlEscaped(); // TODO htmlspecialchars
-            event["message"] = record.value("message").toString().toHtmlEscaped(); // TODO htmlspecialchars
+            nlohmann::json jsonEvent;
+            jsonEvent["dt"] = record.value("dt").toString().toStdString();
+            jsonEvent["id"] = record.value("id").toInt();
+            jsonEvent["type"] = record.value("type").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
+            jsonEvent["message"] = record.value("message").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
 
-            publiceventslist.push_back(event);
+            jsonPublicEventsList.push_back(jsonEvent);
         }
     }
 
-    jsonResponse["data"] = publiceventslist;
+    jsonResponse["data"] = jsonPublicEventsList;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

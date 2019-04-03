@@ -1,82 +1,62 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import signal
 import sys
-import libfhqcli
+import os
+import subprocess
+import fhqtest
+import signal
+import time
+import traceback
 
-def signal_handler(signal, frame):
-        print('You pressed Ctrl+C!')
-        sys.exit(0)
-signal.signal(signal.SIGINT, signal_handler)
-print('For stop test please press Ctrl+C')
-# signal.pause()
+fhqtest.print_header(" > > > TESTS: begin ")
 
-def alert(check, msg):
-    if(check == True):
-        print("Error: " + msg)
-        sys.exit(0)
+fhqtest.print_bold("Start fhq-server... ")
+wd = os.getcwd()
+print(wd)
+os.chdir(wd + "/../fhq-server")
+p_fhq_server = subprocess.Popen([wd + '/../fhq-server/fhq-server', 'start'])
+os.chdir(wd)
+
+wait_max = 20
+wait_i = 0
+result_check_port = False
+while wait_i < wait_max:
+    wait_i = wait_i + 1
+    time.sleep(1)
+    result_check_port = fhqtest.check_port('127.0.0.1', 1234)
+    if not result_check_port:
+        print(" =====> " + str(wait_i) + ": port not available... ")
+    else:
+        break
+
+if not result_check_port:
+    print("Port not available... failed")
+    exit(-1)
+else:
+    print("Port available... OK!")
 
 try:
-    fhq_admin = libfhqcli.FHQCli("ws://localhost:1234/");
+    def run_test(file_name):
+        p_test = subprocess.Popen(['python', file_name])
+        p_test.wait()
+        if p_test.returncode != 0:
+            sys.exit(-1)
 
-    resp = fhq_admin.login({"email": "admin", "password": "admin"});
-    alert(resp == None, 'Could not login as admin (1)');
-    alert(resp['result'] == 'FAIL', 'Could not login as admin (2)');
-    print("admin_user: " + str(resp));
-    res = fhq_admin.user_create({
-        "email": "user1",
-        "nick": "user1", 
-        "password":"user1",
-        "role":"user",
-        "university": "..."
-    });
+    run_test('test_web_server.py')
+    run_test('test_classbook.py')
+    run_test('test_users.py')
+    run_test('test_games.py')
+    run_test('test_leaks.py')
 
-    print(res);
-    res = fhq_admin.user_create({
-        "email": "user2",
-        "nick": "user2", 
-        "password":"user2",
-        "role":"user",
-        "university": "..."
-    });
-    print(res);
-    res = fhq_admin.user_create({
-        "email": "user3",
-        "nick": "user3", 
-        "password":"user3",
-        "role":"user",
-        "university": "..."
-    });
-    print(res);
-    scoreboard = fhq_admin.scoreboard({
-        "page": 0,
-        "onpage": 10
-    });
-    print(scoreboard);
-    fhq_admin.close();
-except (KeyboardInterrupt, SystemExit):
-    fhq_admin.close();
-    sys.exit()
+    # last step
+    run_test('test_stats.py')
     
-    '''
-fhq_admin = libfhq.FHQCli("ws://localhost:1234/");
-resp = fhq_admin.login("admin", "admin");
-alert(resp['result'] == 'FAIL', 'Could not login by admin');
-
-print("admin_user: " + str(admin_user));
-res = fhq_admin.admin_user_create("user1", "user1", "user1", "user", "...");
-res = fhq_admin.admin_user_create("user2", "user2", "user2", "user", "...");
-res = fhq_admin.admin_user_create("user3", "user3", "user3", "user", "...");
-print(res);
-scoreboard = fhq_admin.scoreboard();
-print("scoreboard: " + str(scoreboard));
-
-fhq_admin.close();
-'''
-
-# TODO KeyboardInterrupt process
-
-'''
-
-'''
+except Exception as e:
+    fhqtest.log_err(str(e))
+    traceback.print_exc(file=sys.stdout)
+    exit(-1)
+finally:
+    fhqtest.print_header(" > > > TESTS: end ")
+    print("Kill process " + str(p_fhq_server.pid))
+    os.kill(p_fhq_server.pid, signal.SIGKILL)

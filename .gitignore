@@ -1,5 +1,6 @@
 dckr_mysql/*
-
+unit-tests/tmp/*
+unit-tests/unit-tests
 # Compiled Object files
 *.slo
 *.lo
@@ -67,7 +68,7 @@ install/DOXYGEN/html/*
 CMakeLists.txt.user
 .vscode
 fhq-server/libfhqcli-py
-fhq-server/libfhqcli-js
+fhq-server/libfhqcli-web-js
 tests/libfhqcli.py
 tests/libfhqcli/*
 

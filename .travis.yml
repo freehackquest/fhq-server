@@ -20,20 +20,26 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y g++ libcurl4-openssl-dev libpng-dev libqt5sql5-mysql libqt5websockets5 libqt5websockets5-dev libwebsockets-dev make qt5-default qtchooser zlib1g zlib1g-dev zlibc
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `fhq_test` CHARACTER SET utf8 COLLATE utf8_general_ci;'
-  
 
+install:
+  - pip install --user websocket-client
+  - pip install --user requests
+  
 # Build your code e.g. by calling make
 script:
-  - cd fhq-server
-  - mkdir -p build
-  - cd build
-  - cmake ..
-  - make
-  - cd ..
+  - echo "Build unit tests"
+  - cd unit-tests
+  - ./build_simple.sh
+  - echo "Run unit tests"
+  - ./unit-tests
+  - cd ../fhq-server
+  - ./build_simple.sh
   - ./fhq-server version
   - echo "usemysql=yes" > fhq-server.conf
+  - echo "storage_type=mysql" >> fhq-server.conf
   - echo "dbhost=127.0.0.1" >> fhq-server.conf
   - echo "dbname=fhq_test" >> fhq-server.conf
+  - echo "dbport=3306" >> fhq-server.conf
   - echo "dbuser=travis" >> fhq-server.conf
   - echo "dbpass=" >> fhq-server.conf
   - echo "port = 1234" >> fhq-server.conf
@@ -41,4 +47,12 @@ script:
   - echo "ssl_port = 4613" >> fhq-server.conf
   - echo "ssl_key_file = " >> fhq-server.conf
   - echo "ssl_cert_file = " >> fhq-server.conf
+  - echo "web_port = 1234" >> fhq-server.conf
+  - echo "web_admin_folder = ../web-admin" >> fhq-server.conf
+  - echo "web_max_threads = 1" >> fhq-server.conf
   - ./fhq-server -cdc
+  - mkdir -p public/games
+  - ./fhq-server -set "server_folder_public=`pwd`/public/"
+  - cd ../tests
+  - ./update_libfhqcli.sh
+  - python run_tests.py # run tests

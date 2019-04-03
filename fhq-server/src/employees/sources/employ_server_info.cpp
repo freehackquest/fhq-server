@@ -3,7 +3,9 @@
 #include <employ_database.h>
 #include <QSqlQuery>
 #include <QSqlRecord>
-
+#include <QMap>
+#include <QString>
+#include <QVariant>
 
 REGISTRY_EMPLOY(EmployServerInfo)
 
@@ -29,7 +31,7 @@ bool EmployServerInfo::init(){
         QSqlQuery query(db);
         query.prepare("SELECT COUNT(*) cnt FROM quest");
         if (!query.exec()){
-            Log::err(TAG, query.lastError().text());
+            Log::err(TAG, query.lastError().text().toStdString());
             return false;
         }
         if (query.next()) {
@@ -46,7 +48,7 @@ bool EmployServerInfo::init(){
         QSqlQuery query(db);
         query.prepare("SELECT COUNT(*) cnt FROM users_quests_answers");
         if (!query.exec()){
-            Log::err(TAG, query.lastError().text());
+            Log::err(TAG, query.lastError().text().toStdString());
             return false;
         }
         if (query.next()) {
@@ -63,7 +65,7 @@ bool EmployServerInfo::init(){
         QSqlQuery query(db);
         query.prepare("SELECT COUNT(*) cnt FROM users_quests");
         if (!query.exec()){
-            Log::err(TAG, query.lastError().text());
+            Log::err(TAG, query.lastError().text().toStdString());
             return false;
         }
         if (query.next()) {

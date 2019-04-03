@@ -184,14 +184,14 @@ CmdHandlerLXDInfo::CmdHandlerLXDInfo()
 
 void CmdHandlerLXDInfo::handle(ModelRequest *pRequest) {
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
     std::string sError;
     int nErrorCode;
     std::string sName = jsonRequest["name"].toString().trimmed().toStdString();
     nlohmann::json jsonState;
 
     if (get_state(sName, sError, nErrorCode, jsonState)) {
-        jsonResponse["state"] = QJsonValue(QString::fromStdString(jsonState.dump()));
+        jsonResponse["state"] = jsonState.dump();
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     } else
         pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));

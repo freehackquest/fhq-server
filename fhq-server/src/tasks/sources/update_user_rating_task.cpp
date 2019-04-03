@@ -13,11 +13,11 @@ UpdateUserRatingTask::UpdateUserRatingTask(int nUserID){
 }
 
 UpdateUserRatingTask::~UpdateUserRatingTask(){
-	
+
 }
 
 void UpdateUserRatingTask::run(){
-    Log::info(TAG, "userid " + QString::number(m_nUserID));
+    Log::info(TAG, "userid " + std::to_string(m_nUserID));
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
@@ -33,7 +33,7 @@ void UpdateUserRatingTask::run(){
     );
     query.bindValue(":userid", m_nUserID);
     if(!query.exec()){
-        Log::err(TAG, query.lastError().text());
+        Log::err(TAG, query.lastError().text().toStdString());
         return;
     }
 
@@ -49,7 +49,7 @@ void UpdateUserRatingTask::run(){
     query_update.bindValue(":userid", m_nUserID);
 
     if(!query_update.exec()){
-        Log::err(TAG, query_update.lastError().text());
+        Log::err(TAG, query_update.lastError().text().toStdString());
         return;
     }
 }
