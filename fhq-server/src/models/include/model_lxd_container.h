@@ -8,30 +8,40 @@
 #include <json.hpp>
 
 class LXDContainer {
-    public:
+public:
     explicit LXDContainer(const std::string &name_of_container);
-        std::string get_name();
-        std::string get_status();
-        std::string get_IPv4();
-        std::string get_error();
-        std::string full_name();
+    std::string get_name() const;
+    std::string get_status() const;
+    std::string get_IPv4() const;
+    std::string get_port();
+    std::string get_error() const;
+    std::string get_result() const;
+    std::string full_name() const;
 
-        bool state(nlohmann::json &jsonState);
-        bool create();
-        bool start();
-        bool stop();
-        bool remove();
-        bool read_file(std::string path, QFile & file);
-        std::string exec(std::string command);
+    bool state(nlohmann::json &jsonState);
+    bool create();
+    bool start();
+    bool stop();
+    bool remove();
+    bool read_file(const std::string &sPath, std::string &sRawData);
+    bool push_file(const std::string &sPath, const std::string &sRawData);
+    bool open_port(const std::string &sPort, const std::string &sProto);
+    bool open_port(const int &nPort, const std::string &sProto);
+    bool exec(const std::string &sCommand);
+
+    std::vector<std::string> split(const std::string& str);
 
 
-    private:
-        std::string name;
-        std::string status;
-        std::string IPv4;
-        std::string m_sError;
-        std::string prefix;
-        std::string TAG = "EmployOrchestraContainer";
+private:
+    std::string name;
+    std::string status;
+    std::string IPv4;
+    std::string prefix;
+    // TODO ADD nErrorCode
+    std::string m_sError;
+    std::string m_sResult;
+    std::string m_sPort;
+    const std::string TAG = "EmployOrchestraContainer";
 };
 
 #endif // MODEL_LXD_CONTAINER
