@@ -273,7 +273,7 @@ void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
         return;
     }
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
     std::string sError;
     int nErrorCode = 500;
     std::string name = jsonRequest["name"].toString().toStdString();
@@ -282,7 +282,7 @@ void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
 
     bool done = exec_command(name, command, sError, nErrorCode, sOutput);
     if (done){
-        jsonResponse["container"] = QString::fromStdString(name);
+        jsonResponse["container"] = name;
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
         return;
     }
@@ -337,7 +337,7 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
         return;
     }
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
     std::string sError;
     int nErrorCode = 500;
     std::string name = jsonRequest["name"].toString().toStdString();
@@ -375,11 +375,11 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
     }
 
     if (sError.empty() && !isDirectory){
-        jsonResponse["container"] = QString::fromStdString(name);
-        jsonResponse["path"] = QString::fromStdString(path);
+        jsonResponse["container"] = name;
+        jsonResponse["path"] = path;
 
         if (action == "pull") {
-            jsonResponse["file_base64"] = QString::fromStdString(sb64File);
+            jsonResponse["file_base64"] = sb64File;
         } else if (action == "push") {
             jsonResponse["status"] = "Success";
         }
@@ -435,7 +435,7 @@ void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
         return;
     }
     QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
+    nlohmann::json jsonResponse;
     std::string sError;
     int nErrorCode = 500;
     const std::string sName = jsonRequest["name"].toString().toStdString();
