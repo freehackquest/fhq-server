@@ -30,6 +30,7 @@ bool EmployQuests::init(){
         return false;
     }
 
+    // cache for subjects
     while (query.next()) {
         QSqlRecord record = query.record();
         std::string sSubject = record.value("subject").toString().toStdString();

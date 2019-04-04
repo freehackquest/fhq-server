@@ -10,13 +10,15 @@ ModelRequest::ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServ
     m_pServer = pWebSocketServer;
     m_jsonRequest = jsonRequest_;
 
-    if(m_jsonRequest["cmd"].is_string()) {
+    if (m_jsonRequest["cmd"].is_string()) {
         m_sCommand = m_jsonRequest["cmd"];
     }
 
-    if(m_jsonRequest["m"].is_string()){
+    if (m_jsonRequest["m"].is_string()) {
         m_sMessageId = m_jsonRequest["m"];
     }
+
+    m_pUserToken = m_pServer->getUserToken(m_pClient);
 }
 
 // ---------------------------------------------------------------------
@@ -46,7 +48,31 @@ std::string ModelRequest::m(){
 // ---------------------------------------------------------------------
 
 IUserToken *ModelRequest::userToken() {
-    return m_pServer->getUserToken(m_pClient);
+    return m_pUserToken;
+}
+
+// ---------------------------------------------------------------------
+
+bool ModelRequest::isAdmin() {
+    if (m_pUserToken != NULL) {
+        return m_pUserToken->isAdmin();
+    }
+    return false;
+}
+
+// ---------------------------------------------------------------------
+
+bool ModelRequest::isUser() {
+    if (m_pUserToken != NULL) {
+        return m_pUserToken->isUser();
+    }
+    return false;
+}
+
+// ---------------------------------------------------------------------
+
+bool ModelRequest::isUnauthorized() {
+    return m_pUserToken == NULL;
 }
 
 // ---------------------------------------------------------------------
