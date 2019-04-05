@@ -99,6 +99,19 @@ CmdHandlerUsefulLinksAdd::CmdHandlerUsefulLinksAdd()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest){
+    std::string sUrl = pRequest->getInputString("url", "");
+    std::string sDescription = pRequest->getInputString("description", "");
+    std::string sAuthor = pRequest->getInputString("author", "");
+
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
+    // pDatabase->storage();
+
+
+    // Storage *storage();
+
+    // pRequest->
+
     pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
 }
 

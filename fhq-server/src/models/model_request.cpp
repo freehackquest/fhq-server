@@ -41,6 +41,16 @@ const nlohmann::json& ModelRequest::jsonRequest() {
 
 // ---------------------------------------------------------------------
 
+std::string ModelRequest::getInputString(const std::string &sParamName, const std::string &sDefaultValue) {
+    std::string sRet = sDefaultValue;
+    if (m_jsonRequest[sParamName].is_string()) {
+        sRet = m_jsonRequest[sParamName];
+    }
+    return sRet;
+}
+
+// ---------------------------------------------------------------------
+
 std::string ModelRequest::m(){
     return m_sMessageId;
 }

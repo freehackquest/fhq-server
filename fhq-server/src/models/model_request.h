@@ -15,12 +15,15 @@ class ModelRequest {
         bool isUnauthorized();
         QJsonObject data(); // deprecated
         const nlohmann::json& jsonRequest();
+        std::string getInputString(const std::string &sParamName, const std::string &sDefaultValue);
+        
         std::string m();
         bool hasM();
         std::string command();
         bool hasCommand();
         void sendMessageError(const std::string &cmd, Error error);
         void sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse);
+
         // bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler);
     private:
         QWebSocket *m_pClient;
