@@ -22,8 +22,8 @@ CmdHandlerChatSendMessage::CmdHandlerChatSendMessage()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("type").required().string_().description("Type"));
-    m_vInputs.push_back(CmdInputDef("message").required().string_().description("Message"));
+    addInputDef("type").required().string_().description("Type");
+    addInputDef("message").required().string_().description("Message");
 }
 
 // ---------------------------------------------------------------------

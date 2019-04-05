@@ -27,8 +27,8 @@ CmdHandlerEventAdd::CmdHandlerEventAdd()
     eventTypes << "warning";
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("type").enum_(eventTypes).required());
-    m_vInputs.push_back(CmdInputDef("message").string_().required());
+    addInputDef("type").enum_(eventTypes).required();
+    addInputDef("message").string_().required();
 }
 
 // ---------------------------------------------------------------------
@@ -68,7 +68,7 @@ CmdHandlerEventDelete::CmdHandlerEventDelete()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("hintid").required().integer_().description("hint id"));
+    addInputDef("hintid").required().integer_().description("hint id");
 
 }
 
@@ -117,7 +117,7 @@ CmdHandlerEventInfo::CmdHandlerEventInfo()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("eventid").required().integer_().description("Event id"));
+    addInputDef("eventid").required().integer_().description("Event id");
 }
 
 // ---------------------------------------------------------------------
@@ -166,8 +166,8 @@ CmdHandlerEventsList::CmdHandlerEventsList()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("page").required().integer_().description("Number of page"));
-    m_vInputs.push_back(CmdInputDef("onpage").required().integer_().description("How much rows in one page"));
+    addInputDef("page").required().integer_().description("Number of page");
+    addInputDef("onpage").required().integer_().description("How much rows in one page");
 }
 
 // ---------------------------------------------------------------------

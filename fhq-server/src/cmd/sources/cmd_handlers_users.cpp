@@ -23,8 +23,8 @@ CmdHandlerUsersScoreboard::CmdHandlerUsersScoreboard()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("page").required().integer_().description("Number of page"));
-    m_vInputs.push_back(CmdInputDef("onpage").required().integer_().description("How much rows in one page"));
+    addInputDef("page").required().integer_().description("Number of page");
+    addInputDef("onpage").required().integer_().description("How much rows in one page");
 }
 
 // ---------------------------------------------------------------------
@@ -127,8 +127,8 @@ CmdHandlerLogin::CmdHandlerLogin()
     m_modelCommandAccess.setAccessAdmin(false);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("email").required().string_().description("E-mail"));
-    m_vInputs.push_back(CmdInputDef("password").required().string_().description("Password"));
+    addInputDef("email").required().string_().description("E-mail");
+    addInputDef("password").required().string_().description("Password");
 }
 
 // ---------------------------------------------------------------------
@@ -224,8 +224,8 @@ CmdHandlerRegistration::CmdHandlerRegistration()
     m_modelCommandAccess.setAccessAdmin(false);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("email").required().email_().description("E-mail"));
-    m_vInputs.push_back(CmdInputDef("university").required().string_().description("University"));
+    addInputDef("email").required().email_().description("E-mail");
+    addInputDef("university").required().string_().description("University");
 }
 
 // ---------------------------------------------------------------------
@@ -378,7 +378,7 @@ CmdHandlerToken::CmdHandlerToken()
     m_modelCommandAccess.setAccessAdmin(false);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("token").string_().optional().description("Auth token"));
+    addInputDef("token").string_().optional().description("Auth token");
 }
 
 // ---------------------------------------------------------------------
@@ -441,7 +441,7 @@ CmdHandlerUpdateUserLocation::CmdHandlerUpdateUserLocation()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("userid").required().integer_().description("User ID"));
+    addInputDef("userid").required().integer_().description("User ID");
 }
 
 // ---------------------------------------------------------------------
@@ -503,8 +503,8 @@ CmdHandlerUserChangePassword::CmdHandlerUserChangePassword()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("password_old").required().string_().description("Old password"));
-    m_vInputs.push_back(CmdInputDef("password_new").required().string_().description("New password"));
+    addInputDef("password_old").required().string_().description("Old password");
+    addInputDef("password_new").required().string_().description("New password");
 }
 
 // ---------------------------------------------------------------------
@@ -585,12 +585,12 @@ CmdHandlerUsersAdd::CmdHandlerUsersAdd()
     setActivatedFromVersion("0.2.17");
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("uuid").optional().uuid_().description("User's Global Unique Identifier"));
-    m_vInputs.push_back(CmdInputDef("email").required().string_().description("User's E-mail"));
-    m_vInputs.push_back(CmdInputDef("nick").required().string_().description("User's nick"));
-    m_vInputs.push_back(CmdInputDef("password").required().string_().description("Password"));
-    m_vInputs.push_back(CmdInputDef("role").required().string_().description("User's role"));
-    m_vInputs.push_back(CmdInputDef("university").optional().string_().description("University"));
+    addInputDef("uuid").optional().uuid_().description("User's Global Unique Identifier");
+    addInputDef("email").required().string_().description("User's E-mail");
+    addInputDef("nick").required().string_().description("User's nick");
+    addInputDef("password").required().string_().description("Password");
+    addInputDef("role").required().string_().description("User's role");
+    addInputDef("university").optional().string_().description("University");
 
 }
 
@@ -755,7 +755,7 @@ CmdHandlerUser::CmdHandlerUser()
     setDeprecatedFromVersion("0.2.17");
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("userid").optional().integer_().description("Id of user"));
+    addInputDef("userid").optional().integer_().description("Id of user");
 }
 
 // ---------------------------------------------------------------------
@@ -865,7 +865,7 @@ CmdHandlerUsersInfo::CmdHandlerUsersInfo()
 
     // validation and description input fields
     // TODO change to uuid
-    m_vInputs.push_back(CmdInputDef("uuid").optional().integer_().description("Global unique identify of user"));
+    addInputDef("uuid").optional().integer_().description("Global unique identify of user");
 }
 
 // ---------------------------------------------------------------------
@@ -973,7 +973,7 @@ CmdHandlerUserResetPassword::CmdHandlerUserResetPassword()
     m_modelCommandAccess.setAccessAdmin(false);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("email").required().email_().description("E-mail"));
+    addInputDef("email").required().email_().description("E-mail");
 }
 
 // ---------------------------------------------------------------------
@@ -1057,7 +1057,7 @@ CmdHandlerUserSkills::CmdHandlerUserSkills()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("userid").required().integer_().description("Id of user"));
+    addInputDef("userid").required().integer_().description("Id of user");
 }
 
 // ---------------------------------------------------------------------
@@ -1125,11 +1125,11 @@ CmdHandlerUserUpdate::CmdHandlerUserUpdate()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("userid").required().integer_().description("Id of user"));
-    m_vInputs.push_back(CmdInputDef("nick").optional().string_().description("Nick of user"));
-    m_vInputs.push_back(CmdInputDef("university").optional().string_().description("University of user"));
-    m_vInputs.push_back(CmdInputDef("about").optional().string_().description("About of user"));
-    m_vInputs.push_back(CmdInputDef("country").optional().string_().description("Country of user"));
+    addInputDef("userid").required().integer_().description("Id of user");
+    addInputDef("nick").optional().string_().description("Nick of user");
+    addInputDef("university").optional().string_().description("University of user");
+    addInputDef("about").optional().string_().description("About of user");
+    addInputDef("country").optional().string_().description("Country of user");
 }
 
 // ---------------------------------------------------------------------
@@ -1260,8 +1260,8 @@ CmdHandlerUserDelete::CmdHandlerUserDelete()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("userid").required().integer_().description("User's id"));
-    m_vInputs.push_back(CmdInputDef("password").required().string_().description("Admin's password"));
+    addInputDef("userid").required().integer_().description("User's id");
+    addInputDef("password").required().string_().description("Admin's password");
 }
 
 // ---------------------------------------------------------------------
@@ -1469,10 +1469,10 @@ CmdHandlerUsers::CmdHandlerUsers()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("filter_text").string_().optional().description("Filter by user email or nick"));
-    m_vInputs.push_back(CmdInputDef("filter_role").string_().optional().description("Filter by user role"));
-    m_vInputs.push_back(CmdInputDef("onpage").integer_().optional().description("On page"));
-    m_vInputs.push_back(CmdInputDef("page").integer_().optional().description("page"));
+    addInputDef("filter_text").string_().optional().description("Filter by user email or nick");
+    addInputDef("filter_role").string_().optional().description("Filter by user role");
+    addInputDef("onpage").integer_().optional().description("On page");
+    addInputDef("page").integer_().optional().description("page");
 }
 
 // ---------------------------------------------------------------------

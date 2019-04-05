@@ -15,13 +15,14 @@ REGISTRY_CMD(CmdHandlerUsefulLinksList)
 
 CmdHandlerUsefulLinksList::CmdHandlerUsefulLinksList()
     : CmdHandlerBase("useful_links_list", "Method will be return list of useful links"){
+    
+    setActivatedFromVersion("0.2.21");
 
     m_modelCommandAccess.setAccessUnauthorized(true);
     m_modelCommandAccess.setAccessUser(true);
     m_modelCommandAccess.setAccessAdmin(true);
 
-    // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("filter").required().string_().description("Filter by word"));
+    addInputDef("filter").required().string_().description("Filter by word");
 }
 
 
@@ -83,20 +84,22 @@ REGISTRY_CMD(CmdHandlerUsefulLinksAdd)
 CmdHandlerUsefulLinksAdd::CmdHandlerUsefulLinksAdd()
     : CmdHandlerBase("useful_links_add", "Method for add new useful link") {
 
+    setActivatedFromVersion("0.2.21");
+
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(true);
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("url").required().string_().description("URL"));
-    m_vInputs.push_back(CmdInputDef("description").required().string_().description("Description"));
-    m_vInputs.push_back(CmdInputDef("author").required().string_().description("Author"));
+    addInputDef("url").required().string_().description("URL");
+    addInputDef("description").required().string_().description("Description");
+    addInputDef("author").required().string_().description("Author");
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest){
-    
+    pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
 }
 
 /*********************************************
@@ -107,21 +110,23 @@ REGISTRY_CMD(CmdHandlerUsefulLinksDelete)
 
 CmdHandlerUsefulLinksDelete::CmdHandlerUsefulLinksDelete()
     : CmdHandlerBase("useful_links_delete", "Method for delete link by admin") {
+    
+    setActivatedFromVersion("0.2.21");
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("url").required().string_().description("URL"));
-    m_vInputs.push_back(CmdInputDef("description").required().string_().description("Description"));
-    m_vInputs.push_back(CmdInputDef("author").required().string_().description("Author"));
+    addInputDef("url").required().string_().description("URL");
+    addInputDef("description").required().string_().description("Description");
+    addInputDef("author").required().string_().description("Author");
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest){
-    
+    pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
 }
 
 /*********************************************
@@ -132,22 +137,24 @@ REGISTRY_CMD(CmdHandlerUsefulLinksUpdate)
 
 CmdHandlerUsefulLinksUpdate::CmdHandlerUsefulLinksUpdate()
     : CmdHandlerBase("useful_links_update", "Method for update useful link"){
+    
+    setActivatedFromVersion("0.2.21");
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("url").required().string_().description("URL"));
-    m_vInputs.push_back(CmdInputDef("description").required().string_().description("Description"));
-    m_vInputs.push_back(CmdInputDef("author").required().string_().description("Author"));
-    m_vInputs.push_back(CmdInputDef("status").required().string_().description("Status"));
+    addInputDef("url").required().string_().description("URL");
+    addInputDef("description").required().string_().description("Description");
+    addInputDef("author").required().string_().description("Author");
+    addInputDef("status").required().string_().description("Status");
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksUpdate::handle(ModelRequest *pRequest){
-    
+    pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
 }
 
 /*********************************************
@@ -158,6 +165,8 @@ REGISTRY_CMD(CmdHandlerUsefulLinksStar)
 
 CmdHandlerUsefulLinksStar::CmdHandlerUsefulLinksStar()
     : CmdHandlerBase("useful_links_star", "Method set star"){
+    
+    setActivatedFromVersion("0.2.21");
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(true);
@@ -169,7 +178,7 @@ CmdHandlerUsefulLinksStar::CmdHandlerUsefulLinksStar()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksStar::handle(ModelRequest *pRequest){
-    
+    pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
 }
 
 /*********************************************
@@ -180,6 +189,8 @@ REGISTRY_CMD(CmdHandlerUsefulLinksUnstar)
 
 CmdHandlerUsefulLinksUnstar::CmdHandlerUsefulLinksUnstar()
     : CmdHandlerBase("useful_links_unstar", "Method set unstar"){
+    
+    setActivatedFromVersion("0.2.21");
 
     m_modelCommandAccess.setAccessUnauthorized(false);
     m_modelCommandAccess.setAccessUser(true);
@@ -191,5 +202,5 @@ CmdHandlerUsefulLinksUnstar::CmdHandlerUsefulLinksUnstar()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksUnstar::handle(ModelRequest *pRequest){
-    
+    pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
 }

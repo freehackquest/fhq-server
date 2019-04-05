@@ -30,16 +30,16 @@ CmdHandlerGameCreate::CmdHandlerGameCreate()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
-    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Name of the Game"));
-    m_vInputs.push_back(CmdInputDef("description").string_().required().description("Description of the Game"));
-    m_vInputs.push_back(CmdInputDef("state").string_().required().description("State of the game"));
-    m_vInputs.push_back(CmdInputDef("form").string_().required().description("Form of the game"));
-    m_vInputs.push_back(CmdInputDef("type").string_().required().description("Type of the game"));
-    m_vInputs.push_back(CmdInputDef("date_start").string_().required().description("Date start"));
-    m_vInputs.push_back(CmdInputDef("date_stop").string_().required().description("Date stop"));
-    m_vInputs.push_back(CmdInputDef("date_restart").string_().required().description("Date restart"));
-    m_vInputs.push_back(CmdInputDef("organizators").string_().required().description("Organizators"));
+    addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
+    addInputDef("name").string_().required().description("Name of the Game");
+    addInputDef("description").string_().required().description("Description of the Game");
+    addInputDef("state").string_().required().description("State of the game");
+    addInputDef("form").string_().required().description("Form of the game");
+    addInputDef("type").string_().required().description("Type of the game");
+    addInputDef("date_start").string_().required().description("Date start");
+    addInputDef("date_stop").string_().required().description("Date stop");
+    addInputDef("date_restart").string_().required().description("Date restart");
+    addInputDef("organizators").string_().required().description("Organizators");
 }
 
 
@@ -98,8 +98,8 @@ CmdHandlerGameDelete::CmdHandlerGameDelete()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
-    m_vInputs.push_back(CmdInputDef("admin_password").string_().required().description("Admin Password"));
+    addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
+    addInputDef("admin_password").string_().required().description("Admin Password");
 }
 
 // ---------------------------------------------------------------------
@@ -263,7 +263,7 @@ CmdHandlerGameExport::CmdHandlerGameExport()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
+    addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
 }
 
 // ---------------------------------------------------------------------
@@ -356,7 +356,7 @@ CmdHandlerGameImport::CmdHandlerGameImport()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
+    addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
 }
 
 // ---------------------------------------------------------------------
@@ -386,7 +386,7 @@ CmdHandlerGameInfo::CmdHandlerGameInfo()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
+    addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
 }
 
 // ---------------------------------------------------------------------
@@ -421,16 +421,16 @@ CmdHandlerGameUpdate::CmdHandlerGameUpdate()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
-    m_vInputs.push_back(CmdInputDef("name").string_().optional().description("Name of the Game"));
-    m_vInputs.push_back(CmdInputDef("description").string_().optional().description("Description of the Game"));
-    m_vInputs.push_back(CmdInputDef("state").string_().optional().description("State of the game"));
-    m_vInputs.push_back(CmdInputDef("form").string_().optional().description("Form of the game"));
-    m_vInputs.push_back(CmdInputDef("type").string_().optional().description("Type of the game"));
-    m_vInputs.push_back(CmdInputDef("date_start").string_().optional().description("Date start"));
-    m_vInputs.push_back(CmdInputDef("date_stop").string_().optional().description("Date stop"));
-    m_vInputs.push_back(CmdInputDef("date_restart").string_().optional().description("Date restart"));
-    m_vInputs.push_back(CmdInputDef("organizators").string_().optional().description("Organizators"));
+    addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
+    addInputDef("name").string_().optional().description("Name of the Game");
+    addInputDef("description").string_().optional().description("Description of the Game");
+    addInputDef("state").string_().optional().description("State of the game");
+    addInputDef("form").string_().optional().description("Form of the game");
+    addInputDef("type").string_().optional().description("Type of the game");
+    addInputDef("date_start").string_().optional().description("Date start");
+    addInputDef("date_stop").string_().optional().description("Date stop");
+    addInputDef("date_restart").string_().optional().description("Date restart");
+    addInputDef("organizators").string_().optional().description("Organizators");
 }
 
 // ---------------------------------------------------------------------
@@ -494,8 +494,8 @@ CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the Game"));
-    m_vInputs.push_back(CmdInputDef("image_png_base64").string_().required().description("Image PNG in Base64"));
+    addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
+    addInputDef("image_png_base64").string_().required().description("Image PNG in Base64");
 }
 
 // ---------------------------------------------------------------------
@@ -582,8 +582,8 @@ CmdHandlerGames::CmdHandlerGames()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    // m_vInputs.push_back(CmdInputDef("filter_text").string_().optional().description("Filter by user email or nick"));
-    // m_vInputs.push_back(CmdInputDef("filter_role").string_().optional().description("Filter by user role"));
+    // addInputDef("filter_text").string_().optional().description("Filter by user email or nick");
+    // addInputDef("filter_role").string_().optional().description("Filter by user role");
 }
 
 // ---------------------------------------------------------------------

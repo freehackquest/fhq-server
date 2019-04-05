@@ -19,9 +19,9 @@ CmdHandlerFeedbackAdd::CmdHandlerFeedbackAdd()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("from").email_().required().description("From user"));
-    m_vInputs.push_back(CmdInputDef("text").string_().required().description("Text of feedback"));
-    m_vInputs.push_back(CmdInputDef("type").string_().required().description("Type"));
+    addInputDef("from").email_().required().description("From user");
+    addInputDef("text").string_().required().description("Text of feedback");
+    addInputDef("type").string_().required().description("Type");
 }
 
 // ---------------------------------------------------------------------

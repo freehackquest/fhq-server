@@ -19,7 +19,7 @@ CmdHandlerQuestsWriteUpsList::CmdHandlerQuestsWriteUpsList()
     setActivatedFromVersion("0.2.18");
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest ID"));
+    addInputDef("questid").required().integer_().description("Quest ID");
 }
 
 // ---------------------------------------------------------------------
@@ -105,8 +105,8 @@ CmdHandlerQuestsWriteUpsProposal::CmdHandlerQuestsWriteUpsProposal()
     setActivatedFromVersion("0.2.18");
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest ID"));
-    m_vInputs.push_back(CmdInputDef("writeup_link").required().string_().description("Link to writeup (Must be start from " + m_sLinkPrefix + ")"));
+    addInputDef("questid").required().integer_().description("Quest ID");
+    addInputDef("writeup_link").required().string_().description("Link to writeup (Must be start from " + m_sLinkPrefix + ")");
 }
 
 // ---------------------------------------------------------------------
@@ -204,8 +204,8 @@ CmdHandlerQuestsWriteUpsUpdate::CmdHandlerQuestsWriteUpsUpdate()
     setActivatedFromVersion("0.2.18");
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("writeupid").required().integer_().description("WriteUp ID"));
-    m_vInputs.push_back(CmdInputDef("approve").required().string_().description("Approve value 1 or 0"));
+    addInputDef("writeupid").required().integer_().description("WriteUp ID");
+    addInputDef("approve").required().string_().description("Approve value 1 or 0");
 }
 
 // ---------------------------------------------------------------------
@@ -287,7 +287,7 @@ CmdHandlerQuestsWriteUpsDelete::CmdHandlerQuestsWriteUpsDelete()
     setActivatedFromVersion("0.2.18");
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("writeupid").required().integer_().description("WriteUp ID"));
+    addInputDef("writeupid").required().integer_().description("WriteUp ID");
 }
 
 // ---------------------------------------------------------------------

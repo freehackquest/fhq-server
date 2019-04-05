@@ -29,15 +29,16 @@ class CmdHandlerBase {
         void setAccessAdmin(bool bAccess);
         void setActivatedFromVersion(const std::string &sActivatedFromVersion);
         void setDeprecatedFromVersion(const std::string &sDeprecatedFromVersion);
+        CmdInputDef &addInputDef(const std::string &name);
 
         std::string TAG;
         std::string m_sCmd;
         std::string m_sDescription;
 
-        ModelCommandAccess m_modelCommandAccess;
-        std::vector<CmdInputDef> m_vInputs;
+        ModelCommandAccess m_modelCommandAccess; // TODO move to private
 
     private:
+        std::vector<CmdInputDef> m_vInputs;
         std::string m_sActivatedFromVersion;
         std::string m_sDeprecatedFromVersion;
 };

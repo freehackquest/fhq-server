@@ -227,8 +227,8 @@ CmdHandlerServerSettingsUpdate::CmdHandlerServerSettingsUpdate()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("name").required().string_().description("name of setting"));
-    m_vInputs.push_back(CmdInputDef("value").required().any_().description("value of setting"));
+    addInputDef("name").required().string_().description("name of setting");
+    addInputDef("value").required().any_().description("value of setting");
 }
 
 // ---------------------------------------------------------------------

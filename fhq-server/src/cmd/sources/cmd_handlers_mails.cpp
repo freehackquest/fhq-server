@@ -44,9 +44,9 @@ CmdHandlerMailSend::CmdHandlerMailSend()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("to").required().email_().description("E-mail of the recipient"));
-    m_vInputs.push_back(CmdInputDef("subject").required().string_().description("Subject of the message"));
-    m_vInputs.push_back(CmdInputDef("body").required().string_().description("Body of the message"));
+    addInputDef("to").required().email_().description("E-mail of the recipient");
+    addInputDef("subject").required().string_().description("Subject of the message");
+    addInputDef("body").required().string_().description("Body of the message");
 
 }
 
@@ -78,11 +78,11 @@ CmdHandlerMailsList::CmdHandlerMailsList()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("filter_email").string_().optional().description("Filter by email"));
-    m_vInputs.push_back(CmdInputDef("filter_subject").string_().optional().description("Filter by subject"));
-    m_vInputs.push_back(CmdInputDef("filter_message").string_().optional().description("Filter by message"));
-    m_vInputs.push_back(CmdInputDef("onpage").integer_().optional().description("On page"));
-    m_vInputs.push_back(CmdInputDef("page").integer_().optional().description("page"));
+    addInputDef("filter_email").string_().optional().description("Filter by email");
+    addInputDef("filter_subject").string_().optional().description("Filter by subject");
+    addInputDef("filter_message").string_().optional().description("Filter by message");
+    addInputDef("onpage").integer_().optional().description("On page");
+    addInputDef("page").integer_().optional().description("page");
 }
 
 // ---------------------------------------------------------------------

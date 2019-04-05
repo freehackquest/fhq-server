@@ -23,9 +23,9 @@ CmdHandlerLXDContainers::CmdHandlerLXDContainers()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
-    m_vInputs.push_back(CmdInputDef("action").string_().required().description(
-            "Actions: create, start, stop and delete container"));
+    addInputDef("name").string_().required().description("Container name");
+    addInputDef("action").string_().required().description(
+            "Actions: create, start, stop and delete container");
 }
 
 // ---------------------------------------------------------------------
@@ -176,8 +176,8 @@ CmdHandlerLXDInfo::CmdHandlerLXDInfo()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
-    m_vInputs.push_back(CmdInputDef("get").string_().optional().description("Requested information"));
+    addInputDef("name").string_().required().description("Container name");
+    addInputDef("get").string_().optional().description("Requested information");
 }
 
 // ---------------------------------------------------------------------
@@ -261,8 +261,8 @@ CmdHandlerLXDExec::CmdHandlerLXDExec()
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
 
-    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
-    m_vInputs.push_back(CmdInputDef("command").string_().required().description("Name of execution command"));
+    addInputDef("name").string_().required().description("Container name");
+    addInputDef("command").string_().required().description("Name of execution command");
 }
 
 
@@ -325,9 +325,9 @@ CmdHandlerLXDFile::CmdHandlerLXDFile()
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
 
-    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
-    m_vInputs.push_back(CmdInputDef("action").string_().required().description("Action with files: pull, push or delete"));
-    m_vInputs.push_back(CmdInputDef("path").string_().required().description("Path to file inside the container"));
+    addInputDef("name").string_().required().description("Container name");
+    addInputDef("action").string_().required().description("Action with files: pull, push or delete");
+    addInputDef("path").string_().required().description("Path to file inside the container");
 }
 
 void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
@@ -423,9 +423,9 @@ CmdHandlerLXDOpenPort::CmdHandlerLXDOpenPort()
     m_modelCommandAccess.setAccessUser(false);
     m_modelCommandAccess.setAccessAdmin(true);
 
-    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
-    m_vInputs.push_back(CmdInputDef("port").integer_().required().description("Number container port"));
-    m_vInputs.push_back(CmdInputDef("protocol").string_().required().description("Protocol"));
+    addInputDef("name").string_().required().description("Container name");
+    addInputDef("port").integer_().required().description("Number container port");
+    addInputDef("protocol").string_().required().description("Protocol");
 }
 
 void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {

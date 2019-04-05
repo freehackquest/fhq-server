@@ -83,6 +83,14 @@ void CmdHandlerBase::setDeprecatedFromVersion(const std::string &sDeprecatedFrom
 
 // ---------------------------------------------------------------------
 
+CmdInputDef &CmdHandlerBase::addInputDef(const std::string &name) {
+    // TODO check duplicates
+    m_vInputs.push_back(CmdInputDef(name));
+    return m_vInputs[m_vInputs.size()-1];
+}
+
+// ---------------------------------------------------------------------
+
 const std::vector<CmdInputDef> &CmdHandlerBase::inputs(){
     return m_vInputs;
 }

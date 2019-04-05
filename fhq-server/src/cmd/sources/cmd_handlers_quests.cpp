@@ -20,7 +20,7 @@ CmdHandlerQuests::CmdHandlerQuests()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("subject").string_().optional().description("Filter by subject"));
+    addInputDef("subject").string_().optional().description("Filter by subject");
 }
 
 // ---------------------------------------------------------------------
@@ -129,7 +129,7 @@ CmdHandlerQuest::CmdHandlerQuest()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("questid").integer_().required().description("Quest ID"));
+    addInputDef("questid").integer_().required().description("Quest ID");
 }
 
 // ---------------------------------------------------------------------
@@ -308,8 +308,8 @@ CmdHandlerQuestPass::CmdHandlerQuestPass()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("questid").integer_().required().description("Quest ID"));
-    m_vInputs.push_back(CmdInputDef("answer").string_().required().description("Answer"));
+    addInputDef("questid").integer_().required().description("Quest ID");
+    addInputDef("answer").string_().required().description("Answer");
 
 }
 
@@ -480,21 +480,21 @@ CmdHandlerCreateQuest::CmdHandlerCreateQuest()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("uuid").uuid_().required().description("Global Identificator of the quest"));
-    m_vInputs.push_back(CmdInputDef("gameid").integer_().required().description("Which game included this quest"));
-    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Name of the quest"));
-    m_vInputs.push_back(CmdInputDef("text").string_().required().description("Description of the quest"));
-    m_vInputs.push_back(CmdInputDef("score").integer_().minval(1).maxval(1000).required().description("How much append to user score after solve quest by them"));
+    addInputDef("uuid").uuid_().required().description("Global Identificator of the quest");
+    addInputDef("gameid").integer_().required().description("Which game included this quest");
+    addInputDef("name").string_().required().description("Name of the quest");
+    addInputDef("text").string_().required().description("Description of the quest");
+    addInputDef("score").integer_().minval(1).maxval(1000).required().description("How much append to user score after solve quest by them");
 
     // TODO from database init
     QStringList questTypes;
     questTypes << "trivia";
-    m_vInputs.push_back(CmdInputDef("author").string_().required().description("Author of the quest"));
-    m_vInputs.push_back(CmdInputDef("subject").string_().required().description("Subject must be one from types (look types)"));
-    m_vInputs.push_back(CmdInputDef("answer").string_().required().description("Answer for the quest"));
-    m_vInputs.push_back(CmdInputDef("answer_format").string_().required().description("Answer format for the quest"));
-    m_vInputs.push_back(CmdInputDef("state").string_().required().description("State of the quest, can be: open, broken, closed"));
-    m_vInputs.push_back(CmdInputDef("description_state").string_().required().description("You can add some descriptions for quest state"));
+    addInputDef("author").string_().required().description("Author of the quest");
+    addInputDef("subject").string_().required().description("Subject must be one from types (look types)");
+    addInputDef("answer").string_().required().description("Answer for the quest");
+    addInputDef("answer_format").string_().required().description("Answer format for the quest");
+    addInputDef("state").string_().required().description("State of the quest, can be: open, broken, closed");
+    addInputDef("description_state").string_().required().description("You can add some descriptions for quest state");
 }
 
 // ---------------------------------------------------------------------
@@ -632,7 +632,7 @@ CmdHandlerQuestDelete::CmdHandlerQuestDelete()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest ID"));
+    addInputDef("questid").required().integer_().description("Quest ID");
 }
 
 // ---------------------------------------------------------------------
@@ -721,17 +721,17 @@ CmdHandlerQuestProposal::CmdHandlerQuestProposal()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("gameid").integer_().required().description("Which game included this quest"));
-    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Name of the quest"));
-    m_vInputs.push_back(CmdInputDef("text").string_().required().description("Description of the quest"));
-    m_vInputs.push_back(CmdInputDef("score").integer_().minval(1).maxval(1000).required().description("How much append to user score after solve quest by them"));
+    addInputDef("gameid").integer_().required().description("Which game included this quest");
+    addInputDef("name").string_().required().description("Name of the quest");
+    addInputDef("text").string_().required().description("Description of the quest");
+    addInputDef("score").integer_().minval(1).maxval(1000).required().description("How much append to user score after solve quest by them");
 
     QStringList questTypes; // TODO fill from database or use employees
     questTypes << "trivia";
-    m_vInputs.push_back(CmdInputDef("author").string_().required().description("Author of the quest"));
-    m_vInputs.push_back(CmdInputDef("subject").string_().required().description("Subject must be one from types (look types)"));
-    m_vInputs.push_back(CmdInputDef("answer").string_().required().description("Answer for the quest"));
-    m_vInputs.push_back(CmdInputDef("answer_format").string_().required().description("Answer format for the quest"));
+    addInputDef("author").string_().required().description("Author of the quest");
+    addInputDef("subject").string_().required().description("Subject must be one from types (look types)");
+    addInputDef("answer").string_().required().description("Answer for the quest");
+    addInputDef("answer_format").string_().required().description("Answer format for the quest");
 }
 
 // ---------------------------------------------------------------------
@@ -881,7 +881,7 @@ CmdHandlerQuestStatistics::CmdHandlerQuestStatistics()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("questid").integer_().required().description("Quest ID"));
+    addInputDef("questid").integer_().required().description("Quest ID");
 }
 
 // ---------------------------------------------------------------------
@@ -1003,21 +1003,21 @@ CmdHandlerQuestUpdate::CmdHandlerQuestUpdate()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("questid").integer_().required().description("Quest ID"));
-    m_vInputs.push_back(CmdInputDef("name").string_().optional().description("Name of the quest"));
-    m_vInputs.push_back(CmdInputDef("gameid").integer_().optional().description("Which game included this quest"));
-    m_vInputs.push_back(CmdInputDef("text").string_().optional().description("Description of the quest"));
-    m_vInputs.push_back(CmdInputDef("score").integer_().minval(1).maxval(1000).optional().description("How much append to user score after solve quest by them"));
+    addInputDef("questid").integer_().required().description("Quest ID");
+    addInputDef("name").string_().optional().description("Name of the quest");
+    addInputDef("gameid").integer_().optional().description("Which game included this quest");
+    addInputDef("text").string_().optional().description("Description of the quest");
+    addInputDef("score").integer_().minval(1).maxval(1000).optional().description("How much append to user score after solve quest by them");
 
     // TODO from database init
     QStringList questTypes;
     questTypes << "trivia";
 
-    m_vInputs.push_back(CmdInputDef("subject").string_().optional().description("Subject must be one from types (look types)"));
-    m_vInputs.push_back(CmdInputDef("answer").string_().optional().description("Answer for the quest"));
-    m_vInputs.push_back(CmdInputDef("answer_format").string_().optional().description("Answer format for the quest"));
-    m_vInputs.push_back(CmdInputDef("state").string_().optional().description("State of the quest, can be: open, broken, closed"));
-    m_vInputs.push_back(CmdInputDef("description_state").string_().optional().description("You can add some descriptions for quest state"));
+    addInputDef("subject").string_().optional().description("Subject must be one from types (look types)");
+    addInputDef("answer").string_().optional().description("Answer for the quest");
+    addInputDef("answer_format").string_().optional().description("Answer format for the quest");
+    addInputDef("state").string_().optional().description("State of the quest, can be: open, broken, closed");
+    addInputDef("description_state").string_().optional().description("You can add some descriptions for quest state");
 }
 
 // ---------------------------------------------------------------------
@@ -1280,8 +1280,8 @@ CmdHandlerQuestsSubjects::CmdHandlerQuestsSubjects()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    // m_vInputs.push_back(CmdInputDef("filter_text").string_().optional().description("Filter by user email or nick"));
-    // m_vInputs.push_back(CmdInputDef("filter_role").string_().optional().description("Filter by user role"));
+    // addInputDef("filter_text").string_().optional().description("Filter by user email or nick");
+    // addInputDef("filter_role").string_().optional().description("Filter by user role");
 }
 
 // ---------------------------------------------------------------------
@@ -1331,8 +1331,8 @@ CmdHandlerAddHint::CmdHandlerAddHint()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("quest id"));
-    m_vInputs.push_back(CmdInputDef("hint").required().string_().description("hint text"));
+    addInputDef("questid").required().integer_().description("quest id");
+    addInputDef("hint").required().string_().description("hint text");
 }
 
 // ---------------------------------------------------------------------
@@ -1388,10 +1388,10 @@ CmdHandlerAnswerList::CmdHandlerAnswerList()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("page").required().integer_().description("Number of page"));
-    m_vInputs.push_back(CmdInputDef("onpage").required().integer_().description("How much rows on page"));
-    m_vInputs.push_back(CmdInputDef("questid").optional().integer_().description("Filter for questid"));
-    m_vInputs.push_back(CmdInputDef("userid").optional().integer_().description("Filter for userid"));
+    addInputDef("page").required().integer_().description("Number of page");
+    addInputDef("onpage").required().integer_().description("How much rows on page");
+    addInputDef("questid").optional().integer_().description("Filter for questid");
+    addInputDef("userid").optional().integer_().description("Filter for userid");
 }
 
 // ---------------------------------------------------------------------
@@ -1560,7 +1560,7 @@ CmdHandlerDeleteHint::CmdHandlerDeleteHint()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("hintid").required().integer_().description("hint id"));
+    addInputDef("hintid").required().integer_().description("hint id");
 }
 
 // ---------------------------------------------------------------------
@@ -1598,7 +1598,7 @@ CmdHandlerHints::CmdHandlerHints()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest id"));
+    addInputDef("questid").required().integer_().description("Quest id");
 }
 
 // ---------------------------------------------------------------------
@@ -1654,8 +1654,8 @@ CmdHandlerQuestsProposalList::CmdHandlerQuestsProposalList()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("onpage").integer_().optional().description("On page"));
-    m_vInputs.push_back(CmdInputDef("page").integer_().optional().description("page"));
+    addInputDef("onpage").integer_().optional().description("On page");
+    addInputDef("page").integer_().optional().description("page");
 }
 
 // ---------------------------------------------------------------------

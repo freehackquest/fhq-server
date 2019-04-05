@@ -17,8 +17,8 @@ CmdHandlerLeaksList::CmdHandlerLeaksList()
     m_modelCommandAccess.setAccessAdmin(true);
 
 	// validation and description input fields
-    m_vInputs.push_back(CmdInputDef("page").required().integer_().description("Number of page"));
-    m_vInputs.push_back(CmdInputDef("onpage").required().integer_().description("How much rows in one page"));
+    addInputDef("page").required().integer_().description("Number of page");
+    addInputDef("onpage").required().integer_().description("How much rows in one page");
 }
 
 // ---------------------------------------------------------------------
@@ -137,11 +137,11 @@ CmdHandlerLeaksAdd::CmdHandlerLeaksAdd()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("uuid").required().uuid_().description("UUID of the leak"));
-    m_vInputs.push_back(CmdInputDef("game_uuid").required().uuid_().description("UUID of the game"));
-    m_vInputs.push_back(CmdInputDef("name").required().string_().description("Visible part of the content"));
-    m_vInputs.push_back(CmdInputDef("content").required().string_().description("Content of the leak"));
-    m_vInputs.push_back(CmdInputDef("score").required().integer_().description("Price of the leak"));
+    addInputDef("uuid").required().uuid_().description("UUID of the leak");
+    addInputDef("game_uuid").required().uuid_().description("UUID of the game");
+    addInputDef("name").required().string_().description("Visible part of the content");
+    addInputDef("content").required().string_().description("Content of the leak");
+    addInputDef("score").required().integer_().description("Price of the leak");
 }
 
 // ---------------------------------------------------------------------
@@ -203,10 +203,10 @@ CmdHandlerLeaksUpdate::CmdHandlerLeaksUpdate()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("id").required().integer_().description("Leak id"));
-    m_vInputs.push_back(CmdInputDef("name").optional().string_().description("Visible part of the content"));
-    m_vInputs.push_back(CmdInputDef("content").optional().string_().description("Content of the leak"));
-    m_vInputs.push_back(CmdInputDef("score").optional().integer_().description("Price of the leak"));
+    addInputDef("id").required().integer_().description("Leak id");
+    addInputDef("name").optional().string_().description("Visible part of the content");
+    addInputDef("content").optional().string_().description("Content of the leak");
+    addInputDef("score").optional().integer_().description("Price of the leak");
 }
 
 // ---------------------------------------------------------------------
@@ -287,7 +287,7 @@ CmdHandlerLeaksDelete::CmdHandlerLeaksDelete()
     m_modelCommandAccess.setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("id").required().integer_().description("Leak id"));
+    addInputDef("id").required().integer_().description("Leak id");
     //TODO admin password
 }
 
@@ -363,7 +363,7 @@ CmdHandlerLeaksBuy::CmdHandlerLeaksBuy()
     m_modelCommandAccess.setAccessAdmin(false);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("id").required().integer_().description("Leak id"));
+    addInputDef("id").required().integer_().description("Leak id");
 }
 
 // ---------------------------------------------------------------------
