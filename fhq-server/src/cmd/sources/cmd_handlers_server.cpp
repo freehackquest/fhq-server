@@ -15,9 +15,9 @@
 CmdHandlerServerApi::CmdHandlerServerApi()
     : CmdHandlerBase("server_api", "This method Will be return list of all handlers"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 }
 
 // ---------------------------------------------------------------------
@@ -41,9 +41,9 @@ void CmdHandlerServerApi::handle(ModelRequest *pRequest){
 
         jsonHandler["cmd"] = pHandler->cmd().c_str();
         jsonHandler["description"] = pHandler->description();
-        jsonHandler["access_unauthorized"] = pHandler->access().accessUnauthorized();
-        jsonHandler["access_user"] = pHandler->access().accessUser();
-        jsonHandler["access_admin"] = pHandler->access().accessAdmin();
+        jsonHandler["access_unauthorized"] = pHandler->accessUnauthorized();
+        jsonHandler["access_user"] = pHandler->accessUser();
+        jsonHandler["access_admin"] = pHandler->accessAdmin();
 
         auto jsonInputs = nlohmann::json::array();
         std::vector<CmdInputDef> ins = pHandler->inputs();
@@ -67,9 +67,9 @@ void CmdHandlerServerApi::handle(ModelRequest *pRequest){
 CmdHandlerPublicInfo::CmdHandlerPublicInfo()
     : CmdHandlerBase("public_info", "Method return public information about server"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
 }
 
@@ -164,9 +164,9 @@ CmdHandlerServerInfo::CmdHandlerServerInfo()
     : CmdHandlerBase("server_info", "Return server private information"){
     TAG = "CmdServerInfoHandler";
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 }
 
 // ---------------------------------------------------------------------
@@ -197,9 +197,9 @@ void CmdHandlerServerInfo::handle(ModelRequest *pRequest){
 CmdHandlerServerSettings::CmdHandlerServerSettings()
     : CmdHandlerBase("server_settings", "Return server settings"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
 }
@@ -222,9 +222,9 @@ void CmdHandlerServerSettings::handle(ModelRequest *pRequest){
 CmdHandlerServerSettingsUpdate::CmdHandlerServerSettingsUpdate()
     : CmdHandlerBase("server_settings_update", "Update server settings"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("name").required().string_().description("name of setting");

@@ -215,9 +215,9 @@ void ExportLibFHQCliPy::exportAPImd(){
             apimd << pCmdHandlerBase->description() << "\n\n";
         }
         apimd 
-            << "Access: unauthorized - **" << (pCmdHandlerBase->access().accessUnauthorized() ? "yes" : "no") << "**, "
-            << " user - **" << (pCmdHandlerBase->access().accessUser() ? "yes" : "no") << "**, "
-            << " admin - **" << (pCmdHandlerBase->access().accessAdmin() ? "yes" : "no") << "**\n"
+            << "Access: unauthorized - **" << (pCmdHandlerBase->accessUnauthorized() ? "yes" : "no") << "**, "
+            << " user - **" << (pCmdHandlerBase->accessUser() ? "yes" : "no") << "**, "
+            << " admin - **" << (pCmdHandlerBase->accessAdmin() ? "yes" : "no") << "**\n"
             << "\n";
 
         apimd << " #### Input params \n\n";
@@ -441,9 +441,9 @@ void ExportLibFHQCliPy::export__init__py(){
         std::string sCmd = it->first;
         CmdHandlerBase* pCmdHandlerBase = it->second;
         builder
-        .add("# Access unauthorized " + std::string(pCmdHandlerBase->access().accessUnauthorized() ? "yes" : "no"))
-        .add("# Acess user " + std::string(pCmdHandlerBase->access().accessUser() ? "yes" : "no"))
-        .add("# Access admin " + std::string(pCmdHandlerBase->access().accessAdmin() ? "yes" : "no"));
+        .add("# Access unauthorized " + std::string(pCmdHandlerBase->accessUnauthorized() ? "yes" : "no"))
+        .add("# Acess user " + std::string(pCmdHandlerBase->accessUser() ? "yes" : "no"))
+        .add("# Access admin " + std::string(pCmdHandlerBase->accessAdmin() ? "yes" : "no"));
         
         if(pCmdHandlerBase->activatedFromVersion() != ""){
             builder.add("# Activated From Version: " + pCmdHandlerBase->activatedFromVersion());

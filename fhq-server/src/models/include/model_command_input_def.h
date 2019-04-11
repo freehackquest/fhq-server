@@ -20,10 +20,6 @@ class ModelCommandInputDef {
         CmdInputDef &requiredEnum(const std::string &sName, const std::string &sDescription);
         CmdInputDef &optionalEnum(const std::string &sName, const std::string &sDescription);
         
-        // uuid
-        CmdInputDef &requiredUUID(const std::string &sName, const std::string &sDescription);
-        CmdInputDef &optionalUUID(const std::string &sName, const std::string &sDescription);
-        
         // email
         CmdInputDef &requiredEmail(const std::string &sName, const std::string &sDescription);
         CmdInputDef &optionalEmail(const std::string &sName, const std::string &sDescription);

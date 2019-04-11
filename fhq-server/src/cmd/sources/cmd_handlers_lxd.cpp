@@ -18,9 +18,9 @@ CmdHandlerLXDContainers::CmdHandlerLXDContainers()
 
     TAG = "LXD_HANDLER";
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("name").string_().required().description("Container name");
@@ -171,9 +171,9 @@ void CmdHandlerLXDContainers::delete_container(const std::string &name, std::str
 CmdHandlerLXDInfo::CmdHandlerLXDInfo()
         : CmdHandlerBase("lxd_info", "Get information about the orhestra, containers.") {
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("name").string_().required().description("Container name");
@@ -226,9 +226,9 @@ bool CmdHandlerLXDInfo::get_state(std::string sName, std::string &sError, int &n
 CmdHandlerLXDList::CmdHandlerLXDList()
         : CmdHandlerBase("lxd_list", "Get information about all containers.") {
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 }
 
 // ---------------------------------------------------------------------
@@ -257,9 +257,9 @@ void CmdHandlerLXDList::handle(ModelRequest *pRequest) {
 CmdHandlerLXDExec::CmdHandlerLXDExec()
         : CmdHandlerBase("lxd_exec", "Exec command in the container with name.") {
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     addInputDef("name").string_().required().description("Container name");
     addInputDef("command").string_().required().description("Name of execution command");
@@ -321,9 +321,9 @@ bool CmdHandlerLXDExec::exec_command(const std::string &sName, const std::string
 CmdHandlerLXDFile::CmdHandlerLXDFile()
         : CmdHandlerBase("lxd_file", "Pull, push, delete file inside the container.") {
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     addInputDef("name").string_().required().description("Container name");
     addInputDef("action").string_().required().description("Action with files: pull, push or delete");
@@ -419,9 +419,9 @@ bool CmdHandlerLXDFile::push_file(LXDContainer *pContainer, const std::string &s
 CmdHandlerLXDOpenPort::CmdHandlerLXDOpenPort()
         : CmdHandlerBase("lxd_open_port", "Opens the container port.") {
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     addInputDef("name").string_().required().description("Container name");
     addInputDef("port").integer_().required().description("Number container port");

@@ -196,8 +196,7 @@ void WebSocketServer::processTextMessage(const QString &message) {
         pServerInfo->incrementRequests(sCmd);
 
         // check access
-        const ModelCommandAccess access = pCmdHandler->access();
-        if (!access.accessUnauthorized()) {
+        if (!pCmdHandler->accessUnauthorized()) {
             IUserToken *pUserToken = getUserToken(pClient);
             if (pUserToken == NULL) {
                 
@@ -206,13 +205,13 @@ void WebSocketServer::processTextMessage(const QString &message) {
             }
 
             // access user
-            if (pUserToken->isUser() && !access.accessUser()) {
+            if (pUserToken->isUser() && !pCmdHandler->accessUser()) {
                 pModelRequest->sendMessageError(pCmdHandler->cmd(), Error(403, "Access deny for user"));
                 return;
             }
 
             // access admin
-            if (pUserToken->isAdmin() && !access.accessAdmin()) {
+            if (pUserToken->isAdmin() && !pCmdHandler->accessAdmin()) {
                 pModelRequest->sendMessageError(pCmdHandler->cmd(), Error(403, "Access deny for admin"));
                 return;
             }

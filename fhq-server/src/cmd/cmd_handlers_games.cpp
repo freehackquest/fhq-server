@@ -21,13 +21,14 @@
  * Create Game
 **********************************************/
 
-
 CmdHandlerGameCreate::CmdHandlerGameCreate()
    : CmdHandlerBase("game_create", "Create the game"){
-
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    
+    setActivatedFromVersion("0.2.0");
+    
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
@@ -93,9 +94,9 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
 CmdHandlerGameDelete::CmdHandlerGameDelete()
     : CmdHandlerBase("game_delete", "Remove game and all quests"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
@@ -258,9 +259,9 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
 CmdHandlerGameExport::CmdHandlerGameExport()
     : CmdHandlerBase("game_export", "Export the game") {
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
@@ -351,9 +352,9 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest){
 CmdHandlerGameImport::CmdHandlerGameImport()
     : CmdHandlerBase("game_import", "Import game") {
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
@@ -381,9 +382,9 @@ void CmdHandlerGameImport::handle(ModelRequest *pRequest){
 CmdHandlerGameInfo::CmdHandlerGameInfo()
     : CmdHandlerBase("game_info", "Return game info"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
@@ -416,9 +417,9 @@ void CmdHandlerGameInfo::handle(ModelRequest *pRequest){
 CmdHandlerGameUpdate::CmdHandlerGameUpdate()
     : CmdHandlerBase("game_update", "Update game info"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
@@ -489,9 +490,9 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
 CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
     : CmdHandlerBase("game_update_logo", "Update game logo"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
@@ -577,9 +578,9 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
 CmdHandlerGames::CmdHandlerGames()
     : CmdHandlerBase("games", "Method returned list of games"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     // addInputDef("filter_text").string_().optional().description("Filter by user email or nick");

@@ -12,9 +12,9 @@
 CmdHandlerLeaksList::CmdHandlerLeaksList()
     : CmdHandlerBase("leaks_list", "Method returns list of leaks"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
 	// validation and description input fields
     addInputDef("page").required().integer_().description("Number of page");
@@ -132,9 +132,9 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
 CmdHandlerLeaksAdd::CmdHandlerLeaksAdd()
     : CmdHandlerBase("leaks_add", "Method adds a leak"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("uuid").required().uuid_().description("UUID of the leak");
@@ -198,9 +198,9 @@ void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest){
 CmdHandlerLeaksUpdate::CmdHandlerLeaksUpdate()
     : CmdHandlerBase("leaks_update", "Method updates a leak"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("id").required().integer_().description("Leak id");
@@ -282,9 +282,9 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest){
 CmdHandlerLeaksDelete::CmdHandlerLeaksDelete()
     : CmdHandlerBase("leaks_delete", "Method deletes a leak"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("id").required().integer_().description("Leak id");
@@ -358,9 +358,9 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest){
 CmdHandlerLeaksBuy::CmdHandlerLeaksBuy()
     : CmdHandlerBase("leaks_buy", "Method buys a leak"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(false);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(false);
 
     // validation and description input fields
     addInputDef("id").required().integer_().description("Leak id");

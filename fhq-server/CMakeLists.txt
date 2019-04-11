@@ -18,6 +18,7 @@ set (FHQSRV_SOURCES "")
 # Sources
 
 # include header dirs
+list (APPEND FHQSRV_INCLUDE_DIRS "src/core")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/nlohmann")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/smallsha1")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/md5")
@@ -45,9 +46,12 @@ list (APPEND FHQSRV_INCLUDE_DIRS "src/updates")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/storages/updates/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/include")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/classbook/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/web-server")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/web-server/core")
+
+# core
+list (APPEND FHQSRV_SOURCES "src/core/cmd_handlers.h")
+list (APPEND FHQSRV_SOURCES "src/core/cmd_handlers.cpp")
 
 # json
 list (APPEND FHQSRV_SOURCES "src/3rdParty/nlohmann/json.hpp")
@@ -110,8 +114,6 @@ list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_quests_writeups.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_quests_writeups.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_useful_links.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_useful_links.cpp")
-list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.h")
-list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_users.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_users.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_events.h")
@@ -145,11 +147,9 @@ list (APPEND FHQSRV_SOURCES "src/models/include/model_game.h")
 list (APPEND FHQSRV_SOURCES "src/models/sources/model_game.cpp")
 list (APPEND FHQSRV_SOURCES "src/models/include/model_usertoken.h")
 list (APPEND FHQSRV_SOURCES "src/models/include/model_command_input_def.h")
-list (APPEND FHQSRV_SOURCES "src/models/include/model_command_access.h")
 list (APPEND FHQSRV_SOURCES "src/models/sources/cmd_input_def.cpp")
 list (APPEND FHQSRV_SOURCES "src/models/sources/model_usertoken.cpp")
 list (APPEND FHQSRV_SOURCES "src/models/sources/model_command_input_def.cpp")
-list (APPEND FHQSRV_SOURCES "src/models/sources/model_command_access.cpp")
 list (APPEND FHQSRV_SOURCES "src/models/include/model_lxd_container.h")
 list (APPEND FHQSRV_SOURCES "src/models/sources/model_lxd_container.cpp")
 
@@ -205,7 +205,6 @@ list (APPEND FHQSRV_SOURCES "src/server/include/error.h")
 list (APPEND FHQSRV_SOURCES "src/server/sources/error.cpp")
 list (APPEND FHQSRV_SOURCES "src/server/include/websocketserver.h")
 list (APPEND FHQSRV_SOURCES "src/server/sources/websocketserver.cpp")
-
 
 # employees
 list (APPEND FHQSRV_SOURCES "src/employees/employees.h")

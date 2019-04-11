@@ -15,9 +15,9 @@
 CmdHandlerQuests::CmdHandlerQuests()
     : CmdHandlerBase("quests", "Method will be returned quest list"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("subject").string_().optional().description("Filter by subject");
@@ -124,9 +124,9 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest){
 CmdHandlerQuest::CmdHandlerQuest()
     : CmdHandlerBase("quest", "Update the quest info"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("questid").integer_().required().description("Quest ID");
@@ -303,9 +303,9 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest){
 CmdHandlerQuestPass::CmdHandlerQuestPass()
 : CmdHandlerBase("quest_pass", "Quest pass"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("questid").integer_().required().description("Quest ID");
@@ -475,9 +475,9 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest){
 CmdHandlerCreateQuest::CmdHandlerCreateQuest()
     : CmdHandlerBase("createquest", "Method will be create new quest"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("uuid").uuid_().required().description("Global Identificator of the quest");
@@ -627,9 +627,9 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest){
 CmdHandlerQuestDelete::CmdHandlerQuestDelete()
     : CmdHandlerBase("quest_delete", "Method for delete quest"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("questid").required().integer_().description("Quest ID");
@@ -716,9 +716,9 @@ CmdHandlerQuestProposal::CmdHandlerQuestProposal()
     : CmdHandlerBase("quest_proposal", "Add quest proposal"){
     TAG = "CmdQuestProposalHandler";
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("gameid").integer_().required().description("Which game included this quest");
@@ -876,9 +876,9 @@ CmdHandlerQuestStatistics::CmdHandlerQuestStatistics()
 
     TAG = "CmdHandlerQuestStatistics";
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("questid").integer_().required().description("Quest ID");
@@ -998,9 +998,9 @@ void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest){
 CmdHandlerQuestUpdate::CmdHandlerQuestUpdate()
     : CmdHandlerBase("quest_update", "Update the quest info"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("questid").integer_().required().description("Quest ID");
@@ -1275,9 +1275,9 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest){
 CmdHandlerQuestsSubjects::CmdHandlerQuestsSubjects()
     : CmdHandlerBase("quests_subjects", "Method returned list of quests by subjects"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     // addInputDef("filter_text").string_().optional().description("Filter by user email or nick");
@@ -1326,9 +1326,9 @@ void CmdHandlerQuestsSubjects::handle(ModelRequest *pRequest){
 CmdHandlerAddHint::CmdHandlerAddHint()
     : CmdHandlerBase("addhint", "Methid add hint to quest"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("questid").required().integer_().description("quest id");
@@ -1384,9 +1384,9 @@ CmdHandlerAnswerList::CmdHandlerAnswerList()
 
     TAG = "CmdHandlerAnswerList";
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("page").required().integer_().description("Number of page");
@@ -1556,9 +1556,9 @@ CmdHandlerDeleteHint::CmdHandlerDeleteHint()
     : CmdHandlerBase("deletehint", "Method for delete hint from quest"){
     TAG = "CmdHandlerDeleteHint";
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("hintid").required().integer_().description("hint id");
@@ -1594,9 +1594,9 @@ void CmdHandlerDeleteHint::handle(ModelRequest *pRequest){
 CmdHandlerHints::CmdHandlerHints()
     : CmdHandlerBase("hints", "Return list of hints"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("questid").required().integer_().description("Quest id");
@@ -1650,9 +1650,9 @@ CmdHandlerQuestsProposalList::CmdHandlerQuestsProposalList()
     : CmdHandlerBase("quests_proposal_list", "Quests proposal list"){
     TAG = "CmdHandlerQuestsProposalList";
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("onpage").integer_().optional().description("On page");

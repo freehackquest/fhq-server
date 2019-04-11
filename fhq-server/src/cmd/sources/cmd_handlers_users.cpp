@@ -18,9 +18,9 @@
 CmdHandlerUsersScoreboard::CmdHandlerUsersScoreboard()
     : CmdHandlerBase("scoreboard", "Method return scoreboard"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("page").required().integer_().description("Number of page");
@@ -75,9 +75,9 @@ void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest){
 CmdHandlerGetMap::CmdHandlerGetMap()
     : CmdHandlerBase("getmap", "Returned coordinate list"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 }
 
 // ---------------------------------------------------------------------
@@ -122,9 +122,9 @@ void CmdHandlerGetMap::handle(ModelRequest *pRequest){
 CmdHandlerLogin::CmdHandlerLogin()
     : CmdHandlerBase("login", "Method for login"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(false);
+    setAccessUnauthorized(true);
+    setAccessUser(false);
+    setAccessAdmin(false);
 
     // validation and description input fields
     addInputDef("email").required().string_().description("E-mail");
@@ -219,9 +219,9 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest){
 CmdHandlerRegistration::CmdHandlerRegistration()
     : CmdHandlerBase("registration", "Method for registration"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(false);
+    setAccessUnauthorized(true);
+    setAccessUser(false);
+    setAccessAdmin(false);
 
     // validation and description input fields
     addInputDef("email").required().email_().description("E-mail");
@@ -373,9 +373,9 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest){
 CmdHandlerToken::CmdHandlerToken()
     : CmdHandlerBase("token", "Method for login by token"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(false);
+    setAccessUnauthorized(true);
+    setAccessUser(false);
+    setAccessAdmin(false);
 
     // validation and description input fields
     addInputDef("token").string_().optional().description("Auth token");
@@ -435,9 +435,9 @@ void CmdHandlerToken::handle(ModelRequest *pRequest){
 CmdHandlerUpdateUserLocation::CmdHandlerUpdateUserLocation()
     : CmdHandlerBase("updateuserlocation", "This method will be try update user location by lastip"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("userid").required().integer_().description("User ID");
@@ -497,9 +497,9 @@ void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest){
 CmdHandlerUserChangePassword::CmdHandlerUserChangePassword()
     : CmdHandlerBase("user_change_password", "This method for change user password"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("password_old").required().string_().description("Old password");
@@ -967,9 +967,9 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
 CmdHandlerUserResetPassword::CmdHandlerUserResetPassword()
     : CmdHandlerBase("user_reset_password", "Method for reset password"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(false);
+    setAccessUnauthorized(true);
+    setAccessUser(false);
+    setAccessAdmin(false);
 
     // validation and description input fields
     addInputDef("email").required().email_().description("E-mail");
@@ -1051,9 +1051,9 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest){
 CmdHandlerUserSkills::CmdHandlerUserSkills()
     : CmdHandlerBase("user_skills", "Return user skills info"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("userid").required().integer_().description("Id of user");
@@ -1119,9 +1119,9 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
 CmdHandlerUserUpdate::CmdHandlerUserUpdate()
     : CmdHandlerBase("user_update", "Update user info"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("userid").required().integer_().description("Id of user");
@@ -1254,9 +1254,9 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest){
 CmdHandlerUserDelete::CmdHandlerUserDelete()
     : CmdHandlerBase("user_delete", "Method for deleting a user"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("userid").required().integer_().description("User's id");
@@ -1463,9 +1463,9 @@ CmdHandlerUsers::CmdHandlerUsers()
 
     TAG = "CmdUsersHandler";
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("filter_text").string_().optional().description("Filter by user email or nick");

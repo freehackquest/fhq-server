@@ -13,9 +13,9 @@ CmdHandlerBase::CmdHandlerBase(const std::string &sCmd, const std::string &sDesc
     m_sDescription = sDescription;
     TAG = "CmdHandlerBase(" + sCmd + ")";
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(false);
+    m_bAccessUnauthorized = false;
+    m_bAccessUser = false;
+    m_bAccessAdmin = false;
 
     // can register in global variable
     CmdHandlers::addHandler(sCmd, this);
@@ -35,6 +35,24 @@ std::string CmdHandlerBase::deprecatedFromVersion(){
 
 // ---------------------------------------------------------------------
 
+bool CmdHandlerBase::accessUnauthorized() {
+    return m_bAccessUnauthorized;
+}
+
+// ---------------------------------------------------------------------
+
+bool CmdHandlerBase::accessUser() {
+    return m_bAccessUser;
+}
+
+// ---------------------------------------------------------------------
+
+bool CmdHandlerBase::accessAdmin() {
+    return m_bAccessAdmin;
+}
+
+// ---------------------------------------------------------------------
+
 std::string CmdHandlerBase::cmd(){
     return m_sCmd;
 }
@@ -48,25 +66,19 @@ std::string CmdHandlerBase::description(){
 // ---------------------------------------------------------------------
 
 void CmdHandlerBase::setAccessUnauthorized(bool bAccess){
-    m_modelCommandAccess.setAccessUnauthorized(bAccess);
+    m_bAccessUnauthorized = bAccess;
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerBase::setAccessUser(bool bAccess){
-    m_modelCommandAccess.setAccessUser(bAccess);
+    m_bAccessUser = bAccess;
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerBase::setAccessAdmin(bool bAccess){
-    m_modelCommandAccess.setAccessAdmin(bAccess);
-}
-
-// ---------------------------------------------------------------------
-
-const ModelCommandAccess & CmdHandlerBase::access(){
-    return m_modelCommandAccess;
+    m_bAccessAdmin = bAccess;
 }
 
 // ---------------------------------------------------------------------
@@ -86,6 +98,15 @@ void CmdHandlerBase::setDeprecatedFromVersion(const std::string &sDeprecatedFrom
 CmdInputDef &CmdHandlerBase::addInputDef(const std::string &name) {
     // TODO check duplicates
     m_vInputs.push_back(CmdInputDef(name));
+    return m_vInputs[m_vInputs.size()-1];
+}
+
+// ---------------------------------------------------------------------
+
+CmdInputDef &CmdHandlerBase::addInputDef_require_string(const std::string &sName, const std::string &sDescription) {
+    CmdInputDef pStringDef(sName);
+    pStringDef.string_().description(sDescription).required();
+    m_vInputs.push_back(pStringDef);
     return m_vInputs[m_vInputs.size()-1];
 }
 

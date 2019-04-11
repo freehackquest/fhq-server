@@ -14,9 +14,9 @@
 CmdHandlerFeedbackAdd::CmdHandlerFeedbackAdd()
     : CmdHandlerBase("feedback_add", "Create the feedback"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("from").email_().required().description("From user");

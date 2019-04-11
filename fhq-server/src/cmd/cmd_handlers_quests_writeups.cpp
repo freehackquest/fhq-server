@@ -13,9 +13,9 @@ REGISTRY_CMD(CmdHandlerQuestsWriteUpsList)
 CmdHandlerQuestsWriteUpsList::CmdHandlerQuestsWriteUpsList()
     : CmdHandlerBase("quests_writeups_list", "This method will be returned list of writeups by questid"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
     setActivatedFromVersion("0.2.18");
 
     // validation and description input fields
@@ -99,9 +99,9 @@ CmdHandlerQuestsWriteUpsProposal::CmdHandlerQuestsWriteUpsProposal()
 
     m_sLinkPrefix = "https://www.youtube.com/watch?v=";
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
     setActivatedFromVersion("0.2.18");
 
     // validation and description input fields
@@ -198,9 +198,9 @@ REGISTRY_CMD(CmdHandlerQuestsWriteUpsUpdate)
 CmdHandlerQuestsWriteUpsUpdate::CmdHandlerQuestsWriteUpsUpdate()
     : CmdHandlerBase("quests_writeups_update", "This method will be update writeup approve now") {
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
     setActivatedFromVersion("0.2.18");
 
     // validation and description input fields
@@ -281,9 +281,9 @@ REGISTRY_CMD(CmdHandlerQuestsWriteUpsDelete)
 CmdHandlerQuestsWriteUpsDelete::CmdHandlerQuestsWriteUpsDelete()
     : CmdHandlerBase("quests_writeups_delete", "This method will be remove writeup") {
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
     setActivatedFromVersion("0.2.18");
 
     // validation and description input fields

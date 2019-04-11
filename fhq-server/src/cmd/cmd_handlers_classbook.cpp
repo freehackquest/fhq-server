@@ -19,9 +19,9 @@
 CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler()
     : CmdHandlerBase("classbook_add_record", "Adds a new article with the specified name, content, and id."){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("parentid").required().integer_().description("pareintid for classbook article");
@@ -183,9 +183,9 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
 CmdClassbookDeleteRecordHandler::CmdClassbookDeleteRecordHandler()
     : CmdHandlerBase("classbook_delete_record", "Delete a article with a given classbookid"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("classbookid").required().integer_().description("id for classbook article");
@@ -246,9 +246,9 @@ void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest){
 CmdClassbookExportHandler::CmdClassbookExportHandler()
     : CmdHandlerBase("classbook_export", "Export classbook's articles to html or markdown, optionally in zip archive."){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("output").required().string_().description("The output file format");
@@ -454,9 +454,9 @@ void CmdClassbookExportHandler::createMD(QFile *file, const std::string &sLang, 
 CmdClassbookInfoHandler::CmdClassbookInfoHandler()
     : CmdHandlerBase("classbook_info", "Return name and content, langs, path classbook article with a given id"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("classbookid").required().integer_().description("id for the classbook article");
@@ -617,9 +617,9 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
 CmdClassbookListHandler::CmdClassbookListHandler()
     : CmdHandlerBase("classbook_list", "Return list of classbook articles with parentid, id, names, childs, proposals for a given parentid"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("parentid").required().integer_().description("parentid for classbook articles");
@@ -797,9 +797,9 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest){
 CmdClassbookUpdateRecordHandler::CmdClassbookUpdateRecordHandler()
     : CmdHandlerBase("classbook_update_record", "Update a article with a given classbookid"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("classbookid").required().integer_().description("id for classbook article");
@@ -960,9 +960,9 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
 CmdClassbookLocalizationAddRecordHandler::CmdClassbookLocalizationAddRecordHandler()
     : CmdHandlerBase("classbook_localization_add_record", "Add a new article localization for the English version"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("classbookid").required().integer_().description("Classbookid for article localization");
@@ -1070,9 +1070,9 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest){
 CmdClassbookLocalizationDeleteRecordHandler::CmdClassbookLocalizationDeleteRecordHandler()
     : CmdHandlerBase("classbook_localization_delete_record", "Delete an article localization"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("classbook_localizationid").required().integer_().description("Localization id");
@@ -1122,9 +1122,9 @@ void CmdClassbookLocalizationDeleteRecordHandler::handle(ModelRequest *pRequest)
 CmdClassbookLocalizationInfoHandler::CmdClassbookLocalizationInfoHandler()
     : CmdHandlerBase("classbook_localization_info", "Find and display localization for an article by classbookid"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("classbook_localizationid").required().integer_().description("Localization id");
@@ -1184,9 +1184,9 @@ void CmdClassbookLocalizationInfoHandler::handle(ModelRequest *pRequest){
 CmdClassbookLocalizationUpdateRecordHandler::CmdClassbookLocalizationUpdateRecordHandler()
     : CmdHandlerBase("classbook_localization_update_record", "Update table with localization by classbookid"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("classbook_localizationid").required().integer_().description("Localization id");
@@ -1270,9 +1270,9 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest)
 CmdClassbookProposalAddRecordHandler::CmdClassbookProposalAddRecordHandler()
     : CmdHandlerBase("classbook_proposal_add_record", "Propose an update of article"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("classbookid").required().integer_().description("Classbookid for an article");
@@ -1400,9 +1400,9 @@ void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest){
 CmdClassbookProposalDeleteRecordHandler::CmdClassbookProposalDeleteRecordHandler()
     : CmdHandlerBase("classbook_proposal_delete_record", "Delete a proposal of updating an article"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("classbook_proposal_id").required().integer_().description("Proposal id");
@@ -1454,9 +1454,9 @@ void CmdClassbookProposalDeleteRecordHandler::handle(ModelRequest *pRequest){
 CmdClassbookProposalInfoHandler::CmdClassbookProposalInfoHandler()
     : CmdHandlerBase("classbook_proposal_info", "Find and display all proposal data by id"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("classbook_proposal_id").required().integer_().description("Proposal id");
@@ -1520,9 +1520,9 @@ void CmdClassbookProposalInfoHandler::handle(ModelRequest *pRequest){
 CmdClassbookProposalListHandler::CmdClassbookProposalListHandler()
     : CmdHandlerBase("classbook_proposal_list", "Display list of proposals by classbookid"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("classbookid").optional().integer_().description("Classbookid for an article");
@@ -1621,9 +1621,9 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest){
 CmdClassbookProposalPrepareMergeRecordHandler::CmdClassbookProposalPrepareMergeRecordHandler()
     : CmdHandlerBase("classbook_propasal_prepare_merge_record", "Prepare to merge updating requests"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("classbook_proposal_id").required().integer_().description("Proposal id");
@@ -1692,9 +1692,9 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
 CmdClassbookHandler::CmdClassbookHandler()
     : CmdHandlerBase("classbook", "Return classbook contents"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
 }
 

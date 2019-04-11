@@ -16,9 +16,9 @@ CmdHandlerMailInfo::CmdHandlerMailInfo()
     : CmdHandlerBase("mail_info", "This method Will be return info of mail"){
     TAG = "CmdHandlerMailInfo";
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
 }
@@ -39,9 +39,9 @@ void CmdHandlerMailInfo::handle(ModelRequest *pRequest){
 CmdHandlerMailSend::CmdHandlerMailSend()
     : CmdHandlerBase("mail_send", "Mail Send"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("to").required().email_().description("E-mail of the recipient");
@@ -73,9 +73,9 @@ CmdHandlerMailsList::CmdHandlerMailsList()
     : CmdHandlerBase("mails_list", "Mails list"){
     TAG = "CmdHandlerMailsList";
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("filter_email").string_().optional().description("Filter by email");

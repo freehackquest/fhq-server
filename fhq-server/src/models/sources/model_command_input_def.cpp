@@ -62,24 +62,6 @@ CmdInputDef &ModelCommandInputDef::optionalEnum(const std::string &sName, const 
 
 // ---------------------------------------------------------------------
 
-CmdInputDef &ModelCommandInputDef::requiredUUID(const std::string &sName, const std::string &sDescription){
-    CmdInputDef pUuidDef(sName);
-    pUuidDef.uuid_().description(sDescription).required();
-    m_vInputsDef.insert(std::pair<std::string, CmdInputDef>(sName,pUuidDef));
-    return m_vInputsDef[sName];
-}
-
-// ---------------------------------------------------------------------
-
-CmdInputDef &ModelCommandInputDef::optionalUUID(const std::string &sName, const std::string &sDescription){
-    CmdInputDef pUuidDef(sName);
-    pUuidDef.uuid_().description(sDescription).optional();
-    m_vInputsDef.insert(std::pair<std::string, CmdInputDef>(sName,pUuidDef));
-    return m_vInputsDef[sName];
-}
-
-// ---------------------------------------------------------------------
-
 CmdInputDef &ModelCommandInputDef::requiredEmail(const std::string &sName, const std::string &sDescription){
     CmdInputDef def(sName);
     def.email_().description(sDescription).required();

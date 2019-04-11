@@ -14,9 +14,9 @@
 CmdHandlerEventAdd::CmdHandlerEventAdd()
     : CmdHandlerBase("createpublicevent", "Create the public event"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     QStringList eventTypes;
     // TODO load from database
@@ -63,9 +63,9 @@ void CmdHandlerEventAdd::handle(ModelRequest *pRequest){
 CmdHandlerEventDelete::CmdHandlerEventDelete()
     : CmdHandlerBase("deletepublicevent", "Delete public event"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("hintid").required().integer_().description("hint id");
@@ -112,9 +112,9 @@ void CmdHandlerEventDelete::handle(ModelRequest *pRequest){
 CmdHandlerEventInfo::CmdHandlerEventInfo()
     : CmdHandlerBase("getpublicevent", "Return public event info by id"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("eventid").required().integer_().description("Event id");
@@ -161,9 +161,9 @@ void CmdHandlerEventInfo::handle(ModelRequest *pRequest){
 CmdHandlerEventsList::CmdHandlerEventsList()
     : CmdHandlerBase("publiceventslist", "Return list of public events"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("page").required().integer_().description("Number of page");
