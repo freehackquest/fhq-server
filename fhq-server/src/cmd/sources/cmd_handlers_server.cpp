@@ -244,7 +244,7 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest){
 
     if(!pSettings->hasSett(sName)){
         std::string sError = "Setting with name: " + sName + " did not found";
-        pRequest->sendMessageError(cmd(), Errors::NotFound(QString(sError.c_str())));
+        pRequest->sendMessageError(cmd(), Error(404, sError));
         return;
     }
 
@@ -259,7 +259,7 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest){
     }else if(sType == SETT_TYPE_BOOLEAN){
         pSettings->setSettBoolean(sName, sNewValue == "yes");
     }else{
-        pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
+        pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
         return;
     }
 

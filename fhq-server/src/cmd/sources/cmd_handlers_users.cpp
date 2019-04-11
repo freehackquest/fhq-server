@@ -38,7 +38,7 @@ void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest){
 
     int nOnPage = jsonRequest.at("onpage");
     if(nOnPage > 50){
-        pRequest->sendMessageError(cmd(), Errors::OnPageCouldNotBeMoreThen50());
+        pRequest->sendMessageError(cmd(), Error(400, "Parameter 'onpage' could not be more then 50"));
     }
     jsonResponse["onpage"] = nOnPage;
 
@@ -393,7 +393,7 @@ void CmdHandlerToken::handle(ModelRequest *pRequest){
     jsonData["cmd"] = nlohmann::json(cmd());
 
     if(jsonRequest.find("token") == jsonRequest.end()){
-        pRequest->sendMessageError(cmd(), Errors::NotFound("requred parameter token"));
+        pRequest->sendMessageError(cmd(), Error(404, "Not found requred parameter token"));
         return;
     }
     QString token = QString::fromStdString(jsonRequest.at("token"));
@@ -421,8 +421,7 @@ void CmdHandlerToken::handle(ModelRequest *pRequest){
         RunTasks::UpdateUserLocation(userid, lastip);
     }else{
         Log::err(TAG, "Invalid token " + token.toStdString());
-        // ["error"]
-        pRequest->sendMessageError(cmd(), Errors::InvalidToken());
+        pRequest->sendMessageError(cmd(), Error(401, "Invalid token"));
         return;
     }
 
@@ -457,8 +456,8 @@ void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest){
     int userid = jsonRequest.at("userid");
 
     // TODO redesign
-    if(userid == 0){
-        pRequest->sendMessageError(cmd(), Errors::QuestIDMustBeNotZero());
+    if (userid == 0) {
+        pRequest->sendMessageError(cmd(), Error(400, "Parameter 'userid' must be not zero"));
         return;
     }
 
@@ -536,7 +535,7 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest){
         sEmail = record.value("email").toString();
         sPass = record.value("pass").toString();
     }else{
-        pRequest->sendMessageError(cmd(), Errors::NotFound("user"));
+        pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
         return;
     }
 
@@ -769,7 +768,7 @@ void CmdHandlerUser::handle(ModelRequest *pRequest){
     IUserToken *pUserToken = pRequest->userToken();
 
     if(jsonRequest.find("userid") != jsonRequest.end() && pUserToken == NULL){
-        pRequest->sendMessageError(cmd(), Errors::NotAuthorizedRequest());
+        pRequest->sendMessageError(cmd(), Error(401, "Not Authorized Request"));
         return;
     }
 
@@ -824,7 +823,7 @@ void CmdHandlerUser::handle(ModelRequest *pRequest){
                 data["city"] = record.value("city").toString().toStdString();
             }
         }else{
-            pRequest->sendMessageError(cmd(), Errors::NotFound("user"));
+            pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
             return;
         }
     }
@@ -879,7 +878,7 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
     IUserToken *pUserToken = pRequest->userToken();
 
      if (jsonRequest.find("userid") == jsonRequest.end() && pUserToken == NULL) {
-        pRequest->sendMessageError(cmd(), Errors::NotAuthorizedRequest());
+        pRequest->sendMessageError(cmd(), Error(401, "Not Authorized Request"));
         return;
     }
 
@@ -934,7 +933,7 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
                 jsonData["city"] = record.value("city").toString().toStdString();
             }
         }else{
-            pRequest->sendMessageError(cmd(), Errors::NotFound("user"));
+            pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
             return;
         }
     }
@@ -1078,7 +1077,7 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
         QSqlQuery query(db);
         query.prepare("SELECT q.subject, sum(q.score) as sum_subject FROM quest q WHERE ! ISNULL( q.subject ) GROUP BY q.subject");
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Errors::DatabaseError(query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         };
 
@@ -1096,7 +1095,7 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
         query.prepare("SELECT uq.userid, q.subject, SUM( q.score ) as sum_score FROM users_quests uq INNER JOIN quest q ON uq.questid = q.idquest WHERE ! ISNULL( q.subject ) AND uq.userid = :userid GROUP BY uq.userid, q.subject");
         query.bindValue(":userid", nUserID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), Errors::DatabaseError(query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         };
 
@@ -1167,7 +1166,7 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest){
         query.bindValue(":userid", nUserID);
 
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Errors::DatabaseError(query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         };
 
@@ -1297,7 +1296,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
             sEmail = record.value("email").toString();
             sPass = record.value("pass").toString();
         }else{
-            pRequest->sendMessageError(cmd(), Errors::NotFound("user"));
+            pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
             return;
         }
 

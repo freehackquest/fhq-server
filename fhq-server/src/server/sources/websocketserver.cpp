@@ -161,9 +161,9 @@ void WebSocketServer::processTextMessage(const QString &message) {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     std::string sCmd = "";
     std::string sM = "";
-    try{
-        if(!nlohmann::json::accept(message.toStdString())){
-            this->sendMessageError(pClient, sCmd, sM, Errors::NotImplementedYet("Not JSON data"));
+    try {
+        if (!nlohmann::json::accept(message.toStdString())) {
+            this->sendMessageError(pClient, sCmd, sM, Error(400, "Not JSON data"));
             return;
         }
 
@@ -171,15 +171,15 @@ void WebSocketServer::processTextMessage(const QString &message) {
         ModelRequest *pModelRequest = new ModelRequest(pClient, this, jsonRequest_);
         
         if(!pModelRequest->hasCommand()){
-            this->sendMessageError(pClient, sCmd, sM, Errors::NotFound("requare parameter 'cmd'"));
-            // pModelRequestData->sendError(Errors::NotFound("command '" + QString(cmd.c_str()) + "'"));
+            this->sendMessageError(pClient, sCmd, sM, Error(404, "Not found requare parameter 'cmd'"));
+            // pModelRequestData->sendError(Error(404, "Not found command '" + QString(cmd.c_str()) + "'"));
             return;
         }
 
         sCmd = pModelRequest->command();
         if(!pModelRequest->hasM()){
             Log::info(TAG, "[WS] >>> " + sCmd);
-            this->sendMessageError(pClient, sCmd, sM, Errors::NotFound("requare parameter 'm' - messageid"));
+            this->sendMessageError(pClient, sCmd, sM, Error(404, "Not found requare parameter 'm' - messageid"));
             return;
         }
         sM = pModelRequest->m();
@@ -189,7 +189,7 @@ void WebSocketServer::processTextMessage(const QString &message) {
         CmdHandlerBase *pCmdHandler = CmdHandlers::findCmdHandler(sCmd);
         if(pCmdHandler == NULL){
             Log::warn(TAG, "Unknown command: " + sCmd);
-            pModelRequest->sendMessageError(sCmd, Errors::NotFound("command '" + QString::fromStdString(sCmd) + "'"));
+            pModelRequest->sendMessageError(sCmd, Error(404, "Not found command '" + sCmd + "'"));
             return;
         }
 
@@ -200,33 +200,34 @@ void WebSocketServer::processTextMessage(const QString &message) {
         if (!access.accessUnauthorized()) {
             IUserToken *pUserToken = getUserToken(pClient);
             if (pUserToken == NULL) {
-                pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::NotAuthorizedRequest());
+                
+                pModelRequest->sendMessageError(pCmdHandler->cmd(), Error(401, "Not Authorized Request"));
                 return;
             }
 
             // access user
             if (pUserToken->isUser() && !access.accessUser()) {
-                pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::AccessDenyForUser());
+                pModelRequest->sendMessageError(pCmdHandler->cmd(), Error(403, "Access deny for user"));
                 return;
             }
 
             // access admin
             if (pUserToken->isAdmin() && !access.accessAdmin()) {
-                pModelRequest->sendMessageError(pCmdHandler->cmd(), Errors::AccessDenyForAdmin());
+                pModelRequest->sendMessageError(pCmdHandler->cmd(), Error(403, "Access deny for admin"));
                 return;
             }
         }
 
         // allow access
         // TODO move to ModelRequest
-        Error error = Errors::NoneError();
+        Error error(404, "none");
         if(!pWsServer->validateInputParameters(error, pCmdHandler, jsonRequest_)){
             pModelRequest->sendMessageError(pCmdHandler->cmd(), error);
             return;
         }
         pCmdHandler->handle(pModelRequest);
     } catch (const std::exception &e) {
-        this->sendMessageError(pClient, sCmd, sM, Errors::InternalServerError());
+        this->sendMessageError(pClient, sCmd, sM, Error(500, "InternalServerError"));
         Log::err(TAG, e.what());
     }
 }

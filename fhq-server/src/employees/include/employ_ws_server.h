@@ -2,7 +2,6 @@
 #define EMPLOY_WS_SERVER_H
 
 #include <employees.h>
-#include <errors.h>
 #include <cmd_handlers.h>
 //
 #include <QJsonObject>

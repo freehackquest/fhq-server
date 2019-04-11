@@ -1351,7 +1351,8 @@ void CmdHandlerAddHint::handle(ModelRequest *pRequest){
 
     if(nQuestId == 0){
         // todo this check move to cmd input def
-        pRequest->sendMessageError(cmd(), Errors::QuestIDMustBeNotZero());
+        // TODO must be check on inputDef validators
+        pRequest->sendMessageError(cmd(), Error(400, "Parameter 'questid' must be not zero"));
         return;
     }
 
@@ -1409,7 +1410,7 @@ void CmdHandlerAnswerList::handle(ModelRequest *pRequest){
     jsonResponse["onpage"] = nOnPage;
 
     if(nOnPage > 50){
-        pRequest->sendMessageError(cmd(), Errors::OnPageCouldNotBeMoreThen50());
+        pRequest->sendMessageError(cmd(), Error(400, "Parameter 'onpage' could not be more then 50"));
         return;
     }
 
@@ -1573,7 +1574,7 @@ void CmdHandlerDeleteHint::handle(ModelRequest *pRequest){
 
     int hintid = jsonRequest["hintid"].toInt();
     if(hintid == 0){
-        pRequest->sendMessageError(cmd(), Errors::HintIDMustBeNotZero()); // TODO redesign
+        pRequest->sendMessageError(cmd(), Error(400, "Parameter 'hintid' must be not zero"));
         return;
     }
 
@@ -1611,7 +1612,7 @@ void CmdHandlerHints::handle(ModelRequest *pRequest){
 
     int questid = jsonRequest["questid"].toInt();
     if(questid == 0){
-        pRequest->sendMessageError(cmd(), Errors::QuestIDMustBeNotZero());
+        pRequest->sendMessageError(cmd(), Error(400, "Parameter 'questid' must be not zero"));
         return;
     }
 

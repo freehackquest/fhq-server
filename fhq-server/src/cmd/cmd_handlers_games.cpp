@@ -136,7 +136,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
             sEmail = record.value("email").toString();
             sPass = record.value("pass").toString();
         }else{
-            pRequest->sendMessageError(cmd(), Errors::NotFound("user"));
+            pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
             return;
         }
 
@@ -365,7 +365,7 @@ void CmdHandlerGameImport::handle(ModelRequest *pRequest){
     // nlohmann::json jsonRequest = pRequest->jsonRequest();
     // nlohmann::json jsonResponse;
 
-    pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
+    pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
     return;
 
     // TODO

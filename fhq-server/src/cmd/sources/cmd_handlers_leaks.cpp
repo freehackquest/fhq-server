@@ -35,7 +35,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
 
     int nOnPage = jsonRequest["onpage"].toInt();
     if(nOnPage > 50){
-        pRequest->sendMessageError(cmd(), Errors::OnPageCouldNotBeMoreThen50());
+        pRequest->sendMessageError(cmd(), Error(400, "Parameter 'onpage' could not be more then 50"));
         return;
     }
     jsonResponse["onpage"] = nOnPage;
@@ -175,7 +175,7 @@ void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest){
     }
 
     if(nResult == EmployResult::GAME_NOT_FOUND){
-        pRequest->sendMessageError(cmd(), Errors::NotFound("Game does not exists with this uuid"));
+        pRequest->sendMessageError(cmd(), Error(404, "Game does not exists with this uuid"));
         delete pModelLeak;
         return;
     }
@@ -231,7 +231,7 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest){
             return;
         }
         if (!query.next()){
-            pRequest->sendMessageError(cmd(), Errors::NotFound("leak with this id"));
+            pRequest->sendMessageError(cmd(), Error(404, "leak with this id"));
             return;
         }
     }
@@ -313,7 +313,7 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest){
             return;
         }
         if (!query.next()){
-            pRequest->sendMessageError(cmd(), Errors::NotFound("leak with this id"));
+            pRequest->sendMessageError(cmd(), Error(404, "Not found leak with this id"));
             return;
         }
     }
@@ -388,7 +388,7 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest){
             return;
         }
         if (!query.next()){
-            pRequest->sendMessageError(cmd(), Errors::NotFound("leak with this id"));
+            pRequest->sendMessageError(cmd(), Error(404, "Not found leak with this id"));
             return;
         }
     }
@@ -406,7 +406,7 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest){
             return;
         }
         if (!query.next()){
-            pRequest->sendMessageError(cmd(), Errors::NotFound("leak with this id"));
+            pRequest->sendMessageError(cmd(), Error(404, "Not found leak with this id"));
             return;
         }
         else

@@ -29,7 +29,7 @@ void CmdHandlerMailInfo::handle(ModelRequest *pRequest){
     // QJsonObject jsonRequest = pRequest->data();
     // QJsonObject jsonResponse;
 
-    pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
+    pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
 }
 
 /*****************************************

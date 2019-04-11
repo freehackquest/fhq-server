@@ -17,9 +17,9 @@ REGISTRY_CMD(CmdHandlerChatSendMessage)
 CmdHandlerChatSendMessage::CmdHandlerChatSendMessage()
     : CmdHandlerBase("chat_send_message", "Method will be send chat message and it sent to another users"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("type").required().string_().description("Type");
@@ -85,9 +85,9 @@ REGISTRY_CMD(CmdHandlerChatLastestMessages)
 CmdHandlerChatLastestMessages::CmdHandlerChatLastestMessages()
     : CmdHandlerBase("chat_latest_messages", "Method will be send chat message and it sent to another users"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
 }

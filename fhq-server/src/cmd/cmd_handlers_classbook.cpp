@@ -52,7 +52,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
         query.bindValue(":parentid", nParentID);
         query.exec();
         if (!query.next()){
-            pRequest->sendMessageError(cmd(), Errors::NotFound("article with this id"));
+            pRequest->sendMessageError(cmd(), Error(404, "Not found article with this id"));
             return;
         }
     }
@@ -221,7 +221,7 @@ void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest){
         query.bindValue(":classbookid", nClassbookID);
         query.exec();
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Errors::DatabaseError(query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -230,7 +230,7 @@ void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest){
         query.bindValue(":classbookid", nClassbookID);
         query.exec();
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Errors::DatabaseError(query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -489,7 +489,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
         jsonInfo["parentid"] = record.value("parentid").toInt();
         jsonInfo["uuid"] = record.value("uuid").toString().toStdString();
     } else {
-        pRequest->sendMessageError(cmd(), Errors::NotFound("the article"));
+        pRequest->sendMessageError(cmd(), Error(404, "Not found the article"));
         return;
     }
 
@@ -530,7 +530,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
                 jsonInfo["name"] = record.value("name").toString().toStdString();
                 jsonInfo["content"] = record.value("content").toString().toStdString();
             } else {
-                pRequest->sendMessageError(cmd(), Errors::NotFound("the article"));
+                pRequest->sendMessageError(cmd(), Error(404, "Not found the article"));
                 return;
             }
         }
@@ -545,7 +545,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
             jsonInfo["name"] = record.value("name").toString().toStdString();
             jsonInfo["content"] = record.value("content").toString().toStdString();
         } else {
-            pRequest->sendMessageError(cmd(), Errors::NotFound("the article"));
+            pRequest->sendMessageError(cmd(), Error(404, "Not found the article"));
             return;
         }
     }
@@ -944,7 +944,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
         jsonInfo["md5_content"] = record.value("md5_content").toString().toStdString();
         jsonInfo["ordered"] = record.value("ordered").toInt();
     } else {
-        pRequest->sendMessageError(cmd(), Errors::NotFound("article"));
+        pRequest->sendMessageError(cmd(), Error(404, "Not found article"));
         return;
     }
 

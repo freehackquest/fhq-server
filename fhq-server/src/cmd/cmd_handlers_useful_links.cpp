@@ -18,9 +18,9 @@ CmdHandlerUsefulLinksList::CmdHandlerUsefulLinksList()
     
     setActivatedFromVersion("0.2.21");
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     addInputDef("filter").required().string_().description("Filter by word");
 }
@@ -86,9 +86,9 @@ CmdHandlerUsefulLinksAdd::CmdHandlerUsefulLinksAdd()
 
     setActivatedFromVersion("0.2.21");
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("url").required().string_().description("URL");
@@ -112,7 +112,7 @@ void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest){
 
     // pRequest->
 
-    pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
+    pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
 }
 
 /*********************************************
@@ -126,9 +126,9 @@ CmdHandlerUsefulLinksDelete::CmdHandlerUsefulLinksDelete()
     
     setActivatedFromVersion("0.2.21");
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("url").required().string_().description("URL");
@@ -139,7 +139,7 @@ CmdHandlerUsefulLinksDelete::CmdHandlerUsefulLinksDelete()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest){
-    pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
+    pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
 }
 
 /*********************************************
@@ -153,9 +153,9 @@ CmdHandlerUsefulLinksUpdate::CmdHandlerUsefulLinksUpdate()
     
     setActivatedFromVersion("0.2.21");
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     addInputDef("url").required().string_().description("URL");
@@ -167,7 +167,7 @@ CmdHandlerUsefulLinksUpdate::CmdHandlerUsefulLinksUpdate()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksUpdate::handle(ModelRequest *pRequest){
-    pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
+    pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
 }
 
 /*********************************************
@@ -181,9 +181,9 @@ CmdHandlerUsefulLinksStar::CmdHandlerUsefulLinksStar()
     
     setActivatedFromVersion("0.2.21");
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
 }
@@ -191,7 +191,7 @@ CmdHandlerUsefulLinksStar::CmdHandlerUsefulLinksStar()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksStar::handle(ModelRequest *pRequest){
-    pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
+    pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
 }
 
 /*********************************************
@@ -205,9 +205,9 @@ CmdHandlerUsefulLinksUnstar::CmdHandlerUsefulLinksUnstar()
     
     setActivatedFromVersion("0.2.21");
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
 }
@@ -215,5 +215,5 @@ CmdHandlerUsefulLinksUnstar::CmdHandlerUsefulLinksUnstar()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksUnstar::handle(ModelRequest *pRequest){
-    pRequest->sendMessageError(cmd(), Errors::NotImplementedYet());
+    pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
 }

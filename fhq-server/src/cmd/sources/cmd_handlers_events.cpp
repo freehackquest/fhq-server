@@ -92,7 +92,7 @@ void CmdHandlerEventDelete::handle(ModelRequest *pRequest){
     query.bindValue(":eventid", nEventId);
     query.exec();
     if (!query.next()) {
-        pRequest->sendMessageError(cmd(), Errors::EventNotFound());
+        pRequest->sendMessageError(cmd(), Error(404, "Event not found"));
         return;
     }
 
@@ -145,7 +145,7 @@ void CmdHandlerEventInfo::handle(ModelRequest *pRequest){
         jsonEvent["type"] = record.value("type").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
         jsonEvent["message"] = record.value("message").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
     }else{
-        pRequest->sendMessageError(cmd(), Errors::EventNotFound());
+        pRequest->sendMessageError(cmd(), Error(404, "Event not found"));
         return;
     }
 
@@ -184,7 +184,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest){
 
     int nOnPage = jsonRequest["onpage"].toInt();
     if(nOnPage > 50){
-        pRequest->sendMessageError(cmd(), Errors::OnPageCouldNotBeMoreThen50());
+        pRequest->sendMessageError(cmd(), Error(400, "Parameter 'onpage' could not be more then 50"));
         return;
     }
     jsonResponse["onpage"] = nOnPage;
