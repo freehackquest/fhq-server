@@ -137,8 +137,12 @@ CmdHandlerLeaksAdd::CmdHandlerLeaksAdd()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("uuid").required().uuid_().description("UUID of the leak");
-    addInputDef("game_uuid").required().uuid_().description("UUID of the game");
+    addInputDef("uuid").required().string_().description("UUID of the leak")
+        .addValidator(new ValidatorUUID());
+
+    addInputDef("game_uuid").required().string_().description("UUID of the game")
+        .addValidator(new ValidatorUUID());
+
     addInputDef("name").required().string_().description("Visible part of the content");
     addInputDef("content").required().string_().description("Content of the leak");
     addInputDef("score").required().integer_().description("Price of the leak");

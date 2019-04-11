@@ -126,9 +126,8 @@ CmdHandlerLogin::CmdHandlerLogin()
     setAccessUser(false);
     setAccessAdmin(false);
 
-    // validation and description input fields
-    addInputDef("email").required().string_().description("E-mail");
-    addInputDef("password").required().string_().description("Password");
+    addInputDef_require_string("email", "E-mail");
+    addInputDef_require_string("password", "Password");
 }
 
 // ---------------------------------------------------------------------
@@ -584,7 +583,9 @@ CmdHandlerUsersAdd::CmdHandlerUsersAdd()
     setActivatedFromVersion("0.2.17");
 
     // validation and description input fields
-    addInputDef("uuid").optional().uuid_().description("User's Global Unique Identifier");
+    addInputDef("uuid").optional().string_().description("User's Global Unique Identifier")
+        .addValidator(new ValidatorUUID());
+
     addInputDef("email").required().string_().description("User's E-mail");
     addInputDef("nick").required().string_().description("User's nick");
     addInputDef("password").required().string_().description("Password");

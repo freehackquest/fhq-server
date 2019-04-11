@@ -19,13 +19,10 @@ set (FHQSRV_SOURCES "")
 
 # include header dirs
 list (APPEND FHQSRV_INCLUDE_DIRS "src/core")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/nlohmann")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/smallsha1")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/md5")
+list (APPEND FHQSRV_INCLUDE_DIRS "src/core/3rdParty")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/quazip-0.7.3/quazip")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/unit_tests/include")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/unit_tests")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/utils")
+list (APPEND FHQSRV_INCLUDE_DIRS "src/validators")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/utils/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/employees")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/employees/include")
@@ -47,24 +44,27 @@ list (APPEND FHQSRV_INCLUDE_DIRS "src/storages/updates/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/web-server")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/web-server/core")
+
+# core - 3rdParty
+list (APPEND FHQSRV_SOURCES "src/core/3rdParty/json.hpp")
+list (APPEND FHQSRV_SOURCES "src/core/3rdParty/md5.h")
+list (APPEND FHQSRV_SOURCES "src/core/3rdParty/md5.cpp")
+list (APPEND FHQSRV_SOURCES "src/core/3rdParty/smallsha1.h")
+list (APPEND FHQSRV_SOURCES "src/core/3rdParty/smallsha1.cpp")
+list (APPEND FHQSRV_SOURCES "src/core/3rdParty/sha1_wrapper.h")
+list (APPEND FHQSRV_SOURCES "src/core/3rdParty/sha1_wrapper.cpp")
 
 # core
 list (APPEND FHQSRV_SOURCES "src/core/cmd_handlers.h")
 list (APPEND FHQSRV_SOURCES "src/core/cmd_handlers.cpp")
-
-# json
-list (APPEND FHQSRV_SOURCES "src/3rdParty/nlohmann/json.hpp")
-
-# small md5
-list (APPEND FHQSRV_SOURCES "src/3rdParty/md5/md5.h")
-list (APPEND FHQSRV_SOURCES "src/3rdParty/md5/md5.cpp")
-
-# small sha1
-list (APPEND FHQSRV_SOURCES "src/3rdParty/smallsha1/sha1.h")
-list (APPEND FHQSRV_SOURCES "src/3rdParty/smallsha1/sha1.cpp")
-list (APPEND FHQSRV_SOURCES "src/3rdParty/smallsha1/sha1_wrapper.h")
-list (APPEND FHQSRV_SOURCES "src/3rdParty/smallsha1/sha1_wrapper.cpp")
+list (APPEND FHQSRV_SOURCES "src/core/jobs_pool.h")
+list (APPEND FHQSRV_SOURCES "src/core/jobs_pool.cpp")
+list (APPEND FHQSRV_SOURCES "src/core/light_http_server.cpp")
+list (APPEND FHQSRV_SOURCES "src/core/light_http_server.h")
+list (APPEND FHQSRV_SOURCES "src/core/parse_config.h")
+list (APPEND FHQSRV_SOURCES "src/core/parse_config.cpp")
+list (APPEND FHQSRV_SOURCES "src/core/validators_base.cpp")
+list (APPEND FHQSRV_SOURCES "src/core/validators_base.h")
 
 # interfaces
 list (APPEND FHQSRV_SOURCES "src/interfaces/iserver.h")
@@ -153,6 +153,10 @@ list (APPEND FHQSRV_SOURCES "src/models/sources/model_command_input_def.cpp")
 list (APPEND FHQSRV_SOURCES "src/models/include/model_lxd_container.h")
 list (APPEND FHQSRV_SOURCES "src/models/sources/model_lxd_container.cpp")
 
+# validators
+list (APPEND FHQSRV_SOURCES "src/validators/validators.cpp")
+list (APPEND FHQSRV_SOURCES "src/validators/validators.h")
+
 # storages
 list (APPEND FHQSRV_SOURCES "src/storages/storage.h")
 list (APPEND FHQSRV_SOURCES "src/storages/storage.cpp")
@@ -184,8 +188,6 @@ list (APPEND FHQSRV_SOURCES "src/utils/help_parse_args.h")
 list (APPEND FHQSRV_SOURCES "src/utils/help_parse_args.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/logger.h")
 list (APPEND FHQSRV_SOURCES "src/utils/logger.cpp")
-list (APPEND FHQSRV_SOURCES "src/utils/parse_config.h")
-list (APPEND FHQSRV_SOURCES "src/utils/parse_config.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/str.h")
 list (APPEND FHQSRV_SOURCES "src/utils/str.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/utils_merge_text.h")
@@ -234,10 +236,6 @@ list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_ws_server.cpp")
 list (APPEND FHQSRV_SOURCES "src/employees/include/employ_orchestra.h")
 list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_orchestra.cpp")
 
-# jobs-pool
-list (APPEND FHQSRV_SOURCES "src/jobs-pool/core/jobs_pool.h")
-list (APPEND FHQSRV_SOURCES "src/jobs-pool/core/jobs_pool.cpp")
-
 # tasks
 list (APPEND FHQSRV_SOURCES "src/tasks/runtasks.h")
 list (APPEND FHQSRV_SOURCES "src/tasks/runtasks.cpp")
@@ -268,8 +266,6 @@ list (APPEND FHQSRV_SOURCES "src/storages/updates/update_u0100_mhd92m15nb.h")
 list (APPEND FHQSRV_SOURCES "src/storages/updates/update_u0100_mhd92m15nb.cpp")
 
 # web-server
-list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_server.cpp")
-list (APPEND FHQSRV_SOURCES "src/web-server/core/light_http_server.h")
 list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_admin_folder.cpp")
 list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_admin_folder.h")
 

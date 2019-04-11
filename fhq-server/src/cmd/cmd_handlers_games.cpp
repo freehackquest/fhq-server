@@ -16,6 +16,7 @@
 #include <sha1_wrapper.h>
 #include <QFile>
 #include <fstream>
+#include <validators.h>
 
 /*********************************************
  * Create Game
@@ -29,12 +30,15 @@ CmdHandlerGameCreate::CmdHandlerGameCreate()
     setAccessUnauthorized(false);
     setAccessUser(false);
     setAccessAdmin(true);
-
+    
     // validation and description input fields
-    addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
+    addInputDef("uuid").string_().required().description("Global Identificator of the Game")
+        .addValidator(new ValidatorUUID());
+
     addInputDef("name").string_().required().description("Name of the Game");
     addInputDef("description").string_().required().description("Description of the Game");
     addInputDef("state").string_().required().description("State of the game");
+    // new ValidatorGameState();
     addInputDef("form").string_().required().description("Form of the game");
     addInputDef("type").string_().required().description("Type of the game");
     addInputDef("date_start").string_().required().description("Date start");
@@ -99,7 +103,9 @@ CmdHandlerGameDelete::CmdHandlerGameDelete()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
+    addInputDef("uuid").string_().required().description("Global Identificator of the Game")
+        .addValidator(new ValidatorUUID());
+
     addInputDef("admin_password").string_().required().description("Admin Password");
 }
 
@@ -264,7 +270,8 @@ CmdHandlerGameExport::CmdHandlerGameExport()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
+    addInputDef("uuid").string_().required().description("Global Identificator of the Game")
+        .addValidator(new ValidatorUUID());
 }
 
 // ---------------------------------------------------------------------
@@ -357,7 +364,8 @@ CmdHandlerGameImport::CmdHandlerGameImport()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
+    addInputDef("uuid").string_().required().description("Global Identificator of the Game")
+        .addValidator(new ValidatorUUID());
 }
 
 // ---------------------------------------------------------------------
@@ -387,7 +395,8 @@ CmdHandlerGameInfo::CmdHandlerGameInfo()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
+    addInputDef("uuid").string_().required().description("Global Identificator of the Game")
+        .addValidator(new ValidatorUUID());
 }
 
 // ---------------------------------------------------------------------
@@ -422,7 +431,9 @@ CmdHandlerGameUpdate::CmdHandlerGameUpdate()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
+    addInputDef("uuid").string_().required().description("Global Identificator of the Game")
+        .addValidator(new ValidatorUUID());
+
     addInputDef("name").string_().optional().description("Name of the Game");
     addInputDef("description").string_().optional().description("Description of the Game");
     addInputDef("state").string_().optional().description("State of the game");
@@ -495,7 +506,9 @@ CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("uuid").uuid_().required().description("Global Identificator of the Game");
+    addInputDef_require_string("uuid", "Global Identificator of the Game")
+        .addValidator(new ValidatorUUID());
+
     addInputDef("image_png_base64").string_().required().description("Image PNG in Base64");
 }
 

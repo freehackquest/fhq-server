@@ -480,7 +480,9 @@ CmdHandlerCreateQuest::CmdHandlerCreateQuest()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("uuid").uuid_().required().description("Global Identificator of the quest");
+    addInputDef("uuid").string_().required().description("Global Identificator of the quest")
+        .addValidator(new ValidatorUUID());
+
     addInputDef("gameid").integer_().required().description("Which game included this quest");
     addInputDef("name").string_().required().description("Name of the quest");
     addInputDef("text").string_().required().description("Description of the quest");

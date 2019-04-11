@@ -3,6 +3,7 @@
 
 #include <json.hpp>
 #include <QStringList>
+#include <validators.h>
 
 /*! 
  * Helper api methods description for input params in handlers
@@ -19,7 +20,6 @@ class CmdInputDef {
         CmdInputDef & email_();
         CmdInputDef & any_();
 		CmdInputDef & bool_();
-		CmdInputDef & uuid_();
 		CmdInputDef & enum_(QStringList list);
         CmdInputDef & description(const std::string &sDescription);
 		CmdInputDef & minval(int minval);
@@ -37,18 +37,21 @@ class CmdInputDef {
 
 		bool isRequired();
 		bool isInteger();
-		bool isEnum();
+		bool isEnum(); // TODO: redesign to validators
 		bool isString();
-		bool isUUID();
 		bool isBool();
-        bool isEmail();
+        bool isEmail(); // TODO: redesign to validators
         bool isAny();
 		
-		QStringList getEnumList();
-		bool isMinVal();
-		int getMinVal();
-		bool isMaxVal();
-		int getMaxVal();
+		QStringList getEnumList(); // TODO: redesign to validators
+		bool isMinVal(); // TODO: redesign to validators
+		int getMinVal(); // TODO: redesign to validators
+		bool isMaxVal(); // TODO: redesign to validators
+		int getMaxVal(); // TODO: redesign to validators
+
+		CmdInputDef &addValidator(ValidatorStringBase *pValidatorStringBase);
+		
+		const std::vector<ValidatorStringBase *> &listOfValidators();
 
 	private:
         std::string m_sType;
@@ -65,9 +68,10 @@ class CmdInputDef {
 		std::string CMD_INPUT_DEF_TYPE_STRING = "string";
 		std::string CMD_INPUT_DEF_TYPE_BOOL = "boolean";
 		std::string CMD_INPUT_DEF_TYPE_ENUM = "enum";
-		std::string CMD_INPUT_DEF_TYPE_UUID = "uuid";
 		std::string CMD_INPUT_DEF_TYPE_EMAIL = "email";
 		std::string CMD_INPUT_DEF_TYPE_ANY = "any";
+
+		std::vector<ValidatorStringBase *> m_vValidatorsString;
 };
 
 #endif // CMD_INPUT_DEF_H

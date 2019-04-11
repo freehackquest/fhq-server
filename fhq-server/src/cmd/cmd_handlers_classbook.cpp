@@ -11,6 +11,7 @@
 #include <quazipfileinfo.h>
 #include <utils_merge_text.h>
 #include <md5.h>
+#include <validators.h>
 
 // *******************************************
 // * This handler will be add classbook record
@@ -27,7 +28,9 @@ CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler()
     addInputDef("parentid").required().integer_().description("pareintid for classbook article");
     addInputDef("name").required().string_().description("name of article");
     addInputDef("content").required().string_().description("content of article");
-    addInputDef("uuid").optional().uuid_().description("uuid of article");
+    addInputDef("uuid").optional().string_().description("uuid of article")
+        .addValidator(new ValidatorUUID());
+
     addInputDef("ordered").optional().integer_().description("order of article");
 }
 

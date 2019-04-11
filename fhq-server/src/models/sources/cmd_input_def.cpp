@@ -52,13 +52,6 @@ CmdInputDef & CmdInputDef::integer_(){
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::uuid_(){
-	m_sType = std::string(CMD_INPUT_DEF_TYPE_UUID);
-	return *this;
-}
-
-// ---------------------------------------------------------------------
-
 CmdInputDef & CmdInputDef::bool_(){
 	m_sType = std::string(CMD_INPUT_DEF_TYPE_BOOL);
 	return *this;
@@ -185,12 +178,6 @@ bool CmdInputDef::isEnum(){
 bool CmdInputDef::isString(){
 	return m_sType == CMD_INPUT_DEF_TYPE_STRING;
 }
-		
-// ---------------------------------------------------------------------
-
-bool CmdInputDef::isUUID(){
-	return m_sType == CMD_INPUT_DEF_TYPE_UUID;
-}
 
 // ---------------------------------------------------------------------
 
@@ -200,13 +187,13 @@ bool CmdInputDef::isBool(){
 
 // ---------------------------------------------------------------------
 
-bool CmdInputDef::isEmail(){
+bool CmdInputDef::isEmail() {
     return m_sType == CMD_INPUT_DEF_TYPE_EMAIL;
 }
 
 // ---------------------------------------------------------------------
 
-bool CmdInputDef::isAny(){
+bool CmdInputDef::isAny() {
     return m_sType == CMD_INPUT_DEF_TYPE_ANY;
 }
 
@@ -241,4 +228,17 @@ int CmdInputDef::getMaxVal(){
 }
 
 // ---------------------------------------------------------------------
-		
+
+const std::vector<ValidatorStringBase *> &CmdInputDef::listOfValidators() {
+	return m_vValidatorsString;
+}
+
+// ---------------------------------------------------------------------
+
+CmdInputDef &CmdInputDef::addValidator(ValidatorStringBase *pValidatorStringBase) {
+	// TODO check type
+	m_vValidatorsString.push_back(pValidatorStringBase);
+	return *this;
+}
+
+// ---------------------------------------------------------------------

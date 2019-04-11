@@ -87,13 +87,15 @@ bool EmployWsServer::validateInputParameters(Error &error, CmdHandlerBase *pCmdH
                     }
                 }
 
-                if (inDef.isUUID()) {
-                    auto &&val = itJsonParamName->get_ref<std::string const&>();
-                    // if expression is not valid then std::regex throws exception
-                    std::regex rx("[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}");
-                    if(!std::regex_match(val, rx)){
-                        error = Error(400, "Wrong param '" + inDef.getName() + "': must be uuid");
-                        return false;
+                if (inDef.isString()) {
+                    auto &&sVal = itJsonParamName->get_ref<std::string const&>();
+                    std::string sError;
+                    const std::vector<ValidatorStringBase *> vValidators = inDef.listOfValidators();
+                    for (int i = 0; i < vValidators.size(); i++) {
+                        if (!vValidators[i]->isValid(sVal, sError)) {
+                            error = Error(400, "Wrong param '" + inDef.getName() + "': " + sError);
+                            return false;
+                        }
                     }
                 }
 

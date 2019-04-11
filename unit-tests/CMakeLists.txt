@@ -17,30 +17,37 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../fhq-server/cm
 # Sources
 
 # include header dirs
-list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/3rdParty/nlohmann")
-list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/3rdParty/smallsha1")
-list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/3rdParty/md5")
+list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/core")
+list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/core/3rdParty")
 list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/unit_tests/include")
 list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/unit_tests") # deprecated
 list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/utils")
+list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/validators")
 list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/utils/include")
 list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/storages")
 list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/storages/mysql")
-list (APPEND UNIT_TESTS_INCLUDE_DIRS "../fhq-server/src/jobs-pool/core")
 list (APPEND UNIT_TESTS_INCLUDE_DIRS "src/unit_tests")
 
-# json
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/3rdParty/nlohmann/json.hpp")
+# core - 3rdParty
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/3rdParty/json.hpp")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/3rdParty/md5.h")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/3rdParty/md5.cpp")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/3rdParty/smallsha1.h")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/3rdParty/smallsha1.cpp")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/3rdParty/sha1_wrapper.h")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/3rdParty/sha1_wrapper.cpp")
 
-# small md5
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/3rdParty/md5/md5.h")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/3rdParty/md5/md5.cpp")
+# core
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/jobs_pool.h")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/jobs_pool.cpp")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/parse_config.h")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/parse_config.cpp")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/validators_base.cpp")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/validators_base.h")
 
-# small sha1
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/3rdParty/smallsha1/sha1.h")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/3rdParty/smallsha1/sha1.cpp")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/3rdParty/smallsha1/sha1_wrapper.h")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/3rdParty/smallsha1/sha1_wrapper.cpp")
+# validators
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/validators/validators.cpp")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/validators/validators.h")
 
 # interfaces
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/interfaces/iserver.h")
@@ -54,10 +61,6 @@ list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/storage.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/storages.h")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/storages.cpp")
 
-# jobs-pool
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/jobs-pool/core/jobs_pool.h")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/jobs-pool/core/jobs_pool.cpp")
-
 # utils
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/fallen.h")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/fallen.cpp")
@@ -65,8 +68,6 @@ list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/fs.h")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/fs.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/logger.h")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/logger.cpp")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/parse_config.h")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/parse_config.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/str.h")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/str.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/utils_merge_text.h")
@@ -98,6 +99,8 @@ list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_storage_struct.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_storage_struct.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_tests.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_tests.cpp")
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_validators.h")
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_validators.cpp")
 
 # main
 list (APPEND UNIT_TESTS_SOURCES "src/main.cpp")

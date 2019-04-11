@@ -1,4 +1,4 @@
-#include <sha1.h>
+#include <smallsha1.h>
 #include <sha1_wrapper.h>
 #include <iostream>
 #include <cstring>
