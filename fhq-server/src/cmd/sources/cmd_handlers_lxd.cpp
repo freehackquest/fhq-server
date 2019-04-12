@@ -7,6 +7,8 @@
 #include <employ_orchestra.h>
 #include <vector>
 #include <algorithm>
+#include <include/cmd_handlers_lxd.h>
+
 
 /*********************************************
  * Any actions with the container. Actions: create, start, stop and delete container
@@ -280,8 +282,7 @@ void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
     std::string command = jsonRequest["command"].toString().toStdString();
     std::string sOutput;
 
-    bool done = exec_command(name, command, sError, nErrorCode, sOutput);
-    if (done){
+    if (exec_command(name, command, sError, nErrorCode, sOutput)){
         jsonResponse["container"] = name;
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
         return;
@@ -351,6 +352,11 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
         nErrorCode = 404;
     }
 
+    if (!sError.empty()) {
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+        return;
+    }
+
     LXDContainer *pContainer;
     if (!pOrchestra->find_container(name, pContainer)) {
         sError = "Not found container " + name;
@@ -365,7 +371,10 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
         nErrorCode = 400;
     }
 
-    // TODO CHECK sError before
+    if (!sError.empty()) {
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+        return;
+    }
 
     if (!isDirectory && action == "pull"){
         pull_file(pContainer, path, sb64File, sError, nErrorCode, isDirectory);
@@ -442,20 +451,7 @@ void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
     const int nPort = jsonRequest["port"].toInt();
     const std::string sProto = jsonRequest["protocol"].toString().toStdString();
 
-    if (!(sProto == "tcp" || sProto == "udp")) {
-        sError = "Only tcp or udp protocols. Not " + sProto;
-        nErrorCode = 400;
-    }
-
-    if (nPort >= 49152) {
-        sError = "Port " + std::to_string(nPort) + " is reserved.";
-        nErrorCode = 400;
-    } else if (nPort <= 0) {
-        sError = "Port number must be a positive integer.";
-        nErrorCode = 400;
-    }
-
-    if (!sError.empty()) {
+    if (!is_port_valide(sProto, nPort, sError, nErrorCode)) {
         pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
         return;
     }
@@ -481,4 +477,26 @@ void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
     } else {
         pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
     }
+}
+
+bool CmdHandlerLXDOpenPort::is_port_valide(const std::string &sProto, const int &nPort, std::string &sError,
+                                           int &nErrorCode) {
+
+    if (!(sProto == "tcp" || sProto == "udp")) {
+        sError = "Only tcp or udp protocols. Not " + sProto;
+        nErrorCode = 400;
+        return false;
+    }
+
+    if (nPort >= 49152) {
+        sError = "Port " + std::to_string(nPort) + " is reserved.";
+        nErrorCode = 400;
+        return false;
+    } else if (nPort <= 0) {
+        sError = "Port number must be a positive integer.";
+        nErrorCode = 400;
+        return false;
+    }
+
+    return true;
 }

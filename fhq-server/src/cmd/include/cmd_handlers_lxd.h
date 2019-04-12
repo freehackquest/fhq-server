@@ -97,6 +97,8 @@ class CmdHandlerLXDOpenPort : public CmdHandlerBase {
 public:
     CmdHandlerLXDOpenPort();
     void handle(ModelRequest *pRequest) override;
+    bool is_port_valide(const std::string &sProto, const int &nPort, std::string &sError,
+                        int &nErrorCode);
 
 };
 
