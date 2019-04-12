@@ -399,8 +399,8 @@ void CmdHandlerLXDFile::pull_file(LXDContainer *pContainer, const std::string &s
     }
 
     if (nlohmann::json::accept(std::begin(sRawData), std::end(sRawData))){
-        auto jsonResponce = nlohmann::json::parse(sRawData);
-        if (jsonResponce.find("metadata") != jsonResponce.end() && jsonResponce.find("status") != jsonResponce.end()){
+        auto jsonResponse = nlohmann::json::parse(sRawData);
+        if (jsonResponse.find("metadata") != jsonResponse.end() && jsonResponse.find("status") != jsonResponse.end()){
             isDirectory = true;
             sError = sPath + " is the directory!";
             nErrorCode = 400;
@@ -476,7 +476,7 @@ void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
        sError = pContainer->get_error();
    }
 
-    if (!sError.empty()) {
+    if (sError.empty()) {
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     } else {
         pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));

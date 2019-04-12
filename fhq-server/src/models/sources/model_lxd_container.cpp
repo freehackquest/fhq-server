@@ -229,21 +229,22 @@ std::string LXDContainer::get_port() {
     return m_sPort;
 }
 
-
-
 bool LXDContainer::open_port(const std::string &sPort, const std::string &sProto) {
     auto *pOrchestra = findEmploy<EmployOrchestra>();
-    auto sUrl = "/1.0/profiles";
+    auto sUrl = "/1.0/containers/" + full_name();
     nlohmann::json jsonResponse;
+    nlohmann::json jsonRequest;
 
-    if (!pOrchestra->send_get_request(sUrl, jsonResponse, m_sError)) {
+    jsonRequest["devices"] = {};
+    jsonRequest["devices"][sProto + sPort]["connect"] = sProto + ":localhost:" + sPort;
+    jsonRequest["devices"][sProto + sPort]["listen"] = sProto + ":0.0.0.0:" + sPort;
+    jsonRequest["devices"][sProto + sPort]["type"] = "proxy";
+
+    if (!pOrchestra->send_patch_request(sUrl, jsonRequest, jsonResponse, m_sError)) {
         return false;
     }
-
-    if (jsonResponse.is_array()) {
-        std::cout << jsonResponse.dump(2) << std::endl;
-    }
-
+    m_sPort = sPort;
+    m_sProtoPort = sProto;
     return true;
 }
 

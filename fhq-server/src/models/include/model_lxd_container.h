@@ -41,6 +41,7 @@ private:
     std::string m_sError;
     std::string m_sResult;
     std::string m_sPort;
+    std::string m_sProtoPort;
     const std::string TAG = "EmployOrchestraContainer";
 };
 
