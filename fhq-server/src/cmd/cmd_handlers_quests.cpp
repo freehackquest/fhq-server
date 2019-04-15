@@ -21,7 +21,6 @@ CmdHandlerQuests::CmdHandlerQuests()
 
     // validation and description input fields
     optionalStringParam("subject", "Filter by subject"); // TODO validator
-    
 }
 
 // ---------------------------------------------------------------------
@@ -64,7 +63,7 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest){
     auto jsonQuests = nlohmann::json::array();
 
     QSqlDatabase db = *(pDatabase->database());
-	QSqlQuery query(db);
+    QSqlQuery query(db);
 
     query.prepare(""
                   "SELECT "
@@ -95,8 +94,8 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest){
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
-	while (query.next()) {
-		QSqlRecord record = query.record();
+    while (query.next()) {
+        QSqlRecord record = query.record();
         nlohmann::json jsonQuest;
         jsonQuest["questid"] = record.value("idquest").toInt();
         jsonQuest["score"] = record.value("score").toInt();
@@ -111,7 +110,7 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest){
         jsonQuest["status"] = (status == "" ? "open" : "completed");
 
         jsonQuests.push_back(jsonQuest);
-	}
+    }
 
     jsonResponse["data"] = jsonQuests;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -160,26 +159,26 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest){
     {
         QSqlQuery query(db);
         query.prepare("SELECT "
-            "	q.idquest, "
-            "	q.gameid, "
-            "	q.name, "
-            "	q.text, "
-            "	q.answer_format, "
-            "	q.score, "
-            "	q.subject, "
-            "	q.copyright, "
-            "	q.state, "
-            "	q.author, "
-            "	q.count_user_solved, "
-            "	q.answer, "
-            "	q.description_state, "
-            " 	users_quests.dt_passed as dt_passed2"
+            "    q.idquest, "
+            "    q.gameid, "
+            "    q.name, "
+            "    q.text, "
+            "    q.answer_format, "
+            "    q.score, "
+            "    q.subject, "
+            "    q.copyright, "
+            "    q.state, "
+            "    q.author, "
+            "    q.count_user_solved, "
+            "    q.answer, "
+            "    q.description_state, "
+            "     users_quests.dt_passed as dt_passed2"
             " FROM "
-            "	quest q "
+            "    quest q "
             " LEFT JOIN "
-            "	users_quests ON users_quests.questid = q.idquest AND users_quests.userid = :userid"
+            "    users_quests ON users_quests.questid = q.idquest AND users_quests.userid = :userid"
             " WHERE "
-            "	q.idquest = :questid"
+            "    q.idquest = :questid"
         );
         query.bindValue(":userid", nUserID);
         query.bindValue(":questid", nQuestID);
@@ -554,41 +553,41 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest){
     QSqlQuery query(db);
     query.prepare(
         "INSERT INTO quest("
-        "		uuid,"
-        "		gameid,"
-        "		name,"
-        "		text,"
-        "		answer,"
-        "		answer_upper_md5,"
-        "		answer_format,"
-        "		score,"
-        "		author,"
-        "		subject,"
-        "		state,"
-        "		description_state,"
-        "		copyright,"
-        "		count_user_solved,"
-        "		date_change,"
-        "		date_create"
-        "	)"
-        "	VALUES("
-        "		:uuid,"
-        "		:gameid,"
-        "		:name,"
-        "		:text,"
-        "		:answer,"
-        "		:answer_upper_md5,"
-        "		:answer_format,"
-        "		:score,"
-        "		:author,"
-        "		:subject,"
-        "		:state,"
-        "		:description_state,"
-        "		:copyright,"
-        "		:count_user_solved,"
-        "		NOW(),"
-        "		NOW()"
-        "	)");
+        "        uuid,"
+        "        gameid,"
+        "        name,"
+        "        text,"
+        "        answer,"
+        "        answer_upper_md5,"
+        "        answer_format,"
+        "        score,"
+        "        author,"
+        "        subject,"
+        "        state,"
+        "        description_state,"
+        "        copyright,"
+        "        count_user_solved,"
+        "        date_change,"
+        "        date_create"
+        "    )"
+        "    VALUES("
+        "        :uuid,"
+        "        :gameid,"
+        "        :name,"
+        "        :text,"
+        "        :answer,"
+        "        :answer_upper_md5,"
+        "        :answer_format,"
+        "        :score,"
+        "        :author,"
+        "        :subject,"
+        "        :state,"
+        "        :description_state,"
+        "        :copyright,"
+        "        :count_user_solved,"
+        "        NOW(),"
+        "        NOW()"
+        "    )");
     query.bindValue(":uuid", sUUID);
     query.bindValue(":gameid", nGameID);
     query.bindValue(":name", sName);
@@ -807,35 +806,35 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest){
     QSqlQuery query(db);
     query.prepare(
         "INSERT INTO quests_proposal("
-        "		userid,"
-        "		gameid,"
-        "		name,"
-        "		text,"
-        "		answer,"
-        "		answer_format,"
-        "		score,"
-        "		author,"
-        "		subject,"
-        "		copyright,"
-        "		created,"
-        "		updated,"
-        "		confirmed"
-        "	)"
-        "	VALUES("
-        "		:userid,"
-        "		:gameid,"
-        "		:name,"
-        "		:text,"
-        "		:answer,"
-        "		:answer_format,"
-        "		:score,"
-        "		:author,"
-        "		:subject,"
-        "		:copyright,"
-        "		NOW(),"
-        "		NOW(),"
-        "		:confirmed"
-        "	)");
+        "        userid,"
+        "        gameid,"
+        "        name,"
+        "        text,"
+        "        answer,"
+        "        answer_format,"
+        "        score,"
+        "        author,"
+        "        subject,"
+        "        copyright,"
+        "        created,"
+        "        updated,"
+        "        confirmed"
+        "    )"
+        "    VALUES("
+        "        :userid,"
+        "        :gameid,"
+        "        :name,"
+        "        :text,"
+        "        :answer,"
+        "        :answer_format,"
+        "        :score,"
+        "        :author,"
+        "        :subject,"
+        "        :copyright,"
+        "        NOW(),"
+        "        NOW(),"
+        "        :confirmed"
+        "    )");
     query.bindValue(":userid", nUserID);
     query.bindValue(":gameid", nGameID);
     query.bindValue(":name", sName);
@@ -1490,20 +1489,20 @@ void CmdHandlerAnswerList::handle(ModelRequest *pRequest){
     {
         QSqlQuery query(db);
         query.prepare("SELECT "
-            " 	uqa.dt,"
-            "	uqa.passed,"
-            "	uqa.questid,"
-            "	uqa.userid,"
-            "	uqa.user_answer,"
-            "	uqa.quest_answer,"
-            "	uqa.levenshtein,"
-            " 	u.nick,"
-            "	u.logo,"
-            "	u.email, "
-            " 	q.name,"
-            "	q.subject,"
-            "	q.score,"
-            "	q.count_user_solved"
+            "     uqa.dt,"
+            "    uqa.passed,"
+            "    uqa.questid,"
+            "    uqa.userid,"
+            "    uqa.user_answer,"
+            "    uqa.quest_answer,"
+            "    uqa.levenshtein,"
+            "     u.nick,"
+            "    u.logo,"
+            "    u.email, "
+            "     q.name,"
+            "    q.subject,"
+            "    q.score,"
+            "    q.count_user_solved"
             " FROM users_quests_answers uqa "
             " INNER JOIN users u ON u.id = uqa.userid"
             " INNER JOIN quest q ON q.idquest = uqa.questid"

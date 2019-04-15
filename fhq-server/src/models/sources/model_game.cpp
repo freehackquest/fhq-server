@@ -42,13 +42,13 @@ void ModelGame::setLocalId(int nLocalId){
 // ---------------------------------------------------------------------
 
 const std::string &ModelGame::uuid() const{
-	return m_sUuid;
+    return m_sUuid;
 }
 
 // ---------------------------------------------------------------------
 
 void ModelGame::setUuid(std::string sUuid){
-	m_sUuid = sUuid;
+    m_sUuid = sUuid;
 }
 
 // ---------------------------------------------------------------------

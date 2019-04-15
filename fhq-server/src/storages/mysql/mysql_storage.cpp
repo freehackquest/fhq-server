@@ -110,7 +110,7 @@ MySqlStorage::MySqlStorage() {
 
 bool MySqlStorage::applyConfigFromFile(const std::string &sFilePath) {
     ParseConfig parseConfig(sFilePath);
-	parseConfig.load();
+    parseConfig.load();
 
     if (!parseConfig.has("dbhost")) {
         Log::err(TAG, "Not found 'dbhost' in " + sFilePath);

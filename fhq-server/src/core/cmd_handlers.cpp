@@ -11,50 +11,50 @@
 CmdInputDef::CmdInputDef(const std::string &sName, const std::string &sDescription) {
     m_sName = sName;
     m_sDescription = sDescription;
-	m_bSettedMinVal = false;
-	m_bSettedMaxVal = false;
+    m_bSettedMinVal = false;
+    m_bSettedMaxVal = false;
 }
 
 // ---------------------------------------------------------------------
 
 CmdInputDef::CmdInputDef() {
     m_bSettedMinVal = false;
-	m_bSettedMaxVal = false;
+    m_bSettedMaxVal = false;
 }
 
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::optional(){
-	m_sRestrict = "optional";
-	return *this;
+    m_sRestrict = "optional";
+    return *this;
 }
 
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::required(){
-	m_sRestrict = "required";
-	return *this;
+    m_sRestrict = "required";
+    return *this;
 }
 
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::string_(){
-	m_sType = std::string(CMD_INPUT_DEF_TYPE_STRING);
-	return *this;
+    m_sType = std::string(CMD_INPUT_DEF_TYPE_STRING);
+    return *this;
 }
 
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::integer_(){
-	m_sType = CMD_INPUT_DEF_TYPE_INTEGER;
-	return *this;
+    m_sType = CMD_INPUT_DEF_TYPE_INTEGER;
+    return *this;
 }
 
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::bool_(){
-	m_sType = std::string(CMD_INPUT_DEF_TYPE_BOOL);
-	return *this;
+    m_sType = std::string(CMD_INPUT_DEF_TYPE_BOOL);
+    return *this;
 }
 
 // ---------------------------------------------------------------------
@@ -67,24 +67,24 @@ CmdInputDef & CmdInputDef::any_(){
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::description(const std::string& s){
-	m_sDescription = s;
-	return *this;
+    m_sDescription = s;
+    return *this;
 }
 
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::minval(int minval){
-	m_bSettedMinVal = true;
-	m_nMinVal = minval;
-	return *this;
+    m_bSettedMinVal = true;
+    m_nMinVal = minval;
+    return *this;
 }
 
 // ---------------------------------------------------------------------
 
 CmdInputDef & CmdInputDef::maxval(int maxval){
-	m_bSettedMaxVal = true;
-	m_nMaxVal = maxval;
-	return *this;
+    m_bSettedMaxVal = true;
+    m_nMaxVal = maxval;
+    return *this;
 }
 
 // ---------------------------------------------------------------------
@@ -95,80 +95,80 @@ nlohmann::json CmdInputDef::toJson(){
     obj["type"] = m_sType;
     obj["restrict"] = m_sRestrict;
     obj["description"] = m_sDescription;
-	// TODO validator description
-	return obj;
+    // TODO validator description
+    return obj;
 }
 
 // ---------------------------------------------------------------------
 
 const std::string &CmdInputDef::getType(){
-	return m_sType;
+    return m_sType;
 }
 
 // ---------------------------------------------------------------------
 
 const std::string &CmdInputDef::getType() const{
-	return m_sType;
+    return m_sType;
 }
 
 // ---------------------------------------------------------------------
 
 const std::string &CmdInputDef::getName(){
-	return m_sName;
+    return m_sName;
 }
 
 // ---------------------------------------------------------------------
 
 const std::string &CmdInputDef::getName() const {
-	return m_sName;
+    return m_sName;
 }
 
 // ---------------------------------------------------------------------
 
 const std::string &CmdInputDef::getRestrict(){
-	return m_sRestrict;
+    return m_sRestrict;
 }
 
 // ---------------------------------------------------------------------
 
 const std::string &CmdInputDef::getRestrict() const{
-	return m_sRestrict;
+    return m_sRestrict;
 }
 
 // ---------------------------------------------------------------------
 
 const std::string &CmdInputDef::getDescription(){
-	return m_sDescription;
+    return m_sDescription;
 }
 
 // ---------------------------------------------------------------------
 
 const std::string &CmdInputDef::getDescription() const{
-	return m_sDescription;
+    return m_sDescription;
 }
 
 // ---------------------------------------------------------------------
 
 bool CmdInputDef::isRequired(){
-	return m_sRestrict == "required";
+    return m_sRestrict == "required";
 }
 
 // ---------------------------------------------------------------------
 
 bool CmdInputDef::isInteger(){
-	return m_sType == CMD_INPUT_DEF_TYPE_INTEGER;
+    return m_sType == CMD_INPUT_DEF_TYPE_INTEGER;
 }
 
 // ---------------------------------------------------------------------
 
 bool CmdInputDef::isString(){
-	return m_sType == CMD_INPUT_DEF_TYPE_STRING;
+    return m_sType == CMD_INPUT_DEF_TYPE_STRING;
 }
 
 // ---------------------------------------------------------------------
 
 bool CmdInputDef::isBool(){
-	return m_sType == CMD_INPUT_DEF_TYPE_BOOL;
+    return m_sType == CMD_INPUT_DEF_TYPE_BOOL;
 }
 
 // ---------------------------------------------------------------------
@@ -180,39 +180,39 @@ bool CmdInputDef::isAny() {
 // ---------------------------------------------------------------------
 
 bool CmdInputDef::isMinVal(){
-	return m_bSettedMaxVal;
+    return m_bSettedMaxVal;
 }
 
 // ---------------------------------------------------------------------
 
 int CmdInputDef::getMinVal(){
-	return m_nMinVal;
+    return m_nMinVal;
 }
 
 // ---------------------------------------------------------------------
 
 bool CmdInputDef::isMaxVal(){
-	return m_bSettedMaxVal;
+    return m_bSettedMaxVal;
 }
 
 // ---------------------------------------------------------------------
 
 int CmdInputDef::getMaxVal(){
-	return m_nMaxVal;
+    return m_nMaxVal;
 }
 
 // ---------------------------------------------------------------------
 
 const std::vector<ValidatorStringBase *> &CmdInputDef::listOfValidators() {
-	return m_vValidatorsString;
+    return m_vValidatorsString;
 }
 
 // ---------------------------------------------------------------------
 
 CmdInputDef &CmdInputDef::addValidator(ValidatorStringBase *pValidatorStringBase) {
-	// TODO check type
-	m_vValidatorsString.push_back(pValidatorStringBase);
-	return *this;
+    // TODO check type
+    m_vValidatorsString.push_back(pValidatorStringBase);
+    return *this;
 }
 
 // ---------------------------------------------------------------------

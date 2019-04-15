@@ -17,8 +17,8 @@ class EmployDatabase : public EmployBase {
        bool manualCreateDatabase(const std::string& sRootPassword, std::string& sError);
        Storage *storage();
 
-	private:
-		std::string TAG;
+    private:
+        std::string TAG;
         std::string m_sStorageType;
         Storage *m_pStorage;
 
@@ -29,10 +29,10 @@ class EmployDatabase : public EmployBase {
         std::mutex m_mtxSwapConenctions;
 
         // old
-		QMap<long long, ModelDatabaseConnection *> m_mDatabaseConnections;
-		QMap<long long, ModelDatabaseConnection *> m_mDatabaseConnections_older;
-		ModelDatabaseConnection *m_pDBConnection;
-		ModelDatabaseConnection *m_pDBConnection_older;
+        QMap<long long, ModelDatabaseConnection *> m_mDatabaseConnections;
+        QMap<long long, ModelDatabaseConnection *> m_mDatabaseConnections_older;
+        ModelDatabaseConnection *m_pDBConnection;
+        ModelDatabaseConnection *m_pDBConnection_older;
 
 
 };

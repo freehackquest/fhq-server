@@ -17,48 +17,48 @@ ParseConfig::ParseConfig(const std::string &sFilepathConf) {
 
 bool ParseConfig::load() {
     std::ifstream isConfigFile( m_sFilepathConf );
-	int nLineNumber = 0;
-	for (std::string sLine; getline(isConfigFile, sLine);) {
-		nLineNumber++;
-		std::string sOrigLine = sLine;
-		std::size_t nFoundComment = sLine.find("#");
-		
+    int nLineNumber = 0;
+    for (std::string sLine; getline(isConfigFile, sLine);) {
+        nLineNumber++;
+        std::string sOrigLine = sLine;
+        std::size_t nFoundComment = sLine.find("#");
+        
         if (nFoundComment != std::string::npos){
-			// remove all after #
-			sLine.erase (sLine.begin() + nFoundComment, sLine.end());
-		}
+            // remove all after #
+            sLine.erase (sLine.begin() + nFoundComment, sLine.end());
+        }
 
-		Fallen::trim(sLine);
-		if (sLine == "") { // skip empty strings
-			continue;
-		}
-		
-		// std::cout << "Line (" << nLineNumber << "): [" << sLine << "]" << std::endl;
-		
-		std::size_t nFoundEqualChar = sLine.find("=");
-		if (nFoundEqualChar != std::string::npos) {
-			// split name of param and value
-			std::string sParamName = sLine;
-			std::string sParamValue = sLine;
-			
-			sParamName.erase (sParamName.begin() + nFoundEqualChar, sParamName.end());
-			sParamValue.erase (sParamValue.begin(), sParamValue.begin() + nFoundEqualChar + 1);
-			Fallen::trim(sParamName);
-			Fallen::trim(sParamValue);
-			
-			// std::cout << " [" << sParamName << "]  => [" << sParamValue << "]" << std::endl;
-			
-			if (m_mapConfigValues.count(sParamName)) {
-				Log::warn(TAG, "Ignoring duplicate of option line(" + std::to_string(nLineNumber) + ") in config: " + m_sFilepathConf);
-			} else {
-				m_mapConfigValues.insert(std::pair<std::string,std::string>(sParamName, sParamValue));	
-			}
-		} else {
-			Log::warn(TAG, "Ignoring invalid line(" + std::to_string(nLineNumber) + ") in config: " + m_sFilepathConf);
-		}
-		
-	}
-	return true;
+        Fallen::trim(sLine);
+        if (sLine == "") { // skip empty strings
+            continue;
+        }
+        
+        // std::cout << "Line (" << nLineNumber << "): [" << sLine << "]" << std::endl;
+        
+        std::size_t nFoundEqualChar = sLine.find("=");
+        if (nFoundEqualChar != std::string::npos) {
+            // split name of param and value
+            std::string sParamName = sLine;
+            std::string sParamValue = sLine;
+            
+            sParamName.erase (sParamName.begin() + nFoundEqualChar, sParamName.end());
+            sParamValue.erase (sParamValue.begin(), sParamValue.begin() + nFoundEqualChar + 1);
+            Fallen::trim(sParamName);
+            Fallen::trim(sParamValue);
+            
+            // std::cout << " [" << sParamName << "]  => [" << sParamValue << "]" << std::endl;
+            
+            if (m_mapConfigValues.count(sParamName)) {
+                Log::warn(TAG, "Ignoring duplicate of option line(" + std::to_string(nLineNumber) + ") in config: " + m_sFilepathConf);
+            } else {
+                m_mapConfigValues.insert(std::pair<std::string,std::string>(sParamName, sParamValue));    
+            }
+        } else {
+            Log::warn(TAG, "Ignoring invalid line(" + std::to_string(nLineNumber) + ") in config: " + m_sFilepathConf);
+        }
+        
+    }
+    return true;
 }
 
 // ---------------------------------------------------------------------
@@ -76,7 +76,7 @@ std::string ParseConfig::stringValue(const std::string &sParamName, const std::s
     } else {
         Log::warn(TAG, sParamName + " - not found in " + m_sFilepathConf + "\n\t Will be used default value: " + defaultValue);
     }
-	return sResult;
+    return sResult;
 }
 
 // ---------------------------------------------------------------------

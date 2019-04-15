@@ -30,25 +30,25 @@ void ModelLeak::setLocalId(int nLocalId){
 // ---------------------------------------------------------------------
 
 const std::string &ModelLeak::uuid(){
-	return m_sUuid;
+    return m_sUuid;
 }
 
 // ---------------------------------------------------------------------
 
 void ModelLeak::setUuid(std::string sUuid){
-	m_sUuid = sUuid;
+    m_sUuid = sUuid;
 }
 
 // ---------------------------------------------------------------------
 
 const std::string &ModelLeak::gameUuid(){
-	return m_sGameUuid;
+    return m_sGameUuid;
 }
 
 // ---------------------------------------------------------------------
 
 void ModelLeak::setGameUuid(std::string sGameUuid){
-	m_sGameUuid = sGameUuid;
+    m_sGameUuid = sGameUuid;
 }
 
 // ---------------------------------------------------------------------
@@ -66,79 +66,79 @@ void ModelLeak::setGameId(int nGameId){ // deprecated
 // ---------------------------------------------------------------------
 
 const std::string &ModelLeak::name(){
-	return m_sName;
+    return m_sName;
 }
 
 // ---------------------------------------------------------------------
 
 void ModelLeak::setName(std::string sName){
-	m_sName = sName;
+    m_sName = sName;
 }
 
 // ---------------------------------------------------------------------
 
 const std::string &ModelLeak::content(){
-	return m_sContent;
+    return m_sContent;
 }
 
 // ---------------------------------------------------------------------
 
 void ModelLeak::setContent(std::string sContent){
-	m_sContent = sContent;
+    m_sContent = sContent;
 }
 
 // ---------------------------------------------------------------------
 
 int ModelLeak::score(){
-	return m_nScore;
+    return m_nScore;
 }
 
 // ---------------------------------------------------------------------
 
 void ModelLeak::setScore(int nScore){
-	m_nScore = nScore;
+    m_nScore = nScore;
 }
 
 // ---------------------------------------------------------------------
 
 const std::string &ModelLeak::created(){
-	return m_sCreated;
+    return m_sCreated;
 }
 
 // ---------------------------------------------------------------------
 
 void ModelLeak::setCreated(std::string sCreated){
-	m_sCreated = sCreated;
+    m_sCreated = sCreated;
 }
 
 // ---------------------------------------------------------------------
 
 const std::string &ModelLeak::updated(){
-	return m_sUpdated;
+    return m_sUpdated;
 }
 
 // ---------------------------------------------------------------------
 
 void ModelLeak::setUpdated(std::string sUpdated){
-	m_sUpdated = sUpdated;
+    m_sUpdated = sUpdated;
 }
 
 // ---------------------------------------------------------------------
 
 int ModelLeak::sold(){
-	return m_nSold;
+    return m_nSold;
 }
 
 // ---------------------------------------------------------------------
 
 void ModelLeak::setSold(int nSold){
-	m_nSold = nSold;
+    m_nSold = nSold;
 }
 
 // ---------------------------------------------------------------------
 
 nlohmann::json ModelLeak::toJson(){
-	nlohmann::json jsonLeak;
+    nlohmann::json jsonLeak;
     jsonLeak["uuid"] = m_sUuid;
     jsonLeak["gameid"] = m_nGameId; // deprecated
     jsonLeak["game_uuid"] = m_sGameUuid;
@@ -146,7 +146,7 @@ nlohmann::json ModelLeak::toJson(){
     jsonLeak["sold"] = m_nSold;
     jsonLeak["name"] = m_sName;
     jsonLeak["content"] = m_sContent;
-	return jsonLeak;
+    return jsonLeak;
 }
 
 // ---------------------------------------------------------------------

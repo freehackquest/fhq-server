@@ -77,7 +77,7 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
     if(m_mapCacheLeaks.count(sUuid)){
         // pError = new Error(403, "Leak already exists with this uuid");
         return EmployResult::ALREADY_EXISTS;
-	}
+    }
 
     // check the game
     EmployGames *pEmployGames = findEmploy<EmployGames>();
@@ -132,9 +132,9 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
 const ModelLeak* EmployLeaks::findLeakByUuid(std::string sUuid){
     std::map<std::string, ModelLeak*>::iterator it = m_mapCacheLeaks.find(sUuid);
     if (it != m_mapCacheLeaks.end()){
-		return it->second; // TODO nullpointer exception
-	}
-	return NULL;
+        return it->second; // TODO nullpointer exception
+    }
+    return NULL;
 }
 
 // ---------------------------------------------------------------------
@@ -145,10 +145,10 @@ int EmployLeaks::removeLeak(std::string sUuid){
         ModelLeak* pLeak = it->second;
         m_mapCacheLeaks.erase(it);
         delete pLeak;
-		return true;
-	}
-	// TODO remove leak from database
-	return false;
+        return true;
+    }
+    // TODO remove leak from database
+    return false;
 }
 
 // ---------------------------------------------------------------------
@@ -157,21 +157,21 @@ int EmployLeaks::updateLeak(ModelLeak* pModelLeak){
     std::string sUuid = pModelLeak->uuid();
     std::map<std::string, ModelLeak*>::iterator it = m_mapCacheLeaks.find(sUuid);
     if (it != m_mapCacheLeaks.end()){
-		it->second = pModelLeak;
-		return true;
-	}
+        it->second = pModelLeak;
+        return true;
+    }
 
 
-	// TODO save changes by leak to database
-	return false;
+    // TODO save changes by leak to database
+    return false;
 }
 
 // ---------------------------------------------------------------------
 
 nlohmann::json EmployLeaks::toJson(){
-	nlohmann::json jsonLeaks;
-	// TODO fill json leaks
-	return jsonLeaks;
+    nlohmann::json jsonLeaks;
+    // TODO fill json leaks
+    return jsonLeaks;
 }
 
 // ---------------------------------------------------------------------

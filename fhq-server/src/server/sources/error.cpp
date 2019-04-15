@@ -10,11 +10,11 @@ Error::Error(int nCodeError, const std::string &sMessage){
 // ---------------------------------------------------------------------
 
 int Error::codeError(){
-	return m_nCodeError;
+    return m_nCodeError;
 }
 
 // ---------------------------------------------------------------------
 
 std::string Error::message(){
-	return m_sMessage;
+    return m_sMessage;
 }

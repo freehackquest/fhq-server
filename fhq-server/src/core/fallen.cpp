@@ -105,7 +105,7 @@ bool Fallen::fileExists(const std::string &sFilename) {
     if (bExists) {
         return (st.st_mode & S_IFDIR) == 0;
     }
-	return false;
+    return false;
 }
 
 // ---------------------------------------------------------------------
@@ -116,7 +116,7 @@ bool Fallen::dirExists(const std::string &sDirname) {
     if (bExists) {
         return (st.st_mode & S_IFDIR) != 0;
     }
-	return false;
+    return false;
 }
 
 // ---------------------------------------------------------------------
@@ -176,7 +176,7 @@ bool Fallen::makeDir(const std::string &sDirname) {
         return false;
     }
     std::cout << "nStatus: " << nStatus << std::endl;
-	return true;
+    return true;
 }
 
 // ---------------------------------------------------------------------
@@ -191,7 +191,7 @@ bool Fallen::writeFile(const std::string &sFilename, const std::string &sContent
 
     f << sContent << std::endl;
     f.close();
-	return true;
+    return true;
 }
 
 // ---------------------------------------------------------------------
@@ -204,7 +204,7 @@ bool Fallen::writeFile(const std::string &sFilename, const char *pBuffer, const 
     }
     f.write(pBuffer, nBufferSize);
     f.close();
-	return true;
+    return true;
 }
 
 
@@ -231,8 +231,8 @@ std::string& Fallen::trim(std::string& str, const std::string& chars) {
 // ---------------------------------------------------------------------
 
 std::string& Fallen::to_lower(std::string& str) {
-	std::transform(str.begin(), str.end(), str.begin(), ::tolower);
-	return str;
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+    return str;
 }
 
 // ---------------------------------------------------------------------

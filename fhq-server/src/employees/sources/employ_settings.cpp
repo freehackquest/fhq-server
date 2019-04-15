@@ -23,7 +23,7 @@ EmploySettings::EmploySettings()
 // ---------------------------------------------------------------------
 
 bool EmploySettings::init(){
-	Log::info(TAG, "Start init settings");
+    Log::info(TAG, "Start init settings");
 
     std::string sGroupProfile = "profile";
     addNewSetting(new ModelServerSettHelper(sGroupProfile, "profile_change_nick", true));
@@ -75,7 +75,7 @@ bool EmploySettings::init(){
 
     std::vector<std::string> vFoundInDatabase;
 
-	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
 
     // load from database
@@ -123,10 +123,10 @@ bool EmploySettings::init(){
         std::string sName = it->first;
         
         if(std::find(vFoundInDatabase.begin(), vFoundInDatabase.end(), sName) == vFoundInDatabase.end()) {
-			// not found in database
-			ModelServerSettHelper *pServerSettHelper = m_mapSettings.at(sName);
+            // not found in database
+            ModelServerSettHelper *pServerSettHelper = m_mapSettings.at(sName);
             initSettingDatabase(pServerSettHelper);
-		}
+        }
     }
     return true;
 }
@@ -300,28 +300,28 @@ const std::string &EmploySettings::getSettType(const std::string &sName){
 // ---------------------------------------------------------------------
 
 const std::map<std::string, ModelServerSettHelper*> &EmploySettings::listSettings(){
-	return m_mapSettings;
+    return m_mapSettings;
 }
 
 // ---------------------------------------------------------------------
 
 void EmploySettings::printSettings(){
-	std::map<std::string, ModelServerSettHelper*>::iterator it = m_mapSettings.begin();
+    std::map<std::string, ModelServerSettHelper*>::iterator it = m_mapSettings.begin();
     for (; it!=m_mapSettings.end(); ++it){
         std::string sName = it->first;
         ModelServerSettHelper *pServerSettHelper = it->second;
 
-		std::cout << " * [" << pServerSettHelper->name() << "] => [";
+        std::cout << " * [" << pServerSettHelper->name() << "] => [";
         if (pServerSettHelper->isBoolean()) {
-			std::cout << (pServerSettHelper->valueAsBoolean() ? "true" : "false");
+            std::cout << (pServerSettHelper->valueAsBoolean() ? "true" : "false");
         } else if (pServerSettHelper->isString()) {
-			std::cout << pServerSettHelper->valueAsString().toStdString();
+            std::cout << pServerSettHelper->valueAsString().toStdString();
         } else if (pServerSettHelper->isInteger()) {
-			std::cout << pServerSettHelper->valueAsInteger();
+            std::cout << pServerSettHelper->valueAsInteger();
         } else if (pServerSettHelper->isPassword()) {
-			std::cout << pServerSettHelper->valueAsString().toStdString();
+            std::cout << pServerSettHelper->valueAsString().toStdString();
         } else {
-			std::cout << pServerSettHelper->valueAsString().toStdString();
+            std::cout << pServerSettHelper->valueAsString().toStdString();
         }
         std::cout << "]" << std::endl;
 
@@ -380,7 +380,7 @@ void EmploySettings::initSettingDatabase(ModelServerSettHelper *pServerSettHelpe
 // ---------------------------------------------------------------------
 
 void EmploySettings::updateSettingDatabase(ModelServerSettHelper *pServerSettHelper){
-	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("UPDATE settings SET value = :value WHERE name = :name");

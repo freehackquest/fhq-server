@@ -12,13 +12,13 @@ REGISTRY_EMPLOY(EmployQuests)
 
 EmployQuests::EmployQuests()
     : EmployBase(EmployQuests::name(), {EmployDatabase::name()}) {
-	TAG = EmployQuests::name();
+    TAG = EmployQuests::name();
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployQuests::init(){
-	
+    
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
@@ -26,7 +26,7 @@ bool EmployQuests::init(){
     query.bindValue(":state", "open");
 
     if(!query.exec()){
-		Log::err(TAG, query.lastError().text().toStdString());
+        Log::err(TAG, query.lastError().text().toStdString());
         return false;
     }
 

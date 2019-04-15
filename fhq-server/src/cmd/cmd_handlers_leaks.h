@@ -8,8 +8,8 @@
 **********************************************/
 
 class CmdHandlerLeaksList : public CmdHandlerBase {
-	
-	public:
+
+    public:
         CmdHandlerLeaksList();
         virtual void handle(ModelRequest *pRequest);
 };

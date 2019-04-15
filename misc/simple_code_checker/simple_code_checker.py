@@ -11,7 +11,7 @@ folders_for_check = []
 folders_for_check.append({
     "path": "../../fhq-server/src/",
     "exclude": [
-        "../../fhq-server/src/3rdParty",
+        "../../fhq-server/src/core/3rdParty",
         "../../fhq-server/src/3rdParty/quazip-0.7.3"
     ]
 })

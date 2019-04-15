@@ -4,14 +4,14 @@
 void UtilsMergeText::compare(std::string &txt1, std::string &txt2, std::vector<UtilsMergeTextRow *> &arr) {
     std::vector<std::string> list1;
     std::istringstream isTxt1(txt1);
-	std::string sLine = "";
+    std::string sLine = "";
     while (getline(isTxt1, sLine, '\n')) {
         list1.push_back(sLine);
     }
 
     std::vector<std::string> list2;
     std::istringstream isTxt2(txt2);
-	sLine = "";
+    sLine = "";
     while (getline(isTxt2, sLine, '\n')) {
         list2.push_back(sLine);
     }

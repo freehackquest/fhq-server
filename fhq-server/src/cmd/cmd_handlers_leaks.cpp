@@ -16,7 +16,7 @@ CmdHandlerLeaksList::CmdHandlerLeaksList()
     setAccessUser(true);
     setAccessAdmin(true);
 
-	// validation and description input fields
+    // validation and description input fields
     requireIntegerParam("page", "Number of page"); // TODO validator
     requireIntegerParam("onpage", "How much rows in one page"); // TODO validator
 }

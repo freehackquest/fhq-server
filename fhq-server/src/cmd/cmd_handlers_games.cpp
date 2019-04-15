@@ -112,8 +112,8 @@ CmdHandlerGameDelete::CmdHandlerGameDelete()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
-	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-	
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
@@ -279,7 +279,7 @@ CmdHandlerGameExport::CmdHandlerGameExport()
 void CmdHandlerGameExport::handle(ModelRequest *pRequest){
     // EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     EmployGames *pEmployGames = findEmploy<EmployGames>();
-	
+    
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
@@ -602,8 +602,8 @@ CmdHandlerGames::CmdHandlerGames()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGames::handle(ModelRequest *pRequest){
-	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-	
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
