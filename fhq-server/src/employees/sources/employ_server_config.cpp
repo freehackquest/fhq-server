@@ -80,7 +80,7 @@ bool EmployServerConfig::init() {
 
     if (m_sWorkDir != "") {
         // TODO convert to fullpath
-        vSearchConfigFile.push_back(PossibleFileConfigs(m_sWorkDir, m_sWorkDir + "/conf.d/fhq-server.conf"));
+        vSearchConfigFile.push_back(PossibleFileConfigs(m_sWorkDir + "/conf.d/", m_sWorkDir + "/conf.d/fhq-server.conf"));
     } else {
         // TODO convert to fullpath
         vSearchConfigFile.push_back(PossibleFileConfigs("./", "fhq-server.conf"));
@@ -162,6 +162,8 @@ bool EmployServerConfig::init() {
     if (!Fallen::dirExists(m_sWeb_admin_folder)) {
         Log::err(TAG, "Wrong option 'web_admin_folder', because folder '" + m_sWeb_admin_folder + "' does not exists");
         return false;
+    } else {
+        Log::info(TAG, "Web: web_admin_folder " + m_sWeb_admin_folder);
     }
     return true;
 }
