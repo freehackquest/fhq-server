@@ -78,6 +78,13 @@ int main(int argc, char** argv) {
             Log::err(TAG, "Directory '" + sWorkDir + "' did'not exists");
             return -1;
         }
+
+        // configure employ
+        EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
+        if (sWorkDir != "") {
+            pServerConfig->setWorkDir(sWorkDir);
+        }
+
         std::string sDirLogs = sWorkDir + "/logs";
         if (!Fallen::dirExists(sDirLogs)) {
             Fallen::makeDir(sDirLogs);
@@ -123,8 +130,8 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("check-server-config")) {
         std::cout << "\n * Check Server Config\n\n";
-        EmployServerConfig *pConfig = new EmployServerConfig();
-        if (!pConfig->init()) {
+        EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
+        if (!pServerConfig->init()) {
             std::cout << "\n * FAIL\n\n";
         } else {
             std::cout << "\n * Success\n\n";
