@@ -3,8 +3,20 @@
 
 import os
 import re
+import sys
 
-print("simple_code_check 0.0.1")
+print("simple_code_checker 0.0.1")
+
+only_errors = False
+
+for arg in sys.argv:
+    if arg == './simple_code_checker.py':
+        pass
+    elif arg == '--only-errors':
+        only_errors = True
+    else:
+        print("uknown argument " + str(arg))
+        exit(-1)
 
 folders_for_check = []
 
@@ -54,38 +66,71 @@ def getListOfFiles(p):
             if not isExclude(p, path):
                 f.append(path)
             else:
-                print("Skipped: " + path)
-
+                if not only_errors:
+                    print("Skipped: " + path)
     return f
 
 warnings = {
-    'check_line_tabs': 0
+    'TODO': 0,
 }
 
+evil_pieces = {
+    'auto': 0,
+    'tabs': 0,
+}
+
+# TODO for(){
+
 # TODO: check int nNumber 
-# TODO: search TODO in line
 # TODO: check if() - must contains space
 # TODO check the if () {} - figure brakets
-# TODO: auto - is great evil !!!
 
 def check_line_tabs(filepath, line_number, l):
     global warnings
+    global evil_pieces
     if re.match(r'\t+', l):
-        warnings['check_line_tabs'] = warnings['check_line_tabs'] + 1
-        log_warn('File: ' + filepath + ' (' + str(line_number) + ') \n'
+        evil_pieces['tabs'] = evil_pieces['tabs'] + 1
+        log_err('File: ' + filepath + ' (' + str(line_number) + ') \n'
             + 'Line: "' + l + '" \n'
             + 'What: found tabs on starts line\n')
 
+def check_TODO(filepath, line_number, l):
+    global warnings
+    global evil_pieces
+    if re.match(r'.*TODO.*', l):
+        warnings['TODO'] = warnings['TODO'] + 1
+        if not only_errors:
+            log_warn('File: ' + filepath + ' (' + str(line_number) + ') \n'
+                + 'Line: "' + l + '" \n'
+                + 'What: found TODO in line \n')
+
+def check_auto_evil(filepath, line_number, l):
+    global warnings
+    global evil_pieces
+    if re.match(r'.*[^\w]+auto[^\w]+.*', l):
+        evil_pieces['auto'] = evil_pieces['auto'] + 1
+        log_err('File: ' + filepath + ' (' + str(line_number) + ') \n'
+            + 'Line: "' + l + '" \n'
+            + 'What: found "auto" in line\n')
+
 _files = getListOfFiles(folders_for_check[0])
 for filepath in _files:
-    print(filepath)
+    if not only_errors:
+        print(filepath)
     with open(filepath) as f:
         lines = f.readlines()
         line_number = 0
         for l in lines:
             l = l.rstrip('\n')
             check_line_tabs(filepath, line_number, l)
+            check_TODO(filepath, line_number, l)
+            check_auto_evil(filepath, line_number, l)
             line_number = line_number + 1
 
-print(" ============= ")
-print(" Warnings: " + str(warnings))
+print(" ============= \n")
+for i in warnings:
+    log_warn(" found '" + i + "' " + str(warnings[i]) + " times in code")
+for i in evil_pieces:
+    log_err(" found '" + i + "' " + str(evil_pieces[i]) + " times in code")
+
+print("")

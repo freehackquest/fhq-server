@@ -58,7 +58,7 @@ void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest){
     }
 
     nlohmann::json jsonResponse;
-    auto jsonWriteups = nlohmann::json::array();
+    nlohmann::json jsonWriteups = nlohmann::json::array();
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);

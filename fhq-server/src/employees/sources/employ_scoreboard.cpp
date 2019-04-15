@@ -78,7 +78,7 @@ nlohmann::json EmployScoreboard::toJson(){
         jsonRow["rating"] = m_vRows[i]->rating;
         jsonRow["place"] = m_vRows[i]->place;
         
-        auto jsonUsers = nlohmann::json::array();;
+        nlohmann::json jsonUsers = nlohmann::json::array();;
         for(unsigned int u = 0; u < m_vRows[i]->vUsers.size(); u++){
             nlohmann::json jsonUser;
             jsonUser["userid"] = m_vRows[i]->vUsers[u]->userid;

@@ -42,9 +42,8 @@ void EmployWsServer::sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMe
 bool EmployWsServer::validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler, const nlohmann::json &jsonMessage){
     try {
         // TODO check extra params
-        
-        // for(auto &&inDef : pCmdHandler->inputs()){
-        for (auto inDef : pCmdHandler->inputs()) { // TODO: when metheds 'is*' are marked as 'const', then add && to inDeff
+
+        for (CmdInputDef inDef : pCmdHandler->inputs()) {
             
             auto itJsonParamName = jsonMessage.find(inDef.getName());
             const auto endJson = jsonMessage.end();
@@ -72,7 +71,7 @@ bool EmployWsServer::validateInputParameters(Error &error, CmdHandlerBase *pCmdH
                 }
 
                 if (inDef.isString()) {
-                    auto &&sVal = itJsonParamName->get_ref<std::string const&>();
+                    std::string sVal = itJsonParamName->get_ref<std::string const&>();
                     std::string sError;
                     const std::vector<ValidatorStringBase *> vValidators = inDef.listOfValidators();
                     for (int i = 0; i < vValidators.size(); i++) {

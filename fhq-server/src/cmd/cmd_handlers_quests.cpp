@@ -60,7 +60,7 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest){
     sWhere = sWhere.length() > 0 ? " WHERE " + sWhere : "";
     std::cout << "sWhere: " << sWhere << std::endl;
 
-    auto jsonQuests = nlohmann::json::array();
+    nlohmann::json jsonQuests = nlohmann::json::array();
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
@@ -244,7 +244,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest){
 
             // files
             {
-                auto jsonFiles = nlohmann::json::array();
+                nlohmann::json jsonFiles = nlohmann::json::array();
                 QSqlQuery query_files(db);
                 query_files.prepare("SELECT * FROM quests_files WHERE questid = :questid");
                 query_files.bindValue(":questid", nQuestID);
@@ -268,7 +268,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest){
 
             // hints
             {
-                auto jsonHints = nlohmann::json::array();
+                nlohmann::json jsonHints = nlohmann::json::array();
 
                 QSqlQuery query_hints(db);
                 query_hints.prepare("SELECT * FROM quests_hints WHERE questid = :questid");
@@ -974,7 +974,7 @@ void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest){
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
-        auto jsonUsers = nlohmann::json::array();
+        nlohmann::json jsonUsers = nlohmann::json::array();
         while(query.next()) {
             QSqlRecord record = query.record();
             nlohmann::json jsonUser;
@@ -1290,7 +1290,7 @@ void CmdHandlerQuestsSubjects::handle(ModelRequest *pRequest){
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
-    auto jsonSubjects = nlohmann::json::array();
+    nlohmann::json jsonSubjects = nlohmann::json::array();
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -1485,7 +1485,7 @@ void CmdHandlerAnswerList::handle(ModelRequest *pRequest){
     }
 
     // data
-    auto jsonAnswerList = nlohmann::json::array();
+    nlohmann::json jsonAnswerList = nlohmann::json::array();
     {
         QSqlQuery query(db);
         query.prepare("SELECT "
@@ -1615,7 +1615,7 @@ void CmdHandlerHints::handle(ModelRequest *pRequest){
         return;
     }
 
-    auto jsonHints = nlohmann::json::array();
+    nlohmann::json jsonHints = nlohmann::json::array();
     QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
@@ -1706,7 +1706,7 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest){
     }
 
     // quests_proposal
-    auto jsonQuestsProposal = nlohmann::json::array();
+    nlohmann::json jsonQuestsProposal = nlohmann::json::array();
     {
         QSqlQuery query(db);
         query.prepare("SELECT qp.*, u.nick, u.email, g.title as game_title  FROM quests_proposal qp "

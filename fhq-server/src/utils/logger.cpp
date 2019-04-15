@@ -101,7 +101,7 @@ std::string Log::threadId(){
 nlohmann::json Log::last_logs() {
     Log::initGlobalVariables();
     std::lock_guard<std::mutex> lock(*g_LOG_MUTEX);
-    auto lastLogMessages = nlohmann::json::array();
+    nlohmann::json lastLogMessages = nlohmann::json::array();
     int len = g_LAST_LOG_MESSAGES->size();
     for(int i = 0; i < len; i++){
         lastLogMessages.push_back(g_LAST_LOG_MESSAGES->at(i));

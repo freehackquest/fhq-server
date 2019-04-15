@@ -29,7 +29,7 @@ CmdHandlerUsersScoreboard::CmdHandlerUsersScoreboard()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest){
-    const auto &jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json &jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     int nPage = jsonRequest.at("page");
@@ -134,7 +134,7 @@ CmdHandlerLogin::CmdHandlerLogin()
 void CmdHandlerLogin::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    auto const & jsonRequest = pRequest->jsonRequest();
+    nlohmann::json const & jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     QString email = QString::fromStdString(jsonRequest.at("email"));
@@ -232,7 +232,7 @@ CmdHandlerRegistration::CmdHandlerRegistration()
 void CmdHandlerRegistration::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto &jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json &jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     //EmploySettings *pSettings = findEmploy<EmploySettings>();
@@ -385,7 +385,7 @@ CmdHandlerToken::CmdHandlerToken()
 void CmdHandlerToken::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto & jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json & jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     nlohmann::json jsonData;
@@ -443,7 +443,7 @@ CmdHandlerUpdateUserLocation::CmdHandlerUpdateUserLocation()
 void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto & jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json & jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     // bool bConvert = false;
@@ -506,7 +506,7 @@ CmdHandlerUserChangePassword::CmdHandlerUserChangePassword()
 void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto& jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     IUserToken *pUserToken = pRequest->userToken();
@@ -594,7 +594,7 @@ CmdHandlerUsersAdd::CmdHandlerUsersAdd()
 void CmdHandlerUsersAdd::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto& jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json& jsonRequest = pRequest->jsonRequest();
 
     QRegularExpression regexEmail("^[0-9a-zA-Z-._@]{3,128}$");
     QString sEmail = QString::fromStdString(jsonRequest.at("email"));
@@ -978,7 +978,7 @@ CmdHandlerUserResetPassword::CmdHandlerUserResetPassword()
 void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto& jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     QString sEmail = QString::fromStdString(jsonRequest.at("email"));
@@ -1062,7 +1062,7 @@ CmdHandlerUserSkills::CmdHandlerUserSkills()
 void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto& jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
 
@@ -1134,7 +1134,7 @@ CmdHandlerUserUpdate::CmdHandlerUserUpdate()
 void CmdHandlerUserUpdate::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto& jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
     nlohmann::json data;
 
@@ -1266,7 +1266,7 @@ CmdHandlerUserDelete::CmdHandlerUserDelete()
 void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto& jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     QString sAdminPassword = QString::fromStdString(jsonRequest.at("password"));
@@ -1477,7 +1477,7 @@ CmdHandlerUsers::CmdHandlerUsers()
 void CmdHandlerUsers::handle(ModelRequest *pRequest){
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto& jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
 
@@ -1512,7 +1512,7 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest){
         nOnPage = jsonRequest.at("onpage");
     }
 
-    auto jsonUsers = nlohmann::json::array();
+    nlohmann::json jsonUsers = nlohmann::json::array();
     QSqlDatabase db = *(pDatabase->database());
     QString where = filters.join(" AND ");
     if(where.length() > 0){

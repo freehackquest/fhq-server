@@ -31,7 +31,7 @@ void CmdHandlerServerApi::handle(ModelRequest *pRequest){
     /*result["port"] = m_pServerConfig->serverPort();
     result["ssl_port"] = m_pServerConfig->serverPort();*/
 
-    auto jsonHandlers = nlohmann::json::array();
+    nlohmann::json jsonHandlers = nlohmann::json::array();
     std::map<std::string, CmdHandlerBase *>::iterator it = g_pCmdHandlers->begin();
     while(it != g_pCmdHandlers->end()){
         std::string sCmd = it->first;
@@ -45,7 +45,7 @@ void CmdHandlerServerApi::handle(ModelRequest *pRequest){
         jsonHandler["access_user"] = pHandler->accessUser();
         jsonHandler["access_admin"] = pHandler->accessAdmin();
 
-        auto jsonInputs = nlohmann::json::array();
+        nlohmann::json jsonInputs = nlohmann::json::array();
         std::vector<CmdInputDef> ins = pHandler->inputs();
         for(unsigned int i = 0; i < ins.size(); i++){
             jsonInputs.push_back(ins[i].toJson());
@@ -84,8 +84,8 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest){
     nlohmann::json jsonResponse;
 
     nlohmann::json jsonQuests;
-    auto jsonWinners = nlohmann::json::array();
-    auto jsonCities = nlohmann::json::array();
+    nlohmann::json jsonWinners = nlohmann::json::array();
+    nlohmann::json jsonCities = nlohmann::json::array();
 
     jsonQuests["count"] = pServerInfo->countQuests();
     jsonQuests["attempts"] = pServerInfo->countQuestsAttempt();

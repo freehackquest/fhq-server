@@ -332,7 +332,7 @@ void EmploySettings::printSettings(){
 // ---------------------------------------------------------------------
 
 nlohmann::json EmploySettings::toJson(){
-    auto jsonSettings = nlohmann::json::array();
+    nlohmann::json jsonSettings = nlohmann::json::array();
 
     std::map<std::string, ModelServerSettHelper*>::iterator it = m_mapSettings.begin();
     for (; it!=m_mapSettings.end(); ++it){

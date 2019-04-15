@@ -27,6 +27,10 @@ install:
   
 # Build your code e.g. by calling make
 script:
+  - echo "code-check"
+  - cd code-check
+  - ./simple_code_checker.py --only-errors
+  - cd ../
   - echo "Build unit tests"
   - cd unit-tests
   - ./build_simple.sh

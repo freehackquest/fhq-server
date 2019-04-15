@@ -156,7 +156,7 @@ void CmdHandlerMailsList::handle(ModelRequest *pRequest){
     }
 
     // emails
-    auto jsonEmails = nlohmann::json::array();
+    nlohmann::json jsonEmails = nlohmann::json::array();
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM email_delivery ed " + where + " ORDER BY ed.dt DESC LIMIT " + QString::number(nPage*nOnPage) + "," + QString::number(nOnPage));

@@ -611,7 +611,7 @@ void CmdHandlerGames::handle(ModelRequest *pRequest){
 
     QString base_url = pSettings->getSettString("server_folder_public_url") + "games/";
 
-    auto jsonGames = nlohmann::json::array();
+    nlohmann::json jsonGames = nlohmann::json::array();
 
     QSqlDatabase db = *(pDatabase->database());
 

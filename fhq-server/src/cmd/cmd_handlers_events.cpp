@@ -224,7 +224,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest){
     }
 
     // data
-    auto jsonPublicEventsList = nlohmann::json::array();
+    nlohmann::json jsonPublicEventsList = nlohmann::json::array();
 
     {
         QSqlQuery query(db);

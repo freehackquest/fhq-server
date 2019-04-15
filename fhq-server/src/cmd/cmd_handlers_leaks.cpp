@@ -90,7 +90,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
     }
 
     //data
-    auto jsonLeaksList = nlohmann::json::array();
+    nlohmann::json jsonLeaksList = nlohmann::json::array();
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM leaks l"

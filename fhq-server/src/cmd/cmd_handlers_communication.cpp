@@ -92,7 +92,7 @@ CmdHandlerChatLastestMessages::CmdHandlerChatLastestMessages()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatLastestMessages::handle(ModelRequest *pRequest){
-    auto jsonMessages = nlohmann::json::array();
+    nlohmann::json jsonMessages = nlohmann::json::array();
 
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());

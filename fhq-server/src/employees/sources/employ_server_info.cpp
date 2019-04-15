@@ -159,7 +159,7 @@ void EmployServerInfo::incrementQuestsCompleted(){
 // ---------------------------------------------------------------------
 
 nlohmann::json EmployServerInfo::developers(){
-    auto jsonDevelopers = nlohmann::json::array();
+    nlohmann::json jsonDevelopers = nlohmann::json::array();
 
     nlohmann::json jsonDev1;
     jsonDev1["name"] = "Evgenii Sopov";

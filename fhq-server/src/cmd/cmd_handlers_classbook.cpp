@@ -645,7 +645,7 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest){
         nParentID = jsonRequest.at("parentid").get<int>();
     }
 
-    auto jsonData = nlohmann::json::array();
+    nlohmann::json jsonData = nlohmann::json::array();
     
     //SET lang
     std::string sLang;
@@ -1542,7 +1542,7 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest){
 
     QSqlQuery query(db);
 
-    auto jsonData = nlohmann::json::array();
+    nlohmann::json jsonData = nlohmann::json::array();
 
     QString sQuery;
     QMap<QString, QJsonValue> mapFilter;
@@ -1709,7 +1709,7 @@ void CmdClassbookHandler::handle(ModelRequest *pRequest){
 
     QSqlDatabase db = *(pDatabase->database());
 
-    auto jsonContents = nlohmann::json::array();
+    nlohmann::json jsonContents = nlohmann::json::array();
 
     QSqlQuery query(db);
     query.prepare("SELECT * FROM classbook ORDER BY id ASC");

@@ -42,7 +42,7 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest){
         sFilter = jsonRequest["filter"];
     }
 
-    auto jsonData = nlohmann::json::array();
+    nlohmann::json jsonData = nlohmann::json::array();
     QString sWhere = "";
     if (!bIsAdmin) {
         sWhere = " WHERE status = 'ok' ";
