@@ -11,9 +11,7 @@
 #include <math.h>
 #include <thread>
 #include <algorithm>
-#include <fs.h>
 #include <fallen.h>
-#include <str.h>
 
 // ----------------------------------------------------------------------
 // LightHttpResponse
@@ -349,7 +347,7 @@ void LightHttpRequest::appendRecieveRequest(const std::string &sRequestPart) {
 		bool bHeadersEnded = false;
 		while (getline(f, sLine, '\n')) {
 			nSize += sLine.length() + 1;
-			Str::trim(sLine);
+			Fallen::trim(sLine);
 			// Log::info(TAG, "Line: {" + sLine + "}, size=" + std::to_string(sLine.length()));
 			if (sLine.length() == 0) {
 				bHeadersEnded = true;
@@ -357,7 +355,7 @@ void LightHttpRequest::appendRecieveRequest(const std::string &sRequestPart) {
 			}
 			m_vHeaders.push_back(sLine);
 
-			Str::to_lower(sLine);
+			Fallen::to_lower(sLine);
 			if (!sLine.compare(0, sContentLengthPrefix.size(), sContentLengthPrefix)) {
 				m_nContentLength = atoi(sLine.substr(sContentLengthPrefix.size()).c_str());
 				// Log::warn(TAG, "Content-Length: " + std::to_string(m_nContentLength));

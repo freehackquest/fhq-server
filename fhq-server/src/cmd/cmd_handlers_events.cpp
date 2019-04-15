@@ -6,6 +6,7 @@
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <QtCore>
+#include <validators.h>
 
 // *****************************************
 // * Create public events
@@ -18,17 +19,10 @@ CmdHandlerEventAdd::CmdHandlerEventAdd()
     setAccessUser(false);
     setAccessAdmin(true);
 
-    QStringList eventTypes;
-    // TODO load from database
-    eventTypes << "info";
-    eventTypes << "users";
-    eventTypes << "games";
-    eventTypes << "quests";
-    eventTypes << "warning";
-
     // validation and description input fields
-    addInputDef("type").enum_(eventTypes).required();
-    addInputDef("message").string_().required();
+    requireStringParam("type", "Type of event")
+        .addValidator(new ValidatorEventType());
+    requireStringParam("message", "Message");
 }
 
 // ---------------------------------------------------------------------
@@ -67,9 +61,7 @@ CmdHandlerEventDelete::CmdHandlerEventDelete()
     setAccessUser(false);
     setAccessAdmin(true);
 
-    // validation and description input fields
-    addInputDef("hintid").required().integer_().description("hint id");
-
+    requireIntegerParam("hintid", "hint id");
 }
 
 // ---------------------------------------------------------------------
@@ -117,7 +109,7 @@ CmdHandlerEventInfo::CmdHandlerEventInfo()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("eventid").required().integer_().description("Event id");
+    requireIntegerParam("eventid", "Event id");
 }
 
 // ---------------------------------------------------------------------
@@ -165,9 +157,8 @@ CmdHandlerEventsList::CmdHandlerEventsList()
     setAccessUser(true);
     setAccessAdmin(true);
 
-    // validation and description input fields
-    addInputDef("page").required().integer_().description("Number of page");
-    addInputDef("onpage").required().integer_().description("How much rows in one page");
+    requireIntegerParam("page", "Number of page"); // TODO validator
+    requireIntegerParam("onpage", "How much rows in one page"); // TODO validator
 }
 
 // ---------------------------------------------------------------------

@@ -29,3 +29,27 @@ bool ValidatorGameState::isValid(const std::string &sValue, std::string &sError)
 }
 
 // ---------------------------------------------------------------------
+// ValidatorEventType
+
+ValidatorEventType::ValidatorEventType() {
+    TAG = "ValidatorEventType";
+    m_vEventTypes = {"info", "users", "games", "quests", "warning"};
+};
+
+// ---------------------------------------------------------------------
+
+std::string ValidatorEventType::typeName() {
+    return "event_type";
+}
+
+// ---------------------------------------------------------------------
+
+bool ValidatorEventType::isValid(const std::string &sValue, std::string &sError) {
+    if (std::find(m_vEventTypes.begin(), m_vEventTypes.end(), sValue) != m_vEventTypes.end()) {
+        return true;
+    }
+    sError = " expected one of ['info', 'users', 'games', 'quests', 'warning']";
+    return false;
+}
+
+// ---------------------------------------------------------------------

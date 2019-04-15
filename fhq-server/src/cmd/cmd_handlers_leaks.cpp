@@ -17,8 +17,8 @@ CmdHandlerLeaksList::CmdHandlerLeaksList()
     setAccessAdmin(true);
 
 	// validation and description input fields
-    addInputDef("page").required().integer_().description("Number of page");
-    addInputDef("onpage").required().integer_().description("How much rows in one page");
+    requireIntegerParam("page", "Number of page"); // TODO validator
+    requireIntegerParam("onpage", "How much rows in one page"); // TODO validator
 }
 
 // ---------------------------------------------------------------------
@@ -136,16 +136,15 @@ CmdHandlerLeaksAdd::CmdHandlerLeaksAdd()
     setAccessUser(false);
     setAccessAdmin(true);
 
-    // validation and description input fields
-    addInputDef("uuid").required().string_().description("UUID of the leak")
+    requireStringParam("uuid", "UUID of the leak")
+        .addValidator(new ValidatorUUID()); // may be optional ?
+
+    requireStringParam("game_uuid", "UUID of the game")
         .addValidator(new ValidatorUUID());
 
-    addInputDef("game_uuid").required().string_().description("UUID of the game")
-        .addValidator(new ValidatorUUID());
-
-    addInputDef("name").required().string_().description("Visible part of the content");
-    addInputDef("content").required().string_().description("Content of the leak");
-    addInputDef("score").required().integer_().description("Price of the leak");
+    requireStringParam("name", "Visible part of the content");
+    requireStringParam("content", "Content of the leak");
+    requireIntegerParam("score", "Price of the leak"); // TODO validator
 }
 
 // ---------------------------------------------------------------------
@@ -206,11 +205,11 @@ CmdHandlerLeaksUpdate::CmdHandlerLeaksUpdate()
     setAccessUser(false);
     setAccessAdmin(true);
 
-    // validation and description input fields
-    addInputDef("id").required().integer_().description("Leak id");
-    addInputDef("name").optional().string_().description("Visible part of the content");
-    addInputDef("content").optional().string_().description("Content of the leak");
-    addInputDef("score").optional().integer_().description("Price of the leak");
+    requireIntegerParam("id", "Leak id");
+    optionalStringParam("name", "Visible part of the content");
+    optionalStringParam("content", "Content of the leak");
+    optionalIntegerParam("score", "Price of the leak");
+    
 }
 
 // ---------------------------------------------------------------------
@@ -291,7 +290,7 @@ CmdHandlerLeaksDelete::CmdHandlerLeaksDelete()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("id").required().integer_().description("Leak id");
+    requireIntegerParam("id", "Leak id");
     //TODO admin password
 }
 
@@ -367,7 +366,7 @@ CmdHandlerLeaksBuy::CmdHandlerLeaksBuy()
     setAccessAdmin(false);
 
     // validation and description input fields
-    addInputDef("id").required().integer_().description("Leak id");
+    requireIntegerParam("id", "Leak id");
 }
 
 // ---------------------------------------------------------------------

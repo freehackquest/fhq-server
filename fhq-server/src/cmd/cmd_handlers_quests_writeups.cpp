@@ -18,8 +18,7 @@ CmdHandlerQuestsWriteUpsList::CmdHandlerQuestsWriteUpsList()
     setAccessAdmin(true);
     setActivatedFromVersion("0.2.18");
 
-    // validation and description input fields
-    addInputDef("questid").required().integer_().description("Quest ID");
+    requireIntegerParam("questid", "Quest ID");
 }
 
 // ---------------------------------------------------------------------
@@ -105,8 +104,8 @@ CmdHandlerQuestsWriteUpsProposal::CmdHandlerQuestsWriteUpsProposal()
     setActivatedFromVersion("0.2.18");
 
     // validation and description input fields
-    addInputDef("questid").required().integer_().description("Quest ID");
-    addInputDef("writeup_link").required().string_().description("Link to writeup (Must be start from " + m_sLinkPrefix + ")");
+    requireIntegerParam("questid", "Quest ID");
+    requireStringParam("writeup_link", "Link to writeup (Must be start from " + m_sLinkPrefix + ")"); // TODO validator
 }
 
 // ---------------------------------------------------------------------
@@ -204,8 +203,8 @@ CmdHandlerQuestsWriteUpsUpdate::CmdHandlerQuestsWriteUpsUpdate()
     setActivatedFromVersion("0.2.18");
 
     // validation and description input fields
-    addInputDef("writeupid").required().integer_().description("WriteUp ID");
-    addInputDef("approve").required().string_().description("Approve value 1 or 0");
+    requireIntegerParam("writeupid", "WriteUp ID");
+    requireStringParam("approve", "Approve value 1 or 0"); // TODO validator
 }
 
 // ---------------------------------------------------------------------
@@ -287,7 +286,7 @@ CmdHandlerQuestsWriteUpsDelete::CmdHandlerQuestsWriteUpsDelete()
     setActivatedFromVersion("0.2.18");
 
     // validation and description input fields
-    addInputDef("writeupid").required().integer_().description("WriteUp ID");
+    requireIntegerParam("writeupid", "WriteUp ID");
 }
 
 // ---------------------------------------------------------------------

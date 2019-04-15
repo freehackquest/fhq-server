@@ -23,9 +23,8 @@ CmdHandlerLXDContainers::CmdHandlerLXDContainers()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("name").string_().required().description("Container name");
-    addInputDef("action").string_().required().description(
-            "Actions: create, start, stop and delete container");
+    requireStringParam("name", "Container name");
+    requireStringParam("action", "Actions: create, start, stop and delete container"); // TODO validator
 }
 
 // ---------------------------------------------------------------------
@@ -176,8 +175,9 @@ CmdHandlerLXDInfo::CmdHandlerLXDInfo()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("name").string_().required().description("Container name");
-    addInputDef("get").string_().optional().description("Requested information");
+    requireStringParam("name", "Container name");
+    optionalStringParam("get", "Requested information");
+    
 }
 
 // ---------------------------------------------------------------------
@@ -261,8 +261,8 @@ CmdHandlerLXDExec::CmdHandlerLXDExec()
     setAccessUser(false);
     setAccessAdmin(true);
 
-    addInputDef("name").string_().required().description("Container name");
-    addInputDef("command").string_().required().description("Name of execution command");
+    requireStringParam("name", "Container name");
+    requireStringParam("command", "Name of execution command"); // TODO validator
 }
 
 
@@ -325,9 +325,9 @@ CmdHandlerLXDFile::CmdHandlerLXDFile()
     setAccessUser(false);
     setAccessAdmin(true);
 
-    addInputDef("name").string_().required().description("Container name");
-    addInputDef("action").string_().required().description("Action with files: pull, push or delete");
-    addInputDef("path").string_().required().description("Path to file inside the container");
+    requireStringParam("name", "Container name");
+    requireStringParam("action", "Action with files: pull, push or delete"); // TODO validator
+    requireStringParam("path", "Path to file inside the container");
 }
 
 void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
@@ -423,9 +423,9 @@ CmdHandlerLXDOpenPort::CmdHandlerLXDOpenPort()
     setAccessUser(false);
     setAccessAdmin(true);
 
-    addInputDef("name").string_().required().description("Container name");
-    addInputDef("port").integer_().required().description("Number container port");
-    addInputDef("protocol").string_().required().description("Protocol");
+    requireStringParam("name", "Container name");
+    requireIntegerParam("port", "Number container port");
+    requireStringParam("protocol", "Protocol");
 }
 
 void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {

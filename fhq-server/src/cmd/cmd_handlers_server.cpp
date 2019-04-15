@@ -226,9 +226,8 @@ CmdHandlerServerSettingsUpdate::CmdHandlerServerSettingsUpdate()
     setAccessUser(false);
     setAccessAdmin(true);
 
-    // validation and description input fields
-    addInputDef("name").required().string_().description("name of setting");
-    addInputDef("value").required().any_().description("value of setting");
+    requireStringParam("name", "name of setting");
+    requireStringParam("value", "value of setting");
 }
 
 // ---------------------------------------------------------------------

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <logger.h>
-#include <str.h>
+#include <fallen.h>
 
 // ---------------------------------------------------------------------
 
@@ -28,7 +28,7 @@ bool ParseConfig::load() {
 			sLine.erase (sLine.begin() + nFoundComment, sLine.end());
 		}
 
-		Str::trim(sLine);
+		Fallen::trim(sLine);
 		if (sLine == "") { // skip empty strings
 			continue;
 		}
@@ -43,8 +43,8 @@ bool ParseConfig::load() {
 			
 			sParamName.erase (sParamName.begin() + nFoundEqualChar, sParamName.end());
 			sParamValue.erase (sParamValue.begin(), sParamValue.begin() + nFoundEqualChar + 1);
-			Str::trim(sParamName);
-			Str::trim(sParamValue);
+			Fallen::trim(sParamName);
+			Fallen::trim(sParamValue);
 			
 			// std::cout << " [" << sParamName << "]  => [" << sParamValue << "]" << std::endl;
 			

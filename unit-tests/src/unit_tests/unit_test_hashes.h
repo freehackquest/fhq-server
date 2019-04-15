@@ -3,9 +3,9 @@
 
 #include <unit_tests.h>
 
-class UnitTestM5 : public UnitTestBase {
+class UnitTestHashes : public UnitTestBase {
     public:
-        UnitTestM5();
+        UnitTestHashes();
         virtual void init();
         virtual bool run();
 };

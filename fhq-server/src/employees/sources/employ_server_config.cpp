@@ -2,7 +2,7 @@
 #include <utils_logger.h>
 #include <sys/stat.h>
 #include <storages.h>
-#include <fs.h>
+#include <fallen.h>
 #include <parse_config.h>
 #include <fstream>
 #include <regex>        // regex, sregex_token_iterator
@@ -61,7 +61,7 @@ bool EmployServerConfig::init(){
 
     for (int i = 0; i < vSearchConfigFile.size(); i++) {
         std::string tmp = vSearchConfigFile[i];
-        if (FS::fileExists(tmp)) {
+        if (Fallen::fileExists(tmp)) {
             m_sFilepathConf = tmp;
             Log::info(TAG, "Found config file " + tmp);
             break;
@@ -124,7 +124,7 @@ bool EmployServerConfig::init(){
     }
 
     m_sWeb_admin_folder = parseConfig.stringValue("web_admin_folder", m_sWeb_admin_folder);
-    if (!FS::dirExists(m_sWeb_admin_folder)) {
+    if (!Fallen::dirExists(m_sWeb_admin_folder)) {
         Log::err(TAG, "Wrong option 'web_admin_folder', because folder '" + m_sWeb_admin_folder + "' does not exists");
         return false;
     }

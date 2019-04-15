@@ -22,9 +22,8 @@ CmdHandlerUsersScoreboard::CmdHandlerUsersScoreboard()
     setAccessUser(true);
     setAccessAdmin(true);
 
-    // validation and description input fields
-    addInputDef("page").required().integer_().description("Number of page");
-    addInputDef("onpage").required().integer_().description("How much rows in one page");
+    requireIntegerParam("page", "Number of page");
+    requireIntegerParam("onpage", "How much rows in one page");
 }
 
 // ---------------------------------------------------------------------
@@ -126,8 +125,8 @@ CmdHandlerLogin::CmdHandlerLogin()
     setAccessUser(false);
     setAccessAdmin(false);
 
-    addInputDef_require_string("email", "E-mail");
-    addInputDef_require_string("password", "Password");
+    requireStringParam("email", "E-mail"); // TODO validator no empty
+    requireStringParam("password", "Password"); // TODO validator no empty
 }
 
 // ---------------------------------------------------------------------
@@ -151,7 +150,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest){
     query.bindValue(":email", email);
     query.bindValue(":pass", password_sha1);
 
-    if(!query.exec()){
+    if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
@@ -202,7 +201,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest){
         QString lastip = pRequest->client()->peerAddress().toString();
         RunTasks::UpdateUserLocation(nUserId, lastip);
 
-    }else{
+    } else {
         Log::err(TAG, "Invalid login or password");
         pRequest->sendMessageError(cmd(), Error(401, "Invalid login or password"));
         return;
@@ -223,8 +222,9 @@ CmdHandlerRegistration::CmdHandlerRegistration()
     setAccessAdmin(false);
 
     // validation and description input fields
-    addInputDef("email").required().email_().description("E-mail");
-    addInputDef("university").required().string_().description("University");
+    requireStringParam("email", "E-mail")
+        .addValidator(new ValidatorEmail());
+    requireStringParam("university", "University");
 }
 
 // ---------------------------------------------------------------------
@@ -377,7 +377,7 @@ CmdHandlerToken::CmdHandlerToken()
     setAccessAdmin(false);
 
     // validation and description input fields
-    addInputDef("token").string_().optional().description("Auth token");
+    requireStringParam("token", "Authorization token"); // TODO validator
 }
 
 // ---------------------------------------------------------------------
@@ -391,10 +391,6 @@ void CmdHandlerToken::handle(ModelRequest *pRequest){
     nlohmann::json jsonData;
     jsonData["cmd"] = nlohmann::json(cmd());
 
-    if(jsonRequest.find("token") == jsonRequest.end()){
-        pRequest->sendMessageError(cmd(), Error(404, "Not found requred parameter token"));
-        return;
-    }
     QString token = QString::fromStdString(jsonRequest.at("token"));
     QSqlDatabase db = *(pDatabase->database());
 
@@ -439,7 +435,7 @@ CmdHandlerUpdateUserLocation::CmdHandlerUpdateUserLocation()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("userid").required().integer_().description("User ID");
+    requireIntegerParam("userid", "User ID"); // TODO validator
 }
 
 // ---------------------------------------------------------------------
@@ -501,8 +497,8 @@ CmdHandlerUserChangePassword::CmdHandlerUserChangePassword()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("password_old").required().string_().description("Old password");
-    addInputDef("password_new").required().string_().description("New password");
+    requireStringParam("password_old", "Old password");
+    requireStringParam("password_new", "New password");
 }
 
 // ---------------------------------------------------------------------
@@ -583,15 +579,14 @@ CmdHandlerUsersAdd::CmdHandlerUsersAdd()
     setActivatedFromVersion("0.2.17");
 
     // validation and description input fields
-    addInputDef("uuid").optional().string_().description("User's Global Unique Identifier")
+    requireStringParam("uuid", "User's Global Unique Identifier")
         .addValidator(new ValidatorUUID());
 
-    addInputDef("email").required().string_().description("User's E-mail");
-    addInputDef("nick").required().string_().description("User's nick");
-    addInputDef("password").required().string_().description("Password");
-    addInputDef("role").required().string_().description("User's role");
-    addInputDef("university").optional().string_().description("University");
-
+    requireStringParam("email", "User's E-mail");
+    requireStringParam("nick", "User's nick");
+    requireStringParam("password", "Password");
+    requireStringParam("role", "User's role"); // TODO role validator
+    requireStringParam("university", "University");
 }
 
 // ---------------------------------------------------------------------
@@ -755,7 +750,7 @@ CmdHandlerUser::CmdHandlerUser()
     setDeprecatedFromVersion("0.2.17");
 
     // validation and description input fields
-    addInputDef("userid").optional().integer_().description("Id of user");
+    optionalIntegerParam("userid", "Id of user");
 }
 
 // ---------------------------------------------------------------------
@@ -823,7 +818,7 @@ void CmdHandlerUser::handle(ModelRequest *pRequest){
                 data["region"] = record.value("region").toString().toStdString();
                 data["city"] = record.value("city").toString().toStdString();
             }
-        }else{
+        } else {
             pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
             return;
         }
@@ -865,7 +860,8 @@ CmdHandlerUsersInfo::CmdHandlerUsersInfo()
 
     // validation and description input fields
     // TODO change to uuid
-    addInputDef("uuid").optional().integer_().description("Global unique identify of user");
+    // TODO wrong
+    requireIntegerParam("uuid", "Global unique identify of user");
 }
 
 // ---------------------------------------------------------------------
@@ -973,7 +969,8 @@ CmdHandlerUserResetPassword::CmdHandlerUserResetPassword()
     setAccessAdmin(false);
 
     // validation and description input fields
-    addInputDef("email").required().email_().description("E-mail");
+    requireStringParam("email", "E-mail")
+        .addValidator(new ValidatorEmail());
 }
 
 // ---------------------------------------------------------------------
@@ -1057,7 +1054,7 @@ CmdHandlerUserSkills::CmdHandlerUserSkills()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("userid").required().integer_().description("Id of user");
+    requireIntegerParam("userid", "Id of user");
 }
 
 // ---------------------------------------------------------------------
@@ -1125,11 +1122,11 @@ CmdHandlerUserUpdate::CmdHandlerUserUpdate()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("userid").required().integer_().description("Id of user");
-    addInputDef("nick").optional().string_().description("Nick of user");
-    addInputDef("university").optional().string_().description("University of user");
-    addInputDef("about").optional().string_().description("About of user");
-    addInputDef("country").optional().string_().description("Country of user");
+    requireIntegerParam("userid", "Id of user");
+    optionalStringParam("nick", "Nick of user");
+    optionalStringParam("university", "University of user");
+    optionalStringParam("about", "About of user");
+    optionalStringParam("country", "Country of user");
 }
 
 // ---------------------------------------------------------------------
@@ -1260,8 +1257,8 @@ CmdHandlerUserDelete::CmdHandlerUserDelete()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("userid").required().integer_().description("User's id");
-    addInputDef("password").required().string_().description("Admin's password");
+    requireIntegerParam("userid", "User's id");
+    requireStringParam("password", "Admin's password");
 }
 
 // ---------------------------------------------------------------------
@@ -1469,10 +1466,10 @@ CmdHandlerUsers::CmdHandlerUsers()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("filter_text").string_().optional().description("Filter by user email or nick");
-    addInputDef("filter_role").string_().optional().description("Filter by user role");
-    addInputDef("onpage").integer_().optional().description("On page");
-    addInputDef("page").integer_().optional().description("page");
+    optionalStringParam("filter_text", "Filter by user email or nick");
+    optionalStringParam("filter_role", "Filter by user role"); // TODO validator role
+    optionalIntegerParam("onpage", "On Page");
+    optionalIntegerParam("page", "Number of page");
 }
 
 // ---------------------------------------------------------------------

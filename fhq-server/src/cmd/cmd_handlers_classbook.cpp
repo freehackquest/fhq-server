@@ -25,13 +25,12 @@ CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("parentid").required().integer_().description("pareintid for classbook article");
-    addInputDef("name").required().string_().description("name of article");
-    addInputDef("content").required().string_().description("content of article");
-    addInputDef("uuid").optional().string_().description("uuid of article")
+    requireIntegerParam("parentid", "pareintid for classbook article");
+    requireStringParam("name", "name of article");
+    requireStringParam("content", "content of article");
+    optionalStringParam("uuid", "uuid of article")
         .addValidator(new ValidatorUUID());
-
-    addInputDef("ordered").optional().integer_().description("order of article");
+    optionalIntegerParam("ordered", "order of article");
 }
 
 // ---------------------------------------------------------------------
@@ -191,7 +190,7 @@ CmdClassbookDeleteRecordHandler::CmdClassbookDeleteRecordHandler()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("classbookid").required().integer_().description("id for classbook article");
+    requireIntegerParam("classbookid", "id for classbook article");
 }
 
 // ---------------------------------------------------------------------
@@ -254,9 +253,9 @@ CmdClassbookExportHandler::CmdClassbookExportHandler()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("output").required().string_().description("The output file format");
-    addInputDef("lang").required().string_().description("The output file format");
-    addInputDef("zip").optional().bool_().description("Zipping the output");
+    requireStringParam("output", "The output file format");
+    requireStringParam("lang", "The output file format");
+    optionalBooleanParam("zip", "Zipping the output");
 }
 
 // ---------------------------------------------------------------------
@@ -462,8 +461,9 @@ CmdClassbookInfoHandler::CmdClassbookInfoHandler()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("classbookid").required().integer_().description("id for the classbook article");
-    addInputDef("lang").optional().string_().description("Set lang for the article");
+    requireIntegerParam("classbookid", "id for the classbook article");
+    optionalStringParam("lang", "Set lang for the article"); // TODO validator lang
+    
 }
 
 // ---------------------------------------------------------------------
@@ -625,9 +625,9 @@ CmdClassbookListHandler::CmdClassbookListHandler()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("parentid").required().integer_().description("parentid for classbook articles");
-    addInputDef("lang").optional().string_().description("lang for classbook articles");
-    addInputDef("search").optional().string_().description("Search string for classbook articles");
+    requireIntegerParam("parentid", "parentid for classbook articles");
+    optionalStringParam("lang", "lang for classbook articles"); // TODO validator lang
+    optionalStringParam("search", "Search string for classbook articles");
 }
 
 // ---------------------------------------------------------------------
@@ -805,11 +805,11 @@ CmdClassbookUpdateRecordHandler::CmdClassbookUpdateRecordHandler()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("classbookid").required().integer_().description("id for classbook article");
-    addInputDef("name").optional().string_().description("name for classbook article");
-    addInputDef("content").optional().string_().description("content for classbook article");
-    addInputDef("ordered").optional().integer_().description("ordered for classbook article");
-    addInputDef("parentid").optional().integer_().description("parentid for classbook article");
+    requireIntegerParam("classbookid", "id for classbook article");
+    optionalStringParam("name", "name for classbook article");
+    optionalStringParam("content", "content for classbook article");
+    optionalIntegerParam("ordered", "ordered for classbook article");
+    optionalIntegerParam("parentid", "parentid for classbook article");
 }
 
 // ---------------------------------------------------------------------
@@ -968,10 +968,10 @@ CmdClassbookLocalizationAddRecordHandler::CmdClassbookLocalizationAddRecordHandl
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("classbookid").required().integer_().description("Classbookid for article localization");
-    addInputDef("lang").required().string_().description("Language");
-    addInputDef("name").required().string_().description("Article name");
-    addInputDef("content").required().string_().description("The content of the article");
+    requireIntegerParam("classbookid", "Classbookid for article localization");
+    requireStringParam("lang", "Language"); // TODO validator lang
+    requireStringParam("name", "Article name");
+    requireStringParam("content", "The content of the article");
 }
 
 // ---------------------------------------------------------------------
@@ -1078,7 +1078,7 @@ CmdClassbookLocalizationDeleteRecordHandler::CmdClassbookLocalizationDeleteRecor
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("classbook_localizationid").required().integer_().description("Localization id");
+    requireIntegerParam("classbook_localizationid", "Localization id");
 }
 
 // ---------------------------------------------------------------------
@@ -1130,7 +1130,7 @@ CmdClassbookLocalizationInfoHandler::CmdClassbookLocalizationInfoHandler()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("classbook_localizationid").required().integer_().description("Localization id");
+    requireIntegerParam("classbook_localizationid", "Localization id");
 }
 
 // ---------------------------------------------------------------------
@@ -1192,9 +1192,9 @@ CmdClassbookLocalizationUpdateRecordHandler::CmdClassbookLocalizationUpdateRecor
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("classbook_localizationid").required().integer_().description("Localization id");
-    addInputDef("name").required().string_().description("Article name");
-    addInputDef("content").required().string_().description("The content of the article");
+    requireIntegerParam("classbook_localizationid", "Localization id");
+    requireStringParam("name", "Article name");
+    requireStringParam("content", "The content of the article");
 }
 
 // ---------------------------------------------------------------------
@@ -1278,10 +1278,10 @@ CmdClassbookProposalAddRecordHandler::CmdClassbookProposalAddRecordHandler()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("classbookid").required().integer_().description("Classbookid for an article");
-    addInputDef("lang").required().string_().description("Language");
-    addInputDef("name").required().string_().description("Article name");
-    addInputDef("content").required().string_().description("The content of the article");
+    requireIntegerParam("classbookid", "Classbookid for an article");
+    requireStringParam("lang", "Language"); // TODO validator lang
+    requireStringParam("name", "Article name");
+    requireStringParam("content", "The content of the article");
 }
 
 // ---------------------------------------------------------------------
@@ -1407,8 +1407,7 @@ CmdClassbookProposalDeleteRecordHandler::CmdClassbookProposalDeleteRecordHandler
     setAccessUser(true);
     setAccessAdmin(true);
 
-    // validation and description input fields
-    addInputDef("classbook_proposal_id").required().integer_().description("Proposal id");
+    requireIntegerParam("classbook_proposal_id", "Proposal id");
 }
 
 // ---------------------------------------------------------------------
@@ -1462,7 +1461,7 @@ CmdClassbookProposalInfoHandler::CmdClassbookProposalInfoHandler()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("classbook_proposal_id").required().integer_().description("Proposal id");
+    requireIntegerParam("classbook_proposal_id", "Proposal id");
 }
 
 // ---------------------------------------------------------------------
@@ -1528,8 +1527,8 @@ CmdClassbookProposalListHandler::CmdClassbookProposalListHandler()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("classbookid").optional().integer_().description("Classbookid for an article");
-    addInputDef("lang").optional().string_().description("Language");
+    requireIntegerParam("classbookid", "Classbookid for an article");
+    optionalStringParam("lang", "Language"); // TODO validator lang
 }
 
 // ---------------------------------------------------------------------
@@ -1629,7 +1628,7 @@ CmdClassbookProposalPrepareMergeRecordHandler::CmdClassbookProposalPrepareMergeR
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("classbook_proposal_id").required().integer_().description("Proposal id");
+    requireIntegerParam("classbook_proposal_id", "Proposal id");
 }
 
 // ---------------------------------------------------------------------

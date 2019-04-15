@@ -21,9 +21,8 @@ CmdHandlerChatSendMessage::CmdHandlerChatSendMessage()
     setAccessUser(true);
     setAccessAdmin(true);
 
-    // validation and description input fields
-    addInputDef("type").required().string_().description("Type");
-    addInputDef("message").required().string_().description("Message");
+    requireStringParam("type", "Type"); // TODO validator chat type
+    requireStringParam("message", "Message");
 }
 
 // ---------------------------------------------------------------------
@@ -88,8 +87,6 @@ CmdHandlerChatLastestMessages::CmdHandlerChatLastestMessages()
     setAccessUnauthorized(true);
     setAccessUser(true);
     setAccessAdmin(true);
-
-    // validation and description input fields
 }
 
 // ---------------------------------------------------------------------

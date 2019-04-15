@@ -22,7 +22,7 @@ CmdHandlerUsefulLinksList::CmdHandlerUsefulLinksList()
     setAccessUser(true);
     setAccessAdmin(true);
 
-    addInputDef("filter").required().string_().description("Filter by word");
+    optionalStringParam("filter", "Filter by word");
 }
 
 
@@ -91,9 +91,10 @@ CmdHandlerUsefulLinksAdd::CmdHandlerUsefulLinksAdd()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("url").required().string_().description("URL");
-    addInputDef("description").required().string_().description("Description");
-    addInputDef("author").required().string_().description("Author");
+    
+    requireStringParam("url", "URL"); // TODO validator
+    requireStringParam("description", "Description");
+    requireStringParam("author", "Author");
 }
 
 // ---------------------------------------------------------------------
@@ -131,9 +132,9 @@ CmdHandlerUsefulLinksDelete::CmdHandlerUsefulLinksDelete()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("url").required().string_().description("URL");
-    addInputDef("description").required().string_().description("Description");
-    addInputDef("author").required().string_().description("Author");
+    requireStringParam("url", "URL"); // TODO validator
+    requireStringParam("description", "Description"); 
+    requireStringParam("author", "Author");
 }
 
 // ---------------------------------------------------------------------
@@ -158,10 +159,10 @@ CmdHandlerUsefulLinksUpdate::CmdHandlerUsefulLinksUpdate()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("url").required().string_().description("URL");
-    addInputDef("description").required().string_().description("Description");
-    addInputDef("author").required().string_().description("Author");
-    addInputDef("status").required().string_().description("Status");
+    requireStringParam("url", "URL"); // TODO validator
+    requireStringParam("description", "Description");
+    requireStringParam("author", "Author");
+    requireStringParam("status", "Status"); // TODO validator
 }
 
 // ---------------------------------------------------------------------

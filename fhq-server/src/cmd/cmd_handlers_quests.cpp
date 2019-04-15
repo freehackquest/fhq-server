@@ -20,7 +20,8 @@ CmdHandlerQuests::CmdHandlerQuests()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("subject").string_().optional().description("Filter by subject");
+    optionalStringParam("subject", "Filter by subject"); // TODO validator
+    
 }
 
 // ---------------------------------------------------------------------
@@ -129,7 +130,7 @@ CmdHandlerQuest::CmdHandlerQuest()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("questid").integer_().required().description("Quest ID");
+    requireIntegerParam("questid", "Quest ID");
 }
 
 // ---------------------------------------------------------------------
@@ -308,8 +309,8 @@ CmdHandlerQuestPass::CmdHandlerQuestPass()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("questid").integer_().required().description("Quest ID");
-    addInputDef("answer").string_().required().description("Answer");
+    requireIntegerParam("questid", "Quest ID");
+    requireStringParam("answer", "Answer");
 
 }
 
@@ -479,24 +480,24 @@ CmdHandlerCreateQuest::CmdHandlerCreateQuest()
     setAccessUser(false);
     setAccessAdmin(true);
 
-    // validation and description input fields
-    addInputDef("uuid").string_().required().description("Global Identificator of the quest")
+    requireStringParam("uuid", "Global Identificator of the quest")
         .addValidator(new ValidatorUUID());
 
-    addInputDef("gameid").integer_().required().description("Which game included this quest");
-    addInputDef("name").string_().required().description("Name of the quest");
-    addInputDef("text").string_().required().description("Description of the quest");
-    addInputDef("score").integer_().minval(1).maxval(1000).required().description("How much append to user score after solve quest by them");
+    requireIntegerParam("gameid", "Which game included this quest");
+    requireStringParam("name", "Name of the quest");
+    requireStringParam("text", "Description of the quest");
+    requireIntegerParam("score", "How much append to user score after solve quest by them").minval(1).maxval(1000);
+    // TODO validator score
 
     // TODO from database init
     QStringList questTypes;
     questTypes << "trivia";
-    addInputDef("author").string_().required().description("Author of the quest");
-    addInputDef("subject").string_().required().description("Subject must be one from types (look types)");
-    addInputDef("answer").string_().required().description("Answer for the quest");
-    addInputDef("answer_format").string_().required().description("Answer format for the quest");
-    addInputDef("state").string_().required().description("State of the quest, can be: open, broken, closed");
-    addInputDef("description_state").string_().required().description("You can add some descriptions for quest state");
+    requireStringParam("author", "Author of the quest");
+    requireStringParam("subject", "Subject must be one from types (look types)"); // TODO validator
+    requireStringParam("answer", "Answer for the quest");
+    requireStringParam("answer_format", "Answer format for the quest");
+    requireStringParam("state", "State of the quest, can be: open, broken, closed"); // TODO validator
+    requireStringParam("description_state", "You can add some descriptions for quest state");
 }
 
 // ---------------------------------------------------------------------
@@ -634,7 +635,7 @@ CmdHandlerQuestDelete::CmdHandlerQuestDelete()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("questid").required().integer_().description("Quest ID");
+    requireIntegerParam("questid", "Quest ID");
 }
 
 // ---------------------------------------------------------------------
@@ -723,17 +724,17 @@ CmdHandlerQuestProposal::CmdHandlerQuestProposal()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("gameid").integer_().required().description("Which game included this quest");
-    addInputDef("name").string_().required().description("Name of the quest");
-    addInputDef("text").string_().required().description("Description of the quest");
-    addInputDef("score").integer_().minval(1).maxval(1000).required().description("How much append to user score after solve quest by them");
+    requireIntegerParam("gameid", "Which game included this quest");
+    requireStringParam("name", "Name of the quest");
+    requireStringParam("text", "Description of the quest");
+    requireIntegerParam("score", "How much append to user score after solve quest by them").minval(1).maxval(1000);
 
     QStringList questTypes; // TODO fill from database or use employees
     questTypes << "trivia";
-    addInputDef("author").string_().required().description("Author of the quest");
-    addInputDef("subject").string_().required().description("Subject must be one from types (look types)");
-    addInputDef("answer").string_().required().description("Answer for the quest");
-    addInputDef("answer_format").string_().required().description("Answer format for the quest");
+    requireStringParam("author", "Author of the quest");
+    requireStringParam("subject", "Subject must be one from types (look types)"); // TODO validator
+    requireStringParam("answer", "Answer for the quest");
+    requireStringParam("answer_format", "Answer format for the quest");
 }
 
 // ---------------------------------------------------------------------
@@ -883,7 +884,7 @@ CmdHandlerQuestStatistics::CmdHandlerQuestStatistics()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("questid").integer_().required().description("Quest ID");
+    requireIntegerParam("questid", "Quest ID");
 }
 
 // ---------------------------------------------------------------------
@@ -1005,21 +1006,21 @@ CmdHandlerQuestUpdate::CmdHandlerQuestUpdate()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("questid").integer_().required().description("Quest ID");
-    addInputDef("name").string_().optional().description("Name of the quest");
-    addInputDef("gameid").integer_().optional().description("Which game included this quest");
-    addInputDef("text").string_().optional().description("Description of the quest");
-    addInputDef("score").integer_().minval(1).maxval(1000).optional().description("How much append to user score after solve quest by them");
+    requireIntegerParam("questid", "Quest ID");
+    optionalStringParam("name", "Name of the quest");
+    optionalStringParam("gameid", "Which game included this quest");
+    optionalStringParam("text", "Description of the quest");
+    optionalIntegerParam("score", "How much append to user score after solve quest by them").minval(1).maxval(1000); // TODO validator
 
     // TODO from database init
     QStringList questTypes;
     questTypes << "trivia";
 
-    addInputDef("subject").string_().optional().description("Subject must be one from types (look types)");
-    addInputDef("answer").string_().optional().description("Answer for the quest");
-    addInputDef("answer_format").string_().optional().description("Answer format for the quest");
-    addInputDef("state").string_().optional().description("State of the quest, can be: open, broken, closed");
-    addInputDef("description_state").string_().optional().description("You can add some descriptions for quest state");
+    optionalStringParam("subject", "Subject must be one from types (look types)");  // TODO validator
+    optionalStringParam("answer", "Answer for the quest");
+    optionalStringParam("answer_format", "Answer format for the quest");
+    optionalStringParam("state", "State of the quest, can be: open, broken, closed"); // TODO validator
+    optionalStringParam("description_state", "You can add some descriptions for quest state");
 }
 
 // ---------------------------------------------------------------------
@@ -1280,10 +1281,6 @@ CmdHandlerQuestsSubjects::CmdHandlerQuestsSubjects()
     setAccessUnauthorized(true);
     setAccessUser(true);
     setAccessAdmin(true);
-
-    // validation and description input fields
-    // addInputDef("filter_text").string_().optional().description("Filter by user email or nick");
-    // addInputDef("filter_role").string_().optional().description("Filter by user role");
 }
 
 // ---------------------------------------------------------------------
@@ -1333,8 +1330,8 @@ CmdHandlerAddHint::CmdHandlerAddHint()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("questid").required().integer_().description("quest id");
-    addInputDef("hint").required().string_().description("hint text");
+    requireIntegerParam("questid", "quest id");
+    requireStringParam("hint", "hint text");
 }
 
 // ---------------------------------------------------------------------
@@ -1391,10 +1388,11 @@ CmdHandlerAnswerList::CmdHandlerAnswerList()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("page").required().integer_().description("Number of page");
-    addInputDef("onpage").required().integer_().description("How much rows on page");
-    addInputDef("questid").optional().integer_().description("Filter for questid");
-    addInputDef("userid").optional().integer_().description("Filter for userid");
+    requireIntegerParam("page", "Number of page"); // TODO validator
+    requireIntegerParam("onpage", "How much rows on page");  // TODO validator
+    optionalIntegerParam("questid", "Filter for questid");
+    optionalIntegerParam("userid", "Filter for userid");
+    
 }
 
 // ---------------------------------------------------------------------
@@ -1563,7 +1561,7 @@ CmdHandlerDeleteHint::CmdHandlerDeleteHint()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("hintid").required().integer_().description("hint id");
+    requireIntegerParam("hintid", "hint id");
 }
 
 // ---------------------------------------------------------------------
@@ -1601,7 +1599,7 @@ CmdHandlerHints::CmdHandlerHints()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("questid").required().integer_().description("Quest id");
+    requireIntegerParam("questid", "Quest id");
 }
 
 // ---------------------------------------------------------------------
@@ -1657,8 +1655,8 @@ CmdHandlerQuestsProposalList::CmdHandlerQuestsProposalList()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("onpage").integer_().optional().description("On page");
-    addInputDef("page").integer_().optional().description("page");
+    optionalIntegerParam("onpage", "On page"); // TODO validator
+    optionalIntegerParam("page", "page");  // TODO validator
 }
 
 // ---------------------------------------------------------------------

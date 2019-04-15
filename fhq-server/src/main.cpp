@@ -25,8 +25,6 @@
 #include <employ_database.h>
 #include <employ_settings.h>
 #include <employ_images.h>
-#include <model_help_args.h>
-#include <help_parse_args.h>
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
@@ -38,6 +36,7 @@
 #include <light_http_server.h>
 #include <http_handler_web_admin_folder.h>
 #include <jobs_pool.h>
+#include <fallen.h>
 
 LightHttpServer g_httpServer;
 
@@ -46,30 +45,46 @@ int main(int argc, char** argv) {
     std::string TAG = "MAIN";
     Log::setdir("/var/log/fhq-server");
 
-    HelpParseArgs helpArgs(argc, argv);
+    FallenHelpParseArgs helpArgs(argc, argv);
     helpArgs.setAppName(FHQSRV_APP_NAME);
     helpArgs.setAppVersion(FHQSRV_VERSION);
 
-    helpArgs.addHelp("help", "-h", HelpParseArgType::SINGLE_OPTION, "This help");
-    helpArgs.addHelp("version", "-v", HelpParseArgType::SINGLE_OPTION, "Print version");
-    helpArgs.addHelp("show-handlers", "-sh", HelpParseArgType::SINGLE_OPTION, "Show handlers");
-    helpArgs.addHelp("show-storage-struct", "-sh-ss", HelpParseArgType::SINGLE_OPTION, "Show Storage Struct");
-    helpArgs.addHelp("export-libfhqcli-py", "-exlp", HelpParseArgType::SINGLE_OPTION, "Export libfhqcli-py (python)");
-    helpArgs.addHelp("export-libfhqcli-web-javascript", "-exlwjs", HelpParseArgType::SINGLE_OPTION, "Export libfhqcli-web-js (javascript)");
-    helpArgs.addHelp("show-employees", "-se", HelpParseArgType::SINGLE_OPTION, "Show employees");
-    helpArgs.addHelp("show-settings", "-ss", HelpParseArgType::SINGLE_OPTION, "Show settings");
-    helpArgs.addHelp("set-setting", "-set", HelpParseArgType::PARAMETER, "Set setting value like 'mail_username=some@where.org'");
-    helpArgs.addHelp("send-test-mail", "-stm", HelpParseArgType::SINGLE_OPTION, "Send test mail");
-    helpArgs.addHelp("prepare-deb", "-pd", HelpParseArgType::SINGLE_OPTION, "Prepare Deb Package");
-    helpArgs.addHelp("check-server-config", "-csc", HelpParseArgType::SINGLE_OPTION, "Check server config");
-    helpArgs.addHelp("make-config-linux", "-mcl", HelpParseArgType::SINGLE_OPTION, "Create config file for Linux: /etc/fhq-server/fhq-server.conf");
-    helpArgs.addHelp("check-database-connection", "-cdc", HelpParseArgType::SINGLE_OPTION, "Check database conenction");
-    helpArgs.addHelp("manual-create-database", "-mcd", HelpParseArgType::SINGLE_OPTION, "Manual create database");
-    helpArgs.addHelp("manual-configure-lxd", "-mclxd", HelpParseArgType::SINGLE_OPTION, "Manual configure HTTPS connection with LXD. \n You need generated SSL cert and key in /etc/fhq-server/lxd");
-    helpArgs.addHelp("lxd-enable", "-uplxd", HelpParseArgType::SINGLE_OPTION, "Enable lxd mode");
-    helpArgs.addHelp("lxd-disable", "-downlxd", HelpParseArgType::SINGLE_OPTION, "Disable lxd mode");
-    helpArgs.addHelp("start", "-s", HelpParseArgType::SINGLE_OPTION, "Start server");
-    
+    helpArgs.addHelp("help", "-h", FallenHelpParseArgType::SINGLE_OPTION, "This help");
+    helpArgs.addHelp("version", "-v", FallenHelpParseArgType::SINGLE_OPTION, "Print version");
+    helpArgs.addHelp("show-handlers", "-sh", FallenHelpParseArgType::SINGLE_OPTION, "Show handlers");
+    helpArgs.addHelp("show-storage-struct", "-sh-ss", FallenHelpParseArgType::SINGLE_OPTION, "Show Storage Struct");
+    helpArgs.addHelp("export-libfhqcli-py", "-exlp", FallenHelpParseArgType::SINGLE_OPTION, "Export libfhqcli-py (python)");
+    helpArgs.addHelp("export-libfhqcli-web-javascript", "-exlwjs", FallenHelpParseArgType::SINGLE_OPTION, "Export libfhqcli-web-js (javascript)");
+    helpArgs.addHelp("show-employees", "-se", FallenHelpParseArgType::SINGLE_OPTION, "Show employees");
+    helpArgs.addHelp("show-settings", "-ss", FallenHelpParseArgType::SINGLE_OPTION, "Show settings");
+    helpArgs.addHelp("set-setting", "-set", FallenHelpParseArgType::PARAMETER, "Set setting value like 'mail_username=some@where.org'");
+    helpArgs.addHelp("send-test-mail", "-stm", FallenHelpParseArgType::SINGLE_OPTION, "Send test mail");
+    helpArgs.addHelp("prepare-deb", "-pd", FallenHelpParseArgType::SINGLE_OPTION, "Prepare Deb Package");
+    helpArgs.addHelp("check-server-config", "-csc", FallenHelpParseArgType::SINGLE_OPTION, "Check server config");
+    helpArgs.addHelp("make-config-linux", "-mcl", FallenHelpParseArgType::SINGLE_OPTION, "Create config file for Linux: /etc/fhq-server/fhq-server.conf");
+    helpArgs.addHelp("check-database-connection", "-cdc", FallenHelpParseArgType::SINGLE_OPTION, "Check database conenction");
+    helpArgs.addHelp("manual-create-database", "-mcd", FallenHelpParseArgType::SINGLE_OPTION, "Manual create database");
+    helpArgs.addHelp("manual-configure-lxd", "-mclxd", FallenHelpParseArgType::SINGLE_OPTION, "Manual configure HTTPS connection with LXD. \n You need generated SSL cert and key in /etc/fhq-server/lxd");
+    helpArgs.addHelp("lxd-enable", "-uplxd", FallenHelpParseArgType::SINGLE_OPTION, "Enable lxd mode");
+    helpArgs.addHelp("lxd-disable", "-downlxd", FallenHelpParseArgType::SINGLE_OPTION, "Disable lxd mode");
+    helpArgs.addHelp("start", "-s", FallenHelpParseArgType::SINGLE_OPTION, "Start server");
+    helpArgs.addHelp("--workdir", "-wd", FallenHelpParseArgType::PARAMETER, "Set work dir (logs, configs aand etc...)");
+
+    std::string sWorkDir = "";
+    if (helpArgs.has("--workdir")) {
+        sWorkDir = helpArgs.option("--workdir");
+        std::cout << "\n Workdir " << sWorkDir << " \n\n";
+        if (!Fallen::dirExists(sWorkDir)) {
+            Log::err(TAG, "Directory '" + sWorkDir + "' did'not exists");
+            return -1;
+        }
+        std::string sDirLogs = sWorkDir + "/logs";
+        if (!Fallen::dirExists(sDirLogs)) {
+            Fallen::makeDir(sDirLogs);
+        }
+        Log::setdir(sDirLogs);
+    }
+
     if (helpArgs.has("help")) {
         helpArgs.printHelp();
         return 0;

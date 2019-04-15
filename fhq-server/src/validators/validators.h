@@ -16,4 +16,17 @@ class ValidatorGameState : public ValidatorStringBase {
         std::vector<std::string> m_vDataTypes;
 };
 
+// ---------------------------------------------------------------------
+
+class ValidatorEventType : public ValidatorStringBase {
+    public:
+        ValidatorEventType();
+        virtual std::string typeName();
+        virtual bool isValid(const std::string &sValue, std::string &sError);
+
+    private:
+        std::string TAG;
+        std::vector<std::string> m_vEventTypes;
+};
+
 #endif // VALIDATOR_GAME_STATE_H

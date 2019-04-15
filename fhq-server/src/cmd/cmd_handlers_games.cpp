@@ -32,19 +32,19 @@ CmdHandlerGameCreate::CmdHandlerGameCreate()
     setAccessAdmin(true);
     
     // validation and description input fields
-    addInputDef("uuid").string_().required().description("Global Identificator of the Game")
+    requireStringParam("uuid", "Global Identificator of the Game")
         .addValidator(new ValidatorUUID());
 
-    addInputDef("name").string_().required().description("Name of the Game");
-    addInputDef("description").string_().required().description("Description of the Game");
-    addInputDef("state").string_().required().description("State of the game");
+    requireStringParam("name", "Name of the Game");
+    requireStringParam("description", "Description of the Game");
+    requireStringParam("state", "State of the game"); // TODO validator
     // new ValidatorGameState();
-    addInputDef("form").string_().required().description("Form of the game");
-    addInputDef("type").string_().required().description("Type of the game");
-    addInputDef("date_start").string_().required().description("Date start");
-    addInputDef("date_stop").string_().required().description("Date stop");
-    addInputDef("date_restart").string_().required().description("Date restart");
-    addInputDef("organizators").string_().required().description("Organizators");
+    requireStringParam("form", "Form of the game"); // TODO validator
+    requireStringParam("type", "Type of the game"); // TODO validator
+    requireStringParam("date_start", "Date start"); // TODO validator datetime
+    requireStringParam("date_stop", "Date stop"); // TODO validator datetime
+    requireStringParam("date_restart", "Date restart"); // TODO validator datetime
+    requireStringParam("organizators", "Organizators");
 }
 
 
@@ -103,10 +103,10 @@ CmdHandlerGameDelete::CmdHandlerGameDelete()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("uuid").string_().required().description("Global Identificator of the Game")
+    requireStringParam("uuid", "Global Identificator of the Game")
         .addValidator(new ValidatorUUID());
 
-    addInputDef("admin_password").string_().required().description("Admin Password");
+    requireStringParam("admin_password", "Admin Password");
 }
 
 // ---------------------------------------------------------------------
@@ -142,7 +142,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
             QSqlRecord record = query.record();
             sEmail = record.value("email").toString();
             sPass = record.value("pass").toString();
-        }else{
+        } else {
             pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
             return;
         }
@@ -270,7 +270,7 @@ CmdHandlerGameExport::CmdHandlerGameExport()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("uuid").string_().required().description("Global Identificator of the Game")
+    requireStringParam("uuid", "Global Identificator of the Game")
         .addValidator(new ValidatorUUID());
 }
 
@@ -363,8 +363,7 @@ CmdHandlerGameImport::CmdHandlerGameImport()
     setAccessUser(false);
     setAccessAdmin(true);
 
-    // validation and description input fields
-    addInputDef("uuid").string_().required().description("Global Identificator of the Game")
+    requireStringParam("uuid", "Global Identificator of the Game")
         .addValidator(new ValidatorUUID());
 }
 
@@ -395,7 +394,7 @@ CmdHandlerGameInfo::CmdHandlerGameInfo()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("uuid").string_().required().description("Global Identificator of the Game")
+    requireStringParam("uuid", "Global Identificator of the Game")
         .addValidator(new ValidatorUUID());
 }
 
@@ -431,18 +430,18 @@ CmdHandlerGameUpdate::CmdHandlerGameUpdate()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("uuid").string_().required().description("Global Identificator of the Game")
+    requireStringParam("uuid", "Global Identificator of the Game")
         .addValidator(new ValidatorUUID());
 
-    addInputDef("name").string_().optional().description("Name of the Game");
-    addInputDef("description").string_().optional().description("Description of the Game");
-    addInputDef("state").string_().optional().description("State of the game");
-    addInputDef("form").string_().optional().description("Form of the game");
-    addInputDef("type").string_().optional().description("Type of the game");
-    addInputDef("date_start").string_().optional().description("Date start");
-    addInputDef("date_stop").string_().optional().description("Date stop");
-    addInputDef("date_restart").string_().optional().description("Date restart");
-    addInputDef("organizators").string_().optional().description("Organizators");
+    optionalStringParam("name", "Name of the Game");
+    optionalStringParam("description", "Description of the Game");
+    optionalStringParam("state", "State of the game"); // TODO validator state of game
+    optionalStringParam("form", "Form of the game"); // TODO validator form of game
+    optionalStringParam("type", "Type of the game"); // TODO validator type of game
+    optionalStringParam("date_start", "Date start"); // TODO validator datetime
+    optionalStringParam("date_stop", "Date stop"); // TODO validator datetime
+    optionalStringParam("date_restart", "Date restart"); // TODO validator datetime
+    optionalStringParam("organizators", "Organizators");
 }
 
 // ---------------------------------------------------------------------
@@ -506,10 +505,10 @@ CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef_require_string("uuid", "Global Identificator of the Game")
+    requireStringParam("uuid", "Global Identificator of the Game")
         .addValidator(new ValidatorUUID());
 
-    addInputDef("image_png_base64").string_().required().description("Image PNG in Base64");
+    requireStringParam("image_png_base64", "Image PNG in Base64");
 }
 
 // ---------------------------------------------------------------------
@@ -596,8 +595,8 @@ CmdHandlerGames::CmdHandlerGames()
     setAccessAdmin(true);
 
     // validation and description input fields
-    // addInputDef("filter_text").string_().optional().description("Filter by user email or nick");
-    // addInputDef("filter_role").string_().optional().description("Filter by user role");
+    // optionalStringParam("filter_text", "Filter by user email or nick");
+    // optionalStringParam("filter_role", "Filter by user role");
 }
 
 // ---------------------------------------------------------------------

@@ -47,10 +47,10 @@ script:
   - echo "ssl_port = 4613" >> fhq-server.conf
   - echo "ssl_key_file = " >> fhq-server.conf
   - echo "ssl_cert_file = " >> fhq-server.conf
-  - echo "web_port = 1234" >> fhq-server.conf
+  - echo "web_port = 7080" >> fhq-server.conf
   - echo "web_admin_folder = ../web-admin" >> fhq-server.conf
   - echo "web_max_threads = 1" >> fhq-server.conf
-  - ./fhq-server -cdc
+  - ./fhq-server -wd ../data_travis -cdc
   - mkdir -p public/games
   - ./fhq-server -set "server_folder_public=`pwd`/public/"
   - cd ../tests

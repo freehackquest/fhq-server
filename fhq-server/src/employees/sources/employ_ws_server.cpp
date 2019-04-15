@@ -3,12 +3,6 @@
 #include <employ_server_info.h>
 #include <utils_logger.h>
 
-#include <QSqlQuery>
-#include <QSqlRecord>
-#include <QRegularExpression>
-
-#include <regex>
-
 REGISTRY_EMPLOY(EmployWsServer)
 
 // ---------------------------------------------------------------------
@@ -77,16 +71,6 @@ bool EmployWsServer::validateInputParameters(Error &error, CmdHandlerBase *pCmdH
                     }
                 }
 
-                if (inDef.isEnum()) {
-                    QString val = QString::fromStdString(*itJsonParamName);
-                    QStringList eList = inDef.getEnumList();
-                    // TODO: redesign to validator
-                    if (!eList.contains(val)) {
-                        error = Error(400, "Parameter '" + inDef.getName() + "' expected values one from [" + eList.join(",").toStdString() + "]");
-                        return false;
-                    }
-                }
-
                 if (inDef.isString()) {
                     auto &&sVal = itJsonParamName->get_ref<std::string const&>();
                     std::string sError;
@@ -96,15 +80,6 @@ bool EmployWsServer::validateInputParameters(Error &error, CmdHandlerBase *pCmdH
                             error = Error(400, "Wrong param '" + inDef.getName() + "': " + sError);
                             return false;
                         }
-                    }
-                }
-
-                if (inDef.isEmail()) {
-                    auto &&val = itJsonParamName->get_ref<std::string const&>();
-                    std::regex rx("^[0-9a-zA-Z]{1}[0-9a-zA-Z-._]*[0-9a-zA-Z]{1}@[0-9a-zA-Z]{1}[-.0-9a-zA-Z]*[0-9a-zA-Z]{1}\\.[a-zA-Z]{2,6}$");
-                    if(!std::regex_match(val, rx)){
-                        error = Error(400, "Parameter '" + inDef.getName() + "' must be email type");
-                        return false;
                     }
                 }
             }

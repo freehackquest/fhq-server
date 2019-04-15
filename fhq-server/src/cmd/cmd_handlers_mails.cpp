@@ -20,7 +20,6 @@ CmdHandlerMailInfo::CmdHandlerMailInfo()
     setAccessUser(false);
     setAccessAdmin(true);
 
-    // validation and description input fields
 }
 
 // ---------------------------------------------------------------------
@@ -44,9 +43,10 @@ CmdHandlerMailSend::CmdHandlerMailSend()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("to").required().email_().description("E-mail of the recipient");
-    addInputDef("subject").required().string_().description("Subject of the message");
-    addInputDef("body").required().string_().description("Body of the message");
+    requireStringParam("to", "E-mail of the recipient")
+        .addValidator(new ValidatorEmail());
+    requireStringParam("subject", "Subject of the message");
+    requireStringParam("body", "Body of the message");
 
 }
 
@@ -77,12 +77,11 @@ CmdHandlerMailsList::CmdHandlerMailsList()
     setAccessUser(false);
     setAccessAdmin(true);
 
-    // validation and description input fields
-    addInputDef("filter_email").string_().optional().description("Filter by email");
-    addInputDef("filter_subject").string_().optional().description("Filter by subject");
-    addInputDef("filter_message").string_().optional().description("Filter by message");
-    addInputDef("onpage").integer_().optional().description("On page");
-    addInputDef("page").integer_().optional().description("page");
+    optionalStringParam("filter_email", "Filter by email");
+    optionalStringParam("filter_subject", "Filter by subject");
+    optionalStringParam("filter_message", "Filter by message");
+    optionalIntegerParam("onpage", "On page"); // TODO validator
+    optionalIntegerParam("page", "page"); // TODO validator
 }
 
 // ---------------------------------------------------------------------

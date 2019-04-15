@@ -19,9 +19,10 @@ CmdHandlerFeedbackAdd::CmdHandlerFeedbackAdd()
     setAccessAdmin(true);
 
     // validation and description input fields
-    addInputDef("from").email_().required().description("From user");
-    addInputDef("text").string_().required().description("Text of feedback");
-    addInputDef("type").string_().required().description("Type");
+    requireStringParam("from", "From user")
+        .addValidator(new ValidatorEmail());
+    requireStringParam("text", "Text of feedback");
+    requireStringParam("type", "Type of feedback"); // TODO validator
 }
 
 // ---------------------------------------------------------------------

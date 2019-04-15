@@ -4,7 +4,70 @@
 #include <map>
 #include <utils_logger.h>
 #include <model_request.h>
-#include <cmd_input_def.h>
+#include <validators_base.h>
+
+/*! 
+ * CmdInputDef - helper api for define input params and descrip it for docs.
+ * */
+	
+class CmdInputDef {
+	public:
+        CmdInputDef(const std::string &sName, const std::string &sDescription);
+		CmdInputDef();
+		CmdInputDef & optional();
+		CmdInputDef & required();
+		CmdInputDef & string_();
+		CmdInputDef & integer_();
+        CmdInputDef & any_();
+		CmdInputDef & bool_();
+        CmdInputDef & description(const std::string &sDescription);
+		CmdInputDef & minval(int minval);
+		CmdInputDef & maxval(int maxval);
+        nlohmann::json toJson();
+		
+        const std::string &getType();
+		const std::string &getType() const;
+		const std::string &getName();
+        const std::string &getName() const;
+		const std::string &getRestrict();
+		const std::string &getRestrict() const;
+		const std::string &getDescription();
+		const std::string &getDescription() const;
+
+		bool isRequired();
+		bool isInteger();
+		bool isString();
+		bool isBool();
+        bool isAny();
+
+		bool isMinVal(); // TODO: redesign to validators
+		int getMinVal(); // TODO: redesign to validators
+		bool isMaxVal(); // TODO: redesign to validators
+		int getMaxVal(); // TODO: redesign to validators
+
+		CmdInputDef &addValidator(ValidatorStringBase *pValidatorStringBase);
+		
+		const std::vector<ValidatorStringBase *> &listOfValidators();
+
+	private:
+        std::string m_sType;
+        std::string m_sName;
+        std::string m_sRestrict;
+        std::string m_sDescription;
+		int m_nMinVal;
+		bool m_bSettedMinVal;
+		int m_nMaxVal;
+		bool m_bSettedMaxVal;
+
+		std::string CMD_INPUT_DEF_TYPE_INTEGER = "integer";
+		std::string CMD_INPUT_DEF_TYPE_STRING = "string";
+		std::string CMD_INPUT_DEF_TYPE_BOOL = "boolean";
+		std::string CMD_INPUT_DEF_TYPE_ANY = "any";
+
+		std::vector<ValidatorStringBase *> m_vValidatorsString;
+};
+
+// ---------------------------------------------------------------------
 
 class CmdHandlerBase {
 
@@ -30,8 +93,13 @@ class CmdHandlerBase {
         void setAccessAdmin(bool bAccess);
         void setActivatedFromVersion(const std::string &sActivatedFromVersion);
         void setDeprecatedFromVersion(const std::string &sDeprecatedFromVersion);
-        CmdInputDef &addInputDef(const std::string &name);
-        CmdInputDef &addInputDef_require_string(const std::string &sName, const std::string &sDescription);
+
+        CmdInputDef &requireStringParam(const std::string &sName, const std::string &sDescription);
+        CmdInputDef &optionalStringParam(const std::string &sName, const std::string &sDescription);
+        CmdInputDef &requireIntegerParam(const std::string &sName, const std::string &sDescription);
+        CmdInputDef &optionalIntegerParam(const std::string &sName, const std::string &sDescription);
+        CmdInputDef &requireBooleanParam(const std::string &sName, const std::string &sDescription);
+        CmdInputDef &optionalBooleanParam(const std::string &sName, const std::string &sDescription);
 
         std::string TAG;
         std::string m_sCmd;

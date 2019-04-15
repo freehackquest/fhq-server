@@ -13,7 +13,7 @@
 #include <iomanip> // put_time
 #include <ctime>
 #include <sstream>
-#include <fs.h>
+#include <fallen.h>
 
 // ---------------------------------------------------------------------
 
@@ -145,9 +145,9 @@ void ExportLibFHQCliWebJS::exportPrepareDirs(const std::string &sBasicDir) {
     
     for (int i = 0; i < vDirs.size(); i++) {
         std::string sDir = vDirs[i];
-        if (!FS::dirExists(sDir)) {
+        if (!Fallen::dirExists(sDir)) {
             std::cout << " * mkdir " << sDir << std::endl
-                << (FS::makeDir(sDir) ? "\t> OK" : "\t> FAILED") << std::endl;
+                << (Fallen::makeDir(sDir) ? "\t> OK" : "\t> FAILED") << std::endl;
         } else {
             std::cout << " * Directory already exists " << sDir << std::endl;
         }
