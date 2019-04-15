@@ -72,6 +72,10 @@ def getListOfFiles(p):
 
 warnings = {
     'TODO': 0,
+    'if-format': 0,
+    'while-format': 0,
+    'for-format': 0,
+    'end-brackets': 0,
 }
 
 evil_pieces = {
@@ -80,10 +84,7 @@ evil_pieces = {
 }
 
 # TODO for(){
-
 # TODO: check int nNumber 
-# TODO: check if() - must contains space
-# TODO check the if () {} - figure brakets
 
 def check_line_tabs(filepath, line_number, l):
     global warnings
@@ -104,6 +105,46 @@ def check_TODO(filepath, line_number, l):
                 + 'Line: "' + l + '" \n'
                 + 'What: found TODO in line \n')
 
+def check_if_format(filepath, line_number, l):
+    global warnings
+    global evil_pieces
+    if re.match(r'.*if\(.*', l):
+        warnings['if-format'] = warnings['if-format'] + 1
+        if not only_errors:
+            log_warn('File: ' + filepath + ' (' + str(line_number) + ') \n'
+                + 'Line: "' + l + '" \n'
+                + 'What: found wrong if-format (expected space between "if" and "(") in line \n')
+
+def check_for_format(filepath, line_number, l):
+    global warnings
+    global evil_pieces
+    if re.match(r'.*for\(.*', l):
+        warnings['for-format'] = warnings['for-format'] + 1
+        if not only_errors:
+            log_warn('File: ' + filepath + ' (' + str(line_number) + ') \n'
+                + 'Line: "' + l + '" \n'
+                + 'What: found wrong if-format (expected space between "for" and "(") in line \n')
+
+def check_while_format(filepath, line_number, l):
+    global warnings
+    global evil_pieces
+    if re.match(r'.*while\(.*', l):
+        warnings['while-format'] = warnings['while-format'] + 1
+        if not only_errors:
+            log_warn('File: ' + filepath + ' (' + str(line_number) + ') \n'
+                + 'Line: "' + l + '" \n'
+                + 'What: found wrong while-format (expected space between "while" and "(") in line \n')
+
+def check_end_brackets_format(filepath, line_number, l):
+    global warnings
+    global evil_pieces
+    if re.match(r'.*\){.*', l):
+        warnings['end-brackets'] = warnings['end-brackets'] + 1
+        if not only_errors:
+            log_warn('File: ' + filepath + ' (' + str(line_number) + ') \n'
+                + 'Line: "' + l + '" \n'
+                + 'What: found wrong end-brackets (expected space between ")" and "{") in line \n')
+
 def check_auto_evil(filepath, line_number, l):
     global warnings
     global evil_pieces
@@ -111,7 +152,7 @@ def check_auto_evil(filepath, line_number, l):
         evil_pieces['auto'] = evil_pieces['auto'] + 1
         log_err('File: ' + filepath + ' (' + str(line_number) + ') \n'
             + 'Line: "' + l + '" \n'
-            + 'What: found "auto" in line\n')
+            + 'What: found "auto" in line - c++ is a specific language\n')
 
 _files = getListOfFiles(folders_for_check[0])
 for filepath in _files:
@@ -121,11 +162,16 @@ for filepath in _files:
         lines = f.readlines()
         line_number = 0
         for l in lines:
+            line_number = line_number + 1
             l = l.rstrip('\n')
             check_line_tabs(filepath, line_number, l)
             check_TODO(filepath, line_number, l)
             check_auto_evil(filepath, line_number, l)
-            line_number = line_number + 1
+            check_if_format(filepath, line_number, l)
+            check_end_brackets_format(filepath, line_number, l)
+            check_for_format(filepath, line_number, l)
+            check_while_format(filepath, line_number, l)
+            
 
 print(" ============= \n")
 for i in warnings:

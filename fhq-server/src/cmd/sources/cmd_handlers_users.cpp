@@ -1498,24 +1498,24 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest){
     }
     if(jsonRequest.find("filter_role") != jsonRequest.end()){
         QString role = QString::fromStdString( jsonRequest["filter_role"].get_ref<std::string const&>() ).trimmed();
-        if(role != ""){
+        if (role != "") {
             filters << "role = :role";
             filter_values[":role"] = role;
         }
     }
 
-    if(jsonRequest.find("page") != jsonRequest.end()){
+    if (jsonRequest.find("page") != jsonRequest.end()) {
         nPage = jsonRequest.at("page");
     }
 
-    if(jsonRequest.find("onpage") != jsonRequest.end()){
+    if (jsonRequest.find("onpage") != jsonRequest.end()) {
         nOnPage = jsonRequest.at("onpage");
     }
 
     nlohmann::json jsonUsers = nlohmann::json::array();
     QSqlDatabase db = *(pDatabase->database());
     QString where = filters.join(" AND ");
-    if(where.length() > 0){
+    if (where.length() > 0) {
         where = "WHERE " + where;
     }
 
