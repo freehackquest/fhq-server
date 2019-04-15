@@ -9,15 +9,15 @@ print("simple_code_check 0.0.1")
 folders_for_check = []
 
 folders_for_check.append({
-    "path": "../../fhq-server/src/",
+    "path": "../fhq-server/src/",
     "exclude": [
-        "../../fhq-server/src/core/3rdParty",
-        "../../fhq-server/src/3rdParty/quazip-0.7.3"
+        "../fhq-server/src/core/3rdParty",
+        "../fhq-server/src/3rdParty/quazip-0.7.3"
     ]
 })
 
 folders_for_check.append({
-    "path": "../../fhq-server/unit-tests/",
+    "path": "../fhq-server/unit-tests/",
     "exclude": []
 })
 
