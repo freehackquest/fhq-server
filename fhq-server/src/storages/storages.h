@@ -55,11 +55,12 @@ class StorageUpdateBase {
         const std::string &version();
         const std::string &description();
         const std::vector<StorageStruct> &listOfStructChanges();
+        void add(StorageStruct st);
         virtual bool custom(Storage *pStorage, StorageConnection *pConn, std::string &error) = 0;
 
     protected:
         std::string TAG;
-        std::vector<StorageStruct> m_vStructChanges;
+        std::vector<StorageStruct> m_vStructChanges; // TODO: move to private
         
     private:
         std::string m_sFromVersion;

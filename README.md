@@ -1,4 +1,5 @@
-# FreeHackQuest Backend
+# FHQ Server (backend)
+
 [![Build Status](https://travis-ci.org/freehackquest/fhq-server.svg?branch=master)](https://travis-ci.org/freehackquest/fhq-server)
 
 Backend for FreeHackQuest on Qt and WebSockets

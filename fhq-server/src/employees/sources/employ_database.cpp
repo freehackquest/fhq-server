@@ -221,7 +221,7 @@ Storage *EmployDatabase::storage() {
     if (it == m_mapStorageConnections.end()) {
 		EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
 		std::string sFilepathConfig = "";
-        pStorage = Storages::create("mysql");
+        pStorage = Storages::create("mysql"); // TODO hardcoded mysql
 		if (!pStorage->applyConfigFromFile(sFilepathConfig)) {
 			delete pStorage;
 			return nullptr;

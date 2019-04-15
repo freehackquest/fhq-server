@@ -102,6 +102,12 @@ const std::vector<StorageStruct> &StorageUpdateBase::listOfStructChanges() {
 
 // ---------------------------------------------------------------------
 
+void StorageUpdateBase::add(StorageStruct st) {
+    m_vStructChanges.push_back(st);
+}
+
+// ---------------------------------------------------------------------
+
 void StorageUpdates::initGlobalVariables(){
     if(g_pStorageUpdates == NULL){
         // Log::info(std::string(), "Create list updates");

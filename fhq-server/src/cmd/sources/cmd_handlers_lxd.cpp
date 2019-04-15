@@ -18,14 +18,13 @@ CmdHandlerLXDContainers::CmdHandlerLXDContainers()
 
     TAG = "LXD_HANDLER";
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
-    m_vInputs.push_back(CmdInputDef("action").string_().required().description(
-            "Actions: create, start, stop and delete container"));
+    requireStringParam("name", "Container name");
+    requireStringParam("action", "Actions: create, start, stop and delete container"); // TODO validator
 }
 
 // ---------------------------------------------------------------------
@@ -171,13 +170,14 @@ void CmdHandlerLXDContainers::delete_container(const std::string &name, std::str
 CmdHandlerLXDInfo::CmdHandlerLXDInfo()
         : CmdHandlerBase("lxd_info", "Get information about the orhestra, containers.") {
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
-    m_vInputs.push_back(CmdInputDef("get").string_().optional().description("Requested information"));
+    requireStringParam("name", "Container name");
+    optionalStringParam("get", "Requested information");
+    
 }
 
 // ---------------------------------------------------------------------
@@ -226,9 +226,9 @@ bool CmdHandlerLXDInfo::get_state(std::string sName, std::string &sError, int &n
 CmdHandlerLXDList::CmdHandlerLXDList()
         : CmdHandlerBase("lxd_list", "Get information about all containers.") {
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 }
 
 // ---------------------------------------------------------------------
@@ -257,12 +257,12 @@ void CmdHandlerLXDList::handle(ModelRequest *pRequest) {
 CmdHandlerLXDExec::CmdHandlerLXDExec()
         : CmdHandlerBase("lxd_exec", "Exec command in the container with name.") {
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
-    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
-    m_vInputs.push_back(CmdInputDef("command").string_().required().description("Name of execution command"));
+    requireStringParam("name", "Container name");
+    requireStringParam("command", "Name of execution command"); // TODO validator
 }
 
 
@@ -321,13 +321,13 @@ bool CmdHandlerLXDExec::exec_command(const std::string &sName, const std::string
 CmdHandlerLXDFile::CmdHandlerLXDFile()
         : CmdHandlerBase("lxd_file", "Pull, push, delete file inside the container.") {
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
-    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
-    m_vInputs.push_back(CmdInputDef("action").string_().required().description("Action with files: pull, push or delete"));
-    m_vInputs.push_back(CmdInputDef("path").string_().required().description("Path to file inside the container"));
+    requireStringParam("name", "Container name");
+    requireStringParam("action", "Action with files: pull, push or delete"); // TODO validator
+    requireStringParam("path", "Path to file inside the container");
 }
 
 void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
@@ -419,13 +419,13 @@ bool CmdHandlerLXDFile::push_file(LXDContainer *pContainer, const std::string &s
 CmdHandlerLXDOpenPort::CmdHandlerLXDOpenPort()
         : CmdHandlerBase("lxd_open_port", "Opens the container port.") {
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
-    m_vInputs.push_back(CmdInputDef("name").string_().required().description("Container name"));
-    m_vInputs.push_back(CmdInputDef("port").integer_().required().description("Number container port"));
-    m_vInputs.push_back(CmdInputDef("protocol").string_().required().description("Protocol"));
+    requireStringParam("name", "Container name");
+    requireIntegerParam("port", "Number container port");
+    requireStringParam("protocol", "Protocol");
 }
 
 void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {

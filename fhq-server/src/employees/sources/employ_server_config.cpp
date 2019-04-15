@@ -2,7 +2,7 @@
 #include <utils_logger.h>
 #include <sys/stat.h>
 #include <storages.h>
-#include <fs.h>
+#include <fallen.h>
 #include <parse_config.h>
 #include <fstream>
 #include <regex>        // regex, sregex_token_iterator
@@ -18,7 +18,17 @@ EmployServerConfig::EmployServerConfig()
     : EmployBase(EmployServerConfig::name(), {}){
     
     TAG = EmployServerConfig::name();
-    
+
+    m_mapDefaultOptions["storage_type"] = "mysql";
+    m_mapDefaultOptions["port"] = "1234";
+    m_mapDefaultOptions["ssl_on"] = "no";
+    m_mapDefaultOptions["ssl_port"] = "4613";
+    m_mapDefaultOptions["ssl_key_file"] = "/etc/ssl/private/localhost.key";
+    m_mapDefaultOptions["ssl_cert_file"] = "/etc/ssl/certs/localhost.crt";
+    m_mapDefaultOptions["web_port"] = "7080";
+    m_mapDefaultOptions["web_max_threads"] = "4";
+    m_mapDefaultOptions["web_admin_folder"] = "/usr/share/fhq-server/web-admin";
+
     // default settings
     m_bServer_ssl_on = false;
     m_bDatabase_usemysql = true;
@@ -49,24 +59,46 @@ EmployServerConfig::EmployServerConfig()
 
 // ---------------------------------------------------------------------
 
-bool EmployServerConfig::init(){
-    // TODO: redesign find folder with configs
+void EmployServerConfig::setWorkDir(const std::string &sWorkDir) {
+    m_sWorkDir = sWorkDir;
+}
 
-    std::vector<std::string> vSearchConfigFile;
-    vSearchConfigFile.push_back("fhq-server.conf");
-    // vSearchConfigFile.push_back("/etc/freehackquest-backend/conf.ini");
-    // vSearchConfigFile.push_back("/etc/fhq-server/conf.ini");
-    // vSearchConfigFile.push_back("etc/freehackquest-backend/conf.ini");
-    vSearchConfigFile.push_back("/etc/fhq-server/fhq-server.conf");
+// ---------------------------------------------------------------------
+
+bool EmployServerConfig::init() {
+    // TODO: redesign find folder with configs
+    struct PossibleFileConfigs {
+        PossibleFileConfigs(const std::string &sDirPath, const std::string &sFilePathConf) :
+            sDirPath(sDirPath), sFilePathConf(sFilePathConf) {
+
+        };
+        std::string sDirPath;
+        std::string sFilePathConf;
+    };
+
+    std::vector<PossibleFileConfigs> vSearchConfigFile;
+
+    if (m_sWorkDir != "") {
+        // TODO convert to fullpath
+        vSearchConfigFile.push_back(PossibleFileConfigs(m_sWorkDir + "/conf.d/", m_sWorkDir + "/conf.d/fhq-server.conf"));
+    } else {
+        // TODO convert to fullpath
+        vSearchConfigFile.push_back(PossibleFileConfigs("./", "fhq-server.conf"));
+        // vSearchConfigFile.push_back("/etc/freehackquest-backend/conf.ini");
+        // vSearchConfigFile.push_back("/etc/fhq-server/conf.ini");
+        // vSearchConfigFile.push_back("etc/freehackquest-backend/conf.ini");
+        vSearchConfigFile.push_back(PossibleFileConfigs("/etc/fhq-server/", "/etc/fhq-server/fhq-server.conf"));
+    }
 
     for (int i = 0; i < vSearchConfigFile.size(); i++) {
-        std::string tmp = vSearchConfigFile[i];
-        if (FS::fileExists(tmp)) {
-            m_sFilepathConf = tmp;
-            Log::info(TAG, "Found config file " + tmp);
+        PossibleFileConfigs tmp = vSearchConfigFile[i];
+        if (Fallen::fileExists(tmp.sFilePathConf)) {
+            m_sFilepathConf = tmp.sFilePathConf;
+            m_sWorkDir = tmp.sDirPath;
+            Log::info(TAG, "Found config file " + tmp.sFilePathConf);
             break;
         } else {
-            Log::warn(TAG, "Not found possible config file " + tmp);
+            Log::warn(TAG, "Not found possible config file " + tmp.sFilePathConf);
         }
     }
     
@@ -106,7 +138,7 @@ bool EmployServerConfig::init(){
     m_nServer_port = parseConfig.intValue("port", m_nServer_port);
     m_bServer_ssl_on = parseConfig.boolValue("ssl_on", m_bServer_ssl_on);
     if (m_bServer_ssl_on) {
-        m_nServer_ssl_port = parseConfig.intValue("SERVER/ssl_port", m_nServer_ssl_port);
+        m_nServer_ssl_port = parseConfig.intValue("ssl_port", m_nServer_ssl_port);
         m_sServer_ssl_key_file = parseConfig.stringValue("ssl_key_file", m_sServer_ssl_key_file);
         m_sServer_ssl_cert_file = parseConfig.stringValue("ssl_cert_file", m_sServer_ssl_cert_file);
     }
@@ -124,9 +156,14 @@ bool EmployServerConfig::init(){
     }
 
     m_sWeb_admin_folder = parseConfig.stringValue("web_admin_folder", m_sWeb_admin_folder);
-    if (!FS::dirExists(m_sWeb_admin_folder)) {
+    if (m_sWeb_admin_folder.length() > 0 && m_sWeb_admin_folder[0] != '/') {
+        m_sWeb_admin_folder = m_sWorkDir + "/" + m_sWeb_admin_folder;
+    }
+    if (!Fallen::dirExists(m_sWeb_admin_folder)) {
         Log::err(TAG, "Wrong option 'web_admin_folder', because folder '" + m_sWeb_admin_folder + "' does not exists");
         return false;
+    } else {
+        Log::info(TAG, "Web: web_admin_folder " + m_sWeb_admin_folder);
     }
     return true;
 }

@@ -22,14 +22,13 @@ void ExportListOfHandlers::print(){
         std::string sCmd = it->first;
         CmdHandlerBase* pCmdHandlerBase = it->second;
         CmdRow row;
-        row.bAccessUnauth = pCmdHandlerBase->access().accessUnauthorized();
-        row.bAccessUser = pCmdHandlerBase->access().accessUser();
-        row.bAccessAdmin = pCmdHandlerBase->access().accessAdmin();
+        row.bAccessUnauth = pCmdHandlerBase->accessUnauthorized();
+        row.bAccessUser = pCmdHandlerBase->accessUser();
+        row.bAccessAdmin = pCmdHandlerBase->accessAdmin();
         row.sCommandName = sCmd;
         nMaxLenCommandName = std::max(nMaxLenCommandName, (int)sCmd.length());
         vRows.push_back(row);
     }
-
 
     std::cout << " +-" << std::setfill('-') << std::setw(nMaxLenCommandName) << "-" << "-+"
         << "--------+--------+--------+\n";

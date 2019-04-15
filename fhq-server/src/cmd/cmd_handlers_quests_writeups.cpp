@@ -13,13 +13,12 @@ REGISTRY_CMD(CmdHandlerQuestsWriteUpsList)
 CmdHandlerQuestsWriteUpsList::CmdHandlerQuestsWriteUpsList()
     : CmdHandlerBase("quests_writeups_list", "This method will be returned list of writeups by questid"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
     setActivatedFromVersion("0.2.18");
 
-    // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest ID"));
+    requireIntegerParam("questid", "Quest ID");
 }
 
 // ---------------------------------------------------------------------
@@ -99,14 +98,14 @@ CmdHandlerQuestsWriteUpsProposal::CmdHandlerQuestsWriteUpsProposal()
 
     m_sLinkPrefix = "https://www.youtube.com/watch?v=";
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
     setActivatedFromVersion("0.2.18");
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("questid").required().integer_().description("Quest ID"));
-    m_vInputs.push_back(CmdInputDef("writeup_link").required().string_().description("Link to writeup (Must be start from " + m_sLinkPrefix + ")"));
+    requireIntegerParam("questid", "Quest ID");
+    requireStringParam("writeup_link", "Link to writeup (Must be start from " + m_sLinkPrefix + ")"); // TODO validator
 }
 
 // ---------------------------------------------------------------------
@@ -198,14 +197,14 @@ REGISTRY_CMD(CmdHandlerQuestsWriteUpsUpdate)
 CmdHandlerQuestsWriteUpsUpdate::CmdHandlerQuestsWriteUpsUpdate()
     : CmdHandlerBase("quests_writeups_update", "This method will be update writeup approve now") {
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
     setActivatedFromVersion("0.2.18");
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("writeupid").required().integer_().description("WriteUp ID"));
-    m_vInputs.push_back(CmdInputDef("approve").required().string_().description("Approve value 1 or 0"));
+    requireIntegerParam("writeupid", "WriteUp ID");
+    requireStringParam("approve", "Approve value 1 or 0"); // TODO validator
 }
 
 // ---------------------------------------------------------------------
@@ -281,13 +280,13 @@ REGISTRY_CMD(CmdHandlerQuestsWriteUpsDelete)
 CmdHandlerQuestsWriteUpsDelete::CmdHandlerQuestsWriteUpsDelete()
     : CmdHandlerBase("quests_writeups_delete", "This method will be remove writeup") {
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
     setActivatedFromVersion("0.2.18");
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("writeupid").required().integer_().description("WriteUp ID"));
+    requireIntegerParam("writeupid", "WriteUp ID");
 }
 
 // ---------------------------------------------------------------------
