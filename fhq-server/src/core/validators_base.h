@@ -53,4 +53,18 @@ class ValidatorUUID : public ValidatorStringBase {
 
 // ----------------------------------------------------------------------
 
+class ValidatorStringLenght : public ValidatorStringBase {
+    public:
+        ValidatorStringLenght(int nMinLength, int nMaxLength);
+        virtual std::string typeName();
+        virtual bool isValid(const std::string &sValue, std::string &sError);
+
+    private:
+        std::string TAG;
+        int m_nMinLength;
+        int m_nMaxLength;
+};
+
+// ----------------------------------------------------------------------
+
 #endif // VALIDATOR_BASE_H

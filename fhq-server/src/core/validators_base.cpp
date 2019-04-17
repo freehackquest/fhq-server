@@ -63,3 +63,33 @@ bool ValidatorUUID::isValid(const std::string &sValue, std::string &sError) {
 }
 
 // ----------------------------------------------------------------------
+// ValidatorStringLenght
+
+ValidatorStringLenght::ValidatorStringLenght(int nMinLength, int nMaxLength) {
+    TAG = "ValidatorStringLenght";
+    m_nMinLength = nMinLength;
+    m_nMaxLength = nMaxLength;
+}
+
+// ----------------------------------------------------------------------
+
+std::string ValidatorStringLenght::typeName() {
+    return "uuid";
+}
+
+// ----------------------------------------------------------------------
+
+bool ValidatorStringLenght::isValid(const std::string &sValue, std::string &sError) {
+    if (sValue.length() < m_nMinLength) {
+        sError = "Value must have more than " + std::to_string(m_nMinLength) + " simbols";
+        return false;
+    }
+
+    if (sValue.length() > m_nMaxLength) {
+        sError = "Value must have less than " + std::to_string(m_nMaxLength) + " simbols";
+        return false;
+    }
+    return true;
+}
+
+// ----------------------------------------------------------------------

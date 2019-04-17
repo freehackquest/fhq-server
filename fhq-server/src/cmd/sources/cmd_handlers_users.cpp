@@ -584,8 +584,10 @@ CmdHandlerUsersAdd::CmdHandlerUsersAdd()
         .addValidator(new ValidatorUUID());
 
     requireStringParam("email", "User's E-mail");
-    requireStringParam("nick", "User's nick");
-    requireStringParam("password", "Password");
+    requireStringParam("nick", "User's nick")
+        .addValidator(new ValidatorStringLenght(4, 127));
+    requireStringParam("password", "Password")
+        .addValidator(new ValidatorStringLenght(4, 127));
     requireStringParam("role", "User's role"); // TODO role validator
     requireStringParam("university", "University");
 }
@@ -622,23 +624,7 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest) {
     }
 
     QString sNick = QString::fromStdString(jsonRequest.at("nick"));
-
-    // TODO: redesign string validator
-    if (sNick.size() < 3 && sNick.size() > 128) {
-        Log::err(TAG, "Invalid nick format " + sNick.toStdString());
-        pRequest->sendMessageError(cmd(), Error(400, "Expected nick format"));
-        return;
-    }
-
-    // TODO: redesign password validator
-    QRegularExpression regexPassword("^[0-9a-zA-Z]{3,128}$");
     QString sPassword = QString::fromStdString(jsonRequest.at("password"));
-
-    if (!regexPassword.match(sPassword).hasMatch()) {
-        Log::err(TAG, "Invalid password format");
-        pRequest->sendMessageError(cmd(), Error(400, "Expected password format"));
-        return;
-    }
 
     QString sPassword_sha1 = sEmail.toUpper() + sPassword;
 
