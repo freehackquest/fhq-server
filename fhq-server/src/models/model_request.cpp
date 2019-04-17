@@ -35,6 +35,7 @@ IWebSocketServer *ModelRequest::server() {
 
 // ---------------------------------------------------------------------
 
+// TODO deprecated
 const nlohmann::json& ModelRequest::jsonRequest() {
     return m_jsonRequest;
 }
@@ -42,6 +43,7 @@ const nlohmann::json& ModelRequest::jsonRequest() {
 // ---------------------------------------------------------------------
 
 std::string ModelRequest::getInputString(const std::string &sParamName, const std::string &sDefaultValue) {
+    // TODO check by input defs
     std::string sRet = sDefaultValue;
     if (m_jsonRequest[sParamName].is_string()) {
         sRet = m_jsonRequest[sParamName];
@@ -52,6 +54,7 @@ std::string ModelRequest::getInputString(const std::string &sParamName, const st
 // ---------------------------------------------------------------------
 
 int ModelRequest::getInputInteger(const std::string &sParamName, int nDefaultValue) {
+    // TODO check by input defs
     int nRet = nDefaultValue;
     if (m_jsonRequest[sParamName].is_number()) {
         nRet = m_jsonRequest[sParamName];
@@ -97,7 +100,8 @@ bool ModelRequest::isUnauthorized() {
 
 // ---------------------------------------------------------------------
 
-QJsonObject ModelRequest::data() { // deprecated
+// TODO deprecated
+QJsonObject ModelRequest::data() {
     QString s = QString::fromStdString( m_jsonRequest.dump() );
     return QJsonDocument::fromJson(s.toUtf8()).object();
 }

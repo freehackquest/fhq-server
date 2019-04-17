@@ -13,8 +13,9 @@ class ModelRequest {
         bool isAdmin();
         bool isUser();
         bool isUnauthorized();
-        QJsonObject data(); // deprecated
-        const nlohmann::json& jsonRequest();
+        // TODO set input defs
+        QJsonObject data(); // TODO deprecated
+        const nlohmann::json& jsonRequest(); // TODO deprecated
         std::string getInputString(const std::string &sParamName, const std::string &sDefaultValue);
         int getInputInteger(const std::string &sParamName, int defaultValue);
         
