@@ -10,18 +10,28 @@ from pprint import pprint
 
 test_name = 'Testing Classbook'
 
-# scoreboard
-# users
-# user
-# user_change_password
-# user_create
-# user_delete
-# user_skills
-# user_update
 user2_session = None
 try:
     fhqtest.print_header(" > > > " + test_name + ": begin ")
     fhqtest.init_enviroment()
+
+    fhqtest.print_bold("Clean up test data... ")
+    records_list = fhqtest.admin_session.classbook_list({
+        "parentid": 0,
+        "lang": "en",
+        "search": ""
+    })
+    pprint(records_list)
+    
+    fhqtest.print_bold("Create new record")
+    record1 = fhqtest.admin_session.classbook_add_record({
+        "parentid": 0,
+        "name": "Some",
+        "content": "Some",
+        "uuid": fhqtest.CLASSBOOK_RECORD1,
+        "ordered": 0
+    })
+    fhqtest.check_response(record1, "Records succesfull created")
 
     # Cleanup
     ''' user1 = None
