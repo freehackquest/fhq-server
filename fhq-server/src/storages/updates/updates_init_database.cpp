@@ -226,7 +226,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
         StorageStruct classbook("classbook", StorageStructTableMode::CREATE);
         classbook.addColumn(StorageStructColumn("id").number().autoIncrement().primaryKey().notNull());
         classbook.addColumn(StorageStructColumn("parentid").number().notNull());
-        classbook.addColumn(StorageStructColumn("classbookid").number().notNull());
+        classbook.addColumn(StorageStructColumn("ordered").number().notNull());
         classbook.addColumn(StorageStructColumn("uuid").string(128).notNull());
         classbook.addColumn(StorageStructColumn("parentuuid").string(128).notNull());
         classbook.addColumn(StorageStructColumn("name").string(128).notNull());
