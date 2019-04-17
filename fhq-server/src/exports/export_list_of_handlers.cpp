@@ -5,7 +5,7 @@
 #include <websocketserver.h>
 #include <employees.h>
 
-void ExportListOfHandlers::print(){
+void ExportListOfHandlers::print() {
     std::cout << "\n\n * CmdHandlers (" << g_pCmdHandlers->size() << "):\n";
 
     struct CmdRow{
@@ -18,7 +18,7 @@ void ExportListOfHandlers::print(){
     int nMaxLenCommandName = 0;
 
     std::map<std::string, CmdHandlerBase*>::iterator it = g_pCmdHandlers->begin();
-    for (; it!=g_pCmdHandlers->end(); ++it){
+    for (; it!=g_pCmdHandlers->end(); ++it) {
         std::string sCmd = it->first;
         CmdHandlerBase* pCmdHandlerBase = it->second;
         CmdRow row;
@@ -37,7 +37,7 @@ void ExportListOfHandlers::print(){
     std::cout << " +-" << std::setfill('-') << std::setw(nMaxLenCommandName) << "-"       << "-+"
         << "--------+--------+--------+\n";
 
-    for(unsigned int i = 0; i < vRows.size(); i++){
+    for (unsigned int i = 0; i < vRows.size(); i++) {
         std::cout << " | " << std::setfill(' ') << std::setw(nMaxLenCommandName) << vRows[i].sCommandName << " |";
         std::cout << " " << (vRows[i].bAccessUnauth ? "unauth" : "      ") << " |";
         std::cout << "  " << (vRows[i].bAccessUser ? "user" : "    ") << "  |";

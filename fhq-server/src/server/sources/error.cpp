@@ -2,19 +2,19 @@
 
 // ---------------------------------------------------------------------
 
-Error::Error(int nCodeError, const std::string &sMessage){
+Error::Error(int nCodeError, const std::string &sMessage) {
     m_nCodeError = nCodeError;
     m_sMessage = sMessage;
 }
 
 // ---------------------------------------------------------------------
 
-int Error::codeError(){
+int Error::codeError() {
     return m_nCodeError;
 }
 
 // ---------------------------------------------------------------------
 
-std::string Error::message(){
+std::string Error::message() {
     return m_sMessage;
 }

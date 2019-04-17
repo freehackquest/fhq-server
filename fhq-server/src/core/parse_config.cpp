@@ -23,9 +23,9 @@ bool ParseConfig::load() {
         std::string sOrigLine = sLine;
         std::size_t nFoundComment = sLine.find("#");
         
-        if (nFoundComment != std::string::npos){
+        if (nFoundComment != std::string::npos) {
             // remove all after #
-            sLine.erase (sLine.begin() + nFoundComment, sLine.end());
+            sLine.erase(sLine.begin() + nFoundComment, sLine.end());
         }
 
         Fallen::trim(sLine);
@@ -83,11 +83,11 @@ std::string ParseConfig::stringValue(const std::string &sParamName, const std::s
 
 int ParseConfig::intValue(const std::string &sParamName, int defaultValue) {
     int nResult = defaultValue;
-    if(m_mapConfigValues.count(sParamName)){
+    if (m_mapConfigValues.count(sParamName)) {
         std::string sParamValue = m_mapConfigValues.at(sParamName);
         std::istringstream isBuffer(sParamValue);
         isBuffer >> nResult;
-    }else{
+    } else {
         Log::warn(TAG, sParamName + " - not found in " + m_sFilepathConf + "\n\t Will be used default value: " + std::to_string(defaultValue));
     }
     return nResult;
@@ -98,11 +98,11 @@ int ParseConfig::intValue(const std::string &sParamName, int defaultValue) {
 bool ParseConfig::boolValue(const std::string &sParamName, bool defaultValue) {
     bool bResult = defaultValue;
 
-    if(m_mapConfigValues.count(sParamName)){
+    if (m_mapConfigValues.count(sParamName)) {
         std::string sParamValue = m_mapConfigValues.at(sParamName);
         std::transform(sParamValue.begin(), sParamValue.end(), sParamValue.begin(), ::tolower);
         bResult = (sParamValue == "yes" || sParamValue == "no");
-    }else{
+    } else {
         Log::warn(TAG, sParamName + " - not found in " + m_sFilepathConf + "\n\t Will be used default value: " + (defaultValue ? "yes" : "no"));
     }
     return bResult;

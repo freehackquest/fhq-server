@@ -13,7 +13,7 @@
 // *****************************************
 
 CmdHandlerEventAdd::CmdHandlerEventAdd()
-    : CmdHandlerBase("createpublicevent", "Create the public event"){
+    : CmdHandlerBase("createpublicevent", "Create the public event") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -27,7 +27,7 @@ CmdHandlerEventAdd::CmdHandlerEventAdd()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerEventAdd::handle(ModelRequest *pRequest){
+void CmdHandlerEventAdd::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
@@ -42,7 +42,7 @@ void CmdHandlerEventAdd::handle(ModelRequest *pRequest){
     query.prepare("INSERT INTO public_events(type,message,dt) VALUES(:type,:message,NOW())");
     query.bindValue(":type", type);
     query.bindValue(":message", message);
-    if(!query.exec()){
+    if (!query.exec()) {
         // TODO database error
     }
 
@@ -55,7 +55,7 @@ void CmdHandlerEventAdd::handle(ModelRequest *pRequest){
 
 
 CmdHandlerEventDelete::CmdHandlerEventDelete()
-    : CmdHandlerBase("deletepublicevent", "Delete public event"){
+    : CmdHandlerBase("deletepublicevent", "Delete public event") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -66,7 +66,7 @@ CmdHandlerEventDelete::CmdHandlerEventDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerEventDelete::handle(ModelRequest *pRequest){
+void CmdHandlerEventDelete::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
@@ -102,7 +102,7 @@ void CmdHandlerEventDelete::handle(ModelRequest *pRequest){
 // *****************************************
 
 CmdHandlerEventInfo::CmdHandlerEventInfo()
-    : CmdHandlerBase("getpublicevent", "Return public event info by id"){
+    : CmdHandlerBase("getpublicevent", "Return public event info by id") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -114,7 +114,7 @@ CmdHandlerEventInfo::CmdHandlerEventInfo()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerEventInfo::handle(ModelRequest *pRequest){
+void CmdHandlerEventInfo::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
@@ -136,7 +136,7 @@ void CmdHandlerEventInfo::handle(ModelRequest *pRequest){
         jsonEvent["id"] = record.value("id").toInt();
         jsonEvent["type"] = record.value("type").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
         jsonEvent["message"] = record.value("message").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
-    }else{
+    } else {
         pRequest->sendMessageError(cmd(), Error(404, "Event not found"));
         return;
     }
@@ -151,7 +151,7 @@ void CmdHandlerEventInfo::handle(ModelRequest *pRequest){
 
 
 CmdHandlerEventsList::CmdHandlerEventsList()
-    : CmdHandlerBase("publiceventslist", "Return list of public events"){
+    : CmdHandlerBase("publiceventslist", "Return list of public events") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -163,7 +163,7 @@ CmdHandlerEventsList::CmdHandlerEventsList()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerEventsList::handle(ModelRequest *pRequest){
+void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
@@ -174,7 +174,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest){
     jsonResponse["page"] = nPage;
 
     int nOnPage = jsonRequest["onpage"].toInt();
-    if(nOnPage > 50){
+    if (nOnPage > 50) {
         pRequest->sendMessageError(cmd(), Error(400, "Parameter 'onpage' could not be more then 50"));
         return;
     }
@@ -183,17 +183,17 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest){
     QStringList filters;
     QMap<QString,QString> filter_values;
     
-    if(jsonRequest.contains("type")){
+    if (jsonRequest.contains("type")) {
         QString type = jsonRequest["type"].toString().trimmed();
-        if(type != ""){
+        if (type != "") {
             filters << "(e.type = :type)";
             filter_values[":type"] = type;
         }
     }
 
-    if(jsonRequest.contains("search")){
+    if (jsonRequest.contains("search")) {
         QString search = jsonRequest["search"].toString().trimmed();
-        if(search != ""){
+        if (search != "") {
             filters << "(e.message LIKE :search)";
             filter_values[":search"] = "%" + search + "%";
         }
@@ -201,7 +201,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest){
     }
 
     QString where = filters.join(" AND ");
-    if(where.length() > 0){
+    if (where.length() > 0) {
         where = "WHERE " + where;
     }
 
@@ -213,7 +213,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest){
         query.prepare("SELECT count(*) as cnt FROM public_events e "
             " " + where
         );
-        foreach(QString key, filter_values.keys() ){
+        foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
         query.exec();
@@ -233,7 +233,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest){
             " ORDER BY dt DESC "
             " LIMIT " + QString::number(nPage*nOnPage) + "," + QString::number(nOnPage)
         );
-        foreach(QString key, filter_values.keys() ){
+        foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
         query.exec();

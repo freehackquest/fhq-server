@@ -11,7 +11,7 @@
 REGISTRY_CMD(CmdHandlerQuestsWriteUpsList)
 
 CmdHandlerQuestsWriteUpsList::CmdHandlerQuestsWriteUpsList()
-    : CmdHandlerBase("quests_writeups_list", "This method will be returned list of writeups by questid"){
+    : CmdHandlerBase("quests_writeups_list", "This method will be returned list of writeups by questid") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -23,7 +23,7 @@ CmdHandlerQuestsWriteUpsList::CmdHandlerQuestsWriteUpsList()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest){
+void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
@@ -44,7 +44,7 @@ void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest){
     IUserToken *pUserToken = pRequest->userToken();
     bool bAdmin = false;
     int nUserID = 0;
-    if(pUserToken != NULL) {
+    if (pUserToken != NULL) {
         bAdmin = pUserToken->isAdmin();
         nUserID = pUserToken->userid();
     }
@@ -209,7 +209,7 @@ CmdHandlerQuestsWriteUpsUpdate::CmdHandlerQuestsWriteUpsUpdate()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestsWriteUpsUpdate::handle(ModelRequest *pRequest){
+void CmdHandlerQuestsWriteUpsUpdate::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
@@ -291,7 +291,7 @@ CmdHandlerQuestsWriteUpsDelete::CmdHandlerQuestsWriteUpsDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestsWriteUpsDelete::handle(ModelRequest *pRequest){
+void CmdHandlerQuestsWriteUpsDelete::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();

@@ -75,7 +75,7 @@ class LightHttpRequest {
             int nSockFd,
             const std::string &sAddress
         );
-        ~LightHttpRequest(){};
+        ~LightHttpRequest() {};
 
         int sockFd();
         void appendRecieveRequest(const std::string &sRequestPart);

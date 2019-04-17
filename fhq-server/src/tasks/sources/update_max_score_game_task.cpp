@@ -7,16 +7,16 @@
 #include <QEventLoop>
 #include <employ_database.h>
 
-UpdateMaxScoreGameTask::UpdateMaxScoreGameTask(int gameid){
+UpdateMaxScoreGameTask::UpdateMaxScoreGameTask(int gameid) {
     TAG = "UpdateMaxScoreGameTask";
     m_nGameID = gameid;
 }
 
-UpdateMaxScoreGameTask::~UpdateMaxScoreGameTask(){
+UpdateMaxScoreGameTask::~UpdateMaxScoreGameTask() {
     
 }
 
-void UpdateMaxScoreGameTask::run(){
+void UpdateMaxScoreGameTask::run() {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     Log::info(TAG, "gameid " + std::to_string(m_nGameID));
@@ -27,7 +27,7 @@ void UpdateMaxScoreGameTask::run(){
     query.bindValue(":state", "open");
     query.bindValue(":gameid", m_nGameID);
     query.bindValue(":id", m_nGameID);
-    if(!query.exec()){
+    if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
     }
 };

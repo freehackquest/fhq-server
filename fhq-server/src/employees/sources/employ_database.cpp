@@ -57,7 +57,7 @@ bool EmployDatabase::init() {
 
 // ---------------------------------------------------------------------
 
-bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std::string& sError){
+bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std::string& sError) {
     EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
     m_sStorageType = pServerConfig->storageType();
     if (!Storages::support(m_sStorageType)) {
@@ -74,7 +74,7 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
     pDatabase->setPort(pServerConfig->databasePort());
     pDatabase->setUserName("root");
     pDatabase->setPassword(QString(sRootPassword.c_str()));
-    if(!pDatabase->open()){
+    if (!pDatabase->open()) {
         sError = "Could not connect to mysql://" + pServerConfig->databaseHost() + ":" + std::to_string(pServerConfig->databasePort());
         Log::err(TAG, sError);
         Log::err(TAG, "Maybe wrong root password");
@@ -91,7 +91,7 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
     {    
         QSqlQuery query(*pDatabase);
         query.prepare("SHOW DATABASES;");
-        if(!query.exec()){
+        if (!query.exec()) {
             sError = query.lastError().text().toStdString();
             Log::err(TAG, sError);
             return false;
@@ -99,7 +99,7 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
         while (query.next()) {
             QSqlRecord record = query.record();
             std::string sDatabaseName = record.value("Database").toString().toStdString();
-            if(sDatabaseName == dbname){
+            if (sDatabaseName == dbname) {
                 bDatabaseAlreadyExists = true;
             }
         }
@@ -112,7 +112,7 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
         // TODO escaping
         std::string sQuery = "select user from mysql.user where user = '" + dbuser + "';";
         query.prepare(QString(sQuery.c_str()));
-        if(!query.exec()){
+        if (!query.exec()) {
             sError = query.lastError().text().toStdString();
             Log::err(TAG, sError);
             return false;
@@ -120,18 +120,18 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
         while (query.next()) {
             QSqlRecord record = query.record();
             std::string sUserName = record.value("user").toString().toStdString();
-            if(sUserName == dbuser){
+            if (sUserName == dbuser) {
                 bUserAlreadyExists = true;
             }
         }
     }
     
-    if(bDatabaseAlreadyExists || bUserAlreadyExists){
+    if (bDatabaseAlreadyExists || bUserAlreadyExists) {
         sError = "";
-        if(bDatabaseAlreadyExists){
+        if (bDatabaseAlreadyExists) {
             sError += "Database '" + dbname + "' already exists. If you wish: you can drop database manually and try again\n";
         }
-        if(bUserAlreadyExists){
+        if (bUserAlreadyExists) {
             sError += "User '" + dbuser + "' already exists. If you wish: you can drop user manually and try again\n";
         }
         return false;
@@ -143,7 +143,7 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
         // TODO escaping
         std::string sQuery = "CREATE DATABASE `" + dbname + "` CHARACTER SET utf8 COLLATE utf8_general_ci;";
         query.prepare(QString(sQuery.c_str()));
-        if(!query.exec()){
+        if (!query.exec()) {
             sError = query.lastError().text().toStdString();
             Log::err(TAG, sError);
             return false;
@@ -156,7 +156,7 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
         // TODO escaping
         std::string sQuery = "CREATE USER '" + dbuser + "'@'localhost' IDENTIFIED BY '" + dbpass + "';";
         query.prepare(QString(sQuery.c_str()));
-        if(!query.exec()){
+        if (!query.exec()) {
             sError = query.lastError().text().toStdString();
             Log::err(TAG, sError);
             return false;
@@ -169,7 +169,7 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
         // TODO escaping
         std::string sQuery = "GRANT ALL PRIVILEGES ON " + dbname + ".* TO '" + dbuser + "'@'localhost' WITH GRANT OPTION;";
         query.prepare(QString(sQuery.c_str()));
-        if(!query.exec()){
+        if (!query.exec()) {
             sError = query.lastError().text().toStdString();
             Log::err(TAG, sError);
             return false;
@@ -181,18 +181,16 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
 
 // ---------------------------------------------------------------------
 
-QSqlDatabase *EmployDatabase::database(){
+QSqlDatabase *EmployDatabase::database() {
     // swap connection
     std::lock_guard<std::mutex> lock(m_mtxSwapConenctions);
-
     long long nThreadID = (long long)QThread::currentThreadId();
     
-    
-    if(m_mDatabaseConnections.contains(nThreadID)){
+    if (m_mDatabaseConnections.contains(nThreadID)) {
         ModelDatabaseConnection *pDBConnection = m_mDatabaseConnections[nThreadID];
         ModelDatabaseConnection *pDBConnection_older = m_mDatabaseConnections_older[nThreadID];
         
-        if(pDBConnection->isOutdated()){
+        if (pDBConnection->isOutdated()) {
             pDBConnection_older->close();
             pDBConnection_older->swap(pDBConnection);
             pDBConnection->connect();

@@ -7,17 +7,17 @@
 #include <utils_logger.h>
 #include <employ_database.h>
 
-UpdateUserLocationTask::UpdateUserLocationTask(int userid, QString lastip){
+UpdateUserLocationTask::UpdateUserLocationTask(int userid, QString lastip) {
     m_nUserID = userid;
     mLastIP = lastip;
     TAG = "UpdateUserLocationTask";
 }
 
-UpdateUserLocationTask::~UpdateUserLocationTask(){
+UpdateUserLocationTask::~UpdateUserLocationTask() {
     
 }
 
-void UpdateUserLocationTask::run(){
+void UpdateUserLocationTask::run() {
     Log::info(TAG, "userid = " + std::to_string(m_nUserID) + " start");
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
@@ -25,14 +25,14 @@ void UpdateUserLocationTask::run(){
     QSqlQuery query(db);
     query.prepare("SELECT * FROM users WHERE id = :id");
     query.bindValue(":id", m_nUserID);
-    if(!query.exec()){
+    if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
     }
     if (query.next()) {
         QSqlRecord record = query.record();
         QString lastip = record.value("last_ip").toString();
 
-        if(lastip != mLastIP){
+        if (lastip != mLastIP) {
             Log::info(TAG, "Update user # " + std::to_string(m_nUserID) + " location by ip " + mLastIP.toStdString());
             QNetworkAccessManager manager;
             QUrl url("http://ip-api.com/json/" + mLastIP);
@@ -70,13 +70,13 @@ void UpdateUserLocationTask::run(){
             query_update.bindValue(":latitude", lat);
             query_update.bindValue(":longitude", lon);
             query_update.bindValue(":id", m_nUserID);
-            if(!query_update.exec()){
+            if (!query_update.exec()) {
                 Log::err(TAG, query_update.lastError().text().toStdString());
             }
-        }else{
-
+        } else {
+            // nothing
         }
-    }else{
+    } else {
         Log::err(TAG, "failed for userid = " + std::to_string(m_nUserID) + "(not found userid in database)");
     }
 };

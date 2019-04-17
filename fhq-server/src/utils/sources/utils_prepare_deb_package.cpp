@@ -5,13 +5,15 @@
 #include <QSysInfo>
 #include <QtCore>
 
-void UtilsPrepareDebPackage::prepare(QString /*repo*/, QString tmpdeb){
+void UtilsPrepareDebPackage::prepare(QString /*repo*/, QString tmpdeb) {
     std::cout << "Distribution: " + QSysInfo::productType().toStdString() + "\n";
     std::cout << "Distribution version: " + QSysInfo::productVersion().toStdString() + "\n";
 
     QFile file(tmpdeb + "/DEBIAN/control");
-    if(file.exists()) file.remove();
-    if(file.open(QIODevice::ReadWrite)){
+    if (file.exists()) {
+        file.remove();
+    }
+    if (file.open(QIODevice::ReadWrite)) {
         QTextStream stream(&file);
         stream << "Source: " << FHQSRV_APP_NAME << endl;
         stream << "Section: misc" << endl;
@@ -20,11 +22,11 @@ void UtilsPrepareDebPackage::prepare(QString /*repo*/, QString tmpdeb){
         stream << "Maintainer: Evgenii Sopov <mrseakg@gmail.com>" << endl;
         // TODO different for ubuntu (default-mysql-server) and for debian (mysql-server)
         QStringList depends;
-        if(QSysInfo::productType() == "ubuntu"){
+        if (QSysInfo::productType() == "ubuntu") {
             depends << "default-mysql-server";
-        }else if(QSysInfo::productType() == "debian"){
+        } else if (QSysInfo::productType() == "debian") {
             depends << "mysql-server";
-        }else{
+        } else {
             depends << "mysql-server";
         }
         depends << "libqt5websockets5" << "libqt5network5" << "libqt5sql5" << "libqt5sql5-mysql" << "libqt5core5a";
@@ -46,13 +48,13 @@ void UtilsPrepareDebPackage::prepare(QString /*repo*/, QString tmpdeb){
         std::cout << "Package: " << std::string(FHQSRV_APP_NAME) << "\n";
         
         // Architecture
-        if(QSysInfo::currentCpuArchitecture() == "x86_64"){
+        if (QSysInfo::currentCpuArchitecture() == "x86_64") {
             stream << "Architecture: amd64" << endl;
             std::cout << "Architecture: amd64\n";
-        } else if(QSysInfo::currentCpuArchitecture() == "i386"){
+        } else if (QSysInfo::currentCpuArchitecture() == "i386") {
             stream << "Architecture: i386" << endl;
             std::cout << "Architecture: i386\n";
-        }else{
+        } else {
             stream << "Architecture: all" << endl;
             std::cout << "Architecture: all\n";
         }

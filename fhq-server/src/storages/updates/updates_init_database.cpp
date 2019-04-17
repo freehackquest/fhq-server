@@ -354,7 +354,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 }
 
-bool UpdatesInitDatabase::custom(Storage *pStorage, StorageConnection *pConn, std::string &error){
+bool UpdatesInitDatabase::custom(Storage *pStorage, StorageConnection *pConn, std::string &error) {
     
     // here you can migrate data of correction if not just return true;
 

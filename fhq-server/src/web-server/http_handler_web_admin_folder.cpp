@@ -51,7 +51,7 @@ bool HttpHandlerWebAdminFolder::canHandle(const std::string &sWorkerId, LightHtt
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerWebAdminFolder::handle(const std::string &sWorkerId, LightHttpRequest *pRequest){
+bool HttpHandlerWebAdminFolder::handle(const std::string &sWorkerId, LightHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
     std::string sRequestPath = pRequest->requestPath();
     // Log::warn(_tag, pRequest->requestPath());

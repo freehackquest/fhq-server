@@ -25,7 +25,7 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
     TAG = "WebSocketServer";
 
     m_bFailed = false;
-    if(!Employees::init({"start_ws_server"})){
+    if (!Employees::init({"start_ws_server"})) {
         m_bFailed = true;
         return;
     }
@@ -41,13 +41,13 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
         Log::info(TAG, "fhq-server listening on port " + std::to_string(pServerConfig->serverPort()));
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnection);
         connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &WebSocketServer::closed);
-    }else{
+    } else {
         Log::err(TAG, "fhq-server can not listening on port " + std::to_string(pServerConfig->serverPort()));
         m_bFailed = true;
         return;
     }
 
-    if(pServerConfig->serverSslOn()){
+    if (pServerConfig->serverSslOn()) {
         QSslConfiguration sslConfiguration;
         QFile certFile(QString(pServerConfig->serverSslCertFile().c_str()));
         QFile keyFile(QString(pServerConfig->serverSslKeyFile().c_str()));
@@ -67,7 +67,7 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
             Log::info(TAG, "fhq-server listening (via ssl) on port" + std::to_string(pServerConfig->serverSslPort()));
             connect(m_pWebSocketServerSSL, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnectionSSL);
             connect(m_pWebSocketServerSSL, &QWebSocketServer::sslErrors, this, &WebSocketServer::onSslErrors);
-        }else{
+        } else {
             Log::err(TAG, "fhq-server can not listening (via ssl) on port " + std::to_string(pServerConfig->serverSslPort()));
             m_bFailed = true;
             return;
@@ -94,13 +94,13 @@ WebSocketServer::~WebSocketServer() {
 
 // ---------------------------------------------------------------------
 
-bool WebSocketServer::isFailed(){
+bool WebSocketServer::isFailed() {
     return m_bFailed;
 }
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendServerMessage(QWebSocket *pSocket){
+void WebSocketServer::sendServerMessage(QWebSocket *pSocket) {
     nlohmann::json jsonServer;
     jsonServer["cmd"] = "server";
     jsonServer["m"] = "s0";
@@ -139,7 +139,7 @@ void WebSocketServer::onNewConnection()
  *  Handling new connection by wss://
  */
 
-void WebSocketServer::onNewConnectionSSL(){
+void WebSocketServer::onNewConnectionSSL() {
     QWebSocket *pSocket = m_pWebSocketServerSSL->nextPendingConnection();
     std::string sAddress = pSocket->peerAddress().toString().toStdString();
     Log::info(TAG, "NewConnectionSSL " + sAddress + " " + std::to_string(pSocket->peerPort()));
@@ -170,14 +170,14 @@ void WebSocketServer::processTextMessage(const QString &message) {
         nlohmann::json jsonRequest_ = nlohmann::json::parse(message.toStdString());
         ModelRequest *pModelRequest = new ModelRequest(pClient, this, jsonRequest_);
         
-        if(!pModelRequest->hasCommand()){
+        if (!pModelRequest->hasCommand()) {
             this->sendMessageError(pClient, sCmd, sM, Error(404, "Not found requare parameter 'cmd'"));
             // pModelRequestData->sendError(Error(404, "Not found command '" + QString(cmd.c_str()) + "'"));
             return;
         }
 
         sCmd = pModelRequest->command();
-        if(!pModelRequest->hasM()){
+        if (!pModelRequest->hasM()) {
             Log::info(TAG, "[WS] >>> " + sCmd);
             this->sendMessageError(pClient, sCmd, sM, Error(404, "Not found requare parameter 'm' - messageid"));
             return;
@@ -187,7 +187,7 @@ void WebSocketServer::processTextMessage(const QString &message) {
         Log::info(TAG, "[WS] >>> " + sCmd + ":" + sM);
 
         CmdHandlerBase *pCmdHandler = CmdHandlers::findCmdHandler(sCmd);
-        if(pCmdHandler == NULL){
+        if (pCmdHandler == NULL) {
             Log::warn(TAG, "Unknown command: " + sCmd);
             pModelRequest->sendMessageError(sCmd, Error(404, "Not found command '" + sCmd + "'"));
             return;
@@ -220,7 +220,7 @@ void WebSocketServer::processTextMessage(const QString &message) {
         // allow access
         // TODO move to ModelRequest
         Error error(404, "none");
-        if(!pWsServer->validateInputParameters(error, pCmdHandler, jsonRequest_)){
+        if (!pWsServer->validateInputParameters(error, pCmdHandler, jsonRequest_)) {
             pModelRequest->sendMessageError(pCmdHandler->cmd(), error);
             return;
         }
@@ -258,19 +258,19 @@ void WebSocketServer::socketDisconnected() {
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::onSslErrors(const QList<QSslError> &){
+void WebSocketServer::onSslErrors(const QList<QSslError> &) {
     Log::err(TAG, "Ssl errors occurred");
 }
 
 // ---------------------------------------------------------------------
 
-int WebSocketServer::getConnectedUsers(){
+int WebSocketServer::getConnectedUsers() {
     return m_clients.length();
 }
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse){
+void WebSocketServer::sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse) {
     if (pClient) {
         std::string sCmd = "";
         if (jsonResponse.find("cmd") != jsonResponse.end() && jsonResponse["cmd"].is_string()) {
@@ -300,7 +300,7 @@ void WebSocketServer::sendMessage(QWebSocket *pClient, const nlohmann::json& jso
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string &sM, Error error){
+void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string &sM, Error error) {
     nlohmann::json jsonResponse;
     jsonResponse["cmd"] = sCmd;
     jsonResponse["m"] = sM;
@@ -314,35 +314,35 @@ void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &s
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendToAll(const nlohmann::json& jsonMessage){
+void WebSocketServer::sendToAll(const nlohmann::json& jsonMessage) {
     std::string message = jsonMessage.dump();
     emit sig_sendToAll(QString(message.c_str()));
 }
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage){
+void WebSocketServer::sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) {
     std::string message = jsonMessage.dump();
     emit signal_sendToOne(pClient, QString(message.c_str()));
 }
 
 // ---------------------------------------------------------------------
 // slot
-void WebSocketServer::slot_sendToAll(QString message){
+void WebSocketServer::slot_sendToAll(QString message) {
     std::string sMsg = message.toStdString();
-    if(!nlohmann::json::accept(sMsg)){
+    if (!nlohmann::json::accept(sMsg)) {
         return;
     }
     nlohmann::json jsonMessage = nlohmann::json::parse(sMsg);
-    for(int i = 0; i < m_clients.size(); i++){
+    for (int i = 0; i < m_clients.size(); i++) {
         this->sendMessage(m_clients.at(i), jsonMessage);
     }
 }
 
 // ---------------------------------------------------------------------
 // slot
-void WebSocketServer::slot_sendToOne(QWebSocket *pClient, QString message){
-    if(!nlohmann::json::accept(message.toStdString())){
+void WebSocketServer::slot_sendToOne(QWebSocket *pClient, QString message) {
+    if (!nlohmann::json::accept(message.toStdString())) {
         return;
     }
     nlohmann::json jsonMessage = nlohmann::json::parse(message.toStdString());
@@ -353,14 +353,14 @@ void WebSocketServer::slot_sendToOne(QWebSocket *pClient, QString message){
 
 // TODO move to EmployWsServer
 
-void WebSocketServer::setUserToken(QWebSocket *pClient, IUserToken *pUserToken){
+void WebSocketServer::setUserToken(QWebSocket *pClient, IUserToken *pUserToken) {
     m_tokens[pClient] = pUserToken;
 }
 
 // ---------------------------------------------------------------------
 
-IUserToken * WebSocketServer::getUserToken(QWebSocket *pClient){
-    if(m_tokens.contains(pClient)){
+IUserToken * WebSocketServer::getUserToken(QWebSocket *pClient) {
+    if (m_tokens.contains(pClient)) {
         return m_tokens[pClient];
     }
     return NULL;
@@ -372,51 +372,51 @@ void WebSocketServer::logSocketError(QAbstractSocket::SocketError socketError) {
     std::string msg = "Unknown error";
     if (socketError == QAbstractSocket::ConnectionRefusedError) {
         msg = "QAbstractSocket::ConnectionRefusedError, The connection was refused by the peer (or timed out).";
-    } else if(socketError == QAbstractSocket::RemoteHostClosedError) {
+    } else if (socketError == QAbstractSocket::RemoteHostClosedError) {
         msg = "QAbstractSocket::RemoteHostClosedError, The remote host closed the connection. Note that the client socket (i.e., this socket) will be closed after the remote close notification has been sent.";
-    } else if(socketError == QAbstractSocket::HostNotFoundError) {
+    } else if (socketError == QAbstractSocket::HostNotFoundError) {
         msg = "QAbstractSocket::HostNotFoundError, The host address was not found.";
-    } else if(socketError == QAbstractSocket::SocketAccessError) {
+    } else if (socketError == QAbstractSocket::SocketAccessError) {
         msg = "QAbstractSocket::SocketAccessError, The socket operation failed because the application lacked the required privileges.";
-    } else if(socketError == QAbstractSocket::SocketResourceError) {
+    } else if (socketError == QAbstractSocket::SocketResourceError) {
         msg = "QAbstractSocket::SocketResourceError, The local system ran out of resources (e.g., too many sockets).";
-    } else if(socketError == QAbstractSocket::SocketTimeoutError) {
+    } else if (socketError == QAbstractSocket::SocketTimeoutError) {
         msg = "QAbstractSocket::SocketTimeoutError, The socket operation timed out.";
-    } else if(socketError == QAbstractSocket::DatagramTooLargeError) {
+    } else if (socketError == QAbstractSocket::DatagramTooLargeError) {
         msg = "QAbstractSocket::DatagramTooLargeError, The datagram was larger than the operating system's limit (which can be as low as 8192 bytes).";
-    } else if(socketError == QAbstractSocket::NetworkError) {
+    } else if (socketError == QAbstractSocket::NetworkError) {
         msg = "QAbstractSocket::NetworkError, An error occurred with the network (e.g., the network cable was accidentally plugged out).";
-    } else if(socketError == QAbstractSocket::AddressInUseError) {
+    } else if (socketError == QAbstractSocket::AddressInUseError) {
         msg = "QAbstractSocket::AddressInUseError, The address specified to QAbstractSocket::bind() is already in use and was set to be exclusive.";
-    } else if(socketError == QAbstractSocket::SocketAddressNotAvailableError) {
+    } else if (socketError == QAbstractSocket::SocketAddressNotAvailableError) {
         msg = "QAbstractSocket::SocketAddressNotAvailableError, The address specified to QAbstractSocket::bind() does not belong to the host.";
-    } else if(socketError == QAbstractSocket::UnsupportedSocketOperationError) {
+    } else if (socketError == QAbstractSocket::UnsupportedSocketOperationError) {
         msg = "QAbstractSocket::UnsupportedSocketOperationError, The requested socket operation is not supported by the local operating system (e.g., lack of IPv6 support).";
-    } else if(socketError == QAbstractSocket::ProxyAuthenticationRequiredError) {
+    } else if (socketError == QAbstractSocket::ProxyAuthenticationRequiredError) {
         msg = "QAbstractSocket::ProxyAuthenticationRequiredError, The socket is using a proxy, and the proxy requires authentication.";
-    } else if(socketError == QAbstractSocket::SslHandshakeFailedError) {
+    } else if (socketError == QAbstractSocket::SslHandshakeFailedError) {
         msg = "QAbstractSocket::SslHandshakeFailedError, The SSL/TLS handshake failed, so the connection was closed (only used in QSslSocket)";
-    } else if(socketError == QAbstractSocket::UnfinishedSocketOperationError) {
+    } else if (socketError == QAbstractSocket::UnfinishedSocketOperationError) {
         msg = "QAbstractSocket::UnfinishedSocketOperationError, Used by QAbstractSocketEngine only, The last operation attempted has not finished yet (still in progress in the background).";
-    } else if(socketError == QAbstractSocket::ProxyConnectionRefusedError) {
+    } else if (socketError == QAbstractSocket::ProxyConnectionRefusedError) {
         msg = "QAbstractSocket::ProxyConnectionRefusedError, Could not contact the proxy server because the connection to that server was denied";
-    } else if(socketError == QAbstractSocket::ProxyConnectionClosedError) {
+    } else if (socketError == QAbstractSocket::ProxyConnectionClosedError) {
         msg = "QAbstractSocket::ProxyConnectionClosedError, The connection to the proxy server was closed unexpectedly (before the connection to the final peer was established)";
-    } else if(socketError == QAbstractSocket::ProxyConnectionTimeoutError) {
+    } else if (socketError == QAbstractSocket::ProxyConnectionTimeoutError) {
         msg = "QAbstractSocket::ProxyConnectionTimeoutError, The connection to the proxy server timed out or the proxy server stopped responding in the authentication phase.";
-    } else if(socketError == QAbstractSocket::ProxyNotFoundError) {
+    } else if (socketError == QAbstractSocket::ProxyNotFoundError) {
         msg = "QAbstractSocket::ProxyNotFoundError, The proxy address set with setProxy() (or the application proxy) was not found.";
-    } else if(socketError == QAbstractSocket::ProxyProtocolError) {
+    } else if (socketError == QAbstractSocket::ProxyProtocolError) {
         msg = "QAbstractSocket::ProxyProtocolError, The connection negotiation with the proxy server failed, because the response from the proxy server could not be understood.";
-    } else if(socketError == QAbstractSocket::OperationError) {
+    } else if (socketError == QAbstractSocket::OperationError) {
         msg = "QAbstractSocket::OperationError, An operation was attempted while the socket was in a state that did not permit it.";
-    } else if(socketError == QAbstractSocket::SslInternalError) {
+    } else if (socketError == QAbstractSocket::SslInternalError) {
         msg = "QAbstractSocket::SslInternalError, The SSL library being used reported an internal error. This is probably the result of a bad installation or misconfiguration of the library.";
-    } else if(socketError == QAbstractSocket::SslInvalidUserDataError) {
+    } else if (socketError == QAbstractSocket::SslInvalidUserDataError) {
         msg = "QAbstractSocket::SslInvalidUserDataError, Invalid data (certificate, key, cypher, etc.) was provided and its use resulted in an error in the SSL library.";
-    } else if(socketError == QAbstractSocket::TemporaryError) {
+    } else if (socketError == QAbstractSocket::TemporaryError) {
         msg = "QAbstractSocket::TemporaryError, A temporary error occurred (e.g., operation would block and socket is non-blocking).";
-    } else if(socketError == QAbstractSocket::UnknownSocketError) {
+    } else if (socketError == QAbstractSocket::UnknownSocketError) {
         msg = "QAbstractSocket::UnknownSocketError, An unidentified error occurred.";
     }
     Log::err(TAG, msg);

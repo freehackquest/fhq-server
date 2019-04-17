@@ -15,19 +15,19 @@ EmployWsServer::EmployWsServer()
 
 // ---------------------------------------------------------------------
 
-bool EmployWsServer::init(){
+bool EmployWsServer::init() {
     return true;
 }
 
 // ---------------------------------------------------------------------
 
-void EmployWsServer::setServer(IWebSocketServer *pWebSocketServer){
+void EmployWsServer::setServer(IWebSocketServer *pWebSocketServer) {
     m_pWebSocketServer = pWebSocketServer;
 }
 
 // ---------------------------------------------------------------------
 
-void EmployWsServer::sendToAll(const nlohmann::json& jsonMessage){
+void EmployWsServer::sendToAll(const nlohmann::json& jsonMessage) {
     m_pWebSocketServer->sendToAll(jsonMessage);
 }
 
@@ -39,7 +39,7 @@ void EmployWsServer::sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMe
 
 // ---------------------------------------------------------------------
 
-bool EmployWsServer::validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler, const nlohmann::json &jsonMessage){
+bool EmployWsServer::validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler, const nlohmann::json &jsonMessage) {
     try {
         // TODO check extra params
 

@@ -137,7 +137,7 @@ std::string LightHttpResponse::detectTypeOfFile(const std::string &sFilePath) {
     std::string sFileExt = sFilePath.substr(sFilePath.find_last_of(".") + 1);
 
     std::string sType = "application/octet-stream";
-    if (sFileExt == "json"){
+    if (sFileExt == "json") {
         sType = "application/json";
     } else if (sFileExt == "css") {
         sType = "text/css"; 
@@ -169,7 +169,7 @@ void LightHttpResponse::sendText(const std::string &sBody) {
     std::string sResponse = prepareHeaders(sBody.length())
         + "\r\n" + sBody;
     
-    if(m_bClosed) {
+    if (m_bClosed) {
         Log::warn(TAG, "Already sended response");
         return;
     }
@@ -195,7 +195,7 @@ void LightHttpResponse::sendOptions(const std::string &sOptions) {
         + "Access-Control-Allow-Methods: " + sOptions
         + "\r\n\r\n";
     
-    if(m_bClosed) {
+    if (m_bClosed) {
         Log::warn(TAG, "Already sended response");
         return;
     }
@@ -212,7 +212,7 @@ void LightHttpResponse::sendOptions(const std::string &sOptions) {
 void LightHttpResponse::sendDontUnderstand() {
     std::string sResponse = "I don't understand you! Are you just a machine? Or maybe hacker?";
     
-    if(m_bClosed) {
+    if (m_bClosed) {
         Log::warn(TAG, "Already sended response");
         return;
     }
@@ -263,7 +263,7 @@ void LightHttpResponse::sendBuffer(const std::string &sFilePath, const char *pBu
     std::string sResponse = prepareHeaders(nBufferSize)
         + "\r\n";
 
-    if(m_bClosed) {
+    if (m_bClosed) {
         Log::warn(TAG, "Already sended response");
         // delete[] pData;
         return;
@@ -300,27 +300,29 @@ LightHttpRequest::LightHttpRequest(int nSockFd, const std::string &sAddress) {
 
 // ----------------------------------------------------------------------
 
-int LightHttpRequest::sockFd(){
+int LightHttpRequest::sockFd() {
     return m_nSockFd;
 }
 
 // ----------------------------------------------------------------------
 
-std::string LightHttpRequest::requestType(){
+std::string LightHttpRequest::requestType() {
     return m_sRequestType;
 }
 
 // ----------------------------------------------------------------------
 
-std::string LightHttpRequest::requestPath(){
+std::string LightHttpRequest::requestPath() {
     return m_sRequestPath;
 }
 
 // ----------------------------------------------------------------------
 
-std::string LightHttpRequest::requestHttpVersion(){
+std::string LightHttpRequest::requestHttpVersion() {
     return m_sRequestHttpVersion;
 }
+
+// ----------------------------------------------------------------------
 
 std::map<std::string,std::string> &LightHttpRequest::requestQueryParams() {
     return m_sRequestQueryParams;
@@ -328,7 +330,7 @@ std::map<std::string,std::string> &LightHttpRequest::requestQueryParams() {
 
 // ----------------------------------------------------------------------
 
-std::string LightHttpRequest::address(){
+std::string LightHttpRequest::address() {
     return m_sAddress;
 }
 
@@ -396,16 +398,16 @@ void LightHttpRequest::parseFirstLine(const std::string &sHeader) {
         while (getline(f, s, ' ')) {
             params.push_back(s);
         }
-        if(params.size() > 0){
+        if (params.size() > 0) {
             m_sRequestType = params[0];
         }
 
-        if(params.size() > 1){
+        if (params.size() > 1) {
             m_sRequestPath = params[1];
         }
 
         // TODO m_sRequestPath - need split by ? if exists
-        if(params.size() > 2){
+        if (params.size() > 2) {
             m_sRequestHttpVersion = params[2];
         }
     }
@@ -429,7 +431,7 @@ void LightHttpRequest::parseFirstLine(const std::string &sHeader) {
 // ----------------------------------------------------------------------
 // LightHttpDequeRequests
 
-LightHttpRequest *LightHttpDequeRequests::popRequest(){
+LightHttpRequest *LightHttpDequeRequests::popRequest() {
     std::lock_guard<std::mutex> guard(this->m_mtxDequeRequests);
     LightHttpRequest *pRequest = nullptr;
     int nSize = m_dequeRequests.size();
@@ -442,7 +444,7 @@ LightHttpRequest *LightHttpDequeRequests::popRequest(){
 
 // ----------------------------------------------------------------------
 
-void LightHttpDequeRequests::pushRequest(LightHttpRequest *pRequest){
+void LightHttpDequeRequests::pushRequest(LightHttpRequest *pRequest) {
     std::lock_guard<std::mutex> guard(this->m_mtxDequeRequests);
     if (m_dequeRequests.size() > 20) {
         Log::warn(TAG, " deque more than " + std::to_string(m_dequeRequests.size()));
@@ -452,7 +454,7 @@ void LightHttpDequeRequests::pushRequest(LightHttpRequest *pRequest){
 
 // ----------------------------------------------------------------------
 
-void LightHttpDequeRequests::cleanup(){
+void LightHttpDequeRequests::cleanup() {
     std::lock_guard<std::mutex> guard(this->m_mtxDequeRequests);
     while (m_dequeRequests.size() > 0) {
         delete m_dequeRequests.back();
@@ -569,7 +571,7 @@ void LightHttpThreadWorker::stop() {
 
 void LightHttpThreadWorker::run() {
     const int nMaxPackageSize = 4096;
-    while(1) {
+    while (1) {
         if (m_bStop) return;
         LightHttpRequest *pInfo = m_pDeque->popRequest();
         bool bExists = pInfo != nullptr;
@@ -601,7 +603,7 @@ void LightHttpThreadWorker::run() {
             // std::cout << nSockFd  << ": address = " << info->address() << "\n";
             // read data from socket
             bool bErrorRead = false;
-            while(1) { // problem can be here
+            while (1) { // problem can be here
                 // std::cout << nSockFd  << ": wait recv...\n";
                 memset(msg, 0, nMaxPackageSize);
 
@@ -697,7 +699,7 @@ void LightHttpServer::setMaxWorkers(int nMaxWorkers) {
 void LightHttpServer::startSync() {
     
     m_nSockFd = socket(AF_INET, SOCK_STREAM, 0);
-    if(m_nSockFd <= 0){
+    if (m_nSockFd <= 0) {
         Log::err(TAG, "Failed to establish socket connection");
         return;
     }
@@ -711,7 +713,7 @@ void LightHttpServer::startSync() {
     m_serverAddress.sin_family = AF_INET;
     m_serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
     m_serverAddress.sin_port = htons(m_nPort);
-    if(bind(m_nSockFd, (struct sockaddr *)&m_serverAddress, sizeof(m_serverAddress)) == -1){
+    if (bind(m_nSockFd, (struct sockaddr *)&m_serverAddress, sizeof(m_serverAddress)) == -1) {
         Log::err(TAG, "Error binding to port " + std::to_string(m_nPort));
         return;
     }
@@ -728,7 +730,7 @@ void LightHttpServer::startSync() {
 
     std::string str;
     m_bStop = false;
-    while(!m_bStop) { // or problem can be here
+    while (!m_bStop) { // or problem can be here
         struct sockaddr_in clientAddress;
         socklen_t sosize  = sizeof(clientAddress);
         int nSockFd = accept(m_nSockFd,(struct sockaddr*)&clientAddress,&sosize);

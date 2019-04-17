@@ -7,16 +7,16 @@
 #include <QEventLoop>
 #include <employ_database.h>
 
-UpdateUserRatingTask::UpdateUserRatingTask(int nUserID){
+UpdateUserRatingTask::UpdateUserRatingTask(int nUserID) {
     m_nUserID = nUserID;
     TAG = "UpdateUserRatingTask";
 }
 
-UpdateUserRatingTask::~UpdateUserRatingTask(){
+UpdateUserRatingTask::~UpdateUserRatingTask() {
 
 }
 
-void UpdateUserRatingTask::run(){
+void UpdateUserRatingTask::run() {
     Log::info(TAG, "userid " + std::to_string(m_nUserID));
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
@@ -32,7 +32,7 @@ void UpdateUserRatingTask::run(){
                 "    (users_quests.userid = :userid) "
     );
     query.bindValue(":userid", m_nUserID);
-    if(!query.exec()){
+    if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
         return;
     }
@@ -48,7 +48,7 @@ void UpdateUserRatingTask::run(){
     query_update.bindValue(":rating", nNewRating);
     query_update.bindValue(":userid", m_nUserID);
 
-    if(!query_update.exec()){
+    if (!query_update.exec()) {
         Log::err(TAG, query_update.lastError().text().toStdString());
         return;
     }

@@ -13,13 +13,13 @@ REGISTRY_EMPLOY(EmployImages)
 // ---------------------------------------------------------------------
 
 EmployImages::EmployImages()
-    : EmployBase(EmployImages::name(), {}){
+    : EmployBase(EmployImages::name(), {}) {
     TAG = EmployImages::name();
 }
 
 // ---------------------------------------------------------------------
 
-bool EmployImages::init(){
+bool EmployImages::init() {
     Log::info(TAG, "Start init images");
     return true;
 }
@@ -36,25 +36,24 @@ struct avrgClr {
     png_byte* ptrResult;
 };
 
-void avarage_color(avrgClr &a){
+void avarage_color(avrgClr &a) {
     long nColorRed = 0;
     long nColorGreen = 0;
     long nColorBlue = 0;
     long nColorAlpha = 0;
     long nCount = 0;
-    
-    
+
     for (int y=a.y1; y< a.y2; y++) {
         png_byte* row = a.row_pointers[y];
         for (int x=a.x1; x<a.x2; x++) {
             // row_pointers
             png_byte* ptr = &(row[x*(a.bAlpha ? 4 : 3)]);
-            if(a.bAlpha){
+            if (a.bAlpha) {
                 nColorRed += ptr[0];
                 nColorGreen += ptr[1];
                 nColorBlue += ptr[2];
                 nColorAlpha += ptr[3];
-            }else{
+            } else {
                 nColorRed += ptr[0];
                 nColorGreen += ptr[1];
                 nColorBlue += ptr[2];
@@ -62,25 +61,25 @@ void avarage_color(avrgClr &a){
             nCount++;
         }
     }
-    if(nCount == 0){
+    if (nCount == 0) {
         std::cout << "nCount == 0" << std::endl;
         a.ptrResult[0] = 0;
         a.ptrResult[1] = 0;
         a.ptrResult[2] = 0;
         a.ptrResult[3] = 255;
-    }else{
+    } else {
         a.ptrResult[0] = nColorRed/nCount;
         a.ptrResult[1] = nColorGreen/nCount;
         a.ptrResult[2] = nColorBlue/nCount;
-        if(a.bAlpha){
+        if (a.bAlpha) {
             a.ptrResult[3] = nColorAlpha/nCount;
-        }else{
+        } else {
             a.ptrResult[3] = 255;
         }
     }
 }
 
-bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const std::string &targetImageFile, int width_resize, int height_resize){
+bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const std::string &targetImageFile, int width_resize, int height_resize) {
     // TODO keep proportional (will be got from web)
 
     Log::info(TAG, "doThumbnailImagePng");
@@ -103,7 +102,7 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
 
         /* open file and test for it being a png */
         FILE *fp = fopen(sourceImageFile.c_str(), "rb");
-        if (!fp){
+        if (!fp) {
             Log::err(TAG, "[read_png_file] File " + sourceImageFile + " could not be opened for reading");
             return false;
         }
@@ -112,7 +111,7 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
         // todo check png file
         // png_const_bytep *png_header = (png_const_bytep *)header;
         /*bool is_png = !png_sig_cmp(header, (png_size_t)0, (png_size_t)PNG_BYTES_TO_CHECK);
-        if (!is_png){
+        if (!is_png) {
             Log::err(TAG, "[read_png_file] File " + sourceFilepath + " is not recognized as a PNG file");
             return false;
         }*/
@@ -120,18 +119,18 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
         /* initialize stuff */
         png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
-        if (!png_ptr){
+        if (!png_ptr) {
             Log::err(TAG, "[read_png_file] png_create_read_struct failed");
             return false;
         }
 
         info_ptr = png_create_info_struct(png_ptr);
-        if (!info_ptr){
+        if (!info_ptr) {
             Log::err(TAG, "[read_png_file] png_create_info_struct failed");
             return false;
         }
 
-        if (setjmp(png_jmpbuf(png_ptr))){
+        if (setjmp(png_jmpbuf(png_ptr))) {
             Log::err(TAG, "[read_png_file] Error during init_io");
             return false;
         }
@@ -151,13 +150,14 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
         png_read_update_info(png_ptr, info_ptr);
 
         /* read file */
-        if (setjmp(png_jmpbuf(png_ptr))){
+        if (setjmp(png_jmpbuf(png_ptr))) {
             Log::err(TAG, "[read_png_file] Error during read_image");
             return false;
         }
         row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * height);
-        for (y=0; y<height; y++)
-                row_pointers[y] = (png_byte*) malloc(png_get_rowbytes(png_ptr,info_ptr));
+        for (y=0; y<height; y++) {
+            row_pointers[y] = (png_byte*) malloc(png_get_rowbytes(png_ptr,info_ptr));
+        }
         png_read_image(png_ptr, row_pointers);
         fclose(fp);
     }
@@ -170,18 +170,18 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
         int bAlpha = false;
         
         
-        if (nType != PNG_COLOR_TYPE_RGB && nType != PNG_COLOR_TYPE_RGBA){
+        if (nType != PNG_COLOR_TYPE_RGB && nType != PNG_COLOR_TYPE_RGBA) {
             Log::err(TAG, "[process_file] input file is not PNG_COLOR_TYPE_RGB or PNG_COLOR_TYPE_RGBA (lacks the alpha channel)");
             return false;
         }
 
-        if (nType == PNG_COLOR_TYPE_RGBA){
+        if (nType == PNG_COLOR_TYPE_RGBA) {
             bAlpha = true;
         }
         
         // new size 
         row_pointers_resize = (png_bytep*) malloc(sizeof(png_bytep) * height_resize);
-        for (y=0; y<height_resize; y++){
+        for (y=0; y<height_resize; y++) {
             row_pointers_resize[y] = (png_byte*) malloc(sizeof(png_bytep) * width_resize);
         }
         
@@ -222,7 +222,7 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
     {
         /* create file */
         FILE *fp = fopen(targetImageFile.c_str(), "wb");
-        if (!fp){
+        if (!fp) {
             Log::err(TAG, "[write_png_file] File " + targetImageFile + " could not be opened for writing");
             return false;
         }
@@ -231,18 +231,18 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
         /* initialize stuff */
         png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
-        if (!png_ptr){
+        if (!png_ptr) {
             Log::err(TAG, "[write_png_file] png_create_write_struct failed");
             return false;
         }
 
         info_ptr = png_create_info_struct(png_ptr);
-        if (!info_ptr){
+        if (!info_ptr) {
             Log::err(TAG, "[write_png_file] png_create_info_struct failed");
             return false;
         }
 
-        if (setjmp(png_jmpbuf(png_ptr))){
+        if (setjmp(png_jmpbuf(png_ptr))) {
             Log::err(TAG, "[write_png_file] Error during init_io");
             return false;
         }
@@ -251,7 +251,7 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
 
 
         /* write header */
-        if (setjmp(png_jmpbuf(png_ptr))){
+        if (setjmp(png_jmpbuf(png_ptr))) {
             Log::err(TAG, "[write_png_file] Error during writing header");
             return false;
         }
@@ -264,7 +264,7 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
 
 
         /* write bytes */
-        if (setjmp(png_jmpbuf(png_ptr))){
+        if (setjmp(png_jmpbuf(png_ptr))) {
             Log::err(TAG, "[write_png_file] Error during writing bytes");
             return false;
         }
@@ -273,7 +273,7 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
 
 
         /* end write */
-        if (setjmp(png_jmpbuf(png_ptr))){
+        if (setjmp(png_jmpbuf(png_ptr))) {
             Log::err(TAG, "[write_png_file] Error during end of write");
             return false;
         }
@@ -281,12 +281,12 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
         png_write_end(png_ptr, NULL);
 
         /* cleanup heap allocation */
-        for (y=0; y<height; y++){
+        for (y=0; y<height; y++) {
             free(row_pointers[y]);
         }
         free(row_pointers);
 
-        for (y=0; y<height_resize; y++){
+        for (y=0; y<height_resize; y++) {
             free(row_pointers_resize[y]);
         }
         free(row_pointers_resize);

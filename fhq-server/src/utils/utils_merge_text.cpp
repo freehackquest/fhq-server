@@ -39,7 +39,7 @@ void UtilsMergeText::compare(std::string &txt1, std::string &txt2, std::vector<U
             //checkout for deleted rows
             for (int k=i+1;k<len1;++k) {
                 if (list1[k]==list2[j]) {
-                    while(i<k) {
+                    while (i<k) {
                         arr.push_back(new UtilsMergeTextRow(i, sWord.at(1), list1.at(i)));
                         i++;
                     }
@@ -68,7 +68,7 @@ void UtilsMergeText::merge(
     std::string &txt2,
     std::vector<UtilsMergeTextRow *> &arr1,
     std::vector<UtilsMergeTextRow *> &arr2
-){
+) {
     compare(txt1, txt2, arr1);
     compare(txt1, curtxt, arr2);
     for (unsigned int i=0;i<arr2.size();++i) {
@@ -105,7 +105,7 @@ void UtilsMergeText::merge(
     arr1.insert(arr1.end(),arr2.begin(),arr2.end());
     for (unsigned int i=0; i < arr1.size(); ++i) {
         for (unsigned int j = arr1.size()-1; j > i; --j) {
-            if(arr1.at(j-1)->id > arr1.at(j)->id) {
+            if (arr1.at(j-1)->id > arr1.at(j)->id) {
                 // TODO redesign
                 std::swap(arr1.at(j-1)->id, arr1.at(j)->id);
                 std::swap(arr1.at(j-1)->key, arr1.at(j)->key);

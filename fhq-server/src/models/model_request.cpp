@@ -51,7 +51,7 @@ std::string ModelRequest::getInputString(const std::string &sParamName, const st
 
 // ---------------------------------------------------------------------
 
-std::string ModelRequest::m(){
+std::string ModelRequest::m() {
     return m_sMessageId;
 }
 
@@ -109,7 +109,7 @@ void ModelRequest::sendMessageSuccess(const std::string &cmd, nlohmann::json& js
 
 // ---------------------------------------------------------------------
 
-bool ModelRequest::hasM(){
+bool ModelRequest::hasM() {
     return m_sMessageId != "";
 }
 
@@ -127,6 +127,6 @@ bool ModelRequest::hasCommand() {
 
 // ---------------------------------------------------------------------
 
-// bool ModelRequest::validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler){
+// bool ModelRequest::validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler) {
 
 // }

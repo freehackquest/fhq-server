@@ -62,15 +62,15 @@ template <class T> T* findEmploy() {
     std::string TAG = "findEmploy";
     std::string sEmployName = T::name();
     EmployBase *pEmploy = NULL;
-    if(g_pEmployees->count(sEmployName)){
+    if (g_pEmployees->count(sEmployName)) {
         pEmploy = g_pEmployees->at(sEmployName);
     }
-    if(pEmploy == NULL){
+    if (pEmploy == NULL) {
         Log::err(TAG, "Not found employ " + sEmployName);
         return NULL;
     }
     T *pTEmploy = dynamic_cast<T*>(pEmploy);
-    if(pTEmploy == NULL){
+    if (pTEmploy == NULL) {
         Log::err(TAG, "Employ could not cast to T [" + sEmployName + "]");
         return NULL;
     }

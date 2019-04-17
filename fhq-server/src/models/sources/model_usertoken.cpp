@@ -1,7 +1,7 @@
 #include <model_usertoken.h>
 #include <utils_logger.h>
 
-ModelUserToken::ModelUserToken(){
+ModelUserToken::ModelUserToken() {
     TAG = "ModelUserToken";
 }
 
@@ -9,12 +9,12 @@ ModelUserToken::ModelUserToken(nlohmann::json const& obj) : ModelUserToken() {
     this->fillFrom(obj);
 }
 
-ModelUserToken::ModelUserToken(QString json) : ModelUserToken(){
+ModelUserToken::ModelUserToken(QString json) : ModelUserToken() {
     this->fillFrom(nlohmann::json::parse(json.toStdString()));
 }
 
-void ModelUserToken::fillFrom(const nlohmann::json &obj){
-    if(obj.find("user") != obj.end()){
+void ModelUserToken::fillFrom(const nlohmann::json &obj) {
+    if (obj.find("user") != obj.end()) {
         nlohmann::json user = obj.at("user");
        
         // user.role
@@ -55,40 +55,40 @@ void ModelUserToken::fillFrom(const nlohmann::json &obj){
             m_sNick = "";
         }
         
-    }else{
+    } else {
         Log::warn(TAG, "Not found param 'user' in struct");
     }
 }
 
-bool ModelUserToken::isAdmin(){
+bool ModelUserToken::isAdmin() {
     return m_sRole == "admin";
 }
 
-bool ModelUserToken::isUser(){
+bool ModelUserToken::isUser() {
     return m_sRole == "user";
 }
 
-bool ModelUserToken::isTester(){
+bool ModelUserToken::isTester() {
     return m_sRole == "tester";
 }
 
-bool ModelUserToken::hasRole(){
+bool ModelUserToken::hasRole() {
     return m_sRole != "";
 }
 
-QString ModelUserToken::nick(){
+QString ModelUserToken::nick() {
     return QString::fromStdString(m_sNick);
 }
 
-void ModelUserToken::setNick(QString sNick){
+void ModelUserToken::setNick(QString sNick) {
     m_sNick = sNick.toStdString();
 }
 
-int ModelUserToken::userid(){
+int ModelUserToken::userid() {
     return m_nUserID;
 }
 
-QString ModelUserToken::email(){
+QString ModelUserToken::email() {
     return QString::fromStdString(m_sEmail);
 }
 

@@ -2,16 +2,16 @@
 #include <employ_ws_server.h>
 #include <utils_logger.h>
 
-NotifyToAllTask::NotifyToAllTask(const nlohmann::json &jsonMessage){
+NotifyToAllTask::NotifyToAllTask(const nlohmann::json &jsonMessage) {
     TAG = "NotifyToAllTask";
     m_jsonMessage = jsonMessage;
 }
 
-NotifyToAllTask::~NotifyToAllTask(){
+NotifyToAllTask::~NotifyToAllTask() {
 
 }
 
-void NotifyToAllTask::run(){
+void NotifyToAllTask::run() {
     Log::info(TAG, "send notify");
     EmployWsServer *pWsServer = findEmploy<EmployWsServer>();
     pWsServer->sendToAll(m_jsonMessage);

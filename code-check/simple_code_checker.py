@@ -76,6 +76,8 @@ warnings = {
     'while-format': 0,
     'for-format': 0,
     'end-brackets': 0,
+    'start-bracket-else': 0,
+    'end-bracket-else': 0,
 }
 
 evil_pieces = {
@@ -83,9 +85,16 @@ evil_pieces = {
     'tabs': 0,
 }
 
-# TODO for(){
 # TODO: check int nNumber 
-
+# TODO: lines in function/method (multiline)
+# TODO: size of line
+# TODO format of if (multiline)
+# TODO: check // ----------- in cpp files and in headers
+# TODO: foreach - forbiden use a while or for
+# TODO: d==0 - missing spaces
+# TODO: check the more then one space
+# TODO: { before must be one space
+# TODO: if () {
 def check_line_tabs(filepath, line_number, l):
     global warnings
     global evil_pieces
@@ -108,7 +117,7 @@ def check_TODO(filepath, line_number, l):
 def check_if_format(filepath, line_number, l):
     global warnings
     global evil_pieces
-    if re.match(r'.*if\(.*', l):
+    if re.match(r'.*[ ]+if\(.*', l):
         warnings['if-format'] = warnings['if-format'] + 1
         if not only_errors:
             log_warn('File: ' + filepath + ' (' + str(line_number) + ') \n'
@@ -118,7 +127,7 @@ def check_if_format(filepath, line_number, l):
 def check_for_format(filepath, line_number, l):
     global warnings
     global evil_pieces
-    if re.match(r'.*for\(.*', l):
+    if re.match(r'.*[ ]+for\(.*', l):
         warnings['for-format'] = warnings['for-format'] + 1
         if not only_errors:
             log_warn('File: ' + filepath + ' (' + str(line_number) + ') \n'
@@ -154,6 +163,26 @@ def check_auto_evil(filepath, line_number, l):
             + 'Line: "' + l + '" \n'
             + 'What: found "auto" in line - c++ is a specific language\n')
 
+def check_start_bracket_else(filepath, line_number, l):
+    global warnings
+    global evil_pieces
+    if re.match(r'.*}else.*', l):
+        warnings['start-bracket-else'] = warnings['start-bracket-else'] + 1
+        if not only_errors:
+            log_warn('File: ' + filepath + ' (' + str(line_number) + ') \n'
+                + 'Line: "' + l + '" \n'
+                + 'What: found wrong forma "}else" in line - missing spaces\n')
+
+def check_end_bracket_else(filepath, line_number, l):
+    global warnings
+    global evil_pieces
+    if re.match(r'.*else{.*', l):
+        warnings['end-bracket-else'] = warnings['end-bracket-else'] + 1
+        if not only_errors:
+            log_warn('File: ' + filepath + ' (' + str(line_number) + ') \n'
+                + 'Line: "' + l + '" \n'
+                + 'What: found wrong forma "else{" in line - missing spaces\n')
+
 _files = getListOfFiles(folders_for_check[0])
 for filepath in _files:
     if not only_errors:
@@ -171,7 +200,8 @@ for filepath in _files:
             check_end_brackets_format(filepath, line_number, l)
             check_for_format(filepath, line_number, l)
             check_while_format(filepath, line_number, l)
-            
+            check_start_bracket_else(filepath, line_number, l)
+            check_end_bracket_else(filepath, line_number, l)
 
 print(" ============= \n")
 for i in warnings:

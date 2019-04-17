@@ -15,7 +15,7 @@
 REGISTRY_CMD(CmdHandlerChatSendMessage)
 
 CmdHandlerChatSendMessage::CmdHandlerChatSendMessage()
-    : CmdHandlerBase("chat_send_message", "Method will be send chat message and it sent to another users"){
+    : CmdHandlerBase("chat_send_message", "Method will be send chat message and it sent to another users") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -27,7 +27,7 @@ CmdHandlerChatSendMessage::CmdHandlerChatSendMessage()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest){
+void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
@@ -82,7 +82,7 @@ void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest){
 REGISTRY_CMD(CmdHandlerChatLastestMessages)
 
 CmdHandlerChatLastestMessages::CmdHandlerChatLastestMessages()
-    : CmdHandlerBase("chat_latest_messages", "Method will be send chat message and it sent to another users"){
+    : CmdHandlerBase("chat_latest_messages", "Method will be send chat message and it sent to another users") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -91,7 +91,7 @@ CmdHandlerChatLastestMessages::CmdHandlerChatLastestMessages()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerChatLastestMessages::handle(ModelRequest *pRequest){
+void CmdHandlerChatLastestMessages::handle(ModelRequest *pRequest) {
     nlohmann::json jsonMessages = nlohmann::json::array();
 
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();

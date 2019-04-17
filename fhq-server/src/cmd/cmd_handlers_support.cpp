@@ -12,7 +12,7 @@
 // ******************************
 
 CmdHandlerFeedbackAdd::CmdHandlerFeedbackAdd()
-    : CmdHandlerBase("feedback_add", "Create the feedback"){
+    : CmdHandlerBase("feedback_add", "Create the feedback") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -27,7 +27,7 @@ CmdHandlerFeedbackAdd::CmdHandlerFeedbackAdd()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest){
+void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
@@ -41,7 +41,7 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest){
     QString sType = jsonRequest["type"].toString().trimmed();
 
     IUserToken *pUserToken = pRequest->userToken();
-    if(pUserToken != NULL){
+    if (pUserToken != NULL) {
         sEmail = pUserToken->email();
         nUserID = pUserToken->userid();
     }
@@ -53,7 +53,7 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest){
     query.bindValue(":from", sEmail);
     query.bindValue(":text", sText);
     query.bindValue(":userid", nUserID);
-    if(!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }

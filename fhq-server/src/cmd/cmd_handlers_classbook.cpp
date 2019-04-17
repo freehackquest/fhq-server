@@ -18,7 +18,7 @@
 // *******************************************
 
 CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler()
-    : CmdHandlerBase("classbook_add_record", "Adds a new article with the specified name, content, and id."){
+    : CmdHandlerBase("classbook_add_record", "Adds a new article with the specified name, content, and id.") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -35,7 +35,7 @@ CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
+void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
@@ -53,7 +53,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
         query.prepare("SELECT name FROM classbook WHERE id=:parentid");
         query.bindValue(":parentid", nParentID);
         query.exec();
-        if (!query.next()){
+        if (!query.next()) {
             pRequest->sendMessageError(cmd(), Error(404, "Not found article with this id"));
             return;
         }
@@ -111,11 +111,11 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
         if (!record.value("max").isNull()) {
             nOrdered = record.value("max").toInt() + 1;
         } else {
-            if (nParentID != 0){
+            if (nParentID != 0) {
                 query.prepare("SELECT ordered FROM classbook WHERE id=:parentid");
                 query.bindValue(":parentid", nParentID);
                 query.exec();
-                if (query.next()){
+                if (query.next()) {
                     QSqlRecord record = query.record();
                     nOrdered = record.value("ordered").toInt() + 1;
                 } else {
@@ -159,7 +159,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
     query.bindValue(":name", QString::fromStdString(sName));
     query.bindValue(":content", QString::fromStdString(sContent));
     query.bindValue(":md5_content", QString::fromStdString(sContentMd5));
-    if (!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
@@ -183,7 +183,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
 // *******************************************
 
 CmdClassbookDeleteRecordHandler::CmdClassbookDeleteRecordHandler()
-    : CmdHandlerBase("classbook_delete_record", "Delete a article with a given classbookid"){
+    : CmdHandlerBase("classbook_delete_record", "Delete a article with a given classbookid") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -195,7 +195,7 @@ CmdClassbookDeleteRecordHandler::CmdClassbookDeleteRecordHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest){
+void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
@@ -213,16 +213,15 @@ void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest){
     if (nClassbookID !=0) {
         query.prepare("SELECT id FROM classbook WHERE parentid=:classbookid");
         query.bindValue(":classbookid", nClassbookID);
-        query.exec();
-        if (query.next()){
+        query.exec(); // TODO check db error
+        if (query.next()) {
             pRequest->sendMessageError(cmd(), Error(403, "Could not delete, because childs exists. Please remove childs first."));
             return;
         }
         //Delete record in classbook
         query.prepare("DELETE FROM classbook WHERE id=:classbookid");
         query.bindValue(":classbookid", nClassbookID);
-        query.exec();
-        if(!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
@@ -230,8 +229,7 @@ void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest){
         //Delete record's localization
         query.prepare("DELETE FROM classbook_localization WHERE classbookid=:classbookid");
         query.bindValue(":classbookid", nClassbookID);
-        query.exec();
-        if(!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
@@ -246,7 +244,7 @@ void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest){
 // *******************************************
 
 CmdClassbookExportHandler::CmdClassbookExportHandler()
-    : CmdHandlerBase("classbook_export", "Export classbook's articles to html or markdown, optionally in zip archive."){
+    : CmdHandlerBase("classbook_export", "Export classbook's articles to html or markdown, optionally in zip archive.") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -260,7 +258,7 @@ CmdClassbookExportHandler::CmdClassbookExportHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookExportHandler::handle(ModelRequest *pRequest){
+void CmdClassbookExportHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
@@ -280,7 +278,7 @@ void CmdClassbookExportHandler::handle(ModelRequest *pRequest){
     }
 
     //Check parametrs
-    if (sOutput != "html" && sOutput != "markdown"){
+    if (sOutput != "html" && sOutput != "markdown") {
         pRequest->sendMessageError(cmd(), Error(403, "The output is not supported."));
         return;
     }
@@ -322,7 +320,7 @@ void CmdClassbookExportHandler::handle(ModelRequest *pRequest){
             export_zipfile.close();
             zip.close();
             QFile fileZip(tmpZipFile);
-            if (!fileZip.open(QIODevice::ReadOnly)){
+            if (!fileZip.open(QIODevice::ReadOnly)) {
                 pRequest->sendMessageError(cmd(), Error(500, "Could not open zip file"));
                 return;
             }
@@ -345,14 +343,14 @@ void CmdClassbookExportHandler::handle(ModelRequest *pRequest){
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookExportHandler::createHtml(QFile *file, const std::string &sLang, QSqlQuery query){
+void CmdClassbookExportHandler::createHtml(QFile *file, const std::string &sLang, QSqlQuery query) {
     QTextStream out(file);
     out.setCodec("UTF-8");
     QMap <int, QString> name_of_articles;
-    if (sLang == "en"){
+    if (sLang == "en") {
         query.prepare("SELECT id, name FROM classbook ORDER BY ordered");
         query.exec(); // TODO check errors
-        while (query.next()){
+        while (query.next()) {
             QSqlRecord record = query.record();
             int id = record.value("id").toInt();
             name_of_articles[id] = record.value("name").toString();
@@ -361,7 +359,7 @@ void CmdClassbookExportHandler::createHtml(QFile *file, const std::string &sLang
         query.prepare("SELECT classbookid, name FROM classbook_localization WHERE lang=:lang");
         query.bindValue(":lang", QString::fromStdString(sLang));
         query.exec(); // TODO check errors
-        while (query.next()){
+        while (query.next()) {
             QSqlRecord record = query.record();
             int id = record.value("classbookid").toInt();
             name_of_articles[id] = record.value("name").toString();
@@ -373,14 +371,14 @@ void CmdClassbookExportHandler::createHtml(QFile *file, const std::string &sLang
     out << "<body><h1> Freehackquest Classbook</h1>" << endl;
     out << "<h2>Table of contents</h2>" << endl;
     QMap <int, QString>::iterator i;
-    for (i = name_of_articles.begin(); i != name_of_articles.end(); ++i){
+    for (i = name_of_articles.begin(); i != name_of_articles.end(); ++i) {
         out << "<h3><a href=#" << i.key() << ">" << i.value().toUtf8() << "</a></h3>" << endl;
     }
 
-    if (sLang == "en"){
+    if (sLang == "en") {
         query.prepare("SELECT id, name, content FROM classbook ORDER BY ordered");
         query.exec(); // TODO check errors
-        while (query.next()){
+        while (query.next()) {
             QSqlRecord record = query.record();
             out << "<article id=" << record.value("id").toInt() << "><h2>";
             out << record.value("name").toString().toUtf8() << "</h2>" << endl;
@@ -390,7 +388,7 @@ void CmdClassbookExportHandler::createHtml(QFile *file, const std::string &sLang
         query.prepare("SELECT classbookid, name, content FROM classbook_localization WHERE lang=:lang");
         query.bindValue(":lang", QString::fromStdString(sLang));
         query.exec(); // TODO check errors
-        while (query.next()){
+        while (query.next()) {
             QSqlRecord record = query.record();
             out << "<article><h2 id =" << record.value("classbookid").toInt() << ">";
             out << record.value("name").toString().toUtf8() << "</h2>" << endl;
@@ -402,14 +400,14 @@ void CmdClassbookExportHandler::createHtml(QFile *file, const std::string &sLang
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookExportHandler::createMD(QFile *file, const std::string &sLang, QSqlQuery query){
+void CmdClassbookExportHandler::createMD(QFile *file, const std::string &sLang, QSqlQuery query) {
     QTextStream out(file);
     out.setCodec("UTF-8");
     QList<QString> name_of_articles;
-    if (sLang == "en"){
+    if (sLang == "en") {
         query.prepare("SELECT name FROM classbook ORDER BY ordered");
         query.exec(); // TODO check errors
-        while (query.next()){
+        while (query.next()) {
             QSqlRecord record = query.record();
             name_of_articles << record.value("name").toString();
         }
@@ -417,7 +415,7 @@ void CmdClassbookExportHandler::createMD(QFile *file, const std::string &sLang, 
         query.prepare("SELECT name FROM classbook_localization WHERE lang=:lang");
         query.bindValue(":lang", QString::fromStdString(sLang));
         query.exec(); // TODO check errors
-        while (query.next()){
+        while (query.next()) {
             QSqlRecord record = query.record();
             name_of_articles << record.value("name").toString();
         }
@@ -425,14 +423,14 @@ void CmdClassbookExportHandler::createMD(QFile *file, const std::string &sLang, 
 
     out << "# Freehackquest classbook" << endl;
     out << "## Table of content" << endl;
-    for (int i = 0; i < name_of_articles.size(); ++i){
+    for (int i = 0; i < name_of_articles.size(); ++i) {
         out << "* " << name_of_articles.at(i).toUtf8() << endl;
     }
 
-    if (sLang == "en"){
+    if (sLang == "en") {
         query.prepare("SELECT name, content FROM classbook ORDER BY ordered");
         query.exec(); // TODO check errors
-        while (query.next()){
+        while (query.next()) {
             QSqlRecord record = query.record();
             out << "### " << record.value("name").toString().toUtf8() << endl;
             out << record.value("content").toString().toUtf8() << endl;
@@ -441,7 +439,7 @@ void CmdClassbookExportHandler::createMD(QFile *file, const std::string &sLang, 
         query.prepare("SELECT name, content FROM classbook_localization WHERE lang=:lang");
         query.bindValue(":lang", QString::fromStdString(sLang));
         query.exec(); // TODO check errors
-        while (query.next()){
+        while (query.next()) {
             QSqlRecord record = query.record();
             out << "### " << record.value("name").toString().toUtf8() << endl;
             out << record.value("content").toString().toUtf8() << endl;
@@ -454,7 +452,7 @@ void CmdClassbookExportHandler::createMD(QFile *file, const std::string &sLang, 
 // *******************************************
 
 CmdClassbookInfoHandler::CmdClassbookInfoHandler()
-    : CmdHandlerBase("classbook_info", "Return name and content, langs, path classbook article with a given id"){
+    : CmdHandlerBase("classbook_info", "Return name and content, langs, path classbook article with a given id") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -468,7 +466,7 @@ CmdClassbookInfoHandler::CmdClassbookInfoHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
+void CmdClassbookInfoHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -498,7 +496,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
 
     //SET lang
     std::string sLang;
-    if (jsonRequest.find("lang") != jsonRequest.end()){
+    if (jsonRequest.find("lang") != jsonRequest.end()) {
         sLang = jsonRequest["lang"];
         QList<QString> allow_lang = {"en", "ru","de"};
         if (!allow_lang.contains(QString::fromStdString(sLang))) {
@@ -569,9 +567,9 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
     auto jsonParents = nlohmann::json::array();
     QSet<int> set_of_parent;
     int nParentId = jsonInfo["parentid"];
-    for (int i=0; i < 5; ++i){
+    for (int i=0; i < 5; ++i) {
         //END IT root article
-        if (nParentId==0){
+        if (nParentId==0) {
             nlohmann::json jsonParent;
             jsonParent["classbookid"] = 0;
             jsonParent["parentid"] = 0;
@@ -580,7 +578,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
             break;
         }
         //CONTINUE if already have a article in parents
-        if (set_of_parent.contains(nParentId)){
+        if (set_of_parent.contains(nParentId)) {
             continue;
         }
         query.prepare("SELECT id, name, parentid FROM classbook WHERE id=:parentid");
@@ -591,7 +589,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
             nlohmann::json jsonParent;
             int nClassBookId_ = record.value("id").toInt();
             jsonParent["classbookid"] = nClassBookId_;
-            if (nClassbookID == nClassBookId_){
+            if (nClassbookID == nClassBookId_) {
                 continue;
             }
             nParentId = record.value("parentid").toInt();
@@ -618,7 +616,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
 
 
 CmdClassbookListHandler::CmdClassbookListHandler()
-    : CmdHandlerBase("classbook_list", "Return list of classbook articles with parentid, id, names, childs, proposals for a given parentid"){
+    : CmdHandlerBase("classbook_list", "Return list of classbook articles with parentid, id, names, childs, proposals for a given parentid") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -632,7 +630,7 @@ CmdClassbookListHandler::CmdClassbookListHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookListHandler::handle(ModelRequest *pRequest){
+void CmdClassbookListHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -660,11 +658,11 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest){
         sLang = "en";
     }
 
-    if (jsonRequest.find("search") != jsonRequest.end()){
+    if (jsonRequest.find("search") != jsonRequest.end()) {
         std::string sSearch = jsonRequest["search"];
 
         QSqlQuery query1(db);
-        if (sLang == "en"){
+        if (sLang == "en") {
             query1.prepare("SELECT id, name FROM classbook WHERE name LIKE :search OR content LIKE :search ORDER BY ordered;");
             query1.bindValue(":search", QString::fromStdString("%" + sSearch + "%"));
         } else {
@@ -672,7 +670,7 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest){
             query1.bindValue(":search", QString::fromStdString("%" + sSearch + "%"));
         }
 
-        if (!query1.exec()){
+        if (!query1.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query1.lastError().text().toStdString()));
             return;
         }
@@ -684,7 +682,7 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest){
             jsonItem["parentid"] = nParentID;
             classbookid = record.value("id").toInt();
             jsonItem["classbookid"] = classbookid;
-            if (sLang != "en"){
+            if (sLang != "en") {
                 query.prepare("SELECT classbookid, name FROM classbook_localization "
                                   "WHERE lang=:lang AND (name LIKE '%:search%' OR content LIKE '%:search%')");
                 query.bindValue(":search", QString::fromStdString(sSearch));
@@ -712,7 +710,7 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest){
             query_proposals.bindValue(":lang", QString::fromStdString(sLang));
             query_proposals.exec(); // TODO check errors
             int proposals = 0;
-            if (query_proposals.next()){
+            if (query_proposals.next()) {
                 QSqlRecord record_proposals = query_proposals.record();
                 proposals = record_proposals.value("proposals").toInt();
             }
@@ -726,7 +724,7 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest){
         query.prepare("SELECT name FROM classbook WHERE id =:parentid");
         query.bindValue(":parentid", nParentID);
         query.exec(); // TODO check errors
-        if (!query.next() && nParentID != 0){
+        if (!query.next() && nParentID != 0) {
             pRequest->sendMessageError(cmd(), Error(404, "Not found the article with a given parentid"));
             return;
         }
@@ -743,7 +741,7 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest){
             jsonItem["classbookid"] = classbookid;
 
             //GET name with the lang
-            if (sLang == "en"){
+            if (sLang == "en") {
                 jsonItem["name"] = record.value("name").toString().toStdString();
             } else {
                 QSqlQuery query_lang(db);
@@ -765,7 +763,7 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest){
             query_childs.bindValue(":classbookid", classbookid);
             query_childs.exec(); // TODO check errors
             int childs = 0;
-            if (query_childs.next()){
+            if (query_childs.next()) {
                 QSqlRecord record_childs = query_childs.record();
                 childs = record_childs.value("childs").toInt();
             }
@@ -798,7 +796,7 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest){
 // *******************************************
 
 CmdClassbookUpdateRecordHandler::CmdClassbookUpdateRecordHandler()
-    : CmdHandlerBase("classbook_update_record", "Update a article with a given classbookid"){
+    : CmdHandlerBase("classbook_update_record", "Update a article with a given classbookid") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -814,7 +812,7 @@ CmdClassbookUpdateRecordHandler::CmdClassbookUpdateRecordHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
+void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -841,7 +839,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
-    if (!query.next()){
+    if (!query.next()) {
         pRequest->sendMessageError(cmd(), Error(404, "Not found a article with a given classbookid"));
         return;
     }
@@ -869,7 +867,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
                  pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
                 return;
             }
-            if(!query.next()){
+            if (!query.next()) {
                 pRequest->sendMessageError(cmd(), Error(404, "Not found a article with a given parentid"));
                 return;
             }
@@ -878,7 +876,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
         query.prepare("UPDATE classbook SET parentid=:parentid WHERE id=:classbookid");
         query.bindValue(":classbookid", nClassbookID);
         query.bindValue(":parentid", nParentID);
-        if (!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
@@ -890,7 +888,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
         query.prepare("UPDATE classbook SET name=:name WHERE id = :classbookid");
         query.bindValue(":classbookid", nClassbookID);
         query.bindValue(":name", QString::fromStdString(sName));
-        if (!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
@@ -904,7 +902,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
         query.bindValue(":classbookid", nClassbookID);
         query.bindValue(":content", QString::fromStdString(sContent));
         query.bindValue(":md5_content", QString::fromStdString(sContentMd5_));
-        if (!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
@@ -916,7 +914,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
         query.prepare("UPDATE classbook SET ordered=:ordered WHERE id = :classbookid");
         query.bindValue(":classbookid", nClassbookID);
         query.bindValue(":ordered", ordered);
-        if (!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
@@ -925,7 +923,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
     //UPDATE updated column
     query.prepare("UPDATE classbook SET updated = NOW() WHERE id = :classbookid");
     query.bindValue(":classbookid", nClassbookID);
-    if (!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
@@ -961,7 +959,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
 
 
 CmdClassbookLocalizationAddRecordHandler::CmdClassbookLocalizationAddRecordHandler()
-    : CmdHandlerBase("classbook_localization_add_record", "Add a new article localization for the English version"){
+    : CmdHandlerBase("classbook_localization_add_record", "Add a new article localization for the English version") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -976,7 +974,7 @@ CmdClassbookLocalizationAddRecordHandler::CmdClassbookLocalizationAddRecordHandl
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest){
+void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -1009,11 +1007,11 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest){
     query.prepare("SELECT lang FROM classbook_localization WHERE lang = :lang AND classbookid=:classbookid");
     query.bindValue(":lang", QString::fromStdString(sLang));
     query.bindValue(":classbookid", nClassbookID);
-    if(!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
-    if(query.next()){
+    if (query.next()) {
         pRequest->sendMessageError(cmd(), Error(400, "This lang already exist"));
         return;
     }
@@ -1050,7 +1048,7 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest){
     query.bindValue(":name", QString::fromStdString(sName));
     query.bindValue(":content", QString::fromStdString(sContent));
     query.bindValue(":md5_content", QString::fromStdString(sContentMd5_));
-    if(!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
@@ -1071,7 +1069,7 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest){
 // *******************************************
 
 CmdClassbookLocalizationDeleteRecordHandler::CmdClassbookLocalizationDeleteRecordHandler()
-    : CmdHandlerBase("classbook_localization_delete_record", "Delete an article localization"){
+    : CmdHandlerBase("classbook_localization_delete_record", "Delete an article localization") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1083,7 +1081,7 @@ CmdClassbookLocalizationDeleteRecordHandler::CmdClassbookLocalizationDeleteRecor
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookLocalizationDeleteRecordHandler::handle(ModelRequest *pRequest){
+void CmdClassbookLocalizationDeleteRecordHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -1099,17 +1097,17 @@ void CmdClassbookLocalizationDeleteRecordHandler::handle(ModelRequest *pRequest)
     QSqlQuery query(db);
     query.prepare("SELECT id FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", nClassbookLocalizationID);
-    if(!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
-    if(!query.next()){
+    if (!query.next()) {
         pRequest->sendMessageError(cmd(), Error(404, "This localization doesn't exist"));
         return;
     }
     query.prepare("DELETE FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", nClassbookLocalizationID);
-    if(!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
@@ -1123,7 +1121,7 @@ void CmdClassbookLocalizationDeleteRecordHandler::handle(ModelRequest *pRequest)
 
 
 CmdClassbookLocalizationInfoHandler::CmdClassbookLocalizationInfoHandler()
-    : CmdHandlerBase("classbook_localization_info", "Find and display localization for an article by classbookid"){
+    : CmdHandlerBase("classbook_localization_info", "Find and display localization for an article by classbookid") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1135,7 +1133,7 @@ CmdClassbookLocalizationInfoHandler::CmdClassbookLocalizationInfoHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookLocalizationInfoHandler::handle(ModelRequest *pRequest){
+void CmdClassbookLocalizationInfoHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -1153,18 +1151,18 @@ void CmdClassbookLocalizationInfoHandler::handle(ModelRequest *pRequest){
     QSqlQuery query(db);
     query.prepare("SELECT id FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", nClassbookLocalizationID);
-    if(!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
-    if(!query.next()){
+    if (!query.next()) {
         pRequest->sendMessageError(cmd(), Error(404, "This localization doesn't exist"));
         return;
     }
 
     query.prepare("SELECT classbookid, lang, name, content FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", nClassbookLocalizationID);
-    if (!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
@@ -1185,7 +1183,7 @@ void CmdClassbookLocalizationInfoHandler::handle(ModelRequest *pRequest){
 // *******************************************
 
 CmdClassbookLocalizationUpdateRecordHandler::CmdClassbookLocalizationUpdateRecordHandler()
-    : CmdHandlerBase("classbook_localization_update_record", "Update table with localization by classbookid"){
+    : CmdHandlerBase("classbook_localization_update_record", "Update table with localization by classbookid") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1199,7 +1197,7 @@ CmdClassbookLocalizationUpdateRecordHandler::CmdClassbookLocalizationUpdateRecor
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest){
+void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -1227,11 +1225,11 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest)
     QSqlQuery query(db);
     query.prepare("SELECT id FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", nClassbookLocalizationID);
-    if(!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
-    if(!query.next()){
+    if (!query.next()) {
         pRequest->sendMessageError(cmd(), Error(404, "This localization doesn't exist"));
         return;
     }
@@ -1246,7 +1244,7 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest)
     query.bindValue(":name", QString::fromStdString(sName));
     query.bindValue(":content", QString::fromStdString(sContent));
     query.bindValue(":md5_content", md5_content);
-    if(!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
@@ -1271,7 +1269,7 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest)
  * */
 
 CmdClassbookProposalAddRecordHandler::CmdClassbookProposalAddRecordHandler()
-    : CmdHandlerBase("classbook_proposal_add_record", "Propose an update of article"){
+    : CmdHandlerBase("classbook_proposal_add_record", "Propose an update of article") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -1286,7 +1284,7 @@ CmdClassbookProposalAddRecordHandler::CmdClassbookProposalAddRecordHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest){
+void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -1376,7 +1374,7 @@ void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest){
     query.bindValue(":name_before", name_before);
     query.bindValue(":content_before", content_before);
     query.bindValue(":md5_content", md5_content);
-    if(!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
@@ -1401,7 +1399,7 @@ void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest){
  * */
 
 CmdClassbookProposalDeleteRecordHandler::CmdClassbookProposalDeleteRecordHandler()
-    : CmdHandlerBase("classbook_proposal_delete_record", "Delete a proposal of updating an article"){
+    : CmdHandlerBase("classbook_proposal_delete_record", "Delete a proposal of updating an article") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -1412,7 +1410,7 @@ CmdClassbookProposalDeleteRecordHandler::CmdClassbookProposalDeleteRecordHandler
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookProposalDeleteRecordHandler::handle(ModelRequest *pRequest){
+void CmdClassbookProposalDeleteRecordHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     
@@ -1429,7 +1427,7 @@ void CmdClassbookProposalDeleteRecordHandler::handle(ModelRequest *pRequest){
     QSqlQuery query(db);
     query.prepare("SELECT id FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", nClassbookProposalID);
-    if(!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
@@ -1454,7 +1452,7 @@ void CmdClassbookProposalDeleteRecordHandler::handle(ModelRequest *pRequest){
  * */
 
 CmdClassbookProposalInfoHandler::CmdClassbookProposalInfoHandler()
-    : CmdHandlerBase("classbook_proposal_info", "Find and display all proposal data by id"){
+    : CmdHandlerBase("classbook_proposal_info", "Find and display all proposal data by id") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -1466,7 +1464,7 @@ CmdClassbookProposalInfoHandler::CmdClassbookProposalInfoHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookProposalInfoHandler::handle(ModelRequest *pRequest){
+void CmdClassbookProposalInfoHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -1484,18 +1482,18 @@ void CmdClassbookProposalInfoHandler::handle(ModelRequest *pRequest){
     QSqlQuery query(db);
     query.prepare("SELECT id FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", nClassbookProposalID);
-    if(!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
-    if(!query.next()){
+    if (!query.next()) {
         pRequest->sendMessageError(cmd(), Error(404, "This proposal doesn't exist"));
         return;
     }
 
     query.prepare("SELECT classbookid, lang, name, content FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", nClassbookProposalID);
-    if (!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
@@ -1520,7 +1518,7 @@ void CmdClassbookProposalInfoHandler::handle(ModelRequest *pRequest){
  * */
 
 CmdClassbookProposalListHandler::CmdClassbookProposalListHandler()
-    : CmdHandlerBase("classbook_proposal_list", "Display list of proposals by classbookid"){
+    : CmdHandlerBase("classbook_proposal_list", "Display list of proposals by classbookid") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -1533,7 +1531,7 @@ CmdClassbookProposalListHandler::CmdClassbookProposalListHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest){
+void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -1553,11 +1551,11 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest){
         nClassbookID = jsonRequest.at("classbookid").get<int>();
         query.prepare("SELECT id FROM classbook WHERE id = :classbookid");
         query.bindValue(":classbookid", nClassbookID);
-        if(!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
-        if(!query.next()){
+        if (!query.next()) {
             pRequest->sendMessageError(cmd(), Error(404, "This article doesn't exist"));
             return;
         }
@@ -1576,17 +1574,21 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest){
     else sQuery = "SELECT id, name, lang FROM classbook_proposal";
 
     //generation of the rest of the query
-    if(mapFilter.size() > 0) sQuery += " WHERE ";
+    if (mapFilter.size() > 0) {
+        sQuery += " WHERE ";
+    }
     bool bFirst = true;
-    foreach(QString key, mapFilter.keys()){
-        if(!bFirst) sQuery += " AND ";
+    foreach (QString key, mapFilter.keys()) {
+        if (!bFirst) {
+            sQuery += " AND ";
+        }
         bFirst = false;
         sQuery +=  key + " = :" + key;
     }
     query.prepare(sQuery);
 
     //binding of values
-    foreach(QString key, mapFilter.keys()){
+    foreach (QString key, mapFilter.keys()) {
         QMap<QString, QJsonValue>::const_iterator v = mapFilter.lowerBound(key);
         if (key=="classbookid") {
             query.bindValue(":" + key, v.value().toInt());
@@ -1594,7 +1596,7 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest){
             query.bindValue(":" + key, v.value());
         }
     }
-    if (!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
@@ -1621,7 +1623,7 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest){
  * This handler will be prepare classbook proposal record
  * */
 CmdClassbookProposalPrepareMergeRecordHandler::CmdClassbookProposalPrepareMergeRecordHandler()
-    : CmdHandlerBase("classbook_propasal_prepare_merge_record", "Prepare to merge updating requests"){
+    : CmdHandlerBase("classbook_propasal_prepare_merge_record", "Prepare to merge updating requests") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1633,7 +1635,7 @@ CmdClassbookProposalPrepareMergeRecordHandler::CmdClassbookProposalPrepareMergeR
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pRequest){
+void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
@@ -1653,18 +1655,18 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
     QSqlRecord record = query.record();
     query.prepare("SELECT id FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", nClassbookProposalID);
-    if(!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
-    if(!query.next()){
+    if (!query.next()) {
         pRequest->sendMessageError(cmd(), Error(404, "This proposal doesn't exist"));
         return;
     }
 
     query.prepare("SELECT content FROM classbook WHERE id IN (SELECT classbookid FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", nClassbookProposalID);
-    if (!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
@@ -1672,7 +1674,7 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
 
     query.prepare("SELECT content, content_before FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", nClassbookProposalID);
-    if (!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
@@ -1692,7 +1694,7 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
  * */
 
 CmdClassbookHandler::CmdClassbookHandler()
-    : CmdHandlerBase("classbook", "Return classbook contents"){
+    : CmdHandlerBase("classbook", "Return classbook contents") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -1702,7 +1704,7 @@ CmdClassbookHandler::CmdClassbookHandler()
 
 // ---------------------------------------------------------------------
 
-void CmdClassbookHandler::handle(ModelRequest *pRequest){
+void CmdClassbookHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;

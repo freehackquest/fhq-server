@@ -44,20 +44,20 @@ void Log::ok(const std::string &sTag, const std::string &sMessage) {
 
 // ---------------------------------------------------------------------
 
-void Log::setdir(const std::string &sDirectoryPath){
+void Log::setdir(const std::string &sDirectoryPath) {
     g_LOG_DIR_PATH = sDirectoryPath;
 }
 
 // ---------------------------------------------------------------------
 
-void Log::initGlobalVariables(){
+void Log::initGlobalVariables() {
     // create deque if not created
-    if(g_LAST_LOG_MESSAGES == NULL){
+    if (g_LAST_LOG_MESSAGES == NULL) {
         g_LAST_LOG_MESSAGES = new std::deque<std::string>();
         // std::cout << Log::currentTime() + ", " + Log::threadId() + " Init last messages deque\r\n";
     }
     // create mutex if not created
-    if(g_LOG_MUTEX == NULL){
+    if (g_LOG_MUTEX == NULL) {
         g_LOG_MUTEX = new std::mutex();
         // std::cout << Log::currentTime() + ", " + Log::threadId() + " Init mutex for log\r\n";
     }
@@ -65,7 +65,7 @@ void Log::initGlobalVariables(){
 
 // ---------------------------------------------------------------------
 
-std::string Log::currentTime(){
+std::string Log::currentTime() { // TODO redesign to helpers
     // milleseconds
     struct timeval tv;
     gettimeofday(&tv, NULL);
@@ -89,7 +89,7 @@ std::string Log::currentTime(){
 
 // ---------------------------------------------------------------------
 
-std::string Log::threadId(){
+std::string Log::threadId() {
     std::thread::id this_id = std::this_thread::get_id();
     std::stringstream stream;
     stream << std::hex << this_id;
@@ -103,7 +103,7 @@ nlohmann::json Log::last_logs() {
     std::lock_guard<std::mutex> lock(*g_LOG_MUTEX);
     nlohmann::json lastLogMessages = nlohmann::json::array();
     int len = g_LAST_LOG_MESSAGES->size();
-    for(int i = 0; i < len; i++){
+    for (int i = 0; i < len; i++) {
         lastLogMessages.push_back(g_LAST_LOG_MESSAGES->at(i));
     }
     return lastLogMessages;
@@ -111,7 +111,7 @@ nlohmann::json Log::last_logs() {
 
 // ---------------------------------------------------------------------
 
-void Log::add(Color::Modifier &clr, const std::string &sType, const std::string &sTag, const std::string &sMessage){
+void Log::add(Color::Modifier &clr, const std::string &sType, const std::string &sTag, const std::string &sMessage) {
     Log::initGlobalVariables();
 
     std::lock_guard<std::mutex> lock(*g_LOG_MUTEX);
@@ -121,7 +121,7 @@ void Log::add(Color::Modifier &clr, const std::string &sType, const std::string 
     std::cout << clr << sLogMessage << def << std::endl;
 
     g_LAST_LOG_MESSAGES->push_front(sLogMessage);
-    while(g_LAST_LOG_MESSAGES->size() > 50){
+    while (g_LAST_LOG_MESSAGES->size() > 50) {
         g_LAST_LOG_MESSAGES->pop_back();
     }
     

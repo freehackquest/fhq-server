@@ -2,7 +2,7 @@
 #include <employ_server_config.h>
 #include <utils_logger.h>
 
-ModelDatabaseConnection::ModelDatabaseConnection(QString sNameConnection){
+ModelDatabaseConnection::ModelDatabaseConnection(QString sNameConnection) {
     m_pDatabase = NULL;
     m_sNameConnection = sNameConnection;
     m_nOutdatedAfter = 60*60*1000; // every 1 hour reconnect to database
@@ -11,7 +11,7 @@ ModelDatabaseConnection::ModelDatabaseConnection(QString sNameConnection){
 
 // ---------------------------------------------------------------------
 
-void ModelDatabaseConnection::swap(ModelDatabaseConnection *pDatabaseConnection){
+void ModelDatabaseConnection::swap(ModelDatabaseConnection *pDatabaseConnection) {
     QSqlDatabase *pDatabase = m_pDatabase;
     m_pDatabase = pDatabaseConnection->db();
     pDatabaseConnection->setDb(pDatabase);
@@ -23,19 +23,19 @@ void ModelDatabaseConnection::swap(ModelDatabaseConnection *pDatabaseConnection)
 
 // ---------------------------------------------------------------------
 
-QString ModelDatabaseConnection::nameConnection(){
+QString ModelDatabaseConnection::nameConnection() {
     return m_sNameConnection;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelDatabaseConnection::setNameConnection(QString sNameConnection){
+void ModelDatabaseConnection::setNameConnection(QString sNameConnection) {
     m_sNameConnection = sNameConnection;
 }
 
 // ---------------------------------------------------------------------
 
-bool ModelDatabaseConnection::connect(){
+bool ModelDatabaseConnection::connect() {
     EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
     
     m_pDatabase = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL", m_sNameConnection));
@@ -44,7 +44,7 @@ bool ModelDatabaseConnection::connect(){
     m_pDatabase->setPort(pServerConfig->databasePort());
     m_pDatabase->setUserName(QString(pServerConfig->databaseUser().c_str()));
     m_pDatabase->setPassword(QString(pServerConfig->databasePassword().c_str()));
-    if (!m_pDatabase->open()){
+    if (!m_pDatabase->open()) {
         Log::err(TAG, "Failed to connect." + m_pDatabase->lastError().text().toStdString());
         m_pDatabase = NULL;
         return false;
@@ -56,27 +56,27 @@ bool ModelDatabaseConnection::connect(){
 
 // ---------------------------------------------------------------------
 
-bool ModelDatabaseConnection::isOutdated(){
+bool ModelDatabaseConnection::isOutdated() {
     qint64 nCurrent = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
     return m_nOpened + m_nOutdatedAfter < nCurrent;
 }
 
 // ---------------------------------------------------------------------
 
-QSqlDatabase *ModelDatabaseConnection::db(){
-    if(m_pDatabase == NULL){
+QSqlDatabase *ModelDatabaseConnection::db() {
+    if (m_pDatabase == NULL) {
         Log::err(TAG, "Database is not connected");
         return NULL;
     }
-    if(!m_pDatabase->isOpen()){
+    if (!m_pDatabase->isOpen()) {
         Log::err(TAG, "Database is not open");
     }
     
-    if(m_pDatabase->isOpenError()){
+    if (m_pDatabase->isOpenError()) {
         Log::err(TAG, "Database connection has error");
     }
     
-    if(!m_pDatabase->isValid()){
+    if (!m_pDatabase->isValid()) {
         Log::err(TAG, "Database connection invalid");
     }
     
@@ -85,15 +85,15 @@ QSqlDatabase *ModelDatabaseConnection::db(){
 
 // ---------------------------------------------------------------------
 
-void ModelDatabaseConnection::setDb(QSqlDatabase *pDatabase){
+void ModelDatabaseConnection::setDb(QSqlDatabase *pDatabase) {
     m_pDatabase = pDatabase;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelDatabaseConnection::close(){
-    if(m_pDatabase != NULL){
-        if (m_pDatabase->isOpen()){
+void ModelDatabaseConnection::close() {
+    if (m_pDatabase != NULL) {
+        if (m_pDatabase->isOpen()) {
             m_pDatabase->close();
         }
         delete m_pDatabase;

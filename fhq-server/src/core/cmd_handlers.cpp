@@ -24,56 +24,56 @@ CmdInputDef::CmdInputDef() {
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::optional(){
+CmdInputDef & CmdInputDef::optional() {
     m_sRestrict = "optional";
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::required(){
+CmdInputDef & CmdInputDef::required() {
     m_sRestrict = "required";
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::string_(){
+CmdInputDef & CmdInputDef::string_() {
     m_sType = std::string(CMD_INPUT_DEF_TYPE_STRING);
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::integer_(){
+CmdInputDef & CmdInputDef::integer_() {
     m_sType = CMD_INPUT_DEF_TYPE_INTEGER;
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::bool_(){
+CmdInputDef & CmdInputDef::bool_() {
     m_sType = std::string(CMD_INPUT_DEF_TYPE_BOOL);
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::any_(){
+CmdInputDef & CmdInputDef::any_() {
     m_sType = std::string(CMD_INPUT_DEF_TYPE_ANY);
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::description(const std::string& s){
+CmdInputDef & CmdInputDef::description(const std::string& s) {
     m_sDescription = s;
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::minval(int minval){
+CmdInputDef & CmdInputDef::minval(int minval) {
     m_bSettedMinVal = true;
     m_nMinVal = minval;
     return *this;
@@ -81,7 +81,7 @@ CmdInputDef & CmdInputDef::minval(int minval){
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::maxval(int maxval){
+CmdInputDef & CmdInputDef::maxval(int maxval) {
     m_bSettedMaxVal = true;
     m_nMaxVal = maxval;
     return *this;
@@ -89,7 +89,7 @@ CmdInputDef & CmdInputDef::maxval(int maxval){
 
 // ---------------------------------------------------------------------
 
-nlohmann::json CmdInputDef::toJson(){
+nlohmann::json CmdInputDef::toJson() {
     nlohmann::json obj;
     obj["name"] = m_sName;
     obj["type"] = m_sType;
@@ -101,19 +101,19 @@ nlohmann::json CmdInputDef::toJson(){
 
 // ---------------------------------------------------------------------
 
-const std::string &CmdInputDef::getType(){
+const std::string &CmdInputDef::getType() {
     return m_sType;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &CmdInputDef::getType() const{
+const std::string &CmdInputDef::getType() const {
     return m_sType;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &CmdInputDef::getName(){
+const std::string &CmdInputDef::getName() {
     return m_sName;
 }
 
@@ -125,49 +125,49 @@ const std::string &CmdInputDef::getName() const {
 
 // ---------------------------------------------------------------------
 
-const std::string &CmdInputDef::getRestrict(){
+const std::string &CmdInputDef::getRestrict() {
     return m_sRestrict;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &CmdInputDef::getRestrict() const{
+const std::string &CmdInputDef::getRestrict() const {
     return m_sRestrict;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &CmdInputDef::getDescription(){
+const std::string &CmdInputDef::getDescription() {
     return m_sDescription;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &CmdInputDef::getDescription() const{
+const std::string &CmdInputDef::getDescription() const {
     return m_sDescription;
 }
 
 // ---------------------------------------------------------------------
 
-bool CmdInputDef::isRequired(){
+bool CmdInputDef::isRequired() {
     return m_sRestrict == "required";
 }
 
 // ---------------------------------------------------------------------
 
-bool CmdInputDef::isInteger(){
+bool CmdInputDef::isInteger() {
     return m_sType == CMD_INPUT_DEF_TYPE_INTEGER;
 }
 
 // ---------------------------------------------------------------------
 
-bool CmdInputDef::isString(){
+bool CmdInputDef::isString() {
     return m_sType == CMD_INPUT_DEF_TYPE_STRING;
 }
 
 // ---------------------------------------------------------------------
 
-bool CmdInputDef::isBool(){
+bool CmdInputDef::isBool() {
     return m_sType == CMD_INPUT_DEF_TYPE_BOOL;
 }
 
@@ -179,25 +179,25 @@ bool CmdInputDef::isAny() {
 
 // ---------------------------------------------------------------------
 
-bool CmdInputDef::isMinVal(){
+bool CmdInputDef::isMinVal() {
     return m_bSettedMaxVal;
 }
 
 // ---------------------------------------------------------------------
 
-int CmdInputDef::getMinVal(){
+int CmdInputDef::getMinVal() {
     return m_nMinVal;
 }
 
 // ---------------------------------------------------------------------
 
-bool CmdInputDef::isMaxVal(){
+bool CmdInputDef::isMaxVal() {
     return m_bSettedMaxVal;
 }
 
 // ---------------------------------------------------------------------
 
-int CmdInputDef::getMaxVal(){
+int CmdInputDef::getMaxVal() {
     return m_nMaxVal;
 }
 
@@ -223,7 +223,7 @@ CmdInputDef &CmdInputDef::addValidator(ValidatorStringBase *pValidatorStringBase
 
 // ---------------------------------------------------------------------
 
-CmdHandlerBase::CmdHandlerBase(const std::string &sCmd, const std::string &sDescription){
+CmdHandlerBase::CmdHandlerBase(const std::string &sCmd, const std::string &sDescription) {
     m_sCmd = sCmd;
     m_sDescription = sDescription;
     TAG = "CmdHandlerBase(" + sCmd + ")";
@@ -238,13 +238,13 @@ CmdHandlerBase::CmdHandlerBase(const std::string &sCmd, const std::string &sDesc
 
 // ---------------------------------------------------------------------
 
-std::string CmdHandlerBase::activatedFromVersion(){
+std::string CmdHandlerBase::activatedFromVersion() {
     return m_sActivatedFromVersion;
 }
 
 // ---------------------------------------------------------------------
 
-std::string CmdHandlerBase::deprecatedFromVersion(){
+std::string CmdHandlerBase::deprecatedFromVersion() {
     return m_sDeprecatedFromVersion;
 }
 
@@ -268,43 +268,43 @@ bool CmdHandlerBase::accessAdmin() {
 
 // ---------------------------------------------------------------------
 
-std::string CmdHandlerBase::cmd(){
+std::string CmdHandlerBase::cmd() {
     return m_sCmd;
 }
 
 // ---------------------------------------------------------------------
 
-std::string CmdHandlerBase::description(){
+std::string CmdHandlerBase::description() {
     return m_sDescription;
 }
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerBase::setAccessUnauthorized(bool bAccess){
+void CmdHandlerBase::setAccessUnauthorized(bool bAccess) {
     m_bAccessUnauthorized = bAccess;
 }
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerBase::setAccessUser(bool bAccess){
+void CmdHandlerBase::setAccessUser(bool bAccess) {
     m_bAccessUser = bAccess;
 }
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerBase::setAccessAdmin(bool bAccess){
+void CmdHandlerBase::setAccessAdmin(bool bAccess) {
     m_bAccessAdmin = bAccess;
 }
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerBase::setActivatedFromVersion(const std::string &sActivatedFromVersion){
+void CmdHandlerBase::setActivatedFromVersion(const std::string &sActivatedFromVersion) {
     m_sActivatedFromVersion = sActivatedFromVersion;
 }
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerBase::setDeprecatedFromVersion(const std::string &sDeprecatedFromVersion){
+void CmdHandlerBase::setDeprecatedFromVersion(const std::string &sDeprecatedFromVersion) {
     m_sDeprecatedFromVersion = sDeprecatedFromVersion;
 }
 
@@ -370,14 +370,14 @@ CmdInputDef &CmdHandlerBase::optionalBooleanParam(const std::string &sName, cons
 
 // ---------------------------------------------------------------------
 
-const std::vector<CmdInputDef> &CmdHandlerBase::inputs(){
+const std::vector<CmdInputDef> &CmdHandlerBase::inputs() {
     return m_vInputs;
 }
 
 // ---------------------------------------------------------------------
 
 /*
-void CmdHandlerBase::success(nlohmann::json jsonResponse){
+void CmdHandlerBase::success(nlohmann::json jsonResponse) {
     EmployWsServer *pEmployWsServer = findEmploy<EmployWsServer>();
     // TODO sendMessageSuccess
     // and remove from ModelRequests
@@ -385,7 +385,7 @@ void CmdHandlerBase::success(nlohmann::json jsonResponse){
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerBase::error(int nCode, const std::string &sErrorMessage){
+void CmdHandlerBase::error(int nCode, const std::string &sErrorMessage) {
     EmployWsServer *pEmployWsServer = findEmploy<EmployWsServer>();
     // TODO sendMessageError
     // and remove from ModelRequests
@@ -400,8 +400,8 @@ void CmdHandlerBase::error(int nCode, const std::string &sErrorMessage){
 
 std::map<std::string, CmdHandlerBase*> *g_pCmdHandlers = NULL;
 
-void CmdHandlers::initGlobalVariables(){
-    if(g_pCmdHandlers == NULL){
+void CmdHandlers::initGlobalVariables() {
+    if (g_pCmdHandlers == NULL) {
         // Log::info(std::string(), "Create handlers map");
         g_pCmdHandlers = new std::map<std::string, CmdHandlerBase*>();
     }
@@ -409,11 +409,11 @@ void CmdHandlers::initGlobalVariables(){
 
 // ---------------------------------------------------------------------
 
-void CmdHandlers::addHandler(const std::string &sCmd, CmdHandlerBase* pCmdHandler){
+void CmdHandlers::addHandler(const std::string &sCmd, CmdHandlerBase* pCmdHandler) {
     CmdHandlers::initGlobalVariables();
-    if(g_pCmdHandlers->count(sCmd)){
+    if (g_pCmdHandlers->count(sCmd)) {
         Log::err(sCmd, "Already registered");
-    }else{
+    } else {
         g_pCmdHandlers->insert(std::pair<std::string, CmdHandlerBase*>(sCmd,pCmdHandler));
         // Log::info(sCmd, "Registered");
     }
@@ -421,15 +421,15 @@ void CmdHandlers::addHandler(const std::string &sCmd, CmdHandlerBase* pCmdHandle
 
 // ---------------------------------------------------------------------
 
-CmdHandlerBase * CmdHandlers::findCmdHandler(const std::string &sCmd){
+CmdHandlerBase * CmdHandlers::findCmdHandler(const std::string &sCmd) {
     CmdHandlers::initGlobalVariables();
     CmdHandlerBase *pCmdHandler = NULL;
 
-    if(g_pCmdHandlers->count(sCmd)){
+    if (g_pCmdHandlers->count(sCmd)) {
         pCmdHandler = g_pCmdHandlers->at(sCmd);
     }
 
-    if(pCmdHandler == NULL){
+    if (pCmdHandler == NULL) {
         Log::err(sCmd, "Not found");
     }
 

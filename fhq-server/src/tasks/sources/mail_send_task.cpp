@@ -7,7 +7,7 @@
 #include <iostream>
 #include <time.h>
 
-MailSendTask::MailSendTask(const std::string &sTo, const std::string &sSubject, const std::string &sContent){
+MailSendTask::MailSendTask(const std::string &sTo, const std::string &sSubject, const std::string &sContent) {
     TAG = "MailSendTask";
     m_sTo = sTo;
     m_sSubject = sSubject;
@@ -16,7 +16,7 @@ MailSendTask::MailSendTask(const std::string &sTo, const std::string &sSubject, 
 
 // ---------------------------------------------------------------------
 
-MailSendTask::~MailSendTask(){
+MailSendTask::~MailSendTask() {
 
 }
 
@@ -38,7 +38,7 @@ std::string MailSendTask::nextPayloadLine() {
 size_t curl_task_send_mail(void *ptr, size_t size, size_t nmemb, void *userp) {
     MailSendTask *pTaskMailSend = (MailSendTask *)userp;
 
-    if((size == 0) || (nmemb == 0) || ((size*nmemb) < 1)) {
+    if ((size == 0) || (nmemb == 0) || ((size*nmemb) < 1)) {
         return 0;
     }
     
@@ -110,7 +110,7 @@ static void trim(std::string &s) {
 // ---------------------------------------------------------------------
 
 
-void MailSendTask::run(){
+void MailSendTask::run() {
     Log::info(TAG, "Try send mail to '" + m_sTo + "', with subject: '" + m_sSubject + "'");
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     EmploySettings *pSettings = findEmploy<EmploySettings>();
@@ -145,7 +145,7 @@ void MailSendTask::run(){
     query.bindValue(":message", QString::fromStdString(m_sContent));
     query.bindValue(":priority", "");
     query.bindValue(":status", "loaded");
-    if(!query.exec()){
+    if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
         return;
     }
@@ -220,7 +220,7 @@ void MailSendTask::run(){
         query.prepare("UPDATE email_delivery SET status = :status WHERE id = :id");
         query.bindValue(":status", QString::fromStdString(sStatus));
         query.bindValue(":id", nMailID);
-        if(!query.exec()){
+        if (!query.exec()) {
             Log::err(TAG, query.lastError().text().toStdString());
             return;
         }

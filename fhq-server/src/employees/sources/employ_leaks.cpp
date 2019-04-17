@@ -22,7 +22,7 @@ EmployLeaks::EmployLeaks()
 
 // ---------------------------------------------------------------------
 
-bool EmployLeaks::init(){
+bool EmployLeaks::init() {
     // load list of leaks to cache
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     EmployGames *pEmployGames = findEmploy<EmployGames>();
@@ -31,7 +31,7 @@ bool EmployLeaks::init(){
 
     QSqlQuery query(db);
     query.prepare("SELECT * FROM leaks");
-    if (!query.exec()){
+    if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
         return false;
     }
@@ -45,9 +45,9 @@ bool EmployLeaks::init(){
         int nGameId = record.value("gameid").toInt();
         pModelLeak->setGameId(nGameId);
         ModelGame modelGame;
-        if(pEmployGames->findGame(nGameId, modelGame)){
+        if (pEmployGames->findGame(nGameId, modelGame)) {
             pModelLeak->setGameUuid(modelGame.uuid());
-        }else{
+        } else {
             Log::err(TAG, "Game not found by localId: " + std::to_string(nGameId));
         }
         pModelLeak->setName(record.value("name").toString().toStdString());
@@ -58,9 +58,9 @@ bool EmployLeaks::init(){
         // TODO created & updated
         // leak["created"] = record.value("created").toString().toHtmlEscaped();
         // leak["updated"] = record.value("updated").toString().toHtmlEscaped();
-        if(m_mapCacheLeaks.count(sUuid)){
+        if (m_mapCacheLeaks.count(sUuid)) {
             Log::err(TAG, "Inconsistent list leaks in database uuid: " + sUuid);
-        }else{
+        } else {
             m_mapCacheLeaks.insert(std::pair<std::string, ModelLeak*>(sUuid,pModelLeak));
         }
     }
@@ -69,12 +69,12 @@ bool EmployLeaks::init(){
 
 // ---------------------------------------------------------------------
 
-int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
+int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError) {
     std::string sUuid = pModelLeak->uuid();
     std::string sGameUuid = pModelLeak->gameUuid();
     std::string sName = pModelLeak->name();
 
-    if(m_mapCacheLeaks.count(sUuid)){
+    if (m_mapCacheLeaks.count(sUuid)) {
         // pError = new Error(403, "Leak already exists with this uuid");
         return EmployResult::ALREADY_EXISTS;
     }
@@ -111,7 +111,7 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
         query.bindValue(":score", pModelLeak->score());
         query.bindValue(":sold", pModelLeak->sold());
 
-        if (!query.exec()){
+        if (!query.exec()) {
             sError = query.lastError().text().toStdString();
             return EmployResult::DATABASE_ERROR;
         }
@@ -129,9 +129,9 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError){
 
 // ---------------------------------------------------------------------
 
-const ModelLeak* EmployLeaks::findLeakByUuid(std::string sUuid){
+const ModelLeak* EmployLeaks::findLeakByUuid(std::string sUuid) {
     std::map<std::string, ModelLeak*>::iterator it = m_mapCacheLeaks.find(sUuid);
-    if (it != m_mapCacheLeaks.end()){
+    if (it != m_mapCacheLeaks.end()) {
         return it->second; // TODO nullpointer exception
     }
     return NULL;
@@ -139,9 +139,9 @@ const ModelLeak* EmployLeaks::findLeakByUuid(std::string sUuid){
 
 // ---------------------------------------------------------------------
 
-int EmployLeaks::removeLeak(std::string sUuid){
+int EmployLeaks::removeLeak(std::string sUuid) {
     std::map<std::string, ModelLeak*>::iterator it = m_mapCacheLeaks.find(sUuid);
-    if (it != m_mapCacheLeaks.end()){
+    if (it != m_mapCacheLeaks.end()) {
         ModelLeak* pLeak = it->second;
         m_mapCacheLeaks.erase(it);
         delete pLeak;
@@ -153,14 +153,13 @@ int EmployLeaks::removeLeak(std::string sUuid){
 
 // ---------------------------------------------------------------------
 
-int EmployLeaks::updateLeak(ModelLeak* pModelLeak){
+int EmployLeaks::updateLeak(ModelLeak* pModelLeak) {
     std::string sUuid = pModelLeak->uuid();
     std::map<std::string, ModelLeak*>::iterator it = m_mapCacheLeaks.find(sUuid);
-    if (it != m_mapCacheLeaks.end()){
+    if (it != m_mapCacheLeaks.end()) {
         it->second = pModelLeak;
         return true;
     }
-
 
     // TODO save changes by leak to database
     return false;
@@ -168,7 +167,7 @@ int EmployLeaks::updateLeak(ModelLeak* pModelLeak){
 
 // ---------------------------------------------------------------------
 
-nlohmann::json EmployLeaks::toJson(){
+nlohmann::json EmployLeaks::toJson() {
     nlohmann::json jsonLeaks;
     // TODO fill json leaks
     return jsonLeaks;

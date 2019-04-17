@@ -7,17 +7,17 @@
 #include <QEventLoop>
 #include <employ_database.h>
 
-AddPublicEventsTask::AddPublicEventsTask(QString type, QString message){
+AddPublicEventsTask::AddPublicEventsTask(QString type, QString message) {
     m_sType = type;
     m_sMessage = message;
     TAG = "AddPublicEventsTask";
 };
 
-AddPublicEventsTask::~AddPublicEventsTask(){
+AddPublicEventsTask::~AddPublicEventsTask() {
     
 }
 
-void AddPublicEventsTask::run(){
+void AddPublicEventsTask::run() {
     Log::info(TAG, "message " + m_sMessage.toStdString());
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
@@ -25,7 +25,7 @@ void AddPublicEventsTask::run(){
     query.prepare("INSERT INTO public_events(type,dt,message) VALUES(:type,NOW(),:message)");
     query.bindValue(":type", m_sType);
     query.bindValue(":message", m_sMessage);
-    if(!query.exec()){
+    if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
     }
 };

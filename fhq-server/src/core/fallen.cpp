@@ -29,7 +29,7 @@ long Fallen::currentTime_seconds() {
 
 // ---------------------------------------------------------------------
 
-std::string Fallen::currentTime_logformat(){
+std::string Fallen::currentTime_logformat() {
     long nTimeStart = Fallen::currentTime_milliseconds();
     std::string sMilliseconds = std::to_string(int(nTimeStart % 1000));
     nTimeStart = nTimeStart / 1000;
@@ -280,7 +280,7 @@ bool FallenHelpParseArg::isOption() {
 // ---------------------------------------------------------------------
 
 FallenHelpParseArgs::FallenHelpParseArgs(int argc, char** argv) {
-    for(int i = 0; i < argc; i++){
+    for (int i = 0; i < argc; i++) {
         m_vArgs.push_back(std::string(argv[i]));
     }
 }
@@ -332,7 +332,7 @@ std::string FallenHelpParseArgs::option(const std::string &sName) {
 
 // ---------------------------------------------------------------------
 
-bool FallenHelpParseArgs::has(const std::string &sName){
+bool FallenHelpParseArgs::has(const std::string &sName) {
     std::vector<std::string> m_vAliases;
     m_vAliases.push_back(sName);
     FallenHelpParseArg *pHpa = NULL;
@@ -374,10 +374,10 @@ void FallenHelpParseArgs::addHelp(const std::string &sName, const std::string &s
 
 // ---------------------------------------------------------------------
 
-void FallenHelpParseArgs::printHelp(){
+void FallenHelpParseArgs::printHelp() {
     // TODO calculate max size
     int nMaxSize = 0;
-    for(unsigned int i = 0; i < m_vHelpArgs.size(); i++){
+    for (unsigned int i = 0; i < m_vHelpArgs.size(); i++) {
         FallenHelpParseArg *pHpa = m_vHelpArgs[i];
         std::string sTmp = pHpa->name() + ", " + pHpa->alias();
         nMaxSize = std::max(nMaxSize, (int)sTmp.size());
@@ -387,13 +387,13 @@ void FallenHelpParseArgs::printHelp(){
     // TODO:
     std::cout << "" << m_sAppName << " " << m_sAppVersion << "\n";
     std::cout << "Usage: " << m_vArgs.at(0) << "   [PARAM]\n";
-    for(unsigned int i = 0; i < m_vHelpArgs.size(); i++){
+    for (unsigned int i = 0; i < m_vHelpArgs.size(); i++) {
         FallenHelpParseArg *pHpa = m_vHelpArgs[i];
         std::string sTmp = pHpa->name() + ", " + pHpa->alias();
         int nIntent = nMaxSize - sTmp.size();
 
         std::cout << "\t " << sTmp;
-        for(int x = 0; x < nIntent; x++){
+        for (int x = 0; x < nIntent; x++) {
             std::cout << " ";
         }
         std::cout << pHpa->description() << "\n";

@@ -14,7 +14,7 @@
 REGISTRY_CMD(CmdHandlerUsefulLinksList)
 
 CmdHandlerUsefulLinksList::CmdHandlerUsefulLinksList()
-    : CmdHandlerBase("useful_links_list", "Method will be return list of useful links"){
+    : CmdHandlerBase("useful_links_list", "Method will be return list of useful links") {
     
     setActivatedFromVersion("0.2.21");
 
@@ -28,7 +28,7 @@ CmdHandlerUsefulLinksList::CmdHandlerUsefulLinksList()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest){
+void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
     IUserToken *pUserToken = pRequest->userToken();
@@ -99,7 +99,7 @@ CmdHandlerUsefulLinksAdd::CmdHandlerUsefulLinksAdd()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest){
+void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest) {
     std::string sUrl = pRequest->getInputString("url", "");
     std::string sDescription = pRequest->getInputString("description", "");
     std::string sAuthor = pRequest->getInputString("author", "");
@@ -139,7 +139,7 @@ CmdHandlerUsefulLinksDelete::CmdHandlerUsefulLinksDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest){
+void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
 }
 
@@ -150,7 +150,7 @@ void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest){
 REGISTRY_CMD(CmdHandlerUsefulLinksUpdate)
 
 CmdHandlerUsefulLinksUpdate::CmdHandlerUsefulLinksUpdate()
-    : CmdHandlerBase("useful_links_update", "Method for update useful link"){
+    : CmdHandlerBase("useful_links_update", "Method for update useful link") {
     
     setActivatedFromVersion("0.2.21");
 
@@ -167,7 +167,7 @@ CmdHandlerUsefulLinksUpdate::CmdHandlerUsefulLinksUpdate()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksUpdate::handle(ModelRequest *pRequest){
+void CmdHandlerUsefulLinksUpdate::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
 }
 
@@ -178,7 +178,7 @@ void CmdHandlerUsefulLinksUpdate::handle(ModelRequest *pRequest){
 REGISTRY_CMD(CmdHandlerUsefulLinksStar)
 
 CmdHandlerUsefulLinksStar::CmdHandlerUsefulLinksStar()
-    : CmdHandlerBase("useful_links_star", "Method set star"){
+    : CmdHandlerBase("useful_links_star", "Method set star") {
     
     setActivatedFromVersion("0.2.21");
 
@@ -191,7 +191,7 @@ CmdHandlerUsefulLinksStar::CmdHandlerUsefulLinksStar()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksStar::handle(ModelRequest *pRequest){
+void CmdHandlerUsefulLinksStar::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
 }
 
@@ -202,7 +202,7 @@ void CmdHandlerUsefulLinksStar::handle(ModelRequest *pRequest){
 REGISTRY_CMD(CmdHandlerUsefulLinksUnstar)
 
 CmdHandlerUsefulLinksUnstar::CmdHandlerUsefulLinksUnstar()
-    : CmdHandlerBase("useful_links_unstar", "Method set unstar"){
+    : CmdHandlerBase("useful_links_unstar", "Method set unstar") {
     
     setActivatedFromVersion("0.2.21");
 
@@ -215,6 +215,6 @@ CmdHandlerUsefulLinksUnstar::CmdHandlerUsefulLinksUnstar()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksUnstar::handle(ModelRequest *pRequest){
+void CmdHandlerUsefulLinksUnstar::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
 }

@@ -110,12 +110,12 @@ int main(int argc, char** argv) {
     } else if (helpArgs.has("show-employees")) {
         std::cout << " * Employees (" << g_pEmployees->size() << "):\n";
         std::map<std::string, EmployBase*>::iterator it = g_pEmployees->begin();
-        for (; it!=g_pEmployees->end(); ++it){
+        for (; it!=g_pEmployees->end(); ++it) {
             std::string sEmployName = it->first;
             EmployBase* pEmployBase = it->second;
             std::cout << " |--- * " << sEmployName << "\n";
-            if(pEmployBase->loadAfter().size() > 0){
-                for(int i = 0; i < pEmployBase->loadAfter().size(); i++){
+            if (pEmployBase->loadAfter().size() > 0) {
+                for (int i = 0; i < pEmployBase->loadAfter().size(); i++) {
                     std::cout << " |    +--- * after: " << pEmployBase->loadAfter().at(i) << "\n";
                 }
             }
@@ -145,7 +145,7 @@ int main(int argc, char** argv) {
         }
         EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
         QSqlDatabase *db = pDatabase->database();
-        if (!db->open()){
+        if (!db->open()) {
             Log::err(TAG, "Could not connect to database, please check config");
             return -1;
         }
@@ -205,7 +205,7 @@ int main(int argc, char** argv) {
     } else if (helpArgs.has("manual-create-database")) {
         std::cout << "\n * Manual create database\n\n";
         EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
-        if(!pServerConfig->init()){
+        if (!pServerConfig->init()) {
             std::cout << "\n * Failed on init server config\n\n";
             return -1;
         }
@@ -215,13 +215,13 @@ int main(int argc, char** argv) {
         char *pPassword=getpass("Enter MySQL root password: ");
         std::string sRootPassword(pPassword);
         std::string sError;
-        if(!pDatabase->manualCreateDatabase(sRootPassword, sError)){
+        if (!pDatabase->manualCreateDatabase(sRootPassword, sError)) {
             std::cout << "\n * Failed: " << sError << "\n\n";
             return -1;
         }
 
         // init database
-        if(!pDatabase->init()){
+        if (!pDatabase->init()) {
             std::cout << "\n * Failed on init database structure\n\n";
             return -1;
         }
@@ -231,13 +231,12 @@ int main(int argc, char** argv) {
     } else if (helpArgs.has("manual-configure-lxd")) {
         std::string sError;
         Employees::init({});
-        if (UtilsLXDAuth::check_trust_certs(sError))
+        if (UtilsLXDAuth::check_trust_certs(sError)) {
             std::cout << "\nGOOD HTTPS connection with LXD\n\n";
-        else if (!sError.empty()){
+        } else if (!sError.empty()) {
             Log::err(TAG, "\nBAD HTTPS connection with LXD\n\n: " + sError);
             return -1;
-        }
-        else {
+        } else {
             char *pPassword=getpass("\nPlease enter your password for LXD:");
             std::string sPass(pPassword);
             if (UtilsLXDAuth::connect_with_lxd(sPass, sError))
@@ -263,10 +262,10 @@ int main(int argc, char** argv) {
         pSettings->setSettString("lxd_mode", QString::fromStdString(lxd_mode));
         std::cout << "\nCurrent LXD mode: " << pSettings->getSettString("lxd_mode").toStdString() << "\n";
         return 0;
-    } else if(helpArgs.has("start") || helpArgs.has("-s")) {
+    } else if (helpArgs.has("start") || helpArgs.has("-s")) {
         QThreadPool::globalInstance()->setMaxThreadCount(5);
         WebSocketServer *pServer = new WebSocketServer();
-        if(pServer->isFailed()){
+        if (pServer->isFailed()) {
             Log::err(TAG, "Could not start server");
             return -1;
         }
@@ -275,7 +274,7 @@ int main(int argc, char** argv) {
         EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
         // TODO redesign to check config
         QSqlDatabase *db = pDatabase->database();
-        if (!db->open()){
+        if (!db->open()) {
             return -1;
         }
 

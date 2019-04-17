@@ -13,7 +13,7 @@
 
 
 CmdHandlerMailInfo::CmdHandlerMailInfo()
-    : CmdHandlerBase("mail_info", "This method Will be return info of mail"){
+    : CmdHandlerBase("mail_info", "This method Will be return info of mail") {
     TAG = "CmdHandlerMailInfo";
 
     setAccessUnauthorized(false);
@@ -24,7 +24,7 @@ CmdHandlerMailInfo::CmdHandlerMailInfo()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerMailInfo::handle(ModelRequest *pRequest){
+void CmdHandlerMailInfo::handle(ModelRequest *pRequest) {
     // QJsonObject jsonRequest = pRequest->data();
     // QJsonObject jsonResponse;
 
@@ -36,7 +36,7 @@ void CmdHandlerMailInfo::handle(ModelRequest *pRequest){
  *****************************************/
 
 CmdHandlerMailSend::CmdHandlerMailSend()
-    : CmdHandlerBase("mail_send", "Mail Send"){
+    : CmdHandlerBase("mail_send", "Mail Send") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -52,7 +52,7 @@ CmdHandlerMailSend::CmdHandlerMailSend()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerMailSend::handle(ModelRequest *pRequest){
+void CmdHandlerMailSend::handle(ModelRequest *pRequest) {
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
@@ -70,7 +70,7 @@ void CmdHandlerMailSend::handle(ModelRequest *pRequest){
  *****************************************/
 
 CmdHandlerMailsList::CmdHandlerMailsList()
-    : CmdHandlerBase("mails_list", "Mails list"){
+    : CmdHandlerBase("mails_list", "Mails list") {
     TAG = "CmdHandlerMailsList";
 
     setAccessUnauthorized(false);
@@ -86,7 +86,7 @@ CmdHandlerMailsList::CmdHandlerMailsList()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerMailsList::handle(ModelRequest *pRequest){
+void CmdHandlerMailsList::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QJsonObject jsonRequest = pRequest->data();
@@ -99,42 +99,42 @@ void CmdHandlerMailsList::handle(ModelRequest *pRequest){
     int nOnPage = 5;
     int nCount = 0;
 
-    if(jsonRequest.contains("filter_email")){
+    if (jsonRequest.contains("filter_email")) {
         QString sEmail = jsonRequest["filter_email"].toString().trimmed();
-        if(sEmail != ""){
+        if (sEmail != "") {
             filters << "(ed.to_email LIKE :email)";
             filter_values[":email"] = "%" + sEmail + "%";
         }
     }
 
-    if(jsonRequest.contains("filter_subject")){
+    if (jsonRequest.contains("filter_subject")) {
         QString sSubject = jsonRequest["filter_subject"].toString().trimmed();
-        if(sSubject != ""){
+        if (sSubject != "") {
             filters << "(ed.subject LIKE :subject)";
             filter_values[":subject"] = "%" + sSubject + "%";
         }
     }
 
-    if(jsonRequest.contains("filter_message")){
+    if (jsonRequest.contains("filter_message")) {
         QString sMessage = jsonRequest["filter_message"].toString().trimmed();
-        if(sMessage != ""){
+        if (sMessage != "") {
             filters << "(ed.message LIKE :message)";
             filter_values[":message"] = "%" + sMessage + "%";
         }
     }
 
-    if(jsonRequest.contains("page")){
+    if (jsonRequest.contains("page")) {
         nPage = jsonRequest["page"].toInt();
     }
 
-    if(jsonRequest.contains("onpage")){
+    if (jsonRequest.contains("onpage")) {
         nOnPage = jsonRequest["onpage"].toInt();
     }
 
 
     QSqlDatabase db = *(pDatabase->database());
     QString where = filters.join(" AND ");
-    if(where.length() > 0){
+    if (where.length() > 0) {
         where = "WHERE " + where;
     }
 
@@ -142,14 +142,14 @@ void CmdHandlerMailsList::handle(ModelRequest *pRequest){
     {
         QSqlQuery query(db);
         query.prepare("SELECT COUNT(*) cnt FROM email_delivery ed " + where);
-        foreach(QString key, filter_values.keys() ){
+        foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
-        if(!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
-        if(query.next()) {
+        if (query.next()) {
             QSqlRecord record = query.record();
             nCount = record.value("cnt").toInt();
         }
@@ -160,7 +160,7 @@ void CmdHandlerMailsList::handle(ModelRequest *pRequest){
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM email_delivery ed " + where + " ORDER BY ed.dt DESC LIMIT " + QString::number(nPage*nOnPage) + "," + QString::number(nOnPage));
-        foreach(QString key, filter_values.keys()){
+        foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
         query.exec();
