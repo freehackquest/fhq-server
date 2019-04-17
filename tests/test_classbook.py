@@ -7,6 +7,7 @@ import sys, traceback
 import base64
 import json
 from pprint import pprint
+import random
 
 test_name = 'Testing Classbook'
 
@@ -22,20 +23,41 @@ try:
     fhqtest.check_response(records_list, "Classbook Records list got")
     
     for i in records_list['data']:
-        print(i)
-        # TODO remove all
-        pass 
+        print("Try remove classbookid = " + str(i['classbookid']))
+        r = fhqtest.admin_session.classbook_delete_record({"classbookid": i['classbookid']})
+        fhqtest.check_response(r, "Record succesfull removed")
+        if r['result'] == 'FAIL':
+            raise ValueError('Could not remove classbook article')
+        
 
-    fhqtest.print_bold("Create new record")
-    record1 = fhqtest.admin_session.classbook_add_record({
-        "parentid": 0,
-        "name": "Some",
-        "content": "Some",
-        "uuid": fhqtest.CLASSBOOK_RECORD1,
-        "ordered": 0
-    })
-    fhqtest.check_response(record1, "Records succesfull created")
+    records = []
+    for _ in range(10):
+        records.append({
+            'name': fhqtest.generate_random(10),
+            'content': fhqtest.generate_random(255),
+            'uuid': fhqtest.generate_random_uuid(),
+        })
 
+    fhqtest.print_bold("Create new records")
+    parentids = []
+    parentids.append(0) # root
+    for rec in records:
+        rec['parentid'] = random.choice(parentids)
+        r = fhqtest.admin_session.classbook_add_record({
+            "parentid": rec['parentid'],
+            "name": rec['name'],
+            "content": rec['content'],
+            "uuid": rec['uuid'],
+            "ordered": 0
+        })
+        fhqtest.check_response(r, "Record " + rec['uuid'] + " succesfull in parent " + str(rec['parentid']) + " created")
+        if r['result'] == 'FAIL':
+            raise ValueError('Could not create new classbook')
+
+        rec['classbookid'] = r['data']['classbookid']
+        parentids.append(rec['classbookid'])
+
+    # pprint(records)
     # Cleanup
     ''' user1 = None
     user2 = None

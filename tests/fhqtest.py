@@ -71,6 +71,19 @@ def check_port(host, port):
 def generate_random(size): 
     return ''.join(random.choice(string.ascii_uppercase + string.digits + ' _+=\'"~@!#?/<>') for _ in range(size))
 
+def generate_random_uuid(): 
+    ret = ''
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(8))
+    ret = ret + '-'
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(4))
+    ret = ret + '-'
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(4))
+    ret = ret + '-'
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(4))
+    ret = ret + '-'
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(12))
+    return ret
+
 def check_response(resp, msg_success):
     if(resp['result'] == 'FAIL'):
         log_err(resp['error'])
