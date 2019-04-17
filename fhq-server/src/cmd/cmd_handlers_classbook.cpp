@@ -42,15 +42,12 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest) {
 
     QSqlDatabase db = *(pDatabase->database());
 
-    int nParentID = 0;
-    if (jsonRequest.find("parentid") != jsonRequest.end()) {
-        nParentID = jsonRequest.at("parentid").get<int>();
-    }
+    int nParentID = pRequest->getInputInteger("parentid", 0);
 
-    //Check parentid in database
+    // check parentid in database
     QSqlQuery query(db);
     if (nParentID != 0) {
-        query.prepare("SELECT name FROM classbook WHERE id=:parentid");
+        query.prepare("SELECT name FROM classbook WHERE id = :parentid");
         query.bindValue(":parentid", nParentID);
         query.exec();
         if (!query.next()) {
@@ -59,28 +56,25 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest) {
         }
     }
 
-    std::string sName = "";
-    if (jsonRequest.find("name") != jsonRequest.end()) {
-        sName = jsonRequest["name"];
-    }
-
-    std::string sContent = "";
-    if (jsonRequest.find("content") != jsonRequest.end()) {
-        sContent = jsonRequest["content"];
-    }
+    std::string sName = pRequest->getInputString("name", "");
+    std::string sContent = pRequest->getInputString("content", "");
 
     //Set uuid from request if available, else generate uuid
-    std::string sUuid;
-    if (jsonRequest.find("uuid") != jsonRequest.end()) {
+    std::string sUuid = pRequest->getInputString("uuid", "");
+    if (sUuid != "") {
         sUuid = jsonRequest["uuid"];
-        query.prepare("SELECT uuid FROM classbook WHERE uuid=:uuid");
+        query.prepare("SELECT uuid FROM classbook WHERE uuid = :uuid");
         query.bindValue(":uuid", QString::fromStdString(sUuid));
-        query.exec();
-        if (!query.next()) {
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+            return;
+        }
+        if (query.next()) {
             pRequest->sendMessageError(cmd(), Error(403, "Uuid already exist"));
             return;
         }
     } else {
+        // TODO redesign QUuid to helpers library
         QString uuid = QUuid::createUuid().toString().replace("{", "").replace("}", "");
         sUuid = uuid.toStdString();
     }
@@ -114,7 +108,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest) {
             if (nParentID != 0) {
                 query.prepare("SELECT ordered FROM classbook WHERE id=:parentid");
                 query.bindValue(":parentid", nParentID);
-                query.exec();
+                query.exec(); // TODO check errors
                 if (query.next()) {
                     QSqlRecord record = query.record();
                     nOrdered = record.value("ordered").toInt() + 1;
@@ -801,10 +795,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
-    int nClassbookID = 0;
-    if (jsonRequest.find("classbookid") != jsonRequest.end()) {
-        nClassbookID = jsonRequest.at("classbookid").get<int>();
-    }
+    int nClassbookID = pRequest->getInputInteger("classbookid", 0);
 
     nlohmann::json jsonResponse;
 

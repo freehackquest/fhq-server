@@ -18,11 +18,14 @@ try:
     fhqtest.print_bold("Clean up test data... ")
     records_list = fhqtest.admin_session.classbook_list({
         "parentid": 0,
-        "lang": "en",
-        "search": ""
     })
-    pprint(records_list)
+    fhqtest.check_response(records_list, "Classbook Records list got")
     
+    for i in records_list['data']:
+        print(i)
+        # TODO remove all
+        pass 
+
     fhqtest.print_bold("Create new record")
     record1 = fhqtest.admin_session.classbook_add_record({
         "parentid": 0,
