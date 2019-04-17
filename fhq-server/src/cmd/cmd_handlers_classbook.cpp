@@ -561,7 +561,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest) {
     auto jsonParents = nlohmann::json::array();
     QSet<int> set_of_parent;
     int nParentId = jsonInfo["parentid"];
-    for (int i=0; i < 5; ++i) {
+    for (int i = 0; i < 5; ++i) {
         //END IT root article
         if (nParentId==0) {
             nlohmann::json jsonParent;
@@ -667,7 +667,7 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest) {
                 query.bindValue(":search", QString::fromStdString(sSearch));
                 query.bindValue(":lang", QString::fromStdString(sLang));
             }
-            jsonItem["name"] = record.value("name").toString().toStdString();
+            jsonItem["name"] = record.value("name").toString().toStdString();  // TODO escaping html chars
 
             //COUNT childs for an article
             QSqlQuery query_childs(db);
@@ -721,7 +721,7 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest) {
 
             //GET name with the lang
             if (sLang == "en") {
-                jsonItem["name"] = record.value("name").toString().toStdString();
+                jsonItem["name"] = record.value("name").toString().toStdString(); // TODO escaping html chars
             } else {
                 QSqlQuery query_lang(db);
                 query_lang.prepare("SELECT name FROM classbook_localization WHERE classbookid=:classbookid AND lang=:lang");
