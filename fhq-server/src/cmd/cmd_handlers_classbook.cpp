@@ -616,15 +616,15 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest) {
 
 
 CmdClassbookListHandler::CmdClassbookListHandler()
-    : CmdHandlerBase("classbook_list", "Return list of classbook articles with parentid, id, names, childs, proposals for a given parentid") {
+    : CmdHandlerBase("classbook_list", "Return list of classbook articles") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
     setAccessAdmin(true);
 
-    // validation and description input fields
-    requireIntegerParam("parentid", "parentid for classbook articles");
-    optionalStringParam("lang", "lang for classbook articles"); // TODO validator lang
+    requireIntegerParam("parentid", "parentid for classbook articles"); // TODO validator id
+    optionalStringParam("lang", "lang for classbook articles")
+        .addValidator(new ValidatorLanguage());
     optionalStringParam("search", "Search string for classbook articles");
 }
 
@@ -634,29 +634,14 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
-
-    QSqlDatabase db = *(pDatabase->database());
-    QSqlQuery query(db);
-
-    int nParentID = 0;
-    if (jsonRequest.find("parentid") != jsonRequest.end()) {
-        nParentID = jsonRequest.at("parentid").get<int>();
-    }
-
     nlohmann::json jsonData = nlohmann::json::array();
     
-    //SET lang
-    std::string sLang;
-    if (jsonRequest.find("lang") != jsonRequest.end()) {
-        sLang = jsonRequest["lang"];
-        QList<QString> allow_lang = {"en", "ru","de"};
-        if (!allow_lang.contains(QString::fromStdString(sLang))) {
-            pRequest->sendMessageError(cmd(), Error(404, "Language is not support"));
-            return;
-        }
-    } else {
-        sLang = "en";
-    }
+
+    int nParentID = pRequest->getInputInteger("parentid", 0);
+    std::string sLang = pRequest->getInputString("lang", "en");
+    
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
 
     if (jsonRequest.find("search") != jsonRequest.end()) {
         std::string sSearch = jsonRequest["search"];

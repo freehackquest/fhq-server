@@ -51,6 +51,16 @@ std::string ModelRequest::getInputString(const std::string &sParamName, const st
 
 // ---------------------------------------------------------------------
 
+int ModelRequest::getInputInteger(const std::string &sParamName, int nDefaultValue) {
+    int nRet = nDefaultValue;
+    if (m_jsonRequest[sParamName].is_number()) {
+        nRet = m_jsonRequest[sParamName];
+    }
+    return nRet;
+}
+
+// ---------------------------------------------------------------------
+
 std::string ModelRequest::m() {
     return m_sMessageId;
 }

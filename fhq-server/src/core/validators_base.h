@@ -53,9 +53,9 @@ class ValidatorUUID : public ValidatorStringBase {
 
 // ----------------------------------------------------------------------
 
-class ValidatorStringLenght : public ValidatorStringBase {
+class ValidatorStringLength : public ValidatorStringBase {
     public:
-        ValidatorStringLenght(int nMinLength, int nMaxLength);
+        ValidatorStringLength(int nMinLength, int nMaxLength);
         virtual std::string typeName();
         virtual bool isValid(const std::string &sValue, std::string &sError);
 
@@ -63,6 +63,18 @@ class ValidatorStringLenght : public ValidatorStringBase {
         std::string TAG;
         int m_nMinLength;
         int m_nMaxLength;
+};
+
+// ----------------------------------------------------------------------
+
+class ValidatorLanguage : public ValidatorStringBase {
+    public:
+        ValidatorLanguage();
+        virtual std::string typeName();
+        virtual bool isValid(const std::string &sValue, std::string &sError);
+
+    private:
+        std::string TAG;
 };
 
 // ----------------------------------------------------------------------

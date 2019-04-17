@@ -16,6 +16,7 @@ class ModelRequest {
         QJsonObject data(); // deprecated
         const nlohmann::json& jsonRequest();
         std::string getInputString(const std::string &sParamName, const std::string &sDefaultValue);
+        int getInputInteger(const std::string &sParamName, int defaultValue);
         
         std::string m();
         bool hasM();

@@ -585,9 +585,9 @@ CmdHandlerUsersAdd::CmdHandlerUsersAdd()
 
     requireStringParam("email", "User's E-mail");
     requireStringParam("nick", "User's nick")
-        .addValidator(new ValidatorStringLenght(4, 127));
+        .addValidator(new ValidatorStringLength(4, 127));
     requireStringParam("password", "Password")
-        .addValidator(new ValidatorStringLenght(4, 127));
+        .addValidator(new ValidatorStringLength(4, 127));
     requireStringParam("role", "User's role"); // TODO role validator
     requireStringParam("university", "University");
 }
