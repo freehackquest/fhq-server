@@ -10,18 +10,25 @@ class ModelRequest {
         QWebSocket *client();
         IWebSocketServer *server();
         IUserToken *userToken();
+        bool isAdmin();
+        bool isUser();
+        bool isUnauthorized();
         QJsonObject data(); // deprecated
         const nlohmann::json& jsonRequest();
+        std::string getInputString(const std::string &sParamName, const std::string &sDefaultValue);
+        
         std::string m();
         bool hasM();
         std::string command();
         bool hasCommand();
         void sendMessageError(const std::string &cmd, Error error);
         void sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse);
+
         // bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler);
     private:
         QWebSocket *m_pClient;
         IWebSocketServer *m_pServer;
+        IUserToken *m_pUserToken;
         nlohmann::json m_jsonRequest;
         std::string m_sMessageId;
         std::string m_sCommand;

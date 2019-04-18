@@ -13,7 +13,7 @@
 #include <iomanip> // put_time
 #include <ctime>
 #include <sstream>
-#include <fs.h>
+#include <fallen.h>
 
 // ---------------------------------------------------------------------
 
@@ -145,9 +145,9 @@ void ExportLibFHQCliWebJS::exportPrepareDirs(const std::string &sBasicDir) {
     
     for (int i = 0; i < vDirs.size(); i++) {
         std::string sDir = vDirs[i];
-        if (!FS::dirExists(sDir)) {
+        if (!Fallen::dirExists(sDir)) {
             std::cout << " * mkdir " << sDir << std::endl
-                << (FS::makeDir(sDir) ? "\t> OK" : "\t> FAILED") << std::endl;
+                << (Fallen::makeDir(sDir) ? "\t> OK" : "\t> FAILED") << std::endl;
         } else {
             std::cout << " * Directory already exists " << sDir << std::endl;
         }
@@ -241,9 +241,9 @@ void ExportLibFHQCliWebJS::exportAPImd(const std::string &sBasicDir){
             apimd << pCmdHandlerBase->description() << "\n\n";
         }
         apimd 
-            << "Access: unauthorized - **" << (pCmdHandlerBase->access().accessUnauthorized() ? "yes" : "no") << "**, "
-            << " user - **" << (pCmdHandlerBase->access().accessUser() ? "yes" : "no") << "**, "
-            << " admin - **" << (pCmdHandlerBase->access().accessAdmin() ? "yes" : "no") << "**\n"
+            << "Access: unauthorized - **" << (pCmdHandlerBase->accessUnauthorized() ? "yes" : "no") << "**, "
+            << " user - **" << (pCmdHandlerBase->accessUser() ? "yes" : "no") << "**, "
+            << " admin - **" << (pCmdHandlerBase->accessAdmin() ? "yes" : "no") << "**\n"
             << "\n";
 
         apimd << " #### Input params \n\n";
@@ -593,9 +593,9 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
         CmdHandlerBase* pCmdHandlerBase = it->second;
 
         libfhqcli_web_js_file
-            << "// Access unauthorized: " << (pCmdHandlerBase->access().accessUnauthorized() ? "yes" : "no") << "\r\n"
-            << "// Access user: " << (pCmdHandlerBase->access().accessUser() ? "yes" : "no") << "\r\n"
-            << "// Access admin: " << (pCmdHandlerBase->access().accessAdmin() ? "yes" : "no") << "\r\n";
+            << "// Access unauthorized: " << (pCmdHandlerBase->accessUnauthorized() ? "yes" : "no") << "\r\n"
+            << "// Access user: " << (pCmdHandlerBase->accessUser() ? "yes" : "no") << "\r\n"
+            << "// Access admin: " << (pCmdHandlerBase->accessAdmin() ? "yes" : "no") << "\r\n";
         
         if(pCmdHandlerBase->activatedFromVersion() != ""){
             libfhqcli_web_js_file 

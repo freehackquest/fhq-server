@@ -26,13 +26,17 @@ class EmployServerConfig : public EmployBase {
         std::string serverSslKeyFile();
         std::string serverSslCertFile();
         
+        void setWorkDir(const std::string &sWorkDir);
+
         int webPort();
         int webMaxThreads();
         std::string webAdminFolder();
 
 	private:
 		std::string TAG;
-
+        std::string m_sWorkDir;
+        std::map <std::string, std::string> m_mapDefaultOptions;
+    
         std::string m_sFilepathConf;
 
         // database settings

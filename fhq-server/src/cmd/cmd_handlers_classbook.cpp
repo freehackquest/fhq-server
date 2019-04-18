@@ -11,6 +11,7 @@
 #include <quazipfileinfo.h>
 #include <utils_merge_text.h>
 #include <md5.h>
+#include <validators.h>
 
 // *******************************************
 // * This handler will be add classbook record
@@ -19,16 +20,17 @@
 CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler()
     : CmdHandlerBase("classbook_add_record", "Adds a new article with the specified name, content, and id."){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("parentid").required().integer_().description("pareintid for classbook article"));
-    m_vInputs.push_back(CmdInputDef("name").required().string_().description("name of article"));
-    m_vInputs.push_back(CmdInputDef("content").required().string_().description("content of article"));
-    m_vInputs.push_back(CmdInputDef("uuid").optional().uuid_().description("uuid of article"));
-    m_vInputs.push_back(CmdInputDef("ordered").optional().integer_().description("order of article"));
+    requireIntegerParam("parentid", "pareintid for classbook article");
+    requireStringParam("name", "name of article");
+    requireStringParam("content", "content of article");
+    optionalStringParam("uuid", "uuid of article")
+        .addValidator(new ValidatorUUID());
+    optionalIntegerParam("ordered", "order of article");
 }
 
 // ---------------------------------------------------------------------
@@ -52,7 +54,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
         query.bindValue(":parentid", nParentID);
         query.exec();
         if (!query.next()){
-            pRequest->sendMessageError(cmd(), Errors::NotFound("article with this id"));
+            pRequest->sendMessageError(cmd(), Error(404, "Not found article with this id"));
             return;
         }
     }
@@ -183,12 +185,12 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest){
 CmdClassbookDeleteRecordHandler::CmdClassbookDeleteRecordHandler()
     : CmdHandlerBase("classbook_delete_record", "Delete a article with a given classbookid"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("id for classbook article"));
+    requireIntegerParam("classbookid", "id for classbook article");
 }
 
 // ---------------------------------------------------------------------
@@ -221,7 +223,7 @@ void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest){
         query.bindValue(":classbookid", nClassbookID);
         query.exec();
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Errors::DatabaseError(query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -230,7 +232,7 @@ void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest){
         query.bindValue(":classbookid", nClassbookID);
         query.exec();
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Errors::DatabaseError(query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -246,14 +248,14 @@ void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest){
 CmdClassbookExportHandler::CmdClassbookExportHandler()
     : CmdHandlerBase("classbook_export", "Export classbook's articles to html or markdown, optionally in zip archive."){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("output").required().string_().description("The output file format"));
-    m_vInputs.push_back(CmdInputDef("lang").required().string_().description("The output file format"));
-    m_vInputs.push_back(CmdInputDef("zip").optional().bool_().description("Zipping the output"));
+    requireStringParam("output", "The output file format");
+    requireStringParam("lang", "The output file format");
+    optionalBooleanParam("zip", "Zipping the output");
 }
 
 // ---------------------------------------------------------------------
@@ -454,13 +456,14 @@ void CmdClassbookExportHandler::createMD(QFile *file, const std::string &sLang, 
 CmdClassbookInfoHandler::CmdClassbookInfoHandler()
     : CmdHandlerBase("classbook_info", "Return name and content, langs, path classbook article with a given id"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("id for the classbook article"));
-    m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("Set lang for the article"));
+    requireIntegerParam("classbookid", "id for the classbook article");
+    optionalStringParam("lang", "Set lang for the article"); // TODO validator lang
+    
 }
 
 // ---------------------------------------------------------------------
@@ -489,7 +492,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
         jsonInfo["parentid"] = record.value("parentid").toInt();
         jsonInfo["uuid"] = record.value("uuid").toString().toStdString();
     } else {
-        pRequest->sendMessageError(cmd(), Errors::NotFound("the article"));
+        pRequest->sendMessageError(cmd(), Error(404, "Not found the article"));
         return;
     }
 
@@ -530,7 +533,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
                 jsonInfo["name"] = record.value("name").toString().toStdString();
                 jsonInfo["content"] = record.value("content").toString().toStdString();
             } else {
-                pRequest->sendMessageError(cmd(), Errors::NotFound("the article"));
+                pRequest->sendMessageError(cmd(), Error(404, "Not found the article"));
                 return;
             }
         }
@@ -545,7 +548,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
             jsonInfo["name"] = record.value("name").toString().toStdString();
             jsonInfo["content"] = record.value("content").toString().toStdString();
         } else {
-            pRequest->sendMessageError(cmd(), Errors::NotFound("the article"));
+            pRequest->sendMessageError(cmd(), Error(404, "Not found the article"));
             return;
         }
     }
@@ -617,14 +620,14 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest){
 CmdClassbookListHandler::CmdClassbookListHandler()
     : CmdHandlerBase("classbook_list", "Return list of classbook articles with parentid, id, names, childs, proposals for a given parentid"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("parentid").required().integer_().description("parentid for classbook articles"));
-    m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("lang for classbook articles"));
-    m_vInputs.push_back(CmdInputDef("search").optional().string_().description("Search string for classbook articles"));
+    requireIntegerParam("parentid", "parentid for classbook articles");
+    optionalStringParam("lang", "lang for classbook articles"); // TODO validator lang
+    optionalStringParam("search", "Search string for classbook articles");
 }
 
 // ---------------------------------------------------------------------
@@ -797,16 +800,16 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest){
 CmdClassbookUpdateRecordHandler::CmdClassbookUpdateRecordHandler()
     : CmdHandlerBase("classbook_update_record", "Update a article with a given classbookid"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("id for classbook article"));
-    m_vInputs.push_back(CmdInputDef("name").optional().string_().description("name for classbook article"));
-    m_vInputs.push_back(CmdInputDef("content").optional().string_().description("content for classbook article"));
-    m_vInputs.push_back(CmdInputDef("ordered").optional().integer_().description("ordered for classbook article"));
-    m_vInputs.push_back(CmdInputDef("parentid").optional().integer_().description("parentid for classbook article"));
+    requireIntegerParam("classbookid", "id for classbook article");
+    optionalStringParam("name", "name for classbook article");
+    optionalStringParam("content", "content for classbook article");
+    optionalIntegerParam("ordered", "ordered for classbook article");
+    optionalIntegerParam("parentid", "parentid for classbook article");
 }
 
 // ---------------------------------------------------------------------
@@ -944,7 +947,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
         jsonInfo["md5_content"] = record.value("md5_content").toString().toStdString();
         jsonInfo["ordered"] = record.value("ordered").toInt();
     } else {
-        pRequest->sendMessageError(cmd(), Errors::NotFound("article"));
+        pRequest->sendMessageError(cmd(), Error(404, "Not found article"));
         return;
     }
 
@@ -960,15 +963,15 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest){
 CmdClassbookLocalizationAddRecordHandler::CmdClassbookLocalizationAddRecordHandler()
     : CmdHandlerBase("classbook_localization_add_record", "Add a new article localization for the English version"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("Classbookid for article localization"));
-    m_vInputs.push_back(CmdInputDef("lang").required().string_().description("Language"));
-    m_vInputs.push_back(CmdInputDef("name").required().string_().description("Article name"));
-    m_vInputs.push_back(CmdInputDef("content").required().string_().description("The content of the article"));
+    requireIntegerParam("classbookid", "Classbookid for article localization");
+    requireStringParam("lang", "Language"); // TODO validator lang
+    requireStringParam("name", "Article name");
+    requireStringParam("content", "The content of the article");
 }
 
 // ---------------------------------------------------------------------
@@ -1070,12 +1073,12 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest){
 CmdClassbookLocalizationDeleteRecordHandler::CmdClassbookLocalizationDeleteRecordHandler()
     : CmdHandlerBase("classbook_localization_delete_record", "Delete an article localization"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("classbook_localizationid").required().integer_().description("Localization id"));
+    requireIntegerParam("classbook_localizationid", "Localization id");
 }
 
 // ---------------------------------------------------------------------
@@ -1122,12 +1125,12 @@ void CmdClassbookLocalizationDeleteRecordHandler::handle(ModelRequest *pRequest)
 CmdClassbookLocalizationInfoHandler::CmdClassbookLocalizationInfoHandler()
     : CmdHandlerBase("classbook_localization_info", "Find and display localization for an article by classbookid"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("classbook_localizationid").required().integer_().description("Localization id"));
+    requireIntegerParam("classbook_localizationid", "Localization id");
 }
 
 // ---------------------------------------------------------------------
@@ -1184,14 +1187,14 @@ void CmdClassbookLocalizationInfoHandler::handle(ModelRequest *pRequest){
 CmdClassbookLocalizationUpdateRecordHandler::CmdClassbookLocalizationUpdateRecordHandler()
     : CmdHandlerBase("classbook_localization_update_record", "Update table with localization by classbookid"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("classbook_localizationid").required().integer_().description("Localization id"));
-    m_vInputs.push_back(CmdInputDef("name").required().string_().description("Article name"));
-    m_vInputs.push_back(CmdInputDef("content").required().string_().description("The content of the article"));
+    requireIntegerParam("classbook_localizationid", "Localization id");
+    requireStringParam("name", "Article name");
+    requireStringParam("content", "The content of the article");
 }
 
 // ---------------------------------------------------------------------
@@ -1270,15 +1273,15 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest)
 CmdClassbookProposalAddRecordHandler::CmdClassbookProposalAddRecordHandler()
     : CmdHandlerBase("classbook_proposal_add_record", "Propose an update of article"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("classbookid").required().integer_().description("Classbookid for an article"));
-    m_vInputs.push_back(CmdInputDef("lang").required().string_().description("Language"));
-    m_vInputs.push_back(CmdInputDef("name").required().string_().description("Article name"));
-    m_vInputs.push_back(CmdInputDef("content").required().string_().description("The content of the article"));
+    requireIntegerParam("classbookid", "Classbookid for an article");
+    requireStringParam("lang", "Language"); // TODO validator lang
+    requireStringParam("name", "Article name");
+    requireStringParam("content", "The content of the article");
 }
 
 // ---------------------------------------------------------------------
@@ -1400,12 +1403,11 @@ void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest){
 CmdClassbookProposalDeleteRecordHandler::CmdClassbookProposalDeleteRecordHandler()
     : CmdHandlerBase("classbook_proposal_delete_record", "Delete a proposal of updating an article"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
-    // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("classbook_proposal_id").required().integer_().description("Proposal id"));
+    requireIntegerParam("classbook_proposal_id", "Proposal id");
 }
 
 // ---------------------------------------------------------------------
@@ -1454,12 +1456,12 @@ void CmdClassbookProposalDeleteRecordHandler::handle(ModelRequest *pRequest){
 CmdClassbookProposalInfoHandler::CmdClassbookProposalInfoHandler()
     : CmdHandlerBase("classbook_proposal_info", "Find and display all proposal data by id"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("classbook_proposal_id").required().integer_().description("Proposal id"));
+    requireIntegerParam("classbook_proposal_id", "Proposal id");
 }
 
 // ---------------------------------------------------------------------
@@ -1520,13 +1522,13 @@ void CmdClassbookProposalInfoHandler::handle(ModelRequest *pRequest){
 CmdClassbookProposalListHandler::CmdClassbookProposalListHandler()
     : CmdHandlerBase("classbook_proposal_list", "Display list of proposals by classbookid"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("classbookid").optional().integer_().description("Classbookid for an article"));
-    m_vInputs.push_back(CmdInputDef("lang").optional().string_().description("Language"));
+    requireIntegerParam("classbookid", "Classbookid for an article");
+    optionalStringParam("lang", "Language"); // TODO validator lang
 }
 
 // ---------------------------------------------------------------------
@@ -1621,12 +1623,12 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest){
 CmdClassbookProposalPrepareMergeRecordHandler::CmdClassbookProposalPrepareMergeRecordHandler()
     : CmdHandlerBase("classbook_propasal_prepare_merge_record", "Prepare to merge updating requests"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("classbook_proposal_id").required().integer_().description("Proposal id"));
+    requireIntegerParam("classbook_proposal_id", "Proposal id");
 }
 
 // ---------------------------------------------------------------------
@@ -1692,9 +1694,9 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
 CmdClassbookHandler::CmdClassbookHandler()
     : CmdHandlerBase("classbook", "Return classbook contents"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
 }
 

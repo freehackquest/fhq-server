@@ -569,3 +569,9 @@ fhq.ws.lxd_containers = function(data){
 	data.cmd = 'lxd_containers';
 	return fhq.ws.send(data);
 }
+
+fhq.ws.useful_links_list = function(data){
+	data = data || {};
+	data.cmd = 'useful_links_list';
+	return fhq.ws.send(data);
+}

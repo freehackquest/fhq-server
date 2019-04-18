@@ -18,13 +18,12 @@
 CmdHandlerUsersScoreboard::CmdHandlerUsersScoreboard()
     : CmdHandlerBase("scoreboard", "Method return scoreboard"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
-    // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("page").required().integer_().description("Number of page"));
-    m_vInputs.push_back(CmdInputDef("onpage").required().integer_().description("How much rows in one page"));
+    requireIntegerParam("page", "Number of page");
+    requireIntegerParam("onpage", "How much rows in one page");
 }
 
 // ---------------------------------------------------------------------
@@ -38,7 +37,7 @@ void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest){
 
     int nOnPage = jsonRequest.at("onpage");
     if(nOnPage > 50){
-        pRequest->sendMessageError(cmd(), Errors::OnPageCouldNotBeMoreThen50());
+        pRequest->sendMessageError(cmd(), Error(400, "Parameter 'onpage' could not be more then 50"));
     }
     jsonResponse["onpage"] = nOnPage;
 
@@ -75,9 +74,9 @@ void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest){
 CmdHandlerGetMap::CmdHandlerGetMap()
     : CmdHandlerBase("getmap", "Returned coordinate list"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 }
 
 // ---------------------------------------------------------------------
@@ -122,13 +121,12 @@ void CmdHandlerGetMap::handle(ModelRequest *pRequest){
 CmdHandlerLogin::CmdHandlerLogin()
     : CmdHandlerBase("login", "Method for login"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(false);
+    setAccessUnauthorized(true);
+    setAccessUser(false);
+    setAccessAdmin(false);
 
-    // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("email").required().string_().description("E-mail"));
-    m_vInputs.push_back(CmdInputDef("password").required().string_().description("Password"));
+    requireStringParam("email", "E-mail"); // TODO validator no empty
+    requireStringParam("password", "Password"); // TODO validator no empty
 }
 
 // ---------------------------------------------------------------------
@@ -152,7 +150,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest){
     query.bindValue(":email", email);
     query.bindValue(":pass", password_sha1);
 
-    if(!query.exec()){
+    if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
@@ -203,7 +201,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest){
         QString lastip = pRequest->client()->peerAddress().toString();
         RunTasks::UpdateUserLocation(nUserId, lastip);
 
-    }else{
+    } else {
         Log::err(TAG, "Invalid login or password");
         pRequest->sendMessageError(cmd(), Error(401, "Invalid login or password"));
         return;
@@ -219,13 +217,14 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest){
 CmdHandlerRegistration::CmdHandlerRegistration()
     : CmdHandlerBase("registration", "Method for registration"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(false);
+    setAccessUnauthorized(true);
+    setAccessUser(false);
+    setAccessAdmin(false);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("email").required().email_().description("E-mail"));
-    m_vInputs.push_back(CmdInputDef("university").required().string_().description("University"));
+    requireStringParam("email", "E-mail")
+        .addValidator(new ValidatorEmail());
+    requireStringParam("university", "University");
 }
 
 // ---------------------------------------------------------------------
@@ -373,12 +372,12 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest){
 CmdHandlerToken::CmdHandlerToken()
     : CmdHandlerBase("token", "Method for login by token"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(false);
+    setAccessUnauthorized(true);
+    setAccessUser(false);
+    setAccessAdmin(false);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("token").string_().optional().description("Auth token"));
+    requireStringParam("token", "Authorization token"); // TODO validator
 }
 
 // ---------------------------------------------------------------------
@@ -392,10 +391,6 @@ void CmdHandlerToken::handle(ModelRequest *pRequest){
     nlohmann::json jsonData;
     jsonData["cmd"] = nlohmann::json(cmd());
 
-    if(jsonRequest.find("token") == jsonRequest.end()){
-        pRequest->sendMessageError(cmd(), Errors::NotFound("requred parameter token"));
-        return;
-    }
     QString token = QString::fromStdString(jsonRequest.at("token"));
     QSqlDatabase db = *(pDatabase->database());
 
@@ -421,8 +416,7 @@ void CmdHandlerToken::handle(ModelRequest *pRequest){
         RunTasks::UpdateUserLocation(userid, lastip);
     }else{
         Log::err(TAG, "Invalid token " + token.toStdString());
-        // ["error"]
-        pRequest->sendMessageError(cmd(), Errors::InvalidToken());
+        pRequest->sendMessageError(cmd(), Error(401, "Invalid token"));
         return;
     }
 
@@ -436,12 +430,12 @@ void CmdHandlerToken::handle(ModelRequest *pRequest){
 CmdHandlerUpdateUserLocation::CmdHandlerUpdateUserLocation()
     : CmdHandlerBase("updateuserlocation", "This method will be try update user location by lastip"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("userid").required().integer_().description("User ID"));
+    requireIntegerParam("userid", "User ID"); // TODO validator
 }
 
 // ---------------------------------------------------------------------
@@ -457,8 +451,8 @@ void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest){
     int userid = jsonRequest.at("userid");
 
     // TODO redesign
-    if(userid == 0){
-        pRequest->sendMessageError(cmd(), Errors::QuestIDMustBeNotZero());
+    if (userid == 0) {
+        pRequest->sendMessageError(cmd(), Error(400, "Parameter 'userid' must be not zero"));
         return;
     }
 
@@ -498,13 +492,13 @@ void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest){
 CmdHandlerUserChangePassword::CmdHandlerUserChangePassword()
     : CmdHandlerBase("user_change_password", "This method for change user password"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("password_old").required().string_().description("Old password"));
-    m_vInputs.push_back(CmdInputDef("password_new").required().string_().description("New password"));
+    requireStringParam("password_old", "Old password");
+    requireStringParam("password_new", "New password");
 }
 
 // ---------------------------------------------------------------------
@@ -536,7 +530,7 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest){
         sEmail = record.value("email").toString();
         sPass = record.value("pass").toString();
     }else{
-        pRequest->sendMessageError(cmd(), Errors::NotFound("user"));
+        pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
         return;
     }
 
@@ -585,13 +579,14 @@ CmdHandlerUsersAdd::CmdHandlerUsersAdd()
     setActivatedFromVersion("0.2.17");
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("uuid").optional().uuid_().description("User's Global Unique Identifier"));
-    m_vInputs.push_back(CmdInputDef("email").required().string_().description("User's E-mail"));
-    m_vInputs.push_back(CmdInputDef("nick").required().string_().description("User's nick"));
-    m_vInputs.push_back(CmdInputDef("password").required().string_().description("Password"));
-    m_vInputs.push_back(CmdInputDef("role").required().string_().description("User's role"));
-    m_vInputs.push_back(CmdInputDef("university").optional().string_().description("University"));
+    requireStringParam("uuid", "User's Global Unique Identifier")
+        .addValidator(new ValidatorUUID());
 
+    requireStringParam("email", "User's E-mail");
+    requireStringParam("nick", "User's nick");
+    requireStringParam("password", "Password");
+    requireStringParam("role", "User's role"); // TODO role validator
+    requireStringParam("university", "University");
 }
 
 // ---------------------------------------------------------------------
@@ -755,7 +750,7 @@ CmdHandlerUser::CmdHandlerUser()
     setDeprecatedFromVersion("0.2.17");
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("userid").optional().integer_().description("Id of user"));
+    optionalIntegerParam("userid", "Id of user");
 }
 
 // ---------------------------------------------------------------------
@@ -769,7 +764,7 @@ void CmdHandlerUser::handle(ModelRequest *pRequest){
     IUserToken *pUserToken = pRequest->userToken();
 
     if(jsonRequest.find("userid") != jsonRequest.end() && pUserToken == NULL){
-        pRequest->sendMessageError(cmd(), Errors::NotAuthorizedRequest());
+        pRequest->sendMessageError(cmd(), Error(401, "Not Authorized Request"));
         return;
     }
 
@@ -823,8 +818,8 @@ void CmdHandlerUser::handle(ModelRequest *pRequest){
                 data["region"] = record.value("region").toString().toStdString();
                 data["city"] = record.value("city").toString().toStdString();
             }
-        }else{
-            pRequest->sendMessageError(cmd(), Errors::NotFound("user"));
+        } else {
+            pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
             return;
         }
     }
@@ -865,7 +860,8 @@ CmdHandlerUsersInfo::CmdHandlerUsersInfo()
 
     // validation and description input fields
     // TODO change to uuid
-    m_vInputs.push_back(CmdInputDef("uuid").optional().integer_().description("Global unique identify of user"));
+    // TODO wrong
+    requireIntegerParam("uuid", "Global unique identify of user");
 }
 
 // ---------------------------------------------------------------------
@@ -879,7 +875,7 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
     IUserToken *pUserToken = pRequest->userToken();
 
      if (jsonRequest.find("userid") == jsonRequest.end() && pUserToken == NULL) {
-        pRequest->sendMessageError(cmd(), Errors::NotAuthorizedRequest());
+        pRequest->sendMessageError(cmd(), Error(401, "Not Authorized Request"));
         return;
     }
 
@@ -934,7 +930,7 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
                 jsonData["city"] = record.value("city").toString().toStdString();
             }
         }else{
-            pRequest->sendMessageError(cmd(), Errors::NotFound("user"));
+            pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
             return;
         }
     }
@@ -968,12 +964,13 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
 CmdHandlerUserResetPassword::CmdHandlerUserResetPassword()
     : CmdHandlerBase("user_reset_password", "Method for reset password"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(false);
+    setAccessUnauthorized(true);
+    setAccessUser(false);
+    setAccessAdmin(false);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("email").required().email_().description("E-mail"));
+    requireStringParam("email", "E-mail")
+        .addValidator(new ValidatorEmail());
 }
 
 // ---------------------------------------------------------------------
@@ -1052,12 +1049,12 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest){
 CmdHandlerUserSkills::CmdHandlerUserSkills()
     : CmdHandlerBase("user_skills", "Return user skills info"){
 
-    m_modelCommandAccess.setAccessUnauthorized(true);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("userid").required().integer_().description("Id of user"));
+    requireIntegerParam("userid", "Id of user");
 }
 
 // ---------------------------------------------------------------------
@@ -1078,7 +1075,7 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
         QSqlQuery query(db);
         query.prepare("SELECT q.subject, sum(q.score) as sum_subject FROM quest q WHERE ! ISNULL( q.subject ) GROUP BY q.subject");
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Errors::DatabaseError(query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         };
 
@@ -1096,7 +1093,7 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
         query.prepare("SELECT uq.userid, q.subject, SUM( q.score ) as sum_score FROM users_quests uq INNER JOIN quest q ON uq.questid = q.idquest WHERE ! ISNULL( q.subject ) AND uq.userid = :userid GROUP BY uq.userid, q.subject");
         query.bindValue(":userid", nUserID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), Errors::DatabaseError(query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         };
 
@@ -1120,16 +1117,16 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
 CmdHandlerUserUpdate::CmdHandlerUserUpdate()
     : CmdHandlerBase("user_update", "Update user info"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(true);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("userid").required().integer_().description("Id of user"));
-    m_vInputs.push_back(CmdInputDef("nick").optional().string_().description("Nick of user"));
-    m_vInputs.push_back(CmdInputDef("university").optional().string_().description("University of user"));
-    m_vInputs.push_back(CmdInputDef("about").optional().string_().description("About of user"));
-    m_vInputs.push_back(CmdInputDef("country").optional().string_().description("Country of user"));
+    requireIntegerParam("userid", "Id of user");
+    optionalStringParam("nick", "Nick of user");
+    optionalStringParam("university", "University of user");
+    optionalStringParam("about", "About of user");
+    optionalStringParam("country", "Country of user");
 }
 
 // ---------------------------------------------------------------------
@@ -1167,7 +1164,7 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest){
         query.bindValue(":userid", nUserID);
 
         if(!query.exec()){
-            pRequest->sendMessageError(cmd(), Errors::DatabaseError(query.lastError().text()));
+            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         };
 
@@ -1255,13 +1252,13 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest){
 CmdHandlerUserDelete::CmdHandlerUserDelete()
     : CmdHandlerBase("user_delete", "Method for deleting a user"){
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("userid").required().integer_().description("User's id"));
-    m_vInputs.push_back(CmdInputDef("password").required().string_().description("Admin's password"));
+    requireIntegerParam("userid", "User's id");
+    requireStringParam("password", "Admin's password");
 }
 
 // ---------------------------------------------------------------------
@@ -1297,7 +1294,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
             sEmail = record.value("email").toString();
             sPass = record.value("pass").toString();
         }else{
-            pRequest->sendMessageError(cmd(), Errors::NotFound("user"));
+            pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
             return;
         }
 
@@ -1464,15 +1461,15 @@ CmdHandlerUsers::CmdHandlerUsers()
 
     TAG = "CmdUsersHandler";
 
-    m_modelCommandAccess.setAccessUnauthorized(false);
-    m_modelCommandAccess.setAccessUser(false);
-    m_modelCommandAccess.setAccessAdmin(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
-    m_vInputs.push_back(CmdInputDef("filter_text").string_().optional().description("Filter by user email or nick"));
-    m_vInputs.push_back(CmdInputDef("filter_role").string_().optional().description("Filter by user role"));
-    m_vInputs.push_back(CmdInputDef("onpage").integer_().optional().description("On page"));
-    m_vInputs.push_back(CmdInputDef("page").integer_().optional().description("page"));
+    optionalStringParam("filter_text", "Filter by user email or nick");
+    optionalStringParam("filter_role", "Filter by user role"); // TODO validator role
+    optionalIntegerParam("onpage", "On Page");
+    optionalIntegerParam("page", "Number of page");
 }
 
 // ---------------------------------------------------------------------

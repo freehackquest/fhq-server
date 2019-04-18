@@ -13,7 +13,7 @@ fhq.guid = function() {
 fhq.hideLoader = function(){
 	setTimeout(function(){
 		$('.fhq-page-loader').hide();
-	},1000);
+	},100);
 }
 
 fhq.parsePageParams = function() {

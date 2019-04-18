@@ -12,7 +12,6 @@
 
 #include <iusertoken.h>
 #include <error.h>
-#include <errors.h>
 
 class IWebSocketServer {
     public:
