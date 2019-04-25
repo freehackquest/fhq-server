@@ -282,7 +282,7 @@ void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
     std::string command = jsonRequest["command"].toString().toStdString();
     std::string sOutput;
 
-    if (exec_command(name, command, sError, nErrorCode, sOutput)){
+    if (exec_command(name, command, sError, nErrorCode, sOutput)) {
         jsonResponse["container"] = name;
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
         return;
@@ -291,7 +291,7 @@ void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
 }
 
 bool CmdHandlerLXDExec::exec_command(const std::string &sName, const std::string &sCommand, std::string &sError,
-                                    int &nErrorCode, std::string &sOutput) {
+                                     int &nErrorCode, std::string &sOutput) {
     auto *pOrchestra = findEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()) {
@@ -376,14 +376,14 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
         return;
     }
 
-    if (!isDirectory && action == "pull"){
+    if (!isDirectory && action == "pull") {
         pull_file(pContainer, path, sb64File, sError, nErrorCode, isDirectory);
-    } else if (action == "push"){
+    } else if (action == "push") {
         sb64File = jsonRequest["file_base64"].toString().toStdString();
         push_file(pContainer, path, sb64File, sError, nErrorCode);
     }
 
-    if (sError.empty() && !isDirectory){
+    if (sError.empty() && !isDirectory) {
         jsonResponse["container"] = name;
         jsonResponse["path"] = path;
 
@@ -399,7 +399,7 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
 }
 
 void CmdHandlerLXDFile::pull_file(LXDContainer *pContainer, const std::string &sPath, std::string &sb64File,
-                                 std::string &sError, int &nErrorCode, bool &isDirectory) {
+                                  std::string &sError, int &nErrorCode, bool &isDirectory) {
     std::string sRawData;
 
     if (!pContainer->read_file(sPath, sRawData)) {
@@ -409,7 +409,7 @@ void CmdHandlerLXDFile::pull_file(LXDContainer *pContainer, const std::string &s
 
     if (nlohmann::json::accept(std::begin(sRawData), std::end(sRawData))){
         auto jsonResponse = nlohmann::json::parse(sRawData);
-        if (jsonResponse.find("metadata") != jsonResponse.end() && jsonResponse.find("status") != jsonResponse.end()){
+        if (jsonResponse.find("metadata") != jsonResponse.end() && jsonResponse.find("status") != jsonResponse.end()) {
             isDirectory = true;
             sError = sPath + " is the directory!";
             nErrorCode = 400;
@@ -468,9 +468,9 @@ void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
         return;
     }
 
-   if (!pContainer->open_port(nPort, sProto)){
-       sError = pContainer->get_error();
-   }
+    if (!pContainer->open_port(nPort, sProto)) {
+        sError = pContainer->get_error();
+    }
 
     if (sError.empty()) {
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -499,4 +499,63 @@ bool CmdHandlerLXDOpenPort::is_port_valide(const std::string &sProto, const int 
     }
 
     return true;
+}
+
+
+CmdHandlerLXDImportService::CmdHandlerLXDImportService()
+        : CmdHandlerBase("lxd_import_container", "Import container from json configuration.") {
+
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
+
+    requireStringParam("config", "Container's configuration in json dumped string.");
+}
+
+void CmdHandlerLXDImportService::handle(ModelRequest *pRequest) {
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    if (!pOrchestra->initConnection()) {
+        pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
+        return;
+    }
+    QJsonObject jsonRequest = pRequest->data();
+    nlohmann::json jsonResponse;
+    std::string sError;
+    int nErrorCode = 500;
+    std::string sName = jsonRequest["name"].toString().toStdString();
+    const std::string sConfig = jsonRequest["config"].toString().toStdString();
+
+    if (!nlohmann::json::accept(sConfig)) {
+        pRequest->sendMessageError(cmd(), Error(400, "Json string isn't valid."));
+    }
+    auto jsonConfig = nlohmann::json::parse(sConfig);
+
+    if (sName.empty()) {
+        if (jsonConfig.find("name") != jsonConfig.end()) {
+            sName = jsonConfig["name"];
+        } else {
+            pRequest->sendMessageError(cmd(), Error(400, "Container name not found."));
+        }
+
+    }
+
+    LXDContainer *pContainer;
+    if (pOrchestra->find_container(sName, pContainer)) {
+        sError = "Container " + sName + " is already created.";
+        std::cout << sError << std::endl;
+        nErrorCode = 400;
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+    }
+
+    ServiceRequest serviceReq = ServiceRequest(jsonConfig);
+
+    if (!pOrchestra->create_service(serviceReq, sError)) {
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+    }
+
+    if (sError.empty()) {
+        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    } else {
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+    }
 }

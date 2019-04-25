@@ -85,6 +85,42 @@ bool EmployOrchestra::create_container(const std::string &sName, std::string &sE
 
 // ---------------------------------------------------------------------
 
+bool EmployOrchestra::create_service(const ServiceRequest &serviceReq, std::string &sError) {
+    LXDContainer *pContainer;
+    if (this->find_container(serviceReq.name, pContainer)) {
+        sError = "Container " + serviceReq.name + " is already created.";
+        std::cout << sError << std::endl;
+        return false;
+    }
+
+    Log::info(TAG, "Starting creation container " + serviceReq.name);
+    pContainer = new LXDContainer(serviceReq);
+
+    if (pContainer->create()) {
+        Log::info(TAG, "Created container " + serviceReq.name);
+    }
+
+    if (!pContainer->get_error().empty()) {
+        sError = pContainer->get_error();
+        return false;
+    }
+
+    if (!serviceReq.port_proto.empty() && serviceReq.port_number != 0) {
+        if (!pContainer->open_port(serviceReq.port_number, serviceReq.port_proto)) {
+            sError = "Can't open port for container " + pContainer->full_name() + "  :\n" + pContainer->get_error();
+            return false;
+        }
+    }
+
+    // TODO exec build script
+    // TODO exec start script
+
+    m_mapContainers.insert(std::pair<std::string, LXDContainer *>(serviceReq.name, pContainer));
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
 bool EmployOrchestra::find_container(const std::string &name, LXDContainer *&pContainer) {
     if (m_mapContainers.find(name) == m_mapContainers.end())
         return false;
@@ -101,7 +137,7 @@ bool EmployOrchestra::get_all_profiles(std::vector<std::string> &vecProfiles, st
     if (!send_get_request(sUrl, jsonReponse, sError))
         return false;
 
-    if (!jsonReponse.is_array()){
+    if (!jsonReponse.is_array()) {
         return false;
     }
 
@@ -114,7 +150,7 @@ bool EmployOrchestra::get_all_profiles(std::vector<std::string> &vecProfiles, st
 bool EmployOrchestra::find_profile(const std::string &sName, std::string &sError) {
     std::vector<std::string> vecProfiles;
 
-    if (!get_all_profiles(vecProfiles, sError)){
+    if (!get_all_profiles(vecProfiles, sError)) {
         return false;
     }
 
@@ -226,8 +262,8 @@ bool EmployOrchestra::send_post_request(const std::string &sUrl, const nlohmann:
 }
 
 bool EmployOrchestra::send_patch_request(const std::string &sUrl, const nlohmann::json &jsonData,
-                                        nlohmann::json &jsonResponse,
-                                        std::string &sError) {
+                                         nlohmann::json &jsonResponse,
+                                         std::string &sError) {
     CURLcode ret;
     CURL *hnd;
 
@@ -365,7 +401,7 @@ bool EmployOrchestra::send_get_request_raw(const std::string &sUrl, std::string 
 bool EmployOrchestra::send_get_request(const std::string &sUrl, nlohmann::json &jsonResponse, std::string &sError) {
 
     std::string sResponse;
-    if (!send_get_request_raw(sUrl, sResponse, sError)){
+    if (!send_get_request_raw(sUrl, sResponse, sError)) {
         m_sLastError = sError;
         return false;
     }

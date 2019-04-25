@@ -10,9 +10,46 @@
 #include <sstream>
 
 
+ServiceRequest::ServiceRequest(nlohmann::json jsonConfig) {
+    // Smells awful
+    name = jsonConfig.at("name").get<std::string>();
+    if (jsonConfig.find("type") != jsonConfig.end()) {
+        type = jsonConfig.at("type").get<std::string>();
+    }
+    if (jsonConfig.find("game") != jsonConfig.end()) {
+        game = jsonConfig.at("game").get<std::string>();
+    }
+    if (jsonConfig.find("author") != jsonConfig.end()) {
+        author = jsonConfig.at("author").get<std::string>();
+    }
+    if (jsonConfig.find("version") != jsonConfig.end()) {
+        version = jsonConfig.at("version").get<std::string>();
+    }
+    if (jsonConfig.find("start") != jsonConfig.end()) {
+        start = jsonConfig.at("start").get<std::string>();
+    }
+    if (jsonConfig.find("build") != jsonConfig.end()) {
+        build = jsonConfig.at("build").get<std::string>();
+    }
+    if (jsonConfig.find("port_proto") != jsonConfig.end()) {
+        port_proto = jsonConfig.at("port_proto").get<std::string>();
+    }
+    if (jsonConfig.find("port_number") != jsonConfig.end()) {
+        port_number = jsonConfig.at("port_number").get<int>();
+    }
+}
+
+
 LXDContainer::LXDContainer(const std::string &name_of_container) {
     name = name_of_container;
-    prefix = "fhq-";
+}
+
+LXDContainer::LXDContainer(const ServiceRequest &containerReq) {
+    name = containerReq.name;
+    m_sType = containerReq.type;
+    m_sVersion = containerReq.version;
+    m_sAuthor = containerReq.author;
+    m_sGame = containerReq.game;
 }
 
 std::string LXDContainer::get_name() const {
@@ -152,7 +189,7 @@ bool LXDContainer::remove() {
     return true;
 }
 
-std::vector<std::string> LXDContainer::split(const std::string& str){
+std::vector<std::string> LXDContainer::split(const std::string &str) {
     std::istringstream buf(str);
     std::istream_iterator<std::string> beg(buf), end;
     std::vector<std::string> tokens(beg, end);
@@ -174,7 +211,7 @@ bool LXDContainer::exec(const std::string &sCommand) {
     jsonData["command"] = nlohmann::json(split(sCommand));
     nlohmann::json jsonResponse;
 
-    if (!pOrchestra->send_post_request(sUrl, jsonData, jsonResponse, m_sError)){
+    if (!pOrchestra->send_post_request(sUrl, jsonData, jsonResponse, m_sError)) {
         return false;
     }
 
@@ -186,7 +223,7 @@ bool LXDContainer::exec(const std::string &sCommand) {
             Log::err(TAG, "The asynchronous " + m_sError);
             return false;
         }
-        if (jsonAsyncResponse["metadata"]["metadata"]["return"] != 0){
+        if (jsonAsyncResponse["metadata"]["metadata"]["return"] != 0) {
             m_sError = "The command '" + sCommand + "' could not be executed in " + full_name() + " container";
             Log::err(TAG, "Failed to execute " + sCommand + " in container " + full_name());
             return false;
@@ -213,7 +250,7 @@ bool LXDContainer::push_file(const std::string &sPath, const std::string &sRawDa
         return false;
     }
 
-    if (nlohmann::json::accept(sResponse)){
+    if (nlohmann::json::accept(sResponse)) {
         m_sError = "Response is json";
         return false;
     }
