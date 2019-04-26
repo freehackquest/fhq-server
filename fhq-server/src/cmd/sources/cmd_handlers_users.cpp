@@ -121,7 +121,7 @@ CmdHandlerLogin::CmdHandlerLogin()
     setAccessUser(false);
     setAccessAdmin(false);
 
-    requireStringParam("email", "E-mail"); // TODO validator no empty
+    requireStringParam("email", "E-mail").addValidator(new ValidatorEmail());
     requireStringParam("password", "Password"); // TODO validator no empty
 }
 
@@ -227,8 +227,7 @@ CmdHandlerRegistration::CmdHandlerRegistration()
     setAccessAdmin(false);
 
     // validation and description input fields
-    requireStringParam("email", "E-mail")
-        .addValidator(new ValidatorEmail());
+    requireStringParam("email", "E-mail").addValidator(new ValidatorEmail());
     requireStringParam("university", "University");
 }
 
@@ -950,8 +949,7 @@ CmdHandlerUserResetPassword::CmdHandlerUserResetPassword()
     setAccessAdmin(false);
 
     // validation and description input fields
-    requireStringParam("email", "E-mail")
-        .addValidator(new ValidatorEmail());
+    requireStringParam("email", "E-mail").addValidator(new ValidatorEmail());
 }
 
 // ---------------------------------------------------------------------
@@ -1562,4 +1560,98 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest) {
     jsonResponse["page"] = nPage;
     jsonResponse["count"] = nCount;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+/*********************************************
+ * User registration
+**********************************************/
+
+CmdHandlerUsersRegistration::CmdHandlerUsersRegistration()
+    : CmdHandlerBase("users_registration", "Method for registration"){
+
+    TAG = "CmdUsersRegistrationHandler";
+
+    setAccessUnauthorized(true);
+    setAccessUser(false);
+    setAccessAdmin(false);
+
+    // validation and description input fields
+    requireStringParam("email", "E-mail").addValidator(new ValidatorEmail());
+    requireStringParam("university", "University");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest){
+
+}
+
+/*********************************************
+ * User registration verification 
+**********************************************/
+
+CmdHandlerUsersRegistrationVerification::CmdHandlerUsersRegistrationVerification()
+    : CmdHandlerBase("users_registration_verification", "Method for registration verification"){
+
+    TAG = "CmdUsersRegistrationVerificationHandler";
+
+    setAccessUnauthorized(true);
+    setAccessUser(false);
+    setAccessAdmin(false);
+
+    // validation and description input fields
+    requireStringParam("code", "Verification code"); 
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
+
+}
+
+/*********************************************
+ * Change user's email
+**********************************************/
+
+CmdHandlerUsersChangeEmail::CmdHandlerUsersChangeEmail()
+    : CmdHandlerBase("users_change_email", "Method for email changing"){
+
+    TAG = "CmdUsersChangeEmailHandler";
+
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
+
+    // validation and description input fields
+    requireStringParam("email", "E-mail").addValidator(new ValidatorEmail());
+    requireStringParam("password", "Password"); // TODO validator no empty 
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest){
+
+}
+
+/*********************************************
+ * Change user's email verification
+**********************************************/
+
+CmdHandlerUsersChangeEmailVerification::CmdHandlerUsersChangeEmailVerification()
+    : CmdHandlerBase("users_change_email_verification", "Method for email changing verification"){
+
+    TAG = "CmdUsersChangeEmailVerificationHandler";
+
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
+
+    // validation and description input fields
+    requireStringParam("code", "Verification code"); 
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsersChangeEmailVerification::handle(ModelRequest *pRequest){
+
 }
