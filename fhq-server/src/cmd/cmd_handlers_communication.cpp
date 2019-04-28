@@ -31,10 +31,10 @@ void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    IUserToken *pUserToken = pRequest->userToken();
+    WSJCppUserSession *pUserSession = pRequest->userSession();
     std::string sUsername = "";
-    if (pUserToken != NULL) {
-        sUsername = pUserToken->nick().toStdString();
+    if (pUserSession != nullptr) {
+        sUsername = pUserSession->nick().toStdString();
     } else {
         sUsername = "Guest";
     }

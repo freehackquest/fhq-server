@@ -2,7 +2,6 @@
 #define EMPLOY_IMAGES_H
 
 #include <employees.h>
-#include <iserver.h>
 
 class EmployImages : public EmployBase {
 private:

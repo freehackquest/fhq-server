@@ -67,6 +67,10 @@ class FakeStorage : public Storage {
         virtual std::vector<std::string> prepareSqlQueries(const StorageInsert &storageInsert) {
             return std::vector<std::string>();
         };
+        virtual std::vector<std::string> prepareSqlQueries(const StorageCreateTable &storageCreateTable) {
+            return std::vector<std::string>();
+        };
+
     private:
         FakeVersion *m_pVersion;
 };

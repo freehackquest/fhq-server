@@ -355,7 +355,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
 }
 
 bool UpdatesInitDatabase::custom(Storage *pStorage, StorageConnection *pConn, std::string &error) {
-    
+    // TODO redesign
     // here you can migrate data of correction if not just return true;
 
     std::vector<StorageInsert> vInserts;

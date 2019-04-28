@@ -40,13 +40,12 @@ void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest) {
     }
 
 
-    // user token
-    IUserToken *pUserToken = pRequest->userToken();
-    bool bAdmin = false;
+    // user session
+    WSJCppUserSession *pUserSession = pRequest->userSession();
+    bool bAdmin = pRequest->isAdmin();
     int nUserID = 0;
-    if (pUserToken != NULL) {
-        bAdmin = pUserToken->isAdmin();
-        nUserID = pUserToken->userid();
+    if (pUserSession != nullptr) { // TODO refactor to pRequest->userId()
+        nUserID = pUserSession->userid();
     }
 
     std::string sSQLRequest = ""
@@ -140,14 +139,13 @@ void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
     sWriteUpLink = "https://www.youtube.com/embed/" + sWriteUpLink.substr(m_sLinkPrefix.length());
 
     // user token
-    IUserToken *pUserToken = pRequest->userToken();
-    bool bAdmin = false;
+    WSJCppUserSession *pUserSession = pRequest->userSession();
+    bool bAdmin = pRequest->isAdmin();
     int nUserID = 0;
     QString sUserEmail = "";
-    if (pUserToken != NULL) {
-        bAdmin = pUserToken->isAdmin();
-        nUserID = pUserToken->userid();
-        sUserEmail = pUserToken->email();
+    if (pUserSession != nullptr) {
+        nUserID = pUserSession->userid();
+        sUserEmail = pUserSession->email();
     }
 
     QSqlDatabase db = *(pDatabase->database());

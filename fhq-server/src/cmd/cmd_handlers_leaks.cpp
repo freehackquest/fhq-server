@@ -51,11 +51,8 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
         }
     }
 
-    IUserToken *pUserToken = pRequest->userToken();
-    bool bAdmin = false;
-    if (pUserToken != NULL) {
-        bAdmin = pUserToken->isAdmin();
-    }
+    bool bAdmin = pRequest->isAdmin();
+
     if (jsonRequest.contains("search") && bAdmin) {
         QString search = jsonRequest["search"].toString().trimmed();
         if (search != "") {
@@ -398,10 +395,10 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest) {
         }
     }
 
-    IUserToken *pUserToken = pRequest->userToken();
+    WSJCppUserSession *pUserSession = pRequest->userSession();
     int nUserID = 0;
-    if (pUserToken != NULL) {
-        nUserID = pUserToken->userid();
+    if (pUserSession != nullptr) {
+        nUserID = pUserSession->userid();
     }
 
     int nScore = 0;

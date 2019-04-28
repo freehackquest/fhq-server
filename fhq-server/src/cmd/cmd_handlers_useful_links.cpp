@@ -30,17 +30,9 @@ CmdHandlerUsefulLinksList::CmdHandlerUsefulLinksList()
 
 void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
+    bool bIsAdmin = pRequest->isAdmin();
 
-    IUserToken *pUserToken = pRequest->userToken();
-    bool bIsAdmin = false;
-    if (pUserToken != NULL) {
-        bIsAdmin = pUserToken->isAdmin();
-    }
-
-    std::string sFilter = "";
-    if (jsonRequest["filter"].is_string()) {
-        sFilter = jsonRequest["filter"];
-    }
+    std::string sFilter = pRequest->getInputString("filter", "");
 
     nlohmann::json jsonData = nlohmann::json::array();
     QString sWhere = "";

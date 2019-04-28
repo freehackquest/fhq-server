@@ -202,6 +202,7 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(StorageStruct &storageS
     } else if (storageStruct.mode() == StorageStructTableMode::DROP) {
         vRet.push_back("DROP TABLE IF EXISTS `" + storageStruct.tableName() + "`;");
     } else if (storageStruct.mode() == StorageStructTableMode::CREATE) {
+        // TODO deprecated (Moved to StorageCreateTable)
         std::string sQuery = "";
         sQuery += "CREATE TABLE IF NOT EXISTS `" + storageStruct.tableName() + "` (\r\n";
         std::vector<std::string> vCreateTableContent;
@@ -293,6 +294,74 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(const StorageInsert &st
         }
     }
     vRet.push_back("INSERT INTO " + storageInsert.tableName() + "(" + sSql + ") VALUES(" + sValues + ");");
+    return vRet;
+}
+
+// ----------------------------------------------------------------------
+
+std::vector<std::string> MySqlStorage::prepareSqlQueries(const StorageCreateTable &storageCreateTable) {
+    std::vector<std::string> vRet;
+    std::string sQuery = "";
+    sQuery += "CREATE TABLE IF NOT EXISTS `" + storageCreateTable.getTableName() + "` (\r\n";
+    std::vector<std::string> vCreateTableContent;
+    std::vector<std::string> vCreateTableContentIndexes;
+    std::vector<std::string> vCreateTableContentUniqueIndexes;
+
+    // add columns
+    std::vector<StorageStructColumn> vColumns = storageCreateTable.getColumns();
+    for (int i = 0; i < vColumns.size(); i++) {
+        StorageStructColumn c = vColumns[i];
+        vCreateTableContent.push_back(this->generateLineColumnForSql(c));
+
+        // sQuery += "  " + generateLineColumnForSql(c) + ",\r\n";
+        if (c.isPrimaryKey()) {
+            vCreateTableContentIndexes.push_back("PRIMARY KEY (" + c.columnName() + ")");
+        }
+
+        if (c.isEnableIndex()) {
+            std::string sIndexLine = "KEY idx_" + c.columnName() + " (" + c.columnName();
+            if (c.columnType() == "string" && c.columnTypeSize() > 255) {
+                sIndexLine += "(" + std::to_string(255) + ")";
+            }
+            sIndexLine += ")";
+            vCreateTableContentIndexes.push_back(sIndexLine);
+        }
+
+        if (c.isEnableUniqueIndex()) {
+            std::string sPrefix = "UNIQUE KEY " + c.nameOfUniqueIndex();
+            int nFound = -1;
+            for (int i = 0; i < vCreateTableContentIndexes.size(); i++) {
+                if (vCreateTableContentIndexes[i].rfind(sPrefix, 0) == 0) {
+                    nFound = i;
+                    break;
+                }
+            }
+            if (nFound == -1) {
+                vCreateTableContentIndexes.push_back("UNIQUE KEY " + c.nameOfUniqueIndex() + " (" + c.columnName());
+            } else {
+                vCreateTableContentIndexes[nFound] += "," + c.columnName();
+            }
+        }
+    }
+    // close uniq indexes
+    for (int i = 0; i < vCreateTableContentIndexes.size(); i++) {
+        if (vCreateTableContentIndexes[i].rfind("UNIQUE KEY ", 0) == 0) {
+            vCreateTableContentIndexes[i] += ")";
+        }
+    }
+
+    for (int i = 0; i < vCreateTableContentIndexes.size(); i++) {
+        vCreateTableContent.push_back(vCreateTableContentIndexes[i]);
+    }
+
+    int nSize = vCreateTableContent.size();
+    for (int i = 0; i < nSize; i++) {
+        sQuery += "  " + vCreateTableContent[i];
+        sQuery += (nSize-1 != i) ? "," : "";
+        sQuery += "\r\n";
+    }
+    sQuery += ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+    vRet.push_back(sQuery);
     return vRet;
 }
 

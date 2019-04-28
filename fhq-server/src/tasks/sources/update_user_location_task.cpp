@@ -6,10 +6,14 @@
 #include <QEventLoop>
 #include <utils_logger.h>
 #include <employ_database.h>
+#include <QSqlQuery> // TODO redesign
+#include <QSqlRecord> // TODO redesign
+#include <QJsonDocument> // TODO redesign
+#include <QJsonObject> // TODO redesign
 
-UpdateUserLocationTask::UpdateUserLocationTask(int userid, QString lastip) {
+UpdateUserLocationTask::UpdateUserLocationTask(int userid, const std::string &sLastIP) {
     m_nUserID = userid;
-    mLastIP = lastip;
+    m_sLastIP = sLastIP;
     TAG = "UpdateUserLocationTask";
 }
 
@@ -30,12 +34,14 @@ void UpdateUserLocationTask::run() {
     }
     if (query.next()) {
         QSqlRecord record = query.record();
-        QString lastip = record.value("last_ip").toString();
+        std::string sLastIP = record.value("last_ip").toString().toStdString();
 
-        if (lastip != mLastIP) {
-            Log::info(TAG, "Update user # " + std::to_string(m_nUserID) + " location by ip " + mLastIP.toStdString());
+        if (sLastIP != m_sLastIP) {
+            // TODO redesign to curl request
+            // TODO redesign check in database same ip first
+            Log::info(TAG, "Update user # " + std::to_string(m_nUserID) + " location by ip " + m_sLastIP);
             QNetworkAccessManager manager;
-            QUrl url("http://ip-api.com/json/" + mLastIP);
+            QUrl url("http://ip-api.com/json/" + QString::fromStdString(m_sLastIP));
             QNetworkRequest request(url);
             QNetworkReply *pReply = manager.get(request);
             QEventLoop eventLoop;
@@ -63,7 +69,7 @@ void UpdateUserLocationTask::run() {
                 "latitude = :latitude,"
                 "longitude = :longitude "
                 " WHERE id = :id");
-            query_update.bindValue(":lastip", mLastIP);
+            query_update.bindValue(":lastip", QString::fromStdString(m_sLastIP));
             query_update.bindValue(":country", country);
             query_update.bindValue(":region", region);
             query_update.bindValue(":city", city);

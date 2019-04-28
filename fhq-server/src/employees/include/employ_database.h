@@ -15,7 +15,7 @@ class EmployDatabase : public EmployBase {
        virtual bool init();
        QSqlDatabase *database();
        bool manualCreateDatabase(const std::string& sRootPassword, std::string& sError);
-       Storage *storage();
+       StorageConnection *getStorageConnection();
 
     private:
         std::string TAG;
@@ -23,7 +23,7 @@ class EmployDatabase : public EmployBase {
         Storage *m_pStorage;
 
         // new new
-        std::map<std::string, Storage *> m_mapStorageConnections;
+        std::map<std::string, StorageConnection*> m_mapStorageConnections;
 
         // db two connections
         std::mutex m_mtxSwapConenctions;

@@ -40,10 +40,10 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
     QString sText = jsonRequest["text"].toString().trimmed();
     QString sType = jsonRequest["type"].toString().trimmed();
 
-    IUserToken *pUserToken = pRequest->userToken();
-    if (pUserToken != NULL) {
-        sEmail = pUserToken->email();
-        nUserID = pUserToken->userid();
+    WSJCppUserSession *pUserSession = pRequest->userSession();
+    if (pUserSession != NULL) {
+        sEmail = pUserSession->email();
+        nUserID = pUserSession->userid();
     }
     EmploySettings *pSettings = findEmploy<EmploySettings>();
 

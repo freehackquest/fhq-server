@@ -37,7 +37,7 @@ void EmployNotify::sendNotification(ModelNotification &modelNotification) {
     std::string sType = modelNotification.type();
     std::string sMessage = modelNotification.message();
 
-    RunTasks::AddPublicEvents(QString(sType.c_str()), QString(sMessage.c_str()));
+    RunTasks::AddPublicEvents(sType, sMessage);
 
     nlohmann::json jsonMessage = modelNotification.toJson();
     jsonMessage["cmd"] = "notify";
@@ -77,7 +77,7 @@ void EmployNotify::sendNotification(const std::string &sType,
                                     const std::string &sSection,
                                     const std::string &sMessage) {
 
-    RunTasks::AddPublicEvents(QString(sType.c_str()), QString(sMessage.c_str()));
+    RunTasks::AddPublicEvents(sType, sMessage);
 
     nlohmann::json jsonMessage;
     jsonMessage["type"] = sType;

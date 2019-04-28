@@ -14,7 +14,6 @@
 #include <employ_server_config.h>
 #include <employ_server_info.h>
 #include <employ_ws_server.h>
-#include <model_request.h>
 #include <cmd_handlers.h>
 
 // QT_USE_NAMESPACE
@@ -196,25 +195,9 @@ void WebSocketServer::processTextMessage(const QString &message) {
         pServerInfo->incrementRequests(sCmd);
 
         // check access
-        if (!pCmdHandler->accessUnauthorized()) {
-            IUserToken *pUserToken = getUserToken(pClient);
-            if (pUserToken == NULL) {
-                
-                pModelRequest->sendMessageError(pCmdHandler->cmd(), Error(401, "Not Authorized Request"));
-                return;
-            }
-
-            // access user
-            if (pUserToken->isUser() && !pCmdHandler->accessUser()) {
-                pModelRequest->sendMessageError(pCmdHandler->cmd(), Error(403, "Access deny for user"));
-                return;
-            }
-
-            // access admin
-            if (pUserToken->isAdmin() && !pCmdHandler->accessAdmin()) {
-                pModelRequest->sendMessageError(pCmdHandler->cmd(), Error(403, "Access deny for admin"));
-                return;
-            }
+        // TODO move check inside in CmdHandler
+        if (!pCmdHandler->checkAccess(pModelRequest)) {
+            return;
         }
 
         // allow access
@@ -353,18 +336,19 @@ void WebSocketServer::slot_sendToOne(QWebSocket *pClient, QString message) {
 
 // TODO move to EmployWsServer
 
-void WebSocketServer::setUserToken(QWebSocket *pClient, IUserToken *pUserToken) {
-    m_tokens[pClient] = pUserToken;
+void WebSocketServer::setWSJCppUserSession(QWebSocket *pClient, WSJCppUserSession *pWSJCppUserSession) {
+    m_tokens[pClient] = pWSJCppUserSession;
 }
 
 // ---------------------------------------------------------------------
+// TODO EmployWsServer
 
-IUserToken * WebSocketServer::getUserToken(QWebSocket *pClient) {
+WSJCppUserSession *WebSocketServer::getWSJCppUserSession(QWebSocket *pClient) {
     if (m_tokens.contains(pClient)) {
         return m_tokens[pClient];
     }
-    return NULL;
-}
+    return nullptr;
+};
 
 // ---------------------------------------------------------------------
 

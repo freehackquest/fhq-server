@@ -6,6 +6,8 @@
 #include <QNetworkReply>
 #include <QEventLoop>
 #include <employ_database.h>
+#include <QSqlQuery> // TODO redesign
+#include <QSqlRecord> // TODO redesign
 
 UpdateUserRatingTask::UpdateUserRatingTask(int nUserID) {
     m_nUserID = nUserID;

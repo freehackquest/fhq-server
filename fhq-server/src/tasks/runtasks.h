@@ -1,14 +1,12 @@
 #ifndef RUNTASKS_H
 #define RUNTASKS_H
 
-#include <iserver.h>
-#include <QString>
-#include <model_request.h>
+#include <cmd_handlers.h>
 
 class RunTasks {
     public:
-        static void AddPublicEvents(QString type, QString message);
-        static void UpdateUserLocation(int userid, QString lastip);
+        static void AddPublicEvents(const std::string &sType, const std::string &sMessage);
+        static void UpdateUserLocation(int userid, const std::string &sLastip);
         static void UpdateMaxScoreGame(int gameid);
         static void UpdateUserRating(int nUserID);
         static void UpdateQuestSolved(int nQuestID);

@@ -211,26 +211,19 @@ QSqlDatabase *EmployDatabase::database() {
 // - need close connection after hour
 // - control of count of connections (must be < 100)
 
-Storage *EmployDatabase::storage() {
+StorageConnection *EmployDatabase::getStorageConnection() {
     std::string sThreadId = Log::threadId();
-    Storage *pStorage = nullptr;
-    std::map<std::string,Storage *>::iterator it;
+    StorageConnection *pStorageConnection = nullptr;
+    std::map<std::string, StorageConnection *>::iterator it;
     it = m_mapStorageConnections.find(sThreadId);
     if (it == m_mapStorageConnections.end()) {
-        EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
-        std::string sFilepathConfig = "";
-        pStorage = Storages::create("mysql"); // TODO hardcoded mysql
-        if (!pStorage->applyConfigFromFile(sFilepathConfig)) {
-            delete pStorage;
+        pStorageConnection = m_pStorage->connect();
+        if (pStorageConnection == nullptr) {
             return nullptr;
         }
-        if (!pStorage->connect()) {
-            delete pStorage;
-            return nullptr;
-        }
-        m_mapStorageConnections[sThreadId] = pStorage;
+        m_mapStorageConnections[sThreadId] = pStorageConnection;
     } else {
-        pStorage = it->second;
+        pStorageConnection = it->second;
     }
-    return pStorage;
+    return pStorageConnection;
 }

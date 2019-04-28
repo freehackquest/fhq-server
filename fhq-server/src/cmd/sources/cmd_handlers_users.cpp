@@ -7,7 +7,6 @@
 #include <employ_server_info.h>
 #include <employ_scoreboard.h>
 #include <QtCore>
-#include <model_usertoken.h>
 #include <sha1_wrapper.h>
 #include <QUuid>
 
@@ -195,11 +194,11 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
         jsonResponse["token"] = token.toStdString();
         jsonResponse["user"] = user;
 
-        pRequest->server()->setUserToken(pRequest->client(), new ModelUserToken(user_token));
+        pRequest->server()->setWSJCppUserSession(pRequest->client(), new WSJCppUserSession(user_token));
 
         // update user location
-        QString lastip = pRequest->client()->peerAddress().toString();
-        RunTasks::UpdateUserLocation(nUserId, lastip);
+        std::string sLastIP = pRequest->client()->peerAddress().toString().toStdString();
+        RunTasks::UpdateUserLocation(nUserId, sLastIP);
 
     } else {
         Log::err(TAG, "Invalid login or password");
@@ -323,8 +322,9 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest) {
                          "   :about);"
     );
 
-    QString sLastIP = pRequest->client()->peerAddress().toString();
+    std::string sLastIP = pRequest->client()->peerAddress().toString().toStdString();
 
+    // TODO move to helpers
     QString sUuid = QUuid::createUuid().toString();
     sUuid = sUuid.mid(1,sUuid.length()-2);
     sUuid = sUuid.toUpper();
@@ -353,7 +353,7 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest) {
 
     int nUserID = query_insert.lastInsertId().toInt();
 
-    RunTasks::AddPublicEvents("users", "New user #" + QString::number(nUserID) + "  " + sNick);
+    RunTasks::AddPublicEvents("users", "New [user#" + std::to_string(nUserID) + "]  " + sNick.toStdString());
 
     std::string sSubject = "Registration on FreeHackQuest";
     std::string sContext = "Welcome to FreeHackQuest!\n"
@@ -410,11 +410,11 @@ void CmdHandlerToken::handle(ModelRequest *pRequest) {
         QString data = record.value("data").toString();
         QString start_date = record.value("start_date").toString();
         QString end_date = record.value("end_date").toString();
-        QString lastip = pRequest->client()->peerAddress().toString();
-        pRequest->server()->setUserToken(pRequest->client(), new ModelUserToken(data));
+        std::string sLastIP = pRequest->client()->peerAddress().toString().toStdString();
+        pRequest->server()->setWSJCppUserSession(pRequest->client(), new WSJCppUserSession(data));
         Log::info(TAG, "userid: " + QString::number(userid).toStdString());
         // TODO redesign this
-        RunTasks::UpdateUserLocation(userid, lastip);
+        RunTasks::UpdateUserLocation(userid, sLastIP);
     } else {
         Log::err(TAG, "Invalid token " + token.toStdString());
         pRequest->sendMessageError(cmd(), Error(401, "Invalid token"));
@@ -458,7 +458,7 @@ void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest) {
     }
 
     QSqlDatabase db = *(pDatabase->database());
-    QString lastip = "";
+    std::string sLastIP = "";
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM users WHERE id = :userid");
@@ -466,22 +466,22 @@ void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest) {
         query.exec();
         if (query.next()) {
             QSqlRecord record = query.record();
-            lastip = record.value("last_ip").toString();
+            sLastIP = record.value("last_ip").toString().toStdString();
         }
     }
 
-    if (lastip == "" || lastip == NULL) {
+    if (sLastIP == "") {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM users_ips WHERE userid = :userid ORDER BY id DESC");
         query.bindValue(":userid", userid);
         query.exec();
         if (query.next()) {
             QSqlRecord record = query.record();
-            lastip = record.value("ip").toString();
+            sLastIP = record.value("ip").toString().toStdString();
         }
     }
 
-    RunTasks::UpdateUserLocation(userid, lastip);
+    RunTasks::UpdateUserLocation(userid, sLastIP);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -510,8 +510,8 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest) {
     const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    IUserToken *pUserToken = pRequest->userToken();
-    int nUserID = pUserToken->userid();
+    WSJCppUserSession *pUserSession = pRequest->userSession();
+    int nUserID = pUserSession->userid();
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -722,7 +722,7 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest) {
     nlohmann::json jsonData;
     jsonData["userid"] = nUserID;
     jsonResponse["data"] = jsonData;
-    RunTasks::AddPublicEvents("users", "New user #" + QString::number(nUserID) + "  " + sNick);
+    RunTasks::AddPublicEvents("users", "New [user#" + std::to_string(nUserID) + "] " + sNick.toStdString());
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -750,9 +750,9 @@ void CmdHandlerUser::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    IUserToken *pUserToken = pRequest->userToken();
+    WSJCppUserSession *pUserSession = pRequest->userSession();
 
-    if (jsonRequest.find("userid") != jsonRequest.end() && pUserToken == NULL) {
+    if (jsonRequest.find("userid") != jsonRequest.end() && pUserSession == nullptr) {
         pRequest->sendMessageError(cmd(), Error(401, "Not Authorized Request"));
         return;
     }
@@ -760,18 +760,15 @@ void CmdHandlerUser::handle(ModelRequest *pRequest) {
     bool bCurrentUserOrAdmin = false;
 
     int nUserID = 0;
-    if (pUserToken != NULL) {
-        nUserID = pUserToken->userid();
+    if (pUserSession != nullptr) {
+        nUserID = pUserSession->userid();
         bCurrentUserOrAdmin = true;
     }
 
     if (jsonRequest.find("userid") != jsonRequest.end()) {
         int nUserID_ = jsonRequest.at("userid").get<int>();
         if (nUserID_ != nUserID) {
-            bCurrentUserOrAdmin = false;
-            if (pUserToken != NULL) {
-                bCurrentUserOrAdmin = pUserToken->isAdmin();
-            }
+            bCurrentUserOrAdmin = pRequest->isAdmin();
         }
         nUserID = nUserID_;
     }
@@ -861,9 +858,9 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    IUserToken *pUserToken = pRequest->userToken();
+    WSJCppUserSession *pUserSession = pRequest->userSession();
 
-     if (jsonRequest.find("userid") == jsonRequest.end() && pUserToken == NULL) {
+     if (jsonRequest.find("userid") == jsonRequest.end() && pUserSession == nullptr) {
         pRequest->sendMessageError(cmd(), Error(401, "Not Authorized Request"));
         return;
     }
@@ -871,18 +868,15 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest) {
     bool bCurrentUserOrAdmin = false;
 
     int nUserID = 0;
-    if (pUserToken != NULL) {
-        nUserID = pUserToken->userid();
+    if (pUserSession != nullptr) {
+        nUserID = pUserSession->userid();
         bCurrentUserOrAdmin = true;
     }
 
     if (jsonRequest.find("userid") != jsonRequest.end()) {
         int nUserID_ = jsonRequest.at("userid").get<int>();
         if (nUserID_ != nUserID) {
-            bCurrentUserOrAdmin = false;
-            if (pUserToken != NULL) {
-                bCurrentUserOrAdmin = pUserToken->isAdmin();
-            }
+            bCurrentUserOrAdmin = pRequest->isAdmin();
         }
         nUserID = nUserID_;
     }
@@ -1019,7 +1013,7 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest) {
         return;
     }
 
-    RunTasks::AddPublicEvents("users", "User comeback #" + QString::number(nUserID) + "  " + sNick);
+    RunTasks::AddPublicEvents("users", "User comeback [user#" + std::to_string(nUserID) + "] " + sNick.toStdString());
 
     std::string sSubject = "Reset Password from FreeHackQuest";
     std::string sContext = "Welcome back to FreeHackQuest!\n"
@@ -1127,10 +1121,10 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
     nlohmann::json data;
 
-    IUserToken *pUserToken = pRequest->userToken();
-    int nUserIDFromToken = pUserToken->userid();
-    int nUserID = jsonRequest.at("userid");
-    if (nUserIDFromToken != nUserID && !pUserToken->isAdmin()) {
+    WSJCppUserSession *pUserSession = pRequest->userSession();
+    int nUserIDFromToken = pUserSession->userid();
+    int nUserID = pRequest->getInputInteger("userid", 0);
+    if (nUserIDFromToken != nUserID && !pRequest->isAdmin()) {
         pRequest->sendMessageError(cmd(), Error(403, "Deny change inmormation about user"));
         return;
     }
@@ -1213,8 +1207,8 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest) {
         };
     }
 
-    pUserToken->setNick(sNick);
-    RunTasks::AddPublicEvents("users", "User #" + QString::number(nUserID) + "  " + sNick
+    pUserSession->setNick(sNick);
+    RunTasks::AddPublicEvents("users", "User [user#" + std::to_string(nUserID) + "]  " + sNick.toStdString()
                               + " updated info");
 
     data["id"] = nUserID;
@@ -1259,8 +1253,8 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
 
     QString sAdminPassword = QString::fromStdString(jsonRequest.at("password"));
 
-    IUserToken *pUserToken = pRequest->userToken();
-    int nAdminUserID = pUserToken->userid();
+    WSJCppUserSession *pUserSession = pRequest->userSession();
+    int nAdminUserID = pUserSession->userid();
 
     QSqlDatabase db = *(pDatabase->database());
 

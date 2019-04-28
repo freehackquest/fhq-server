@@ -6,6 +6,8 @@
 // #include <QByteArray>
 // #include <QDateTime>
 // #include <QDir>
+#include <QSqlQuery> // TODO redesign
+#include <QSqlRecord> // TODO redesign
 
 REGISTRY_EMPLOY(EmploySettings)
 

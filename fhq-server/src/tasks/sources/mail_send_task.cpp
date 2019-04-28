@@ -6,6 +6,8 @@
 #include <sstream>
 #include <iostream>
 #include <time.h>
+#include <QSqlQuery> // TODO redesign
+#include <QSqlRecord> // TODO redesign
 
 MailSendTask::MailSendTask(const std::string &sTo, const std::string &sSubject, const std::string &sContent) {
     TAG = "MailSendTask";

@@ -1,12 +1,152 @@
 #include <utils_logger.h>
 #include <cmd_handlers.h>
 #include <employ_ws_server.h>
+#include <QJsonDocument>
+#include <QJsonObject>
+
+/*! 
+ * Error - 
+ * */
+
+Error::Error(int nCodeError, const std::string &sMessage) {
+    m_nCodeError = nCodeError;
+    m_sMessage = sMessage;
+}
+
+// ---------------------------------------------------------------------
+
+int Error::codeError() {
+    return m_nCodeError;
+}
+
+// ---------------------------------------------------------------------
+
+std::string Error::message() {
+    return m_sMessage;
+}
+
+// ---------------------------------------------------------------------
+
+/*! 
+ * WSJCppUserSession - all data by current user session
+ * */
+
+WSJCppUserSession::WSJCppUserSession() {
+    TAG = "WSJCppUserSession";
+}
+
+// ---------------------------------------------------------------------
+
+WSJCppUserSession::WSJCppUserSession(nlohmann::json const& obj) : WSJCppUserSession() {
+    this->fillFrom(obj);
+}
+
+// ---------------------------------------------------------------------
+
+WSJCppUserSession::WSJCppUserSession(QString json) : WSJCppUserSession() {
+    this->fillFrom(nlohmann::json::parse(json.toStdString()));
+}
+
+// ---------------------------------------------------------------------
+
+void WSJCppUserSession::fillFrom(const nlohmann::json &obj) {
+    if (obj.find("user") != obj.end()) {
+        nlohmann::json user = obj.at("user");
+       
+        // user.role
+        try {
+            m_sRole = user.at("role").get<std::string>();
+        } catch (const std::exception &e) {
+            Log::err(TAG, "JSON: " + obj.dump());
+            Log::err(TAG, "Something wrong param user.role in struct. " + std::string(e.what()));
+            m_sRole = "";
+        }
+
+        // TODO check allow roles
+
+        // user.id
+        try {
+            m_nUserID = user.at("id").get<int>();
+        } catch (const std::exception &e) {
+            Log::err(TAG, "JSON: " + obj.dump());
+            Log::err(TAG, "Something wrong param user.id in struct. " + std::string(e.what()));
+            m_nUserID = -1;
+        }
+        
+        // user.email
+        try {
+            m_sEmail = user.at("email").get<std::string>();
+        } catch (const std::exception &e) {
+            Log::err(TAG, "JSON: " + obj.dump());
+            Log::err(TAG, "Something wrong param user.email in struct. " + std::string(e.what()));
+            m_sEmail = "";
+        }
+
+        // user.nick
+        try {
+            m_sNick = user.at("nick").get<std::string>();
+        } catch (const std::exception &e) {
+            Log::err(TAG, "JSON: " + obj.dump());
+            Log::err(TAG, "Something wrong param user.nick in struct. " + std::string(e.what()));
+            m_sNick = "";
+        }
+        
+    } else {
+        Log::warn(TAG, "Not found param 'user' in struct");
+    }
+}
+
+// ---------------------------------------------------------------------
+
+bool WSJCppUserSession::isAdmin() {
+    return m_sRole == "admin";
+}
+
+// ---------------------------------------------------------------------
+
+bool WSJCppUserSession::isUser() {
+    return m_sRole == "user";
+}
+
+// ---------------------------------------------------------------------
+
+bool WSJCppUserSession::isTester() {
+    return m_sRole == "tester";
+}
+
+// ---------------------------------------------------------------------
+
+bool WSJCppUserSession::hasRole() {
+    return m_sRole != "";
+}
+
+// ---------------------------------------------------------------------
+
+QString WSJCppUserSession::nick() {
+    return QString::fromStdString(m_sNick);
+}
+
+// ---------------------------------------------------------------------
+
+void WSJCppUserSession::setNick(QString sNick) {
+    m_sNick = sNick.toStdString();
+}
+
+// ---------------------------------------------------------------------
+
+int WSJCppUserSession::userid() {
+    return m_nUserID;
+}
+
+// ---------------------------------------------------------------------
+
+QString WSJCppUserSession::email() {
+    return QString::fromStdString(m_sEmail);
+}
 
 // ****************************
 // **** CmdInputDef
 // ****************************
-
-// ---------------------------------------------------------------------
 
 CmdInputDef::CmdInputDef(const std::string &sName, const std::string &sDescription) {
     m_sName = sName;
@@ -218,6 +358,151 @@ CmdInputDef &CmdInputDef::addValidator(ValidatorStringBase *pValidatorStringBase
 // ---------------------------------------------------------------------
 
 // ****************************
+// **** ModelRequest
+// ****************************
+
+
+ModelRequest::ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_) {
+    m_pClient = pClient;
+    m_pServer = pWebSocketServer;
+    m_jsonRequest = jsonRequest_;
+
+    if (m_jsonRequest["cmd"].is_string()) {
+        m_sCommand = m_jsonRequest["cmd"];
+    }
+
+    if (m_jsonRequest["m"].is_string()) {
+        m_sMessageId = m_jsonRequest["m"];
+    }
+
+    m_pWSJCppUserSession = m_pServer->getWSJCppUserSession(m_pClient);
+}
+
+// ---------------------------------------------------------------------
+
+QWebSocket *ModelRequest::client() {
+    return m_pClient;
+}
+
+// ---------------------------------------------------------------------
+
+IWebSocketServer *ModelRequest::server() {
+    return m_pServer;
+}
+
+// ---------------------------------------------------------------------
+
+// TODO deprecated
+const nlohmann::json& ModelRequest::jsonRequest() {
+    return m_jsonRequest;
+}
+
+// ---------------------------------------------------------------------
+
+std::string ModelRequest::getInputString(const std::string &sParamName, const std::string &sDefaultValue) {
+    // TODO check by input defs
+    std::string sRet = sDefaultValue;
+    if (m_jsonRequest[sParamName].is_string()) {
+        sRet = m_jsonRequest[sParamName];
+    }
+    return sRet;
+}
+
+// ---------------------------------------------------------------------
+
+int ModelRequest::getInputInteger(const std::string &sParamName, int nDefaultValue) {
+    // TODO check by input defs
+    int nRet = nDefaultValue;
+    if (m_jsonRequest[sParamName].is_number()) {
+        nRet = m_jsonRequest[sParamName];
+    }
+    return nRet;
+}
+
+// ---------------------------------------------------------------------
+
+std::string ModelRequest::m() {
+    return m_sMessageId;
+}
+
+// ---------------------------------------------------------------------
+
+WSJCppUserSession *ModelRequest::userSession() {
+    return m_pWSJCppUserSession;
+}
+
+// ---------------------------------------------------------------------
+
+bool ModelRequest::isAdmin() {
+    if (m_pWSJCppUserSession != nullptr) {
+        return m_pWSJCppUserSession->isAdmin();
+    }
+    return false;
+}
+
+// ---------------------------------------------------------------------
+
+bool ModelRequest::isUser() {
+    if (m_pWSJCppUserSession != nullptr) {
+        return m_pWSJCppUserSession->isUser();
+    }
+    return false;
+}
+
+// ---------------------------------------------------------------------
+
+bool ModelRequest::isUnauthorized() {
+    return m_pWSJCppUserSession == nullptr;
+}
+
+// ---------------------------------------------------------------------
+
+// TODO deprecated
+QJsonObject ModelRequest::data() {
+    QString s = QString::fromStdString( m_jsonRequest.dump() );
+    return QJsonDocument::fromJson(s.toUtf8()).object();
+}
+
+// ---------------------------------------------------------------------
+
+void ModelRequest::sendMessageError(const std::string &cmd, Error error) {
+    m_pServer->sendMessageError(m_pClient,cmd,m_sMessageId,error);
+}
+
+// ---------------------------------------------------------------------
+
+void ModelRequest::sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse) {
+    jsonResponse["cmd"] = cmd;
+    jsonResponse["m"] = m_sMessageId;
+    jsonResponse["result"] = "DONE";
+    m_pServer->sendMessage(m_pClient, jsonResponse);
+}
+
+// ---------------------------------------------------------------------
+
+bool ModelRequest::hasM() {
+    return m_sMessageId != "";
+}
+
+// ---------------------------------------------------------------------
+
+std::string ModelRequest::command() {
+    return m_sCommand;
+}
+
+// ---------------------------------------------------------------------
+
+bool ModelRequest::hasCommand() {
+    return m_sCommand != "";
+}
+
+// ---------------------------------------------------------------------
+
+// bool ModelRequest::validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler) {
+
+// }
+
+// ****************************
 // **** CmdHandlerBase
 // ****************************
 
@@ -264,6 +549,33 @@ bool CmdHandlerBase::accessUser() {
 
 bool CmdHandlerBase::accessAdmin() {
     return m_bAccessAdmin;
+}
+
+// ---------------------------------------------------------------------
+// TODO write unit-test for this
+
+bool CmdHandlerBase::checkAccess(ModelRequest *pRequest) {
+    WSJCppUserSession *pUserSession = pRequest->userSession();
+    if (!accessUnauthorized()) {
+        if (pUserSession == nullptr) {
+            pRequest->sendMessageError(cmd(), Error(401, "Not Authorized Request"));
+            return false;
+        }
+
+        // access user
+        if (pUserSession->isUser() && !accessUser()) {
+            pRequest->sendMessageError(cmd(), Error(403, "Access deny for user"));
+            return false;
+        }
+
+        // access admin
+        if (pUserSession->isAdmin() && !accessAdmin()) {
+            pRequest->sendMessageError(cmd(), Error(403, "Access deny for admin"));
+            return false;
+        }
+    }
+
+    return true;
 }
 
 // ---------------------------------------------------------------------
