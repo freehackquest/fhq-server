@@ -11,7 +11,7 @@ std::vector<std::string> ModelGame::STATES = {"original", "copy", "unlicensed_co
 
 // ---------------------------------------------------------------------
 
-ModelGame::ModelGame(){
+ModelGame::ModelGame() {
     TAG = "ModelGame";
     m_nLocalId = 0;
     m_nMaxScore = 0;
@@ -29,61 +29,61 @@ ModelGame::ModelGame(){
 
 // ---------------------------------------------------------------------
 
-int ModelGame::localId() const{
+int ModelGame::localId() const {
     return m_nLocalId;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelGame::setLocalId(int nLocalId){
+void ModelGame::setLocalId(int nLocalId) {
     m_nLocalId = nLocalId;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::uuid() const{
-	return m_sUuid;
+const std::string &ModelGame::uuid() const {
+    return m_sUuid;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelGame::setUuid(std::string sUuid){
-	m_sUuid = sUuid;
+void ModelGame::setUuid(std::string sUuid) {
+    m_sUuid = sUuid;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::name() const{
+const std::string &ModelGame::name() const {
     return m_sName;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelGame::setName(std::string sName){
+void ModelGame::setName(std::string sName) {
     m_sName = sName;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::description() const{
+const std::string &ModelGame::description() const {
     return m_sDescription;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelGame::setDescription(std::string sDescription){
+void ModelGame::setDescription(std::string sDescription) {
     m_sDescription = sDescription;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::state() const{
+const std::string &ModelGame::state() const {
     return m_sState;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelGame::setState(const std::string &sState){
+void ModelGame::setState(const std::string &sState) {
     if (std::find(ModelGame::STATES.begin(), ModelGame::STATES.end(), sState) == ModelGame::STATES.end()) {
         Log::err(TAG, "Game state unknown: [" + sState + "]");
     }
@@ -92,14 +92,14 @@ void ModelGame::setState(const std::string &sState){
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::form() const{
+const std::string &ModelGame::form() const {
     return m_sForm;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelGame::setForm(std::string sForm){
-    if(std::find(ModelGame::FORMS.begin(), ModelGame::FORMS.end(), sForm) == ModelGame::FORMS.end()) {
+void ModelGame::setForm(std::string sForm) {
+    if (std::find(ModelGame::FORMS.begin(), ModelGame::FORMS.end(), sForm) == ModelGame::FORMS.end()) {
         Log::err(TAG, "Game form unknown: [" + sForm + "]");
     }
     m_sForm = sForm;
@@ -107,14 +107,14 @@ void ModelGame::setForm(std::string sForm){
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::type() const{
+const std::string &ModelGame::type() const {
     return m_sType;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelGame::setType(std::string sType){
-    if(std::find(ModelGame::TYPES.begin(), ModelGame::TYPES.end(), sType) == ModelGame::TYPES.end()) {
+void ModelGame::setType(std::string sType) {
+    if (std::find(ModelGame::TYPES.begin(), ModelGame::TYPES.end(), sType) == ModelGame::TYPES.end()) {
         Log::err(TAG, "Game type unknown: [" + sType + "]");
     }
     m_sType = sType;
@@ -122,49 +122,49 @@ void ModelGame::setType(std::string sType){
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::dateStart() const{
+const std::string &ModelGame::dateStart() const {
     return m_sDateStart;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelGame::setDateStart(std::string sDateStart){
+void ModelGame::setDateStart(std::string sDateStart) {
     m_sDateStart = sDateStart;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::dateStop() const{
+const std::string &ModelGame::dateStop() const {
     return m_sDateStop;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelGame::setDateStop(std::string sDateStop){
+void ModelGame::setDateStop(std::string sDateStop) {
     m_sDateStop = sDateStop;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::dateRestart() const{
+const std::string &ModelGame::dateRestart() const {
     return m_sDateRestart;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelGame::setDateRestart(std::string sDateRestart){
+void ModelGame::setDateRestart(std::string sDateRestart) {
     m_sDateRestart = sDateRestart;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelGame::organizators() const{
+const std::string &ModelGame::organizators() const {
     return m_sOrganizators;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelGame::setOrganizators(std::string sOrganizators){
+void ModelGame::setOrganizators(std::string sOrganizators) {
     m_sOrganizators = sOrganizators;
 }
 
@@ -176,13 +176,13 @@ int ModelGame::maxScore() const{
 
 // ---------------------------------------------------------------------
 
-void ModelGame::setMaxScore(int nMaxScore){
+void ModelGame::setMaxScore(int nMaxScore) {
     m_nMaxScore = nMaxScore;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelGame::copy(const ModelGame &modelGame){
+void ModelGame::copy(const ModelGame &modelGame) {
     this->setLocalId(modelGame.localId());
     this->setUuid(modelGame.uuid());
     this->setName(modelGame.name());
@@ -199,7 +199,7 @@ void ModelGame::copy(const ModelGame &modelGame){
 
 // ---------------------------------------------------------------------
 
-ModelGame *ModelGame::clone() const{
+ModelGame *ModelGame::clone() const {
     ModelGame *pModel = new ModelGame();
     pModel->setLocalId(this->localId());
     pModel->setUuid(this->uuid());
@@ -218,7 +218,7 @@ ModelGame *ModelGame::clone() const{
 
 // ---------------------------------------------------------------------
 
-nlohmann::json ModelGame::toJson(){
+nlohmann::json ModelGame::toJson() {
     nlohmann::json jsonGame;
     jsonGame["local_id"] = m_nLocalId; // deprecated
     jsonGame["uuid"] = m_sUuid;
@@ -237,7 +237,7 @@ nlohmann::json ModelGame::toJson(){
 
 // ---------------------------------------------------------------------
 
-void ModelGame::fillFrom(const nlohmann::json &jsonGame){
+void ModelGame::fillFrom(const nlohmann::json &jsonGame) {
     // TODO local_id ?
     // TODO maxScore ?
 

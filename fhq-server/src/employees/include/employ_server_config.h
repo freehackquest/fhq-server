@@ -17,12 +17,12 @@ class EmployServerConfig : public EmployBase {
         std::string databaseName();
         std::string databaseUser();
         std::string databasePassword();
-		bool databaseUseMySQL();
+        bool databaseUseMySQL();
         std::string databasePath();
 
-		bool serverSslOn();
-		int serverPort();
-		int serverSslPort();
+        bool serverSslOn();
+        int serverPort();
+        int serverSslPort();
         std::string serverSslKeyFile();
         std::string serverSslCertFile();
         
@@ -32,8 +32,8 @@ class EmployServerConfig : public EmployBase {
         int webMaxThreads();
         std::string webAdminFolder();
 
-	private:
-		std::string TAG;
+    private:
+        std::string TAG;
         std::string m_sWorkDir;
         std::map <std::string, std::string> m_mapDefaultOptions;
     
@@ -48,11 +48,11 @@ class EmployServerConfig : public EmployBase {
         std::string m_sDatabase_user;
         std::string m_sDatabase_password;
         std::string m_sDatabase_path;
-		
+        
         // server settings
-		bool m_bServer_ssl_on;
-		int m_nServer_port;
-		int m_nServer_ssl_port;
+        bool m_bServer_ssl_on;
+        int m_nServer_port;
+        int m_nServer_ssl_port;
         std::string m_sServer_ssl_key_file;
         std::string m_sServer_ssl_cert_file;
 

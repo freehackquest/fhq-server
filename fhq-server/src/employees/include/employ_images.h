@@ -2,7 +2,6 @@
 #define EMPLOY_IMAGES_H
 
 #include <employees.h>
-#include <iserver.h>
 
 class EmployImages : public EmployBase {
 private:
@@ -12,14 +11,14 @@ private:
     // EmployImages() { };
     // ~EmployImages() { };
     EmployImages(EmployImages const&) = delete; // disabled
-	EmployImages& operator= (EmployImages const&) = delete;  // disabled
+    EmployImages& operator= (EmployImages const&) = delete;  // disabled
 
 public:
     EmployImages();
     /*static EmployImages* getInstance() {
-		static EmployImages *pInstance;
+        static EmployImages *pInstance;
         return pInstance;
-	};*/
+    };*/
     static std::string name() { return "EmployImages"; }
     virtual bool init();
     bool doThumbnailImagePng(const std::string &sourceFilepath, const std::string &targetFilepath, int width_resize, int height_resize);

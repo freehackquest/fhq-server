@@ -22,6 +22,23 @@ bool UnitTestStorageStruct::run() {
     int nExpectedSize = 0;
     std::string sExpectedQuery = "";
 
+    StorageCreateTable test_tbl0("test_tbl0");
+    test_tbl0.addColumn("id").number().autoIncrement().primaryKey().notNull();
+    test_tbl0.addColumn("filed1").string(255).notNull().enableIndex();
+
+    std::vector<std::string> vQueries0 = pStorage->prepareSqlQueries(test_tbl0);
+    if (!compareN("vQueries0", vQueries0.size(), 1)) {
+        bTestSuccess = false;
+    } else {
+        bTestSuccess = compareS(bTestSuccess, vQueries0[0], 
+            "CREATE TABLE IF NOT EXISTS `test_tbl0` (\r\n"
+			"  `id` INT NOT NULL AUTO_INCREMENT,\r\n"
+			"  `filed1` VARCHAR(255) NOT NULL,\r\n"
+			"  PRIMARY KEY (id),\r\n"
+            "  KEY idx_filed1 (filed1)\r\n"
+			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+    }
+
     StorageStruct test_tbl1("test_tbl1", StorageStructTableMode::CREATE);
 	
     test_tbl1.addColumn(StorageStructColumn("id")

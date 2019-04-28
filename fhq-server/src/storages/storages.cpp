@@ -8,8 +8,8 @@ std::map<std::string, IFabricStorage*> *g_pFabricStorages = NULL;
 
 // ---------------------------------------------------------------------
 
-void Storages::initGlobalVariables(){
-    if(g_pFabricStorages == NULL){
+void Storages::initGlobalVariables() {
+    if (g_pFabricStorages == NULL) {
         // Log::info(std::string(), "Create employees map");
         g_pFabricStorages = new std::map<std::string, IFabricStorage*>();
     }
@@ -17,7 +17,7 @@ void Storages::initGlobalVariables(){
 
 // ---------------------------------------------------------------------
 
-void Storages::add(const std::string &sType, IFabricStorage* pStorage){
+void Storages::add(const std::string &sType, IFabricStorage* pStorage) {
     Storages::initGlobalVariables();
     const std::string TAG = "addStorage";
     if (g_pFabricStorages->count(sType) > 0) {
@@ -53,7 +53,7 @@ Storage* Storages::create(const std::string &sType) {
     Storages::initGlobalVariables();
     std::string TAG = "findStorage";
     IFabricStorage *pFabricStorage = nullptr;
-    if(g_pFabricStorages->count(sType)){
+    if (g_pFabricStorages->count(sType)) {
         pFabricStorage = g_pFabricStorages->at(sType);
         return pFabricStorage->create();
     }
@@ -67,7 +67,7 @@ std::vector<StorageUpdateBase*> *g_pStorageUpdates = nullptr;
 // ---------------------------------------------------------------------
 // class StorageUpdateBase
 
-StorageUpdateBase::StorageUpdateBase(const std::string &sFromVersion, const std::string &sVersion, const std::string &sDescription){
+StorageUpdateBase::StorageUpdateBase(const std::string &sFromVersion, const std::string &sVersion, const std::string &sDescription) {
     TAG = "Update_" + sVersion;
     m_sFromVersion = sFromVersion;
     m_sVersion = sVersion;
@@ -78,19 +78,19 @@ StorageUpdateBase::StorageUpdateBase(const std::string &sFromVersion, const std:
 
 // ---------------------------------------------------------------------
 
-const std::string &StorageUpdateBase::from_version(){
+const std::string &StorageUpdateBase::from_version() {
     return m_sFromVersion;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &StorageUpdateBase::version(){
+const std::string &StorageUpdateBase::version() {
     return m_sVersion;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &StorageUpdateBase::description(){
+const std::string &StorageUpdateBase::description() {
     return m_sDescription;
 }
 
@@ -108,8 +108,8 @@ void StorageUpdateBase::add(StorageStruct st) {
 
 // ---------------------------------------------------------------------
 
-void StorageUpdates::initGlobalVariables(){
-    if(g_pStorageUpdates == NULL){
+void StorageUpdates::initGlobalVariables() {
+    if (g_pStorageUpdates == NULL) {
         // Log::info(std::string(), "Create list updates");
         g_pStorageUpdates = new std::vector<StorageUpdateBase*>();
     }
@@ -120,7 +120,7 @@ void StorageUpdates::initGlobalVariables(){
 StorageUpdateBase* StorageUpdates::findUpdateFromVersion(const std::string &sFromVersion) {
     std::string TAG = "StorageUpdates::findUpdateFromVersion";
     StorageUpdateBase* pRet = nullptr;
-    for (int i = 0; i < g_pStorageUpdates->size(); i++){
+    for (int i = 0; i < g_pStorageUpdates->size(); i++) {
         StorageUpdateBase* pUpdate = g_pStorageUpdates->at(i);
         if (sFromVersion == pUpdate->from_version()) {
             if (pRet == nullptr) {
@@ -135,7 +135,7 @@ StorageUpdateBase* StorageUpdates::findUpdateFromVersion(const std::string &sFro
 
 // ---------------------------------------------------------------------
 
-bool StorageUpdates::apply(Storage *pStorage){
+bool StorageUpdates::apply(Storage *pStorage) {
     StorageUpdates::initGlobalVariables();
     std::string TAG = "StorageUpdates::apply";
 

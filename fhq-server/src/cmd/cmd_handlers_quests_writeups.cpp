@@ -11,7 +11,7 @@
 REGISTRY_CMD(CmdHandlerQuestsWriteUpsList)
 
 CmdHandlerQuestsWriteUpsList::CmdHandlerQuestsWriteUpsList()
-    : CmdHandlerBase("quests_writeups_list", "This method will be returned list of writeups by questid"){
+    : CmdHandlerBase("quests_writeups_list", "This method will be returned list of writeups by questid") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -23,7 +23,7 @@ CmdHandlerQuestsWriteUpsList::CmdHandlerQuestsWriteUpsList()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest){
+void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
@@ -40,13 +40,12 @@ void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest){
     }
 
 
-    // user token
-    IUserToken *pUserToken = pRequest->userToken();
-    bool bAdmin = false;
+    // user session
+    WSJCppUserSession *pUserSession = pRequest->userSession();
+    bool bAdmin = pRequest->isAdmin();
     int nUserID = 0;
-    if(pUserToken != NULL) {
-        bAdmin = pUserToken->isAdmin();
-        nUserID = pUserToken->userid();
+    if (pUserSession != nullptr) { // TODO refactor to pRequest->userId()
+        nUserID = pUserSession->userid();
     }
 
     std::string sSQLRequest = ""
@@ -58,7 +57,7 @@ void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest){
     }
 
     nlohmann::json jsonResponse;
-    auto jsonWriteups = nlohmann::json::array();
+    nlohmann::json jsonWriteups = nlohmann::json::array();
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
@@ -140,14 +139,13 @@ void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
     sWriteUpLink = "https://www.youtube.com/embed/" + sWriteUpLink.substr(m_sLinkPrefix.length());
 
     // user token
-    IUserToken *pUserToken = pRequest->userToken();
-    bool bAdmin = false;
+    WSJCppUserSession *pUserSession = pRequest->userSession();
+    bool bAdmin = pRequest->isAdmin();
     int nUserID = 0;
     QString sUserEmail = "";
-    if (pUserToken != NULL) {
-        bAdmin = pUserToken->isAdmin();
-        nUserID = pUserToken->userid();
-        sUserEmail = pUserToken->email();
+    if (pUserSession != nullptr) {
+        nUserID = pUserSession->userid();
+        sUserEmail = pUserSession->email();
     }
 
     QSqlDatabase db = *(pDatabase->database());
@@ -209,7 +207,7 @@ CmdHandlerQuestsWriteUpsUpdate::CmdHandlerQuestsWriteUpsUpdate()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestsWriteUpsUpdate::handle(ModelRequest *pRequest){
+void CmdHandlerQuestsWriteUpsUpdate::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
@@ -291,7 +289,7 @@ CmdHandlerQuestsWriteUpsDelete::CmdHandlerQuestsWriteUpsDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestsWriteUpsDelete::handle(ModelRequest *pRequest){
+void CmdHandlerQuestsWriteUpsDelete::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();

@@ -26,18 +26,18 @@ EmployNotify::EmployNotify()
 
 // ---------------------------------------------------------------------
 
-bool EmployNotify::init(){
+bool EmployNotify::init() {
     // nothing
     return true;
 }
 
 // ---------------------------------------------------------------------
 
-void EmployNotify::sendNotification(ModelNotification &modelNotification){
+void EmployNotify::sendNotification(ModelNotification &modelNotification) {
     std::string sType = modelNotification.type();
     std::string sMessage = modelNotification.message();
 
-    RunTasks::AddPublicEvents(QString(sType.c_str()), QString(sMessage.c_str()));
+    RunTasks::AddPublicEvents(sType, sMessage);
 
     nlohmann::json jsonMessage = modelNotification.toJson();
     jsonMessage["cmd"] = "notify";
@@ -48,25 +48,25 @@ void EmployNotify::sendNotification(ModelNotification &modelNotification){
 
 // ---------------------------------------------------------------------
 
-void EmployNotify::notifyWarning(const std::string &sSection, const std::string &sMessage){
+void EmployNotify::notifyWarning(const std::string &sSection, const std::string &sMessage) {
     sendNotification("warning", sSection, sMessage);
 }
 
 // ---------------------------------------------------------------------
 
-void EmployNotify::notifyDanger(const std::string &sSection, const std::string &sMessage){
+void EmployNotify::notifyDanger(const std::string &sSection, const std::string &sMessage) {
     sendNotification("danger", sSection, sMessage);
 }
 
 // ---------------------------------------------------------------------
 
-void EmployNotify::notifyInfo(const std::string &sSection, const std::string &sMessage){
+void EmployNotify::notifyInfo(const std::string &sSection, const std::string &sMessage) {
     sendNotification("info", sSection, sMessage);
 }
 
 // ---------------------------------------------------------------------
 
-void EmployNotify::notifySuccess(const std::string &sSection, const std::string &sMessage){
+void EmployNotify::notifySuccess(const std::string &sSection, const std::string &sMessage) {
     sendNotification("success", sSection, sMessage);
 }
 
@@ -75,9 +75,9 @@ void EmployNotify::notifySuccess(const std::string &sSection, const std::string 
 
 void EmployNotify::sendNotification(const std::string &sType,
                                     const std::string &sSection,
-                                    const std::string &sMessage){
+                                    const std::string &sMessage) {
 
-    RunTasks::AddPublicEvents(QString(sType.c_str()), QString(sMessage.c_str()));
+    RunTasks::AddPublicEvents(sType, sMessage);
 
     nlohmann::json jsonMessage;
     jsonMessage["type"] = sType;

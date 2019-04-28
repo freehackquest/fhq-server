@@ -24,51 +24,51 @@ class PyCodeLine{
     std::vector<PyCodeLine *> m_vLines;
 public:
     
-    PyCodeLine(){
+    PyCodeLine() {
         m_pParent = NULL;
         m_sLine = "";
     }
 
-    PyCodeLine(PyCodeLine *parent, const std::string &sLine){
+    PyCodeLine(PyCodeLine *parent, const std::string &sLine) {
         m_pParent = parent;
         m_sLine = sLine;
     }
 
-    ~PyCodeLine(){
-        if(m_pParent == NULL){
+    ~PyCodeLine() {
+        if (m_pParent == NULL) {
             std::cout << "destruct root \n";
-        }else{
+        } else {
             std::cout << "destruct something else [" << m_sLine << "]\n";
         }
     }
 
-    PyCodeLine *addLine(const std::string &sLine){
+    PyCodeLine *addLine(const std::string &sLine) {
         PyCodeLine *pPyCodeLine = new PyCodeLine(this,sLine);
         m_vLines.push_back(pPyCodeLine);
         return pPyCodeLine;
     }
 
-    PyCodeLine *getParent(){
+    PyCodeLine *getParent() {
         return m_pParent;
     }
 
-    std::string getLine(){
+    std::string getLine() {
         return m_sLine;
     }
 
-    PyCodeLine *findRoot(){
-        if(m_pParent == NULL){
+    PyCodeLine *findRoot() {
+        if (m_pParent == NULL) {
             return this;
         }
         return m_pParent->findRoot();
     }
 
-    void print(std::ofstream &__init__, std::string intent = ""){
-        if(m_pParent != NULL){
+    void print(std::ofstream &__init__, std::string intent = "") {
+        if (m_pParent != NULL) {
             __init__ << intent << m_sLine << std::endl;
             intent += "    ";
         }
-        for(int i = 0; i < m_vLines.size(); i++){
+        for (int i = 0; i < m_vLines.size(); i++) {
             m_vLines[i]->print(__init__, intent);
         }
     }
@@ -82,33 +82,33 @@ private:
     PyCodeLine *m_pCurr = NULL;
 
 public:
-    PyCodeBuilder(){
+    PyCodeBuilder() {
         m_pCurr = new PyCodeLine();
     }
 
-    ~PyCodeBuilder(){
+    ~PyCodeBuilder() {
         // std::cout << "destruct something else [" << m_pCurr->getLine() << "]\n";
     }
 
-    PyCodeBuilder &add(const std::string &sLine){
+    PyCodeBuilder &add(const std::string &sLine) {
         m_pCurr->addLine(sLine);
         return *this;
     }
-    PyCodeBuilder &sub(const std::string &sLine){
+    PyCodeBuilder &sub(const std::string &sLine) {
         m_pCurr = m_pCurr->addLine(sLine);
         return *this;
     }
-    PyCodeBuilder &end(){
+    PyCodeBuilder &end() {
         PyCodeLine *p = m_pCurr->getParent();
-        if(p != NULL){
+        if (p != NULL) {
             m_pCurr = p;
-        }else{
+        } else {
             std::cout << "Wrong called end function" << std::endl;
         }
         return *this;
     }
 
-    void print(std::ofstream &__init__){
+    void print(std::ofstream &__init__) {
         PyCodeLine *pRoot = m_pCurr->findRoot();
         pRoot->print(__init__);
     };
@@ -116,7 +116,7 @@ public:
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliPy::exportLib(){
+void ExportLibFHQCliPy::exportLib() {
 
     ExportLibFHQCliPy::exportPrepareDirs();
     ExportLibFHQCliPy::export__init__py();
@@ -126,7 +126,7 @@ void ExportLibFHQCliPy::exportLib(){
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliPy::exportPrepareDirs(){
+void ExportLibFHQCliPy::exportPrepareDirs() {
     int status;
     std::cout << " * mkdir libfhqcli-py" << std::endl;
     status = mkdir("libfhqcli-py", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -139,7 +139,7 @@ void ExportLibFHQCliPy::exportPrepareDirs(){
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliPy::exportSetupPy(){
+void ExportLibFHQCliPy::exportSetupPy() {
     std::ofstream setupPy;
     std::cout << " * write code to libfhqcli-py/libfhqcli/setup.py " << std::endl;
     setupPy.open ("libfhqcli-py/setup.py");
@@ -182,7 +182,7 @@ void ExportLibFHQCliPy::exportSetupPy(){
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliPy::exportAPImd(){
+void ExportLibFHQCliPy::exportAPImd() {
     
     std::ofstream apimd;
     std::cout << " * write file to libfhqcli-py/API.md" << std::endl;
@@ -206,12 +206,12 @@ void ExportLibFHQCliPy::exportAPImd(){
     apimd << "\n";
 
     std::map<std::string, CmdHandlerBase*>::iterator it = g_pCmdHandlers->begin();
-    for (; it!=g_pCmdHandlers->end(); ++it){
+    for (; it!=g_pCmdHandlers->end(); ++it) {
         std::string sCmd = it->first;
         CmdHandlerBase* pCmdHandlerBase = it->second;
         
         apimd << " ## " << sCmd << "\n\n";
-        if(pCmdHandlerBase->description() != ""){
+        if (pCmdHandlerBase->description() != "") {
             apimd << pCmdHandlerBase->description() << "\n\n";
         }
         apimd 
@@ -225,22 +225,22 @@ void ExportLibFHQCliPy::exportAPImd(){
         std::string pythonTemplate = "";
 
         std::vector<CmdInputDef> vVin = pCmdHandlerBase->inputs();
-        for(int i = 0; i < vVin.size(); i++){
+        for (int i = 0; i < vVin.size(); i++) {
             CmdInputDef inDef = vVin[i];
             std::string nameIn = std::string(inDef.getName());
 
             apimd << " * " << inDef.getName() << " - " << inDef.getType() << ", " << inDef.getRestrict() << "; " << inDef.getDescription() << "\n";
 
-            if(pythonTemplate != ""){
+            if (pythonTemplate != "") {
                 pythonTemplate += ", ";
             }
-            if(inDef.isInteger()){
+            if (inDef.isInteger()) {
                 int nVal = 0;
-                if(inDef.getName() == "onpage"){
+                if (inDef.getName() == "onpage") {
                     nVal = 10;
                 }
                 pythonTemplate += "\"" + inDef.getName() + "\": " + std::to_string(nVal);
-            }else{
+            } else {
                 pythonTemplate += "\"" + inDef.getName() + "\": \"\"";
             }
         }
@@ -258,7 +258,7 @@ void ExportLibFHQCliPy::exportAPImd(){
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliPy::export__init__py(){
+void ExportLibFHQCliPy::export__init__py() {
     std::ofstream __init__;
     std::cout << " * write code to libfhqcli-py/libfhqcli/__init__.py " << std::endl;
     __init__.open ("libfhqcli-py/libfhqcli/__init__.py");
@@ -320,7 +320,7 @@ void ExportLibFHQCliPy::export__init__py(){
             .add("# self.__ws.setblocking(0)")
             .add("self.__connecting = False")
             .add("print('[FHQCliThread] Connected')")
-            .sub("while(self.do_run):")
+            .sub("while (self.do_run):")
                 .sub("while not self.__sendCommandQueue.empty():")
                     .add("requestJson = self.__sendCommandQueue.get()")
                     .add("requestText = json.dumps(requestJson)")
@@ -437,7 +437,7 @@ void ExportLibFHQCliPy::export__init__py(){
         .add("");
 
     std::map<std::string, CmdHandlerBase*>::iterator it = g_pCmdHandlers->begin();
-    for (; it!=g_pCmdHandlers->end(); ++it){
+    for (; it!=g_pCmdHandlers->end(); ++it) {
         std::string sCmd = it->first;
         CmdHandlerBase* pCmdHandlerBase = it->second;
         builder
@@ -445,16 +445,16 @@ void ExportLibFHQCliPy::export__init__py(){
         .add("# Acess user " + std::string(pCmdHandlerBase->accessUser() ? "yes" : "no"))
         .add("# Access admin " + std::string(pCmdHandlerBase->accessAdmin() ? "yes" : "no"));
         
-        if(pCmdHandlerBase->activatedFromVersion() != ""){
+        if (pCmdHandlerBase->activatedFromVersion() != "") {
             builder.add("# Activated From Version: " + pCmdHandlerBase->activatedFromVersion());
         }
         
-        if(pCmdHandlerBase->deprecatedFromVersion() != ""){
+        if (pCmdHandlerBase->deprecatedFromVersion() != "") {
             builder.add("# Deprecated From Version: " + pCmdHandlerBase->deprecatedFromVersion());
         }
         
         std::vector<CmdInputDef> vVin = pCmdHandlerBase->inputs();
-        for(int i = 0; i < vVin.size(); i++){
+        for (int i = 0; i < vVin.size(); i++) {
             CmdInputDef inDef = vVin[i];
             std::string nameIn = std::string(inDef.getName());
             builder.add("# " + nameIn + " - " + inDef.getType() + ", " + inDef.getRestrict() + " (" + inDef.getDescription() + ")" );
@@ -466,9 +466,9 @@ void ExportLibFHQCliPy::export__init__py(){
             .add("requestJson = self.__recvThread.generateBaseCommand('" + sCmd + "')");
 
         // check required
-        for(int i = 0; i < vVin.size(); i++){
+        for (int i = 0; i < vVin.size(); i++) {
             CmdInputDef inDef = vVin[i];
-            if(inDef.isRequired()){
+            if (inDef.isRequired()) {
                 std::string nameIn = std::string(vVin[i].getName());
                 builder
                 .sub("if '" + nameIn + "' not in req: ")
@@ -477,7 +477,7 @@ void ExportLibFHQCliPy::export__init__py(){
             }
         }
 
-        for(int i = 0; i < vVin.size(); i++){
+        for (int i = 0; i < vVin.size(); i++) {
             std::string nameIn = std::string(vVin[i].getName());
             builder
             .sub("if '" + nameIn + "' in req: ")

@@ -15,7 +15,7 @@ REGISTRY_EMPLOY(EmployServerConfig)
 // ---------------------------------------------------------------------
 
 EmployServerConfig::EmployServerConfig()
-    : EmployBase(EmployServerConfig::name(), {}){
+    : EmployBase(EmployServerConfig::name(), {}) {
     
     TAG = EmployServerConfig::name();
 
@@ -188,67 +188,67 @@ std::string EmployServerConfig::databaseHost() {
 
 // ---------------------------------------------------------------------
 
-int EmployServerConfig::databasePort(){
+int EmployServerConfig::databasePort() {
     return m_nDatabase_port;
 }
 
 // ---------------------------------------------------------------------
 
-std::string EmployServerConfig::databaseName(){
+std::string EmployServerConfig::databaseName() {
     return m_sDatabase_name;
 }
 
 // ---------------------------------------------------------------------
 
-std::string EmployServerConfig::databaseUser(){
+std::string EmployServerConfig::databaseUser() {
     return m_sDatabase_user;
 }
 
 // ---------------------------------------------------------------------
 
-std::string EmployServerConfig::databasePassword(){
+std::string EmployServerConfig::databasePassword() {
     return m_sDatabase_password;
 }
 
 // ---------------------------------------------------------------------
 
-bool EmployServerConfig::databaseUseMySQL(){
+bool EmployServerConfig::databaseUseMySQL() {
     return m_bDatabase_usemysql;
 }
 
 // ---------------------------------------------------------------------
 
-std::string EmployServerConfig::databasePath(){
+std::string EmployServerConfig::databasePath() {
     return m_sDatabase_path;
 }
 
 // ---------------------------------------------------------------------
 
-bool EmployServerConfig::serverSslOn(){
+bool EmployServerConfig::serverSslOn() {
     return m_bServer_ssl_on;
 }
 
 // ---------------------------------------------------------------------
 
-int EmployServerConfig::serverPort(){
+int EmployServerConfig::serverPort() {
     return m_nServer_port;
 }
 
 // ---------------------------------------------------------------------
 
-int EmployServerConfig::serverSslPort(){
+int EmployServerConfig::serverSslPort() {
     return m_nServer_ssl_port;
 }
 
 // ---------------------------------------------------------------------
 
-std::string EmployServerConfig::serverSslKeyFile(){
+std::string EmployServerConfig::serverSslKeyFile() {
     return m_sServer_ssl_key_file;
 }
 
 // ---------------------------------------------------------------------
 
-std::string EmployServerConfig::serverSslCertFile(){
+std::string EmployServerConfig::serverSslCertFile() {
     return m_sServer_ssl_cert_file;
 }
 

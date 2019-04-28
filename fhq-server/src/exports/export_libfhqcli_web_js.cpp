@@ -35,7 +35,7 @@ public:
         m_sLine = sLine;
     }
 
-    ~JSCodeLine(){
+    ~JSCodeLine() {
         if (m_pParent == nullptr) {
             std::cout << "destruct root \n";
         } else {
@@ -83,23 +83,23 @@ private:
     JSCodeLine *m_pCurr = nullptr;
 
 public:
-    JSCodeBuilder(){
+    JSCodeBuilder() {
         m_pCurr = new JSCodeLine();
     }
 
-    ~JSCodeBuilder(){
+    ~JSCodeBuilder() {
         // std::cout << "destruct something else [" << m_pCurr->getLine() << "]\n";
     }
 
-    JSCodeBuilder &add(const std::string &sLine){
+    JSCodeBuilder &add(const std::string &sLine) {
         m_pCurr->addLine(sLine);
         return *this;
     }
-    JSCodeBuilder &sub(const std::string &sLine){
+    JSCodeBuilder &sub(const std::string &sLine) {
         m_pCurr = m_pCurr->addLine(sLine);
         return *this;
     }
-    JSCodeBuilder &end(){
+    JSCodeBuilder &end() {
         JSCodeLine *p = m_pCurr->getParent();
         if (p != nullptr) {
             m_pCurr = p;
@@ -109,7 +109,7 @@ public:
         return *this;
     }
 
-    void print(std::ofstream &__init__){
+    void print(std::ofstream &__init__) {
         JSCodeLine *pRoot = m_pCurr->findRoot();
         pRoot->print(__init__);
     };
@@ -126,7 +126,7 @@ public:
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliWebJS::exportLib(){
+void ExportLibFHQCliWebJS::exportLib() {
     std::string sBasicDir = "./libfhqcli-web-js";
 
     ExportLibFHQCliWebJS::exportPrepareDirs(sBasicDir);
@@ -208,7 +208,7 @@ void ExportLibFHQCliWebJS::exportPackageJson(const std::string &sBasicDir) {
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliWebJS::exportAPImd(const std::string &sBasicDir){
+void ExportLibFHQCliWebJS::exportAPImd(const std::string &sBasicDir) {
     
     std::ofstream apimd;
     std::cout << " * write file to " + sBasicDir + "/API.md" << std::endl;
@@ -232,12 +232,12 @@ void ExportLibFHQCliWebJS::exportAPImd(const std::string &sBasicDir){
     apimd << "\n";
 
     std::map<std::string, CmdHandlerBase*>::iterator it = g_pCmdHandlers->begin();
-    for (; it!=g_pCmdHandlers->end(); ++it){
+    for (; it!=g_pCmdHandlers->end(); ++it) {
         std::string sCmd = it->first;
         CmdHandlerBase* pCmdHandlerBase = it->second;
         
         apimd << " ## " << sCmd << "\n\n";
-        if(pCmdHandlerBase->description() != ""){
+        if (pCmdHandlerBase->description() != "") {
             apimd << pCmdHandlerBase->description() << "\n\n";
         }
         apimd 
@@ -251,22 +251,22 @@ void ExportLibFHQCliWebJS::exportAPImd(const std::string &sBasicDir){
         std::string pythonTemplate = "";
 
         std::vector<CmdInputDef> vVin = pCmdHandlerBase->inputs();
-        for(int i = 0; i < vVin.size(); i++){
+        for (int i = 0; i < vVin.size(); i++) {
             CmdInputDef inDef = vVin[i];
             std::string nameIn = std::string(inDef.getName());
 
             apimd << " * " << inDef.getName() << " - " << inDef.getType() << ", " << inDef.getRestrict() << "; " << inDef.getDescription() << "\n";
 
-            if(pythonTemplate != ""){
+            if (pythonTemplate != "") {
                 pythonTemplate += ", ";
             }
-            if(inDef.isInteger()){
+            if (inDef.isInteger()) {
                 int nVal = 0;
-                if(inDef.getName() == "onpage"){
+                if (inDef.getName() == "onpage") {
                     nVal = 10;
                 }
                 pythonTemplate += "\"" + inDef.getName() + "\": " + std::to_string(nVal);
-            }else{
+            } else {
                 pythonTemplate += "\"" + inDef.getName() + "\": \"\"";
             }
         }
@@ -326,7 +326,7 @@ void ExportLibFHQCliWebJS::exportSampleHtmlFile(const std::string &sBasicDir) {
         << "</div>\r\n"
         << "<script>\r\n"
         << "    btn_login.onclick = function() {\r\n"
-        << "        fhq.ws.login({email: login.value, password: password.value}).done(function(r){ \r\n"
+        << "        fhq.ws.login({email: login.value, password: password.value}).done(function(r) { \r\n"
         << "            log('Login success, token = ' + r.token);\r\n"
         << "        }).fail(function(e) {\r\n"
         << "            log('Login failed, error = ' + e.error);\r\n"
@@ -342,7 +342,7 @@ void ExportLibFHQCliWebJS::exportSampleHtmlFile(const std::string &sBasicDir) {
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir){
+void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir) {
 
     std::string sFilename = sBasicDir + "/dist/libfhqcli-web.js";
     std::ofstream libfhqcli_web_js_file;
@@ -369,7 +369,7 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
         << "    d.completed = false;\r\n"
         << "    d.failed = false;\r\n"
         << "    d.successed = false;\r\n"
-        << "    d.done = function(callback){\r\n"
+        << "    d.done = function(callback) {\r\n"
         << "        d.done_callback = callback;\r\n"
         << "        if (d.completed && typeof d.done_callback === 'function' && d.successed) {\r\n"
         << "            d.done_callback.apply(this, d.result_arguments);\r\n"
@@ -412,7 +412,7 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
         << "    var p = fhq.ws.promise();\r\n"
         << "    var max_len = arr_promise.length;\r\n"
         << "    var result = [];\r\n"
-        << "    function cmpl(r){\r\n"
+        << "    function cmpl(r) {\r\n"
         << "        result.push(r);\r\n"
         << "        if (result.length == max_len) {\r\n"
         << "            p.resolve(result);\r\n"
@@ -451,12 +451,12 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
         << "fhq.ws.handleCommand = function(response) {\r\n"
         << "	if (fhq.ws.listeners[response.m]) {\r\n"
         << "		if (response['error']) {\r\n"
-        << "			setTimeout(function(){\r\n"
+        << "			setTimeout(function() {\r\n"
         << "				fhq.ws.listeners[response.m].reject(response);\r\n"
         << "				delete fhq.ws.listeners[response.m];\r\n"
         << "			},1);\r\n"
         << "		} else {\r\n"
-        << "			setTimeout(function(){\r\n"
+        << "			setTimeout(function() {\r\n"
         << "				fhq.ws.listeners[response.m].resolve(response);\r\n"
         << "				delete fhq.ws.listeners[response.m];\r\n"
         << "			},1);\r\n"
@@ -510,7 +510,7 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
         << "	window.fhq.ws.socket.onclose = function(event) {\r\n"
         << "		console.log('Closed');\r\n"
         << "		\r\n"
-        << "		if (fhq.ws.onConnectionClose){\r\n"
+        << "		if (fhq.ws.onConnectionClose) {\r\n"
         << "			fhq.ws.onConnectionClose();\r\n"
         << "		}\r\n"
         << "		\r\n"
@@ -518,7 +518,7 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
         << "			fhq.ws._onConnectionState('CLOSED');\r\n"
         << "		} else {\r\n"
         << "			fhq.ws._onConnectionState('BROKEN');\r\n"
-        << "			setTimeout(function(){\r\n"
+        << "			setTimeout(function() {\r\n"
         << "				fhq.ws._onConnectionState('RECONN');\r\n"
         << "				fhq.ws.initWebsocket();\r\n"
         << "			}, 10000);\r\n"
@@ -550,7 +550,7 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
         << "	fhq.ws.listeners[obj.m] = d;\r\n"
         << "	try {\r\n"
         << "		if (fhq.ws.socket.readyState == 0) {\r\n"
-        << "			setTimeout(function(){\r\n"
+        << "			setTimeout(function() {\r\n"
         << "				fhq.ws.send(obj, d);\r\n"
         << "			},1000);\r\n"
         << "		} else {\r\n"
@@ -564,9 +564,9 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
         << "	return d;\r\n"
         << "}\r\n"
         << "fhq.ws.userProfile = {bInitUserProfile: false}\r\n"
-        << "fhq.ws.updateUserProfileAsync = function(){\r\n"
-        << "    setTimeout(function(){\r\n"
-        << "        fhq.ws.user().done(function(r){\r\n"
+        << "fhq.ws.updateUserProfileAsync = function() {\r\n"
+        << "    setTimeout(function() {\r\n"
+        << "        fhq.ws.user().done(function(r) {\r\n"
         << "            fhq.ws.userProfile.bInitUserProfile == true;\r\n"
         << "            fhq.ws.userProfile.university = r.data.university;\r\n"
         << "            fhq.ws.userProfile.country = r.data.country;\r\n"
@@ -578,7 +578,7 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
         << "            fhq.userinfo.role = r.data.role;\r\n"
         << "            fhq.userinfo.logo = r.data.logo;\r\n"
         << "            fhq.ws._onGotUserData();\r\n"
-        << "        }).fail(function(){\r\n"
+        << "        }).fail(function() {\r\n"
         << "            fhq.ws.cleanuptoken();\r\n"
         << "            localStorage.removeItem('userinfo');\r\n"
         << "            fhq.ws._onGotUserData();\r\n"
@@ -588,7 +588,7 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
         << "\r\n";
 
     std::map<std::string, CmdHandlerBase*>::iterator it = g_pCmdHandlers->begin();
-    for (; it!=g_pCmdHandlers->end(); ++it){
+    for (; it!=g_pCmdHandlers->end(); ++it) {
         std::string sCmd = it->first;
         CmdHandlerBase* pCmdHandlerBase = it->second;
 
@@ -597,12 +597,12 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
             << "// Access user: " << (pCmdHandlerBase->accessUser() ? "yes" : "no") << "\r\n"
             << "// Access admin: " << (pCmdHandlerBase->accessAdmin() ? "yes" : "no") << "\r\n";
         
-        if(pCmdHandlerBase->activatedFromVersion() != ""){
+        if (pCmdHandlerBase->activatedFromVersion() != "") {
             libfhqcli_web_js_file 
                 << "// Activated From Version: " << pCmdHandlerBase->activatedFromVersion() << "\r\n";
         }
         
-        if(pCmdHandlerBase->deprecatedFromVersion() != ""){
+        if (pCmdHandlerBase->deprecatedFromVersion() != "") {
             libfhqcli_web_js_file
                 << "// Deprecated From Version: " + pCmdHandlerBase->deprecatedFromVersion() << "\r\n";
         }
@@ -612,7 +612,7 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
             libfhqcli_web_js_file 
                 <<  "// Input params:\r\n"; 
         }
-        for(int i = 0; i < vVin.size(); i++){
+        for (int i = 0; i < vVin.size(); i++) {
             CmdInputDef inDef = vVin[i];
             std::string nameIn = std::string(inDef.getName());
             libfhqcli_web_js_file 
@@ -625,7 +625,7 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
             // check required
         for (int i = 0; i < vVin.size(); i++) {
             CmdInputDef inDef = vVin[i];
-            if(inDef.isRequired()){
+            if (inDef.isRequired()) {
                 std::string nameIn = std::string(vVin[i].getName());
                 libfhqcli_web_js_file 
                     << "    if (!params['" + nameIn + "']) {\r\n"
@@ -636,7 +636,7 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
         if (sCmd == "login") {
             libfhqcli_web_js_file
                 << "    var ret = fhq.ws.promise()\r\n"
-                << "    fhq.ws.send(params).done(function(r){\r\n"
+                << "    fhq.ws.send(params).done(function(r) {\r\n"
                 << "        fhq.ws.tokenValue = r.token;\r\n"
                 << "        console.log(fhq.ws.tokenValue);\r\n"
                 << "        fhq.userinfo = r.user;\r\n"
@@ -644,7 +644,7 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
                 << "        fhq.ws.setTokenToCookie(fhq.ws.tokenValue);\r\n"
                 << "        fhq.ws.updateUserProfileAsync();\r\n"
                 << "        ret.resolve(r);\r\n"
-                << "    }).fail(function(err){\r\n"
+                << "    }).fail(function(err) {\r\n"
                 << "        fhq.ws.cleanuptoken();\r\n"
                 << "        localStorage.removeItem('userinfo');\r\n"
                 << "        fhq.userinfo = {};\r\n"
@@ -656,10 +656,10 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
                 << "    if (fhq.ws.tokenValue && fhq.ws.tokenValue != '') {\r\n"
                 << "        var ret = fhq.ws.promise()\r\n"
                 << "        params.token = fhq.ws.tokenValue;\r\n"
-                << "        fhq.ws.send(params).done(function(r){\r\n"
+                << "        fhq.ws.send(params).done(function(r) {\r\n"
                 << "            fhq.ws.updateUserProfileAsync();\r\n"
                 << "            ret.resolve(r);\r\n"
-                << "        }).fail(function(err){\r\n"
+                << "        }).fail(function(err) {\r\n"
                 << "            fhq.api.cleanuptoken();\r\n"
                 << "            fhq.ws._onGotUserData();\r\n"
                 << "            ret.reject(err);\r\n"

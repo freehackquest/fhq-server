@@ -44,24 +44,14 @@ list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/jobs_pool.h")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/jobs_pool.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/parse_config.h")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/parse_config.cpp")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/storages.h")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/storages.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/validators_base.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/validators_base.h")
 
 # validators
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/validators/validators.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/validators/validators.h")
-
-# interfaces
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/interfaces/iserver.h")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/interfaces/iuser.h")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/interfaces/iusertoken.h")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/interfaces/iwebsocketserver.h")
-
-# storages
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/storage.h")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/storage.cpp")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/storages.h")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/storages/storages.cpp")
 
 # utils
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/logger.h")

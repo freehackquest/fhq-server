@@ -15,7 +15,7 @@
 REGISTRY_CMD(CmdHandlerChatSendMessage)
 
 CmdHandlerChatSendMessage::CmdHandlerChatSendMessage()
-    : CmdHandlerBase("chat_send_message", "Method will be send chat message and it sent to another users"){
+    : CmdHandlerBase("chat_send_message", "Method will be send chat message and it sent to another users") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -27,14 +27,14 @@ CmdHandlerChatSendMessage::CmdHandlerChatSendMessage()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest){
+void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    IUserToken *pUserToken = pRequest->userToken();
+    WSJCppUserSession *pUserSession = pRequest->userSession();
     std::string sUsername = "";
-    if (pUserToken != NULL) {
-        sUsername = pUserToken->nick().toStdString();
+    if (pUserSession != nullptr) {
+        sUsername = pUserSession->nick().toStdString();
     } else {
         sUsername = "Guest";
     }
@@ -82,7 +82,7 @@ void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest){
 REGISTRY_CMD(CmdHandlerChatLastestMessages)
 
 CmdHandlerChatLastestMessages::CmdHandlerChatLastestMessages()
-    : CmdHandlerBase("chat_latest_messages", "Method will be send chat message and it sent to another users"){
+    : CmdHandlerBase("chat_latest_messages", "Method will be send chat message and it sent to another users") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -91,8 +91,8 @@ CmdHandlerChatLastestMessages::CmdHandlerChatLastestMessages()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerChatLastestMessages::handle(ModelRequest *pRequest){
-    auto jsonMessages = nlohmann::json::array();
+void CmdHandlerChatLastestMessages::handle(ModelRequest *pRequest) {
+    nlohmann::json jsonMessages = nlohmann::json::array();
 
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());

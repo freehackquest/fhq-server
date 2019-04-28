@@ -23,7 +23,7 @@
 **********************************************/
 
 CmdHandlerGameCreate::CmdHandlerGameCreate()
-   : CmdHandlerBase("game_create", "Create the game"){
+   : CmdHandlerBase("game_create", "Create the game") {
     
     setActivatedFromVersion("0.2.0");
     
@@ -50,7 +50,7 @@ CmdHandlerGameCreate::CmdHandlerGameCreate()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
+void CmdHandlerGameCreate::handle(ModelRequest *pRequest) {
     EmployGames *pEmployGames = findEmploy<EmployGames>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
@@ -96,7 +96,7 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerGameDelete::CmdHandlerGameDelete()
-    : CmdHandlerBase("game_delete", "Remove game and all quests"){
+    : CmdHandlerBase("game_delete", "Remove game and all quests") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -111,17 +111,16 @@ CmdHandlerGameDelete::CmdHandlerGameDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
-	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-	
+void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
     QString sUuid = jsonRequest["uuid"].toString().trimmed();
     QString sAdminPassword = jsonRequest["admin_password"].toString();
 
-    IUserToken *pUserToken = pRequest->userToken();
-    int nUserID = pUserToken->userid();
+    int nUserID = pRequest->userSession()->userid();
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -130,7 +129,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         QSqlQuery query(db);
         query.prepare("SELECT * FROM users WHERE id = :userid");
         query.bindValue(":userid", nUserID);
-        if(!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
@@ -151,7 +150,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         std::string _sAdminPasswordHash = sha1::calc_string_to_hex(sAdminPasswordHash.toStdString());
         sAdminPasswordHash = QString(_sAdminPasswordHash.c_str());
 
-        if(sAdminPasswordHash != sPass){
+        if (sAdminPasswordHash != sPass) {
             pRequest->sendMessageError(cmd(), Error(401, "Wrong password"));
             return;
         }
@@ -166,15 +165,15 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         query.prepare("SELECT * FROM games WHERE uuid = :uuid");
         query.bindValue(":uuid", sUuid);
 
-        if(!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
 
-        if(!query.next()) {
+        if (!query.next()) {
             pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
             return;
-        }else{
+        } else {
             QSqlRecord record = query.record();
             nGameID = record.value("id").toInt();
             sName = record.value("title").toString().toStdString();
@@ -189,7 +188,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         QSqlQuery query_del(db);
         query_del.prepare("DELETE FROM users_games WHERE gameid = :gameid");
         query_del.bindValue(":gameid", nGameID);
-        if(!query_del.exec()){
+        if (!query_del.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
@@ -200,7 +199,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         QSqlQuery query_del(db);
         query_del.prepare("DELETE FROM users_quests_answers WHERE questid IN (SELECT idquest FROM quest q WHERE q.gameid = :gameid)");
         query_del.bindValue(":gameid", nGameID);
-        if(!query_del.exec()){
+        if (!query_del.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
@@ -211,7 +210,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         QSqlQuery query_del(db);
         query_del.prepare("DELETE FROM users_quests WHERE questid IN (SELECT idquest FROM quest q WHERE q.gameid = :gameid)");
         query_del.bindValue(":gameid", nGameID);
-        if(!query_del.exec()){
+        if (!query_del.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
@@ -222,7 +221,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         QSqlQuery query_del(db);
         query_del.prepare("DELETE FROM quest WHERE gameid = :gameid");
         query_del.bindValue(":gameid", nGameID);
-        if(!query_del.exec()){
+        if (!query_del.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
@@ -233,7 +232,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         QSqlQuery query_del(db);
         query_del.prepare("DELETE FROM games WHERE id = :gameid");
         query_del.bindValue(":gameid", nGameID);
-        if(!query_del.exec()){
+        if (!query_del.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
@@ -245,7 +244,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest){
         EmploySettings *pSettings = findEmploy<EmploySettings>();
         QString sBasePath = pSettings->getSettString(EmploySettings::SERVER_FOLDER_PUBLIC);
         sGameLogoFilename = sBasePath.toStdString() + "games/" + std::to_string(nGameID) + ".png";
-        if( remove( sGameLogoFilename.c_str() ) != 0 ){
+        if (remove( sGameLogoFilename.c_str() ) != 0) {
             Log::err(TAG, "Could not delete file " + sGameLogoFilename);
         }
     }
@@ -276,17 +275,17 @@ CmdHandlerGameExport::CmdHandlerGameExport()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGameExport::handle(ModelRequest *pRequest){
+void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
     // EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     EmployGames *pEmployGames = findEmploy<EmployGames>();
-	
+    
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
     QString sUuid = jsonRequest["uuid"].toString();
 
     ModelGame modelGame;
-    if(!pEmployGames->findGame(sUuid.toStdString(), modelGame)){
+    if (!pEmployGames->findGame(sUuid.toStdString(), modelGame)) {
         pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
         return;
     }
@@ -311,14 +310,14 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest){
     // pack logo
     {
         QFile fileLogo(sGameLogoFilename);
-        if(fileLogo.exists() && fileLogo.open(QIODevice::ReadOnly)){
+        if (fileLogo.exists() && fileLogo.open(QIODevice::ReadOnly)) {
             export_zipfile.open(QIODevice::WriteOnly, QuaZipNewInfo(sUuid.toLower() + ".png"));
             // After .toString(), you should specify a text codec to use to encode the
             // string data into the (binary) file. Here, I use UTF-8:
             QByteArray baLogo = fileLogo.readAll();
             export_zipfile.write(baLogo);
             export_zipfile.close();
-        }else{
+        } else {
             Log::warn(TAG, QString("Logo not found " + sGameLogoFilename).toStdString());
         }
     }
@@ -335,7 +334,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest){
     // preapre zip base64
     {
         QFile fileZip(tmpZipFile);
-        if (!fileZip.open(QIODevice::ReadOnly)){
+        if (!fileZip.open(QIODevice::ReadOnly)) {
             pRequest->sendMessageError(cmd(), Error(500, "Could not open zip file"));
             return;
         }
@@ -369,7 +368,7 @@ CmdHandlerGameImport::CmdHandlerGameImport()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGameImport::handle(ModelRequest *pRequest){
+void CmdHandlerGameImport::handle(ModelRequest *pRequest) {
     // nlohmann::json jsonRequest = pRequest->jsonRequest();
     // nlohmann::json jsonResponse;
 
@@ -387,7 +386,7 @@ void CmdHandlerGameImport::handle(ModelRequest *pRequest){
 
 
 CmdHandlerGameInfo::CmdHandlerGameInfo()
-    : CmdHandlerBase("game_info", "Return game info"){
+    : CmdHandlerBase("game_info", "Return game info") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -400,7 +399,7 @@ CmdHandlerGameInfo::CmdHandlerGameInfo()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGameInfo::handle(ModelRequest *pRequest){
+void CmdHandlerGameInfo::handle(ModelRequest *pRequest) {
     EmployGames *pEmployGames = findEmploy<EmployGames>();
 
     QJsonObject jsonRequest = pRequest->data();
@@ -409,7 +408,7 @@ void CmdHandlerGameInfo::handle(ModelRequest *pRequest){
     QString sUuid = jsonRequest["uuid"].toString().trimmed();
 
     ModelGame modelGame;
-    if(!pEmployGames->findGame(sUuid.toStdString(), modelGame)){
+    if (!pEmployGames->findGame(sUuid.toStdString(), modelGame)) {
         pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
         return;
     }
@@ -423,7 +422,7 @@ void CmdHandlerGameInfo::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerGameUpdate::CmdHandlerGameUpdate()
-    : CmdHandlerBase("game_update", "Update game info"){
+    : CmdHandlerBase("game_update", "Update game info") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -446,14 +445,14 @@ CmdHandlerGameUpdate::CmdHandlerGameUpdate()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
+void CmdHandlerGameUpdate::handle(ModelRequest *pRequest) {
     EmployGames *pEmployGames = findEmploy<EmployGames>();
 
     ModelGame updatedModelGame;
     updatedModelGame.fillFrom(pRequest->jsonRequest());
 
     ModelGame modelGame;
-    if(!pEmployGames->findGame(updatedModelGame.uuid(), modelGame)){
+    if (!pEmployGames->findGame(updatedModelGame.uuid(), modelGame)) {
         pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
         return;
     }
@@ -498,7 +497,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest){
 
 
 CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
-    : CmdHandlerBase("game_update_logo", "Update game logo"){
+    : CmdHandlerBase("game_update_logo", "Update game logo") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -513,12 +512,12 @@ CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
+void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
     EmployGames *pEmployGames = findEmploy<EmployGames>();
 
     ModelGame modelGame;
     modelGame.fillFrom(pRequest->jsonRequest());
-    if(!pEmployGames->findGame(modelGame.uuid(), modelGame)){
+    if (!pEmployGames->findGame(modelGame.uuid(), modelGame)) {
         pRequest->sendMessageError(cmd(), Error(404, "Game not found"));
         return;
     }
@@ -562,14 +561,14 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
 
     std::string targetImageFile = sFilename.toStdString();
     // Log::info(TAG, "targetImageFile " + targetImageFile);
-    if(!pImages->doThumbnailImagePng(sSourceImageFile, targetImageFile, 100, 100)){
+    if (!pImages->doThumbnailImagePng(sSourceImageFile, targetImageFile, 100, 100)) {
         pRequest->sendMessageError(cmd(), Error(400, "Could not decode bytearray to png"));
         // cleanup - redesign try finnaly
         remove( sSourceImageFile.c_str());
         return;
     }
 
-    if( remove( sSourceImageFile.c_str() ) != 0 ){
+    if (remove(sSourceImageFile.c_str()) != 0) {
         Log::err(TAG, "Could not delete file " + sSourceImageFile);
     }
 
@@ -588,7 +587,7 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest){
 
 
 CmdHandlerGames::CmdHandlerGames()
-    : CmdHandlerBase("games", "Method returned list of games"){
+    : CmdHandlerBase("games", "Method returned list of games") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -601,9 +600,9 @@ CmdHandlerGames::CmdHandlerGames()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGames::handle(ModelRequest *pRequest){
-	EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-	
+void CmdHandlerGames::handle(ModelRequest *pRequest) {
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
@@ -611,14 +610,14 @@ void CmdHandlerGames::handle(ModelRequest *pRequest){
 
     QString base_url = pSettings->getSettString("server_folder_public_url") + "games/";
 
-    auto jsonGames = nlohmann::json::array();
+    nlohmann::json jsonGames = nlohmann::json::array();
 
     QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
     query.prepare("SELECT * FROM games ORDER BY games.date_start");
 
-    if(!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }

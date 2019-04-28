@@ -15,7 +15,7 @@ const std::string &JobAsync::name() {
 
 // ---------------------------------------------------------------------
 
-JobAsync *JobAsyncDeque::pop(){
+JobAsync *JobAsyncDeque::pop() {
     std::lock_guard<std::mutex> guard(this->m_mtxJobsAsyncDeque);
     JobAsync *pJobAsync = nullptr;
     int nSize = m_dequeJobsAsync.size();
@@ -28,7 +28,7 @@ JobAsync *JobAsyncDeque::pop(){
 
 // ----------------------------------------------------------------------
 
-void JobAsyncDeque::push(JobAsync *pJobAsync){
+void JobAsyncDeque::push(JobAsync *pJobAsync) {
     std::lock_guard<std::mutex> guard(this->m_mtxJobsAsyncDeque);
     if (m_dequeJobsAsync.size() > 20) {
         Log::warn(TAG, " deque more than " + std::to_string(m_dequeJobsAsync.size()));
@@ -38,7 +38,7 @@ void JobAsyncDeque::push(JobAsync *pJobAsync){
 
 // ----------------------------------------------------------------------
 
-void JobAsyncDeque::cleanup(){
+void JobAsyncDeque::cleanup() {
     std::lock_guard<std::mutex> guard(this->m_mtxJobsAsyncDeque);
     while (m_dequeJobsAsync.size() > 0) {
         delete m_dequeJobsAsync.back();
@@ -95,7 +95,7 @@ bool JobsThreadWorker::isBuzy() {
 // ----------------------------------------------------------------------
 
 void JobsThreadWorker::run() {
-    while(1) {
+    while (1) {
         if (m_bStop) {
             m_bBuzy = false;
             return;
@@ -201,7 +201,7 @@ void JobsPool::waitForDone() {
     // TODO when job in progress need wait deque for progress jobs ?
     JobsPool::initGlobalVariables();
     bool bBuzy = true;
-    while(bBuzy) {
+    while (bBuzy) {
         bBuzy = false;
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         if (!g_pJobsFastPool->isEmpty()) {

@@ -2,17 +2,17 @@
 #define UPDATE_USER_LOCATION_TASK_H
 
 #include <QRunnable>
-#include <iserver.h>
+#include <string>
 
 class UpdateUserLocationTask : public QRunnable {
     
     void run();
     public:
-        UpdateUserLocationTask(int userid, QString lastip);
+        UpdateUserLocationTask(int userid, const std::string &sLastIP);
         ~UpdateUserLocationTask();
     private:
         int m_nUserID;
-        QString mLastIP;
+        std::string m_sLastIP;
         std::string TAG;
         
 };
