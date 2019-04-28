@@ -95,6 +95,8 @@ evil_pieces = {
 # TODO: check the more then one space
 # TODO: { before must be one space
 # TODO: if () {
+# TODO: check start method like get/set/is/do etc... and check camalCase name of methods/functions
+
 def check_line_tabs(filepath, line_number, l):
     global warnings
     global evil_pieces
