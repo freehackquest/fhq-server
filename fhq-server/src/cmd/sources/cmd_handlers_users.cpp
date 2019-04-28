@@ -1583,7 +1583,78 @@ CmdHandlerUsersRegistration::CmdHandlerUsersRegistration()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
+    const auto &jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
+
+    QString sEmail = QString::fromStdString(jsonRequest.at("email"));
+    QString sUniversity = QString::fromStdString(jsonRequest.at("university"));
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM users WHERE email = :email");
+    query.bindValue(":email", sEmail);
+    if(!query.exec()){
+        Log::err(TAG, query.lastError().text().toStdString());
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        return;
+    }
+    if (query.next()) {
+        Log::err(TAG, "User already exists " + sEmail.toStdString());
+        pRequest->sendMessageError(cmd(), Error(403, "This email already exists"));
+        return;
+    }
+
+    // generate a verification code
+    const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+    const int randomStringLength = 6; 
+    QString sCode;
+    for(int i=0; i<randomStringLength; ++i){
+        int index = qrand() % possibleCharacters.length();
+        QChar nextChar = possibleCharacters.at(index);
+        sCode.append(nextChar);
+    }
+
+    QString sCode_sha1 = sEmail.toUpper() + sCode;
+    std::string _code_sha1 = sha1::calc_string_to_hex(sCode_sha1.toStdString());
+    sCode_sha1 = QString(_code_sha1.c_str()); 
+    
+    QSqlQuery query_insert(db);
+    query_insert.prepare(""
+                         "INSERT INTO user_requests ("
+                         "   email, "
+                         "   type, "
+                         "   code, "
+                         "   dt, "
+                         "   data) "
+                         "VALUES("
+                         "   :email, "
+                         "   :type, "
+                         "   :code, "
+                         "   NOW(), "
+                         "   :data); "
+    );
+
+    query_insert.bindValue(":email", sEmail);
+    query_insert.bindValue(":type", "registration");
+    query_insert.bindValue(":code", sCode_sha1);
+    query_insert.bindValue(":data", "");
+
+    if(!query_insert.exec()){
+        pRequest->sendMessageError(cmd(), Error(500, query_insert.lastError().text().toStdString()));
+        return;
+    }
+
+    std::string sSubject = "Registration on FreeHackQuest";
+    std::string sContext = "Welcome to FreeHackQuest!\n"
+                       "To confirm registration, enter the following code "
+                       "into the appropriate form on the website.\n"
+                       "Your code: " + sCode.toStdString() + "\n";
+
+    RunTasks::MailSend(sEmail.toStdString(), sSubject, sContext);
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 /*********************************************
