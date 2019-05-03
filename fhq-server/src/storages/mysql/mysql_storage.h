@@ -26,13 +26,12 @@ class MySqlStorage : public Storage {
         virtual bool applyConfigFromFile(const std::string &sFilePath);
         virtual StorageConnection *connect();
         virtual void clean();
-        virtual std::vector<std::string> prepareSqlQueries(StorageStruct &storageStruct);
         virtual std::vector<std::string> prepareSqlQueries(const StorageInsert &storageInsert);
         virtual std::vector<std::string> prepareSqlQueries(const StorageCreateTable &storageCreateTable);
         virtual std::string prepareStringValue(const std::string &sValue);
         
     private:
-        std::string generateLineColumnForSql(StorageStructColumn &c);
+        std::string generateLineColumnForSql(StorageColumnDef &c);
         std::string TAG;
         std::string m_sDatabaseHost;
         std::string m_sDatabaseName;

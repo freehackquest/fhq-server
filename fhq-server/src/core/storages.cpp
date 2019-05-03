@@ -4,13 +4,13 @@
 #include <fallen.h>
 
 // ***********************
-// *** StorageStructColumn
+// *** StorageColumnDef
 // ***********************
 
 // ---------------------------------------------------------------------
 
-StorageStructColumn::StorageStructColumn(const std::string &sColumnName) {
-    TAG = "StorageStructColumn_" + sColumnName;
+StorageColumnDef::StorageColumnDef(const std::string &sColumnName) {
+    TAG = "StorageColumnDef_" + sColumnName;
     // TODO validate column name
 
     m_sColumnName = sColumnName;
@@ -26,21 +26,21 @@ StorageStructColumn::StorageStructColumn(const std::string &sColumnName) {
 
 // ---------------------------------------------------------------------
 
-StorageStructColumn &StorageStructColumn::autoIncrement() {
+StorageColumnDef &StorageColumnDef::autoIncrement() {
     m_bAutoIncrement = true;
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-StorageStructColumn &StorageStructColumn::notNull() {
+StorageColumnDef &StorageColumnDef::notNull() {
     m_bNotNull = true;
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-StorageStructColumn &StorageStructColumn::string(int nValue) {
+StorageColumnDef &StorageColumnDef::string(int nValue) {
     if (m_sType != "") {
         Log::err(TAG, "Datatype already defined: " + m_sType);
         return *this;
@@ -52,7 +52,7 @@ StorageStructColumn &StorageStructColumn::string(int nValue) {
 
 // ---------------------------------------------------------------------
 
-StorageStructColumn &StorageStructColumn::text() {
+StorageColumnDef &StorageColumnDef::text() {
     if (m_sType != "") {
         Log::err(TAG, "Datatype already defined: " + m_sType);
         return *this;
@@ -63,7 +63,7 @@ StorageStructColumn &StorageStructColumn::text() {
 
 // ---------------------------------------------------------------------
 
-StorageStructColumn &StorageStructColumn::datetime() {
+StorageColumnDef &StorageColumnDef::datetime() {
     if (m_sType != "") {
         Log::err(TAG, "Datatype already defined: " + m_sType);
         return *this;
@@ -74,7 +74,7 @@ StorageStructColumn &StorageStructColumn::datetime() {
 
 // ---------------------------------------------------------------------
 
-StorageStructColumn &StorageStructColumn::number() {
+StorageColumnDef &StorageColumnDef::number() {
     if (m_sType != "") {
         Log::err(TAG, "Datatype already defined: " + m_sType);
         return *this;
@@ -85,7 +85,7 @@ StorageStructColumn &StorageStructColumn::number() {
 
 // ---------------------------------------------------------------------
 
-StorageStructColumn &StorageStructColumn::doubleNumber() {
+StorageColumnDef &StorageColumnDef::doubleNumber() {
     if (m_sType != "") {
         Log::err(TAG, "Datatype already defined: " + m_sType);
         return *this;
@@ -97,14 +97,14 @@ StorageStructColumn &StorageStructColumn::doubleNumber() {
 
 // ---------------------------------------------------------------------
 
-StorageStructColumn &StorageStructColumn::primaryKey() {
+StorageColumnDef &StorageColumnDef::primaryKey() {
     m_bPrimaryKey = true;
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-StorageStructColumn &StorageStructColumn::defaultValue(const std::string& sDefaultValue) {
+StorageColumnDef &StorageColumnDef::defaultValue(const std::string& sDefaultValue) {
     m_sDefaultValue = sDefaultValue;
     m_bDefaultValue = true;
     return *this;
@@ -112,14 +112,14 @@ StorageStructColumn &StorageStructColumn::defaultValue(const std::string& sDefau
 
 // ---------------------------------------------------------------------
 
-StorageStructColumn &StorageStructColumn::enableIndex() {
+StorageColumnDef &StorageColumnDef::enableIndex() {
     m_bEnableIndex = true;
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-StorageStructColumn &StorageStructColumn::enableUniqueIndex(const std::string& sIndexName) {
+StorageColumnDef &StorageColumnDef::enableUniqueIndex(const std::string& sIndexName) {
     m_sNameOfUniqueIndex = sIndexName;
     m_bEnableUniqueIndex = true;
     return *this;
@@ -127,67 +127,67 @@ StorageStructColumn &StorageStructColumn::enableUniqueIndex(const std::string& s
 
 // ---------------------------------------------------------------------
 
-std::string StorageStructColumn::columnName() {
+std::string StorageColumnDef::columnName() {
     return m_sColumnName;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageStructColumn::columnType() {
+std::string StorageColumnDef::columnType() {
     return m_sType;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageStructColumn::columnDefaultValue() {
+std::string StorageColumnDef::columnDefaultValue() {
     return m_sDefaultValue;
 }
 
 // ---------------------------------------------------------------------
 
-bool StorageStructColumn::isDefaultValue() {
+bool StorageColumnDef::isDefaultValue() {
     return m_bDefaultValue;
 }
 
 // ---------------------------------------------------------------------
 
-int StorageStructColumn::columnTypeSize() {
+int StorageColumnDef::columnTypeSize() {
     return m_nTypeSize;
 }
 
 // ---------------------------------------------------------------------
 
-bool StorageStructColumn::isAutoIncrement() {
+bool StorageColumnDef::isAutoIncrement() {
     return m_bAutoIncrement;
 }
 
 // ---------------------------------------------------------------------
 
-bool StorageStructColumn::isPrimaryKey() {
+bool StorageColumnDef::isPrimaryKey() {
     return m_bPrimaryKey;
 }
 
 // ---------------------------------------------------------------------
 
-bool StorageStructColumn::isNotNull() {
+bool StorageColumnDef::isNotNull() {
     return m_bNotNull;
 }
 
 // ---------------------------------------------------------------------
 
-bool StorageStructColumn::isEnableIndex() {
+bool StorageColumnDef::isEnableIndex() {
     return m_bEnableIndex;
 }
 
 // ---------------------------------------------------------------------
 
-bool StorageStructColumn::isEnableUniqueIndex() {
+bool StorageColumnDef::isEnableUniqueIndex() {
     return m_bEnableUniqueIndex;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageStructColumn::nameOfUniqueIndex() {
+std::string StorageColumnDef::nameOfUniqueIndex() {
     return m_sNameOfUniqueIndex;
 }
 
@@ -272,7 +272,7 @@ std::string StorageCreateTable::getAppliedFailed() const {
 
 // ---------------------------------------------------------------------
 
-StorageStructColumn &StorageCreateTable::addColumn(const std::string &sColumnName) {
+StorageColumnDef &StorageCreateTable::addColumn(const std::string &sColumnName) {
     for (int i = 0; i < m_vColumns.size(); i++) {
         if (m_vColumns[i].columnName() == sColumnName) {
             std::string sError = "Column '" + sColumnName + "' in table '" + m_sTableName + "' already exists";
@@ -280,14 +280,107 @@ StorageStructColumn &StorageCreateTable::addColumn(const std::string &sColumnNam
             throw std::runtime_error(sError);
         }
     }
-    m_vColumns.push_back(StorageStructColumn(sColumnName));
+    m_vColumns.push_back(StorageColumnDef(sColumnName));
     return m_vColumns[m_vColumns.size()-1];
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<StorageStructColumn> &StorageCreateTable::getColumns() const {
+const std::vector<StorageColumnDef> &StorageCreateTable::getColumns() const {
     return m_vColumns;
+}
+
+
+// ---------------------------------------------------------------------
+
+// ***********************
+// *** StorageModifyTable
+// ***********************
+
+StorageModifyTable::StorageModifyTable(const std::string &sTableName) 
+    : StorageChanges(sTableName) {
+    TAG = "StorageModifyTable";
+    // TODO validate table of name
+}
+
+// ---------------------------------------------------------------------
+
+StorageChangesType StorageModifyTable::getType() const {
+    return StorageChangesType::MODIFY_TABLE;
+};
+
+// ---------------------------------------------------------------------
+
+std::string StorageModifyTable::getStartApply() const {
+    return "Creating table " + m_sTableName;
+}
+
+// ---------------------------------------------------------------------
+
+std::string StorageModifyTable::getAppliedSuccess() const {
+    return "Created table " +  m_sTableName;
+}
+
+// ---------------------------------------------------------------------
+
+std::string StorageModifyTable::getAppliedFailed() const {
+    return "Could not create table " +  m_sTableName;
+}
+
+// ---------------------------------------------------------------------
+
+StorageColumnDef &StorageModifyTable::addColumn(const std::string &sColumnName) {
+    for (int i = 0; i < m_vColumns.size(); i++) {
+        if (m_vColumns[i].columnName() == sColumnName) {
+            std::string sError = "Column '" + sColumnName + "' in table '" + m_sTableName + "' already exists";
+            Log::err(TAG, sError);
+            throw std::runtime_error(sError);
+        }
+    }
+    m_vColumns.push_back(StorageColumnDef(sColumnName));
+    return m_vColumns[m_vColumns.size()-1];
+}
+
+// ---------------------------------------------------------------------
+
+const std::vector<StorageColumnDef> &StorageModifyTable::getColumns() const {
+    return m_vColumns;
+}
+
+// ---------------------------------------------------------------------
+
+// ***********************
+// *** StorageDropTable
+// ***********************
+
+StorageDropTable::StorageDropTable(const std::string &sTableName) 
+    : StorageChanges(sTableName) {
+    TAG = "StorageDropTable";
+    // TODO validate table of name
+}
+
+// ---------------------------------------------------------------------
+
+StorageChangesType StorageDropTable::getType() const {
+    return StorageChangesType::DROP_TABLE;
+};
+
+// ---------------------------------------------------------------------
+
+std::string StorageDropTable::getStartApply() const {
+    return "Dropping table " + m_sTableName;
+}
+
+// ---------------------------------------------------------------------
+
+std::string StorageDropTable::getAppliedSuccess() const {
+    return "Dropped table " +  m_sTableName;
+}
+
+// ---------------------------------------------------------------------
+
+std::string StorageDropTable::getAppliedFailed() const {
+    return "Could not drop table " +  m_sTableName;
 }
 
 // ---------------------------------------------------------------------
@@ -297,6 +390,7 @@ const std::vector<StorageStructColumn> &StorageCreateTable::getColumns() const {
 // ***********************
 
 // ---------------------------------------------------------------------
+/*
 
 StorageStruct::StorageStruct(const std::string &sTableName, StorageStructTableMode nMode) {
     m_sTableName = sTableName;
@@ -328,7 +422,7 @@ StorageStructTableMode StorageStruct::mode() const {
 
 // ---------------------------------------------------------------------
 
-bool StorageStruct::addColumn(StorageStructColumn &column) {
+bool StorageStruct::addColumn(StorageColumnDef &column) {
     if (m_nMode == StorageStructTableMode::DROP) {
         Log::err(TAG, "addColumn not allowed for a drop mode");
         return false;
@@ -340,7 +434,7 @@ bool StorageStruct::addColumn(StorageStructColumn &column) {
 
 // ---------------------------------------------------------------------
 
-bool StorageStruct::alterColumn(StorageStructColumn &column) {
+bool StorageStruct::alterColumn(StorageColumnDef &column) {
     if (m_nMode == StorageStructTableMode::DROP) {
         Log::err(TAG, "alterColumn not allowed for a drop mode");
         return false;
@@ -374,14 +468,14 @@ bool StorageStruct::dropColumn(const std::string &sColumnName) {
 
 // ---------------------------------------------------------------------
 
-const std::vector<StorageStructColumn> &StorageStruct::listAddColumns() const {
+const std::vector<StorageColumnDef> &StorageStruct::listAddColumns() const {
     return m_vAddColumns;
 }
 
 // ---------------------------------------------------------------------
 
 
-const std::vector<StorageStructColumn> &StorageStruct::listAlterColumns() const {
+const std::vector<StorageColumnDef> &StorageStruct::listAlterColumns() const {
     return m_vAlterColumns;
 }
 
@@ -428,10 +522,10 @@ bool StorageStruct::mergeWith(const StorageStruct &storageStruct) {
     }
 
     // TODO check indexes
-    std::vector<StorageStructColumn> vAddColumns = storageStruct.listAddColumns();
+    std::vector<StorageColumnDef> vAddColumns = storageStruct.listAddColumns();
     for (int i = 0; i < vAddColumns.size(); i++) {
         bool bFound = false;
-        StorageStructColumn c = vAddColumns[i];
+        StorageColumnDef c = vAddColumns[i];
         for (int i = 0; i < m_vAddColumns.size(); i++) {
             if (m_vAddColumns[i].columnName() == c.columnName()) {
                 bFound = true;
@@ -446,10 +540,10 @@ bool StorageStruct::mergeWith(const StorageStruct &storageStruct) {
     }
 
     // TODO check indexes
-    std::vector<StorageStructColumn> vAlterColumns = storageStruct.listAlterColumns();
+    std::vector<StorageColumnDef> vAlterColumns = storageStruct.listAlterColumns();
     for (int i = 0; i < vAlterColumns.size(); i++) {
         bool bFound = false;
-        StorageStructColumn c = vAlterColumns[i];
+        StorageColumnDef c = vAlterColumns[i];
         for (int i = 0; i < m_vAddColumns.size(); i++) {
             if (m_vAddColumns[i].columnName() == c.columnName()) {
                 if (m_vAddColumns[i].isEnableIndex()) {
@@ -467,6 +561,7 @@ bool StorageStruct::mergeWith(const StorageStruct &storageStruct) {
 
     return true;
 }
+*/
 
 // ---------------------------------------------------------------------
 
@@ -474,7 +569,7 @@ bool StorageStruct::mergeWith(const StorageStruct &storageStruct) {
 // *** StorageColumnValue
 // ***********************
 
-StorageColumnValue::StorageColumnValue(const std::string &sColumnName, StorageStructColumnType nType) {
+StorageColumnValue::StorageColumnValue(const std::string &sColumnName, StorageColumnType nType) {
     m_sColumnName = sColumnName;
     m_nColumnType = nType;
 }
@@ -505,7 +600,7 @@ std::string StorageColumnValue::getColumnName() {
 
 // ---------------------------------------------------------------------
 
-StorageStructColumnType StorageColumnValue::getColumnType() {
+StorageColumnType StorageColumnValue::getColumnType() {
     return m_nColumnType;
 }
 
@@ -551,7 +646,7 @@ void StorageInsert::bindValue(const std::string &sColumnName, const std::string 
         Log::warn(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
         return;
     }
-    StorageColumnValue val(sColumnName, StorageStructColumnType::STRING);
+    StorageColumnValue val(sColumnName, StorageColumnType::STRING);
     val.setValue(sValue);
     m_vValues.push_back(val);
 }
@@ -563,7 +658,7 @@ void StorageInsert::bindValue(const std::string &sColumnName, int nValue) {
         Log::warn(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
         return;
     }
-    StorageColumnValue val(sColumnName, StorageStructColumnType::NUMBER);
+    StorageColumnValue val(sColumnName, StorageColumnType::NUMBER);
     val.setValue(nValue);
     m_vValues.push_back(val);
 }
@@ -575,7 +670,7 @@ void StorageInsert::bindValue(const std::string &sColumnName, double nValue) {
         Log::warn(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
         return;
     }
-    StorageColumnValue val(sColumnName, StorageStructColumnType::DOUBLE_NUMBER);
+    StorageColumnValue val(sColumnName, StorageColumnType::DOUBLE_NUMBER);
     val.setValue(nValue);
     m_vValues.push_back(val);
 }
@@ -599,13 +694,13 @@ bool StorageInsert::exists(const std::string &sColumnName) {
 
 // ---------------------------------------------------------------------
 
-bool StorageInsert::isValid(const StorageStruct &storageStruct) const {
-    if (storageStruct.tableName() != m_sTableName) {
-        Log::err(TAG, "Expeceted '" + m_sTableName + "', but got '" + storageStruct.tableName() + "'");
+bool StorageInsert::isValid(const StorageTable &storageTable) const {
+    if (storageTable.getTableName() != m_sTableName) {
+        Log::err(TAG, "Expeceted '" + m_sTableName + "', but got '" + storageTable.getTableName() + "'");
         return false;
     }
 
-    std::vector<StorageStructColumn> vColumns = storageStruct.listAddColumns();
+    std::vector<StorageColumnDef> vColumns = storageTable.getColumns();
     std::vector<std::string> vCurrentColumns;
     
     for (int x = 0; x < m_vValues.size(); x++) {
@@ -613,16 +708,16 @@ bool StorageInsert::isValid(const StorageStruct &storageStruct) const {
         StorageColumnValue val = m_vValues[x];
         vCurrentColumns.push_back(val.getColumnName());
         for (int y = 0; y < vColumns.size(); y++) {
-            StorageStructColumn st = vColumns[y];
+            StorageColumnDef st = vColumns[y];
             if (st.columnName() == val.getColumnName()) {
-                if (val.getColumnType() == StorageStructColumnType::STRING
+                if (val.getColumnType() == StorageColumnType::STRING
                     && (st.columnType() == "string" || st.columnType() == "datetime" || st.columnType() == "text")) {
                     bFound = true;
                     break;
-                } else if (val.getColumnType() == StorageStructColumnType::NUMBER && st.columnType() == "number") {
+                } else if (val.getColumnType() == StorageColumnType::NUMBER && st.columnType() == "number") {
                     bFound = true;
                     break;
-                } else if (val.getColumnType() == StorageStructColumnType::DOUBLE_NUMBER && st.columnType() == "doubleNumber") {
+                } else if (val.getColumnType() == StorageColumnType::DOUBLE_NUMBER && st.columnType() == "doubleNumber") {
                     bFound = true;
                     break;
                 } else {
@@ -704,14 +799,27 @@ StorageTable::StorageTable(const std::string &sTableName) {
 
 // ---------------------------------------------------------------------
 
-const std::vector<StorageStructColumn> &StorageTable::getColumns() const {
+std::string StorageTable::getTableName() const {
+    return m_sTableName;
+}
+
+// ---------------------------------------------------------------------
+
+const std::vector<StorageColumnDef> &StorageTable::getColumns() const {
     return m_vColumns;
+}
+
+// ---------------------------------------------------------------------
+// temporary
+
+void StorageTable::addColumn(const StorageColumnDef &c) {
+    m_vColumns.push_back(c);
 }
 
 // ---------------------------------------------------------------------
 
 void StorageTable::mergeWith(StorageCreateTable &createTable) {
-    const std::vector<StorageStructColumn> &list = createTable.getColumns();
+    const std::vector<StorageColumnDef> &list = createTable.getColumns();
     for (int i = 0; i < list.size(); i++) {
         m_vColumns.push_back(list[i]);
     }
@@ -761,30 +869,35 @@ Storage::Storage() {
 
 // ---------------------------------------------------------------------
 // TODO: deprecated
-
+/*
 bool Storage::addStruct(StorageStruct &storageStruct) {
     std::string sTableName = storageStruct.tableName();
-    std::map<std::string,StorageStruct>::iterator it = m_mapStructs.find(sTableName);
+    std::map<std::string,StorageTable>::iterator it = m_mapTables.find(sTableName);
 
     if (storageStruct.mode() == StorageStructTableMode::CREATE) {
-        if (it != m_mapStructs.end()) {
+        if (it != m_mapTables.end()) {
             Log::err(TAG, "Struct '" + sTableName + "' already defined");
             Log::warn(TAG, "TODO need drop table");
             return false;
         }
-        m_mapStructs.insert( std::pair<std::string,StorageStruct>(sTableName,storageStruct) );
+        StorageTable table(sTableName);
+        const std::vector<StorageColumnDef> columns = storageStruct.listAddColumns();
+        for(int i = 0; i < columns.size(); i++) {
+            table.addColumn(columns[i]);
+        }
+        m_mapTables.insert(std::pair<std::string,StorageTable>(sTableName, table));
     } else  if (storageStruct.mode() == StorageStructTableMode::ALTER) {
-        if (it == m_mapStructs.end()) {
+        if (it == m_mapTables.end()) {
             Log::err(TAG, "Not found table '" + sTableName + "'");
             return false;
         }
-        m_mapStructs.find(sTableName)->second.mergeWith(storageStruct);
+        m_mapTables.find(sTableName)->second.mergeWith(storageStruct);
     } else if (storageStruct.mode() == StorageStructTableMode::DROP) {
-        if (it == m_mapStructs.end()) {
+        if (it == m_mapTables.end()) {
             Log::err(TAG, "Not found table '" + sTableName + "'");
             return false;
         }
-        m_mapStructs.erase(sTableName);
+        m_mapTables.erase(sTableName);
     } else {
         Log::err(TAG, "Unknown operation with table");
         std::runtime_error("Unknown operation with table");
@@ -792,10 +905,11 @@ bool Storage::addStruct(StorageStruct &storageStruct) {
     }
     return true;
 }
-
+*/
 // ---------------------------------------------------------------------
 // TODO: deprecated
 
+/*
 bool Storage::applyStruct(StorageConnection *pConn, StorageStruct &storageStruct) {
     std::string sTableName = storageStruct.tableName();
     std::string sStartApply = "";
@@ -834,7 +948,7 @@ bool Storage::applyStruct(StorageConnection *pConn, StorageStruct &storageStruct
     Log::ok(TAG, sAppliedSuccess);
     return true;
 }
-
+*/
 // ---------------------------------------------------------------------
 
 bool Storage::addStorageChanges(StorageChanges &storageChanges) {
@@ -892,8 +1006,8 @@ bool Storage::executeStorageChanges(StorageConnection *pConn, StorageChanges &st
 bool Storage::insertRow(StorageConnection *pConn, const StorageInsert &storageInsert) {
 
     std::string sTableName = storageInsert.tableName();
-    std::map<std::string,StorageStruct>::iterator it = m_mapStructs.find(sTableName);
-    if (it == m_mapStructs.end()) {
+    std::map<std::string, StorageTable>::iterator it = m_mapTables.find(sTableName);
+    if (it == m_mapTables.end()) {
         Log::err(TAG, "Struct '" + sTableName + "' not found");
         return false;
     }
@@ -914,8 +1028,8 @@ bool Storage::insertRow(StorageConnection *pConn, const StorageInsert &storageIn
 
 // ---------------------------------------------------------------------
 
-const std::map<std::string, StorageStruct> &Storage::storageStruct() {
-    return m_mapStructs;
+const std::map<std::string, StorageTable> &Storage::getTables() {
+    return m_mapTables;
 }
 
 // ---------------------------------------------------------------------
@@ -1012,27 +1126,41 @@ const std::string &StorageUpdateBase::description() {
 
 // ---------------------------------------------------------------------
 
-// TODO deprecated
-const std::vector<StorageStruct> &StorageUpdateBase::listOfStructChanges() {
-    return m_vStructChanges;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<StorageChanges> &StorageUpdateBase::getListChanges() {
+const std::vector<StorageChanges *> &StorageUpdateBase::getChanges() {
     return m_vStorageChanges;
 }
 
 // ---------------------------------------------------------------------
 
-void StorageUpdateBase::add(StorageStruct st) {
-    m_vStructChanges.push_back(st);
+StorageCreateTable *StorageUpdateBase::createTable(std::string sTableName) {
+    checkTableName(sTableName);
+    StorageCreateTable *pCreateTable = new StorageCreateTable(sTableName);
+    m_vStorageChanges.push_back(pCreateTable);
+    return pCreateTable;
 }
 
 // ---------------------------------------------------------------------
 
-void StorageUpdateBase::addStorageChanges(const StorageChanges &st) {
-    m_vStorageChanges.push_back(st);
+StorageModifyTable *StorageUpdateBase::modifyTable(std::string sTableName) {
+    checkTableName(sTableName);
+    StorageModifyTable *pModifyTable = new StorageModifyTable(sTableName);
+    m_vStorageChanges.push_back(pModifyTable);
+    return pModifyTable;
+}
+
+// ---------------------------------------------------------------------
+
+StorageDropTable *StorageUpdateBase::dropTable(std::string sTableName) {
+    checkTableName(sTableName);
+    StorageDropTable *pDropTable = new StorageDropTable(sTableName);
+    m_vStorageChanges.push_back(pDropTable);
+    return pDropTable;
+}
+
+// ---------------------------------------------------------------------
+
+void StorageUpdateBase::checkTableName(std::string sTableName) {
+    // TODO check table name + runtime error
 }
 
 // ---------------------------------------------------------------------
@@ -1092,36 +1220,24 @@ bool StorageUpdates::apply(Storage *pStorage) {
                 bHasUpdates = true;
                 std::string error = "";
 
-                // TODO: Apply struct - deprecated
-                std::vector<StorageStruct> vStructChanges = pUpdate->listOfStructChanges();
-                for (int i = 0; i < vStructChanges.size(); i++) {
-                    StorageStruct st = vStructChanges[i];
-                    if (!pStorage->addStruct(st)) {
-                        error = " Problem with add struct '" + st.tableName() + "'";
-                        Log::err(TAG, error);
-                        delete pConn;
-                        return false;
-                    }
-                }
                 Log::info(TAG, "Apply changes '" + pUpdate->from_version() + "' -> '" + pUpdate->version() + "'");
                 // Apply changes
-                std::vector<StorageChanges> vStorageChanges = pUpdate->getListChanges();
+                std::vector<StorageChanges *> vStorageChanges = pUpdate->getChanges();
                 for (int i = 0; i < vStorageChanges.size(); i++) {
                     Log::info(TAG, "Apply changes (1)");
-                    StorageChanges st2 = vStorageChanges[i];
-                    if (st2.getType() == StorageChangesType::NOPE) {
+                    StorageChanges *pChanges = vStorageChanges[i];
+                    if (pChanges->getType() == StorageChangesType::NOPE) {
                         std::string sError = "Not allowed use a StorageChangesType::NOPE";
                         Log::err(TAG, sError);
                         throw std::runtime_error(sError);
                     }
 
-                    if (!pStorage->addStorageChanges(st2)) {
-                        error = "Problem add storage changes '" + st2.getTableName() + "' in version " + pUpdate->version();
+                    if (!pStorage->addStorageChanges(*pChanges)) {
+                        error = "Problem add storage changes '" + pChanges->getTableName() + "' in version " + pUpdate->version();
                         delete pConn;
                         return false;
                     }
                 }
-                Log::info(TAG, "Apply changes (2)");
             }
         }
     }
@@ -1137,40 +1253,23 @@ bool StorageUpdates::apply(Storage *pStorage) {
             sLastVersion = pUpdate->version();
             bHasUpdates = true;
             std::string error = "";
-            std::vector<StorageStruct> vStructChanges = pUpdate->listOfStructChanges();
-
-            // TODO: Apply struct - deprecated
-            for (int i = 0; i < vStructChanges.size(); i++) {
-                StorageStruct st = vStructChanges[i];
-                if (!pStorage->applyStruct(pConn, st)) {
-                    error = "Problem with table '" + st.tableName() + "' in version " + pUpdate->version();
-                    delete pConn;
-                    return false;
-                }
-            }
 
             // Apply changes
-            std::vector<StorageChanges> vStorageChanges = pUpdate->getListChanges();
+            std::vector<StorageChanges *> vStorageChanges = pUpdate->getChanges();
             for (int i = 0; i < vStorageChanges.size(); i++) {
-                StorageChanges st2 = vStorageChanges[i];
-                if (st2.getType() == StorageChangesType::NOPE) {
+                StorageChanges *pChanges = vStorageChanges[i];
+                if (pChanges->getType() == StorageChangesType::NOPE) {
                     std::string sError = "Not allowed use a StorageChangesType::NOPE";
                     Log::err(TAG, sError);
                     throw std::runtime_error(sError);
                 }
-                if (!pStorage->executeStorageChanges(pConn, st2)) {
-                    error = "Problem with table '" + st2.getTableName() + "' in version " + pUpdate->version();
+                if (!pStorage->executeStorageChanges(pConn, *pChanges)) {
+                    error = "Problem with table '" + pChanges->getTableName() + "' in version " + pUpdate->version();
                     delete pConn;
                     return false;
                 }
             }
 
-            // TODO rename to after
-            if (!pUpdate->custom(pStorage, pConn, error)) {
-                Log::err(TAG, "Error on install custom update: \n\t -> " + error);
-                delete pConn;
-                return false;
-            }
             pConn->insertUpdateInfo(pUpdate->version(), pUpdate->description());
         }
     }
