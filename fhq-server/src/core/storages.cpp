@@ -1348,12 +1348,10 @@ bool StorageUpdates::apply(Storage *pStorage) {
                 // Apply changes
                 std::vector<StorageChanges *> vStorageChanges = pUpdate->getChanges();
                 for (int i = 0; i < vStorageChanges.size(); i++) {
-                    Log::info(TAG, "Apply changes (1)");
                     StorageChanges *pChanges = vStorageChanges[i];
                     if (pChanges->getType() == StorageChangesType::NOPE) {
                         std::string sError = "Not allowed use a StorageChangesType::NOPE";
-                        Log::err(TAG, sError);
-                        throw std::runtime_error(sError);
+                        Log::throw_err(TAG, sError);
                     }
 
                     if (!pStorage->addStorageChanges(*pChanges)) {

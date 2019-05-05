@@ -61,14 +61,17 @@ class FakeStorage : public Storage {
         virtual std::string prepareStringValue(const std::string &sValue) {
             return sValue;
         };
-        /*virtual std::vector<std::string> prepareSqlQueries(StorageStruct &storageStruct) {
-            return std::vector<std::string>();
-        };*/
         virtual std::vector<std::string> prepareSqlQueries(const StorageInsert &storageInsert) {
             return std::vector<std::string>();
         };
         virtual std::vector<std::string> prepareSqlQueries(const StorageCreateTable &storageCreateTable) {
             return std::vector<std::string>();
+        };
+        virtual std::vector<std::string> prepareSqlQueries(const StorageModifyTable &storageModifyTable) {
+
+        };
+        virtual std::vector<std::string> prepareSqlQueries(const StorageDropTable &storageDropTable) {
+            
         };
 
     private:

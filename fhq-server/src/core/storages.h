@@ -77,14 +77,6 @@ class StorageColumnDefIndex {
 
 // ---------------------------------------------------------------------
 
-enum StorageStructTableMode { // TODO deprecated
-    DROP,
-    ALTER,
-    CREATE
-};
-
-// ---------------------------------------------------------------------
-
 enum StorageChangesType {
     NOPE,
     DROP_TABLE,
