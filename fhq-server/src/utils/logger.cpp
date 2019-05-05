@@ -30,6 +30,14 @@ void Log::err(const std::string & sTag, const std::string &sMessage) {
 
 // ---------------------------------------------------------------------
 
+void Log::throw_err(const std::string &sTag, const std::string &sMessage) {
+    Color::Modifier red(Color::FG_RED);
+    Log::add(red, "ERR", sTag, sMessage);
+    throw std::runtime_error(sMessage);
+}
+
+// ---------------------------------------------------------------------
+
 void Log::warn(const std::string & sTag, const std::string &sMessage) {
     Color::Modifier yellow(Color::FG_YELLOW);
     Log::add(yellow, "WARN",sTag, sMessage);

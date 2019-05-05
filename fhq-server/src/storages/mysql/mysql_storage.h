@@ -28,6 +28,8 @@ class MySqlStorage : public Storage {
         virtual void clean();
         virtual std::vector<std::string> prepareSqlQueries(const StorageInsert &storageInsert);
         virtual std::vector<std::string> prepareSqlQueries(const StorageCreateTable &storageCreateTable);
+        virtual std::vector<std::string> prepareSqlQueries(const StorageModifyTable &storageModifyTable);
+        virtual std::vector<std::string> prepareSqlQueries(const StorageDropTable &storageDropTable);
         virtual std::string prepareStringValue(const std::string &sValue);
         
     private:

@@ -22,6 +22,7 @@ StorageColumnDef::StorageColumnDef(const std::string &sColumnName) {
     m_sDefaultValue = "";
     m_bEnableIndex = false;
     m_bEnableUniqueIndex = false;
+    m_bDefaultValue = false;
 }
 
 // ---------------------------------------------------------------------
@@ -42,7 +43,7 @@ StorageColumnDef &StorageColumnDef::notNull() {
 
 StorageColumnDef &StorageColumnDef::string(int nValue) {
     if (m_sType != "") {
-        Log::err(TAG, "Datatype already defined: " + m_sType);
+        Log::throw_err(TAG, "Datatype already defined: " + m_sType);
         return *this;
     }
     m_sType = "string";
@@ -54,7 +55,7 @@ StorageColumnDef &StorageColumnDef::string(int nValue) {
 
 StorageColumnDef &StorageColumnDef::text() {
     if (m_sType != "") {
-        Log::err(TAG, "Datatype already defined: " + m_sType);
+        Log::throw_err(TAG, "Datatype already defined: " + m_sType);
         return *this;
     }
     m_sType = "text";
@@ -65,7 +66,7 @@ StorageColumnDef &StorageColumnDef::text() {
 
 StorageColumnDef &StorageColumnDef::datetime() {
     if (m_sType != "") {
-        Log::err(TAG, "Datatype already defined: " + m_sType);
+        Log::throw_err(TAG, "Datatype already defined: " + m_sType);
         return *this;
     }
     m_sType = "datetime";
@@ -76,7 +77,7 @@ StorageColumnDef &StorageColumnDef::datetime() {
 
 StorageColumnDef &StorageColumnDef::number() {
     if (m_sType != "") {
-        Log::err(TAG, "Datatype already defined: " + m_sType);
+        Log::throw_err(TAG, "Datatype already defined: " + m_sType);
         return *this;
     }
     m_sType = "number";
@@ -87,7 +88,7 @@ StorageColumnDef &StorageColumnDef::number() {
 
 StorageColumnDef &StorageColumnDef::doubleNumber() {
     if (m_sType != "") {
-        Log::err(TAG, "Datatype already defined: " + m_sType);
+        Log::throw_err(TAG, "Datatype already defined: " + m_sType);
         return *this;
     }
     m_sType = "doubleNumber";
@@ -127,7 +128,7 @@ StorageColumnDef &StorageColumnDef::enableUniqueIndex(const std::string& sIndexN
 
 // ---------------------------------------------------------------------
 
-std::string StorageColumnDef::columnName() {
+std::string StorageColumnDef::columnName() const {
     return m_sColumnName;
 }
 
@@ -312,39 +313,97 @@ StorageChangesType StorageModifyTable::getType() const {
 // ---------------------------------------------------------------------
 
 std::string StorageModifyTable::getStartApply() const {
-    return "Creating table " + m_sTableName;
+    return "Modifing table " + m_sTableName;
 }
 
 // ---------------------------------------------------------------------
 
 std::string StorageModifyTable::getAppliedSuccess() const {
-    return "Created table " +  m_sTableName;
+    return "Modified table " +  m_sTableName;
 }
 
 // ---------------------------------------------------------------------
 
 std::string StorageModifyTable::getAppliedFailed() const {
-    return "Could not create table " +  m_sTableName;
+    return "Could not modify table " +  m_sTableName;
 }
 
 // ---------------------------------------------------------------------
 
 StorageColumnDef &StorageModifyTable::addColumn(const std::string &sColumnName) {
-    for (int i = 0; i < m_vColumns.size(); i++) {
-        if (m_vColumns[i].columnName() == sColumnName) {
-            std::string sError = "Column '" + sColumnName + "' in table '" + m_sTableName + "' already exists";
-            Log::err(TAG, sError);
-            throw std::runtime_error(sError);
-        }
+    std::string sError;
+    if (isColumnDefined(sColumnName, sError)) {
+        Log::throw_err(TAG, "addColumn, " + sError);
     }
-    m_vColumns.push_back(StorageColumnDef(sColumnName));
-    return m_vColumns[m_vColumns.size()-1];
+    m_vAddColumns.push_back(StorageColumnDef(sColumnName));
+    return m_vAddColumns[m_vAddColumns.size()-1];
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<StorageColumnDef> &StorageModifyTable::getColumns() const {
-    return m_vColumns;
+StorageColumnDef &StorageModifyTable::alterColumn(const std::string &sColumnName) {
+    std::string sError;
+    if (isColumnDefined(sColumnName, sError)) {
+        Log::throw_err(TAG, "alterColumn, " + sError);
+    }
+    m_vAlterColumns.push_back(StorageColumnDef(sColumnName));
+    return m_vAlterColumns[m_vAlterColumns.size()-1];
+}
+
+// ---------------------------------------------------------------------
+
+std::string StorageModifyTable::dropColumn(const std::string &sColumnName) {
+    std::string sError;
+    if (isColumnDefined(sColumnName, sError)) {
+        Log::throw_err(TAG, "dropColumn, " + sError);
+    }
+    m_vDropColumns.push_back(sColumnName);
+    return m_vDropColumns[m_vDropColumns.size()-1];
+}
+
+// ---------------------------------------------------------------------
+
+const std::vector<StorageColumnDef> &StorageModifyTable::getAddColumns() const {
+    return m_vAddColumns;
+}
+
+// ---------------------------------------------------------------------
+
+const std::vector<StorageColumnDef> &StorageModifyTable::getAlterColumns() const {
+    return m_vAlterColumns;
+}
+
+// ---------------------------------------------------------------------
+
+const std::vector<std::string> &StorageModifyTable::getDropColumns() const {
+    return m_vDropColumns;
+}
+
+// ---------------------------------------------------------------------
+
+bool StorageModifyTable::isColumnDefined(const std::string &sColumnName, std::string &sError) const {
+    for (int i = 0; i < m_vAddColumns.size(); i++) {
+        if (m_vAddColumns[i].columnName() == sColumnName) {
+            sError = "Column '" + sColumnName + "' in table '" + m_sTableName + "' already defined as 'add' ";
+            return true;
+        }
+    }
+
+    for (int i = 0; i < m_vAlterColumns.size(); i++) {
+        if (m_vAlterColumns[i].columnName() == sColumnName) {
+            sError = "Column '" + sColumnName + "' in table '" + m_sTableName + "' already defined as 'alter'";
+            return true;
+        }
+    }
+
+    for (int i = 0; i < m_vDropColumns.size(); i++) {
+        if (m_vDropColumns[i] == sColumnName) {
+            sError = "Column '" + sColumnName + "' in table '" + m_sTableName + "' already defined as 'drop'";
+            return true;
+        }
+    }
+
+    return false;
 }
 
 // ---------------------------------------------------------------------
@@ -643,7 +702,7 @@ std::string StorageInsert::tableName() const {
 
 void StorageInsert::bindValue(const std::string &sColumnName, const std::string &sValue) {
     if (this->exists(sColumnName)) {
-        Log::warn(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
+        Log::throw_err(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
         return;
     }
     StorageColumnValue val(sColumnName, StorageColumnType::STRING);
@@ -655,7 +714,7 @@ void StorageInsert::bindValue(const std::string &sColumnName, const std::string 
 
 void StorageInsert::bindValue(const std::string &sColumnName, int nValue) {
     if (this->exists(sColumnName)) {
-        Log::warn(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
+        Log::throw_err(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
         return;
     }
     StorageColumnValue val(sColumnName, StorageColumnType::NUMBER);
@@ -667,7 +726,7 @@ void StorageInsert::bindValue(const std::string &sColumnName, int nValue) {
 
 void StorageInsert::bindValue(const std::string &sColumnName, double nValue) {
     if (this->exists(sColumnName)) {
-        Log::warn(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
+        Log::throw_err(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
         return;
     }
     StorageColumnValue val(sColumnName, StorageColumnType::DOUBLE_NUMBER);
@@ -799,6 +858,16 @@ StorageTable::StorageTable(const std::string &sTableName) {
 
 // ---------------------------------------------------------------------
 
+StorageTable::StorageTable(StorageCreateTable &createTable) {
+    m_sTableName = createTable.getTableName();
+    const std::vector<StorageColumnDef> &list = createTable.getColumns();
+    for (int i = 0; i < list.size(); i++) {
+        m_vColumns.push_back(list[i]);
+    }
+}
+
+// ---------------------------------------------------------------------
+
 std::string StorageTable::getTableName() const {
     return m_sTableName;
 }
@@ -810,29 +879,59 @@ const std::vector<StorageColumnDef> &StorageTable::getColumns() const {
 }
 
 // ---------------------------------------------------------------------
-// temporary
 
-void StorageTable::addColumn(const StorageColumnDef &c) {
-    m_vColumns.push_back(c);
-}
+void StorageTable::mergeWith(StorageModifyTable &modifyTable) {
 
-// ---------------------------------------------------------------------
-
-void StorageTable::mergeWith(StorageCreateTable &createTable) {
-    const std::vector<StorageColumnDef> &list = createTable.getColumns();
-    for (int i = 0; i < list.size(); i++) {
-        m_vColumns.push_back(list[i]);
+    // TODO check indexes
+    std::vector<std::string> vDropColumns = modifyTable.getDropColumns();
+    for (int i = 0; i < vDropColumns.size(); i++) {
+        bool bFound = false;
+        std::string sColumnName = vDropColumns[i];
+        for (int i = 0; i < m_vColumns.size(); i++) {
+            if (m_vColumns[i].columnName() == sColumnName) {
+                m_vColumns.erase(m_vColumns.begin() + i);
+                bFound = true;
+                break;
+            }
+        }
+        if (!bFound) {
+            Log::throw_err(TAG, "Not found column " + sColumnName + " in table " + m_sTableName);
+        }
     }
-}
 
-// ---------------------------------------------------------------------
+    std::vector<StorageColumnDef> vAddColumns = modifyTable.getAddColumns();
+    for (int i = 0; i < vAddColumns.size(); i++) {
+        bool bFound = false;
+        StorageColumnDef c = vAddColumns[i];
+        for (int i = 0; i < m_vColumns.size(); i++) {
+            if (m_vColumns[i].columnName() == c.columnName()) {
+                bFound = true;
+            }
+        }
+        if (bFound) {
+            Log::throw_err(TAG, "Column already defined " + c.columnName() + " in table " + m_sTableName);
+        } else {
+            m_vColumns.push_back(c);
+        }
+    }
 
-void StorageTable::mergeWith(StorageChanges &storageChanges) {
-    if (storageChanges.getType() == StorageChangesType::CREATE_TABLE) {
-        StorageCreateTable createTable = (StorageCreateTable &)storageChanges;
-        mergeWith(createTable);
-    } else {
-        throw std::runtime_error("Could not support type of storageChanges for merge with table");
+    // TODO check indexes
+    std::vector<StorageColumnDef> vAlterColumns = modifyTable.getAlterColumns();
+    for (int i = 0; i < vAlterColumns.size(); i++) {
+        bool bFound = false;
+        StorageColumnDef c = vAlterColumns[i];
+        for (int i = 0; i < m_vColumns.size(); i++) {
+            if (m_vColumns[i].columnName() == c.columnName()) {
+                if (m_vColumns[i].isEnableIndex()) {
+                    c.enableIndex();
+                }
+                m_vColumns[i] = c;
+                bFound = true;
+            }
+        }
+        if (!bFound) {
+            Log::throw_err(TAG, "Problem with alter column '" + c.columnName() + "'. It's not defined in table '" + m_sTableName + "'");
+        }
     }
 }
 
@@ -961,12 +1060,20 @@ bool Storage::addStorageChanges(StorageChanges &storageChanges) {
             Log::warn(TAG, "TODO need drop table");
             return false;
         }
-        StorageTable tbl(sTableName);
-        tbl.mergeWith(storageChanges);
-        m_mapTables.insert( std::pair<std::string,StorageTable>(sTableName,tbl) );
+        StorageTable tbl((StorageCreateTable &)storageChanges);
+        m_mapTables.insert(std::pair<std::string,StorageTable>(sTableName,tbl) );
+    } else if (storageChanges.getType() == StorageChangesType::DROP_TABLE) {
+        if (it == m_mapTables.end()) {
+            Log::throw_err(TAG, "Not found table '" + sTableName + "'");
+        }
+        m_mapTables.erase(sTableName);
+    } else if (storageChanges.getType() == StorageChangesType::MODIFY_TABLE) {
+        if (it == m_mapTables.end()) {
+            Log::throw_err(TAG, "Not found table '" + sTableName + "'");
+        }
+        it->second.mergeWith((StorageModifyTable &)storageChanges);
     } else {
-        Log::err(TAG, "addStorageChanges, Unknown operation with table");
-        throw std::runtime_error("addStorageChanges, Unknown operation with table");
+        Log::throw_err(TAG, "addStorageChanges, Unknown operation with table");
     }
     return true;
 }
@@ -1030,6 +1137,23 @@ bool Storage::insertRow(StorageConnection *pConn, const StorageInsert &storageIn
 
 const std::map<std::string, StorageTable> &Storage::getTables() {
     return m_mapTables;
+}
+
+// ---------------------------------------------------------------------
+
+bool Storage::existsTable(const std::string &sTableName) {
+    std::map<std::string, StorageTable>::iterator it = m_mapTables.find(sTableName);
+    return (it != m_mapTables.end());
+}
+
+// ---------------------------------------------------------------------
+
+const StorageTable &Storage::getTableDef(const std::string &sTableName) {
+    std::map<std::string, StorageTable>::iterator it = m_mapTables.find(sTableName);
+    if (it == m_mapTables.end()) {
+        Log::throw_err(TAG, "Table " + sTableName + " does not exists");
+    }
+    return it->second; 
 }
 
 // ---------------------------------------------------------------------

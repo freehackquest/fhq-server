@@ -38,7 +38,7 @@ class StorageColumnDef {
         StorageColumnDef &enableIndex();
         StorageColumnDef &enableUniqueIndex(const std::string& sIndexName);
 
-        std::string columnName();
+        std::string columnName() const;
         std::string columnType();
         bool isDefaultValue();
         std::string columnDefaultValue();
@@ -142,12 +142,19 @@ class StorageModifyTable : public StorageChanges {
         virtual std::string getAppliedFailed() const override;
 
         StorageColumnDef &addColumn(const std::string &sColumnName);
-        const std::vector<StorageColumnDef> &getColumns() const;
+        StorageColumnDef &alterColumn(const std::string &sColumnName);
+        std::string dropColumn(const std::string &sColumnName);
+        const std::vector<StorageColumnDef> &getAddColumns() const;
+        const std::vector<StorageColumnDef> &getAlterColumns() const;
+        const std::vector<std::string> &getDropColumns() const;
+        bool isColumnDefined(const std::string &sColumnName, std::string &sError) const;
 
     private:
         std::string TAG;
         std::string m_sTableName;
-        std::vector<StorageColumnDef> m_vColumns;
+        std::vector<StorageColumnDef> m_vAddColumns;
+        std::vector<StorageColumnDef> m_vAlterColumns;
+        std::vector<std::string> m_vDropColumns;
 };
 
 // ---------------------------------------------------------------------
@@ -193,13 +200,10 @@ class StorageColumnValue {
 class StorageTable {
     public:
         StorageTable(const std::string &sTableName);
+        StorageTable(StorageCreateTable &createTable);
         std::string getTableName() const;
         const std::vector<StorageColumnDef> &getColumns() const;
-        // void mergeWith(StorageStruct &storageStruct); // temporary
-        void addColumn(const StorageColumnDef &cl); // temporary
-        void mergeWith(StorageCreateTable &createTable);
         void mergeWith(StorageModifyTable &modifyTable);
-        void mergeWith(StorageChanges &storageChanges);
         
     private:
         std::string TAG;
@@ -288,9 +292,13 @@ class Storage {
 
         virtual std::vector<std::string> prepareSqlQueries(const StorageInsert &storageInsert) = 0;
         virtual std::vector<std::string> prepareSqlQueries(const StorageCreateTable &storageCreateTable) = 0;
+        virtual std::vector<std::string> prepareSqlQueries(const StorageModifyTable &storageModifyTable) = 0;
+        virtual std::vector<std::string> prepareSqlQueries(const StorageDropTable &storageDropTable) = 0;
         
         bool insertRow(StorageConnection *pConn, const StorageInsert &storageInsert);
         const std::map<std::string, StorageTable> &getTables();
+        bool existsTable(const std::string &sTableName);
+        const StorageTable &getTableDef(const std::string &sTableName);
 
     protected:
         std::string TAG;

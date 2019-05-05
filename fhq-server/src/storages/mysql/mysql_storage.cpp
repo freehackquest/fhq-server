@@ -200,8 +200,6 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(StorageStruct &storageS
         for (int i = 0; i < vAlterColumns.size(); i++) {
             vRet.push_back("ALTER TABLE `" + storageStruct.tableName() + "` MODIFY " + generateLineColumnForSql(vAlterColumns[i]) + ";");
         }
-    } else if (storageStruct.mode() == StorageStructTableMode::DROP) {
-        vRet.push_back("DROP TABLE IF EXISTS `" + storageStruct.tableName() + "`;");
     } else if (storageStruct.mode() == StorageStructTableMode::CREATE) {
         // TODO deprecated (Moved to StorageCreateTable)
         std::string sQuery = "";
@@ -363,6 +361,42 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(const StorageCreateTabl
     }
     sQuery += ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
     vRet.push_back(sQuery);
+    return vRet;
+}
+
+// ----------------------------------------------------------------------
+
+std::vector<std::string> MySqlStorage::prepareSqlQueries(const StorageModifyTable &storageModifyTable) {
+    std::vector<std::string> vRet;
+
+    // drop columns
+    std::vector<std::string> vDropColumns = storageModifyTable.getDropColumns();
+    for (int i = 0; i < vDropColumns.size(); i++) {
+        vRet.push_back("ALTER TABLE `" + storageModifyTable.getTableName() + "` DROP COLUMN `" + vDropColumns[i] + "`;");
+    }
+
+    // add columns
+    std::vector<StorageColumnDef> vAddColumns = storageModifyTable.getAddColumns();
+    for (int i = 0; i < vAddColumns.size(); i++) {
+        vRet.push_back("ALTER TABLE `" + storageModifyTable.getTableName() + "` ADD COLUMN " + generateLineColumnForSql(vAddColumns[i]) + ";");
+    }
+
+    // alter columns
+    std::vector<StorageColumnDef> vAlterColumns = storageModifyTable.getAlterColumns();
+    for (int i = 0; i < vAlterColumns.size(); i++) {
+        vRet.push_back("ALTER TABLE `" + storageModifyTable.getTableName() + "` MODIFY " + generateLineColumnForSql(vAlterColumns[i]) + ";");
+    }
+    return vRet;
+}
+
+// ----------------------------------------------------------------------
+
+std::vector<std::string> MySqlStorage::prepareSqlQueries(const StorageDropTable &storageDropTable) {
+    if (!this->existsTable(storageDropTable.getTableName())) {
+        Log::throw_err(TAG, "Table '" + storageDropTable.getTableName() + "' does not define previously");
+    }
+    std::vector<std::string> vRet;
+    vRet.push_back("DROP TABLE IF EXISTS `" + storageDropTable.getTableName() + "`;");
     return vRet;
 }
 
