@@ -94,6 +94,13 @@ def check_response(resp, msg_success):
     else:
         print_success(msg_success)
 
+def check_values(what, got, expected):
+    print_bold("Check the " + what + "... ")
+    if got != expected:
+        log_err(what + " has wrong expected '" + str(expected) + "' got '" + str(got) + "'")
+    else:
+        print_success(what + " is ok")
+
 def init_enviroment():
     global admin_session
     global user1_uuid
