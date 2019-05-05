@@ -48,6 +48,7 @@ try:
     run_test('test_users.py')
     run_test('test_games.py')
     run_test('test_leaks.py')
+    run_test('test_quests.py')
 
     # last step
     run_test('test_stats.py')

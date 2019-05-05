@@ -19,6 +19,10 @@ CLASSBOOK_RECORD1 = "C1A55800-0000-0000-0000-000000000001"
 CLASSBOOK_RECORD2 = "C1A55800-0000-0000-0000-000000000002"
 CLASSBOOK_RECORD3 = "C1A55800-0000-0000-0000-000000000003"
 CLASSBOOK_RECORD4 = "C1A55800-0000-0000-0000-000000000004"
+QUEST_UUID1 = "03E51000-0000-0000-0000-000000000001"
+QUEST_UUID2 = "03E51000-0000-0000-0000-000000000002"
+QUEST_UUID3 = "03E51000-0000-0000-0000-000000000003"
+QUEST_UUID4 = "03E51000-0000-0000-0000-000000000004"
 GAME1 = None
 admin_email = "admin" # deprecated
 admin_password = "admin" # deprecated
@@ -109,7 +113,7 @@ def init_enviroment():
     
     # loggined = True
     GAME1 = admin_session.game_info({"uuid": GAME_UUID1})
-    alert(resp == None, 'Could not get test game (2)');
+    alert(resp == None, 'Could not get test game (2)')
     if GAME1['result'] == 'FAIL':
         GAME1 = admin_session.game_create({
             "uuid": GAME_UUID1,
