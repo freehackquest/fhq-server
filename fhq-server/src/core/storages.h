@@ -205,10 +205,13 @@ class StorageTable {
 
 // ---------------------------------------------------------------------
 
-class StorageInsert {
+class StorageInsert : public StorageChanges {
     public:
         StorageInsert(const std::string &sTableName);
-        std::string tableName() const;
+        virtual StorageChangesType getType() const override;
+        virtual std::string getStartApply() const override;
+        virtual std::string getAppliedSuccess() const override;
+        virtual std::string getAppliedFailed() const override;
 
         void bindValue(const std::string &sColumnName, const std::string &sValue);
         void bindValue(const std::string &sColumnName, int nValue);
@@ -353,6 +356,7 @@ class StorageUpdateBase {
         StorageCreateTable *createTable(std::string sTableName);
         StorageModifyTable *modifyTable(std::string sTableName);
         StorageDropTable *dropTable(std::string sTableName);
+        StorageInsert *insertIntoTable(std::string sTableName);
         
     private:
         void checkTableName(std::string sTableName);

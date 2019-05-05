@@ -157,6 +157,21 @@ UpdatesInitDatabase::UpdatesInitDatabase()
         users->addColumn("university").string(255).defaultValue("''");
     }
 
+    {
+        StorageInsert *pAddDefailtAdmin = insertIntoTable("users");
+        pAddDefailtAdmin->bindValue("uuid", "39A551F4-3BF0-A1C8-8686-06A5C510DDA3");
+        pAddDefailtAdmin->bindValue("email", "admin");
+        pAddDefailtAdmin->bindValue("pass", "06976539736714f7eaaa9409a643855029717a9d"); // admin
+        pAddDefailtAdmin->bindValue("role", "admin");
+        pAddDefailtAdmin->bindValue("nick", "Admin");
+        pAddDefailtAdmin->bindValue("logo", "files/users/0.png");
+        pAddDefailtAdmin->bindValue("dt_create", "1970-01-01 00:00:00");
+        pAddDefailtAdmin->bindValue("dt_last_login", "2015-04-12 23:49:58");
+        pAddDefailtAdmin->bindValue("last_ip", "127.0.0.1");
+        pAddDefailtAdmin->bindValue("status", "activated");
+        pAddDefailtAdmin->bindValue("about", "");
+        pAddDefailtAdmin->bindValue("university", "");
+    }
     /*
     // TODO redesign
     // here you can migrate data of correction if not just return true;
@@ -202,6 +217,10 @@ UpdatesInitDatabase::UpdatesInitDatabase()
         if (!pStorage->insertRow(pConn, ins)) {
             error = "could not insert to table '" + ins.tableName() + "' ";
             return false;
+        }
+        if (!ins.isValid(st)) {
+                error = "Insert not valid";
+                return false;
         }
         Log::ok(TAG, "Inserted.");
     }

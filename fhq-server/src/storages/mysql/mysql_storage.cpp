@@ -292,7 +292,7 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(const StorageInsert &st
             Log::err(TAG, "Unknown type " + std::to_string(v.getColumnType()));
         }
     }
-    vRet.push_back("INSERT INTO " + storageInsert.tableName() + "(" + sSql + ") VALUES(" + sValues + ");");
+    vRet.push_back("INSERT INTO " + storageInsert.getTableName() + "(" + sSql + ") VALUES(" + sValues + ");");
     return vRet;
 }
 
