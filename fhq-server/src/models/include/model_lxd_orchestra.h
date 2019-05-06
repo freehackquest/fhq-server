@@ -58,13 +58,32 @@ private:
     std::string m_sError;
     int m_nError;
     std::string m_sResult;
-    std::string m_sType;
-    std::string m_sVersion;
-    std::string m_sAuthor;
-    std::string m_sGame;
     std::string m_sPort;
     std::string m_sProtoPort;
     const std::string TAG = "EmployOrchestraContainer";
+};
+
+
+class ServiceLXD {
+public:
+    explicit ServiceLXD(const ServiceRequest &reqService);
+
+    bool create_container();
+    bool build();
+    bool start();
+    bool stop();
+
+    std::string get_error();
+
+private:
+    ServiceRequest m_reqService;
+    LXDContainer* m_Container;
+
+    std::string m_sName;
+    std::string m_sError;
+    int m_nError;
+    std::string m_sResult;
+    const std::string TAG = "EmployOrchestraService";
 };
 
 #endif // MODEL_LXD_CONTAINER

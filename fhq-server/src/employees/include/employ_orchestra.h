@@ -2,7 +2,7 @@
 #define EMPLOY_ORCHESTRA
 
 #include <employees.h>
-#include <model_lxd_container.h>
+#include <model_lxd_orchestra.h>
 
 #include <list>
 #include <string>
@@ -24,6 +24,7 @@ public:
     bool create_service(const ServiceRequest &serviceReq, std::string &sError);
     bool check_response(const nlohmann::json &jsonResponse, std::string &sError);
     bool find_container(const std::string &sName, LXDContainer *&pContainer);
+    bool find_service(const std::string &sName, ServiceLXD *&pService);
     bool remove_container(const std::string &sName, std::string &sError);
     bool get_all_profiles(std::vector<std::string> &vecProfiles, std::string &sError);
     bool find_profile(const std::string &sName, std::string &sError);
@@ -45,6 +46,7 @@ public:
 
 private:
     std::map<std::string, LXDContainer *> m_mapContainers;
+    std::map<std::string, ServiceLXD *> m_mapServices;
     std::string m_sPathDirLxcSSL;
     std::string m_sLxdAddress;
     std::string m_sLastError;

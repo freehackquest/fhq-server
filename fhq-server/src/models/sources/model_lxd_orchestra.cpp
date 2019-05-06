@@ -1,8 +1,8 @@
 #include <utility>
 
-#include <model_lxd_container.h>
+#include <model_lxd_orchestra.h>
 #include <employ_orchestra.h>
-#include <include/model_lxd_container.h>
+#include <include/model_lxd_orchestra.h>
 #include <iomanip>
 #include <vector>
 #include <iostream>
@@ -46,10 +46,6 @@ LXDContainer::LXDContainer(const std::string &name_of_container) {
 
 LXDContainer::LXDContainer(const ServiceRequest &containerReq) {
     name = containerReq.name;
-    m_sType = containerReq.type;
-    m_sVersion = containerReq.version;
-    m_sAuthor = containerReq.author;
-    m_sGame = containerReq.game;
 }
 
 std::string LXDContainer::get_name() const {
@@ -288,4 +284,65 @@ bool LXDContainer::open_port(const std::string &sPort, const std::string &sProto
 bool LXDContainer::open_port(const int &nPort, const std::string &sProto) {
     auto sPort = std::to_string(nPort);
     return open_port(sPort, sProto);
+}
+
+
+ServiceLXD::ServiceLXD(const ServiceRequest &reqService) : m_reqService(reqService) {
+    m_sName = m_reqService.name;
+}
+
+bool ServiceLXD::create_container() {
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    LXDContainer *pContainer;
+
+    if (!pOrchestra->create_container(m_sName, m_sError)){
+        return false;
+    };
+
+    if (!pOrchestra->find_container(m_sName, pContainer)){
+        return false;
+    }
+    m_Container = pContainer;
+
+    return true;
+}
+
+std::string ServiceLXD::get_error() {
+    return m_sError;
+}
+
+bool ServiceLXD::build() {
+
+    if (!m_reqService.build.empty()){
+        if (!m_Container->exec("sh /root/service/" + m_reqService.build)){
+            m_sError = "Can't build service " + m_Container->full_name() + " :\n" + m_Container->get_error();
+            return false;
+        }
+    }
+
+    if (!m_reqService.port_proto.empty() && m_reqService.port_number != 0) {
+        if (!m_Container->open_port(m_reqService.port_number, m_reqService.port_proto)) {
+            m_sError = "Can't open port for container " + m_Container->full_name() + "  :\n" + m_Container->get_error();
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool ServiceLXD::start() {
+
+    if (!m_Container->start()){
+        m_sError = m_Container->get_error();
+        return false;
+    }
+
+    if (!m_reqService.start.empty()) {
+        if (!m_Container->exec("sh /root/service/" + m_reqService.start)){
+            m_sError = "Can't start service " + m_Container->full_name() + " :\n" + m_Container->get_error();
+            return false;
+        }
+    }
+
+    return true;
 }

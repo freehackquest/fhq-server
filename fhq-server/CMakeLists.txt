@@ -149,8 +149,8 @@ list (APPEND FHQSRV_SOURCES "src/models/include/model_game.h")
 list (APPEND FHQSRV_SOURCES "src/models/sources/model_game.cpp")
 list (APPEND FHQSRV_SOURCES "src/models/include/model_usertoken.h")
 list (APPEND FHQSRV_SOURCES "src/models/sources/model_usertoken.cpp")
-list (APPEND FHQSRV_SOURCES "src/models/include/model_lxd_container.h")
-list (APPEND FHQSRV_SOURCES "src/models/sources/model_lxd_container.cpp")
+list (APPEND FHQSRV_SOURCES "src/models/include/model_lxd_orchestra.h")
+list (APPEND FHQSRV_SOURCES "src/models/sources/model_lxd_orchestra.cpp")
 
 # validators
 list (APPEND FHQSRV_SOURCES "src/validators/validators.cpp")
