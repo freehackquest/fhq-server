@@ -8,6 +8,7 @@
 #include <iostream>
 #include <iterator>
 #include <sstream>
+#include <jmorecfg.h>
 
 
 ServiceRequest::ServiceRequest(nlohmann::json jsonConfig) {
@@ -26,26 +27,25 @@ ServiceRequest::ServiceRequest(nlohmann::json jsonConfig) {
         version = jsonConfig.at("version").get<std::string>();
     }
     if (jsonConfig.find("start") != jsonConfig.end()) {
-        start = jsonConfig.at("start").get<std::string>();
+        start = jsonConfig.at("start").get<boolean>();
     }
     if (jsonConfig.find("build") != jsonConfig.end()) {
-        build = jsonConfig.at("build").get<std::string>();
+        build = jsonConfig.at("build").get<boolean>();
     }
     if (jsonConfig.find("port_proto") != jsonConfig.end()) {
         port_proto = jsonConfig.at("port_proto").get<std::string>();
     }
-    if (jsonConfig.find("port_number") != jsonConfig.end()) {
-        port_number = jsonConfig.at("port_number").get<int>();
+    if (jsonConfig.find("port") != jsonConfig.end()) {
+        if (port_proto.empty()) {
+            port_proto = "tcp";
+        }
+        port_number = jsonConfig.at("port").get<int>();
     }
 }
 
 
 LXDContainer::LXDContainer(const std::string &name_of_container) {
     name = name_of_container;
-}
-
-LXDContainer::LXDContainer(const ServiceRequest &containerReq) {
-    name = containerReq.name;
 }
 
 std::string LXDContainer::get_name() const {
@@ -313,8 +313,8 @@ std::string ServiceLXD::get_error() {
 
 bool ServiceLXD::build() {
 
-    if (!m_reqService.build.empty()){
-        if (!m_Container->exec("sh /root/service/" + m_reqService.build)){
+    if (m_reqService.build){
+        if (!m_Container->exec("sh /root/service/build.sh")){
             m_sError = "Can't build service " + m_Container->full_name() + " :\n" + m_Container->get_error();
             return false;
         }
@@ -337,12 +337,16 @@ bool ServiceLXD::start() {
         return false;
     }
 
-    if (!m_reqService.start.empty()) {
-        if (!m_Container->exec("sh /root/service/" + m_reqService.start)){
+    if (m_reqService.start) {
+        if (!m_Container->exec("sh /root/service/start.sh")){
             m_sError = "Can't start service " + m_Container->full_name() + " :\n" + m_Container->get_error();
             return false;
         }
     }
 
+    return true;
+}
+
+bool ServiceLXD::load_service() {
     return true;
 }

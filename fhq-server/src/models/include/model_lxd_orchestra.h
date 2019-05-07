@@ -14,10 +14,11 @@ struct ServiceRequest {
     std::string game;
     std::string author;
     std::string version;
-    std::string start;
-    std::string build;
     std::string port_proto;
+
     int port_number;
+    bool start;
+    bool build;
 
     explicit ServiceRequest(nlohmann::json jsonConfig);
 };
@@ -26,7 +27,6 @@ struct ServiceRequest {
 class LXDContainer {
 public:
     explicit LXDContainer(const std::string &name_of_container);
-    explicit LXDContainer(const ServiceRequest &containerReq);
     std::string get_name() const;
     std::string get_status() const;
     std::string get_IPv4() const;
@@ -69,6 +69,7 @@ public:
     explicit ServiceLXD(const ServiceRequest &reqService);
 
     bool create_container();
+    bool load_service();
     bool build();
     bool start();
     bool stop();
