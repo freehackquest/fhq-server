@@ -573,7 +573,6 @@ CmdHandlerLXDImportServiceFromZip::CmdHandlerLXDImportServiceFromZip()
     setAccessAdmin(true);
 
     requireStringParam("zip_file", "Service's configuration in Base64 zip archive.");
-    requireStringParam("name", "Service's name.");
 }
 
 void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
@@ -587,7 +586,6 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
     std::string sError;
     int nErrorCode = 500;
     const std::string qsB64Zip = jsonRequest["zip_file"].toString().toStdString();
-    const std::string name = jsonRequest["name"].toString().toStdString();
     std::string sConfig;
 
     QByteArray qbaZip = QByteArray::fromBase64(QByteArray::fromStdString(qsB64Zip));
@@ -615,20 +613,37 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
 
     if (sConfig.empty()) {
         pRequest->sendMessageError(cmd(), Error(nErrorCode, "Not found service.json in zip archive."));
+        zip.close();
         return;
     }
 
     if (!nlohmann::json::accept(sConfig)) {
         pRequest->sendMessageError(cmd(), Error(400, "Service json file isn't valid."));
+        zip.close();
+        return;
     }
     auto jsonConfig = nlohmann::json::parse(sConfig);
-    const ServiceConfig config = ServiceConfig(jsonConfig);
-    ServiceLXD service = ServiceLXD(config);
-    service.create_container();
-    LXDContainer *container = service.get_container();
+
+    if (!pOrchestra->create_service(jsonConfig, sError)){
+        pRequest->sendMessageError(cmd(), Error(500, "Cant create service. Error: " + sError));
+        zip.close();
+        return;
+    }
+
+    ServiceLXD *service;
+    if (!pOrchestra->find_service(jsonConfig["name"].get<std::string>(), service)){
+        pRequest->sendMessageError(cmd(), Error(500, "Cant find service. Error: " + pOrchestra->lastError()));
+        zip.close();
+        return;
+    }
+
+    service->create_container();
+    LXDContainer *container = service->get_container();
 
     if (!container->exec("mkdir -p /root/service")) {
         sError = "Cant create service directory.";
+        zip.close();
+        return;
     }
 
     for (bool more = zip.goToFirstFile(); more; more = zip.goToNextFile()) {
@@ -638,6 +653,7 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
             if (!container->push_file("/root/service/" + file_name, file.readAll().toStdString())) {
                 pRequest->sendMessageError(cmd(), Error(nErrorCode, container->get_error()));
                 file.close();
+                zip.close();
                 return;
             }
             file.close();

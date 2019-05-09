@@ -100,6 +100,11 @@ bool EmployOrchestra::create_service(const ServiceConfig &serviceReq, std::strin
     return true;
 }
 
+bool EmployOrchestra::create_service(const nlohmann::json &jsonConfig, std::string &sError) {
+    ServiceConfig config = ServiceConfig(jsonConfig);
+    return create_service(config, sError);
+}
+
 // ---------------------------------------------------------------------
 
 bool EmployOrchestra::find_container(const std::string &name, LXDContainer *&pContainer) {
@@ -555,5 +560,6 @@ std::list<std::string> EmployOrchestra::registry_names() {
         container_names.push_back(container.first);
     return container_names;
 }
+
 
 // ---------------------------------------------------------------------

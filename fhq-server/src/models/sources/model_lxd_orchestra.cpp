@@ -253,6 +253,7 @@ bool LXDContainer::push_file(const std::string &sPath, const std::string &sRawDa
         return false;
     }
 
+    Log::info(TAG, "In container " + name + " pushed file " + sPath);
     return true;
 }
 

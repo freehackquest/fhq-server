@@ -22,6 +22,7 @@ public:
     bool initConnection();
     bool create_container(const std::string &sName, std::string &sError);
     bool create_service(const ServiceConfig &serviceReq, std::string &sError);
+    bool create_service(const nlohmann::json &jsonConfig, std::string &sError);
     bool check_response(const nlohmann::json &jsonResponse, std::string &sError);
     bool find_container(const std::string &sName, LXDContainer *&pContainer);
     bool find_service(const std::string &sName, ServiceLXD *&pService);
