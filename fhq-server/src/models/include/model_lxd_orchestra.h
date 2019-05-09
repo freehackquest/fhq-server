@@ -69,20 +69,20 @@ public:
     explicit ServiceLXD(const ServiceConfig &reqService);
 
     bool create_container();
-    bool load_service();
     bool build();
     bool start();
     bool stop();
 
     std::string get_error();
+    LXDContainer *get_container();
 
 private:
     ServiceConfig m_configService;
-    LXDContainer* m_Container;
+    LXDContainer *m_Container;
 
     std::string m_sName;
     std::string m_sError;
-    int m_nError;
+    int m_nError = 500;
     std::string m_sResult;
     const std::string TAG = "EmployOrchestraService";
 };

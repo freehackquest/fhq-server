@@ -246,8 +246,10 @@ bool LXDContainer::push_file(const std::string &sPath, const std::string &sRawDa
         return false;
     }
 
-    if (nlohmann::json::accept(sResponse)) {
-        m_sError = "Response is json";
+    auto jsonResponse = nlohmann::json::parse(sResponse);
+    if (!jsonResponse["error"].get<std::string>().empty()) {
+        m_sError = "Cant push file in service. Error: " + jsonResponse["error"].get<std::string>();
+        Log::err(TAG, m_sError);
         return false;
     }
 
@@ -287,19 +289,36 @@ bool LXDContainer::open_port(const int &nPort, const std::string &sProto) {
 }
 
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "modernize-pass-by-value"
+
 ServiceLXD::ServiceLXD(const ServiceConfig &reqService) : m_configService(reqService) {
     m_sName = m_configService.name;
+
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    if (!pOrchestra->find_container(m_sName, m_Container)) {
+        m_Container = nullptr;
+    }
 }
 
 bool ServiceLXD::create_container() {
+    if (m_Container != nullptr) {
+        return true;
+    }
+
     auto *pOrchestra = findEmploy<EmployOrchestra>();
     LXDContainer *pContainer;
 
-    if (!pOrchestra->create_container(m_sName, m_sError)){
+    if (m_sName.empty()) {
+        m_sError = "Can't create container with empty name.";
         return false;
-    };
+    }
 
-    if (!pOrchestra->find_container(m_sName, pContainer)){
+    if (!pOrchestra->create_container(m_sName, m_sError)) {
+        return false;
+    }
+
+    if (!pOrchestra->find_container(m_sName, pContainer)) {
         return false;
     }
     m_Container = pContainer;
@@ -313,8 +332,8 @@ std::string ServiceLXD::get_error() {
 
 bool ServiceLXD::build() {
 
-    if (m_configService.build){
-        if (!m_Container->exec("sh /root/service/build.sh")){
+    if (m_configService.build) {
+        if (!m_Container->exec("sh /root/service/build.sh")) {
             m_sError = "Can't build service " + m_Container->full_name() + " :\n" + m_Container->get_error();
             return false;
         }
@@ -332,13 +351,13 @@ bool ServiceLXD::build() {
 
 bool ServiceLXD::start() {
 
-    if (!m_Container->start()){
+    if (!m_Container->start()) {
         m_sError = m_Container->get_error();
         return false;
     }
 
     if (m_configService.start) {
-        if (!m_Container->exec("sh /root/service/start.sh")){
+        if (!m_Container->exec("sh /root/service/start.sh")) {
             m_sError = "Can't start service " + m_Container->full_name() + " :\n" + m_Container->get_error();
             return false;
         }
@@ -347,10 +366,10 @@ bool ServiceLXD::start() {
     return true;
 }
 
-bool ServiceLXD::load_service() {
+bool ServiceLXD::stop() {
     return false;
 }
 
-bool ServiceLXD::stop() {
-    return false;
+LXDContainer *ServiceLXD::get_container() {
+    return m_Container;
 }

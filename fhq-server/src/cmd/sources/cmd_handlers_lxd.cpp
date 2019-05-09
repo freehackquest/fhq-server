@@ -411,7 +411,7 @@ void CmdHandlerLXDFile::pull_file(LXDContainer *pContainer, const std::string &s
         nErrorCode = 500;
     }
 
-    if (nlohmann::json::accept(std::begin(sRawData), std::end(sRawData))){
+    if (nlohmann::json::accept(std::begin(sRawData), std::end(sRawData))) {
         auto jsonResponse = nlohmann::json::parse(sRawData);
         if (jsonResponse.find("metadata") != jsonResponse.end() && jsonResponse.find("status") != jsonResponse.end()) {
             isDirectory = true;
@@ -565,7 +565,6 @@ void CmdHandlerLXDImportService::handle(ModelRequest *pRequest) {
 }
 
 
-
 CmdHandlerLXDImportServiceFromZip::CmdHandlerLXDImportServiceFromZip()
         : CmdHandlerBase("lxd_import_service_from_zip", "Import Service from zip.") {
 
@@ -600,7 +599,8 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
     if (zip.open(QuaZip::mdUnzip)) {
 
         if (zip.getZipError() != UNZ_OK) {
-            std::cout << "\n Cant unzip " << zip.getZipError();
+            pRequest->sendMessageError(cmd(), Error(400, "Cant unzip " + std::to_string(zip.getZipError())));
+            return;
         } else {
             for (bool more = zip.goToFirstFile(); more; more = zip.goToNextFile()) {
                 if (zip.getCurrentFileName().endsWith("service.json")) {
@@ -613,45 +613,39 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
         }
     }
 
-    if (!sError.empty()) {
-        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+    if (sConfig.empty()) {
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, "Not found service.json in zip archive."));
         return;
     }
 
     if (!nlohmann::json::accept(sConfig)) {
-        pRequest->sendMessageError(cmd(), Error(400, "Json string isn't valid."));
+        pRequest->sendMessageError(cmd(), Error(400, "Service json file isn't valid."));
     }
     auto jsonConfig = nlohmann::json::parse(sConfig);
+    const ServiceConfig config = ServiceConfig(jsonConfig);
+    ServiceLXD service = ServiceLXD(config);
+    service.create_container();
+    LXDContainer *container = service.get_container();
 
-    
+    if (!container->exec("mkdir -p /root/service")) {
+        sError = "Cant create service directory.";
+    }
 
+    for (bool more = zip.goToFirstFile(); more; more = zip.goToNextFile()) {
+        std::string file_name = zip.getCurrentFileName().section('/', -1).toStdString();
+        if (!file_name.empty() && file_name != "service.json") {
+            file.open(QIODevice::ReadOnly);
+            if (!container->push_file("/root/service/" + file_name, file.readAll().toStdString())) {
+                pRequest->sendMessageError(cmd(), Error(nErrorCode, container->get_error()));
+                file.close();
+                return;
+            }
+            file.close();
+        }
+    }
 
     zip.close();
 
-//
-//    if (sName.empty()) {
-//        if (jsonConfig.find("name") != jsonConfig.end()) {
-//            sName = jsonConfig["name"];
-//        } else {
-//            pRequest->sendMessageError(cmd(), Error(400, "Container name not found."));
-//        }
-//
-//    }
-//
-//    LXDContainer *pContainer;
-//    if (pOrchestra->find_container(sName, pContainer)) {
-//        sError = "Container " + sName + " is already created.";
-//        std::cout << sError << std::endl;
-//        nErrorCode = 400;
-//        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
-//    }
-//
-//    ServiceConfig serviceReq = ServiceConfig(jsonConfig);
-//
-//    if (!pOrchestra->create_service(serviceReq, sError)) {
-//        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
-//    }
-//
     if (sError.empty()) {
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     } else {
