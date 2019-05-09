@@ -133,16 +133,16 @@ REGISTRY_CMD(CmdHandlerLXDImportServiceFromZip)
 
 
 /*********************************************
- * Build service.
+ * Start service.
 **********************************************/
 
-class CmdHandlerLXDBuildService : public CmdHandlerBase {
+class CmdHandlerLXDStartService : public CmdHandlerBase {
 
 public:
-    CmdHandlerLXDBuildService();
+    CmdHandlerLXDStartService();
     void handle(ModelRequest *pRequest) override;
 };
 
-REGISTRY_CMD(CmdHandlerLXDBuildService)
+REGISTRY_CMD(CmdHandlerLXDStartService)
 
 #endif // CMD_HADNLERS_LXD_H

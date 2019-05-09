@@ -46,13 +46,19 @@ ServiceConfig::ServiceConfig(nlohmann::json jsonConfig) {
 
 LXDContainer::LXDContainer(const std::string &name_of_container) {
     name = name_of_container;
+    m_nError = 500;
 }
 
 std::string LXDContainer::get_name() const {
     return name;
 }
 
-std::string LXDContainer::get_status() const {
+std::string LXDContainer::get_status() {
+    nlohmann::json jsonState;
+    if (get_state(jsonState)) {
+        status = jsonState.at("metadata").at("status").get<std::string>();
+    }
+
     return status;
 }
 
@@ -68,7 +74,7 @@ std::string LXDContainer::full_name() const {
     return prefix + name;
 }
 
-bool LXDContainer::state(nlohmann::json &jsonState) {
+bool LXDContainer::get_state(nlohmann::json &jsonState) {
     auto *pOrchestra = findEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0/containers/" + full_name() + "/state";
 
@@ -132,8 +138,7 @@ bool LXDContainer::start() {
     }
 
     Log::info(TAG, "Started container " + full_name());
-    return true;
-
+    return get_status() == "Running";
 }
 
 bool LXDContainer::stop() {

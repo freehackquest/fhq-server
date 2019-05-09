@@ -217,7 +217,7 @@ bool CmdHandlerLXDInfo::get_state(std::string sName, std::string &sError, int &n
         return false;
     }
 
-    if (!pContainer->state(jsonState)) {
+    if (!pContainer->get_state(jsonState)) {
         nErrorCode = 500;
         sError = pContainer->get_error();
         return false;
@@ -640,8 +640,15 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
     service->create_container();
     LXDContainer *container = service->get_container();
 
+    if (container->get_status() != "Running" && !container->start()) {
+        pRequest->sendMessageError(cmd(), Error(500, "Cant start container. Error: " + container->get_error()));
+        zip.close();
+        return;
+    }
+
     if (!container->exec("mkdir -p /root/service")) {
-        sError = "Cant create service directory.";
+        pRequest->sendMessageError(cmd(),
+                                   Error(500, "Cant create service directory. Error: " + container->get_error()));
         zip.close();
         return;
     }
@@ -662,6 +669,11 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
 
     zip.close();
 
+    if (!service->build()) {
+        pRequest->sendMessageError(cmd(), Error(500, "Cant build service. Error: " + service->get_error()));
+        return;
+    }
+
     if (sError.empty()) {
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     } else {
@@ -670,8 +682,8 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
 }
 
 
-CmdHandlerLXDBuildService::CmdHandlerLXDBuildService()
-        : CmdHandlerBase("lxd_build_service", "Build service.") {
+CmdHandlerLXDStartService::CmdHandlerLXDStartService()
+        : CmdHandlerBase("lxd_start_service", "Start service.") {
 
     setAccessUnauthorized(true);
     setAccessUser(false);
@@ -680,7 +692,7 @@ CmdHandlerLXDBuildService::CmdHandlerLXDBuildService()
     requireStringParam("name", "Service's name.");
 }
 
-void CmdHandlerLXDBuildService::handle(ModelRequest *pRequest) {
+void CmdHandlerLXDStartService::handle(ModelRequest *pRequest) {
     auto *pOrchestra = findEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
@@ -698,8 +710,8 @@ void CmdHandlerLXDBuildService::handle(ModelRequest *pRequest) {
         return;
     }
 
-    if (!service->build()) {
-        pRequest->sendMessageError(cmd(), Error(500, "Cant build service. Error: " + service->get_error()));
+    if (!service->start()) {
+        pRequest->sendMessageError(cmd(), Error(500, "Cant start service. Error: " + service->get_error()));
         return;
     }
 
