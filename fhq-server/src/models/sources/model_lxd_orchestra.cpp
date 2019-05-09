@@ -219,9 +219,10 @@ bool LXDContainer::exec(const std::string &sCommand) {
             Log::err(TAG, "The asynchronous " + m_sError);
             return false;
         }
-        if (jsonAsyncResponse["metadata"]["metadata"]["return"] != 0) {
+        if (jsonAsyncResponse["metadata"]["metadata"]["return"].get<int>() != 0) {
             m_sError = "The command '" + sCommand + "' could not be executed in " + full_name() + " container";
             Log::err(TAG, "Failed to execute " + sCommand + " in container " + full_name());
+            std::cout << jsonAsyncResponse.dump(2);
             return false;
         }
     }
@@ -334,6 +335,11 @@ std::string ServiceLXD::get_error() {
 bool ServiceLXD::build() {
 
     if (m_configService.build) {
+        if (!m_Container->exec("chmod u+x -R /root/service/")) {
+            m_sError = "Can't build service " + m_Container->full_name() + " :\n" + m_Container->get_error();
+            return false;
+        }
+
         if (!m_Container->exec("sh /root/service/build.sh")) {
             m_sError = "Can't build service " + m_Container->full_name() + " :\n" + m_Container->get_error();
             return false;

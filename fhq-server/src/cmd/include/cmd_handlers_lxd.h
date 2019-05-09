@@ -131,4 +131,18 @@ public:
 
 REGISTRY_CMD(CmdHandlerLXDImportServiceFromZip)
 
+
+/*********************************************
+ * Build service.
+**********************************************/
+
+class CmdHandlerLXDBuildService : public CmdHandlerBase {
+
+public:
+    CmdHandlerLXDBuildService();
+    void handle(ModelRequest *pRequest) override;
+};
+
+REGISTRY_CMD(CmdHandlerLXDBuildService)
+
 #endif // CMD_HADNLERS_LXD_H

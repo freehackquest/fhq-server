@@ -624,14 +624,14 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
     }
     auto jsonConfig = nlohmann::json::parse(sConfig);
 
-    if (!pOrchestra->create_service(jsonConfig, sError)){
+    if (!pOrchestra->create_service(jsonConfig, sError)) {
         pRequest->sendMessageError(cmd(), Error(500, "Cant create service. Error: " + sError));
         zip.close();
         return;
     }
 
     ServiceLXD *service;
-    if (!pOrchestra->find_service(jsonConfig["name"].get<std::string>(), service)){
+    if (!pOrchestra->find_service(jsonConfig["name"].get<std::string>(), service)) {
         pRequest->sendMessageError(cmd(), Error(500, "Cant find service. Error: " + pOrchestra->lastError()));
         zip.close();
         return;
@@ -661,6 +661,47 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
     }
 
     zip.close();
+
+    if (sError.empty()) {
+        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    } else {
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+    }
+}
+
+
+CmdHandlerLXDBuildService::CmdHandlerLXDBuildService()
+        : CmdHandlerBase("lxd_build_service", "Build service.") {
+
+    setAccessUnauthorized(true);
+    setAccessUser(false);
+    setAccessAdmin(true);
+
+    requireStringParam("name", "Service's name.");
+}
+
+void CmdHandlerLXDBuildService::handle(ModelRequest *pRequest) {
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    if (!pOrchestra->initConnection()) {
+        pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
+        return;
+    }
+    QJsonObject jsonRequest = pRequest->data();
+    nlohmann::json jsonResponse;
+    std::string sError;
+    int nErrorCode = 500;
+    const std::string sNameService = jsonRequest["name"].toString().toStdString();
+
+    ServiceLXD *service;
+    if (!pOrchestra->find_service(sNameService, service)) {
+        pRequest->sendMessageError(cmd(), Error(500, "Cant find service. Error: " + pOrchestra->lastError()));
+        return;
+    }
+
+    if (!service->build()) {
+        pRequest->sendMessageError(cmd(), Error(500, "Cant build service. Error: " + service->get_error()));
+        return;
+    }
 
     if (sError.empty()) {
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
