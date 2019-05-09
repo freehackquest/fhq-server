@@ -117,4 +117,18 @@ public:
 
 REGISTRY_CMD(CmdHandlerLXDImportService)
 
+
+/*********************************************
+ * Import container configuration from zip archive.
+**********************************************/
+
+class CmdHandlerLXDImportServiceFromZip : public CmdHandlerBase {
+
+public:
+    CmdHandlerLXDImportServiceFromZip();
+    void handle(ModelRequest *pRequest) override;
+};
+
+REGISTRY_CMD(CmdHandlerLXDImportServiceFromZip)
+
 #endif // CMD_HADNLERS_LXD_H

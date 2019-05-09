@@ -8,7 +8,7 @@
 #include <json.hpp>
 
 
-struct ServiceRequest {
+struct ServiceConfig {
     std::string name;
     std::string type;
     std::string game;
@@ -20,7 +20,7 @@ struct ServiceRequest {
     bool start;
     bool build;
 
-    explicit ServiceRequest(nlohmann::json jsonConfig);
+    explicit ServiceConfig(nlohmann::json jsonConfig);
 };
 
 
@@ -66,7 +66,7 @@ private:
 
 class ServiceLXD {
 public:
-    explicit ServiceLXD(const ServiceRequest &reqService);
+    explicit ServiceLXD(const ServiceConfig &reqService);
 
     bool create_container();
     bool load_service();
@@ -77,7 +77,7 @@ public:
     std::string get_error();
 
 private:
-    ServiceRequest m_reqService;
+    ServiceConfig m_configService;
     LXDContainer* m_Container;
 
     std::string m_sName;

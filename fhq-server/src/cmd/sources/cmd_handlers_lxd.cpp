@@ -8,6 +8,10 @@
 #include <vector>
 #include <algorithm>
 #include <include/cmd_handlers_lxd.h>
+#include <QtCore/QDir>
+#include <quazip.h>
+#include <quazipfile.h>
+#include <QtCore/QBuffer>
 
 
 /*********************************************
@@ -547,12 +551,107 @@ void CmdHandlerLXDImportService::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
     }
 
-    ServiceRequest serviceReq = ServiceRequest(jsonConfig);
+    ServiceConfig serviceReq = ServiceConfig(jsonConfig);
 
     if (!pOrchestra->create_service(serviceReq, sError)) {
         pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
     }
 
+    if (sError.empty()) {
+        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    } else {
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+    }
+}
+
+
+
+CmdHandlerLXDImportServiceFromZip::CmdHandlerLXDImportServiceFromZip()
+        : CmdHandlerBase("lxd_import_service_from_zip", "Import Service from zip.") {
+
+    setAccessUnauthorized(true);
+    setAccessUser(false);
+    setAccessAdmin(true);
+
+    requireStringParam("zip_file", "Service's configuration in Base64 zip archive.");
+    requireStringParam("name", "Service's name.");
+}
+
+void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    if (!pOrchestra->initConnection()) {
+        pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
+        return;
+    }
+    QJsonObject jsonRequest = pRequest->data();
+    nlohmann::json jsonResponse;
+    std::string sError;
+    int nErrorCode = 500;
+    const std::string qsB64Zip = jsonRequest["zip_file"].toString().toStdString();
+    const std::string name = jsonRequest["name"].toString().toStdString();
+    std::string sConfig;
+
+    QByteArray qbaZip = QByteArray::fromBase64(QByteArray::fromStdString(qsB64Zip));
+    QBuffer buffer(&qbaZip);
+    buffer.open(QIODevice::ReadOnly);
+    QuaZip zip(&buffer);
+    QuaZipFile file(&zip);
+
+    if (zip.open(QuaZip::mdUnzip)) {
+
+        if (zip.getZipError() != UNZ_OK) {
+            std::cout << "\n Cant unzip " << zip.getZipError();
+        } else {
+            for (bool more = zip.goToFirstFile(); more; more = zip.goToNextFile()) {
+                if (zip.getCurrentFileName().endsWith("service.json")) {
+                    file.open(QIODevice::ReadOnly);
+                    sConfig = file.readAll().toStdString();
+                    file.close();
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!sError.empty()) {
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+        return;
+    }
+
+    if (!nlohmann::json::accept(sConfig)) {
+        pRequest->sendMessageError(cmd(), Error(400, "Json string isn't valid."));
+    }
+    auto jsonConfig = nlohmann::json::parse(sConfig);
+
+    
+
+
+    zip.close();
+
+//
+//    if (sName.empty()) {
+//        if (jsonConfig.find("name") != jsonConfig.end()) {
+//            sName = jsonConfig["name"];
+//        } else {
+//            pRequest->sendMessageError(cmd(), Error(400, "Container name not found."));
+//        }
+//
+//    }
+//
+//    LXDContainer *pContainer;
+//    if (pOrchestra->find_container(sName, pContainer)) {
+//        sError = "Container " + sName + " is already created.";
+//        std::cout << sError << std::endl;
+//        nErrorCode = 400;
+//        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+//    }
+//
+//    ServiceConfig serviceReq = ServiceConfig(jsonConfig);
+//
+//    if (!pOrchestra->create_service(serviceReq, sError)) {
+//        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+//    }
+//
     if (sError.empty()) {
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     } else {

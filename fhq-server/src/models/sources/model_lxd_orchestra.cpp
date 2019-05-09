@@ -11,7 +11,7 @@
 #include <jmorecfg.h>
 
 
-ServiceRequest::ServiceRequest(nlohmann::json jsonConfig) {
+ServiceConfig::ServiceConfig(nlohmann::json jsonConfig) {
     // Smells awful
     name = jsonConfig.at("name").get<std::string>();
     if (jsonConfig.find("type") != jsonConfig.end()) {
@@ -287,8 +287,8 @@ bool LXDContainer::open_port(const int &nPort, const std::string &sProto) {
 }
 
 
-ServiceLXD::ServiceLXD(const ServiceRequest &reqService) : m_reqService(reqService) {
-    m_sName = m_reqService.name;
+ServiceLXD::ServiceLXD(const ServiceConfig &reqService) : m_configService(reqService) {
+    m_sName = m_configService.name;
 }
 
 bool ServiceLXD::create_container() {
@@ -313,15 +313,15 @@ std::string ServiceLXD::get_error() {
 
 bool ServiceLXD::build() {
 
-    if (m_reqService.build){
+    if (m_configService.build){
         if (!m_Container->exec("sh /root/service/build.sh")){
             m_sError = "Can't build service " + m_Container->full_name() + " :\n" + m_Container->get_error();
             return false;
         }
     }
 
-    if (!m_reqService.port_proto.empty() && m_reqService.port_number != 0) {
-        if (!m_Container->open_port(m_reqService.port_number, m_reqService.port_proto)) {
+    if (!m_configService.port_proto.empty() && m_configService.port_number != 0) {
+        if (!m_Container->open_port(m_configService.port_number, m_configService.port_proto)) {
             m_sError = "Can't open port for container " + m_Container->full_name() + "  :\n" + m_Container->get_error();
             return false;
         }
@@ -337,7 +337,7 @@ bool ServiceLXD::start() {
         return false;
     }
 
-    if (m_reqService.start) {
+    if (m_configService.start) {
         if (!m_Container->exec("sh /root/service/start.sh")){
             m_sError = "Can't start service " + m_Container->full_name() + " :\n" + m_Container->get_error();
             return false;
@@ -348,5 +348,9 @@ bool ServiceLXD::start() {
 }
 
 bool ServiceLXD::load_service() {
-    return true;
+    return false;
+}
+
+bool ServiceLXD::stop() {
+    return false;
 }

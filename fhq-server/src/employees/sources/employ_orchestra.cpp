@@ -85,7 +85,7 @@ bool EmployOrchestra::create_container(const std::string &sName, std::string &sE
 
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::create_service(const ServiceRequest &serviceReq, std::string &sError) {
+bool EmployOrchestra::create_service(const ServiceConfig &serviceReq, std::string &sError) {
     auto *const pService = new ServiceLXD(serviceReq);
 
     Log::info(TAG, "Starting creation container " + serviceReq.name);
