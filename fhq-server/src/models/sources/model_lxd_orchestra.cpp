@@ -89,9 +89,7 @@ bool LXDContainer::create() {
         "name": "full_name",
         "source": {
             "type": "image",
-            "protocol": "simplestreams",
-            "server": "https://cloud-images.ubuntu.com/daily",
-            "alias": "16.04"
+            "alias": "alpine"
         }
     })"_json;
     jsonData["name"] = full_name();
