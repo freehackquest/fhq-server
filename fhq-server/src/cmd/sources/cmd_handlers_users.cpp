@@ -983,7 +983,7 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest) {
         return;
     }
 
-    // // generate random password
+    // generate random password
     const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
     const int randomStringLength = 12; // assuming you want random strings of 12 characters
     QString sPassword;
@@ -1618,7 +1618,7 @@ void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest){
 
     QString sCode_sha1 = sEmail.toUpper() + sCode;
     std::string _code_sha1 = sha1::calc_string_to_hex(sCode_sha1.toStdString());
-    sCode_sha1 = QString(_code_sha1.c_str()); 
+    sCode_sha1 = QString(_code_sha1.c_str());
     
     QSqlQuery query_insert(db);
     query_insert.prepare(""
@@ -1671,13 +1671,168 @@ CmdHandlerUsersRegistrationVerification::CmdHandlerUsersRegistrationVerification
     setAccessAdmin(false);
 
     // validation and description input fields
+    requireStringParam("email", "E-mail").addValidator(new ValidatorEmail());
     requireStringParam("code", "Verification code"); 
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
+    const auto &jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
+
+    QString sEmail = QString::fromStdString(jsonRequest.at("email"));
+    QString sCode = QString::fromStdString(jsonRequest.at("code"));
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM user_requests WHERE email = :email");
+    query.bindValue(":email", sEmail);
+    if(!query.exec()){
+        Log::err(TAG, query.lastError().text().toStdString());
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        return;
+    }
+    if(!query.next()) {
+        pRequest->sendMessageError(cmd(), Error(404, "Request not found"));
+        return;
+    }
+    QSqlRecord record = query.record();
+    QString sCode_stored = record.value("code").toString();
+    QString sExecuted = record.value("executed").toString();
+    QString sUniversity = " "; //TODO work with a field 'data'
+         
+    if (sExecuted == "true") {
+        pRequest->sendMessageError(cmd(), Error(403, "This request is already executed"));
+        return;
+    }
+    
+    QString sCode_sha1 = sEmail.toUpper() + sCode;
+    std::string _code_sha1 = sha1::calc_string_to_hex(sCode_sha1.toStdString());
+    sCode_sha1 = QString(_code_sha1.c_str());
+
+    if (sCode_sha1 != sCode_stored) {
+        pRequest->sendMessageError(cmd(), Error(401, "Wrong code"));
+        return;
+    }
+
+    // generate random nick
+    const QString possibleCharacters("ABCDEFH0123456789");
+    const int randomStringLength = 8; // assuming you want random strings of 8 characters
+    QString sNick;
+    for(int i=0; i<randomStringLength; ++i){
+        int index = qrand() % possibleCharacters.length();
+        QChar nextChar = possibleCharacters.at(index);
+        sNick.append(nextChar);
+    }
+    sNick = "hacker-" + sNick;
+
+    // generate random password
+    const QString possibleCharacters2("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+    const int randomStringLength2 = 12; // assuming you want random strings of 12 characters
+    QString sPassword;
+    for(int i=0; i<randomStringLength2; ++i){
+        int index = qrand() % possibleCharacters2.length();
+        QChar nextChar = possibleCharacters2.at(index);
+        sPassword.append(nextChar);
+    }
+
+    QString sPassword_sha1 = sEmail.toUpper() + sPassword;
+    std::string _password_sha1 = sha1::calc_string_to_hex(sPassword_sha1.toStdString());
+    sPassword_sha1 = QString(_password_sha1.c_str());
+
+    QSqlQuery query_insert(db);
+    query_insert.prepare(""
+                         "INSERT INTO users ("
+                         "   uuid, "
+                         "   email, "
+                         "   pass, "
+                         "   role, "
+                         "   nick,"
+                         "   logo,"
+                         "   dt_create,"
+                         "   dt_last_login,"
+                         "   last_ip,"
+                         "   status,"
+                         "   country,"
+                         "   region,"
+                         "   city,"
+                         "   university,"
+                         "   latitude,"
+                         "   longitude,"
+                         "   rating,"
+                         "   about)"
+                         "VALUES("
+                         "   :uuid, "
+                         "   :email, "
+                         "   :pass, "
+                         "   :role, "
+                         "   :nick,"
+                         "   :logo,"
+                         "   NOW(),"
+                         "   NOW(),"
+                         "   :last_ip,"
+                         "   :status,"
+                         "   :country,"
+                         "   :region,"
+                         "   :city,"
+                         "   :university,"
+                         "   :latitude,"
+                         "   :longitude,"
+                         "   :rating,"
+                         "   :about);"
+    );
+
+    QString sLastIP = pRequest->client()->peerAddress().toString();
+
+    QString sUuid = QUuid::createUuid().toString();
+    sUuid = sUuid.mid(1,sUuid.length()-2);
+    sUuid = sUuid.toUpper();
+
+    query_insert.bindValue(":uuid", sUuid);
+    query_insert.bindValue(":email", sEmail);
+    query_insert.bindValue(":pass", sPassword_sha1);
+    query_insert.bindValue(":role", "user");
+    query_insert.bindValue(":nick", sNick);
+    query_insert.bindValue(":logo", "files/users/0.png");
+    query_insert.bindValue(":last_ip", "");
+    query_insert.bindValue(":status", "activated");
+    query_insert.bindValue(":country", "");
+    query_insert.bindValue(":region", "");
+    query_insert.bindValue(":city", "");
+    query_insert.bindValue(":university", sUniversity);
+    query_insert.bindValue(":latitude", 0);
+    query_insert.bindValue(":longitude", 0);
+    query_insert.bindValue(":rating", 0);
+    query_insert.bindValue(":about", "");
+
+    if(!query_insert.exec()){
+        pRequest->sendMessageError(cmd(), Error(500, query_insert.lastError().text().toStdString()));
+        return;
+    }
+
+    int nUserID = query_insert.lastInsertId().toInt();
+
+    query.prepare("UPDATE user_requests SET executed=true WHERE email=:email");
+    query.bindValue(":email", sEmail);
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    RunTasks::AddPublicEvents("users", "New user #" + QString::number(nUserID) + "  " + sNick);
+
+    std::string sSubject = "Registration on FreeHackQuest";
+    std::string sContext = "Welcome to FreeHackQuest!\n"
+                       "You login: " + sEmail.toStdString() + "\n"
+                       "You password: " + sPassword.toStdString() + "\n";
+
+    RunTasks::MailSend(sEmail.toStdString(), sSubject, sContext);
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    RunTasks::UpdateUserLocation(nUserID, sLastIP);
 }
 
 /*********************************************
