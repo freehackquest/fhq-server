@@ -113,6 +113,11 @@ bool LXDContainer::create() {
 }
 
 bool LXDContainer::start() {
+
+    if (get_status() == "Running") {
+        return true;
+    }
+
     auto *pOrchestra = findEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0/containers/" + full_name() + "/state";
     auto jsonData = R"(
