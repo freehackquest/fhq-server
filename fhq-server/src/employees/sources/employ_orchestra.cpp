@@ -21,6 +21,7 @@ REGISTRY_EMPLOY(EmployOrchestra)
 EmployOrchestra::EmployOrchestra()
         : EmployBase(EmployOrchestra::name(), {EmploySettings::name()}) {
     TAG = "EmployOrchestra";
+    m_bTrusted = false;
 }
 
 // ---------------------------------------------------------------------
@@ -490,7 +491,7 @@ bool EmployOrchestra::pull_container_names() {
         }
     }
 
-    for (auto name : listNames) {
+    for (const auto& name : listNames) {
         auto *pContainer = new LXDContainer(name);
         m_mapContainers.insert(std::pair<std::string, LXDContainer *>(name, pContainer));
 

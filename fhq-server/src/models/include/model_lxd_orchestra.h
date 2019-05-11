@@ -46,7 +46,7 @@ public:
     bool open_port(const int &nPort, const std::string &sProto);
     bool exec(const std::string &sCommand);
 
-    std::vector<std::string> split(const std::string &str);
+    static std::vector<std::string> split(const std::string &str);
 
 
 private:

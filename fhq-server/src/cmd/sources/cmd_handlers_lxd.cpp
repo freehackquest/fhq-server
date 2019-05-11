@@ -203,7 +203,7 @@ void CmdHandlerLXDInfo::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
 }
 
-bool CmdHandlerLXDInfo::get_state(std::string sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState) {
+bool CmdHandlerLXDInfo::get_state(const std::string& sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState) {
     auto *pOrchestra = findEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         return false;

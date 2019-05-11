@@ -230,7 +230,6 @@ bool LXDContainer::exec(const std::string &sCommand) {
         if (jsonAsyncResponse["metadata"]["metadata"]["return"].get<int>() != 0) {
             m_sError = "The command '" + sCommand + "' could not be executed in " + full_name() + " container";
             Log::err(TAG, "Failed to execute " + sCommand + " in container " + full_name());
-            std::cout << jsonAsyncResponse.dump(2);
             return false;
         }
     }

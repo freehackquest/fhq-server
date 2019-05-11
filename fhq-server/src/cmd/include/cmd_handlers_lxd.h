@@ -34,7 +34,7 @@ class CmdHandlerLXDInfo : public CmdHandlerBase {
 public:
     CmdHandlerLXDInfo();
     virtual void handle(ModelRequest *pRequest);
-    bool get_state(std::string sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState);
+    bool get_state(const std::string& sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState);
 };
 
 REGISTRY_CMD(CmdHandlerLXDInfo)
@@ -82,7 +82,7 @@ public:
                    std::string &sError, int &nErrorCode, bool &isDirectory);
     bool push_file(LXDContainer *pContainer, const std::string &sPath, const std::string &sb64File,
                    std::string &sError, int &nErrorCode);
-    static bool delete_file(const std::string &sName, const std::string &sPath, std::string &s_b64Zip);
+    bool delete_file(const std::string &sName, const std::string &sPath, std::string &s_b64Zip);
 
 };
 
