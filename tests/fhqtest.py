@@ -7,6 +7,7 @@ import libfhqcli
 import string
 import random
 import socket
+from pprint import pprint
 
 admin_session = None
 loggined = False
@@ -148,3 +149,49 @@ def deinit_enviroment():
         admin_session.game_delete({"uuid": GAME_UUID1, "admin_password": "admin"})
 
     admin_session.close()
+
+def remove_item(classbookid, padding):
+    records_list = admin_session.classbook_list({
+        "parentid": classbookid,
+    })
+    childs = len(records_list['data'])
+    print("     * " + padding + " " + str(classbookid) + " has " + str(childs) + " childs")
+    # check_response(records_list, "Classbook Records list got")
+    for clb in records_list['data']:
+        childs = childs + 1
+        child_classbookid = clb['classbookid']
+        remove_item(child_classbookid, padding + "-(" + str(child_classbookid) + " has " + str(clb['childs']) + " childs)-")
+    
+    if classbookid != 0:
+        # print("Try remove classbook record #" + str(child_classbookid))
+        r = admin_session.classbook_delete_record({"classbookid": classbookid})
+        # check_response(r, "Record #" + str(child_classbookid) + " succesfull removed")
+        if r['result'] == 'FAIL':
+            pprint(r)
+            raise ValueError('Could not remove classbook record #' + str(classbookid))
+        else:
+            print_success(" * " + padding + "+ " + str(classbookid) + " - removed")
+
+def clean_all_classbooks():
+    print_bold("Cleanup all classbook test data... ")
+    remove_item(0, "-")
+
+def clean_all_quests():
+    print_bold("Cleanup quests test data... ")
+    quests = admin_session.quests({})
+    alert(quests == None, 'Could not get response')
+    quests = quests['data']
+    for q in quests:
+        questid = q['questid']
+        quest_removed = admin_session.quest_delete({"questid": questid})
+        check_response(quest_removed, "Quest #" + str(questid) + " succesfull removed")
+
+def find_first_gameid():
+    print_bold("Search first game id...")
+    games1 = admin_session.games({})
+    check_response(games1, "Games succesfull got")
+    games1 = games1['data']
+    gameid = 0
+    if len(games1) == 0:
+        log_err("Not found any game")
+    return games1[0]['local_id']

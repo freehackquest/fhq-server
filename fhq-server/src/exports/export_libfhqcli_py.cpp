@@ -245,11 +245,8 @@ void ExportLibFHQCliPy::exportAPImd() {
             }
         }
         apimd << "\n\n";
-
-        apimd << " #### example call method \n\n ```response = fhq." + sCmd + "({" + pythonTemplate + "});```";
-
+        apimd << " #### example call method \n\n ```response = fhq." + sCmd + "({" + pythonTemplate + "})```";
         apimd << "\n\n";
-
     }
 
     apimd.close();

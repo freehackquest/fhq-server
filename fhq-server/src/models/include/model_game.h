@@ -3,12 +3,10 @@
 
 #include <string>
 #include <json.hpp>
+#include <validators.h>
 
 class ModelGame {
     public:
-        static std::vector<std::string> TYPES;
-        static std::vector<std::string> FORMS;
-        static std::vector<std::string> STATES;
 
         ModelGame();
         
@@ -56,6 +54,9 @@ class ModelGame {
         std::string m_sDateRestart;
         std::string m_sOrganizators;
         int m_nMaxScore;
+        ValidatorGameType *m_pValidatorGameType;
+        ValidatorGameState *m_pValidatorGameState;
+        ValidatorGameForm *m_pValidatorGameForm;
 };
 
 #endif // MODEL_GAME_H

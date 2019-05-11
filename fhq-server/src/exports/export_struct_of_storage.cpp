@@ -68,10 +68,10 @@ class FakeStorage : public Storage {
             return std::vector<std::string>();
         };
         virtual std::vector<std::string> prepareSqlQueries(const StorageModifyTable &storageModifyTable) {
-
+            return std::vector<std::string>();
         };
         virtual std::vector<std::string> prepareSqlQueries(const StorageDropTable &storageDropTable) {
-            
+            return std::vector<std::string>();
         };
 
     private:

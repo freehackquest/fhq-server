@@ -16,19 +16,7 @@ try:
     fhqtest.print_header(" > > > " + test_name + ": begin ")
     fhqtest.init_enviroment()
 
-    fhqtest.print_bold("Clean up test data... ")
-    records_list = fhqtest.admin_session.classbook_list({
-        "parentid": 0,
-    })
-    fhqtest.check_response(records_list, "Classbook Records list got")
-    
-    for i in records_list['data']:
-        print("Try remove classbookid = " + str(i['classbookid']))
-        r = fhqtest.admin_session.classbook_delete_record({"classbookid": i['classbookid']})
-        fhqtest.check_response(r, "Record succesfull removed")
-        if r['result'] == 'FAIL':
-            raise ValueError('Could not remove classbook article')
-        
+    fhqtest.clean_all_classbooks();
 
     records = []
     for _ in range(10):
@@ -276,7 +264,7 @@ try:
         fhqtest.log_err("Expected field 'email' value 'user2', but got '" + user2_found1['email'] + "'")
         exit(-1)
     '''
-
+    fhqtest.clean_all_classbooks();
 except Exception as e:
     fhqtest.log_err(str(e))
     traceback.print_exc(file=sys.stdout)

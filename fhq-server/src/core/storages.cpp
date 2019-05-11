@@ -291,7 +291,6 @@ const std::vector<StorageColumnDef> &StorageCreateTable::getColumns() const {
     return m_vColumns;
 }
 
-
 // ---------------------------------------------------------------------
 
 // ***********************

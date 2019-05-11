@@ -32,6 +32,12 @@ try:
     game_name = fhqtest.generate_random(255)
     game_description = fhqtest.generate_random(300)
     game_teams = fhqtest.generate_random(255)
+    game_state = "original"
+    game_form = "online"
+    game_type = "jeopardy"
+    game_date_start = "2000-01-01 00:00:00"
+    game_date_stop = "2001-01-01 00:00:00"
+    game_date_restart = "2011-01-01 00:00:00"
 
     # test create game
     fhqtest.print_bold("Try create game...")
@@ -39,12 +45,12 @@ try:
         "uuid": fhqtest.GAME_UUID2,
         "name": game_name,
         "description": game_description,
-        "state": "original", # TODO not has list of states
-        "form": "online", # TODO not has list of form
-        "type": "jeopardy", # TODO not has list of type
-        "date_start": "2000-01-01 00:00:00",
-        "date_stop": "2001-01-01 00:00:00",
-        "date_restart": "2011-01-01 00:00:00",
+        "state": game_state,
+        "form": game_form,
+        "type": game_type,
+        "date_start": game_date_start,
+        "date_stop": game_date_stop,
+        "date_restart": game_date_restart,
         "organizators": game_teams
     })
     fhqtest.alert(game2 == None, 'Could not get response (2)')
@@ -61,47 +67,13 @@ try:
     
     game2 = game2['data']
 
-    fhqtest.print_bold("Check name... ")
-    if game2['name'] != game_name:
-        fhqtest.log_err("Game has wrong name expected '" + game_name + "' got '" + game2['name'] + "'")
-    else:
-        fhqtest.print_success("Game name ok")
-
-    fhqtest.print_bold("Check organizators... ")
-    if game2['organizators'] != game_teams:
-        fhqtest.log_err("Game has wrong organizators expected '" + game_teams + "' got '" + game2['organizators'] + "'")
-    else:
-        fhqtest.print_success("Game organizators ok")
-
-    fhqtest.print_bold("Check form... ")
-    if game2['form'] != 'online':
-        fhqtest.log_err("Game has wrong form expected 'online' got '" + game2['form'] + "'")
-    else:
-        fhqtest.print_success("Game form ok")
-    
-    fhqtest.print_bold("Check state... ")
-    if game2['state'] != 'original':
-        fhqtest.log_err("Game has wrong state expected 'original' got '" + game2['state'] + "'")
-    else:
-        fhqtest.print_success("Game state ok")
-
-    fhqtest.print_bold("Check type... ")
-    if game2['type'] != 'jeopardy':
-        fhqtest.log_err("Game has wrong form expected 'jeopardy' got '" + game2['type'] + "'")
-    else:
-        fhqtest.print_success("Game type ok")
-
-    fhqtest.print_bold("Check description... ")
-    if game2['description'] != game_description:
-        fhqtest.log_err("Game has wrong description expected '" + game_description + "' got '" + game2['description'] + "'")
-    else:
-        fhqtest.print_success("Game description ok")
-
-    fhqtest.print_bold("Check maxscore... ")
-    if game2['maxscore'] != 0:
-        fhqtest.log_err("Game has wrong maxscore expected '0' got '" + str(game2['maxscore']) + "'")
-    else:
-        fhqtest.print_success("Game maxscore ok")
+    fhqtest.check_values("name of game", game2['name'], game_name)
+    fhqtest.check_values("organizators of game", game2['organizators'], game_teams)
+    fhqtest.check_values("form of game", game2['form'], game_form)
+    fhqtest.check_values("state of game", game2['state'], game_state)
+    fhqtest.check_values("type of game", game2['type'], game_type)
+    fhqtest.check_values("description of game", game2['description'], game_description)
+    fhqtest.check_values("maxscore of game", game2['maxscore'], 0)
 
     gameid = game2['local_id']
     # print("gameid: " + str(gameid))

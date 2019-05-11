@@ -5,12 +5,6 @@
 
 // ---------------------------------------------------------------------
 
-std::vector<std::string> ModelGame::TYPES = {"jeopardy"};
-std::vector<std::string> ModelGame::FORMS = {"online", "offline"};
-std::vector<std::string> ModelGame::STATES = {"original", "copy", "unlicensed_copy"};
-
-// ---------------------------------------------------------------------
-
 ModelGame::ModelGame() {
     TAG = "ModelGame";
     m_nLocalId = 0;
@@ -25,6 +19,9 @@ ModelGame::ModelGame() {
     m_sDateStop = "";
     m_sDateRestart = "";
     m_sOrganizators = "";
+    m_pValidatorGameType = new ValidatorGameType();
+    m_pValidatorGameState = new ValidatorGameState();
+    m_pValidatorGameForm = new ValidatorGameForm();
 }
 
 // ---------------------------------------------------------------------
@@ -84,8 +81,9 @@ const std::string &ModelGame::state() const {
 // ---------------------------------------------------------------------
 
 void ModelGame::setState(const std::string &sState) {
-    if (std::find(ModelGame::STATES.begin(), ModelGame::STATES.end(), sState) == ModelGame::STATES.end()) {
-        Log::err(TAG, "Game state unknown: [" + sState + "]");
+    std::string sError;
+    if (!m_pValidatorGameState->isValid(sState, sError)) {
+        Log::err(TAG, "Game state unknown:" + sError);
     }
     m_sState = sState;
 }
@@ -99,8 +97,9 @@ const std::string &ModelGame::form() const {
 // ---------------------------------------------------------------------
 
 void ModelGame::setForm(std::string sForm) {
-    if (std::find(ModelGame::FORMS.begin(), ModelGame::FORMS.end(), sForm) == ModelGame::FORMS.end()) {
-        Log::err(TAG, "Game form unknown: [" + sForm + "]");
+    std::string sError;
+    if (!m_pValidatorGameForm->isValid(sForm, sError)) {
+        Log::err(TAG, "Game form unknown: '" + sForm + "' " + sError);
     }
     m_sForm = sForm;
 }
@@ -114,8 +113,9 @@ const std::string &ModelGame::type() const {
 // ---------------------------------------------------------------------
 
 void ModelGame::setType(std::string sType) {
-    if (std::find(ModelGame::TYPES.begin(), ModelGame::TYPES.end(), sType) == ModelGame::TYPES.end()) {
-        Log::err(TAG, "Game type unknown: [" + sType + "]");
+    std::string sError;
+    if (!m_pValidatorGameType->isValid(sType, sError)) {
+        Log::err(TAG, "Game type unknown:" + sError);
     }
     m_sType = sType;
 }
