@@ -58,6 +58,10 @@ bool EmployGames::init() {
         std::string sUuid = record.value("uuid").toString().toStdString();
         pModelGame->setUuid(sUuid);
         pModelGame->setName(record.value("name").toString().toStdString());
+        pModelGame->setState(record.value("state").toString().toStdString());
+        pModelGame->setForm(record.value("form").toString().toStdString());
+        pModelGame->setType(record.value("type_game").toString().toStdString());
+        // TODO must be cached all fields
 
         if (m_mapCacheGames.count(sUuid)) {
             Log::err(TAG, "Inconsistent list games in database uuid: " + sUuid);

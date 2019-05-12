@@ -8,6 +8,7 @@
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <employ_notify.h>
+#include <validators.h>
 
 // *******************************************
 // *************** Quest List ****************
@@ -21,7 +22,8 @@ CmdHandlerQuests::CmdHandlerQuests()
     setAccessAdmin(true);
 
     // validation and description input fields
-    optionalStringParam("subject", "Filter by subject"); // TODO validator
+    optionalStringParam("subject", "Filter by subject")
+        .addValidator(new ValidatorQuestSubject());
 }
 
 // ---------------------------------------------------------------------
@@ -474,6 +476,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
 
 CmdHandlerCreateQuest::CmdHandlerCreateQuest()
     : CmdHandlerBase("createquest", "Method will be create new quest") {
+    // TODO add symlinks
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -488,15 +491,15 @@ CmdHandlerCreateQuest::CmdHandlerCreateQuest()
     requireIntegerParam("score", "How much append to user score after solve quest by them").minval(1).maxval(1000);
     // TODO validator score
 
-    // TODO from database init
-    QStringList questTypes;
-    questTypes << "trivia";
     requireStringParam("author", "Author of the quest");
-    requireStringParam("subject", "Subject must be one from types (look types)"); // TODO validator
+    requireStringParam("subject", "Subject must be one from types")
+        .addValidator(new ValidatorQuestSubject());
     requireStringParam("answer", "Answer for the quest");
     requireStringParam("answer_format", "Answer format for the quest");
-    requireStringParam("state", "State of the quest, can be: open, broken, closed"); // TODO validator
+    requireStringParam("state", "State of the quest")
+        .addValidator(new ValidatorQuestState());
     requireStringParam("description_state", "You can add some descriptions for quest state");
+    optionalStringParam("copyright", "You can add some copyright information");
 }
 
 // ---------------------------------------------------------------------
@@ -734,10 +737,9 @@ CmdHandlerQuestProposal::CmdHandlerQuestProposal()
     requireStringParam("text", "Description of the quest");
     requireIntegerParam("score", "How much append to user score after solve quest by them").minval(1).maxval(1000);
 
-    QStringList questTypes; // TODO fill from database or use employees
-    questTypes << "trivia";
     requireStringParam("author", "Author of the quest");
-    requireStringParam("subject", "Subject must be one from types (look types)"); // TODO validator
+    requireStringParam("subject", "Subject must be one from types (look types)")
+        .addValidator(new ValidatorQuestSubject());
     requireStringParam("answer", "Answer for the quest");
     requireStringParam("answer_format", "Answer format for the quest");
 }
@@ -1013,19 +1015,19 @@ CmdHandlerQuestUpdate::CmdHandlerQuestUpdate()
     // validation and description input fields
     requireIntegerParam("questid", "Quest ID");
     optionalStringParam("name", "Name of the quest");
-    optionalStringParam("gameid", "Which game included this quest");
+    optionalIntegerParam("gameid", "Which game included this quest");
     optionalStringParam("text", "Description of the quest");
     optionalIntegerParam("score", "How much append to user score after solve quest by them").minval(1).maxval(1000); // TODO validator
 
-    // TODO from database init
-    QStringList questTypes;
-    questTypes << "trivia";
-
-    optionalStringParam("subject", "Subject must be one from types (look types)");  // TODO validator
+    optionalStringParam("subject", "Subject must be one from types")
+        .addValidator(new ValidatorQuestSubject());
+    optionalStringParam("author", "Author of the quest");
     optionalStringParam("answer", "Answer for the quest");
     optionalStringParam("answer_format", "Answer format for the quest");
-    optionalStringParam("state", "State of the quest, can be: open, broken, closed"); // TODO validator
-    optionalStringParam("description_state", "You can add some descriptions for quest state");
+    optionalStringParam("state", "State of the quest")
+        .addValidator(new ValidatorQuestState());
+    optionalStringParam("description_state", "You can update some descriptions for quest state");
+    optionalStringParam("copyright", "You can update copyright");
 }
 
 // ---------------------------------------------------------------------

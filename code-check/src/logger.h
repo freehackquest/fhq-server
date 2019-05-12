@@ -38,21 +38,11 @@ class Log {
         static void throw_err(const std::string &sTag, const std::string &sMessage);
         static void warn(const std::string &sTag, const std::string &sMessage);
         static void ok(const std::string &sTag, const std::string &sMessage);
-        static void setdir(const std::string &sDirectoryPath);
-        static nlohmann::json last_logs();
-        static void initGlobalVariables();
         static std::string currentTime();
         static std::string threadId();
 
     private:
         static void add(Color::Modifier &clr, const std::string &sType, const std::string &sTag, const std::string &sMessage);
 };
-
-// TODO redesign to extern
-
-extern std::mutex *g_LOG_MUTEX;
-extern std::deque<std::string> *g_LAST_LOG_MESSAGES;
-
-static std::string g_LOG_DIR_PATH;
 
 #endif // LOGGER_H

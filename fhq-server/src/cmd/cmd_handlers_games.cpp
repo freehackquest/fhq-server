@@ -34,13 +34,14 @@ CmdHandlerGameCreate::CmdHandlerGameCreate()
     // validation and description input fields
     requireStringParam("uuid", "Global Identificator of the Game")
         .addValidator(new ValidatorUUID());
-
     requireStringParam("name", "Name of the Game");
     requireStringParam("description", "Description of the Game");
-    requireStringParam("state", "State of the game"); // TODO validator
-    // new ValidatorGameState();
-    requireStringParam("form", "Form of the game"); // TODO validator
-    requireStringParam("type", "Type of the game"); // TODO validator
+    requireStringParam("state", "State of the game")
+        .addValidator(new ValidatorGameState());
+    requireStringParam("form", "Form of the game")
+        .addValidator(new ValidatorGameForm());
+    requireStringParam("type", "Type of the game")
+        .addValidator(new ValidatorGameType());
     requireStringParam("date_start", "Date start"); // TODO validator datetime
     requireStringParam("date_stop", "Date stop"); // TODO validator datetime
     requireStringParam("date_restart", "Date restart"); // TODO validator datetime
@@ -124,7 +125,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
 
     QSqlDatabase db = *(pDatabase->database());
 
-    // check admin password
+    // TODO easy way for check admin password
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM users WHERE id = :userid");
@@ -431,12 +432,14 @@ CmdHandlerGameUpdate::CmdHandlerGameUpdate()
     // validation and description input fields
     requireStringParam("uuid", "Global Identificator of the Game")
         .addValidator(new ValidatorUUID());
-
     optionalStringParam("name", "Name of the Game");
     optionalStringParam("description", "Description of the Game");
-    optionalStringParam("state", "State of the game"); // TODO validator state of game
-    optionalStringParam("form", "Form of the game"); // TODO validator form of game
-    optionalStringParam("type", "Type of the game"); // TODO validator type of game
+    optionalStringParam("state", "State of the game")
+        .addValidator(new ValidatorGameState());
+    optionalStringParam("form", "Form of the game")
+        .addValidator(new ValidatorGameForm());
+    optionalStringParam("type", "Type of the game")
+        .addValidator(new ValidatorGameType());
     optionalStringParam("date_start", "Date start"); // TODO validator datetime
     optionalStringParam("date_stop", "Date stop"); // TODO validator datetime
     optionalStringParam("date_restart", "Date restart"); // TODO validator datetime

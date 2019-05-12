@@ -179,6 +179,7 @@ void MySqlStorage::clean() {
 
 // ----------------------------------------------------------------------
 
+/*
 std::vector<std::string> MySqlStorage::prepareSqlQueries(StorageStruct &storageStruct) {
     std::vector<std::string> vRet;
     if (storageStruct.mode() == StorageStructTableMode::ALTER) {
@@ -189,18 +190,16 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(StorageStruct &storageS
         }
         
         // add columns
-        std::vector<StorageStructColumn> vAddColumns = storageStruct.listAddColumns();
+        std::vector<StorageColumnDef> vAddColumns = storageStruct.listAddColumns();
         for (int i = 0; i < vAddColumns.size(); i++) {
             vRet.push_back("ALTER TABLE `" + storageStruct.tableName() + "` ADD COLUMN " + generateLineColumnForSql(vAddColumns[i]) + ";");
         }
 
         // alter columns
-        std::vector<StorageStructColumn> vAlterColumns = storageStruct.listAlterColumns();
+        std::vector<StorageColumnDef> vAlterColumns = storageStruct.listAlterColumns();
         for (int i = 0; i < vAlterColumns.size(); i++) {
             vRet.push_back("ALTER TABLE `" + storageStruct.tableName() + "` MODIFY " + generateLineColumnForSql(vAlterColumns[i]) + ";");
         }
-    } else if (storageStruct.mode() == StorageStructTableMode::DROP) {
-        vRet.push_back("DROP TABLE IF EXISTS `" + storageStruct.tableName() + "`;");
     } else if (storageStruct.mode() == StorageStructTableMode::CREATE) {
         // TODO deprecated (Moved to StorageCreateTable)
         std::string sQuery = "";
@@ -210,9 +209,9 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(StorageStruct &storageS
         std::vector<std::string> vCreateTableContentUniqueIndexes;
 
         // add columns
-        std::vector<StorageStructColumn> vAddColumns = storageStruct.listAddColumns();
+        std::vector<StorageColumnDef> vAddColumns = storageStruct.listAddColumns();
         for (int i = 0; i < vAddColumns.size(); i++) {
-            StorageStructColumn c = vAddColumns[i];
+            StorageColumnDef c = vAddColumns[i];
             vCreateTableContent.push_back(this->generateLineColumnForSql(c));
 
             // sQuery += "  " + generateLineColumnForSql(c) + ",\r\n";
@@ -266,7 +265,7 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(StorageStruct &storageS
     }
     return vRet;
 }
-
+*/
 // ----------------------------------------------------------------------
 
 std::vector<std::string> MySqlStorage::prepareSqlQueries(const StorageInsert &storageInsert) {
@@ -281,19 +280,19 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(const StorageInsert &st
         sSql += v.getColumnName();
         sValues += (sValues.length() > 0 ? ", " : "");
         
-        if (v.getColumnType() == StorageStructColumnType::STRING) {
+        if (v.getColumnType() == StorageColumnType::STRING) {
             sValues += this->prepareStringValue(v.getString());
-        } else if (v.getColumnType() == StorageStructColumnType::DATETIME) {
+        } else if (v.getColumnType() == StorageColumnType::DATETIME) {
             sValues += this->prepareStringValue(v.getString());
-        } else if (v.getColumnType() == StorageStructColumnType::NUMBER) {
+        } else if (v.getColumnType() == StorageColumnType::NUMBER) {
             sValues += std::to_string(v.getInt());
-        } else if (v.getColumnType() == StorageStructColumnType::DOUBLE_NUMBER) {
+        } else if (v.getColumnType() == StorageColumnType::DOUBLE_NUMBER) {
             sValues += std::to_string(v.getDouble());
         } else {
             Log::err(TAG, "Unknown type " + std::to_string(v.getColumnType()));
         }
     }
-    vRet.push_back("INSERT INTO " + storageInsert.tableName() + "(" + sSql + ") VALUES(" + sValues + ");");
+    vRet.push_back("INSERT INTO " + storageInsert.getTableName() + "(" + sSql + ") VALUES(" + sValues + ");");
     return vRet;
 }
 
@@ -308,9 +307,9 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(const StorageCreateTabl
     std::vector<std::string> vCreateTableContentUniqueIndexes;
 
     // add columns
-    std::vector<StorageStructColumn> vColumns = storageCreateTable.getColumns();
+    std::vector<StorageColumnDef> vColumns = storageCreateTable.getColumns();
     for (int i = 0; i < vColumns.size(); i++) {
-        StorageStructColumn c = vColumns[i];
+        StorageColumnDef c = vColumns[i];
         vCreateTableContent.push_back(this->generateLineColumnForSql(c));
 
         // sQuery += "  " + generateLineColumnForSql(c) + ",\r\n";
@@ -367,6 +366,42 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(const StorageCreateTabl
 
 // ----------------------------------------------------------------------
 
+std::vector<std::string> MySqlStorage::prepareSqlQueries(const StorageModifyTable &storageModifyTable) {
+    std::vector<std::string> vRet;
+
+    // drop columns
+    std::vector<std::string> vDropColumns = storageModifyTable.getDropColumns();
+    for (int i = 0; i < vDropColumns.size(); i++) {
+        vRet.push_back("ALTER TABLE `" + storageModifyTable.getTableName() + "` DROP COLUMN `" + vDropColumns[i] + "`;");
+    }
+
+    // add columns
+    std::vector<StorageColumnDef> vAddColumns = storageModifyTable.getAddColumns();
+    for (int i = 0; i < vAddColumns.size(); i++) {
+        vRet.push_back("ALTER TABLE `" + storageModifyTable.getTableName() + "` ADD COLUMN " + generateLineColumnForSql(vAddColumns[i]) + ";");
+    }
+
+    // alter columns
+    std::vector<StorageColumnDef> vAlterColumns = storageModifyTable.getAlterColumns();
+    for (int i = 0; i < vAlterColumns.size(); i++) {
+        vRet.push_back("ALTER TABLE `" + storageModifyTable.getTableName() + "` MODIFY " + generateLineColumnForSql(vAlterColumns[i]) + ";");
+    }
+    return vRet;
+}
+
+// ----------------------------------------------------------------------
+
+std::vector<std::string> MySqlStorage::prepareSqlQueries(const StorageDropTable &storageDropTable) {
+    if (!this->existsTable(storageDropTable.getTableName())) {
+        Log::throw_err(TAG, "Table '" + storageDropTable.getTableName() + "' does not define previously");
+    }
+    std::vector<std::string> vRet;
+    vRet.push_back("DROP TABLE IF EXISTS `" + storageDropTable.getTableName() + "`;");
+    return vRet;
+}
+
+// ----------------------------------------------------------------------
+
 std::string MySqlStorage::prepareStringValue(const std::string &sValue) {
     // escaping simbols  NUL (ASCII 0), \n, \r, \, ', ", и Control-Z.
     std::string sResult;
@@ -396,7 +431,7 @@ std::string MySqlStorage::prepareStringValue(const std::string &sValue) {
 
 // ----------------------------------------------------------------------
 
-std::string MySqlStorage::generateLineColumnForSql(StorageStructColumn &c) {
+std::string MySqlStorage::generateLineColumnForSql(StorageColumnDef &c) {
     std::string sSqlColumn = "";
 
     sSqlColumn += "`" + c.columnName() + "`";

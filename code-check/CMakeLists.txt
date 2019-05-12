@@ -17,7 +17,13 @@ set (CODE_CHECK_SOURCES "")
 # include header dirs
 list (APPEND CODE_CHECK_INCLUDE_DIRS "src")
 
-# main
+list (APPEND CODE_CHECK_SOURCES "src/helpers.h")
+list (APPEND CODE_CHECK_SOURCES "src/helpers.cpp")
+list (APPEND CODE_CHECK_SOURCES "src/json.hpp")
+list (APPEND CODE_CHECK_SOURCES "src/line_checkers.h")
+list (APPEND CODE_CHECK_SOURCES "src/line_checkers.cpp")
+list (APPEND CODE_CHECK_SOURCES "src/logger.h")
+list (APPEND CODE_CHECK_SOURCES "src/logger.cpp")
 list (APPEND CODE_CHECK_SOURCES "src/main.cpp")
 
 include_directories(${CODE_CHECK_INCLUDE_DIRS})

@@ -48,6 +48,9 @@ try:
     run_test('test_users.py')
     run_test('test_games.py')
     run_test('test_leaks.py')
+    run_test('test_quests.py')
+    run_test('test_public_events.py')
+    run_test('test_scoreboard.py')
 
     # last step
     run_test('test_stats.py')
@@ -55,8 +58,10 @@ try:
 except Exception as e:
     fhqtest.log_err(str(e))
     traceback.print_exc(file=sys.stdout)
+    fhqtest.log_err("Some tests wrong")
     exit(-1)
 finally:
     fhqtest.print_header(" > > > TESTS: end ")
     print("Kill process " + str(p_fhq_server.pid))
+    fhqtest.print_success("All tests passed")
     os.kill(p_fhq_server.pid, signal.SIGKILL)

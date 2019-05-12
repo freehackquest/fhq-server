@@ -61,13 +61,16 @@ class FakeStorage : public Storage {
         virtual std::string prepareStringValue(const std::string &sValue) {
             return sValue;
         };
-        virtual std::vector<std::string> prepareSqlQueries(StorageStruct &storageStruct) {
-            return std::vector<std::string>();
-        };
         virtual std::vector<std::string> prepareSqlQueries(const StorageInsert &storageInsert) {
             return std::vector<std::string>();
         };
         virtual std::vector<std::string> prepareSqlQueries(const StorageCreateTable &storageCreateTable) {
+            return std::vector<std::string>();
+        };
+        virtual std::vector<std::string> prepareSqlQueries(const StorageModifyTable &storageModifyTable) {
+            return std::vector<std::string>();
+        };
+        virtual std::vector<std::string> prepareSqlQueries(const StorageDropTable &storageDropTable) {
             return std::vector<std::string>();
         };
 
@@ -82,16 +85,16 @@ void ExportStructOfStorage::print() {
     StorageUpdates::apply(pStorage);
 
     std::cout << std::endl << std::endl << " * Tables: " << std::endl;
-    std::map<std::string, StorageStruct> structs = pStorage->storageStruct();
-    std::map<std::string, StorageStruct>::iterator it = structs.begin();
-    while (it != structs.end()) {
+    std::map<std::string, StorageTable> tables = pStorage->getTables();
+    std::map<std::string, StorageTable>::iterator it = tables.begin();
+    while (it != tables.end()) {
         std::string sTableName = it->first;
-        StorageStruct st = it->second;
-        std::cout << " + Table '" << st.tableName() << "' " << std::endl;
+        StorageTable st = it->second;
+        std::cout << " + Table '" << st.getTableName() << "' " << std::endl;
         std::cout << " |---* Columns: " << std::endl;
-        std::vector<StorageStructColumn> vColumns = st.listAddColumns();
+        std::vector<StorageColumnDef> vColumns = st.getColumns();
         for (int i = 0; i < vColumns.size(); i++) {
-            StorageStructColumn c = vColumns[i];
+            StorageColumnDef c = vColumns[i];
             std::cout << " |   | - '" 
                 << c.columnName() << "' as " << c.columnType() << " (" << c.columnTypeSize() << ") " 
                 // TODO c.columnDescription()

@@ -12,7 +12,7 @@
 
 // ---------------------------------------------------------------------
 
-enum StorageStructColumnType {
+enum StorageColumnType {
     DATETIME,
     STRING,
     NUMBER,
@@ -23,22 +23,22 @@ enum StorageStructColumnType {
 
 // ---------------------------------------------------------------------
 
-class StorageStructColumn {
+class StorageColumnDef {
     public:
-        StorageStructColumn(const std::string &sColumnName);
-        StorageStructColumn &autoIncrement();
-        StorageStructColumn &notNull();
-        StorageStructColumn &string(int nSize);
-        StorageStructColumn &text();
-        StorageStructColumn &datetime();
-        StorageStructColumn &number();
-        StorageStructColumn &doubleNumber();
-        StorageStructColumn &primaryKey();
-        StorageStructColumn &defaultValue(const std::string& sDefault);
-        StorageStructColumn &enableIndex();
-        StorageStructColumn &enableUniqueIndex(const std::string& sIndexName);
+        StorageColumnDef(const std::string &sColumnName);
+        StorageColumnDef &autoIncrement();
+        StorageColumnDef &notNull();
+        StorageColumnDef &string(int nSize);
+        StorageColumnDef &text();
+        StorageColumnDef &datetime();
+        StorageColumnDef &number();
+        StorageColumnDef &doubleNumber();
+        StorageColumnDef &primaryKey();
+        StorageColumnDef &defaultValue(const std::string& sDefault);
+        StorageColumnDef &enableIndex();
+        StorageColumnDef &enableUniqueIndex(const std::string& sIndexName);
 
-        std::string columnName();
+        std::string columnName() const;
         std::string columnType();
         bool isDefaultValue();
         std::string columnDefaultValue();
@@ -71,16 +71,8 @@ class StorageStructColumn {
 
 // TODO redesign
 
-class StorageStructColumnIndex {
+class StorageColumnDefIndex {
 
-};
-
-// ---------------------------------------------------------------------
-
-enum StorageStructTableMode { // TODO deprecated
-    DROP,
-    ALTER,
-    CREATE
 };
 
 // ---------------------------------------------------------------------
@@ -88,7 +80,7 @@ enum StorageStructTableMode { // TODO deprecated
 enum StorageChangesType {
     NOPE,
     DROP_TABLE,
-    ALTER_TABLE,
+    MODIFY_TABLE,
     CREATE_TABLE,
     INSERT_ROW,
     DELETE_ROW,
@@ -114,10 +106,6 @@ class StorageChanges {
 
 // ---------------------------------------------------------------------
 
-// TODO split to different -> 
-// StorageDropTable
-// StorageAlterTable
-
 class StorageCreateTable : public StorageChanges {
     public:
         StorageCreateTable(const std::string &sTableName);
@@ -126,60 +114,73 @@ class StorageCreateTable : public StorageChanges {
         virtual std::string getAppliedSuccess() const override;
         virtual std::string getAppliedFailed() const override;
 
-        StorageStructColumn &addColumn(const std::string &sColumnName);
-        const std::vector<StorageStructColumn> &getColumns() const;
+        StorageColumnDef &addColumn(const std::string &sColumnName);
+        const std::vector<StorageColumnDef> &getColumns() const;
 
     private:
         std::string TAG;
         std::string m_sTableName;
-        std::vector<StorageStructColumn> m_vColumns;
+        std::vector<StorageColumnDef> m_vColumns;
 };
 
 // ---------------------------------------------------------------------
 
-class StorageStruct {
+class StorageModifyTable : public StorageChanges {
     public:
-        StorageStruct(const std::string &sTableName, StorageStructTableMode nMode);
-        std::string tableName() const;
-        StorageStructTableMode mode() const;
-        bool addColumn(StorageStructColumn &column);
-        bool alterColumn(StorageStructColumn &column);
-        bool dropColumn(const std::string &sColumnName);
-        const std::vector<StorageStructColumn> &listAddColumns() const;
-        const std::vector<StorageStructColumn> &listAlterColumns() const;
-        const std::vector<std::string> &listDropColumns() const;
-        bool mergeWith(const StorageStruct &storageStruct);
-        // bool mergeWith(const StorageCreateTable &storageStruct);
-        // bool mergeWith(const StorageDropTable &storageStruct);
-        // bool mergeWith(const StorageAlterTable &storageStruct);
+        StorageModifyTable(const std::string &sTableName);
+        virtual StorageChangesType getType() const override;
+        virtual std::string getStartApply() const override;
+        virtual std::string getAppliedSuccess() const override;
+        virtual std::string getAppliedFailed() const override;
+
+        StorageColumnDef &addColumn(const std::string &sColumnName);
+        StorageColumnDef &alterColumn(const std::string &sColumnName);
+        std::string dropColumn(const std::string &sColumnName);
+        const std::vector<StorageColumnDef> &getAddColumns() const;
+        const std::vector<StorageColumnDef> &getAlterColumns() const;
+        const std::vector<std::string> &getDropColumns() const;
+        bool isColumnDefined(const std::string &sColumnName, std::string &sError) const;
 
     private:
         std::string TAG;
         std::string m_sTableName;
-        StorageStructTableMode m_nMode;
-        std::vector<StorageStructColumn> m_vAddColumns;
-        std::vector<StorageStructColumn> m_vAlterColumns;
+        std::vector<StorageColumnDef> m_vAddColumns;
+        std::vector<StorageColumnDef> m_vAlterColumns;
         std::vector<std::string> m_vDropColumns;
-        
+};
+
+// ---------------------------------------------------------------------
+
+class StorageDropTable : public StorageChanges {
+    public:
+        StorageDropTable(const std::string &sTableName);
+        virtual StorageChangesType getType() const override;
+        virtual std::string getStartApply() const override;
+        virtual std::string getAppliedSuccess() const override;
+        virtual std::string getAppliedFailed() const override;
+
+    private:
+        std::string TAG;
+        std::string m_sTableName;
 };
 
 // ---------------------------------------------------------------------
 
 class StorageColumnValue {
     public:
-        StorageColumnValue(const std::string &sColumnName, StorageStructColumnType nType);
+        StorageColumnValue(const std::string &sColumnName, StorageColumnType nType);
         void setValue(std::string sValue);
         void setValue(int nValue);
         void setValue(double nValue);
         std::string getColumnName();
-        StorageStructColumnType getColumnType();
+        StorageColumnType getColumnType();
         std::string getString();
         int getInt();
         double getDouble();
 
     private:
         std::string m_sColumnName;
-        StorageStructColumnType m_nColumnType;
+        StorageColumnType m_nColumnType;
 
         std::string m_sStringValue;
         int m_nIntValue;
@@ -188,16 +189,35 @@ class StorageColumnValue {
 
 // ---------------------------------------------------------------------
 
-class StorageInsert {
+class StorageTable {
+    public:
+        StorageTable(const std::string &sTableName);
+        StorageTable(StorageCreateTable &createTable);
+        std::string getTableName() const;
+        const std::vector<StorageColumnDef> &getColumns() const;
+        void mergeWith(StorageModifyTable &modifyTable);
+        
+    private:
+        std::string TAG;
+        std::string m_sTableName;
+        std::vector<StorageColumnDef> m_vColumns;
+};
+
+// ---------------------------------------------------------------------
+
+class StorageInsert : public StorageChanges {
     public:
         StorageInsert(const std::string &sTableName);
-        std::string tableName() const;
+        virtual StorageChangesType getType() const override;
+        virtual std::string getStartApply() const override;
+        virtual std::string getAppliedSuccess() const override;
+        virtual std::string getAppliedFailed() const override;
 
         void bindValue(const std::string &sColumnName, const std::string &sValue);
         void bindValue(const std::string &sColumnName, int nValue);
         void bindValue(const std::string &sColumnName, double nValue);
         std::vector<StorageColumnValue> values() const;
-        bool isValid(const StorageStruct &storageStruct) const;
+        bool isValid(const StorageTable &storageTable) const;
 
     private:
         bool exists(const std::string &sColumnName);
@@ -231,21 +251,6 @@ class StorageUpdate {
 
 // ---------------------------------------------------------------------
 
-class StorageTable {
-    public:
-        StorageTable(const std::string &sTableName);
-        const std::vector<StorageStructColumn> &getColumns() const;
-        void mergeWith(StorageCreateTable &createTable);
-        void mergeWith(StorageChanges &storageChanges);
-
-    private:
-        std::string TAG;
-        std::string m_sTableName;
-        std::vector<StorageStructColumn> m_vColumns;
-};
-
-// ---------------------------------------------------------------------
-
 class StorageConnection {
     public:
         StorageConnection();
@@ -275,26 +280,25 @@ class Storage {
         virtual void clean() = 0;
         virtual std::string prepareStringValue(const std::string &sValue) = 0;
 
-        virtual std::vector<std::string> prepareSqlQueries(StorageStruct &storageStruct) = 0; // TODO deprecated
-        bool addStruct(StorageStruct &storageStruct); // TODO deprecated
-        bool applyStruct(StorageConnection *pConn, StorageStruct &storageStruct); // TODO deprecated
+        // virtual std::vector<std::string> prepareSqlQueries(StorageStruct &storageStruct) = 0; // TODO deprecated
 
         bool executeStorageChanges(StorageConnection *pConn, StorageChanges &storageChanges);
         bool addStorageChanges(StorageChanges &storageChanges);
 
         virtual std::vector<std::string> prepareSqlQueries(const StorageInsert &storageInsert) = 0;
         virtual std::vector<std::string> prepareSqlQueries(const StorageCreateTable &storageCreateTable) = 0;
+        virtual std::vector<std::string> prepareSqlQueries(const StorageModifyTable &storageModifyTable) = 0;
+        virtual std::vector<std::string> prepareSqlQueries(const StorageDropTable &storageDropTable) = 0;
         
         bool insertRow(StorageConnection *pConn, const StorageInsert &storageInsert);
-        
-        const std::map<std::string, StorageStruct> &storageStruct(); // TODO deprecated
         const std::map<std::string, StorageTable> &getTables();
+        bool existsTable(const std::string &sTableName);
+        const StorageTable &getTableDef(const std::string &sTableName);
 
     protected:
         std::string TAG;
 
     private:
-        std::map<std::string, StorageStruct> m_mapStructs;
         std::map<std::string, StorageTable> m_mapTables;
 };
 
@@ -345,18 +349,18 @@ class StorageUpdateBase {
         const std::string &from_version();
         const std::string &version();
         const std::string &description();
-        const std::vector<StorageStruct> &listOfStructChanges(); // TODO deprecated
-        const std::vector<StorageChanges> &getListChanges();
-        void add(StorageStruct st); // TODO deprecated
-        void addStorageChanges(const StorageChanges &st);
-        virtual bool custom(Storage *pStorage, StorageConnection *pConn, std::string &error) = 0;  // TODO deprecated create after and before update
+        const std::vector<StorageChanges *> &getChanges();
 
     protected:
         std::string TAG;
-        std::vector<StorageStruct> m_vStructChanges; // TODO: move to private
+        StorageCreateTable *createTable(std::string sTableName);
+        StorageModifyTable *modifyTable(std::string sTableName);
+        StorageDropTable *dropTable(std::string sTableName);
+        StorageInsert *insertIntoTable(std::string sTableName);
         
     private:
-        std::vector<StorageChanges> m_vStorageChanges;
+        void checkTableName(std::string sTableName);
+        std::vector<StorageChanges *> m_vStorageChanges;
         std::string m_sFromVersion;
         std::string m_sVersion;
         std::string m_sDescription;

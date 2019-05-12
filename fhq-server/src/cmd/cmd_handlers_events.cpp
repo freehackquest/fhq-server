@@ -61,7 +61,7 @@ CmdHandlerEventDelete::CmdHandlerEventDelete()
     setAccessUser(false);
     setAccessAdmin(true);
 
-    requireIntegerParam("hintid", "hint id");
+    requireIntegerParam("eventid", "Event ID");
 }
 
 // ---------------------------------------------------------------------
