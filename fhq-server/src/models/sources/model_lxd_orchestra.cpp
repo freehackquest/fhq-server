@@ -8,7 +8,6 @@
 #include <iostream>
 #include <iterator>
 #include <sstream>
-#include <jmorecfg.h>
 
 
 ServiceConfig::ServiceConfig(nlohmann::json jsonConfig) {
@@ -27,10 +26,10 @@ ServiceConfig::ServiceConfig(nlohmann::json jsonConfig) {
         version = jsonConfig.at("version").get<std::string>();
     }
     if (jsonConfig.find("start") != jsonConfig.end()) {
-        start = jsonConfig.at("start").get<boolean>();
+        start = jsonConfig.at("start").get<bool>();
     }
     if (jsonConfig.find("build") != jsonConfig.end()) {
-        build = jsonConfig.at("build").get<boolean>();
+        build = jsonConfig.at("build").get<bool>();
     }
     if (jsonConfig.find("port_proto") != jsonConfig.end()) {
         port_proto = jsonConfig.at("port_proto").get<std::string>();
