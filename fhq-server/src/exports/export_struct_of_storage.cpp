@@ -49,7 +49,7 @@ class FakeStorage : public Storage {
         FakeStorage() {
             m_pVersion = new FakeVersion();
         };
-        virtual bool applyConfigFromFile(const std::string &sFilePath){
+        virtual bool applyConfigFromFile(const std::string &sFilePath) {
             return true;
         };
         virtual StorageConnection *connect() {
@@ -58,7 +58,7 @@ class FakeStorage : public Storage {
         virtual void clean() {
             // nothing
         };
-        virtual std::string prepareStringValue(const std::string &sValue){
+        virtual std::string prepareStringValue(const std::string &sValue) {
             return sValue;
         };
         virtual std::vector<std::string> prepareSqlQueries(StorageStruct &storageStruct) {
@@ -67,6 +67,10 @@ class FakeStorage : public Storage {
         virtual std::vector<std::string> prepareSqlQueries(const StorageInsert &storageInsert) {
             return std::vector<std::string>();
         };
+        virtual std::vector<std::string> prepareSqlQueries(const StorageCreateTable &storageCreateTable) {
+            return std::vector<std::string>();
+        };
+
     private:
         FakeVersion *m_pVersion;
 };

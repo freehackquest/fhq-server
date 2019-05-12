@@ -21,17 +21,17 @@
 // ---------------------------------------------------------------------
 
 class LightHttpResponse {
-	public:
+    public:
         static std::map<int, std::string> *g_mapReponseDescription;
 
         // enum for http responses
         static std::string RESP_OK;
         static std::string RESP_BAD_REQUEST;
-		static std::string RESP_FORBIDDEN;
+        static std::string RESP_FORBIDDEN;
         static std::string RESP_NOT_FOUND;
         static std::string RESP_PAYLOAD_TOO_LARGE;
-		static std::string RESP_INTERNAL_SERVER_ERROR;
-		static std::string RESP_NOT_IMPLEMENTED;
+        static std::string RESP_INTERNAL_SERVER_ERROR;
+        static std::string RESP_NOT_IMPLEMENTED;
         
         LightHttpResponse(int nSockFd);
 
@@ -44,14 +44,14 @@ class LightHttpResponse {
         LightHttpResponse &notImplemented();
 
         LightHttpResponse &noCache();
-		LightHttpResponse &cacheSec(int nCacheSec);
+        LightHttpResponse &cacheSec(int nCacheSec);
 
         void sendText(const std::string &sBody);
         void sendEmpty();
         void sendOptions(const std::string &sOptions);
         void sendDontUnderstand();
         void sendFile(const std::string &sFilePath);
-		void sendBuffer(const std::string &sFilePath, const char *pBuffer, const int nBufferSize);
+        void sendBuffer(const std::string &sFilePath, const char *pBuffer, const int nBufferSize);
 
     private:
         std::string prepareHeaders(int nLength);
@@ -60,83 +60,83 @@ class LightHttpResponse {
         std::string TAG;
 
         int m_nSockFd;
-		bool m_bClosed;
+        bool m_bClosed;
         int m_nResponseCode;
         std::string m_sDataType;
         std::string m_sCacheControl;
-		std::string m_sLastModified;
+        std::string m_sLastModified;
 };
 
 // ---------------------------------------------------------------------
 
 class LightHttpRequest {
-	public:
-		LightHttpRequest(
-			int nSockFd,
-			const std::string &sAddress
-		);
-		~LightHttpRequest(){};
+    public:
+        LightHttpRequest(
+            int nSockFd,
+            const std::string &sAddress
+        );
+        ~LightHttpRequest() {};
 
-		int sockFd();
-		void appendRecieveRequest(const std::string &sRequestPart);
-		bool isEnoughAppendReceived();
-		
-		std::string address();
-		std::string requestType();
-		std::string requestPath();
-		std::string requestBody();
-		std::string requestHttpVersion();
-		std::map<std::string,std::string> &requestQueryParams();
+        int sockFd();
+        void appendRecieveRequest(const std::string &sRequestPart);
+        bool isEnoughAppendReceived();
+        
+        std::string address();
+        std::string requestType();
+        std::string requestPath();
+        std::string requestBody();
+        std::string requestHttpVersion();
+        std::map<std::string,std::string> &requestQueryParams();
 
-	private:
-		std::string TAG;
+    private:
+        std::string TAG;
 
-		void parseFirstLine(const std::string &sHeader);
+        void parseFirstLine(const std::string &sHeader);
 
-		enum EnumParserState {
-			START,
-			BODY,
-			ENDED
-		};
-		int m_nSockFd;
-		bool m_bClosed;
-		EnumParserState m_nParserState;
-		std::vector<std::string> m_vHeaders;
-		int m_nContentLength;
-		std::string m_sRequest;
-		std::string m_sAddress;
-		std::string m_sRequestType;
-		std::string m_sRequestPath;
-		std::string m_sRequestBody;
-		std::map<std::string,std::string> m_sRequestQueryParams; // wrong use map for params
-		std::string m_sRequestHttpVersion;
+        enum EnumParserState {
+            START,
+            BODY,
+            ENDED
+        };
+        int m_nSockFd;
+        bool m_bClosed;
+        EnumParserState m_nParserState;
+        std::vector<std::string> m_vHeaders;
+        int m_nContentLength;
+        std::string m_sRequest;
+        std::string m_sAddress;
+        std::string m_sRequestType;
+        std::string m_sRequestPath;
+        std::string m_sRequestBody;
+        std::map<std::string,std::string> m_sRequestQueryParams; // wrong use map for params
+        std::string m_sRequestHttpVersion;
 
-		std::string m_sResponseCacheControl;
-		std::string m_sLastModified;
+        std::string m_sResponseCacheControl;
+        std::string m_sLastModified;
 };
 
 // ---------------------------------------------------------------------
 
 class LightHttpDequeRequests {
-	public:
+    public:
         LightHttpRequest *popRequest();
-		void pushRequest(LightHttpRequest *pRequest);
-		void cleanup();
+        void pushRequest(LightHttpRequest *pRequest);
+        void cleanup();
 
-	private:
-		std::string TAG;
+    private:
+        std::string TAG;
 
-		std::mutex m_mtxDequeRequests;
-		std::deque<LightHttpRequest *> m_dequeRequests;
+        std::mutex m_mtxDequeRequests;
+        std::deque<LightHttpRequest *> m_dequeRequests;
 };
 
 // ---------------------------------------------------------------------
 
 class LightHttpHandlerBase {
-	public:
+    public:
         LightHttpHandlerBase(const std::string &sName);
         const std::string &name();
-		virtual bool canHandle(const std::string &sWorkerId, LightHttpRequest *pRequest) = 0;
+        virtual bool canHandle(const std::string &sWorkerId, LightHttpRequest *pRequest) = 0;
         virtual bool handle(const std::string &sWorkerId, LightHttpRequest *pRequest) = 0;
 
     private:
@@ -160,49 +160,49 @@ class LightHttpHandlers {
 // ---------------------------------------------------------------------
 
 class LightHttpThreadWorker {
-	public:
+    public:
 
-		LightHttpThreadWorker(const std::string &sName, LightHttpDequeRequests *pDeque, LightHttpHandlers *pHandlers);
+        LightHttpThreadWorker(const std::string &sName, LightHttpDequeRequests *pDeque, LightHttpHandlers *pHandlers);
 
-		void start();
-		void stop();
-		void run();		
-	private:
-		std::string TAG;
-		std::string m_sName;
-		LightHttpDequeRequests *m_pDeque;
-		LightHttpHandlers *m_pHandlers;
-		bool m_bStop;
-		pthread_t m_serverThread;
+        void start();
+        void stop();
+        void run();        
+    private:
+        std::string TAG;
+        std::string m_sName;
+        LightHttpDequeRequests *m_pDeque;
+        LightHttpHandlers *m_pHandlers;
+        bool m_bStop;
+        pthread_t m_serverThread;
 };
 
 // ---------------------------------------------------------------------
 
 class LightHttpServer {
-	public:
+    public:
 
-		LightHttpServer();
-		void setPort(int nPort);
-		void setMaxWorkers(int nMaxWorkers);
-		void startSync();
-		void start();
-		void stop();
+        LightHttpServer();
+        void setPort(int nPort);
+        void setMaxWorkers(int nMaxWorkers);
+        void startSync();
+        void start();
+        void stop();
 
-		LightHttpHandlers *handlers();
+        LightHttpHandlers *handlers();
 
-	private:
-		std::string TAG;
-		LightHttpDequeRequests *m_pDeque;
-		LightHttpHandlers *m_pHandlers;
-		bool m_bStop;
+    private:
+        std::string TAG;
+        LightHttpDequeRequests *m_pDeque;
+        LightHttpHandlers *m_pHandlers;
+        bool m_bStop;
 
-		int m_nMaxWorkers;
-		int m_nPort;
-		std::vector<LightHttpThreadWorker *> m_vWorkers;
+        int m_nMaxWorkers;
+        int m_nPort;
+        std::vector<LightHttpThreadWorker *> m_vWorkers;
 
-		int m_nSockFd;
-		struct sockaddr_in m_serverAddress;
-		pthread_t m_serverThread;
+        int m_nSockFd;
+        struct sockaddr_in m_serverAddress;
+        pthread_t m_serverThread;
 };
 
 #endif // LIGHT_HTTP_SERVER_H

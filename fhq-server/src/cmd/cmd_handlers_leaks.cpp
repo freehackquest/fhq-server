@@ -10,20 +10,20 @@
 **********************************************/
 
 CmdHandlerLeaksList::CmdHandlerLeaksList()
-    : CmdHandlerBase("leaks_list", "Method returns list of leaks"){
+    : CmdHandlerBase("leaks_list", "Method returns list of leaks") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
     setAccessAdmin(true);
 
-	// validation and description input fields
+    // validation and description input fields
     requireIntegerParam("page", "Number of page"); // TODO validator
     requireIntegerParam("onpage", "How much rows in one page"); // TODO validator
 }
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
+void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
 
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
@@ -34,7 +34,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
     jsonResponse["page"] = nPage;
 
     int nOnPage = jsonRequest["onpage"].toInt();
-    if(nOnPage > 50){
+    if (nOnPage > 50) {
         pRequest->sendMessageError(cmd(), Error(400, "Parameter 'onpage' could not be more then 50"));
         return;
     }
@@ -43,20 +43,19 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
     QStringList filters;
     QMap<QString,QString> filter_values;
 
-    if(jsonRequest.contains("name")){
+    if (jsonRequest.contains("name")) {
         QString name = jsonRequest["name"].toString().trimmed();
-        if(name != ""){
+        if (name != "") {
             filters << "(l.name = :name)";
             filter_values[":name"] = name;
         }
     }
 
-    IUserToken *pUserToken = pRequest->userToken();
-    bool bAdmin = false;
-    if(pUserToken != NULL) bAdmin = pUserToken->isAdmin();
-    if(jsonRequest.contains("search") && bAdmin){
+    bool bAdmin = pRequest->isAdmin();
+
+    if (jsonRequest.contains("search") && bAdmin) {
         QString search = jsonRequest["search"].toString().trimmed();
-        if(search != ""){
+        if (search != "") {
             filters << "(l.message LIKE :search)";
             filter_values[":search"] = "%" + search + "%";
         }
@@ -64,7 +63,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
     }
 
     QString where = filters.join(" AND ");
-    if(where.length() > 0){
+    if (where.length() > 0) {
         where = "WHERE " + where;
     }
 
@@ -76,10 +75,10 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
         query.prepare("SELECT count(*) as cnt FROM leaks l"
             " " + where
         );
-        foreach(QString key, filter_values.keys() ){
+        foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
-        if (!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
@@ -90,7 +89,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
     }
 
     //data
-    auto jsonLeaksList = nlohmann::json::array();
+    nlohmann::json jsonLeaksList = nlohmann::json::array();
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM leaks l"
@@ -98,10 +97,10 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
             " ORDER BY id "
             " LIMIT " + QString::number(nPage*nOnPage) + "," + QString::number(nOnPage)
         );
-        foreach(QString key, filter_values.keys() ){
+        foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
-        if (!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
@@ -130,7 +129,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerLeaksAdd::CmdHandlerLeaksAdd()
-    : CmdHandlerBase("leaks_add", "Method adds a leak"){
+    : CmdHandlerBase("leaks_add", "Method adds a leak") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -149,13 +148,13 @@ CmdHandlerLeaksAdd::CmdHandlerLeaksAdd()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest){
+void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
     ModelLeak *pModelLeak = new ModelLeak();
     pModelLeak->fillFrom(jsonRequest);
 
-    if(pModelLeak->score() <= 0){
+    if (pModelLeak->score() <= 0) {
         // todo this check move to cmd input def
         pRequest->sendMessageError(cmd(), Error(400, "Score must be more then 0"));
         return;
@@ -165,30 +164,30 @@ void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest){
     std::string sError = "";
     int nResult = pEmployLeaks->addLeak(pModelLeak, sError);
 
-    if(nResult == EmployResult::DATABASE_ERROR){
+    if (nResult == EmployResult::DATABASE_ERROR) {
         pRequest->sendMessageError(cmd(), Error(500, sError));
         delete pModelLeak;
         return;
     }
 
-    if(nResult == EmployResult::ALREADY_EXISTS){
+    if (nResult == EmployResult::ALREADY_EXISTS) {
         pRequest->sendMessageError(cmd(), Error(403, "Leak already exists with this uuid"));
         delete pModelLeak;
         return;
     }
 
-    if(nResult == EmployResult::GAME_NOT_FOUND){
+    if (nResult == EmployResult::GAME_NOT_FOUND) {
         pRequest->sendMessageError(cmd(), Error(404, "Game does not exists with this uuid"));
         delete pModelLeak;
         return;
     }
 
-    if(nResult == EmployResult::OK){
+    if (nResult == EmployResult::OK) {
         nlohmann::json jsonResponse;
         jsonResponse["data"] = pModelLeak->toJson();
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
         return;
-    }else{
+    } else {
         pRequest->sendMessageError(cmd(), Error(500, "Server error"));
         delete pModelLeak;
     }
@@ -199,7 +198,7 @@ void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerLeaksUpdate::CmdHandlerLeaksUpdate()
-    : CmdHandlerBase("leaks_update", "Method updates a leak"){
+    : CmdHandlerBase("leaks_update", "Method updates a leak") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -214,7 +213,7 @@ CmdHandlerLeaksUpdate::CmdHandlerLeaksUpdate()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest){
+void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest) {
 
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
@@ -229,47 +228,47 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest){
     {
         query.prepare("SELECT id FROM leaks WHERE id = :id");
         query.bindValue(":id", id);
-        if (!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
-        if (!query.next()){
+        if (!query.next()) {
             pRequest->sendMessageError(cmd(), Error(404, "leak with this id"));
             return;
         }
     }
 
     QString sName;
-    if(jsonRequest.contains("name")){
+    if (jsonRequest.contains("name")) {
         sName = jsonRequest.value("name").toString().trimmed().toHtmlEscaped();
         query.prepare("UPDATE leaks SET name=:name WHERE id = :id");
         query.bindValue(":name", sName);
         query.bindValue(":id", id);
-        if (!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
 
     QString sContent;
-    if(jsonRequest.contains("content")){
+    if (jsonRequest.contains("content")) {
         sContent = jsonRequest.value("content").toString().trimmed().toHtmlEscaped();
         query.prepare("UPDATE leaks SET content=:content WHERE id = :id");
         query.bindValue(":content", sContent);
         query.bindValue(":id", id);
-        if (!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
 
     int nScore;
-    if(jsonRequest.contains("score")){
+    if (jsonRequest.contains("score")) {
         nScore = jsonRequest.value("score").toInt();
         query.prepare("UPDATE leaks SET score=:score WHERE id = :id");
         query.bindValue(":score", nScore);
         query.bindValue(":id", id);
-        if (!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
@@ -283,7 +282,7 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerLeaksDelete::CmdHandlerLeaksDelete()
-    : CmdHandlerBase("leaks_delete", "Method deletes a leak"){
+    : CmdHandlerBase("leaks_delete", "Method deletes a leak") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -296,7 +295,7 @@ CmdHandlerLeaksDelete::CmdHandlerLeaksDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest){
+void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest) {
 
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
@@ -311,11 +310,11 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest){
     {
         query.prepare("SELECT id FROM leaks WHERE id = :id");
         query.bindValue(":id", id);
-        if (!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
-        if (!query.next()){
+        if (!query.next()) {
             pRequest->sendMessageError(cmd(), Error(404, "Not found leak with this id"));
             return;
         }
@@ -325,7 +324,7 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest){
     {
         query.prepare("DELETE FROM users_leaks WHERE leakid = :id");
         query.bindValue(":id", id);
-        if(!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
@@ -335,7 +334,7 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest){
     {
         query.prepare("DELETE FROM leaks_files WHERE leakid = :id");
         query.bindValue(":id", id);
-        if(!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
@@ -345,7 +344,7 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest){
     {
         query.prepare("DELETE FROM leaks WHERE id = :id");
         query.bindValue(":id", id);
-        if(!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
@@ -359,7 +358,7 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerLeaksBuy::CmdHandlerLeaksBuy()
-    : CmdHandlerBase("leaks_buy", "Method buys a leak"){
+    : CmdHandlerBase("leaks_buy", "Method buys a leak") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -371,7 +370,7 @@ CmdHandlerLeaksBuy::CmdHandlerLeaksBuy()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest){
+void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest) {
 
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
@@ -386,34 +385,34 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest){
     {
         query.prepare("SELECT id FROM leaks WHERE id = :id");
         query.bindValue(":id", id);
-        if (!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
-        if (!query.next()){
+        if (!query.next()) {
             pRequest->sendMessageError(cmd(), Error(404, "Not found leak with this id"));
             return;
         }
     }
 
-    IUserToken *pUserToken = pRequest->userToken();
+    WSJCppUserSession *pUserSession = pRequest->userSession();
     int nUserID = 0;
-    if(pUserToken != NULL) nUserID = pUserToken->userid();
+    if (pUserSession != nullptr) {
+        nUserID = pUserSession->userid();
+    }
 
-    int nScore;
+    int nScore = 0;
     {
         query.prepare("SELECT score FROM leaks WHERE id = :id");
         query.bindValue(":id", id);
-        if (!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
-        if (!query.next()){
+        if (!query.next()) {
             pRequest->sendMessageError(cmd(), Error(404, "Not found leak with this id"));
             return;
-        }
-        else
-        {
+        } else {
             QSqlRecord record = query.record();
             nScore = record.value("score").toInt();
         }
@@ -424,7 +423,7 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest){
         query.prepare("UPDATE users SET rating = rating - :score WHERE id = :id");
         query.bindValue(":score", nScore);
         query.bindValue(":id", nUserID);
-        if (!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
@@ -446,7 +445,7 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest){
     query.bindValue(":leakid", id);
     query.bindValue(":userid", nUserID);
     query.bindValue(":grade", -1);
-    if (!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
@@ -455,7 +454,7 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest){
     {
         query.prepare("UPDATE leaks SET sold = sold + 1 WHERE id = :id");
         query.bindValue(":id", id);
-        if (!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }

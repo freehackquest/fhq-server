@@ -7,7 +7,6 @@
 #include <employ_server_info.h>
 #include <employ_scoreboard.h>
 #include <QtCore>
-#include <model_usertoken.h>
 #include <sha1_wrapper.h>
 #include <QUuid>
 
@@ -16,7 +15,7 @@
 **********************************************/
 
 CmdHandlerUsersScoreboard::CmdHandlerUsersScoreboard()
-    : CmdHandlerBase("scoreboard", "Method return scoreboard"){
+    : CmdHandlerBase("scoreboard", "Method return scoreboard") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -28,15 +27,15 @@ CmdHandlerUsersScoreboard::CmdHandlerUsersScoreboard()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest){
-    const auto &jsonRequest = pRequest->jsonRequest();
+void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest) {
+    const nlohmann::json &jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     int nPage = jsonRequest.at("page");
     jsonResponse["page"] = nPage;
 
     int nOnPage = jsonRequest.at("onpage");
-    if(nOnPage > 50){
+    if (nOnPage > 50) {
         pRequest->sendMessageError(cmd(), Error(400, "Parameter 'onpage' could not be more then 50"));
     }
     jsonResponse["onpage"] = nOnPage;
@@ -54,7 +53,7 @@ void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest){
     filters << "(rating > 0)";
 
     QString where = filters.join(" AND ");
-    if(where.length() > 0){
+    if (where.length() > 0) {
         where = "WHERE " + where;
     }
 
@@ -72,7 +71,7 @@ void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerGetMap::CmdHandlerGetMap()
-    : CmdHandlerBase("getmap", "Returned coordinate list"){
+    : CmdHandlerBase("getmap", "Returned coordinate list") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -81,7 +80,7 @@ CmdHandlerGetMap::CmdHandlerGetMap()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGetMap::handle(ModelRequest *pRequest){
+void CmdHandlerGetMap::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
 //    QJsonObject jsonRequest = pRequest->jsonRequest();
@@ -99,7 +98,7 @@ void CmdHandlerGetMap::handle(ModelRequest *pRequest){
         double lat = record.value("latitude").toDouble();
         double lon = record.value("longitude").toDouble();
         int count = record.value("cnt").toInt();
-        if(lat == 0. && lon == 0.){
+        if (lat == 0. && lon == 0.) {
             continue;
         }
         nlohmann::json item;
@@ -119,7 +118,7 @@ void CmdHandlerGetMap::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerLogin::CmdHandlerLogin()
-    : CmdHandlerBase("login", "Method for login"){
+    : CmdHandlerBase("login", "Method for login") {
 
     setAccessUnauthorized(true);
     setAccessUser(false);
@@ -131,10 +130,10 @@ CmdHandlerLogin::CmdHandlerLogin()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLogin::handle(ModelRequest *pRequest){
+void CmdHandlerLogin::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    auto const & jsonRequest = pRequest->jsonRequest();
+    nlohmann::json const & jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     QString email = QString::fromStdString(jsonRequest.at("email"));
@@ -186,7 +185,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest){
         query_token.bindValue(":status", "active");
         query_token.bindValue(":data", data);
 
-        if(!query_token.exec()){
+        if (!query_token.exec()) {
             Log::err(TAG, query_token.lastError().text().toStdString());
             pRequest->sendMessageError(cmd(), Error(500, query_token.lastError().text().toStdString()));
             return;
@@ -195,11 +194,11 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest){
         jsonResponse["token"] = token.toStdString();
         jsonResponse["user"] = user;
 
-        pRequest->server()->setUserToken(pRequest->client(), new ModelUserToken(user_token));
+        pRequest->server()->setWSJCppUserSession(pRequest->client(), new WSJCppUserSession(user_token));
 
         // update user location
-        QString lastip = pRequest->client()->peerAddress().toString();
-        RunTasks::UpdateUserLocation(nUserId, lastip);
+        std::string sLastIP = pRequest->client()->peerAddress().toString().toStdString();
+        RunTasks::UpdateUserLocation(nUserId, sLastIP);
 
     } else {
         Log::err(TAG, "Invalid login or password");
@@ -215,7 +214,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerRegistration::CmdHandlerRegistration()
-    : CmdHandlerBase("registration", "Method for registration"){
+    : CmdHandlerBase("registration", "Method for registration") {
 
     setAccessUnauthorized(true);
     setAccessUser(false);
@@ -229,10 +228,10 @@ CmdHandlerRegistration::CmdHandlerRegistration()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerRegistration::handle(ModelRequest *pRequest){
+void CmdHandlerRegistration::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto &jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json &jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     //EmploySettings *pSettings = findEmploy<EmploySettings>();
@@ -244,7 +243,7 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest){
     QSqlQuery query(db);
     query.prepare("SELECT * FROM users WHERE email = :email");
     query.bindValue(":email", sEmail);
-    if(!query.exec()){
+    if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
@@ -255,11 +254,12 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest){
         return;
     }
 
+    // TODO: move to helpers
     // // generate random password
     const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
     const int randomStringLength = 12; // assuming you want random strings of 12 characters
     QString sPassword;
-    for(int i=0; i<randomStringLength; ++i){
+    for (int i=0; i < randomStringLength; ++i) {
         int index = qrand() % possibleCharacters.length();
         QChar nextChar = possibleCharacters.at(index);
         sPassword.append(nextChar);
@@ -273,7 +273,7 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest){
     const QString possibleCharacters2("ABCDEFH0123456789");
     const int randomStringLength2 = 8; // assuming you want random strings of 12 characters
     QString sNick;
-    for(int i=0; i<randomStringLength2; ++i){
+    for (int i=0; i<randomStringLength2; ++i) {
         int index = qrand() % possibleCharacters2.length();
         QChar nextChar = possibleCharacters2.at(index);
         sNick.append(nextChar);
@@ -322,8 +322,9 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest){
                          "   :about);"
     );
 
-    QString sLastIP = pRequest->client()->peerAddress().toString();
+    std::string sLastIP = pRequest->client()->peerAddress().toString().toStdString();
 
+    // TODO move to helpers
     QString sUuid = QUuid::createUuid().toString();
     sUuid = sUuid.mid(1,sUuid.length()-2);
     sUuid = sUuid.toUpper();
@@ -345,14 +346,14 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest){
     query_insert.bindValue(":rating", 0);
     query_insert.bindValue(":about", "");
 
-    if(!query_insert.exec()){
+    if (!query_insert.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query_insert.lastError().text().toStdString()));
         return;
     }
 
     int nUserID = query_insert.lastInsertId().toInt();
 
-    RunTasks::AddPublicEvents("users", "New user #" + QString::number(nUserID) + "  " + sNick);
+    RunTasks::AddPublicEvents("users", "New [user#" + std::to_string(nUserID) + "]  " + sNick.toStdString());
 
     std::string sSubject = "Registration on FreeHackQuest";
     std::string sContext = "Welcome to FreeHackQuest!\n"
@@ -370,7 +371,7 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerToken::CmdHandlerToken()
-    : CmdHandlerBase("token", "Method for login by token"){
+    : CmdHandlerBase("token", "Method for login by token") {
 
     setAccessUnauthorized(true);
     setAccessUser(false);
@@ -382,10 +383,10 @@ CmdHandlerToken::CmdHandlerToken()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerToken::handle(ModelRequest *pRequest){
+void CmdHandlerToken::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto & jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json & jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     nlohmann::json jsonData;
@@ -397,7 +398,7 @@ void CmdHandlerToken::handle(ModelRequest *pRequest){
     QSqlQuery query(db);
     query.prepare("SELECT * FROM users_tokens WHERE token = :token");
     query.bindValue(":token", token);
-    if(!query.exec()){
+    if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
@@ -409,12 +410,12 @@ void CmdHandlerToken::handle(ModelRequest *pRequest){
         QString data = record.value("data").toString();
         QString start_date = record.value("start_date").toString();
         QString end_date = record.value("end_date").toString();
-        QString lastip = pRequest->client()->peerAddress().toString();
-        pRequest->server()->setUserToken(pRequest->client(), new ModelUserToken(data));
+        std::string sLastIP = pRequest->client()->peerAddress().toString().toStdString();
+        pRequest->server()->setWSJCppUserSession(pRequest->client(), new WSJCppUserSession(data));
         Log::info(TAG, "userid: " + QString::number(userid).toStdString());
         // TODO redesign this
-        RunTasks::UpdateUserLocation(userid, lastip);
-    }else{
+        RunTasks::UpdateUserLocation(userid, sLastIP);
+    } else {
         Log::err(TAG, "Invalid token " + token.toStdString());
         pRequest->sendMessageError(cmd(), Error(401, "Invalid token"));
         return;
@@ -428,7 +429,7 @@ void CmdHandlerToken::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerUpdateUserLocation::CmdHandlerUpdateUserLocation()
-    : CmdHandlerBase("updateuserlocation", "This method will be try update user location by lastip"){
+    : CmdHandlerBase("updateuserlocation", "This method will be try update user location by lastip") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -440,10 +441,10 @@ CmdHandlerUpdateUserLocation::CmdHandlerUpdateUserLocation()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest){
+void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto & jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json & jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     // bool bConvert = false;
@@ -457,7 +458,7 @@ void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest){
     }
 
     QSqlDatabase db = *(pDatabase->database());
-    QString lastip = "";
+    std::string sLastIP = "";
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM users WHERE id = :userid");
@@ -465,22 +466,22 @@ void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest){
         query.exec();
         if (query.next()) {
             QSqlRecord record = query.record();
-            lastip = record.value("last_ip").toString();
+            sLastIP = record.value("last_ip").toString().toStdString();
         }
     }
 
-    if(lastip == "" || lastip == NULL){
+    if (sLastIP == "") {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM users_ips WHERE userid = :userid ORDER BY id DESC");
         query.bindValue(":userid", userid);
         query.exec();
         if (query.next()) {
             QSqlRecord record = query.record();
-            lastip = record.value("ip").toString();
+            sLastIP = record.value("ip").toString().toStdString();
         }
     }
 
-    RunTasks::UpdateUserLocation(userid, lastip);
+    RunTasks::UpdateUserLocation(userid, sLastIP);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -490,7 +491,7 @@ void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerUserChangePassword::CmdHandlerUserChangePassword()
-    : CmdHandlerBase("user_change_password", "This method for change user password"){
+    : CmdHandlerBase("user_change_password", "This method for change user password") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -503,21 +504,21 @@ CmdHandlerUserChangePassword::CmdHandlerUserChangePassword()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest){
+void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto& jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    IUserToken *pUserToken = pRequest->userToken();
-    int nUserID = pUserToken->userid();
+    WSJCppUserSession *pUserSession = pRequest->userSession();
+    int nUserID = pUserSession->userid();
 
     QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
     query.prepare("SELECT * FROM users WHERE id = :userid");
     query.bindValue(":userid", nUserID);
-    if(!query.exec()){
+    if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
@@ -529,7 +530,7 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest){
         QSqlRecord record = query.record();
         sEmail = record.value("email").toString();
         sPass = record.value("pass").toString();
-    }else{
+    } else {
         pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
         return;
     }
@@ -542,7 +543,7 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest){
     std::string _sOldPassword_sha1 = sha1::calc_string_to_hex(sOldPassword_sha1.toStdString());
     sOldPassword_sha1 = QString(_sOldPassword_sha1.c_str());
 
-    if(sOldPassword_sha1 != sPass){
+    if (sOldPassword_sha1 != sPass) {
         pRequest->sendMessageError(cmd(), Error(401, "Wrong password"));
         return;
     }
@@ -558,7 +559,7 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest){
     query_update.bindValue(":userid", nUserID);
     query_update.bindValue(":email", sEmail);
 
-    if(!query_update.exec()){
+    if (!query_update.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query_update.lastError().text().toStdString()));
         return;
     }
@@ -571,7 +572,7 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerUsersAdd::CmdHandlerUsersAdd()
-    : CmdHandlerBase("users_add", "Method for add new user"){
+    : CmdHandlerBase("users_add", "Method for add new user") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -583,23 +584,25 @@ CmdHandlerUsersAdd::CmdHandlerUsersAdd()
         .addValidator(new ValidatorUUID());
 
     requireStringParam("email", "User's E-mail");
-    requireStringParam("nick", "User's nick");
-    requireStringParam("password", "Password");
+    requireStringParam("nick", "User's nick")
+        .addValidator(new ValidatorStringLength(4, 127));
+    requireStringParam("password", "Password")
+        .addValidator(new ValidatorStringLength(4, 127));
     requireStringParam("role", "User's role"); // TODO role validator
     requireStringParam("university", "University");
 }
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsersAdd::handle(ModelRequest *pRequest){
+void CmdHandlerUsersAdd::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto& jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json& jsonRequest = pRequest->jsonRequest();
 
     QRegularExpression regexEmail("^[0-9a-zA-Z-._@]{3,128}$");
     QString sEmail = QString::fromStdString(jsonRequest.at("email"));
 
-    if(!regexEmail.match(sEmail).hasMatch()){
+    if (!regexEmail.match(sEmail).hasMatch()) {
         Log::err(TAG, "Invalid email format " + sEmail.toStdString());
         pRequest->sendMessageError(cmd(), Error(400, "Expected email format"));
         return;
@@ -609,7 +612,7 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest){
     QSqlQuery query(db);
     query.prepare("SELECT * FROM users WHERE email = :email");
     query.bindValue(":email", sEmail);
-    if(!query.exec()){
+    if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
@@ -621,21 +624,7 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest){
     }
 
     QString sNick = QString::fromStdString(jsonRequest.at("nick"));
-
-    if(sNick.size() < 3 && sNick.size() > 128){
-        Log::err(TAG, "Invalid nick format " + sNick.toStdString());
-        pRequest->sendMessageError(cmd(), Error(400, "Expected nick format"));
-        return;
-    }
-
-    QRegularExpression regexPassword("^[0-9a-zA-Z]{3,128}$");
     QString sPassword = QString::fromStdString(jsonRequest.at("password"));
-
-    if(!regexPassword.match(sPassword).hasMatch()){
-        Log::err(TAG, "Invalid password format");
-        pRequest->sendMessageError(cmd(), Error(400, "Expected password format"));
-        return;
-    }
 
     QString sPassword_sha1 = sEmail.toUpper() + sPassword;
 
@@ -643,7 +632,7 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest){
     sPassword_sha1 = QString(_sPassword_sha1.c_str());
 
     QString sRole = QString::fromStdString(jsonRequest.at("role"));
-    if(sRole != "user" && sRole != "admin"){
+    if (sRole != "user" && sRole != "admin") {
         Log::err(TAG, "Invalid role format " + sRole.toStdString());
         pRequest->sendMessageError(cmd(), Error(400, "This role doesn't exist"));
         return;
@@ -696,10 +685,10 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest){
     QString sLastIP = pRequest->client()->peerAddress().toString();
 
     QString sUuid = "";
-    if(jsonRequest.find("uuid") == jsonRequest.end()){
+    if (jsonRequest.find("uuid") == jsonRequest.end()) {
         sUuid = QString::fromStdString(jsonRequest.at("uuid"));
         sUuid = sUuid.toUpper();
-    }else{
+    } else {
         sUuid = QUuid::createUuid().toString();
         sUuid = sUuid.mid(1,sUuid.length()-2);
         sUuid = sUuid.toUpper(); // why to upper ??
@@ -722,7 +711,7 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest){
     query_insert.bindValue(":rating", 0);
     query_insert.bindValue(":about", "");
 
-    if(!query_insert.exec()){
+    if (!query_insert.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query_insert.lastError().text().toStdString()));
         return;
     }
@@ -733,7 +722,7 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest){
     nlohmann::json jsonData;
     jsonData["userid"] = nUserID;
     jsonResponse["data"] = jsonData;
-    RunTasks::AddPublicEvents("users", "New user #" + QString::number(nUserID) + "  " + sNick);
+    RunTasks::AddPublicEvents("users", "New [user#" + std::to_string(nUserID) + "] " + sNick.toStdString());
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -742,7 +731,7 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerUser::CmdHandlerUser()
-    : CmdHandlerBase("user", "Return user info"){
+    : CmdHandlerBase("user", "Return user info") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -755,15 +744,15 @@ CmdHandlerUser::CmdHandlerUser()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUser::handle(ModelRequest *pRequest){
+void CmdHandlerUser::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    IUserToken *pUserToken = pRequest->userToken();
+    WSJCppUserSession *pUserSession = pRequest->userSession();
 
-    if(jsonRequest.find("userid") != jsonRequest.end() && pUserToken == NULL){
+    if (jsonRequest.find("userid") != jsonRequest.end() && pUserSession == nullptr) {
         pRequest->sendMessageError(cmd(), Error(401, "Not Authorized Request"));
         return;
     }
@@ -771,18 +760,15 @@ void CmdHandlerUser::handle(ModelRequest *pRequest){
     bool bCurrentUserOrAdmin = false;
 
     int nUserID = 0;
-    if(pUserToken != NULL){
-        nUserID = pUserToken->userid();
+    if (pUserSession != nullptr) {
+        nUserID = pUserSession->userid();
         bCurrentUserOrAdmin = true;
     }
 
-    if(jsonRequest.find("userid") != jsonRequest.end()){
+    if (jsonRequest.find("userid") != jsonRequest.end()) {
         int nUserID_ = jsonRequest.at("userid").get<int>();
-        if(nUserID_ != nUserID){
-            bCurrentUserOrAdmin = false;
-            if(pUserToken != NULL){
-                bCurrentUserOrAdmin = pUserToken->isAdmin();
-            }
+        if (nUserID_ != nUserID) {
+            bCurrentUserOrAdmin = pRequest->isAdmin();
         }
         nUserID = nUserID_;
     }
@@ -809,7 +795,7 @@ void CmdHandlerUser::handle(ModelRequest *pRequest){
             data["rating"] = record.value("rating").toString().toStdString();
             data["university"] = record.value("university").toString().toHtmlEscaped().toStdString();
 
-            if(bCurrentUserOrAdmin){
+            if (bCurrentUserOrAdmin) {
                 data["email"] = record.value("email").toString().toStdString();
                 data["dt_create"] = record.value("dt_create").toString().toStdString();
                 data["dt_last_login"] = record.value("dt_last_login").toString().toStdString();
@@ -851,7 +837,7 @@ void CmdHandlerUser::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerUsersInfo::CmdHandlerUsersInfo()
-    : CmdHandlerBase("users_info", "Return user info"){
+    : CmdHandlerBase("users_info", "Return user info") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -866,15 +852,15 @@ CmdHandlerUsersInfo::CmdHandlerUsersInfo()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
+void CmdHandlerUsersInfo::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    IUserToken *pUserToken = pRequest->userToken();
+    WSJCppUserSession *pUserSession = pRequest->userSession();
 
-     if (jsonRequest.find("userid") == jsonRequest.end() && pUserToken == NULL) {
+     if (jsonRequest.find("userid") == jsonRequest.end() && pUserSession == nullptr) {
         pRequest->sendMessageError(cmd(), Error(401, "Not Authorized Request"));
         return;
     }
@@ -882,18 +868,15 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
     bool bCurrentUserOrAdmin = false;
 
     int nUserID = 0;
-    if (pUserToken != NULL) {
-        nUserID = pUserToken->userid();
+    if (pUserSession != nullptr) {
+        nUserID = pUserSession->userid();
         bCurrentUserOrAdmin = true;
     }
 
     if (jsonRequest.find("userid") != jsonRequest.end()) {
         int nUserID_ = jsonRequest.at("userid").get<int>();
-        if(nUserID_ != nUserID){
-            bCurrentUserOrAdmin = false;
-            if(pUserToken != NULL){
-                bCurrentUserOrAdmin = pUserToken->isAdmin();
-            }
+        if (nUserID_ != nUserID) {
+            bCurrentUserOrAdmin = pRequest->isAdmin();
         }
         nUserID = nUserID_;
     }
@@ -920,7 +903,7 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
             jsonData["rating"] = record.value("rating").toString().toStdString();
             jsonData["university"] = record.value("university").toString().toHtmlEscaped().toStdString();
 
-            if(bCurrentUserOrAdmin){
+            if (bCurrentUserOrAdmin) {
                 jsonData["email"] = record.value("email").toString().toStdString();
                 jsonData["dt_create"] = record.value("dt_create").toString().toStdString();
                 jsonData["dt_last_login"] = record.value("dt_last_login").toString().toStdString();
@@ -929,7 +912,7 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
                 jsonData["region"] = record.value("region").toString().toStdString();
                 jsonData["city"] = record.value("city").toString().toStdString();
             }
-        }else{
+        } else {
             pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
             return;
         }
@@ -962,7 +945,7 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerUserResetPassword::CmdHandlerUserResetPassword()
-    : CmdHandlerBase("user_reset_password", "Method for reset password"){
+    : CmdHandlerBase("user_reset_password", "Method for reset password") {
 
     setAccessUnauthorized(true);
     setAccessUser(false);
@@ -975,10 +958,10 @@ CmdHandlerUserResetPassword::CmdHandlerUserResetPassword()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest){
+void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto& jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     QString sEmail = QString::fromStdString(jsonRequest.at("email"));
@@ -987,7 +970,7 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest){
     QSqlQuery query(db);
     query.prepare("SELECT * FROM users WHERE email = :email");
     query.bindValue(":email", sEmail);
-    if(!query.exec()){
+    if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
@@ -998,7 +981,7 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest){
         QSqlRecord record = query.record();
         nUserID = record.value("id").toInt();
         sNick = record.value("nick").toString().toHtmlEscaped();
-    }else{
+    } else {
         Log::err(TAG, "User not found" + sEmail.toStdString());
         pRequest->sendMessageError(cmd(), Error(403, "This email not exists"));
         return;
@@ -1008,7 +991,7 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest){
     const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
     const int randomStringLength = 12; // assuming you want random strings of 12 characters
     QString sPassword;
-    for(int i=0; i<randomStringLength; ++i){
+    for (int i=0; i<randomStringLength; ++i) {
         int index = qrand() % possibleCharacters.length();
         QChar nextChar = possibleCharacters.at(index);
         sPassword.append(nextChar);
@@ -1025,12 +1008,12 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest){
     query_update.bindValue(":userid", nUserID);
     query_update.bindValue(":email", sEmail);
 
-    if(!query_update.exec()){
+    if (!query_update.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query_update.lastError().text().toStdString()));
         return;
     }
 
-    RunTasks::AddPublicEvents("users", "User comeback #" + QString::number(nUserID) + "  " + sNick);
+    RunTasks::AddPublicEvents("users", "User comeback [user#" + std::to_string(nUserID) + "] " + sNick.toStdString());
 
     std::string sSubject = "Reset Password from FreeHackQuest";
     std::string sContext = "Welcome back to FreeHackQuest!\n"
@@ -1047,7 +1030,7 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerUserSkills::CmdHandlerUserSkills()
-    : CmdHandlerBase("user_skills", "Return user skills info"){
+    : CmdHandlerBase("user_skills", "Return user skills info") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -1059,10 +1042,10 @@ CmdHandlerUserSkills::CmdHandlerUserSkills()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
+void CmdHandlerUserSkills::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto& jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
 
@@ -1074,7 +1057,7 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
     {
         QSqlQuery query(db);
         query.prepare("SELECT q.subject, sum(q.score) as sum_subject FROM quest q WHERE ! ISNULL( q.subject ) GROUP BY q.subject");
-        if(!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         };
@@ -1097,7 +1080,7 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
             return;
         };
 
-        while(query.next()) {
+        while (query.next()) {
             QSqlRecord record = query.record();
             QString subject = record.value("subject").toString();
             jsonSkillsUser[subject.toStdString()] = record.value("sum_score").toInt();
@@ -1115,7 +1098,7 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerUserUpdate::CmdHandlerUserUpdate()
-    : CmdHandlerBase("user_update", "Update user info"){
+    : CmdHandlerBase("user_update", "Update user info") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -1131,17 +1114,17 @@ CmdHandlerUserUpdate::CmdHandlerUserUpdate()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUserUpdate::handle(ModelRequest *pRequest){
+void CmdHandlerUserUpdate::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto& jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
     nlohmann::json data;
 
-    IUserToken *pUserToken = pRequest->userToken();
-    int nUserIDFromToken = pUserToken->userid();
-    int nUserID = jsonRequest.at("userid");
-    if(nUserIDFromToken != nUserID && !pUserToken->isAdmin()){
+    WSJCppUserSession *pUserSession = pRequest->userSession();
+    int nUserIDFromToken = pUserSession->userid();
+    int nUserID = pRequest->getInputInteger("userid", 0);
+    if (nUserIDFromToken != nUserID && !pRequest->isAdmin()) {
         pRequest->sendMessageError(cmd(), Error(403, "Deny change inmormation about user"));
         return;
     }
@@ -1163,15 +1146,15 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest){
         query.prepare("SELECT * FROM users WHERE id = :userid");
         query.bindValue(":userid", nUserID);
 
-        if(!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         };
 
-        if(!query.next()) {
+        if (!query.next()) {
             pRequest->sendMessageError(cmd(), Error(404, "User not found"));
             return;
-        }else{
+        } else {
             QSqlRecord record = query.record();
             sNick = record.value("nick").toString();
             sUniversity = record.value("university").toString();
@@ -1199,7 +1182,6 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest){
     std::string s = jsonRequest.dump();
     Log::warn(TAG, "jsonRequest " + s);
     if (jsonRequest.find("country") != jsonRequest.end()) {
-        
         sCountry = jsonRequest["country"];
     }
 
@@ -1219,14 +1201,14 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest){
         query.bindValue(":about", sAbout);
         query.bindValue(":country", QString::fromStdString(sCountry));
         query.bindValue(":userid", nUserID);
-        if(!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         };
     }
 
-    pUserToken->setNick(sNick);
-    RunTasks::AddPublicEvents("users", "User #" + QString::number(nUserID) + "  " + sNick
+    pUserSession->setNick(sNick);
+    RunTasks::AddPublicEvents("users", "User [user#" + std::to_string(nUserID) + "]  " + sNick.toStdString()
                               + " updated info");
 
     data["id"] = nUserID;
@@ -1250,7 +1232,7 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerUserDelete::CmdHandlerUserDelete()
-    : CmdHandlerBase("user_delete", "Method for deleting a user"){
+    : CmdHandlerBase("user_delete", "Method for deleting a user") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1263,16 +1245,16 @@ CmdHandlerUserDelete::CmdHandlerUserDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
+void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto& jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     QString sAdminPassword = QString::fromStdString(jsonRequest.at("password"));
 
-    IUserToken *pUserToken = pRequest->userToken();
-    int nAdminUserID = pUserToken->userid();
+    WSJCppUserSession *pUserSession = pRequest->userSession();
+    int nAdminUserID = pUserSession->userid();
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -1281,7 +1263,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         QSqlQuery query(db);
         query.prepare("SELECT * FROM users WHERE id = :userid");
         query.bindValue(":userid", nAdminUserID);
-        if(!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
@@ -1293,7 +1275,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
             QSqlRecord record = query.record();
             sEmail = record.value("email").toString();
             sPass = record.value("pass").toString();
-        }else{
+        } else {
             pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
             return;
         }
@@ -1302,7 +1284,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         std::string _sAdminPasswordHash = sha1::calc_string_to_hex(sAdminPasswordHash.toStdString());
         sAdminPasswordHash = QString(_sAdminPasswordHash.c_str());
 
-        if(sAdminPasswordHash != sPass){
+        if (sAdminPasswordHash != sPass) {
             pRequest->sendMessageError(cmd(), Error(401, "Wrong password"));
             return;
         }
@@ -1316,12 +1298,12 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
         query.prepare("SELECT * FROM users WHERE id = :id");
         query.bindValue(":id", nUserID);
 
-        if(!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
 
-        if(!query.next()) {
+        if (!query.next()) {
             pRequest->sendMessageError(cmd(), Error(404, "User not found"));
             return;
         }
@@ -1333,7 +1315,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
     {
         query_del.prepare("DELETE FROM feedback WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
-        if(!query_del.exec()){
+        if (!query_del.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
@@ -1343,7 +1325,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
     {
         query_del.prepare("DELETE FROM feedback_msg WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
-        if(!query_del.exec()){
+        if (!query_del.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
@@ -1353,7 +1335,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
     {
         query_del.prepare("DELETE FROM quest WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
-        if(!query_del.exec()){
+        if (!query_del.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
@@ -1363,7 +1345,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
     {
         query_del.prepare("DELETE FROM users_games WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
-        if(!query_del.exec()){
+        if (!query_del.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
@@ -1373,7 +1355,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
     {
         query_del.prepare("DELETE FROM users_profile WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
-        if(!query_del.exec()){
+        if (!query_del.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
@@ -1383,7 +1365,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
     {
         query_del.prepare("DELETE FROM users_quests WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
-        if(!query_del.exec()){
+        if (!query_del.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
@@ -1393,7 +1375,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
     {
         query_del.prepare("DELETE FROM users_tokens WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
-        if(!query_del.exec()){
+        if (!query_del.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
@@ -1403,7 +1385,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
     {
         query_del.prepare("DELETE FROM users_tokens_invalid WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
-        if(!query_del.exec()){
+        if (!query_del.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
@@ -1413,7 +1395,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
     {
         query_del.prepare("DELETE FROM users_offers WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
-        if(!query_del.exec()){
+        if (!query_del.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
@@ -1423,7 +1405,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
     {
         query_del.prepare("DELETE FROM quests_proposal WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
-        if(!query_del.exec()){
+        if (!query_del.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
@@ -1433,7 +1415,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
     {
         query_del.prepare("DELETE FROM users_quests_answers WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
-        if(!query_del.exec()){
+        if (!query_del.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
@@ -1443,7 +1425,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
     {
         query_del.prepare("DELETE FROM users WHERE id = :id");
         query_del.bindValue(":id", nUserID);
-        if(!query_del.exec()){
+        if (!query_del.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
             return;
         }
@@ -1457,7 +1439,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerUsers::CmdHandlerUsers()
-    : CmdHandlerBase("users", "Method return list of users"){
+    : CmdHandlerBase("users", "Method return list of users") {
 
     TAG = "CmdUsersHandler";
 
@@ -1474,10 +1456,10 @@ CmdHandlerUsers::CmdHandlerUsers()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsers::handle(ModelRequest *pRequest){
+void CmdHandlerUsers::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    const auto& jsonRequest = pRequest->jsonRequest();
+    const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
 
@@ -1488,34 +1470,34 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest){
     int nOnPage = 5;
     int nCount = 0;
 
-    if(jsonRequest.find("filter_text") != jsonRequest.end()){
+    if (jsonRequest.find("filter_text") != jsonRequest.end()) {
         QString text = QString::fromStdString(jsonRequest.at("filter_text"));
-        if(text != ""){
+        if (text != "") {
             filters << "(email LIKE :email OR nick LIKE :nick)";
             filter_values[":email"] = "%" + text + "%";
             filter_values[":nick"] = "%" + text + "%";
         }
     }
-    if(jsonRequest.find("filter_role") != jsonRequest.end()){
+    if (jsonRequest.find("filter_role") != jsonRequest.end()) {
         QString role = QString::fromStdString( jsonRequest["filter_role"].get_ref<std::string const&>() ).trimmed();
-        if(role != ""){
+        if (role != "") {
             filters << "role = :role";
             filter_values[":role"] = role;
         }
     }
 
-    if(jsonRequest.find("page") != jsonRequest.end()){
+    if (jsonRequest.find("page") != jsonRequest.end()) {
         nPage = jsonRequest.at("page");
     }
 
-    if(jsonRequest.find("onpage") != jsonRequest.end()){
+    if (jsonRequest.find("onpage") != jsonRequest.end()) {
         nOnPage = jsonRequest.at("onpage");
     }
 
-    auto jsonUsers = nlohmann::json::array();
+    nlohmann::json jsonUsers = nlohmann::json::array();
     QSqlDatabase db = *(pDatabase->database());
     QString where = filters.join(" AND ");
-    if(where.length() > 0){
+    if (where.length() > 0) {
         where = "WHERE " + where;
     }
 
@@ -1540,7 +1522,7 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest){
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM users " + where + " ORDER BY dt_last_login DESC LIMIT " + QString::number(nPage*nOnPage) + "," + QString::number(nOnPage));
-        foreach(QString key, filter_values.keys() ){
+        foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
         query.exec();

@@ -12,10 +12,7 @@
 #include <QSqlError>
 #include <QtNetwork/QSslError>
 
-#include <iserver.h>
 #include <cmd_handlers.h>
-
-#include <error.h>
 
 // QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 // QT_FORWARD_DECLARE_CLASS(QWebSocket)
@@ -43,8 +40,8 @@ class WebSocketServer : public QObject, public IWebSocketServer {
         virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, Error error) override;
         virtual void sendToAll(const nlohmann::json& jsonMessage) override;
         void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) override;
-        virtual void setUserToken(QWebSocket *pClient, IUserToken *pUserToken) override;
-        virtual IUserToken * getUserToken(QWebSocket *pClient) override;
+        virtual void setWSJCppUserSession(QWebSocket *pClient, WSJCppUserSession *pWSJCppUserSession) override; 
+        virtual WSJCppUserSession *getWSJCppUserSession(QWebSocket *pClient) override;
 
     Q_SIGNALS:
         void closed();
@@ -68,7 +65,10 @@ class WebSocketServer : public QObject, public IWebSocketServer {
         QWebSocketServer *m_pWebSocketServer;
         QWebSocketServer *m_pWebSocketServerSSL;
         QList<QWebSocket *> m_clients;
-        QMap<QWebSocket *, IUserToken *> m_tokens;
+        // TODO redesign to std::map and move to EmployWSServer
+        // TODO rename m_tokens to m_mapUserSessions;
+        // TODO usersession must be single std::map<std::string sUserUuid, WSJCppUserSession *>
+        QMap<QWebSocket *, WSJCppUserSession *> m_tokens; 
 
         bool m_bFailed;
         std::string TAG;

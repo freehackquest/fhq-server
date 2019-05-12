@@ -12,21 +12,21 @@ REGISTRY_EMPLOY(EmployQuests)
 
 EmployQuests::EmployQuests()
     : EmployBase(EmployQuests::name(), {EmployDatabase::name()}) {
-	TAG = EmployQuests::name();
+    TAG = EmployQuests::name();
 }
 
 // ---------------------------------------------------------------------
 
-bool EmployQuests::init(){
-	
+bool EmployQuests::init() {
+    
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("SELECT subject, COUNT(*) as cnt FROM `quest` WHERE quest.state = :state GROUP BY subject");
     query.bindValue(":state", "open");
 
-    if(!query.exec()){
-		Log::err(TAG, query.lastError().text().toStdString());
+    if (!query.exec()) {
+        Log::err(TAG, query.lastError().text().toStdString());
         return false;
     }
 

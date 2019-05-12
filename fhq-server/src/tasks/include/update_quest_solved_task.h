@@ -2,7 +2,7 @@
 #define UPDATE_QUEST_SOLVED_TASK_H
 
 #include <QRunnable>
-#include <iserver.h>
+#include <string>
 
 class UpdateQuestSolvedTask : public QRunnable {
     void run();

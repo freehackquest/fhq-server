@@ -4,7 +4,6 @@
 #include <storages.h>
 
 class UpdatesInitDatabase : public StorageUpdateBase {
-	
     public:
         UpdatesInitDatabase();
         virtual bool custom(Storage *pStorage, StorageConnection *pConn, std::string &error);

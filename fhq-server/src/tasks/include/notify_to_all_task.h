@@ -2,7 +2,7 @@
 #define NOTIFY_TO_ALL_TASK_H
 
 #include <QRunnable>
-#include <iserver.h>
+#include <json.hpp>
 
 class NotifyToAllTask : public QRunnable {
 

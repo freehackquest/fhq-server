@@ -2,16 +2,16 @@
 #define ADD_PUBLIC_EVENTS_TASK_H
 
 #include <QRunnable>
-#include <iserver.h>
+#include <string>
 
 class AddPublicEventsTask : public QRunnable {
         void run();
     public:
-        AddPublicEventsTask(QString type, QString message);
+        AddPublicEventsTask(const std::string &sType, const std::string &sMessage);
         ~AddPublicEventsTask();
     private:
-        QString m_sMessage;
-        QString m_sType;
+        std::string m_sMessage;
+        std::string m_sType;
         std::string TAG;
 };
 

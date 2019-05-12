@@ -27,6 +27,10 @@ install:
   
 # Build your code e.g. by calling make
 script:
+  - echo "code-check"
+  - cd code-check
+  - ./simple_code_checker.py --only-errors
+  - cd ../
   - echo "Build unit tests"
   - cd unit-tests
   - ./build_simple.sh
@@ -34,25 +38,10 @@ script:
   - ./unit-tests
   - cd ../fhq-server
   - ./build_simple.sh
-  - ./fhq-server version
-  - echo "usemysql=yes" > fhq-server.conf
-  - echo "storage_type=mysql" >> fhq-server.conf
-  - echo "dbhost=127.0.0.1" >> fhq-server.conf
-  - echo "dbname=fhqtravis" >> fhq-server.conf
-  - echo "dbport=3306" >> fhq-server.conf
-  - echo "dbuser=travis" >> fhq-server.conf
-  - echo "dbpass=" >> fhq-server.conf
-  - echo "port = 1234" >> fhq-server.conf
-  - echo "ssl_on = no" >> fhq-server.conf
-  - echo "ssl_port = 4613" >> fhq-server.conf
-  - echo "ssl_key_file = " >> fhq-server.conf
-  - echo "ssl_cert_file = " >> fhq-server.conf
-  - echo "web_port = 7080" >> fhq-server.conf
-  - echo "web_admin_folder = ../web-admin" >> fhq-server.conf
-  - echo "web_max_threads = 1" >> fhq-server.conf
+  - ./fhq-server -wd ../data_travis version
   - ./fhq-server -wd ../data_travis -cdc
   - mkdir -p public/games
-  - ./fhq-server -set "server_folder_public=`pwd`/public/"
+  - ./fhq-server -wd ../data_travis -set "server_folder_public=`pwd`/public/"
   - cd ../tests
   - ./update_libfhqcli.sh
   - python run_tests.py # run tests

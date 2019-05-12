@@ -2,7 +2,7 @@
 #define CMD_HADNLERS_CLASSBOOK_H
 
 #include <cmd_handlers.h>
-#include <QFile>
+#include <QFile> // TODO redesign to c++ file
 
 /*!
  * This handler will be add classbook record

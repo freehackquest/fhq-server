@@ -15,6 +15,10 @@ GAME_UUID2 = "00000000-0000-0000-1000-000000000002"
 USER1_UUID = "00000000-0000-0000-0000-000000000001"
 USER2_UUID = "00000000-0000-0000-0000-000000000002"
 USER3_UUID = "00000000-0000-0000-0000-000000000003"
+CLASSBOOK_RECORD1 = "C1A55800-0000-0000-0000-000000000001"
+CLASSBOOK_RECORD2 = "C1A55800-0000-0000-0000-000000000002"
+CLASSBOOK_RECORD3 = "C1A55800-0000-0000-0000-000000000003"
+CLASSBOOK_RECORD4 = "C1A55800-0000-0000-0000-000000000004"
 GAME1 = None
 admin_email = "admin" # deprecated
 admin_password = "admin" # deprecated
@@ -66,6 +70,19 @@ def check_port(host, port):
 
 def generate_random(size): 
     return ''.join(random.choice(string.ascii_uppercase + string.digits + ' _+=\'"~@!#?/<>') for _ in range(size))
+
+def generate_random_uuid(): 
+    ret = ''
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(8))
+    ret = ret + '-'
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(4))
+    ret = ret + '-'
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(4))
+    ret = ret + '-'
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(4))
+    ret = ret + '-'
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(12))
+    return ret
 
 def check_response(resp, msg_success):
     if(resp['result'] == 'FAIL'):

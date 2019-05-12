@@ -12,7 +12,7 @@
 #include <QThreadPool>
 #include <include/lxd_async_operation_task.h>
 
-void RunTasks::AddPublicEvents(QString type, QString message) {
+void RunTasks::AddPublicEvents(const std::string &type, const std::string &message) {
     AddPublicEventsTask *pAddPublicEventsTask = new AddPublicEventsTask(type, message);
     QThreadPool::globalInstance()->start(pAddPublicEventsTask);
 }
@@ -27,8 +27,8 @@ void RunTasks::UpdateQuestSolved(int nQuestID) {
     QThreadPool::globalInstance()->start(pUpdateQuestSolvedTask);
 }
 
-void RunTasks::UpdateUserLocation(int userid, QString lastip) {
-    UpdateUserLocationTask *pUpdateUserLocationTask = new UpdateUserLocationTask(userid, lastip);
+void RunTasks::UpdateUserLocation(int userid, const std::string &sLastip) {
+    UpdateUserLocationTask *pUpdateUserLocationTask = new UpdateUserLocationTask(userid, sLastip);
     QThreadPool::globalInstance()->start(pUpdateUserLocationTask);
 }
 

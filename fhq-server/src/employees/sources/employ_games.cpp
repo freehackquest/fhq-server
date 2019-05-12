@@ -19,7 +19,7 @@ EmployGames::EmployGames()
 
 // ---------------------------------------------------------------------
 
-bool EmployGames::init(){
+bool EmployGames::init() {
     // TODO mutex
     // check the access to games folder
     EmploySettings *pSettings = findEmploy<EmploySettings>();
@@ -27,14 +27,14 @@ bool EmployGames::init(){
     std::string targetTestFile = sBasePath.toStdString();
     targetTestFile += "games/test";
 
-    FILE * pFile = fopen (targetTestFile.c_str(), "wb");
-    if(pFile == NULL){
+    FILE * pFile = fopen(targetTestFile.c_str(), "wb");
+    if (pFile == NULL) {
         Log::err(TAG, "Cannot access to write " + targetTestFile);
         return false;
     }
     fclose(pFile);
 
-    if( remove( targetTestFile.c_str() ) != 0 ){
+    if (remove(targetTestFile.c_str()) != 0) {
         Log::err(TAG, "Could not delete file " + targetTestFile);
         return false;
     }
@@ -46,7 +46,7 @@ bool EmployGames::init(){
     QSqlQuery query(db);
     query.prepare("SELECT * FROM games");
 
-    if (!query.exec()){
+    if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
         return false;
     }
@@ -59,10 +59,10 @@ bool EmployGames::init(){
         pModelGame->setUuid(sUuid);
         pModelGame->setName(record.value("name").toString().toStdString());
 
-        if(m_mapCacheGames.count(sUuid)){
+        if (m_mapCacheGames.count(sUuid)) {
             Log::err(TAG, "Inconsistent list games in database uuid: " + sUuid);
             return false;
-        }else{
+        } else {
             m_mapCacheGames.insert(std::pair<std::string, ModelGame*>(sUuid,pModelGame));
             m_vectCacheGame.push_back(pModelGame);
         }
@@ -73,10 +73,10 @@ bool EmployGames::init(){
 
 // ---------------------------------------------------------------------
 
-bool EmployGames::findGame(int nLocalId, ModelGame &modelGame){
+bool EmployGames::findGame(int nLocalId, ModelGame &modelGame) {
     // TODO mutex
-    for(int i = 0; i < m_vectCacheGame.size(); i++){ // TODO create map with index
-        if(m_vectCacheGame[i]->localId() == nLocalId){
+    for (int i = 0; i < m_vectCacheGame.size(); i++) { // TODO create map with index
+        if (m_vectCacheGame[i]->localId() == nLocalId) {
             modelGame.copy(*m_vectCacheGame[i]);
             return true;
         }
@@ -86,8 +86,8 @@ bool EmployGames::findGame(int nLocalId, ModelGame &modelGame){
 
 // ---------------------------------------------------------------------
 
-bool EmployGames::findGame(const std::string &sUuid, ModelGame &modelGame){
-    if(!m_mapCacheGames.count(sUuid)){
+bool EmployGames::findGame(const std::string &sUuid, ModelGame &modelGame) {
+    if (!m_mapCacheGames.count(sUuid)) {
         return false;
     }
     modelGame.copy(*m_mapCacheGames.at(sUuid));
@@ -96,13 +96,13 @@ bool EmployGames::findGame(const std::string &sUuid, ModelGame &modelGame){
 
 // ---------------------------------------------------------------------
 
-EmployResult EmployGames::addGame(const ModelGame &modelGame, std::string &sError){
+EmployResult EmployGames::addGame(const ModelGame &modelGame, std::string &sError) {
     // TODO mutex
-    if(m_mapCacheGames.count(modelGame.uuid())){
+    if (m_mapCacheGames.count(modelGame.uuid())) {
         return EmployResult::ALREADY_EXISTS;
     }
 
-    if(modelGame.name().length() == 0){
+    if (modelGame.name().length() == 0) {
         return EmployResult::ERROR_NAME_IS_EMPTY;
     }
 
@@ -150,7 +150,7 @@ EmployResult EmployGames::addGame(const ModelGame &modelGame, std::string &sErro
         query.bindValue(":maxscore", 0);
         query.bindValue(":owner", 0);
 
-        if (!query.exec()){
+        if (!query.exec()) {
             delete pModelGame;
             sError = query.lastError().text().toStdString();
             return EmployResult::DATABASE_ERROR;
@@ -175,10 +175,9 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
 
     std::string sUuid = modelGame.uuid();
 
-    if(!m_mapCacheGames.count(sUuid)){
+    if (!m_mapCacheGames.count(sUuid)) {
         return EmployResult::GAME_NOT_FOUND;
     }
-
 
     ModelGame *pOrigModelGame = m_mapCacheGames[sUuid];
 
@@ -187,12 +186,12 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
     QSqlDatabase db = *(pDatabase->database());
 
     // game name
-    if(pOrigModelGame->name() != modelGame.name()){
+    if (pOrigModelGame->name() != modelGame.name()) {
         QSqlQuery query(db);
         query.prepare("UPDATE games SET title = :name WHERE uuid = :gameuuid");
         query.bindValue(":name", QString::fromStdString(modelGame.name()));
         query.bindValue(":gameuuid", QString::fromStdString(sUuid));
-        if (!query.exec()){
+        if (!query.exec()) {
             sError = query.lastError().text().toStdString();
             return EmployResult::DATABASE_ERROR;
         }
@@ -202,12 +201,12 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
     }
 
     // game type
-    if(pOrigModelGame->type() != modelGame.type()){
+    if (pOrigModelGame->type() != modelGame.type()) {
         QSqlQuery query(db);
         query.prepare("UPDATE games SET type_game = :type_game WHERE uuid = :gameuuid");
         query.bindValue(":type_game", QString::fromStdString(modelGame.type()));
         query.bindValue(":gameuuid", QString::fromStdString(sUuid));
-        if (!query.exec()){
+        if (!query.exec()) {
             sError = query.lastError().text().toStdString();
             return EmployResult::DATABASE_ERROR;
         }
@@ -217,12 +216,12 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
     }
 
     // description
-    if(pOrigModelGame->description() != modelGame.description()){
+    if (pOrigModelGame->description() != modelGame.description()) {
         QSqlQuery query(db);
         query.prepare("UPDATE games SET description = :description WHERE uuid = :gameuuid");
         query.bindValue(":description", QString::fromStdString(modelGame.description()));
         query.bindValue(":gameuuid", QString::fromStdString(sUuid));
-        if (!query.exec()){
+        if (!query.exec()) {
             sError = query.lastError().text().toStdString();
             return EmployResult::DATABASE_ERROR;
         }
@@ -232,12 +231,12 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
     }
 
     // state
-    if(pOrigModelGame->state() != modelGame.state()){
+    if (pOrigModelGame->state() != modelGame.state()) {
         QSqlQuery query(db);
         query.prepare("UPDATE games SET `state` = :state WHERE uuid = :gameuuid");
         query.bindValue(":state", QString::fromStdString(modelGame.state()));
         query.bindValue(":gameuuid", QString::fromStdString(sUuid));
-        if (!query.exec()){
+        if (!query.exec()) {
             sError = query.lastError().text().toStdString();
             return EmployResult::DATABASE_ERROR;
         }
@@ -247,12 +246,12 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
     }
 
     // form
-    if(pOrigModelGame->form() != modelGame.form()){
+    if (pOrigModelGame->form() != modelGame.form()) {
         QSqlQuery query(db);
         query.prepare("UPDATE games SET `form` = :form WHERE uuid = :gameuuid");
         query.bindValue(":form", QString::fromStdString(modelGame.form()));
         query.bindValue(":gameuuid", QString::fromStdString(sUuid));
-        if (!query.exec()){
+        if (!query.exec()) {
             sError = query.lastError().text().toStdString();
             return EmployResult::DATABASE_ERROR;
         }
@@ -262,12 +261,12 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
     }
 
     // organizators
-    if(pOrigModelGame->organizators() != modelGame.organizators()){
+    if (pOrigModelGame->organizators() != modelGame.organizators()) {
         QSqlQuery query(db);
         query.prepare("UPDATE games SET `organizators` = :organizators WHERE uuid = :gameuuid");
         query.bindValue(":organizators", QString::fromStdString(modelGame.organizators()));
         query.bindValue(":gameuuid", QString::fromStdString(sUuid));
-        if (!query.exec()){
+        if (!query.exec()) {
             sError = query.lastError().text().toStdString();
             return EmployResult::DATABASE_ERROR;
         }
@@ -277,12 +276,12 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
     }
 
     // date_start
-    if(pOrigModelGame->dateStart() != modelGame.dateStart()){
+    if (pOrigModelGame->dateStart() != modelGame.dateStart()) {
         QSqlQuery query(db);
         query.prepare("UPDATE games SET `date_start` = :date_start WHERE uuid = :gameuuid");
         query.bindValue(":date_start", QString::fromStdString(modelGame.dateStart()));
         query.bindValue(":gameuuid", QString::fromStdString(sUuid));
-        if (!query.exec()){
+        if (!query.exec()) {
             sError = query.lastError().text().toStdString();
             return EmployResult::DATABASE_ERROR;
         }
@@ -292,12 +291,12 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
     }
 
     // date_stop
-    if(pOrigModelGame->dateStop() != modelGame.dateStop()){
+    if (pOrigModelGame->dateStop() != modelGame.dateStop()) {
         QSqlQuery query(db);
         query.prepare("UPDATE games SET `date_stop` = :date_stop WHERE uuid = :gameuuid");
         query.bindValue(":date_stop", QString::fromStdString(modelGame.dateStop()));
         query.bindValue(":gameuuid", QString::fromStdString(sUuid));
-        if (!query.exec()){
+        if (!query.exec()) {
             sError = query.lastError().text().toStdString();
             return EmployResult::DATABASE_ERROR;
         }
@@ -307,12 +306,12 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
     }
 
     // date_restart
-    if(pOrigModelGame->dateRestart() != modelGame.dateRestart()){
+    if (pOrigModelGame->dateRestart() != modelGame.dateRestart()) {
         QSqlQuery query(db);
         query.prepare("UPDATE games SET `date_restart` = :date_restart WHERE uuid = :gameuuid");
         query.bindValue(":date_restart", QString::fromStdString(modelGame.dateRestart()));
         query.bindValue(":gameuuid", QString::fromStdString(sUuid));
-        if (!query.exec()){
+        if (!query.exec()) {
             sError = query.lastError().text().toStdString();
             return EmployResult::DATABASE_ERROR;
         }
@@ -327,9 +326,9 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
 
 // ---------------------------------------------------------------------
 
-EmployResult EmployGames::removeGame(const std::string &sUuid){
+EmployResult EmployGames::removeGame(const std::string &sUuid) {
     // TODO mutex
-    if(!m_mapCacheGames.count(sUuid)){
+    if (!m_mapCacheGames.count(sUuid)) {
         return EmployResult::GAME_NOT_FOUND;
     }
     m_mapCacheGames.erase(sUuid);
@@ -350,7 +349,7 @@ bool EmployGames::dir_exists(const char* filePath)
     struct stat fileAtt; //the type stat and function stat have exactly the same names, so to refer the type, we put struct before it to indicate it is an structure.
 
     //Use the stat function to get the information
-    if (stat(filePath, &fileAtt) != 0){ //start will be 0 when it succeeds
+    if (stat(filePath, &fileAtt) != 0) { //start will be 0 when it succeeds
         return false;
     }
 

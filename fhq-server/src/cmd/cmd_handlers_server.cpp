@@ -13,7 +13,7 @@
 
 
 CmdHandlerServerApi::CmdHandlerServerApi()
-    : CmdHandlerBase("server_api", "This method Will be return list of all handlers"){
+    : CmdHandlerBase("server_api", "This method Will be return list of all handlers") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -22,7 +22,7 @@ CmdHandlerServerApi::CmdHandlerServerApi()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerServerApi::handle(ModelRequest *pRequest){
+void CmdHandlerServerApi::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
 
     // EmploySettings *pSettings = findEmploy<EmploySettings>();
@@ -31,9 +31,9 @@ void CmdHandlerServerApi::handle(ModelRequest *pRequest){
     /*result["port"] = m_pServerConfig->serverPort();
     result["ssl_port"] = m_pServerConfig->serverPort();*/
 
-    auto jsonHandlers = nlohmann::json::array();
+    nlohmann::json jsonHandlers = nlohmann::json::array();
     std::map<std::string, CmdHandlerBase *>::iterator it = g_pCmdHandlers->begin();
-    while(it != g_pCmdHandlers->end()){
+    while (it != g_pCmdHandlers->end()) {
         std::string sCmd = it->first;
         CmdHandlerBase *pHandler = g_pCmdHandlers->at(sCmd);
 
@@ -45,9 +45,9 @@ void CmdHandlerServerApi::handle(ModelRequest *pRequest){
         jsonHandler["access_user"] = pHandler->accessUser();
         jsonHandler["access_admin"] = pHandler->accessAdmin();
 
-        auto jsonInputs = nlohmann::json::array();
+        nlohmann::json jsonInputs = nlohmann::json::array();
         std::vector<CmdInputDef> ins = pHandler->inputs();
-        for(unsigned int i = 0; i < ins.size(); i++){
+        for (unsigned int i = 0; i < ins.size(); i++) {
             jsonInputs.push_back(ins[i].toJson());
         }
         jsonHandler["inputs"] = jsonInputs;
@@ -65,7 +65,7 @@ void CmdHandlerServerApi::handle(ModelRequest *pRequest){
  *****************************************/
 
 CmdHandlerPublicInfo::CmdHandlerPublicInfo()
-    : CmdHandlerBase("public_info", "Method return public information about server"){
+    : CmdHandlerBase("public_info", "Method return public information about server") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -76,7 +76,7 @@ CmdHandlerPublicInfo::CmdHandlerPublicInfo()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerPublicInfo::handle(ModelRequest *pRequest){
+void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
 
@@ -84,8 +84,8 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest){
     nlohmann::json jsonResponse;
 
     nlohmann::json jsonQuests;
-    auto jsonWinners = nlohmann::json::array();
-    auto jsonCities = nlohmann::json::array();
+    nlohmann::json jsonWinners = nlohmann::json::array();
+    nlohmann::json jsonCities = nlohmann::json::array();
 
     jsonQuests["count"] = pServerInfo->countQuests();
     jsonQuests["attempts"] = pServerInfo->countQuestsAttempt();
@@ -113,11 +113,11 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest){
                       "LIMIT 0,:citieslimit");
         query.bindValue(":morethan", nMoreThen);
         query.bindValue(":citieslimit", nCitiesLimit);
-        if (!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
-        while(query.next()) {
+        while (query.next()) {
             QSqlRecord record = query.record();
             nlohmann::json city;
             city["cnt"] = record.value("cnt").toInt();
@@ -131,12 +131,12 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest){
         QSqlQuery query(db);
         query.prepare("SELECT u.nick, u.university, u.rating FROM users u WHERE u.role = :role ORDER BY u.rating DESC LIMIT 0,10");
         query.bindValue(":role", "user");
-        if (!query.exec()){
+        if (!query.exec()) {
             pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
             return;
         }
         int nPlace = 1;
-        while(query.next()) {
+        while (query.next()) {
             QSqlRecord record = query.record();
             nlohmann::json jsonUser;
             jsonUser["place"] = nPlace;
@@ -161,7 +161,7 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest){
  *****************************************/
 
 CmdHandlerServerInfo::CmdHandlerServerInfo()
-    : CmdHandlerBase("server_info", "Return server private information"){
+    : CmdHandlerBase("server_info", "Return server private information") {
     TAG = "CmdServerInfoHandler";
 
     setAccessUnauthorized(false);
@@ -171,7 +171,7 @@ CmdHandlerServerInfo::CmdHandlerServerInfo()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerServerInfo::handle(ModelRequest *pRequest){
+void CmdHandlerServerInfo::handle(ModelRequest *pRequest) {
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
     // QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
@@ -195,7 +195,7 @@ void CmdHandlerServerInfo::handle(ModelRequest *pRequest){
  *****************************************/
 
 CmdHandlerServerSettings::CmdHandlerServerSettings()
-    : CmdHandlerBase("server_settings", "Return server settings"){
+    : CmdHandlerBase("server_settings", "Return server settings") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -206,7 +206,7 @@ CmdHandlerServerSettings::CmdHandlerServerSettings()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerServerSettings::handle(ModelRequest *pRequest){
+void CmdHandlerServerSettings::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
@@ -220,7 +220,7 @@ void CmdHandlerServerSettings::handle(ModelRequest *pRequest){
  *****************************************/
 
 CmdHandlerServerSettingsUpdate::CmdHandlerServerSettingsUpdate()
-    : CmdHandlerBase("server_settings_update", "Update server settings"){
+    : CmdHandlerBase("server_settings_update", "Update server settings") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -232,7 +232,7 @@ CmdHandlerServerSettingsUpdate::CmdHandlerServerSettingsUpdate()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest){
+void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
@@ -241,7 +241,7 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest){
     std::string sName = jsonRequest["name"].toString().toStdString();
     QString sNewValue = jsonRequest["value"].toString();
 
-    if(!pSettings->hasSett(sName)){
+    if (!pSettings->hasSett(sName)) {
         std::string sError = "Setting with name: " + sName + " did not found";
         pRequest->sendMessageError(cmd(), Error(404, sError));
         return;
@@ -249,15 +249,15 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest){
 
     std::string sType = pSettings->getSettType(sName);
 
-    if(sType == SETT_TYPE_STRING){
+    if (sType == SETT_TYPE_STRING) {
         pSettings->setSettString(sName, sNewValue);
-    }else if(sType == SETT_TYPE_PASSWORD){
+    } else if (sType == SETT_TYPE_PASSWORD) {
         pSettings->setSettPassword(sName, sNewValue);
-    }else if(sType == SETT_TYPE_INTEGER){
+    } else if (sType == SETT_TYPE_INTEGER) {
         pSettings->setSettInteger(sName, sNewValue.toInt());
-    }else if(sType == SETT_TYPE_BOOLEAN){
+    } else if (sType == SETT_TYPE_BOOLEAN) {
         pSettings->setSettBoolean(sName, sNewValue == "yes");
-    }else{
+    } else {
         pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
         return;
     }

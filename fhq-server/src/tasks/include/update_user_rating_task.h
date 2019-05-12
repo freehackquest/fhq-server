@@ -2,7 +2,7 @@
 #define UPDATE_USER_RATING_TASK_H
 
 #include <QRunnable>
-#include <iserver.h>
+#include <cmd_handlers.h>
 
 class UpdateUserRatingTask : public QRunnable {
     

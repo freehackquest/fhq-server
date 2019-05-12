@@ -568,7 +568,7 @@ void CmdHandlerLXDImportService::handle(ModelRequest *pRequest) {
 CmdHandlerLXDImportServiceFromZip::CmdHandlerLXDImportServiceFromZip()
         : CmdHandlerBase("lxd_import_service_from_zip", "Import Service from zip.") {
 
-    setAccessUnauthorized(true);
+    setAccessUnauthorized(false);
     setAccessUser(false);
     setAccessAdmin(true);
 
@@ -685,7 +685,7 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
 CmdHandlerLXDStartService::CmdHandlerLXDStartService()
         : CmdHandlerBase("lxd_start_service", "Start service.") {
 
-    setAccessUnauthorized(true);
+    setAccessUnauthorized(false);
     setAccessUser(false);
     setAccessAdmin(true);
 

@@ -30,17 +30,13 @@ list (APPEND FHQSRV_INCLUDE_DIRS "src/models")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/models/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/server")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/server/include")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/interfaces")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/jobs-pool/core")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/jobs-pool")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/tasks")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/tasks/include")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/updates")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/exports")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/storages")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/storages/updates")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/updates")
-list (APPEND FHQSRV_INCLUDE_DIRS "src/storages/updates/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/web-server")
@@ -67,12 +63,8 @@ list (APPEND FHQSRV_SOURCES "src/core/parse_config.h")
 list (APPEND FHQSRV_SOURCES "src/core/parse_config.cpp")
 list (APPEND FHQSRV_SOURCES "src/core/validators_base.cpp")
 list (APPEND FHQSRV_SOURCES "src/core/validators_base.h")
-
-# interfaces
-list (APPEND FHQSRV_SOURCES "src/interfaces/iserver.h")
-list (APPEND FHQSRV_SOURCES "src/interfaces/iuser.h")
-list (APPEND FHQSRV_SOURCES "src/interfaces/iusertoken.h")
-list (APPEND FHQSRV_SOURCES "src/interfaces/iwebsocketserver.h")
+list (APPEND FHQSRV_SOURCES "src/core/storages.h")
+list (APPEND FHQSRV_SOURCES "src/core/storages.cpp")
 
 # quazip
 list (APPEND FHQSRV_SOURCES "src/3rdParty/quazip-0.7.3/quazip/crypt.h")
@@ -137,8 +129,6 @@ list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_lxd.cpp")
 # models
 list (APPEND FHQSRV_SOURCES "src/models/model_notification.cpp")
 list (APPEND FHQSRV_SOURCES "src/models/model_notification.h")
-list (APPEND FHQSRV_SOURCES "src/models/model_request.cpp")
-list (APPEND FHQSRV_SOURCES "src/models/model_request.h")
 list (APPEND FHQSRV_SOURCES "src/models/include/model_database_connection.h")
 list (APPEND FHQSRV_SOURCES "src/models/sources/model_database_connection.cpp")
 list (APPEND FHQSRV_SOURCES "src/models/include/model_server_sett_helper.h")
@@ -147,20 +137,12 @@ list (APPEND FHQSRV_SOURCES "src/models/include/model_leak.h")
 list (APPEND FHQSRV_SOURCES "src/models/sources/model_leak.cpp")
 list (APPEND FHQSRV_SOURCES "src/models/include/model_game.h")
 list (APPEND FHQSRV_SOURCES "src/models/sources/model_game.cpp")
-list (APPEND FHQSRV_SOURCES "src/models/include/model_usertoken.h")
-list (APPEND FHQSRV_SOURCES "src/models/sources/model_usertoken.cpp")
 list (APPEND FHQSRV_SOURCES "src/models/include/model_lxd_orchestra.h")
 list (APPEND FHQSRV_SOURCES "src/models/sources/model_lxd_orchestra.cpp")
 
 # validators
 list (APPEND FHQSRV_SOURCES "src/validators/validators.cpp")
 list (APPEND FHQSRV_SOURCES "src/validators/validators.h")
-
-# storages
-list (APPEND FHQSRV_SOURCES "src/storages/storage.h")
-list (APPEND FHQSRV_SOURCES "src/storages/storage.cpp")
-list (APPEND FHQSRV_SOURCES "src/storages/storages.h")
-list (APPEND FHQSRV_SOURCES "src/storages/storages.cpp")
 
 
 # TODO include only if libmysqlclient exists 
@@ -194,8 +176,6 @@ list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_static_analizing_text.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/sources/utils_lxd.cpp")
 
 # server
-list (APPEND FHQSRV_SOURCES "src/server/include/error.h")
-list (APPEND FHQSRV_SOURCES "src/server/sources/error.cpp")
 list (APPEND FHQSRV_SOURCES "src/server/include/websocketserver.h")
 list (APPEND FHQSRV_SOURCES "src/server/sources/websocketserver.cpp")
 

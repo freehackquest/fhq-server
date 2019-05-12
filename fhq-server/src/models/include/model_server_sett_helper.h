@@ -1,8 +1,8 @@
 #ifndef MODEL_SERVER_SETT_HELPER_H
 #define MODEL_SERVER_SETT_HELPER_H
 
-#include <iserver.h>
 #include <utils_logger.h>
+#include <QString> // TODO deprecated
 
 class ModelServerSettHelper {
 

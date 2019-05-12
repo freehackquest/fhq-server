@@ -2,7 +2,7 @@
 #define UPDATE_MAX_SCORE_GAME_TASK_H
 
 #include <QRunnable>
-#include <iserver.h>
+#include <cmd_handlers.h>
 
 class UpdateMaxScoreGameTask : public QRunnable {
     void run();

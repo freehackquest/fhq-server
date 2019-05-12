@@ -2,7 +2,7 @@
 #define EMPLOY_SETTINGS_H
 
 #include <employees.h>
-#include <iserver.h>
+#include <cmd_handlers.h>
 #include <model_server_sett_helper.h>
 
 #include <QString>
@@ -28,8 +28,8 @@ public:
     bool hasSett(const std::string &sName);
     const std::string &getSettType(const std::string &sName);
 
-	const std::map<std::string, ModelServerSettHelper*> &listSettings();
-	void printSettings();
+    const std::map<std::string, ModelServerSettHelper*> &listSettings();
+    void printSettings();
     nlohmann::json toJson();
 
 private:
