@@ -21,6 +21,7 @@ REGISTRY_EMPLOY(EmployOrchestra)
 EmployOrchestra::EmployOrchestra()
         : EmployBase(EmployOrchestra::name(), {EmploySettings::name()}) {
     TAG = "EmployOrchestra";
+    m_bTrusted = false;
 }
 
 // ---------------------------------------------------------------------
@@ -85,10 +86,41 @@ bool EmployOrchestra::create_container(const std::string &sName, std::string &sE
 
 // ---------------------------------------------------------------------
 
+bool EmployOrchestra::create_service(const ServiceConfig &serviceReq, std::string &sError) {
+    auto *const pService = new ServiceLXD(serviceReq);
+
+    Log::info(TAG, "Starting creation container " + serviceReq.name);
+
+    if (!pService->create_container()){
+        sError = pService->get_error();
+        Log::err(TAG, "Failed created service. I can't create container.");
+        return false;
+    }
+
+    m_mapServices.insert(std::pair<std::string, ServiceLXD *>(std::string(serviceReq.name), pService));
+    return true;
+}
+
+bool EmployOrchestra::create_service(const nlohmann::json &jsonConfig, std::string &sError) {
+    ServiceConfig config = ServiceConfig(jsonConfig);
+    return create_service(config, sError);
+}
+
+// ---------------------------------------------------------------------
+
 bool EmployOrchestra::find_container(const std::string &name, LXDContainer *&pContainer) {
     if (m_mapContainers.find(name) == m_mapContainers.end())
         return false;
     pContainer = m_mapContainers[name];
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+bool EmployOrchestra::find_service(const std::string &name, ServiceLXD *&pService) {
+    if (m_mapServices.find(name) == m_mapServices.end())
+        return false;
+    pService = m_mapServices[name];
     return true;
 }
 
@@ -101,7 +133,7 @@ bool EmployOrchestra::get_all_profiles(std::vector<std::string> &vecProfiles, st
     if (!send_get_request(sUrl, jsonReponse, sError))
         return false;
 
-    if (!jsonReponse.is_array()){
+    if (!jsonReponse.is_array()) {
         return false;
     }
 
@@ -114,7 +146,7 @@ bool EmployOrchestra::get_all_profiles(std::vector<std::string> &vecProfiles, st
 bool EmployOrchestra::find_profile(const std::string &sName, std::string &sError) {
     std::vector<std::string> vecProfiles;
 
-    if (!get_all_profiles(vecProfiles, sError)){
+    if (!get_all_profiles(vecProfiles, sError)) {
         return false;
     }
 
@@ -226,8 +258,8 @@ bool EmployOrchestra::send_post_request(const std::string &sUrl, const nlohmann:
 }
 
 bool EmployOrchestra::send_patch_request(const std::string &sUrl, const nlohmann::json &jsonData,
-                                        nlohmann::json &jsonResponse,
-                                        std::string &sError) {
+                                         nlohmann::json &jsonResponse,
+                                         std::string &sError) {
     CURLcode ret;
     CURL *hnd;
 
@@ -365,7 +397,7 @@ bool EmployOrchestra::send_get_request_raw(const std::string &sUrl, std::string 
 bool EmployOrchestra::send_get_request(const std::string &sUrl, nlohmann::json &jsonResponse, std::string &sError) {
 
     std::string sResponse;
-    if (!send_get_request_raw(sUrl, sResponse, sError)){
+    if (!send_get_request_raw(sUrl, sResponse, sError)) {
         m_sLastError = sError;
         return false;
     }
@@ -459,7 +491,7 @@ bool EmployOrchestra::pull_container_names() {
         }
     }
 
-    for (auto name : listNames) {
+    for (const auto& name : listNames) {
         auto *pContainer = new LXDContainer(name);
         m_mapContainers.insert(std::pair<std::string, LXDContainer *>(name, pContainer));
 
@@ -529,5 +561,6 @@ std::list<std::string> EmployOrchestra::registry_names() {
         container_names.push_back(container.first);
     return container_names;
 }
+
 
 // ---------------------------------------------------------------------

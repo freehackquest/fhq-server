@@ -7,6 +7,12 @@
 #include <employ_orchestra.h>
 #include <vector>
 #include <algorithm>
+#include <include/cmd_handlers_lxd.h>
+#include <QtCore/QDir>
+#include <quazip.h>
+#include <quazipfile.h>
+#include <QtCore/QBuffer>
+
 
 /*********************************************
  * Any actions with the container. Actions: create, start, stop and delete container
@@ -177,7 +183,7 @@ CmdHandlerLXDInfo::CmdHandlerLXDInfo()
     // validation and description input fields
     requireStringParam("name", "Container name");
     optionalStringParam("get", "Requested information");
-    
+
 }
 
 // ---------------------------------------------------------------------
@@ -197,7 +203,7 @@ void CmdHandlerLXDInfo::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
 }
 
-bool CmdHandlerLXDInfo::get_state(std::string sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState) {
+bool CmdHandlerLXDInfo::get_state(const std::string& sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState) {
     auto *pOrchestra = findEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         return false;
@@ -211,7 +217,7 @@ bool CmdHandlerLXDInfo::get_state(std::string sName, std::string &sError, int &n
         return false;
     }
 
-    if (!pContainer->state(jsonState)) {
+    if (!pContainer->get_state(jsonState)) {
         nErrorCode = 500;
         sError = pContainer->get_error();
         return false;
@@ -280,8 +286,7 @@ void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
     std::string command = jsonRequest["command"].toString().toStdString();
     std::string sOutput;
 
-    bool done = exec_command(name, command, sError, nErrorCode, sOutput);
-    if (done){
+    if (exec_command(name, command, sError, nErrorCode, sOutput)) {
         jsonResponse["container"] = name;
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
         return;
@@ -290,7 +295,7 @@ void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
 }
 
 bool CmdHandlerLXDExec::exec_command(const std::string &sName, const std::string &sCommand, std::string &sError,
-                                    int &nErrorCode, std::string &sOutput) {
+                                     int &nErrorCode, std::string &sOutput) {
     auto *pOrchestra = findEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()) {
@@ -351,6 +356,11 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
         nErrorCode = 404;
     }
 
+    if (!sError.empty()) {
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+        return;
+    }
+
     LXDContainer *pContainer;
     if (!pOrchestra->find_container(name, pContainer)) {
         sError = "Not found container " + name;
@@ -365,16 +375,19 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
         nErrorCode = 400;
     }
 
-    // TODO CHECK sError before
+    if (!sError.empty()) {
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+        return;
+    }
 
-    if (!isDirectory && action == "pull"){
+    if (!isDirectory && action == "pull") {
         pull_file(pContainer, path, sb64File, sError, nErrorCode, isDirectory);
-    } else if (action == "push"){
+    } else if (action == "push") {
         sb64File = jsonRequest["file_base64"].toString().toStdString();
         push_file(pContainer, path, sb64File, sError, nErrorCode);
     }
 
-    if (sError.empty() && !isDirectory){
+    if (sError.empty() && !isDirectory) {
         jsonResponse["container"] = name;
         jsonResponse["path"] = path;
 
@@ -390,7 +403,7 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
 }
 
 void CmdHandlerLXDFile::pull_file(LXDContainer *pContainer, const std::string &sPath, std::string &sb64File,
-                                 std::string &sError, int &nErrorCode, bool &isDirectory) {
+                                  std::string &sError, int &nErrorCode, bool &isDirectory) {
     std::string sRawData;
 
     if (!pContainer->read_file(sPath, sRawData)) {
@@ -398,9 +411,9 @@ void CmdHandlerLXDFile::pull_file(LXDContainer *pContainer, const std::string &s
         nErrorCode = 500;
     }
 
-    if (nlohmann::json::accept(std::begin(sRawData), std::end(sRawData))){
-        auto jsonResponce = nlohmann::json::parse(sRawData);
-        if (jsonResponce.find("metadata") != jsonResponce.end() && jsonResponce.find("status") != jsonResponce.end()){
+    if (nlohmann::json::accept(std::begin(sRawData), std::end(sRawData))) {
+        auto jsonResponse = nlohmann::json::parse(sRawData);
+        if (jsonResponse.find("metadata") != jsonResponse.end() && jsonResponse.find("status") != jsonResponse.end()) {
             isDirectory = true;
             sError = sPath + " is the directory!";
             nErrorCode = 400;
@@ -442,20 +455,7 @@ void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
     const int nPort = jsonRequest["port"].toInt();
     const std::string sProto = jsonRequest["protocol"].toString().toStdString();
 
-    if (!(sProto == "tcp" || sProto == "udp")) {
-        sError = "Only tcp or udp protocols. Not " + sProto;
-        nErrorCode = 400;
-    }
-
-    if (nPort >= 49152) {
-        sError = "Port " + std::to_string(nPort) + " is reserved.";
-        nErrorCode = 400;
-    } else if (nPort <= 0) {
-        sError = "Port number must be a positive integer.";
-        nErrorCode = 400;
-    }
-
-    if (!sError.empty()) {
+    if (!is_port_valide(sProto, nPort, sError, nErrorCode)) {
         pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
         return;
     }
@@ -472,11 +472,250 @@ void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
         return;
     }
 
-   if (!pContainer->open_port(nPort, sProto)){
-       sError = pContainer->get_error();
-   }
+    if (!pContainer->open_port(nPort, sProto)) {
+        sError = pContainer->get_error();
+    }
 
-    if (!sError.empty()) {
+    if (sError.empty()) {
+        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    } else {
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+    }
+}
+
+bool CmdHandlerLXDOpenPort::is_port_valide(const std::string &sProto, const int &nPort, std::string &sError,
+                                           int &nErrorCode) {
+
+    if (!(sProto == "tcp" || sProto == "udp")) {
+        sError = "Only tcp or udp protocols. Not " + sProto;
+        nErrorCode = 400;
+        return false;
+    }
+
+    if (nPort >= 49152) {
+        sError = "Port " + std::to_string(nPort) + " is reserved.";
+        nErrorCode = 400;
+        return false;
+    } else if (nPort <= 0) {
+        sError = "Port number must be a positive integer.";
+        nErrorCode = 400;
+        return false;
+    }
+
+    return true;
+}
+
+
+CmdHandlerLXDImportService::CmdHandlerLXDImportService()
+        : CmdHandlerBase("lxd_import_container", "Import container from json configuration.") {
+
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
+
+    requireStringParam("config", "Container's configuration in json dumped string.");
+}
+
+void CmdHandlerLXDImportService::handle(ModelRequest *pRequest) {
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    if (!pOrchestra->initConnection()) {
+        pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
+        return;
+    }
+    QJsonObject jsonRequest = pRequest->data();
+    nlohmann::json jsonResponse;
+    std::string sError;
+    int nErrorCode = 500;
+    std::string sName = jsonRequest["name"].toString().toStdString();
+    const std::string sConfig = jsonRequest["config"].toString().toStdString();
+
+    if (!nlohmann::json::accept(sConfig)) {
+        pRequest->sendMessageError(cmd(), Error(400, "Json string isn't valid."));
+    }
+    auto jsonConfig = nlohmann::json::parse(sConfig);
+
+    if (sName.empty()) {
+        if (jsonConfig.find("name") != jsonConfig.end()) {
+            sName = jsonConfig["name"];
+        } else {
+            pRequest->sendMessageError(cmd(), Error(400, "Container name not found."));
+        }
+
+    }
+
+    LXDContainer *pContainer;
+    if (pOrchestra->find_container(sName, pContainer)) {
+        sError = "Container " + sName + " is already created.";
+        std::cout << sError << std::endl;
+        nErrorCode = 400;
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+    }
+
+    ServiceConfig serviceReq = ServiceConfig(jsonConfig);
+
+    if (!pOrchestra->create_service(serviceReq, sError)) {
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+    }
+
+    if (sError.empty()) {
+        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    } else {
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+    }
+}
+
+
+CmdHandlerLXDImportServiceFromZip::CmdHandlerLXDImportServiceFromZip()
+        : CmdHandlerBase("lxd_import_service_from_zip", "Import Service from zip.") {
+
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
+
+    requireStringParam("zip_file", "Service's configuration in Base64 zip archive.");
+}
+
+void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    if (!pOrchestra->initConnection()) {
+        pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
+        return;
+    }
+    QJsonObject jsonRequest = pRequest->data();
+    nlohmann::json jsonResponse;
+    std::string sError;
+    int nErrorCode = 500;
+    const std::string qsB64Zip = jsonRequest["zip_file"].toString().toStdString();
+    std::string sConfig;
+
+    QByteArray qbaZip = QByteArray::fromBase64(QByteArray::fromStdString(qsB64Zip));
+    QBuffer buffer(&qbaZip);
+    buffer.open(QIODevice::ReadOnly);
+    QuaZip zip(&buffer);
+    QuaZipFile file(&zip);
+
+    if (zip.open(QuaZip::mdUnzip)) {
+
+        if (zip.getZipError() != UNZ_OK) {
+            pRequest->sendMessageError(cmd(), Error(400, "Cant unzip " + std::to_string(zip.getZipError())));
+            return;
+        } else {
+            for (bool more = zip.goToFirstFile(); more; more = zip.goToNextFile()) {
+                if (zip.getCurrentFileName().endsWith("service.json")) {
+                    file.open(QIODevice::ReadOnly);
+                    sConfig = file.readAll().toStdString();
+                    file.close();
+                    break;
+                }
+            }
+        }
+    }
+
+    if (sConfig.empty()) {
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, "Not found service.json in zip archive."));
+        zip.close();
+        return;
+    }
+
+    if (!nlohmann::json::accept(sConfig)) {
+        pRequest->sendMessageError(cmd(), Error(400, "Service json file isn't valid."));
+        zip.close();
+        return;
+    }
+    auto jsonConfig = nlohmann::json::parse(sConfig);
+
+    if (!pOrchestra->create_service(jsonConfig, sError)) {
+        pRequest->sendMessageError(cmd(), Error(500, "Cant create service. Error: " + sError));
+        zip.close();
+        return;
+    }
+
+    ServiceLXD *service;
+    if (!pOrchestra->find_service(jsonConfig["name"].get<std::string>(), service)) {
+        pRequest->sendMessageError(cmd(), Error(500, "Cant find service. Error: " + pOrchestra->lastError()));
+        zip.close();
+        return;
+    }
+
+    service->create_container();
+    LXDContainer *container = service->get_container();
+
+    if (container->get_status() != "Running" && !container->start()) {
+        pRequest->sendMessageError(cmd(), Error(500, "Cant start container. Error: " + container->get_error()));
+        zip.close();
+        return;
+    }
+
+    if (!container->exec("mkdir -p /root/service")) {
+        pRequest->sendMessageError(cmd(),
+                                   Error(500, "Cant create service directory. Error: " + container->get_error()));
+        zip.close();
+        return;
+    }
+
+    for (bool more = zip.goToFirstFile(); more; more = zip.goToNextFile()) {
+        std::string file_name = zip.getCurrentFileName().section('/', -1).toStdString();
+        if (!file_name.empty() && file_name != "service.json") {
+            file.open(QIODevice::ReadOnly);
+            if (!container->push_file("/root/service/" + file_name, file.readAll().toStdString())) {
+                pRequest->sendMessageError(cmd(), Error(nErrorCode, container->get_error()));
+                file.close();
+                zip.close();
+                return;
+            }
+            file.close();
+        }
+    }
+
+    zip.close();
+
+    if (!service->build()) {
+        pRequest->sendMessageError(cmd(), Error(500, "Cant build service. Error: " + service->get_error()));
+        return;
+    }
+
+    if (sError.empty()) {
+        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    } else {
+        pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
+    }
+}
+
+
+CmdHandlerLXDStartService::CmdHandlerLXDStartService()
+        : CmdHandlerBase("lxd_start_service", "Start service.") {
+
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
+
+    requireStringParam("name", "Service's name.");
+}
+
+void CmdHandlerLXDStartService::handle(ModelRequest *pRequest) {
+    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    if (!pOrchestra->initConnection()) {
+        pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
+        return;
+    }
+    QJsonObject jsonRequest = pRequest->data();
+    nlohmann::json jsonResponse;
+    std::string sError;
+    int nErrorCode = 500;
+    const std::string sNameService = jsonRequest["name"].toString().toStdString();
+
+    ServiceLXD *service;
+    if (!pOrchestra->find_service(sNameService, service)) {
+        pRequest->sendMessageError(cmd(), Error(500, "Cant find service. Error: " + pOrchestra->lastError()));
+        return;
+    }
+
+    if (!service->start()) {
+        pRequest->sendMessageError(cmd(), Error(500, "Cant start service. Error: " + service->get_error()));
+        return;
+    }
+
+    if (sError.empty()) {
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     } else {
         pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
