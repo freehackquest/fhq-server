@@ -41,11 +41,11 @@ RUN mkdir -p /usr/share/fhq-server \
 
 COPY ./scripts/dockerhold.sh /root/dockerhold.sh
 
+WORKDIR /root/
 
 # 1234 - ws
 # 4613 - wss
 # 7080 - http port (without ssl)
-
 EXPOSE 1234 4613 7080
 
 # todo mount volume
