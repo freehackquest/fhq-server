@@ -5,6 +5,7 @@ import libfhqcli
 import fhqtest
 import sys, traceback
 import uuid
+import libtestleaks
 
 test_name = 'Testing Leaks'
 

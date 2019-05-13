@@ -10,12 +10,11 @@ import socket
 from pprint import pprint
 
 admin_session = None
+user_session = None
+anon_session = None
 loggined = False
 GAME_UUID1 = "00000000-0000-0000-1000-000000000001"
 GAME_UUID2 = "00000000-0000-0000-1000-000000000002"
-USER1_UUID = "00000000-0000-0000-0000-000000000001"
-USER2_UUID = "00000000-0000-0000-0000-000000000002"
-USER3_UUID = "00000000-0000-0000-0000-000000000003"
 CLASSBOOK_RECORD1 = "C1A55800-0000-0000-0000-000000000001"
 CLASSBOOK_RECORD2 = "C1A55800-0000-0000-0000-000000000002"
 CLASSBOOK_RECORD3 = "C1A55800-0000-0000-0000-000000000003"
@@ -93,7 +92,8 @@ def generate_random_uuid():
     return ret
 
 def check_response(resp, msg_success):
-    if(resp['result'] == 'FAIL'):
+    alert(resp == None, 'Wrong response')
+    if resp['result'] == 'FAIL':
         log_err(resp['error'])
     else:
         print_success(msg_success)
@@ -147,8 +147,8 @@ def deinit_enviroment():
     # try remove all test objects
     if loggined == True:
         admin_session.game_delete({"uuid": GAME_UUID1, "admin_password": "admin"})
-
-    admin_session.close()
+    if admin_session != None:
+        admin_session.close()
 
 def remove_item(classbookid, padding):
     records_list = admin_session.classbook_list({
