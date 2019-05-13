@@ -21,8 +21,6 @@ class EmployGames : public EmployBase {
         std::string TAG;
         std::vector<ModelGame*> m_vectCacheGame;
         std::map<std::string, ModelGame*> m_mapCacheGames;
-
-        bool dir_exists(const char* filePath);
 };
 
 #endif // EMPLOY_GAMES_H

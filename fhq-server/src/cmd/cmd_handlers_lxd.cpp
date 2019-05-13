@@ -7,7 +7,7 @@
 #include <employ_orchestra.h>
 #include <vector>
 #include <algorithm>
-#include <include/cmd_handlers_lxd.h>
+#include <cmd_handlers_lxd.h>
 #include <QtCore/QDir>
 #include <quazip.h>
 #include <quazipfile.h>
