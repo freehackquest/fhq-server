@@ -6,7 +6,8 @@
     "exclude": [
         "fhq-server/src/core/3rdParty",
         "fhq-server/src/3rdParty/quazip-0.7.3",
-        "json.hpp"
+        "json.hpp",
+        ".DS_Store"
     ],
     "line-checkers": {
         "if-format": "err",
