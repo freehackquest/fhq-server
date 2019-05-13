@@ -119,27 +119,27 @@ EmployResult EmployGames::addGame(const ModelGame &modelGame, std::string &sErro
         QSqlQuery query(db);
         query.prepare(
             "INSERT INTO games("
-            "		uuid, title, type_game,"
-            "		date_start, date_stop, date_restart,"
-            "		description,"
-            "		organizators,"
-            "		state, form, rules,"
-            "		maxscore,"
-            "		owner,"
+            "       uuid, title, type_game,"
+            "       date_start, date_stop, date_restart,"
+            "       description,"
+            "       organizators,"
+            "       state, form, rules,"
+            "       maxscore,"
+            "       owner,"
             "       date_create, " // TODO change created
-            "		date_change "  // TODO change updated
-            "	)"
-            "	VALUES("
-            "		:uuid, :name, :type_game,"
-            "		:date_start, :date_stop, :date_restart,"
-            "		:description,"
-            "		:organizators,"
-            "		:state, :form, :rules,"
-            "		:maxscore,"
+            "       date_change "  // TODO change updated
+            "   )"
+            "   VALUES("
+            "       :uuid, :name, :type_game,"
+            "       :date_start, :date_stop, :date_restart,"
+            "       :description,"
+            "       :organizators,"
+            "       :state, :form, :rules,"
+            "       :maxscore,"
             "       :owner,"
-            "		NOW(),"
-            "		NOW()"
-            "	)");
+            "       NOW(),"
+            "       NOW()"
+            "   )");
         query.bindValue(":uuid", QString::fromStdString(pModelGame->uuid()));
         query.bindValue(":name", QString(pModelGame->name().c_str()));
         query.bindValue(":type_game", QString(pModelGame->type().c_str()));
