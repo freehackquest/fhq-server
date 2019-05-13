@@ -126,7 +126,7 @@ public:
 
 // ---------------------------------------------------------------------
 
-void ExportLibWsjCppCliWebJS::setDirectoryName(const std::string &sPackageName) {
+void ExportLibWsjCppCliWebJS::setPackageName(const std::string &sPackageName) {
     m_sPackageName = sPackageName;
 }
 
