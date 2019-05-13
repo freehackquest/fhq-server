@@ -98,7 +98,7 @@ bool UnitTestMergeText::run() {
         UtilsMergeText::merge(txt1, txt2, txt3, arr1, arr2);
         unsigned int n = tests1[i]->n;
 
-        if(arr1.size()==n) {
+        if (arr1.size()==n) {
             nSuccess++;
         } else {
             Log::err(TAG, "In the test №" + std::to_string(i + 1) + " the length of the vector is expected: "

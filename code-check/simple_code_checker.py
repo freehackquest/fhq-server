@@ -97,35 +97,6 @@ evil_pieces = {
 # TODO: if () {
 # TODO: check start method like get/set/is/do etc... and check camalCase name of methods/functions
 
-def check_line_tabs(filepath, line_number, l):
-    global warnings
-    global evil_pieces
-    if re.match(r'\t+', l):
-        evil_pieces['tabs'] = evil_pieces['tabs'] + 1
-        log_err('File: ' + filepath + ' (' + str(line_number) + ') \n'
-            + 'Line: "' + l + '" \n'
-            + 'What: found tabs on starts line\n')
-
-def check_TODO(filepath, line_number, l):
-    global warnings
-    global evil_pieces
-    if re.match(r'.*TODO.*', l):
-        warnings['TODO'] = warnings['TODO'] + 1
-        if not only_errors:
-            log_warn('File: ' + filepath + ' (' + str(line_number) + ') \n'
-                + 'Line: "' + l + '" \n'
-                + 'What: found TODO in line \n')
-
-def check_if_format(filepath, line_number, l):
-    global warnings
-    global evil_pieces
-    if re.match(r'.*[ ]+if\(.*', l):
-        warnings['if-format'] = warnings['if-format'] + 1
-        if not only_errors:
-            log_warn('File: ' + filepath + ' (' + str(line_number) + ') \n'
-                + 'Line: "' + l + '" \n'
-                + 'What: found wrong if-format (expected space between "if" and "(") in line \n')
-
 def check_for_format(filepath, line_number, l):
     global warnings
     global evil_pieces
@@ -195,10 +166,7 @@ for filepath in _files:
         for l in lines:
             line_number = line_number + 1
             l = l.rstrip('\n')
-            check_line_tabs(filepath, line_number, l)
-            check_TODO(filepath, line_number, l)
             check_auto_evil(filepath, line_number, l)
-            check_if_format(filepath, line_number, l)
             check_end_brackets_format(filepath, line_number, l)
             check_for_format(filepath, line_number, l)
             check_while_format(filepath, line_number, l)

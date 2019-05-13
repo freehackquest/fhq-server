@@ -73,11 +73,11 @@ void UnitTestStorageStruct::createTestTable0(bool &bTestSuccess, Storage *pStora
     if (compareN(bTestSuccess, "createTable0", vQueries0.size(), 1)) {
         compareS(bTestSuccess, "createTable0", vQueries0[0], 
             "CREATE TABLE IF NOT EXISTS `test_tbl0` (\r\n"
-			"  `id` INT NOT NULL AUTO_INCREMENT,\r\n"
-			"  `filed1` VARCHAR(255) NOT NULL,\r\n"
-			"  PRIMARY KEY (id),\r\n"
+            "  `id` INT NOT NULL AUTO_INCREMENT,\r\n"
+            "  `filed1` VARCHAR(255) NOT NULL,\r\n"
+            "  PRIMARY KEY (id),\r\n"
             "  KEY idx_filed1 (filed1)\r\n"
-			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+            ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
     }
     pStorage->addStorageChanges(test_tbl0); // add just runtime storage changes
 }
@@ -102,10 +102,10 @@ void UnitTestStorageStruct::dropTestTable0(bool &bTestSuccess, Storage *pStorage
 void UnitTestStorageStruct::createTestTable1(bool &bTestSuccess, Storage *pStorage) {
     StorageCreateTable test_tbl1("test_tbl1");
     test_tbl1.addColumn("id").number().autoIncrement().primaryKey().notNull();
-	test_tbl1.addColumn("filed1").string(255).notNull().enableIndex();
-	test_tbl1.addColumn("filed2").text().notNull();
-	test_tbl1.addColumn("filed3").datetime().notNull();
-	test_tbl1.addColumn("filed4").string(2000).notNull().enableIndex();
+    test_tbl1.addColumn("filed1").string(255).notNull().enableIndex();
+    test_tbl1.addColumn("filed2").text().notNull();
+    test_tbl1.addColumn("filed3").datetime().notNull();
+    test_tbl1.addColumn("filed4").string(2000).notNull().enableIndex();
     test_tbl1.addColumn("filed5").number().notNull().enableUniqueIndex("idx_f5_and_f7");
     test_tbl1.addColumn("filed6").number().notNull().enableUniqueIndex("idx_f6_and_f8");
     test_tbl1.addColumn("filed7").number().notNull().enableUniqueIndex("idx_f5_and_f7");
@@ -115,22 +115,22 @@ void UnitTestStorageStruct::createTestTable1(bool &bTestSuccess, Storage *pStora
     if (compareN(bTestSuccess, "createTestTable1", vQueries1.size(), 1)) {
         compareS(bTestSuccess, "createTestTable1", vQueries1[0], 
             "CREATE TABLE IF NOT EXISTS `test_tbl1` (\r\n"
-			"  `id` INT NOT NULL AUTO_INCREMENT,\r\n"
-			"  `filed1` VARCHAR(255) NOT NULL,\r\n"
-			"  `filed2` TEXT NOT NULL,\r\n"
-			"  `filed3` DATETIME NOT NULL,\r\n"
+            "  `id` INT NOT NULL AUTO_INCREMENT,\r\n"
+            "  `filed1` VARCHAR(255) NOT NULL,\r\n"
+            "  `filed2` TEXT NOT NULL,\r\n"
+            "  `filed3` DATETIME NOT NULL,\r\n"
             "  `filed4` VARCHAR(2000) NOT NULL,\r\n"
             "  `filed5` INT NOT NULL,\r\n"
             "  `filed6` INT NOT NULL,\r\n"
             "  `filed7` INT NOT NULL,\r\n"
             "  `filed8` INT NOT NULL,\r\n"
             "  `filed9` DOUBLE DEFAULT 0.0,\r\n"
-			"  PRIMARY KEY (id),\r\n"
+            "  PRIMARY KEY (id),\r\n"
             "  KEY idx_filed1 (filed1),\r\n"
             "  KEY idx_filed4 (filed4(255)),\r\n"
             "  UNIQUE KEY idx_f5_and_f7 (filed5,filed7),\r\n"
             "  UNIQUE KEY idx_f6_and_f8 (filed6,filed8)\r\n"
-			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+            ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
     }
     pStorage->addStorageChanges(test_tbl1); // add just runtime storage changes
 }
@@ -163,8 +163,8 @@ void UnitTestStorageStruct::checkModifiedTable1(bool &bTestSuccess, Storage *pSt
     }
     std::vector<StorageColumnDef> vExpectedColumns;
     vExpectedColumns.push_back(StorageColumnDef("id").number().autoIncrement().primaryKey().notNull());
-	vExpectedColumns.push_back(StorageColumnDef("filed3").datetime().notNull());
-	vExpectedColumns.push_back(StorageColumnDef("filed4").string(1500).notNull().enableIndex());
+    vExpectedColumns.push_back(StorageColumnDef("filed3").datetime().notNull());
+    vExpectedColumns.push_back(StorageColumnDef("filed4").string(1500).notNull().enableIndex());
     vExpectedColumns.push_back(StorageColumnDef("filed5").number().notNull().enableUniqueIndex("idx_f5_and_f7"));
     vExpectedColumns.push_back(StorageColumnDef("filed6").number().notNull().enableUniqueIndex("idx_f6_and_f8"));
     vExpectedColumns.push_back(StorageColumnDef("filed7").number().notNull().enableUniqueIndex("idx_f5_and_f7"));
@@ -205,8 +205,8 @@ void UnitTestStorageStruct::checkModifiedTable1(bool &bTestSuccess, Storage *pSt
     } else {
         bTestSuccess = compareS(bTestSuccess, vQueries1_2[0],
             "CREATE TABLE IF NOT EXISTS `test_tbl1` (\r\n"
-			"  `id` INT NOT NULL AUTO_INCREMENT,\r\n"
-			"  `filed3` DATETIME NOT NULL,\r\n"
+            "  `id` INT NOT NULL AUTO_INCREMENT,\r\n"
+            "  `filed3` DATETIME NOT NULL,\r\n"
             "  `filed4` VARCHAR(1500) NOT NULL,\r\n"
             "  `filed5` INT NOT NULL,\r\n"
             "  `filed6` INT NOT NULL,\r\n"
@@ -214,11 +214,11 @@ void UnitTestStorageStruct::checkModifiedTable1(bool &bTestSuccess, Storage *pSt
             "  `filed8` INT NOT NULL,\r\n"
             "  `filed9` DOUBLE DEFAULT 0.0,\r\n"
             "  `filed10` INT NOT NULL,\r\n"
-			"  PRIMARY KEY (id),\r\n"
+            "  PRIMARY KEY (id),\r\n"
             "  KEY idx_filed4 (filed4(255)),\r\n"
             "  UNIQUE KEY idx_f5_and_f7 (filed5,filed7),\r\n"
             "  UNIQUE KEY idx_f6_and_f8 (filed6,filed8)\r\n"
-			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+            ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
     }*/
 }
 
@@ -260,12 +260,12 @@ void UnitTestStorageStruct::createTestTable3(bool &bTestSuccess, Storage *pStora
     if (compareN(bTestSuccess, "createTestTable3", vQueries1.size(), 1)) {
         compareS(bTestSuccess, "createTestTable3", vQueries1[0], 
             "CREATE TABLE IF NOT EXISTS `test_tbl3` (\r\n"
-			"  `id` INT NOT NULL AUTO_INCREMENT,\r\n"
+            "  `id` INT NOT NULL AUTO_INCREMENT,\r\n"
             "  `field1` VARCHAR(123) NOT NULL,\r\n"
             "  `field2` VARCHAR(223) NOT NULL,\r\n"
             "  `field3` VARCHAR(323) NOT NULL,\r\n"
-			"  PRIMARY KEY (id)\r\n"
-			") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+            "  PRIMARY KEY (id)\r\n"
+            ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
     }
     pStorage->addStorageChanges(test_tbl3); // add just runtime storage changes
 }

@@ -65,23 +65,26 @@ int main(int argc, char** argv) {
     }
     nlohmann::json jsonConfig = nlohmann::json::parse(sConfig);
     std::cout << "JSON-Config: " << sConfig << std::endl;
-    std::string sBasePath = jsonConfig["path"];
-    sBasePath = sRootDir + "/" + sBasePath;
-    if (!Helpers::dirExists(sBasePath)) {
-        std::cout << "[ERROR] Path does not exists " << sBasePath << std::endl;
-        return -1;
-    }
 
     // registry line checkers - TODO apply config
-    g_vLineCheckers.push_back((LineCheckerBase *)new LineCheckerTabsInLine());
+    g_vLineCheckers.push_back((LineCheckerBase *)new LineCheckerTabsInLine(jsonConfig));
+    g_vLineCheckers.push_back((LineCheckerBase *)new LineCheckerTODOInLine(jsonConfig));
+    g_vLineCheckers.push_back((LineCheckerBase *)new LineCheckerIfFormat(jsonConfig));
 
-    startRecoursiveCheckSimpleFormat(sRootDir, sBasePath, jsonConfig);
-
+    std::vector<std::string> vPaths = jsonConfig["paths"];
+    for (int i = 0; i < vPaths.size(); i++) {
+        std::string sBasePath = vPaths[i];
+        sBasePath = sRootDir + "/" + sBasePath;
+        if (!Helpers::dirExists(sBasePath)) {
+            Log::throw_err(TAG, "Path '" + sBasePath + "' does not exists " + sBasePath);
+        }
+        startRecoursiveCheckSimpleFormat(sRootDir, sBasePath, jsonConfig);
+    }
     int nRet = 0;
     for (int i = 0; i < g_vLineCheckers.size(); i++) {
         LineCheckerBase *pChecker = g_vLineCheckers[i];
         pChecker->printResult();
-        if (!pChecker->isSuccess()) {
+        if (!pChecker->isSuccess() && pChecker->getType() == "err") {
             nRet = -1;
         }
     }

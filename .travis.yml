@@ -29,6 +29,8 @@ install:
 script:
   - echo "code-check"
   - cd code-check
+  - ./build_simple.sh
+  - ./code-check ../
   - ./simple_code_checker.py --only-errors
   - cd ../
   - echo "Build unit tests"

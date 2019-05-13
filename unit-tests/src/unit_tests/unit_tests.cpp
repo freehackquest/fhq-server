@@ -14,7 +14,7 @@ std::string UnitTestBase::name() {
 std::vector<UnitTestBase*> *g_pUnitTests = NULL;
 
 void UnitTests::initGlobalVariables(){
-    if(g_pUnitTests == NULL){
+    if (g_pUnitTests == NULL) {
         // Log::info(std::string(), "Create handlers map");
         g_pUnitTests = new std::vector<UnitTestBase*>();
     }
