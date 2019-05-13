@@ -235,10 +235,9 @@ try:
     fhqtest.alert(user2_found2 == None, 'Could not get user2')
     fhqtest.check_response(user2_found2, "User2 succesfull got (2)")
     if "email" not in user2_found1:
-        fhqtest.log_err("Not found field 'email' in response user2_found1")
-        exit(-1)
+        fhqtest.throw_err("Not found field 'email' in response user2_found1")
     elif user2_found1['email'] != 'user2':
-        fhqtest.log_err("Expected field 'email' value 'user2', but got '" + user2_found1['email'] + "'")
+        fhqtest.throw_err("Expected field 'email' value 'user2', but got '" + user2_found1['email'] + "'")
         exit(-1)
 
     '''curr_user = fhqtest.admin_session.users_info({})
@@ -277,9 +276,6 @@ try:
     # test user_skills
     # test scoreboard
 
-except Exception as e:
-    fhqtest.log_err(str(e))
-    traceback.print_exc(file=sys.stdout)
 finally:
     fhqtest.print_header(" < < < " + test_name + ": end ")
     fhqtest.deinit_enviroment()

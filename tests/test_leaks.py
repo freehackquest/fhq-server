@@ -69,10 +69,7 @@ try:
 	#TODO leaks_list test
 	
     #TODO leaks_buy test
-    
-except Exception as e:
-	fhqtest.log_err(str(e))
-	traceback.print_exc(file=sys.stdout)
+
 finally:
 	fhqtest.print_header(" < < < " + test_name + ": end ")
-	fhqtest.deinit_enviroment();
+	fhqtest.deinit_enviroment()

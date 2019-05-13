@@ -62,11 +62,14 @@ def log_err(msg):
     global bcolors
     print(bcolors.FAIL + "ERROR: " + msg + bcolors.ENDC)
 
+def throw_err(msg):
+    global bcolors
+    print(bcolors.FAIL + "ERROR: " + msg + bcolors.ENDC)
+    raise Exception(msg)
+
 def alert(check, msg):
-    if(check == True):
-        log_err(msg)
-        raise Exception(msg)
-        sys.exit(0)
+    if (check == True):
+        throw_err(msg)
 
 def check_port(host, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -98,15 +101,12 @@ def check_response(resp, msg_success):
 def check_values(what, got, expected):
     print_bold("Check the " + what + "... ")
     if got != expected:
-        log_err(what + " has wrong expected '" + str(expected) + "' got '" + str(got) + "'")
+        throw_err(what + " has wrong expected '" + str(expected) + "' got '" + str(got) + "'")
     else:
         print_success(what + " is ok")
 
 def init_enviroment():
     global admin_session
-    global user1_uuid
-    global user2_uuid
-    global user3_uuid
     global ADMIN_EMAIL
     global ADMIN_PASSWORD
     global TEST_SERVER

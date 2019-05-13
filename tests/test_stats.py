@@ -41,10 +41,6 @@ try:
 
     fhqtest.print_bold("***********\n*API Coverage " + str(called_cmd_count*100/all_cmd_count) + "%\n***********")
 
-except Exception as e:
-    fhqtest.log_err(str(e))
-    traceback.print_exc(file=sys.stdout)
-    exit(-1)
 finally:
     fhqtest.print_header(" < < < " + test_name + ": end ")
     fhqtest.deinit_enviroment()

@@ -238,11 +238,6 @@ try:
     resp = fhqtest.admin_session.game_delete({ "uuid": game_uuid1, "admin_password": fhqtest.admin_password })
     fhqtest.check_response(resp, "Game removed")
     '''
-
-except Exception as e:
-    fhqtest.log_err(str(e))
-    traceback.print_exc(file=sys.stdout)
-    exit(-1)
 finally:
     fhqtest.print_header(" < < < " + test_name + ": end ")
     fhqtest.deinit_enviroment()
