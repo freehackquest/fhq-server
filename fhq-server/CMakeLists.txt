@@ -115,6 +115,8 @@ list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_games.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_games.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_leaks.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_leaks.cpp")
+list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_lxd.h")
+list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_lxd.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_mails.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_mails.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_quests_writeups.h")
@@ -130,8 +132,6 @@ list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_useful_links.cpp")
 
 list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_users.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_users.cpp")
-list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_lxd.h")
-list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_lxd.cpp")
 
 # models
 list (APPEND FHQSRV_SOURCES "src/models/model_notification.cpp")
