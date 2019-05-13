@@ -70,7 +70,7 @@ int EmployScoreboard::findScoreboardRowByRating(int rating) {
 // ---------------------------------------------------------------------
 
 nlohmann::json EmployScoreboard::toJson() {
-    auto jsonScoreboard = nlohmann::json::array();
+    nlohmann::json jsonScoreboard = nlohmann::json::array();
     
     for (unsigned int i = 0; i < m_vRows.size(); i++) {
         nlohmann::json jsonRow;

@@ -12,6 +12,7 @@
 #include <quazip.h>
 #include <quazipfile.h>
 #include <QtCore/QBuffer>
+#include <validators.h>
 
 
 /*********************************************
@@ -38,7 +39,7 @@ CmdHandlerLXDContainers::CmdHandlerLXDContainers()
 void CmdHandlerLXDContainers::handle(ModelRequest *pRequest) {
     QJsonObject jsonRequest = pRequest->data();
     QJsonObject jsonResponse;
-    auto *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -74,7 +75,7 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest) {
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDContainers::create_container(const std::string &name, std::string &sError, int &nErrorCode) {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     LXDContainer *pContainer;
 
     //Переместить в Orchestra
@@ -99,7 +100,7 @@ void CmdHandlerLXDContainers::create_container(const std::string &name, std::str
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDContainers::start_container(const std::string &name, std::string &sError, int &nErrorCode) {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()) {
         sError = "Can\'t connect to LXD server";
@@ -123,7 +124,7 @@ void CmdHandlerLXDContainers::start_container(const std::string &name, std::stri
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDContainers::stop_container(const std::string &name, std::string &sError, int &nErrorCode) {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()) {
         sError = "Can\'t connect to LXD server";
@@ -147,7 +148,7 @@ void CmdHandlerLXDContainers::stop_container(const std::string &name, std::strin
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDContainers::delete_container(const std::string &name, std::string &sError, int &nErrorCode) {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     LXDContainer *pContainer;
 
     if (!pOrchestra->initConnection()) {
@@ -204,7 +205,7 @@ void CmdHandlerLXDInfo::handle(ModelRequest *pRequest) {
 }
 
 bool CmdHandlerLXDInfo::get_state(const std::string& sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState) {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         return false;
     }
@@ -240,7 +241,7 @@ CmdHandlerLXDList::CmdHandlerLXDList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDList::handle(ModelRequest *pRequest) {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
         return;
@@ -248,7 +249,7 @@ void CmdHandlerLXDList::handle(ModelRequest *pRequest) {
 
     std::list<std::string> vList = pOrchestra->registry_names();
 
-    auto jsonNameContainers = nlohmann::json::array();
+    nlohmann::json jsonNameContainers = nlohmann::json::array();
     for (auto const &i : vList) {
         jsonNameContainers.push_back(std::string(i));
     }
@@ -271,9 +272,10 @@ CmdHandlerLXDExec::CmdHandlerLXDExec()
     requireStringParam("command", "Name of execution command"); // TODO validator
 }
 
+// ---------------------------------------------------------------------
 
 void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
         return;
@@ -294,9 +296,11 @@ void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), Error(nErrorCode, sError));
 }
 
+// ---------------------------------------------------------------------
+
 bool CmdHandlerLXDExec::exec_command(const std::string &sName, const std::string &sCommand, std::string &sError,
                                      int &nErrorCode, std::string &sOutput) {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()) {
         sError = "Can\'t connect to LXD server";
@@ -331,12 +335,13 @@ CmdHandlerLXDFile::CmdHandlerLXDFile()
     setAccessAdmin(true);
 
     requireStringParam("name", "Container name");
-    requireStringParam("action", "Action with files: pull, push or delete"); // TODO validator
+    requireStringParam("action", "Action with files: pull, push or delete")
+        .addValidator(new ValidatorLXDFileActionType());
     requireStringParam("path", "Path to file inside the container");
 }
 
 void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
         return;
@@ -350,6 +355,7 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
     std::string path = jsonRequest["path"].toString().toStdString();
     std::string sb64File;
 
+    // TODO use a validator
     const std::vector<std::string> actions = {"pull", "push", "delete"};
     if (std::find(actions.begin(), actions.end(), action) == actions.end()) {
         sError = "Non-existent operation. Possible operations: pull, push, delete.";
@@ -412,7 +418,7 @@ void CmdHandlerLXDFile::pull_file(LXDContainer *pContainer, const std::string &s
     }
 
     if (nlohmann::json::accept(std::begin(sRawData), std::end(sRawData))) {
-        auto jsonResponse = nlohmann::json::parse(sRawData);
+        nlohmann::json jsonResponse = nlohmann::json::parse(sRawData);
         if (jsonResponse.find("metadata") != jsonResponse.end() && jsonResponse.find("status") != jsonResponse.end()) {
             isDirectory = true;
             sError = sPath + " is the directory!";
@@ -442,7 +448,7 @@ CmdHandlerLXDOpenPort::CmdHandlerLXDOpenPort()
 }
 
 void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
         return;
@@ -517,7 +523,7 @@ CmdHandlerLXDImportService::CmdHandlerLXDImportService()
 }
 
 void CmdHandlerLXDImportService::handle(ModelRequest *pRequest) {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
         return;
@@ -532,7 +538,7 @@ void CmdHandlerLXDImportService::handle(ModelRequest *pRequest) {
     if (!nlohmann::json::accept(sConfig)) {
         pRequest->sendMessageError(cmd(), Error(400, "Json string isn't valid."));
     }
-    auto jsonConfig = nlohmann::json::parse(sConfig);
+    nlohmann::json jsonConfig = nlohmann::json::parse(sConfig);
 
     if (sName.empty()) {
         if (jsonConfig.find("name") != jsonConfig.end()) {
@@ -576,7 +582,7 @@ CmdHandlerLXDImportServiceFromZip::CmdHandlerLXDImportServiceFromZip()
 }
 
 void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
         return;
@@ -622,7 +628,7 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
         zip.close();
         return;
     }
-    auto jsonConfig = nlohmann::json::parse(sConfig);
+    nlohmann::json jsonConfig = nlohmann::json::parse(sConfig);
 
     if (!pOrchestra->create_service(jsonConfig, sError)) {
         pRequest->sendMessageError(cmd(), Error(500, "Cant create service. Error: " + sError));
@@ -693,7 +699,7 @@ CmdHandlerLXDStartService::CmdHandlerLXDStartService()
 }
 
 void CmdHandlerLXDStartService::handle(ModelRequest *pRequest) {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), Error(500, pOrchestra->lastError()));
         return;

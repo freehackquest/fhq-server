@@ -11,7 +11,7 @@
 bool UtilsLXDAuth::check_trust_certs(std::string &sError){
     std::string sUrl = "/1.0";
     nlohmann::json jsonResponse;
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()){
         sError = "Can\'t connect to LXD server";
@@ -45,14 +45,14 @@ bool UtilsLXDAuth::connect_with_lxd(const std::string &sPass, std::string &sErro
 
 bool UtilsLXDAuth::set_trusted(const std::string &sPass, std::string &sError){
     std::string sUrl = "/1.0/certificates";
-    auto jsonData = R"(
+    nlohmann::json jsonData = R"(
     {
         "type": "client",
         "password": "change it"
     })"_json;
     jsonData["password"] = sPass;
     nlohmann::json jsonResponse;
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()){
         sError = "Can\'t connect to LXD server";
