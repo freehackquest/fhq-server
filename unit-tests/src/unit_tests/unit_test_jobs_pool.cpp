@@ -72,7 +72,7 @@ bool UnitTestJobsPool::run() {
     int nCountJobs = 5;
     Log::info(TAG, "Check waitForDone...");
     JobWaiterResult *pJobWaiterResult = new JobWaiterResult();
-    for(int i = 0; i < nCountJobs; i++) {
+    for (int i = 0; i < nCountJobs; i++) {
         JobsPool::addJobFast(new JobAsyncWaiter(i, 500, pJobWaiterResult));
     }
 

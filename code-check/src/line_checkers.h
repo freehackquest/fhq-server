@@ -4,6 +4,7 @@
 #include <vector>
 #include <json.hpp>
 #include <regex>
+#include "config.h"
 
 class FileLine {
     public:
@@ -22,7 +23,7 @@ class FileLine {
 
 class LineCheckerBase {
     public:
-        LineCheckerBase(const std::string &sName, const nlohmann::json &jsonConfig);
+        LineCheckerBase(const std::string &sName, CodeCheckConfig *pConfig);
         std::string getName();
         std::string getType();
         void printWrongLine(const FileLine &line, const std::string &sError);
@@ -36,13 +37,29 @@ class LineCheckerBase {
         std::string m_sName;
         std::string m_sType;
         int m_nCounter;
+        CodeCheckConfig *m_pConfig;
+};
+
+// ---------------------------------------------------------------------
+
+class LineCheckerRegExp : LineCheckerBase {
+    public:
+        LineCheckerRegExp(
+            const std::string &sName,
+            CodeCheckConfig *pConfig,
+            const std::regex &rxRegExp
+        );
+        virtual void checkLine(const FileLine &line, const nlohmann::json &jsonConfig) override;
+
+    private:
+        std::regex m_rxForLine;
 };
 
 // ---------------------------------------------------------------------
 
 class LineCheckerTabsInLine : LineCheckerBase {
     public:
-        LineCheckerTabsInLine(const nlohmann::json &jsonConfig);
+        LineCheckerTabsInLine(CodeCheckConfig *pConfig);
         virtual void checkLine(const FileLine &line, const nlohmann::json &jsonConfig) override;
     
     private:
@@ -51,24 +68,58 @@ class LineCheckerTabsInLine : LineCheckerBase {
 
 // ---------------------------------------------------------------------
 
-class LineCheckerTODOInLine : LineCheckerBase {
+class LineCheckerTODOInLine : LineCheckerRegExp {
     public:
-        LineCheckerTODOInLine(const nlohmann::json &jsonConfig);
-        virtual void checkLine(const FileLine &line, const nlohmann::json &jsonConfig) override;
-    
-    private:
-        std::regex m_rxTODOInLine;
+        LineCheckerTODOInLine(CodeCheckConfig *pConfig);
 };
 
 // ---------------------------------------------------------------------
 
-class LineCheckerIfFormat : LineCheckerBase {
+class LineCheckerIfFormat : LineCheckerRegExp {
     public:
-        LineCheckerIfFormat(const nlohmann::json &jsonConfig);
-        virtual void checkLine(const FileLine &line, const nlohmann::json &jsonConfig) override;
-    
-    private:
-        std::regex m_rxIfFormatInLine;
+        LineCheckerIfFormat(CodeCheckConfig *pConfig);
+};
+
+// ---------------------------------------------------------------------
+
+class LineCheckerWhileFormat : LineCheckerRegExp {
+    public:
+        LineCheckerWhileFormat(CodeCheckConfig *pConfig);
+};
+
+// ---------------------------------------------------------------------
+
+class LineCheckerForFormat : LineCheckerRegExp {
+    public:
+        LineCheckerForFormat(CodeCheckConfig *pConfig);
+};
+
+// ---------------------------------------------------------------------
+
+class LineCheckerEndBrackets : LineCheckerRegExp {
+    public:
+        LineCheckerEndBrackets(CodeCheckConfig *pConfig);
+};
+
+// ---------------------------------------------------------------------
+
+class LineCheckerStartBracketElse : LineCheckerRegExp {
+    public:
+        LineCheckerStartBracketElse(CodeCheckConfig *pConfig);
+};
+
+// ---------------------------------------------------------------------
+
+class LineCheckerEndBracketElse : LineCheckerRegExp {
+    public:
+        LineCheckerEndBracketElse(CodeCheckConfig *pConfig);
+};
+
+// ---------------------------------------------------------------------
+
+class LineCheckerAuto : LineCheckerRegExp {
+    public:
+        LineCheckerAuto(CodeCheckConfig *pConfig);
 };
 
 #endif // LINE_CHECKERS_H

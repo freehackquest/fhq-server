@@ -91,7 +91,7 @@ bool EmployOrchestra::create_service(const ServiceConfig &serviceReq, std::strin
 
     Log::info(TAG, "Starting creation container " + serviceReq.name);
 
-    if (!pService->create_container()){
+    if (!pService->create_container()) {
         sError = pService->get_error();
         Log::err(TAG, "Failed created service. I can't create container.");
         return false;

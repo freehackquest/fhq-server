@@ -41,7 +41,7 @@ bool UnitTestLevenshtein::run() {
         if (n1 != n) {
             std::cout << "Test levenshtein distance between " << s1 << " and " << s2 << "\n"
                       << " (expected " << n << ", but got " << n1 << ")";
-        }else{
+        } else {
             nSuccess++;
         }
     }

@@ -9,10 +9,10 @@ UnitTestStaticAnalizingText::UnitTestStaticAnalizingText()
     // 
 }
 
-void UnitTestStaticAnalizingText::init(){
+void UnitTestStaticAnalizingText::init() {
 }
 
-bool UnitTestStaticAnalizingText::run(){
+bool UnitTestStaticAnalizingText::run() {
 
     struct LTest {
         LTest(std::string s1, std::map<char, double> n) : s1(s1), n(n) {}
@@ -38,7 +38,7 @@ bool UnitTestStaticAnalizingText::run(){
     tests.push_back(new LTest(".--.", thirdCase));
 
     unsigned int nSuccess = 0;
-    for(unsigned int i = 0; i < tests.size(); i++){
+    for (unsigned int i = 0; i < tests.size(); i++) {
         std::string s1 = tests[i]->s1;
         std::map<char, double> n = tests[i]->n;
         std::map<char, double> n1 = UtilsStaticAnalizingText::calc(s1);

@@ -17,6 +17,8 @@ set (CODE_CHECK_SOURCES "")
 # include header dirs
 list (APPEND CODE_CHECK_INCLUDE_DIRS "src")
 
+list (APPEND CODE_CHECK_SOURCES "src/config.h")
+list (APPEND CODE_CHECK_SOURCES "src/config.cpp")
 list (APPEND CODE_CHECK_SOURCES "src/helpers.h")
 list (APPEND CODE_CHECK_SOURCES "src/helpers.cpp")
 list (APPEND CODE_CHECK_SOURCES "src/json.hpp")

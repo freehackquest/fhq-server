@@ -27,15 +27,17 @@ const std::string &FileLine::getLine() const {
 
 // ---------------------------------------------------------------------
 
-LineCheckerBase::LineCheckerBase(const std::string &sName, const nlohmann::json &jsonConfig) {
+LineCheckerBase::LineCheckerBase(const std::string &sName, CodeCheckConfig *pConfig) {
     m_sName = sName;
     m_nCounter = 0;
+    m_pConfig = pConfig;
     TAG = "LineCheckerBase-" + sName;
+    nlohmann::json jsonConfig = pConfig->getJsonConfig();
     const nlohmann::json line_checkers = jsonConfig["line-checkers"];
     if (line_checkers.find(m_sName) == line_checkers.end()) {
         Log::throw_err(TAG, "'line-checkers' must contains '" + m_sName + "'");
     }
-    m_sType = line_checkers[m_sName];
+    m_sType = line_checkers[m_sName]; // TODO move check in CodeCheckConfig
     if (m_sType != "err" && m_sType != "warn" && m_sType != "ignore") {
         Log::throw_err(TAG, "'line-checkers'['" + m_sName + "'] "
             "expected one of ['err', 'warn', 'ignoroe'] but got '" + m_sType + "'");
@@ -66,7 +68,9 @@ void LineCheckerBase::printWrongLine(const FileLine &line, const std::string &sE
     if (m_sType == "err") {
         Log::err(TAG, sMessage);
     } else if (m_sType == "warn") {
-        Log::warn(TAG, sMessage);
+        if (!m_pConfig->isShowOnlyErrors()) {
+            Log::warn(TAG, sMessage);
+        }
     } else if (m_sType == "ignore") {
         // silent
     } else {
@@ -95,8 +99,26 @@ void LineCheckerBase::printResult() {
 
 // ---------------------------------------------------------------------
 
-LineCheckerTabsInLine::LineCheckerTabsInLine(const nlohmann::json &jsonConfig)
-: LineCheckerBase("tabs", jsonConfig) {
+LineCheckerRegExp::LineCheckerRegExp(
+    const std::string &sName,
+    CodeCheckConfig *pConfig,
+    const std::regex &rxRegExp
+) : LineCheckerBase(sName, pConfig) {
+    m_rxForLine = rxRegExp;
+}
+
+// ---------------------------------------------------------------------
+
+void LineCheckerRegExp::checkLine(const FileLine &line, const nlohmann::json &jsonConfig) {
+    if (std::regex_match(line.getLine(), m_rxForLine)) {
+        printWrongLine(line, "Found " + getName() + " in line");
+    }
+}
+
+// ---------------------------------------------------------------------
+
+LineCheckerTabsInLine::LineCheckerTabsInLine(CodeCheckConfig *pConfig)
+: LineCheckerBase("tabs", pConfig) {
     m_rxTabsInLine = std::regex(".*\\t+.*");
 }
 
@@ -110,30 +132,58 @@ void LineCheckerTabsInLine::checkLine(const FileLine &line, const nlohmann::json
 
 // ---------------------------------------------------------------------
 
-LineCheckerTODOInLine::LineCheckerTODOInLine(const nlohmann::json &jsonConfig)
-: LineCheckerBase("TODO", jsonConfig) {
-    m_rxTODOInLine = std::regex(".*TODO.*");
+LineCheckerTODOInLine::LineCheckerTODOInLine(CodeCheckConfig *pConfig)
+: LineCheckerRegExp("TODO", pConfig, std::regex(".*TODO.*")) {
+    // nothing
 }
 
 // ---------------------------------------------------------------------
 
-void LineCheckerTODOInLine::checkLine(const FileLine &line, const nlohmann::json &jsonConfig) {
-    if (std::regex_match(line.getLine(), m_rxTODOInLine)) {
-        printWrongLine(line, "Found TODO in line ");
-    }
+LineCheckerIfFormat::LineCheckerIfFormat(CodeCheckConfig *pConfig)
+: LineCheckerRegExp("if-format", pConfig, std::regex(".*[ ]+if\\(.*")) {
+    // nothing
 }
 
 // ---------------------------------------------------------------------
 
-LineCheckerIfFormat::LineCheckerIfFormat(const nlohmann::json &jsonConfig)
-: LineCheckerBase("if-format", jsonConfig) {
-    m_rxIfFormatInLine = std::regex(".*[ ]+if\\(.*");
+LineCheckerWhileFormat::LineCheckerWhileFormat(CodeCheckConfig *pConfig)
+: LineCheckerRegExp("while-format", pConfig, std::regex(".*while\\(.*")) {
+    // nothing
 }
 
 // ---------------------------------------------------------------------
 
-void LineCheckerIfFormat::checkLine(const FileLine &line, const nlohmann::json &jsonConfig) {
-    if (std::regex_match(line.getLine(), m_rxIfFormatInLine)) {
-        printWrongLine(line, "Found TODO in line ");
-    }
+LineCheckerForFormat::LineCheckerForFormat(CodeCheckConfig *pConfig)
+: LineCheckerRegExp("for-format", pConfig, std::regex(".*[ ]+for\\(.*")) {
+    // nothing
 }
+
+// ---------------------------------------------------------------------
+
+LineCheckerEndBrackets::LineCheckerEndBrackets(CodeCheckConfig *pConfig)
+: LineCheckerRegExp("end-brackets", pConfig, std::regex(".*\\)\\{.*")) {
+    // nothing
+}
+
+// ---------------------------------------------------------------------
+
+LineCheckerStartBracketElse::LineCheckerStartBracketElse(CodeCheckConfig *pConfig)
+: LineCheckerRegExp("start-bracket-else", pConfig, std::regex(".*\\}else.*")) {
+    // nothing
+}
+
+// ---------------------------------------------------------------------
+
+LineCheckerEndBracketElse::LineCheckerEndBracketElse(CodeCheckConfig *pConfig)
+: LineCheckerRegExp("end-bracket-else", pConfig, std::regex(".*else\\{.*")) {
+    // nothing
+}
+
+// ---------------------------------------------------------------------
+
+LineCheckerAuto::LineCheckerAuto(CodeCheckConfig *pConfig)
+: LineCheckerRegExp("auto", pConfig, std::regex(".*[^\\w]+auto[^\\w]+.*")) {
+    // nothing
+}
+
+// ---------------------------------------------------------------------
