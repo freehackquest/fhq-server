@@ -1,4 +1,4 @@
-#include <export_libfhqcli_py.h>
+#include <export_libwsjcppcli_py.h>
 
 #include <iostream>
 #include <iomanip>
@@ -121,17 +121,17 @@ public:
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliPy::exportLib() {
+void ExportLibWsjCppCliPy::exportLib() {
 
-    ExportLibFHQCliPy::exportPrepareDirs();
-    ExportLibFHQCliPy::export__init__py();
-    ExportLibFHQCliPy::exportSetupPy();
-    ExportLibFHQCliPy::exportAPImd();
+    exportPrepareDirs();
+    export__init__py();
+    exportSetupPy();
+    exportAPImd();
 }
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliPy::exportPrepareDirs() {
+void ExportLibWsjCppCliPy::exportPrepareDirs() {
     int status;
     std::cout << " * mkdir libfhqcli-py" << std::endl;
     status = mkdir("libfhqcli-py", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -144,7 +144,7 @@ void ExportLibFHQCliPy::exportPrepareDirs() {
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliPy::exportSetupPy() {
+void ExportLibWsjCppCliPy::exportSetupPy() {
     std::ofstream setupPy;
     std::cout << " * write code to libfhqcli-py/libfhqcli/setup.py " << std::endl;
     setupPy.open ("libfhqcli-py/setup.py");
@@ -191,7 +191,7 @@ void ExportLibFHQCliPy::exportSetupPy() {
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliPy::exportAPImd() {
+void ExportLibWsjCppCliPy::exportAPImd() {
     
     std::ofstream apimd;
     std::cout << " * write file to libfhqcli-py/API.md" << std::endl;
@@ -293,7 +293,7 @@ Access: unauthorized - **no**,  user - **no**,  admin - **yes**
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliPy::export__init__py() {
+void ExportLibWsjCppCliPy::export__init__py() {
     std::ofstream __init__;
     std::cout << " * write code to libfhqcli-py/libfhqcli/__init__.py " << std::endl;
     __init__.open ("libfhqcli-py/libfhqcli/__init__.py");

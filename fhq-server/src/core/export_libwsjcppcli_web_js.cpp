@@ -1,4 +1,4 @@
-#include <export_libfhqcli_web_js.h>
+#include <export_libwsjcppcli_web_js.h>
 
 #include <iostream>
 #include <iomanip>
@@ -126,19 +126,49 @@ public:
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliWebJS::exportLib() {
-    std::string sBasicDir = "./libfhqcli-web-js";
-
-    ExportLibFHQCliWebJS::exportPrepareDirs(sBasicDir);
-    ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(sBasicDir);
-    ExportLibFHQCliWebJS::exportSampleHtmlFile(sBasicDir);
-    ExportLibFHQCliWebJS::exportPackageJson(sBasicDir);
-    ExportLibFHQCliWebJS::exportAPImd(sBasicDir);
+void ExportLibWsjCppCliWebJS::setDirectoryName(const std::string &sPackageName) {
+    m_sPackageName = sPackageName;
 }
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliWebJS::exportPrepareDirs(const std::string &sBasicDir) {
+void ExportLibWsjCppCliWebJS::setLibraryName(const std::string &sLibraryName) {
+    m_sLibraryName = sLibraryName;
+}
+
+// ---------------------------------------------------------------------
+
+void ExportLibWsjCppCliWebJS::setVersion(const std::string &sVersion) {
+    m_sVersion = sVersion;
+}
+
+// ---------------------------------------------------------------------
+
+void ExportLibWsjCppCliWebJS::setAuthor(const std::string &sAuthor) {
+    m_sAuthor = sAuthor;
+}
+
+// ---------------------------------------------------------------------
+
+void ExportLibWsjCppCliWebJS::setPrefixRepositoryURL(const std::string &sPrefixRepositoryURL) {
+    m_sPrefixRepositoryURL = sPrefixRepositoryURL;
+}
+
+// ---------------------------------------------------------------------
+
+void ExportLibWsjCppCliWebJS::exportLib() {
+    std::string sBasicDir = "./" + m_sPackageName;
+
+    exportPrepareDirs(sBasicDir);
+    exportLibWsjCppCliWebJSFile(sBasicDir);
+    exportSampleHtmlFile(sBasicDir);
+    exportPackageJson(sBasicDir);
+    exportAPImd(sBasicDir);
+}
+
+// ---------------------------------------------------------------------
+
+void ExportLibWsjCppCliWebJS::exportPrepareDirs(const std::string &sBasicDir) {
     std::vector<std::string> vDirs;
     vDirs.push_back(sBasicDir);
     vDirs.push_back(sBasicDir + "/dist");
@@ -156,7 +186,7 @@ void ExportLibFHQCliWebJS::exportPrepareDirs(const std::string &sBasicDir) {
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliWebJS::exportPackageJson(const std::string &sBasicDir) {
+void ExportLibWsjCppCliWebJS::exportPackageJson(const std::string &sBasicDir) {
     std::ofstream packageJson;
     std::cout << " * write code to " << sBasicDir << "/package.json " << std::endl;
     packageJson.open (sBasicDir + "/package.json");
@@ -170,32 +200,31 @@ void ExportLibFHQCliWebJS::exportPackageJson(const std::string &sBasicDir) {
     JSCodeBuilder builder;
     builder
     .sub("{")
-        .add("\"name\": \"libfhqcli-web-js\",")
-        .add("\"version\": \"" + std::string(FHQSRV_VERSION) + "\",")
+        .add("\"name\": \"" + m_sPackageName + "\",")
+        .add("\"version\": \"" + m_sVersion + "\",")
         .add("\"description\": \"FreeHackQuest JavaScript Web Client Library for fhq-server\",")
-        .add("\"main\": \"dist/libfhqcli-web.js\",")
+        .add("\"main\": \"dist/" + m_sPackageName + ".js\",")
         .sub("\"repository\": {")
             .add("\"type\": \"git\",")
-            .add("\"url\": \"https://github.com/freehackquest/libfhqcli-web-js.git\"")
+            .add("\"url\": \"" + m_sPrefixRepositoryURL + m_sPackageName + ".git\"")
             .end()
         .add("},")
         .sub("\"keywords\": [")
             .add("\"browser\",")
             .add("\"library\",")
-            .add("\"fhq\",")
-            .add("\"freehackquest\",")
+            .add("\"client\",")
             .add("\"websocket\"")
             .end()
         .add("],")
         .sub("\"bugs\": {")
-            .add("\"url\": \"https://github.com/freehackquest/libfhqcli-web-js/issues\"")
+            .add("\"url\": \"" + m_sPrefixRepositoryURL + m_sPackageName + "/issues\"")
             .end()
         .add("},")
-        .add("\"author\": \"FreeHackQuest Team\",")
+        .add("\"author\": \"" + m_sAuthor + "\",")
         .add("\"license\": \"MIT\",")
         .sub("\"licenses\": [{")
             .add("\"type\": \"MIT\",")
-            .add("\"url\": \"https://github.com/freehackquest/libfhqcli-web-js/blob/master/LICENSE\"")
+            .add("\"url\": \"" + m_sPrefixRepositoryURL + m_sPackageName + "/blob/master/LICENSE\"")
             .end()
         .add("}]")
         .end()
@@ -208,7 +237,7 @@ void ExportLibFHQCliWebJS::exportPackageJson(const std::string &sBasicDir) {
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliWebJS::exportAPImd(const std::string &sBasicDir) {
+void ExportLibWsjCppCliWebJS::exportAPImd(const std::string &sBasicDir) {
     
     std::ofstream apimd;
     std::cout << " * write file to " + sBasicDir + "/API.md" << std::endl;
@@ -218,9 +247,9 @@ void ExportLibFHQCliWebJS::exportAPImd(const std::string &sBasicDir) {
     std::stringstream buffer;
     buffer << std::put_time(std::gmtime(&t), "%d %b %Y");
 
-    apimd << "# FHQCli\n\n";
+    apimd << "# " + m_sPackageName + "\n\n";
     apimd << " Automatically generated by fhq-server. \n";
-    apimd << " * Version: " << FHQSRV_VERSION << "\n";
+    apimd << " * Version: " << m_sVersion << "\n";
     apimd << " * Date: " << buffer.str() << "\n\n";
     apimd << " Example connect/disconnect:\n"
         << "```\n"
@@ -284,7 +313,7 @@ void ExportLibFHQCliWebJS::exportAPImd(const std::string &sBasicDir) {
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliWebJS::exportSampleHtmlFile(const std::string &sBasicDir) {
+void ExportLibWsjCppCliWebJS::exportSampleHtmlFile(const std::string &sBasicDir) {
     std::string sFilename = sBasicDir + "/sample.html";
     std::ofstream sample_html;
     std::cout << " * write code to " << sFilename << std::endl;
@@ -296,7 +325,7 @@ void ExportLibFHQCliWebJS::exportSampleHtmlFile(const std::string &sBasicDir) {
         << "        function log(n) {\r\n"
         << "            console.log(n);\r\n"
         << "            var log = document.getElementById('log');\r\n"
-        << "            log.innerHTML += '[' + new Date() + '] ' + n + '\\r\\n';"
+        << "            log.innerHTML += '[' + new Date() + '] ' + n + '\\r\\n';\r\n"
         << "        };\r\n"
         << "        window.fhq = window.fhq || {};\r\n"
         << "        window.fhq.ws = window.fhq.ws || {};\r\n"
@@ -313,9 +342,9 @@ void ExportLibFHQCliWebJS::exportSampleHtmlFile(const std::string &sBasicDir) {
         << "        window.fhq.ws.onConnectionClose = function() {\r\n"
         << "            // handle\r\n"
         << "        }\r\n"
-        << "        fhq.ws.base_url = 'ws://' + window.location.hostname + ':1234/api-ws/';\r\n"
+        << "        wjscpp.ws.base_url = 'ws://' + window.location.hostname + ':1234/api-ws/';\r\n"
         << "    </script>\r\n"
-        << "    <script src='dist/libfhqcli-web.js'></script>\r\n"
+        << "    <script src='dist/" + m_sPackageName + ".js'></script>\r\n"
         << "</head>\r\n"
         << "<body>\r\n"
         << "<div>\r\n"
@@ -342,21 +371,21 @@ void ExportLibFHQCliWebJS::exportSampleHtmlFile(const std::string &sBasicDir) {
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir) {
+void ExportLibWsjCppCliWebJS::exportLibWsjCppCliWebJSFile(const std::string &sBasicDir) {
 
-    std::string sFilename = sBasicDir + "/dist/libfhqcli-web.js";
-    std::ofstream libfhqcli_web_js_file;
+    std::string sFilename = sBasicDir + "/dist/" + m_sPackageName + ".js";
+    std::ofstream libwjscppcli_web_js_file;
     std::cout << " * write code to " << sFilename << std::endl;
-    libfhqcli_web_js_file.open(sFilename);
+    libwjscppcli_web_js_file.open(sFilename);
 
     std::time_t t = std::time(nullptr);
     std::stringstream buffer;
     buffer << std::put_time(std::gmtime(&t), "%d %b %Y");
     // now the result is in `buffer.str()`.
 
-    libfhqcli_web_js_file
+    libwjscppcli_web_js_file
         << "// This file was automatically generated by fhq-server \r\n"
-        << "// Version: " << std::string(FHQSRV_VERSION) << "\r\n"
+        << "// Version: " << m_sVersion << "\r\n"
         << "// Date: " << buffer.str() << " \r\n\r\n"
 
         << "if (!window.fhq) window.fhq = {};\r\n"
@@ -592,33 +621,33 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
         std::string sCmd = it->first;
         CmdHandlerBase* pCmdHandlerBase = it->second;
 
-        libfhqcli_web_js_file
+        libwjscppcli_web_js_file
             << "// Access unauthorized: " << (pCmdHandlerBase->accessUnauthorized() ? "yes" : "no") << "\r\n"
             << "// Access user: " << (pCmdHandlerBase->accessUser() ? "yes" : "no") << "\r\n"
             << "// Access admin: " << (pCmdHandlerBase->accessAdmin() ? "yes" : "no") << "\r\n";
         
         if (pCmdHandlerBase->activatedFromVersion() != "") {
-            libfhqcli_web_js_file 
+            libwjscppcli_web_js_file 
                 << "// Activated From Version: " << pCmdHandlerBase->activatedFromVersion() << "\r\n";
         }
         
         if (pCmdHandlerBase->deprecatedFromVersion() != "") {
-            libfhqcli_web_js_file
+            libwjscppcli_web_js_file
                 << "// Deprecated From Version: " + pCmdHandlerBase->deprecatedFromVersion() << "\r\n";
         }
         
         std::vector<CmdInputDef> vVin = pCmdHandlerBase->inputs();
         if (vVin.size() > 0) {
-            libfhqcli_web_js_file 
+            libwjscppcli_web_js_file 
                 <<  "// Input params:\r\n"; 
         }
         for (int i = 0; i < vVin.size(); i++) {
             CmdInputDef inDef = vVin[i];
             std::string nameIn = std::string(inDef.getName());
-            libfhqcli_web_js_file 
+            libwjscppcli_web_js_file 
                 <<  "// * " + nameIn + " - " + inDef.getType() + ", " + inDef.getRestrict() + " (" + inDef.getDescription() + ") \r\n";
         }
-        libfhqcli_web_js_file 
+        libwjscppcli_web_js_file 
             << "fhq.ws." << sCmd << " = function(params) {\r\n"
             << "    params = params || {};\r\n"
             << "    params.cmd = '" << sCmd << "';\r\n";
@@ -627,14 +656,14 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
             CmdInputDef inDef = vVin[i];
             if (inDef.isRequired()) {
                 std::string nameIn = std::string(vVin[i].getName());
-                libfhqcli_web_js_file 
+                libwjscppcli_web_js_file 
                     << "    if (!params['" + nameIn + "']) {\r\n"
                     << "         console.error('Parameter \"" << nameIn << "\" expected (lib)');\r\n"
                     << "    }\r\n";
             }
         }
         if (sCmd == "login") {
-            libfhqcli_web_js_file
+            libwjscppcli_web_js_file
                 << "    var ret = fhq.ws.promise()\r\n"
                 << "    fhq.ws.send(params).done(function(r) {\r\n"
                 << "        fhq.ws.tokenValue = r.token;\r\n"
@@ -652,7 +681,7 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
                 << "    })\r\n"
                 << "    return ret;\r\n";
         } else if (sCmd == "token") {
-            libfhqcli_web_js_file
+            libwjscppcli_web_js_file
                 << "    if (fhq.ws.tokenValue && fhq.ws.tokenValue != '') {\r\n"
                 << "        var ret = fhq.ws.promise()\r\n"
                 << "        params.token = fhq.ws.tokenValue;\r\n"
@@ -669,15 +698,15 @@ void ExportLibFHQCliWebJS::exportLibfhqcliWebJSFile(const std::string &sBasicDir
                 << "        return fhq.ws.send(params);"
                 << "    }\r\n";
         } else {
-            libfhqcli_web_js_file 
+            libwjscppcli_web_js_file 
                 << "    return fhq.ws.send(params);\r\n";
         }
 
-        libfhqcli_web_js_file 
+        libwjscppcli_web_js_file 
             << "}\r\n\r\n";
     }
 
-    libfhqcli_web_js_file.close();
+    libwjscppcli_web_js_file.close();
     std::cout << "\t> OK" << std::endl;
 }
 
