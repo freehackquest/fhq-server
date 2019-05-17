@@ -6,29 +6,24 @@
 Backend for FreeHackQuest on Qt and WebSockets
 Frontend for FreeHackQuest here: [frontend](https://github.com/freehackquest/frontend)
 
-* [CONFIGURING](install/CONFIGURING.md)
-* [HOW-TO-BUILD](install/HOW-TO-BUILD.md)
-* [PRE-BUILDS](install/PRE-BUILDS.md)
+* [CONFIGURING](https://github.com/freehackquest/fhq-server/tree/master/install/install/CONFIGURING.md)
+* [HOW-TO-BUILD](https://github.com/freehackquest/fhq-server/tree/master/install/install/HOW-TO-BUILD.md)
+* [PRE-BUILDS](https://github.com/freehackquest/fhq-server/tree/master/install/install/PRE-BUILDS.md)
 * [DOCKER-COMPOSE](https://github.com/freehackquest/fhq-server/tree/master/install/DOCKER_COMPOSE)
+* [INSTALL_FROM_PPA](https://github.com/freehackquest/fhq-server/tree/master/install/INSTALL_FROM_PPA.md)
 * Configure autostart
 	* [SYSTEMD](install/SYSTEMD.md)
 	* [INITD](install/INITD.md)
 
-## (Ubuntu) Install from ppa:
+## Distribution
 
-```
-$ sudo add-apt-repository ppa:freehackquest/fhq-server
-$ sudo apt update
-$ sudo apt install fhq-server
-```
-More details here:
+| What           | Where         |
+| -------------- | ------------- |
+| server: fhq-server     | [https://launchpad.net/~freehackquest/+archive/ubuntu/fhq-server](https://launchpad.net/~freehackquest/+archive/ubuntu/fhq-server)  |
+| server: docker image   | [https://hub.docker.com/r/freehackquest/fhq-server](https://hub.docker.com/r/freehackquest/fhq-server)  |
+| client library: javascript/npm | [npm javascript](https://www.npmjs.com/package/libfhqcli-web-js) |
+| client library: python | [python](https://pypi.org/project/libfhqcli/) |
 
-[https://launchpad.net/~freehackquest/+archive/ubuntu/fhq-server](https://launchpad.net/~freehackquest/+archive/ubuntu/fhq-server)
-
-## Client libraries
-
-* [npm javascript](https://www.npmjs.com/package/libfhqcli-web-js)
-* [python](https://pypi.org/project/libfhqcli/)
 
 ## 3rdParty
 
