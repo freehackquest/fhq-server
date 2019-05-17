@@ -12,6 +12,7 @@
 #include <chrono>
 #include <string>
 #include <algorithm>
+#include <cstdlib>
 
 // ---------------------------------------------------------------------
 
@@ -233,6 +234,23 @@ std::string& Fallen::trim(std::string& str, const std::string& chars) {
 std::string& Fallen::to_lower(std::string& str) {
     std::transform(str.begin(), str.end(), str.begin(), ::tolower);
     return str;
+}
+
+
+// ---------------------------------------------------------------------
+
+std::string Fallen::createUuid() {
+    std::string sRet = "00000000-0000-0000-0000-000000000000";
+    const std::string sAlphabet = "0123456789abcdef";
+    // unsigned t = std::time(0);
+    for (int i = 0; i < 36; i++) {
+        if (i != 8 && i != 13 && i != 18 && i != 23) {
+            sRet[i] = sAlphabet[std::rand() % sAlphabet.length()];
+        }
+    }
+    unsigned t = std::rand() + std::time(0);
+    std::srand(t);
+    return sRet;
 }
 
 // ---------------------------------------------------------------------
