@@ -506,7 +506,7 @@ fhq.pages['quest_edit'] = function(questid) {
 fhq.updateQuest = function() {
 	fhq.showLoader();
 	var params = {};
-	params["questid"] = parseInt(params["questid"],10);
+	params["questid"] = parseInt($("#edit_quest_id").val(),10);
 	params["gameid"] = parseInt($("#edit_quest_gameid").val(),10);
 	params["name"] = $("#edit_quest_name").val();
 	params["text"] = window['edit_quest_text'].value();
