@@ -18,10 +18,8 @@ fhq.mailSend = function()  {
 		console.error(err);
 		$('#error_info').show();
 		$('#error_info .alert').html('ERROR: ' + err.error);
-		
 	})
 };
-
 
 fhq.pages['mail_send'] = function(){
 	fhq.changeLocationState({'mail_send':''});

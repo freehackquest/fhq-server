@@ -93,10 +93,10 @@ fhq.t = function(message){
 fhq.pages = [];
 
 fhq.processParams = function(){
-	if(fhq.token == "" || (fhq.userinfo && fhq.userinfo.role != 'admin')){
+	if (fhq.token == "" || (fhq.userinfo && fhq.userinfo.role != 'admin')) {
 		fhq.ws.cleanuptoken();
 		fhq.showSignInForm();
-	}else{
+	} else {
 		console.log(fhq.userinfo);
 		console.log(fhq.pages);
 		for(var name in fhq.pages){
