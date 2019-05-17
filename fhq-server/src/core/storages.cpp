@@ -989,6 +989,21 @@ StorageUpdateBase::StorageUpdateBase(const std::string &sFromVersion, const std:
     m_sFromVersion = sFromVersion;
     m_sVersion = sVersion;
     m_sDescription = sDescription;
+    
+    if (sFromVersion != "") {
+        StorageUpdateBase *pUpdate = StorageUpdates::findUpdateVersion(sFromVersion);
+        if (pUpdate == nullptr) {
+            Log::throw_err(TAG, "Not found storage update version: '" + sFromVersion + "'");
+        }
+    }
+
+    {
+        StorageUpdateBase *pUpdate = StorageUpdates::findUpdateVersion(sVersion);
+        if (pUpdate != nullptr) {
+            Log::throw_err(TAG, "Storage updates already has update with this version: '" + sVersion + "'");
+        }
+    }
+    
     StorageUpdates::initGlobalVariables();
     g_pStorageUpdates->push_back(this);
 }
@@ -1081,6 +1096,7 @@ std::vector<StorageUpdateBase*> StorageUpdates::getSortedStorageUpdates() {
 // ---------------------------------------------------------------------
 
 StorageUpdateBase* StorageUpdates::findUpdateFromVersion(const std::string &sFromVersion) {
+    StorageUpdates::initGlobalVariables();
     std::string TAG = "StorageUpdates::findUpdateFromVersion";
     StorageUpdateBase* pRet = nullptr;
     for (int i = 0; i < g_pStorageUpdates->size(); i++) {
@@ -1089,7 +1105,26 @@ StorageUpdateBase* StorageUpdates::findUpdateFromVersion(const std::string &sFro
             if (pRet == nullptr) {
                 pRet = pUpdate;
             } else {
-                Log::warn(TAG, "Already defined update with from_version " + sFromVersion);
+                Log::throw_err(TAG, "Already defined update with from_version " + sFromVersion);
+            }
+        }
+    }
+    return pRet;
+}
+
+// ---------------------------------------------------------------------
+
+StorageUpdateBase* StorageUpdates::findUpdateVersion(const std::string &sVersion) {
+    StorageUpdates::initGlobalVariables();
+    std::string TAG = "StorageUpdates::findUpdateVersion";
+    StorageUpdateBase* pRet = nullptr;
+    for (int i = 0; i < g_pStorageUpdates->size(); i++) {
+        StorageUpdateBase* pUpdate = g_pStorageUpdates->at(i);
+        if (sVersion == pUpdate->version()) {
+            if (pRet == nullptr) {
+                pRet = pUpdate;
+            } else {
+                Log::throw_err(TAG, "Already defined update with version " + sVersion);
             }
         }
     }

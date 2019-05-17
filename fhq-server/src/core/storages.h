@@ -375,6 +375,7 @@ class StorageUpdates {
         static std::vector<StorageUpdateBase*> getSortedStorageUpdates();
         static void initGlobalVariables();
         static StorageUpdateBase* findUpdateFromVersion(const std::string &sFromVersion);
+        static StorageUpdateBase* findUpdateVersion(const std::string &sVersion);
         static bool apply(Storage *pStorage);
 };
 
