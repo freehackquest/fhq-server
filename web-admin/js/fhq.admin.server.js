@@ -16,7 +16,6 @@ fhq.startUptime = function(server_uptime_sec) {
 	window["server_uptime_sec"] = server_uptime_sec;
 	clearInterval(window["server_uptime_sec_intrl"]);
 	window["server_uptime_sec_intrl"] = setInterval(function() {
-		console.log("startUptime");
 		if ($('#server_uptime').length > 0) {
 			window["server_uptime_sec"]++;
 			$('#server_uptime').html('Server uptime: ' + fhq.formatUptime(window["server_uptime_sec"]) + ' sec');
@@ -28,6 +27,7 @@ fhq.startUptime = function(server_uptime_sec) {
 
 fhq.pages['server_info'] = function(){
 	fhq.changeLocationState({'server_info':''});
+	console.warn("server_info");
 	$('#page_name').html('Server Info');
 	var el = $('#page_content');
 	fhq.showLoader();
