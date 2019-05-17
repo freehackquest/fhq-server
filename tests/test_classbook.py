@@ -264,10 +264,7 @@ try:
         fhqtest.log_err("Expected field 'email' value 'user2', but got '" + user2_found1['email'] + "'")
         exit(-1)
     '''
-    fhqtest.clean_all_classbooks();
-except Exception as e:
-    fhqtest.log_err(str(e))
-    traceback.print_exc(file=sys.stdout)
+    fhqtest.clean_all_classbooks()
 finally:
     fhqtest.print_header(" < < < " + test_name + ": end ")
     fhqtest.deinit_enviroment()

@@ -2,7 +2,7 @@
 #define CMD_HADNLERS_LXD_H
 
 #include <cmd_handlers.h>
-#include <include/model_lxd_orchestra.h>
+#include <model_lxd_orchestra.h>
 
 /*********************************************
  * Any actions with the container. Actions: create, start, stop and delete container

@@ -91,14 +91,14 @@ bool UnitTestMergeText::run() {
     tests1.push_back(new LTest("We\nspent\nthe rest\nof our life\non\nthis\ncourse\nwork", "We\nspent\na lot of\ntime\non\nthis\ncourse\nwork", "We\ngonna\nspend\na lot of\nfunky\ntime\non\ncourse\nwork", arr1, arr2, 6));
 
     unsigned int nSuccess = 0;
-    for (unsigned int i = 0; i < tests1.size(); i++){
+    for (unsigned int i = 0; i < tests1.size(); i++) {
         std::string txt1 = tests1[i]->txt1;
         std::string txt2 = tests1[i]->txt2;
         std::string txt3 = tests1[i]->txt3;
         UtilsMergeText::merge(txt1, txt2, txt3, arr1, arr2);
         unsigned int n = tests1[i]->n;
 
-        if(arr1.size()==n) {
+        if (arr1.size()==n) {
             nSuccess++;
         } else {
             Log::err(TAG, "In the test №" + std::to_string(i + 1) + " the length of the vector is expected: "
@@ -151,7 +151,7 @@ bool UnitTestMergeText::run() {
     sline.push_back("good");
     sline.push_back("boy");
 
-    for(int i=0;i<skey.size();++i) arr3.push_back(new UtilsMergeTextRow(id[i], skey.at(i), sline.at(i)));
+    for (int i=0;i<skey.size();++i) arr3.push_back(new UtilsMergeTextRow(id[i], skey.at(i), sline.at(i)));
 
     tests2.push_back(new LTest2(
         "You\nare\ngot\nand\ngood",

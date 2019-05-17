@@ -982,10 +982,6 @@ Storage* Storages::create(const std::string &sType) {
 }
 
 // ---------------------------------------------------------------------
-
-std::vector<StorageUpdateBase*> *g_pStorageUpdates = nullptr;
-
-// ---------------------------------------------------------------------
 // class StorageUpdateBase
 
 StorageUpdateBase::StorageUpdateBase(const std::string &sFromVersion, const std::string &sVersion, const std::string &sDescription) {
@@ -1061,12 +1057,25 @@ void StorageUpdateBase::checkTableName(std::string sTableName) {
 }
 
 // ---------------------------------------------------------------------
+// StorageUpdates
+
+std::vector<StorageUpdateBase*> *g_pStorageUpdates = nullptr;
+
+// ---------------------------------------------------------------------
 
 void StorageUpdates::initGlobalVariables() {
     if (g_pStorageUpdates == NULL) {
         // Log::info(std::string(), "Create list updates");
         g_pStorageUpdates = new std::vector<StorageUpdateBase*>();
     }
+}
+
+// ---------------------------------------------------------------------
+
+std::vector<StorageUpdateBase*> StorageUpdates::getSortedStorageUpdates() {
+    StorageUpdates::initGlobalVariables();
+    // TODO sorting list of updates
+    return *g_pStorageUpdates;
 }
 
 // ---------------------------------------------------------------------

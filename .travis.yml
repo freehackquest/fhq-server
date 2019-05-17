@@ -29,13 +29,9 @@ install:
 script:
   - echo "code-check"
   - cd code-check
-  - ./simple_code_checker.py --only-errors
-  - cd ../
-  - echo "Build unit tests"
-  - cd unit-tests
-  - ./build_simple.sh
-  - echo "Run unit tests"
-  - ./unit-tests
+  - ./check.sh
+  - cd ../unit-tests
+  - ./run_unit_tests.sh
   - cd ../fhq-server
   - ./build_simple.sh
   - ./fhq-server -wd ../data_travis version

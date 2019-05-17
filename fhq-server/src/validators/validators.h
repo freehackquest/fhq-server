@@ -83,4 +83,17 @@ class ValidatorGameType : public ValidatorStringBase {
         std::vector<std::string> m_vGameTypes;
 };
 
-#endif // VALIDATOR_GAME_STATE_H
+// ---------------------------------------------------------------------
+
+class ValidatorLXDFileActionType : public ValidatorStringBase {
+    public:
+        ValidatorLXDFileActionType();
+        virtual std::string typeName();
+        virtual bool isValid(const std::string &sValue, std::string &sError);
+
+    private:
+        std::string TAG;
+        std::vector<std::string> m_vActionTypes;
+};
+
+#endif // VALIDATORS_H

@@ -21,9 +21,6 @@ try:
         fhqtest.log_err("Wrong sattus code expected 200, but got " + str(r.status_code))
         exit(-1)
 
-except Exception as e:
-    fhqtest.log_err(str(e))
-    traceback.print_exc(file=sys.stdout)
 finally:
     fhqtest.print_header(" < < < " + test_name + ": end ")
     

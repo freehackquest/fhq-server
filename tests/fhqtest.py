@@ -10,12 +10,11 @@ import socket
 from pprint import pprint
 
 admin_session = None
+user_session = None
+anon_session = None
 loggined = False
 GAME_UUID1 = "00000000-0000-0000-1000-000000000001"
 GAME_UUID2 = "00000000-0000-0000-1000-000000000002"
-USER1_UUID = "00000000-0000-0000-0000-000000000001"
-USER2_UUID = "00000000-0000-0000-0000-000000000002"
-USER3_UUID = "00000000-0000-0000-0000-000000000003"
 CLASSBOOK_RECORD1 = "C1A55800-0000-0000-0000-000000000001"
 CLASSBOOK_RECORD2 = "C1A55800-0000-0000-0000-000000000002"
 CLASSBOOK_RECORD3 = "C1A55800-0000-0000-0000-000000000003"
@@ -62,11 +61,14 @@ def log_err(msg):
     global bcolors
     print(bcolors.FAIL + "ERROR: " + msg + bcolors.ENDC)
 
+def throw_err(msg):
+    global bcolors
+    print(bcolors.FAIL + "ERROR: " + msg + bcolors.ENDC)
+    raise Exception(msg)
+
 def alert(check, msg):
-    if(check == True):
-        log_err(msg)
-        raise Exception(msg)
-        sys.exit(0)
+    if (check == True):
+        throw_err(msg)
 
 def check_port(host, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -90,7 +92,8 @@ def generate_random_uuid():
     return ret
 
 def check_response(resp, msg_success):
-    if(resp['result'] == 'FAIL'):
+    alert(resp == None, 'Wrong response')
+    if resp['result'] == 'FAIL':
         log_err(resp['error'])
     else:
         print_success(msg_success)
@@ -98,15 +101,12 @@ def check_response(resp, msg_success):
 def check_values(what, got, expected):
     print_bold("Check the " + what + "... ")
     if got != expected:
-        log_err(what + " has wrong expected '" + str(expected) + "' got '" + str(got) + "'")
+        throw_err(what + " has wrong expected '" + str(expected) + "' got '" + str(got) + "'")
     else:
         print_success(what + " is ok")
 
 def init_enviroment():
     global admin_session
-    global user1_uuid
-    global user2_uuid
-    global user3_uuid
     global ADMIN_EMAIL
     global ADMIN_PASSWORD
     global TEST_SERVER
@@ -147,8 +147,8 @@ def deinit_enviroment():
     # try remove all test objects
     if loggined == True:
         admin_session.game_delete({"uuid": GAME_UUID1, "admin_password": "admin"})
-
-    admin_session.close()
+    if admin_session != None:
+        admin_session.close()
 
 def remove_item(classbookid, padding):
     records_list = admin_session.classbook_list({

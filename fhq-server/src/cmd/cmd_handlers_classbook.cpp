@@ -558,7 +558,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest) {
     jsonInfo["langs"] = jsonLangs;
 
     //FIND parents for the article
-    auto jsonParents = nlohmann::json::array();
+    nlohmann::json jsonParents = nlohmann::json::array();
     QSet<int> set_of_parent;
     int nParentId = jsonInfo["parentid"];
     for (int i = 0; i < 5; ++i) {

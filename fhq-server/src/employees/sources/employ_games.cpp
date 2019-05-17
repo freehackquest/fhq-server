@@ -119,27 +119,27 @@ EmployResult EmployGames::addGame(const ModelGame &modelGame, std::string &sErro
         QSqlQuery query(db);
         query.prepare(
             "INSERT INTO games("
-            "		uuid, title, type_game,"
-            "		date_start, date_stop, date_restart,"
-            "		description,"
-            "		organizators,"
-            "		state, form, rules,"
-            "		maxscore,"
-            "		owner,"
+            "       uuid, title, type_game,"
+            "       date_start, date_stop, date_restart,"
+            "       description,"
+            "       organizators,"
+            "       state, form, rules,"
+            "       maxscore,"
+            "       owner,"
             "       date_create, " // TODO change created
-            "		date_change "  // TODO change updated
-            "	)"
-            "	VALUES("
-            "		:uuid, :name, :type_game,"
-            "		:date_start, :date_stop, :date_restart,"
-            "		:description,"
-            "		:organizators,"
-            "		:state, :form, :rules,"
-            "		:maxscore,"
+            "       date_change "  // TODO change updated
+            "   )"
+            "   VALUES("
+            "       :uuid, :name, :type_game,"
+            "       :date_start, :date_stop, :date_restart,"
+            "       :description,"
+            "       :organizators,"
+            "       :state, :form, :rules,"
+            "       :maxscore,"
             "       :owner,"
-            "		NOW(),"
-            "		NOW()"
-            "	)");
+            "       NOW(),"
+            "       NOW()"
+            "   )");
         query.bindValue(":uuid", QString::fromStdString(pModelGame->uuid()));
         query.bindValue(":name", QString(pModelGame->name().c_str()));
         query.bindValue(":type_game", QString(pModelGame->type().c_str()));
@@ -343,23 +343,4 @@ EmployResult EmployGames::removeGame(const std::string &sUuid) {
     return EmployResult::OK;
 }
 
-
 // ---------------------------------------------------------------------
-// TODO move to helpers
-
-bool EmployGames::dir_exists(const char* filePath)
-{
-    //The variable that holds the file information
-    struct stat fileAtt; //the type stat and function stat have exactly the same names, so to refer the type, we put struct before it to indicate it is an structure.
-
-    //Use the stat function to get the information
-    if (stat(filePath, &fileAtt) != 0) { //start will be 0 when it succeeds
-        return false;
-    }
-
-    //S_ISREG is a macro to check if the filepath referers to a file. If you don't know what a macro is, it's ok, you can use S_ISREG as any other function, it 'returns' a bool.
-    return S_ISREG(fileAtt.st_mode);
-}
-
-// ---------------------------------------------------------------------
-

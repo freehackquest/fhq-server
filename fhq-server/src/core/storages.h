@@ -372,6 +372,7 @@ extern std::vector<StorageUpdateBase*> *g_pStorageUpdates;
 
 class StorageUpdates {
     public:
+        static std::vector<StorageUpdateBase*> getSortedStorageUpdates();
         static void initGlobalVariables();
         static StorageUpdateBase* findUpdateFromVersion(const std::string &sFromVersion);
         static bool apply(Storage *pStorage);

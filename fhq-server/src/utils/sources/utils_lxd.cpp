@@ -8,12 +8,12 @@
 #include <employees.h>
 
 
-bool UtilsLXDAuth::check_trust_certs(std::string &sError){
+bool UtilsLXDAuth::check_trust_certs(std::string &sError) {
     std::string sUrl = "/1.0";
     nlohmann::json jsonResponse;
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
 
-    if (!pOrchestra->initConnection()){
+    if (!pOrchestra->initConnection()) {
         sError = "Can\'t connect to LXD server";
         return false;
     }
@@ -24,18 +24,18 @@ bool UtilsLXDAuth::check_trust_certs(std::string &sError){
     return (jsonResponse["metadata"]["auth"].is_string()) && (jsonResponse["metadata"]["auth"] == "trusted" );
 }
 
-bool UtilsLXDAuth::connect_with_lxd(const std::string &sPass, std::string &sError){
+bool UtilsLXDAuth::connect_with_lxd(const std::string &sPass, std::string &sError) {
     bool bTrusted = check_trust_certs(sError);
 
-    if (!sError.empty()){
+    if (!sError.empty()) {
         Log::err(std::string("UtilsLXDAuth"), "Can't get info about client cert");
         return false;
     }
 
-    if (!bTrusted){
-        if (!set_trusted(sPass, sError)){
+    if (!bTrusted) {
+        if (!set_trusted(sPass, sError)) {
             Log::err("UtilsLXDAuth", "Can't set trusted certs" + sError);
-        }else{
+        } else {
             bTrusted = true;
         }
     }
@@ -43,18 +43,18 @@ bool UtilsLXDAuth::connect_with_lxd(const std::string &sPass, std::string &sErro
     return bTrusted;
 }
 
-bool UtilsLXDAuth::set_trusted(const std::string &sPass, std::string &sError){
+bool UtilsLXDAuth::set_trusted(const std::string &sPass, std::string &sError) {
     std::string sUrl = "/1.0/certificates";
-    auto jsonData = R"(
+    nlohmann::json jsonData = R"(
     {
         "type": "client",
         "password": "change it"
     })"_json;
     jsonData["password"] = sPass;
     nlohmann::json jsonResponse;
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
 
-    if (!pOrchestra->initConnection()){
+    if (!pOrchestra->initConnection()) {
         sError = "Can\'t connect to LXD server";
         return false;
     }

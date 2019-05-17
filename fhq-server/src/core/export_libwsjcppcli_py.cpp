@@ -1,11 +1,10 @@
-#include <export_libfhqcli_py.h>
+#include <export_libwsjcppcli_py.h>
 
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
 #include <websocketserver.h>
 #include <employees.h>
-#include <QtCore> // TODO remove
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <memory>
@@ -94,6 +93,12 @@ public:
         m_pCurr->addLine(sLine);
         return *this;
     }
+    PyCodeBuilder &add(const std::vector<std::string> &vLines) {
+        for (int i = 0; i < vLines.size(); i++) {
+            m_pCurr->addLine(vLines[i]);
+        }
+        return *this;
+    }
     PyCodeBuilder &sub(const std::string &sLine) {
         m_pCurr = m_pCurr->addLine(sLine);
         return *this;
@@ -116,17 +121,17 @@ public:
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliPy::exportLib() {
+void ExportLibWsjCppCliPy::exportLib() {
 
-    ExportLibFHQCliPy::exportPrepareDirs();
-    ExportLibFHQCliPy::export__init__py();
-    ExportLibFHQCliPy::exportSetupPy();
-    ExportLibFHQCliPy::exportAPImd();
+    exportPrepareDirs();
+    export__init__py();
+    exportSetupPy();
+    exportAPImd();
 }
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliPy::exportPrepareDirs() {
+void ExportLibWsjCppCliPy::exportPrepareDirs() {
     int status;
     std::cout << " * mkdir libfhqcli-py" << std::endl;
     status = mkdir("libfhqcli-py", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -139,7 +144,7 @@ void ExportLibFHQCliPy::exportPrepareDirs() {
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliPy::exportSetupPy() {
+void ExportLibWsjCppCliPy::exportSetupPy() {
     std::ofstream setupPy;
     std::cout << " * write code to libfhqcli-py/libfhqcli/setup.py " << std::endl;
     setupPy.open ("libfhqcli-py/setup.py");
@@ -157,15 +162,19 @@ void ExportLibFHQCliPy::exportSetupPy() {
         .end()
     .add("")
     .sub("setuptools.setup(")
-        .add("name='libfhqcli',")
-        .add("version='" + std::string(FHQSRV_VERSION) + "',")
-        .add("author='FreeHackQuest Team',")
-        .add("author_email='freehackquest@gmail.com',")
-        .add("description='FreeHackQuest Python Client Library for fhq-server',")
-        .add("long_description=long_description,")
-        .add("long_description_content_type='text/markdown',")
-        .add("url='https://github.com/freehackquest/libfhqcli-py',")
-        .add("packages=setuptools.find_packages(),")
+        .add({
+            "name='libfhqcli',",
+            "version='" + std::string(FHQSRV_VERSION) + "',",
+            "install_requires=['websocket-client>=0.48.0', 'requests>=2.21.0'],",
+            "keywords=['ctf', 'fhq', 'jeopardy', 'freehackquest'],",
+            "author='FreeHackQuest Team',",
+            "author_email='freehackquest@gmail.com',",
+            "description='FreeHackQuest Python Client Library for fhq-server',",
+            "long_description=long_description,",
+            "long_description_content_type='text/markdown',",
+            "url='https://github.com/freehackquest/libfhqcli-py',",
+            "packages=['libfhqcli'],",
+        })
         .sub("classifiers=(")
             .add("'Programming Language :: Python :: 2',")
             .add("'License :: OSI Approved :: Apache Software License',")
@@ -182,7 +191,7 @@ void ExportLibFHQCliPy::exportSetupPy() {
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliPy::exportAPImd() {
+void ExportLibWsjCppCliPy::exportAPImd() {
     
     std::ofstream apimd;
     std::cout << " * write file to libfhqcli-py/API.md" << std::endl;
@@ -205,12 +214,38 @@ void ExportLibFHQCliPy::exportAPImd() {
         << "```\n";
     apimd << "\n";
 
+/*
+<details>
+  <summary>addhint</summary>
+  
+  Methid add hint to quest
+
+Access: unauthorized - **no**,  user - **no**,  admin - **yes**
+
+ #### Input params 
+
+ * questid - integer, required; quest id
+ * hint - string, required; hint text
+
+
+ #### example call method 
+
+ ```response = fhq.addhint({"questid": 0, "hint": ""})```
+ 
+</details>
+
+*/
+
     std::map<std::string, CmdHandlerBase*>::iterator it = g_pCmdHandlers->begin();
     for (; it!=g_pCmdHandlers->end(); ++it) {
         std::string sCmd = it->first;
         CmdHandlerBase* pCmdHandlerBase = it->second;
-        
-        apimd << " ## " << sCmd << "\n\n";
+
+        apimd
+            << "<details>\n"
+            << "<summary>" << sCmd << "</summary>\n\n"
+            << "## " << sCmd << "\n\n";
+
         if (pCmdHandlerBase->description() != "") {
             apimd << pCmdHandlerBase->description() << "\n\n";
         }
@@ -232,21 +267,24 @@ void ExportLibFHQCliPy::exportAPImd() {
             apimd << " * " << inDef.getName() << " - " << inDef.getType() << ", " << inDef.getRestrict() << "; " << inDef.getDescription() << "\n";
 
             if (pythonTemplate != "") {
-                pythonTemplate += ", ";
+                pythonTemplate += ",\n";
             }
             if (inDef.isInteger()) {
                 int nVal = 0;
                 if (inDef.getName() == "onpage") {
                     nVal = 10;
                 }
-                pythonTemplate += "\"" + inDef.getName() + "\": " + std::to_string(nVal);
+                pythonTemplate += "    \"" + inDef.getName() + "\": " + std::to_string(nVal);
             } else {
-                pythonTemplate += "\"" + inDef.getName() + "\": \"\"";
+                pythonTemplate += "    \"" + inDef.getName() + "\": \"\"";
             }
         }
-        apimd << "\n\n";
-        apimd << " #### example call method \n\n ```response = fhq." + sCmd + "({" + pythonTemplate + "})```";
-        apimd << "\n\n";
+        apimd 
+            << "\n\n"
+            << " #### example call method \n\n ```\nresponse = fhq." + sCmd + "({\n" + pythonTemplate + "\n})\n```"
+            << "\n\n</details>"
+            << "\n\n";
+        
     }
 
     apimd.close();
@@ -255,7 +293,7 @@ void ExportLibFHQCliPy::exportAPImd() {
 
 // ---------------------------------------------------------------------
 
-void ExportLibFHQCliPy::export__init__py() {
+void ExportLibWsjCppCliPy::export__init__py() {
     std::ofstream __init__;
     std::cout << " * write code to libfhqcli-py/libfhqcli/__init__.py " << std::endl;
     __init__.open ("libfhqcli-py/libfhqcli/__init__.py");

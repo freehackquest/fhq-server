@@ -10,7 +10,7 @@ import time
 import traceback
 
 fhqtest.print_header(" > > > TESTS: begin ")
-
+tests_passed = False
 fhqtest.print_bold("Start fhq-server... ")
 wd = os.getcwd()
 print(wd)
@@ -54,14 +54,15 @@ try:
 
     # last step
     run_test('test_stats.py')
-    
+    tests_passed = True
 except Exception as e:
-    fhqtest.log_err(str(e))
-    traceback.print_exc(file=sys.stdout)
-    fhqtest.log_err("Some tests wrong")
+    fhqtest.throw_err("Some tests wrong")
     exit(-1)
 finally:
     fhqtest.print_header(" > > > TESTS: end ")
     print("Kill process " + str(p_fhq_server.pid))
-    fhqtest.print_success("All tests passed")
+    if tests_passed:
+        fhqtest.print_success("All tests passed")
+    else:
+        fhqtest.log_err("Some tests failed")
     os.kill(p_fhq_server.pid, signal.SIGKILL)

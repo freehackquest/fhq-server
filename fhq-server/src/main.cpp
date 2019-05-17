@@ -30,8 +30,8 @@
 #include <algorithm>
 #include <export_list_of_handlers.h>
 #include <export_struct_of_storage.h>
-#include <export_libfhqcli_web_js.h>
-#include <export_libfhqcli_py.h>
+#include <export_libwsjcppcli_web_js.h>
+#include <export_libwsjcppcli_py.h>
 #include <runtasks.h>
 #include <light_http_server.h>
 #include <http_handler_web_admin_folder.h>
@@ -102,10 +102,16 @@ int main(int argc, char** argv) {
         ExportStructOfStorage::print();
         return 0;
     } else if (helpArgs.has("export-libfhqcli-py")) {
-        ExportLibFHQCliPy::exportLib();
+        ExportLibWsjCppCliPy *pExportPython = new ExportLibWsjCppCliPy();
+        pExportPython->exportLib();
         return 0;
     } else if (helpArgs.has("export-libfhqcli-web-javascript")) {
-        ExportLibFHQCliWebJS::exportLib();
+        ExportLibWsjCppCliWebJS *pExportWebJS = new ExportLibWsjCppCliWebJS();
+        pExportWebJS->setLibraryName("libfhqcli-web-js");
+        pExportWebJS->setAuthor("FreeHackQuest Team");
+        pExportWebJS->setVersion(std::string(FHQSRV_VERSION));
+        pExportWebJS->setPrefixRepositoryURL("https://github.com/freehackquest/");
+        pExportWebJS->exportLib();
         return 0;
     } else if (helpArgs.has("show-employees")) {
         std::cout << " * Employees (" << g_pEmployees->size() << "):\n";

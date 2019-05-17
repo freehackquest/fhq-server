@@ -29,7 +29,7 @@ EmployOrchestra::EmployOrchestra()
 bool EmployOrchestra::init() {
     Log::info(TAG, "Start init settings");
 
-    auto *pSettings = findEmploy<EmploySettings>();
+    EmploySettings *pSettings = findEmploy<EmploySettings>();
     std::string lxd_mode = pSettings->getSettString("lxd_mode").toStdString();
     if (lxd_mode != "enabled")
         return true;
@@ -69,7 +69,7 @@ std::string EmployOrchestra::lastError() {
 
 bool EmployOrchestra::create_container(const std::string &sName, std::string &sError) {
     Log::info(TAG, "Starting creation container " + sName);
-    auto *const pContainer = new LXDContainer(sName);
+    LXDContainer *const pContainer = new LXDContainer(sName);
 
     if (pContainer->create()) {
         Log::info(TAG, "Created container " + sName);
@@ -87,11 +87,11 @@ bool EmployOrchestra::create_container(const std::string &sName, std::string &sE
 // ---------------------------------------------------------------------
 
 bool EmployOrchestra::create_service(const ServiceConfig &serviceReq, std::string &sError) {
-    auto *const pService = new ServiceLXD(serviceReq);
+    ServiceLXD *const pService = new ServiceLXD(serviceReq);
 
     Log::info(TAG, "Starting creation container " + serviceReq.name);
 
-    if (!pService->create_container()){
+    if (!pService->create_container()) {
         sError = pService->get_error();
         Log::err(TAG, "Failed created service. I can't create container.");
         return false;
@@ -473,7 +473,7 @@ bool EmployOrchestra::pull_container_names() {
         return false;
     }
 
-    auto container_names = jsonResponse.at("metadata").get<std::vector<std::string>>();
+    std::vector<std::string> container_names = jsonResponse.at("metadata").get<std::vector<std::string>>();
     std::list<std::string> listNames;
     std::list<std::string> listRegistry = registry_names();
 

@@ -589,7 +589,7 @@ CmdHandlerUsersAdd::CmdHandlerUsersAdd()
     requireStringParam("password", "Password")
         .addValidator(new ValidatorStringLength(4, 127));
     requireStringParam("role", "User's role"); // TODO role validator
-    requireStringParam("university", "University");
+    optionalStringParam("university", "University");
 }
 
 // ---------------------------------------------------------------------
@@ -637,8 +637,7 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), Error(400, "This role doesn't exist"));
         return;
     }
-
-    QString sUniversity = QString::fromStdString(jsonRequest.value("university", std::string{}));
+    std::string sUniversity = pRequest->getInputString("university", "");
 
     QSqlQuery query_insert(db);
     query_insert.prepare(""
@@ -705,7 +704,7 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest) {
     query_insert.bindValue(":country", "");
     query_insert.bindValue(":region", "");
     query_insert.bindValue(":city", "");
-    query_insert.bindValue(":university", sUniversity);
+    query_insert.bindValue(":university", QString::fromStdString(sUniversity));
     query_insert.bindValue(":latitude", 0);
     query_insert.bindValue(":longitude", 0);
     query_insert.bindValue(":rating", 0);

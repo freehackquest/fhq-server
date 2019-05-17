@@ -13,8 +13,8 @@ std::string UnitTestBase::name() {
 
 std::vector<UnitTestBase*> *g_pUnitTests = NULL;
 
-void UnitTests::initGlobalVariables(){
-    if(g_pUnitTests == NULL){
+void UnitTests::initGlobalVariables() {
+    if (g_pUnitTests == NULL) {
         // Log::info(std::string(), "Create handlers map");
         g_pUnitTests = new std::vector<UnitTestBase*>();
     }
@@ -22,7 +22,7 @@ void UnitTests::initGlobalVariables(){
 
 // ---------------------------------------------------------------------
 
-void UnitTests::addUnitTest(const std::string &sTestName, UnitTestBase* pUnitTest){
+void UnitTests::addUnitTest(const std::string &sTestName, UnitTestBase* pUnitTest) {
     UnitTests::initGlobalVariables();
     bool bFound = false;
     for (int i = 0; i < g_pUnitTests->size(); i++) {

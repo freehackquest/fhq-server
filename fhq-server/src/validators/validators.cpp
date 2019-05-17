@@ -192,3 +192,36 @@ bool ValidatorGameType::isValid(const std::string &sValue, std::string &sError) 
 }
 
 // ---------------------------------------------------------------------
+
+
+// ---------------------------------------------------------------------
+// ValidatorLXDFileActionType
+ 
+ValidatorLXDFileActionType::ValidatorLXDFileActionType() {
+    TAG = "ValidatorLXDFileActionType";
+    m_vActionTypes = {"pull", "push", "delete"};
+};
+
+// ---------------------------------------------------------------------
+
+std::string ValidatorLXDFileActionType::typeName() {
+    return "action_type";
+}
+
+// ---------------------------------------------------------------------
+
+bool ValidatorLXDFileActionType::isValid(const std::string &sValue, std::string &sError) {
+    if (std::find(m_vActionTypes.begin(), m_vActionTypes.end(), sValue) != m_vActionTypes.end()) {
+        return true;
+    }
+    // TODO Fallen::join
+    sError = " expected one of [";
+    for (int i = 0; i < m_vActionTypes.size(); i++) {
+        sError += "'" + m_vActionTypes[i] + "'";
+        if (i < m_vActionTypes.size() - 1) {
+            sError += ", ";
+        }
+    }
+    sError += "]";
+    return false;
+}

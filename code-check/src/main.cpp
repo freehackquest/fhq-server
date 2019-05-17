@@ -7,27 +7,11 @@
 #include <sstream>
 #include <regex>
 #include "line_checkers.h"
+#include "config.h"
 
 nlohmann::json g_jsonWarnings;
 nlohmann::json g_jsonErrors;
 std::vector<LineCheckerBase *> g_vLineCheckers;
-
-/*
-warnings = {
-    'TODO': 0,
-    'if-format': 0,
-    'while-format': 0,
-    'for-format': 0,
-    'end-brackets': 0,
-    'start-bracket-else': 0,
-    'end-bracket-else': 0,
-}
-
-evil_pieces = {
-    'auto': 0,
-    'tabs': 0,
-}
-*/
 
 // ---------------------------------------------------------------------
 
@@ -36,52 +20,49 @@ int startRecoursiveCheckSimpleFormat(const std::string &sRootDir, const std::str
 // ---------------------------------------------------------------------
 
 int main(int argc, char** argv) {
+    CodeCheckConfig *pConfig = new CodeCheckConfig();
+
+    pConfig->applyArguments(argc, argv);
+
     std::string TAG = "MAIN";
-    if (argc != 2) {
-        Log::throw_err(TAG, "Usage: " + std::string(argv[0]) + " <dir>");
-        return -1;
-    }
-    
-    std::string sRootDir(argv[1]);
-    Log::ok(TAG, "Root Directory: " + sRootDir);
-    std::string fileConfig = sRootDir + "/.code-check.json";
-    if (!Helpers::fileExists(fileConfig)) {
-        Log::throw_err(TAG, "Expected file: " + fileConfig);
-        return -1;
-    }
-    
-    std::string sConfig;
-    std::ifstream f( fileConfig );
-    std::string sLine;
-    while (std::getline(f, sLine)) {
-        sConfig += sLine + "\n";
-    }
-    
-    if (!nlohmann::json::accept(sConfig)) {
-        std::cout << "[ERROR] Wrong JSON format " << std::endl
-            << "File-config: " << fileConfig << std::endl
-            << "File-content: " << sConfig << std::endl;
-        return -1;
-    }
-    nlohmann::json jsonConfig = nlohmann::json::parse(sConfig);
-    std::cout << "JSON-Config: " << sConfig << std::endl;
-    std::string sBasePath = jsonConfig["path"];
-    sBasePath = sRootDir + "/" + sBasePath;
-    if (!Helpers::dirExists(sBasePath)) {
-        std::cout << "[ERROR] Path does not exists " << sBasePath << std::endl;
-        return -1;
-    }
 
-    // registry line checkers - TODO apply config
-    g_vLineCheckers.push_back((LineCheckerBase *)new LineCheckerTabsInLine());
+    // registry line checkers
+    g_vLineCheckers.push_back((LineCheckerBase *)new LineCheckerTabsInLine(pConfig));
+    g_vLineCheckers.push_back((LineCheckerBase *)new LineCheckerTODOInLine(pConfig));
+    g_vLineCheckers.push_back((LineCheckerBase *)new LineCheckerIfFormat(pConfig));
+    g_vLineCheckers.push_back((LineCheckerBase *)new LineCheckerWhileFormat(pConfig));
+    g_vLineCheckers.push_back((LineCheckerBase *)new LineCheckerForFormat(pConfig));
+    g_vLineCheckers.push_back((LineCheckerBase *)new LineCheckerEndBrackets(pConfig));
+    g_vLineCheckers.push_back((LineCheckerBase *)new LineCheckerStartBracketElse(pConfig));
+    g_vLineCheckers.push_back((LineCheckerBase *)new LineCheckerEndBracketElse(pConfig));
+    g_vLineCheckers.push_back((LineCheckerBase *)new LineCheckerAuto(pConfig));
 
-    startRecoursiveCheckSimpleFormat(sRootDir, sBasePath, jsonConfig);
-
+    // TODO: check int nNumber 
+    // TODO: lines in function/method (multiline)
+    // TODO: size of line
+    // TODO format of if (multiline)
+    // TODO: check // ----------- in cpp files and in headers
+    // TODO: foreach - forbiden use a while or for
+    // TODO: d==0 - missing spaces
+    // TODO: check the more then one space
+    // TODO: { before must be one space
+    // TODO: if () {
+    // TODO: check start method like get/set/is/do etc... and check camalCase name of methods/functions
+    nlohmann::json jsonConfig = pConfig->getJsonConfig();
+    std::vector<std::string> vPaths = jsonConfig["paths"];
+    for (int i = 0; i < vPaths.size(); i++) {
+        std::string sBasePath = vPaths[i];
+        sBasePath = pConfig->getRootDir() + "/" + sBasePath;
+        if (!Helpers::dirExists(sBasePath)) {
+            Log::throw_err(TAG, "Path '" + sBasePath + "' does not exists " + sBasePath);
+        }
+        startRecoursiveCheckSimpleFormat(pConfig->getRootDir(), sBasePath, pConfig->getJsonConfig());
+    }
     int nRet = 0;
     for (int i = 0; i < g_vLineCheckers.size(); i++) {
         LineCheckerBase *pChecker = g_vLineCheckers[i];
         pChecker->printResult();
-        if (!pChecker->isSuccess()) {
+        if (!pChecker->isSuccess() && pChecker->getType() == "err") {
             nRet = -1;
         }
     }
@@ -131,7 +112,7 @@ int startRecoursiveCheckSimpleFormat(const std::string &sRootDir, const std::str
             }
         }
         if (!bExclude) {
-            std::cout << "Dir: " << sNewPath << std::endl;
+            // std::cout << "Dir: " << sNewPath << std::endl;
             startRecoursiveCheckSimpleFormat(sRootDir, sNewPath, jsonConfig);
         } else {
             Log::warn(TAG, "Skipped Dir: " + sNewPath);
@@ -147,7 +128,7 @@ int startRecoursiveCheckSimpleFormat(const std::string &sRootDir, const std::str
             }
         }
         if (!bExclude) {
-            std::cout << "Check file: " << sNewPath << std::endl;
+            // std::cout << "Check file: " << sNewPath << std::endl;
             readFileAndCheckSimpleFormat(sNewPath, jsonConfig);
         } else {
             Log::warn(TAG, "Skipped File: " + sNewPath);
