@@ -11,9 +11,6 @@ class UnitTestStorageStruct : public UnitTestBase {
         virtual bool run();
 
     private:
-        void compareS(bool &bTestSuccess, const std::string &sPoint, const std::string &sValue, const std::string &sExpected);
-        bool compareN(bool &bTestSuccess, const std::string &sPoint, int nValue, int nExpected);
-        void compareB(bool &bTestSuccess, const std::string &sPoint, bool bValue, bool bExpected);
 
         void createTestTable0(bool &bTestSuccess, Storage *pStorage);
         void dropTestTable0(bool &bTestSuccess, Storage *pStorage);

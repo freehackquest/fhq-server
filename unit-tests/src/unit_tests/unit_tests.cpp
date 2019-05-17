@@ -6,10 +6,43 @@ UnitTestBase::UnitTestBase(const std::string &sTestName) {
     UnitTests::addUnitTest(sTestName, this);
 }
 
+// ---------------------------------------------------------------------
+
 std::string UnitTestBase::name() {
     return m_sTestName;
 }
 
+// ---------------------------------------------------------------------
+
+void UnitTestBase::compareS(bool &bTestSuccess, const std::string &sPoint,
+    const std::string &sValue, const std::string &sExpected) {
+    if (sValue != sExpected) {
+        Log::err(TAG, sPoint + ", expeceted '" + sExpected + "', but got '" + sValue + "'");
+        bTestSuccess = false;
+    }
+}
+
+// ---------------------------------------------------------------------
+
+bool UnitTestBase::compareN(bool &bTestSuccess, const std::string &sPoint, int nValue, int nExpected) {
+    if (nValue != nExpected) {
+        Log::err(TAG, " {" + sPoint + "} Expeceted '" + std::to_string(nExpected) + "', but got '" + std::to_string(nValue) + "'");
+        bTestSuccess = false;
+        return false;
+    }
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+void UnitTestBase::compareB(bool &bTestSuccess, const std::string &sPoint, bool bValue, bool bExpected) {
+    if (bValue != bExpected) {
+        Log::err(TAG, sPoint + ", expeceted '" + (bExpected ? "true" : "false") + "', but got '" + (bValue ? "true" : "false") + "'");
+        bTestSuccess = false;
+    }
+}
+
+// ---------------------------------------------------------------------
 
 std::vector<UnitTestBase*> *g_pUnitTests = NULL;
 

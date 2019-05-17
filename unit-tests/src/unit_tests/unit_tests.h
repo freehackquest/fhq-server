@@ -13,6 +13,11 @@ class UnitTestBase {
         virtual bool run() = 0;
     protected:
         std::string TAG;
+
+        void compareS(bool &bTestSuccess, const std::string &sPoint, const std::string &sValue, const std::string &sExpected);
+        bool compareN(bool &bTestSuccess, const std::string &sPoint, int nValue, int nExpected);
+        void compareB(bool &bTestSuccess, const std::string &sPoint, bool bValue, bool bExpected);
+
     private:
         std::string m_sTestName;
 };
