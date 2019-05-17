@@ -11,6 +11,7 @@ Frontend for FreeHackQuest here: [frontend](https://github.com/freehackquest/fro
 * [PRE-BUILDS](https://github.com/freehackquest/fhq-server/tree/master/install/install/PRE-BUILDS.md)
 * [DOCKER-COMPOSE](https://github.com/freehackquest/fhq-server/tree/master/install/DOCKER_COMPOSE)
 * [INSTALL_FROM_PPA](https://github.com/freehackquest/fhq-server/tree/master/install/INSTALL_FROM_PPA.md)
+* [DOXYGEN](https://freehackquest.com/doxygen/)
 * Configure autostart
 	* [SYSTEMD](install/SYSTEMD.md)
 	* [INITD](install/INITD.md)
@@ -24,7 +25,6 @@ Frontend for FreeHackQuest here: [frontend](https://github.com/freehackquest/fro
 | client library | [npm/javascript](https://www.npmjs.com/package/libfhqcli-web-js) |
 | client library | [python](https://pypi.org/project/libfhqcli/) |
 | frontend       | [github/web](https://github.com/freehackquest/frontend) |
-
 
 ## 3rdParty
 
