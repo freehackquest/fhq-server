@@ -19,10 +19,11 @@ Frontend for FreeHackQuest here: [frontend](https://github.com/freehackquest/fro
 
 | What           | Where         |
 | -------------- | ------------- |
-| server: fhq-server     | [https://launchpad.net/~freehackquest/+archive/ubuntu/fhq-server](https://launchpad.net/~freehackquest/+archive/ubuntu/fhq-server)  |
-| server: docker image   | [https://hub.docker.com/r/freehackquest/fhq-server](https://hub.docker.com/r/freehackquest/fhq-server)  |
-| client library: javascript/npm | [npm javascript](https://www.npmjs.com/package/libfhqcli-web-js) |
-| client library: python | [python](https://pypi.org/project/libfhqcli/) |
+| fhq-server     | [ubuntu/ppa](https://launchpad.net/~freehackquest/+archive/ubuntu/fhq-server)  |
+| fhq-server     | [docker image](https://hub.docker.com/r/freehackquest/fhq-server)  |
+| client library | [npm/javascript](https://www.npmjs.com/package/libfhqcli-web-js) |
+| client library | [python](https://pypi.org/project/libfhqcli/) |
+| frontend       | [github/web](https://github.com/freehackquest/frontend) |
 
 
 ## 3rdParty
