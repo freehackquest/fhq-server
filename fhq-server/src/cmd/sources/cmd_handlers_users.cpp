@@ -1718,6 +1718,7 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
         pRequest->sendMessageError(cmd(), Error(403, "This request is already executed"));
         return;
     }
+    // code is expired if one hour has passed since the request
     if (dDate_current > dDate_stored.addSecs(3600)) {
         pRequest->sendMessageError(cmd(), Error(403, "This request is already expired"));
         return;
@@ -1974,5 +1975,64 @@ CmdHandlerUsersChangeEmailVerification::CmdHandlerUsersChangeEmailVerification()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsersChangeEmailVerification::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
+    const auto &jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
+
+    QString sCode = QString::fromStdString(jsonRequest.at("code"));
+
+    std::string _code_sha1 = sha1::calc_string_to_hex(sCode.toStdString());
+    QString sCode_sha1 = QString(_code_sha1.c_str()); 
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM user_requests WHERE code = :code");
+    query.bindValue(":code", sCode_sha1);
+    if(!query.exec()){
+        Log::err(TAG, query.lastError().text().toStdString());
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        return;
+    }
+    if(!query.next()) {
+        pRequest->sendMessageError(cmd(), Error(401, "Wrong code"));
+        return;
+    }
+    QSqlRecord record = query.record();
+    QString sEmail = record.value("email").toString();
+    QString sDate = record.value("dt").toString();
+    QString sStatus = record.value("status").toString();
+    
+    QDateTime dDate_stored = QDateTime::fromString(sDate, "yyyy-mm-dd hh:mm:ss");
+    QDateTime dDate_current = QDateTime::currentDateTime();
+
+    if (sStatus == "executed") {
+        pRequest->sendMessageError(cmd(), Error(403, "This request is already executed"));
+        return;
+    }
+    // code is expired if one hour has passed since the request
+    if (dDate_current > dDate_stored.addSecs(3600)) {
+        pRequest->sendMessageError(cmd(), Error(403, "This request is already expired"));
+        return;
+    }   
+
+    IUserToken *pUserToken = pRequest->userToken();
+    int iUserID = pUserToken->userid();
+
+    query.prepare("UPDATE users SET email=:email WHERE id=:userid");
+    query.bindValue(":email", sEmail);
+    query.bindValue(":userid", iUserID);
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    query.prepare("UPDATE user_requests SET status=executed WHERE email=:email");
+    query.bindValue(":email", sEmail);
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
