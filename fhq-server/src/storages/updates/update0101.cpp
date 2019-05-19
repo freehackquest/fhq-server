@@ -12,7 +12,7 @@ Update0101::Update0101()
         user_requests.addColumn(StorageStructColumn("type").string(255).notNull().defaultValue("''"));
         user_requests.addColumn(StorageStructColumn("code").string(32).notNull());
         user_requests.addColumn(StorageStructColumn("dt").datetime().notNull());
-        user_requests.addColumn(StorageStructColumn("executed").string(10).notNull().defaultValue("false"));
+        user_requests.addColumn(StorageStructColumn("status").string(10).notNull().defaultValue("prepared"));
         user_requests.addColumn(StorageStructColumn("data").string(2048).notNull().enableIndex());
         m_vStructChanges.push_back(user_requests);
     }

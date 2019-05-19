@@ -7,6 +7,9 @@
 #include <QtCore>
 #include <wsjcpp_hashes.h>
 #include <fallen.h>
+#include <model_usertoken.h>
+#include <QUuid>
+#include <QDateTime>
 
 /*********************************************
  * This handler will be return scoreboard of user
@@ -1577,7 +1580,6 @@ CmdHandlerUsersRegistration::CmdHandlerUsersRegistration()
 
     // validation and description input fields
     requireStringParam("email", "E-mail").addValidator(new ValidatorEmail());
-    requireStringParam("university", "University");
 }
 
 // ---------------------------------------------------------------------
@@ -1589,7 +1591,6 @@ void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest){
     nlohmann::json jsonResponse;
 
     QString sEmail = QString::fromStdString(jsonRequest.at("email"));
-    QString sUniversity = QString::fromStdString(jsonRequest.at("university"));
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
@@ -1616,9 +1617,8 @@ void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest){
         sCode.append(nextChar);
     }
 
-    QString sCode_sha1 = sEmail.toUpper() + sCode;
-    std::string _code_sha1 = sha1::calc_string_to_hex(sCode_sha1.toStdString());
-    sCode_sha1 = QString(_code_sha1.c_str());
+    std::string _code_sha1 = sha1::calc_string_to_hex(sCode.toStdString());
+    QString sCode_sha1 = QString(_code_sha1.c_str());
     
     QSqlQuery query_insert(db);
     query_insert.prepare(""
@@ -1647,10 +1647,16 @@ void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest){
     }
 
     std::string sSubject = "Registration on FreeHackQuest";
-    std::string sContext = "Welcome to FreeHackQuest!\n"
-                       "To confirm registration, enter the following code "
-                       "into the appropriate form on the website.\n"
-                       "Your code: " + sCode.toStdString() + "\n";
+    std::string sContext = "You received this email because you (or someone "
+                        "impersonating you) tried to pass the registration "
+                        "on the website https://freehackquest.com. "
+                        "If you didn’t make a registration request, "
+                        "please ignore this email. In case you continue to get "
+                        "emails with similar content - contact the developers."
+                        "\n\n Otherwise, to confirm the change of your email "
+                        "address, enter the following code into the appropriate "
+                        "entry form on the website.\n\n"
+                        "Your code: " + sCode.toStdString() + "\n";                      
 
     RunTasks::MailSend(sEmail.toStdString(), sSubject, sContext);
 
@@ -1671,7 +1677,6 @@ CmdHandlerUsersRegistrationVerification::CmdHandlerUsersRegistrationVerification
     setAccessAdmin(false);
 
     // validation and description input fields
-    requireStringParam("email", "E-mail").addValidator(new ValidatorEmail());
     requireStringParam("code", "Verification code"); 
 }
 
@@ -1683,40 +1688,40 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
     const auto &jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    QString sEmail = QString::fromStdString(jsonRequest.at("email"));
     QString sCode = QString::fromStdString(jsonRequest.at("code"));
+
+    std::string _code_sha1 = sha1::calc_string_to_hex(sCode.toStdString());
+    QString sCode_sha1 = QString(_code_sha1.c_str()); 
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
-    query.prepare("SELECT * FROM user_requests WHERE email = :email");
-    query.bindValue(":email", sEmail);
+    query.prepare("SELECT * FROM user_requests WHERE code = :code");
+    query.bindValue(":code", sCode_sha1);
     if(!query.exec()){
         Log::err(TAG, query.lastError().text().toStdString());
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
         return;
     }
     if(!query.next()) {
-        pRequest->sendMessageError(cmd(), Error(404, "Request not found"));
-        return;
-    }
-    QSqlRecord record = query.record();
-    QString sCode_stored = record.value("code").toString();
-    QString sExecuted = record.value("executed").toString();
-    QString sUniversity = " "; //TODO work with a field 'data'
-         
-    if (sExecuted == "true") {
-        pRequest->sendMessageError(cmd(), Error(403, "This request is already executed"));
-        return;
-    }
-    
-    QString sCode_sha1 = sEmail.toUpper() + sCode;
-    std::string _code_sha1 = sha1::calc_string_to_hex(sCode_sha1.toStdString());
-    sCode_sha1 = QString(_code_sha1.c_str());
-
-    if (sCode_sha1 != sCode_stored) {
         pRequest->sendMessageError(cmd(), Error(401, "Wrong code"));
         return;
     }
+    QSqlRecord record = query.record();
+    QString sEmail = record.value("email").toString();
+    QString sDate = record.value("dt").toString();
+    QString sStatus = record.value("status").toString();
+    
+    QDateTime dDate_stored = QDateTime::fromString(sDate, "yyyy-mm-dd hh:mm:ss");
+    QDateTime dDate_current = QDateTime::currentDateTime();
+
+    if (sStatus == "executed") {
+        pRequest->sendMessageError(cmd(), Error(403, "This request is already executed"));
+        return;
+    }
+    if (dDate_current > dDate_stored.addSecs(3600)) {
+        pRequest->sendMessageError(cmd(), Error(403, "This request is already expired"));
+        return;
+    }   
 
     // generate random nick
     const QString possibleCharacters("ABCDEFH0123456789");
@@ -1802,7 +1807,7 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
     query_insert.bindValue(":country", "");
     query_insert.bindValue(":region", "");
     query_insert.bindValue(":city", "");
-    query_insert.bindValue(":university", sUniversity);
+    query_insert.bindValue(":university", "");
     query_insert.bindValue(":latitude", 0);
     query_insert.bindValue(":longitude", 0);
     query_insert.bindValue(":rating", 0);
@@ -1815,7 +1820,7 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
 
     int nUserID = query_insert.lastInsertId().toInt();
 
-    query.prepare("UPDATE user_requests SET executed=true WHERE email=:email");
+    query.prepare("UPDATE user_requests SET status=executed WHERE email=:email");
     query.bindValue(":email", sEmail);
     if (!query.exec()) {
         pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
@@ -1849,14 +1854,104 @@ CmdHandlerUsersChangeEmail::CmdHandlerUsersChangeEmail()
     setAccessAdmin(true);
 
     // validation and description input fields
-    requireStringParam("email", "E-mail").addValidator(new ValidatorEmail());
-    requireStringParam("password", "Password"); // TODO validator no empty 
+    requireStringParam("email", "New E-mail").addValidator(new ValidatorEmail());
+    requireStringParam("password", "Password"); // TODO validator 'not empty' 
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest){
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
+    const auto &jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
+
+    QString sEmail = QString::fromStdString(jsonRequest.at("email"));
+    QString sPassword = QString::fromStdString(jsonRequest.at("password"));
+    
+    IUserToken *pUserToken = pRequest->userToken();
+    int iUserID = pUserToken->userid();
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM users WHERE id = :userid");
+    query.bindValue(":userid", iUserID); 
+    if(!query.exec()){
+        Log::err(TAG, query.lastError().text().toStdString());
+        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        return;
+    }
+    if(!query.next()) {
+        pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
+        return;
+    }
+    QSqlRecord record = query.record();
+    QString sEmail_stored = record.value("email").toString();
+    QString sPassword_stored = record.value("pass").toString();
+    
+    QString sPasswordHash = sEmail_stored.toUpper() + sPassword;
+    std::string _sPasswordHash = sha1::calc_string_to_hex(sPasswordHash.toStdString());
+    sPasswordHash = QString(_sPasswordHash.c_str());
+
+    if(sPasswordHash != sPassword_stored){
+        pRequest->sendMessageError(cmd(), Error(401, "Wrong password"));
+        return;
+    }
+    
+    // generate a verification code
+    const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+    const int randomStringLength = 6; 
+    QString sCode;
+    for(int i=0; i<randomStringLength; ++i){
+        int index = qrand() % possibleCharacters.length();
+        QChar nextChar = possibleCharacters.at(index);
+        sCode.append(nextChar);
+    }
+
+    std::string _code_sha1 = sha1::calc_string_to_hex(sCode.toStdString());
+    QString sCode_sha1 = QString(_code_sha1.c_str());
+    
+    QSqlQuery query_insert(db);
+    query_insert.prepare(""
+                         "INSERT INTO user_requests ("
+                         "   email, "
+                         "   type, "
+                         "   code, "
+                         "   dt, "
+                         "   data) "
+                         "VALUES("
+                         "   :email, "
+                         "   :type, "
+                         "   :code, "
+                         "   NOW(), "
+                         "   :data); "
+    );
+
+    query_insert.bindValue(":email", sEmail);
+    query_insert.bindValue(":type", "change email");
+    query_insert.bindValue(":code", sCode_sha1);
+    query_insert.bindValue(":data", "");
+
+    if(!query_insert.exec()){
+        pRequest->sendMessageError(cmd(), Error(500, query_insert.lastError().text().toStdString()));
+        return;
+    }
+    
+    std::string sSubject = "Change of the email address on FreeHackQuest";
+    std::string sContext = "You received this email because you (or someone "
+                        "impersonating you) decided to change your email "
+                        "address on the website https://freehackquest.com. " 
+                        "If you didn’t make a change email request, "
+                        "please ignore this email. In case you continue to get "
+                        "emails with similar content - contact the developers."
+                        "\n\n Otherwise, to confirm the change of your email "
+                        "address, enter the following code into the appropriate "
+                        "entry form on the website.\n\n"
+                        "Your code: " + sCode.toStdString() + "\n";
+
+    RunTasks::MailSend(sEmail.toStdString(), sSubject, sContext);
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 /*********************************************
