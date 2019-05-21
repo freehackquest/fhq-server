@@ -35,36 +35,6 @@ bool UnitTestStorageStruct::run() {
 
 // ---------------------------------------------------------------------
 
-void UnitTestStorageStruct::compareS(bool &bTestSuccess, const std::string &sPoint,
-    const std::string &sValue, const std::string &sExpected) {
-    if (sValue != sExpected) {
-        Log::err(TAG, sPoint + ", expeceted '" + sExpected + "', but got '" + sValue + "'");
-        bTestSuccess = false;
-    }
-}
-
-// ---------------------------------------------------------------------
-
-bool UnitTestStorageStruct::compareN(bool &bTestSuccess, const std::string &sPoint, int nValue, int nExpected) {
-    if (nValue != nExpected) {
-        Log::err(TAG, " {" + sPoint + "} Expeceted '" + std::to_string(nExpected) + "', but got '" + std::to_string(nValue) + "'");
-        bTestSuccess = false;
-        return false;
-    }
-    return true;
-}
-
-// ---------------------------------------------------------------------
-
-void UnitTestStorageStruct::compareB(bool &bTestSuccess, const std::string &sPoint, bool bValue, bool bExpected) {
-    if (bValue != bExpected) {
-        Log::err(TAG, sPoint + ", expeceted '" + (bExpected ? "true" : "false") + "', but got '" + (bValue ? "true" : "false") + "'");
-        bTestSuccess = false;
-    }
-}
-
-// ---------------------------------------------------------------------
-
 void UnitTestStorageStruct::createTestTable0(bool &bTestSuccess, Storage *pStorage) {
     StorageCreateTable test_tbl0("test_tbl0");
     test_tbl0.addColumn("id").number().autoIncrement().primaryKey().notNull();

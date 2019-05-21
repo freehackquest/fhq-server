@@ -12,6 +12,7 @@
 #include <utils_merge_text.h>
 #include <md5.h>
 #include <validators.h>
+#include <fallen.h>
 
 // *******************************************
 // * This handler will be add classbook record
@@ -74,9 +75,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest) {
             return;
         }
     } else {
-        // TODO redesign QUuid to helpers library
-        QString uuid = QUuid::createUuid().toString().replace("{", "").replace("}", "");
-        sUuid = uuid.toStdString();
+        sUuid = Fallen::createUuid();
     }
 
     //Set md5_content hash
@@ -996,7 +995,7 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest) {
     std::string sContentMd5_ = md5(sContent);
 
     //generate uuid
-    QString uuid = QUuid::createUuid().toString().replace("{", "").replace("}", "");
+    std::string sUuid = Fallen::createUuid();
 
     query.prepare("INSERT INTO classbook_localization("
                   "classbookid,"
@@ -1019,7 +1018,7 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest) {
                   "NOW()"
                   ")");
     query.bindValue(":classbookid", nClassbookID);
-    query.bindValue(":uuid", uuid);
+    query.bindValue(":uuid", QString::fromStdString(sUuid));
     query.bindValue(":lang", QString::fromStdString(sLang));
     query.bindValue(":name", QString::fromStdString(sName));
     query.bindValue(":content", QString::fromStdString(sContent));
@@ -1318,7 +1317,7 @@ void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest) {
     QString md5_content = QString::fromStdString(sContentMd5_);
 
     //generate uuid
-    QString uuid = QUuid::createUuid().toString().replace("{", "").replace("}", "");
+    std::string sUuid = Fallen::createUuid();
 
     query.prepare("INSERT INTO classbook_proposal("
                   "classbookid,"
@@ -1343,7 +1342,7 @@ void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest) {
                   "NOW()"
                   ")");
     query.bindValue(":classbookid", nClassbookID);
-    query.bindValue(":uuid", uuid);
+    query.bindValue(":uuid", QString::fromStdString(sUuid));
     query.bindValue(":lang", QString::fromStdString(sLang));
     query.bindValue(":name", QString::fromStdString(sName));
     query.bindValue(":content", QString::fromStdString(sContent));

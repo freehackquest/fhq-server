@@ -29,9 +29,10 @@ bool EmployDatabase::init() {
         return false;
     }
 
-    if (!StorageUpdates::apply(m_pStorage)) {
+    /*if (!StorageUpdates::apply(m_pStorage)) {
         return false;
-    }
+    }*/
+    StorageUpdates::apply2(m_pStorage);
 
     // deprecated
     m_pDBConnection = new ModelDatabaseConnection("qt_sql_default_connection_1");

@@ -92,19 +92,21 @@ fhq.t = function(message){
 
 fhq.pages = [];
 
-fhq.processParams = function(){
-	if(fhq.token == "" || (fhq.userinfo && fhq.userinfo.role != 'admin')){
+fhq.processParams = function() {
+	if (fhq.token == "" || (fhq.userinfo && fhq.userinfo.role != 'admin')) {
 		fhq.ws.cleanuptoken();
 		fhq.showSignInForm();
-	}else{
+	} else {
 		console.log(fhq.userinfo);
 		console.log(fhq.pages);
-		for(var name in fhq.pages){
-			if(fhq.containsPageParam(name)){
+		for (var name in fhq.pages) {
+			if (fhq.containsPageParam(name)) {
 				fhq.pages[name]();
 				break;
 			}	
 		}
+		// default page
+		fhq.pages['server_info']();
 	}
 }
 

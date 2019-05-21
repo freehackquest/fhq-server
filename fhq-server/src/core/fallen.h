@@ -25,6 +25,9 @@ class Fallen {
         static std::string& rtrim(std::string& str, const std::string& chars = "\t\n\v\f\r ");
         static std::string& trim(std::string& str, const std::string& chars = "\t\n\v\f\r ");
         static std::string& to_lower(std::string& str);
+
+        static void initRandom();
+        static std::string createUuid();
 };
 
 // ---------------------------------------------------------------------

@@ -257,6 +257,7 @@ class StorageConnection {
         virtual ~StorageConnection();
         virtual bool executeQuery(const std::string &sQuery) = 0; // TODO redesign in future
         virtual std::string lastDatabaseVersion() = 0;
+        virtual std::vector<std::string> getInstalledVersions() = 0;
         virtual bool insertUpdateInfo(const std::string &sVersion, const std::string &sDescription) = 0;
         
         long created();
@@ -350,7 +351,8 @@ class StorageUpdateBase {
         const std::string &version();
         const std::string &description();
         const std::vector<StorageChanges *> &getChanges();
-
+        void setWeight(int nWeight);
+        int getWeight();
     protected:
         std::string TAG;
         StorageCreateTable *createTable(std::string sTableName);
@@ -364,6 +366,7 @@ class StorageUpdateBase {
         std::string m_sFromVersion;
         std::string m_sVersion;
         std::string m_sDescription;
+        int m_nWeight;
 };
 
 // ---------------------------------------------------------------------
@@ -371,11 +374,21 @@ class StorageUpdateBase {
 extern std::vector<StorageUpdateBase*> *g_pStorageUpdates;
 
 class StorageUpdates {
+    private:
+        static int calculateWeight(int nWeight, const std::string &sVersion);
+        static void sortByWeight(std::vector<StorageUpdateBase*> &vUpdates);
+        static std::vector<StorageUpdateBase*> findUpdatesFromVersion(const std::string &sVersion);
+        static void pushUpdatesFromVersion(std::vector<StorageUpdateBase*> &vUpdates, const std::string &sVersion);
+        static void applyAllStorageChanges(Storage *pStorage, StorageUpdateBase *pUpdate);
+        static void executeAllStorageChanges(Storage *pStorage, StorageConnection *pConn, StorageUpdateBase *pUpdate);
+
     public:
         static std::vector<StorageUpdateBase*> getSortedStorageUpdates();
         static void initGlobalVariables();
         static StorageUpdateBase* findUpdateFromVersion(const std::string &sFromVersion);
-        static bool apply(Storage *pStorage);
+        static StorageUpdateBase* findUpdateVersion(const std::string &sVersion);
+        // static bool apply(Storage *pStorage);
+        static bool apply2(Storage *pStorage);
 };
 
 // ---------------------------------------------------------------------

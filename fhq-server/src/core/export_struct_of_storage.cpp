@@ -33,6 +33,10 @@ class FakeStorageConnection : public StorageConnection {
         virtual std::string lastDatabaseVersion() {
             return m_pVersion->getVersion();
         };
+        virtual std::vector<std::string> getInstalledVersions() override {
+            std::vector<std::string> vVersions;
+            return vVersions;
+        }
         virtual bool insertUpdateInfo(const std::string &sVersion, const std::string &sDescription) {
             m_pVersion->setVersion(sVersion);
             return true;
@@ -82,7 +86,7 @@ class FakeStorage : public Storage {
 
 void ExportStructOfStorage::print() {
     FakeStorage *pStorage = new FakeStorage();
-    StorageUpdates::apply(pStorage);
+    StorageUpdates::apply2(pStorage);
 
     std::cout << std::endl << std::endl << " * Tables: " << std::endl;
     std::map<std::string, StorageTable> tables = pStorage->getTables();

@@ -3,7 +3,6 @@
 #include <employ_database.h>
 #include <employ_leaks.h>
 #include <QJsonArray>
-#include <QUuid>
 
 /*********************************************
  * This handler will return the list of leaks

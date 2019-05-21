@@ -8,7 +8,7 @@
 #include <employ_scoreboard.h>
 #include <QtCore>
 #include <sha1_wrapper.h>
-#include <QUuid>
+#include <fallen.h>
 
 /*********************************************
  * This handler will be return scoreboard of user
@@ -173,8 +173,9 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
 
         // QJsonDocument doc(user_token);
         QString data = QString::fromStdString(user_token.dump());
-
-        QString token = QUuid::createUuid().toString();
+        
+        std::string sUuid = Fallen::createUuid();
+        QString token = QString::fromStdString(sUuid);
         token = token.mid(1,token.length()-2);
         token = token.toUpper();
 
@@ -325,11 +326,8 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest) {
     std::string sLastIP = pRequest->client()->peerAddress().toString().toStdString();
 
     // TODO move to helpers
-    QString sUuid = QUuid::createUuid().toString();
-    sUuid = sUuid.mid(1,sUuid.length()-2);
-    sUuid = sUuid.toUpper();
-
-    query_insert.bindValue(":uuid", sUuid);
+    std::string sUuid = Fallen::createUuid();
+    query_insert.bindValue(":uuid", QString::fromStdString(sUuid));
     query_insert.bindValue(":email", sEmail);
     query_insert.bindValue(":pass", sPassword_sha1);
     query_insert.bindValue(":role", "user");
@@ -683,17 +681,14 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest) {
 
     QString sLastIP = pRequest->client()->peerAddress().toString();
 
-    QString sUuid = "";
+    std::string sUuid = "";
     if (jsonRequest.find("uuid") == jsonRequest.end()) {
-        sUuid = QString::fromStdString(jsonRequest.at("uuid"));
-        sUuid = sUuid.toUpper();
+        sUuid = jsonRequest.at("uuid");
     } else {
-        sUuid = QUuid::createUuid().toString();
-        sUuid = sUuid.mid(1,sUuid.length()-2);
-        sUuid = sUuid.toUpper(); // why to upper ??
+        sUuid = Fallen::createUuid();
     }
 
-    query_insert.bindValue(":uuid", sUuid);
+    query_insert.bindValue(":uuid", QString::fromStdString(sUuid));
     query_insert.bindValue(":email", sEmail);
     query_insert.bindValue(":pass", sPassword_sha1);
     query_insert.bindValue(":role", sRole);

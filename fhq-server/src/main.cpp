@@ -41,6 +41,7 @@
 LightHttpServer g_httpServer;
 
 int main(int argc, char** argv) {
+    Fallen::initRandom();
     QCoreApplication a(argc, argv);
     std::string TAG = "MAIN";
     Log::setdir("/var/log/fhq-server");

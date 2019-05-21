@@ -65,6 +65,9 @@ list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/include/utils_static_an
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/utils/sources/utils_static_analizing_text.cpp")
 
 # unit_tests
+
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen.h")
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_hashes.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_hashes.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_jobs_pool.h")
@@ -73,6 +76,8 @@ list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_levenshtein.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_levenshtein.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_merge_text.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_merge_text.cpp")
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_storage_updates.h")
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_storage_updates.cpp")
 # list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_base64.h")
 # list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_base64.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_static_analizing_text.h")
