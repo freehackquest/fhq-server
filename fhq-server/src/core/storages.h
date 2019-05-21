@@ -379,13 +379,15 @@ class StorageUpdates {
         static void sortByWeight(std::vector<StorageUpdateBase*> &vUpdates);
         static std::vector<StorageUpdateBase*> findUpdatesFromVersion(const std::string &sVersion);
         static void pushUpdatesFromVersion(std::vector<StorageUpdateBase*> &vUpdates, const std::string &sVersion);
-        
+        static void applyAllStorageChanges(Storage *pStorage, StorageUpdateBase *pUpdate);
+        static void executeAllStorageChanges(Storage *pStorage, StorageConnection *pConn, StorageUpdateBase *pUpdate);
+
     public:
         static std::vector<StorageUpdateBase*> getSortedStorageUpdates();
         static void initGlobalVariables();
         static StorageUpdateBase* findUpdateFromVersion(const std::string &sFromVersion);
         static StorageUpdateBase* findUpdateVersion(const std::string &sVersion);
-        static bool apply(Storage *pStorage);
+        // static bool apply(Storage *pStorage);
         static bool apply2(Storage *pStorage);
 };
 

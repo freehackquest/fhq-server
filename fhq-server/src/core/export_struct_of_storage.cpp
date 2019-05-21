@@ -86,7 +86,7 @@ class FakeStorage : public Storage {
 
 void ExportStructOfStorage::print() {
     FakeStorage *pStorage = new FakeStorage();
-    StorageUpdates::apply(pStorage);
+    StorageUpdates::apply2(pStorage);
 
     std::cout << std::endl << std::endl << " * Tables: " << std::endl;
     std::map<std::string, StorageTable> tables = pStorage->getTables();

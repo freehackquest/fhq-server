@@ -1219,7 +1219,7 @@ StorageUpdateBase* StorageUpdates::findUpdateVersion(const std::string &sVersion
 }
 
 // ---------------------------------------------------------------------
-
+/*
 bool StorageUpdates::apply(Storage *pStorage) {
     StorageUpdates::initGlobalVariables();
     std::string TAG = "StorageUpdates::apply";
@@ -1294,11 +1294,50 @@ bool StorageUpdates::apply(Storage *pStorage) {
                     return false;
                 }
             }
-
             pConn->insertUpdateInfo(pUpdate->version(), pUpdate->description());
         }
     }
     return true;
+}
+*/
+// ---------------------------------------------------------------------
+
+void StorageUpdates::applyAllStorageChanges(Storage *pStorage, StorageUpdateBase *pUpdate) {
+    std::string TAG = "StorageUpdates::applyAllStorageChanges";
+    Log::info(TAG, "Apply changes '" + pUpdate->from_version() + "' -> '" + pUpdate->version() + "'");
+
+    // Apply changes
+    std::vector<StorageChanges *> vStorageChanges = pUpdate->getChanges();
+    for (int i = 0; i < vStorageChanges.size(); i++) {
+        StorageChanges *pChanges = vStorageChanges[i];
+        if (pChanges->getType() == StorageChangesType::NOPE) {
+            Log::throw_err(TAG, "Not allowed use a StorageChangesType::NOPE");
+        }
+
+        if (!pStorage->addStorageChanges(*pChanges)) {
+            Log::throw_err(TAG,"Problem add storage changes '" + pChanges->getTableName() + "' in version " + pUpdate->version());
+        }
+    }
+}
+
+// ---------------------------------------------------------------------
+
+void StorageUpdates::executeAllStorageChanges(Storage *pStorage, StorageConnection *pConn, StorageUpdateBase *pUpdate) {
+    std::string TAG = "StorageUpdates::executeAllStorageChanges";
+    Log::info(TAG, "Installing update '" + pUpdate->from_version() + "' -> '" + pUpdate->version() + "': " + pUpdate->description());
+
+    // Apply changes
+    std::vector<StorageChanges *> vStorageChanges = pUpdate->getChanges();
+    for (int i = 0; i < vStorageChanges.size(); i++) {
+        StorageChanges *pChanges = vStorageChanges[i];
+        if (pChanges->getType() == StorageChangesType::NOPE) {
+            Log::throw_err(TAG, "Not allowed use a StorageChangesType::NOPE");
+        }
+        if (!pStorage->executeStorageChanges(pConn, *pChanges)) {
+            Log::throw_err(TAG, "Problem with table '" + pChanges->getTableName() + "' in version " + pUpdate->version());
+        }
+    }
+    pConn->insertUpdateInfo(pUpdate->version(), pUpdate->description());
 }
 
 // ---------------------------------------------------------------------
@@ -1310,10 +1349,17 @@ bool StorageUpdates::apply2(Storage *pStorage) {
 
     std::vector<std::string> vVersions = pConn->getInstalledVersions();
     std::vector<StorageUpdateBase*> vUpdates = getSortedStorageUpdates();
+
     for (int i = 0; i < vUpdates.size(); i++) {
-        
+        std::string sVersion = vUpdates[i]->version();
+        StorageUpdateBase* pUpdate = vUpdates[i];
+        bool bUpdatedAlreadyInstalled = std::find(vVersions.begin(), vVersions.end(), sVersion) != vVersions.end();
+
+        if (bUpdatedAlreadyInstalled) {
+            applyAllStorageChanges(pStorage, pUpdate);
+        } else {
+            executeAllStorageChanges(pStorage, pConn, pUpdate);
+        }            
     }
-
-
-    return false;
+    return true;
 }

@@ -85,7 +85,42 @@ std::string MySqlStorageConnection::lastDatabaseVersion() {
 // ----------------------------------------------------------------------
 
 std::vector<std::string> MySqlStorageConnection::getInstalledVersions() {
+    std::lock_guard<std::mutex> lock(m_mtxConn);
     std::vector<std::string> vVersions;
+
+    std::string sQuery = "SELECT version FROM updates ORDER BY id";
+
+    if (mysql_query(m_pConnection, sQuery.c_str())) {
+        std::string sError(mysql_error(m_pConnection));
+        if (sError.find("updates' doesn't exist") != std::string::npos) {
+            Log::warn(TAG, "Creating table updates .... ");
+            std::string sTableDbUpdates = 
+                "CREATE TABLE IF NOT EXISTS updates ("
+                "  id INT NOT NULL AUTO_INCREMENT,"
+                "  version varchar(255) DEFAULT NULL,"
+                "  description text,"
+                "  datetime_update datetime DEFAULT NULL,"
+                "  PRIMARY KEY (`id`)"
+                ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+            if (mysql_query(m_pConnection, sTableDbUpdates.c_str())) {
+                std::string sError2(mysql_error(m_pConnection));
+                Log::throw_err(TAG, "Problem on create table updates " + sError2);
+            } else {
+                Log::ok(TAG, "Table updates success created");
+                return vVersions;
+            }
+        } else {
+            Log::throw_err(TAG, "Problem with database " + sError);
+        }
+    } else {
+        MYSQL_RES *pRes = mysql_use_result(m_pConnection);
+        MYSQL_ROW row;
+        // output table name
+        while ((row = mysql_fetch_row(pRes)) != NULL) {
+            vVersions.push_back(std::string(row[0]));
+        }
+        mysql_free_result(pRes);
+    }
     return vVersions;
 }
 
