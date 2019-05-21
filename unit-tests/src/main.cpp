@@ -1,8 +1,10 @@
 #include <string>
 #include <logger.h>
+#include <fallen.h>
 #include <unit_tests.h>
 
 int main(int argc, char** argv) {
+    Fallen::initRandom();
     std::string TAG = "UnitTests";
     Log::setdir("./");
 

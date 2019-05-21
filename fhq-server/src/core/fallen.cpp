@@ -239,6 +239,12 @@ std::string& Fallen::to_lower(std::string& str) {
 
 // ---------------------------------------------------------------------
 
+void Fallen::initRandom() {
+    std::srand(std::rand() + std::time(0));
+}
+
+// ---------------------------------------------------------------------
+
 std::string Fallen::createUuid() {
     std::string sRet = "00000000-0000-0000-0000-000000000000";
     const std::string sAlphabet = "0123456789abcdef";
@@ -248,8 +254,7 @@ std::string Fallen::createUuid() {
             sRet[i] = sAlphabet[std::rand() % sAlphabet.length()];
         }
     }
-    unsigned t = std::rand() + std::time(0);
-    std::srand(t);
+    // Fallen::initRandom();
     return sRet;
 }
 

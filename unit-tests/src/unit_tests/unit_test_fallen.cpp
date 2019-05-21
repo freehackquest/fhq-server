@@ -19,7 +19,9 @@ bool UnitTestFallen::run() {
     std::vector<std::string> vUuids;
     for (int i = 0; i < 100; i++) {
         std::string sUuid = Fallen::createUuid();
-        // Log::info(TAG, "sUuid: " + sUuid);
+        /*if (i < 3) {
+            Log::info(TAG, "sUuid: " + sUuid);
+        }*/
         vUuids.push_back(sUuid);
     }
 
