@@ -48,8 +48,8 @@ bool UnitTestStorageUpdates::run() {
     vUpdatesExpectedSorted.push_back("u0001-u0002");
     vUpdatesExpectedSorted.push_back("u0002-u0003");
     vUpdatesExpectedSorted.push_back("u0003-u1004");
-    vUpdatesExpectedSorted.push_back("u1004-u0005");
-    vUpdatesExpectedSorted.push_back("u0004-u0005");
+    vUpdatesExpectedSorted.push_back("u1004-u1005");
+    vUpdatesExpectedSorted.push_back("u0003-u0005");
     vUpdatesExpectedSorted.push_back("u0005-u0006");
     vUpdatesExpectedSorted.push_back("u0006-u0007");
     vUpdatesExpectedSorted.push_back("u0007-u0008");

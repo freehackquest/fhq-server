@@ -350,7 +350,8 @@ class StorageUpdateBase {
         const std::string &version();
         const std::string &description();
         const std::vector<StorageChanges *> &getChanges();
-
+        void setWeight(int nWeight);
+        int getWeight();
     protected:
         std::string TAG;
         StorageCreateTable *createTable(std::string sTableName);
@@ -364,6 +365,7 @@ class StorageUpdateBase {
         std::string m_sFromVersion;
         std::string m_sVersion;
         std::string m_sDescription;
+        int m_nWeight;
 };
 
 // ---------------------------------------------------------------------
@@ -371,6 +373,12 @@ class StorageUpdateBase {
 extern std::vector<StorageUpdateBase*> *g_pStorageUpdates;
 
 class StorageUpdates {
+    private:
+        static int calculateWeight(int nWeight, const std::string &sVersion);
+        static void sortByWeight(std::vector<StorageUpdateBase*> &vUpdates);
+        static std::vector<StorageUpdateBase*> findUpdatesFromVersion(const std::string &sVersion);
+        static void pushUpdatesFromVersion(std::vector<StorageUpdateBase*> &vUpdates, const std::string &sVersion);
+        
     public:
         static std::vector<StorageUpdateBase*> getSortedStorageUpdates();
         static void initGlobalVariables();

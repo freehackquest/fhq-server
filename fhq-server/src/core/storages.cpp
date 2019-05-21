@@ -1034,6 +1034,18 @@ const std::vector<StorageChanges *> &StorageUpdateBase::getChanges() {
 
 // ---------------------------------------------------------------------
 
+void StorageUpdateBase::setWeight(int nWeight) {
+    m_nWeight = nWeight;
+}
+
+// ---------------------------------------------------------------------
+
+int StorageUpdateBase::getWeight() {
+    return m_nWeight;
+}
+
+// ---------------------------------------------------------------------
+
 StorageCreateTable *StorageUpdateBase::createTable(std::string sTableName) {
     checkTableName(sTableName);
     StorageCreateTable *pCreateTable = new StorageCreateTable(sTableName);
@@ -1087,10 +1099,85 @@ void StorageUpdates::initGlobalVariables() {
 
 // ---------------------------------------------------------------------
 
+int StorageUpdates::calculateWeight(int nWeight, const std::string &sVersion) {
+    int nRet = nWeight;
+    StorageUpdateBase* pCurrentUpdate = StorageUpdates::findUpdateVersion(sVersion);
+    if (pCurrentUpdate == nullptr) {
+        return nRet;
+    }
+    nRet++;
+    std::vector<StorageUpdateBase*> vChildUpdates;
+    for (int i = 0; i < g_pStorageUpdates->size(); i++) {
+        StorageUpdateBase* pUpdate = g_pStorageUpdates->at(i);
+        if (sVersion == pUpdate->from_version()) {
+            nRet = calculateWeight(nRet, pUpdate->version());
+        }
+    }
+    return nRet;
+}
+
+// ---------------------------------------------------------------------
+
+void StorageUpdates::sortByWeight(std::vector<StorageUpdateBase*> &vUpdates) {
+    if (vUpdates.size() <= 1) {
+        return;
+    }
+    for (int i = 0; i < vUpdates.size(); i++) {
+        int nWeight = calculateWeight(0, vUpdates[i]->version());
+        vUpdates[i]->setWeight(nWeight);
+    }
+
+    bool bSorted = false;
+    while (!bSorted) {
+        bSorted = true;
+        for (int i = 0; i < vUpdates.size()-1; i++) {
+            if (vUpdates[i]->getWeight() > vUpdates[i+1]->getWeight()) {
+                StorageUpdateBase* p = vUpdates[i];
+                vUpdates[i] = vUpdates[i+1];
+                vUpdates[i+1] = p;
+                bSorted = false;
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------
+
+std::vector<StorageUpdateBase*> StorageUpdates::findUpdatesFromVersion(const std::string &sFromVersion) {
+    std::vector<StorageUpdateBase*> vFoundUpdates;
+    for (int i = 0; i < g_pStorageUpdates->size(); i++) {
+        StorageUpdateBase* pUpdate = g_pStorageUpdates->at(i);
+        if (pUpdate->from_version() == sFromVersion) {
+            vFoundUpdates.push_back(pUpdate);
+        }
+    }
+    return vFoundUpdates;
+}
+
+// ---------------------------------------------------------------------
+
+void StorageUpdates::pushUpdatesFromVersion(std::vector<StorageUpdateBase*> &vSortedUpdates, const std::string &sFromVersion) {
+    std::vector<StorageUpdateBase*> vFoundUpdates = findUpdatesFromVersion(sFromVersion);
+    sortByWeight(vFoundUpdates);
+    // std::cout << std::to_string(vFoundUpdates.size()) << std::endl;
+    if (vFoundUpdates.size() == 0) {
+        return;
+    }
+
+    for (int i = 0; i < vFoundUpdates.size(); i++) {
+        vSortedUpdates.push_back(vFoundUpdates[i]);
+        pushUpdatesFromVersion(vSortedUpdates, vFoundUpdates[i]->version());
+    }
+}
+
+// ---------------------------------------------------------------------
+
 std::vector<StorageUpdateBase*> StorageUpdates::getSortedStorageUpdates() {
     StorageUpdates::initGlobalVariables();
-    // TODO sorting list of updates
-    return *g_pStorageUpdates;
+    // calculate weights
+    std::vector<StorageUpdateBase*> vSortedUpdates;
+    pushUpdatesFromVersion(vSortedUpdates, "");
+    return vSortedUpdates;
 }
 
 // ---------------------------------------------------------------------
