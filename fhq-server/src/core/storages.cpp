@@ -1300,3 +1300,20 @@ bool StorageUpdates::apply(Storage *pStorage) {
     }
     return true;
 }
+
+// ---------------------------------------------------------------------
+
+bool StorageUpdates::apply2(Storage *pStorage) {
+    StorageUpdates::initGlobalVariables();
+    std::string TAG = "StorageUpdates::apply";
+    StorageConnection *pConn = pStorage->connect();
+
+    std::vector<std::string> vVersions = pConn->getInstalledVersions();
+    std::vector<StorageUpdateBase*> vUpdates = getSortedStorageUpdates();
+    for (int i = 0; i < vUpdates.size(); i++) {
+        
+    }
+
+
+    return false;
+}

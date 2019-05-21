@@ -84,6 +84,13 @@ std::string MySqlStorageConnection::lastDatabaseVersion() {
 
 // ----------------------------------------------------------------------
 
+std::vector<std::string> MySqlStorageConnection::getInstalledVersions() {
+    std::vector<std::string> vVersions;
+    return vVersions;
+}
+
+// ----------------------------------------------------------------------
+
 bool MySqlStorageConnection::insertUpdateInfo(const std::string &sVersion, const std::string &sDescription) {
     std::lock_guard<std::mutex> lock(m_mtxConn);
     std::string sInsertNewVersion = "INSERT INTO updates(version, description, datetime_update) "
