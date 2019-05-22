@@ -27,6 +27,7 @@ cd ..
 
 cd fhq-server
 check_ret $? "change directory to fhq-server"
+qmake --version # TODO when will be removed all then qt need remove this line
 ./build_simple.sh
 check_ret $? "build fhq-server"
 ./fhq-server -wd ../data_travis version
