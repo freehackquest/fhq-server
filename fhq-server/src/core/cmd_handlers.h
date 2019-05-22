@@ -140,6 +140,7 @@ class ModelRequest {
     public:
         ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_);
         QWebSocket *client();
+        std::string getIpAddress();
         IWebSocketServer *server();
         WSJCppUserSession *userSession(); // TODO rename to getUserSession
         bool isAdmin();

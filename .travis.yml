@@ -24,20 +24,7 @@ before_install:
 install:
   - pip install --user websocket-client
   - pip install --user requests
-  
+
 # Build your code e.g. by calling make
 script:
-  - echo "code-check"
-  - cd code-check
-  - ./check.sh
-  - cd ../unit-tests
-  - ./run_unit_tests.sh
-  - cd ../fhq-server
-  - ./build_simple.sh
-  - ./fhq-server -wd ../data_travis version
-  - ./fhq-server -wd ../data_travis -cdc
-  - mkdir -p public/games
-  - ./fhq-server -wd ../data_travis -set "server_folder_public=`pwd`/public/"
-  - cd ../tests
-  - ./update_libfhqcli.sh
-  - python run_tests.py # run tests
+  - ./run_travis.sh

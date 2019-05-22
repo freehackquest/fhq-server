@@ -198,7 +198,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
         pRequest->server()->setWSJCppUserSession(pRequest->client(), new WSJCppUserSession(user_token));
 
         // update user location
-        std::string sLastIP = pRequest->client()->peerAddress().toString().toStdString();
+        std::string sLastIP = pRequest->getIpAddress();
         RunTasks::UpdateUserLocation(nUserId, sLastIP);
 
     } else {
@@ -323,7 +323,7 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest) {
                          "   :about);"
     );
 
-    std::string sLastIP = pRequest->client()->peerAddress().toString().toStdString();
+    std::string sLastIP = pRequest->getIpAddress();
 
     // TODO move to helpers
     std::string sUuid = Fallen::createUuid();
@@ -408,7 +408,7 @@ void CmdHandlerToken::handle(ModelRequest *pRequest) {
         QString data = record.value("data").toString();
         QString start_date = record.value("start_date").toString();
         QString end_date = record.value("end_date").toString();
-        std::string sLastIP = pRequest->client()->peerAddress().toString().toStdString();
+        std::string sLastIP = pRequest->getIpAddress();
         pRequest->server()->setWSJCppUserSession(pRequest->client(), new WSJCppUserSession(data));
         Log::info(TAG, "userid: " + QString::number(userid).toStdString());
         // TODO redesign this
@@ -678,8 +678,6 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest) {
                          "   :rating,"
                          "   :about);"
     );
-
-    QString sLastIP = pRequest->client()->peerAddress().toString();
 
     std::string sUuid = "";
     if (jsonRequest.find("uuid") == jsonRequest.end()) {

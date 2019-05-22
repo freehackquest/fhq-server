@@ -114,15 +114,18 @@ void WebSocketServer::sendServerMessage(QWebSocket *pSocket) {
 
 // ---------------------------------------------------------------------
 
-/*!
- *  Handling new connection by ws://
- */
-
-void WebSocketServer::onNewConnection()
-{
-    QWebSocket *pSocket = m_pWebSocketServer->nextPendingConnection();
+void WebSocketServer::initNewConnection(const std::string &sPrefix, QWebSocket *pSocket) {
     std::string sAddress = pSocket->peerAddress().toString().toStdString();
-    Log::info(TAG, "NewConnection " + sAddress + " " + std::to_string(pSocket->peerPort()));
+    std::string sInitMessage = "NewConnection" + sPrefix + ", url=" + pSocket->requestUrl().toString().toStdString();
+    QNetworkRequest r = pSocket->request();
+    sInitMessage += sAddress + " " + std::to_string(pSocket->peerPort());
+    QByteArray qbaHeaderName = QString("x-forwarded-for").toLatin1();
+    if (r.hasRawHeader(qbaHeaderName)) {
+        sAddress = r.rawHeader(qbaHeaderName).toStdString();
+        sInitMessage += " Apache Proxy (" + qbaHeaderName.toStdString() + "="
+         + sAddress + ")";
+    }
+    Log::info(TAG, sInitMessage);
 
     connect(pSocket, &QWebSocket::textMessageReceived, this, &WebSocketServer::processTextMessage);
     connect(pSocket, &QWebSocket::binaryMessageReceived, this, &WebSocketServer::processBinaryMessage);
@@ -135,20 +138,24 @@ void WebSocketServer::onNewConnection()
 // ---------------------------------------------------------------------
 
 /*!
+ *  Handling new connection by ws://
+ */
+
+void WebSocketServer::onNewConnection()
+{
+    QWebSocket *pSocket = m_pWebSocketServer->nextPendingConnection();
+    initNewConnection("", pSocket);
+}
+
+// ---------------------------------------------------------------------
+
+/*!
  *  Handling new connection by wss://
  */
 
 void WebSocketServer::onNewConnectionSSL() {
     QWebSocket *pSocket = m_pWebSocketServerSSL->nextPendingConnection();
-    std::string sAddress = pSocket->peerAddress().toString().toStdString();
-    Log::info(TAG, "NewConnectionSSL " + sAddress + " " + std::to_string(pSocket->peerPort()));
-
-    connect(pSocket, &QWebSocket::textMessageReceived, this, &WebSocketServer::processTextMessage);
-    connect(pSocket, &QWebSocket::binaryMessageReceived, this, &WebSocketServer::processBinaryMessage);
-    connect(pSocket, &QWebSocket::disconnected, this, &WebSocketServer::socketDisconnected);
-
-    m_clients << pSocket;
-    sendServerMessage(pSocket);
+    initNewConnection("SSL", pSocket);
 }
 
 // ---------------------------------------------------------------------

@@ -59,6 +59,7 @@ class WebSocketServer : public QObject, public IWebSocketServer {
         void slot_sendToOne(QWebSocket *pClient, QString message);
 
     private:
+        void initNewConnection(const std::string &sPrefix, QWebSocket *pSocket);
         void sendServerMessage(QWebSocket *pSocket);
         void logSocketError(QAbstractSocket::SocketError socketError);
 
