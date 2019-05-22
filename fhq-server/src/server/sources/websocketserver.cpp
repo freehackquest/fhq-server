@@ -117,7 +117,7 @@ void WebSocketServer::sendServerMessage(QWebSocket *pSocket) {
 void WebSocketServer::initNewConnection(const std::string &sPrefix, QWebSocket *pSocket) {
     std::string sAddress = pSocket->peerAddress().toString().toStdString();
     std::string sInitMessage = "NewConnection" + sPrefix + ", url=" + pSocket->requestUrl().toString().toStdString();
-    QNetworkRequest	r = pSocket->request();
+    QNetworkRequest r = pSocket->request();
     sInitMessage += sAddress + " " + std::to_string(pSocket->peerPort());
     QByteArray qbaHeaderName = QString("x-forwarded-for").toLatin1();
     if (r.hasRawHeader(qbaHeaderName)) {

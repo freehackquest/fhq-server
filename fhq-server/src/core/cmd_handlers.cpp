@@ -388,7 +388,7 @@ QWebSocket *ModelRequest::client() {
 
 std::string ModelRequest::getIpAddress() {
     std::string sAddress = m_pClient->peerAddress().toString().toStdString();
-    QNetworkRequest	r = m_pClient->request();
+    QNetworkRequest r = m_pClient->request();
     QByteArray qbaHeaderName = QString("x-forwarded-for").toLatin1();
     if (r.hasRawHeader(qbaHeaderName)) {
         sAddress = r.rawHeader(qbaHeaderName).toStdString();
