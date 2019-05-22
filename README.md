@@ -6,9 +6,9 @@
 Backend for FreeHackQuest on Qt and WebSockets
 Frontend for FreeHackQuest here: [frontend](https://github.com/freehackquest/frontend)
 
-* [CONFIGURING](https://github.com/freehackquest/fhq-server/tree/master/install/install/CONFIGURING.md)
-* [HOW-TO-BUILD](https://github.com/freehackquest/fhq-server/tree/master/install/install/HOW-TO-BUILD.md)
-* [PRE-BUILDS](https://github.com/freehackquest/fhq-server/tree/master/install/install/PRE-BUILDS.md)
+* [CONFIGURING](https://github.com/freehackquest/fhq-server/tree/master/install/CONFIGURING.md)
+* [HOW-TO-BUILD](https://github.com/freehackquest/fhq-server/tree/master/install/HOW-TO-BUILD.md)
+* [PRE-BUILDS](https://github.com/freehackquest/fhq-server/tree/master/install/PRE-BUILDS.md)
 * [DOCKER-COMPOSE](https://github.com/freehackquest/fhq-server/tree/master/install/DOCKER_COMPOSE)
 * [INSTALL_FROM_PPA](https://github.com/freehackquest/fhq-server/tree/master/install/INSTALL_FROM_PPA.md)
 * [DOXYGEN](https://freehackquest.com/doxygen/)
