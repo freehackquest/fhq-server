@@ -27,11 +27,7 @@ install:
   
 # Build your code e.g. by calling make
 script:
-  - echo "code-check"
-  - cd code-check
-  - ./check.sh
-  - cd ../unit-tests
-  - ./run_unit_tests.sh
+  - ./run_travis.sh
   - cd ../fhq-server
   - ./build_simple.sh
   - ./fhq-server -wd ../data_travis version
