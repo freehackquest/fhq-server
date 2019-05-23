@@ -32,6 +32,7 @@
 #include <export_struct_of_storage.h>
 #include <export_libwsjcppcli_web_js.h>
 #include <export_libwsjcppcli_py.h>
+#include <export_libwsjcppcli_java_android.h>
 #include <runtasks.h>
 #include <light_http_server.h>
 #include <http_handler_web_admin_folder.h>
@@ -56,6 +57,7 @@ int main(int argc, char** argv) {
     helpArgs.addHelp("show-storage-struct", "-sh-ss", FallenHelpParseArgType::SINGLE_OPTION, "Show Storage Struct");
     helpArgs.addHelp("export-libfhqcli-py", "-exlp", FallenHelpParseArgType::SINGLE_OPTION, "Export libfhqcli-py (python)");
     helpArgs.addHelp("export-libfhqcli-web-javascript", "-exlwjs", FallenHelpParseArgType::SINGLE_OPTION, "Export libfhqcli-web-js (javascript)");
+    helpArgs.addHelp("export-libfhqcli-java-android", "-exljadr", FallenHelpParseArgType::SINGLE_OPTION, "Export libfhqcli-java-android");
     helpArgs.addHelp("show-employees", "-se", FallenHelpParseArgType::SINGLE_OPTION, "Show employees");
     helpArgs.addHelp("show-settings", "-ss", FallenHelpParseArgType::SINGLE_OPTION, "Show settings");
     helpArgs.addHelp("set-setting", "-set", FallenHelpParseArgType::PARAMETER, "Set setting value like 'mail_username=some@where.org'");
@@ -113,6 +115,14 @@ int main(int argc, char** argv) {
         pExportWebJS->setVersion(std::string(FHQSRV_VERSION));
         pExportWebJS->setPrefixRepositoryURL("https://github.com/freehackquest/");
         pExportWebJS->exportLib();
+        return 0;
+    } else if (helpArgs.has("export-libfhqcli-java-android")) {
+        ExportLibWsjCppCliJavaAndroid *pExportJavaAndroid = new ExportLibWsjCppCliJavaAndroid();
+        // pExportJavaAndroid->setLibraryName("libfhqcli-java-android");
+        // pExportJavaAndroid->setAuthor("FreeHackQuest Team");
+        pExportJavaAndroid->setVersion(std::string(FHQSRV_VERSION));
+        // pExportJavaAndroid->setPrefixRepositoryURL("https://github.com/freehackquest/");
+        pExportJavaAndroid->exportLib();
         return 0;
     } else if (helpArgs.has("show-employees")) {
         std::cout << " * Employees (" << g_pEmployees->size() << "):\n";

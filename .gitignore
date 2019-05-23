@@ -69,6 +69,7 @@ CMakeLists.txt.user
 .vscode
 fhq-server/libfhqcli-py
 fhq-server/libfhqcli-web-js
+fhq-server/libfhqcli-java-android
 tests/libfhqcli.py
 tests/libfhqcli/*
 
