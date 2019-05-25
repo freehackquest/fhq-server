@@ -117,14 +117,19 @@ void WebSocketServer::sendServerMessage(QWebSocket *pSocket) {
 void WebSocketServer::initNewConnection(const std::string &sPrefix, QWebSocket *pSocket) {
     std::string sAddress = pSocket->peerAddress().toString().toStdString();
     std::string sInitMessage = "NewConnection" + sPrefix + ", url=" + pSocket->requestUrl().toString().toStdString();
-    QNetworkRequest r = pSocket->request();
+    
     sInitMessage += sAddress + " " + std::to_string(pSocket->peerPort());
-    QByteArray qbaHeaderName = QString("x-forwarded-for").toLatin1();
-    if (r.hasRawHeader(qbaHeaderName)) {
-        sAddress = r.rawHeader(qbaHeaderName).toStdString();
-        sInitMessage += " Apache Proxy (" + qbaHeaderName.toStdString() + "="
-         + sAddress + ")";
-    }
+
+    #if QT_VERSION >= 0x050600
+        QNetworkRequest r = pSocket->request();
+        QByteArray qbaHeaderName = QString("x-forwarded-for").toLatin1();
+        if (r.hasRawHeader(qbaHeaderName)) {
+            sAddress = r.rawHeader(qbaHeaderName).toStdString();
+            sInitMessage += " Apache Proxy (" + qbaHeaderName.toStdString() + "="
+            + sAddress + ")";
+        }        
+    #endif
+
     Log::info(TAG, sInitMessage);
 
     connect(pSocket, &QWebSocket::textMessageReceived, this, &WebSocketServer::processTextMessage);

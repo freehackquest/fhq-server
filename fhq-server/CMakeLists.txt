@@ -52,6 +52,8 @@ list (APPEND FHQSRV_SOURCES "src/core/3rdParty/sha1_wrapper.cpp")
 # core
 list (APPEND FHQSRV_SOURCES "src/core/cmd_handlers.h")
 list (APPEND FHQSRV_SOURCES "src/core/cmd_handlers.cpp")
+list (APPEND FHQSRV_SOURCES "src/core/export_libwsjcppcli_java_android.h")
+list (APPEND FHQSRV_SOURCES "src/core/export_libwsjcppcli_java_android.cpp")
 list (APPEND FHQSRV_SOURCES "src/core/export_libwsjcppcli_py.h")
 list (APPEND FHQSRV_SOURCES "src/core/export_libwsjcppcli_py.cpp")
 list (APPEND FHQSRV_SOURCES "src/core/export_libwsjcppcli_web_js.h")
