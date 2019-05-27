@@ -302,6 +302,7 @@ fhq.createQuest = function() {
 
 	fhq.ws.createquest(params).done(function(r){
 		fhq.hideLoader();
+		console.log(r);
 		// fhq.loadQuest(r.questid);
 		fhq.pages['quests']();
 	}).fail(function(err){
@@ -313,13 +314,197 @@ fhq.createQuest = function() {
 	});
 };
 
+function quest_edit_menu(el, active_tab, questid) {
+	var menu = [{
+		'page': 'quest_edit',
+		'caption': 'Quest',
+	}, {
+		'page': 'quest_hints_edit',
+		'caption': 'Hints',
+	}, {
+		'page': 'quest_files_edit',
+		'caption': 'Files',
+	}, {
+		'page': 'quest_writeups_edit',
+		'caption': 'Write Ups',
+	}, {
+		'page': 'quest_statistics_edit',
+		'caption': 'Statistics',
+	}];
+	var html = '<ul class="nav nav-tabs">';
+	for (var i in menu) {
+		var m = menu[i];
+		html += ''
+			+ '  <li class="nav-item">'
+			+ '    <div class="quest-menu-btn nav-link ' + (active_tab == m.page ? 'active' : '') + '" '
+			+ '      page="' + m.page + '">' + m.caption + '</div>'
+			+ '  </li>'
+	}
+	html += '</ul>';
+	el.append(html);
+	$('.quest-menu-btn').unbind().bind('click', function(){
+		var page = $(this).attr('page');
+		fhq.pages[page](questid);
+	});
+}
+
+
+fhq.pages['quest_hints_edit'] = function(questid) {
+	questid = questid || fhq.pageParams['quest_hints_edit'];
+	if (questid) {
+		questid = parseInt(questid, 10);
+	}
+	$('#page_name').html('Quest Hints Edit [quest#' + questid + ']');
+	var el = $('#page_content');
+	el.html('');
+	console.log("questid: ", questid);
+	window.fhq.changeLocationState({'quest_hints_edit':questid});
+	fhq.hideLoader();
+	
+	el.html('');
+	quest_edit_menu(el, 'quest_hints_edit', questid);
+	el.append(''
+		+ '<div class="card">'
+		+ '		<div class="card-body">'
+		+ '			<table class="table table-striped table-hover">'
+		+ '				<thead class="thead-dark"><tr><th>#</th><th>Text</th><th>Actions</th></tr></thead>'
+		+ '				<tbody id="quest_hints"></tbody>'
+		+ '			</table>'
+		+ '         <div class="btn btn-primary" id="add_hint" questid="' + questid + '">Add Hint</div>'
+		+ '		</div>'
+		+ '</div>'
+	);
+	$('#add_hint').unbind().bind('click', fhq.addQuestHintForm);
+	
+	fhq.ws.quest({"questid": questid}).done(function(data){
+		var q = data.quest;
+		var hints = data.hints;
+		for (var i in hints) {
+			var h = hints[i];
+			console.log(h)
+			$('#quest_hints').append('<tr>'
+				+ '<td>[hint#' + h.id + ']</td>'
+				+ '<td>' + h.text + '</td>'
+				+ '<td><div class="btn btn-danger delete-hint" '
+				+ '         questid="' + questid + '" hintid="' + h.id + '" >Delete Hint</div></td>'
+				+ '</tr>');
+		}
+		$('.delete-hint').unbind().bind('click', fhq.deleteHint);
+	}).fail(function(err){
+		console.error(err);
+	})
+}
+
+fhq.deleteHint = function() {
+	var hintid = $(this).attr('hintid');
+	hintid = parseInt(hintid,10);
+	var questid = $(this).attr('questid');
+	questid = parseInt(questid,10);
+
+	fhq.showLoader();
+	fhq.ws.deletehint({"hintid": hintid}).done(function(r){
+		fhq.hideLoader();
+		fhq.pages['quest_hints_edit'](questid);
+	}).fail(function(err){
+		fhq.hideLoader();
+		console.error(err);
+	});
+};
+
+fhq.addQuestHintForm = function() {
+	var questid = $(this).attr('questid');
+	questid = parseInt(questid,10);
+	
+	$('#modalInfoTitle').html('Quest {' + questid + '} add hint');
+	$('#modalInfoBody').html('');
+	$('#modalInfoBody').append(''
+		+ 'Hint test:'
+		+ '<input class="form-control" id="quest_new_hint_text" type="text"><br>'
+		+ '<div class=" alert alert-danger" style="display: none" id="quest_add_hint_error"></div>'
+	);
+	$('#modalInfoButtons').html(''
+		+ '<button type="button" class="btn btn-secondary" '
+		+ ' id="quest_add_hint" questid="' + questid + '" '
+		+ ' onclick="fhq.addHint(this);">Add</button> '
+		+ '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'
+	);
+	$('#modalInfo').modal('show');
+};
+
+fhq.addHint = function(el){
+	var hint_text = $('#quest_new_hint_text').val();
+	var questid = $(el).attr('questid');
+	questid = parseInt(questid,10);
+	var data = {};
+	data.questid = questid;
+	data.hint = hint_text;
+
+	fhq.ws.addhint(data).done(function(r){
+		$('#modalInfo').modal('hide');
+		fhq.pages['quest_hints_edit'](questid);
+	}).fail(function(r){
+		$('#quest_add_hint_error').show();
+		$('#quest_add_hint_error').html(r.error);
+	});
+}
+
+fhq.pages['quest_files_edit'] = function(questid) {
+	questid = questid || fhq.pageParams['quest_files_edit'];
+	if (questid) {
+		questid = parseInt(questid, 10);
+	}
+	$('#page_name').html('Quest Files Edit [quest#' + questid + ']');
+	var el = $('#page_content');
+	el.html('');
+	console.log("questid: ", questid);
+	window.fhq.changeLocationState({'quest_files_edit':questid});
+	fhq.hideLoader();
+	
+	el.html('');
+	quest_edit_menu(el, 'quest_files_edit', questid);
+	el.append('TODO');
+}
+
+fhq.pages['quest_writeups_edit'] = function(questid) {
+	questid = questid || fhq.pageParams['quest_writeups_edit'];
+	if (questid) {
+		questid = parseInt(questid, 10);
+	}
+	$('#page_name').html('Quest WriteUps Edit [quest#' + questid + ']');
+	var el = $('#page_content');
+	el.html('');
+	console.log("questid: ", questid);
+	window.fhq.changeLocationState({'quest_writeups_edit':questid});
+	fhq.hideLoader();
+	
+	el.html('');
+	quest_edit_menu(el, 'quest_writeups_edit', questid);
+	el.append('TODO');
+}
+
+fhq.pages['quest_statistics_edit'] = function(questid) {
+	questid = questid || fhq.pageParams['quest_statistics_edit'];
+	if (questid) {
+		questid = parseInt(questid, 10);
+	}
+	$('#page_name').html('Quest Statistics Edit [quest#' + questid + ']');
+	var el = $('#page_content');
+	el.html('');
+	console.log("questid: ", questid);
+	window.fhq.changeLocationState({'quest_statistics_edit':questid});
+	fhq.hideLoader();
+	
+	el.html('');
+	quest_edit_menu(el, 'quest_statistics_edit', questid);
+	el.append('TODO');
+}
 
 fhq.pages['quest_edit'] = function(questid) {
-	$('#page_name').html('Quest Edit');
 	questid = questid || fhq.pageParams['quest_edit'];
 	if (questid) {
 		questid = parseInt(questid, 10);
 	}
+	$('#page_name').html('Quest Edit [quest#' + questid + ']');
 	var el = $('#page_content');
 	el.html('');
 	console.log("questid: ", questid);
@@ -327,19 +512,17 @@ fhq.pages['quest_edit'] = function(questid) {
 	fhq.hideLoader();
 	
 	el.html('');
-	el.html(''
+	quest_edit_menu(el, 'quest_edit', questid);
+	el.append(''
 		+ '<div class="card">'
-		+ '		<div class="card-header">' + fhq.t('Edit Quest') + '</div>'
 		+ '		<div class="card-body">'
 		+ '			<div class="form-group row">'
 		+ '				<label for="edit_quest_id" class="col-sm-2 col-form-label">' + fhq.t('ID') + '</label>'
-		+ ' 			<div class="col-sm-10">'
+		+ ' 			<div class="col-sm-4">'
 		+ '					<input type="text" readonly class="form-control" value="" id="edit_quest_id">'
 		+ '				</div>'
-		+ '			</div>'
-		+ '			<div class="form-group row">'
-		+ '				<label for="edit_quest_count_user_solved" class="col-sm-2 col-form-label">' + fhq.t('Solved') + '</label>'
-		+ ' 			<div class="col-sm-10">'
+		+ '				<label for="edit_quest_count_user_solved" class="col-sm-2 col-form-label text-right">' + fhq.t('Solved') + '</label>'
+		+ ' 			<div class="col-sm-4">'
 		+ '					<input type="text" readonly class="form-control" value="" id="edit_quest_count_user_solved">'
 		+ '				</div>'
 		+ '			</div>'
@@ -443,13 +626,6 @@ fhq.pages['quest_edit'] = function(questid) {
 		+ '</div>'
 		+ '<div class="btn btn-danger" id="quest_update"><i class="fa fa-check"></i> Update</div> '
 		+ '<div class="btn btn-primary" id="quest_update_close"><i class="fa fa-times"></i> Cancel</div> '
-		+ '<br><br>'
-		+ '<h3>Hints</h3>'
-		+ '		<table class="table table-striped table-hover">'
-		+ '			<thead class="thead-dark"><tr><th>#</th><th>Text</th><th>Actions</th></tr></thead>'
-		+ '			<tbody id="quest_hints"></tbody>'
-		+ '		</table>'
-		+ '</div>'
 	);
 	window['edit_quest_text'] = new SimpleMDE({ element: $("#edit_quest_text")[0] });
 
@@ -479,23 +655,6 @@ fhq.pages['quest_edit'] = function(questid) {
 					console.warn("Not found field: " + edit_id);
 				}
 			}
-			for (var i in hints) {
-				var h = hints[i];
-				console.log(h)
-				$('#quest_hints').append('<tr>'
-					+ '<td>[hint#' + h.id + ']</td>'
-					+ '<td>' + h.text + '</td>'
-					+ '<td><div class="btn btn-danger delete-hint" '
-					+ '         questid="' + questid + '" hintid="' + h.id + '" >Delete Hint</div></td>'
-					+ '</tr>');
-			}
-			$('#quest_hints').append('<tr>'
-				+ '<td colspan="3"><div class="btn btn-primary" id="add_hint" questid="' + questid + '">Add Hint</div></td>'
-				+ '</tr>');
-			
-			$('.delete-hint').unbind().bind('click', fhq.deleteHint);
-			$('#add_hint').unbind().bind('click', fhq.addQuestHintForm);
-
 		}).fail(function(err){
 			console.error(err);
 		})
@@ -530,56 +689,3 @@ fhq.updateQuest = function() {
 		$('#quest_update_error').html(err.error);
 	});
 };
-
-fhq.deleteHint = function() {
-	var hintid = $(this).attr('hintid');
-	hintid = parseInt(hintid,10);
-	var questid = $(this).attr('questid');
-	questid = parseInt(questid,10);
-
-	fhq.showLoader();
-	fhq.ws.deletehint({"hintid": hintid}).done(function(r){
-		fhq.hideLoader();
-		fhq.pages['quest_edit'](questid);
-	}).fail(function(err){
-		fhq.hideLoader();
-		console.error(err);
-	});
-};
-
-fhq.addQuestHintForm = function() {
-	var questid = $(this).attr('questid');
-	questid = parseInt(questid,10);
-	
-	$('#modalInfoTitle').html('Quest {' + questid + '} add hint');
-	$('#modalInfoBody').html('');
-	$('#modalInfoBody').append(''
-		+ 'Hint test:'
-		+ '<input class="form-control" id="quest_new_hint_text" type="text"><br>'
-		+ '<div class=" alert alert-danger" style="display: none" id="quest_add_hint_error"></div>'
-	);
-	$('#modalInfoButtons').html(''
-		+ '<button type="button" class="btn btn-secondary" '
-		+ ' id="quest_add_hint" questid="' + questid + '" '
-		+ ' onclick="fhq.addHint(this);">Add</button> '
-		+ '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'
-	);
-	$('#modalInfo').modal('show');
-};
-
-fhq.addHint = function(el){
-	var hint_text = $('#quest_new_hint_text').val();
-	var questid = $(el).attr('questid');
-	questid = parseInt(questid,10);
-	var data = {};
-	data.questid = questid;
-	data.hint = hint_text;
-
-	fhq.ws.addhint(data).done(function(r){
-		$('#modalInfo').modal('hide');
-		fhq.pages['quest_edit'](questid);
-	}).fail(function(r){
-		$('#quest_add_hint_error').show();
-		$('#quest_add_hint_error').html(r.error);
-	});
-}
