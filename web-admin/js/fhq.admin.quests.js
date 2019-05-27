@@ -39,7 +39,6 @@ fhq.exportQuest = function(questid){
 }
 
 fhq.pages['quests'] = function() {
-	window.fhq.changeLocationState({'quests':''});
 	$('.nav-item .nav-link').removeClass("active");
 	$('#menu_quests').addClass("active");
 	fhq.showLoader();
@@ -49,8 +48,13 @@ fhq.pages['quests'] = function() {
 	el.html('Loading...')
 	
 	var onpage = 5;
-	if(fhq.containsPageParam("onpage")){
+	if (fhq.containsPageParam("onpage")) {
 		onpage = parseInt(fhq.pageParams['onpage'], 10);
+	}
+
+	var quests_filter = '';
+	if (fhq.containsPageParam("filter")) {
+		quests_filter = fhq.pageParams['filter'];
 	}
 
 	var page = 0;
@@ -58,42 +62,72 @@ fhq.pages['quests'] = function() {
 		page = parseInt(fhq.pageParams['page'], 10);
 	}
 	
-	window.fhq.changeLocationState({'quests': '', 'onpage': onpage, 'page': page});
+	window.fhq.changeLocationState({
+		'quests': '',
+		'onpage': onpage,
+		'page': page,
+		'filter': quests_filter,
+	});
 
-	fhq.ws.quests({'onpage': onpage, 'page': page}).done(function(r){
+	el.html('');
+	el.append(''
+		+ '<div>'
+		+ '   <input id="quests_search" class="form-control" type="text" placeholder="Search...">'
+		+ '</div><br>'
+	);
+	$('#quests_search').val(quests_filter);
+	$('#quests_search').unbind().bind('keyup', function(e){
+		var new_filter = $('#quests_search').val();
+		if (new_filter != quests_filter) {
+			window.fhq.changeLocationState({
+				'quests': '',
+				'onpage': onpage,
+				'page': page,
+				'filter': new_filter,
+			});
+			setTimeout(function() {
+				if ($('#quests_search').val() == new_filter) {
+					fhq.pages['quests']();
+				}
+			}, 500);
+		}
+	});
+	$('#quests_search').focus();
+	el.append(''
+		+ '<div class="btn btn-primary" id="quest_create"><i class="fa fa-plus"></i> New quest</div> '
+		+ '<div class="btn btn-primary" id="quest_import"><i class="fa fa-upload"></i> Import (TODO)</div>'
+	);
+
+	$('#quest_create').unbind().bind('click', fhq.pages['quest_create']);
+	$('#quest_import').unbind().bind('click', function(){
+		alert("TODO");
+	});
+			
+	el.append('<hr>');
+
+	// el.append(fhq.paginator(0, r.count, r.onpage, r.page));
+	el.append('<table class="table table-striped table-hover">'
+		+ '		<thead class="thead-dark">'
+		+ '			<tr>'
+		+ '				<th>#</th>'
+		+ '				<th>Game</th>'
+		+ '				<th>Subject</th>'
+		+ '             <th>Score</th>'
+		+ '             <th>Name</th>'
+		+ '				<th>State</th>'
+		+ '				<th>Solved</th>'
+		+ '				<th>Actions</th>'
+		+ '			</tr>'
+		+ '		</thead>'
+		+ '		<tbody id="list">'
+		+ '		</tbody>'
+		+ '</table>'
+	)
+
+	fhq.ws.quests({'onpage': onpage, 'page': page, 'filter': quests_filter}).done(function(r){
 		fhq.hideLoader();
 		console.log(r);
-		el.html('');
-		el.append(''
-			+ '<div class="btn btn-primary" id="quest_create"><i class="fa fa-plus"></i> New quest</div> '
-			+ '<div class="btn btn-primary" id="quest_import"><i class="fa fa-upload"></i> Import (TODO)</div>'
-		);
-
-		$('#quest_create').unbind().bind('click', fhq.pages['quest_create']);
-		$('#quest_import').unbind().bind('click', function(){
-			alert("TODO");
-		});
-				
-		el.append('<hr>');
-
-		// el.append(fhq.paginator(0, r.count, r.onpage, r.page));
-		el.append('<table class="table table-striped table-hover">'
-			+ '		<thead class="thead-dark">'
-			+ '			<tr>'
-			+ '				<th>#</th>'
-			+ '				<th>Game</th>'
-			+ '				<th>Subject</th>'
-			+ '             <th>Score</th>'
-			+ '             <th>Name</th>'
-			+ '				<th>State</th>'
-			+ '				<th>Solved</th>'
-			+ '				<th>Actions</th>'
-			+ '			</tr>'
-			+ '		</thead>'
-			+ '		<tbody id="list">'
-			+ '		</tbody>'
-			+ '</table>'
-		)
+		
 
 		for(var i in r.data){
 			var q = r.data[i];

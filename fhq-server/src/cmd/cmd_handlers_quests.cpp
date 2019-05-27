@@ -24,6 +24,7 @@ CmdHandlerQuests::CmdHandlerQuests()
     // validation and description input fields
     optionalStringParam("subject", "Filter by subject")
         .addValidator(new ValidatorQuestSubject());
+    optionalStringParam("filter", "Filter by some text");
 }
 
 // ---------------------------------------------------------------------
@@ -41,6 +42,15 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest) {
 
     std::vector<std::string> vWhereQuery;
     std::vector<std::pair<std::string, std::string> > vWhereValues;
+
+    std::string sFilter = pRequest->getInputString("filter", "");
+    if (sFilter != "") {
+        sFilter = "%" + sFilter + "%";
+        vWhereQuery.push_back("(q.name LIKE :filter OR q.copyright LIKE :copyright OR q.text LIKE :text)");
+        vWhereValues.push_back(std::pair<std::string, std::string>(":filter", sFilter));
+        vWhereValues.push_back(std::pair<std::string, std::string>(":copyright", sFilter));
+        vWhereValues.push_back(std::pair<std::string, std::string>(":text", sFilter));
+    }
 
     // get quest id
     std::string sSubject = pRequest->getInputString("subject", "");
@@ -269,7 +279,8 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
                 jsonResponse["files"] = jsonFiles;
             }
 
-            // hints
+            // TODO: deprecated
+            // hints 
             {
                 nlohmann::json jsonHints = nlohmann::json::array();
 
