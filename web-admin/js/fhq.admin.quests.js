@@ -362,7 +362,7 @@ fhq.pages['quest_edit'] = function(questid) {
 		+ '				</div>'
 		+ '			</div>'
 		+ '			<div class="form-group row">'
-		+ '				<label for="edit_text" class="col-sm-2 col-form-label">' + fhq.t('Text') + ' (Use markdown format)</label>'
+		+ '				<label for="edit_text" class="col-sm-2 col-form-label">' + fhq.t('Text') + ' (markdown)</label>'
 		+ ' 			<div class="col-sm-10">'
 		+ '					<textarea type="text" class="form-control" style="height: 150px" value="" id="edit_quest_text"></textarea>'
 		+ '				</div>'
