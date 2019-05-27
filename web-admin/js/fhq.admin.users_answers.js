@@ -5,6 +5,9 @@ if(!fhq.pages) fhq.pages = [];
 
 
 fhq.pages['users_answers'] = function(){
+	$('.nav-link.main-menu').removeClass("active");
+	$('#menu_users_answers').addClass("active");
+
 	$('#page_name').html('<div class="header-name">Users Answers</div>'
 		+ ''
 	);

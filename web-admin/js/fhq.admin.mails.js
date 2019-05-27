@@ -66,6 +66,9 @@ fhq.pages['mail_send'] = function(){
 }
 
 fhq.pages['mails'] = function(){
+	$('.nav-link.main-menu').removeClass("active");
+	$('#menu_mails').addClass("active");
+
 	$('#page_name').html('Mails');
 	$('#page_content').html('');
 	fhq.showLoader();

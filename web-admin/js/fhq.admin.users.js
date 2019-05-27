@@ -103,6 +103,9 @@ fhq.pages['user_create'] = function(){
 }
 
 fhq.pages['users'] = function(){
+	$('.nav-link.main-menu').removeClass("active");
+	$('#menu_users').addClass("active");
+
 	$('#page_name').html('Users');
 	$('#page_content').html('');
 	fhq.showLoader();

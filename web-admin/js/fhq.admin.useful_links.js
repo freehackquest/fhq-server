@@ -2,6 +2,8 @@ if(!window.fhq) window.fhq = {};
 if(!fhq.pages) fhq.pages = [];
 
 fhq.pages['useful_links'] = function(){
+	$('.nav-link.main-menu').removeClass("active");
+	$('#menu_useful_links').addClass("active");
 	$('#page_name').html('Useful Links');
 	$('#page_content').html('');
 	fhq.showLoader();

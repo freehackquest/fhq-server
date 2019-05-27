@@ -39,8 +39,9 @@ fhq.exportQuest = function(questid){
 }
 
 fhq.pages['quests'] = function() {
-	$('.nav-item .nav-link').removeClass("active");
+	$('.nav-link.main-menu').removeClass("active");
 	$('#menu_quests').addClass("active");
+
 	fhq.showLoader();
 	$('#page_name').html('Quests');
 

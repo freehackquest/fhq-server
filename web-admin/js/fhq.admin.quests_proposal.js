@@ -2,6 +2,9 @@ if(!window.fhq) window.fhq = {};
 if(!fhq.pages) fhq.pages = [];
 
 fhq.pages['quests_proposal'] = function(){
+	$('.nav-link.main-menu').removeClass("active");
+	$('#menu_quests_proposal').addClass("active");
+
 	$('#page_name').html('Quests Proposal');
 	$('#page_content').html('');
 	fhq.showLoader();
