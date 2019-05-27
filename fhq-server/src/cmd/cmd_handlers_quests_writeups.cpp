@@ -1,7 +1,6 @@
 #include <cmd_handlers_quests_writeups.h>
 #include <runtasks.h>
 #include <fallen.h>
-#include <utils.h>
 #include <md5.h>
 #include <employ_settings.h>
 #include <employ_database.h>

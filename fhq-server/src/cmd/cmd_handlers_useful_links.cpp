@@ -1,6 +1,5 @@
 #include "cmd_handlers_useful_links.h"
 #include <fallen.h>
-#include <utils.h>
 #include <md5.h>
 #include <employ_settings.h>
 #include <employ_database.h>
