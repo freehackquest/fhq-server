@@ -2,7 +2,7 @@
 #define CMD_HADNLERS_H
 
 #include <map>
-#include <utils_logger.h>
+#include <fallen.h>
 #include <validators_base.h>
 #include <json.hpp>
 #include <QWebSocket>
@@ -18,7 +18,7 @@
  * Error - 
  * */
 
-class Error {
+class Error { // TODO rename to WsjCppError
     public:
         Error(int nCodeError, const std::string &sMessage);
         int codeError();

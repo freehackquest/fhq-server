@@ -1,6 +1,6 @@
 #include <employ_settings.h>
 #include <employ_database.h>
-#include <utils_logger.h>
+#include <fallen.h>
 // #include <QTextStream>
 // #include <QFile>
 // #include <QByteArray>
@@ -8,6 +8,7 @@
 // #include <QDir>
 #include <QSqlQuery> // TODO redesign
 #include <QSqlRecord> // TODO redesign
+#include <iostream>
 
 REGISTRY_EMPLOY(EmploySettings)
 
@@ -69,6 +70,7 @@ bool EmploySettings::init() {
     addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_users_url", QString("https://freehackquest.com/files/quests/")));
 
     // LXD
+    // TODO move to employ_orchestra
     std::string  sGroupLXD = "lxd";
     addNewSetting(new ModelServerSettHelper(sGroupLXD, "path_dir_lxc_ssl", QString("/etc/fhq-server/lxd")));
     addNewSetting(new ModelServerSettHelper(sGroupLXD, "lxd_server_ip", QString("127.0.0.1")));

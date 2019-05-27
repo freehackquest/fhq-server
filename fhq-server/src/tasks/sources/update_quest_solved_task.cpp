@@ -1,5 +1,5 @@
 #include <update_quest_solved_task.h>
-#include <utils_logger.h>
+#include <fallen.h>
 #include <QThread>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>

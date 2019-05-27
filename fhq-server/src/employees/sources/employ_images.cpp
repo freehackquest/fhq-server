@@ -1,5 +1,5 @@
 #include <employ_images.h>
-#include <utils_logger.h>
+#include <fallen.h>
 #define PNG_DEBUG 3
 #include <png.h>
 
@@ -62,7 +62,7 @@ void avarage_color(avrgClr &a) {
         }
     }
     if (nCount == 0) {
-        std::cout << "nCount == 0" << std::endl;
+        Log::info("avarage_color", "nCount == 0");
         a.ptrResult[0] = 0;
         a.ptrResult[1] = 0;
         a.ptrResult[2] = 0;

@@ -15,7 +15,6 @@
 #include <QtCore>
 #include <QFile>
 #include <QString>
-#include <utils_logger.h>
 #include <websocketserver.h>
 #include <utils_prepare_deb_package.h>
 #include <utils_lxd.h>

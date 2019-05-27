@@ -1,5 +1,4 @@
 #include <cmd_handlers_classbook.h>
-#include <utils_logger.h>
 #include <runtasks.h>
 #include <iostream>
 #include <employ_settings.h>

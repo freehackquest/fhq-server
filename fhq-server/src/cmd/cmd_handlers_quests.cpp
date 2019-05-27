@@ -1,6 +1,5 @@
 #include <cmd_handlers_quests.h>
 #include <runtasks.h>
-#include <utils_logger.h>
 #include <utils.h>
 #include <md5.h>
 #include <fallen.h>

@@ -1,9 +1,7 @@
 #include <employ_server_config.h>
-#include <utils_logger.h>
 #include <sys/stat.h>
 #include <storages.h>
 #include <fallen.h>
-#include <parse_config.h>
 #include <fstream>
 #include <regex>        // regex, sregex_token_iterator
 #include <string>
@@ -107,7 +105,7 @@ bool EmployServerConfig::init() {
         return false;
     }
 
-    ParseConfig parseConfig(m_sFilepathConf);
+    FallenParseConfig parseConfig(m_sFilepathConf);
     parseConfig.load();
 
     m_sStorageType = parseConfig.stringValue("storage_type", m_sStorageType);
