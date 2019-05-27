@@ -414,6 +414,30 @@ fhq.ws.quest = function(params){
 	return fhq.ws.send(params);
 }
 
+fhq.ws.quests_writeups_list = function(params){
+	params = params || {};
+	params.cmd = 'quests_writeups_list';
+	return fhq.ws.send(params);
+}
+
+fhq.ws.quests_writeups_proposal = function(params){
+	params = params || {};
+	params.cmd = 'quests_writeups_proposal';
+	return fhq.ws.send(params);
+}
+
+fhq.ws.quests_writeups_delete = function(params){
+	params = params || {};
+	params.cmd = 'quests_writeups_delete';
+	return fhq.ws.send(params);
+}
+
+fhq.ws.quests_writeups_update = function(params){
+	params = params || {};
+	params.cmd = 'quests_writeups_update';
+	return fhq.ws.send(params);
+}
+
 fhq.ws.user = function(params){
 	params = params || {};
 	params.cmd = 'user';

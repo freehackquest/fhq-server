@@ -375,7 +375,7 @@ fhq.pages['quest_hints_edit'] = function(questid) {
 		+ '</div>'
 	);
 	$('#add_hint').unbind().bind('click', fhq.addQuestHintForm);
-	
+
 	fhq.ws.quest({"questid": questid}).done(function(data){
 		var q = data.quest;
 		var hints = data.hints;
@@ -479,8 +479,92 @@ fhq.pages['quest_writeups_edit'] = function(questid) {
 	
 	el.html('');
 	quest_edit_menu(el, 'quest_writeups_edit', questid);
-	el.append('TODO');
+	el.append(''
+		+ '<div class="card">'
+		+ '		<div class="card-body">'
+		+ '			<table class="table table-striped table-hover">'
+		+ '				<thead class="thead-dark"><tr><th>#</th><th>Text</th><th>Actions</th></tr></thead>'
+		+ '				<tbody id="quest_writeupds"></tbody>'
+		+ '			</table><br>'
+		+ '         <div class="btn btn-primary" id="add_writeup" questid="' + questid + '">Add Writeup</div>'
+		+ '		</div>'
+		+ '</div>'
+	);
+	$('#add_writeup').unbind().bind('click', fhq.addQuestWriteupForm);
+	
+	fhq.ws.quests_writeups_list({"questid": questid}).done(function(r){
+		var writeups = r.data;
+		for (var i in writeups) {
+			var w = writeups[i];
+			console.log(w)
+			$('#quest_writeupds').append('<tr>'
+				+ '<td>[writeup#' + w.writeupid + ']</td>'
+				+ '<td>' + w.link + '</td>'
+				+ '<td><div class="btn btn-danger delete-writeup" '
+				+ '         questid="' + questid + '" writeupid="' + w.writeupid + '" >Delete Hint</div></td>'
+				+ '</tr>');
+		}
+		$('.delete-writeup').unbind().bind('click', fhq.deleteWriteup);
+	}).fail(function(err){
+		console.error(err);
+	})
+	// 
+	// 
 }
+
+fhq.addQuestWriteupForm = function() {
+	var questid = $(this).attr('questid');
+	questid = parseInt(questid,10);
+
+	$('#modalInfoTitle').html('Quest {' + questid + '} add writeup');
+	$('#modalInfoBody').html('');
+	$('#modalInfoBody').append(''
+		+ 'WriteUp link:'
+		+ '<input class="form-control" id="quest_add_writeup_link" placeholder="https://www.youtube.com/watch?v=gJeOeTGI7T8" type="text"><br>'
+		+ '<div class=" alert alert-danger" style="display: none" id="quest_add_writeup_error"></div>'
+	);
+	$('#modalInfoButtons').html(''
+		+ '<button type="button" class="btn btn-secondary" '
+		+ ' id="quest_add_writeup" questid="' + questid + '" '
+		+ ' onclick="fhq.addWriteUp(this);">Add</button> '
+		+ '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'
+	);
+	$('#modalInfo').modal('show');
+};
+
+fhq.addWriteUp = function(el){
+	var writeup_link = $('#quest_add_writeup_link').val();
+	var questid = $(el).attr('questid');
+	questid = parseInt(questid,10);
+	var data = {};
+	data.questid = questid;
+	data.writeup_link = writeup_link;
+
+	fhq.ws.quests_writeups_proposal(data).done(function(r){
+		$('#modalInfo').modal('hide');
+		fhq.pages['quest_writeups_edit'](questid);
+	}).fail(function(r){
+		$('#quest_add_writeup_error').show();
+		$('#quest_add_writeup_error').html(r.error);
+	});
+}
+
+fhq.deleteWriteup = function() {
+	var writeupid = $(this).attr('writeupid');
+	writeupid = parseInt(writeupid,10);
+	var questid = $(this).attr('questid');
+	questid = parseInt(questid,10);
+
+	fhq.showLoader();
+	fhq.ws.quests_writeups_delete({"writeupid": writeupid}).done(function(r){
+		console.log(r);
+		fhq.hideLoader();
+		fhq.pages['quest_writeups_edit'](questid);
+	}).fail(function(err){
+		fhq.hideLoader();
+		console.error(err);
+	});
+};
 
 fhq.pages['quest_statistics_edit'] = function(questid) {
 	questid = questid || fhq.pageParams['quest_statistics_edit'];
