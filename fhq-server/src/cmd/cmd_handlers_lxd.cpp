@@ -169,7 +169,6 @@ void CmdHandlerLXDContainers::delete_container(const std::string &name, std::str
     }
 }
 
-
 /*********************************************
  * Get information about the orhestra, containers.
 **********************************************/
