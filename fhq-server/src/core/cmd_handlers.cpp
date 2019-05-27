@@ -763,3 +763,55 @@ CmdHandlerBase * CmdHandlers::findCmdHandler(const std::string &sCmd) {
     return pCmdHandler;
 }
 
+// ---------------------------------------------------------------------
+// WJSCppCmdHandlerServerApi
+
+REGISTRY_CMD(WJSCppCmdHandlerServerApi)
+
+WJSCppCmdHandlerServerApi::WJSCppCmdHandlerServerApi()
+    : CmdHandlerBase("server_api", "This method Will be return list of all handlers") {
+
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
+}
+
+// ---------------------------------------------------------------------
+
+void WJSCppCmdHandlerServerApi::handle(ModelRequest *pRequest) {
+    nlohmann::json jsonResponse;
+    jsonResponse["version"] = FHQSRV_VERSION; // TODO redesign
+
+    // EmploySettings *pSettings = findEmploy<EmploySettings>();
+
+    // TODO
+    /*result["port"] = m_pServerConfig->serverPort();
+    result["ssl_port"] = m_pServerConfig->serverPort();*/
+
+    nlohmann::json jsonHandlers = nlohmann::json::array();
+    std::map<std::string, CmdHandlerBase *>::iterator it = g_pCmdHandlers->begin();
+    while (it != g_pCmdHandlers->end()) {
+        std::string sCmd = it->first;
+        CmdHandlerBase *pHandler = g_pCmdHandlers->at(sCmd);
+
+        nlohmann::json jsonHandler;
+
+        jsonHandler["cmd"] = pHandler->cmd().c_str();
+        jsonHandler["description"] = pHandler->description();
+        jsonHandler["access_unauthorized"] = pHandler->accessUnauthorized();
+        jsonHandler["access_user"] = pHandler->accessUser();
+        jsonHandler["access_admin"] = pHandler->accessAdmin();
+
+        nlohmann::json jsonInputs = nlohmann::json::array();
+        std::vector<CmdInputDef> ins = pHandler->inputs();
+        for (unsigned int i = 0; i < ins.size(); i++) {
+            jsonInputs.push_back(ins[i].toJson());
+        }
+        jsonHandler["inputs"] = jsonInputs;
+        jsonHandlers.push_back(jsonHandler);
+
+        it++;
+    }
+    jsonResponse["data"] = jsonHandlers;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}

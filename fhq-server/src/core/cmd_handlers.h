@@ -171,7 +171,11 @@ class ModelRequest {
 
 // ---------------------------------------------------------------------
 
-class CmdHandlerBase {
+/*!
+ * Api handler Base
+ * */
+
+class CmdHandlerBase { // TODO rename to WJSCppHandler
 
     public:
         CmdHandlerBase(const std::string &sCmd, const std::string &sDescription);
@@ -220,6 +224,12 @@ class CmdHandlerBase {
 
 extern std::map<std::string, CmdHandlerBase*> *g_pCmdHandlers;
 
+// ---------------------------------------------------------------------
+
+/*!
+ * Global collection with handlers
+ * */
+
 class CmdHandlers {
     public:
         static void initGlobalVariables();
@@ -231,5 +241,17 @@ class CmdHandlers {
 #define REGISTRY_CMD( classname ) \
     static classname * pRegistry ## classname = new classname(); \
 
+// ---------------------------------------------------------------------
+
+/*!
+ * This handler will be return list of handlers - publish api interfaces
+ * */
+
+class WJSCppCmdHandlerServerApi : public CmdHandlerBase {
+
+    public:
+        WJSCppCmdHandlerServerApi();
+        virtual void handle(ModelRequest *pRequest);
+};
 
 #endif // CMD_HADNLERS_H

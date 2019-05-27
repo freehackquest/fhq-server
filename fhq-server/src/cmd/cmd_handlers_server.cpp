@@ -8,59 +8,6 @@
 #include <QtCore>
 
 /*****************************************
- * This handler will be return list of handlers - publish api interfaces
- *****************************************/
-
-
-CmdHandlerServerApi::CmdHandlerServerApi()
-    : CmdHandlerBase("server_api", "This method Will be return list of all handlers") {
-
-    setAccessUnauthorized(true);
-    setAccessUser(true);
-    setAccessAdmin(true);
-}
-
-// ---------------------------------------------------------------------
-
-void CmdHandlerServerApi::handle(ModelRequest *pRequest) {
-    nlohmann::json jsonResponse;
-
-    // EmploySettings *pSettings = findEmploy<EmploySettings>();
-
-    // TODO
-    /*result["port"] = m_pServerConfig->serverPort();
-    result["ssl_port"] = m_pServerConfig->serverPort();*/
-
-    nlohmann::json jsonHandlers = nlohmann::json::array();
-    std::map<std::string, CmdHandlerBase *>::iterator it = g_pCmdHandlers->begin();
-    while (it != g_pCmdHandlers->end()) {
-        std::string sCmd = it->first;
-        CmdHandlerBase *pHandler = g_pCmdHandlers->at(sCmd);
-
-        nlohmann::json jsonHandler;
-
-        jsonHandler["cmd"] = pHandler->cmd().c_str();
-        jsonHandler["description"] = pHandler->description();
-        jsonHandler["access_unauthorized"] = pHandler->accessUnauthorized();
-        jsonHandler["access_user"] = pHandler->accessUser();
-        jsonHandler["access_admin"] = pHandler->accessAdmin();
-
-        nlohmann::json jsonInputs = nlohmann::json::array();
-        std::vector<CmdInputDef> ins = pHandler->inputs();
-        for (unsigned int i = 0; i < ins.size(); i++) {
-            jsonInputs.push_back(ins[i].toJson());
-        }
-        jsonHandler["inputs"] = jsonInputs;
-        jsonHandlers.push_back(jsonHandler);
-
-        it++;
-    }
-    jsonResponse["data"] = jsonHandlers;
-    jsonResponse["version"] = FHQSRV_VERSION;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
-}
-
-/*****************************************
  * This handler will be return public info
  *****************************************/
 
@@ -72,7 +19,6 @@ CmdHandlerPublicInfo::CmdHandlerPublicInfo()
     setAccessAdmin(true);
 
 }
-
 
 // ---------------------------------------------------------------------
 

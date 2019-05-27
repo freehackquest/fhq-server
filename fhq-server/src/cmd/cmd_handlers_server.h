@@ -4,19 +4,6 @@
 #include <cmd_handlers.h>
 
 /*!
- * This handler will be return list of handlers - publish api interfaces
- * */
-
-class CmdHandlerServerApi : public CmdHandlerBase {
-
-    public:
-        CmdHandlerServerApi();
-        virtual void handle(ModelRequest *pRequest);
-};
-
-REGISTRY_CMD(CmdHandlerServerApi)
-
-/*!
  * This handler will be return public info
  * */
 
