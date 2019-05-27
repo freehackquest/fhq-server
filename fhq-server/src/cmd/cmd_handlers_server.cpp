@@ -114,7 +114,7 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
         query.bindValue(":morethan", nMoreThen);
         query.bindValue(":citieslimit", nCitiesLimit);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
             return;
         }
         while (query.next()) {
@@ -132,7 +132,7 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
         query.prepare("SELECT u.nick, u.university, u.rating FROM users u WHERE u.role = :role ORDER BY u.rating DESC LIMIT 0,10");
         query.bindValue(":role", "user");
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
             return;
         }
         int nPlace = 1;
@@ -243,7 +243,7 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
 
     if (!pSettings->hasSett(sName)) {
         std::string sError = "Setting with name: " + sName + " did not found";
-        pRequest->sendMessageError(cmd(), Error(404, sError));
+        pRequest->sendMessageError(cmd(), WSJCppError(404, sError));
         return;
     }
 
@@ -258,7 +258,7 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
     } else if (sType == SETT_TYPE_BOOLEAN) {
         pSettings->setSettBoolean(sName, sNewValue == "yes");
     } else {
-        pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
+        pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
         return;
     }
 

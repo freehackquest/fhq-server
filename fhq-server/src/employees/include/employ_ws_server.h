@@ -11,7 +11,7 @@ public:
     EmployWsServer();
     static std::string name() { return "EmployWsServer"; }
     virtual bool init();
-    bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler, const nlohmann::json& jsonMessage);
+    bool validateInputParameters(WSJCppError &error, CmdHandlerBase *pCmdHandler, const nlohmann::json& jsonMessage);
     void setServer(IWebSocketServer *pWebSocketServer);
     void sendToAll(const nlohmann::json& jsonMessage);
     void sendToOne(QWebSocket *pClient, const nlohmann::json& jsonMessage);

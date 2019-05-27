@@ -15,12 +15,12 @@
 
 
 /*! 
- * Error - 
+ * WSJCppError - helper class for errors
  * */
 
-class Error { // TODO rename to WsjCppError
+class WSJCppError {
     public:
-        Error(int nCodeError, const std::string &sMessage);
+        WSJCppError(int nCodeError, const std::string &sMessage);
         int codeError();
         std::string message();
     private:
@@ -65,7 +65,7 @@ class WSJCppUserSession {
 class IWebSocketServer {
     public:
         virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse) = 0;
-        virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, Error error) = 0;
+        virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, WSJCppError error) = 0;
         virtual void sendToAll(const nlohmann::json& jsonMessage) = 0;
         virtual void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) = 0;
         virtual int getConnectedUsers() = 0;
@@ -156,7 +156,7 @@ class ModelRequest {
         bool hasM();
         std::string command();
         bool hasCommand();
-        void sendMessageError(const std::string &cmd, Error error);
+        void sendMessageError(const std::string &cmd, WSJCppError error);
         void sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse);
 
         // bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler);

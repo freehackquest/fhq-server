@@ -34,7 +34,7 @@ void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest) {
     }
 
     if (nQuestID == 0) {
-        pRequest->sendMessageError(cmd(), Error(400, "'questid' must be none zero"));
+        pRequest->sendMessageError(cmd(), WSJCppError(400, "'questid' must be none zero"));
         return;
     }
 
@@ -120,7 +120,7 @@ void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
     }
 
     if (nQuestID == 0) {
-        pRequest->sendMessageError(cmd(), Error(400, "'questid' must be none zero"));
+        pRequest->sendMessageError(cmd(), WSJCppError(400, "'questid' must be none zero"));
         return;
     }
 
@@ -131,7 +131,7 @@ void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
     }
 
     if (sWriteUpLink.rfind(m_sLinkPrefix, 0) != 0) {
-        pRequest->sendMessageError(cmd(), Error(400, "Expected link starts from '" + m_sLinkPrefix + "'"));
+        pRequest->sendMessageError(cmd(), WSJCppError(400, "Expected link starts from '" + m_sLinkPrefix + "'"));
         return;
     }
 
@@ -156,7 +156,7 @@ void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
     query.bindValue(":userid", nUserID);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
     int nWriteUpID = query.lastInsertId().toInt();
@@ -232,7 +232,7 @@ void CmdHandlerQuestsWriteUpsUpdate::handle(ModelRequest *pRequest) {
     query.prepare("SELECT * FROM quests_writeups WHERE id = :writeupid");
     query.bindValue(":writeupid", nWriteUpID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
     
@@ -243,7 +243,7 @@ void CmdHandlerQuestsWriteUpsUpdate::handle(ModelRequest *pRequest) {
         jsonWriteUp["questid"] = nQuestIDValue;
         nCurrentApproveValue = record.value("approve").toInt();
     } else {
-        pRequest->sendMessageError(cmd(), Error(404, "Not found writeup"));
+        pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found writeup"));
         return;
     }
 
@@ -253,7 +253,7 @@ void CmdHandlerQuestsWriteUpsUpdate::handle(ModelRequest *pRequest) {
         query2.bindValue(":approve", nApprove);
         query2.bindValue(":writeupid", nWriteUpID);
         if (!query2.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query2.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query2.lastError().text().toStdString()));
             return;
         }
         if (nApprove == 1) {
@@ -307,7 +307,7 @@ void CmdHandlerQuestsWriteUpsDelete::handle(ModelRequest *pRequest) {
     query.prepare("SELECT * FROM quests_writeups WHERE id = :writeupid");
     query.bindValue(":writeupid", nWriteUpID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
     
@@ -316,7 +316,7 @@ void CmdHandlerQuestsWriteUpsDelete::handle(ModelRequest *pRequest) {
         nlohmann::json jsonWriteup;
         nQuestIDValue = record.value("questid").toInt();
     } else {
-        pRequest->sendMessageError(cmd(), Error(404, "Not found writeup"));
+        pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found writeup"));
         return;
     }
 
@@ -325,7 +325,7 @@ void CmdHandlerQuestsWriteUpsDelete::handle(ModelRequest *pRequest) {
     query2.prepare("DELETE FROM quests_writeups WHERE id = :writeupid");
     query2.bindValue(":writeupid", nWriteUpID);
     if (!query2.exec()) {
-        pRequest->sendMessageError(cmd(), Error(500, query2.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query2.lastError().text().toStdString()));
         return;
     }
     

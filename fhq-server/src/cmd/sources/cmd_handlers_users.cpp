@@ -35,7 +35,7 @@ void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest) {
 
     int nOnPage = jsonRequest.at("onpage");
     if (nOnPage > 50) {
-        pRequest->sendMessageError(cmd(), Error(400, "Parameter 'onpage' could not be more then 50"));
+        pRequest->sendMessageError(cmd(), WSJCppError(400, "Parameter 'onpage' could not be more then 50"));
     }
     jsonResponse["onpage"] = nOnPage;
 
@@ -150,7 +150,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
 
     if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
     if (query.next()) {
@@ -187,7 +187,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
 
         if (!query_token.exec()) {
             Log::err(TAG, query_token.lastError().text().toStdString());
-            pRequest->sendMessageError(cmd(), Error(500, query_token.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query_token.lastError().text().toStdString()));
             return;
         }
 
@@ -202,7 +202,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
 
     } else {
         Log::err(TAG, "Invalid login or password");
-        pRequest->sendMessageError(cmd(), Error(401, "Invalid login or password"));
+        pRequest->sendMessageError(cmd(), WSJCppError(401, "Invalid login or password"));
         return;
     }
     Log::info(TAG, jsonResponse.dump());
@@ -245,12 +245,12 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest) {
     query.bindValue(":email", sEmail);
     if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
     if (query.next()) {
         Log::err(TAG, "User already exists " + sEmail.toStdString());
-        pRequest->sendMessageError(cmd(), Error(403, "This email already exists"));
+        pRequest->sendMessageError(cmd(), WSJCppError(403, "This email already exists"));
         return;
     }
 
@@ -344,7 +344,7 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest) {
     query_insert.bindValue(":about", "");
 
     if (!query_insert.exec()) {
-        pRequest->sendMessageError(cmd(), Error(500, query_insert.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query_insert.lastError().text().toStdString()));
         return;
     }
 
@@ -397,7 +397,7 @@ void CmdHandlerToken::handle(ModelRequest *pRequest) {
     query.bindValue(":token", token);
     if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
     if (query.next()) {
@@ -414,7 +414,7 @@ void CmdHandlerToken::handle(ModelRequest *pRequest) {
         RunTasks::UpdateUserLocation(userid, sLastIP);
     } else {
         Log::err(TAG, "Invalid token " + token.toStdString());
-        pRequest->sendMessageError(cmd(), Error(401, "Invalid token"));
+        pRequest->sendMessageError(cmd(), WSJCppError(401, "Invalid token"));
         return;
     }
 
@@ -450,7 +450,7 @@ void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest) {
 
     // TODO redesign
     if (userid == 0) {
-        pRequest->sendMessageError(cmd(), Error(400, "Parameter 'userid' must be not zero"));
+        pRequest->sendMessageError(cmd(), WSJCppError(400, "Parameter 'userid' must be not zero"));
         return;
     }
 
@@ -516,7 +516,7 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest) {
     query.prepare("SELECT * FROM users WHERE id = :userid");
     query.bindValue(":userid", nUserID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -528,7 +528,7 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest) {
         sEmail = record.value("email").toString();
         sPass = record.value("pass").toString();
     } else {
-        pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
+        pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found user"));
         return;
     }
 
@@ -541,7 +541,7 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest) {
     sOldPassword_sha1 = QString(_sOldPassword_sha1.c_str());
 
     if (sOldPassword_sha1 != sPass) {
-        pRequest->sendMessageError(cmd(), Error(401, "Wrong password"));
+        pRequest->sendMessageError(cmd(), WSJCppError(401, "Wrong password"));
         return;
     }
 
@@ -557,7 +557,7 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest) {
     query_update.bindValue(":email", sEmail);
 
     if (!query_update.exec()) {
-        pRequest->sendMessageError(cmd(), Error(500, query_update.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query_update.lastError().text().toStdString()));
         return;
     }
 
@@ -601,7 +601,7 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest) {
 
     if (!regexEmail.match(sEmail).hasMatch()) {
         Log::err(TAG, "Invalid email format " + sEmail.toStdString());
-        pRequest->sendMessageError(cmd(), Error(400, "Expected email format"));
+        pRequest->sendMessageError(cmd(), WSJCppError(400, "Expected email format"));
         return;
     }
 
@@ -611,12 +611,12 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest) {
     query.bindValue(":email", sEmail);
     if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
     if (query.next()) {
         Log::err(TAG, "User already exists " + sEmail.toStdString());
-        pRequest->sendMessageError(cmd(), Error(403, "This email already exists"));
+        pRequest->sendMessageError(cmd(), WSJCppError(403, "This email already exists"));
         return;
     }
 
@@ -631,7 +631,7 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest) {
     QString sRole = QString::fromStdString(jsonRequest.at("role"));
     if (sRole != "user" && sRole != "admin") {
         Log::err(TAG, "Invalid role format " + sRole.toStdString());
-        pRequest->sendMessageError(cmd(), Error(400, "This role doesn't exist"));
+        pRequest->sendMessageError(cmd(), WSJCppError(400, "This role doesn't exist"));
         return;
     }
     std::string sUniversity = pRequest->getInputString("university", "");
@@ -703,7 +703,7 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest) {
     query_insert.bindValue(":about", "");
 
     if (!query_insert.exec()) {
-        pRequest->sendMessageError(cmd(), Error(500, query_insert.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query_insert.lastError().text().toStdString()));
         return;
     }
     
@@ -744,7 +744,7 @@ void CmdHandlerUser::handle(ModelRequest *pRequest) {
     WSJCppUserSession *pUserSession = pRequest->userSession();
 
     if (jsonRequest.find("userid") != jsonRequest.end() && pUserSession == nullptr) {
-        pRequest->sendMessageError(cmd(), Error(401, "Not Authorized Request"));
+        pRequest->sendMessageError(cmd(), WSJCppError(401, "Not Authorized Request"));
         return;
     }
 
@@ -796,7 +796,7 @@ void CmdHandlerUser::handle(ModelRequest *pRequest) {
                 data["city"] = record.value("city").toString().toStdString();
             }
         } else {
-            pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
+            pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found user"));
             return;
         }
     }
@@ -852,7 +852,7 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest) {
     WSJCppUserSession *pUserSession = pRequest->userSession();
 
      if (jsonRequest.find("userid") == jsonRequest.end() && pUserSession == nullptr) {
-        pRequest->sendMessageError(cmd(), Error(401, "Not Authorized Request"));
+        pRequest->sendMessageError(cmd(), WSJCppError(401, "Not Authorized Request"));
         return;
     }
 
@@ -904,7 +904,7 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest) {
                 jsonData["city"] = record.value("city").toString().toStdString();
             }
         } else {
-            pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
+            pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found user"));
             return;
         }
     }
@@ -963,7 +963,7 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest) {
     query.bindValue(":email", sEmail);
     if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
     int nUserID = 0;
@@ -974,7 +974,7 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest) {
         sNick = record.value("nick").toString().toHtmlEscaped();
     } else {
         Log::err(TAG, "User not found" + sEmail.toStdString());
-        pRequest->sendMessageError(cmd(), Error(403, "This email not exists"));
+        pRequest->sendMessageError(cmd(), WSJCppError(403, "This email not exists"));
         return;
     }
 
@@ -1000,7 +1000,7 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest) {
     query_update.bindValue(":email", sEmail);
 
     if (!query_update.exec()) {
-        pRequest->sendMessageError(cmd(), Error(500, query_update.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query_update.lastError().text().toStdString()));
         return;
     }
 
@@ -1049,7 +1049,7 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest) {
         QSqlQuery query(db);
         query.prepare("SELECT q.subject, sum(q.score) as sum_subject FROM quest q WHERE ! ISNULL( q.subject ) GROUP BY q.subject");
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
             return;
         };
 
@@ -1067,7 +1067,7 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest) {
         query.prepare("SELECT uq.userid, q.subject, SUM( q.score ) as sum_score FROM users_quests uq INNER JOIN quest q ON uq.questid = q.idquest WHERE ! ISNULL( q.subject ) AND uq.userid = :userid GROUP BY uq.userid, q.subject");
         query.bindValue(":userid", nUserID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
             return;
         };
 
@@ -1116,7 +1116,7 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest) {
     int nUserIDFromToken = pUserSession->userid();
     int nUserID = pRequest->getInputInteger("userid", 0);
     if (nUserIDFromToken != nUserID && !pRequest->isAdmin()) {
-        pRequest->sendMessageError(cmd(), Error(403, "Deny change inmormation about user"));
+        pRequest->sendMessageError(cmd(), WSJCppError(403, "Deny change inmormation about user"));
         return;
     }
 
@@ -1138,12 +1138,12 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest) {
         query.bindValue(":userid", nUserID);
 
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
             return;
         };
 
         if (!query.next()) {
-            pRequest->sendMessageError(cmd(), Error(404, "User not found"));
+            pRequest->sendMessageError(cmd(), WSJCppError(404, "User not found"));
             return;
         } else {
             QSqlRecord record = query.record();
@@ -1193,7 +1193,7 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest) {
         query.bindValue(":country", QString::fromStdString(sCountry));
         query.bindValue(":userid", nUserID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
             return;
         };
     }
@@ -1255,7 +1255,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
         query.prepare("SELECT * FROM users WHERE id = :userid");
         query.bindValue(":userid", nAdminUserID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -1267,7 +1267,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
             sEmail = record.value("email").toString();
             sPass = record.value("pass").toString();
         } else {
-            pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
+            pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found user"));
             return;
         }
 
@@ -1276,7 +1276,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
         sAdminPasswordHash = QString(_sAdminPasswordHash.c_str());
 
         if (sAdminPasswordHash != sPass) {
-            pRequest->sendMessageError(cmd(), Error(401, "Wrong password"));
+            pRequest->sendMessageError(cmd(), WSJCppError(401, "Wrong password"));
             return;
         }
     }
@@ -1290,12 +1290,12 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
         query.bindValue(":id", nUserID);
 
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
             return;
         }
 
         if (!query.next()) {
-            pRequest->sendMessageError(cmd(), Error(404, "User not found"));
+            pRequest->sendMessageError(cmd(), WSJCppError(404, "User not found"));
             return;
         }
     }
@@ -1307,7 +1307,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM feedback WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1317,7 +1317,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM feedback_msg WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1327,7 +1327,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM quest WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1337,7 +1337,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM users_games WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1347,7 +1347,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM users_profile WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1357,7 +1357,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM users_quests WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1367,7 +1367,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM users_tokens WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1377,7 +1377,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM users_tokens_invalid WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1387,7 +1387,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM users_offers WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1397,7 +1397,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM quests_proposal WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1407,7 +1407,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM users_quests_answers WHERE userid = :userid");
         query_del.bindValue(":userid", nUserID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1417,7 +1417,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM users WHERE id = :id");
         query_del.bindValue(":id", nUserID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -1500,7 +1500,7 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest) {
             query.bindValue(key, filter_values.value(key));
         }
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {

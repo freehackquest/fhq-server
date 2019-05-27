@@ -40,7 +40,7 @@ void EmployWsServer::sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMe
 
 // ---------------------------------------------------------------------
 
-bool EmployWsServer::validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler, const nlohmann::json &jsonMessage) {
+bool EmployWsServer::validateInputParameters(WSJCppError &error, CmdHandlerBase *pCmdHandler, const nlohmann::json &jsonMessage) {
     try {
         // TODO check extra params
 
@@ -49,24 +49,24 @@ bool EmployWsServer::validateInputParameters(Error &error, CmdHandlerBase *pCmdH
             auto itJsonParamName = jsonMessage.find(inDef.getName());
             const auto endJson = jsonMessage.end();
             if (inDef.isRequired() && itJsonParamName == endJson) {
-                error = Error(400, "Parameter '" + inDef.getName() + "' expected");
+                error = WSJCppError(400, "Parameter '" + inDef.getName() + "' expected");
                 return false;
             }
 
             if (itJsonParamName != endJson) {
                 if (inDef.isInteger()) {
                     if (!itJsonParamName->is_number()) {
-                        error = Error(400, "Parameter '" + inDef.getName() + "' must be integer");
+                        error = WSJCppError(400, "Parameter '" + inDef.getName() + "' must be integer");
                         return false;
                     }
 
                     int val = *itJsonParamName;
                     if (inDef.isMinVal() && val < inDef.getMinVal()) {
-                        error = Error(400, "Parameter '" + inDef.getName() + "' must be more then " + std::to_string(inDef.getMinVal()));
+                        error = WSJCppError(400, "Parameter '" + inDef.getName() + "' must be more then " + std::to_string(inDef.getMinVal()));
                         return false;
                     }
                     if (inDef.isMaxVal() && val > inDef.getMaxVal()) {
-                        error = Error(400, "Parameter '" + inDef.getName() + "' must be less then " + std::to_string(inDef.getMaxVal()));
+                        error = WSJCppError(400, "Parameter '" + inDef.getName() + "' must be less then " + std::to_string(inDef.getMaxVal()));
                         return false;
                     }
                 }
@@ -77,7 +77,7 @@ bool EmployWsServer::validateInputParameters(Error &error, CmdHandlerBase *pCmdH
                     const std::vector<ValidatorStringBase *> vValidators = inDef.listOfValidators();
                     for (int i = 0; i < vValidators.size(); i++) {
                         if (!vValidators[i]->isValid(sVal, sError)) {
-                            error = Error(400, "Wrong param '" + inDef.getName() + "': " + sError);
+                            error = WSJCppError(400, "Wrong param '" + inDef.getName() + "': " + sError);
                             return false;
                         }
                     }
@@ -86,7 +86,7 @@ bool EmployWsServer::validateInputParameters(Error &error, CmdHandlerBase *pCmdH
         }
         return true;
     } catch(std::exception const &e) {
-        error = Error(500, "InternalServerError");
+        error = WSJCppError(500, "InternalServerError");
         Log::err(TAG, std::string("validateInputParameters, ") + e.what());
         return false;
     }

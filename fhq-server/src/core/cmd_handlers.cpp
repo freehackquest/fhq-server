@@ -6,23 +6,23 @@
 #include <fallen.h>
 
 /*! 
- * Error - 
+ * WSJCppError - 
  * */
 
-Error::Error(int nCodeError, const std::string &sMessage) {
+WSJCppError::WSJCppError(int nCodeError, const std::string &sMessage) {
     m_nCodeError = nCodeError;
     m_sMessage = sMessage;
 }
 
 // ---------------------------------------------------------------------
 
-int Error::codeError() {
+int WSJCppError::codeError() {
     return m_nCodeError;
 }
 
 // ---------------------------------------------------------------------
 
-std::string Error::message() {
+std::string WSJCppError::message() {
     return m_sMessage;
 }
 
@@ -480,7 +480,7 @@ QJsonObject ModelRequest::data() {
 
 // ---------------------------------------------------------------------
 
-void ModelRequest::sendMessageError(const std::string &cmd, Error error) {
+void ModelRequest::sendMessageError(const std::string &cmd, WSJCppError error) {
     m_pServer->sendMessageError(m_pClient,cmd,m_sMessageId,error);
 }
 
@@ -573,19 +573,19 @@ bool CmdHandlerBase::checkAccess(ModelRequest *pRequest) {
     WSJCppUserSession *pUserSession = pRequest->userSession();
     if (!accessUnauthorized()) {
         if (pUserSession == nullptr) {
-            pRequest->sendMessageError(cmd(), Error(401, "Not Authorized Request"));
+            pRequest->sendMessageError(cmd(), WSJCppError(401, "Not Authorized Request"));
             return false;
         }
 
         // access user
         if (pUserSession->isUser() && !accessUser()) {
-            pRequest->sendMessageError(cmd(), Error(403, "Access deny for user"));
+            pRequest->sendMessageError(cmd(), WSJCppError(403, "Access deny for user"));
             return false;
         }
 
         // access admin
         if (pUserSession->isAdmin() && !accessAdmin()) {
-            pRequest->sendMessageError(cmd(), Error(403, "Access deny for admin"));
+            pRequest->sendMessageError(cmd(), WSJCppError(403, "Access deny for admin"));
             return false;
         }
     }

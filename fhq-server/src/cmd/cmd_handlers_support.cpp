@@ -54,7 +54,7 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
     query.bindValue(":text", sText);
     query.bindValue(":userid", nUserID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
 

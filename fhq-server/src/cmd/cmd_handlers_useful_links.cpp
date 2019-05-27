@@ -46,7 +46,7 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     query.prepare("SELECT * FROM useful_links " + sWhere + " ORDER BY stars, dt DESC LIMIT 0,25");
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -104,7 +104,7 @@ void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest) {
 
     // pRequest->
 
-    pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
 }
 
 /*********************************************
@@ -131,7 +131,7 @@ CmdHandlerUsefulLinksDelete::CmdHandlerUsefulLinksDelete()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
 }
 
 /*********************************************
@@ -159,7 +159,7 @@ CmdHandlerUsefulLinksUpdate::CmdHandlerUsefulLinksUpdate()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksUpdate::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
 }
 
 /*********************************************
@@ -183,7 +183,7 @@ CmdHandlerUsefulLinksStar::CmdHandlerUsefulLinksStar()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksStar::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
 }
 
 /*********************************************
@@ -207,5 +207,5 @@ CmdHandlerUsefulLinksUnstar::CmdHandlerUsefulLinksUnstar()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksUnstar::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
 }

@@ -28,7 +28,7 @@ void CmdHandlerMailInfo::handle(ModelRequest *pRequest) {
     // QJsonObject jsonRequest = pRequest->data();
     // QJsonObject jsonResponse;
 
-    pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
 }
 
 /*****************************************
@@ -146,7 +146,7 @@ void CmdHandlerMailsList::handle(ModelRequest *pRequest) {
             query.bindValue(key, filter_values.value(key));
         }
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {
