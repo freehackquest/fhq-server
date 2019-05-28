@@ -105,7 +105,7 @@ bool EmployServerConfig::init() {
         return false;
     }
 
-    FallenParseConfig parseConfig(m_sFilepathConf);
+    WJSCppParseConfig parseConfig(m_sFilepathConf);
     parseConfig.load();
 
     m_sStorageType = parseConfig.stringValue("storage_type", m_sStorageType);

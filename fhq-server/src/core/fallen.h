@@ -136,14 +136,12 @@ class Log {
 extern std::mutex *g_LOG_MUTEX;
 extern std::deque<std::string> *g_LAST_LOG_MESSAGES;
 
-static std::string g_LOG_DIR_PATH;
-
 // ---------------------------------------------------------------------
 
-class FallenParseConfig {
+class WJSCppParseConfig {
 
     public:
-        FallenParseConfig(const std::string &sFilepathConf);
+        WJSCppParseConfig(const std::string &sFilepathConf);
         bool load();
 
         bool has(const std::string &sParamName);

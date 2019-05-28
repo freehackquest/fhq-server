@@ -148,7 +148,7 @@ MySqlStorage::MySqlStorage() {
 // ----------------------------------------------------------------------
 
 bool MySqlStorage::applyConfigFromFile(const std::string &sFilePath) {
-    FallenParseConfig parseConfig(sFilePath);
+    WJSCppParseConfig parseConfig(sFilePath);
     parseConfig.load();
 
     if (!parseConfig.has("dbhost")) {

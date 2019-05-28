@@ -571,17 +571,17 @@ void Log::add(Color::Modifier &clr, const std::string &sType, const std::string 
 }
 
 // ---------------------------------------------------------------------
-// FallenParseConfig
+// WJSCppParseConfig
 // TODO rename WJSCppParseConfig
 
-FallenParseConfig::FallenParseConfig(const std::string &sFilepathConf) {
-    TAG = "FallenParseConfig";
+WJSCppParseConfig::WJSCppParseConfig(const std::string &sFilepathConf) {
+    TAG = "WJSCppParseConfig";
     m_sFilepathConf = sFilepathConf;
 }
 
 // ---------------------------------------------------------------------
 
-bool FallenParseConfig::load() {
+bool WJSCppParseConfig::load() {
     std::ifstream isConfigFile( m_sFilepathConf );
     int nLineNumber = 0;
     for (std::string sLine; getline(isConfigFile, sLine);) {
@@ -629,13 +629,13 @@ bool FallenParseConfig::load() {
 
 // ---------------------------------------------------------------------
 
-bool FallenParseConfig::has(const std::string &sParamName) {
+bool WJSCppParseConfig::has(const std::string &sParamName) {
     return m_mapConfigValues.count(sParamName);
 }
 
 // ---------------------------------------------------------------------
 
-std::string FallenParseConfig::stringValue(const std::string &sParamName, const std::string &defaultValue) {
+std::string WJSCppParseConfig::stringValue(const std::string &sParamName, const std::string &defaultValue) {
     std::string sResult = defaultValue;
     if (m_mapConfigValues.count(sParamName)) {
         sResult = m_mapConfigValues.at(sParamName);
@@ -647,7 +647,7 @@ std::string FallenParseConfig::stringValue(const std::string &sParamName, const 
 
 // ---------------------------------------------------------------------
 
-int FallenParseConfig::intValue(const std::string &sParamName, int defaultValue) {
+int WJSCppParseConfig::intValue(const std::string &sParamName, int defaultValue) {
     int nResult = defaultValue;
     if (m_mapConfigValues.count(sParamName)) {
         std::string sParamValue = m_mapConfigValues.at(sParamName);
@@ -661,7 +661,7 @@ int FallenParseConfig::intValue(const std::string &sParamName, int defaultValue)
 
 // ---------------------------------------------------------------------
 
-bool FallenParseConfig::boolValue(const std::string &sParamName, bool defaultValue) {
+bool WJSCppParseConfig::boolValue(const std::string &sParamName, bool defaultValue) {
     bool bResult = defaultValue;
 
     if (m_mapConfigValues.count(sParamName)) {
