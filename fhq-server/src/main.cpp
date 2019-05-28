@@ -45,10 +45,11 @@ int main(int argc, char** argv) {
     std::string TAG = "MAIN";
     Log::setPrefixLogFile("fhq-server");
     std::string sLogDir = "/var/log/fhq-server"; 
-    Log::setLogDirectory(sLogDir);
     if (!Fallen::dirExists(sLogDir)) {
+        Log::setLogDirectory(sLogDir);
         Log::err(TAG, "Directory '" + sLogDir + "' did'not exists");
-        return -1;
+    } else {
+        Log::setLogDirectory("./");
     }
 
     FallenHelpParseArgs helpArgs(argc, argv);
