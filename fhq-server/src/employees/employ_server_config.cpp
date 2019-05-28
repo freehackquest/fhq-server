@@ -8,7 +8,7 @@
 #include <sstream>
 #include <iostream>
 
-REGISTRY_EMPLOY(EmployServerConfig)
+REGISTRY_WJSCPP_EMPLOY(EmployServerConfig)
 
 // ---------------------------------------------------------------------
 

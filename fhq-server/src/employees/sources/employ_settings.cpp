@@ -10,7 +10,7 @@
 #include <QSqlRecord> // TODO redesign
 #include <iostream>
 
-REGISTRY_EMPLOY(EmploySettings)
+REGISTRY_WJSCPP_EMPLOY(EmploySettings)
 
 // ---------------------------------------------------------------------
 

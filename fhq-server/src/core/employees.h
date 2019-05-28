@@ -51,8 +51,8 @@ class Employees {
 
 // ---------------------------------------------------------------------
 // RegistryEmploy
-#define REGISTRY_EMPLOY( classname ) \
-    static classname * pRegistry ## classname = new classname(); \
+#define REGISTRY_WJSCPP_EMPLOY( classname ) \
+    static classname * pWJSCppRegistry ## classname = new classname(); \
 
 // ---------------------------------------------------------------------
 // findEmploy

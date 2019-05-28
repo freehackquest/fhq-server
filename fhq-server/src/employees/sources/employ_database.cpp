@@ -5,7 +5,7 @@
 #include <QSqlRecord>
 #include <QVariant>
 
-REGISTRY_EMPLOY(EmployDatabase)
+REGISTRY_WJSCPP_EMPLOY(EmployDatabase)
 
 // ---------------------------------------------------------------------
 

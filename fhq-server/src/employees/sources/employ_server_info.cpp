@@ -7,7 +7,7 @@
 #include <QString>
 #include <QVariant>
 
-REGISTRY_EMPLOY(EmployServerInfo)
+REGISTRY_WJSCPP_EMPLOY(EmployServerInfo)
 
 // ---------------------------------------------------------------------
 

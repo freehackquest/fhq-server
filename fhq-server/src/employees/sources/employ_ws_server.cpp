@@ -4,7 +4,7 @@
 #include <fallen.h>
 #include <cmd_handlers.h>
 
-REGISTRY_EMPLOY(EmployWsServer)
+REGISTRY_WJSCPP_EMPLOY(EmployWsServer)
 
 // ---------------------------------------------------------------------
 
