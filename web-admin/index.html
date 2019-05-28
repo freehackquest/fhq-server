@@ -46,11 +46,11 @@
         </button>
         <div class="collapse navbar-collapse " id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto navbar-right-top">
-                <li class="nav-item">
+                <!-- li class="nav-item">
                     <div id="custom-search" class="top-search-bar">
                         <input class="form-control" type="text" placeholder="Search..">
                     </div>
-                </li>
+                </li -->
                 <li class="nav-item dropdown notification">
                     <a class="nav-link nav-icons" href="#" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-bell"></i> <span class="indicator"></span></a>
                     <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
@@ -213,43 +213,43 @@
                     </li -->
                     
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0);" onclick="fhq.pages.server_info()">Server Info</a>
+                        <a class="nav-link main-menu" id="menu_server_info" href="javascript:void(0);" onclick="fhq.pages.server_info()">Server Info</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0);" onclick="fhq.pages.users()">Users</a>
+                        <a class="nav-link main-menu" id="menu_users" href="javascript:void(0);" onclick="fhq.pages.users()">Users</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0);" onclick="fhq.pages.users_answers()">Users Answers</a>
+                        <a class="nav-link main-menu" id="menu_users_answers" href="javascript:void(0);" onclick="fhq.pages.users_answers()">Users Answers</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0);" onclick="fhq.pages.games()">Games</a>
+                        <a class="nav-link main-menu" id="menu_games" href="javascript:void(0);" onclick="fhq.pages.games()">Games</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" id="menu_quests" href="javascript:void(0);" onclick="fhq.pages.quests()">Quests</a>
+                        <a class="nav-link main-menu" id="menu_quests" href="javascript:void(0);" onclick="fhq.pages.quests()">Quests</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0);" onclick="fhq.pages.quests_proposal()">Quests Proposals</a>
+                        <a class="nav-link main-menu" id="menu_quests_proposal" href="javascript:void(0);" onclick="fhq.pages.quests_proposal()">Quests Proposals</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0);" onclick="fhq.pages.mails()">Mails</a>
+                        <a class="nav-link main-menu" id="menu_mails" href="javascript:void(0);" onclick="fhq.pages.mails()">Mails</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0);" onclick="fhq.pages.orchestra()">Orchestra</a>
+                        <a class="nav-link main-menu" id="menu_orchestra" href="javascript:void(0);" onclick="fhq.pages.orchestra()">Orchestra</a>
                     </li>
 
                     <li class="nav-item">
-                    <a class="nav-link" href="javascript:void(0);" onclick="fhq.pages.useful_links()">Useful Links</a>
+                        <a class="nav-link main-menu" id="menu_useful_links" href="javascript:void(0);" onclick="fhq.pages.useful_links()">Useful Links</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0);" onclick="fhq.pages.settings()">Settings</a>
+                        <a class="nav-link main-menu" id="menu_settings" href="javascript:void(0);" onclick="fhq.pages.settings()">Settings</a>
                     </li>
                 </ul>
             </div>
@@ -366,6 +366,7 @@
     <script defer src="./js/libs/jquery-3.1.0.min.js"></script>
     <script defer src="./js/libs/popper.min.js"></script>
     <script defer src="./js/libs/bootstrap.min.js"></script>
+    <script defer src="./js/libs/simplemde.min.js"></script>
     <script defer src="fhq.ws.config.js"></script>
     <script defer src="./js/fhq.admin.localization.js"></script>
     <script defer src="./js/fhq.admin.js"></script>

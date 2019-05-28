@@ -8,7 +8,7 @@
 #include <sys/stat.h>
 
 
-REGISTRY_EMPLOY(EmployGames)
+REGISTRY_WJSCPP_EMPLOY(EmployGames)
 
 // ---------------------------------------------------------------------
 

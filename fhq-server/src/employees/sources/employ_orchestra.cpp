@@ -2,11 +2,11 @@
 #include <employ_settings.h>
 #include <utils_lxd.h>
 
-REGISTRY_EMPLOY(EmployOrchestra)
+REGISTRY_WJSCPP_EMPLOY(EmployOrchestra)
 
 // ---------------------------------------------------------------------
 
-#include <utils_logger.h>
+#include <fallen.h>
 #include <algorithm>
 
 #include <QTextStream>

@@ -1,7 +1,6 @@
 #include <cmd_handlers_communication.h>
 #include <runtasks.h>
-#include <utils_logger.h>
-#include <utils.h>
+#include <fallen.h>
 #include <md5.h>
 #include <employ_settings.h>
 #include <employ_database.h>
@@ -100,7 +99,7 @@ void CmdHandlerChatLastestMessages::handle(ModelRequest *pRequest) {
     query.prepare("SELECT user, message, dt FROM chatmessages ORDER BY dt DESC LIMIT 0,25");
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
 

@@ -4,16 +4,10 @@
 // ---------------------------------------------------------------------
 // ValidatorEventType
 
-ValidatorEventType::ValidatorEventType() {
+ValidatorEventType::ValidatorEventType() : ValidatorStringBase("event_type") {
     TAG = "ValidatorEventType";
     m_vEventTypes = {"info", "users", "games", "quests", "warning"};
 };
-
-// ---------------------------------------------------------------------
-
-std::string ValidatorEventType::typeName() {
-    return "event_type";
-}
 
 // ---------------------------------------------------------------------
 
@@ -29,7 +23,7 @@ bool ValidatorEventType::isValid(const std::string &sValue, std::string &sError)
 // ---------------------------------------------------------------------
 // ValidatorQuestSubject
  
-ValidatorQuestSubject::ValidatorQuestSubject() {
+ValidatorQuestSubject::ValidatorQuestSubject() : ValidatorStringBase("quest_subject") {
     TAG = "ValidatorQuestSubject";
     m_vQuestSubjects = {
         "trivia", "hashes", "stego", "reverse",
@@ -37,12 +31,6 @@ ValidatorQuestSubject::ValidatorQuestSubject() {
         "web", "ppc", "admin", "enjoy", "unknown"
     };
 };
-
-// ---------------------------------------------------------------------
-
-std::string ValidatorQuestSubject::typeName() {
-    return "quest_subject";
-}
 
 // ---------------------------------------------------------------------
 
@@ -65,16 +53,10 @@ bool ValidatorQuestSubject::isValid(const std::string &sValue, std::string &sErr
 // ---------------------------------------------------------------------
 // ValidatorQuestSubject
  
-ValidatorQuestState::ValidatorQuestState() {
+ValidatorQuestState::ValidatorQuestState() : ValidatorStringBase("quest_state") {
     TAG = "ValidatorQuestState";
     m_vQuestStates = {"open", "broken", "closed"};
 };
-
-// ---------------------------------------------------------------------
-
-std::string ValidatorQuestState::typeName() {
-    return "quest_state";
-}
 
 // ---------------------------------------------------------------------
 
@@ -97,16 +79,10 @@ bool ValidatorQuestState::isValid(const std::string &sValue, std::string &sError
 // ---------------------------------------------------------------------
 // ValidatorGameForm
  
-ValidatorGameForm::ValidatorGameForm() {
+ValidatorGameForm::ValidatorGameForm() : ValidatorStringBase("game_form") {
     TAG = "ValidatorGameForm";
     m_vGameForms = {"online", "offline"};
 };
-
-// ---------------------------------------------------------------------
-
-std::string ValidatorGameForm::typeName() {
-    return "game_form";
-}
 
 // ---------------------------------------------------------------------
 
@@ -130,16 +106,10 @@ bool ValidatorGameForm::isValid(const std::string &sValue, std::string &sError) 
 // ---------------------------------------------------------------------
 // ValidatorGameState
  
-ValidatorGameState::ValidatorGameState() {
+ValidatorGameState::ValidatorGameState() : ValidatorStringBase("game_state") {
     TAG = "ValidatorGameForm";
     m_vGameStates = {"original", "copy", "unlicensed_copy"};
 };
-
-// ---------------------------------------------------------------------
-
-std::string ValidatorGameState::typeName() {
-    return "game_state";
-}
 
 // ---------------------------------------------------------------------
 
@@ -162,16 +132,10 @@ bool ValidatorGameState::isValid(const std::string &sValue, std::string &sError)
 // ---------------------------------------------------------------------
 // ValidatorGameType
  
-ValidatorGameType::ValidatorGameType() {
+ValidatorGameType::ValidatorGameType() : ValidatorStringBase("game_type") {
     TAG = "ValidatorGameType";
     m_vGameTypes = {"jeopardy"};
 };
-
-// ---------------------------------------------------------------------
-
-std::string ValidatorGameType::typeName() {
-    return "game_type";
-}
 
 // ---------------------------------------------------------------------
 
@@ -192,21 +156,12 @@ bool ValidatorGameType::isValid(const std::string &sValue, std::string &sError) 
 }
 
 // ---------------------------------------------------------------------
-
-
-// ---------------------------------------------------------------------
 // ValidatorLXDFileActionType
  
-ValidatorLXDFileActionType::ValidatorLXDFileActionType() {
+ValidatorLXDFileActionType::ValidatorLXDFileActionType() : ValidatorStringBase("lxd_action_type") {
     TAG = "ValidatorLXDFileActionType";
     m_vActionTypes = {"pull", "push", "delete"};
 };
-
-// ---------------------------------------------------------------------
-
-std::string ValidatorLXDFileActionType::typeName() {
-    return "action_type";
-}
 
 // ---------------------------------------------------------------------
 
@@ -225,3 +180,5 @@ bool ValidatorLXDFileActionType::isValid(const std::string &sValue, std::string 
     sError += "]";
     return false;
 }
+
+// ---------------------------------------------------------------------

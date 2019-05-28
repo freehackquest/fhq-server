@@ -99,14 +99,19 @@ fhq.processParams = function() {
 	} else {
 		console.log(fhq.userinfo);
 		console.log(fhq.pages);
+		var bFound = false;
 		for (var name in fhq.pages) {
+			console.log(name);
 			if (fhq.containsPageParam(name)) {
 				fhq.pages[name]();
+				bFound = true;
 				break;
-			}	
+			}
 		}
-		// default page
-		fhq.pages['server_info']();
+		if (!bFound) {
+			console.log("Load default page");
+			fhq.pages['server_info']();
+		}
 	}
 }
 
@@ -118,13 +123,13 @@ fhq.logout = function(){
 fhq.changeLocationState = function(newPageParams){
 	var url = '';
 	var params = [];
-	console.log("changeLocationState");
-	console.log("changeLocationState", newPageParams);
+	// console.log("changeLocationState");
+	console.log("changeLocationState, newPageParams = ", newPageParams);
 	for(var p in newPageParams){
 		params.push(encodeURIComponent(p) + "=" + encodeURIComponent(newPageParams[p]));
 	}
-	console.log("changeLocationState", params);
-	console.log("changeLocationState", window.location.pathname + '?' + params.join("&"));
+	// console.log("changeLocationState", params);
+	// console.log("changeLocationState", window.location.pathname + '?' + params.join("&"));
 	window.history.pushState(newPageParams, document.title, window.location.pathname + '?' + params.join("&"));
 	fhq.pageParams = fhq.parsePageParams();
 }

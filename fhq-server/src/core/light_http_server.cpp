@@ -1,5 +1,4 @@
 #include "light_http_server.h"
-#include <logger.h>
 #include <sstream>
 #include <iostream>
 #include <vector>

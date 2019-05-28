@@ -2,6 +2,9 @@ if(!window.fhq) window.fhq = {};
 if(!fhq.pages) fhq.pages = [];
 
 fhq.pages['orchestra'] = function(){
+	$('.nav-link.main-menu').removeClass("active");
+	$('#menu_orchestra').addClass("active");
+
 	$('#page_name').html('<div class="header-name">Orchestra</div>'
 		+ '<div class="header-btn" id="orchestra_create"><i class="fa fa-plus"></i></div>'
 	);

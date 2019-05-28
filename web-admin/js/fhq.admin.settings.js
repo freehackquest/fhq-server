@@ -2,6 +2,8 @@ if(!window.fhq) window.fhq = {};
 if(!fhq.pages) fhq.pages = [];
 
 fhq.pages['settings'] = function(idelem) {
+	$('.nav-link.main-menu').removeClass("active");
+	$('#menu_settings').addClass("active");
 	fhq.changeLocationState({'settings':''});
 	$('#page_name').html('Settings');
 	$('#page_content').html('');

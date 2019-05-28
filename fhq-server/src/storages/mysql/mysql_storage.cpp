@@ -1,9 +1,6 @@
 #include <mysql_storage.h>
-#include <utils_logger.h>
+#include <fallen.h>
 #include <mysql/mysql.h>
-#include <parse_config.h>
-// #include <fs.h>
-// #include <ts.h>
 
 REGISTRY_STORAGE(MySqlStorage)
 
@@ -151,7 +148,7 @@ MySqlStorage::MySqlStorage() {
 // ----------------------------------------------------------------------
 
 bool MySqlStorage::applyConfigFromFile(const std::string &sFilePath) {
-    ParseConfig parseConfig(sFilePath);
+    WJSCppParseConfig parseConfig(sFilePath);
     parseConfig.load();
 
     if (!parseConfig.has("dbhost")) {

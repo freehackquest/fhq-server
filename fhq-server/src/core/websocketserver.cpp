@@ -9,14 +9,12 @@
 #include <QtNetwork/QSslCertificate>
 #include <QtNetwork/QSslKey>
 
-#include <utils_logger.h>
+#include <fallen.h>
 
-#include <employ_server_config.h>
+#include <wjscpp_employees.h>
 #include <employ_server_info.h>
 #include <employ_ws_server.h>
 #include <cmd_handlers.h>
-
-// QT_USE_NAMESPACE
 
 // ---------------------------------------------------------------------
 
@@ -174,7 +172,7 @@ void WebSocketServer::processTextMessage(const QString &message) {
     std::string sM = "";
     try {
         if (!nlohmann::json::accept(message.toStdString())) {
-            this->sendMessageError(pClient, sCmd, sM, Error(400, "Not JSON data"));
+            this->sendMessageError(pClient, sCmd, sM, WSJCppError(400, "Not JSON data"));
             return;
         }
 
@@ -182,7 +180,7 @@ void WebSocketServer::processTextMessage(const QString &message) {
         ModelRequest *pModelRequest = new ModelRequest(pClient, this, jsonRequest_);
         
         if (!pModelRequest->hasCommand()) {
-            this->sendMessageError(pClient, sCmd, sM, Error(404, "Not found requare parameter 'cmd'"));
+            this->sendMessageError(pClient, sCmd, sM, WSJCppError(404, "Not found requare parameter 'cmd'"));
             // pModelRequestData->sendError(Error(404, "Not found command '" + QString(cmd.c_str()) + "'"));
             return;
         }
@@ -190,7 +188,7 @@ void WebSocketServer::processTextMessage(const QString &message) {
         sCmd = pModelRequest->command();
         if (!pModelRequest->hasM()) {
             Log::info(TAG, "[WS] >>> " + sCmd);
-            this->sendMessageError(pClient, sCmd, sM, Error(404, "Not found requare parameter 'm' - messageid"));
+            this->sendMessageError(pClient, sCmd, sM, WSJCppError(404, "Not found requare parameter 'm' - messageid"));
             return;
         }
         sM = pModelRequest->m();
@@ -200,7 +198,7 @@ void WebSocketServer::processTextMessage(const QString &message) {
         CmdHandlerBase *pCmdHandler = CmdHandlers::findCmdHandler(sCmd);
         if (pCmdHandler == NULL) {
             Log::warn(TAG, "Unknown command: " + sCmd);
-            pModelRequest->sendMessageError(sCmd, Error(404, "Not found command '" + sCmd + "'"));
+            pModelRequest->sendMessageError(sCmd, WSJCppError(404, "Not found command '" + sCmd + "'"));
             return;
         }
 
@@ -214,14 +212,14 @@ void WebSocketServer::processTextMessage(const QString &message) {
 
         // allow access
         // TODO move to ModelRequest
-        Error error(404, "none");
+        WSJCppError error(404, "none");
         if (!pWsServer->validateInputParameters(error, pCmdHandler, jsonRequest_)) {
             pModelRequest->sendMessageError(pCmdHandler->cmd(), error);
             return;
         }
         pCmdHandler->handle(pModelRequest);
     } catch (const std::exception &e) {
-        this->sendMessageError(pClient, sCmd, sM, Error(500, "InternalServerError"));
+        this->sendMessageError(pClient, sCmd, sM, WSJCppError(500, "InternalServerError"));
         Log::err(TAG, e.what());
     }
 }
@@ -295,7 +293,7 @@ void WebSocketServer::sendMessage(QWebSocket *pClient, const nlohmann::json& jso
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string &sM, Error error) {
+void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string &sM, WSJCppError error) {
     nlohmann::json jsonResponse;
     jsonResponse["cmd"] = sCmd;
     jsonResponse["m"] = sM;

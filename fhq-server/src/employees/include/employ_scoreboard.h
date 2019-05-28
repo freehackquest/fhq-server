@@ -1,7 +1,7 @@
 #ifndef EMPLOY_SCOREBOARD_H
 #define EMPLOY_SCOREBOARD_H
 
-#include <employees.h>
+#include <wjscpp_employees.h>
 #include <json.hpp>
 
 class EmployScoreboard : public EmployBase {

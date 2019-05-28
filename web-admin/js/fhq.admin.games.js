@@ -29,6 +29,9 @@ fhq.createGame = function()  {
 };
 
 fhq.pages['game_create'] = function() {
+	$('.nav-link.main-menu').removeClass("active");
+	$('#menu_games').addClass("active");
+
 	fhq.changeLocationState({'game_create':''});
 	$('#page_name').html('Game Create');
 	$('#page_content').html('');

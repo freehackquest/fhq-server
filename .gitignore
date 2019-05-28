@@ -1,6 +1,8 @@
 dckr_mysql/*
 unit-tests/tmp/*
 unit-tests/unit-tests
+data_travis/logs/*.log
+unit-tests/*.log
 # Compiled Object files
 *.slo
 *.lo

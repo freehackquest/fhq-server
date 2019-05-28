@@ -3,14 +3,13 @@
 
 #include <string>
 #include <vector>
-#include "validators_base.h"
+#include <wjscpp_validators.h>
 
 // ---------------------------------------------------------------------
 
 class ValidatorEventType : public ValidatorStringBase {
     public:
         ValidatorEventType();
-        virtual std::string typeName();
         virtual bool isValid(const std::string &sValue, std::string &sError);
 
     private:
@@ -23,7 +22,6 @@ class ValidatorEventType : public ValidatorStringBase {
 class ValidatorQuestSubject : public ValidatorStringBase {
     public:
         ValidatorQuestSubject();
-        virtual std::string typeName();
         virtual bool isValid(const std::string &sValue, std::string &sError);
 
     private:
@@ -36,7 +34,6 @@ class ValidatorQuestSubject : public ValidatorStringBase {
 class ValidatorQuestState : public ValidatorStringBase {
     public:
         ValidatorQuestState();
-        virtual std::string typeName();
         virtual bool isValid(const std::string &sValue, std::string &sError);
 
     private:
@@ -49,7 +46,6 @@ class ValidatorQuestState : public ValidatorStringBase {
 class ValidatorGameForm : public ValidatorStringBase {
     public:
         ValidatorGameForm();
-        virtual std::string typeName();
         virtual bool isValid(const std::string &sValue, std::string &sError);
 
     private:
@@ -62,7 +58,6 @@ class ValidatorGameForm : public ValidatorStringBase {
 class ValidatorGameState : public ValidatorStringBase {
     public:
         ValidatorGameState();
-        virtual std::string typeName();
         virtual bool isValid(const std::string &sValue, std::string &sError);
 
     private:
@@ -75,7 +70,6 @@ class ValidatorGameState : public ValidatorStringBase {
 class ValidatorGameType : public ValidatorStringBase {
     public:
         ValidatorGameType();
-        virtual std::string typeName();
         virtual bool isValid(const std::string &sValue, std::string &sError);
 
     private:
@@ -88,7 +82,6 @@ class ValidatorGameType : public ValidatorStringBase {
 class ValidatorLXDFileActionType : public ValidatorStringBase {
     public:
         ValidatorLXDFileActionType();
-        virtual std::string typeName();
         virtual bool isValid(const std::string &sValue, std::string &sError);
 
     private:

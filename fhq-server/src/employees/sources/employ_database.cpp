@@ -1,11 +1,11 @@
-#include <employ_server_config.h>
 #include <employ_database.h>
+#include <wjscpp_employees.h>
 #include <QThread>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QVariant>
 
-REGISTRY_EMPLOY(EmployDatabase)
+REGISTRY_WJSCPP_EMPLOY(EmployDatabase)
 
 // ---------------------------------------------------------------------
 
@@ -213,7 +213,7 @@ QSqlDatabase *EmployDatabase::database() {
 // - control of count of connections (must be < 100)
 
 StorageConnection *EmployDatabase::getStorageConnection() {
-    std::string sThreadId = Log::threadId();
+    std::string sThreadId = Fallen::threadId();
     StorageConnection *pStorageConnection = nullptr;
     std::map<std::string, StorageConnection *>::iterator it;
     it = m_mapStorageConnections.find(sThreadId);

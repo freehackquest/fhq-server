@@ -1,7 +1,7 @@
 #ifndef EMPLOY_QUESTS_H
 #define EMPLOY_QUESTS_H
 
-#include <employees.h>
+#include <wjscpp_employees.h>
 
 class EmployQuests : public EmployBase {
     public:

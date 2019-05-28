@@ -1,7 +1,7 @@
 #ifndef EMPLOY_SERVER_INFO_H
 #define EMPLOY_SERVER_INFO_H
 
-#include <employees.h>
+#include <wjscpp_employees.h>
 #include <QMutex>
 #include <QDateTime>
 #include <QMap>

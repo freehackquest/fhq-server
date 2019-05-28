@@ -1,6 +1,6 @@
 #include <cmd_handlers_events.h>
 #include <runtasks.h>
-#include <utils_logger.h>
+#include <fallen.h>
 #include <iostream>
 #include <employ_settings.h>
 #include <employ_database.h>
@@ -84,7 +84,7 @@ void CmdHandlerEventDelete::handle(ModelRequest *pRequest) {
     query.bindValue(":eventid", nEventId);
     query.exec();
     if (!query.next()) {
-        pRequest->sendMessageError(cmd(), Error(404, "Event not found"));
+        pRequest->sendMessageError(cmd(), WSJCppError(404, "Event not found"));
         return;
     }
 
@@ -137,7 +137,7 @@ void CmdHandlerEventInfo::handle(ModelRequest *pRequest) {
         jsonEvent["type"] = record.value("type").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
         jsonEvent["message"] = record.value("message").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
     } else {
-        pRequest->sendMessageError(cmd(), Error(404, "Event not found"));
+        pRequest->sendMessageError(cmd(), WSJCppError(404, "Event not found"));
         return;
     }
 
@@ -175,7 +175,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
 
     int nOnPage = jsonRequest["onpage"].toInt();
     if (nOnPage > 50) {
-        pRequest->sendMessageError(cmd(), Error(400, "Parameter 'onpage' could not be more then 50"));
+        pRequest->sendMessageError(cmd(), WSJCppError(400, "Parameter 'onpage' could not be more then 50"));
         return;
     }
     jsonResponse["onpage"] = nOnPage;

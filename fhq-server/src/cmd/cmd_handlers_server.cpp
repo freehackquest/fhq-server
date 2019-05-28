@@ -1,64 +1,11 @@
 #include <cmd_handlers_server.h>
-#include <utils_logger.h>
+#include <fallen.h>
 #include <runtasks.h>
 #include <iostream>
 #include <employ_settings.h>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <QtCore>
-
-/*****************************************
- * This handler will be return list of handlers - publish api interfaces
- *****************************************/
-
-
-CmdHandlerServerApi::CmdHandlerServerApi()
-    : CmdHandlerBase("server_api", "This method Will be return list of all handlers") {
-
-    setAccessUnauthorized(true);
-    setAccessUser(true);
-    setAccessAdmin(true);
-}
-
-// ---------------------------------------------------------------------
-
-void CmdHandlerServerApi::handle(ModelRequest *pRequest) {
-    nlohmann::json jsonResponse;
-
-    // EmploySettings *pSettings = findEmploy<EmploySettings>();
-
-    // TODO
-    /*result["port"] = m_pServerConfig->serverPort();
-    result["ssl_port"] = m_pServerConfig->serverPort();*/
-
-    nlohmann::json jsonHandlers = nlohmann::json::array();
-    std::map<std::string, CmdHandlerBase *>::iterator it = g_pCmdHandlers->begin();
-    while (it != g_pCmdHandlers->end()) {
-        std::string sCmd = it->first;
-        CmdHandlerBase *pHandler = g_pCmdHandlers->at(sCmd);
-
-        nlohmann::json jsonHandler;
-
-        jsonHandler["cmd"] = pHandler->cmd().c_str();
-        jsonHandler["description"] = pHandler->description();
-        jsonHandler["access_unauthorized"] = pHandler->accessUnauthorized();
-        jsonHandler["access_user"] = pHandler->accessUser();
-        jsonHandler["access_admin"] = pHandler->accessAdmin();
-
-        nlohmann::json jsonInputs = nlohmann::json::array();
-        std::vector<CmdInputDef> ins = pHandler->inputs();
-        for (unsigned int i = 0; i < ins.size(); i++) {
-            jsonInputs.push_back(ins[i].toJson());
-        }
-        jsonHandler["inputs"] = jsonInputs;
-        jsonHandlers.push_back(jsonHandler);
-
-        it++;
-    }
-    jsonResponse["data"] = jsonHandlers;
-    jsonResponse["version"] = FHQSRV_VERSION;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
-}
 
 /*****************************************
  * This handler will be return public info
@@ -72,7 +19,6 @@ CmdHandlerPublicInfo::CmdHandlerPublicInfo()
     setAccessAdmin(true);
 
 }
-
 
 // ---------------------------------------------------------------------
 
@@ -114,7 +60,7 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
         query.bindValue(":morethan", nMoreThen);
         query.bindValue(":citieslimit", nCitiesLimit);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
             return;
         }
         while (query.next()) {
@@ -132,7 +78,7 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
         query.prepare("SELECT u.nick, u.university, u.rating FROM users u WHERE u.role = :role ORDER BY u.rating DESC LIMIT 0,10");
         query.bindValue(":role", "user");
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
             return;
         }
         int nPlace = 1;
@@ -184,7 +130,7 @@ void CmdHandlerServerInfo::handle(ModelRequest *pRequest) {
     qint64 updatime = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
     updatime = updatime - pServerInfo->getServerStart().toMSecsSinceEpoch();
     data["server_uptime_sec"] = updatime/1000;
-    data["last_log_messages"] = Log::last_logs();
+    data["last_log_messages"] = Log::getLastLogs();
     jsonResponse["data"] = data;
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -243,7 +189,7 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
 
     if (!pSettings->hasSett(sName)) {
         std::string sError = "Setting with name: " + sName + " did not found";
-        pRequest->sendMessageError(cmd(), Error(404, sError));
+        pRequest->sendMessageError(cmd(), WSJCppError(404, sError));
         return;
     }
 
@@ -258,7 +204,7 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
     } else if (sType == SETT_TYPE_BOOLEAN) {
         pSettings->setSettBoolean(sName, sNewValue == "yes");
     } else {
-        pRequest->sendMessageError(cmd(), Error(501, "Not Implemented Yet"));
+        pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
         return;
     }
 

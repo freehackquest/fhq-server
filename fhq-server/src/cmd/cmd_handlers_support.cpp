@@ -1,5 +1,5 @@
 #include <cmd_handlers_support.h>
-#include <utils_logger.h>
+#include <fallen.h>
 #include <runtasks.h>
 #include <iostream>
 #include <employ_settings.h>
@@ -54,7 +54,7 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
     query.bindValue(":text", sText);
     query.bindValue(":userid", nUserID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
 

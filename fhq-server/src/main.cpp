@@ -15,12 +15,10 @@
 #include <QtCore>
 #include <QFile>
 #include <QString>
-#include <utils_logger.h>
 #include <websocketserver.h>
 #include <utils_prepare_deb_package.h>
 #include <utils_lxd.h>
-#include <employees.h>
-#include <employ_server_config.h>
+#include <wjscpp_employees.h>
 #include <employ_server_info.h>
 #include <employ_database.h>
 #include <employ_settings.h>
@@ -45,7 +43,14 @@ int main(int argc, char** argv) {
     Fallen::initRandom();
     QCoreApplication a(argc, argv);
     std::string TAG = "MAIN";
-    Log::setdir("/var/log/fhq-server");
+    Log::setPrefixLogFile("fhq-server");
+    std::string sLogDir = "/var/log/fhq-server"; 
+    if (!Fallen::dirExists(sLogDir)) {
+        Log::setLogDirectory(sLogDir);
+        Log::err(TAG, "Directory '" + sLogDir + "' did'not exists");
+    } else {
+        Log::setLogDirectory("./");
+    }
 
     FallenHelpParseArgs helpArgs(argc, argv);
     helpArgs.setAppName(FHQSRV_APP_NAME);
@@ -92,7 +97,7 @@ int main(int argc, char** argv) {
         if (!Fallen::dirExists(sDirLogs)) {
             Fallen::makeDir(sDirLogs);
         }
-        Log::setdir(sDirLogs);
+        Log::setLogDirectory(sDirLogs);
     }
 
     if (helpArgs.has("help")) {

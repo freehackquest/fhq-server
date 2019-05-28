@@ -2,8 +2,8 @@
 #define CMD_HADNLERS_H
 
 #include <map>
-#include <utils_logger.h>
-#include <validators_base.h>
+#include <fallen.h>
+#include <wjscpp_validators.h>
 #include <json.hpp>
 #include <QWebSocket>
 #include <QSqlQuery> // TODO deprecated
@@ -15,12 +15,12 @@
 
 
 /*! 
- * Error - 
+ * WSJCppError - helper class for errors
  * */
 
-class Error {
+class WSJCppError {
     public:
-        Error(int nCodeError, const std::string &sMessage);
+        WSJCppError(int nCodeError, const std::string &sMessage);
         int codeError();
         std::string message();
     private:
@@ -65,7 +65,7 @@ class WSJCppUserSession {
 class IWebSocketServer {
     public:
         virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse) = 0;
-        virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, Error error) = 0;
+        virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, WSJCppError error) = 0;
         virtual void sendToAll(const nlohmann::json& jsonMessage) = 0;
         virtual void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) = 0;
         virtual int getConnectedUsers() = 0;
@@ -156,7 +156,7 @@ class ModelRequest {
         bool hasM();
         std::string command();
         bool hasCommand();
-        void sendMessageError(const std::string &cmd, Error error);
+        void sendMessageError(const std::string &cmd, WSJCppError error);
         void sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse);
 
         // bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler);
@@ -171,7 +171,11 @@ class ModelRequest {
 
 // ---------------------------------------------------------------------
 
-class CmdHandlerBase {
+/*!
+ * Api handler Base
+ * */
+
+class CmdHandlerBase { // TODO rename to WJSCppHandler
 
     public:
         CmdHandlerBase(const std::string &sCmd, const std::string &sDescription);
@@ -220,6 +224,12 @@ class CmdHandlerBase {
 
 extern std::map<std::string, CmdHandlerBase*> *g_pCmdHandlers;
 
+// ---------------------------------------------------------------------
+
+/*!
+ * Global collection with handlers
+ * */
+
 class CmdHandlers {
     public:
         static void initGlobalVariables();
@@ -231,5 +241,17 @@ class CmdHandlers {
 #define REGISTRY_CMD( classname ) \
     static classname * pRegistry ## classname = new classname(); \
 
+// ---------------------------------------------------------------------
+
+/*!
+ * This handler will be return list of handlers - publish api interfaces
+ * */
+
+class WJSCppCmdHandlerServerApi : public CmdHandlerBase {
+
+    public:
+        WJSCppCmdHandlerServerApi();
+        virtual void handle(ModelRequest *pRequest);
+};
 
 #endif // CMD_HADNLERS_H

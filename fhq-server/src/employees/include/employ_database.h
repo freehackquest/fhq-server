@@ -2,7 +2,7 @@
 #define EMPLOY_DATABASE_H
 
 #include <model_database_connection.h>
-#include <employees.h>
+#include <wjscpp_employees.h>
 
 #include <storages.h>
 #include <mutex>
