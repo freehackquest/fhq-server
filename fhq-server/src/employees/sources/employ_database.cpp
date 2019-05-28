@@ -213,7 +213,7 @@ QSqlDatabase *EmployDatabase::database() {
 // - control of count of connections (must be < 100)
 
 StorageConnection *EmployDatabase::getStorageConnection() {
-    std::string sThreadId = Log::threadId();
+    std::string sThreadId = Fallen::threadId();
     StorageConnection *pStorageConnection = nullptr;
     std::map<std::string, StorageConnection *>::iterator it;
     it = m_mapStorageConnections.find(sThreadId);

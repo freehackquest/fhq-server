@@ -130,7 +130,7 @@ void CmdHandlerServerInfo::handle(ModelRequest *pRequest) {
     qint64 updatime = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
     updatime = updatime - pServerInfo->getServerStart().toMSecsSinceEpoch();
     data["server_uptime_sec"] = updatime/1000;
-    data["last_log_messages"] = Log::last_logs();
+    data["last_log_messages"] = Log::getLastLogs();
     jsonResponse["data"] = data;
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);

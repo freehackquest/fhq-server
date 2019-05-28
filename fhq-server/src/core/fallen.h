@@ -14,6 +14,7 @@ class Fallen {
         static long currentTime_seconds();
         static std::string currentTime_forFilename();
         static std::string currentTime_logformat();
+        static std::string threadId();
         static std::string formatTimeForWeb(long nTimeInSec);
         static std::string formatTimeForFilename(long nTimeInSec);
         static std::string formatTimeUTC(int nTimeInSec);
@@ -110,16 +111,21 @@ namespace Color {
 
 class Log {
     public:
+        static std::string g_LOG_DIR;
+        static std::string g_PREFIX_LOG_FILE;
+        static std::string g_LOG_FILE;
+        static long g_LOG_START_TIME;
+        static void doLogRotateUpdateFilename(bool bForce = false);
+
         static void info(const std::string &sTag, const std::string &sMessage);
         static void err(const std::string &sTag, const std::string &sMessage);
         static void throw_err(const std::string &sTag, const std::string &sMessage);
         static void warn(const std::string &sTag, const std::string &sMessage);
         static void ok(const std::string &sTag, const std::string &sMessage);
-        static void setdir(const std::string &sDirectoryPath);
-        static nlohmann::json last_logs();
+        static void setLogDirectory(const std::string &sDirectoryPath);
+        static void setPrefixLogFile(const std::string &sPrefixLogFile);
+        static nlohmann::json getLastLogs();
         static void initGlobalVariables();
-        static std::string currentTime();
-        static std::string threadId();
 
     private:
         static void add(Color::Modifier &clr, const std::string &sType, const std::string &sTag, const std::string &sMessage);

@@ -44,7 +44,13 @@ int main(int argc, char** argv) {
     Fallen::initRandom();
     QCoreApplication a(argc, argv);
     std::string TAG = "MAIN";
-    Log::setdir("/var/log/fhq-server");
+    Log::setPrefixLogFile("fhq-server");
+    std::string sLogDir = "/var/log/fhq-server"; 
+    Log::setLogDirectory(sLogDir);
+    if (!Fallen::dirExists(sLogDir)) {
+        Log::err(TAG, "Directory '" + sLogDir + "' did'not exists");
+        return -1;
+    }
 
     FallenHelpParseArgs helpArgs(argc, argv);
     helpArgs.setAppName(FHQSRV_APP_NAME);
@@ -91,7 +97,7 @@ int main(int argc, char** argv) {
         if (!Fallen::dirExists(sDirLogs)) {
             Fallen::makeDir(sDirLogs);
         }
-        Log::setdir(sDirLogs);
+        Log::setLogDirectory(sDirLogs);
     }
 
     if (helpArgs.has("help")) {
