@@ -42,8 +42,8 @@ list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/jobs_pool.h")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/jobs_pool.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/storages.h")
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/storages.cpp")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/validators_base.cpp")
-list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/validators_base.h")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/wjscpp_validators.cpp")
+list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/core/wjscpp_validators.h")
 
 # validators
 list (APPEND UNIT_TESTS_SOURCES "../fhq-server/src/validators/validators.cpp")
