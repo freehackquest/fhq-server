@@ -1,11 +1,6 @@
 #include <model_server_sett_helper.h>
 
 #include <fallen.h>
-#include <QTextStream>
-#include <QFile>
-#include <QByteArray>
-#include <QDateTime>
-#include <QDir>
 
 ModelServerSettHelper::ModelServerSettHelper() {
        TAG = "ModelServerSettHelper";

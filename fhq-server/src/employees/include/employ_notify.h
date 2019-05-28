@@ -1,7 +1,7 @@
 #ifndef EMPLOY_NOTIFY_H
 #define EMPLOY_NOTIFY_H
 
-#include <employees.h>
+#include <wjscpp_employees.h>
 #include <model_notification.h>
 
 class EmployNotify : public EmployBase {

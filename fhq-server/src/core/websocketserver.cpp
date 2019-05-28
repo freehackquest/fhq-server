@@ -11,12 +11,10 @@
 
 #include <fallen.h>
 
-#include <employ_server_config.h>
+#include <wjscpp_employees.h>
 #include <employ_server_info.h>
 #include <employ_ws_server.h>
 #include <cmd_handlers.h>
-
-// QT_USE_NAMESPACE
 
 // ---------------------------------------------------------------------
 

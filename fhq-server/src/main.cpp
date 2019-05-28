@@ -18,8 +18,7 @@
 #include <websocketserver.h>
 #include <utils_prepare_deb_package.h>
 #include <utils_lxd.h>
-#include <employees.h>
-#include <employ_server_config.h>
+#include <wjscpp_employees.h>
 #include <employ_server_info.h>
 #include <employ_database.h>
 #include <employ_settings.h>

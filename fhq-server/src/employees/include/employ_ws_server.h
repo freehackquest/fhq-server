@@ -1,7 +1,7 @@
 #ifndef EMPLOY_WS_SERVER_H
 #define EMPLOY_WS_SERVER_H
 
-#include <employees.h>
+#include <wjscpp_employees.h>
 #include <cmd_handlers.h>
 //
 #include <QJsonObject>

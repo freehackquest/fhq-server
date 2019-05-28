@@ -1,5 +1,5 @@
-#include <employ_server_config.h>
 #include <employ_server_info.h>
+#include <wjscpp_employees.h>
 #include <employ_database.h>
 #include <QSqlQuery>
 #include <QSqlRecord>

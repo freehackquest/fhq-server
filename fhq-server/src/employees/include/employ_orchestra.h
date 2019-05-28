@@ -1,7 +1,7 @@
 #ifndef EMPLOY_ORCHESTRA
 #define EMPLOY_ORCHESTRA
 
-#include <employees.h>
+#include <wjscpp_employees.h>
 #include <model_lxd_orchestra.h>
 
 #include <list>

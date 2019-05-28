@@ -1,7 +1,7 @@
 #ifndef EMPLOY_GAMES_H
 #define EMPLOY_GAMES_H
 
-#include <employees.h>
+#include <wjscpp_employees.h>
 #include <model_game.h>
 
 class EmployGames : public EmployBase {

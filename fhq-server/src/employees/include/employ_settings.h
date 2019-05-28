@@ -1,7 +1,7 @@
 #ifndef EMPLOY_SETTINGS_H
 #define EMPLOY_SETTINGS_H
 
-#include <employees.h>
+#include <wjscpp_employees.h>
 #include <cmd_handlers.h>
 #include <model_server_sett_helper.h>
 

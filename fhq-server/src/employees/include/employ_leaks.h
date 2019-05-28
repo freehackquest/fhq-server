@@ -1,7 +1,7 @@
 #ifndef EMPLOY_LEAKS_H
 #define EMPLOY_LEAKS_H
 
-#include <employees.h>
+#include <wjscpp_employees.h>
 #include <model_leak.h>
 
 class EmployLeaks : public EmployBase {

@@ -1,7 +1,7 @@
 #ifndef EMPLOY_IMAGES_H
 #define EMPLOY_IMAGES_H
 
-#include <employees.h>
+#include <wjscpp_employees.h>
 
 class EmployImages : public EmployBase {
 private:
