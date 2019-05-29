@@ -4,6 +4,7 @@
 #include <QJsonObject>
 #include <QtGlobal>
 #include <fallen.h>
+#include <wjscpp_employees.h>
 
 /*! 
  * WSJCppError - 
@@ -780,13 +781,14 @@ WJSCppCmdHandlerServerApi::WJSCppCmdHandlerServerApi()
 
 void WJSCppCmdHandlerServerApi::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
-    jsonResponse["version"] = FHQSRV_VERSION; // TODO redesign
+    jsonResponse["version"] = FHQSRV_VERSION; // TODO redesign, what?
 
-    // EmploySettings *pSettings = findEmploy<EmploySettings>();
-
-    // TODO
-    /*result["port"] = m_pServerConfig->serverPort();
-    result["ssl_port"] = m_pServerConfig->serverPort();*/
+    EmployServerConfig *pConfig = findEmploy<EmployServerConfig>();
+    
+    jsonResponse["server_ws_port"] = pConfig->serverPort();
+    if (pConfig->serverSslOn()) {
+        jsonResponse["server_wss_port"] = pConfig->serverSslPort();
+    }
 
     nlohmann::json jsonHandlers = nlohmann::json::array();
     std::map<std::string, CmdHandlerBase *>::iterator it = g_pCmdHandlers->begin();
