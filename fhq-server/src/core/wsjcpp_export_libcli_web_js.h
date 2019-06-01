@@ -1,6 +1,7 @@
-#ifndef WSJCPP_EXPORT_LIBWSJCPPCLI_WEB_JS_H
+#ifndef WSJCPP_EXPORT_LIBCLI_WEB_JS_H
 #define WSJCPP_EXPORT_LIBCLI_WEB_JS_H
 
+#include <vector>
 #include <string>
 
 namespace WsjCpp {
@@ -22,6 +23,7 @@ class ExportLibCliWebJS {
         std::string m_sAppVersion;
         std::string m_sAuthor;
         std::string m_sPrefixRepositoryURL;
+        std::vector<std::string> m_vEvents;
 
         void exportPackageJson(const std::string &sBasicDir);
         void exportAPImd(const std::string &sBasicDir);
