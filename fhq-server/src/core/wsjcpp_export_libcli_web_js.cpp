@@ -19,116 +19,6 @@ namespace WsjCpp {
 
 // ---------------------------------------------------------------------
 
-class JSCodeLine {
-    
-    JSCodeLine *m_pParent;
-    std::string m_sLine;
-    std::vector<JSCodeLine *> m_vLines;
-
-public:
-    
-    JSCodeLine() {
-        m_pParent = nullptr;
-        m_sLine = "";
-    }
-
-    JSCodeLine(JSCodeLine *parent, const std::string &sLine) {
-        m_pParent = parent;
-        m_sLine = sLine;
-    }
-
-    ~JSCodeLine() {
-        if (m_pParent == nullptr) {
-            std::cout << "destruct root \n";
-        } else {
-            std::cout << "destruct something else [" << m_sLine << "]\n";
-        }
-    }
-
-    JSCodeLine *addLine(const std::string &sLine) {
-        JSCodeLine *pJSCodeLine = new JSCodeLine(this,sLine);
-        m_vLines.push_back(pJSCodeLine);
-        return pJSCodeLine;
-    }
-
-    JSCodeLine *getParent() {
-        return m_pParent;
-    }
-
-    std::string getLine() {
-        return m_sLine;
-    }
-
-    JSCodeLine *findRoot() {
-        if (m_pParent == nullptr) {
-            return this;
-        }
-        return m_pParent->findRoot();
-    }
-
-    void print(std::ofstream &__init__, std::string intent = "") {
-        if (m_pParent != nullptr) {
-            __init__ << intent << m_sLine << std::endl;
-            intent += "  ";
-        }
-        for (int i = 0; i < m_vLines.size(); i++) {
-            m_vLines[i]->print(__init__, intent);
-        }
-    }
-};
-
-// ---------------------------------------------------------------------
-
-class JSCodeBuilder {
-
-private:
-    JSCodeLine *m_pCurr = nullptr;
-
-public:
-    JSCodeBuilder() {
-        m_pCurr = new JSCodeLine();
-    }
-
-    ~JSCodeBuilder() {
-        // std::cout << "destruct something else [" << m_pCurr->getLine() << "]\n";
-    }
-
-    JSCodeBuilder &add(const std::string &sLine) {
-        m_pCurr->addLine(sLine);
-        return *this;
-    }
-    JSCodeBuilder &sub(const std::string &sLine) {
-        m_pCurr = m_pCurr->addLine(sLine);
-        return *this;
-    }
-    JSCodeBuilder &end() {
-        JSCodeLine *p = m_pCurr->getParent();
-        if (p != nullptr) {
-            m_pCurr = p;
-        } else {
-            std::cout << "Wrong called end function" << std::endl;
-        }
-        return *this;
-    }
-
-    void print(std::ofstream &__init__) {
-        JSCodeLine *pRoot = m_pCurr->findRoot();
-        pRoot->print(__init__);
-    };
-};
-
-
-// ---------------------------------------------------------------------
-
-class PkgJSONObject {
-private:
-    
-public:
-
-};
-
-// ---------------------------------------------------------------------
-
 ExportLibCliWebJS::ExportLibCliWebJS() {
     m_sAppName = "wjscpp";
     m_sPackageName = "libwjscpp-web-js";
@@ -226,43 +116,34 @@ void ExportLibCliWebJS::exportPackageJson(const std::string &sBasicDir) {
     buffer << std::put_time(std::gmtime(&t), "%d %b %Y");
 
     // look here an example https://github.com/jquery/jquery/blob/master/package.json
-
-    JSCodeBuilder builder;
-    builder
-    .sub("{")
-        .add("\"name\": \"" + m_sPackageName + "\",")
-        .add("\"version\": \"" + m_sAppVersion + "\",")
-        .add("\"description\": \"FreeHackQuest JavaScript Web Client Library for " + m_sAppName + "\",")
-        .add("\"main\": \"dist/" + m_sPackageName + ".js\",")
-        .sub("\"repository\": {")
-            .add("\"type\": \"git\",")
-            .add("\"url\": \"" + m_sPrefixRepositoryURL + m_sPackageName + ".git\"")
-            .end()
-        .add("},")
-        .sub("\"keywords\": [")
-            .add("\"browser\",")
-            .add("\"library\",")
-            .add("\"client\",")
-            .add("\"websocket\"")
-            .end()
-        .add("],")
-        .sub("\"bugs\": {")
-            .add("\"url\": \"" + m_sPrefixRepositoryURL + m_sPackageName + "/issues\"")
-            .end()
-        .add("},")
-        .add("\"author\": \"" + m_sAuthor + "\",")
-        .add("\"license\": \"MIT\",")
-        .sub("\"licenses\": [{")
-            .add("\"type\": \"MIT\",")
-            .add("\"url\": \"" + m_sPrefixRepositoryURL + m_sPackageName + "/blob/master/LICENSE\"")
-            .end()
-        .add("}]")
-        .end()
-    .add("}");
-    builder.print(packageJson);
+    packageJson << 
+        "{\n"
+        "  \"name\": \"" + m_sPackageName + "\",\n"
+        "  \"version\": \"" + m_sAppVersion + "\",\n"
+        "  \"description\": \"FreeHackQuest JavaScript Web Client Library for " + m_sAppName + "\",\n"
+        "  \"main\": \"dist/" + m_sPackageName + ".js\",\n"
+        "  \"repository\": {\n"
+        "    \"type\": \"git\",\n"
+        "    \"url\": \"" + m_sPrefixRepositoryURL + m_sPackageName + ".git\"\n"
+        "  },\n"
+        "  \"keywords\": [\n"
+        "    \"browser\",\n"
+        "    \"library\",\n"
+        "    \"client\",\n"
+        "    \"websocket\"\n"
+        "  ],\n"
+        "  \"bugs\": {\n"
+        "    \"url\": \"" + m_sPrefixRepositoryURL + m_sPackageName + "/issues\"\n"
+        "  },\n"
+        "  \"author\": \"" + m_sAuthor + "\",\n"
+        "  \"license\": \"MIT\",\n"
+        "  \"licenses\": [{\n"
+        "    \"type\": \"MIT\",\n"
+        "    \"url\": \"" + m_sPrefixRepositoryURL + m_sPackageName + "/blob/master/LICENSE\"\n"
+        "  }]\n"
+        "}\n";
     packageJson.close();
     std::cout << "\t> OK" << std::endl;
-
 }
 
 // ---------------------------------------------------------------------
@@ -278,37 +159,49 @@ void ExportLibCliWebJS::exportAPImd(const std::string &sBasicDir) {
     buffer << std::put_time(std::gmtime(&t), "%d %b %Y");
 
     // TODO redesign
-    apimd << "# " + m_sPackageName + "\n\n";
-    apimd << " Automatically generated by " << m_sAppName << ". \n";
-    apimd << " * Version: " << m_sAppVersion << "\n";
-    apimd << " * Date: " << buffer.str() << "\n\n";
-    apimd << " Example connect/disconnect:\n"
-        << "```\n"
-        << "import libfhqcli \n\n"
-        << "fhq = libfhqcli.FHQCli('ws://localhost:1234')\n"
-        << " ... \n"
-        << "fhq.close()\n"
-        << "```\n";
-    apimd << "\n";
+    apimd <<
+        "# " + m_sPackageName + "\n\n"
+        " Automatically generated by " << m_sAppName << ". \n"
+        " * Version: " << m_sAppVersion << "\n"
+        " * Date: " << buffer.str() << "\n\n"
+        " Include script ```dist/libfhqcli-web-js.js```\n"
+        " Example connect:\n"
+        "```\n";
+    for (int i = 0; i < m_vEvents.size(); i++) {
+        apimd <<
+            "fhq.bind('" + m_vEvents[i] + "', function(data) { console.log('" + m_vEvents[i] + "', data)})\n";
+    }
+    apimd <<
+        "fhq.bind('connected', function(data) { console.log('connected', data)})\n"
+        "// connect\n"
+        "fhq.init({'baseUrl': 'ws://localhost:1234/'})\n"
+        "// disconnect\n"
+        "fhq.deinit()\n"
+        "```\n"
+        "\n";
 
     std::map<std::string, CmdHandlerBase*>::iterator it = g_pCmdHandlers->begin();
     for (; it!=g_pCmdHandlers->end(); ++it) {
         std::string sCmd = it->first;
         CmdHandlerBase* pCmdHandlerBase = it->second;
         
-        apimd << " ## " << sCmd << "\n\n";
+        apimd <<
+            "<details>\n"
+            "<summary>" << sCmd << "</summary>\n\n"
+            "## " << sCmd << "\n\n";
+
         if (pCmdHandlerBase->description() != "") {
             apimd << pCmdHandlerBase->description() << "\n\n";
         }
-        apimd 
-            << "Access: unauthorized - **" << (pCmdHandlerBase->accessUnauthorized() ? "yes" : "no") << "**, "
-            << " user - **" << (pCmdHandlerBase->accessUser() ? "yes" : "no") << "**, "
-            << " admin - **" << (pCmdHandlerBase->accessAdmin() ? "yes" : "no") << "**\n"
-            << "\n";
+        apimd <<
+            "Access: unauthorized - **" << (pCmdHandlerBase->accessUnauthorized() ? "yes" : "no") << "**, "
+            " user - **" << (pCmdHandlerBase->accessUser() ? "yes" : "no") << "**, "
+            " admin - **" << (pCmdHandlerBase->accessAdmin() ? "yes" : "no") << "**\n"
+            "\n";
 
         apimd << " #### Input params \n\n";
 
-        std::string pythonTemplate = "";
+        std::string jsTemplate = "";
 
         std::vector<CmdInputDef> vVin = pCmdHandlerBase->inputs();
         for (int i = 0; i < vVin.size(); i++) {
@@ -317,25 +210,32 @@ void ExportLibCliWebJS::exportAPImd(const std::string &sBasicDir) {
 
             apimd << " * " << inDef.getName() << " - " << inDef.getType() << ", " << inDef.getRestrict() << "; " << inDef.getDescription() << "\n";
 
-            if (pythonTemplate != "") {
-                pythonTemplate += ", ";
+            if (jsTemplate != "") {
+                jsTemplate += ",\n";
             }
             if (inDef.isInteger()) {
                 int nVal = 0;
                 if (inDef.getName() == "onpage") {
                     nVal = 10;
                 }
-                pythonTemplate += "\"" + inDef.getName() + "\": " + std::to_string(nVal);
+                jsTemplate += "    \"" + inDef.getName() + "\": " + std::to_string(nVal);
             } else {
-                pythonTemplate += "\"" + inDef.getName() + "\": \"\"";
+                jsTemplate += "    \"" + inDef.getName() + "\": \"\"";
             }
         }
-        apimd << "\n\n";
-
-        apimd << " #### example call method \n\n ```response = " + m_sLibraryName + "." + sCmd + "({" + pythonTemplate + "});```";
-
-        apimd << "\n\n";
-
+        apimd <<
+            "\n\n"
+            " #### example call method \n\n"
+            "```\n"
+            "fhq." + sCmd + "({\n" + jsTemplate + "\n}).done(function(r) {\n"
+            "    console.log('Success: ', r);\n"
+            "}).fail(function(err){\n"
+            "    console.error('Error:', err);\n"
+            "});\n"
+            "```"
+            "\n\n"
+            "</details>"
+            "\n\n";
     }
 
     apimd.close();
@@ -645,91 +545,93 @@ void ExportLibCliWebJS::exportLibCliWebJSFile(const std::string &sBasicDir) {
     for (; it!=g_pCmdHandlers->end(); ++it) {
         std::string sCmd = it->first;
         CmdHandlerBase* pCmdHandlerBase = it->second;
+        libwjscppcli_web_js_file <<
+            "    self." << sCmd << " = function(params) {\r\n";
 
-        libwjscppcli_web_js_file
-            << "// Access unauthorized: " << (pCmdHandlerBase->accessUnauthorized() ? "yes" : "no") << "\r\n"
-            << "// Access user: " << (pCmdHandlerBase->accessUser() ? "yes" : "no") << "\r\n"
-            << "// Access admin: " << (pCmdHandlerBase->accessAdmin() ? "yes" : "no") << "\r\n";
+        libwjscppcli_web_js_file <<
+            "       // Access unauthorized: " << (pCmdHandlerBase->accessUnauthorized() ? "yes" : "no") << "\r\n"
+            "       // Access user: " << (pCmdHandlerBase->accessUser() ? "yes" : "no") << "\r\n"
+            "       // Access admin: " << (pCmdHandlerBase->accessAdmin() ? "yes" : "no") << "\r\n";
         
         if (pCmdHandlerBase->activatedFromVersion() != "") {
-            libwjscppcli_web_js_file 
-                << "// Activated From Version: " << pCmdHandlerBase->activatedFromVersion() << "\r\n";
+            libwjscppcli_web_js_file <<
+                "       // Activated From Version: " << pCmdHandlerBase->activatedFromVersion() << "\r\n";
         }
         
         if (pCmdHandlerBase->deprecatedFromVersion() != "") {
-            libwjscppcli_web_js_file
-                << "// Deprecated From Version: " + pCmdHandlerBase->deprecatedFromVersion() << "\r\n";
+            libwjscppcli_web_js_file <<
+                "       // Deprecated From Version: " + pCmdHandlerBase->deprecatedFromVersion() << "\r\n";
         }
         
         std::vector<CmdInputDef> vVin = pCmdHandlerBase->inputs();
         if (vVin.size() > 0) {
-            libwjscppcli_web_js_file 
-                <<  "// Input params:\r\n"; 
+            libwjscppcli_web_js_file <<
+                "       // Input params:\r\n"; 
         }
         for (int i = 0; i < vVin.size(); i++) {
             CmdInputDef inDef = vVin[i];
             std::string nameIn = std::string(inDef.getName());
-            libwjscppcli_web_js_file 
-                <<  "// * " + nameIn + " - " + inDef.getType() + ", " + inDef.getRestrict() + " (" + inDef.getDescription() + ") \r\n";
+            libwjscppcli_web_js_file <<
+                "       // * " + nameIn + " - " + inDef.getType() + ", " + inDef.getRestrict() + " (" + inDef.getDescription() + ") \r\n";
         }
-        libwjscppcli_web_js_file 
-            << "self." << sCmd << " = function(params) {\r\n"
-            << "    params = params || {};\r\n"
-            << "    params.cmd = '" << sCmd << "';\r\n";
+
+        libwjscppcli_web_js_file <<
+            "        params = params || {};\r\n"
+            "        params.cmd = '" << sCmd << "';\r\n";
             // check required
         for (int i = 0; i < vVin.size(); i++) {
             CmdInputDef inDef = vVin[i];
             if (inDef.isRequired()) {
                 std::string nameIn = std::string(vVin[i].getName());
-                libwjscppcli_web_js_file 
-                    << "    if (params['" + nameIn + "'] == undefined) {\r\n"
-                    << "         console.error('Parameter \"" << nameIn << "\" expected (lib)');\r\n"
-                    << "    }\r\n";
+                libwjscppcli_web_js_file <<
+                    "        if (params['" + nameIn + "'] == undefined) {\r\n"
+                    "             console.error('Parameter \"" << nameIn << "\" expected (lib)');\r\n"
+                    "        }\r\n";
             }
         }
         if (sCmd == "login") {
-            libwjscppcli_web_js_file
-                << "    var ret = self.promise()\r\n"
-                << "    self.send(params).done(function(r) {\r\n"
-                << "        _tokenValue = r.token;\r\n"
-                << "        console.log(_tokenValue);\r\n"
-                << "        self.userinfo = r.user;\r\n"
-                << "        self.setToken(_tokenValue);\r\n"
-                << "        self.updateUserProfileAsync();\r\n"
-                << "        ret.resolve(r);\r\n"
-                << "    }).fail(function(err) {\r\n"
-                << "        self.removeToken();\r\n"
-                << "        ret.reject(err);\r\n"
-                << "    })\r\n"
-                << "    return ret;\r\n";
+            libwjscppcli_web_js_file <<
+                "        var ret = self.promise()\r\n"
+                "        self.send(params).done(function(r) {\r\n"
+                "            _tokenValue = r.token;\r\n"
+                "            console.log(_tokenValue);\r\n"
+                "            self.userinfo = r.user;\r\n"
+                "            self.setToken(_tokenValue);\r\n"
+                "            self.updateUserProfileAsync();\r\n"
+                "            ret.resolve(r);\r\n"
+                "        }).fail(function(err) {\r\n"
+                "            self.removeToken();\r\n"
+                "            ret.reject(err);\r\n"
+                "        })\r\n"
+                "        return ret;\r\n";
         } else if (sCmd == "token") {
-            libwjscppcli_web_js_file
-                << "    if (_tokenValue != '') {\r\n"
-                << "        var ret = self.promise()\r\n"
-                << "        params.token = _tokenValue;\r\n"
-                << "        self.send(params).done(function(r) {\r\n"
-                << "            self.updateUserProfileAsync();\r\n"
-                << "            ret.resolve(r);\r\n"
-                << "        }).fail(function(err) {\r\n"
-                << "            self.removeToken();\r\n"
-                << "            _call('userdata', {});\r\n"
-                << "            ret.reject(err);\r\n"
-                << "        })\r\n"
-                << "        return ret;\r\n"
-                << "    } else {\r\n"
-                << "        return self.send(params);\r\n"
-                << "    }\r\n";
+            libwjscppcli_web_js_file <<
+                "         if (_tokenValue != '') {\r\n"
+                "             var ret = self.promise()\r\n"
+                "             params.token = _tokenValue;\r\n"
+                "             self.send(params).done(function(r) {\r\n"
+                "                 self.updateUserProfileAsync();\r\n"
+                "                 ret.resolve(r);\r\n"
+                "             }).fail(function(err) {\r\n"
+                "                 self.removeToken();\r\n"
+                "                 _call('userdata', {});\r\n"
+                "                 ret.reject(err);\r\n"
+                "             })\r\n"
+                "             return ret;\r\n"
+                "         } else {\r\n"
+                "             return self.send(params);\r\n"
+                "         }\r\n";
         } else {
             libwjscppcli_web_js_file 
-                << "    return self.send(params);\r\n";
+                << "         return self.send(params);\r\n";
         }
 
         libwjscppcli_web_js_file 
-            << "}\r\n\r\n";
+            << "    }\r\n\r\n";
     }
 
     libwjscppcli_web_js_file <<
-        "   return self;\r\n"
+        "    return self;\r\n"
         "})();\r\n";
 
     libwjscppcli_web_js_file.close();
