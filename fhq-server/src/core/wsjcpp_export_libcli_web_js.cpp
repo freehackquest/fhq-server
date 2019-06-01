@@ -1,4 +1,4 @@
-#include <export_libwsjcppcli_web_js.h>
+#include "wsjcpp_export_libcli_web_js.h"
 
 #include <iostream>
 #include <iomanip>
@@ -14,6 +14,8 @@
 #include <ctime>
 #include <sstream>
 #include <fallen.h>
+
+namespace WsjCpp {
 
 // ---------------------------------------------------------------------
 
@@ -115,6 +117,7 @@ public:
     };
 };
 
+
 // ---------------------------------------------------------------------
 
 class PkgJSONObject {
@@ -126,7 +129,7 @@ public:
 
 // ---------------------------------------------------------------------
 
-ExportLibWsjCppCliWebJS::ExportLibWsjCppCliWebJS() {
+ExportLibCliWebJS::ExportLibCliWebJS() {
     m_sPackageName = "";
     m_sAppName = "";
     m_sPackageName = "libwjscpp-web-js";
@@ -139,47 +142,47 @@ ExportLibWsjCppCliWebJS::ExportLibWsjCppCliWebJS() {
 
 // ---------------------------------------------------------------------
 
-void ExportLibWsjCppCliWebJS::setPackageName(const std::string &sPackageName) {
+void ExportLibCliWebJS::setPackageName(const std::string &sPackageName) {
     m_sPackageName = sPackageName;
 }
 
 // ---------------------------------------------------------------------
 
-void ExportLibWsjCppCliWebJS::setLibraryName(const std::string &sLibraryName) {
+void ExportLibCliWebJS::setLibraryName(const std::string &sLibraryName) {
     m_sLibraryName = sLibraryName;
 }
 
 // ---------------------------------------------------------------------
 
-void ExportLibWsjCppCliWebJS::setAppName(const std::string &sAppName) {
+void ExportLibCliWebJS::setAppName(const std::string &sAppName) {
     m_sAppName = sAppName;
 }
 
 // ---------------------------------------------------------------------
 
-void ExportLibWsjCppCliWebJS::setAppVersion(const std::string &sAppVersion) {
+void ExportLibCliWebJS::setAppVersion(const std::string &sAppVersion) {
     m_sAppVersion = sAppVersion;
 }
 
 // ---------------------------------------------------------------------
 
-void ExportLibWsjCppCliWebJS::setAuthor(const std::string &sAuthor) {
+void ExportLibCliWebJS::setAuthor(const std::string &sAuthor) {
     m_sAuthor = sAuthor;
 }
 
 // ---------------------------------------------------------------------
 
-void ExportLibWsjCppCliWebJS::setPrefixRepositoryURL(const std::string &sPrefixRepositoryURL) {
+void ExportLibCliWebJS::setPrefixRepositoryURL(const std::string &sPrefixRepositoryURL) {
     m_sPrefixRepositoryURL = sPrefixRepositoryURL;
 }
 
 // ---------------------------------------------------------------------
 
-void ExportLibWsjCppCliWebJS::exportLib() {
+void ExportLibCliWebJS::exportLib() {
     std::string sBasicDir = "./" + m_sPackageName;
 
     exportPrepareDirs(sBasicDir);
-    exportLibWsjCppCliWebJSFile(sBasicDir);
+    exportLibCliWebJSFile(sBasicDir);
     exportSampleHtmlFile(sBasicDir);
     exportPackageJson(sBasicDir);
     exportAPImd(sBasicDir);
@@ -187,7 +190,7 @@ void ExportLibWsjCppCliWebJS::exportLib() {
 
 // ---------------------------------------------------------------------
 
-void ExportLibWsjCppCliWebJS::exportPrepareDirs(const std::string &sBasicDir) {
+void ExportLibCliWebJS::exportPrepareDirs(const std::string &sBasicDir) {
     std::vector<std::string> vDirs;
     vDirs.push_back(sBasicDir);
     vDirs.push_back(sBasicDir + "/dist");
@@ -205,7 +208,7 @@ void ExportLibWsjCppCliWebJS::exportPrepareDirs(const std::string &sBasicDir) {
 
 // ---------------------------------------------------------------------
 
-void ExportLibWsjCppCliWebJS::exportPackageJson(const std::string &sBasicDir) {
+void ExportLibCliWebJS::exportPackageJson(const std::string &sBasicDir) {
     std::ofstream packageJson;
     std::cout << " * write code to " << sBasicDir << "/package.json " << std::endl;
     packageJson.open (sBasicDir + "/package.json");
@@ -256,7 +259,7 @@ void ExportLibWsjCppCliWebJS::exportPackageJson(const std::string &sBasicDir) {
 
 // ---------------------------------------------------------------------
 
-void ExportLibWsjCppCliWebJS::exportAPImd(const std::string &sBasicDir) {
+void ExportLibCliWebJS::exportAPImd(const std::string &sBasicDir) {
     
     std::ofstream apimd;
     std::cout << " * write file to " + sBasicDir + "/API.md" << std::endl;
@@ -333,7 +336,7 @@ void ExportLibWsjCppCliWebJS::exportAPImd(const std::string &sBasicDir) {
 
 // ---------------------------------------------------------------------
 
-void ExportLibWsjCppCliWebJS::exportSampleHtmlFile(const std::string &sBasicDir) {
+void ExportLibCliWebJS::exportSampleHtmlFile(const std::string &sBasicDir) {
     std::string sFilename = sBasicDir + "/sample.html";
     std::ofstream sample_html;
     std::cout << " * write code to " << sFilename << std::endl;
@@ -391,7 +394,7 @@ void ExportLibWsjCppCliWebJS::exportSampleHtmlFile(const std::string &sBasicDir)
 
 // ---------------------------------------------------------------------
 
-void ExportLibWsjCppCliWebJS::exportLibWsjCppCliWebJSFile(const std::string &sBasicDir) {
+void ExportLibCliWebJS::exportLibCliWebJSFile(const std::string &sBasicDir) {
 
     std::string sFilename = sBasicDir + "/dist/" + m_sPackageName + ".js";
     std::ofstream libwjscppcli_web_js_file;
@@ -718,3 +721,4 @@ void ExportLibWsjCppCliWebJS::exportLibWsjCppCliWebJSFile(const std::string &sBa
 
 // ---------------------------------------------------------------------
 
+} // namespace WsjCpp

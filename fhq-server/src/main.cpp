@@ -28,7 +28,7 @@
 #include <algorithm>
 #include <export_list_of_handlers.h>
 #include <export_struct_of_storage.h>
-#include <export_libwsjcppcli_web_js.h>
+#include <wsjcpp_export_libcli_web_js.h>
 #include <export_libwsjcppcli_py.h>
 #include <export_libwsjcppcli_java_android.h>
 #include <runtasks.h>
@@ -118,7 +118,7 @@ int main(int argc, char** argv) {
         pExportPython->exportLib();
         return 0;
     } else if (helpArgs.has("export-libfhqcli-web-javascript")) {
-        ExportLibWsjCppCliWebJS *pExportWebJS = new ExportLibWsjCppCliWebJS();
+        WsjCpp::ExportLibCliWebJS *pExportWebJS = new WsjCpp::ExportLibCliWebJS();
         pExportWebJS->setLibraryName("fhq");
         pExportWebJS->setPackageName("libfhqcli-web-js");
         pExportWebJS->setAuthor("FreeHackQuest Team");

@@ -1,11 +1,12 @@
-#ifndef EXPORT_LIBWSJCPPCLI_WEB_JS_H
-#define EXPORT_LIBWSJCPPCLI_WEB_JS_H
+#ifndef WSJCPP_EXPORT_LIBWSJCPPCLI_WEB_JS_H
+#define WSJCPP_EXPORT_LIBCLI_WEB_JS_H
 
 #include <string>
 
-class ExportLibWsjCppCliWebJS {
+namespace WsjCpp {
+class ExportLibCliWebJS {
     public:
-        ExportLibWsjCppCliWebJS();
+        ExportLibCliWebJS();
         void setPackageName(const std::string &sPackageName);
         void setLibraryName(const std::string &sLibraryName);
         void setAppName(const std::string &sAppName);
@@ -24,9 +25,11 @@ class ExportLibWsjCppCliWebJS {
 
         void exportPackageJson(const std::string &sBasicDir);
         void exportAPImd(const std::string &sBasicDir);
-        void exportLibWsjCppCliWebJSFile(const std::string &sBasicDir);
+        void exportLibCliWebJSFile(const std::string &sBasicDir);
         void exportSampleHtmlFile(const std::string &sBasicDir);
         void exportPrepareDirs(const std::string &sBasicDir);
 };
 
-#endif // EXPORT_LIBWSJCPPCLI_WEB_JS_H
+} // namespace WsjCpp
+
+#endif // WSJCPP_EXPORT_LIBCLI_WEB_JS_H
