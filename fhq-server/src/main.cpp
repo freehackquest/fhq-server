@@ -41,10 +41,14 @@ LightHttpServer g_httpServer;
 
 int main(int argc, char** argv) {
     Fallen::initRandom();
+    std::string appName(FHQSRV_APP_NAME);
+    std::string appVersion(FHQSRV_VERSION);
+    std::string appAuthor("FreeHackQuest Team");
+
     QCoreApplication a(argc, argv);
     std::string TAG = "MAIN";
-    Log::setPrefixLogFile("fhq-server");
-    std::string sLogDir = "/var/log/fhq-server"; 
+    Log::setPrefixLogFile(appName);
+    std::string sLogDir = "/var/log/" + appName;
     if (!Fallen::dirExists(sLogDir)) {
         Log::setLogDirectory(sLogDir);
         Log::err(TAG, "Directory '" + sLogDir + "' did'not exists");
@@ -53,8 +57,8 @@ int main(int argc, char** argv) {
     }
 
     FallenHelpParseArgs helpArgs(argc, argv);
-    helpArgs.setAppName(FHQSRV_APP_NAME);
-    helpArgs.setAppVersion(FHQSRV_VERSION);
+    helpArgs.setAppName(appName);
+    helpArgs.setAppVersion(appVersion);
 
     helpArgs.addHelp("help", "-h", FallenHelpParseArgType::SINGLE_OPTION, "This help");
     helpArgs.addHelp("version", "-v", FallenHelpParseArgType::SINGLE_OPTION, "Print version");
@@ -115,9 +119,11 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("export-libfhqcli-web-javascript")) {
         ExportLibWsjCppCliWebJS *pExportWebJS = new ExportLibWsjCppCliWebJS();
-        pExportWebJS->setLibraryName("libfhqcli-web-js");
+        pExportWebJS->setLibraryName("fhq");
+        pExportWebJS->setPackageName("libfhqcli-web-js");
         pExportWebJS->setAuthor("FreeHackQuest Team");
-        pExportWebJS->setVersion(std::string(FHQSRV_VERSION));
+        pExportWebJS->setAppName(appName);
+        pExportWebJS->setAppVersion(appVersion);
         pExportWebJS->setPrefixRepositoryURL("https://github.com/freehackquest/");
         pExportWebJS->exportLib();
         return 0;
