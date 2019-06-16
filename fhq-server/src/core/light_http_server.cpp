@@ -120,7 +120,7 @@ std::string LightHttpResponse::prepareHeaders(int nLength) {
     std::string sResponseCode = LightHttpResponse::g_mapReponseDescription->at(m_nResponseCode);
     return sResponseCode + "\r\n"
         "Date: " + m_sLastModified + "\r\n"
-        "Server: mecd\r\n"
+        "Server: wsjcpp\r\n"
         "Access-Control-Allow-Origin: *\r\n"
         "Cache-Control: " + m_sCacheControl + "\r\n"
         "Last-Modified: " + m_sLastModified + "\r\n" // TODO generate data
