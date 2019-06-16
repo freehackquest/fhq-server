@@ -1,7 +1,7 @@
 {
     "paths": [
         "fhq-server/src/",
-        "unit-tests/src/"
+        "fhq-server/unit-tests/src/"
     ],
     "exclude": [
         "fhq-server/src/core/3rdParty",
