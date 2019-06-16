@@ -16,7 +16,7 @@ try:
     fhqtest.print_header(" > > > " + test_name + ": begin ")
     fhqtest.init_enviroment()
 
-    fhqtest.clean_all_classbooks();
+    fhqtest.clean_all_classbooks()
 
     records = []
     for _ in range(10):
