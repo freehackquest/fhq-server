@@ -50,11 +50,9 @@ int main(int argc, char** argv) {
     Log::setPrefixLogFile(appName);
     std::string sLogDir = "/var/log/" + appName;
     if (!Fallen::dirExists(sLogDir)) {
-        Log::setLogDirectory(sLogDir);
-        Log::err(TAG, "Directory '" + sLogDir + "' did'not exists");
-    } else {
-        Log::setLogDirectory("./");
+        sLogDir = "./";
     }
+    Log::setLogDirectory(sLogDir);
 
     FallenHelpParseArgs helpArgs(argc, argv);
     helpArgs.setAppName(appName);

@@ -122,8 +122,8 @@ try:
     fhqtest.print_bold("Login by user2... ")
     user2_session = libfhqcli.FHQCli(fhqtest.TEST_SERVER)
     user2_login = user2_session.login({"email": "user2", "password": "user2"})
-    fhqtest.alert(user2_login == None, 'Could not login as user2')
-    fhqtest.alert(user2_login['result'] == 'FAIL', 'Could not login as user2 (fail)')
+    fhqtest.alert(user2_login == None, 'Could not login as user2 (1)')
+    fhqtest.alert(user2_login['result'] == 'FAIL', 'Could not login as user2 (2) (fail)')
     if user2_login['result'] == 'DONE':
         fhqtest.print_success("User2 login success - OK")
         user2_session.close()
