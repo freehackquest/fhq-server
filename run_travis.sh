@@ -48,7 +48,7 @@ check_ret $? "created public/games"
 check_ret $? "set server_folder"
 cd ..
 
-cd tests
+cd fhq-server-tests
 check_ret $? "Change directory to tests"
 ./update_libfhqcli.sh
 check_ret $? "update libfhqcli-python"
