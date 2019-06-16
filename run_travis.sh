@@ -25,6 +25,14 @@ check_ret $? "build unit-tests"
 check_ret $? "unit-tests"
 cd ..
 
+cd fhq-web-main
+check_ret $? "change directory to fhq-web-main"
+npm install
+check_ret $? "install requirements for fhq-web-main"
+npm run build
+check_ret $? "build fhq-web-main"
+cd ..
+
 cd fhq-server
 check_ret $? "change directory to fhq-server"
 qmake --version # TODO when will be removed all then qt need remove this line
@@ -46,3 +54,4 @@ check_ret $? "Change directory to tests"
 check_ret $? "update libfhqcli-python"
 python run_tests.py # run tests
 check_ret $? "tests"
+
