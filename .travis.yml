@@ -28,3 +28,7 @@ install:
 # Build your code e.g. by calling make
 script:
   - ./run_travis.sh
+
+notifications:
+  email:
+    - freehackquest@gmail.com
