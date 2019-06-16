@@ -2,10 +2,16 @@
 
 check_ret() {
     if [ $1 -ne 0 ]; then
-        echo "FAIL: $3"
+        echo ""
+        echo "!!! FAIL: $3"
+        echo "********************************************************************************"
+        echo ""
         exit $1
     else
-        echo "SUCCESS: $2"
+        echo ""
+        echo "*** SUCCESS: $2"
+        echo "********************************************************************************"
+        echo ""
     fi
 } 
 
@@ -17,12 +23,20 @@ check_ret $? "build code-check"
 check_ret $? "code-check"
 cd ..
 
-cd unit-tests
+cd fhq-server/unit-tests
 check_ret $? "change directory to unit-tests"
 ./build_simple.sh
 check_ret $? "build unit-tests"
 ./unit-tests
 check_ret $? "unit-tests"
+cd ../..
+
+cd fhq-web-main
+check_ret $? "change directory to fhq-web-main"
+npm install
+check_ret $? "install requirements for fhq-web-main"
+npm run build
+check_ret $? "build fhq-web-main"
 cd ..
 
 cd fhq-server
@@ -40,9 +54,10 @@ check_ret $? "created public/games"
 check_ret $? "set server_folder"
 cd ..
 
-cd tests
+cd fhq-server-tests
 check_ret $? "Change directory to tests"
 ./update_libfhqcli.sh
 check_ret $? "update libfhqcli-python"
 python run_tests.py # run tests
 check_ret $? "tests"
+

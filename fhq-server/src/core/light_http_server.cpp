@@ -120,7 +120,7 @@ std::string LightHttpResponse::prepareHeaders(int nLength) {
     std::string sResponseCode = LightHttpResponse::g_mapReponseDescription->at(m_nResponseCode);
     return sResponseCode + "\r\n"
         "Date: " + m_sLastModified + "\r\n"
-        "Server: mecd\r\n"
+        "Server: wsjcpp\r\n"
         "Access-Control-Allow-Origin: *\r\n"
         "Cache-Control: " + m_sCacheControl + "\r\n"
         "Last-Modified: " + m_sLastModified + "\r\n" // TODO generate data
@@ -431,6 +431,9 @@ void LightHttpRequest::parseFirstLine(const std::string &sHeader) {
 // LightHttpDequeRequests
 
 LightHttpRequest *LightHttpDequeRequests::popRequest() {
+    if (m_dequeRequests.size() == 0) {
+        m_mtxWaiterRequests.lock();
+    }
     std::lock_guard<std::mutex> guard(this->m_mtxDequeRequests);
     LightHttpRequest *pRequest = nullptr;
     int nSize = m_dequeRequests.size();
@@ -444,11 +447,17 @@ LightHttpRequest *LightHttpDequeRequests::popRequest() {
 // ----------------------------------------------------------------------
 
 void LightHttpDequeRequests::pushRequest(LightHttpRequest *pRequest) {
-    std::lock_guard<std::mutex> guard(this->m_mtxDequeRequests);
-    if (m_dequeRequests.size() > 20) {
-        Log::warn(TAG, " deque more than " + std::to_string(m_dequeRequests.size()));
+    {
+        std::lock_guard<std::mutex> guard(this->m_mtxDequeRequests);
+        if (m_dequeRequests.size() > 20) {
+            Log::warn(TAG, " deque more than " + std::to_string(m_dequeRequests.size()));
+        }
+        m_dequeRequests.push_front(pRequest);
     }
-    m_dequeRequests.push_front(pRequest);
+    
+    if (m_dequeRequests.size() == 1) {
+        m_mtxWaiterRequests.unlock();   
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -650,11 +659,11 @@ void LightHttpThreadWorker::run() {
             delete pResponse;
         }
 
-        if (!bExists) {
+        /*if (!bExists) {
             if (m_bStop) return;
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             if (m_bStop) return;
-        }
+        }*/
     }
 }
 

@@ -28,7 +28,7 @@
 #include <algorithm>
 #include <export_list_of_handlers.h>
 #include <export_struct_of_storage.h>
-#include <export_libwsjcppcli_web_js.h>
+#include <wsjcpp_export_libcli_web_js.h>
 #include <export_libwsjcppcli_py.h>
 #include <export_libwsjcppcli_java_android.h>
 #include <runtasks.h>
@@ -41,20 +41,22 @@ LightHttpServer g_httpServer;
 
 int main(int argc, char** argv) {
     Fallen::initRandom();
+    std::string appName(FHQSRV_APP_NAME);
+    std::string appVersion(FHQSRV_VERSION);
+    std::string appAuthor("FreeHackQuest Team");
+
     QCoreApplication a(argc, argv);
     std::string TAG = "MAIN";
-    Log::setPrefixLogFile("fhq-server");
-    std::string sLogDir = "/var/log/fhq-server"; 
+    Log::setPrefixLogFile(appName);
+    std::string sLogDir = "/var/log/" + appName;
     if (!Fallen::dirExists(sLogDir)) {
-        Log::setLogDirectory(sLogDir);
-        Log::err(TAG, "Directory '" + sLogDir + "' did'not exists");
-    } else {
-        Log::setLogDirectory("./");
+        sLogDir = "./";
     }
+    Log::setLogDirectory(sLogDir);
 
     FallenHelpParseArgs helpArgs(argc, argv);
-    helpArgs.setAppName(FHQSRV_APP_NAME);
-    helpArgs.setAppVersion(FHQSRV_VERSION);
+    helpArgs.setAppName(appName);
+    helpArgs.setAppVersion(appVersion);
 
     helpArgs.addHelp("help", "-h", FallenHelpParseArgType::SINGLE_OPTION, "This help");
     helpArgs.addHelp("version", "-v", FallenHelpParseArgType::SINGLE_OPTION, "Print version");
@@ -114,10 +116,12 @@ int main(int argc, char** argv) {
         pExportPython->exportLib();
         return 0;
     } else if (helpArgs.has("export-libfhqcli-web-javascript")) {
-        ExportLibWsjCppCliWebJS *pExportWebJS = new ExportLibWsjCppCliWebJS();
-        pExportWebJS->setLibraryName("libfhqcli-web-js");
+        WsjCpp::ExportLibCliWebJS *pExportWebJS = new WsjCpp::ExportLibCliWebJS();
+        pExportWebJS->setLibraryName("fhq");
+        pExportWebJS->setPackageName("libfhqcli-web-js");
         pExportWebJS->setAuthor("FreeHackQuest Team");
-        pExportWebJS->setVersion(std::string(FHQSRV_VERSION));
+        pExportWebJS->setAppName(appName);
+        pExportWebJS->setAppVersion(appVersion);
         pExportWebJS->setPrefixRepositoryURL("https://github.com/freehackquest/");
         pExportWebJS->exportLib();
         return 0;

@@ -667,7 +667,7 @@ bool WJSCppParseConfig::boolValue(const std::string &sParamName, bool defaultVal
     if (m_mapConfigValues.count(sParamName)) {
         std::string sParamValue = m_mapConfigValues.at(sParamName);
         std::transform(sParamValue.begin(), sParamValue.end(), sParamValue.begin(), ::tolower);
-        bResult = (sParamValue == "yes" || sParamValue == "no");
+        bResult = (sParamValue == "yes");
     } else {
         Log::warn(TAG, sParamName + " - not found in " + m_sFilepathConf + "\n\t Will be used default value: " + (defaultValue ? "yes" : "no"));
     }

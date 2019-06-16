@@ -127,6 +127,7 @@ class LightHttpDequeRequests {
         std::string TAG;
 
         std::mutex m_mtxDequeRequests;
+        std::mutex m_mtxWaiterRequests;
         std::deque<LightHttpRequest *> m_dequeRequests;
 };
 
