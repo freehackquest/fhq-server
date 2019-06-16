@@ -3,20 +3,10 @@
 
 import libfhqcli
 import fhqtest
-import sys, traceback
-import base64
-
-test_name = 'Testing Games'
+import libtestscoreboard
 
 try:
-    fhqtest.print_header(" > > > " + test_name + ": begin ")
     fhqtest.init_enviroment()
-
-    # Cleanup
-    fhqtest.print_bold("Clean up test data... ")
-    s = fhqtest.admin_session.scoreboard({"page": 0, "onpage": 10})
-    print(s)
-
+    libtestscoreboard.run_tests()
 finally:
-    fhqtest.print_header(" < < < " + test_name + ": end ")
     fhqtest.deinit_enviroment()

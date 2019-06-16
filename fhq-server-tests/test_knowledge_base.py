@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 import fhqtest
-import libtestquests
+import libtestknowledgebase
+
 try:
     fhqtest.init_enviroment()
-    libtestquests.run_tests()
+    libtestknowledgebase.run_tests()
 finally:
     fhqtest.deinit_enviroment()

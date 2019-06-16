@@ -9,12 +9,9 @@ import json
 from pprint import pprint
 import random
 
-test_name = 'Testing Classbook'
+test_name = 'Testing Knowledge Base'
 
-user2_session = None
-try:
-    fhqtest.print_header(" > > > " + test_name + ": begin ")
-    fhqtest.init_enviroment()
+def run_tests():
 
     fhqtest.clean_all_classbooks()
 
@@ -265,8 +262,3 @@ try:
         exit(-1)
     '''
     fhqtest.clean_all_classbooks()
-finally:
-    fhqtest.print_header(" < < < " + test_name + ": end ")
-    fhqtest.deinit_enviroment()
-    if user2_session != None:
-        user2_session.close()

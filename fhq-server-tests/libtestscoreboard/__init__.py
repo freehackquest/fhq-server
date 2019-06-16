@@ -10,13 +10,11 @@ import zipfile
 import shutil
 import json
 from pprint import pprint
-import libtestusefullinks
 
-try:
-    fhqtest.init_enviroment()
-    libtestusefullinks.run_tests()
-finally:
-    fhqtest.deinit_enviroment()
+test_name = 'Testing Scoreboard'
 
-test_name = 'Testing Useful Links'
-
+def run_tests():
+    # Cleanup
+    fhqtest.print_bold("Clean up test data... ")
+    s = fhqtest.admin_session.scoreboard({"page": 0, "onpage": 10})
+    print(s)
