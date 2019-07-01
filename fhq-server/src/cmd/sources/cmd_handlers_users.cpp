@@ -1047,7 +1047,7 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest) {
 
     {
         QSqlQuery query(db);
-        query.prepare("SELECT q.subject, sum(q.score) as sum_subject FROM quest q WHERE ! ISNULL( q.subject ) GROUP BY q.subject");
+        query.prepare("SELECT q.subject, sum(q.score) as sum_subject FROM quest q WHERE ! ISNULL( q.subject ) AND (q.state = 'open') GROUP BY q.subject");
         if (!query.exec()) {
             pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
             return;
