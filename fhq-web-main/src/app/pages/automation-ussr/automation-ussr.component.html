@@ -1,0 +1,78 @@
+<div class="automation-ussr-image"></div>
+<br/><br/><br/><br/><br/>
+<h1>
+  <div class="d-inline-block" l10nTranslate>automationUssr</div> - 
+  <div class="d-inline-block" l10nTranslate>description</div>
+</h1>
+
+<a class="btn btn-link" routerLink="/automation-ussr" l10nTranslate>description</a>
+<a class="btn btn-link" routerLink="/automation-ussr-presentation" l10nTranslate>automationUssr_presentation</a>
+<a class="btn btn-link" routerLink="/automation-ussr-rating" l10nTranslate>automationUssr_scoreboard</a>
+
+<div class="card">
+  <div class="card-header" l10nTranslate>description</div>
+  <div class="card-body">
+      <p l10nTranslate>automationUssrHello</p>
+
+      <p l10nTranslate>automationUssrDescriptionText</p>
+      <p l10nTranslate>automationUssrDescription_prezentation</p>
+      <p><a routerLink="/automation-ussr-presentation" l10nTranslate>automationUssr_presentation</a></p>
+      
+      <p l10nTranslate>automationUssrDescription_sourcecode</p>
+      <p><a href="assets/automation_ussr/v20151221.zip">Download v20151221.zip</a></p>
+      
+      <p l10nTranslate>automationUssrDescription_where</p>
+  </div>
+</div>
+<br>
+<div class="card">
+    <div class="card-header" l10nTranslate>rules</div>
+    <div class="card-body">
+      <p l10nTranslate>automationUssrRules_1</p>
+      <p l10nTranslate>automationUssrRules_2</p>
+      <p l10nTranslate>automationUssrRules_3</p>
+      <p l10nTranslate>automationUssrRules_4</p>
+      <p l10nTranslate>automationUssrRules_5</p>
+      <p l10nTranslate>automationUssrRules_6</p>
+      <p l10nTranslate>automationUssrRules_7</p>
+      <p l10nTranslate>automationUssrRules_8</p>
+      <p l10nTranslate>automationUssrRules_9</p>
+      <p l10nTranslate>automationUssrRules_10</p>
+      <p l10nTranslate>automationUssrRules_11</p>
+      <a routerLink="/automation-ussr-rating" l10nTranslate>automationUssr_scoreboard</a>
+  </div>
+</div>
+
+<br>
+<div class="card">
+    <div class="card-header" l10nTranslate>registration</div>
+    <div class="card-body">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" #regUsername value="" placeholder="username">
+        <div class="input-group-append">
+          <button class="btn btn-primary" (click)="requestRegistration()" type="button" l10nTranslate>automationUssr_getToken</button>
+        </div>
+      </div>
+      <div *ngIf="resultOfregistration != ''" class="alert alert-success"> {{ resultOfregistration }} </div>
+      <div *ngIf="errorResultOfregistration != ''" class="alert alert-danger"> {{ errorResultOfregistration }} </div>
+  </div>
+</div>
+
+<br>
+<div class="card">
+    <div class="card-header" l10nTranslate>automationUssr_acceptFlags</div>
+    <div class="card-body">
+      <div class="input-group mb-3">
+        <input type="text" #afToken class="form-control" placeholder="TOKEN">
+        <input type="text" #afFlag class="form-control" placeholder="FLAG">
+        <div class="input-group-append">
+          <button class="btn btn-primary" (click)="sendFlag()" type="button" l10nTranslate>automationUssr_sendFlag</button>
+        </div>
+      </div>
+      <div *ngIf="resultOfSendFlag != ''" class="alert alert-success"> {{ resultOfSendFlag }} </div>
+      <div *ngIf="errorResultOfSendFlag != ''" class="alert alert-danger"> {{ errorResultOfSendFlag }} </div>
+      <p l10nTranslate>automationUssr_sendFlagViaLink</p>
+      <a class="btn btn-link" href="https://freehackquest.com/automation-ussr/api/v1/flag/?token=your_token&flag=someflag">https://freehackquest.com/automation-ussr/api/v1/flag/?token=your_token&flag=someflag</a>
+
+  </div>
+</div>

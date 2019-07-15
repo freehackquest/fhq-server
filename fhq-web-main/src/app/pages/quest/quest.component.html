@@ -1,0 +1,234 @@
+<nav aria-label="breadcrumb" *ngIf="errorMessage == null">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a routerLink="/quests" l10nTranslate>quests</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a routerLink="/game/{{ game.id }}">{{ game.title }}</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a routerLink="/quests/{{ quest.subject }}">{{ quest.subject }}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        [quest#{{ quest.id }}] {{ quest.name }} +{{ quest.score }}
+      <div *ngIf="quest.completed === true" class="card-subtitle mb-2 text-muted d-inline"> (Задача завершена) </div>
+    </li>
+  </ol>
+</nav>
+
+<div *ngIf="errorMessage != null" class="alert alert-danger">
+  {{ errorMessage }}
+  <br>
+  Try open <a class="btn btn-link" routerLink="/quests" l10nTranslate>quests</a>
+</div>
+
+<div *ngIf="errorMessage == null" class="ya-share2" 
+  data-services="collections,vkontakte,facebook,odnoklassniki,moimir,twitter,blogger,delicious,digg,reddit,evernote,linkedin,lj,pocket,qzone,renren,sinaWeibo,surfingbird,tencentWeibo,tumblr,viber,whatsapp,skype,telegram"></div>
+
+<hr *ngIf="errorMessage == null">
+<div *ngIf="errorMessage == null">
+  <div class="row">
+    <div class="col">
+      <strong l10nTranslate>questName</strong>: <label> {{ quest.name }}</label>
+    </div>
+    <div class="col">
+      <strong l10nTranslate>questSubject</strong>: <label> {{ quest.subject }}</label>
+    </div>
+    <div class="col">
+      <strong l10nTranslate>questScore</strong>: <label> +{{ quest.score }}</label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <strong l10nTranslate>questStatus</strong>: 
+      <label *ngIf="quest.completed === true"> решена ({{ quest.dt_passed }})</label>
+      <label *ngIf="quest.completed === false"> не решена</label>
+    </div>
+    <div class="col">
+      <strong l10nTranslate>questState</strong>: <label l10nTranslate>quest_{{ quest.state }}</label>
+    </div>
+    <div class="col">
+      <strong l10nTranslate>author</strong>: <label> {{ quest.author }}</label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <strong l10nTranslate>copyright</strong>: <label> {{ quest.copyright }}</label>
+    </div>
+    <div class="col">
+      <strong l10nTranslate>solved</strong>: <label>{{ quest.count_user_solved }} users</label>
+    </div>
+    <div class="col">
+        <div class="btn btn-danger" (click)="openDialogFeedback()" l10nTranslate>reportAboutBug</div>
+    </div>
+  </div>
+  <hr>
+  <div [innerHtml]="questDescription"></div>
+</div>
+
+<div *ngIf="questFiles.length > 0">
+  <table class="table">
+    <thead>
+      <tr>
+        <th l10nTranslate>filename</th>
+        <th l10nTranslate>filesize</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let qf of questFiles">
+        <td><a target="_blank" href="{{ qf.filepath }}" class="btn btn-link">{{ qf.filename }}</a></td>
+        <td>{{ qf.size }} bytes</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<br *ngIf="errorMessage == null"/>
+
+<div *ngIf="questHints.length > 0">
+  <ul class="list-group" *ngIf="showHints == false">
+    <li class="list-group-item d-flex justify-content-between align-items-center" (click)="switchShowHints()">
+      <div class="d-inline-block btn-link" l10nTranslate>questHints</div>
+      <span class="badge badge-primary badge-pill">{{ questHints.length }}</span>
+    </li>
+  </ul>
+
+  <ul class="list-group" *ngIf="showHints == true">
+    <li class="list-group-item d-flex justify-content-between align-items-center" (click)="switchShowHints()">
+      <div class="d-inline-block btn-link" l10nTranslate>questHints</div>
+      <span class="badge badge-primary badge-pill">{{ questHints.length }}</span>
+    </li>
+    <li class="list-group-item" *ngFor="let qh of questHints">Hint {{ qh.num }}: {{ qh.text }}</li>
+  </ul>
+</div>
+
+<br/>
+
+<div *ngIf="quest.completed !== true && errorMessage == null && _fhq.isAuthorized">
+  <hr/>
+  <div class="form-group">
+    <label l10nTranslate>questAnswer</label>
+    <input type="text" #questAnswer class="form-control" />
+    <p class="form-text text-muted">
+      <label l10nTranslate>questAnswerFormat</label>:
+      {{ quest.answer_format }}
+    </p>
+  </div>
+  <div class="btn btn-primary" (click)="checkAnswer()" l10nTranslate>questCheckAnswer</div>
+  <div class="alert alert-danger" *ngIf="errorCheckAnswerMessage != null">
+    {{ errorCheckAnswerMessage }}
+  </div>
+</div>
+<div *ngIf="errorMessage == null && !_fhq.isAuthorized">
+    <label l10nTranslate>questAnswer</label>
+    <div class="alert alert-danger" *ngIf="!_fhq.isAuthorized">
+      <label l10nTranslate>pleaseAuthorize</label>
+      <div class="btn btn-primary" (click)="openDialogSignIn()" l10nTranslate>signin</div>
+    </div>
+</div>
+
+
+<br/>
+
+<div *ngIf="errorMessage == null && _fhq.isAuthorized">
+  <br/>
+  <ul class="list-group">
+    <li class="list-group-item d-flex justify-content-between align-items-center" (click)="switchShowMyAnswers()">
+      <div class="d-inline-block btn btn-link" l10nTranslate>questMyAnswers</div>
+    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-danger" 
+      *ngIf="showMyAnswers == false && errorAnswersMessage != null">
+      {{ errorAnswersMessage }}
+    </li>
+    <li class="list-group-item list-group-item-light" *ngIf="showMyAnswers == true && questMyAnswers.length == 0" l10nTranslate>questMyAnswersNotFound</li>
+    <li class="list-group-item" *ngFor="let qw of questMyAnswers">
+        <div class="media">
+            <iframe class="mr-3" type="text/html" width="640" height="360"
+              [src]="qw.iframe_link"
+              frameborder="0" allowfullscreen></iframe>
+            <div class="media-body">
+              <h5 class="mt-0">[writeup#{{ qw.writeupid }}]</h5>
+              <p> Original link: <a href="{{ qw.link }}">{{ qw.link }}</a> </p>
+              <p> Datetime: {{ qw.dt }} (UTC) </p>
+              <p> By user: [user#{{ qw.userid }}] {{ qw.user_nick }} </p>
+            </div>
+          </div>
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="errorMessage == null">
+  <br/>
+  <ul class="list-group">
+    <li class="list-group-item d-flex justify-content-between align-items-center" (click)="switchShowWriteUps()">
+      <div class="d-inline-block btn btn-link" l10nTranslate>questWriteUps</div>
+    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-danger" 
+      *ngIf="showWriteUps == false && errorWriteUpsMessage != null">
+      {{ errorWriteUpsMessage }}
+    </li>
+    <li class="list-group-item" *ngIf="showWriteUps == true">
+        <input class="form-control" #questWriteUpProposalLink 
+          type="url" value="" placeholder="https://www.youtube.com/watch?v=gJeOeTGI7T8" />
+        <br/>
+        <div class="btn btn-info" (click)="proposalWriteUp()" l10nTranslate>questProposalWriteUpLink</div>
+        <div class="alert alert-danger" *ngIf="errorProposalWriteUpMessage != null"> {{ errorProposalWriteUpMessage }} </div>
+    </li>
+    <li class="list-group-item" *ngFor="let qw of questWriteUps">
+        <div class="media">
+          <iframe class="mr-3" type="text/html" width="640" height="360"
+            [src]="qw.iframe_link"
+            frameborder="0" allowfullscreen></iframe>
+          <div class="media-body">
+            <h5 class="mt-0">[writeup#{{ qw.writeupid }}]</h5>
+            <p> Original link: <a href="{{ qw.link }}">{{ qw.link }}</a> </p>
+            <p> Datetime: {{ qw.dt }} (UTC) </p>
+            <p> By user: [user#{{ qw.userid }}] {{ qw.user_nick }} </p>
+          </div>
+        </div>
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="errorMessage == null">
+    <br/>
+    <ul class="list-group">
+      <li class="list-group-item d-flex justify-content-between align-items-center" (click)="switchShowStatistics()">
+        <div class="d-inline-block btn btn-link" l10nTranslate>questStatistics</div>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-danger" 
+        *ngIf="showStatistics == false && errorStatisticsMessage != null">
+        {{ errorStatisticsMessage }}
+      </li>
+      <li class="list-group-item" *ngIf="showStatistics == true">
+        <div>
+          <label l10nTranslate>questStatisticsSolved</label>
+          ({{ questStatistics.solved }}):
+        </div>
+        <div class="progress">
+          <div class="progress-bar bg-success" role="progressbar" 
+              [ngStyle]="{'width': questStatistics.solvedProcent + '%' }"
+              aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <br/>
+        <div>
+          <label l10nTranslate>questStatisticsTries</label>
+          ({{ questStatistics.tries }}):
+        </div>
+        <div class="progress">
+          <div class="progress-bar bg-info" role="progressbar" 
+            [ngStyle]="{'width': questStatistics.triesProcent + '%' }"
+            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <hr/>
+        <label l10nTranslate>questStatisticsUsersSolvedQuest</label>
+        <div *ngFor="let u of questStatistics.users">
+            <!-- [user#{{ u.userid }}] --> {{ u.university != '' ? '[' +  u.university + ']' : '' }} {{ u.nick }}
+        </div>
+      </li>
+    </ul>
+  </div>
+
+<br/>
+<br/>
+<br/>

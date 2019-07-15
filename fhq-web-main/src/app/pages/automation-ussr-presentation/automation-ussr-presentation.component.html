@@ -1,0 +1,270 @@
+<div class="automation-ussr-image"></div>
+<br/><br/><br/><br/><br/>
+<h1>
+  <div class="d-inline-block" l10nTranslate>automationUssr</div> - 
+  <div class="d-inline-block" l10nTranslate>automationUssr_presentation</div>
+</h1>
+
+<a class="btn btn-link" routerLink="/automation-ussr" l10nTranslate>description</a>
+<a class="btn btn-link" routerLink="/automation-ussr-presentation" l10nTranslate>automationUssr_presentation</a>
+<a class="btn btn-link" routerLink="/automation-ussr-rating" l10nTranslate>automationUssr_scoreboard</a>
+
+<div class="card">
+    <div class="card-header" >План</div>
+    <div class="card-body">
+      <ul>
+        <li>Лекция (30-60 мин)</li>
+        <li>Практикуемся (2 часа)</li>
+        <li>Подведение итогов (30-60 мин)</li>
+      </ul>
+  </div>
+</div>
+<br/>
+
+<div class="card">
+    <div class="card-header">Классический подход к сдачи флагов на игре</div>
+    <div class="card-body">
+      <p>В классическом подходе: игроки взаимодействуют непосредственно с жюрейной системой</p>
+      <img src="assets/img/automation_ussr_usually_game.png"/>
+      <h3>Недостатки классического подхода к сдачи флагов на игре</h3>
+      <ul>
+        <li>Невозможно (или сложно) отследить какие флаги кем были сданы</li>
+        <li>Повторная сдача флагов отнимает время</li>
+        <li>Если журейная система была недоступна то найденные флаги за это время не были сданы.</li>
+        <li>Нагрузка на журейную систему и внешний канал.</li>
+      </ul>
+  </div>
+</div>
+<br/>
+
+<div class="card">
+    <div class="card-header">Тезис</div>
+    <div class="card-body">
+        <p>Один из аспектов победы умение правильно и хорошо автоматизировать атаку на сервисы противника.</p>     
+  </div>
+</div>
+<br/>
+
+<div class="card">
+    <div class="card-header">Советы</div>
+    <div class="card-body">
+      <ul>
+        <li>Атаку лучше всего проводить вдвоем или втроем.</li>
+        <li>На изучение сервиса тратьте около 30 минут, прежде чем перейти к другому сервису.</li>
+        <li>Старайтесь не паниковать и “не бегать” от одного сервеса к другому наводя панику в команде.</li>
+        <li>Тихонько сидите и разбираетесь с сервисом.</li>
+        <li>Делайте время от времени перерывы.</li>
+        <li>Незабывайте документировать – что бы потом составить интересный writeup и поделиться им с командой после игры.</li>
+      </ul>
+  </div>
+</div>
+<br/>
+
+<div class="card">
+  <div class="card-header">План действий</div>
+  <div class="card-body">
+    <ul>
+      <li>Выбирать сервис</li>
+      <li>Узнать список host'ов или ip'шниками противников</li>
+      <li>Добыть исходники (или бинари)</li>
+      <li>Изучить протокол работы сервиса</li>
+      <li>Либо изучить исходники</li>
+      <li>Либо “руками” разобрать что да как работает</li>
+      <li>Найти где лежат флаги, попытаться сдать любой флаг</li>
+      <li>Найти уязвимость (если есть)</li>
+      <li>Написать автоматизацию (незабывайте о правилах: Dos-атаки запрещены)</li>
+      <li>Отдыхаете а ваш скрипт работает</li>
+    </ul>
+  </div>
+</div>
+<br/>
+
+<div class="card">
+  <div class="card-header">Проблемы</div>
+  <div class="card-body">
+    <ul>
+        <li>Для новичков (я тоже когда то им был) все кажется достаточно сложным из-за нехватка информации и инструкций</li>
+        <li>На текущий момент не так много игр такого типа проходят онлайн</li>
+        <li>Практически никто из новичков ни разу нормально не писал автоматизацию. Хотя ничего сверхестественного в этом нет – дело практики.</li>
+        <li>12-24 часов игры мало для того что бы освоить базовые навыки написания скриптов самостоятельно.</li>
+    </ul>
+  </div>
+</div>
+<br/>
+
+<div class="card">
+  <div class="card-header">Решение</div>
+  <div class="card-body">
+    <ul>
+      <li>Поднять тестовый упрощенный сервис (без уязвимостей) </li>
+      <li>Вся необходимая информация здесь: https://freehackquest.com/automation-ussr/</li>
+      <li>Сам сервис распологается на том же сервере.</li>
+      <li>Сервис будет поднят на протяжении некоторого времени, что бы вы могли неторопясь попробовать и понять как лучше автоматизировать.</li>
+    </ul>
+  </div>
+</div>
+<br/>
+
+<div class="card">
+  <div class="card-header">Некоторые полезные утилиты</div>
+  <div class="card-body">
+    <ul>
+      <li>“nmap” – сканер портов</li>
+      <li>“telnet” - сетевой клиент</li>
+      <li>“nc” - сетевой клиент</li>
+      <li>“nano” - консольный текстовой редактор</li>
+    </ul>
+  </div>
+</div>
+<br/>
+
+<div class="card">
+  <div class="card-header">Утилита “nmap”</div>
+  <div class="card-body">
+      <h3>“nmap” сканирование на стандартные порты</h3>
+      <img src="assets/img/automation_ussr_nmap.png"/>
+      
+      <h3>“nmap” сканирование на определенные порты с 100 по 200</h3>
+      <img src="assets/img/automation_ussr_nmap_100200.png"/>
+  </div>
+</div>
+<br/>
+
+
+<div class="card">
+  <div class="card-header">Утилита “telnet”</div>
+  <div class="card-body">
+      <h3>“telnet” подключаемся к 127.0.0.1 на 80 порт (web server) и отправляем “dd” ему</h3>
+      <img src="assets/img/automation_ussr_telnet80.png">
+  </div>
+</div>
+<br/>
+
+<div class="card">
+  <div class="card-header">Утилита “nc”</div>
+  <div class="card-body">
+    <h3>“nc” подключаемся к 127.0.0.1 на 80 порт (web server) и отправляем “dd” ему</h3>
+    <img src="assets/img/automation_ussr_nc80.png"/>
+  </div>
+</div>
+<br/>
+
+<div class="card">
+  <div class="card-header">Утилита “nano”</div>
+  <div class="card-body">
+    <ul>
+      <li>“nano filename” - Oткрыть файл для редактирования</li>
+      <li>Ctrl+O – Сохранить (Записать изменения в файл)</li>
+      <li>Ctrl+X – Выйти из редактора</li>
+    </ul>
+    <img src="assets/img/automation_ussr_nano.png"/>
+  </div>
+</div>
+<br/>
+
+<div class="card">
+  <div class="card-header">Автоматизация (на чем?)</div>
+  <div class="card-body">
+    <ul>
+      <li><strong>“python” (рассмотрим на его примере)</strong></li>
+      <li>“bash”</li>
+      <li>“c++”</li>
+      <li>“php”</li>
+      <li>“nodejs”</li>
+      <li>“C#”</li>
+      <li>Все что умеет работать с сетью</li>
+    </ul>
+  </div>
+</div>
+<br/>
+
+<div class="card">
+  <div class="card-header">Знакомство с Python (linux)</div>
+  <div class="card-body">
+    <ul>
+      <li>Создаем файл командой “touch automation.py”</li>
+      <li>Даем права на выполнения “chmod +x automation.py“</li>
+      <li>Закидываем код (см следующий слайд)</li>
+      <li>Выполнить скрипт: “./automation.py”</li>
+    </ul>
+  </div>
+</div>
+<br/>
+
+<div class="card">
+  <div class="card-header">Знакомство с Python (Привет Мир!)</div>
+  <div class="card-body">
+    <img src="assets/img/automation_ussr_python_hello_world.png"/>
+  </div>
+</div>
+<br/>
+
+<div class="card">
+  <div class="card-header">Знакомство с Python (сеть)</div>
+  <div class="card-body">
+    <img src="assets/img/automation_ussr_python_network.png"/>
+  </div>
+</div>
+<br/>
+
+<div class="card">
+<div class="card-header">Знакомство с Python (парсинг данных)</div>
+  <div class="card-body">
+    <img src="assets/img/automation_ussr_python_regexp.png"/>
+  </div>
+</div>
+<br/>
+
+<div class="card">
+<div class="card-header">Алгоритм работы скрипта автоматизации</div>
+  <div class="card-body">
+    <ul>
+      <li>Условно его можно разделить на несколько блоков-обработчиков</li>
+      <li>Блок первый: получение списка id флагов с атакуемого сервиса</li>
+      <li>Блок второй: получение флагов по id</li>
+      <li>Блок третий: сдача флагов в журейную систему</li>
+      <li>В каждом блоке лучше всего использовать  промежуточную базу данных, которая будет хранить промежуточную информацию так как за повторную сдачу нас ждет штраф</li>  
+    </ul>
+    <hr/>
+    <h3>Блок первый</h3>
+    <img width="100%" src="assets/img/automation_ussr_algorithm_block1.png"/>
+    <hr/>
+    <h3>Блок второй</h3>
+    <img width="100%" src="assets/img/automation_ussr_algorithm_block2.png"/>
+    <hr/>
+    <h3>Блок третий</h3>
+    <img width="100%" src="assets/img/automation_ussr_algorithm_block3.png"/>
+    <hr/>
+    <h3>Начало скрипта</h3>
+    <img src="assets/img/automation_ussr_script00.png"/>
+    <hr/>
+    <h3>Блок первый (получение id)</h3>
+    <img src="assets/img/automation_ussr_script10.png"/>
+    <hr/>
+    <h3>Блок первый (получение флагов)</h3>
+    <img src="assets/img/automation_ussr_script11.png"/>
+    <hr/>
+    <h3>Блок второй</h3>
+    <img src="assets/img/automation_ussr_script20.png"/>
+    <hr/>
+    <h3>Блок третий</h3>
+    <img src="assets/img/automation_ussr_script30.png"/>
+  </div>
+</div>
+<br/>
+
+<div class="card">
+  <div class="card-header">Правила тренировки</div>
+  <div class="card-body">
+    <ul>
+      <li>“ip” - используйте доменное имя вместо ip-адреса freehackquest.com</li>
+      <li>Большая часть информации находиться на сайте</li>
+      <li>Регистрация: сохраняем свой токен – он пригодится при сдачи флагов</li>
+      <li>Не стесняемся задавать вопросы</li>
+      <li>Скрипты оставляем на память </li>
+    </ul>
+  </div>
+</div>
+<br>
+
+<h1>Спасибо за внимание!</h1>

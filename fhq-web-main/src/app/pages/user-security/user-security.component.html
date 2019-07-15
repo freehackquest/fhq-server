@@ -1,0 +1,16 @@
+<h1 l10nTranslate>security</h1>
+
+<div class="alert alert-danger" *ngIf="userId == 0">
+  Please authorize
+  <div class="btn btn-primary" (click)="openDialogSignIn()" l10nTranslate>signin</div>
+</div>
+<div class="row">
+  <div class="col-lg-2">
+    <app-user-profile-menu></app-user-profile-menu>
+  </div>
+  <div class="col-lg-10">
+    <app-user-location></app-user-location>
+    <br>
+    <app-user-change-password></app-user-change-password>
+  </div>
+</div>

@@ -1,0 +1,62 @@
+<div class="form-group row">
+  <div class="col-sm-4"></div>
+  <div class="col-sm-4">
+      <h1 l10nTranslate>registration</h1>
+  </div>
+  <div class="col-sm-4"></div>
+</div>
+
+<div class="form-group row" *ngIf="!successRegistered">
+  <div class="col-sm-4"></div>
+  <div class="col-sm-4">
+    <label class="col-form-label" l10nTranslate>registrationEmail</label>
+    <input type="email" class="form-control" value="" id="regEmail" #regEmail>
+  </div>
+  <div class="col-sm-4"></div>
+</div>
+
+<div class="form-group row" *ngIf="!successRegistered">
+  <div class="col-sm-4"></div>
+  <div class="col-sm-4">
+    <label class="col-form-label" l10nTranslate>registrationUniversity</label>
+    <input type="text" #regUniversity class="form-control" value="">
+  </div>
+  <div class="col-sm-4"></div>
+</div>
+
+<div class="form-group row" *ngIf="!successRegistered">
+  <div class="col-sm-4"></div>
+  <div class="col-sm-4 text-center">
+    <div class="btn btn-primary" (click)="registryTry()" l10nTranslate>registrationGo</div>
+  </div>
+  <div class="col-sm-4"></div>
+</div>
+
+<div class="form-group row" *ngIf="errorMessage != null">
+  <div class="col-sm-4"></div>
+  <div class="col-sm-4 text-center">
+    <div class="alert alert-danger">{{ errorMessage }} </div>
+  </div>
+  <div class="col-sm-4"></div>
+</div>
+
+<div class="form-group row" *ngIf="successRegistered">
+  <div class="col-sm-4"></div>
+  <div class="col-sm-4 text-center">
+      Please check your mailbox (also look in spam)
+  </div>
+  <div class="col-sm-4"></div>
+</div>
+
+
+<hr>
+<div class="form-group row">
+  <div class="col-sm-4"></div>
+  <div class="col-sm-4 text-center">
+    <p>Add star to projet on <a href="https://github.com/freehackquest/fhq-server/stargazers">https://github.com/freehackquest/fhq-server/stargazers</a></p>
+  </div>
+  <div class="col-sm-4"></div>
+</div>
+
+<app-block-contact-us></app-block-contact-us>
+

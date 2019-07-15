@@ -1,0 +1,39 @@
+
+<nav aria-label="breadcrumb" *ngIf="errorMessage == null">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a routerLink="/quests" l10nTranslate>quests</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        {{ subject }} ({{ count }} quests)
+    </li>
+  </ol>
+</nav>
+
+<button class="btn btn-secondary" routerLink="/quest-proposal" l10nTranslate>proposalQuest</button>
+<br>
+<br>
+
+<table class="table table-hover table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Score and Name</th>
+      <th>Solved</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tr *ngFor="let q of dataList"
+    [class.table-success]="q.status !== 'completed'"
+    [ngStyle]="{'text-decoration':q.status === 'completed' ? 'line-through' : 'none', 'cursor': 'pointer' }"
+    routerLink="/quest/{{ q.questid }}"
+  >
+    <td>[quest#{{ q.questid }}]</td>
+    <td>({{ subject + ' +' + q.score }}) {{ q.name }} </td>
+    <td>{{ q.solved }}</td>
+    <td>{{ q.status }}</td>
+  </tr>
+</table>
+
+<br/>
+<br/>

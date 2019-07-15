@@ -1,0 +1,38 @@
+<h1 l10nTranslate>gamesListPage</h1>
+<!--
+<form class="form-inline waves-light" mdbWavesEffect>
+  <div class="md-form mt-0">
+    <input 
+      class="form-control mr-sm-2" 
+      type="text" 
+      placeholder="Search"
+      [formControl]="searchControl"
+      [value]="searchValue"
+    >
+  </div>
+</form>
+
+<br>
+
+<div>
+    <button class="btn btn-link" [disabled]="currentPage==0" (click)="prevPage()">Prev</button>
+    <div class="d-inline-block">{{ currentPage+1 }} of {{ countPages }} pages </div>
+    <button class="btn btn-link" [disabled]="currentPage>=countPages" (click)="nextPage()">Next</button>
+</div>
+-->
+
+<table class="table">
+  <tbody>
+    <tr *ngFor="let g of dataList">
+      <td width=60px>
+        <img width=100px height=100px src="{{ g.logo }}">
+      </td>
+      <td>
+        <h3>{{ g.name }} (Maximum score: {{ g.maxscore }}) </h3>
+        <small>{{ g.date_start }} (UTC) - {{ g.date_stop }} (UTC) </small><br>
+        <small>Organiators: {{ g.organizators }} </small><br>
+        <strong>{{ g.description }}</strong>
+      </td>
+    </tr>
+  </tbody>
+</table>

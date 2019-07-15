@@ -1,0 +1,43 @@
+<h1 l10nTranslate>chatPage</h1>
+<!-- 
+<div class="card">
+  <div class="card-header">Bugs</div>
+  <div class="card-body">
+    If you found some problem or bug please send mail to: <b>freehackquest@gmail.com</b><br>
+    Or create issues: <a href="https://github.com/freehackquest/fhq-server/issues">GitHub fhq-server</a>
+    <br> 	Or create issues: <a href="https://github.com/freehackquest/frontend/issues">GitHub fhq-frontend</a><br>
+  </div>
+</div>
+-->
+
+<div #chatMessages class="chat-messages">
+  <div *ngFor="let d of dataList">
+    <table width="100%">
+      <tr>
+        <td>
+            <strong>{{ d.user }}</strong>
+        </td>
+        <td class="text-right">
+          <small>{{ d.dt }} (UTC)</small>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-left" colspan="2">
+            {{ d.message }}
+            <hr/>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+<br/>
+
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon1" l10nTranslate>yourMessage</span>
+  </div>
+  <input type="text" class="form-control" (keyup.enter)="sendMessage()" #yourMessage value="">
+  <div class="input-group-append">
+    <button class="btn btn-primary" (click)="sendMessage()" type="button" l10nTranslate>send</button>
+  </div>
+</div>

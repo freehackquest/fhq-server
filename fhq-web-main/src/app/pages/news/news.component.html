@@ -1,0 +1,35 @@
+<h1 l10nTranslate>news</h1>
+
+<form class="form-inline waves-light" mdbWavesEffect>
+  <div class="md-form mt-0">
+    <input 
+      class="form-control mr-sm-2" 
+      type="text" 
+      placeholder="Search"
+      [formControl]="searchControl"
+      [value]="searchValue"
+    >
+  </div>
+</form>
+
+<br>
+
+<div>
+    <button class="btn btn-link" [disabled]="currentPage==0" (click)="prevPage()">Prev</button>
+    <div class="d-inline-block">{{ currentPage+1 }} of {{ countPages }} pages </div>
+    <button class="btn btn-link" [disabled]="currentPage>=countPages" (click)="nextPage()">Next</button>
+</div>
+
+<table class="table">
+  <tbody>
+    <tr *ngFor="let n of dataList">
+      <td width=60px>
+        <img width=50px height=50px src="assets/img/event_{{ n.type }}.png">
+      </td>
+      <td>
+        <small>{{ n.dt }} (UTC)</small><br>
+        <strong>{{ n.message }}</strong>
+      </td>
+    </tr>
+  </tbody>
+</table>

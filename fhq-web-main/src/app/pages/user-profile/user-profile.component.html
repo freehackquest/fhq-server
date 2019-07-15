@@ -1,0 +1,69 @@
+<h1 l10nTranslate>yourProfile</h1>
+<div class="alert alert-danger" *ngIf="userId == 0">
+  Please authorize
+  <div class="btn btn-primary" (click)="openDialogSignIn()" l10nTranslate>signin</div>
+</div>
+
+<div class="row">
+  <div class="col-lg-2">
+    <app-user-profile-menu></app-user-profile-menu>
+  </div>
+
+  <div class="col-lg-10">
+    <div class="card" *ngIf="userId != 0">
+      <div class="card-body">
+        <div class="row no-gutters">
+          <div class="col-auto">
+            <img src="{{ userLogo }}" class="img-fluid" alt="">
+          </div>
+          <div class="col">
+            <div class="card-block px-2">
+              <h4 class="card-title">{{ userNick }} (Rating: {{ userRating }}) </h4>
+              <p class="card-text">User {{ userStatus }}. User has {{ userRole }} privileges.</p>
+              <p class="card-text">
+                <!-- TODO link to public user page -->
+                <small> [user#{{ userId }}] </small> or <small> [user#{{ userUuid }}] </small>
+              </p>
+              <p class="card-text">
+                <small>Last Login:</small><small> {{ userDtLastLogin }} (UTC) </small>
+              </p>
+              <p *ngIf="userAbout == ''">Информация отсутсвует</p>
+              {{ userAbout }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="card" *ngIf="userId != 0">
+      <div class="card-header" l10nTranslate>changeUserInfo</div>
+      <div class="card-body">
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label" l10nTranslate>nick</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" value="{{ userNick }}" #userNewNick />
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label" l10nTranslate>university</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" value="{{ userUniversity }}" #userNewUniversity />
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label" l10nTranslate>aboutUser</label>
+          <div class="col-sm-10">
+            <textarea type="text" class="form-control" value="{{ userAbout }}" #userNewAbout></textarea>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label"></label>
+          <div class="col-sm-10">
+            <div class="btn btn-danger" (click)="doChangeUserInfo()" l10nTranslate>changeUserInfo</div>
+            <div class="alert alert-danger" *ngIf="resultOfChangeUserInfo != null">{{ resultOfChangeUserInfo }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

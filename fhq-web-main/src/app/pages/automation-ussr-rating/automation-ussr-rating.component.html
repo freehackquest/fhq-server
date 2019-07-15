@@ -1,0 +1,36 @@
+<div class="automation-ussr-image"></div>
+<br/><br/><br/><br/><br/>
+<h1>
+  <div class="d-inline-block" l10nTranslate>automationUssr</div> - 
+  <div class="d-inline-block" l10nTranslate>automationUssr_scoreboard</div>
+</h1>
+
+<a class="btn btn-link" routerLink="/automation-ussr" l10nTranslate>description</a>
+<a class="btn btn-link" routerLink="/automation-ussr-presentation" l10nTranslate>automationUssr_presentation</a>
+<a class="btn btn-link" routerLink="/automation-ussr-rating" l10nTranslate>automationUssr_scoreboard</a>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Звание</th>
+      <th>Рейтинг</th>
+      <th>Имя</th>
+      <th>Аттака</th>
+      <th>Штраф</th>
+      <th>Попытки</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let r of ratingList">
+      <td>
+        <img width=50px src="assets/img/{{ findPogon(r.score).img }}">
+        {{ findPogon(r.score).title }}
+      </td>
+      <td>{{ r.score }}</td>
+      <td>{{ r.name }}</td>
+      <td>{{ r.attack }}</td>
+      <td style="background-color: #f8d7da;">{{ r.shtraf }}</td>
+      <td>{{ r.tries }}</td>
+    </tr>
+  </tbody>
+</table>

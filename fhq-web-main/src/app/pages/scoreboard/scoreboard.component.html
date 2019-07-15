@@ -1,0 +1,24 @@
+<h1 l10nTranslate>scoreboard</h1>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th width="180px">Place and Score</th>
+      <th>Users</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let r of dataList">
+      <td width="180px">
+        <strong> {{ r.place }} [{{ r.rating }} points] </strong>
+      </td>
+      <td>
+        <div *ngFor="let u of r.users">
+            <img src="{{ u.logo }}">
+            {{ u.university != "" ? '[' + u.university + ']' : '' }} {{ u.nick }}
+            <!-- logo: "files/users/0.png", nick: "lithium", rating: 31645, university: "", userid: 754 -->
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
