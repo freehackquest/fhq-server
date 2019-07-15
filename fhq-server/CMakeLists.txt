@@ -224,9 +224,10 @@ list (APPEND FHQSRV_SOURCES "src/storages/updates/update_u0100_mhd92m15nb.h")
 list (APPEND FHQSRV_SOURCES "src/storages/updates/update_u0100_mhd92m15nb.cpp")
 
 # web-server
+list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_user_folder.cpp")
+list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_user_folder.h")
 list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_admin_folder.cpp")
 list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_admin_folder.h")
-
 
 # main
 list (APPEND FHQSRV_SOURCES "src/main.cpp")
