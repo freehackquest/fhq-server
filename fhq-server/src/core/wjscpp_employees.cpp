@@ -145,6 +145,7 @@ EmployServerConfig::EmployServerConfig()
     m_nWeb_port = 7080;
     m_nWeb_max_threads = 4;
     m_sWeb_admin_folder = "/usr/share/fhq-server/web-admin";
+    m_sWeb_user_folder = "/usr/share/fhq-server/fhq-web-user";
 }
 
 // ---------------------------------------------------------------------
@@ -255,6 +256,17 @@ bool EmployServerConfig::init() {
     } else {
         Log::info(TAG, "Web: web_admin_folder " + m_sWeb_admin_folder);
     }
+
+    m_sWeb_user_folder = parseConfig.stringValue("web_user_folder", m_sWeb_user_folder);
+    if (m_sWeb_user_folder.length() > 0 && m_sWeb_user_folder[0] != '/') {
+        m_sWeb_user_folder = m_sWorkDir + "/" + m_sWeb_user_folder;
+    }
+    if (!Fallen::dirExists(m_sWeb_user_folder)) {
+        Log::err(TAG, "Wrong option 'web_user_folder', because folder '" + m_sWeb_user_folder + "' does not exists");
+        return false;
+    } else {
+        Log::info(TAG, "Web: web_user_folder " + m_sWeb_user_folder);
+    }
     return true;
 }
 
@@ -358,6 +370,12 @@ int EmployServerConfig::webMaxThreads() {
 
 std::string EmployServerConfig::webAdminFolder() {
     return m_sWeb_admin_folder;
+}
+
+// ---------------------------------------------------------------------
+
+std::string EmployServerConfig::webUserFolder() {
+    return m_sWeb_user_folder;
 }
 
 // ---------------------------------------------------------------------

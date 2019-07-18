@@ -1,20 +1,32 @@
-FROM debian:9.5
+FROM debian:10.0
+WORKDIR /root/
+
+RUN apt-get update && \
+    apt-get install -y curl
+
+RUN curl -sL https://deb.nodesource.com/setup_12.x -o setup_node_12x.sh && bash setup_node_12x.sh
 
 # basic libs
-
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     make cmake \
-    g++ \
+    gcc g++ \
+    curl \
     pkg-config \
     libcurl4-openssl-dev \
     zlibc zlib1g zlib1g-dev \
     libpng-dev \
     default-libmysqlclient-dev \ 
     libwebsockets-dev \
-    apt-utils
+    apt-utils \
+    gcc g++ \
+    build-essential \
+    nodejs
 
-# install qt5\
+RUN node --version
+RUN npm --version
+
+# install qt5\src/app/pages/quest-proposal/
 
 RUN apt-get install -y \
     libqt5sql5-mysql \
@@ -23,31 +35,36 @@ RUN apt-get install -y \
     qt5-default \
     qtchooser
 
-# Fix for building on debian system (mysqlclient library)
-RUN ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/mariadb.pc /usr/lib/x86_64-linux-gnu/pkgconfig/mysqlclient.pc
+# Fix for building on debian 9.5 system (mysqlclient library)
+# RUN ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/mariadb.pc /usr/lib/x86_64-linux-gnu/pkgconfig/mysqlclient.pc
 
-COPY ./fhq-server /root/sources
-WORKDIR /root/sources
+COPY ./fhq-server /root/fhq-server
+WORKDIR /root/fhq-server
 RUN ./clean.sh && ./build_simple.sh
 
-FROM debian:9.5
+COPY ./fhq-web-user /root/fhq-web-user
+WORKDIR /root/fhq-web-user
+RUN npm install && npm run build
+
+FROM debian:10.0
 
 LABEL "maintainer"="FreeHackQuest Team <freehackquest@gmail.com>"
 LABEL "repository"="https://github.com/freehackquest/fhq-server"
 
-COPY --from=0 /root/sources/fhq-server /usr/bin/fhq-server
+COPY --from=0 /root/fhq-server/fhq-server /usr/bin/fhq-server
 RUN mkdir -p /usr/share/fhq-server
 COPY ./web-admin /usr/share/fhq-server/web-admin
+COPY --from=0 /root/fhq-web-user/dist /usr/share/fhq-server/fhq-web-user
 RUN mkdir -p /usr/share/fhq-server/public/games 
 RUN mkdir -p /var/log/fhq-server
 
 RUN apt-get update && \
     apt-get install -y \
-    libcurl3 \
+    libcurl4 \
     zlibc \
     zlib1g \
     libpng16-16 \
-    libmariadbclient18 \
+    libmariadb3 \
     libpthread-stubs0-dev \
     locales
 

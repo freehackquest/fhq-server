@@ -33,6 +33,7 @@
 #include <export_libwsjcppcli_java_android.h>
 #include <runtasks.h>
 #include <light_http_server.h>
+#include <http_handler_web_user_folder.h>
 #include <http_handler_web_admin_folder.h>
 #include <jobs_pool.h>
 #include <fallen.h>
@@ -311,6 +312,8 @@ int main(int argc, char** argv) {
         Log::info(TAG, "Starting web-server on " + std::to_string(pConfig->webPort())
              + " with " + std::to_string(pConfig->webMaxThreads()) + " worker threads");
         g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebAdminFolder(pConfig->webAdminFolder()));
+        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebUserFolder(pConfig->webUserFolder()));
+        
         g_httpServer.setPort(pConfig->webPort());
         g_httpServer.setMaxWorkers(pConfig->webMaxThreads());
         g_httpServer.start(); // will be block thread*/

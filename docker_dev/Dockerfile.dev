@@ -1,6 +1,13 @@
-FROM debian:9.5
+FROM debian:10.0
 LABEL "maintainer"="FreeHackQuest Team <freehackquest@gmail.com>"
 LABEL "repository"="https://github.com/freehackquest/fhq-server"
+
+WORKDIR /root/
+
+RUN apt-get update && \
+    apt-get install -y curl
+
+RUN curl -sL https://deb.nodesource.com/setup_12.x -o setup_node_12x.sh && bash setup_node_12x.sh
 
 # basic libs
 
@@ -27,7 +34,7 @@ RUN apt-get install -y \
     qtchooser
 
 # Fix for building on debian system (mysqlclient library)
-RUN ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/mariadb.pc /usr/lib/x86_64-linux-gnu/pkgconfig/mysqlclient.pc
+# RUN ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/mariadb.pc /usr/lib/x86_64-linux-gnu/pkgconfig/mysqlclient.pc
 
 RUN sed -i -e "s/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" /etc/locale.gen && \
     echo 'LANG="en_US.UTF-8"'>/etc/default/locale && \

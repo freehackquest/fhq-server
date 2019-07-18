@@ -108,6 +108,7 @@ class EmployServerConfig : public EmployBase {
         int webPort();
         int webMaxThreads();
         std::string webAdminFolder();
+        std::string webUserFolder();
 
     private:
         std::string TAG;
@@ -137,6 +138,7 @@ class EmployServerConfig : public EmployBase {
         int m_nWeb_port;
         int m_nWeb_max_threads;
         std::string m_sWeb_admin_folder;
+        std::string m_sWeb_user_folder;
 };
 
 #endif // EMPLOYEES_H

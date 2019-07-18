@@ -1,0 +1,44 @@
+<h1 l10nTranslate>newFeedback</h1>
+
+<div *ngIf="errorMessage != null" class="alert alert-danger" color="#ff0000"> {{ errorMessage }} </div>
+
+<div class="card" *ngIf="sendedFeedback" class="alert alert-success">
+  Thanks for your feedback! 
+  <div class="btn btn-primary" (click)="sendNewFeedback()">Write new feedback</div>
+</div>
+
+<div class="card" *ngIf="!sendedFeedback">
+  <div class="card-body">
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" l10nTranslate>feedbackTarget</label>
+      <div class="col-sm-10">
+        <select #feedbackTarget class="form-control">
+          <option value="question" l10nTranslate>feedbackTargetQuestion</option>
+          <option value="complaint" l10nTranslate>feedbackTargetComplaint</option>
+          <option value="defect" l10nTranslate>feedbackTargetDefect</option>
+          <option value="error" l10nTranslate>feedbackTargetError</option>
+          <option value="approval" l10nTranslate>feedbackTargetApproval</option>
+          <option value="proposal" l10nTranslate>feedbackTargetProposal</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" l10nTranslate>feedbackFrom</label>
+      <div class="col-sm-10">
+        <input type="email" #feedbackFrom placeholder="youmail@domain.com" class="form-control" value="{{ _fhq.userdata.email ? _fhq.userdata.email : '' }}" [readonly]="_fhq.isAuthorized">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label" l10nTranslate>feedbackMessage</label>
+      <div class="col-sm-10">
+        <textarea type="text" #feedbackMessage placeholder="Message" class="form-control" style="height: 150px" value=""></textarea>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label"></label>
+      <div class="col-sm-10">
+        <div class="btn btn-danger" (click)="sendFeedback()" l10nTranslate>send</div>
+      </div>
+    </div>
+  </div>
+</div>

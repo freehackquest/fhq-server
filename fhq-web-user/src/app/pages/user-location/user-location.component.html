@@ -1,0 +1,19 @@
+<div class="card" *ngIf="userId != 0">
+  <div class="card-header" l10nTranslate>userLocation</div>
+  <div class="card-body">
+    <p *ngIf="userCountry == '' && userRegion == '' && userCity == '' && userLastIp == ''" l10nTranslate>notDetected
+    </p>
+    <div *ngIf="userLastIp != ''">
+      <div class="d-inline-block" l10nTranslate>userLastIp</div> {{ userLastIp }}
+    </div>
+    <div *ngIf="userCountry != ''">
+      <div class="d-inline-block" l10nTranslate>userCountry</div> {{ userCountry }}
+    </div>
+    <div *ngIf="userRegion != ''">
+      <div class="d-inline-block" l10nTranslate>userRegion</div> {{ userRegion }}
+    </div>
+    <div *ngIf="userCity != ''">
+      <div class="d-inline-block" l10nTranslate>userCity</div> {{ userCity }}
+    </div>
+  </div>
+</div>

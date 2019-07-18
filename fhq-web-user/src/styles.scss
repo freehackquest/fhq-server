@@ -1,0 +1,159 @@
+.fhq-content {
+    margin-top: 85px;
+    margin-bottom: 50px;
+    height: auto;
+}
+
+.fhq-page-loader {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2000;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+}
+
+.fhq-page-loader-tbl {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+.fhq-page-loader-cell {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.btn {
+    cursor: pointer;
+}
+
+.user-logo {
+    border-radius: 20px;
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+}
+
+.automation-ussr-image {
+    background: url("assets/img/automation_ussr.png");
+    width: 100%;
+    height: 200px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.navbar-brand-fullname {
+    display: inline-block;
+    padding-left: 10px;
+    @media (max-width: 576px) {
+        display: none;
+    }
+}
+
+.navbar-brand-shortname {
+    display: inline-block;
+    padding-left: 10px;
+    @media (min-width: 576px) {
+        display: none;
+    }
+}
+
+.nav-link {
+    cursor: pointer;
+}
+
+footer {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    color: rgba(255,255,255,.5);
+}
+
+.map {
+    border: 1px solid black;
+}
+
+.quest-subject-card {
+    display: inline-block;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 10px;
+    vertical-align: top;
+    min-width: 350px;
+    text-align: center;
+    background-repeat: no-repeat;
+    background-size: 100px 100px;
+    background-position: 10 10;
+    background-image: url(./assets/img/quest_subject_unknown.png);
+    padding-left: 120px;
+    height: auto;
+    min-height: 120px;
+    width: 100%;
+    cursor: pointer;
+    transition: all 1s;
+    @media (min-width: 576px) {
+        width: calc(50% - 40px);
+    }
+}
+
+.quest-subject-card:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+    background-color: rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.quest-subject-card.admin {
+    background-image: url(./assets/img/quest_subject_admin.png);
+}
+
+.quest-subject-card.crypto {
+    background-image: url(./assets/img/quest_subject_crypto.png);
+}
+
+.quest-subject-card.enjoy {
+    background-image: url(./assets/img/quest_subject_enjoy.png);
+}
+
+.quest-subject-card.forensics {
+    background-image: url(./assets/img/quest_subject_forensics.png);
+}
+
+.quest-subject-card.hashes {
+    background-image: url(./assets/img/quest_subject_hashes.png);
+}
+
+.quest-subject-card.network {
+    background-image: url(./assets/img/quest_subject_network.png);
+}
+
+.quest-subject-card.ppc {
+    background-image: url(./assets/img/quest_subject_ppc.png);
+}
+
+.quest-subject-card.recon {
+    background-image: url(./assets/img/quest_subject_recon.png);
+}
+
+.quest-subject-card.reverse {
+    background-image: url(./assets/img/quest_subject_reverse.png);
+}
+
+.quest-subject-card.stego {
+    background-image: url(./assets/img/quest_subject_stego.png);
+}
+
+.quest-subject-card.trivia {
+    background-image: url(./assets/img/quest_subject_trivia.png);
+}
+
+.quest-subject-card.web {
+    background-image: url(./assets/img/quest_subject_web.png);
+}

@@ -1,0 +1,30 @@
+
+<!-- Modal --> 
+<div class="modal-header">
+  <h5 class="modal-title" l10nTranslate>signin</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="_activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="form-group">
+      <label for="signinEmailInput" l10nTranslate>emailAddress</label>
+      <input type="email" #signinEmail class="form-control" id="signinEmailInput" aria-describedby="emailHelp" placeholder="Enter email">
+  </div>
+  <div class="form-group">
+      <label for="signinPasswordInput" l10nTranslate>password</label>
+      <input type="password" #signinPassword class="form-control" placeholder="Enter password">
+      <small style="text-align: right; color: blue; cursor: pointer" (click)="openResetPasswordPage()" class="form-text text-muted" l10nTranslate>resetPassword</small>
+  </div>
+  <div *ngIf="errorMessage != null" class="alert alert-danger" color="#ff0000"> {{ errorMessage }} </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" (click)="signInGo()" l10nTranslate>signin</button>
+  or
+  <button class="btn btn-link" (click)="openResgistrationPage()" l10nTranslate>registration</button>
+  <button type="button" class="btn btn-secondary" (click)="_activeModal.close('Close click')" data-dismiss="modal" l10nTranslate>close</button> 
+</div>
+
+<div class="modal-body">
+  <app-block-contact-us></app-block-contact-us>
+</div>

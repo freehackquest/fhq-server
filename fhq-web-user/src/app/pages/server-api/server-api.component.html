@@ -1,0 +1,109 @@
+<h1>FreeHackQuest API (version: {{ apiVersion }})</h1>
+
+<div class="card">
+  <div class="card-header">WebSocket Connection</div>
+  <div class="card-body">
+    Connection string: 
+    <ul>
+      <li>Non-secure: <code>ws://{{ serverHost }}:{{ serverWsPort }}/ </code></li>
+      <li *ngIf="serverWssPort > 0">Secure: <code>wss://{{ serverHost }}:{{ serverWssPort }}/</code></li>
+    </ul>
+    Example javascript connection to api:
+    <pre><code>var messageCounter = 1;
+var fhqSocket = new WebSocket("ws://{{ serverHost }}:{{ serverWsPort }}/");
+function fhq_login(socket) {{ '{' }}
+  socket.send(JSON.stringify({{ '{' }}
+    "cmd": "login",
+    "m": "m" + messageCounter,
+    "email": "username",
+    "password": "userpassword"
+  {{ '}' }}))
+  messageCounter++;
+{{ '}' }}
+
+fhqSocket.onopen = function() {{ '{' }}
+  console.log('WS Opened');
+  fhq_login(fhqSocket);
+{{ '}' }}
+
+fhqSocket.onclose = function(event) {{ '{' }}
+  console.log(event.wasClean ? 'CLOSED' : 'BROKEN');
+  console.error('Code: ' + event.code + ' Reason: ' + event.reason);
+{{ '}' }}
+
+fhqSocket.onmessage = function(event) {{ '{' }}
+  try {{ '{' }}
+    var response = JSON.parse(event.data);
+    console.log('Received: ', response);
+  {{ '}' }} catch(e) {{ '{' }}
+    console.error(e);
+  {{ '}' }}
+{{ '}' }}
+fhqSocket.onerror = function(error) {{ '{' }}
+  console.err('Error: ', error);
+{{ '}' }};
+</code></pre>
+  </div>
+</div>
+<br>
+<div class="card">
+    <div class="card-header">Implementations</div>
+    <div class="card-body">
+      <ul>
+        <li>
+          <a target="_blank" href="https://www.npmjs.com/package/libfhqcli-web-js">npm/javascript</a> - for web client
+        </li>
+        <li>
+          <a target="_blank" href="https://pypi.org/project/libfhqcli/">python</a> - for python client
+        </li>
+        <li>
+          <a target="_blank" href="https://github.com/freehackquest/libfhqcli-java-android">java/android</a> - for java android client (in progress)
+        </li>
+      </ul>
+    </div>
+</div>
+<br>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Commands</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let h of apisList">
+      <td>
+        <strong>{{ h.cmd }} </strong> - {{ h.description }} <br>
+            
+        <a class="btn btn-link" 
+            data-toggle="collapse" href="{{ '#moreInfo' + h.cmd }}" role="button"
+            aria-expanded="false">More info</a>
+        <div class="collapse multi-collapse" id="{{ 'moreInfo' + h.cmd }}">
+          <div class="card card-body">
+            <p>Access:</p>
+            <ul>
+              <li>Unauthorized:
+                <div *ngIf="!h.access_unauthorized" class="alert alert-danger">deny</div>
+                <div *ngIf="h.access_unauthorized" class="alert alert-success">allow</div>
+              </li>
+              <li>User: 
+                <div *ngIf="!h.access_user" class="alert alert-danger">deny</div>
+                <div *ngIf="h.access_user" class="alert alert-success">allow</div>
+              </li>
+              <li>Admin:
+                <div *ngIf="!h.access_admin" class="alert alert-danger">deny</div>
+                <div *ngIf="h.access_admin" class="alert alert-success">allow</div>
+              </li>
+            </ul>
+            <p>Input params:</p>
+            <ul>
+              <li *ngFor="let i of h.inputs">
+                <strong>{{ i.type }}</strong>
+                "{{ i.name }}" ({{ i.restrict}}) - {{ i.description }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>

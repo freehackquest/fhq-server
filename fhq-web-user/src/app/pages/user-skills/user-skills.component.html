@@ -1,0 +1,35 @@
+<h1 l10nTranslate>security</h1>
+
+<div class="alert alert-danger" *ngIf="userId == 0">
+  Please authorize
+  <div class="btn btn-primary" (click)="openDialogSignIn()" l10nTranslate>signin</div>
+</div>
+<div class="row">
+  <div class="col-lg-2">
+    <app-user-profile-menu></app-user-profile-menu>
+  </div>
+  <div class="col-lg-10">
+    <div class="card" *ngIf="userId != 0">
+      <div class="card-header" l10nTranslate>skills</div>
+      <div class="card-body">
+        <div class="alert alert-danger" *ngIf="resultOfUserSkills != null"> {{ resultOfUserSkills }} </div>
+        <table class="table">
+          <tr *ngFor="let skill of userSkills">
+            <td>
+              {{ skill.name }}<br>
+              {{ skill.procent }}%
+            </td>
+            <td width="100%">
+              <div class="progress">
+                <div class="progress-bar" role="progressbar" [ngStyle]="{'width': skill.procent + '%' }" aria-valuemin="0" aria-valuemax="100">
+                  {{ skill.procent }}%
+                </div>
+              </div>
+              {{ skill.val }} <span l10nTranslate>of</span> {{ skill.max }} <span l10nTranslate>points</span>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

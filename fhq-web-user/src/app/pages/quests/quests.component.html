@@ -1,0 +1,13 @@
+<h1 l10nTranslate>quests</h1>
+
+<button class="btn btn-secondary" routerLink="/quest-proposal" l10nTranslate>proposalQuest</button>
+<hr>
+<div class="card quest-subject-card {{ qs.subject }}" *ngFor="let qs of dataList">
+  <div class="card-body" routerLink="/quests/{{ qs.subject }}">
+    <h4 class="card-title">{{ qs.subject }}</h4>
+    <p class="card-text">
+      <label class="text-muted">({{ qs.count }} quests)</label><br>
+      <label l10nTranslate>descrQuestsSubject_{{ qs.subject }}</label>
+    </p>
+  </div>
+</div>
