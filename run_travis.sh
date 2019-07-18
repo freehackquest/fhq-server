@@ -31,6 +31,8 @@ check_ret $? "build unit-tests"
 check_ret $? "unit-tests"
 cd ../..
 
+# hardcode for build travis
+mkdir fhq-web-user/dist
 # cd fhq-web-user
 # check_ret $? "change directory to fhq-web-user"
 # npm install
