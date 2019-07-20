@@ -120,9 +120,6 @@
                                 <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
                                     <a href="#" class="connection-item"><img src="assets/images/mail_chimp.png" alt="" ><span>Mail chimp</span></a>
                                 </div>
-                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                    <a href="#" class="connection-item"><img src="assets/images/slack.png" alt="" > <span>Slack</span></a>
-                                </div>
                             </div>
                         </li>
                         <li>
@@ -247,6 +244,10 @@
                     <li class="nav-item">
                         <a class="nav-link main-menu" id="menu_useful_links" href="javascript:void(0);" onclick="fhq.pages.useful_links()">Useful Links</a>
                     </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link main-menu" id="menu_knowledge_base" href="javascript:void(0);" onclick="fhq.pages.knowledge_base()">Knowledge Base</a>
+                    </li>
 
                     <li class="nav-item">
                         <a class="nav-link main-menu" id="menu_settings" href="javascript:void(0);" onclick="fhq.pages.settings()">Settings</a>
@@ -361,7 +362,7 @@
 </div>
     
     
-<div class="fhq-page-loader">
+<div class="fhq-page-loader" id="fhq_page_loader">
 </div>
     <script defer src="./js/libs/jquery-3.1.0.min.js"></script>
     <script defer src="./js/libs/popper.min.js"></script>
@@ -372,6 +373,7 @@
     <script defer src="./js/fhq.admin.js"></script>
     <script defer src="./js/fhq.admin.users.js"></script>
     <script defer src="./js/fhq.admin.users_answers.js"></script>
+    <script defer src="./js/fhq.admin.knowledge_base.js"></script>
     <script defer src="./js/fhq.admin.games.js"></script>
     <script defer src="./js/fhq.admin.mails.js"></script>
     <script defer src="./js/fhq.admin.settings.js"></script>
@@ -382,5 +384,94 @@
     <script defer src="./js/fhq.admin.server.js"></script>
     <script defer src="./js/fhq.admin.version.js"></script>
     <script defer src="./js/fhq.ws.admin.js"></script>
+    <script src="./js/libs/libfhqcli-web-js.js"></script>
+    <script>
+        var _hostname = window.location.hostname;
+        var _protocol = window.location.protocol;
+        var _connectionState = '';
+        
+        function showLoader() {
+            document.getElementById('fhq_page_loader').style.display = 'block';
+        }
+
+        function hideLoader() {
+            setTimeout(function() {
+                document.getElementById('fhq_page_loader').style.display = 'none';
+            },100);
+        }
+
+        function connectToServer() {
+            console.log("connectToServer");
+            showLoader();
+            if (_connectionState == 'OK') {
+                _connectionState = 'BROKEN';
+            } else {
+                _connectionState = 'WAIT';
+            }
+
+            var _baseUrl = 'ws://' + _hostname + ':1234/api-ws/';
+            if (_protocol == "https:") {
+                _baseUrl = 'wss://' + _hostname + ':4613/api-wss/';
+            }
+
+            if (_hostname == 'freehackquest.com') {
+                _baseUrl = 'wss://freehackquest.com/api-wss/';
+            }
+            // _baseUrl = 'wss://freehackquest.com/api-wss/';
+            // _baseUrl = 'ws://freehackquest.com/api-ws/';
+
+            fhq.init({'baseUrl': _baseUrl});
+        }
+       
+
+        fhq.bind('connected', function() {
+            _connectionState = 'OK';
+            hideLoader();
+            // fhq.processParams();
+        });
+        fhq.bind('disconnected', connectToServer);
+        fhq.bind('broken', function() {
+            _connectionState = 'BROKEN';
+            showLoader();
+        });
+
+        fhq.bind('reconnecting', function() {
+            _connectionState = 'RECONN';
+            showLoader();
+        });
+
+        fhq.bind('userdata', function(data) {
+            /*console.log("updateUserData: ", data);
+            this.isAuthorized = data.nick != undefined;
+            this.userdata = data;
+            this.changedState.emit();*/
+
+            // (data: any) => this.updateUserData(data)
+        });
+        fhq.bind('notify', function(data) {
+            console.log(data);
+
+            /*if (data.type === 'info') {
+            this._toastr.info(data.message)
+            } else if (data.type === 'success') {
+            this._toastr.success(data.message)
+            } else if (data.type === 'danger') {
+            this._toastr.error(data.message)
+            } else if (data.type === 'warning') {
+            this._toastr.warning(data.message)
+            } else {
+            // unknown type of message
+            this._toastr.warning(data.message)
+            }*/
+            // (data: any) => this.showNotification(data)
+        });
+        
+        connectToServer();
+
+        function logout() {
+            fhq.deinit();
+            window.location.reload();
+        }
+    </script>
 </body>
 </html>
