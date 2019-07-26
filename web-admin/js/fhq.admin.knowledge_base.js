@@ -144,7 +144,7 @@ fhq.pages['knowledge_base'] = function(){
 				+ '	<td>' + kbi.proposals + '</td>'
 				+ '	<td> '
 				+ '    <div class="btn btn-primary kbi-open" kbid="' + kbi.classbookid + '">Open</div>'
-				+ '    <div class="btn btn-danger kbi-delete">Delete</div>'
+				+ '    <div class="btn btn-danger kbi-delete" kbid="' + kbi.classbookid + '">Delete</div>'
 				+ ' </td>'
 				+ '</tr>'
 			)
@@ -160,13 +160,15 @@ fhq.pages['knowledge_base'] = function(){
 		})
 
 		$('.kbi-delete').unbind().bind('click', function() {
-			alert('TODO');
-			/*var kbid = parseInt($(this).attr('kbid'),10);
-			window.fhq.changeLocationState({
-				'knowledge_base': '',
-				'parentid': kbid,
+			var kbid = parseInt($(this).attr('kbid'),10);
+			fhq.classbook_delete_record({
+				"classbookid": kbid
+			}).done(function(r) {
+				console.log('Success: ', r);
+				fhq.pages['knowledge_base']();
+			}).fail(function(err){
+				console.error('Error:', err);
 			});
-			fhq.pages['knowledge_base']();*/
 		})
 
 	}).fail(function(r){
