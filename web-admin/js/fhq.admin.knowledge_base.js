@@ -1,6 +1,33 @@
 if(!window.fhq) window.fhq = {};
 if(!fhq.pages) fhq.pages = [];
 
+if(!window.fhqadmin) window.fhqadmin = {};
+
+fhqadmin.knowledge_base_load_current_item = function(kbid) {
+	var el = $('#current_kb_item');
+	el.html('');
+	fhq.ws.classbook_info({
+		"classbookid": kbid,
+	}).done(function(r) {
+		
+		var breadcrumb = '<nav aria-label="breadcrumb"><ol class="breadcrumb">';
+		for(var i in r.data.parents) {
+			var p = r.data.parents[i];
+			breadcrumb += '<li class="breadcrumb-item"><a class="btn-link" href="?knowledge_base=&onpage=5&page=0&parentid=' + p.classbookid + '">' + p.name + '</a></li>';
+		}
+		breadcrumb += '<li class="breadcrumb-item active" aria-current="page">' + r.data.name + '</li>';
+		breadcrumb += '</ol></nav>';
+		el.append(breadcrumb);
+		el.append('<h1>' + r.data.name + '</h1>');
+
+
+		console.log('Success: ', r);
+	}).fail(function(err){
+		el.append('<div class="alert alert-danger">' + err.error + '</div>');
+		console.error('Error:', err);
+	});
+}
+
 fhq.pages['knowledge_base'] = function(){
 	$('.nav-link.main-menu').removeClass("active");
 	$('#menu_knowledge_base').addClass("active");
@@ -46,29 +73,38 @@ fhq.pages['knowledge_base'] = function(){
 		fhq.hideLoader();
 		
 		el.html('');
-		el.append(''
-			+ '<div>'
-			+ '   <input id="knowledge_base_search" class="form-control" type="text" placeholder="Search...">'
-			+ '</div><br>'
-		);
-		$('#knowledge_base_search').val(knowledge_base_filter);
-		$('#knowledge_base_search').unbind().bind('keyup', function(e){
-			var new_filter = $('#knowledge_base_search').val();
-			if (new_filter != quests_filter) {
-				window.fhq.changeLocationState({
-					'knowledge_base': '',
-					'onpage': onpage,
-					'page': page,
-					'filter': new_filter,
-				});
-				setTimeout(function() {
-					if ($('#knowledge_base_search').val() == new_filter) {
-						fhq.pages['knowledge_base']();
-					}
-				}, 500);
-			}
-		});
-		$('#knowledge_base_search').focus();
+		if (parentid == 0) {
+			el.append(''
+				+ '<div>'
+				+ '   <input id="knowledge_base_search" class="form-control" type="text" placeholder="Search...">'
+				+ '</div><br>'
+			);
+			$('#knowledge_base_search').val(knowledge_base_filter);
+			$('#knowledge_base_search').unbind().bind('keyup', function(e){
+				var new_filter = $('#knowledge_base_search').val();
+				if (new_filter != quests_filter) {
+					window.fhq.changeLocationState({
+						'knowledge_base': '',
+						'onpage': onpage,
+						'page': page,
+						'filter': new_filter,
+					});
+					setTimeout(function() {
+						if ($('#knowledge_base_search').val() == new_filter) {
+							fhq.pages['knowledge_base']();
+						}
+					}, 500);
+				}
+			});
+			$('#knowledge_base_search').focus();
+		} else {
+			el.append(''
+				+ '<div id="current_kb_item">'
+				+ '</div><br>'
+			);
+			fhqadmin.knowledge_base_load_current_item(parentid);
+		}
+		
 		el.append(''
 			+ '<div class="btn btn-primary" id="knowledge_base_create"><i class="fa fa-plus"></i> New item</div> '
 		);
@@ -106,6 +142,10 @@ fhq.pages['knowledge_base'] = function(){
 				+ '	<td>' + kbi.name + '</td>'
 				+ '	<td>' + kbi.childs + '</p></td>'
 				+ '	<td>' + kbi.proposals + '</td>'
+				+ '	<td> '
+				+ '    <div class="btn btn-primary kbi-open" kbid="' + kbi.classbookid + '">Open</div>'
+				+ '    <div class="btn btn-danger kbi-delete">Delete</div>'
+				+ ' </td>'
 				+ '</tr>'
 			)
 		}
@@ -118,6 +158,17 @@ fhq.pages['knowledge_base'] = function(){
 			});
 			fhq.pages['knowledge_base']();
 		})
+
+		$('.kbi-delete').unbind().bind('click', function() {
+			alert('TODO');
+			/*var kbid = parseInt($(this).attr('kbid'),10);
+			window.fhq.changeLocationState({
+				'knowledge_base': '',
+				'parentid': kbid,
+			});
+			fhq.pages['knowledge_base']();*/
+		})
+
 	}).fail(function(r){
 		fhq.hideLoader();
 		console.error(r);
