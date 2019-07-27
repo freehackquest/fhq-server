@@ -473,7 +473,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest) {
     nlohmann::json jsonInfo;
 
     // GET parentid and uuid for the article
-    query.prepare("SELECT parentid, uuid FROM classbook WHERE id=:classbookid");
+    query.prepare("SELECT parentid, uuid FROM classbook WHERE id = :classbookid");
     query.bindValue(":classbookid", nClassbookID);
     query.exec();
     if (query.next()) {
@@ -514,7 +514,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest) {
             jsonInfo["content"] = record.value("content").toString().toStdString();
         } else {
             //GET default localization for the article
-            query.prepare("SELECT name, content FROM classbook WHERE id=:classbookid");
+            query.prepare("SELECT name, content, ordered FROM classbook WHERE id=:classbookid");
             query.bindValue(":classbookid", nClassbookID);
             query.exec();
             if (query.next()) {
@@ -522,6 +522,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest) {
                 jsonInfo["lang"] = "en";
                 jsonInfo["name"] = record.value("name").toString().toStdString();
                 jsonInfo["content"] = record.value("content").toString().toStdString();
+                jsonInfo["ordered"] = record.value("ordered").toInt();
             } else {
                 pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found the article"));
                 return;
@@ -529,7 +530,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest) {
         }
     } else {
         // GET default localization for the article
-        query.prepare("SELECT name, content FROM classbook WHERE id=:classbookid");
+        query.prepare("SELECT name, content, ordered FROM classbook WHERE id=:classbookid");
         query.bindValue(":classbookid", nClassbookID);
         query.exec();
         if (query.next()) {
@@ -537,6 +538,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest) {
             jsonInfo["lang"] = sLang;
             jsonInfo["name"] = record.value("name").toString().toStdString();
             jsonInfo["content"] = record.value("content").toString().toStdString();
+            jsonInfo["ordered"] = record.value("ordered").toInt();
         } else {
             pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found the article"));
             return;

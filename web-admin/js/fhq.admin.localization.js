@@ -586,7 +586,11 @@ fhq.localization = {
 		'en': 'Auth',
 		'ru': 'Auth'
 	},
-	'setting_name_mail_from':{
+	'setting_name_lxd_mode': {
+		'en': 'LXD Mode',
+		'ru': 'LXD Режим'
+	},
+	'setting_name_mail_from': {
 		'en': 'From',
 		'ru': 'From'
 	},
@@ -601,6 +605,10 @@ fhq.localization = {
 	'setting_name_mail_port':{
 		'en': 'Port',
 		'ru': 'Port'
+	},
+	'setting_name_mail_signature_text': {
+		'en': 'Mail Signature',
+		'ru': 'Подпись в письме'
 	},
 	'setting_name_mail_username':{
 		'en': 'Username',
