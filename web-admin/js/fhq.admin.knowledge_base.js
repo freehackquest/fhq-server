@@ -3,25 +3,86 @@ if(!fhq.pages) fhq.pages = [];
 
 if(!window.fhqadmin) window.fhqadmin = {};
 
+fhqadmin.openKbItem = function(kbid) {
+	// ) ''?knowledge_base=&onpage=5&page=0&parentid=' + p.classbookid + '
+	window.fhq.changeLocationState({
+		'knowledge_base': '',
+		'parentid': kbid,
+	});
+	fhq.pages['knowledge_base']();
+}
+
 fhqadmin.knowledge_base_load_current_item = function(kbid) {
 	var el = $('#current_kb_item');
 	el.html('');
 	fhq.ws.classbook_info({
 		"classbookid": kbid,
 	}).done(function(r) {
-		
 		var breadcrumb = '<nav aria-label="breadcrumb"><ol class="breadcrumb">';
 		for(var i in r.data.parents) {
 			var p = r.data.parents[i];
-			breadcrumb += '<li class="breadcrumb-item"><a class="btn-link" href="?knowledge_base=&onpage=5&page=0&parentid=' + p.classbookid + '">' + p.name + '</a></li>';
+			breadcrumb += '<li class="breadcrumb-item"><a class="btn-link" href="javascript:void(0);" onclick="fhqadmin.openKbItem(' + p.classbookid + ')">' + p.name + '</a></li>';
 		}
 		breadcrumb += '<li class="breadcrumb-item active" aria-current="page">' + r.data.name + '</li>';
 		breadcrumb += '</ol></nav>';
 		el.append(breadcrumb);
-		el.append('<h1>' + r.data.name + '</h1>');
+		el.append(''
+			+ '<div class="card">'
+			+ '   <div class="card-body">'
+			+ '       <div class="form-group row">'
+			+ '           <label for="edit_quest_id" class="col-sm-2 col-form-label">ParentID</label>'
+			+ '           <div class="col-sm-12">'
+			+ '               <input type="text" class="form-control" value="" id="edit_kb_parentid">'
+			+ '           </div>'
+			+ '       </div>'
+			+ '       <div class="form-group row">'
+			+ '           <label for="edit_quest_id" class="col-sm-2 col-form-label">Name</label>'
+			+ '           <div class="col-sm-12">'
+			+ '               <input type="text" class="form-control" value="" id="edit_kb_name">'
+			+ '           </div>'
+			+ '       </div>'
+			+ '       <div class="form-group row">'
+			+ '           <label for="edit_quest_id" class="col-sm-2 col-form-label">Content</label>'
+			+ '           <div class="col-sm-12">'
+			+ '               <textarea type="text" class="form-control" style="height: 150px" value="" id="edit_kb_content"></textarea>'
+			+ '           </div>'
+			+ '       </div>'
+			+ '     <div class="form-group row">'
+			+ '           <label for="edit_quest_id" class="col-sm-2 col-form-label">Ordered</label>'
+			+ '           <div class="col-sm-12">'
+			+ '               <input type="text" class="form-control" value="" id="edit_kb_ordered">'
+			+ '           </div>'
+			+ '       </div>'
+			+ '    <div class="btn btn-danger kbi-save" kbid="' + kbid + '">Save</div>'
+			+ '   </div>'
+			+ '</div>'
+		);
+		$('#edit_kb_name').val(r.data.name);
+		$('#edit_kb_ordered').val(r.data.ordered);
+		$('#edit_kb_parentid').val(r.data.parentid);
+		
 
+		window['edit_kb_content'] = new SimpleMDE({ element: $("#edit_kb_content")[0] });
+		window['edit_kb_content'].value(r.data.content);
 
 		console.log('Success: ', r);
+
+		$('.kbi-save').unbind().bind('click', function(){
+			// classbook_update_record
+			var kbid = parseInt($(this).attr('kbid'),10);
+			fhq.classbook_update_record({
+				"classbookid": kbid,
+				"name": $('#edit_kb_name').val(),
+				"content": window['edit_kb_content'].value(),
+				"ordered": parseInt($('#edit_kb_ordered').val(),10),
+				"parentid": parseInt($('#edit_kb_parentid').val(),10),
+			}).done(function(r) {
+				console.log('Success: ', r);
+				fhq.pages['knowledge_base']();
+			}).fail(function(err){
+				console.error('Error:', err);
+			});
+		});
 	}).fail(function(err){
 		el.append('<div class="alert alert-danger">' + err.error + '</div>');
 		console.error('Error:', err);
