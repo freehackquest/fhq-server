@@ -52,6 +52,7 @@ import { QuestComponent } from './pages/quest/quest.component';
 import { ModalDialogQuestFeedbackComponent } from './dialogs/modal-dialog-quest-feedback/modal-dialog-quest-feedback.component';
 import { BlockContactUsComponent } from './block-contact-us/block-contact-us.component';
 import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
+import { WelcomeComponent } from './pages/welcome/welcome.component';
 /*import hljs from 'highlight.js/lib/highlight';
 import javascript from 'highlight.js/lib/languages/javascript';
 import typescript from 'highlight.js/lib/languages/typescript';
@@ -117,7 +118,8 @@ const l10nConfig: L10nConfig = {
     QuestComponent,
     ModalDialogQuestFeedbackComponent,
     BlockContactUsComponent,
-    UserSkillsComponent
+    UserSkillsComponent,
+    WelcomeComponent
   ],
   imports: [
     BrowserModule,

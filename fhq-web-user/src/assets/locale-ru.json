@@ -139,5 +139,8 @@
     "questStatisticsSolved": "Правильных ответов",
     "questStatisticsUsersSolvedQuest": "Список пользователей кто решил этот квест",
     "pleaseAuthorize": "Пожалуйста авторизуйтесь",
+    "pageWelcome": "Добро пожаловать на freehackquest!",
+    "pageWelcomeAbout": "Это сайт с архивом квестов (и иногда решений) из разных игр ctf task-based (jeopardy).",
+    "pageWelcomeFirstTime": "Если вы впервые, так что, пожалуйста, перейдите сюда:",
     "": ""
 }

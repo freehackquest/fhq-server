@@ -64,7 +64,7 @@
     "usefulLinks": "Useful Links",
     "resetPasswordGo": "Reset Password",
     "resetPasswordEmail": "E-mail",
-    "knowledgeBase": "knowledgeBase",
+    "knowledgeBase": "Knowledge Base",
     "emailAddress": "E-mail address",
     "password": "Password",
     "close": "Close",
@@ -138,5 +138,8 @@
     "questStatisticsSolved": "Correct answers",
     "questStatisticsUsersSolvedQuest": "The list of users who decided this quest",
     "pleaseAuthorize": "Please authorize",
+    "pageWelcome": "Welcome to freehackquest!",
+    "pageWelcomeAbout": "This site with archive of quests (and sometimes writeups) from different ctf task-based (jeopardy) games.",
+    "pageWelcomeFirstTime": "If you is first time visit so, please go here:",
     "": ""
 }

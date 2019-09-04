@@ -28,6 +28,7 @@ import { UserLocationComponent } from './pages/user-location/user-location.compo
 import { UserSecurityComponent } from './pages/user-security/user-security.component';
 import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
 import { QuestComponent } from './pages/quest/quest.component';
+import { WelcomeComponent } from './pages/welcome/welcome.component';
 
 const routes: Routes = [{
     path: 'knowledge-base',
@@ -116,6 +117,9 @@ const routes: Routes = [{
   }, {
       path: 'quest/:id',
       component: QuestComponent
+  }, {
+    path: '',
+    component: WelcomeComponent
   }, {
     path: '**',
     component: PageNotFoundComponent
