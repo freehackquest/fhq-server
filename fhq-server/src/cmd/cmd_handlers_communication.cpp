@@ -16,7 +16,7 @@ REGISTRY_CMD(CmdHandlerChatSendMessage)
 CmdHandlerChatSendMessage::CmdHandlerChatSendMessage()
     : CmdHandlerBase("chat_send_message", "Method will be send chat message and it sent to another users") {
 
-    setAccessUnauthorized(true);
+    setAccessUnauthorized(false);
     setAccessUser(true);
     setAccessAdmin(true);
 
@@ -31,12 +31,7 @@ void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
 
     WSJCppUserSession *pUserSession = pRequest->userSession();
-    std::string sUsername = "";
-    if (pUserSession != nullptr) {
-        sUsername = pUserSession->nick().toStdString();
-    } else {
-        sUsername = "Guest";
-    }
+    std::string sUsername = pUserSession->nick().toStdString();
 
     std::string sMessage = "";
     if (jsonRequest["message"].is_string()) {
