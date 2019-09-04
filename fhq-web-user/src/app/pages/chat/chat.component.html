@@ -32,7 +32,14 @@
 </div>
 <br/>
 
-<div class="input-group mb-3">
+<div class="alert alert-danger" *ngIf="!_fhq.isAuthorized">
+  <label l10nTranslate>pleaseAuthorize</label>
+  <div class="btn btn-primary" (click)="openDialogSignIn()" l10nTranslate>signin</div>
+</div>
+
+<div class="alert alert-danger" *ngIf="errorMessage != null">{{ errorMessage }}</div>
+
+<div class="input-group mb-3" *ngIf="_fhq.isAuthorized">
   <div class="input-group-prepend">
     <span class="input-group-text" id="basic-addon1" l10nTranslate>yourMessage</span>
   </div>
@@ -40,4 +47,5 @@
   <div class="input-group-append">
     <button class="btn btn-primary" (click)="sendMessage()" type="button" l10nTranslate>send</button>
   </div>
+  
 </div>

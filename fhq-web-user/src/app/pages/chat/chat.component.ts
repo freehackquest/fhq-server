@@ -1,5 +1,8 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { SpinnerService } from '../../services/spinner.service';
+import { FhqService } from '../../services/fhq.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
 
 declare var fhq: any;
 
@@ -11,22 +14,27 @@ declare var fhq: any;
 export class ChatComponent implements OnInit, OnDestroy {
   dataList: Array<any> = [];
   errorMessage: string = null;
-  @ViewChild('yourMessage', { static: true }) yourMessage : ElementRef;
+  subscription: any;
+  @ViewChild('yourMessage', { static: false }) yourMessage : ElementRef;
   @ViewChild('chatMessages', { static: true }) private chatMessages: ElementRef;
   
   constructor(
     private _spinnerService: SpinnerService,
     private _cdr: ChangeDetectorRef,
+    private _fhq: FhqService,
+    private _modalService: NgbModal,
   ) { }
 
   ngOnInit() {
     this.loadData();
     fhq.bind('chat', (m: any) => this.incomeChatMessage(m));
+    this.subscription = this._fhq.changedState.subscribe(() => this.loadData());
   }
 
   ngOnDestroy() {
     console.log('ChatComponent:OnDestroy');
     fhq.unbind('chat'); // will be all unibinded
+    this.subscription.unsubscribe();
   }
 
   loadData() {
@@ -40,14 +48,18 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   sendMessage() {
     const msg = this.yourMessage.nativeElement.value;
+    this.errorMessage = null;
     console.log(msg);
+    var self = this
     fhq.chat_send_message({
       "type": "chat",
       "message": msg
     }).done(function(r: any) {
-        console.log('Success: ', r);
+      console.log('Success: ', r);
     }).fail(function(err: any){
-        console.error('Error:', err);
+      self.errorMessage = err.error
+      console.error('Error:', err);
+      self._cdr.detectChanges();
     });
     this.yourMessage.nativeElement.value = '';
   }
@@ -76,9 +88,15 @@ export class ChatComponent implements OnInit, OnDestroy {
     this._cdr.detectChanges();
     console.error(err);
   }
+
   incomeChatMessage(m: any) {
     this.dataList.push(m);
     this._cdr.detectChanges();
     this.chatScrollToBottom();
+  }
+
+  openDialogSignIn() {
+    const modalRef = this._modalService.open(ModalDialogSignInComponent);
+    modalRef.componentInstance.name = 'SignIn';
   }
 }
