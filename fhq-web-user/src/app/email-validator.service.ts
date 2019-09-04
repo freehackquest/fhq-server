@@ -13,6 +13,8 @@ export class EmailValidatorService {
   checkEmail(email: string) {
     let emailWrongDomains = {};
     emailWrongDomains['yndex.ru'] = {prop: ["yandex.ru"]};
+    emailWrongDomains['yadnex.ru'] = {prop: ["yandex.ru"]};
+    emailWrongDomains['mil.ru'] = {prop: ["mail.ru"]};
     emailWrongDomains['gmail.ru'] = {prop: ["gmail.com"]};
     emailWrongDomains['gmial.com'] = {prop: ["gmail.com"]};
     emailWrongDomains['gmal.com'] = {prop: ["gmail.com"]};
