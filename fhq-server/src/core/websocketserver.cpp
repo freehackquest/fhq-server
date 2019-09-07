@@ -13,7 +13,6 @@
 
 #include <wjscpp_employees.h>
 #include <employ_server_info.h>
-#include <employ_ws_server.h>
 #include <cmd_handlers.h>
 
 // ---------------------------------------------------------------------
@@ -29,7 +28,7 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 
     EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
-    EmployWsServer *pWsServer = findEmploy<EmployWsServer>();
+    EmployServer *pServer = findEmploy<EmployServer>();
 
     m_pWebSocketServer = new QWebSocketServer(QStringLiteral("fhq-server"), QWebSocketServer::NonSecureMode, this);
     m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("fhq-server"), QWebSocketServer::SecureMode, this);
@@ -76,7 +75,7 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
     // connect(this, SIGNAL(sig_sendToAll(nlohmann::json)), this, SLOT(slot_sendToAll(nlohmann::json)));
 
     pServerInfo->serverStarted();
-    pWsServer->setServer(this); // temporary
+    pServer->setServer(this); // temporary
 
     // TODO save in database information about server started
 }
@@ -148,6 +147,7 @@ void WebSocketServer::onNewConnection()
 {
     QWebSocket *pSocket = m_pWebSocketServer->nextPendingConnection();
     initNewConnection("", pSocket);
+    // WSJCppSocketClient *pClient = new WSJCppSocketClient(pSocket);
 }
 
 // ---------------------------------------------------------------------
@@ -159,15 +159,19 @@ void WebSocketServer::onNewConnection()
 void WebSocketServer::onNewConnectionSSL() {
     QWebSocket *pSocket = m_pWebSocketServerSSL->nextPendingConnection();
     initNewConnection("SSL", pSocket);
+    // WSJCppSocketClient *pClient = new WSJCppSocketClient(pSocket);
 }
 
 // ---------------------------------------------------------------------
 
 void WebSocketServer::processTextMessage(const QString &message) {
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
-    EmployWsServer *pWsServer = findEmploy<EmployWsServer>();
+    EmployServer *pServer = findEmploy<EmployServer>();
 
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
+    Log::warn(TAG, "QWebSocket *pClient = " + Fallen::getPointerAsHex(pClient));
+    Log::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
+
     std::string sCmd = "";
     std::string sM = "";
     try {
@@ -213,7 +217,7 @@ void WebSocketServer::processTextMessage(const QString &message) {
         // allow access
         // TODO move to ModelRequest
         WSJCppError error(404, "none");
-        if (!pWsServer->validateInputParameters(error, pCmdHandler, jsonRequest_)) {
+        if (!pServer->validateInputParameters(error, pCmdHandler, jsonRequest_)) {
             pModelRequest->sendMessageError(pCmdHandler->cmd(), error);
             return;
         }
@@ -243,7 +247,7 @@ void WebSocketServer::socketDisconnected() {
     // TODO hex print
     Log::info(TAG, "socketDisconnected:" + std::to_string(nClient));
     if (pClient) {
-        m_tokens.remove(pClient);
+        this->removeWSJCppUserSession(pClient);
         m_clients.removeAll(pClient);
         pClient->deleteLater();
     }
@@ -344,21 +348,40 @@ void WebSocketServer::slot_sendToOne(QWebSocket *pClient, QString message) {
 
 // ---------------------------------------------------------------------
 
-// TODO move to EmployWsServer
+// TODO move to EmployServer
 
 void WebSocketServer::setWSJCppUserSession(QWebSocket *pClient, WSJCppUserSession *pWSJCppUserSession) {
-    m_tokens[pClient] = pWSJCppUserSession;
+    std::lock_guard<std::mutex> lock(m_mtxUserSession);
+    if (m_mapUserSession.find(pClient) == m_mapUserSession.end()) {
+        Log::err(TAG, "pWSJCppUserSession pointer: " + Fallen::getPointerAsHex(pWSJCppUserSession));
+        m_mapUserSession.insert(std::pair<QWebSocket *, WSJCppUserSession *>(pClient, pWSJCppUserSession));
+    } else {
+        Log::err(TAG, "User Session already exists");
+    }
 }
 
 // ---------------------------------------------------------------------
-// TODO EmployWsServer
+// TODO EmployServer
 
 WSJCppUserSession *WebSocketServer::getWSJCppUserSession(QWebSocket *pClient) {
-    if (m_tokens.contains(pClient)) {
-        return m_tokens[pClient];
+    std::lock_guard<std::mutex> lock(m_mtxUserSession);
+    if (m_mapUserSession.find(pClient) != m_mapUserSession.end()) {
+        return m_mapUserSession[pClient];
     }
     return nullptr;
 };
+
+// ---------------------------------------------------------------------
+
+void WebSocketServer::removeWSJCppUserSession(QWebSocket *pClient) {
+    std::lock_guard<std::mutex> lock(m_mtxUserSession);
+    std::map<QWebSocket *, WSJCppUserSession *>::iterator it = m_mapUserSession.find(pClient);
+    if (it != m_mapUserSession.end()) {
+        WSJCppUserSession* pUserSession = it->second;
+        m_mapUserSession.erase(it);
+        delete pUserSession;
+    }
+}
 
 // ---------------------------------------------------------------------
 

@@ -83,7 +83,7 @@ void UpdateUserLocationTask::run() {
                 Log::err(TAG, query_update.lastError().text().toStdString());
             }
         } else {
-            // nothing
+            Log::info(TAG, "IP address same for userid = " + std::to_string(m_nUserID));    
         }
     } else {
         Log::err(TAG, "failed for userid = " + std::to_string(m_nUserID) + "(not found userid in database)");

@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <fallen.h>
+#include <wsjcpp_settings.h>
+#include <cmd_handlers.h>
 
 // ---------------------------------------------------------------------
 // employ enum code results
@@ -80,6 +82,26 @@ template <class T> T* findEmploy() {
 // ---------------------------------------------------------------------
 // WJSCppEmployConfig
 
+class EmployGlobalSettings : public EmployBase {
+    public:
+        EmployGlobalSettings();
+        static std::string name() { return "EmployGlobalSettings"; }
+        virtual bool init(); // here will be init from file
+
+        void regestryItem(const WSJCppSettingItem &item);
+        WSJCppSettingItem &get(const std::string &sSettingName);
+        void update(const WSJCppSettingItem &item);
+        void addListener(WSJCppSettingListener *);
+        void initFromDatabase();
+
+    private:
+        std::vector<WSJCppSettingItem *> m_vSettingItems;
+        std::vector<WSJCppSettingListener *> m_vListeners;
+};
+
+// ---------------------------------------------------------------------
+// WJSCppEmployConfig
+
 class EmployServerConfig : public EmployBase {
     public:
         EmployServerConfig();
@@ -139,6 +161,24 @@ class EmployServerConfig : public EmployBase {
         int m_nWeb_max_threads;
         std::string m_sWeb_admin_folder;
         std::string m_sWeb_user_folder;
+};
+
+// ---------------------------------------------------------------------
+// WJSCppEmployConfig
+
+class EmployServer : public EmployBase {
+    public:
+        EmployServer();
+        static std::string name() { return "EmployServer"; }
+        virtual bool init();
+        bool validateInputParameters(WSJCppError &error, CmdHandlerBase *pCmdHandler, const nlohmann::json& jsonMessage);
+        void setServer(IWebSocketServer *pWebSocketServer);
+        void sendToAll(const nlohmann::json& jsonMessage);
+        void sendToOne(QWebSocket *pClient, const nlohmann::json& jsonMessage);
+
+    private:
+        std::string TAG;
+        IWebSocketServer *m_pWebSocketServer;
 };
 
 #endif // EMPLOYEES_H

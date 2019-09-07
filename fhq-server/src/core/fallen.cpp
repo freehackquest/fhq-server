@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <thread>
+#include <cstdint>
 
 // ---------------------------------------------------------------------
 
@@ -246,6 +247,21 @@ std::string& Fallen::to_lower(std::string& str) {
     return str;
 }
 
+// ---------------------------------------------------------------------
+
+unsigned long Fallen::convertVoid2Int(void *p) {
+    unsigned long ret = *(unsigned long *)p;
+    return ret;
+}
+
+// ---------------------------------------------------------------------
+
+std::string Fallen::getPointerAsHex(void *p) {
+    std::uintptr_t i = reinterpret_cast<std::uintptr_t>(p);
+    std::stringstream stream;
+    stream << std::hex << i;
+    return "0x" + std::string(stream.str());
+}
 
 // ---------------------------------------------------------------------
 

@@ -98,6 +98,50 @@ const std::vector<std::string> &EmployBase::loadAfter() {
 }
 
 // ---------------------------------------------------------------------
+// EmployGlobalSettings
+
+REGISTRY_WJSCPP_EMPLOY(EmployGlobalSettings)
+
+// ---------------------------------------------------------------------
+
+EmployGlobalSettings::EmployGlobalSettings()
+    : EmployBase(EmployGlobalSettings::name(), {}) {
+    this->regestryItem(WSJCppSettingItem("work_dir").string().readonly().inRuntime());
+
+}
+
+// ---------------------------------------------------------------------
+
+bool EmployGlobalSettings::EmployGlobalSettings::init() {
+    // here will be init from file
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+void EmployGlobalSettings::regestryItem(const WSJCppSettingItem &item) {
+    m_vSettingItems.push_back(new WSJCppSettingItem(item));
+}
+
+// ---------------------------------------------------------------------
+
+WSJCppSettingItem &EmployGlobalSettings::get(const std::string &sSettingName) {
+
+}
+
+// ---------------------------------------------------------------------
+
+void EmployGlobalSettings::update(const WSJCppSettingItem &item) {
+    // TODO
+}
+
+// ---------------------------------------------------------------------
+
+void EmployGlobalSettings::initFromDatabase() {
+
+}
+
+// ---------------------------------------------------------------------
 // EmployServerConfig
 
 REGISTRY_WJSCPP_EMPLOY(EmployServerConfig)
@@ -379,3 +423,89 @@ std::string EmployServerConfig::webUserFolder() {
 }
 
 // ---------------------------------------------------------------------
+
+REGISTRY_WJSCPP_EMPLOY(EmployServer)
+
+EmployServer::EmployServer()
+    : EmployBase(EmployServer::name(), {"start_server", EmployServerConfig::name(), EmployServerInfo::name()}) {
+    TAG = EmployServer::name();
+    m_pWebSocketServer = NULL;
+}
+
+// ---------------------------------------------------------------------
+
+bool EmployServer::init() {
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+void EmployServer::setServer(IWebSocketServer *pWebSocketServer) {
+    m_pWebSocketServer = pWebSocketServer;
+}
+
+// ---------------------------------------------------------------------
+
+void EmployServer::sendToAll(const nlohmann::json& jsonMessage) {
+    m_pWebSocketServer->sendToAll(jsonMessage);
+}
+
+// ---------------------------------------------------------------------
+
+void EmployServer::sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) {
+    m_pWebSocketServer->sendToOne(pClient, jsonMessage);
+}
+
+// ---------------------------------------------------------------------
+
+bool EmployServer::validateInputParameters(WSJCppError &error, CmdHandlerBase *pCmdHandler, const nlohmann::json &jsonMessage) {
+    try {
+        // TODO check extra params
+
+        for (CmdInputDef inDef : pCmdHandler->inputs()) {
+            
+            auto itJsonParamName = jsonMessage.find(inDef.getName());
+            const auto endJson = jsonMessage.end();
+            if (inDef.isRequired() && itJsonParamName == endJson) {
+                error = WSJCppError(400, "Parameter '" + inDef.getName() + "' expected");
+                return false;
+            }
+
+            if (itJsonParamName != endJson) {
+                if (inDef.isInteger()) {
+                    if (!itJsonParamName->is_number()) {
+                        error = WSJCppError(400, "Parameter '" + inDef.getName() + "' must be integer");
+                        return false;
+                    }
+
+                    int val = *itJsonParamName;
+                    if (inDef.isMinVal() && val < inDef.getMinVal()) {
+                        error = WSJCppError(400, "Parameter '" + inDef.getName() + "' must be more then " + std::to_string(inDef.getMinVal()));
+                        return false;
+                    }
+                    if (inDef.isMaxVal() && val > inDef.getMaxVal()) {
+                        error = WSJCppError(400, "Parameter '" + inDef.getName() + "' must be less then " + std::to_string(inDef.getMaxVal()));
+                        return false;
+                    }
+                }
+
+                if (inDef.isString()) {
+                    std::string sVal = itJsonParamName->get_ref<std::string const&>();
+                    std::string sError;
+                    const std::vector<ValidatorStringBase *> vValidators = inDef.listOfValidators();
+                    for (int i = 0; i < vValidators.size(); i++) {
+                        if (!vValidators[i]->isValid(sVal, sError)) {
+                            error = WSJCppError(400, "Wrong param '" + inDef.getName() + "': " + sError);
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    } catch(std::exception const &e) {
+        error = WSJCppError(500, "InternalServerError");
+        Log::err(TAG, std::string("validateInputParameters, ") + e.what());
+        return false;
+    }
+}

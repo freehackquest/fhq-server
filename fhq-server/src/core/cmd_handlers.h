@@ -36,7 +36,6 @@ class WSJCppUserSession {
     public:
         WSJCppUserSession();
         WSJCppUserSession(nlohmann::json const& obj);
-        WSJCppUserSession(QString json); // TODO refactoring to std::string
         void fillFrom(nlohmann::json const& obj);
 
         // IUserToken
@@ -48,6 +47,7 @@ class WSJCppUserSession {
         void setNick(QString);
         QString email();
         int userid();
+        std::string userUuid();
         // TODO json field for customization
     private:
 
@@ -55,7 +55,31 @@ class WSJCppUserSession {
         std::string m_sEmail;
         std::string m_sNick;
         int m_nUserID;
+        std::string m_sUserUuid;
         std::string TAG;
+};
+
+/*! 
+ * WSJCppSocketClient - 
+ * */
+
+class WSJCppSocketClient : public QObject {
+    private:
+        Q_OBJECT
+        
+    public:
+        WSJCppSocketClient(QWebSocket *pSocket);
+        ~WSJCppSocketClient();
+        
+    private:
+        std::string TAG;
+        WSJCppUserSession *m_pUserSession;
+        QWebSocket *m_pSocket;
+
+    private Q_SLOTS:
+        void processTextMessage(const QString &message);
+        void processBinaryMessage(QByteArray message);
+        void socketDisconnected();
 };
 
 /*! 
@@ -142,7 +166,8 @@ class ModelRequest {
         QWebSocket *client();
         std::string getIpAddress();
         IWebSocketServer *server();
-        WSJCppUserSession *userSession(); // TODO rename to getUserSession
+        WSJCppUserSession *userSession(); // TODO deprecated
+        WSJCppUserSession *getUserSession();
         bool isAdmin();
         bool isUser();
         bool isUnauthorized();
@@ -161,6 +186,7 @@ class ModelRequest {
 
         // bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler);
     private:
+        std::string TAG;
         QWebSocket *m_pClient;
         IWebSocketServer *m_pServer;
         WSJCppUserSession *m_pWSJCppUserSession;

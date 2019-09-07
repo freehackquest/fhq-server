@@ -1,5 +1,4 @@
 #include "cmd_handlers.h"
-#include <employ_ws_server.h>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QtGlobal>
@@ -35,6 +34,11 @@ std::string WSJCppError::message() {
 
 WSJCppUserSession::WSJCppUserSession() {
     TAG = "WSJCppUserSession";
+    m_nUserID = -1;
+    m_sRole = "";
+    m_sEmail = "";
+    m_sNick = "";
+    m_sUserUuid = "";
 }
 
 // ---------------------------------------------------------------------
@@ -45,16 +49,10 @@ WSJCppUserSession::WSJCppUserSession(nlohmann::json const& obj) : WSJCppUserSess
 
 // ---------------------------------------------------------------------
 
-WSJCppUserSession::WSJCppUserSession(QString json) : WSJCppUserSession() {
-    this->fillFrom(nlohmann::json::parse(json.toStdString()));
-}
-
-// ---------------------------------------------------------------------
-
 void WSJCppUserSession::fillFrom(const nlohmann::json &obj) {
     if (obj.find("user") != obj.end()) {
         nlohmann::json user = obj.at("user");
-       
+
         // user.role
         try {
             m_sRole = user.at("role").get<std::string>();
@@ -91,6 +89,15 @@ void WSJCppUserSession::fillFrom(const nlohmann::json &obj) {
             Log::err(TAG, "JSON: " + obj.dump());
             Log::err(TAG, "Something wrong param user.nick in struct. " + std::string(e.what()));
             m_sNick = "";
+        }
+
+        // user.uuid
+        try {
+            m_sUserUuid = user.at("uuid").get<std::string>();
+        } catch (const std::exception &e) {
+            Log::err(TAG, "JSON: " + obj.dump());
+            Log::err(TAG, "Something wrong param user.uuid in struct. " + std::string(e.what()));
+            m_sUserUuid = "";
         }
         
     } else {
@@ -140,10 +147,67 @@ int WSJCppUserSession::userid() {
     return m_nUserID;
 }
 
+std::string WSJCppUserSession::userUuid() {
+    return m_sUserUuid;
+}
+
 // ---------------------------------------------------------------------
 
 QString WSJCppUserSession::email() {
     return QString::fromStdString(m_sEmail);
+}
+
+
+/*! 
+ * WSJCppSocketClient - 
+ * */
+
+WSJCppSocketClient::WSJCppSocketClient(QWebSocket *pSocket) {
+    TAG = "WSJCppSocketClient";
+    m_pUserSession = nullptr;
+    m_pSocket = pSocket;
+    connect(m_pSocket, &QWebSocket::textMessageReceived, this, &WSJCppSocketClient::processTextMessage);
+    connect(m_pSocket, &QWebSocket::binaryMessageReceived, this, &WSJCppSocketClient::processBinaryMessage);
+    connect(m_pSocket, &QWebSocket::disconnected, this, &WSJCppSocketClient::socketDisconnected);
+}
+
+// ---------------------------------------------------------------------
+
+WSJCppSocketClient::~WSJCppSocketClient() {
+    m_pSocket->deleteLater();
+}
+
+// ---------------------------------------------------------------------
+
+void WSJCppSocketClient::processTextMessage(const QString &message) {
+    QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
+    Log::warn(TAG, "QWebSocket *pClient = " + Fallen::getPointerAsHex(pClient));
+    Log::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
+    // processTextMessage
+}
+
+// ---------------------------------------------------------------------
+
+void WSJCppSocketClient::processBinaryMessage(QByteArray message) {
+    QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
+    Log::warn(TAG, "QWebSocket *pClient = " + Fallen::getPointerAsHex(pClient));
+    Log::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
+}
+
+// ---------------------------------------------------------------------
+
+void WSJCppSocketClient::socketDisconnected() {
+    QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
+    Log::warn(TAG, "QWebSocket *pClient = " + Fallen::getPointerAsHex(pClient));
+    Log::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
+
+    // TODO hex print
+    Log::info(TAG, "socketDisconnected:" + Fallen::getPointerAsHex(pClient));
+    if (pClient) {
+        // this->removeWSJCppUserSession(pClient);
+        // m_clients.removeAll(pClient);
+        // pClient->deleteLater();
+    }
 }
 
 // ****************************
@@ -365,6 +429,7 @@ CmdInputDef &CmdInputDef::addValidator(ValidatorStringBase *pValidatorStringBase
 
 
 ModelRequest::ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_) {
+    TAG = "ModelRequest";
     m_pClient = pClient;
     m_pServer = pWebSocketServer;
     m_jsonRequest = jsonRequest_;
@@ -443,7 +508,13 @@ std::string ModelRequest::m() {
 
 // ---------------------------------------------------------------------
 
-WSJCppUserSession *ModelRequest::userSession() {
+WSJCppUserSession *ModelRequest::userSession() { // TODO deprecated
+    return m_pWSJCppUserSession;
+}
+
+// ---------------------------------------------------------------------
+
+WSJCppUserSession *ModelRequest::getUserSession() {
     return m_pWSJCppUserSession;
 }
 

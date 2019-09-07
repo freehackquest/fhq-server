@@ -34,6 +34,9 @@ class Fallen {
 
         static void initRandom();
         static std::string createUuid();
+        static unsigned long convertVoid2Int(void *p);
+        static std::string getPointerAsHex(void *p);
+
 };
 
 // ---------------------------------------------------------------------

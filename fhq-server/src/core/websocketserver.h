@@ -7,7 +7,6 @@
 #include <QWebSocketServer>
 #include <QMap>
 #include <QFile>
-#include <QMutex>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QtNetwork/QSslError>
@@ -42,6 +41,7 @@ class WebSocketServer : public QObject, public IWebSocketServer {
         void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) override;
         virtual void setWSJCppUserSession(QWebSocket *pClient, WSJCppUserSession *pWSJCppUserSession) override; 
         virtual WSJCppUserSession *getWSJCppUserSession(QWebSocket *pClient) override;
+        void removeWSJCppUserSession(QWebSocket *pClient);
 
     Q_SIGNALS:
         void closed();
@@ -66,10 +66,12 @@ class WebSocketServer : public QObject, public IWebSocketServer {
         QWebSocketServer *m_pWebSocketServer;
         QWebSocketServer *m_pWebSocketServerSSL;
         QList<QWebSocket *> m_clients;
+        std::vector<WSJCppSocketClient *> m_vClients;
         // TODO redesign to std::map and move to EmployWSServer
         // TODO rename m_tokens to m_mapUserSessions;
         // TODO usersession must be single std::map<std::string sUserUuid, WSJCppUserSession *>
-        QMap<QWebSocket *, WSJCppUserSession *> m_tokens; 
+        std::mutex m_mtxUserSession;
+        std::map<QWebSocket *, WSJCppUserSession *> m_mapUserSession; 
 
         bool m_bFailed;
         std::string TAG;

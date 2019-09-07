@@ -135,6 +135,12 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
     nlohmann::json const & jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
+    if (pUserSession != nullptr) {
+        Log::err(TAG, "pUserSession must be nullptr");
+    }
+
+
     QString email = QString::fromStdString(jsonRequest.at("email"));
     QString password = QString::fromStdString(jsonRequest.at("password"));
 
@@ -157,12 +163,14 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
         QSqlRecord record = query.record();
 
         int nUserId = record.value("id").toInt();
+        std::string sUserUuid = record.value("uuid").toString().toStdString();
         QString email = record.value("email").toString();
         QString nick = record.value("nick").toString();
         QString role = record.value("role").toString();
 
         nlohmann::json user;
         user["id"] = nUserId;
+        user["uuid"] = sUserUuid;
         user["email"] = email.toStdString();
         user["nick"] = nick.toStdString();
         user["role"] = role.toStdString();
@@ -404,11 +412,12 @@ void CmdHandlerToken::handle(ModelRequest *pRequest) {
         QSqlRecord record = query.record();
         int userid = record.value("userid").toInt();
         QString status = record.value("status").toString();
-        QString data = record.value("data").toString();
+        std::string data = record.value("data").toString().toStdString();
         QString start_date = record.value("start_date").toString();
         QString end_date = record.value("end_date").toString();
         std::string sLastIP = pRequest->getIpAddress();
-        pRequest->server()->setWSJCppUserSession(pRequest->client(), new WSJCppUserSession(data));
+        nlohmann::json jsonUserSession = nlohmann::json::parse(data);
+        pRequest->server()->setWSJCppUserSession(pRequest->client(), new WSJCppUserSession(jsonUserSession));
         Log::info(TAG, "userid: " + QString::number(userid).toStdString());
         // TODO redesign this
         RunTasks::UpdateUserLocation(userid, sLastIP);
