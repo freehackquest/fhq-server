@@ -516,7 +516,7 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest) {
     const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    WSJCppUserSession *pUserSession = pRequest->userSession();
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
     int nUserID = pUserSession->userid();
 
     QSqlDatabase db = *(pDatabase->database());
@@ -750,7 +750,7 @@ void CmdHandlerUser::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    WSJCppUserSession *pUserSession = pRequest->userSession();
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
 
     if (jsonRequest.find("userid") != jsonRequest.end() && pUserSession == nullptr) {
         pRequest->sendMessageError(cmd(), WSJCppError(401, "Not Authorized Request"));
@@ -858,7 +858,7 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    WSJCppUserSession *pUserSession = pRequest->userSession();
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
 
      if (jsonRequest.find("userid") == jsonRequest.end() && pUserSession == nullptr) {
         pRequest->sendMessageError(cmd(), WSJCppError(401, "Not Authorized Request"));
@@ -1121,7 +1121,7 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
     nlohmann::json data;
 
-    WSJCppUserSession *pUserSession = pRequest->userSession();
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
     int nUserIDFromToken = pUserSession->userid();
     int nUserID = pRequest->getInputInteger("userid", 0);
     if (nUserIDFromToken != nUserID && !pRequest->isAdmin()) {
@@ -1253,7 +1253,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
 
     QString sAdminPassword = QString::fromStdString(jsonRequest.at("password"));
 
-    WSJCppUserSession *pUserSession = pRequest->userSession();
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
     int nAdminUserID = pUserSession->userid();
 
     QSqlDatabase db = *(pDatabase->database());

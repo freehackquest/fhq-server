@@ -166,7 +166,6 @@ class ModelRequest {
         QWebSocket *client();
         std::string getIpAddress();
         IWebSocketServer *server();
-        WSJCppUserSession *userSession(); // TODO deprecated
         WSJCppUserSession *getUserSession();
         bool isAdmin();
         bool isUser();

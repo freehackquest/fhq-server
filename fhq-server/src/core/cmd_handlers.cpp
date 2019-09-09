@@ -508,12 +508,6 @@ std::string ModelRequest::m() {
 
 // ---------------------------------------------------------------------
 
-WSJCppUserSession *ModelRequest::userSession() { // TODO deprecated
-    return m_pWSJCppUserSession;
-}
-
-// ---------------------------------------------------------------------
-
 WSJCppUserSession *ModelRequest::getUserSession() {
     return m_pWSJCppUserSession;
 }
@@ -642,7 +636,7 @@ bool CmdHandlerBase::accessAdmin() {
 // TODO write unit-test for this
 
 bool CmdHandlerBase::checkAccess(ModelRequest *pRequest) {
-    WSJCppUserSession *pUserSession = pRequest->userSession();
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
     if (!accessUnauthorized()) {
         if (pUserSession == nullptr) {
             pRequest->sendMessageError(cmd(), WSJCppError(401, "Not Authorized Request"));

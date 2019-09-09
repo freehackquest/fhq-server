@@ -106,15 +106,25 @@ REGISTRY_WJSCPP_EMPLOY(EmployGlobalSettings)
 
 EmployGlobalSettings::EmployGlobalSettings()
     : EmployBase(EmployGlobalSettings::name(), {}) {
+    // basicly
     this->regestryItem(WSJCppSettingItem("work_dir").string().readonly().inRuntime());
 
+    // in file
+    this->regestryItem(WSJCppSettingItem("storage_type").string().readonly().inFile());
+    this->regestryItem(WSJCppSettingItem("port").number().readonly().inFile());
+    this->regestryItem(WSJCppSettingItem("ssl_on").boolean().readonly().inFile());
+    this->regestryItem(WSJCppSettingItem("ssl_port").number().readonly().inFile());
+    this->regestryItem(WSJCppSettingItem("ssl_key_file").string().readonly().inFile());
+    this->regestryItem(WSJCppSettingItem("ssl_cert_file").string().readonly().inFile());
+    this->regestryItem(WSJCppSettingItem("web_port").number().readonly().inFile());
+    this->regestryItem(WSJCppSettingItem("web_max_threads").number().readonly().inFile());
+    this->regestryItem(WSJCppSettingItem("web_admin_folder").string().readonly().inFile());
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployGlobalSettings::EmployGlobalSettings::init() {
-    // here will be init from file
-    return true;
+    return this->initFromFile();
 }
 
 // ---------------------------------------------------------------------
@@ -137,7 +147,13 @@ void EmployGlobalSettings::update(const WSJCppSettingItem &item) {
 
 // ---------------------------------------------------------------------
 
-void EmployGlobalSettings::initFromDatabase() {
+bool EmployGlobalSettings::initFromDatabase() {
+
+}
+
+// ---------------------------------------------------------------------
+
+bool EmployGlobalSettings::initFromFile() {
 
 }
 

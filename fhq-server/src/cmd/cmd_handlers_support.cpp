@@ -40,7 +40,7 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
     QString sText = jsonRequest["text"].toString().trimmed();
     QString sType = jsonRequest["type"].toString().trimmed();
 
-    WSJCppUserSession *pUserSession = pRequest->userSession();
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
     if (pUserSession != NULL) {
         sEmail = pUserSession->email();
         nUserID = pUserSession->userid();

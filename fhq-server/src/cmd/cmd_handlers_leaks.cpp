@@ -394,7 +394,7 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest) {
         }
     }
 
-    WSJCppUserSession *pUserSession = pRequest->userSession();
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
     int nUserID = 0;
     if (pUserSession != nullptr) {
         nUserID = pUserSession->userid();

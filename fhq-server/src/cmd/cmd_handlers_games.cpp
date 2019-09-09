@@ -121,7 +121,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
     QString sUuid = jsonRequest["uuid"].toString().trimmed();
     QString sAdminPassword = jsonRequest["admin_password"].toString();
 
-    int nUserID = pRequest->userSession()->userid();
+    int nUserID = pRequest->getUserSession()->userid();
 
     QSqlDatabase db = *(pDatabase->database());
 

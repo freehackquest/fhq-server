@@ -92,9 +92,10 @@ class EmployGlobalSettings : public EmployBase {
         WSJCppSettingItem &get(const std::string &sSettingName);
         void update(const WSJCppSettingItem &item);
         void addListener(WSJCppSettingListener *);
-        void initFromDatabase();
+        bool initFromDatabase();
 
     private:
+        bool initFromFile();
         std::vector<WSJCppSettingItem *> m_vSettingItems;
         std::vector<WSJCppSettingListener *> m_vListeners;
 };

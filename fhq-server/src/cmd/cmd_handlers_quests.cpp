@@ -34,7 +34,7 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
 
     int nUserID = 0;
-    WSJCppUserSession *pUserSession = pRequest->userSession();
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
     if (pUserSession != nullptr) {
         nUserID = pUserSession->userid();
     }
@@ -158,7 +158,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
 
     QString sBaseGamesURL = pSettings->getSettString("server_folder_games_url");
 
-    WSJCppUserSession *pUserSession = pRequest->userSession();
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
     bool bAdmin = false;
     int nUserID = 0;
     if (pUserSession != nullptr) {
@@ -336,7 +336,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
 
     QSqlDatabase db = *(pDatabase->database());
 
-    WSJCppUserSession *pUserSession = pRequest->userSession();
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
     int nUserID = 0;
     QString sNick = "";
     if (pUserSession != NULL) {
@@ -766,7 +766,7 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
 
     QSqlDatabase db = *(pDatabase->database());
 
-    WSJCppUserSession *pUserSession = pRequest->userSession();
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
     int nUserID = 0;
     QString sUserEmail = "";
     if (pUserSession != nullptr) {

@@ -40,7 +40,7 @@ void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest) {
 
 
     // user session
-    WSJCppUserSession *pUserSession = pRequest->userSession();
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
     bool bAdmin = pRequest->isAdmin();
     int nUserID = 0;
     if (pUserSession != nullptr) { // TODO refactor to pRequest->userId()
@@ -138,7 +138,7 @@ void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
     sWriteUpLink = "https://www.youtube.com/embed/" + sWriteUpLink.substr(m_sLinkPrefix.length());
 
     // user token
-    WSJCppUserSession *pUserSession = pRequest->userSession();
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
     bool bAdmin = pRequest->isAdmin();
     int nUserID = 0;
     QString sUserEmail = "";
