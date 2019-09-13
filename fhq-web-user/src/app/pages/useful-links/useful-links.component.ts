@@ -32,6 +32,9 @@ export class UsefulLinksComponent implements OnInit {
     "link": "http://ringzer0team.com/",
     "description": "CTF training/wargames",
   }, {
+    "link": "https://30.ctf.su",
+    "description": "Платформа с тасками task-based/jeopardy",
+  }, {
     "link": "https://re.mipt.ru",
     "description": "курс 'защита информации'. кафедра радиотехники. мфти.",
   }, {
