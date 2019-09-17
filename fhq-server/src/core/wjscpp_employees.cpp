@@ -154,7 +154,7 @@ bool EmployGlobalSettings::initFromDatabase() {
 // ---------------------------------------------------------------------
 
 bool EmployGlobalSettings::initFromFile() {
-
+    return true;
 }
 
 // ---------------------------------------------------------------------
