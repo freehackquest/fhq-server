@@ -91,9 +91,11 @@ int main(int argc, char** argv) {
         }
 
         // configure employ
-        EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
+        EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>(); // TODO deprecated
+        EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
         if (sWorkDir != "") {
             pServerConfig->setWorkDir(sWorkDir);
+            pGlobalSettings->setWorkDir(sWorkDir);
         }
 
         std::string sDirLogs = sWorkDir + "/logs";

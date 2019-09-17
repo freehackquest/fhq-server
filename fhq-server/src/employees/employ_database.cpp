@@ -10,16 +10,26 @@ REGISTRY_WJSCPP_EMPLOY(EmployDatabase)
 // ---------------------------------------------------------------------
 
 EmployDatabase::EmployDatabase()
-    : EmployBase(EmployDatabase::name(), {EmployServerConfig::name()}) {
+    : EmployBase(EmployDatabase::name(), {EmployServerConfig::name(), EmployGlobalSettings::name()}) {
     TAG = EmployDatabase::name();
+    
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    pGlobalSettings->regestryItem(WSJCppSettingItem("storage_type").string("mysql").readonly().inFile());
+
+    // TODO validator: 
+    // if (!Storages::support(m_sStorageType)) {
+    //    Log::err(TAG, "Not support storage " + m_sStorageType);
+    //    return false;
+    //}
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployDatabase::init() {
     EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
-    
-    m_sStorageType = pServerConfig->storageType();
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+
+    m_sStorageType = pGlobalSettings->get("storage_type").getStringValue();
     if (!Storages::support(m_sStorageType)) {
         Log::err(TAG, "Not support storage " + m_sStorageType);
         return false;
@@ -59,8 +69,10 @@ bool EmployDatabase::init() {
 // ---------------------------------------------------------------------
 
 bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std::string& sError) {
-    EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
-    m_sStorageType = pServerConfig->storageType();
+    EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>(); // TODO deprecated
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+
+    m_sStorageType = pGlobalSettings->get("storage_type").getStringValue();
     if (!Storages::support(m_sStorageType)) {
         Log::err(TAG, "Not support storage " + m_sStorageType);
         return false;

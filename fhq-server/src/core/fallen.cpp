@@ -691,3 +691,7 @@ bool WJSCppParseConfig::boolValue(const std::string &sParamName, bool defaultVal
 }
 
 // ---------------------------------------------------------------------
+
+std::map<std::string,std::string> WJSCppParseConfig::getValues() {
+    return m_mapConfigValues;
+}

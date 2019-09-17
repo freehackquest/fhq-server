@@ -151,7 +151,7 @@ class WJSCppParseConfig {
         std::string stringValue(const std::string &sParamName, const std::string &defaultValue);
         int intValue(const std::string &sParamName, int defaultValue);
         bool boolValue(const std::string &sParamName, bool defaultValue);
-
+        std::map<std::string,std::string> getValues();
     private:
         std::string TAG;
         std::string m_sFilepathConf;

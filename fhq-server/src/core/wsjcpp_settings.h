@@ -6,6 +6,7 @@
 #include <regex>
 
 enum WSJCppSettingStorageType {
+    WJSCPP_SETTING_IN_NONE,
     WJSCPP_SETTING_IN_FILE,
     WJSCPP_SETTING_IN_DATABASE,
     WJSCPP_SETTING_IN_RUNTIME
@@ -31,18 +32,31 @@ class WSJCppSettingItem {
         WSJCppSettingItem &inDatabase();
         WSJCppSettingItem &inRuntime();
         WSJCppSettingItem &readonly();
-        WSJCppSettingItem &string();
+        WSJCppSettingItem &string(const std::string &sDefaultStringValue);
         WSJCppSettingItem &text();
         WSJCppSettingItem &number();
         WSJCppSettingItem &boolean();
         WSJCppSettingItem &json();
         WSJCppSettingItem &list();
         
+        void checkWithThrow() const;
+        bool isInited() const;
         bool isReadonly() const;
         std::string getName() const;
         bool isFromFile() const;
         bool isFromDatabase() const;
         bool isFromRuntime() const;
+
+        bool isString() const;
+        bool isText() const;
+        bool isNumber() const;
+        bool isBoolean() const;
+        bool isJson() const;
+        bool isList() const;
+        
+        std::string getDefaultStringValue() const;
+        std::string getStringValue() const;
+        void setStringValue(const std::string &sStringValue);
 
     private:
         std::string TAG;
@@ -50,6 +64,11 @@ class WSJCppSettingItem {
         bool m_bReadonly;
         WSJCppSettingStorageType m_nStorageType;
         WSJCppSettingDataType m_nSettingType;
+        bool m_bInited;
+
+        // isString
+        std::string m_sDefaultStringValue;
+        std::string m_sStringValue;
 };
 
 class WSJCppSettingListener {

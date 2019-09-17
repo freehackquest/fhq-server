@@ -87,16 +87,22 @@ class EmployGlobalSettings : public EmployBase {
         EmployGlobalSettings();
         static std::string name() { return "EmployGlobalSettings"; }
         virtual bool init(); // here will be init from file
+        void setWorkDir(const std::string &sWorkDir);
 
         void regestryItem(const WSJCppSettingItem &item);
-        WSJCppSettingItem &get(const std::string &sSettingName);
+        const WSJCppSettingItem &get(const std::string &sSettingName);
         void update(const WSJCppSettingItem &item);
         void addListener(WSJCppSettingListener *);
         bool initFromDatabase();
 
     private:
+        std::string TAG;
+        std::string m_sWorkDir;
+        std::string m_sFilepathConf;
+        WSJCppSettingItem *m_pSettingNone;
+        bool findFileConfig();
         bool initFromFile();
-        std::vector<WSJCppSettingItem *> m_vSettingItems;
+        std::map <std::string, WSJCppSettingItem *> m_mapSettingItems;
         std::vector<WSJCppSettingListener *> m_vListeners;
 };
 
@@ -110,7 +116,6 @@ class EmployServerConfig : public EmployBase {
         virtual bool init();
         
         // configs
-        std::string storageType();
         std::string filepathConf();
         std::string databaseHost();
         int databasePort();
@@ -141,8 +146,6 @@ class EmployServerConfig : public EmployBase {
         std::string m_sFilepathConf;
 
         // database settings
-        std::string m_sStorageType;
-        bool m_bDatabase_usemysql;
         std::string m_sDatabase_host;
         int m_nDatabase_port;
         std::string m_sDatabase_name;

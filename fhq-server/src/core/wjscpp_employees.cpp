@@ -106,37 +106,62 @@ REGISTRY_WJSCPP_EMPLOY(EmployGlobalSettings)
 
 EmployGlobalSettings::EmployGlobalSettings()
     : EmployBase(EmployGlobalSettings::name(), {}) {
+
+    TAG = EmployGlobalSettings::name();
+    m_pSettingNone = new WSJCppSettingItem("none");
+
     // basicly
-    this->regestryItem(WSJCppSettingItem("work_dir").string().readonly().inRuntime());
+    this->regestryItem(WSJCppSettingItem("work_dir").string("").readonly().inRuntime());
 
     // in file
-    this->regestryItem(WSJCppSettingItem("storage_type").string().readonly().inFile());
-    this->regestryItem(WSJCppSettingItem("port").number().readonly().inFile());
-    this->regestryItem(WSJCppSettingItem("ssl_on").boolean().readonly().inFile());
-    this->regestryItem(WSJCppSettingItem("ssl_port").number().readonly().inFile());
-    this->regestryItem(WSJCppSettingItem("ssl_key_file").string().readonly().inFile());
-    this->regestryItem(WSJCppSettingItem("ssl_cert_file").string().readonly().inFile());
-    this->regestryItem(WSJCppSettingItem("web_port").number().readonly().inFile());
-    this->regestryItem(WSJCppSettingItem("web_max_threads").number().readonly().inFile());
-    this->regestryItem(WSJCppSettingItem("web_admin_folder").string().readonly().inFile());
+    // this->regestryItem(WSJCppSettingItem("port").number().readonly().inFile());
+    // this->regestryItem(WSJCppSettingItem("ssl_on").boolean().readonly().inFile());
+    // this->regestryItem(WSJCppSettingItem("ssl_port").number().readonly().inFile());
+    // this->regestryItem(WSJCppSettingItem("ssl_key_file").string().readonly().inFile());
+    // this->regestryItem(WSJCppSettingItem("ssl_cert_file").string().readonly().inFile());
+    // this->regestryItem(WSJCppSettingItem("web_port").number().readonly().inFile());
+    // this->regestryItem(WSJCppSettingItem("web_max_threads").number().readonly().inFile());
+    // this->regestryItem(WSJCppSettingItem("web_admin_folder").string().readonly().inFile());
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployGlobalSettings::EmployGlobalSettings::init() {
+    // TODO checkWithThrow all settings
+
     return this->initFromFile();
 }
 
 // ---------------------------------------------------------------------
 
-void EmployGlobalSettings::regestryItem(const WSJCppSettingItem &item) {
-    m_vSettingItems.push_back(new WSJCppSettingItem(item));
+// TODO redesign to ->update
+void EmployGlobalSettings::setWorkDir(const std::string &sWorkDir) {
+    m_sWorkDir = sWorkDir;
 }
 
 // ---------------------------------------------------------------------
 
-WSJCppSettingItem &EmployGlobalSettings::get(const std::string &sSettingName) {
+void EmployGlobalSettings::regestryItem(const WSJCppSettingItem &item) {
+    item.checkWithThrow();
+    std::string sName = item.getName();
+    std::map<std::string, WSJCppSettingItem*>::iterator it;
+    it = m_mapSettingItems.find(sName);
+    if (it != m_mapSettingItems.end()) {
+        Log::throw_err(TAG, "Setting '" + sName + "' already registered");
+    } else {
+        m_mapSettingItems.insert(std::pair<std::string, WSJCppSettingItem*>(sName, new WSJCppSettingItem(item)));
+    }
+}
 
+// ---------------------------------------------------------------------
+
+const WSJCppSettingItem &EmployGlobalSettings::get(const std::string &sSettingName) {
+    std::map<std::string, WSJCppSettingItem*>::iterator it;
+    it = m_mapSettingItems.find(sSettingName);
+    if (it == m_mapSettingItems.end()) {
+        Log::throw_err(TAG, "Setting '" + sSettingName + "' - not found");
+    }
+    return *(it->second);
 }
 
 // ---------------------------------------------------------------------
@@ -148,12 +173,90 @@ void EmployGlobalSettings::update(const WSJCppSettingItem &item) {
 // ---------------------------------------------------------------------
 
 bool EmployGlobalSettings::initFromDatabase() {
+    // TODO
+}
 
+// ---------------------------------------------------------------------
+
+bool EmployGlobalSettings::findFileConfig() {
+    struct PossibleFileConfigs {
+        PossibleFileConfigs(const std::string &sDirPath, const std::string &sFilePathConf) :
+            sDirPath(sDirPath), sFilePathConf(sFilePathConf) {
+
+        };
+        std::string sDirPath;
+        std::string sFilePathConf;
+    };
+
+    std::vector<PossibleFileConfigs> vSearchConfigFile;
+
+    if (m_sWorkDir != "") {
+        // TODO convert to fullpath
+        vSearchConfigFile.push_back(PossibleFileConfigs(m_sWorkDir + "/conf.d/", m_sWorkDir + "/conf.d/fhq-server.conf"));
+    } else {
+        // TODO convert to fullpath
+        vSearchConfigFile.push_back(PossibleFileConfigs("/etc/fhq-server/", "/etc/fhq-server/fhq-server.conf"));
+    }
+
+    for (int i = 0; i < vSearchConfigFile.size(); i++) {
+        PossibleFileConfigs tmp = vSearchConfigFile[i];
+        if (Fallen::fileExists(tmp.sFilePathConf)) {
+            m_sFilepathConf = tmp.sFilePathConf;
+            m_sWorkDir = tmp.sDirPath;
+            Log::info(TAG, "Found config file " + tmp.sFilePathConf);
+            break;
+        } else {
+            Log::warn(TAG, "Not found possible config file " + tmp.sFilePathConf);
+        }
+    }
+    
+    if (m_sFilepathConf == "") {
+        Log::err(TAG, "Not found config file");
+        return false;
+    }
+    return true;
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployGlobalSettings::initFromFile() {
+    if (!this->findFileConfig()) {
+        return false;
+    }
+
+    WJSCppParseConfig parseConfig(m_sFilepathConf);
+    parseConfig.load();
+
+    std::map<std::string, WSJCppSettingItem*>::iterator it;
+    for(it = m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
+        WSJCppSettingItem *pItem = it->second;
+        if (pItem->isFromFile()) {
+            if (pItem->isString()) {
+                std::string s = parseConfig.stringValue(pItem->getName(), pItem->getDefaultStringValue());
+                pItem->setStringValue(s);
+                // TODO run validators
+            }
+        }
+    }
+
+    // missing settings in file
+    for (it = m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
+        WSJCppSettingItem *pItem = it->second;
+        if (pItem->isFromFile() && !pItem->isInited()) {
+            Log::warn(TAG, "Missing setting: '" + pItem->getName() + "' in file '" + m_sFilepathConf + "'");
+        }
+    }
+
+    // excess settings in file
+    std::map<std::string, std::string> mapValues = parseConfig.getValues();
+    std::map<std::string, std::string>::iterator itV;
+    for (itV = mapValues.begin(); itV != mapValues.end(); ++itV) {
+        std::string sSettingName = itV->first;
+        it = m_mapSettingItems.find(sSettingName);
+        if (it == m_mapSettingItems.end()) {
+            Log::warn(TAG, "Excess setting: '" + sSettingName + "' in file '" + m_sFilepathConf + "'");
+        }
+    }
     return true;
 }
 
@@ -165,11 +268,10 @@ REGISTRY_WJSCPP_EMPLOY(EmployServerConfig)
 // ---------------------------------------------------------------------
 
 EmployServerConfig::EmployServerConfig()
-    : EmployBase(EmployServerConfig::name(), {}) {
+    : EmployBase(EmployServerConfig::name(), { EmployGlobalSettings::name() }) {
     
     TAG = EmployServerConfig::name();
 
-    m_mapDefaultOptions["storage_type"] = "mysql";
     m_mapDefaultOptions["port"] = "1234";
     m_mapDefaultOptions["ssl_on"] = "no";
     m_mapDefaultOptions["ssl_port"] = "4613";
@@ -181,11 +283,8 @@ EmployServerConfig::EmployServerConfig()
 
     // default settings
     m_bServer_ssl_on = false;
-    m_bDatabase_usemysql = true;
 
     // sql
-    m_sStorageType = "mysql"; // default
-    m_bDatabase_usemysql = true;
     m_sDatabase_host = "localhost";
     m_nDatabase_port = 3306;
     m_sDatabase_name = "freehackquest";
@@ -261,15 +360,16 @@ bool EmployServerConfig::init() {
     WJSCppParseConfig parseConfig(m_sFilepathConf);
     parseConfig.load();
 
-    m_sStorageType = parseConfig.stringValue("storage_type", m_sStorageType);
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    std::string sStorageType = pGlobalSettings->get("storage_type").getStringValue();
+
     // TODO check support
-    if (!Storages::support(m_sStorageType)) {
-        Log::err(TAG, "Not support storage " + m_sStorageType);
+    if (!Storages::support(sStorageType)) {
+        Log::err(TAG, "Not support storage '" + sStorageType + "'");
         return false;
     }
 
-    m_bDatabase_usemysql = parseConfig.boolValue("usemysql", m_bDatabase_usemysql);
-    if (m_bDatabase_usemysql) {
+    if (sStorageType == "mysql") { // TODO redesign
         // Deprecated
         m_sDatabase_host = parseConfig.stringValue("dbhost", m_sDatabase_host);
         m_nDatabase_port = parseConfig.intValue("dbport", m_nDatabase_port);
@@ -338,12 +438,6 @@ std::string EmployServerConfig::filepathConf() {
 
 // ---------------------------------------------------------------------
 
-std::string EmployServerConfig::storageType() {
-    return m_sStorageType;
-}
-
-// ---------------------------------------------------------------------
-
 std::string EmployServerConfig::databaseHost() {
     return m_sDatabase_host;
 }
@@ -370,12 +464,6 @@ std::string EmployServerConfig::databaseUser() {
 
 std::string EmployServerConfig::databasePassword() {
     return m_sDatabase_password;
-}
-
-// ---------------------------------------------------------------------
-
-bool EmployServerConfig::databaseUseMySQL() {
-    return m_bDatabase_usemysql;
 }
 
 // ---------------------------------------------------------------------
