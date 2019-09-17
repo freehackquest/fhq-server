@@ -22,6 +22,15 @@ EmployOrchestra::EmployOrchestra()
         : WSJCppEmployBase(EmployOrchestra::name(), {EmploySettings::name()}) {
     TAG = "EmployOrchestra";
     m_bTrusted = false;
+
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+
+    std::string  sGroupLXD = "lxd";
+    pGlobalSettings->regestrySetting(sGroupLXD, "path_dir_lxc_ssl").string("/etc/fhq-server/lxd").inDatabase();
+    pGlobalSettings->regestrySetting(sGroupLXD, "lxd_server_ip").string("127.0.0.1").inDatabase();
+    pGlobalSettings->regestrySetting(sGroupLXD, "lxd_server_port").number(8443).inDatabase();
+    pGlobalSettings->regestrySetting(sGroupLXD, "lxd_mode").string("disabled").inDatabase();
+
 }
 
 // ---------------------------------------------------------------------

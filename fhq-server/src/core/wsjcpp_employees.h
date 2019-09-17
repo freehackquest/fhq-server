@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <fallen.h>
-#include <wsjcpp_settings.h>
 #include <cmd_handlers.h>
 
 // ---------------------------------------------------------------------
@@ -77,6 +76,100 @@ template <class T> T* findEmploy() {
     return pTEmploy;
 }
 
+// ----------------------------------------------------------------------
+
+enum WSJCppSettingStorageType {
+    WJSCPP_SETTING_IN_NONE,
+    WJSCPP_SETTING_IN_FILE,
+    WJSCPP_SETTING_IN_DATABASE,
+    WJSCPP_SETTING_IN_RUNTIME
+};
+
+// ----------------------------------------------------------------------
+
+enum WSJCppSettingDataType {
+    WJSCPP_SETTING_TYPE_NONE,
+    WJSCPP_SETTING_TYPE_STRING,
+    WJSCPP_SETTING_TYPE_TEXT,
+    WJSCPP_SETTING_TYPE_NUMBER,
+    WJSCPP_SETTING_TYPE_BOOLEAN,
+    WJSCPP_SETTING_TYPE_LIST,
+    WJSCPP_SETTING_TYPE_JSON
+};
+
+// ----------------------------------------------------------------------
+
+class WSJCppSettingItem {
+    public:
+        WSJCppSettingItem(const std::string &sSettingGroup, const std::string &sSettingName);
+        // WSJCppSettingItem(const WSJCppSettingItem &item);
+        WSJCppSettingItem &inFile();
+        WSJCppSettingItem &inDatabase();
+        WSJCppSettingItem &inRuntime();
+        WSJCppSettingItem &readonly();
+        WSJCppSettingItem &string(const std::string &sDefaultStringValue);
+        WSJCppSettingItem &text(const std::string &sDefaultTextValue);
+        WSJCppSettingItem &number(int nDefaultNumberValue);
+        WSJCppSettingItem &boolean(bool bDefaultBooleanValue);
+        WSJCppSettingItem &json();
+        WSJCppSettingItem &list();
+        
+        void checkWithThrow() const;
+        bool isInited() const;
+        bool isReadonly() const;
+        std::string getName() const;
+        bool isFromFile() const;
+        bool isFromDatabase() const;
+        bool isFromRuntime() const;
+
+        bool isString() const;
+        bool isText() const;
+        bool isNumber() const;
+        bool isBoolean() const;
+        bool isJson() const;
+        bool isList() const;
+        
+        std::string getDefaultStringValue() const;
+        std::string getStringValue() const;
+        void setStringValue(const std::string &sStringValue);
+
+        int getDefaultNumberValue() const;
+        int getNumberValue() const;
+        void setNumberValue(int nNumberValue);
+
+        bool getDefaultBooleanValue() const;
+        bool getBooleanValue() const;
+        void setBooleanValue(bool bBooleanValue);
+
+    private:
+        std::string TAG;
+        std::string m_sSettingName;
+        std::string m_sSettingGroup;
+        bool m_bReadonly;
+        WSJCppSettingStorageType m_nStorageType;
+        WSJCppSettingDataType m_nSettingType;
+        bool m_bInited;
+
+        // isString
+        std::string m_sDefaultStringValue;
+        std::string m_sStringValue;
+
+        // isNumber
+        int m_nDefaultNumberValue;
+        int m_nNumberValue;
+
+        // isBoolean
+        bool m_bDefaultBooleanValue;
+        bool m_bBooleanValue;
+};
+
+// ----------------------------------------------------------------------
+
+class WSJCppSettingListener {
+    public:
+        virtual void eventSettingsChanged() = 0;
+};
+
 // ---------------------------------------------------------------------
 // WJSCppEmployConfig
 
@@ -85,10 +178,9 @@ class EmployGlobalSettings : public WSJCppEmployBase {
         EmployGlobalSettings();
         static std::string name() { return "EmployGlobalSettings"; }
         virtual bool init(); // here will be init from file
-        void setWorkDir(const std::string &sWorkDir);
+        void setWorkDir(const std::string &sWorkDir); // TODO deprecated
 
-        void regestryItem(const WSJCppSettingItem &item);
-        WSJCppSettingItem &regestrySetting(const std::string &sSettingName);
+        WSJCppSettingItem &regestrySetting(const std::string &sSettingGroup, const std::string &sSettingName);
 
         const WSJCppSettingItem &get(const std::string &sSettingName);
         void update(const WSJCppSettingItem &item);
@@ -99,7 +191,7 @@ class EmployGlobalSettings : public WSJCppEmployBase {
         std::string TAG;
         std::string m_sWorkDir;
         std::string m_sFilepathConf;
-        WSJCppSettingItem *m_pSettingNone;
+
         bool findFileConfig();
         bool initFromFile();
         std::map <std::string, WSJCppSettingItem *> m_mapSettingItems;

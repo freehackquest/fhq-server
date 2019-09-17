@@ -13,8 +13,9 @@ EmployDatabase::EmployDatabase()
     : WSJCppEmployBase(EmployDatabase::name(), {EmployServerConfig::name(), EmployGlobalSettings::name()}) {
     TAG = EmployDatabase::name();
     
+    std::string sGroupDatabase = "database";
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
-    pGlobalSettings->regestrySetting("storage_type").string("mysql").inFile();
+    pGlobalSettings->regestrySetting(sGroupDatabase, "storage_type").string("mysql").inFile();
     // TODO validator: 
     // if (!Storages::support(m_sStorageType)) {
     //    Log::err(TAG, "Not support storage " + m_sStorageType);
@@ -22,11 +23,11 @@ EmployDatabase::EmployDatabase()
     //}
 
     // TODO require some storage_type settings
-    pGlobalSettings->regestrySetting("dbhost").string("localhost").inFile();
-    pGlobalSettings->regestrySetting("dbport").number(3306).inFile();
-    pGlobalSettings->regestrySetting("dbname").string("freehackquest").inFile();
-    pGlobalSettings->regestrySetting("dbuser").string("freehackquest_u").inFile();
-    pGlobalSettings->regestrySetting("dbpass").string("freehackquest_p").inFile();
+    pGlobalSettings->regestrySetting(sGroupDatabase, "dbhost").string("localhost").inFile();
+    pGlobalSettings->regestrySetting(sGroupDatabase, "dbport").number(3306).inFile();
+    pGlobalSettings->regestrySetting(sGroupDatabase, "dbname").string("freehackquest").inFile();
+    pGlobalSettings->regestrySetting(sGroupDatabase, "dbuser").string("freehackquest_u").inFile();
+    pGlobalSettings->regestrySetting(sGroupDatabase, "dbpass").string("freehackquest_p").inFile(); // TODO password
     
     // TODO require some storage_type settings
     // local nosql
@@ -40,7 +41,7 @@ bool EmployDatabase::init() {
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
 
     /*
-            Log::info(TAG, "Database host: " + m_sDatabase_host);
+        Log::info(TAG, "Database host: " + m_sDatabase_host);
         Log::info(TAG, "Database port: " + std::to_string(m_nDatabase_port));
         Log::info(TAG, "Database name: " + m_sDatabase_name);
         Log::info(TAG, "Database user: " + m_sDatabase_user);
