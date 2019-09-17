@@ -13,7 +13,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployImages)
 // ---------------------------------------------------------------------
 
 EmployImages::EmployImages()
-    : EmployBase(EmployImages::name(), {}) {
+    : WSJCppEmployBase(EmployImages::name(), {}) {
     TAG = EmployImages::name();
 }
 

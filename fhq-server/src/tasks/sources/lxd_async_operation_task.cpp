@@ -4,7 +4,7 @@
 #include <lxd_async_operation_task.h>
 #include <iostream>
 #include <QtCore/QThread>
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 
 
 LXDAsyncOperationTask::LXDAsyncOperationTask(void (*func)(const std::string&, std::string &, int &),

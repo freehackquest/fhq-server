@@ -1,5 +1,5 @@
 #include <employ_database.h>
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 #include <QThread>
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -10,7 +10,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployDatabase)
 // ---------------------------------------------------------------------
 
 EmployDatabase::EmployDatabase()
-    : EmployBase(EmployDatabase::name(), {EmployServerConfig::name(), EmployGlobalSettings::name()}) {
+    : WSJCppEmployBase(EmployDatabase::name(), {EmployServerConfig::name(), EmployGlobalSettings::name()}) {
     TAG = EmployDatabase::name();
     
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();

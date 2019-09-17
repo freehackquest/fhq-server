@@ -1,5 +1,5 @@
 #include <model_database_connection.h>
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 #include <fallen.h>
 
 ModelDatabaseConnection::ModelDatabaseConnection(QString sNameConnection) {

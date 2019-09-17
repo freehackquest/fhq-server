@@ -1,14 +1,14 @@
 #ifndef EMPLOY_SETTINGS_H
 #define EMPLOY_SETTINGS_H
 
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 #include <cmd_handlers.h>
 #include <model_server_sett_helper.h>
 
 #include <QString>
 #include <QMutex>
 
-class EmploySettings : public EmployBase {
+class EmploySettings : public WSJCppEmployBase {
 public:
     EmploySettings();
     static std::string name() { return "EmploySettings"; }

@@ -42,8 +42,8 @@ list (APPEND UNIT_TESTS_SOURCES "../src/core/jobs_pool.h")
 list (APPEND UNIT_TESTS_SOURCES "../src/core/jobs_pool.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../src/core/storages.h")
 list (APPEND UNIT_TESTS_SOURCES "../src/core/storages.cpp")
-list (APPEND UNIT_TESTS_SOURCES "../src/core/wjscpp_validators.cpp")
-list (APPEND UNIT_TESTS_SOURCES "../src/core/wjscpp_validators.h")
+list (APPEND UNIT_TESTS_SOURCES "../src/core/wsjcpp_validators.cpp")
+list (APPEND UNIT_TESTS_SOURCES "../src/core/wsjcpp_validators.h")
 
 # validators
 list (APPEND UNIT_TESTS_SOURCES "../src/validators/validators.cpp")

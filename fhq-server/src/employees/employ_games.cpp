@@ -13,7 +13,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployGames)
 // ---------------------------------------------------------------------
 
 EmployGames::EmployGames()
-    : EmployBase(EmployGames::name(), {EmployDatabase::name(), EmploySettings::name(), EmployNotify::name()}) {
+    : WSJCppEmployBase(EmployGames::name(), {EmployDatabase::name(), EmploySettings::name(), EmployNotify::name()}) {
     TAG = EmployGames::name();
 }
 

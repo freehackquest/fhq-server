@@ -19,7 +19,7 @@ std::string EmploySettings::SERVER_FOLDER_PUBLIC = "server_folder_public";
 // ---------------------------------------------------------------------
 
 EmploySettings::EmploySettings()
-    : EmployBase(EmploySettings::name(), {EmployDatabase::name()}) {
+    : WSJCppEmployBase(EmploySettings::name(), {EmployDatabase::name()}) {
     TAG = EmploySettings::name();
 }
 

@@ -18,7 +18,7 @@
 #include <websocketserver.h>
 #include <utils_prepare_deb_package.h>
 #include <utils_lxd.h>
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 #include <employ_server_info.h>
 #include <employ_database.h>
 #include <employ_settings.h>
@@ -138,10 +138,10 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("show-employees")) {
         std::cout << " * Employees (" << g_pEmployees->size() << "):\n";
-        std::map<std::string, EmployBase*>::iterator it = g_pEmployees->begin();
-        for (; it!=g_pEmployees->end(); ++it) {
+        std::map<std::string, WSJCppEmployBase*>::iterator it = g_pEmployees->begin();
+        for (; it != g_pEmployees->end(); ++it) {
             std::string sEmployName = it->first;
-            EmployBase* pEmployBase = it->second;
+            WSJCppEmployBase* pEmployBase = it->second;
             std::cout << " |--- * " << sEmployName << "\n";
             if (pEmployBase->loadAfter().size() > 0) {
                 for (int i = 0; i < pEmployBase->loadAfter().size(); i++) {

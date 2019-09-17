@@ -1,10 +1,10 @@
 #ifndef EMPLOY_GAMES_H
 #define EMPLOY_GAMES_H
 
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 #include <model_game.h>
 
-class EmployGames : public EmployBase {
+class EmployGames : public WSJCppEmployBase {
     public:
 
         EmployGames();

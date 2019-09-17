@@ -1,5 +1,5 @@
 #include <fallen.h>
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 #include <employ_server_info.h>
 #include <employ_settings.h>
 #include <algorithm>
@@ -7,7 +7,7 @@
 
 // ---------------------------------------------------------------------
 
-std::map<std::string, EmployBase*> *g_pEmployees = NULL;
+std::map<std::string, WSJCppEmployBase*> *g_pEmployees = NULL;
 std::vector<std::string> *g_pInitEmployees = NULL;
 
 // ---------------------------------------------------------------------
@@ -15,7 +15,7 @@ std::vector<std::string> *g_pInitEmployees = NULL;
 void Employees::initGlobalVariables() {
     if (g_pEmployees == NULL) {
         // Log::info(std::string(), "Create employees map");
-        g_pEmployees = new std::map<std::string, EmployBase*>();
+        g_pEmployees = new std::map<std::string, WSJCppEmployBase*>();
     }
     if (g_pInitEmployees == NULL) {
         // Log::info(std::string(), "Create init employees vector");
@@ -25,12 +25,12 @@ void Employees::initGlobalVariables() {
 
 // ---------------------------------------------------------------------
 
-void Employees::addEmploy(const std::string &sName, EmployBase* pEmploy) {
+void Employees::addEmploy(const std::string &sName, WSJCppEmployBase* pEmploy) {
     Employees::initGlobalVariables();
     if (g_pEmployees->count(sName)) {
         Log::err(sName, "Already registered");
     } else {
-        g_pEmployees->insert(std::pair<std::string, EmployBase*>(sName,pEmploy));
+        g_pEmployees->insert(std::pair<std::string, WSJCppEmployBase*>(sName,pEmploy));
         // Log::info(sName, "Registered");
     }
 }
@@ -48,10 +48,10 @@ bool Employees::init(const std::vector<std::string> &vStart) {
     bool bRepeat = true;
     while (bRepeat) {
         bRepeat = false;
-        std::map<std::string, EmployBase*>::iterator it = g_pEmployees->begin();
+        std::map<std::string, WSJCppEmployBase*>::iterator it = g_pEmployees->begin();
         for (; it!=g_pEmployees->end(); ++it) {
             std::string sEmployName = it->first;
-            EmployBase *pEmploy = it->second;
+            WSJCppEmployBase *pEmploy = it->second;
 
             if (std::find(g_pInitEmployees->begin(), g_pInitEmployees->end(), sEmployName) != g_pInitEmployees->end()) {
                 continue;
@@ -80,8 +80,8 @@ bool Employees::init(const std::vector<std::string> &vStart) {
 
 // ---------------------------------------------------------------------
 
-// EmployBase
-EmployBase::EmployBase(const std::string &sName, const std::vector<std::string> &vAfter) {
+// WSJCppEmployBase
+WSJCppEmployBase::WSJCppEmployBase(const std::string &sName, const std::vector<std::string> &vAfter) {
     TAG = sName;
     m_sName = sName;
 
@@ -93,7 +93,7 @@ EmployBase::EmployBase(const std::string &sName, const std::vector<std::string> 
 
 // ---------------------------------------------------------------------
 
-const std::vector<std::string> &EmployBase::loadAfter() {
+const std::vector<std::string> &WSJCppEmployBase::loadAfter() {
     return m_vLoadAfter;
 }
 
@@ -105,7 +105,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployGlobalSettings)
 // ---------------------------------------------------------------------
 
 EmployGlobalSettings::EmployGlobalSettings()
-    : EmployBase(EmployGlobalSettings::name(), {}) {
+    : WSJCppEmployBase(EmployGlobalSettings::name(), {}) {
 
     TAG = EmployGlobalSettings::name();
     m_pSettingNone = new WSJCppSettingItem("none");
@@ -287,7 +287,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployServerConfig)
 // ---------------------------------------------------------------------
 
 EmployServerConfig::EmployServerConfig()
-    : EmployBase(EmployServerConfig::name(), { EmployGlobalSettings::name() }) {
+    : WSJCppEmployBase(EmployServerConfig::name(), { EmployGlobalSettings::name() }) {
     
     TAG = EmployServerConfig::name();
 
@@ -480,7 +480,7 @@ std::string EmployServerConfig::webUserFolder() {
 REGISTRY_WJSCPP_EMPLOY(EmployServer)
 
 EmployServer::EmployServer()
-    : EmployBase(EmployServer::name(), {"start_server", EmployServerConfig::name(), EmployServerInfo::name()}) {
+    : WSJCppEmployBase(EmployServer::name(), {"start_server", EmployServerConfig::name(), EmployServerInfo::name()}) {
     TAG = EmployServer::name();
     m_pWebSocketServer = NULL;
 }

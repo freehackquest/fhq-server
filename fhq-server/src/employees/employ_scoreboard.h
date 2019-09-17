@@ -1,10 +1,10 @@
 #ifndef EMPLOY_SCOREBOARD_H
 #define EMPLOY_SCOREBOARD_H
 
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 #include <json.hpp>
 
-class EmployScoreboard : public EmployBase {
+class EmployScoreboard : public WSJCppEmployBase {
     public:
        EmployScoreboard();
        static std::string name() { return "EmployScoreboard"; }

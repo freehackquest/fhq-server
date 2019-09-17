@@ -19,7 +19,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployOrchestra)
 // ---------------------------------------------------------------------
 
 EmployOrchestra::EmployOrchestra()
-        : EmployBase(EmployOrchestra::name(), {EmploySettings::name()}) {
+        : WSJCppEmployBase(EmployOrchestra::name(), {EmploySettings::name()}) {
     TAG = "EmployOrchestra";
     m_bTrusted = false;
 }

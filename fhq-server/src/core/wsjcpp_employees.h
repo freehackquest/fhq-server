@@ -24,9 +24,9 @@ enum EmployResult {
 // ---------------------------------------------------------------------
 // base employ class
 
-class EmployBase {
+class WSJCppEmployBase {
 public:
-    EmployBase(
+    WSJCppEmployBase(
         const std::string &sName,
         const std::vector<std::string> &vLoadAfter);
     virtual bool init() = 0;
@@ -41,13 +41,13 @@ private:
 // ---------------------------------------------------------------------
 // public employees
 
-extern std::map<std::string, EmployBase*> *g_pEmployees;
+extern std::map<std::string, WSJCppEmployBase*> *g_pEmployees;
 extern std::vector<std::string> *g_pInitEmployees;
 
 class Employees {
     public:
         static void initGlobalVariables();
-        static void addEmploy(const std::string &sName, EmployBase* pEmploy);
+        static void addEmploy(const std::string &sName, WSJCppEmployBase* pEmploy);
         static bool init(const std::vector<std::string> &vLoadAfter);
 };
 
@@ -63,18 +63,16 @@ template <class T> T* findEmploy() {
     Employees::initGlobalVariables();
     std::string TAG = "findEmploy";
     std::string sEmployName = T::name();
-    EmployBase *pEmploy = NULL;
+    WSJCppEmployBase *pEmploy = NULL;
     if (g_pEmployees->count(sEmployName)) {
         pEmploy = g_pEmployees->at(sEmployName);
     }
     if (pEmploy == NULL) {
-        Log::err(TAG, "Not found employ " + sEmployName);
-        return NULL;
+        Log::throw_err(TAG, "Not found employ " + sEmployName);
     }
     T *pTEmploy = dynamic_cast<T*>(pEmploy);
     if (pTEmploy == NULL) {
-        Log::err(TAG, "Employ could not cast to T [" + sEmployName + "]");
-        return NULL;
+        Log::throw_err(TAG, "Employ could not cast to T [" + sEmployName + "]");
     }
     return pTEmploy;
 }
@@ -82,7 +80,7 @@ template <class T> T* findEmploy() {
 // ---------------------------------------------------------------------
 // WJSCppEmployConfig
 
-class EmployGlobalSettings : public EmployBase {
+class EmployGlobalSettings : public WSJCppEmployBase {
     public:
         EmployGlobalSettings();
         static std::string name() { return "EmployGlobalSettings"; }
@@ -111,7 +109,7 @@ class EmployGlobalSettings : public EmployBase {
 // ---------------------------------------------------------------------
 // WJSCppEmployConfig
 
-class EmployServerConfig : public EmployBase {
+class EmployServerConfig : public WSJCppEmployBase {
     public:
         EmployServerConfig();
         static std::string name() { return "EmployServerConfig"; }
@@ -157,7 +155,7 @@ class EmployServerConfig : public EmployBase {
 // ---------------------------------------------------------------------
 // WJSCppEmployConfig
 
-class EmployServer : public EmployBase {
+class EmployServer : public WSJCppEmployBase {
     public:
         EmployServer();
         static std::string name() { return "EmployServer"; }

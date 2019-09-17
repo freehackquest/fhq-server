@@ -1,12 +1,12 @@
 #ifndef EMPLOY_SERVER_INFO_H
 #define EMPLOY_SERVER_INFO_H
 
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 #include <QMutex>
 #include <QDateTime>
 #include <QMap>
 
-class EmployServerInfo : public EmployBase {
+class EmployServerInfo : public WSJCppEmployBase {
     public:
         EmployServerInfo();
         static std::string name() { return "EmployServerInfo"; }

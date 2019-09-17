@@ -3,7 +3,7 @@
 
 #include <map>
 #include <fallen.h>
-#include <wjscpp_validators.h>
+#include <wsjcpp_validators.h>
 #include <json.hpp>
 #include <QWebSocket>
 #include <QSqlQuery> // TODO deprecated

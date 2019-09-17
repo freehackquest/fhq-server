@@ -1,5 +1,5 @@
 #include <employ_server_info.h>
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 #include <employ_database.h>
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -12,7 +12,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployServerInfo)
 // ---------------------------------------------------------------------
 
 EmployServerInfo::EmployServerInfo()
-    : EmployBase(EmployServerInfo::name(), {EmployDatabase::name()}) {
+    : WSJCppEmployBase(EmployServerInfo::name(), {EmployDatabase::name()}) {
     m_nCountQuests = 0;
     m_nCountQuestsAttempt = 0;
     m_nCountQuestsCompleted = 0;

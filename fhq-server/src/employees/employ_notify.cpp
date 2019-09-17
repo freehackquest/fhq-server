@@ -1,5 +1,5 @@
 
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 #include <employ_notify.h>
 #include <employ_database.h>
 #include <QSqlDatabase>
@@ -21,7 +21,7 @@ std::string EmployNotify::LEAKS = "leaks";
 // ---------------------------------------------------------------------
 
 EmployNotify::EmployNotify()
-    : EmployBase(EmployNotify::name(), {EmployServer::name(), EmployDatabase::name()}) {
+    : WSJCppEmployBase(EmployNotify::name(), {EmployServer::name(), EmployDatabase::name()}) {
     TAG = EmployNotify::name();
 }
 

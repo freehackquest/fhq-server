@@ -5,7 +5,7 @@
 #include <utils_lxd.h>
 #include <json.hpp>
 #include <employ_orchestra.h>
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 
 
 bool UtilsLXDAuth::check_trust_certs(std::string &sError) {
