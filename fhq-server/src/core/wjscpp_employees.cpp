@@ -111,24 +111,18 @@ EmployGlobalSettings::EmployGlobalSettings()
     m_pSettingNone = new WSJCppSettingItem("none");
 
     // basicly
-    this->regestryItem(WSJCppSettingItem("work_dir").string("").readonly().inRuntime());
-
-    // in file
-    // this->regestryItem(WSJCppSettingItem("port").number().readonly().inFile());
-    // this->regestryItem(WSJCppSettingItem("ssl_on").boolean().readonly().inFile());
-    // this->regestryItem(WSJCppSettingItem("ssl_port").number().readonly().inFile());
-    // this->regestryItem(WSJCppSettingItem("ssl_key_file").string().readonly().inFile());
-    // this->regestryItem(WSJCppSettingItem("ssl_cert_file").string().readonly().inFile());
-    // this->regestryItem(WSJCppSettingItem("web_port").number().readonly().inFile());
-    // this->regestryItem(WSJCppSettingItem("web_max_threads").number().readonly().inFile());
-    // this->regestryItem(WSJCppSettingItem("web_admin_folder").string().readonly().inFile());
+    this->regestrySetting("work_dir").string("").inRuntime().readonly();
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployGlobalSettings::EmployGlobalSettings::init() {
-    // TODO checkWithThrow all settings
-
+    // checking settings
+    std::map<std::string, WSJCppSettingItem*>::iterator it;
+    for (it = m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
+        WSJCppSettingItem *pItem = it->second;
+        pItem->checkWithThrow();
+    }
     return this->initFromFile();
 }
 
@@ -155,6 +149,19 @@ void EmployGlobalSettings::regestryItem(const WSJCppSettingItem &item) {
 
 // ---------------------------------------------------------------------
 
+WSJCppSettingItem &EmployGlobalSettings::regestrySetting(const std::string &sSettingName) {
+    std::map<std::string, WSJCppSettingItem*>::iterator it;
+    it = m_mapSettingItems.find(sSettingName);
+    if (it != m_mapSettingItems.end()) {
+        Log::throw_err(TAG, "Setting '" + sSettingName + "' already registered");
+    }
+    WSJCppSettingItem *pItem = new WSJCppSettingItem(sSettingName);
+    m_mapSettingItems.insert(std::pair<std::string, WSJCppSettingItem*>(sSettingName, pItem));
+    return *pItem;
+}
+
+// ---------------------------------------------------------------------
+
 const WSJCppSettingItem &EmployGlobalSettings::get(const std::string &sSettingName) {
     std::map<std::string, WSJCppSettingItem*>::iterator it;
     it = m_mapSettingItems.find(sSettingName);
@@ -168,12 +175,14 @@ const WSJCppSettingItem &EmployGlobalSettings::get(const std::string &sSettingNa
 
 void EmployGlobalSettings::update(const WSJCppSettingItem &item) {
     // TODO
+    Log::throw_err(TAG, "Not implemented yet");
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployGlobalSettings::initFromDatabase() {
     // TODO
+    Log::throw_err(TAG, "Not implemented yet");
 }
 
 // ---------------------------------------------------------------------
@@ -235,6 +244,16 @@ bool EmployGlobalSettings::initFromFile() {
                 std::string s = parseConfig.stringValue(pItem->getName(), pItem->getDefaultStringValue());
                 pItem->setStringValue(s);
                 // TODO run validators
+            } else if (pItem->isNumber()) {
+                int nValue = parseConfig.intValue(pItem->getName(), pItem->getDefaultNumberValue());
+                pItem->setNumberValue(nValue);
+                // TODO run validators
+            } else if (pItem->isBoolean()) {
+                bool bValue = parseConfig.boolValue(pItem->getName(), pItem->getDefaultBooleanValue());
+                pItem->setBooleanValue(bValue);
+                // TODO run validators
+            } else {
+                Log::throw_err(TAG, "Not implemented yet");
             }
         }
     }
@@ -283,16 +302,6 @@ EmployServerConfig::EmployServerConfig()
 
     // default settings
     m_bServer_ssl_on = false;
-
-    // sql
-    m_sDatabase_host = "localhost";
-    m_nDatabase_port = 3306;
-    m_sDatabase_name = "freehackquest";
-    m_sDatabase_user = "freehackquest_u";
-    m_sDatabase_password = "freehackquest_p";
-
-    // local nosql
-    m_sDatabase_path = "/var/lib/fhq-server/data";
 
     m_nServer_port = 1234;
     m_bServer_ssl_on = false;
@@ -361,30 +370,6 @@ bool EmployServerConfig::init() {
     parseConfig.load();
 
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
-    std::string sStorageType = pGlobalSettings->get("storage_type").getStringValue();
-
-    // TODO check support
-    if (!Storages::support(sStorageType)) {
-        Log::err(TAG, "Not support storage '" + sStorageType + "'");
-        return false;
-    }
-
-    if (sStorageType == "mysql") { // TODO redesign
-        // Deprecated
-        m_sDatabase_host = parseConfig.stringValue("dbhost", m_sDatabase_host);
-        m_nDatabase_port = parseConfig.intValue("dbport", m_nDatabase_port);
-        m_sDatabase_name = parseConfig.stringValue("dbname", m_sDatabase_name);
-        m_sDatabase_user = parseConfig.stringValue("dbuser", m_sDatabase_user);
-        m_sDatabase_password = parseConfig.stringValue("dbpass", m_sDatabase_password);
-
-        Log::info(TAG, "Database host: " + m_sDatabase_host);
-        Log::info(TAG, "Database port: " + std::to_string(m_nDatabase_port));
-        Log::info(TAG, "Database name: " + m_sDatabase_name);
-        Log::info(TAG, "Database user: " + m_sDatabase_user);
-    } else {
-        m_sDatabase_path = parseConfig.stringValue("dbpath", m_sDatabase_path);
-        Log::info(TAG, "Database: using " + m_sDatabase_path);
-    }
 
     m_nServer_port = parseConfig.intValue("port", m_nServer_port);
     m_bServer_ssl_on = parseConfig.boolValue("ssl_on", m_bServer_ssl_on);
@@ -434,42 +419,6 @@ bool EmployServerConfig::init() {
 
 std::string EmployServerConfig::filepathConf() {
     return m_sFilepathConf;
-}
-
-// ---------------------------------------------------------------------
-
-std::string EmployServerConfig::databaseHost() {
-    return m_sDatabase_host;
-}
-
-// ---------------------------------------------------------------------
-
-int EmployServerConfig::databasePort() {
-    return m_nDatabase_port;
-}
-
-// ---------------------------------------------------------------------
-
-std::string EmployServerConfig::databaseName() {
-    return m_sDatabase_name;
-}
-
-// ---------------------------------------------------------------------
-
-std::string EmployServerConfig::databaseUser() {
-    return m_sDatabase_user;
-}
-
-// ---------------------------------------------------------------------
-
-std::string EmployServerConfig::databasePassword() {
-    return m_sDatabase_password;
-}
-
-// ---------------------------------------------------------------------
-
-std::string EmployServerConfig::databasePath() {
-    return m_sDatabase_path;
 }
 
 // ---------------------------------------------------------------------

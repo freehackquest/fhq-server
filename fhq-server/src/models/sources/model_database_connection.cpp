@@ -36,14 +36,19 @@ void ModelDatabaseConnection::setNameConnection(QString sNameConnection) {
 // ---------------------------------------------------------------------
 
 bool ModelDatabaseConnection::connect() {
-    EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
-    
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    std::string sDatabaseHost = pGlobalSettings->get("dbhost").getStringValue();
+    int nDatabasePort = pGlobalSettings->get("dbport").getNumberValue();
+    std::string sDatabaseName = pGlobalSettings->get("dbname").getStringValue();
+    std::string sDatabaseUser = pGlobalSettings->get("dbuser").getStringValue();
+    std::string sDatabasePassword = pGlobalSettings->get("dbpass").getStringValue();
+
     m_pDatabase = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL", m_sNameConnection));
-    m_pDatabase->setHostName(QString(pServerConfig->databaseHost().c_str()));
-    m_pDatabase->setDatabaseName(QString(pServerConfig->databaseName().c_str()));
-    m_pDatabase->setPort(pServerConfig->databasePort());
-    m_pDatabase->setUserName(QString(pServerConfig->databaseUser().c_str()));
-    m_pDatabase->setPassword(QString(pServerConfig->databasePassword().c_str()));
+    m_pDatabase->setHostName(QString(sDatabaseHost.c_str()));
+    m_pDatabase->setDatabaseName(QString(sDatabaseName.c_str()));
+    m_pDatabase->setPort(nDatabasePort);
+    m_pDatabase->setUserName(QString(sDatabaseUser.c_str()));
+    m_pDatabase->setPassword(QString(sDatabasePassword.c_str()));
     if (!m_pDatabase->open()) {
         Log::err(TAG, "Failed to connect." + m_pDatabase->lastError().text().toStdString());
         m_pDatabase = NULL;

@@ -33,9 +33,9 @@ class WSJCppSettingItem {
         WSJCppSettingItem &inRuntime();
         WSJCppSettingItem &readonly();
         WSJCppSettingItem &string(const std::string &sDefaultStringValue);
-        WSJCppSettingItem &text();
-        WSJCppSettingItem &number();
-        WSJCppSettingItem &boolean();
+        WSJCppSettingItem &text(const std::string &sDefaultTextValue);
+        WSJCppSettingItem &number(int nDefaultNumberValue);
+        WSJCppSettingItem &boolean(bool bDefaultBooleanValue);
         WSJCppSettingItem &json();
         WSJCppSettingItem &list();
         
@@ -58,6 +58,14 @@ class WSJCppSettingItem {
         std::string getStringValue() const;
         void setStringValue(const std::string &sStringValue);
 
+        int getDefaultNumberValue() const;
+        int getNumberValue() const;
+        void setNumberValue(int nNumberValue);
+
+        bool getDefaultBooleanValue() const;
+        bool getBooleanValue() const;
+        void setBooleanValue(bool bBooleanValue);
+
     private:
         std::string TAG;
         std::string m_sSettingName;
@@ -69,6 +77,14 @@ class WSJCppSettingItem {
         // isString
         std::string m_sDefaultStringValue;
         std::string m_sStringValue;
+
+        // isNumber
+        int m_nDefaultNumberValue;
+        int m_nNumberValue;
+
+        // isBoolean
+        bool m_bDefaultBooleanValue;
+        bool m_bBooleanValue;
 };
 
 class WSJCppSettingListener {

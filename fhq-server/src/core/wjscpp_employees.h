@@ -90,6 +90,8 @@ class EmployGlobalSettings : public EmployBase {
         void setWorkDir(const std::string &sWorkDir);
 
         void regestryItem(const WSJCppSettingItem &item);
+        WSJCppSettingItem &regestrySetting(const std::string &sSettingName);
+
         const WSJCppSettingItem &get(const std::string &sSettingName);
         void update(const WSJCppSettingItem &item);
         void addListener(WSJCppSettingListener *);
@@ -117,13 +119,6 @@ class EmployServerConfig : public EmployBase {
         
         // configs
         std::string filepathConf();
-        std::string databaseHost();
-        int databasePort();
-        std::string databaseName();
-        std::string databaseUser();
-        std::string databasePassword();
-        bool databaseUseMySQL();
-        std::string databasePath();
 
         bool serverSslOn();
         int serverPort();
@@ -144,14 +139,6 @@ class EmployServerConfig : public EmployBase {
         std::map <std::string, std::string> m_mapDefaultOptions;
     
         std::string m_sFilepathConf;
-
-        // database settings
-        std::string m_sDatabase_host;
-        int m_nDatabase_port;
-        std::string m_sDatabase_name;
-        std::string m_sDatabase_user;
-        std::string m_sDatabase_password;
-        std::string m_sDatabase_path;
         
         // server settings
         bool m_bServer_ssl_on;
