@@ -171,6 +171,8 @@ list (APPEND FHQSRV_SOURCES "src/utils/utils_lxd.h")
 list (APPEND FHQSRV_SOURCES "src/utils/utils_lxd.cpp")
 
 # employees
+list (APPEND FHQSRV_SOURCES "src/employees/employ_chats.h")
+list (APPEND FHQSRV_SOURCES "src/employees/employ_chats.cpp")
 list (APPEND FHQSRV_SOURCES "src/employees/employ_images.h")
 list (APPEND FHQSRV_SOURCES "src/employees/employ_images.cpp")
 list (APPEND FHQSRV_SOURCES "src/employees/employ_games.h")
