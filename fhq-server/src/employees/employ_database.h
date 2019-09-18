@@ -8,14 +8,18 @@
 #include <mutex>
 #include <QMap>
 
-class EmployDatabase : public WSJCppEmployBase {
+class EmployDatabase : public WSJCppEmployBase, public WSJCppSettingsStore {
     public:
-       EmployDatabase();
-       static std::string name() { return "EmployDatabase"; }
-       virtual bool init();
-       QSqlDatabase *database();
-       bool manualCreateDatabase(const std::string& sRootPassword, std::string& sError);
-       StorageConnection *getStorageConnection();
+        EmployDatabase();
+        static std::string name() { return "EmployDatabase"; }
+        virtual bool init();
+        QSqlDatabase *database();
+        bool manualCreateDatabase(const std::string& sRootPassword, std::string& sError);
+        StorageConnection *getStorageConnection();
+        
+        // WSJCppSettingsStore
+        virtual void updateSettingItem(const WSJCppSettingItem *pSettingItem);
+        virtual void initSettingItem(WSJCppSettingItem *pSettingItem);
 
     private:
         std::string TAG;

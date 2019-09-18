@@ -79,7 +79,8 @@ bool EmployDatabase::init() {
     //    query.exec();
     // }
     
-    
+    pGlobalSettings->initFromDatabase(this);
+
     // TODO
     return true;
 }
@@ -257,3 +258,17 @@ StorageConnection *EmployDatabase::getStorageConnection() {
     }
     return pStorageConnection;
 }
+
+// ---------------------------------------------------------------------
+
+void EmployDatabase::updateSettingItem(const WSJCppSettingItem *pSettingItem) {
+    Log::throw_err(TAG, "updateSettingItem - Not implemented yet");
+}
+
+// ---------------------------------------------------------------------
+
+void EmployDatabase::initSettingItem(WSJCppSettingItem *pSettingItem) {
+    Log::warn(TAG, "initSettingItem - Not implemented yet " + pSettingItem->getName());
+}
+
+// ---------------------------------------------------------------------

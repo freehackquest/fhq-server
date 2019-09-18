@@ -489,9 +489,15 @@ void EmployGlobalSettings::update(const WSJCppSettingItem &item) {
 
 // ---------------------------------------------------------------------
 
-bool EmployGlobalSettings::initFromDatabase() {
-    // TODO
-    Log::throw_err(TAG, "Not implemented yet");
+bool EmployGlobalSettings::initFromDatabase(WSJCppSettingsStore *pDatabaseSettingsStore) {
+    m_pDatabaseSettingsStore = pDatabaseSettingsStore;
+    std::map<std::string, WSJCppSettingItem*>::iterator it;
+    for (it = m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
+        WSJCppSettingItem *pItem = it->second;
+        if (pItem->isFromDatabase()) {
+            m_pDatabaseSettingsStore->initSettingItem(pItem);
+        }
+    }
 }
 
 // ---------------------------------------------------------------------

@@ -170,8 +170,16 @@ class WSJCppSettingListener {
         virtual void eventSettingsChanged() = 0;
 };
 
+// ----------------------------------------------------------------------
+
+class WSJCppSettingsStore {
+    public:
+        virtual void updateSettingItem(const WSJCppSettingItem *pSettingItem) = 0;
+        virtual void initSettingItem(WSJCppSettingItem *pSettingItem) = 0;
+};
+
 // ---------------------------------------------------------------------
-// WJSCppEmployConfig
+// EmployGlobalSettings
 
 class EmployGlobalSettings : public WSJCppEmployBase {
     public:
@@ -185,12 +193,13 @@ class EmployGlobalSettings : public WSJCppEmployBase {
         const WSJCppSettingItem &get(const std::string &sSettingName);
         void update(const WSJCppSettingItem &item);
         void addListener(WSJCppSettingListener *);
-        bool initFromDatabase();
+        bool initFromDatabase(WSJCppSettingsStore *pDatabaseSettingsStore);
 
     private:
         std::string TAG;
         std::string m_sWorkDir;
         std::string m_sFilepathConf;
+        WSJCppSettingsStore *m_pDatabaseSettingsStore;
 
         bool findFileConfig();
         bool initFromFile();
