@@ -1,9 +1,9 @@
-#ifndef VALIDATOR_GAME_STATE_H
-#define VALIDATOR_GAME_STATE_H
+#ifndef VALIDATORS_H
+#define VALIDATORS_H
 
 #include <string>
 #include <vector>
-#include <wjscpp_validators.h>
+#include <wsjcpp_validators.h>
 
 // ---------------------------------------------------------------------
 

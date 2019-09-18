@@ -2,20 +2,24 @@
 #define EMPLOY_DATABASE_H
 
 #include <model_database_connection.h>
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 
 #include <storages.h>
 #include <mutex>
 #include <QMap>
 
-class EmployDatabase : public EmployBase {
+class EmployDatabase : public WSJCppEmployBase, public WSJCppSettingsStore {
     public:
-       EmployDatabase();
-       static std::string name() { return "EmployDatabase"; }
-       virtual bool init();
-       QSqlDatabase *database();
-       bool manualCreateDatabase(const std::string& sRootPassword, std::string& sError);
-       StorageConnection *getStorageConnection();
+        EmployDatabase();
+        static std::string name() { return "EmployDatabase"; }
+        virtual bool init();
+        QSqlDatabase *database();
+        bool manualCreateDatabase(const std::string& sRootPassword, std::string& sError);
+        StorageConnection *getStorageConnection();
+        
+        // WSJCppSettingsStore
+        virtual void updateSettingItem(const WSJCppSettingItem *pSettingItem);
+        virtual void initSettingItem(WSJCppSettingItem *pSettingItem);
 
     private:
         std::string TAG;

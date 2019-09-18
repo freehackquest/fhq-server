@@ -11,7 +11,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployScoreboard)
 // ---------------------------------------------------------------------
 
 EmployScoreboard::EmployScoreboard()
-    : EmployBase(EmployScoreboard::name(), {EmployDatabase::name()}) {
+    : WSJCppEmployBase(EmployScoreboard::name(), {EmployDatabase::name()}) {
 
 }
 

@@ -3,7 +3,7 @@
 #include <QJsonObject>
 #include <QtGlobal>
 #include <fallen.h>
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 
 /*! 
  * WSJCppError - 

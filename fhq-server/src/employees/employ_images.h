@@ -1,9 +1,9 @@
 #ifndef EMPLOY_IMAGES_H
 #define EMPLOY_IMAGES_H
 
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 
-class EmployImages : public EmployBase {
+class EmployImages : public WSJCppEmployBase {
 private:
     std::string TAG;
     

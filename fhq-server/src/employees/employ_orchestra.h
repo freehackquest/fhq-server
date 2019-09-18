@@ -1,7 +1,7 @@
 #ifndef EMPLOY_ORCHESTRA
 #define EMPLOY_ORCHESTRA
 
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 #include <model_lxd_orchestra.h>
 
 #include <list>
@@ -11,7 +11,7 @@
 #include <future>
 
 
-class EmployOrchestra : public EmployBase {
+class EmployOrchestra : public WSJCppEmployBase {
 public:
     EmployOrchestra();
 

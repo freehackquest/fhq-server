@@ -11,7 +11,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployQuests)
 // ---------------------------------------------------------------------
 
 EmployQuests::EmployQuests()
-    : EmployBase(EmployQuests::name(), {EmployDatabase::name()}) {
+    : WSJCppEmployBase(EmployQuests::name(), {EmployDatabase::name()}) {
     TAG = EmployQuests::name();
 }
 

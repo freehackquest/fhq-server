@@ -14,7 +14,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployLeaks)
 // ---------------------------------------------------------------------
 
 EmployLeaks::EmployLeaks()
-    : EmployBase(EmployLeaks::name(), {EmployDatabase::name(), EmployNotify::name(), EmployGames::name()}) {
+    : WSJCppEmployBase(EmployLeaks::name(), {EmployDatabase::name(), EmployNotify::name(), EmployGames::name()}) {
     TAG = EmployLeaks::name();
     m_mapCacheLeaks.clear();
     m_vectCacheLeaks.clear();

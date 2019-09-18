@@ -1,9 +1,9 @@
 #ifndef EMPLOY_QUESTS_H
 #define EMPLOY_QUESTS_H
 
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 
-class EmployQuests : public EmployBase {
+class EmployQuests : public WSJCppEmployBase {
     public:
        EmployQuests();
        static std::string name() { return "EmployQuests"; }

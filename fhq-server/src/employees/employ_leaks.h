@@ -1,10 +1,10 @@
 #ifndef EMPLOY_LEAKS_H
 #define EMPLOY_LEAKS_H
 
-#include <wjscpp_employees.h>
+#include <wsjcpp_employees.h>
 #include <model_leak.h>
 
-class EmployLeaks : public EmployBase {
+class EmployLeaks : public WSJCppEmployBase {
     public:
         EmployLeaks();
         static std::string name() { return "EmployLeaks"; }
