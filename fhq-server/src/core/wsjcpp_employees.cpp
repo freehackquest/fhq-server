@@ -546,7 +546,7 @@ bool EmployGlobalSettings::initFromFile() {
     parseConfig.load();
 
     std::map<std::string, WSJCppSettingItem*>::iterator it;
-    for(it = m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
+    for (it = m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
         WSJCppSettingItem *pItem = it->second;
         if (pItem->isFromFile()) {
             if (pItem->isString()) {
