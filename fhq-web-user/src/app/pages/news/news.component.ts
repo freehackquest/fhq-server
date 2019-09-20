@@ -18,7 +18,7 @@ declare var fhq: any;
 export class NewsComponent implements OnInit {
   @Output() loading = new EventEmitter<boolean>();
   searchValue: String = '';
-  private searchControl = new FormControl('');
+  searchControl = new FormControl('');
   formCtrlSub: Subscription;
 
   countPages = 0;

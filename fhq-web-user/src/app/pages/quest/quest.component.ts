@@ -47,7 +47,7 @@ export class QuestComponent implements OnInit {
   constructor(
     private _spinner: SpinnerService,
     private _cdr: ChangeDetectorRef,
-    private _fhq: FhqService,
+    public _fhq: FhqService,
     private _route: ActivatedRoute,
     private _router: Router,
     private _modalService: NgbModal,

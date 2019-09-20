@@ -7,7 +7,7 @@ import { SpinnerService } from '../../services/spinner.service';
   styleUrls: ['./useful-links.component.css']
 })
 export class UsefulLinksComponent implements OnInit {
-  private dataList: Array<any> = [{
+  public dataList: Array<any> = [{
     "link": "https://freehackquest.com/",
     "description": "CTF training: Online aрхив тасков, платформа для проведения CTF игр",
   }, {
