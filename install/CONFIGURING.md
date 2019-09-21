@@ -43,7 +43,7 @@ Default ports:
 
 
 ```
-$ sudo cp ../fhq-server/install_files/fhq-server.conf.sample /etc/fhq-server/fhq-server.conf
+$ sudo cp ../fhq-server/misc/push_to_ppa/install_files/fhq-server.conf.sample /etc/fhq-server/fhq-server.conf
 ```
 
 ### Edit config 
