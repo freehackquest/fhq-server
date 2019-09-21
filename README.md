@@ -3,11 +3,9 @@
 [![Build Status](https://travis-ci.org/freehackquest/fhq-server.svg?branch=master)](https://travis-ci.org/freehackquest/fhq-server) [![Docker Pulls](https://img.shields.io/docker/pulls/freehackquest/fhq-server.svg)](https://hub.docker.com/r/freehackquest/fhq-server/) [![Docker layers](https://images.microbadger.com/badges/image/freehackquest/fhq-server.svg)](https://microbadger.com/images/freehackquest/fhq-server) [![Github Stars](https://img.shields.io/github/stars/freehackquest/fhq-server.svg?label=github%20%E2%98%85)](https://github.com/freehackquest/fhq-server/) [![Github Stars](https://img.shields.io/github/contributors/freehackquest/fhq-server.svg)](https://github.com/freehackquest/fhq-server/) [![Github Forks](https://img.shields.io/github/forks/freehackquest/fhq-server.svg?label=github%20forks)](https://github.com/freehackquest/fhq-server/)
 
 
-Backend for FreeHackQuest on Qt and WebSockets
-Frontend for FreeHackQuest here: [frontend](https://github.com/freehackquest/frontend)
+Backend && Frontend for FreeHackQuest on Qt and WebSockets
 
-* [CONFIGURING](https://github.com/freehackquest/fhq-server/tree/master/install/CONFIGURING.md)
-* [HOW-TO-BUILD](https://github.com/freehackquest/fhq-server/tree/master/install/HOW-TO-BUILD.md)
+* [HOW-TO-BUILD-AND-DEVELOP](https://github.com/freehackquest/fhq-server/tree/master/install/HOW-TO-BUILD-AND-DEVELOP.md)
 * [PRE-BUILDS](https://github.com/freehackquest/fhq-server/tree/master/install/PRE-BUILDS.md)
 * [DOCKER-COMPOSE](https://github.com/freehackquest/fhq-server/tree/master/install/DOCKER_COMPOSE)
 * [INSTALL_FROM_PPA](https://github.com/freehackquest/fhq-server/tree/master/install/INSTALL_FROM_PPA.md)
