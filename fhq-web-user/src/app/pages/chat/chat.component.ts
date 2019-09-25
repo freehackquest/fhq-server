@@ -21,7 +21,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   constructor(
     private _spinnerService: SpinnerService,
     private _cdr: ChangeDetectorRef,
-    private _fhq: FhqService,
+    public _fhq: FhqService,
     private _modalService: NgbModal,
   ) { }
 

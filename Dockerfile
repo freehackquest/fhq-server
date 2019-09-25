@@ -10,7 +10,7 @@ RUN ./clean.sh && ./build_simple.sh
 
 COPY ./fhq-web-user /root/fhq-web-user
 WORKDIR /root/fhq-web-user
-RUN npm install && npm run build
+RUN npm install && npm run build-prod
 
 FROM freehackquest/fhq-docker-common:latest
 

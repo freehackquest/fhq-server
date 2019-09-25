@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
     public _translation: TranslationService,
     private _cdr: ChangeDetectorRef,
     private _modalService: NgbModal,
-    private _fhq: FhqService,
+    public _fhq: FhqService,
     private _router: Router,
     private _spinner: SpinnerService,
   ) {

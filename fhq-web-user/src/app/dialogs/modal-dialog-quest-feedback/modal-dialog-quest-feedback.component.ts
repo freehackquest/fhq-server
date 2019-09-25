@@ -26,7 +26,7 @@ export class ModalDialogQuestFeedbackComponent implements OnInit {
     private _cdr: ChangeDetectorRef,
     private _spinnerService: SpinnerService,
     private _emailValidator: EmailValidatorService,
-    private _fhq: FhqService,
+    public _fhq: FhqService,
   ) { }
 
   ngOnInit() {

@@ -2,15 +2,22 @@ import { Component, OnInit, ViewChild, ChangeDetectorRef, ElementRef } from '@an
 import { SpinnerService } from '../../services/spinner.service';
 import { Router } from '@angular/router';
 import { FhqService } from '../../services/fhq.service';
+import { FormControl } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-scoreboard',
   templateUrl: './scoreboard.component.html',
   styleUrls: ['./scoreboard.component.css']
 })
+
 export class ScoreboardComponent implements OnInit {
   errorMessage: string = null;
   dataList: Array<any> = [];
+  filteredDataList: Array<any> = [];
+  searchValue: String = '';
+  searchControl = new FormControl('');
+  formCtrlSub: Subscription;
 
   constructor(
     private _spinnerService: SpinnerService,
@@ -20,7 +27,41 @@ export class ScoreboardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+	// debounce keystroke events
+    this.formCtrlSub = this.searchControl.valueChanges
+      .debounceTime(1000)
+      .subscribe((newValue) => {
+        this.searchValue = newValue
+		this.applyFilter();
+	});
+	  
     this.loadData();
+  }
+
+  applyFilter() {
+	
+	const _sv = this.searchValue.toUpperCase();
+	console.log(_sv);
+	this.filteredDataList = []
+	this.dataList.forEach((el: any) => {
+		var filteredUsers = {
+			place: el.place,
+			rating: el.rating,
+			users: []
+		}
+		el.users.forEach((u: any) => {
+			if (
+				u.nick.toUpperCase().indexOf(_sv) !== -1 || 
+				u.university.toUpperCase().indexOf(_sv) !== -1
+			) {
+				filteredUsers.users.push(u);
+			}
+		})
+		if (filteredUsers.users.length > 0) {
+			this.filteredDataList.push(filteredUsers);
+		}
+	});
   }
 
   loadData() {
@@ -41,7 +82,8 @@ export class ScoreboardComponent implements OnInit {
     this.dataList = []
     r.data.forEach((el: any) => {
       this.dataList.push(el);
-    });
+	});
+	this.applyFilter();
     this._cdr.detectChanges();
   }
 
