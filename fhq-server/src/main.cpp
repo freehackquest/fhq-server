@@ -91,11 +91,10 @@ int main(int argc, char** argv) {
         }
 
         // configure employ
-        EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>(); // TODO deprecated
         EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
         if (sWorkDir != "") {
-            pServerConfig->setWorkDir(sWorkDir);
             pGlobalSettings->setWorkDir(sWorkDir);
+            // TODO: pGlobalSettings->update("work_dir")
         }
 
         std::string sDirLogs = sWorkDir + "/logs";
@@ -159,8 +158,8 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("check-server-config")) {
         std::cout << "\n * Check Server Config\n\n";
-        EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
-        if (!pServerConfig->init()) {
+        EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+        if (!pGlobalSettings->init()) {
             std::cout << "\n * FAIL\n\n";
         } else {
             std::cout << "\n * Success\n\n";
@@ -233,8 +232,8 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("manual-create-database")) {
         std::cout << "\n * Manual create database\n\n";
-        EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
-        if (!pServerConfig->init()) {
+        EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+        if (!pGlobalSettings->init()) {
             std::cout << "\n * Failed on init server config\n\n";
             return -1;
         }
@@ -292,8 +291,14 @@ int main(int argc, char** argv) {
         std::cout << "\nCurrent LXD mode: " << pSettings->getSettString("lxd_mode").toStdString() << "\n";
         return 0;
     } else if (helpArgs.has("start") || helpArgs.has("-s")) {
+        EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+
+        pGlobalSettings->registrySetting("web_server", "web_admin_folder").dirPath("/usr/share/fhq-server/web-admin").inFile();
+        pGlobalSettings->registrySetting("web_server", "web_user_folder").dirPath("/usr/share/fhq-server/fhq-web-user").inFile();
+        pGlobalSettings->registrySetting("web_server", "web_public_folder").dirPath("/usr/share/fhq-server/fhq-web-public").inFile();
+
         QThreadPool::globalInstance()->setMaxThreadCount(5);
-        WebSocketServer *pServer = new WebSocketServer();
+        WebSocketServer *pServer = new WebSocketServer(); // here will be init settings
         if (pServer->isFailed()) {
             Log::err(TAG, "Could not start server");
             return -1;
@@ -307,17 +312,21 @@ int main(int argc, char** argv) {
             return -1;
         }
 
-        EmployServerConfig *pConfig = findEmploy<EmployServerConfig>();
-
+        // TODO move inside server start
         // start web server
+        int nWebPort = pGlobalSettings->get("web_port").getNumberValue();
+        int nWebMaxThreads = pGlobalSettings->get("web_max_threads").getNumberValue();
+        std::string sWebAdminFolder = pGlobalSettings->get("web_admin_folder").getDirPathValue();
+        std::string sWebUserFolder = pGlobalSettings->get("web_user_folder").getDirPathValue();
+        std::string sWebPublicFolder = pGlobalSettings->get("web_public_folder").getDirPathValue(); // TODO
+
+        Log::info(TAG, "Starting web-server on " + std::to_string(nWebPort)
+             + " with " + std::to_string(nWebMaxThreads) + " worker threads");
+        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebAdminFolder(sWebAdminFolder));
+        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebUserFolder(sWebUserFolder));
         
-        Log::info(TAG, "Starting web-server on " + std::to_string(pConfig->webPort())
-             + " with " + std::to_string(pConfig->webMaxThreads()) + " worker threads");
-        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebAdminFolder(pConfig->webAdminFolder()));
-        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebUserFolder(pConfig->webUserFolder()));
-        
-        g_httpServer.setPort(pConfig->webPort());
-        g_httpServer.setMaxWorkers(pConfig->webMaxThreads());
+        g_httpServer.setPort(nWebPort);
+        g_httpServer.setMaxWorkers(nWebMaxThreads);
         g_httpServer.start(); // will be block thread*/
 
         return a.exec();

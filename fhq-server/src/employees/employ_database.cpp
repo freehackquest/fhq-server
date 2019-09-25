@@ -10,12 +10,12 @@ REGISTRY_WJSCPP_EMPLOY(EmployDatabase)
 // ---------------------------------------------------------------------
 
 EmployDatabase::EmployDatabase()
-    : WSJCppEmployBase(EmployDatabase::name(), {EmployServerConfig::name(), EmployGlobalSettings::name()}) {
+    : WSJCppEmployBase(EmployDatabase::name(), { EmployGlobalSettings::name()}) {
     TAG = EmployDatabase::name();
     
     std::string sGroupDatabase = "database";
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
-    pGlobalSettings->regestrySetting(sGroupDatabase, "storage_type").string("mysql").inFile();
+    pGlobalSettings->registrySetting(sGroupDatabase, "storage_type").string("mysql").inFile();
     // TODO validator: 
     // if (!Storages::support(m_sStorageType)) {
     //    Log::err(TAG, "Not support storage " + m_sStorageType);
@@ -23,11 +23,11 @@ EmployDatabase::EmployDatabase()
     //}
 
     // TODO require some storage_type settings
-    pGlobalSettings->regestrySetting(sGroupDatabase, "dbhost").string("localhost").inFile();
-    pGlobalSettings->regestrySetting(sGroupDatabase, "dbport").number(3306).inFile();
-    pGlobalSettings->regestrySetting(sGroupDatabase, "dbname").string("freehackquest").inFile();
-    pGlobalSettings->regestrySetting(sGroupDatabase, "dbuser").string("freehackquest_u").inFile();
-    pGlobalSettings->regestrySetting(sGroupDatabase, "dbpass").string("freehackquest_p").inFile(); // TODO password
+    pGlobalSettings->registrySetting(sGroupDatabase, "dbhost").string("localhost").inFile();
+    pGlobalSettings->registrySetting(sGroupDatabase, "dbport").number(3306).inFile();
+    pGlobalSettings->registrySetting(sGroupDatabase, "dbname").string("freehackquest").inFile();
+    pGlobalSettings->registrySetting(sGroupDatabase, "dbuser").string("freehackquest_u").inFile();
+    pGlobalSettings->registrySetting(sGroupDatabase, "dbpass").password("freehackquest_p").inFile(); // TODO password
     
     // TODO require some storage_type settings
     // local nosql
@@ -37,7 +37,6 @@ EmployDatabase::EmployDatabase()
 // ---------------------------------------------------------------------
 
 bool EmployDatabase::init() {
-    EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
 
     /*
@@ -53,7 +52,7 @@ bool EmployDatabase::init() {
     }
     m_pStorage = Storages::create(m_sStorageType);
     // TODO redesign init in global settings
-    if (!m_pStorage->applyConfigFromFile(pServerConfig->filepathConf())) {
+    if (!m_pStorage->applyConfigFromFile(pGlobalSettings->getFilepathConf())) {
         return false;
     }
 
@@ -100,7 +99,7 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
     int nDatabasePort = pGlobalSettings->get("dbport").getNumberValue();
     std::string sDatabaseName = pGlobalSettings->get("dbname").getStringValue();
     std::string sDatabaseUser = pGlobalSettings->get("dbuser").getStringValue();
-    std::string sDatabasePass = pGlobalSettings->get("dbpass").getStringValue();
+    std::string sDatabasePass = pGlobalSettings->get("dbpass").getPasswordValue();
     // m_pStorage->connect()
 
     QSqlDatabase *pDatabase = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL", "manualCreateDatabase"));

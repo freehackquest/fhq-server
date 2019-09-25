@@ -90,6 +90,9 @@ enum WSJCppSettingStorageType {
 enum WSJCppSettingDataType {
     WJSCPP_SETTING_TYPE_NONE,
     WJSCPP_SETTING_TYPE_STRING,
+    WJSCPP_SETTING_TYPE_PASSWORD,
+    WJSCPP_SETTING_TYPE_DIRPATH,
+    WJSCPP_SETTING_TYPE_FILEPATH,
     WJSCPP_SETTING_TYPE_TEXT,
     WJSCPP_SETTING_TYPE_NUMBER,
     WJSCPP_SETTING_TYPE_BOOLEAN,
@@ -108,6 +111,9 @@ class WSJCppSettingItem {
         WSJCppSettingItem &inRuntime();
         WSJCppSettingItem &readonly();
         WSJCppSettingItem &string(const std::string &sDefaultStringValue);
+        WSJCppSettingItem &password(const std::string &sDefaultPasswordValue);
+        WSJCppSettingItem &dirPath(const std::string &sDefaultDirPathValue);
+        WSJCppSettingItem &filePath(const std::string &sDefaultFilePathValue);
         WSJCppSettingItem &text(const std::string &sDefaultTextValue);
         WSJCppSettingItem &number(int nDefaultNumberValue);
         WSJCppSettingItem &boolean(bool bDefaultBooleanValue);
@@ -118,11 +124,15 @@ class WSJCppSettingItem {
         bool isInited() const;
         bool isReadonly() const;
         std::string getName() const;
+        std::string getGroupName() const;
         bool isFromFile() const;
         bool isFromDatabase() const;
         bool isFromRuntime() const;
 
         bool isString() const;
+        bool isPassword() const;
+        bool isDirPath() const;
+        bool isFilePath() const;
         bool isText() const;
         bool isNumber() const;
         bool isBoolean() const;
@@ -132,6 +142,18 @@ class WSJCppSettingItem {
         std::string getDefaultStringValue() const;
         std::string getStringValue() const;
         void setStringValue(const std::string &sStringValue);
+
+        std::string getDefaultPasswordValue() const;
+        std::string getPasswordValue() const;
+        void setPasswordValue(const std::string &sPasswordValue);
+
+        std::string getDefaultDirPathValue() const;
+        std::string getDirPathValue() const;
+        void setDirPathValue(const std::string &sDirPathValue);
+
+        std::string getDefaultFilePathValue() const;
+        std::string getFilePathValue() const;
+        void setFilePathValue(const std::string &sFilePathValue);
 
         int getDefaultNumberValue() const;
         int getNumberValue() const;
@@ -153,6 +175,18 @@ class WSJCppSettingItem {
         // isString
         std::string m_sDefaultStringValue;
         std::string m_sStringValue;
+
+        // isPassword
+        std::string m_sDefaultPasswordValue;
+        std::string m_sPasswordValue;
+
+        // isDirPath
+        std::string m_sDefaultDirPathValue;
+        std::string m_sDirPathValue;
+
+        // isFilePath
+        std::string m_sDefaultFilePathValue;
+        std::string m_sFilePathValue;
 
         // isNumber
         int m_nDefaultNumberValue;
@@ -179,7 +213,7 @@ class WSJCppSettingsStore {
 };
 
 // ---------------------------------------------------------------------
-// EmployGlobalSettings
+// WSJCppEmployGlobalSettings
 
 class EmployGlobalSettings : public WSJCppEmployBase {
     public:
@@ -188,13 +222,14 @@ class EmployGlobalSettings : public WSJCppEmployBase {
         virtual bool init(); // here will be init from file
         void setWorkDir(const std::string &sWorkDir); // TODO deprecated
 
-        WSJCppSettingItem &regestrySetting(const std::string &sSettingGroup, const std::string &sSettingName);
+        WSJCppSettingItem &registrySetting(const std::string &sSettingGroup, const std::string &sSettingName);
 
         const WSJCppSettingItem &get(const std::string &sSettingName);
         void update(const WSJCppSettingItem &item);
         void addListener(WSJCppSettingListener *);
         bool initFromDatabase(WSJCppSettingsStore *pDatabaseSettingsStore);
-
+        std::string getFilepathConf() const;
+        
     private:
         std::string TAG;
         std::string m_sWorkDir;
@@ -208,53 +243,7 @@ class EmployGlobalSettings : public WSJCppEmployBase {
 };
 
 // ---------------------------------------------------------------------
-// WJSCppEmployConfig
-
-class EmployServerConfig : public WSJCppEmployBase {
-    public:
-        EmployServerConfig();
-        static std::string name() { return "EmployServerConfig"; }
-        virtual bool init();
-        
-        // configs
-        std::string filepathConf();
-
-        bool serverSslOn();
-        int serverPort();
-        int serverSslPort();
-        std::string serverSslKeyFile();
-        std::string serverSslCertFile();
-        
-        void setWorkDir(const std::string &sWorkDir);
-
-        int webPort();
-        int webMaxThreads();
-        std::string webAdminFolder();
-        std::string webUserFolder();
-
-    private:
-        std::string TAG;
-        std::string m_sWorkDir;
-        std::map <std::string, std::string> m_mapDefaultOptions;
-    
-        std::string m_sFilepathConf;
-        
-        // server settings
-        bool m_bServer_ssl_on;
-        int m_nServer_port;
-        int m_nServer_ssl_port;
-        std::string m_sServer_ssl_key_file;
-        std::string m_sServer_ssl_cert_file;
-
-        // web config
-        int m_nWeb_port;
-        int m_nWeb_max_threads;
-        std::string m_sWeb_admin_folder;
-        std::string m_sWeb_user_folder;
-};
-
-// ---------------------------------------------------------------------
-// WJSCppEmployConfig
+// WJSCppEmployServer
 
 class EmployServer : public WSJCppEmployBase {
     public:

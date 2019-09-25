@@ -26,10 +26,10 @@ EmployOrchestra::EmployOrchestra()
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
 
     std::string  sGroupLXD = "lxd";
-    pGlobalSettings->regestrySetting(sGroupLXD, "path_dir_lxc_ssl").string("/etc/fhq-server/lxd").inDatabase();
-    pGlobalSettings->regestrySetting(sGroupLXD, "lxd_server_ip").string("127.0.0.1").inDatabase();
-    pGlobalSettings->regestrySetting(sGroupLXD, "lxd_server_port").number(8443).inDatabase();
-    pGlobalSettings->regestrySetting(sGroupLXD, "lxd_mode").string("disabled").inDatabase();
+    pGlobalSettings->registrySetting(sGroupLXD, "path_dir_lxc_ssl").string("/etc/fhq-server/lxd").inDatabase();
+    pGlobalSettings->registrySetting(sGroupLXD, "lxd_server_ip").string("127.0.0.1").inDatabase();
+    pGlobalSettings->registrySetting(sGroupLXD, "lxd_server_port").number(8443).inDatabase();
+    pGlobalSettings->registrySetting(sGroupLXD, "lxd_mode").string("disabled").inDatabase();
 
 }
 
@@ -37,6 +37,7 @@ EmployOrchestra::EmployOrchestra()
 
 bool EmployOrchestra::init() {
     Log::info(TAG, "Start init settings");
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();
     std::string lxd_mode = pSettings->getSettString("lxd_mode").toStdString();
