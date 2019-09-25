@@ -1,20 +1,34 @@
 <h1 l10nTranslate>scoreboard</h1>
 
+<form class="form-inline waves-light" mdbWavesEffect>
+  <div class="md-form mt-0">
+    <input 
+      class="form-control mr-sm-2" 
+      type="text" 
+      placeholder="Search"
+      [formControl]="searchControl"
+      [value]="searchValue"
+    >
+  </div>
+</form>
+
+<br>
+
 <table class="table">
   <thead>
     <tr>
-      <th width="180px">Place and Score</th>
-      <th>Users</th>
+      <th width="180px" l10nTranslate>placeAndScore</th>
+      <th l10nTranslate>users</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let r of dataList">
+    <tr *ngFor="let r of filteredDataList">
       <td width="180px">
         <strong> {{ r.place }} [{{ r.rating }} points] </strong>
       </td>
       <td>
         <div *ngFor="let u of r.users">
-            <img src="{{ u.logo }}">
+            <img src="{{ u.logo }}" width=30px height=30px>
             {{ u.university != "" ? '[' + u.university + ']' : '' }} {{ u.nick }}
             <!-- logo: "files/users/0.png", nick: "lithium", rating: 31645, university: "", userid: 754 -->
         </div>
