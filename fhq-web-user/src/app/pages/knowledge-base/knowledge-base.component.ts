@@ -2,26 +2,22 @@ import { Directive, Component, OnInit, ChangeDetectorRef, NgZone } from '@angula
 import { SpinnerService } from '../../services/spinner.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
-import * as marked from 'marked';
-
-declare var fhq: any;
+import { FhqService } from '../../services/fhq.service';
 
 @Component({
   selector: 'app-knowledge-base',
   templateUrl: './knowledge-base.component.html',
   styleUrls: ['./knowledge-base.component.css']
 })
-@Directive({
-  selector: '[appMarked]'
-})
+
 export class KnowledgeBaseComponent implements OnInit {
 
-  errorMessage: String = null;
-  classbookId: Number = -1;
-  articleName: String = '';
-  articleContent: String = '';
-  articleParents: Array<any> = [];
-  articleChilds: Array<any> = [];
+  public errorMessage: String = null;
+  public classbookId: Number = -1;
+  public articleName: String = '';
+    public articleContentNaked: String = '';
+  public articleParents: Array<any> = [];
+  public articleChilds: Array<any> = [];
 
   constructor(
     private _spinnerService: SpinnerService,
@@ -29,28 +25,30 @@ export class KnowledgeBaseComponent implements OnInit {
     private _router: Router,
     private _cdr: ChangeDetectorRef,
     private _zone: NgZone,
+    public _fhq: FhqService,
   ) {
       // nothing
   }
   
   ngOnInit() {
     console.log("ngOnInit");
-    this._route.params.subscribe( (params) => this.loadData(params));
+    this._route.params.subscribe( (params) => {
+      if (!params['id']) {
+        this._router.navigate(['/knowledge-base', 0]);
+        return;
+      }
+      this.classbookId = parseInt(params['id'], 10);
+      this.loadData();
+    });
   }
 
-  loadData(params: any) {
-    // console.log(params['id']);
-    if (!params['id']) {
-      this._router.navigate(['/knowledge-base', 0]);
-      return;
-    }
-    this.classbookId = parseInt(params['id'], 10);
+  loadData() {
     const _data = {
       'classbookid': this.classbookId
     }
     this._spinnerService.show();
     if (this.classbookId != 0) {
-      fhq.classbook_info(_data)
+      this._fhq.api().classbook_info(_data)
       .done((r: any) => this.successResponse(r))
       .fail((err: any) => this.errorResponse(err));
     } else {
@@ -60,9 +58,9 @@ export class KnowledgeBaseComponent implements OnInit {
   }
 
   successResponse(r: any) {
-    // console.log(r);
+    console.log(r);
     this.articleName = `#${this.classbookId} ${r.data.name}`;
-    this.articleContent = marked(r.data.content);
+    this.articleContentNaked = r.data.content;
     this.articleParents = []
     r.data.parents.forEach((el: any) => {
       this.articleParents.push(el);
@@ -76,6 +74,7 @@ export class KnowledgeBaseComponent implements OnInit {
   }
 
   errorResponse(err: any) {
+    console.error(err);
     this._spinnerService.hide();
     if (err.code == 404) {
       this.errorMessage = 'Not found article #' + this.classbookId;
@@ -83,19 +82,19 @@ export class KnowledgeBaseComponent implements OnInit {
       this.errorMessage = err.error;
     }
     this._cdr.detectChanges();
-    console.error(err);
   }
 
   loadChilds() {
     const _data = {
       'parentid': this.classbookId
     }
-    fhq.classbook_list(_data)
+    this._fhq.api().classbook_list(_data)
     .done((r: any) => this.successChildsResponse(r))
     .fail((err: any) => this.errorChildsResponse(err))
   }
 
   successChildsResponse(r: any) {
+    console.log(r)
     this._spinnerService.hide();
     this.articleChilds = []
     r.data.forEach((el: any) => {
@@ -119,7 +118,7 @@ export class KnowledgeBaseComponent implements OnInit {
     // reset
     this.errorMessage = null;
     this.articleName = '';
-    this.articleContent = '';
+    this.articleContentNaked = '';
     this.articleParents = [];
     this.articleChilds = [];
     this._zone.run(() => this._router.navigate(['/knowledge-base', id])).then();

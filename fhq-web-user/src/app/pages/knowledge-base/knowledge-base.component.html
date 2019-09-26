@@ -1,11 +1,11 @@
 <h1 l10nTranslate>knowledgeBase</h1>
 
-<div class="alert alert-danger" *ngIf="errorMessage!=null">
+<div class="alert alert-danger" *ngIf="errorMessage != null">
   {{ errorMessage }}
   <div class="btn btn-link" (click)="openArticle(0)">Try Open Root Article</div>
 </div>
 
-<div *ngIf="errorMessage==null">
+<div *ngIf="errorMessage == null">
   <div class="d-inline-block" *ngFor="let p of articleParents">
     <div class="d-inline-block" *ngIf="p.classbookid == 0">
       <div class="btn btn-link" (click)="openArticle(p.classbookid)">{{ p.name }}</div>
@@ -23,10 +23,19 @@
     Sub-articles:
     <ul>
       <li *ngFor="let c of articleChilds">
-        <div class="btn btn-link" (click)="openArticle(c.classbookid)">#{{ c.classbookid }} {{ c.name }}</div>
+        <button type="button" class="btn btn-link" (click)="openArticle(c.classbookid)">
+            #{{ c.classbookid }} {{ c.name }}  <span class="badge badge-info" *ngIf="c.childs > 0">have {{ c.childs }} child(s)</span>
+        </button>
       </li>
     </ul>
   </div>
   <hr>
-  <div [innerHtml]="articleContent"></div>
+
+  <ngx-md [data]="articleContentNaked"></ngx-md>
+
+
+  <!-- or use angular component -->
 </div>
+
+<br>
+<br>

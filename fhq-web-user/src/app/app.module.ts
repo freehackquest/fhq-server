@@ -53,6 +53,8 @@ import { ModalDialogQuestFeedbackComponent } from './dialogs/modal-dialog-quest-
 import { BlockContactUsComponent } from './block-contact-us/block-contact-us.component';
 import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
+import { NgxMdModule } from 'ngx-md';
+
 /*import hljs from 'highlight.js/lib/highlight';
 import javascript from 'highlight.js/lib/languages/javascript';
 import typescript from 'highlight.js/lib/languages/typescript';
@@ -119,7 +121,7 @@ const l10nConfig: L10nConfig = {
     ModalDialogQuestFeedbackComponent,
     BlockContactUsComponent,
     UserSkillsComponent,
-    WelcomeComponent
+    WelcomeComponent,
   ],
   imports: [
     BrowserModule,
@@ -136,6 +138,7 @@ const l10nConfig: L10nConfig = {
     ReactiveFormsModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
+    NgxMdModule.forRoot(),
   ],
   providers: [
     {
