@@ -29,6 +29,7 @@ import { UserSecurityComponent } from './pages/user-security/user-security.compo
 import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
 import { QuestComponent } from './pages/quest/quest.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
+import { FhqJuryAdComponent } from './pages/fhq-jury-ad/fhq-jury-ad.component';
 
 const routes: Routes = [{
     path: 'knowledge-base',
@@ -117,6 +118,9 @@ const routes: Routes = [{
   }, {
       path: 'quest/:id',
       component: QuestComponent
+  }, {
+    path: 'fhq-jury-ad',
+    component: FhqJuryAdComponent
   }, {
     path: '',
     component: WelcomeComponent

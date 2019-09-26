@@ -54,6 +54,7 @@ import { BlockContactUsComponent } from './block-contact-us/block-contact-us.com
 import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { NgxMdModule } from 'ngx-md';
+import { FhqJuryAdComponent } from './pages/fhq-jury-ad/fhq-jury-ad.component';
 
 /*import hljs from 'highlight.js/lib/highlight';
 import javascript from 'highlight.js/lib/languages/javascript';
@@ -122,6 +123,7 @@ const l10nConfig: L10nConfig = {
     BlockContactUsComponent,
     UserSkillsComponent,
     WelcomeComponent,
+    FhqJuryAdComponent,
   ],
   imports: [
     BrowserModule,

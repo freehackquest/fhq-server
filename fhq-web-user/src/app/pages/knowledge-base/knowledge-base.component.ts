@@ -1,4 +1,4 @@
-import { Directive, Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { SpinnerService } from '../../services/spinner.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';

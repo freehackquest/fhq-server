@@ -1,0 +1,252 @@
+
+<h1 l10nTranslate>pageJuryAttackDefence</h1>
+<hr>
+<div class="media">
+    <img src="../assets/img/fhq-jury-ad-logo.png" width="100px" height="100px" class="mr-3" alt="...">
+    <div class="media-body">
+        <h5 class="mt-0">fhq-jury-ad</h5>
+        <p>Это журейная система для проведения Attack-Defence игр</p>
+        <p>Исходники и инструкции: <a href="https://github.com/freehackquest/fhq-jury-ad" target="_blank">https://github.com/freehackquest/fhq-jury-ad</a></p>
+        <p>Система написана на c++</p>
+        <p>Так же есть докер образ: <a href="https://hub.docker.com/r/freehackquest/fhq-jury-ad">https://hub.docker.com/r/freehackquest/fhq-jury-ad</a></p>
+
+    </div>
+</div>
+
+Для быстроты настройки тренировок написан небольшой менеджер подготовки журейной системы и игровых образов на основе уязвимых сервисов с предыдущих игр.
+
+<div class="alert alert-danger">(!!!) Please don't use this services for production only for training your skills</div>
+
+<h2>So... утилита fhqjad-store (python)</h2>
+
+Рапортовать о проблеме:
+
+<a href="https://github.com/freehackquest/fhq-server/issues">https://github.com/freehackquest/fhq-server/issues</a>
+
+<!-- It's just collection of services with vulnerabilities for training games like ctf (attack/defence);
+For add your service to vulnbox.store please fork and the pull request to https://github.com/freehackquest/vulnbox-store -->
+
+<p>Установка в линуксе:</p>
+
+<ngx-md>
+```bash
+$ sudo curl -L "https://freehackquest.com/assets/fhq-jury-ad/fhqjad-store.py" -o /usr/local/bin/fhqjad-store
+$ sudo chmod +x /usr/local/bin/fhqjad-store
+```
+</ngx-md>
+
+<p>Usage:</p>
+
+<hr>
+
+<pre>
+$ fhqjad-store
+
+Helper's tool for fhq-jury-ad
+
+    Usage:
+    /usr/local/bin/fhqjad-store [command] [name]
+
+Issues: https://github.com/freehackquest/fhq-server/issues
+
+Commands:
+    version - version of current script and for fhq-jury-ad
+    info - installed services and teams list
+    init - will be init game in current directory
+    urls - list of urls
+    urls-add [url] - will be added url with vulnbox.store
+    urls-rm [url] - will be added url with vulnbox.store
+    update - update list information about services
+    search [search] - search services by keywords and names
+    download [name] - download service and checker to folder ./.fhqjad-store/[name]
+    install [name] - will be installed ./cond.d/[name] and to vulnbox
+    remove [name] - will be removed from conf.d and from vulnbox
+    teams-search [search] - list of teams (from vulnbox.store)
+    team-add [name] - add the team
+    team-rm [name] - remove the team
+
+Directories:
+    jury.d - folder with configs for fhq-jury-ad
+    docker_jury - folder with Dockerfile for build jury docker
+    vulnbox - folder with services and script for vulnbox
+
+</pre>
+
+
+<h2>пример как подготовить игру</h2>
+
+Должно быть установлено:
+
+<ul>
+    <li>fhqjad-store</li>
+    <li>docker</li>
+    <li>docker-compose</li>
+    <li>nano</li>
+</ul>
+
+<!-- fhqjad-store urls-add https://freehackquest.com/fhqjad-store/ -->
+1. Prepare work dir:
+<ngx-md>
+```bash
+$ mkdir ~/ctfgame0
+$ cd ~/ctfgame0
+```
+</ngx-md>
+
+2. Init struct of folders
+
+<ngx-md>
+```bash
+~/ctfgame0$ fhqjad-store init
+Create directory ./jury.d
+Create directory ./jury.d/checkers
+Create directory ./jury.d/teams
+Create directory ./jury.d/html
+Create directory ./jury.d/html/images
+Create directory ./jury.d/html/images/teams
+Create directory ./jury.d/logs
+Create directory ./.fhqjad-store
+Create directory ./.fhqjad-store/cache
+Create directory ./.fhqjad-store/downloads
+Create directory ./vulnbox
+Create directory ./docker_jury
+Game - ID [test]: training 
+Game - Name [Test]: Training
+Game - Start Time (UTC) [2018-01-09 11:00:00]: 2019-09-27 02:00:00
+Game - End Time (UTC) [2018-01-09 12:00:00]: 2019-09-27 04:00:00
+Game - Flag Timelive (in minutes) [10]: 
+Prepare ./jury.d/game.conf
+Scoreboard - Port [8080]: 
+Prepare ./jury.d/scoreboard.conf
+Prepare ./jury.d/server.conf
+Prepare ./jury.d/mysql_storage.conf
+Prepare ./docker_jury/build_docker.sh
+Prepare ./docker_jury/clean_docker.sh
+Prepare ./docker_jury/Dockerfile
+Prepare ./docker-compose.yml
+Updating ./docker_jury/Dockerfile
+Download services.json from https://vulnbox.store/
+Download teams.json from https://vulnbox.store/
+```
+</ngx-md>
+
+
+3. Update inforamtion about available services and teams
+<ngx-md>
+```bash
+~/ctfgame0$ fhqjad-store update
+Download services.json from https://vulnbox.store/
+Download teams.json from https://vulnbox.store/
+```
+</ngx-md>
+
+4. Example of search services in store
+
+<ngx-md>
+```bash
+~/ctfgame0$ fhqjad-store search example
+Searching.... 'example'
+example_service1 - Example / Service1 (python,example service)
+	on https://vulnbox.store/
+example_service2 - Example / Service2 (python,example service)
+	on https://vulnbox.store/
+example_service3 - Example / Service3 (python,example service)
+	on https://vulnbox.store/
+example_service4 - Example / Service4 (python,example service)
+	on https://vulnbox.store/
+jury_lazy_conf - jury / lazy-conf (python,example service)
+	on https://vulnbox.store/
+sibirctf2017_freelife - SibirCTF 2017 / FreeLife (python,example)
+	on https://vulnbox.store/
+
+*** Found: 6
+```
+</ngx-md>
+
+5. Download and install several services
+
+<ngx-md>
+```bash
+~/ctfgame0$ fhqjad-store install example_service1
+Download: 
+	URL: https://vulnbox.store/example_service1.zip
+	Directory:./.fhqjad-store/downloads/service_example_service1
+
+Updating ./docker_jury/Dockerfile
+Updating ./vulnbox/run.sh
+```
+</ngx-md>
+
+<ngx-md>
+```bash
+~/ctfgame0$ fhqjad-store install example_service2
+Download: 
+URL: https://vulnbox.store/example_service2.zip
+Directory:./.fhqjad-store/downloads/service_example_service2
+Updating ./docker_jury/Dockerfile
+Updating ./vulnbox/run.sh
+```
+</ngx-md>
+
+6. Search preparing teams (logo and names)
+
+<ngx-md>
+```bash
+~/ctfgame0$ fhqjad-store teams-search keva
+Searching teams... 'keva'
+keva - kev@  (from https://vulnbox.store/)
+*** Found: 1
+```
+</ngx-md>
+
+6. Add teams
+
+<ngx-md>
+```bash
+~/ctfgame0$ fhqjad-store team-add keva
+Download logo https://vulnbox.store/teams/keva.png
+Team - IP Address [127.0.0.1]: 192.168.0.5
+Write to ./jury.d/teams/keva.conf
+```
+</ngx-md>
+
+<ngx-md>
+```bash
+~/ctfgame0$ fhqjad-store team-add someone
+Team - Name [someone]: 
+Team - IP Address [127.0.0.1]: 192.168.0.10
+Write to ./jury.d/teams/someone.conf
+```
+</ngx-md>
+
+6. Now build image
+
+<ngx-md>
+```
+$ cd docker_jury
+$ sudo ./build_docker.sh
+$ cd ..
+```
+</ngx-md>
+
+7. Start fhq-jury-ad in a docker container
+
+<ngx-md>
+```bash
+$ docker-compose up
+```
+</ngx-md>
+
+8. Prepare vulnbox-archive
+
+<ngx-md>
+```bash
+$ zip -r vulnbox.zip vulnbox
+```
+</ngx-md>
+
+vulnbox.zip - отправьте вашим командам
+
+
+<br>
+<br>
