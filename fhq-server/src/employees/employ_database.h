@@ -24,13 +24,17 @@ class EmployDatabase : public WSJCppEmployBase, public WSJCppSettingsStore {
     private:
         std::string TAG;
         std::string m_sStorageType;
+        int m_nConnectionOutdatedAfterSeconds;
         Storage *m_pStorage;
 
         // new new
         std::map<std::string, StorageConnection*> m_mapStorageConnections;
+        std::vector<StorageConnection*> m_vDoRemoveStorageConnections;
+        std::mutex m_mtxStorageConnections;
 
         // db two connections
         std::mutex m_mtxSwapConenctions;
+        
 
         // old
         QMap<long long, ModelDatabaseConnection *> m_mDatabaseConnections;

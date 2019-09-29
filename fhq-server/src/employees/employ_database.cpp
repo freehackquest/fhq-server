@@ -10,7 +10,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployDatabase)
 // ---------------------------------------------------------------------
 
 EmployDatabase::EmployDatabase()
-    : WSJCppEmployBase(EmployDatabase::name(), { EmployGlobalSettings::name()}) {
+    : WSJCppEmployBase(EmployDatabase::name(), { EmployGlobalSettings::name() }) {
     TAG = EmployDatabase::name();
     
     std::string sGroupDatabase = "database";
@@ -21,14 +21,17 @@ EmployDatabase::EmployDatabase()
     //    Log::err(TAG, "Not support storage " + m_sStorageType);
     //    return false;
     //}
+    m_nConnectionOutdatedAfterSeconds = 60*60;
 
     // TODO require some storage_type settings
     pGlobalSettings->registrySetting(sGroupDatabase, "dbhost").string("localhost").inFile();
     pGlobalSettings->registrySetting(sGroupDatabase, "dbport").number(3306).inFile();
     pGlobalSettings->registrySetting(sGroupDatabase, "dbname").string("freehackquest").inFile();
     pGlobalSettings->registrySetting(sGroupDatabase, "dbuser").string("freehackquest_u").inFile();
-    pGlobalSettings->registrySetting(sGroupDatabase, "dbpass").password("freehackquest_p").inFile(); // TODO password
-    
+    pGlobalSettings->registrySetting(sGroupDatabase, "dbpass").password("freehackquest_p").inFile();
+    pGlobalSettings->registrySetting(sGroupDatabase, "connection_outdated_after_seconds")
+        .number(m_nConnectionOutdatedAfterSeconds).inRuntime().readonly();
+
     // TODO require some storage_type settings
     // local nosql
     // m_sDatabase_path = "/var/lib/fhq-server/data";
@@ -242,6 +245,12 @@ QSqlDatabase *EmployDatabase::database() {
 // - control of count of connections (must be < 100)
 
 StorageConnection *EmployDatabase::getStorageConnection() {
+    std::lock_guard<std::mutex> lock(m_mtxStorageConnections);
+    
+    if (m_vDoRemoveStorageConnections.size() > 0) {
+        Log::warn(TAG, "TODO cleanup m_vDoRemoveStorageConnections, size = " + std::to_string(m_vDoRemoveStorageConnections.size()));
+    }
+
     std::string sThreadId = Fallen::threadId();
     StorageConnection *pStorageConnection = nullptr;
     std::map<std::string, StorageConnection *>::iterator it;
@@ -254,6 +263,15 @@ StorageConnection *EmployDatabase::getStorageConnection() {
         m_mapStorageConnections[sThreadId] = pStorageConnection;
     } else {
         pStorageConnection = it->second;
+        // if connection outdated just reconnect this also maybe need keep several time last connection
+        if (pStorageConnection->getConnectionDurationInSeconds() > m_nConnectionOutdatedAfterSeconds) {
+            m_vDoRemoveStorageConnections.push_back(pStorageConnection);
+            pStorageConnection = m_pStorage->connect();
+            if (pStorageConnection == nullptr) {
+                return nullptr;
+            }
+            m_mapStorageConnections[sThreadId] = pStorageConnection;
+        }
     }
     return pStorageConnection;
 }
@@ -262,6 +280,16 @@ StorageConnection *EmployDatabase::getStorageConnection() {
 
 void EmployDatabase::updateSettingItem(const WSJCppSettingItem *pSettingItem) {
     Log::throw_err(TAG, "updateSettingItem - Not implemented yet");
+    
+    /*EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    query.prepare("UPDATE settings SET value = :value WHERE name = :name");
+    query.bindValue(":value", pServerSettHelper->valueAsString());
+    query.bindValue(":name", QString(pServerSettHelper->name().c_str()));
+    if (!query.exec()) {
+        Log::err(TAG, query.lastError().text().toStdString());
+    }*/
 }
 
 // ---------------------------------------------------------------------

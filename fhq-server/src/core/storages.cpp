@@ -789,8 +789,16 @@ StorageConnection::~StorageConnection() {
 
 // ---------------------------------------------------------------------
 
-long StorageConnection::created() {
+long StorageConnection::created() { // TODO 
     return m_nCreated;
+}
+
+// ---------------------------------------------------------------------
+
+long StorageConnection::getConnectionDurationInSeconds() {
+    long nRet = Fallen::currentTime_milliseconds() - m_nCreated;
+    nRet = nRet / 1000;
+    return nRet;
 }
 
 // ---------------------------------------------------------------------
