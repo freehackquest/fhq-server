@@ -105,6 +105,7 @@ WSJCppSettingItem::WSJCppSettingItem(const std::string &sSettingGroup, const std
     m_sSettingName = sSettingName;
     m_sSettingGroup = sSettingGroup;
     m_nStorageType = WJSCPP_SETTING_IN_NONE;
+    m_sStorageType = "none";
     m_bReadonly = false;
     m_nSettingType = WJSCPP_SETTING_TYPE_NONE;
     m_bInited = false;
@@ -137,6 +138,7 @@ WSJCppSettingItem & WSJCppSettingItem::inFile() {
         Log::throw_err(TAG, "inFile: already defined another storage type");
     }
     m_nStorageType = WJSCPP_SETTING_IN_FILE;
+    m_sStorageType = "file";
     m_bReadonly = true; // if in a file then it will be readonly
     return *this;
 }
@@ -148,6 +150,7 @@ WSJCppSettingItem & WSJCppSettingItem::inDatabase() {
         Log::throw_err(TAG, "inDatabase: already defined another storage type");
     }
     m_nStorageType = WJSCPP_SETTING_IN_DATABASE;
+    m_sStorageType = "database";
     return *this;
 }
 
@@ -159,6 +162,7 @@ WSJCppSettingItem & WSJCppSettingItem::inRuntime() {
     }
 
     m_nStorageType = WJSCPP_SETTING_IN_RUNTIME;
+    m_sStorageType = "runtime";
     return *this;
 }
 
@@ -176,6 +180,7 @@ WSJCppSettingItem & WSJCppSettingItem::string(const std::string &sDefaultStringV
         Log::throw_err(TAG, "string: already defined another data type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_STRING;
+    m_sSettingType = "string";
     m_sDefaultStringValue = sDefaultStringValue;
     return *this;
 }
@@ -187,6 +192,7 @@ WSJCppSettingItem & WSJCppSettingItem::password(const std::string &sDefaultPassw
         Log::throw_err(TAG, "password: already defined another data type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_PASSWORD;
+    m_sSettingType = "password";
     m_sDefaultPasswordValue = sDefaultPasswordValue;
     return *this;
 }
@@ -198,6 +204,7 @@ WSJCppSettingItem & WSJCppSettingItem::dirPath(const std::string &sDefaultDirPat
         Log::throw_err(TAG, "dirPath: already defined another data type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_DIRPATH;
+    m_sSettingType = "dir_path";
     m_sDefaultDirPathValue = sDefaultDirPathValue;
     return *this;
 }
@@ -209,6 +216,7 @@ WSJCppSettingItem & WSJCppSettingItem::filePath(const std::string &sDefaultFileP
         Log::throw_err(TAG, "filePath: already defined another data type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_FILEPATH;
+    m_sSettingType = "file_path";
     m_sDefaultFilePathValue = sDefaultFilePathValue;
     return *this;
 }
@@ -221,6 +229,7 @@ WSJCppSettingItem & WSJCppSettingItem::text(const std::string &sDefaultTextValue
         Log::throw_err(TAG, "text: already defined another data type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_TEXT;
+    m_sSettingType = "text";
     m_sDefaultStringValue = sDefaultTextValue;
     return *this;
 }
@@ -232,6 +241,7 @@ WSJCppSettingItem & WSJCppSettingItem::number(int nDefaultNumberValue) {
         Log::throw_err(TAG, "number: already defined another storage type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_NUMBER;
+    m_sSettingType = "number";
     m_nDefaultNumberValue = nDefaultNumberValue;
     return *this;
 }
@@ -243,6 +253,7 @@ WSJCppSettingItem & WSJCppSettingItem::boolean(bool bDefaultBooleanValue) {
         Log::throw_err(TAG, "boolean: already defined another storage type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_BOOLEAN;
+    m_sSettingType = "boolean";
     m_bDefaultBooleanValue = bDefaultBooleanValue;
     return *this;
 }
@@ -256,6 +267,7 @@ WSJCppSettingItem & WSJCppSettingItem::json() {
         Log::throw_err(TAG, "json: already defined another storage type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_JSON;
+    m_sSettingType = "json";
     return *this;
 }
 
@@ -268,6 +280,7 @@ WSJCppSettingItem & WSJCppSettingItem::list() {
         Log::throw_err(TAG, "json: already defined another storage type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_LIST;
+    m_sSettingType = "list";
     return *this;
 }
 
@@ -571,6 +584,33 @@ void WSJCppSettingItem::setBooleanValue(bool bBooleanValue) {
     m_bBooleanValue = bBooleanValue;
 }
 
+nlohmann::json WSJCppSettingItem::toJson() {
+    nlohmann::json jsonSett;
+    jsonSett["name"] = m_sSettingName;
+    jsonSett["group"] = m_sSettingGroup;
+    jsonSett["readonly"] = m_bReadonly;
+    jsonSett["inited"] = m_bInited;
+    jsonSett["storage_type"] = m_sStorageType;
+    jsonSett["type"] = m_sSettingType;
+    if (m_nSettingType == WJSCPP_SETTING_TYPE_BOOLEAN) {
+        jsonSett["value"] = getBooleanValue();
+    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_STRING) {
+        jsonSett["value"] = getStringValue();
+    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_NUMBER) {
+        jsonSett["value"] = getNumberValue();
+    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_PASSWORD) {
+        jsonSett["value"] = "******"; // hided
+    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_DIRPATH) {
+        jsonSett["value"] = getDirPathValue();
+    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_FILEPATH) {
+        jsonSett["value"] = getFilePathValue();
+    } else {
+        jsonSett["value"] = "unknown";
+        jsonSett["type"] = "not_implemented_yet";
+    }
+    return jsonSett;
+}
+
 // ---------------------------------------------------------------------
 // EmployGlobalSettings
 
@@ -585,8 +625,10 @@ EmployGlobalSettings::EmployGlobalSettings()
 
     // basicly
     this->registrySetting("runtime", "work_dir").string("").inRuntime().readonly();
+    this->registrySetting("runtime", "log_dir").string("").inRuntime().readonly();
     this->registrySetting("runtime", "app_version").string("").inRuntime().readonly();
     this->registrySetting("runtime", "app_name").string("").inRuntime().readonly();
+    this->registrySetting("runtime", "app_author").string("").inRuntime().readonly();
 }
 
 // ---------------------------------------------------------------------
@@ -634,9 +676,58 @@ const WSJCppSettingItem &EmployGlobalSettings::get(const std::string &sSettingNa
 
 // ---------------------------------------------------------------------
 
-void EmployGlobalSettings::update(const WSJCppSettingItem &item) {
-    // TODO
-    Log::throw_err(TAG, "Not implemented yet");
+bool EmployGlobalSettings::exists(const std::string &sSettingName) {
+    std::map<std::string, WSJCppSettingItem*>::iterator it;
+    it = m_mapSettingItems.find(sSettingName);
+    return it != m_mapSettingItems.end();
+}
+
+// ---------------------------------------------------------------------
+
+void EmployGlobalSettings::update(const std::string &sSettingName, const std::string &sValue) {
+    std::map<std::string, WSJCppSettingItem*>::iterator it;
+    it = m_mapSettingItems.find(sSettingName);
+    if (it == m_mapSettingItems.end()) {
+        Log::throw_err(TAG, "Setting '" + sSettingName + "' - not found");
+    }
+    WSJCppSettingItem* pItem = it->second;
+    if (pItem->isString()) {
+        pItem->setStringValue(sValue);
+    } else if (pItem->isPassword()) {
+        pItem->setPasswordValue(sValue);
+    } else if (pItem->isFilePath()) {
+        pItem->setFilePathValue(sValue);
+    } else if (pItem->isDirPath()) {
+        pItem->setDirPathValue(sValue);
+    } else if (pItem->isText()) {
+        // pItem->setTextValue(sValue);
+    } else {
+        Log::throw_err(TAG, "Error on updating setting '" + sSettingName + "' ");
+    }
+    if (pItem->isFromDatabase()) {
+        m_pDatabaseSettingsStore->updateSettingItem(pItem);
+    }
+    // TODO send to listeners
+}
+
+// ---------------------------------------------------------------------
+
+void EmployGlobalSettings::update(const std::string &sSettingName, int &nValue) {
+   std::map<std::string, WSJCppSettingItem*>::iterator it;
+    it = m_mapSettingItems.find(sSettingName);
+    if (it == m_mapSettingItems.end()) {
+        Log::throw_err(TAG, "Setting '" + sSettingName + "' - not found");
+    }
+    WSJCppSettingItem* pItem = it->second;
+    if (pItem->isNumber()) {
+        pItem->setNumberValue(nValue);
+    } else {
+        Log::throw_err(TAG, "Error on updating setting '" + sSettingName + "' ");
+    }
+    if (pItem->isFromDatabase()) {
+        m_pDatabaseSettingsStore->updateSettingItem(pItem);
+    }
+    // TODO send to listeners
 }
 
 // ---------------------------------------------------------------------
@@ -791,36 +882,17 @@ nlohmann::json EmployGlobalSettings::toJson() {
     for (; it!=m_mapSettingItems.end(); ++it) {
         std::string sName = it->first;
         WSJCppSettingItem *pItem = it->second;
-
-        nlohmann::json jsonSett;
-        jsonSett["name"] = pItem->getName();
-        jsonSett["group"] = pItem->getGroupName();
-        jsonSett["readonly"] = pItem->isReadonly();
-        if (pItem->isBoolean()) {
-            jsonSett["value"] = pItem->getBooleanValue();
-            jsonSett["type"] = "boolean";
-        } else if (pItem->isString()) {
-            jsonSett["value"] = pItem->getStringValue();
-            jsonSett["type"] = "string";
-        } else if (pItem->isNumber()) {
-            jsonSett["value"] = pItem->getNumberValue();
-            jsonSett["type"] = "integer";
-        } else if (pItem->isPassword()) {
-            jsonSett["value"] = "******"; // hided
-            jsonSett["type"] = "password";
-        } else if (pItem->isDirPath()) {
-            jsonSett["value"] = pItem->getDirPathValue();
-            jsonSett["type"] = "dir_path";
-        } else if (pItem->isFilePath()) {
-            jsonSett["value"] = pItem->getFilePathValue();
-            jsonSett["type"] = "file_path";
-        } else {
-            jsonSett["value"] = "unknown";
-            jsonSett["type"] = "unknown";
-        }
-        jsonSettings.push_back(jsonSett);
+        jsonSettings.push_back(pItem->toJson());
     }
     return jsonSettings;
+}
+
+// ---------------------------------------------------------------------
+
+void EmployGlobalSettings::eventSettingsChanged(const WSJCppSettingItem *pSettingItem) {
+    for (int i = 0; i < m_vListeners.size(); i++) {
+        m_vListeners[i]->onSettingsChanged(pSettingItem);
+    }
 }
 
 // ---------------------------------------------------------------------

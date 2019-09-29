@@ -42,7 +42,7 @@ fhq.pages['settings'] = function(idelem) {
 				edit_button = '';
 			}
 
-			if (sett.type == 'integer') {
+			if (sett.type == 'number') {
 				$('#' + groupid).append(''
 					+ '<div class="form-group row">'
 					+ '	<label for="' + settid + '" class="col-sm-2 col-form-label">' + fhq.t(settid) + '</label>'
@@ -140,7 +140,7 @@ fhq.pages['settings'] = function(idelem) {
 					+ '<p id="modalSettings_error"></p>'
 				);
 				$('#modalSettings_newval').val('');
-			}else if(setttype == 'integer'){
+			}else if(setttype == 'number'){
 				$('#modalSettings .modal-body').append(
 					'<input type="number" class="form-control" id="modalSettings_newval">'
 					+ '<p id="modalSettings_error"></p>'

@@ -268,6 +268,9 @@ void EmployDatabase::updateSettingItem(const WSJCppSettingItem *pSettingItem) {
 
 void EmployDatabase::initSettingItem(WSJCppSettingItem *pSettingItem) {
     Log::warn(TAG, "initSettingItem - Not implemented yet " + pSettingItem->getName());
+    StorageConnection *pConn = this->getStorageConnection();
+
+
 }
 
 // ---------------------------------------------------------------------

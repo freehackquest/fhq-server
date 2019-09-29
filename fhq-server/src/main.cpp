@@ -81,6 +81,11 @@ int main(int argc, char** argv) {
     helpArgs.addHelp("start", "-s", FallenHelpParseArgType::SINGLE_OPTION, "Start server");
     helpArgs.addHelp("--workdir", "-wd", FallenHelpParseArgType::PARAMETER, "Set work dir (logs, configs aand etc...)");
 
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    pGlobalSettings->update("app_name", appName);
+    pGlobalSettings->update("app_version", appVersion);
+    pGlobalSettings->update("app_author", appAuthor);
+
     std::string sWorkDir = "";
     if (helpArgs.has("--workdir")) {
         sWorkDir = helpArgs.option("--workdir");
@@ -91,16 +96,16 @@ int main(int argc, char** argv) {
         }
 
         // configure employ
-        EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
         if (sWorkDir != "") {
             pGlobalSettings->setWorkDir(sWorkDir);
-            // TODO: pGlobalSettings->update("work_dir")
+            pGlobalSettings->update("work_dir", sWorkDir);
         }
 
         std::string sDirLogs = sWorkDir + "/logs";
         if (!Fallen::dirExists(sDirLogs)) {
             Fallen::makeDir(sDirLogs);
         }
+        pGlobalSettings->update("log_dir", sDirLogs);
         Log::setLogDirectory(sDirLogs);
     }
 

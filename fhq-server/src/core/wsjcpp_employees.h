@@ -162,6 +162,8 @@ class WSJCppSettingItem {
         bool getDefaultBooleanValue() const;
         bool getBooleanValue() const;
         void setBooleanValue(bool bBooleanValue);
+        
+        nlohmann::json toJson();
 
     private:
         std::string TAG;
@@ -169,7 +171,9 @@ class WSJCppSettingItem {
         std::string m_sSettingGroup;
         bool m_bReadonly;
         WSJCppSettingStorageType m_nStorageType;
+        std::string m_sStorageType;
         WSJCppSettingDataType m_nSettingType;
+        std::string m_sSettingType;
         bool m_bInited;
 
         // isString
@@ -201,7 +205,7 @@ class WSJCppSettingItem {
 
 class WSJCppSettingListener {
     public:
-        virtual void eventSettingsChanged() = 0;
+        virtual void onSettingsChanged(const WSJCppSettingItem *pSettingItem) = 0;
 };
 
 // ----------------------------------------------------------------------
@@ -225,8 +229,12 @@ class EmployGlobalSettings : public WSJCppEmployBase {
         WSJCppSettingItem &registrySetting(const std::string &sSettingGroup, const std::string &sSettingName);
 
         const WSJCppSettingItem &get(const std::string &sSettingName);
-        void update(const WSJCppSettingItem &item);
+        bool exists(const std::string &sSettingName);
+        void update(const std::string &sSettingName, const std::string &sValue);
+        void update(const std::string &sSettingName, int &nValue);
+
         void addListener(WSJCppSettingListener *);
+        void removeListener(WSJCppSettingListener *);
         bool initFromDatabase(WSJCppSettingsStore *pDatabaseSettingsStore);
         std::string getFilepathConf() const;
         nlohmann::json toJson();
@@ -239,6 +247,7 @@ class EmployGlobalSettings : public WSJCppEmployBase {
 
         bool findFileConfig();
         bool initFromFile();
+        void eventSettingsChanged(const WSJCppSettingItem *pSettingItem);
         std::map <std::string, WSJCppSettingItem *> m_mapSettingItems;
         std::vector<WSJCppSettingListener *> m_vListeners;
 };

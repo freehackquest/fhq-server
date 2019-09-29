@@ -366,6 +366,10 @@ nlohmann::json EmploySettings::toJson() {
 
         jsonSett["group"] = pServerSettHelper->group();
         jsonSett["type"] = pServerSettHelper->type();
+        if (pServerSettHelper->type() == "integer") {
+            jsonSett["type"] = "number";
+        }
+
         jsonSettings.push_back(jsonSett);
     }
     return jsonSettings;

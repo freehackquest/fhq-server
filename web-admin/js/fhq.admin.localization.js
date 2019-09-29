@@ -611,28 +611,28 @@ fhq.localization = {
 		'ru': 'LXD Режим'
 	},
 	'setting_name_mail_from': {
-		'en': 'From',
-		'ru': 'From'
+		'en': 'Mail From',
+		'ru': 'Mail From'
 	},
 	'setting_name_mail_host':{
-		'en': 'Host',
-		'ru': 'Host'
+		'en': 'Mail Host',
+		'ru': 'Mail Host'
 	},
 	'setting_name_mail_password':{
 		'en': 'Password',
 		'ru': 'Password'
 	},
 	'setting_name_mail_port':{
-		'en': 'Port',
-		'ru': 'Port'
+		'en': 'Mail Port',
+		'ru': 'Mail Port'
 	},
 	'setting_name_mail_signature_text': {
 		'en': 'Mail Signature',
 		'ru': 'Подпись в письме'
 	},
 	'setting_name_mail_username':{
-		'en': 'Username',
-		'ru': 'Username'
+		'en': 'Mail Username',
+		'ru': 'Mail Username'
 	},
 	'setting_name_mail_system_message_admin_email':{
 		'en': 'Admin mail',
@@ -781,6 +781,14 @@ fhq.localization = {
 	'setting_name_web_port': {
 		'en': 'Web Port:',
 		'ru': 'Web Port:'
+	},
+	'setting_name_app_author': {
+		'en': 'App Author:',
+		'ru': 'App Author:'
+	},
+	'setting_name_log_dir': {
+		'en': 'Log Dir:',
+		'ru': 'Log Dir:'
 	},
 	'Open':{
 		'en': 'Open',
