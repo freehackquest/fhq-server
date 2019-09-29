@@ -229,7 +229,8 @@ class EmployGlobalSettings : public WSJCppEmployBase {
         void addListener(WSJCppSettingListener *);
         bool initFromDatabase(WSJCppSettingsStore *pDatabaseSettingsStore);
         std::string getFilepathConf() const;
-        
+        nlohmann::json toJson();
+            
     private:
         std::string TAG;
         std::string m_sWorkDir;

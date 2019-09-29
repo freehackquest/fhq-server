@@ -574,6 +574,26 @@ fhq.localization = {
 		'en': 'Profile Settings',
 		'ru': 'Profile Settings'
 	},
+	'settings_group_user_profile':{
+		'en': 'User Profile Settings',
+		'ru': 'User Profile Settings'
+	},
+	'settings_group_ws_server':{
+		'en': 'Server settings',
+		'ru': 'Настройки веб-сокет-сервера'
+	},
+	'settings_group_web_server':{
+		'en': 'Web-Server settings',
+		'ru': 'Настройки веб-сервера'
+	},
+	'settings_group_database':{
+		'en': 'Database settings',
+		'ru': 'Настройки базы данных'
+	},
+	'settings_group_runtime':{
+		'en': 'Runtime settings',
+		'ru': 'Настройки во времени выполнения'
+	},
 	'setting_name_google_map_api_key':{
 		'en': 'API Key',
 		'ru': 'API Key'
@@ -653,6 +673,114 @@ fhq.localization = {
 	'setting_name_path_dir_lxc_ssl':{
 		'en': 'LXD path ssl dir',
 		'ru': 'LXD path ssl dir'
+	},
+	'setting_name_dbhost':{
+		'en': 'DB Host',
+		'ru': 'DB Host'
+	},
+	'setting_name_dbname':{
+		'en': 'DB Name',
+		'ru': 'DB Name'
+	},
+	'setting_name_dbuser':{
+		'en': 'DB User',
+		'ru': 'DB User'
+	},
+	'setting_name_dbpass':{
+		'en': 'DB Password',
+		'ru': 'DB Password'
+	},
+	'setting_name_dbport':{
+		'en': 'DB Port',
+		'ru': 'DB Port'
+	},
+	'setting_name_storage_type':{
+		'en': 'DB Type',
+		'ru': 'DB Type'
+	},
+	'setting_name_app_name': {
+		'en': 'App Name',
+		'ru': 'App Name'
+	},
+	'setting_name_app_version': {
+		'en': 'App Version',
+		'ru': 'App Version'
+	},
+	'setting_name_work_dir': {
+		'en': 'Work Dir',
+		'ru': 'Work Dir'
+	},
+	'setting_name_server_folder_public': {
+		'en': 'Public Folder',
+		'ru': 'Public Folder'
+	},
+	'setting_name_server_folder_public_url': {
+		'en': 'Public Folder URL:',
+		'ru': 'Public Folder URL:'
+	},
+	'setting_name_server_folder_quests': {
+		'en': 'Quests Folder URL:',
+		'ru': 'Quests Folder URL:'
+	},
+	'setting_name_server_folder_quests': {
+		'en': 'Quests Folder:',
+		'ru': 'Quests Folder:'
+	},
+	'setting_name_server_folder_quests_url': {
+		'en': 'Quests Folder URL:',
+		'ru': 'Quests Folder URL:'
+	},
+	'setting_name_server_folder_users': {
+		'en': 'Users Folder:',
+		'ru': 'Users Folder:'
+	},
+	'setting_name_server_folder_users_url': {
+		'en': 'Users Folder URL:',
+		'ru': 'Users Folder URL:'
+	},
+	'setting_name_port': {
+		'en': 'Port:',
+		'ru': 'Port:'
+	},
+	'setting_name_ssl_cert_file': {
+		'en': 'SSL Cert File:',
+		'ru': 'SSL Cert File:'
+	},
+	'setting_name_ssl_key_file': {
+		'en': 'SSL Key File:',
+		'ru': 'SSL Key File:'
+	},
+	'setting_name_ssl_on': {
+		'en': 'SSL On:',
+		'ru': 'SSL On:'
+	},
+	'setting_name_ssl_port': {
+		'en': 'SSL Port:',
+		'ru': 'SSL Port:'
+	},
+	'setting_name_web_max_threads': {
+		'en': 'Web Max Threads:',
+		'ru': 'Web Max Threads:'
+	},
+	'setting_name_web_public_folder': {
+		'en': 'Web Public Folder:',
+		'ru': 'Web Public Folder:'
+	},
+	'setting_name_web_user_folder': {
+		'en': 'Web User Folder:',
+		'ru': 'Web User Folder:'
+	},
+	'setting_name_web_admin_folder': {
+		'en': 'Web Admin Folder:',
+		'ru': 'Web Admin Folder:'
+	},
+	'setting_name_web_fhqjad_store': {
+		'en': 'Web fhqjad-store Folder:',
+		'ru': 'Web fhqjad-store Folder:'
+	},
+	'setting_name_web_port': {
+		'en': 'Web Port:',
+		'ru': 'Web Port:'
 	},
 	'Open':{
 		'en': 'Open',

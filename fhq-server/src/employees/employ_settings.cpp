@@ -19,8 +19,11 @@ std::string EmploySettings::SERVER_FOLDER_PUBLIC = "server_folder_public";
 // ---------------------------------------------------------------------
 
 EmploySettings::EmploySettings()
-    : WSJCppEmployBase(EmploySettings::name(), {EmployDatabase::name()}) {
+    : WSJCppEmployBase(EmploySettings::name(), {EmployDatabase::name(), EmployGlobalSettings::name()}) {
     TAG = EmploySettings::name();
+
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    pGlobalSettings->registrySetting("user_profile", "profile_change_nick").boolean(true).inDatabase();
 }
 
 // ---------------------------------------------------------------------
@@ -336,7 +339,11 @@ void EmploySettings::printSettings() {
 // ---------------------------------------------------------------------
 
 nlohmann::json EmploySettings::toJson() {
-    nlohmann::json jsonSettings = nlohmann::json::array();
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+
+    nlohmann::json jsonSettings = pGlobalSettings->toJson();
+
+    
 
     std::map<std::string, ModelServerSettHelper*>::iterator it = m_mapSettings.begin();
     for (; it!=m_mapSettings.end(); ++it) {

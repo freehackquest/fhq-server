@@ -784,6 +784,47 @@ std::string EmployGlobalSettings::getFilepathConf() const {
 
 // ---------------------------------------------------------------------
 
+nlohmann::json EmployGlobalSettings::toJson() {
+    nlohmann::json jsonSettings = nlohmann::json::array();
+
+    std::map<std::string, WSJCppSettingItem *>::iterator it = m_mapSettingItems.begin();
+    for (; it!=m_mapSettingItems.end(); ++it) {
+        std::string sName = it->first;
+        WSJCppSettingItem *pItem = it->second;
+
+        nlohmann::json jsonSett;
+        jsonSett["name"] = pItem->getName();
+        jsonSett["group"] = pItem->getGroupName();
+        jsonSett["readonly"] = pItem->isReadonly();
+        if (pItem->isBoolean()) {
+            jsonSett["value"] = pItem->getBooleanValue();
+            jsonSett["type"] = "boolean";
+        } else if (pItem->isString()) {
+            jsonSett["value"] = pItem->getStringValue();
+            jsonSett["type"] = "string";
+        } else if (pItem->isNumber()) {
+            jsonSett["value"] = pItem->getNumberValue();
+            jsonSett["type"] = "integer";
+        } else if (pItem->isPassword()) {
+            jsonSett["value"] = "******"; // hided
+            jsonSett["type"] = "password";
+        } else if (pItem->isDirPath()) {
+            jsonSett["value"] = pItem->getDirPathValue();
+            jsonSett["type"] = "dir_path";
+        } else if (pItem->isFilePath()) {
+            jsonSett["value"] = pItem->getFilePathValue();
+            jsonSett["type"] = "file_path";
+        } else {
+            jsonSett["value"] = "unknown";
+            jsonSett["type"] = "unknown";
+        }
+        jsonSettings.push_back(jsonSett);
+    }
+    return jsonSettings;
+}
+
+// ---------------------------------------------------------------------
+
 REGISTRY_WJSCPP_EMPLOY(EmployServer)
 
 EmployServer::EmployServer()

@@ -32,7 +32,17 @@ fhq.pages['settings'] = function(idelem) {
 			var settid = 'setting_name_' + sett.name;
 			
 			var input_type = 'text';
-			if(sett.type == 'integer'){
+			var edit_button = ''
+				+ '  <div class="btn btn-secondary edit-settings" '
+				+ '     groupid="' + groupid + '" '
+				+ '     setttype="' + sett.type + '" '
+				+ '     settname="' + sett.name + '" '
+				+ '     settid="' + settid + '">Edit</div>';
+			if (sett['readonly']) {
+				edit_button = '';
+			}
+
+			if (sett.type == 'integer') {
 				$('#' + groupid).append(''
 					+ '<div class="form-group row">'
 					+ '	<label for="' + settid + '" class="col-sm-2 col-form-label">' + fhq.t(settid) + '</label>'
@@ -40,12 +50,12 @@ fhq.pages['settings'] = function(idelem) {
 					+ '		<input type="number" readonly class="form-control" id="' + settid + '">'
 					+ '	</div>'
 					+ '	<div class="col-sm-2">'
-					+ '		<div class="btn btn-secondary edit-settings" groupid="' + groupid + '" setttype="' + sett.type + '" settname="' + sett.name + '" settid="' + settid + '">Edit</div>'
+					+ edit_button
 					+ '	</div>'
 					+ '</div>'
 				);
 				$('#' + settid).val(sett.value);
-			}else if(sett.type == 'password'){
+			} else if(sett.type == 'password') {
 				$('#' + groupid).append(''
 					+ '<div class="form-group row">'
 					+ '	<label for="' + settid + '" class="col-sm-2 col-form-label">' + fhq.t(settid) + '</label>'
@@ -53,12 +63,12 @@ fhq.pages['settings'] = function(idelem) {
 					+ '		<input type="password" readonly class="form-control" id="' + settid + '">'
 					+ '	</div>'
 					+ '	<div class="col-sm-2">'
-					+ '		<div class="btn btn-secondary edit-settings" groupid="' + groupid + '" setttype="' + sett.type + '" settname="' + sett.name + '" settid="' + settid + '">Edit</div>'
+					+ edit_button
 					+ '	</div>'
 					+ '</div>'
 				);
 				$('#' + settid).val(sett.value);
-			}else if(sett.type == 'string'){
+			} else if(sett.type == 'string' || sett.type == 'dir_path' || sett.type == 'file_path') {
 				$('#' + groupid).append(''
 					+ '<div class="form-group row">'
 					+ '	<label for="' + settid + '" class="col-sm-2 col-form-label">' + fhq.t(settid) + '</label>'
@@ -66,12 +76,13 @@ fhq.pages['settings'] = function(idelem) {
 					+ '		<input type="text" readonly class="form-control" id="' + settid + '">'
 					+ '	</div>'
 					+ '	<div class="col-sm-2">'
-					+ '		<div class="btn btn-secondary edit-settings" groupid="' + groupid + '" setttype="' + sett.type + '" settname="' + sett.name + '" settid="' + settid + '">Edit</div>'
+					+ edit_button
 					+ '	</div>'
 					+ '</div>'
 				);
 				$('#' + settid).val(sett.value);
-			}else if(sett.type == 'boolean'){
+				
+			} else if(sett.type == 'boolean') {
 				$('#' + groupid).append(''
 					+ '<div class="form-group row">'
 					+ '	<label for="' + settid + '" class="col-sm-2 col-form-label">' + fhq.t(settid) + '</label>'
@@ -82,11 +93,13 @@ fhq.pages['settings'] = function(idelem) {
 					+ '		<select class="form-control">'
 					+ '	</div>'
 					+ '	<div class="col-sm-2">'
-					+ '		<div class="btn btn-secondary edit-settings" groupid="' + groupid + '" setttype="' + sett.type + '" settname="' + sett.name + '" settid="' + settid + '">Edit</div>'
+					+ edit_button
 					+ '	</div>'
 					+ '</div>'
 				);
 				$('#' + settid).val(sett.value == true ? 'yes' : 'no');
+			} else {
+				console.error("Unknown type of settings: ", sett)
 			}
 		}
 		
