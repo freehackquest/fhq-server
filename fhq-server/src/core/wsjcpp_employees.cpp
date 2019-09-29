@@ -712,7 +712,7 @@ void EmployGlobalSettings::update(const std::string &sSettingName, const std::st
 
 // ---------------------------------------------------------------------
 
-void EmployGlobalSettings::update(const std::string &sSettingName, int &nValue) {
+void EmployGlobalSettings::update(const std::string &sSettingName, int nValue) {
    std::map<std::string, WSJCppSettingItem*>::iterator it;
     it = m_mapSettingItems.find(sSettingName);
     if (it == m_mapSettingItems.end()) {

@@ -182,11 +182,37 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
-
-    std::string sName = jsonRequest["name"].toString().toStdString();
+    std::string sName = pRequest->getInputString("name", "");
     QString sNewValue = jsonRequest["value"].toString();
 
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    if (pGlobalSettings->exists(sName)) {
+        const WSJCppSettingItem sett = pGlobalSettings->get(sName);
+        if (sett.isReadonly()) {
+            std::string sError = "Setting with name: " + sName + " readonly";
+            pRequest->sendMessageError(cmd(), WSJCppError(400, sError));
+            return;
+        }
+
+        // TODO add method isLikeString
+        if (sett.isString() 
+            || sett.isPassword()
+            || sett.isText()
+            || sett.isFilePath()
+            || sett.isDirPath()
+        ) {
+            pGlobalSettings->update(sName, sNewValue.toStdString());
+        } else if (sett.isNumber()) {
+            pGlobalSettings->update(sName, sNewValue.toInt());
+            
+        } else {
+            std::string sError = "Setting with name: " + sName + " unknown type";
+            pRequest->sendMessageError(cmd(), WSJCppError(500, sError));
+            return;
+        }
+    }
+
+    EmploySettings *pSettings = findEmploy<EmploySettings>();
     if (!pSettings->hasSett(sName)) {
         std::string sError = "Setting with name: " + sName + " did not found";
         pRequest->sendMessageError(cmd(), WSJCppError(404, sError));

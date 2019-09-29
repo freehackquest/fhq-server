@@ -231,7 +231,7 @@ class EmployGlobalSettings : public WSJCppEmployBase {
         const WSJCppSettingItem &get(const std::string &sSettingName);
         bool exists(const std::string &sSettingName);
         void update(const std::string &sSettingName, const std::string &sValue);
-        void update(const std::string &sSettingName, int &nValue);
+        void update(const std::string &sSettingName, int nValue);
 
         void addListener(WSJCppSettingListener *);
         void removeListener(WSJCppSettingListener *);
