@@ -59,6 +59,8 @@ list (APPEND UNIT_TESTS_SOURCES "../src/utils/utils_static_analizing_text.cpp")
 
 # unit_tests
 
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen_normalize_path.h")
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen_normalize_path.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_hashes.h")

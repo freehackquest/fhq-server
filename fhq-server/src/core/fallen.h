@@ -36,6 +36,7 @@ class Fallen {
         static std::string createUuid();
         static unsigned long convertVoid2Int(void *p);
         static std::string getPointerAsHex(void *p);
+        static std::string doNormalizePath(const std::string & sPath);
 
 };
 

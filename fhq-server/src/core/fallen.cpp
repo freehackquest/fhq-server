@@ -265,6 +265,68 @@ std::string Fallen::getPointerAsHex(void *p) {
 
 // ---------------------------------------------------------------------
 
+std::string Fallen::doNormalizePath(const std::string & sPath) {
+    // split path by /
+    std::vector<std::string> vNames;
+    std::string s = "";
+    int nStrLen = sPath.length();
+    for (int i = 0; i < sPath.length(); i++) {
+        if (sPath[i] == '/') {
+            vNames.push_back(s);
+            s = "";
+            if (i == nStrLen-1) {
+                vNames.push_back("");
+            }
+        } else {
+            s += sPath[i];
+        }
+    }
+    if (s != "") {
+         vNames.push_back(s);
+    }
+
+    // fildered
+    int nLen = vNames.size();
+    std::vector<std::string> vNewNames;
+    for (int i = 0; i < nLen; i++) {
+        std::string sCurrent = vNames[i];
+        if (sCurrent == "" && i == nLen-1) {
+            vNewNames.push_back(sCurrent);
+            continue;
+        }
+
+        if ((sCurrent == "" || sCurrent == ".") && i != 0) {
+            continue;
+        }
+
+        if (sCurrent == ".." && vNewNames.size() > 0) {
+            std::string sPrev = vNewNames[vNewNames.size()-1];
+            if (sPrev == "") {
+                vNewNames.pop_back();
+                vNewNames.push_back(sCurrent);
+            } else if (sPrev != "." && sPrev != "..") {
+                vNewNames.pop_back();
+            } else {
+                vNewNames.push_back(sCurrent);
+            }
+        } else {
+            vNewNames.push_back(sCurrent);
+        }
+    }
+    std::string sRet = "";
+    int nNewLen = vNewNames.size();
+    int nLastNew = nNewLen-1;
+    for (int i = 0; i < nNewLen; i++) {
+        sRet += vNewNames[i];
+        if (i != nLastNew) {
+            sRet += "/";
+        }
+    }
+    return sRet;
+}
+
+// ---------------------------------------------------------------------
+
 void Fallen::initRandom() {
     std::srand(std::rand() + std::time(0));
 }
