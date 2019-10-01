@@ -15,6 +15,7 @@
 #include <cstdlib>
 #include <thread>
 #include <cstdint>
+#include <unistd.h>
 
 // ---------------------------------------------------------------------
 
@@ -265,7 +266,7 @@ std::string Fallen::getPointerAsHex(void *p) {
 
 // ---------------------------------------------------------------------
 
-std::string Fallen::doNormalizePath(const std::string & sPath) {
+std::string WSJCppCore::doNormalizePath(const std::string & sPath) {
     // split path by /
     std::vector<std::string> vNames;
     std::string s = "";
@@ -323,6 +324,29 @@ std::string Fallen::doNormalizePath(const std::string & sPath) {
         }
     }
     return sRet;
+}
+
+// ---------------------------------------------------------------------
+
+std::string WSJCppCore::init(
+    int argc, char** argv, 
+    const std::string &sApplicationName,
+    const std::string &sApplicationVersion,
+    const std::string &sApplicationAuthor,
+    const std::string &sLibraryNameForExports
+) {
+    Fallen::initRandom();
+}
+
+
+// ---------------------------------------------------------------------
+
+std::string WSJCppCore::getCurrentDirectory() {
+    char cwd[PATH_MAX];
+    if (getcwd(cwd, sizeof(cwd)) == NULL) {
+        Log::throw_err("getCurrentDirectory", "Could not get current directory");
+    }
+    return std::string(cwd) + "/";
 }
 
 // ---------------------------------------------------------------------

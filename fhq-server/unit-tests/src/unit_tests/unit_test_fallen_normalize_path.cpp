@@ -37,7 +37,7 @@ bool UnitTestFallenNormalizePath::run() {
     for ( it = mapPaths.begin(); it != mapPaths.end(); it++ ) {
         std::string sSource = it->first;
         std::string sExpected = it->second;
-        std::string sGot = Fallen::doNormalizePath(sSource);
+        std::string sGot = WSJCppCore::doNormalizePath(sSource);
         if (sGot != sExpected) {
             nCounter++;
             Log::err(TAG, "Wrong normalize path for: '" + sSource + "'.\n\t Got: '" + sGot + "', but expected: '" + sExpected + "'");

@@ -624,8 +624,8 @@ EmployGlobalSettings::EmployGlobalSettings()
     TAG = EmployGlobalSettings::name();
 
     // basicly
-    this->registrySetting("runtime", "work_dir").string("").inRuntime().readonly();
-    this->registrySetting("runtime", "log_dir").string("").inRuntime().readonly();
+    this->registrySetting("runtime", "work_dir").dirPath("").inRuntime().readonly();
+    this->registrySetting("runtime", "log_dir").dirPath("").inRuntime().readonly();
     this->registrySetting("runtime", "app_version").string("").inRuntime().readonly();
     this->registrySetting("runtime", "app_name").string("").inRuntime().readonly();
     this->registrySetting("runtime", "app_author").string("").inRuntime().readonly();
@@ -746,34 +746,38 @@ bool EmployGlobalSettings::initFromDatabase(WSJCppSettingsStore *pDatabaseSettin
 // ---------------------------------------------------------------------
 
 bool EmployGlobalSettings::findFileConfig() {
-    struct PossibleFileConfigs {
-        PossibleFileConfigs(const std::string &sDirPath, const std::string &sFilePathConf) :
-            sDirPath(sDirPath), sFilePathConf(sFilePathConf) {
 
+    struct PossibleFileConfigs {
+        PossibleFileConfigs(const std::string &sDirPath, const std::string &sFilePathConf) {
+            m_sDirPath = WSJCppCore::doNormalizePath(sDirPath);
+            m_sFilePathConf = WSJCppCore::doNormalizePath(sFilePathConf);
         };
-        std::string sDirPath;
-        std::string sFilePathConf;
+        std::string m_sDirPath;
+        std::string m_sFilePathConf;
     };
 
-    std::vector<PossibleFileConfigs> vSearchConfigFile;
+    std::vector<std::string> vSearchConfigFile;
 
     if (m_sWorkDir != "") {
         // TODO convert to fullpath
-        vSearchConfigFile.push_back(PossibleFileConfigs(m_sWorkDir + "/conf.d/", m_sWorkDir + "/conf.d/fhq-server.conf"));
+        vSearchConfigFile.push_back(m_sWorkDir + "/conf.d/");
     } else {
         // TODO convert to fullpath
-        vSearchConfigFile.push_back(PossibleFileConfigs("/etc/fhq-server/", "/etc/fhq-server/fhq-server.conf"));
+        vSearchConfigFile.push_back("/etc/fhq-server/");
     }
 
     for (int i = 0; i < vSearchConfigFile.size(); i++) {
-        PossibleFileConfigs tmp = vSearchConfigFile[i];
-        if (Fallen::fileExists(tmp.sFilePathConf)) {
-            m_sFilepathConf = tmp.sFilePathConf;
-            m_sWorkDir = tmp.sDirPath;
-            Log::info(TAG, "Found config file " + tmp.sFilePathConf);
+        std::string sDirPath = vSearchConfigFile[i];
+        sDirPath = WSJCppCore::doNormalizePath(sDirPath);
+        std::string sFilePathConf = sDirPath + "/fhq-server.conf";
+        sFilePathConf = WSJCppCore::doNormalizePath(sFilePathConf);
+        if (Fallen::fileExists(sFilePathConf)) {
+            m_sFilepathConf = sFilePathConf;
+            m_sWorkDir = sDirPath;
+            Log::info(TAG, "Found config file " + sFilePathConf);
             break;
         } else {
-            Log::warn(TAG, "Not found possible config file " + tmp.sFilePathConf);
+            Log::warn(TAG, "Not found possible config file " + sFilePathConf);
         }
     }
     
@@ -811,7 +815,8 @@ bool EmployGlobalSettings::initFromFile() {
             } else if (pItem->isDirPath()) {
                 std::string sDirPath = parseConfig.stringValue(pItem->getName(), pItem->getDefaultDirPathValue());
                 if (sDirPath.length() > 0 && sDirPath[0] != '/') {
-                    sDirPath = m_sWorkDir + "/" + sDirPath; // TODO normalize path
+                    sDirPath = m_sWorkDir + "/" + sDirPath;
+                    sDirPath = WSJCppCore::doNormalizePath(sDirPath);
                 }
                 if (!Fallen::dirExists(sDirPath)) {
                     Log::throw_err(TAG, "Wrong settings '" + pItem->getName() + "', because folder '" + sDirPath + "' does not exists");
@@ -822,7 +827,8 @@ bool EmployGlobalSettings::initFromFile() {
              } else if (pItem->isFilePath()) {
                 std::string sFilePath = parseConfig.stringValue(pItem->getName(), pItem->getDefaultFilePathValue());
                 if (sFilePath.length() > 0 && sFilePath[0] != '/') {
-                    sFilePath = m_sWorkDir + "/" + sFilePath; // TODO normalize path
+                    sFilePath = m_sWorkDir + "/" + sFilePath;
+                    sFilePath = WSJCppCore::doNormalizePath(sFilePath);
                 }
                 if (!Fallen::fileExists(sFilePath)) {
                     Log::throw_err(TAG, "Wrong settings '" + pItem->getName() + "', because file '" + sFilePath + "' does not exists");

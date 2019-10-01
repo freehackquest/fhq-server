@@ -41,17 +41,19 @@
 LightHttpServer g_httpServer;
 
 int main(int argc, char** argv) {
-    Fallen::initRandom();
     std::string appName(FHQSRV_APP_NAME);
     std::string appVersion(FHQSRV_VERSION);
     std::string appAuthor("FreeHackQuest Team");
+    std::string sLibraryNameForExports("fhq");
+    WSJCppCore::init(argc, argv, appName, appVersion, appAuthor, sLibraryNameForExports);
 
     QCoreApplication a(argc, argv);
     std::string TAG = "MAIN";
     Log::setPrefixLogFile(appName);
     std::string sLogDir = "/var/log/" + appName;
     if (!Fallen::dirExists(sLogDir)) {
-        sLogDir = "./";
+        sLogDir = WSJCppCore::getCurrentDirectory() + "./";
+        sLogDir = WSJCppCore::doNormalizePath(sLogDir);
     }
     Log::setLogDirectory(sLogDir);
 
@@ -89,7 +91,10 @@ int main(int argc, char** argv) {
     std::string sWorkDir = "";
     if (helpArgs.has("--workdir")) {
         sWorkDir = helpArgs.option("--workdir");
-        std::cout << "\n Workdir " << sWorkDir << " \n\n";
+        sWorkDir = WSJCppCore::getCurrentDirectory() + sWorkDir;
+        sWorkDir = WSJCppCore::doNormalizePath(sWorkDir);
+
+        std::cout << "\n Workdir: " << sWorkDir << " \n\n";
         if (!Fallen::dirExists(sWorkDir)) {
             Log::err(TAG, "Directory '" + sWorkDir + "' did'not exists");
             return -1;
@@ -101,7 +106,7 @@ int main(int argc, char** argv) {
             pGlobalSettings->update("work_dir", sWorkDir);
         }
 
-        std::string sDirLogs = sWorkDir + "/logs";
+        std::string sDirLogs = WSJCppCore::doNormalizePath(sWorkDir + "/logs");
         if (!Fallen::dirExists(sDirLogs)) {
             Fallen::makeDir(sDirLogs);
         }
