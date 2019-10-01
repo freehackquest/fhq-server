@@ -30,6 +30,7 @@ bool UnitTestFallenNormalizePath::run() {
     mapPaths.insert(std::pair<std::string, std::string>("/usr/local/..//bin/./some/","/usr/bin/some/"));
     mapPaths.insert(std::pair<std::string, std::string>("/usr/local/../../bin/./some/","/bin/some/"));
     mapPaths.insert(std::pair<std::string, std::string>("/usr/local/../../../bin/./some/","../bin/some/"));
+    mapPaths.insert(std::pair<std::string, std::string>(".//","./"));
     std::map<std::string, std::string>::iterator it;
 
     int nCounter = 0;
