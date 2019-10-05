@@ -584,7 +584,9 @@ void WSJCppSettingItem::setBooleanValue(bool bBooleanValue) {
     m_bBooleanValue = bBooleanValue;
 }
 
-nlohmann::json WSJCppSettingItem::toJson() {
+// ---------------------------------------------------------------------
+
+nlohmann::json WSJCppSettingItem::toJson(bool bHidePassword) {
     nlohmann::json jsonSett;
     jsonSett["name"] = m_sSettingName;
     jsonSett["group"] = m_sSettingGroup;
@@ -599,7 +601,7 @@ nlohmann::json WSJCppSettingItem::toJson() {
     } else if (m_nSettingType == WJSCPP_SETTING_TYPE_NUMBER) {
         jsonSett["value"] = getNumberValue();
     } else if (m_nSettingType == WJSCPP_SETTING_TYPE_PASSWORD) {
-        jsonSett["value"] = "******"; // hided
+        jsonSett["value"] =  bHidePassword ? "******" : getPasswordValue();
     } else if (m_nSettingType == WJSCPP_SETTING_TYPE_DIRPATH) {
         jsonSett["value"] = getDirPathValue();
     } else if (m_nSettingType == WJSCPP_SETTING_TYPE_FILEPATH) {
@@ -609,6 +611,28 @@ nlohmann::json WSJCppSettingItem::toJson() {
         jsonSett["type"] = "not_implemented_yet";
     }
     return jsonSett;
+}
+
+// ---------------------------------------------------------------------
+
+std::string WSJCppSettingItem::convertValueToString(bool bHidePassword) const {
+    std::string sRet;
+    if (m_nSettingType == WJSCPP_SETTING_TYPE_BOOLEAN) {
+        sRet = getBooleanValue() ? "yes" : "no";
+    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_STRING) {
+        sRet = getStringValue();
+    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_NUMBER) {
+        sRet = std::to_string(getNumberValue());
+    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_PASSWORD) {
+        sRet = bHidePassword ? "(hide)" : getPasswordValue();
+    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_DIRPATH) {
+        sRet = getDirPathValue();
+    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_FILEPATH) {
+        sRet = getFilePathValue();
+    } else {
+        Log::throw_err(TAG, "Not implemented type of setting");
+    }
+    return sRet;
 }
 
 // ---------------------------------------------------------------------
@@ -735,6 +759,27 @@ void EmployGlobalSettings::update(const std::string &sSettingName, int nValue) {
 bool EmployGlobalSettings::initFromDatabase(WSJCppSettingsStore *pDatabaseSettingsStore) {
     m_pDatabaseSettingsStore = pDatabaseSettingsStore;
     std::map<std::string, WSJCppSettingItem*>::iterator it;
+
+    std::vector<WSJCppSettingItem> vList = pDatabaseSettingsStore->loadAllSettings();
+    for (int i = 0; i < vList.size(); i++) {
+        WSJCppSettingItem item = vList[i];
+        std::string sName = item.getName();
+        it = m_mapSettingItems.find(sName);
+        if (it == m_mapSettingItems.end()) {
+            Log::warn(TAG, "Unknown setting in database, name '" + sName + "'");
+        } else {
+            WSJCppSettingItem *pItem = it->second;
+            if (item.isString() && pItem->isString()) {
+                pItem->setStringValue(item.getStringValue());
+            } else if (item.isNumber() && pItem->isNumber()) {
+                pItem->setStringValue(item.getStringValue());
+            } else {
+                Log::warn(TAG, "type of setting (from database) not match with delared, name '" + sName + "'");
+            }
+        }
+    }
+
+    
     for (it = m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
         WSJCppSettingItem *pItem = it->second;
         if (pItem->isFromDatabase()) {
@@ -881,14 +926,14 @@ std::string EmployGlobalSettings::getFilepathConf() const {
 
 // ---------------------------------------------------------------------
 
-nlohmann::json EmployGlobalSettings::toJson() {
+nlohmann::json EmployGlobalSettings::toJson(bool bPasswordHide) {
     nlohmann::json jsonSettings = nlohmann::json::array();
 
     std::map<std::string, WSJCppSettingItem *>::iterator it = m_mapSettingItems.begin();
     for (; it!=m_mapSettingItems.end(); ++it) {
         std::string sName = it->first;
         WSJCppSettingItem *pItem = it->second;
-        jsonSettings.push_back(pItem->toJson());
+        jsonSettings.push_back(pItem->toJson(bPasswordHide));
     }
     return jsonSettings;
 }

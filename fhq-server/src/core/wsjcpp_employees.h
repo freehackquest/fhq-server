@@ -163,7 +163,8 @@ class WSJCppSettingItem {
         bool getBooleanValue() const;
         void setBooleanValue(bool bBooleanValue);
         
-        nlohmann::json toJson();
+        nlohmann::json toJson(bool bHidePassword);
+        std::string convertValueToString(bool bHidePassword) const;
 
     private:
         std::string TAG;
@@ -212,6 +213,7 @@ class WSJCppSettingListener {
 
 class WSJCppSettingsStore {
     public:
+        virtual std::vector<WSJCppSettingItem> loadAllSettings() = 0;
         virtual void updateSettingItem(const WSJCppSettingItem *pSettingItem) = 0;
         virtual void initSettingItem(WSJCppSettingItem *pSettingItem) = 0;
 };
@@ -237,7 +239,7 @@ class EmployGlobalSettings : public WSJCppEmployBase {
         void removeListener(WSJCppSettingListener *);
         bool initFromDatabase(WSJCppSettingsStore *pDatabaseSettingsStore);
         std::string getFilepathConf() const;
-        nlohmann::json toJson();
+        nlohmann::json toJson(bool bHidePassword);
             
     private:
         std::string TAG;

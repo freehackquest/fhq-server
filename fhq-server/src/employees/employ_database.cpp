@@ -278,18 +278,58 @@ StorageConnection *EmployDatabase::getStorageConnection() {
 
 // ---------------------------------------------------------------------
 
+std::vector<WSJCppSettingItem> EmployDatabase::loadAllSettings() {
+    std::vector<WSJCppSettingItem> vRet;
+
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
+
+    {
+        QSqlQuery query(db);
+        query.prepare("SELECT * FROM settings");
+        query.exec();
+        while (query.next()) {
+            QSqlRecord record = query.record();
+            std::string sName = record.value("name").toString().toStdString();
+            std::string sGroup = record.value("group").toString().toStdString();
+            std::string sValue = record.value("value").toString().toStdString();
+            std::string sType = record.value("type").toString().toStdString();
+            WSJCppSettingItem item(sGroup, sName);
+            bool bInit = true;
+            if (sType == "string") {
+                item.string("").setStringValue(sValue);
+            } else if (sType == "password") {
+                item.password("").setPasswordValue(sValue);
+            } else if (sType == "boolean") {
+                item.boolean(false).setBooleanValue(sValue == "yes");
+            } else {
+                Log::err(TAG, "Skip " + sGroup + "/" + sName + " - unknown type: " + sType);
+                bInit = false;
+            }
+            if (bInit) {
+                vRet.push_back(item);
+            }
+        }
+    }
+    return vRet;
+}
+
+// ---------------------------------------------------------------------
+
 void EmployDatabase::updateSettingItem(const WSJCppSettingItem *pSettingItem) {
-    Log::throw_err(TAG, "updateSettingItem - Not implemented yet");
-    
-    /*EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
-    query.prepare("UPDATE settings SET value = :value WHERE name = :name");
-    query.bindValue(":value", pServerSettHelper->valueAsString());
-    query.bindValue(":name", QString(pServerSettHelper->name().c_str()));
+    query.prepare("UPDATE settings SET value = :value, group = :group, type = :type WHERE name = :name");
+    std::string sValue = pSettingItem->convertValueToString(false);
+    query.bindValue(":value", QString::fromStdString(sValue));
+    query.bindValue(":group", QString::fromStdString(pSettingItem->getGroupName()));
+    // query.bindValue(":type", QString::fromStdString(pSettingItem->getSet())); // TODO
+    query.bindValue(":name", QString::fromStdString(pSettingItem->getName()));
+
     if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
-    }*/
+    }
 }
 
 // ---------------------------------------------------------------------

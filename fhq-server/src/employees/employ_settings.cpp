@@ -341,9 +341,7 @@ void EmploySettings::printSettings() {
 nlohmann::json EmploySettings::toJson() {
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
 
-    nlohmann::json jsonSettings = pGlobalSettings->toJson();
-
-    
+    nlohmann::json jsonSettings = pGlobalSettings->toJson(true);
 
     std::map<std::string, ModelServerSettHelper*>::iterator it = m_mapSettings.begin();
     for (; it!=m_mapSettings.end(); ++it) {
