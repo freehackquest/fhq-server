@@ -81,7 +81,19 @@ fhq.pages['settings'] = function(idelem) {
 					+ '</div>'
 				);
 				$('#' + settid).val(sett.value);
-				
+			} else if(sett.type == 'text') {
+				$('#' + groupid).append(''
+					+ '<div class="form-group row">'
+					+ '	<label for="' + settid + '" class="col-sm-2 col-form-label">' + fhq.t(settid) + '</label>'
+					+ '	<div class="col-sm-7">'
+					+ '		<textarea rows="10" readonly class="form-control" id="' + settid + '"></textarea>'
+					+ '	</div>'
+					+ '	<div class="col-sm-2">'
+					+ edit_button
+					+ '	</div>'
+					+ '</div>'
+				);
+				$('#' + settid).html(sett.value);
 			} else if(sett.type == 'boolean') {
 				$('#' + groupid).append(''
 					+ '<div class="form-group row">'
@@ -123,7 +135,13 @@ fhq.pages['settings'] = function(idelem) {
 					+ '<p id="modalSettings_error"></p>'
 				);
 				$('#modalSettings_newval').val(val);
-			}else if(setttype == 'boolean'){
+			} else if (setttype == 'text') {
+				$('#modalSettings .modal-body').append(
+					'<textarea rows="15" class="form-control" id="modalSettings_newval"></textarea>'
+					+ '<p id="modalSettings_error"></p>'
+				);
+				$('#modalSettings_newval').html(val);
+			} else if(setttype == 'boolean') {
 				$('#modalSettings .modal-body').append(''
 					+ '		<select class="form-control" id="modalSettings_newval">'
 					+ '			<option name="no">no</option>'
@@ -132,15 +150,13 @@ fhq.pages['settings'] = function(idelem) {
 					+ '<p id="modalSettings_error"></p>'
 				);
 				$('#modalSettings_newval').val(val);
-				
-					
-			}else if(setttype == 'password'){
+			} else if(setttype == 'password') {
 				$('#modalSettings .modal-body').append(
 					'<input type="password" class="form-control" id="modalSettings_newval">'
 					+ '<p id="modalSettings_error"></p>'
 				);
 				$('#modalSettings_newval').val('');
-			}else if(setttype == 'number'){
+			} else if (setttype == 'number') {
 				$('#modalSettings .modal-body').append(
 					'<input type="number" class="form-control" id="modalSettings_newval">'
 					+ '<p id="modalSettings_error"></p>'
@@ -157,7 +173,8 @@ fhq.pages['settings'] = function(idelem) {
 				data.value = $('#modalSettings_newval').val();
 
 				fhq.ws.server_settings_update(data).done(function(r){
-					if(setttype != 'password'){
+					console.log(r);
+					if (setttype != 'password') {
 						$('#' + settid).val(data.value);
 					}
 					$('#modalSettings').modal('hide');

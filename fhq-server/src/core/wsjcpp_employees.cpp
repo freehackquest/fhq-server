@@ -647,6 +647,8 @@ nlohmann::json WSJCppSettingItem::toJson(bool bHidePassword) {
         jsonSett["value"] = getDirPathValue();
     } else if (m_nSettingType == WJSCPP_SETTING_TYPE_FILEPATH) {
         jsonSett["value"] = getFilePathValue();
+    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_TEXT) {
+        jsonSett["value"] = getTextValue();
     } else {
         jsonSett["value"] = "unknown";
         jsonSett["type"] = "not_implemented_yet";
@@ -665,7 +667,7 @@ std::string WSJCppSettingItem::convertValueToString(bool bHidePassword) const {
     } else if (m_nSettingType == WJSCPP_SETTING_TYPE_NUMBER) {
         sRet = std::to_string(getNumberValue());
     } else if (m_nSettingType == WJSCPP_SETTING_TYPE_PASSWORD) {
-        sRet = bHidePassword ? "(hide)" : getPasswordValue();
+        sRet = bHidePassword ? "(hidden)" : getPasswordValue();
     } else if (m_nSettingType == WJSCPP_SETTING_TYPE_DIRPATH) {
         sRet = getDirPathValue();
     } else if (m_nSettingType == WJSCPP_SETTING_TYPE_FILEPATH) {
@@ -681,23 +683,7 @@ std::string WSJCppSettingItem::convertValueToString(bool bHidePassword) const {
 // ---------------------------------------------------------------------
 
 std::string WSJCppSettingItem::convertTypeToString() const {
-    std::string sRet = "";
-    if (m_nSettingType == WJSCPP_SETTING_TYPE_BOOLEAN) {
-        sRet = "boolean";
-    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_STRING) {
-        sRet = "string";
-    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_NUMBER) {
-        sRet = "number";
-    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_PASSWORD) {
-        sRet = "password";
-    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_DIRPATH) {
-        sRet = "dir_path";
-    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_FILEPATH) {
-        sRet = "file_path";
-    } else {
-        Log::throw_err(TAG, "Not implemented type of setting");
-    }
-    return sRet;
+    return m_sSettingType;
 }
 
 // ---------------------------------------------------------------------
@@ -791,6 +777,8 @@ void EmployGlobalSettings::update(const std::string &sSettingName, const std::st
         pItem->setDirPathValue(sValue);
     } else if (pItem->isText()) {
         pItem->setTextValue(sValue);
+    } else if (pItem->isBoolean()) {
+        pItem->setBooleanValue(sValue == "yes");
     } else {
         Log::throw_err(TAG, "Error on updating setting '" + sSettingName + "' ");
     }
@@ -812,7 +800,7 @@ void EmployGlobalSettings::update(const std::string &sSettingName, int nValue) {
     if (pItem->isNumber()) {
         pItem->setNumberValue(nValue);
     } else {
-        Log::throw_err(TAG, "Error on updating setting '" + sSettingName + "' ");
+        Log::throw_err(TAG, "Error on updating number setting '" + sSettingName + "' ");
     }
     if (pItem->isFromDatabase()) {
         m_pDatabaseSettingsStore->updateSettingItem(pItem);
@@ -832,7 +820,7 @@ void EmployGlobalSettings::update(const std::string &sSettingName, bool bValue) 
     if (pItem->isBoolean()) {
         pItem->setBooleanValue(bValue);
     } else {
-        Log::throw_err(TAG, "Error on updating setting '" + sSettingName + "' ");
+        Log::throw_err(TAG, "Error on updating boolean setting '" + sSettingName + "' ");
     }
     if (pItem->isFromDatabase()) {
         m_pDatabaseSettingsStore->updateSettingItem(pItem);

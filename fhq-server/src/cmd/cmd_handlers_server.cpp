@@ -182,7 +182,7 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
 
     std::string sName = pRequest->getInputString("name", "");
-    QString sNewValue = jsonRequest["value"].toString();
+    std::string sValue = pRequest->getInputString("value", "");
 
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
     if (!pGlobalSettings->exists(sName)) {
@@ -190,6 +190,7 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WSJCppError(404, sError));
         return;
     }
+
     const WSJCppSettingItem sett = pGlobalSettings->get(sName);
     if (sett.isReadonly()) {
         std::string sError = "Setting with name: " + sName + " readonly";
@@ -197,16 +198,12 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
         return;
     }
 
-    // TODO add method isLikeString
-    if (sett.isString() 
-        || sett.isPassword()
-        || sett.isText()
-        || sett.isFilePath()
-        || sett.isDirPath()
-    ) {
-        pGlobalSettings->update(sName, sNewValue.toStdString());
+    if (sett.isLikeString()) {
+        pGlobalSettings->update(sName, sValue);
     } else if (sett.isNumber()) {
-        pGlobalSettings->update(sName, sNewValue.toInt());
+        pGlobalSettings->update(sName, QString::fromStdString(sValue).toInt());
+    } else if (sett.isBoolean()) {
+        pGlobalSettings->update(sName, sValue == "yes");
     } else {
         std::string sError = "Setting with name: " + sName + " unknown type";
         pRequest->sendMessageError(cmd(), WSJCppError(500, sError));
