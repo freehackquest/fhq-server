@@ -18,7 +18,7 @@ class EmployDatabase : public WSJCppEmployBase, public WSJCppSettingsStore {
         StorageConnection *getStorageConnection();
         
         // WSJCppSettingsStore
-        virtual std::vector<WSJCppSettingItem> loadAllSettings();
+        virtual std::map<std::string, std::string> loadAllSettings();
         virtual void updateSettingItem(const WSJCppSettingItem *pSettingItem);
         virtual void initSettingItem(WSJCppSettingItem *pSettingItem);
 

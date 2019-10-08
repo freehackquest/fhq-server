@@ -278,8 +278,8 @@ StorageConnection *EmployDatabase::getStorageConnection() {
 
 // ---------------------------------------------------------------------
 
-std::vector<WSJCppSettingItem> EmployDatabase::loadAllSettings() {
-    std::vector<WSJCppSettingItem> vRet;
+std::map<std::string, std::string> EmployDatabase::loadAllSettings() {
+    std::map<std::string, std::string> vRet;
 
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
@@ -294,20 +294,10 @@ std::vector<WSJCppSettingItem> EmployDatabase::loadAllSettings() {
             std::string sGroup = record.value("group").toString().toStdString();
             std::string sValue = record.value("value").toString().toStdString();
             std::string sType = record.value("type").toString().toStdString();
-            WSJCppSettingItem item(sGroup, sName);
-            bool bInit = true;
-            if (sType == "string") {
-                item.string("").setStringValue(sValue);
-            } else if (sType == "password") {
-                item.password("").setPasswordValue(sValue);
-            } else if (sType == "boolean") {
-                item.boolean(false).setBooleanValue(sValue == "yes");
+            if (vRet.count(sName) == 0) {
+                vRet.insert(std::pair<std::string, std::string>(sName, sValue));
             } else {
-                Log::err(TAG, "Skip " + sGroup + "/" + sName + " - unknown type: " + sType);
-                bInit = false;
-            }
-            if (bInit) {
-                vRet.push_back(item);
+                Log::err(TAG, "In databases settings found duplicates '" + sName + "'");
             }
         }
     }

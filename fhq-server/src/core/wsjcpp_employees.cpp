@@ -760,8 +760,33 @@ bool EmployGlobalSettings::initFromDatabase(WSJCppSettingsStore *pDatabaseSettin
     m_pDatabaseSettingsStore = pDatabaseSettingsStore;
     std::map<std::string, WSJCppSettingItem*>::iterator it;
 
-    std::vector<WSJCppSettingItem> vList = pDatabaseSettingsStore->loadAllSettings();
-    for (int i = 0; i < vList.size(); i++) {
+    std::map<std::string, std::string> vMap = pDatabaseSettingsStore->loadAllSettings();
+    std::map<std::string, std::string>::iterator itDb;
+    for (itDb = vMap.begin(); itDb != vMap.end(); ++itDb) {
+        std::string sName = itDb->first;
+        std::string sValue = itDb->second;
+        it = m_mapSettingItems.find(sName);
+        if (it == m_mapSettingItems.end()) {
+            Log::warn(TAG, "Unknown setting in database, name '" + sName + "'");
+        } else {
+            WSJCppSettingItem *pItem = it->second;
+            if (pItem->isString()) {
+                pItem->setStringValue(sValue);
+                Log::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
+            } else if (pItem->isBoolean()) {
+                pItem->setBooleanValue(sValue == "yes");
+                Log::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
+            } else if (pItem->isNumber()) {
+                int nValue = std::stoi(sValue);
+                pItem->setNumberValue(nValue);
+                Log::info(TAG, "Applyed settings from database: " + sName + " = " + std::to_string(nValue));
+            } else {
+                Log::warn(TAG, "type of setting (from database) not match with delared, name '" + sName + "'");
+            }
+        }
+    }
+
+    /* for (int i = 0; i < vList.size(); i++) {
         WSJCppSettingItem item = vList[i];
         std::string sName = item.getName();
         it = m_mapSettingItems.find(sName);
@@ -777,15 +802,14 @@ bool EmployGlobalSettings::initFromDatabase(WSJCppSettingsStore *pDatabaseSettin
                 Log::warn(TAG, "type of setting (from database) not match with delared, name '" + sName + "'");
             }
         }
-    }
-
+    }*/
     
-    for (it = m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
+    /* for (it = m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
         WSJCppSettingItem *pItem = it->second;
         if (pItem->isFromDatabase()) {
             m_pDatabaseSettingsStore->initSettingItem(pItem);
         }
-    }
+    }*/
 }
 
 // ---------------------------------------------------------------------

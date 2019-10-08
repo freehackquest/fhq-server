@@ -213,7 +213,7 @@ class WSJCppSettingListener {
 
 class WSJCppSettingsStore {
     public:
-        virtual std::vector<WSJCppSettingItem> loadAllSettings() = 0;
+        virtual std::map<std::string, std::string> loadAllSettings() = 0;
         virtual void updateSettingItem(const WSJCppSettingItem *pSettingItem) = 0;
         virtual void initSettingItem(WSJCppSettingItem *pSettingItem) = 0;
 };
