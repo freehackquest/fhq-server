@@ -29,7 +29,7 @@ EmployOrchestra::EmployOrchestra()
     pGlobalSettings->registrySetting(sGroupLXD, "path_dir_lxc_ssl").string("/etc/fhq-server/lxd").inDatabase();
     pGlobalSettings->registrySetting(sGroupLXD, "lxd_server_ip").string("127.0.0.1").inDatabase();
     pGlobalSettings->registrySetting(sGroupLXD, "lxd_server_port").number(8443).inDatabase();
-    pGlobalSettings->registrySetting(sGroupLXD, "lxd_mode").string("disabled").inDatabase();
+    pGlobalSettings->registrySetting(sGroupLXD, "lxd_mode").string("disabled").inDatabase(); // TODO boolean
 
 }
 
@@ -38,15 +38,15 @@ EmployOrchestra::EmployOrchestra()
 bool EmployOrchestra::init() {
     Log::info(TAG, "Start init settings");
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
-
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
-    std::string lxd_mode = pSettings->getSettString("lxd_mode").toStdString();
+    std::string lxd_mode = pGlobalSettings->get("lxd_mode").getStringValue();
+ 
     if (lxd_mode != "enabled")
         return true;
 
-    m_sPathDirLxcSSL = pSettings->getSettString("path_dir_lxc_ssl").toStdString();
-    std::string lxd_server_ip = pSettings->getSettString("lxd_server_ip").toStdString();
-    std::string lxd_server_port = pSettings->getSettString("lxd_server_port").toStdString();
+    m_sPathDirLxcSSL = pGlobalSettings->get("path_dir_lxc_ssl").getStringValue();
+    std::string lxd_server_ip = pGlobalSettings->get("lxd_server_ip").getStringValue();
+    int nServerPort = pGlobalSettings->get("lxd_server_port").getNumberValue();
+    std::string lxd_server_port = std::to_string(nServerPort);
     m_sLxdAddress = "https://" + lxd_server_ip + ":" + lxd_server_port;
     std::string sError;
     m_bTrusted = UtilsLXDAuth::check_trust_certs(sError);

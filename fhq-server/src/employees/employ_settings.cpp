@@ -72,14 +72,6 @@ bool EmploySettings::init() {
     // deprecated (moved to public)
     addNewSetting(new ModelServerSettHelper(sGroupServerFolders, "server_folder_users_url", QString("https://freehackquest.com/files/quests/")));
 
-    // LXD
-    // TODO move to employ_orchestra
-    std::string  sGroupLXD = "lxd";
-    addNewSetting(new ModelServerSettHelper(sGroupLXD, "path_dir_lxc_ssl", QString("/etc/fhq-server/lxd")));
-    addNewSetting(new ModelServerSettHelper(sGroupLXD, "lxd_server_ip", QString("127.0.0.1")));
-    addNewSetting(new ModelServerSettHelper(sGroupLXD, "lxd_server_port", QString("8443")));
-    addNewSetting(new ModelServerSettHelper(sGroupLXD, "lxd_mode", QString("disabled")));
-
     std::vector<std::string> vFoundInDatabase;
 
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
