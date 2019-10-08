@@ -1,7 +1,6 @@
 #include <cmd_handlers_users.h>
 #include <runtasks.h>
 #include <iostream>
-#include <employ_settings.h>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <employ_scoreboard.h>
@@ -85,7 +84,7 @@ void CmdHandlerGetMap::handle(ModelRequest *pRequest) {
 //    QJsonObject jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
 
     nlohmann::json coords;
     QSqlDatabase db = *(pDatabase->database());
@@ -108,7 +107,7 @@ void CmdHandlerGetMap::handle(ModelRequest *pRequest) {
     }
 
     jsonResponse["data"] = coords;
-    jsonResponse["google_map_api_key"] = pSettings->getSettString("google_map_api_key").toStdString();
+    jsonResponse["google_map_api_key"] = "";
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 

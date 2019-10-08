@@ -4,7 +4,6 @@ project(unit-tests)
 
 add_definitions(-DAPP_NAME="unit-tests")
 
-set (CMAKE_AUTOMOC ON)
 set (CMAKE_CXX_STANDARD 11)
 set (EXECUTABLE_OUTPUT_PATH ${unit-tests_SOURCE_DIR})
 

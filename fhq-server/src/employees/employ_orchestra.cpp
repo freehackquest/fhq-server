@@ -1,5 +1,4 @@
 #include <employ_orchestra.h>
-#include <employ_settings.h>
 #include <utils_lxd.h>
 
 REGISTRY_WJSCPP_EMPLOY(EmployOrchestra)
@@ -19,7 +18,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployOrchestra)
 // ---------------------------------------------------------------------
 
 EmployOrchestra::EmployOrchestra()
-        : WSJCppEmployBase(EmployOrchestra::name(), {EmploySettings::name()}) {
+        : WSJCppEmployBase(EmployOrchestra::name(), { EmployGlobalSettings::name() }) {
     TAG = "EmployOrchestra";
     m_bTrusted = false;
 
@@ -29,8 +28,7 @@ EmployOrchestra::EmployOrchestra()
     pGlobalSettings->registrySetting(sGroupLXD, "path_dir_lxc_ssl").string("/etc/fhq-server/lxd").inDatabase();
     pGlobalSettings->registrySetting(sGroupLXD, "lxd_server_ip").string("127.0.0.1").inDatabase();
     pGlobalSettings->registrySetting(sGroupLXD, "lxd_server_port").number(8443).inDatabase();
-    pGlobalSettings->registrySetting(sGroupLXD, "lxd_mode").string("disabled").inDatabase(); // TODO boolean
-
+    pGlobalSettings->registrySetting(sGroupLXD, "lxd_mode").boolean(false).inDatabase();
 }
 
 // ---------------------------------------------------------------------
@@ -38,9 +36,9 @@ EmployOrchestra::EmployOrchestra()
 bool EmployOrchestra::init() {
     Log::info(TAG, "Start init settings");
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
-    std::string lxd_mode = pGlobalSettings->get("lxd_mode").getStringValue();
+    bool bLXDMode = pGlobalSettings->get("lxd_mode").getBooleanValue();
  
-    if (lxd_mode != "enabled")
+    if (!bLXDMode)
         return true;
 
     m_sPathDirLxcSSL = pGlobalSettings->get("path_dir_lxc_ssl").getStringValue();

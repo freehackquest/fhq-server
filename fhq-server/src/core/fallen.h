@@ -42,7 +42,8 @@ class Fallen {
 
 class WSJCppCore {
     public:
-        static std::string init(int argc, char** argv, 
+        static bool init(
+            int argc, char** argv, 
             const std::string &sApplicationName,
             const std::string &sApplicationVersion,
             const std::string &sApplicationAuthor,

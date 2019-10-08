@@ -1,5 +1,4 @@
 #include <employ_games.h>
-#include <employ_settings.h>
 #include <employ_database.h>
 #include <employ_notify.h>
 #include <QSqlDatabase>
@@ -13,7 +12,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployGames)
 // ---------------------------------------------------------------------
 
 EmployGames::EmployGames()
-    : WSJCppEmployBase(EmployGames::name(), {EmployDatabase::name(), EmploySettings::name(), EmployNotify::name()}) {
+    : WSJCppEmployBase(EmployGames::name(), { EmployDatabase::name(), EmployGlobalSettings::name(), EmployNotify::name() }) {
     TAG = EmployGames::name();
 }
 
@@ -22,10 +21,9 @@ EmployGames::EmployGames()
 bool EmployGames::init() {
     // TODO mutex
     // check the access to games folder
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
-    QString sBasePath = pSettings->getSettString("server_folder_public");
-    std::string targetTestFile = sBasePath.toStdString();
-    targetTestFile += "games/test";
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    std::string sBasePath = pGlobalSettings->get("server_folder_public").getStringValue();
+    std::string targetTestFile = sBasePath + "games/test"; // normalize path
 
     FILE * pFile = fopen(targetTestFile.c_str(), "wb");
     if (pFile == NULL) {

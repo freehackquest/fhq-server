@@ -2,7 +2,6 @@
 #include <fallen.h>
 #include <runtasks.h>
 #include <iostream>
-#include <employ_settings.h>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <QtCore>
@@ -155,9 +154,9 @@ CmdHandlerServerSettings::CmdHandlerServerSettings()
 void CmdHandlerServerSettings::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
 
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
+    EmployGlobalSettings *pGloablSettings = findEmploy<EmployGlobalSettings>();
 
-    jsonResponse["data"] = pSettings->toJson(); // TODO how much db connections and time
+    jsonResponse["data"] = pGloablSettings->toJson(true); // TODO how much db connections and time
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -186,54 +185,32 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
     QString sNewValue = jsonRequest["value"].toString();
 
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
-    if (pGlobalSettings->exists(sName)) {
-        const WSJCppSettingItem sett = pGlobalSettings->get(sName);
-        if (sett.isReadonly()) {
-            std::string sError = "Setting with name: " + sName + " readonly";
-            pRequest->sendMessageError(cmd(), WSJCppError(400, sError));
-            return;
-        }
-
-        // TODO add method isLikeString
-        if (sett.isString() 
-            || sett.isPassword()
-            || sett.isText()
-            || sett.isFilePath()
-            || sett.isDirPath()
-        ) {
-            pGlobalSettings->update(sName, sNewValue.toStdString());
-        } else if (sett.isNumber()) {
-            pGlobalSettings->update(sName, sNewValue.toInt());
-        } else {
-            std::string sError = "Setting with name: " + sName + " unknown type";
-            pRequest->sendMessageError(cmd(), WSJCppError(500, sError));
-            return;
-        }
-        pRequest->sendMessageSuccess(cmd(), jsonResponse);
-        return;
-    }
-
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
-    if (!pSettings->hasSett(sName)) {
+    if (!pGlobalSettings->exists(sName)) {
         std::string sError = "Setting with name: " + sName + " did not found";
         pRequest->sendMessageError(cmd(), WSJCppError(404, sError));
         return;
     }
-
-    std::string sType = pSettings->getSettType(sName);
-
-    if (sType == SETT_TYPE_STRING) {
-        pSettings->setSettString(sName, sNewValue);
-    } else if (sType == SETT_TYPE_PASSWORD) {
-        pSettings->setSettPassword(sName, sNewValue);
-    } else if (sType == SETT_TYPE_INTEGER) {
-        pSettings->setSettInteger(sName, sNewValue.toInt());
-    } else if (sType == SETT_TYPE_BOOLEAN) {
-        pSettings->setSettBoolean(sName, sNewValue == "yes");
-    } else {
-        pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    const WSJCppSettingItem sett = pGlobalSettings->get(sName);
+    if (sett.isReadonly()) {
+        std::string sError = "Setting with name: " + sName + " readonly";
+        pRequest->sendMessageError(cmd(), WSJCppError(400, sError));
         return;
     }
 
+    // TODO add method isLikeString
+    if (sett.isString() 
+        || sett.isPassword()
+        || sett.isText()
+        || sett.isFilePath()
+        || sett.isDirPath()
+    ) {
+        pGlobalSettings->update(sName, sNewValue.toStdString());
+    } else if (sett.isNumber()) {
+        pGlobalSettings->update(sName, sNewValue.toInt());
+    } else {
+        std::string sError = "Setting with name: " + sName + " unknown type";
+        pRequest->sendMessageError(cmd(), WSJCppError(500, sError));
+        return;
+    }
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

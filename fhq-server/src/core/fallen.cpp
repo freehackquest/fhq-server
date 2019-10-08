@@ -328,16 +328,18 @@ std::string WSJCppCore::doNormalizePath(const std::string & sPath) {
 
 // ---------------------------------------------------------------------
 
-std::string WSJCppCore::init(
+bool WSJCppCore::init(
     int argc, char** argv, 
     const std::string &sApplicationName,
     const std::string &sApplicationVersion,
     const std::string &sApplicationAuthor,
     const std::string &sLibraryNameForExports
 ) {
-    Fallen::initRandom();
+    // init random
+    std::srand(std::rand() + std::time(0));
+    // Fallen::initRandom();
+    return true;
 }
-
 
 // ---------------------------------------------------------------------
 

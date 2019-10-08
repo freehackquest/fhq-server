@@ -2,7 +2,6 @@
 #include <runtasks.h>
 #include <fallen.h>
 #include <md5.h>
-#include <employ_settings.h>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <employ_notify.h>
@@ -165,8 +164,8 @@ void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
         ModelNotification notification("info", "quests", "Added [writeup#" + std::to_string(nWriteUpID) + "] for [quest#" + std::to_string(nQuestID) + "]");
         pNotify->sendNotification(notification);
     } else {
-        EmploySettings *pSettings = findEmploy<EmploySettings>();
-        std::string sMailToAdmin = pSettings->getSettString("mail_system_message_admin_email").toStdString();
+        EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+        std::string sMailToAdmin = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();
         std::string sMessageSubject = "Quest WriteUp Proposal (FreeHackQuest)";
         std::string sContext = "Quest WriteUp Proposal\n"
                         "UserID: #" + std::to_string(nUserID) + "\n"

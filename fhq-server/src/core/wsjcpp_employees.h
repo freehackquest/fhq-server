@@ -139,6 +139,8 @@ class WSJCppSettingItem {
         bool isJson() const;
         bool isList() const;
         
+        bool isLikeString() const;
+
         std::string getDefaultStringValue() const;
         std::string getStringValue() const;
         void setStringValue(const std::string &sStringValue);
@@ -154,6 +156,10 @@ class WSJCppSettingItem {
         std::string getDefaultFilePathValue() const;
         std::string getFilePathValue() const;
         void setFilePathValue(const std::string &sFilePathValue);
+
+        std::string getDefaultTextValue() const;
+        std::string getTextValue() const;
+        void setTextValue(const std::string &sTextValue);
 
         int getDefaultNumberValue() const;
         int getNumberValue() const;
@@ -193,6 +199,10 @@ class WSJCppSettingItem {
         // isFilePath
         std::string m_sDefaultFilePathValue;
         std::string m_sFilePathValue;
+
+        // isText
+        std::string m_sDefaultTextValue;
+        std::string m_sTextValue;
 
         // isNumber
         int m_nDefaultNumberValue;
@@ -235,13 +245,15 @@ class EmployGlobalSettings : public WSJCppEmployBase {
         bool exists(const std::string &sSettingName);
         void update(const std::string &sSettingName, const std::string &sValue);
         void update(const std::string &sSettingName, int nValue);
+        void update(const std::string &sSettingName, bool bValue);
 
         void addListener(WSJCppSettingListener *);
         void removeListener(WSJCppSettingListener *);
         bool initFromDatabase(WSJCppSettingsStore *pDatabaseSettingsStore);
         std::string getFilepathConf() const;
         nlohmann::json toJson(bool bHidePassword);
-            
+        void printSettings() const;
+
     private:
         std::string TAG;
         std::string m_sWorkDir;

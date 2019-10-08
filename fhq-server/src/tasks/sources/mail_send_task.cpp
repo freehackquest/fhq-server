@@ -1,5 +1,4 @@
 #include <mail_send_task.h>
-#include <employ_settings.h>
 #include <employ_database.h>
 #include <fallen.h>
 #include <curl/curl.h>
@@ -115,13 +114,13 @@ static void trim(std::string &s) {
 void MailSendTask::run() {
     Log::info(TAG, "Try send mail to '" + m_sTo + "', with subject: '" + m_sSubject + "'");
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
 
-    std::string sMailHost = pSettings->getSettString("mail_host").toStdString();
-    long nMailPort = pSettings->getSettInteger("mail_port");
-    std::string sMailPassword = pSettings->getSettPassword("mail_password").toStdString();
-    std::string sMailFrom = pSettings->getSettString("mail_from").toStdString();
-    std::string sMailSignatureText = pSettings->getSettString("mail_signature_text").toStdString();
+    std::string sMailHost = pGlobalSettings->get("mail_host").getStringValue();
+    long nMailPort = pGlobalSettings->get("mail_port").getNumberValue();
+    std::string sMailPassword = pGlobalSettings->get("mail_password").getStringValue();
+    std::string sMailFrom = pGlobalSettings->get("mail_from").getStringValue();
+    std::string sMailSignatureText = pGlobalSettings->get("mail_signature_text").getStringValue();
 
     // write info about message into DB
     QSqlDatabase db = *(pDatabase->database());

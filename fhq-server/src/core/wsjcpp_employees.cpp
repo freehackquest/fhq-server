@@ -1,9 +1,9 @@
 #include <fallen.h>
 #include <wsjcpp_employees.h>
 #include <employ_server_info.h>
-#include <employ_settings.h>
 #include <algorithm>
 #include <storages.h>
+#include <iostream>
 
 // ---------------------------------------------------------------------
 
@@ -224,13 +224,12 @@ WSJCppSettingItem & WSJCppSettingItem::filePath(const std::string &sDefaultFileP
 // ----------------------------------------------------------------------
 
 WSJCppSettingItem & WSJCppSettingItem::text(const std::string &sDefaultTextValue) {
-    Log::throw_err(TAG, "Not implemented yet");
     if (m_nSettingType != WJSCPP_SETTING_TYPE_NONE) {
         Log::throw_err(TAG, "text: already defined another data type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_TEXT;
     m_sSettingType = "text";
-    m_sDefaultStringValue = sDefaultTextValue;
+    m_sDefaultTextValue = sDefaultTextValue;
     return *this;
 }
 
@@ -261,7 +260,7 @@ WSJCppSettingItem & WSJCppSettingItem::boolean(bool bDefaultBooleanValue) {
 // ----------------------------------------------------------------------
 
 WSJCppSettingItem & WSJCppSettingItem::json() {
-    Log::throw_err(TAG, "Not implemented yet");
+    Log::throw_err(TAG, "json, Not implemented yet");
 
     if (m_nSettingType != WJSCPP_SETTING_TYPE_NONE) {
         Log::throw_err(TAG, "json: already defined another storage type");
@@ -274,7 +273,7 @@ WSJCppSettingItem & WSJCppSettingItem::json() {
 // ----------------------------------------------------------------------
 
 WSJCppSettingItem & WSJCppSettingItem::list() {
-    Log::throw_err(TAG, "Not implemented yet");
+    Log::throw_err(TAG, "list, Not implemented yet");
 
     if (m_nSettingType != WJSCPP_SETTING_TYPE_NONE) {
         Log::throw_err(TAG, "json: already defined another storage type");
@@ -394,6 +393,17 @@ bool WSJCppSettingItem::isJson() const {
 
 bool WSJCppSettingItem::isList() const {
     return m_nSettingType == WJSCPP_SETTING_TYPE_LIST;
+}
+
+// ----------------------------------------------------------------------
+
+bool WSJCppSettingItem::isLikeString() const {
+    return 
+        m_nSettingType == WJSCPP_SETTING_TYPE_STRING
+        || m_nSettingType == WJSCPP_SETTING_TYPE_PASSWORD
+        || m_nSettingType == WJSCPP_SETTING_TYPE_DIRPATH
+        || m_nSettingType == WJSCPP_SETTING_TYPE_FILEPATH
+        || m_nSettingType == WJSCPP_SETTING_TYPE_TEXT;
 }
 
 // ----------------------------------------------------------------------
@@ -522,6 +532,37 @@ void WSJCppSettingItem::setFilePathValue(const std::string &sFilePathValue) {
 
 // ----------------------------------------------------------------------
 
+std::string WSJCppSettingItem::getDefaultTextValue() const {
+    if (m_nSettingType != WJSCPP_SETTING_TYPE_TEXT) {
+        Log::throw_err(TAG, "getDefaultTextValue: Expected type text");
+    }
+    return m_sDefaultTextValue;
+}
+
+// ----------------------------------------------------------------------
+
+std::string WSJCppSettingItem::getTextValue() const {
+    if (m_nSettingType != WJSCPP_SETTING_TYPE_TEXT) {
+        Log::throw_err(TAG, "getTextValue: Expected type text");
+    }
+    return m_bInited ? m_sTextValue : m_sDefaultTextValue;
+}
+
+// ----------------------------------------------------------------------
+
+void WSJCppSettingItem::setTextValue(const std::string &sTextValue) {
+    if (m_nSettingType != WJSCPP_SETTING_TYPE_TEXT) {
+        Log::throw_err(TAG, "setTextValue: Expected type text");
+    }
+    if (m_bInited && m_bReadonly) {
+        Log::throw_err(TAG, "setTextValue: Could not change value for readonly setting");
+    }
+    m_bInited = true;
+    m_sTextValue = sTextValue;
+}
+
+// ----------------------------------------------------------------------
+
 int WSJCppSettingItem::getDefaultNumberValue() const {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_NUMBER) {
         Log::throw_err(TAG, "getDefaultNumberValue: Expected type number");
@@ -629,8 +670,10 @@ std::string WSJCppSettingItem::convertValueToString(bool bHidePassword) const {
         sRet = getDirPathValue();
     } else if (m_nSettingType == WJSCPP_SETTING_TYPE_FILEPATH) {
         sRet = getFilePathValue();
+    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_TEXT) {
+        sRet = getTextValue();
     } else {
-        Log::throw_err(TAG, "Not implemented type of setting");
+        Log::throw_err(TAG, "convertValueToString, Not implemented type of setting");
     }
     return sRet;
 }
@@ -668,20 +711,20 @@ EmployGlobalSettings::EmployGlobalSettings()
     : WSJCppEmployBase(EmployGlobalSettings::name(), {}) {
 
     TAG = EmployGlobalSettings::name();
-
+    
     // basicly
     this->registrySetting("runtime", "work_dir").dirPath("").inRuntime().readonly();
     this->registrySetting("runtime", "log_dir").dirPath("").inRuntime().readonly();
     this->registrySetting("runtime", "app_version").string("").inRuntime().readonly();
     this->registrySetting("runtime", "app_name").string("").inRuntime().readonly();
     this->registrySetting("runtime", "app_author").string("").inRuntime().readonly();
-    this->registrySetting("test", "test").string("").inDatabase();
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployGlobalSettings::EmployGlobalSettings::init() {
     // checking settings
+    Log::info(TAG, "EmployGlobalSettings");
     std::map<std::string, WSJCppSettingItem*>::iterator it;
     for (it = m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
         WSJCppSettingItem *pItem = it->second;
@@ -747,7 +790,7 @@ void EmployGlobalSettings::update(const std::string &sSettingName, const std::st
     } else if (pItem->isDirPath()) {
         pItem->setDirPathValue(sValue);
     } else if (pItem->isText()) {
-        // pItem->setTextValue(sValue);
+        pItem->setTextValue(sValue);
     } else {
         Log::throw_err(TAG, "Error on updating setting '" + sSettingName + "' ");
     }
@@ -760,7 +803,7 @@ void EmployGlobalSettings::update(const std::string &sSettingName, const std::st
 // ---------------------------------------------------------------------
 
 void EmployGlobalSettings::update(const std::string &sSettingName, int nValue) {
-   std::map<std::string, WSJCppSettingItem*>::iterator it;
+    std::map<std::string, WSJCppSettingItem*>::iterator it;
     it = m_mapSettingItems.find(sSettingName);
     if (it == m_mapSettingItems.end()) {
         Log::throw_err(TAG, "Setting '" + sSettingName + "' - not found");
@@ -768,6 +811,26 @@ void EmployGlobalSettings::update(const std::string &sSettingName, int nValue) {
     WSJCppSettingItem* pItem = it->second;
     if (pItem->isNumber()) {
         pItem->setNumberValue(nValue);
+    } else {
+        Log::throw_err(TAG, "Error on updating setting '" + sSettingName + "' ");
+    }
+    if (pItem->isFromDatabase()) {
+        m_pDatabaseSettingsStore->updateSettingItem(pItem);
+    }
+    // TODO send to listeners
+}
+
+// ---------------------------------------------------------------------
+
+void EmployGlobalSettings::update(const std::string &sSettingName, bool bValue) {
+    std::map<std::string, WSJCppSettingItem*>::iterator it;
+    it = m_mapSettingItems.find(sSettingName);
+    if (it == m_mapSettingItems.end()) {
+        Log::throw_err(TAG, "Setting '" + sSettingName + "' - not found");
+    }
+    WSJCppSettingItem* pItem = it->second;
+    if (pItem->isBoolean()) {
+        pItem->setBooleanValue(bValue);
     } else {
         Log::throw_err(TAG, "Error on updating setting '" + sSettingName + "' ");
     }
@@ -796,13 +859,26 @@ bool EmployGlobalSettings::initFromDatabase(WSJCppSettingsStore *pDatabaseSettin
             if (pItem->isString()) {
                 pItem->setStringValue(sValue);
                 Log::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
+            } else if (pItem->isPassword()) {
+                pItem->setPasswordValue(sValue);
+                Log::info(TAG, "Applyed settings from database: " + sName + " = (hidden)");
             } else if (pItem->isBoolean()) {
                 pItem->setBooleanValue(sValue == "yes");
+                Log::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
+            } else if (pItem->isDirPath()) {
+                pItem->setDirPathValue(sValue);
+                Log::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
+                // TODO check folder ?
+            } else if (pItem->isFilePath()) {
+                pItem->setFilePathValue(sValue);
                 Log::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
             } else if (pItem->isNumber()) {
                 int nValue = std::stoi(sValue);
                 pItem->setNumberValue(nValue);
                 Log::info(TAG, "Applyed settings from database: " + sName + " = " + std::to_string(nValue));
+            } else if (pItem->isText()) {
+                pItem->setTextValue(sValue);
+                Log::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
             } else {
                 Log::throw_err(TAG, "type of setting (from database) not match with delared, name '" + sName + "'");
             }
@@ -816,31 +892,21 @@ bool EmployGlobalSettings::initFromDatabase(WSJCppSettingsStore *pDatabaseSettin
             m_pDatabaseSettingsStore->initSettingItem(pItem);
         }
     }
+}
 
-    /* for (int i = 0; i < vList.size(); i++) {
-        WSJCppSettingItem item = vList[i];
-        std::string sName = item.getName();
-        it = m_mapSettingItems.find(sName);
-        if (it == m_mapSettingItems.end()) {
-            Log::warn(TAG, "Unknown setting in database, name '" + sName + "'");
-        } else {
-            WSJCppSettingItem *pItem = it->second;
-            if (item.isString() && pItem->isString()) {
-                pItem->setStringValue(item.getStringValue());
-            } else if (item.isNumber() && pItem->isNumber()) {
-                pItem->setStringValue(item.getStringValue());
-            } else {
-                Log::warn(TAG, "type of setting (from database) not match with delared, name '" + sName + "'");
-            }
-        }
-    }*/
-    
-    /* for (it = m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
+// ---------------------------------------------------------------------
+
+void EmployGlobalSettings::printSettings() const {
+    std::map<std::string, WSJCppSettingItem*>::iterator it;
+
+    for (m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
+        std::string sName = it->first;
         WSJCppSettingItem *pItem = it->second;
-        if (pItem->isFromDatabase()) {
-            m_pDatabaseSettingsStore->initSettingItem(pItem);
-        }
-    }*/
+
+        std::cout << " * [" << pItem->getName() << "] => [" << pItem->convertValueToString(true) << "]" << std::endl;
+        // jsonSett["group"] = pServerSettHelper->group();
+        // jsonSett["type"] = pServerSettHelper->type();
+    }
 }
 
 // ---------------------------------------------------------------------
@@ -910,8 +976,7 @@ bool EmployGlobalSettings::initFromFile() {
             } else if (pItem->isPassword()) {
                 std::string sPassword = parseConfig.stringValue(pItem->getName(), pItem->getDefaultPasswordValue());
                 pItem->setPasswordValue(sPassword);
-                Log::info(TAG, pItem->getName() + " = (hide)");
-                // TODO run validators
+                Log::info(TAG, pItem->getName() + " = (hidden)");
             } else if (pItem->isDirPath()) {
                 std::string sDirPath = parseConfig.stringValue(pItem->getName(), pItem->getDefaultDirPathValue());
                 if (sDirPath.length() > 0 && sDirPath[0] != '/') {
@@ -947,7 +1012,7 @@ bool EmployGlobalSettings::initFromFile() {
                 Log::info(TAG, pItem->getName() + " = " + (bValue ? "yes" : "no"));
                 // TODO run validators
             } else {
-                Log::throw_err(TAG, "Not implemented yet");
+                Log::throw_err(TAG, "initFromFile, Not implemented yet");
             }
         }
     }
@@ -1019,7 +1084,32 @@ EmployServer::EmployServer()
     pGlobalSettings->registrySetting("web_server", "web_port").number(7080).inFile();
     pGlobalSettings->registrySetting("web_server", "web_max_threads").number(4).inFile();
     // TODO validators
+
+    pGlobalSettings->registrySetting("google_map", "google_map_api_key").string("some").inDatabase();
+
     
+    std::string sGroupServerFolders = "server_folders";
+    pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_public")
+        .dirPath("/usr/share/fhq-server/public/").inDatabase();
+    pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_public_url")
+        .string("https://freehackquest.com/public/").inDatabase();
+
+    // deprecated
+    pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_quests")
+        .dirPath("/var/www/html/fhq/files/quests/").inDatabase();
+    // deprecated
+    pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_quests_url")
+        .string("https://freehackquest.com/files/quests/").inDatabase();
+    
+    // deprecated
+    pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_users")
+        .dirPath("/var/www/html/fhq/files/quests/").inDatabase();
+    // deprecated (moved to public)
+    pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_users_url")
+        .string("https://freehackquest.com/files/quests/").inDatabase();
+
+    // TODO move to userprofiles
+    pGlobalSettings->registrySetting("user_profile", "profile_change_nick").boolean(true).inDatabase();
 }
 
 // ---------------------------------------------------------------------
