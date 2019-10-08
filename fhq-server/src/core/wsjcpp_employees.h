@@ -165,6 +165,7 @@ class WSJCppSettingItem {
         
         nlohmann::json toJson(bool bHidePassword);
         std::string convertValueToString(bool bHidePassword) const;
+        std::string convertTypeToString() const;
 
     private:
         std::string TAG;

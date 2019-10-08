@@ -636,6 +636,28 @@ std::string WSJCppSettingItem::convertValueToString(bool bHidePassword) const {
 }
 
 // ---------------------------------------------------------------------
+
+std::string WSJCppSettingItem::convertTypeToString() const {
+    std::string sRet = "";
+    if (m_nSettingType == WJSCPP_SETTING_TYPE_BOOLEAN) {
+        sRet = "boolean";
+    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_STRING) {
+        sRet = "string";
+    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_NUMBER) {
+        sRet = "number";
+    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_PASSWORD) {
+        sRet = "password";
+    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_DIRPATH) {
+        sRet = "dir_path";
+    } else if (m_nSettingType == WJSCPP_SETTING_TYPE_FILEPATH) {
+        sRet = "file_path";
+    } else {
+        Log::throw_err(TAG, "Not implemented type of setting");
+    }
+    return sRet;
+}
+
+// ---------------------------------------------------------------------
 // EmployGlobalSettings
 
 REGISTRY_WJSCPP_EMPLOY(EmployGlobalSettings)
@@ -653,6 +675,7 @@ EmployGlobalSettings::EmployGlobalSettings()
     this->registrySetting("runtime", "app_version").string("").inRuntime().readonly();
     this->registrySetting("runtime", "app_name").string("").inRuntime().readonly();
     this->registrySetting("runtime", "app_author").string("").inRuntime().readonly();
+    this->registrySetting("test", "test").string("").inDatabase();
 }
 
 // ---------------------------------------------------------------------
@@ -767,7 +790,7 @@ bool EmployGlobalSettings::initFromDatabase(WSJCppSettingsStore *pDatabaseSettin
         std::string sValue = itDb->second;
         it = m_mapSettingItems.find(sName);
         if (it == m_mapSettingItems.end()) {
-            Log::warn(TAG, "Unknown setting in database, name '" + sName + "'");
+            Log::warn(TAG, "Excess setting in database, name '" + sName + "'");
         } else {
             WSJCppSettingItem *pItem = it->second;
             if (pItem->isString()) {
@@ -781,8 +804,16 @@ bool EmployGlobalSettings::initFromDatabase(WSJCppSettingsStore *pDatabaseSettin
                 pItem->setNumberValue(nValue);
                 Log::info(TAG, "Applyed settings from database: " + sName + " = " + std::to_string(nValue));
             } else {
-                Log::warn(TAG, "type of setting (from database) not match with delared, name '" + sName + "'");
+                Log::throw_err(TAG, "type of setting (from database) not match with delared, name '" + sName + "'");
             }
+        }
+    }
+
+    // check what not init yet in database
+    for (it = m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
+        WSJCppSettingItem *pItem = it->second;
+        if (pItem->isFromDatabase() && !pItem->isInited()) {
+            m_pDatabaseSettingsStore->initSettingItem(pItem);
         }
     }
 

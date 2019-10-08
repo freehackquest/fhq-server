@@ -204,12 +204,13 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
             pGlobalSettings->update(sName, sNewValue.toStdString());
         } else if (sett.isNumber()) {
             pGlobalSettings->update(sName, sNewValue.toInt());
-            
         } else {
             std::string sError = "Setting with name: " + sName + " unknown type";
             pRequest->sendMessageError(cmd(), WSJCppError(500, sError));
             return;
         }
+        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+        return;
     }
 
     EmploySettings *pSettings = findEmploy<EmploySettings>();

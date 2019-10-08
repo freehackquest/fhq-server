@@ -310,11 +310,11 @@ void EmployDatabase::updateSettingItem(const WSJCppSettingItem *pSettingItem) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
-    query.prepare("UPDATE settings SET value = :value, group = :group, type = :type WHERE name = :name");
+    query.prepare("UPDATE settings SET `value` = :value, `group` = :group, `type` = :type WHERE `name` = :name");
     std::string sValue = pSettingItem->convertValueToString(false);
     query.bindValue(":value", QString::fromStdString(sValue));
     query.bindValue(":group", QString::fromStdString(pSettingItem->getGroupName()));
-    // query.bindValue(":type", QString::fromStdString(pSettingItem->getSet())); // TODO
+    query.bindValue(":type", QString::fromStdString(pSettingItem->convertTypeToString()));
     query.bindValue(":name", QString::fromStdString(pSettingItem->getName()));
 
     if (!query.exec()) {
@@ -325,8 +325,20 @@ void EmployDatabase::updateSettingItem(const WSJCppSettingItem *pSettingItem) {
 // ---------------------------------------------------------------------
 
 void EmployDatabase::initSettingItem(WSJCppSettingItem *pSettingItem) {
-    Log::warn(TAG, "initSettingItem - Not implemented yet " + pSettingItem->getName());
-    StorageConnection *pConn = this->getStorageConnection();
+    // StorageConnection *pConn = this->getStorageConnection();
+
+    Log::info(TAG, "Init settings to database: " + pSettingItem->getName());
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    query.prepare("INSERT INTO settings (`name`, `value`, `group`, `type`) VALUES (:name, :value, :group, :type)");
+    query.bindValue(":name", QString::fromStdString(pSettingItem->getName()));
+    query.bindValue(":value", QString::fromStdString(pSettingItem->convertValueToString(false)));
+    query.bindValue(":group", QString::fromStdString(pSettingItem->getGroupName()));
+    query.bindValue(":type", QString::fromStdString(pSettingItem->convertTypeToString()));
+    if (!query.exec()) {
+        Log::throw_err(TAG, query.lastError().text().toStdString());
+    }
 
 
 }
