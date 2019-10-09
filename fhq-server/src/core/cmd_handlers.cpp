@@ -848,11 +848,14 @@ void WJSCppCmdHandlerServerApi::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
     jsonResponse["version"] = FHQSRV_VERSION; // TODO redesign, what?
 
-    EmployServerConfig *pConfig = findEmploy<EmployServerConfig>();
-    
-    jsonResponse["server_ws_port"] = pConfig->serverPort();
-    if (pConfig->serverSslOn()) {
-        jsonResponse["server_wss_port"] = pConfig->serverSslPort();
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    int nWsPort = pGlobalSettings->get("port").getNumberValue();
+    bool bSslOn = pGlobalSettings->get("ssl_on").getBooleanValue();
+    int nWssPort = pGlobalSettings->get("ssl_port").getNumberValue();
+
+    jsonResponse["server_ws_port"] = pGlobalSettings->get("port").getNumberValue();
+    if (bSslOn) {
+        jsonResponse["server_wss_port"] = nWssPort;
     }
 
     nlohmann::json jsonHandlers = nlohmann::json::array();

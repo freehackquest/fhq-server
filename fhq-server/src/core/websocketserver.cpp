@@ -25,28 +25,35 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
         m_bFailed = true;
         return;
     }
+    
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    int nWsPort = pGlobalSettings->get("port").getNumberValue();
+    int bSslEnabled = pGlobalSettings->get("ssl_on").getBooleanValue();
+    int nWssPort = pGlobalSettings->get("ssl_port").getNumberValue();
 
-    EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
     EmployServer *pServer = findEmploy<EmployServer>();
 
     m_pWebSocketServer = new QWebSocketServer(QStringLiteral("fhq-server"), QWebSocketServer::NonSecureMode, this);
     m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("fhq-server"), QWebSocketServer::SecureMode, this);
 
-    if (m_pWebSocketServer->listen(QHostAddress::Any, pServerConfig->serverPort())) {
-        Log::info(TAG, "fhq-server listening on port " + std::to_string(pServerConfig->serverPort()));
+    if (m_pWebSocketServer->listen(QHostAddress::Any, nWsPort)) {
+        Log::info(TAG, "fhq-server listening on port " + std::to_string(nWsPort));
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnection);
         connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &WebSocketServer::closed);
     } else {
-        Log::err(TAG, "fhq-server can not listening on port " + std::to_string(pServerConfig->serverPort()));
+        Log::err(TAG, "fhq-server can not listening on port " + std::to_string(nWsPort));
         m_bFailed = true;
         return;
     }
 
-    if (pServerConfig->serverSslOn()) {
+    if (bSslEnabled) {
         QSslConfiguration sslConfiguration;
-        QFile certFile(QString(pServerConfig->serverSslCertFile().c_str()));
-        QFile keyFile(QString(pServerConfig->serverSslKeyFile().c_str()));
+        std::string sSslKeyFilepath = pGlobalSettings->get("ssl_key_filepath").getFilePathValue();
+        std::string sSslCertFilepath = pGlobalSettings->get("ssl_key_filepath").getFilePathValue();
+
+        QFile certFile(QString::fromStdString(sSslCertFilepath));
+        QFile keyFile(QString::fromStdString(sSslKeyFilepath));
         certFile.open(QIODevice::ReadOnly);
         keyFile.open(QIODevice::ReadOnly);
         QSslCertificate certificate(&certFile, QSsl::Pem);
@@ -59,12 +66,12 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
         sslConfiguration.setProtocol(QSsl::TlsV1SslV3);
         m_pWebSocketServerSSL->setSslConfiguration(sslConfiguration);
 
-        if (m_pWebSocketServerSSL->listen(QHostAddress::Any, pServerConfig->serverSslPort())) {
-            Log::info(TAG, "fhq-server listening (via ssl) on port" + std::to_string(pServerConfig->serverSslPort()));
+        if (m_pWebSocketServerSSL->listen(QHostAddress::Any, nWssPort)) {
+            Log::info(TAG, "fhq-server listening (via ssl) on port" + std::to_string(nWssPort));
             connect(m_pWebSocketServerSSL, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnectionSSL);
             connect(m_pWebSocketServerSSL, &QWebSocketServer::sslErrors, this, &WebSocketServer::onSslErrors);
         } else {
-            Log::err(TAG, "fhq-server can not listening (via ssl) on port " + std::to_string(pServerConfig->serverSslPort()));
+            Log::err(TAG, "fhq-server can not listening (via ssl) on port " + std::to_string(nWssPort));
             m_bFailed = true;
             return;
         }

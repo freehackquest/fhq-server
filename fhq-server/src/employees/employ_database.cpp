@@ -10,25 +10,28 @@ REGISTRY_WJSCPP_EMPLOY(EmployDatabase)
 // ---------------------------------------------------------------------
 
 EmployDatabase::EmployDatabase()
-    : WSJCppEmployBase(EmployDatabase::name(), {EmployServerConfig::name(), EmployGlobalSettings::name()}) {
+    : WSJCppEmployBase(EmployDatabase::name(), { EmployGlobalSettings::name() }) {
     TAG = EmployDatabase::name();
     
     std::string sGroupDatabase = "database";
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
-    pGlobalSettings->regestrySetting(sGroupDatabase, "storage_type").string("mysql").inFile();
+    pGlobalSettings->registrySetting(sGroupDatabase, "storage_type").string("mysql").inFile();
     // TODO validator: 
     // if (!Storages::support(m_sStorageType)) {
     //    Log::err(TAG, "Not support storage " + m_sStorageType);
     //    return false;
     //}
+    m_nConnectionOutdatedAfterSeconds = 60*60;
 
     // TODO require some storage_type settings
-    pGlobalSettings->regestrySetting(sGroupDatabase, "dbhost").string("localhost").inFile();
-    pGlobalSettings->regestrySetting(sGroupDatabase, "dbport").number(3306).inFile();
-    pGlobalSettings->regestrySetting(sGroupDatabase, "dbname").string("freehackquest").inFile();
-    pGlobalSettings->regestrySetting(sGroupDatabase, "dbuser").string("freehackquest_u").inFile();
-    pGlobalSettings->regestrySetting(sGroupDatabase, "dbpass").string("freehackquest_p").inFile(); // TODO password
-    
+    pGlobalSettings->registrySetting(sGroupDatabase, "dbhost").string("localhost").inFile();
+    pGlobalSettings->registrySetting(sGroupDatabase, "dbport").number(3306).inFile();
+    pGlobalSettings->registrySetting(sGroupDatabase, "dbname").string("freehackquest").inFile();
+    pGlobalSettings->registrySetting(sGroupDatabase, "dbuser").string("freehackquest_u").inFile();
+    pGlobalSettings->registrySetting(sGroupDatabase, "dbpass").password("freehackquest_p").inFile();
+    pGlobalSettings->registrySetting(sGroupDatabase, "connection_outdated_after_seconds")
+        .number(m_nConnectionOutdatedAfterSeconds).inRuntime().readonly();
+
     // TODO require some storage_type settings
     // local nosql
     // m_sDatabase_path = "/var/lib/fhq-server/data";
@@ -37,7 +40,6 @@ EmployDatabase::EmployDatabase()
 // ---------------------------------------------------------------------
 
 bool EmployDatabase::init() {
-    EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
 
     /*
@@ -53,7 +55,7 @@ bool EmployDatabase::init() {
     }
     m_pStorage = Storages::create(m_sStorageType);
     // TODO redesign init in global settings
-    if (!m_pStorage->applyConfigFromFile(pServerConfig->filepathConf())) {
+    if (!m_pStorage->applyConfigFromFile(pGlobalSettings->getFilepathConf())) {
         return false;
     }
 
@@ -100,7 +102,7 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
     int nDatabasePort = pGlobalSettings->get("dbport").getNumberValue();
     std::string sDatabaseName = pGlobalSettings->get("dbname").getStringValue();
     std::string sDatabaseUser = pGlobalSettings->get("dbuser").getStringValue();
-    std::string sDatabasePass = pGlobalSettings->get("dbpass").getStringValue();
+    std::string sDatabasePass = pGlobalSettings->get("dbpass").getPasswordValue();
     // m_pStorage->connect()
 
     QSqlDatabase *pDatabase = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL", "manualCreateDatabase"));
@@ -243,6 +245,12 @@ QSqlDatabase *EmployDatabase::database() {
 // - control of count of connections (must be < 100)
 
 StorageConnection *EmployDatabase::getStorageConnection() {
+    std::lock_guard<std::mutex> lock(m_mtxStorageConnections);
+    
+    if (m_vDoRemoveStorageConnections.size() > 0) {
+        Log::warn(TAG, "TODO cleanup m_vDoRemoveStorageConnections, size = " + std::to_string(m_vDoRemoveStorageConnections.size()));
+    }
+
     std::string sThreadId = Fallen::threadId();
     StorageConnection *pStorageConnection = nullptr;
     std::map<std::string, StorageConnection *>::iterator it;
@@ -255,20 +263,84 @@ StorageConnection *EmployDatabase::getStorageConnection() {
         m_mapStorageConnections[sThreadId] = pStorageConnection;
     } else {
         pStorageConnection = it->second;
+        // if connection outdated just reconnect this also maybe need keep several time last connection
+        if (pStorageConnection->getConnectionDurationInSeconds() > m_nConnectionOutdatedAfterSeconds) {
+            m_vDoRemoveStorageConnections.push_back(pStorageConnection);
+            pStorageConnection = m_pStorage->connect();
+            if (pStorageConnection == nullptr) {
+                return nullptr;
+            }
+            m_mapStorageConnections[sThreadId] = pStorageConnection;
+        }
     }
     return pStorageConnection;
 }
 
 // ---------------------------------------------------------------------
 
+std::map<std::string, std::string> EmployDatabase::loadAllSettings() {
+    std::map<std::string, std::string> vRet;
+
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
+
+    {
+        QSqlQuery query(db);
+        query.prepare("SELECT * FROM settings");
+        query.exec();
+        while (query.next()) {
+            QSqlRecord record = query.record();
+            std::string sName = record.value("name").toString().toStdString();
+            std::string sGroup = record.value("group").toString().toStdString();
+            std::string sValue = record.value("value").toString().toStdString();
+            std::string sType = record.value("type").toString().toStdString();
+            if (vRet.count(sName) == 0) {
+                vRet.insert(std::pair<std::string, std::string>(sName, sValue));
+            } else {
+                Log::err(TAG, "In databases settings found duplicates '" + sName + "'");
+            }
+        }
+    }
+    return vRet;
+}
+
+// ---------------------------------------------------------------------
+
 void EmployDatabase::updateSettingItem(const WSJCppSettingItem *pSettingItem) {
-    Log::throw_err(TAG, "updateSettingItem - Not implemented yet");
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    query.prepare("UPDATE settings SET `value` = :value, `group` = :group, `type` = :type WHERE `name` = :name");
+    std::string sValue = pSettingItem->convertValueToString(false);
+    query.bindValue(":value", QString::fromStdString(sValue));
+    query.bindValue(":group", QString::fromStdString(pSettingItem->getGroupName()));
+    query.bindValue(":type", QString::fromStdString(pSettingItem->convertTypeToString()));
+    query.bindValue(":name", QString::fromStdString(pSettingItem->getName()));
+
+    if (!query.exec()) {
+        Log::err(TAG, query.lastError().text().toStdString());
+    }
 }
 
 // ---------------------------------------------------------------------
 
 void EmployDatabase::initSettingItem(WSJCppSettingItem *pSettingItem) {
-    Log::warn(TAG, "initSettingItem - Not implemented yet " + pSettingItem->getName());
+    // StorageConnection *pConn = this->getStorageConnection();
+
+    Log::info(TAG, "Init settings to database: " + pSettingItem->getName());
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    query.prepare("INSERT INTO settings (`name`, `value`, `group`, `type`) VALUES (:name, :value, :group, :type)");
+    query.bindValue(":name", QString::fromStdString(pSettingItem->getName()));
+    query.bindValue(":value", QString::fromStdString(pSettingItem->convertValueToString(false)));
+    query.bindValue(":group", QString::fromStdString(pSettingItem->getGroupName()));
+    query.bindValue(":type", QString::fromStdString(pSettingItem->convertTypeToString()));
+    if (!query.exec()) {
+        Log::throw_err(TAG, query.lastError().text().toStdString());
+    }
+
+
 }
 
 // ---------------------------------------------------------------------

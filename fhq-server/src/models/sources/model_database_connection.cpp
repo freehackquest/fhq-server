@@ -41,7 +41,7 @@ bool ModelDatabaseConnection::connect() {
     int nDatabasePort = pGlobalSettings->get("dbport").getNumberValue();
     std::string sDatabaseName = pGlobalSettings->get("dbname").getStringValue();
     std::string sDatabaseUser = pGlobalSettings->get("dbuser").getStringValue();
-    std::string sDatabasePassword = pGlobalSettings->get("dbpass").getStringValue();
+    std::string sDatabasePassword = pGlobalSettings->get("dbpass").getPasswordValue();
 
     m_pDatabase = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL", m_sNameConnection));
     m_pDatabase->setHostName(QString(sDatabaseHost.c_str()));

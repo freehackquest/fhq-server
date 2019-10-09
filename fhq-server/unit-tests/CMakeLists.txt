@@ -4,7 +4,6 @@ project(unit-tests)
 
 add_definitions(-DAPP_NAME="unit-tests")
 
-set (CMAKE_AUTOMOC ON)
 set (CMAKE_CXX_STANDARD 11)
 set (EXECUTABLE_OUTPUT_PATH ${unit-tests_SOURCE_DIR})
 
@@ -59,6 +58,8 @@ list (APPEND UNIT_TESTS_SOURCES "../src/utils/utils_static_analizing_text.cpp")
 
 # unit_tests
 
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen_normalize_path.h")
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen_normalize_path.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_hashes.h")

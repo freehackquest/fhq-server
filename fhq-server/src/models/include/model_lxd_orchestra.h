@@ -4,7 +4,6 @@
 #include <string>
 #include <curl/curl.h>
 #include <QFile>
-#include <employ_settings.h>
 #include <json.hpp>
 
 

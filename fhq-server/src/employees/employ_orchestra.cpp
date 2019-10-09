@@ -1,5 +1,4 @@
 #include <employ_orchestra.h>
-#include <employ_settings.h>
 #include <utils_lxd.h>
 
 REGISTRY_WJSCPP_EMPLOY(EmployOrchestra)
@@ -19,33 +18,33 @@ REGISTRY_WJSCPP_EMPLOY(EmployOrchestra)
 // ---------------------------------------------------------------------
 
 EmployOrchestra::EmployOrchestra()
-        : WSJCppEmployBase(EmployOrchestra::name(), {EmploySettings::name()}) {
+        : WSJCppEmployBase(EmployOrchestra::name(), { EmployGlobalSettings::name() }) {
     TAG = "EmployOrchestra";
     m_bTrusted = false;
 
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
 
     std::string  sGroupLXD = "lxd";
-    pGlobalSettings->regestrySetting(sGroupLXD, "path_dir_lxc_ssl").string("/etc/fhq-server/lxd").inDatabase();
-    pGlobalSettings->regestrySetting(sGroupLXD, "lxd_server_ip").string("127.0.0.1").inDatabase();
-    pGlobalSettings->regestrySetting(sGroupLXD, "lxd_server_port").number(8443).inDatabase();
-    pGlobalSettings->regestrySetting(sGroupLXD, "lxd_mode").string("disabled").inDatabase();
-
+    pGlobalSettings->registrySetting(sGroupLXD, "path_dir_lxc_ssl").string("/etc/fhq-server/lxd").inDatabase();
+    pGlobalSettings->registrySetting(sGroupLXD, "lxd_server_ip").string("127.0.0.1").inDatabase();
+    pGlobalSettings->registrySetting(sGroupLXD, "lxd_server_port").number(8443).inDatabase();
+    pGlobalSettings->registrySetting(sGroupLXD, "lxd_mode").boolean(false).inDatabase();
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployOrchestra::init() {
     Log::info(TAG, "Start init settings");
-
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
-    std::string lxd_mode = pSettings->getSettString("lxd_mode").toStdString();
-    if (lxd_mode != "enabled")
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    bool bLXDMode = pGlobalSettings->get("lxd_mode").getBooleanValue();
+ 
+    if (!bLXDMode)
         return true;
 
-    m_sPathDirLxcSSL = pSettings->getSettString("path_dir_lxc_ssl").toStdString();
-    std::string lxd_server_ip = pSettings->getSettString("lxd_server_ip").toStdString();
-    std::string lxd_server_port = pSettings->getSettString("lxd_server_port").toStdString();
+    m_sPathDirLxcSSL = pGlobalSettings->get("path_dir_lxc_ssl").getStringValue();
+    std::string lxd_server_ip = pGlobalSettings->get("lxd_server_ip").getStringValue();
+    int nServerPort = pGlobalSettings->get("lxd_server_port").getNumberValue();
+    std::string lxd_server_port = std::to_string(nServerPort);
     m_sLxdAddress = "https://" + lxd_server_ip + ":" + lxd_server_port;
     std::string sError;
     m_bTrusted = UtilsLXDAuth::check_trust_certs(sError);

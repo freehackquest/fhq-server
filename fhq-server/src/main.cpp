@@ -21,7 +21,6 @@
 #include <wsjcpp_employees.h>
 #include <employ_server_info.h>
 #include <employ_database.h>
-#include <employ_settings.h>
 #include <employ_images.h>
 #include <sstream>
 #include <iomanip>
@@ -41,19 +40,26 @@
 LightHttpServer g_httpServer;
 
 int main(int argc, char** argv) {
-    Fallen::initRandom();
     std::string appName(FHQSRV_APP_NAME);
     std::string appVersion(FHQSRV_VERSION);
     std::string appAuthor("FreeHackQuest Team");
+    std::string sLibraryNameForExports("fhq");
+    WSJCppCore::init(argc, argv, appName, appVersion, appAuthor, sLibraryNameForExports);
 
     QCoreApplication a(argc, argv);
     std::string TAG = "MAIN";
     Log::setPrefixLogFile(appName);
     std::string sLogDir = "/var/log/" + appName;
     if (!Fallen::dirExists(sLogDir)) {
-        sLogDir = "./";
+        sLogDir = WSJCppCore::getCurrentDirectory() + "./";
+        sLogDir = WSJCppCore::doNormalizePath(sLogDir);
     }
     Log::setLogDirectory(sLogDir);
+
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    pGlobalSettings->update("app_name", appName);
+    pGlobalSettings->update("app_version", appVersion);
+    pGlobalSettings->update("app_author", appAuthor);
 
     FallenHelpParseArgs helpArgs(argc, argv);
     helpArgs.setAppName(appName);
@@ -81,27 +87,31 @@ int main(int argc, char** argv) {
     helpArgs.addHelp("start", "-s", FallenHelpParseArgType::SINGLE_OPTION, "Start server");
     helpArgs.addHelp("--workdir", "-wd", FallenHelpParseArgType::PARAMETER, "Set work dir (logs, configs aand etc...)");
 
+    
+
     std::string sWorkDir = "";
     if (helpArgs.has("--workdir")) {
         sWorkDir = helpArgs.option("--workdir");
-        std::cout << "\n Workdir " << sWorkDir << " \n\n";
+        sWorkDir = WSJCppCore::getCurrentDirectory() + sWorkDir;
+        sWorkDir = WSJCppCore::doNormalizePath(sWorkDir);
+
+        std::cout << "\n Workdir: " << sWorkDir << " \n\n";
         if (!Fallen::dirExists(sWorkDir)) {
             Log::err(TAG, "Directory '" + sWorkDir + "' did'not exists");
             return -1;
         }
 
         // configure employ
-        EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>(); // TODO deprecated
-        EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
         if (sWorkDir != "") {
-            pServerConfig->setWorkDir(sWorkDir);
             pGlobalSettings->setWorkDir(sWorkDir);
+            pGlobalSettings->update("work_dir", sWorkDir);
         }
 
-        std::string sDirLogs = sWorkDir + "/logs";
+        std::string sDirLogs = WSJCppCore::doNormalizePath(sWorkDir + "/logs");
         if (!Fallen::dirExists(sDirLogs)) {
             Fallen::makeDir(sDirLogs);
         }
+        pGlobalSettings->update("log_dir", sDirLogs);
         Log::setLogDirectory(sDirLogs);
     }
 
@@ -159,8 +169,7 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("check-server-config")) {
         std::cout << "\n * Check Server Config\n\n";
-        EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
-        if (!pServerConfig->init()) {
+        if (!pGlobalSettings->init()) {
             std::cout << "\n * FAIL\n\n";
         } else {
             std::cout << "\n * Success\n\n";
@@ -182,14 +191,12 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("show-settings")) {
         Employees::init({});
-        EmploySettings *pSettings = findEmploy<EmploySettings>();
         std::cout << "\n * Show settings\n\n";
-        pSettings->printSettings();
+        pGlobalSettings->printSettings();
         std::cout << "\n * Done\n\n";
         return 0;
     } else if (helpArgs.has("set-setting")) {
         Employees::init({});
-        EmploySettings *pSettings = findEmploy<EmploySettings>();
         std::string sSetting = helpArgs.option("set-setting");
         std::cout << "\n Try set setting " << sSetting << " \n\n";
         std::string sSettName = "";
@@ -200,22 +207,23 @@ int main(int argc, char** argv) {
             return -1;
         }
         std::string sSettValue = sSetting.substr(sSettName.length()+1);
-        if (!pSettings->hasSett(sSettName)) {
+        if (!pGlobalSettings->exists(sSettName)) {
             Log::err(TAG, "Not support settings with name '" + sSettName + "'");
             return -1;
         }
-        std::string sSettType = pSettings->getSettType(sSettName);
-        if (sSettType == "string" || sSettType == "password") {
-            pSettings->setSettString(sSettName, QString::fromStdString(sSettValue));
-        } else if (sSettType == "boolean") {
+
+        WSJCppSettingItem item = pGlobalSettings->get(sSettName);
+        if (item.isLikeString()) {
+            pGlobalSettings->update(sSettName, sSettValue);
+        } else if (item.isBoolean()) {
             if (sSettValue != "true" && sSettValue != "yes" && sSettValue != "false" && sSettValue != "no") {
                 Log::err(TAG, "Expected value boolean (true|yes|false|no), but got '" + sSettValue + "' for '" + sSettName + "'");
                 return -1;
             }
-            pSettings->setSettBoolean(sSettName, sSettValue == "true" || sSettValue == "yes");
-        } else if (sSettType == "integer") {
+            pGlobalSettings->update(sSettName, sSettValue == "true" || sSettValue == "yes");
+        } else if (item.isNumber()) {
             int nSettValue = std::stoi(sSettValue);
-            pSettings->setSettInteger(sSettName, nSettValue);
+            pGlobalSettings->update(sSettName, nSettValue);
         } else {
             Log::err(TAG, "Not support settings datatype with name '" + sSettName + "'");
             return -1;
@@ -223,9 +231,8 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("send-test-mail")) {
         Employees::init({});
-        EmploySettings *pSettings = findEmploy<EmploySettings>();
         std::cout << "\n * Send test mail\n\n";
-        std::string sTo = pSettings->getSettString("mail_system_message_admin_email").toStdString();
+        std::string sTo = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();
         std::string sSubject = "Test Mail";
         std::string sContent = "Welcome to Free Hack Quest!\r\n\r\nHow are you?";
         RunTasks::MailSend(sTo, sSubject, sContent);
@@ -233,8 +240,7 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("manual-create-database")) {
         std::cout << "\n * Manual create database\n\n";
-        EmployServerConfig *pServerConfig = findEmploy<EmployServerConfig>();
-        if (!pServerConfig->init()) {
+        if (!pGlobalSettings->init()) {
             std::cout << "\n * Failed on init server config\n\n";
             return -1;
         }
@@ -278,22 +284,26 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("lxd-enable") || helpArgs.has("lxd-disable")) {
         Employees::init({});
-        EmploySettings *pSettings = findEmploy<EmploySettings>();
-        std::string lxd_mode;
+        bool bLXDMode;
         if (helpArgs.has("lxd-enable")) {
-            lxd_mode = "enabled";
+            bLXDMode = true;
         } else if (helpArgs.has("lxd-disable")) {
-            lxd_mode = "disabled";
+            bLXDMode = false;
         } else {
             std::cout << "\nError with command lxd-enable or lxd-disable\n";
             return -1;
         }
-        pSettings->setSettString("lxd_mode", QString::fromStdString(lxd_mode));
-        std::cout << "\nCurrent LXD mode: " << pSettings->getSettString("lxd_mode").toStdString() << "\n";
+        pGlobalSettings->update("lxd_mode", bLXDMode);
+        std::cout << "\nCurrent LXD mode: " << pGlobalSettings->get("lxd_mode").convertValueToString(false) << "\n";
         return 0;
     } else if (helpArgs.has("start") || helpArgs.has("-s")) {
+        pGlobalSettings->registrySetting("web_server", "web_admin_folder").dirPath("/usr/share/fhq-server/web-admin").inFile();
+        pGlobalSettings->registrySetting("web_server", "web_user_folder").dirPath("/usr/share/fhq-server/fhq-web-user").inFile();
+        pGlobalSettings->registrySetting("web_server", "web_public_folder").dirPath("/usr/share/fhq-server/fhq-web-public").inFile();
+        pGlobalSettings->registrySetting("web_server", "web_fhqjad_store").dirPath("/usr/share/fhq-server/web/fhqjad-store").inFile();
+
         QThreadPool::globalInstance()->setMaxThreadCount(5);
-        WebSocketServer *pServer = new WebSocketServer();
+        WebSocketServer *pServer = new WebSocketServer(); // here will be init settings
         if (pServer->isFailed()) {
             Log::err(TAG, "Could not start server");
             return -1;
@@ -307,17 +317,21 @@ int main(int argc, char** argv) {
             return -1;
         }
 
-        EmployServerConfig *pConfig = findEmploy<EmployServerConfig>();
-
+        // TODO move inside server start
         // start web server
+        int nWebPort = pGlobalSettings->get("web_port").getNumberValue();
+        int nWebMaxThreads = pGlobalSettings->get("web_max_threads").getNumberValue();
+        std::string sWebAdminFolder = pGlobalSettings->get("web_admin_folder").getDirPathValue();
+        std::string sWebUserFolder = pGlobalSettings->get("web_user_folder").getDirPathValue();
+        std::string sWebPublicFolder = pGlobalSettings->get("web_public_folder").getDirPathValue(); // TODO must be declared in server
+
+        Log::info(TAG, "Starting web-server on " + std::to_string(nWebPort)
+             + " with " + std::to_string(nWebMaxThreads) + " worker threads");
+        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebAdminFolder(sWebAdminFolder));
+        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebUserFolder(sWebUserFolder));
         
-        Log::info(TAG, "Starting web-server on " + std::to_string(pConfig->webPort())
-             + " with " + std::to_string(pConfig->webMaxThreads()) + " worker threads");
-        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebAdminFolder(pConfig->webAdminFolder()));
-        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebUserFolder(pConfig->webUserFolder()));
-        
-        g_httpServer.setPort(pConfig->webPort());
-        g_httpServer.setMaxWorkers(pConfig->webMaxThreads());
+        g_httpServer.setPort(nWebPort);
+        g_httpServer.setMaxWorkers(nWebMaxThreads);
         g_httpServer.start(); // will be block thread*/
 
         return a.exec();

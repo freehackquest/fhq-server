@@ -9,7 +9,6 @@
 #include <quazipfileinfo.h>
 #include <iostream>
 #include <employ_database.h>
-#include <employ_settings.h>
 #include <employ_images.h>
 #include <employ_games.h>
 #include <employ_notify.h>
@@ -242,9 +241,9 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
     // delete game logo if exists
     std::string sGameLogoFilename = "";
     {
-        EmploySettings *pSettings = findEmploy<EmploySettings>();
-        QString sBasePath = pSettings->getSettString(EmploySettings::SERVER_FOLDER_PUBLIC);
-        sGameLogoFilename = sBasePath.toStdString() + "games/" + std::to_string(nGameID) + ".png";
+        EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+        std::string sBasePath = pGlobalSettings->get("server_folder_public").getStringValue();
+        sGameLogoFilename = sBasePath + "games/" + std::to_string(nGameID) + ".png";
         if (remove( sGameLogoFilename.c_str() ) != 0) {
             Log::err(TAG, "Could not delete file " + sGameLogoFilename);
         }
@@ -294,8 +293,8 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
     // find logo for game
     QString sGameLogoFilename = "";
     {
-        EmploySettings *pSettings = findEmploy<EmploySettings>();
-        QString sBasePath = pSettings->getSettString("server_folder_public") + "games/";
+        EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+        QString sBasePath = QString::fromStdString(pGlobalSettings->get("server_folder_public").getStringValue() + "games/");
         sGameLogoFilename = sBasePath + QString::number(modelGame.localId()) + ".png";
     }
 
@@ -529,10 +528,10 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
 
     nlohmann::json jsonResponse;
 
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
     EmployImages *pImages = findEmploy<EmployImages>();
 
-    QString sBasePath = pSettings->getSettString("server_folder_public") + "games/";
+    QString sBasePath = QString::fromStdString(pGlobalSettings->get("server_folder_public").getStringValue() + "games/");
 
     QString sFilename = sBasePath + QString::number(nGameID) + ".png";
 
@@ -609,9 +608,10 @@ void CmdHandlerGames::handle(ModelRequest *pRequest) {
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
 
-    QString base_url = pSettings->getSettString("server_folder_public_url") + "games/";
+    std::string sBaseUrl = pGlobalSettings->get("server_folder_public_url").getStringValue() + "games/";
+    QString base_url = QString::fromStdString(sBaseUrl);
 
     nlohmann::json jsonGames = nlohmann::json::array();
 

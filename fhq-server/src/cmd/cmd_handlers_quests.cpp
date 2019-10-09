@@ -3,7 +3,6 @@
 #include <utils_levenshtein.h>
 #include <md5.h>
 #include <fallen.h>
-#include <employ_settings.h>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <employ_notify.h>
@@ -154,9 +153,9 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
 
     QSqlDatabase db = *(pDatabase->database());
 
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
 
-    QString sBaseGamesURL = pSettings->getSettString("server_folder_games_url");
+    QString sBaseGamesURL = QString::fromStdString(pGlobalSettings->get("server_folder_games_url").getStringValue());
 
     WSJCppUserSession *pUserSession = pRequest->getUserSession();
     bool bAdmin = false;
@@ -762,7 +761,7 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -875,7 +874,8 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     int nQuestProposalId = query.lastInsertId().toInt();
     jsonResponse["questid"] = nQuestProposalId;
 
-    std::string sMailToAdmin = pSettings->getSettString("mail_system_message_admin_email").toStdString();
+    // TODO move to EmployMails
+    std::string sMailToAdmin = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();
     std::string sMessageSubject = "Quest Proposal (FreeHackQuest)";
     std::string sContext = "Quest Proposal \n"
                        "UserID: " + QString::number(nUserID).toStdString() + "\n"

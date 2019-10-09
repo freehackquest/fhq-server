@@ -261,6 +261,7 @@ class StorageConnection {
         virtual bool insertUpdateInfo(const std::string &sVersion, const std::string &sDescription) = 0;
         
         long created();
+        long getConnectionDurationInSeconds();
 
     protected:
         std::string TAG;

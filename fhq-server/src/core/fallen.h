@@ -36,9 +36,25 @@ class Fallen {
         static std::string createUuid();
         static unsigned long convertVoid2Int(void *p);
         static std::string getPointerAsHex(void *p);
-
+        
+        
 };
 
+class WSJCppCore {
+    public:
+        static bool init(
+            int argc, char** argv, 
+            const std::string &sApplicationName,
+            const std::string &sApplicationVersion,
+            const std::string &sApplicationAuthor,
+            const std::string &sLibraryNameForExports
+        );
+
+        static std::string doNormalizePath(const std::string & sPath);
+        static std::string getCurrentDirectory();
+};
+
+// 
 // ---------------------------------------------------------------------
 
 enum FallenHelpParseArgType {
@@ -111,7 +127,7 @@ namespace Color {
 };
 
 // ---------------------------------------------------------------------
-
+// TODO rename WSJCppLog
 class Log {
     public:
         static std::string g_LOG_DIR;

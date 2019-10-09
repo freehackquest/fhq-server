@@ -2,7 +2,6 @@
 #include <fallen.h>
 #include <runtasks.h>
 #include <iostream>
-#include <employ_settings.h>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <QtCore>
@@ -45,7 +44,7 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
         sEmail = pUserSession->email();
         nUserID = pUserSession->userid();
     }
-    EmploySettings *pSettings = findEmploy<EmploySettings>();
+    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
 
     QSqlQuery query(db);
     query.prepare("INSERT INTO feedback(`type`, `from`, `text`, `userid`, `dt`) VALUES(:type,:from,:text,:userid,NOW());");
@@ -60,7 +59,8 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
 
     RunTasks::AddPublicEvents("users", "Added feedback");
 
-    std::string sMailToAdmin = pSettings->getSettString("mail_system_message_admin_email").toStdString();
+    // TODO move to EmployMails
+    std::string sMailToAdmin = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();
     std::string sSubject = "Feedback (FreeHackQuest 2017)";
     std::string sContext = "Feedback \n"
                        "Type: " + sType.toStdString() + "\n"

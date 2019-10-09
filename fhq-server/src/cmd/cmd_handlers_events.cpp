@@ -2,7 +2,6 @@
 #include <runtasks.h>
 #include <fallen.h>
 #include <iostream>
-#include <employ_settings.h>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <QtCore>
