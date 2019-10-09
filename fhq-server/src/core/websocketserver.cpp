@@ -49,8 +49,8 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 
     if (bSslEnabled) {
         QSslConfiguration sslConfiguration;
-        std::string sSslKeyFilepath = pGlobalSettings->get("ssl_key_filepath").getFilePathValue();
-        std::string sSslCertFilepath = pGlobalSettings->get("ssl_key_filepath").getFilePathValue();
+        std::string sSslKeyFilepath = pGlobalSettings->get("ssl_key_file").getFilePathValue();
+        std::string sSslCertFilepath = pGlobalSettings->get("ssl_cert_file").getFilePathValue();
 
         QFile certFile(QString::fromStdString(sSslCertFilepath));
         QFile keyFile(QString::fromStdString(sSslKeyFilepath));
