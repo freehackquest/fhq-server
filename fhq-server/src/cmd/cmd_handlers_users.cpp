@@ -212,11 +212,15 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
         std::string sLastIP = pRequest->getIpAddress();
         RunTasks::UpdateUserLocation(nUserId, sLastIP);
 
+         WsjcppEmployServer *pServer = findWsjcppEmploy<WsjcppEmployServer>();
+        pServer->authorizedUserConnection((void *)pRequest->client(), user_token);
+
     } else {
         WsjcppLog::err(TAG, "Invalid login or password");
         pRequest->sendMessageError(cmd(), WsjcppError(401, "Invalid login or password"));
         return;
     }
+
     WsjcppLog::info(TAG, jsonResponse.dump());
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -398,6 +402,7 @@ CmdHandlerToken::CmdHandlerToken()
 
 void CmdHandlerToken::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+    WsjcppEmployServer *pServer = findWsjcppEmploy<WsjcppEmployServer>();
 
     const nlohmann::json & jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -425,8 +430,11 @@ void CmdHandlerToken::handle(ModelRequest *pRequest) {
         QString end_date = record.value("end_date").toString();
         std::string sLastIP = pRequest->getIpAddress();
         nlohmann::json jsonUserSession = nlohmann::json::parse(data);
+
+        pServer->authorizedUserConnection((void *)pRequest->client(), jsonUserSession);
         pRequest->server()->setWsjcppUserSession(pRequest->client(), new WsjcppUserSession(jsonUserSession));
-        WsjcppLog::info(TAG, "userid: " + QString::number(userid).toStdString());
+        WsjcppLog::info(TAG, "userid: " + std::to_string(userid));
+
         // TODO redesign this
         RunTasks::UpdateUserLocation(userid, sLastIP);
     } else {
@@ -434,6 +442,9 @@ void CmdHandlerToken::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WsjcppError(401, "Invalid token"));
         return;
     }
+
+    
+    
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

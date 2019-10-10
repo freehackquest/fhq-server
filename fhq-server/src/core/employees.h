@@ -214,18 +214,23 @@ class EmployGlobalSettings : public WsjcppEmployBase {
 };
 
 // ---------------------------------------------------------------------
-// WJSCppEmployServer
+// WsjcppEmployServer
 
-class EmployServer : public WsjcppEmployBase {
+class WsjcppEmployServer : public WsjcppEmployBase {
     public:
-        EmployServer();
-        static std::string name() { return "EmployServer"; }
+        WsjcppEmployServer();
+        static std::string name() { return "WsjcppEmployServer"; }
         virtual bool init();
         virtual bool deinit();
         bool validateInputParameters(WsjcppError &error, CmdHandlerBase *pCmdHandler, const nlohmann::json& jsonMessage);
         void setServer(IWebSocketServer *pWebSocketServer);
         void sendToAll(const nlohmann::json& jsonMessage);
         void sendToOne(QWebSocket *pClient, const nlohmann::json& jsonMessage);
+        
+        // users connection
+        void addUserConnection(void *pSocket);
+        void removeUserConnection(void *pSocket);
+        void authorizedUserConnection(void *pSocket, const nlohmann::json& jsonMessage);
 
     private:
         std::string TAG;

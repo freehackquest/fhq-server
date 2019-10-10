@@ -21,7 +21,7 @@ std::string EmployNotify::LEAKS = "leaks";
 // ---------------------------------------------------------------------
 
 EmployNotify::EmployNotify()
-    : WsjcppEmployBase(EmployNotify::name(), { EmployServer::name(), EmployDatabase::name() }) {
+    : WsjcppEmployBase(EmployNotify::name(), { WsjcppEmployServer::name(), EmployDatabase::name() }) {
     TAG = EmployNotify::name();
 }
 

@@ -971,11 +971,11 @@ void EmployGlobalSettings::eventSettingsChanged(const WsjcppSettingItem *pSettin
 
 // ---------------------------------------------------------------------
 
-REGISTRY_WJSCPP_EMPLOY(EmployServer)
+REGISTRY_WJSCPP_EMPLOY(WsjcppEmployServer)
 
-EmployServer::EmployServer()
-    : WsjcppEmployBase(EmployServer::name(), {"start_server", EmployGlobalSettings::name(), EmployServerInfo::name()}) {
-    TAG = EmployServer::name();
+WsjcppEmployServer::WsjcppEmployServer()
+    : WsjcppEmployBase(WsjcppEmployServer::name(), {"start_server", EmployGlobalSettings::name(), EmployServerInfo::name()}) {
+    TAG = WsjcppEmployServer::name();
     m_pWebSocketServer = NULL;
 
     EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
@@ -990,7 +990,6 @@ EmployServer::EmployServer()
 
     pGlobalSettings->registrySetting("google_map", "google_map_api_key").string("some").inDatabase();
 
-    
     std::string sGroupServerFolders = "server_folders";
     
     // deprecated
@@ -1020,7 +1019,7 @@ EmployServer::EmployServer()
 
 // ---------------------------------------------------------------------
 
-bool EmployServer::init() {
+bool WsjcppEmployServer::init() {
     EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
 
     // TODO move to validators
@@ -1039,31 +1038,31 @@ bool EmployServer::init() {
 
 // ---------------------------------------------------------------------
 
-bool EmployServer::deinit() {
+bool WsjcppEmployServer::deinit() {
     // TODO
 }
 
 // ---------------------------------------------------------------------
 
-void EmployServer::setServer(IWebSocketServer *pWebSocketServer) {
+void WsjcppEmployServer::setServer(IWebSocketServer *pWebSocketServer) {
     m_pWebSocketServer = pWebSocketServer;
 }
 
 // ---------------------------------------------------------------------
 
-void EmployServer::sendToAll(const nlohmann::json& jsonMessage) {
+void WsjcppEmployServer::sendToAll(const nlohmann::json& jsonMessage) {
     m_pWebSocketServer->sendToAll(jsonMessage);
 }
 
 // ---------------------------------------------------------------------
 
-void EmployServer::sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) {
+void WsjcppEmployServer::sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) {
     m_pWebSocketServer->sendToOne(pClient, jsonMessage);
 }
 
 // ---------------------------------------------------------------------
 
-bool EmployServer::validateInputParameters(WsjcppError &error, CmdHandlerBase *pCmdHandler, const nlohmann::json &jsonMessage) {
+bool WsjcppEmployServer::validateInputParameters(WsjcppError &error, CmdHandlerBase *pCmdHandler, const nlohmann::json &jsonMessage) {
     try {
         // TODO check extra params
 
@@ -1119,3 +1118,22 @@ bool EmployServer::validateInputParameters(WsjcppError &error, CmdHandlerBase *p
         return false;
     }
 }
+
+// ---------------------------------------------------------------------
+
+void WsjcppEmployServer::addUserConnection(void *pSocket) {
+    WsjcppLog::info(TAG, "add user connection");
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppEmployServer::removeUserConnection(void *pSocket) {
+    WsjcppLog::info(TAG, "removed user connection");
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppEmployServer::authorizedUserConnection(void *pSocket, const nlohmann::json& jsonMessage) {
+    WsjcppLog::info(TAG, "authorized user connection");
+}
+

@@ -13,6 +13,6 @@ NotifyToAllTask::~NotifyToAllTask() {
 
 void NotifyToAllTask::run() {
     WsjcppLog::info(TAG, "send notify");
-    EmployServer *pServer = findWsjcppEmploy<EmployServer>();
+    WsjcppEmployServer *pServer = findWsjcppEmploy<WsjcppEmployServer>();
     pServer->sendToAll(m_jsonMessage);
 }

@@ -32,7 +32,7 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
     int nWssPort = pGlobalSettings->get("ssl_port").getNumberValue();
 
     EmployServerInfo *pServerInfo = findWsjcppEmploy<EmployServerInfo>();
-    EmployServer *pServer = findWsjcppEmploy<EmployServer>();
+    WsjcppEmployServer *pServer = findWsjcppEmploy<WsjcppEmployServer>();
 
     m_pWebSocketServer = new QWebSocketServer(QStringLiteral("fhq-server"), QWebSocketServer::NonSecureMode, this);
     m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("fhq-server"), QWebSocketServer::SecureMode, this);
@@ -142,6 +142,10 @@ void WebSocketServer::initNewConnection(const std::string &sPrefix, QWebSocket *
 
     m_clients << pSocket;
     sendServerMessage(pSocket);
+
+    WsjcppEmployServer *pServer = findWsjcppEmploy<WsjcppEmployServer>();
+    pServer->addUserConnection((void *)pSocket);
+
 }
 
 // ---------------------------------------------------------------------
@@ -173,7 +177,7 @@ void WebSocketServer::onNewConnectionSSL() {
 
 void WebSocketServer::processTextMessage(const QString &message) {
     EmployServerInfo *pServerInfo = findWsjcppEmploy<EmployServerInfo>();
-    EmployServer *pServer = findWsjcppEmploy<EmployServer>();
+    WsjcppEmployServer *pServer = findWsjcppEmploy<WsjcppEmployServer>();
 
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     WsjcppLog::warn(TAG, "QWebSocket *pClient = " + WsjcppCore::getPointerAsHex(pClient));
@@ -257,6 +261,8 @@ void WebSocketServer::socketDisconnected() {
         this->removeWsjcppUserSession(pClient);
         m_clients.removeAll(pClient);
         pClient->deleteLater();
+        WsjcppEmployServer *pServer = findWsjcppEmploy<WsjcppEmployServer>();
+        pServer->removeUserConnection((void *)pClient);
     }
 }
 
