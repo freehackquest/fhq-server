@@ -118,7 +118,7 @@ void MailSendTask::run() {
 
     std::string sMailHost = pGlobalSettings->get("mail_host").getStringValue();
     long nMailPort = pGlobalSettings->get("mail_port").getNumberValue();
-    std::string sMailPassword = pGlobalSettings->get("mail_password").getStringValue();
+    std::string sMailPassword = pGlobalSettings->get("mail_password").getPasswordValue();
     std::string sMailFrom = pGlobalSettings->get("mail_from").getStringValue();
     std::string sMailSignatureText = pGlobalSettings->get("mail_signature_text").getTextValue();
 
