@@ -1090,6 +1090,13 @@ EmployServer::EmployServer()
         .string("https://freehackquest.com/files/quests/").inDatabase();
     
     // deprecated
+    pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_games")
+        .dirPath("/var/www/html/fhq/public/games/").inDatabase();
+    // deprecated
+    pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_games_url")
+        .string("https://freehackquest.com/public/games/").inDatabase();
+
+    // deprecated
     pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_users")
         .dirPath("/var/www/html/fhq/files/quests/").inDatabase();
     // deprecated (moved to public)
