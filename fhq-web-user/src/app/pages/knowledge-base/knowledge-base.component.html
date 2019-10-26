@@ -5,21 +5,20 @@
   <div class="btn btn-link" (click)="openArticle(0)">Try Open Root Article</div>
 </div>
 
+<nav aria-label="breadcrumb" *ngIf="errorMessage == null">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item" *ngFor="let p of articleParents; let isCurrent = last" [class.active]="isCurrent">
+      <a routerLink="" (click)="openArticle(p.classbookid)" *ngIf="p.classbookid == 0">{{ p.name }}</a>
+      <a routerLink="" (click)="openArticle(p.classbookid)" *ngIf="p.classbookid > 0 && p.classbookid != classbookId">#{{ p.classbookid}} {{ p.name }}</a>
+      <a class="active" aria-current="page" (click)="openArticle(p.classbookid)" *ngIf="p.classbookid == classbookId">#{{ p.classbookid}} {{ p.name }}</a>
+    </li>
+  </ol>
+</nav>
+
 <div *ngIf="errorMessage == null">
-  <div class="d-inline-block" *ngFor="let p of articleParents">
-    <div class="d-inline-block" *ngIf="p.classbookid == 0">
-      <div class="btn btn-link" (click)="openArticle(p.classbookid)">{{ p.name }}</div>
-    </div>
-    <div class="d-inline-block" *ngIf="p.classbookid > 0 && p.classbookid != classbookId">
-      >> <div class="btn btn-link" (click)="openArticle(p.classbookid)">#{{ p.classbookid}} {{ p.name }}</div>
-    </div>
-    <div class="d-inline-block" *ngIf="p.classbookid == classbookId">
-        >> <strong>#{{ p.classbookid}} {{ p.name }}</strong>
-    </div>
-  </div>
   <hr>
   <h3>{{ articleName }}</h3>
-  <div *ngIf="articleChilds.length > 0"> 
+  <div *ngIf="articleChilds.length > 0">
     Sub-articles:
     <ul>
       <li *ngFor="let c of articleChilds">
