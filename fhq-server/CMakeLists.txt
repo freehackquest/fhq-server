@@ -218,8 +218,8 @@ list (APPEND FHQSRV_SOURCES "src/storages/updates/update0100.h")
 list (APPEND FHQSRV_SOURCES "src/storages/updates/update0100.cpp")
 list (APPEND FHQSRV_SOURCES "src/storages/updates/update_u0100_mhd92m15nb.h")
 list (APPEND FHQSRV_SOURCES "src/storages/updates/update_u0100_mhd92m15nb.cpp")
-list (APPEND FHQSRV SOURCES "src/storages/updates/update_mhd92m15nb_snwxenqco0.h")
-list (APPEND FHQSRV SOURCES "src/storages/updates/update_mhd92m15nb_snwxenqco0.cpp")
+list (APPEND FHQSRV_SOURCES "src/storages/updates/update_mhd92m15nb_snwxenqco0.h")
+list (APPEND FHQSRV_SOURCES "src/storages/updates/update_mhd92m15nb_snwxenqco0.cpp")
 
 # web-server
 list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_user_folder.cpp")
