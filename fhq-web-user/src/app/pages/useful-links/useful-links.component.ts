@@ -17,6 +17,9 @@ export class UsefulLinksComponent implements OnInit {
     "link": "https://ctfnews.ru/news/",
     "description": "CTF in Russia",
   }, {
+    "link": "https://kmb.cybber.ru/",
+    "description": "КМБ (Курс молодого бойца) CTF - ресурс, посвященный соревнованиям в области информационной безопасности",
+  }, {
     "link": "https://ctftime.org ",
     "description": "all about ctf (capture the flag) capture the flag, ctf teams, ctf ratings, ctf archive, ctf writeups",
   }, {
