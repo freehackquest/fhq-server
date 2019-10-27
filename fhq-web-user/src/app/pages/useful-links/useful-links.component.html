@@ -2,8 +2,8 @@
 
 Что то добавить или исправить то pull request сюда:
 <br/>
-<a href="https://github.com/freehackquest/frontend/tree/master/src/app/useful-links/useful-links.component.ts">
-  https://github.com/freehackquest/frontend/tree/master/src/app/useful-links/useful-links.component.ts
+<a href="https://github.com/freehackquest/fhq-server/blob/master/fhq-web-user/src/app/pages/useful-links/useful-links.component.ts">
+  https://github.com/freehackquest/fhq-server/blob/master/fhq-web-user/src/app/pages/useful-links/useful-links.component.ts
 </a>
 <br/>
 <br/>
@@ -14,20 +14,34 @@
   <li><a href="http://captf.com/practice-ctf/">http://captf.com/practice-ctf/</a></li>
 </ul>
 <br>
-<table class="table">
-  <thead>
-    <tr>
-      <th>Link</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr *ngFor="let l of dataList;">
-        <td><a target="_blank" href="{{ l.link }}">{{ l.link }}</a></td>
-        <td>{{ l.description }}</td>
-      </tr>
-  </tbody>
-</table>
+
+<form class="form-inline waves-light" mdbWavesEffect>
+  <div class="md-form mt-0">
+    <input 
+      class="form-control mr-sm-2" 
+      type="text" 
+      placeholder="Search"
+      [formControl]="searchControl"
+      [value]="searchValue"
+    >
+  </div>
+</form>
+<br>
+
+<div *ngFor="let l of filteredDataList;">
+  <div class="card">
+    <div class="card-body">
+      <p class="card-text">{{ l.description }}</p>
+      <a href="{{ l.link }}" class="card-link">{{ l.link }}</a>
+    </div>
+  </div>
+  <br/>
+</div>
+<br/>
+<br/>
+<br/>
+
+
 
 
 

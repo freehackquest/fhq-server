@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SpinnerService } from '../../services/spinner.service';
+import { FormControl } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-useful-links',
@@ -336,12 +339,43 @@ export class UsefulLinksComponent implements OnInit {
     "description" : "Wargames",
   }];
   
+  filteredDataList: Array<any> = [];
+  searchValue: String = '';
+  searchControl = new FormControl('');
+  formCtrlSub: Subscription;
+
   constructor(
     private _spinner: SpinnerService,
+    private _cdr: ChangeDetectorRef,
+    private _router: Router,
   ) { }
 
   ngOnInit() {
+
     this._spinner.hide();
+    this.formCtrlSub = this.searchControl.valueChanges
+    .debounceTime(1000)
+    .subscribe((newValue) => {
+      this.searchValue = newValue
+      this.applyFilter();
+    });
+    this.applyFilter();
+  }
+
+  applyFilter() {
+    const _sv = this.searchValue.toUpperCase();
+    console.log(_sv);
+    this.filteredDataList = []
+    this.dataList.forEach((el: any) => {
+      var filteredLink = {
+        link: el.link,
+        description: el.description
+      }
+      if (el.link.toUpperCase().indexOf(_sv) !== -1
+        || el.description.toUpperCase().indexOf(_sv) !== -1) {
+          this.filteredDataList.push(filteredLink)
+      }
+    });
   }
 
 }
