@@ -22,7 +22,7 @@ bool EmployGames::init() {
     // TODO mutex
     // check the access to games folder
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
-    std::string sBasePath = pGlobalSettings->get("server_folder_public").getStringValue();
+    std::string sBasePath = pGlobalSettings->get("server_folder_public").getDirPathValue();
     std::string targetTestFile = sBasePath + "games/test"; // normalize path
 
     FILE * pFile = fopen(targetTestFile.c_str(), "wb");
@@ -40,6 +40,8 @@ bool EmployGames::init() {
     // load list of games to cache
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
+
+    Log::warn(TAG, "Try load games");
 
     QSqlQuery query(db);
     query.prepare("SELECT * FROM games");
@@ -65,6 +67,7 @@ bool EmployGames::init() {
             Log::err(TAG, "Inconsistent list games in database uuid: " + sUuid);
             return false;
         } else {
+            Log::warn(TAG, "Loaded " + sUuid);
             m_mapCacheGames.insert(std::pair<std::string, ModelGame*>(sUuid,pModelGame));
             m_vectCacheGame.push_back(pModelGame);
         }
