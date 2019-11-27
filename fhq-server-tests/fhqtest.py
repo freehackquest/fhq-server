@@ -136,7 +136,7 @@ def init_enviroment():
             "organizators": "test"
         })
         alert(GAME1 == None, 'Could not send message (2)')
-        alert(GAME1['result'] == 'FAIL', 'Could not create test game ' + str(resp))
+        alert(GAME1['result'] == 'FAIL', 'Could not create test game ' + str(GAME1))
         GAME1 = admin_session.game_info({"uuid": GAME_UUID1})
 
     GAME1 = GAME1['data']

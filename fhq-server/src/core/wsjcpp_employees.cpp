@@ -71,7 +71,7 @@ bool Employees::init(const std::vector<std::string> &vStart) {
                 }
                 g_pInitEmployees->push_back(sEmployName);
                 bRepeat = true;
-                Log::info(TAG, "Init " + sEmployName + " ... OK");
+                Log::ok(TAG, "Init " + sEmployName + " ... OK");
             }
         }
     }

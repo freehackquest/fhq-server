@@ -22,7 +22,7 @@ bool EmployGames::init() {
     // TODO mutex
     // check the access to games folder
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
-    std::string sBasePath = pGlobalSettings->get("server_folder_public").getStringValue();
+    std::string sBasePath = pGlobalSettings->get("server_folder_public").getDirPathValue();
     std::string targetTestFile = sBasePath + "games/test"; // normalize path
 
     FILE * pFile = fopen(targetTestFile.c_str(), "wb");

@@ -242,7 +242,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
     std::string sGameLogoFilename = "";
     {
         EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
-        std::string sBasePath = pGlobalSettings->get("server_folder_public").getStringValue();
+        std::string sBasePath = pGlobalSettings->get("server_folder_public").getDirPathValue();
         sGameLogoFilename = sBasePath + "games/" + std::to_string(nGameID) + ".png";
         if (remove( sGameLogoFilename.c_str() ) != 0) {
             Log::err(TAG, "Could not delete file " + sGameLogoFilename);
@@ -294,7 +294,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
     QString sGameLogoFilename = "";
     {
         EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
-        QString sBasePath = QString::fromStdString(pGlobalSettings->get("server_folder_public").getStringValue() + "games/");
+        QString sBasePath = QString::fromStdString(pGlobalSettings->get("server_folder_public").getDirPathValue() + "games/");
         sGameLogoFilename = sBasePath + QString::number(modelGame.localId()) + ".png";
     }
 
@@ -402,17 +402,15 @@ CmdHandlerGameInfo::CmdHandlerGameInfo()
 void CmdHandlerGameInfo::handle(ModelRequest *pRequest) {
     EmployGames *pEmployGames = findEmploy<EmployGames>();
 
-    QJsonObject jsonRequest = pRequest->data();
-    nlohmann::json jsonResponse;
-
-    QString sUuid = jsonRequest["uuid"].toString().trimmed();
+    std::string sUuid = pRequest->getInputString("uuid", "");
 
     ModelGame modelGame;
-    if (!pEmployGames->findGame(sUuid.toStdString(), modelGame)) {
+    if (!pEmployGames->findGame(sUuid, modelGame)) {
         pRequest->sendMessageError(cmd(), WSJCppError(404, "Game not found"));
         return;
     }
 
+    nlohmann::json jsonResponse;
     jsonResponse["data"] = modelGame.toJson();
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -531,7 +529,7 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
     EmployImages *pImages = findEmploy<EmployImages>();
 
-    QString sBasePath = QString::fromStdString(pGlobalSettings->get("server_folder_public").getStringValue() + "games/");
+    QString sBasePath = QString::fromStdString(pGlobalSettings->get("server_folder_public").getDirPathValue() + "games/");
 
     QString sFilename = sBasePath + QString::number(nGameID) + ".png";
 

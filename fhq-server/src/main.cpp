@@ -297,10 +297,14 @@ int main(int argc, char** argv) {
         std::cout << "\nCurrent LXD mode: " << pGlobalSettings->get("lxd_mode").convertValueToString(false) << "\n";
         return 0;
     } else if (helpArgs.has("start") || helpArgs.has("-s")) {
+        
+
         pGlobalSettings->registrySetting("web_server", "web_admin_folder").dirPath("/usr/share/fhq-server/web-admin").inFile();
         pGlobalSettings->registrySetting("web_server", "web_user_folder").dirPath("/usr/share/fhq-server/fhq-web-user").inFile();
         pGlobalSettings->registrySetting("web_server", "web_public_folder").dirPath("/usr/share/fhq-server/fhq-web-public").inFile();
         pGlobalSettings->registrySetting("web_server", "web_fhqjad_store").dirPath("/usr/share/fhq-server/web/fhqjad-store").inFile();
+        
+        Employees::init({"start_server"});
 
         QThreadPool::globalInstance()->setMaxThreadCount(5);
         WebSocketServer *pServer = new WebSocketServer(); // here will be init settings
