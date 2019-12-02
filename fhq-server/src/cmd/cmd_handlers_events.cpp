@@ -158,6 +158,9 @@ CmdHandlerEventsList::CmdHandlerEventsList()
 
     requireIntegerParam("page", "Number of page"); // TODO validator
     requireIntegerParam("onpage", "How much rows in one page"); // TODO validator
+    optionalStringParam("type", "Filter by type events"); // TODO validator
+    optionalStringParam("search", "Filter by message event"); // TODO validator
+    
 }
 
 // ---------------------------------------------------------------------

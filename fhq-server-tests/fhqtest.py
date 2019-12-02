@@ -114,9 +114,10 @@ def init_enviroment():
     if not os.path.exists(TMP_DIR):
         os.makedirs(TMP_DIR)
 
-    admin_session = libfhqcli.FHQCli(TEST_SERVER)
+    admin_session = libfhqcli.FHQClient(TEST_SERVER)
     resp = admin_session.login({"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD})
     alert(resp == None, 'Could not login as admin (1)')
+    pprint(resp)
     alert(resp['result'] == 'FAIL', 'Could not login as admin (2)')
     
     # loggined = True
