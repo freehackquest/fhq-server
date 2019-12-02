@@ -182,6 +182,7 @@ class ModelRequest {
         bool hasCommand();
         void sendMessageError(const std::string &cmd, WSJCppError error);
         void sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse);
+        void sendResponse(nlohmann::json& jsonResult);
 
         // bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler);
     private:

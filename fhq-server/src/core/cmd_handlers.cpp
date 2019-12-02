@@ -552,10 +552,24 @@ void ModelRequest::sendMessageError(const std::string &cmd, WSJCppError error) {
 
 // ---------------------------------------------------------------------
 
-void ModelRequest::sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse) {
-    jsonResponse["cmd"] = cmd;
+void ModelRequest::sendMessageSuccess(const std::string &sMethod, nlohmann::json& jsonResponse) {
+    jsonResponse["cmd"] = sMethod; // deprecated
+    jsonResponse["jsonrpc"] = "2.0";
+    jsonResponse["method"] = sMethod;
     jsonResponse["m"] = m_sMessageId;
     jsonResponse["result"] = "DONE";
+    m_pServer->sendMessage(m_pClient, jsonResponse);
+}
+
+// ---------------------------------------------------------------------
+// TODO new for jsonrpc
+
+void ModelRequest::sendResponse(nlohmann::json& jsonResult) {
+    nlohmann::json jsonResponse;
+    jsonResponse["jsonrpc"] = "2.0";
+    jsonResponse["method"] = m_sCommand;
+    jsonResponse["id"] = m_sMessageId;
+    jsonResponse["result"] = jsonResult;
     m_pServer->sendMessage(m_pClient, jsonResponse);
 }
 

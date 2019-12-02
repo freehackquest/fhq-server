@@ -77,7 +77,7 @@ CmdHandlerUsefulLinksAdd::CmdHandlerUsefulLinksAdd()
     setActivatedFromVersion("0.2.21");
 
     setAccessUnauthorized(false);
-    setAccessUser(true);
+    setAccessUser(false);
     setAccessAdmin(true);
 
     // validation and description input fields
@@ -96,14 +96,25 @@ void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest) {
 
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    // pDatabase->storage();
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    // TODO uuid
+    query.prepare("INSERT INTO useful_links(url,description,author,stars,dt) VALUES(:url, :description, :author, 0, NOW())");
+    query.bindValue(":url", QString::fromStdString(sUrl));
+    query.bindValue(":description", QString::fromStdString(sDescription));
+    query.bindValue(":author", QString::fromStdString(sAuthor));
 
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+    nlohmann::json jsonResult;
+    jsonResult["id"] = query.lastInsertId().toInt();
 
-    // Storage *storage();
+    nlohmann::json jsonResponse;
+    jsonResponse["data"] = jsonResult;
 
-    // pRequest->
-
-    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 /*********************************************
@@ -173,7 +184,7 @@ CmdHandlerUsefulLinksStar::CmdHandlerUsefulLinksStar()
     setActivatedFromVersion("0.2.21");
 
     setAccessUnauthorized(false);
-    setAccessUser(true);
+    setAccessUser(false);
     setAccessAdmin(true);
 
     // validation and description input fields
