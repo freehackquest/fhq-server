@@ -29,20 +29,18 @@ CmdHandlerEventAdd::CmdHandlerEventAdd()
 void CmdHandlerEventAdd::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
-
-    QString type = jsonRequest["type"].toString().trimmed();
-    QString message = jsonRequest["message"].toString().trimmed();
-
+    std::string sType = pRequest->getInputString("type", "");
+    std::string sMessage = pRequest->getInputString("message", "");
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("INSERT INTO public_events(type,message,dt) VALUES(:type,:message,NOW())");
-    query.bindValue(":type", type);
-    query.bindValue(":message", message);
+    query.bindValue(":type", QString::fromStdString(sType));
+    query.bindValue(":message", QString::fromStdString(sMessage));
     if (!query.exec()) {
-        // TODO database error
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
     }
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -68,11 +66,9 @@ CmdHandlerEventDelete::CmdHandlerEventDelete()
 void CmdHandlerEventDelete::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
-    
 
-    int nEventId = jsonRequest["eventid"].toInt();
+    int nEventId = pRequest->getInputInteger("eventid", -1);
     jsonResponse["eventid"] = nEventId;
 
     nlohmann::json jsonEvent;
@@ -116,10 +112,9 @@ CmdHandlerEventInfo::CmdHandlerEventInfo()
 void CmdHandlerEventInfo::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
+    int nEventId = pRequest->getInputInteger("eventid", -1);
 
-    int nEventId = jsonRequest["eventid"].toInt();
     jsonResponse["eventid"] = nEventId;
 
     nlohmann::json jsonEvent;
@@ -168,43 +163,47 @@ CmdHandlerEventsList::CmdHandlerEventsList()
 void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
-
-    int nPage = jsonRequest["page"].toInt();
+    int nPage = pRequest->getInputInteger("page", 0);
     jsonResponse["page"] = nPage;
 
-    int nOnPage = jsonRequest["onpage"].toInt();
+    int nOnPage = pRequest->getInputInteger("onpage", 10);
     if (nOnPage > 50) {
         pRequest->sendMessageError(cmd(), WSJCppError(400, "Parameter 'onpage' could not be more then 50"));
         return;
     }
     jsonResponse["onpage"] = nOnPage;
 
-    QStringList filters;
+    std::vector<std::string> vFilters;
     QMap<QString,QString> filter_values;
     
-    if (jsonRequest.contains("type")) {
-        QString type = jsonRequest["type"].toString().trimmed();
-        if (type != "") {
-            filters << "(e.type = :type)";
-            filter_values[":type"] = type;
-        }
+    std::string sType = pRequest->getInputString("type", "");
+    Fallen::trim(sType);
+    if (sType != "") {
+        vFilters.push_back("(e.type = :type)");
+        filter_values[":type"] = QString::fromStdString(sType);
     }
 
-    if (jsonRequest.contains("search")) {
-        QString search = jsonRequest["search"].toString().trimmed();
-        if (search != "") {
-            filters << "(e.message LIKE :search)";
-            filter_values[":search"] = "%" + search + "%";
-        }
-        jsonResponse["search"] = search.toStdString();
+    std::string sSearch = pRequest->getInputString("search", "");
+    Fallen::trim(sSearch);
+    if (sSearch != "") {
+        vFilters.push_back("(e.message LIKE :search)");
+        filter_values[":search"] = "%" + QString::fromStdString(sSearch) + "%";
+        jsonResponse["search"] = sSearch;
     }
 
-    QString where = filters.join(" AND ");
-    if (where.length() > 0) {
-        where = "WHERE " + where;
+    // TODO redesign join
+    std::string sWhere = "";
+    for (int i = 0; i < vFilters.size(); i++) {
+        if (sWhere.length() > 0) {
+            sWhere += " AND ";
+        }
+        sWhere += vFilters[i];
+    }
+
+    if (sWhere.length() > 0) {
+        sWhere = "WHERE " + sWhere;
     }
 
     // count quests
@@ -213,7 +212,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
     {
         QSqlQuery query(db);
         query.prepare("SELECT count(*) as cnt FROM public_events e "
-            " " + where
+            " " + QString::fromStdString(sWhere)
         );
         foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
@@ -231,7 +230,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM public_events e"
-            " " + where +
+            " " + QString::fromStdString(sWhere) +
             " ORDER BY dt DESC "
             " LIMIT " + QString::number(nPage*nOnPage) + "," + QString::number(nOnPage)
         );
