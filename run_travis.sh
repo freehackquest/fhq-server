@@ -60,6 +60,6 @@ cd fhq-server-tests
 check_ret $? "Change directory to tests"
 ./update_libfhqcli.sh
 check_ret $? "update libfhqcli-python"
-python run_tests.py # run tests
+python3 run_tests.py # run tests
 check_ret $? "tests"
 

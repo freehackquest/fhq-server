@@ -25,8 +25,8 @@ before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `fhqtravis` CHARACTER SET utf8 COLLATE utf8_general_ci;'
 
 install:
-  - python-3.7 -m pip install --user websocket-client
-  - python-3.7 -m pip install --user requests
+  - pip3 install --user websocket-client
+  - pip3 install --user requests
 
 # Build your code e.g. by calling make
 script:
