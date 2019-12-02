@@ -113,12 +113,11 @@ CmdHandlerGameDelete::CmdHandlerGameDelete()
 
 void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-    
-    QJsonObject jsonRequest = pRequest->data();
-    nlohmann::json jsonResponse;
 
-    QString sUuid = jsonRequest["uuid"].toString().trimmed();
-    QString sAdminPassword = jsonRequest["admin_password"].toString();
+    nlohmann::json jsonResponse;
+    std::string sUuid = pRequest->getInputString("uuid", "");
+    std::string sAdminPassword = pRequest->getInputString("admin_password", "");
+
 
     int nUserID = pRequest->getUserSession()->userid();
 
@@ -134,21 +133,19 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
             return;
         }
 
-        QString sPass = "";
-        QString sEmail = "";
+        std::string sPass = "";
+        std::string sEmail = "";
 
         if (query.next()) {
             QSqlRecord record = query.record();
-            sEmail = record.value("email").toString();
-            sPass = record.value("pass").toString();
+            sEmail = record.value("email").toString().toUpper().toStdString();
+            sPass = record.value("pass").toString().toStdString();
         } else {
             pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found user"));
             return;
         }
 
-        QString sAdminPasswordHash = sEmail.toUpper() + sAdminPassword;
-        std::string _sAdminPasswordHash = sha1::calc_string_to_hex(sAdminPasswordHash.toStdString());
-        sAdminPasswordHash = QString(_sAdminPasswordHash.c_str());
+        std::string sAdminPasswordHash = sha1::calc_string_to_hex(sEmail + sAdminPassword);
 
         if (sAdminPasswordHash != sPass) {
             pRequest->sendMessageError(cmd(), WSJCppError(401, "Wrong password"));
@@ -163,7 +160,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM games WHERE uuid = :uuid");
-        query.bindValue(":uuid", sUuid);
+        query.bindValue(":uuid", QString::fromStdString(sUuid));
 
         if (!query.exec()) {
             pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
@@ -181,7 +178,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
     }
 
     EmployGames *pEmployGames = findEmploy<EmployGames>();
-    pEmployGames->removeGame(sUuid.toStdString()); // TODO just removed from cache
+    pEmployGames->removeGame(sUuid); // TODO just removed from cache
 
     // delete from users_games
     {
@@ -250,7 +247,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
     }
 
     EmployNotify *pNotify = findEmploy<EmployNotify>();
-    ModelNotification notification("warning", "games", "Removed [game#" + sUuid.toStdString() + "] " + sName);
+    ModelNotification notification("warning", "games", "Removed [game#" + sUuid + "] " + sName);
     pNotify->sendNotification(notification);
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -278,14 +275,13 @@ CmdHandlerGameExport::CmdHandlerGameExport()
 void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
     // EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     EmployGames *pEmployGames = findEmploy<EmployGames>();
-    
-    QJsonObject jsonRequest = pRequest->data();
+
     nlohmann::json jsonResponse;
 
-    QString sUuid = jsonRequest["uuid"].toString();
+    std::string sUuid = pRequest->getInputString("uuid", "");
 
     ModelGame modelGame;
-    if (!pEmployGames->findGame(sUuid.toStdString(), modelGame)) {
+    if (!pEmployGames->findGame(sUuid, modelGame)) {
         pRequest->sendMessageError(cmd(), WSJCppError(404, "Game not found"));
         return;
     }
@@ -311,7 +307,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
     {
         QFile fileLogo(sGameLogoFilename);
         if (fileLogo.exists() && fileLogo.open(QIODevice::ReadOnly)) {
-            export_zipfile.open(QIODevice::WriteOnly, QuaZipNewInfo(sUuid.toLower() + ".png"));
+            export_zipfile.open(QIODevice::WriteOnly, QuaZipNewInfo(QString::fromStdString(sUuid + ".png")));
             // After .toString(), you should specify a text codec to use to encode the
             // string data into the (binary) file. Here, I use UTF-8:
             QByteArray baLogo = fileLogo.readAll();
@@ -324,7 +320,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
 
     // pack json file
     {
-        export_zipfile.open(QIODevice::WriteOnly, QuaZipNewInfo(sUuid.toLower() + ".json"));
+        export_zipfile.open(QIODevice::WriteOnly, QuaZipNewInfo(QString::fromStdString(sUuid + ".json")));
         std::string message = modelGame.toJson().dump();
         export_zipfile.write(QString(message.c_str()).toUtf8());
         export_zipfile.close();
@@ -341,7 +337,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
         QByteArray baZip = fileZip.readAll();
         nlohmann::json jsonData;
         jsonData["zipfile_base64"] = QString(baZip.toBase64()).toStdString();
-        jsonData["zipfile_name"] = QString("game_" + sUuid.toLower() + ".zip").toStdString();
+        jsonData["zipfile_name"] = "game_" + sUuid + ".zip";
         jsonResponse["data"] = jsonData;
         fileZip.close();
         fileZip.remove();
@@ -602,8 +598,7 @@ CmdHandlerGames::CmdHandlerGames()
 
 void CmdHandlerGames::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-    
-    QJsonObject jsonRequest = pRequest->data();
+
     nlohmann::json jsonResponse;
 
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
