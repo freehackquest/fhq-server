@@ -60,14 +60,14 @@ def cleanup_user_by_email(email):
 
 def test_login(user):
     fhqtest.print_bold("Login by '" + user + "'... ")
-    user_session = libfhqcli.FHQCli(fhqtest.TEST_SERVER)
-    user_login = user_session.login({"email": user, "password": user})
+    __user_session = libfhqcli.FHQClient(fhqtest.TEST_SERVER)
+    user_login = __user_session.login({"email": user, "password": user})
     fhqtest.alert(user_login == None, 'Could not login as ' + user)
     fhqtest.alert(user_login['result'] == 'FAIL', 'Could not login as ' + user + ' (fail)')
     if user_login['result'] == 'DONE':
         fhqtest.print_success("'" + user + "' login success - OK")
-        user_session.close()
-        user_session = None
+        __user_session.close()
+        __user_session = None
 
 def run_tests():
     # scoreboard
@@ -176,7 +176,7 @@ def run_tests():
     test_login('user3')
 
     fhqtest.print_bold("Login by user2... ")
-    user2_session = libfhqcli.FHQCli(fhqtest.TEST_SERVER)
+    user2_session = libfhqcli.FHQClient(fhqtest.TEST_SERVER)
     user2_login = user2_session.login({"email": "user2", "password": "user2"})
     fhqtest.alert(user2_login == None, 'Could not login as user2 (1)')
     fhqtest.alert(user2_login['result'] == 'FAIL', 'Could not login as user2 (2) (fail)')
@@ -229,8 +229,8 @@ def run_tests():
     fhqtest.check_response(user3_remove, "User3 succesfull removed")
 
     user2_remove = fhqtest.admin_session.user_delete({"userid": user_found["id"], "password": fhqtest.ADMIN_PASSWORD})
-    fhqtest.alert(user3_remove == None, 'Could not remove user')
-    fhqtest.check_response(user3_remove, "User3 succesfull removed")
+    fhqtest.alert(user2_remove == None, 'Could not remove user')
+    fhqtest.check_response(user2_remove, "User2 succesfull removed")
 
 
 

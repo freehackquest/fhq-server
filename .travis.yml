@@ -10,20 +10,23 @@ branches:
 
 matrix:
   include:
-    - dist: xenial
+    - dist: bionic
 
 services:
   - mysql
 
+python:
+  - "3.7"
+
 # Install dependencies
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -y g++ libcurl4-openssl-dev libpng-dev libqt5sql5-mysql libqt5websockets5 libqt5websockets5-dev libwebsockets-dev make qt5-default qtchooser zlib1g zlib1g-dev zlibc
+  - sudo apt-get install -y g++ libcurl4-openssl-dev libpng-dev libqt5sql5-mysql libqt5websockets5 libqt5websockets5-dev libwebsockets-dev make qt5-default qtchooser zlib1g zlib1g-dev zlibc python3-pip
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `fhqtravis` CHARACTER SET utf8 COLLATE utf8_general_ci;'
 
 install:
-  - pip install --user websocket-client
-  - pip install --user requests
+  - pip3 install --user websocket-client
+  - pip3 install --user requests
 
 # Build your code e.g. by calling make
 script:

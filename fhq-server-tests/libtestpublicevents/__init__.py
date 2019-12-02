@@ -5,6 +5,7 @@ import libfhqcli
 import fhqtest
 import sys, traceback
 import base64
+import time
 from pprint import pprint
 
 test_name = 'Testing Public Events'
@@ -23,6 +24,7 @@ def run_tests():
     event_message_correct = event_message_correct.replace('"', '&quot;')
 
     event_type = "info"
+    print(event_message)
 
     r_pub_event1 = fhqtest.admin_session.createpublicevent({
         "type": event_type,
@@ -31,9 +33,10 @@ def run_tests():
     fhqtest.alert(r_pub_event1 == None, 'Could not get response (createpublicevent)')
     fhqtest.check_response(r_pub_event1, "Public Event succesfull created")
     pprint(r_pub_event1)
+    time.sleep(1)
 
     # TODO redesign on previus request must return data
-    r = fhqtest.admin_session.publiceventslist({"page": 0, "onpage": 10})
+    r = fhqtest.admin_session.publiceventslist({"page": 0, "onpage": 10, "search": event_message})
     pub_event1 = r['data'][0]
     
     fhqtest.check_values("type of public event", pub_event1['type'], event_type)

@@ -27,14 +27,6 @@ TEST_SERVER = "ws://localhost:1234/"
 
 Or more informartion you can find in file `fhqtest.py`
 
-## Run use python2
-
-```
-$ cd %YOUR_ROOT_OF_PROJECT%/tests/
-$ pip install -r requirements.txt
-$ python2 test_games.py
-```
-
 ## Run use python3 
 
 ```
