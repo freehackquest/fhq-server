@@ -480,6 +480,15 @@ const nlohmann::json& ModelRequest::jsonRequest() {
 
 // ---------------------------------------------------------------------
 
+bool ModelRequest::hasInputParam(const std::string &sParamName) {
+    if (m_jsonRequest.find(sParamName) != m_jsonRequest.end()) {
+        return true;
+    } 
+    return false;
+}
+
+// ---------------------------------------------------------------------
+
 std::string ModelRequest::getInputString(const std::string &sParamName, const std::string &sDefaultValue) {
     // TODO check by input defs
     std::string sRet = sDefaultValue;

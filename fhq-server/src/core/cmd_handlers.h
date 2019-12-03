@@ -173,6 +173,7 @@ class ModelRequest {
         // TODO set input defs
         QJsonObject data(); // TODO deprecated
         const nlohmann::json& jsonRequest(); // TODO deprecated
+        bool hasInputParam(const std::string &sParamName);
         std::string getInputString(const std::string &sParamName, const std::string &sDefaultValue);
         int getInputInteger(const std::string &sParamName, int defaultValue);
         
