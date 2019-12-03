@@ -36,14 +36,13 @@ CmdHandlerLXDContainers::CmdHandlerLXDContainers()
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDContainers::handle(ModelRequest *pRequest) {
-    QJsonObject jsonRequest = pRequest->data();
-    QJsonObject jsonResponse;
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QSqlDatabase db = *(pDatabase->database());
 
-    std::string name = jsonRequest["name"].toString().trimmed().toStdString();
-    std::string action = jsonRequest["action"].toString().toStdString();
+    std::string name = pRequest->getInputString("name", "");
+    Fallen::trim(name);
+    std::string action = pRequest->getInputString("action", "");
 
     std::string sError;
     int nErrorCode = 500;
@@ -188,11 +187,11 @@ CmdHandlerLXDInfo::CmdHandlerLXDInfo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDInfo::handle(ModelRequest *pRequest) {
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
     std::string sError;
     int nErrorCode;
-    std::string sName = jsonRequest["name"].toString().trimmed().toStdString();
+    std::string sName = pRequest->getInputString("name", "");
+    Fallen::trim(sName);
     nlohmann::json jsonState;
 
     if (get_state(sName, sError, nErrorCode, jsonState)) {
@@ -201,6 +200,8 @@ void CmdHandlerLXDInfo::handle(ModelRequest *pRequest) {
     } else
         pRequest->sendMessageError(cmd(), WSJCppError(nErrorCode, sError));
 }
+
+// ---------------------------------------------------------------------
 
 bool CmdHandlerLXDInfo::get_state(const std::string& sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState) {
     EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
@@ -278,12 +279,12 @@ void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, pOrchestra->lastError()));
         return;
     }
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
     std::string sError;
     int nErrorCode = 500;
-    std::string name = jsonRequest["name"].toString().toStdString();
-    std::string command = jsonRequest["command"].toString().toStdString();
+    std::string name = pRequest->getInputString("name", "");
+    Fallen::trim(name);
+    std::string command = pRequest->getInputString("command", "");
     std::string sOutput;
 
     if (exec_command(name, command, sError, nErrorCode, sOutput)) {
@@ -344,13 +345,12 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, pOrchestra->lastError()));
         return;
     }
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
     std::string sError;
     int nErrorCode = 500;
-    std::string name = jsonRequest["name"].toString().toStdString();
-    std::string action = jsonRequest["action"].toString().toStdString();
-    std::string path = jsonRequest["path"].toString().toStdString();
+    std::string name = pRequest->getInputString("name", "");
+    std::string action = pRequest->getInputString("action", "");
+    std::string path = pRequest->getInputString("path", "");
     std::string sb64File;
 
     // TODO use a validator
@@ -387,7 +387,7 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
     if (!isDirectory && action == "pull") {
         pull_file(pContainer, path, sb64File, sError, nErrorCode, isDirectory);
     } else if (action == "push") {
-        sb64File = jsonRequest["file_base64"].toString().toStdString();
+        sb64File = pRequest->getInputString("file_base64", "");
         push_file(pContainer, path, sb64File, sError, nErrorCode);
     }
 
@@ -451,13 +451,12 @@ void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, pOrchestra->lastError()));
         return;
     }
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
     std::string sError;
     int nErrorCode = 500;
-    const std::string sName = jsonRequest["name"].toString().toStdString();
-    const int nPort = jsonRequest["port"].toInt();
-    const std::string sProto = jsonRequest["protocol"].toString().toStdString();
+    const std::string sName = pRequest->getInputString("name", "");
+    const int nPort = pRequest->getInputInteger("port", 0);
+    const std::string sProto = pRequest->getInputString("protocol", "");
 
     if (!is_port_valide(sProto, nPort, sError, nErrorCode)) {
         pRequest->sendMessageError(cmd(), WSJCppError(nErrorCode, sError));
@@ -526,12 +525,11 @@ void CmdHandlerLXDImportService::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, pOrchestra->lastError()));
         return;
     }
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
     std::string sError;
     int nErrorCode = 500;
-    std::string sName = jsonRequest["name"].toString().toStdString();
-    const std::string sConfig = jsonRequest["config"].toString().toStdString();
+    std::string sName = pRequest->getInputString("name", "");
+    const std::string sConfig = pRequest->getInputString("config", "");
 
     if (!nlohmann::json::accept(sConfig)) {
         pRequest->sendMessageError(cmd(), WSJCppError(400, "Json string isn't valid."));
@@ -585,11 +583,10 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, pOrchestra->lastError()));
         return;
     }
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
     std::string sError;
     int nErrorCode = 500;
-    const std::string qsB64Zip = jsonRequest["zip_file"].toString().toStdString();
+    const std::string qsB64Zip = pRequest->getInputString("zip_file", "");
     std::string sConfig;
 
     QByteArray qbaZip = QByteArray::fromBase64(QByteArray::fromStdString(qsB64Zip));
@@ -702,11 +699,10 @@ void CmdHandlerLXDStartService::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, pOrchestra->lastError()));
         return;
     }
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
     std::string sError;
     int nErrorCode = 500;
-    const std::string sNameService = jsonRequest["name"].toString().toStdString();
+    const std::string sNameService = pRequest->getInputString("name", "");
 
     ServiceLXD *service;
     if (!pOrchestra->find_service(sNameService, service)) {
