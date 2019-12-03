@@ -10,7 +10,6 @@
  * Mail Info
  *****************************************/
 
-
 CmdHandlerMailInfo::CmdHandlerMailInfo()
     : CmdHandlerBase("mail_info", "This method Will be return info of mail") {
     TAG = "CmdHandlerMailInfo";
@@ -24,8 +23,6 @@ CmdHandlerMailInfo::CmdHandlerMailInfo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerMailInfo::handle(ModelRequest *pRequest) {
-    // QJsonObject jsonRequest = pRequest->data();
-    // QJsonObject jsonResponse;
 
     pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
 }
@@ -52,12 +49,11 @@ CmdHandlerMailSend::CmdHandlerMailSend()
 // ---------------------------------------------------------------------
 
 void CmdHandlerMailSend::handle(ModelRequest *pRequest) {
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
-    std::string sEmail = jsonRequest["to"].toString().toStdString();
-    std::string sSubject = jsonRequest["subject"].toString().toStdString();
-    std::string sBody = jsonRequest["body"].toString().toStdString();
+    std::string sEmail = pRequest->getInputString("to", "");
+    std::string sSubject = pRequest->getInputString("subject", "");
+    std::string sBody = pRequest->getInputString("body", "");
 
     RunTasks::MailSend(sEmail, sSubject, sBody);
 
@@ -87,60 +83,53 @@ CmdHandlerMailsList::CmdHandlerMailsList()
 
 void CmdHandlerMailsList::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
-    QStringList filters;
+    std::vector<std::string> vFilters;
     QMap<QString,QString> filter_values;
 
-    int nPage = 0;
-    int nOnPage = 5;
+    int nPage = pRequest->getInputInteger("page", 0);
+    int nOnPage = pRequest->getInputInteger("onpage", 5);
     int nCount = 0;
 
-    if (jsonRequest.contains("filter_email")) {
-        QString sEmail = jsonRequest["filter_email"].toString().trimmed();
-        if (sEmail != "") {
-            filters << "(ed.to_email LIKE :email)";
-            filter_values[":email"] = "%" + sEmail + "%";
+    std::string sFilterEmail = pRequest->getInputString("filter_email", "");
+    Fallen::trim(sFilterEmail);
+    if (sFilterEmail != "") {
+        vFilters.push_back("(ed.to_email LIKE :email)");
+        filter_values[":email"] = "%" + QString::fromStdString(sFilterEmail) + "%";
+    }
+
+    std::string sFilterSubject = pRequest->getInputString("filter_subject", "");
+    Fallen::trim(sFilterSubject);
+    if (sFilterSubject != "") {
+        vFilters.push_back("(ed.subject LIKE :subject)");
+        filter_values[":subject"] = "%" + QString::fromStdString(sFilterSubject) + "%";
+    }
+
+    std::string sFilterMessage = pRequest->getInputString("filter_message", "");
+    Fallen::trim(sFilterMessage);
+    if (sFilterMessage != "") {
+        vFilters.push_back("(ed.message LIKE :message)");
+        filter_values[":message"] = "%" + QString::fromStdString(sFilterMessage) + "%";
+    }
+   
+    std::string sWhere = "";
+    for (int i = 0; i < vFilters.size(); i++) {
+        if (sWhere.length() > 0) {
+            sWhere += " AND ";
         }
+        sWhere += vFilters[i];
     }
-
-    if (jsonRequest.contains("filter_subject")) {
-        QString sSubject = jsonRequest["filter_subject"].toString().trimmed();
-        if (sSubject != "") {
-            filters << "(ed.subject LIKE :subject)";
-            filter_values[":subject"] = "%" + sSubject + "%";
-        }
+    if (sWhere.length() > 0) {
+        sWhere = "WHERE " + sWhere;
     }
-
-    if (jsonRequest.contains("filter_message")) {
-        QString sMessage = jsonRequest["filter_message"].toString().trimmed();
-        if (sMessage != "") {
-            filters << "(ed.message LIKE :message)";
-            filter_values[":message"] = "%" + sMessage + "%";
-        }
-    }
-
-    if (jsonRequest.contains("page")) {
-        nPage = jsonRequest["page"].toInt();
-    }
-
-    if (jsonRequest.contains("onpage")) {
-        nOnPage = jsonRequest["onpage"].toInt();
-    }
-
 
     QSqlDatabase db = *(pDatabase->database());
-    QString where = filters.join(" AND ");
-    if (where.length() > 0) {
-        where = "WHERE " + where;
-    }
 
     // calculate count
     {
         QSqlQuery query(db);
-        query.prepare("SELECT COUNT(*) cnt FROM email_delivery ed " + where);
+        query.prepare("SELECT COUNT(*) cnt FROM email_delivery ed " + QString::fromStdString(sWhere));
         foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
@@ -158,7 +147,8 @@ void CmdHandlerMailsList::handle(ModelRequest *pRequest) {
     nlohmann::json jsonEmails = nlohmann::json::array();
     {
         QSqlQuery query(db);
-        query.prepare("SELECT * FROM email_delivery ed " + where + " ORDER BY ed.dt DESC LIMIT " + QString::number(nPage*nOnPage) + "," + QString::number(nOnPage));
+        query.prepare("SELECT * FROM email_delivery ed " + QString::fromStdString(sWhere) + " ORDER BY ed.dt DESC LIMIT " 
+            + QString::number(nPage*nOnPage) + "," + QString::number(nOnPage));
         foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }

@@ -147,8 +147,6 @@ CmdHandlerQuest::CmdHandlerQuest()
 
 void CmdHandlerQuest::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
@@ -165,7 +163,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
         nUserID = pUserSession->userid();
     }
 
-    int nQuestID = jsonRequest["questid"].toInt();
+    int nQuestID = pRequest->getInputInteger("questid", 0);
 
     {
         QSqlQuery query(db);
@@ -330,7 +328,6 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
 
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
@@ -343,8 +340,9 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
         sNick = pUserSession->nick();
     }
 
-    int nQuestID = jsonRequest["questid"].toInt();
-    QString sUserAnswer = jsonRequest["answer"].toString().trimmed();
+    int nQuestID = pRequest->getInputInteger("questid", 0);
+    std::string sUserAnswer = pRequest->getInputString("answer", "");
+    Fallen::trim(sUserAnswer);
 
     QString sState = "";
     QString sQuestAnswer = "";
@@ -409,7 +407,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
     {
         QSqlQuery query(db);
         query.prepare("SELECT COUNT(*) as cnt FROM users_quests_answers WHERE user_answer = :user_asnwer AND questid = :questid AND userid = :userid");
-        query.bindValue(":user_answer", sUserAnswer);
+        query.bindValue(":user_answer", QString::fromStdString(sUserAnswer));
         query.bindValue(":questid", nQuestID);
         query.bindValue(":userid", nUserID);
         if (!query.exec()) {
@@ -425,9 +423,9 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
         }
     }
 
-    bool bPassed = sQuestAnswer.toUpper() == sUserAnswer.toUpper();
+    bool bPassed = sQuestAnswer.toUpper() == QString::fromStdString(sUserAnswer).toUpper();
     QString sPassed = bPassed ? "Yes" : "No";
-    int nLevenshtein = UtilsLevenshtein::distance(sUserAnswer.toUpper().toStdString(), sQuestAnswer.toUpper().toStdString());
+    int nLevenshtein = UtilsLevenshtein::distance(QString::fromStdString(sUserAnswer).toUpper().toStdString(), sQuestAnswer.toUpper().toStdString());
 
 
     // insert to user tries
@@ -437,7 +435,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
                       "VALUES(:userid, :questid, :user_answer, :quest_answer, :passed, :levenshtein, NOW())");
         query.bindValue(":userid", nUserID);
         query.bindValue(":questid", nQuestID);
-        query.bindValue(":user_answer", sUserAnswer);
+        query.bindValue(":user_answer", QString::fromStdString(sUserAnswer));
         query.bindValue(":quest_answer", sQuestAnswer);
         query.bindValue(":passed", sPassed);
         query.bindValue(":levenshtein", nLevenshtein);
@@ -1774,3 +1772,4 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 
 }
+

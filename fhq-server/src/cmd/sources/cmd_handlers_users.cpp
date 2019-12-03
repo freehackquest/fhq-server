@@ -81,7 +81,6 @@ CmdHandlerGetMap::CmdHandlerGetMap()
 void CmdHandlerGetMap::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-//    QJsonObject jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();

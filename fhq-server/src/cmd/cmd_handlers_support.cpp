@@ -28,29 +28,30 @@ CmdHandlerFeedbackAdd::CmdHandlerFeedbackAdd()
 
 void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
     int nUserID = 0;
-    QString sEmail = jsonRequest["from"].toString().trimmed();
-    QString sText = jsonRequest["text"].toString().trimmed();
-    QString sType = jsonRequest["type"].toString().trimmed();
+    std::string sEmail = pRequest->getInputString("from", "");
+    Fallen::trim(sEmail);
+    std::string sText = pRequest->getInputString("text", "");
+    Fallen::trim(sText);
+    std::string sType = pRequest->getInputString("type", "");
+    Fallen::trim(sType);
 
     WSJCppUserSession *pUserSession = pRequest->getUserSession();
     if (pUserSession != NULL) {
-        sEmail = pUserSession->email();
+        sEmail = pUserSession->email().toStdString();
         nUserID = pUserSession->userid();
     }
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
 
     QSqlQuery query(db);
     query.prepare("INSERT INTO feedback(`type`, `from`, `text`, `userid`, `dt`) VALUES(:type,:from,:text,:userid,NOW());");
-    query.bindValue(":type", sType);
-    query.bindValue(":from", sEmail);
-    query.bindValue(":text", sText);
+    query.bindValue(":type", QString::fromStdString(sType));
+    query.bindValue(":from", QString::fromStdString(sEmail));
+    query.bindValue(":text", QString::fromStdString(sText));
     query.bindValue(":userid", nUserID);
     if (!query.exec()) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
@@ -63,9 +64,9 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
     std::string sMailToAdmin = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();
     std::string sSubject = "Feedback (FreeHackQuest 2017)";
     std::string sContext = "Feedback \n"
-                       "Type: " + sType.toStdString() + "\n"
-                       "From: " + sEmail.toStdString() + "\n"
-                       "Text: \n" + sText.toStdString() + "\n";
+                       "Type: " + sType + "\n"
+                       "From: " + sEmail + "\n"
+                       "Text: \n" + sText + "\n";
 
     RunTasks::MailSend(sMailToAdmin, sSubject, sContext);
 
