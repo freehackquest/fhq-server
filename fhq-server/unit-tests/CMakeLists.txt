@@ -27,12 +27,6 @@ list (APPEND UNIT_TESTS_INCLUDE_DIRS "src/unit_tests")
 
 # core - 3rdParty
 list (APPEND UNIT_TESTS_SOURCES "../src/core/3rdParty/json.hpp")
-list (APPEND UNIT_TESTS_SOURCES "../src/core/3rdParty/md5.h")
-list (APPEND UNIT_TESTS_SOURCES "../src/core/3rdParty/md5.cpp")
-list (APPEND UNIT_TESTS_SOURCES "../src/core/3rdParty/smallsha1.h")
-list (APPEND UNIT_TESTS_SOURCES "../src/core/3rdParty/smallsha1.cpp")
-list (APPEND UNIT_TESTS_SOURCES "../src/core/3rdParty/sha1_wrapper.h")
-list (APPEND UNIT_TESTS_SOURCES "../src/core/3rdParty/sha1_wrapper.cpp")
 
 # core
 list (APPEND UNIT_TESTS_SOURCES "../src/core/fallen.h")
@@ -62,8 +56,6 @@ list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen_normalize_path.
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen_normalize_path.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen.cpp")
-list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_hashes.h")
-list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_hashes.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_jobs_pool.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_jobs_pool.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_levenshtein.h")

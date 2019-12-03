@@ -12,10 +12,10 @@
 #include <employ_images.h>
 #include <employ_games.h>
 #include <employ_notify.h>
-#include <sha1_wrapper.h>
 #include <QFile>
 #include <fstream>
 #include <validators.h>
+#include <wsjcpp_hashes.h>
 
 /*********************************************
  * Create Game
@@ -145,7 +145,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
             return;
         }
 
-        std::string sAdminPasswordHash = sha1::calc_string_to_hex(sEmail + sAdminPassword);
+        std::string sAdminPasswordHash = WSJCppHashes::sha1_calc_hex(sEmail + sAdminPassword);
 
         if (sAdminPasswordHash != sPass) {
             pRequest->sendMessageError(cmd(), WSJCppError(401, "Wrong password"));

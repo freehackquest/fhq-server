@@ -1,12 +1,12 @@
 #include <cmd_handlers_quests.h>
 #include <runtasks.h>
 #include <utils_levenshtein.h>
-#include <md5.h>
 #include <fallen.h>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <employ_notify.h>
 #include <validators.h>
+#include <wsjcpp_hashes.h>
 
 // *******************************************
 // *************** Quest List ****************
@@ -69,7 +69,7 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest) {
 
     }
     sWhere = sWhere.length() > 0 ? " WHERE " + sWhere : "";
-    std::cout << "sWhere: " << sWhere << std::endl;
+    // std::cout << "sWhere: " << sWhere << std::endl;
 
     nlohmann::json jsonQuests = nlohmann::json::array();
 
@@ -607,7 +607,7 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
     query.bindValue(":name", QString::fromStdString(sName));
     query.bindValue(":text", sText);
     query.bindValue(":answer", sAnswer);
-    std::string sAnswerUpperMd5_ = md5(sAnswer.toUpper().toStdString());
+    std::string sAnswerUpperMd5_ = WSJCppHashes::md5_calc_hex(sAnswer.toUpper().toStdString());
     QString sAnswerUpperMd5 = QString::fromStdString(sAnswerUpperMd5_);
     query.bindValue(":answer_upper_md5", sAnswerUpperMd5);
     query.bindValue(":answer_format", sAnswerFormat);

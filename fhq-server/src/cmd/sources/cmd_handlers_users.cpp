@@ -5,7 +5,7 @@
 #include <employ_server_info.h>
 #include <employ_scoreboard.h>
 #include <QtCore>
-#include <sha1_wrapper.h>
+#include <wsjcpp_hashes.h>
 #include <fallen.h>
 
 /*********************************************
@@ -143,7 +143,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
     QString password = QString::fromStdString(jsonRequest.at("password"));
 
     QString password_sha1 = email.toUpper() + password;
-    std::string _password_sha1 = sha1::calc_string_to_hex(password_sha1.toStdString());
+    std::string _password_sha1 = WSJCppHashes::sha1_calc_hex(password_sha1.toStdString());
     password_sha1 = QString(_password_sha1.c_str());
 
     QSqlDatabase db = *(pDatabase->database());
@@ -272,7 +272,7 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest) {
     }
 
     QString sPassword_sha1 = sEmail.toUpper() + sPassword;
-    std::string _password_sha1 = sha1::calc_string_to_hex(sPassword_sha1.toStdString());
+    std::string _password_sha1 = WSJCppHashes::sha1_calc_hex(sPassword_sha1.toStdString());
     sPassword_sha1 = QString(_password_sha1.c_str());
 
     // generate random nick
@@ -544,7 +544,7 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest) {
 
     QString sOldPassword_sha1 = sEmail.toUpper() + sOldPassword;
 
-    std::string _sOldPassword_sha1 = sha1::calc_string_to_hex(sOldPassword_sha1.toStdString());
+    std::string _sOldPassword_sha1 = WSJCppHashes::sha1_calc_hex(sOldPassword_sha1.toStdString());
     sOldPassword_sha1 = QString(_sOldPassword_sha1.c_str());
 
     if (sOldPassword_sha1 != sPass) {
@@ -554,7 +554,7 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest) {
 
     QString sNewPassword_sha1 = sEmail.toUpper() + sNewPassword;
 
-    std::string _sNewPassword_sha1 = sha1::calc_string_to_hex(sNewPassword_sha1.toStdString());
+    std::string _sNewPassword_sha1 = WSJCppHashes::sha1_calc_hex(sNewPassword_sha1.toStdString());
     sNewPassword_sha1 = QString(_sNewPassword_sha1.c_str());
 
     QSqlQuery query_update(db);
@@ -632,7 +632,7 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest) {
 
     QString sPassword_sha1 = sEmail.toUpper() + sPassword;
 
-    std::string _sPassword_sha1 = sha1::calc_string_to_hex(sPassword_sha1.toStdString());
+    std::string _sPassword_sha1 = WSJCppHashes::sha1_calc_hex(sPassword_sha1.toStdString());
     sPassword_sha1 = QString(_sPassword_sha1.c_str());
 
     QString sRole = QString::fromStdString(jsonRequest.at("role"));
@@ -996,7 +996,7 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest) {
     }
 
     QString sPassword_sha1 = sEmail.toUpper() + sPassword;
-    std::string _sPassword_sha1 = sha1::calc_string_to_hex(sPassword_sha1.toStdString());
+    std::string _sPassword_sha1 = WSJCppHashes::sha1_calc_hex(sPassword_sha1.toStdString());
     sPassword_sha1 = QString(_sPassword_sha1.c_str());
 
     QSqlQuery query_update(db);
@@ -1279,7 +1279,7 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
         }
 
         QString sAdminPasswordHash = sEmail.toUpper() + sAdminPassword;
-        std::string _sAdminPasswordHash = sha1::calc_string_to_hex(sAdminPasswordHash.toStdString());
+        std::string _sAdminPasswordHash = WSJCppHashes::sha1_calc_hex(sAdminPasswordHash.toStdString());
         sAdminPasswordHash = QString(_sAdminPasswordHash.c_str());
 
         if (sAdminPasswordHash != sPass) {
