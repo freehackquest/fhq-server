@@ -10,9 +10,6 @@
 #include <QSqlRecord> // TODO deprecated
 #include <QString> // TODO deprecated
 #include <QVariant> // TODO deprecated
-#include <QJsonArray> // TODO deprecated
-#include <QJsonObject> // TODO deprecated
-
 
 /*! 
  * WSJCppError - helper class for errors
@@ -171,8 +168,9 @@ class ModelRequest {
         bool isUser();
         bool isUnauthorized();
         // TODO set input defs
-        QJsonObject data(); // TODO deprecated
+        
         const nlohmann::json& jsonRequest(); // TODO deprecated
+        bool hasInputParam(const std::string &sParamName);
         std::string getInputString(const std::string &sParamName, const std::string &sDefaultValue);
         int getInputInteger(const std::string &sParamName, int defaultValue);
         
@@ -182,6 +180,7 @@ class ModelRequest {
         bool hasCommand();
         void sendMessageError(const std::string &cmd, WSJCppError error);
         void sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse);
+        void sendResponse(nlohmann::json& jsonResult);
 
         // bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler);
     private:

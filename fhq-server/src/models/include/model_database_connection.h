@@ -2,7 +2,6 @@
 #define MODEL_DATABASE_CONNECTION_H
 
 #include <QString>
-#include <QJsonObject>
 #include <QDateTime>
 #include <QSqlDatabase>
 #include <QSqlError>

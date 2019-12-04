@@ -117,16 +117,14 @@ void CmdHandlerChatLastestMessages::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * Useful Links Unstar
-**********************************************/
+// ---------------------------------------------------------------------
 
 REGISTRY_CMD(CmdHandlerChatReadMessage)
 
 CmdHandlerChatReadMessage::CmdHandlerChatReadMessage()
-    : CmdHandlerBase("read_message", "Change message status from \"unread\" to \"read\"") {
+    : CmdHandlerBase("chats_message_read", "Change chat message status from \"unread\" to \"read\"") {
     
-    setActivatedFromVersion("0.2.21");
+    setActivatedFromVersion("0.2.24");
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -141,12 +139,14 @@ void CmdHandlerChatReadMessage::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
 }
 
+// ---------------------------------------------------------------------
+
 REGISTRY_CMD(CmdHandlerChatShowDialogs)
 
 CmdHandlerChatShowDialogs::CmdHandlerChatShowDialogs()
-    : CmdHandlerBase("show_dialogs", "Show list of dialogs") {
+    : CmdHandlerBase("chats_dialogs_list", "Show list of dialogs") {
     
-    setActivatedFromVersion("0.2.21");
+    setActivatedFromVersion("0.2.24");
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -161,12 +161,14 @@ void CmdHandlerChatShowDialogs::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
 }
 
+// ---------------------------------------------------------------------
+
 REGISTRY_CMD(CmdHandlerChatEditMessage)
 
 CmdHandlerChatEditMessage::CmdHandlerChatEditMessage()
-    : CmdHandlerBase("edit_message", "Edit message") {
+    : CmdHandlerBase("chats_message_edit", "Edit message") {
     
-    setActivatedFromVersion("0.2.21");
+    setActivatedFromVersion("0.2.24");
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -181,12 +183,14 @@ void CmdHandlerChatEditMessage::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
 }
 
+// ---------------------------------------------------------------------
+
 REGISTRY_CMD(CmdHandlerChatDeleteMessage)
 
 CmdHandlerChatDeleteMessage::CmdHandlerChatDeleteMessage()
-    : CmdHandlerBase("delete_message", "Delete message from chat") {
+    : CmdHandlerBase("chats_message_delete", "Delete message from chat") {
     
-    setActivatedFromVersion("0.2.21");
+    setActivatedFromVersion("0.2.24");
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -201,12 +205,14 @@ void CmdHandlerChatDeleteMessage::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
 }
 
+// ---------------------------------------------------------------------
+
 REGISTRY_CMD(CmdHandlerChatAddToChat)
 
 CmdHandlerChatAddToChat::CmdHandlerChatAddToChat()
-    : CmdHandlerBase("add_to_chat", "Add user to some chat") {
+    : CmdHandlerBase("chats_add_to_chat", "Add user to some chat") {
     
-    setActivatedFromVersion("0.2.21");
+    setActivatedFromVersion("0.2.24");
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -221,12 +227,14 @@ void CmdHandlerChatAddToChat::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
 }
 
+// ---------------------------------------------------------------------
+
 REGISTRY_CMD(CmdHandlerChatDeleteFromChat)
 
 CmdHandlerChatDeleteFromChat::CmdHandlerChatDeleteFromChat()
-    : CmdHandlerBase("delete_from_chat", "Delete user from chat") {
+    : CmdHandlerBase("chats_delete_from_chat", "Delete user from chat") {
     
-    setActivatedFromVersion("0.2.21");
+    setActivatedFromVersion("0.2.24");
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -241,12 +249,14 @@ void CmdHandlerChatDeleteFromChat::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
 }
 
+// ---------------------------------------------------------------------
+
 REGISTRY_CMD(CmdHandlerChatChangeOwner)
 
 CmdHandlerChatChangeOwner::CmdHandlerChatChangeOwner()
-    : CmdHandlerBase("change_owner", "Change owner of the chat") {
+    : CmdHandlerBase("chats_change_owner", "Change owner of the chat") {
     
-    setActivatedFromVersion("0.2.21");
+    setActivatedFromVersion("0.2.24");
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -261,12 +271,14 @@ void CmdHandlerChatChangeOwner::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
 }
 
+// ---------------------------------------------------------------------
+
 REGISTRY_CMD(CmdHandlerChatAddToBlackList)
 
 CmdHandlerChatAddToBlackList::CmdHandlerChatAddToBlackList()
-    : CmdHandlerBase("add_to_black_list", "Add user to black list") {
+    : CmdHandlerBase("chats_add_to_black_list", "Add user to black list") {
     
-    setActivatedFromVersion("0.2.21");
+    setActivatedFromVersion("0.2.24");
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -281,12 +293,14 @@ void CmdHandlerChatAddToBlackList::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
 }
 
+// ---------------------------------------------------------------------
+
 REGISTRY_CMD(CmdHandlerChatDeleteFromBlackList)
 
 CmdHandlerChatDeleteFromBlackList::CmdHandlerChatDeleteFromBlackList()
-    : CmdHandlerBase("delete_from_black_list", "Delete user from black list") {
+    : CmdHandlerBase("chats_delete_from_black_list", "Delete user from black list") {
     
-    setActivatedFromVersion("0.2.21");
+    setActivatedFromVersion("0.2.24");
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -301,13 +315,14 @@ void CmdHandlerChatDeleteFromBlackList::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
 }
 
+// ---------------------------------------------------------------------
 
 REGISTRY_CMD(CmdHandlerChatCreateGroupChat)
 
 CmdHandlerChatCreateGroupChat::CmdHandlerChatCreateGroupChat()
-    : CmdHandlerBase("create_group_chat", "Create group chat") {
+    : CmdHandlerBase("chats_create_group_chat", "Create group chat") {
     
-    setActivatedFromVersion("0.2.21");
+    setActivatedFromVersion("0.2.24");
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -321,3 +336,5 @@ CmdHandlerChatCreateGroupChat::CmdHandlerChatCreateGroupChat()
 void CmdHandlerChatCreateGroupChat::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
 }
+
+// ---------------------------------------------------------------------

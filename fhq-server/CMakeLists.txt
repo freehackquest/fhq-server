@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.0)
 
 project(fhq-server)
 
+include(${CMAKE_CURRENT_SOURCE_DIR}/src.wsjcpp/CMakeLists.txt)
+
 add_definitions(-DFHQSRV_VERSION="0.2.23")
 add_definitions(-DFHQSRV_APP_NAME="fhq-server")
 
@@ -14,6 +16,10 @@ include_directories(${Qt5Core_INCLUDE_DIRS})
 set (FHQSRV_LIBRARIES "")
 set (FHQSRV_INCLUDE_DIRS "")
 set (FHQSRV_SOURCES "")
+
+list (APPEND FHQSRV_LIBRARIES ${WSJCPP_LIBRARIES})
+list (APPEND FHQSRV_INCLUDE_DIRS ${WSJCPP_INCLUDE_DIRS})
+list (APPEND FHQSRV_SOURCES ${WSJCPP_SOURCES})
 
 # Sources
 
@@ -37,12 +43,6 @@ list (APPEND FHQSRV_INCLUDE_DIRS "src/web-server")
 
 # core - 3rdParty
 list (APPEND FHQSRV_SOURCES "src/core/3rdParty/json.hpp")
-list (APPEND FHQSRV_SOURCES "src/core/3rdParty/md5.h")
-list (APPEND FHQSRV_SOURCES "src/core/3rdParty/md5.cpp")
-list (APPEND FHQSRV_SOURCES "src/core/3rdParty/smallsha1.h")
-list (APPEND FHQSRV_SOURCES "src/core/3rdParty/smallsha1.cpp")
-list (APPEND FHQSRV_SOURCES "src/core/3rdParty/sha1_wrapper.h")
-list (APPEND FHQSRV_SOURCES "src/core/3rdParty/sha1_wrapper.cpp")
 
 # core
 list (APPEND FHQSRV_SOURCES "src/core/cmd_handlers.h")
@@ -61,6 +61,8 @@ list (APPEND FHQSRV_SOURCES "src/core/jobs_pool.h")
 list (APPEND FHQSRV_SOURCES "src/core/jobs_pool.cpp")
 list (APPEND FHQSRV_SOURCES "src/core/light_http_server.cpp")
 list (APPEND FHQSRV_SOURCES "src/core/light_http_server.h")
+list (APPEND FHQSRV_SOURCES "src/core/parser_ip_api_com.cpp")
+list (APPEND FHQSRV_SOURCES "src/core/parser_ip_api_com.h")
 list (APPEND FHQSRV_SOURCES "src/core/storages.h")
 list (APPEND FHQSRV_SOURCES "src/core/storages.cpp")
 list (APPEND FHQSRV_SOURCES "src/core/websocketserver.h")

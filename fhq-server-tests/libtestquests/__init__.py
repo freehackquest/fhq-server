@@ -111,7 +111,7 @@ def run_tests():
         "copyright": quest_copyright2,
     })
     fhqtest.alert(quest1_update == None, 'Could not get response (4)')
-    fhqtest.check_response(quest1_update, "Quest succesfull upodate")
+    fhqtest.check_response(quest1_update, "Quest succesfull update")
     
     quest1_updated = fhqtest.admin_session.quest({"questid": questid1})
     quest1_updated_hints = quest1_updated['hints']

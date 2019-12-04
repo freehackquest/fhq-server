@@ -25,7 +25,6 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
 
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
     nlohmann::json jsonQuests;
@@ -118,7 +117,6 @@ CmdHandlerServerInfo::CmdHandlerServerInfo()
 
 void CmdHandlerServerInfo::handle(ModelRequest *pRequest) {
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
-    // QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
     nlohmann::json data;
 
@@ -178,7 +176,6 @@ CmdHandlerServerSettingsUpdate::CmdHandlerServerSettingsUpdate()
 // ---------------------------------------------------------------------
 
 void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
     std::string sName = pRequest->getInputString("name", "");

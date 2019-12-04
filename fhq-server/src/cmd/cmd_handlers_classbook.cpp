@@ -11,6 +11,7 @@
 #include <md5.h>
 #include <validators.h>
 #include <fallen.h>
+#include <wsjcpp_hashes.h>
 
 // *******************************************
 // * This handler will be add classbook record
@@ -61,7 +62,6 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest) {
     //Set uuid from request if available, else generate uuid
     std::string sUuid = pRequest->getInputString("uuid", "");
     if (sUuid != "") {
-        sUuid = jsonRequest["uuid"];
         query.prepare("SELECT uuid FROM classbook WHERE uuid = :uuid");
         query.bindValue(":uuid", QString::fromStdString(sUuid));
         if (!query.exec()) {
@@ -77,7 +77,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest) {
     }
 
     //Set md5_content hash
-    std::string sContentMd5 = md5(sContent);
+    std::string sContentMd5 = WSJCppHashes::md5_calc_hex(sContent);
 
     //Find parentuuid from database
     QString parentuuid = "00000000-0000-0000-0000-000000000000";
@@ -872,7 +872,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest) {
     //UPDATE content for article
     if (jsonRequest.find("content") != jsonRequest.end()) {
         std::string sContent = jsonRequest["content"];
-        std::string sContentMd5_ = md5(sContent);
+        std::string sContentMd5_ = WSJCppHashes::md5_calc_hex(sContent);
         query.prepare("UPDATE classbook SET content = :content, md5_content = :md5_content WHERE id = :classbookid");
         query.bindValue(":classbookid", nClassbookID);
         query.bindValue(":content", QString::fromStdString(sContent));
@@ -992,7 +992,7 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest) {
     }
 
     //Set md5_content hash
-    std::string sContentMd5_ = md5(sContent);
+    std::string sContentMd5_ = WSJCppHashes::md5_calc_hex(sContent);
 
     //generate uuid
     std::string sUuid = Fallen::createUuid();
@@ -1210,7 +1210,7 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest)
     }
 
     //Set md5_content hash
-    std::string sContentMd5_ = md5(sContent);
+    std::string sContentMd5_ = WSJCppHashes::md5_calc_hex(sContent);
     QString md5_content = QString::fromStdString(sContentMd5_);
 
     query.prepare("UPDATE classbook_localization SET name = :name, content = :content, md5_content = :md5_content, updated = NOW() "
@@ -1313,7 +1313,7 @@ void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest) {
     QString content_before = record.value("content").toString();
 
     //Set md5_content hash
-    std::string sContentMd5_ = md5(sContent);
+    std::string sContentMd5_ = WSJCppHashes::md5_calc_hex(sContent);
     QString md5_content = QString::fromStdString(sContentMd5_);
 
     //generate uuid

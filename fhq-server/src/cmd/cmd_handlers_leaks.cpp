@@ -26,44 +26,48 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
 
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
-    int nPage = jsonRequest["page"].toInt();
+    int nPage = pRequest->getInputInteger("page", 0);
     jsonResponse["page"] = nPage;
 
-    int nOnPage = jsonRequest["onpage"].toInt();
+    int nOnPage = pRequest->getInputInteger("onpage", 10);
     if (nOnPage > 50) {
         pRequest->sendMessageError(cmd(), WSJCppError(400, "Parameter 'onpage' could not be more then 50"));
         return;
     }
     jsonResponse["onpage"] = nOnPage;
 
-    QStringList filters;
+    std::vector<std::string> vFilters;
     QMap<QString,QString> filter_values;
 
-    if (jsonRequest.contains("name")) {
-        QString name = jsonRequest["name"].toString().trimmed();
-        if (name != "") {
-            filters << "(l.name = :name)";
-            filter_values[":name"] = name;
-        }
+    std::string sName = pRequest->getInputString("name", "");
+    Fallen::trim(sName);
+    if (sName != "") {
+        vFilters.push_back("(l.name = :name)");
+        filter_values[":name"] = QString::fromStdString(sName);
     }
+    
 
     bool bAdmin = pRequest->isAdmin();
+    std::string sSearch = pRequest->getInputString("search", "");
+    Fallen::trim(sSearch);
 
-    if (jsonRequest.contains("search") && bAdmin) {
-        QString search = jsonRequest["search"].toString().trimmed();
-        if (search != "") {
-            filters << "(l.message LIKE :search)";
-            filter_values[":search"] = "%" + search + "%";
+    if (sSearch != "" && bAdmin) {
+        vFilters.push_back("(l.message LIKE :search)");
+        filter_values[":search"] = "%" + QString::fromStdString(sSearch) + "%";
+        jsonResponse["search"] = sSearch;
+    }
+    std::string sWhere = "";
+    for (int i = 0; i > vFilters.size(); i++) {
+        if (sWhere.length() > 0) {
+            sWhere += " AND ";
         }
-        jsonResponse["search"] = search.toStdString();
+        sWhere += vFilters[i];
     }
 
-    QString where = filters.join(" AND ");
-    if (where.length() > 0) {
-        where = "WHERE " + where;
+    if (sWhere.length() > 0) {
+        sWhere = "WHERE " + sWhere;
     }
 
     QSqlDatabase db = *(pDatabase->database());
@@ -72,7 +76,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
     {
         QSqlQuery query(db);
         query.prepare("SELECT count(*) as cnt FROM leaks l"
-            " " + where
+            " " + QString::fromStdString(sWhere)
         );
         foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
@@ -92,7 +96,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM leaks l"
-            " " + where +
+            " " + QString::fromStdString(sWhere) +
             " ORDER BY id "
             " LIMIT " + QString::number(nPage*nOnPage) + "," + QString::number(nOnPage)
         );
@@ -216,12 +220,12 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest) {
 
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
+    
     nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
-    int id = jsonRequest["id"].toInt();
+    int id = pRequest->getInputInteger("id", -1);
 
     QSqlQuery query(db);
     {
@@ -237,11 +241,11 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest) {
         }
     }
 
-    QString sName;
-    if (jsonRequest.contains("name")) {
-        sName = jsonRequest.value("name").toString().trimmed().toHtmlEscaped();
+    if (pRequest->hasInputParam("name")) {
+        std::string sName = pRequest->getInputString("name", "");
+        Fallen::trim(sName);
         query.prepare("UPDATE leaks SET name=:name WHERE id = :id");
-        query.bindValue(":name", sName);
+        query.bindValue(":name", QString::fromStdString(sName));
         query.bindValue(":id", id);
         if (!query.exec()) {
             pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
@@ -249,21 +253,20 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest) {
         }
     }
 
-    QString sContent;
-    if (jsonRequest.contains("content")) {
-        sContent = jsonRequest.value("content").toString().trimmed().toHtmlEscaped();
+    if (pRequest->hasInputParam("content")) {
+        std::string sContent = pRequest->getInputString("content", "");
+        Fallen::trim(sContent);
         query.prepare("UPDATE leaks SET content=:content WHERE id = :id");
-        query.bindValue(":content", sContent);
+        query.bindValue(":content", QString::fromStdString(sContent));
         query.bindValue(":id", id);
         if (!query.exec()) {
             pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
             return;
         }
     }
-
-    int nScore;
-    if (jsonRequest.contains("score")) {
-        nScore = jsonRequest.value("score").toInt();
+    
+    if (pRequest->hasInputParam("score")) {
+        int nScore = pRequest->getInputInteger("score", 0);
         query.prepare("UPDATE leaks SET score=:score WHERE id = :id");
         query.bindValue(":score", nScore);
         query.bindValue(":id", id);
@@ -298,14 +301,13 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest) {
 
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
 
-    int id = jsonRequest["id"].toInt();
+    int id = pRequest->getInputInteger("id", -1);
     {
         query.prepare("SELECT id FROM leaks WHERE id = :id");
         query.bindValue(":id", id);
@@ -372,15 +374,13 @@ CmdHandlerLeaksBuy::CmdHandlerLeaksBuy()
 void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest) {
 
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
 
-    int id = jsonRequest["id"].toInt();
+    int id = pRequest->getInputInteger("id", 0);
     {
         query.prepare("SELECT id FROM leaks WHERE id = :id");
         query.bindValue(":id", id);

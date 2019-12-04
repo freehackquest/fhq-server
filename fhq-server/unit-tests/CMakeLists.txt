@@ -27,12 +27,6 @@ list (APPEND UNIT_TESTS_INCLUDE_DIRS "src/unit_tests")
 
 # core - 3rdParty
 list (APPEND UNIT_TESTS_SOURCES "../src/core/3rdParty/json.hpp")
-list (APPEND UNIT_TESTS_SOURCES "../src/core/3rdParty/md5.h")
-list (APPEND UNIT_TESTS_SOURCES "../src/core/3rdParty/md5.cpp")
-list (APPEND UNIT_TESTS_SOURCES "../src/core/3rdParty/smallsha1.h")
-list (APPEND UNIT_TESTS_SOURCES "../src/core/3rdParty/smallsha1.cpp")
-list (APPEND UNIT_TESTS_SOURCES "../src/core/3rdParty/sha1_wrapper.h")
-list (APPEND UNIT_TESTS_SOURCES "../src/core/3rdParty/sha1_wrapper.cpp")
 
 # core
 list (APPEND UNIT_TESTS_SOURCES "../src/core/fallen.h")
@@ -43,6 +37,8 @@ list (APPEND UNIT_TESTS_SOURCES "../src/core/storages.h")
 list (APPEND UNIT_TESTS_SOURCES "../src/core/storages.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../src/core/wsjcpp_validators.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../src/core/wsjcpp_validators.h")
+list (APPEND UNIT_TESTS_SOURCES "../src/core/parser_ip_api_com.h")
+list (APPEND UNIT_TESTS_SOURCES "../src/core/parser_ip_api_com.cpp")
 
 # validators
 list (APPEND UNIT_TESTS_SOURCES "../src/validators/validators.cpp")
@@ -62,8 +58,6 @@ list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen_normalize_path.
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen_normalize_path.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_fallen.cpp")
-list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_hashes.h")
-list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_hashes.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_jobs_pool.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_jobs_pool.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_levenshtein.h")
@@ -84,6 +78,8 @@ list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_tests.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_tests.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_validators.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_validators.cpp")
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_parser_ip_api_com.h")
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_parser_ip_api_com.cpp")
 
 # main
 list (APPEND UNIT_TESTS_SOURCES "src/main.cpp")

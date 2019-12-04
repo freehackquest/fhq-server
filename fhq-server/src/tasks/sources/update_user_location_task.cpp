@@ -8,8 +8,7 @@
 #include <employ_database.h>
 #include <QSqlQuery> // TODO redesign
 #include <QSqlRecord> // TODO redesign
-#include <QJsonDocument> // TODO redesign
-#include <QJsonObject> // TODO redesign
+#include <parser_ip_api_com.h>
 
 UpdateUserLocationTask::UpdateUserLocationTask(int userid, const std::string &sLastIP) {
     m_nUserID = userid;
@@ -51,15 +50,16 @@ void UpdateUserLocationTask::run() {
             QObject::connect(pReply, SIGNAL(finished()), &eventLoop, SLOT(quit()));
             eventLoop.exec();
             QByteArray data = pReply->readAll();
-
-            QJsonDocument jsonResponse = QJsonDocument::fromJson(data);
-            QJsonObject jsonObject = jsonResponse.object();
-            
-            QString country = jsonObject["country"].toString();
-            QString region = jsonObject["regionName"].toString();
-            QString city = jsonObject["city"].toString();
-            double lat = jsonObject["lat"].toDouble();
-            double lon = jsonObject["lon"].toDouble();
+            std::string sJson = data.toStdString();
+            ParserIpApiCom p;
+            if (!p.parse(m_sLastIP, sJson)) {
+                return;
+            }
+            std::string sCountry = p.getCountry();
+            std::string sRegion = p.getRegionName();
+            std::string sCity = p.getCity();
+            double nLat = p.getLat();
+            double nLon = p.getLon();
 
             Log::info(TAG, "userid = " + std::to_string(m_nUserID) + ", update last_ip, city, region, country");
 
@@ -73,11 +73,11 @@ void UpdateUserLocationTask::run() {
                 "longitude = :longitude "
                 " WHERE id = :id");
             query_update.bindValue(":lastip", QString::fromStdString(m_sLastIP));
-            query_update.bindValue(":country", country);
-            query_update.bindValue(":region", region);
-            query_update.bindValue(":city", city);
-            query_update.bindValue(":latitude", lat);
-            query_update.bindValue(":longitude", lon);
+            query_update.bindValue(":country", QString::fromStdString(sCountry));
+            query_update.bindValue(":region", QString::fromStdString(sRegion));
+            query_update.bindValue(":city", QString::fromStdString(sCity));
+            query_update.bindValue(":latitude", nLat);
+            query_update.bindValue(":longitude", nLon);
             query_update.bindValue(":id", m_nUserID);
             if (!query_update.exec()) {
                 Log::err(TAG, query_update.lastError().text().toStdString());

@@ -1,6 +1,4 @@
 #include "cmd_handlers.h"
-#include <QJsonDocument>
-#include <QJsonObject>
 #include <QtGlobal>
 #include <fallen.h>
 #include <wsjcpp_employees.h>
@@ -480,6 +478,15 @@ const nlohmann::json& ModelRequest::jsonRequest() {
 
 // ---------------------------------------------------------------------
 
+bool ModelRequest::hasInputParam(const std::string &sParamName) {
+    if (m_jsonRequest.find(sParamName) != m_jsonRequest.end()) {
+        return true;
+    } 
+    return false;
+}
+
+// ---------------------------------------------------------------------
+
 std::string ModelRequest::getInputString(const std::string &sParamName, const std::string &sDefaultValue) {
     // TODO check by input defs
     std::string sRet = sDefaultValue;
@@ -538,24 +545,30 @@ bool ModelRequest::isUnauthorized() {
 
 // ---------------------------------------------------------------------
 
-// TODO deprecated
-QJsonObject ModelRequest::data() {
-    QString s = QString::fromStdString( m_jsonRequest.dump() );
-    return QJsonDocument::fromJson(s.toUtf8()).object();
-}
-
-// ---------------------------------------------------------------------
-
 void ModelRequest::sendMessageError(const std::string &cmd, WSJCppError error) {
     m_pServer->sendMessageError(m_pClient,cmd,m_sMessageId,error);
 }
 
 // ---------------------------------------------------------------------
 
-void ModelRequest::sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse) {
-    jsonResponse["cmd"] = cmd;
+void ModelRequest::sendMessageSuccess(const std::string &sMethod, nlohmann::json& jsonResponse) {
+    jsonResponse["cmd"] = sMethod; // deprecated
+    jsonResponse["jsonrpc"] = "2.0";
+    jsonResponse["method"] = sMethod;
     jsonResponse["m"] = m_sMessageId;
     jsonResponse["result"] = "DONE";
+    m_pServer->sendMessage(m_pClient, jsonResponse);
+}
+
+// ---------------------------------------------------------------------
+// TODO new for jsonrpc
+
+void ModelRequest::sendResponse(nlohmann::json& jsonResult) {
+    nlohmann::json jsonResponse;
+    jsonResponse["jsonrpc"] = "2.0";
+    jsonResponse["method"] = m_sCommand;
+    jsonResponse["id"] = m_sMessageId;
+    jsonResponse["result"] = jsonResult;
     m_pServer->sendMessage(m_pClient, jsonResponse);
 }
 

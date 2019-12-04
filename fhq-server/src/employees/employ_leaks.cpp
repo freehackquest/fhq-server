@@ -38,7 +38,6 @@ bool EmployLeaks::init() {
     while (query.next()) {
         QSqlRecord record = query.record();
         ModelLeak* pModelLeak = new ModelLeak();
-        QJsonObject leak;
         pModelLeak->setLocalId(record.value("id").toInt());
         std::string sUuid = record.value("uuid").toString().toStdString();
         pModelLeak->setUuid(sUuid);
