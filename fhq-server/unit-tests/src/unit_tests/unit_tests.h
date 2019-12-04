@@ -16,6 +16,7 @@ class UnitTestBase {
 
         void compareS(bool &bTestSuccess, const std::string &sPoint, const std::string &sValue, const std::string &sExpected);
         bool compareN(bool &bTestSuccess, const std::string &sPoint, int nValue, int nExpected);
+        bool compareD(bool &bTestSuccess, const std::string &sPoint, double nValue, double nExpected);
         void compareB(bool &bTestSuccess, const std::string &sPoint, bool bValue, bool bExpected);
 
     private:

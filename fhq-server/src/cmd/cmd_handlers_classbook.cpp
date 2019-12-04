@@ -62,7 +62,6 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest) {
     //Set uuid from request if available, else generate uuid
     std::string sUuid = pRequest->getInputString("uuid", "");
     if (sUuid != "") {
-        sUuid = jsonRequest["uuid"];
         query.prepare("SELECT uuid FROM classbook WHERE uuid = :uuid");
         query.bindValue(":uuid", QString::fromStdString(sUuid));
         if (!query.exec()) {

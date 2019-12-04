@@ -1,6 +1,4 @@
 #include "cmd_handlers.h"
-#include <QJsonDocument>
-#include <QJsonObject>
 #include <QtGlobal>
 #include <fallen.h>
 #include <wsjcpp_employees.h>
@@ -543,14 +541,6 @@ bool ModelRequest::isUser() {
 
 bool ModelRequest::isUnauthorized() {
     return m_pWSJCppUserSession == nullptr;
-}
-
-// ---------------------------------------------------------------------
-
-// TODO deprecated
-QJsonObject ModelRequest::data() {
-    QString s = QString::fromStdString( m_jsonRequest.dump() );
-    return QJsonDocument::fromJson(s.toUtf8()).object();
 }
 
 // ---------------------------------------------------------------------

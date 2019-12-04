@@ -468,8 +468,8 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
 
     EmployNotify *pEmployNotify = findEmploy<EmployNotify>();
 
-    pEmployNotify->notifyInfo("quests", "User #" + std::to_string(nUserID) + "  " + sNick.toStdString()
-                              + " passed quest #" + std::to_string(nQuestID) + " " + sQuestName.toStdString());
+    pEmployNotify->notifyInfo("quests", "[user#" + std::to_string(nUserID) + "](" + sNick.toStdString() + ") "
+                              + " passed [quest#" + std::to_string(nQuestID) + "] (" + sQuestName.toStdString() + ")");
 
     RunTasks::UpdateUserRating(nUserID);
     RunTasks::UpdateQuestSolved(nQuestID);
@@ -515,7 +515,6 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
 
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
@@ -532,7 +531,7 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
         }
     }
 
-    int nGameID = jsonRequest["gameid"].toInt();
+    int nGameID = pRequest->getInputInteger("gameid", 0);
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM games WHERE id = :id");
@@ -552,17 +551,24 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
         return;
     }*/
 
-    QString sText = jsonRequest["text"].toString().trimmed();
-    int nScore = jsonRequest["score"].toInt();
+    std::string sText = pRequest->getInputString("text", "");
+    Fallen::trim(sText);
+    int nScore = pRequest->getInputInteger("score", 0);
     std::string sSubject = pRequest->getInputString("subject", "");
     Fallen::trim(sSubject);
 
-    QString sAnswer = jsonRequest["answer"].toString().trimmed();
-    QString sAuthor = jsonRequest["author"].toString().trimmed();
-    QString sAnswerFormat = jsonRequest["answer_format"].toString().trimmed();
-    QString sState = jsonRequest["state"].toString().trimmed();
-    QString sCopyright = jsonRequest["copyright"].toString().trimmed();
-    QString sDescriptionState = jsonRequest["description_state"].toString().trimmed();
+    std::string sAnswer = pRequest->getInputString("answer", "");
+    Fallen::trim(sAnswer);
+    std::string sAuthor = pRequest->getInputString("author", "");
+    Fallen::trim(sAuthor);
+    std::string sAnswerFormat = pRequest->getInputString("answer_format", "");
+    Fallen::trim(sAnswerFormat);
+    std::string sState = pRequest->getInputString("state", "");
+    Fallen::trim(sState);
+    std::string sCopyright = pRequest->getInputString("copyright", "");
+    Fallen::trim(sCopyright);
+    std::string sDescriptionState = pRequest->getInputString("description_state", "");
+    Fallen::trim(sDescriptionState);
 
     QSqlQuery query(db);
     query.prepare(
@@ -605,18 +611,18 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
     query.bindValue(":uuid", QString::fromStdString(sUUID));
     query.bindValue(":gameid", nGameID);
     query.bindValue(":name", QString::fromStdString(sName));
-    query.bindValue(":text", sText);
-    query.bindValue(":answer", sAnswer);
-    std::string sAnswerUpperMd5_ = WSJCppHashes::md5_calc_hex(sAnswer.toUpper().toStdString());
-    QString sAnswerUpperMd5 = QString::fromStdString(sAnswerUpperMd5_);
-    query.bindValue(":answer_upper_md5", sAnswerUpperMd5);
-    query.bindValue(":answer_format", sAnswerFormat);
+    query.bindValue(":text", QString::fromStdString(sText));
+    query.bindValue(":answer", QString::fromStdString(sAnswer));
+    sAnswer = QString::fromStdString(sAnswer).toUpper().toStdString();
+    std::string sAnswerUpperMd5 = WSJCppHashes::md5_calc_hex(sAnswer);
+    query.bindValue(":answer_upper_md5", QString::fromStdString(sAnswerUpperMd5));
+    query.bindValue(":answer_format", QString::fromStdString(sAnswerFormat));
     query.bindValue(":score", nScore);
-    query.bindValue(":author", sAuthor);
+    query.bindValue(":author", QString::fromStdString(sAuthor));
     query.bindValue(":subject", QString::fromStdString(sSubject));
-    query.bindValue(":state", sState);
-    query.bindValue(":description_state", sDescriptionState);
-    query.bindValue(":copyright", sCopyright);
+    query.bindValue(":state", QString::fromStdString(sState));
+    query.bindValue(":description_state", QString::fromStdString(sDescriptionState));
+    query.bindValue(":copyright", QString::fromStdString(sCopyright));
     query.bindValue(":count_user_solved", 0);
 
     if (!query.exec()) {
@@ -755,7 +761,6 @@ CmdHandlerQuestProposal::CmdHandlerQuestProposal()
 void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
@@ -771,8 +776,7 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     }
 
     // check the user already sended quest
-
-    int nGameID = jsonRequest["gameid"].toInt();
+    int nGameID = pRequest->getInputInteger("gameid", 0);
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM games WHERE id = :id");
@@ -784,38 +788,47 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
         }
     }
 
-    QString sName = jsonRequest["name"].toString().trimmed();
-    if (sName.length() == 0) {
+    std::string sName = pRequest->getInputString("name", "");
+    Fallen::trim(sName);
+
+    if (sName.length() == 0) { // TODO to validators
         pRequest->sendMessageError(cmd(), WSJCppError(400, "Name could not be empty"));
         return;
     }
 
-    QString sText = jsonRequest["text"].toString().trimmed();
+    std::string sText = pRequest->getInputString("text", "");
+    Fallen::trim(sText);
 
-    int nScore = jsonRequest["score"].toInt();
-    QString sSubject = jsonRequest["subject"].toString().trimmed();
-    QString sAnswer = jsonRequest["answer"].toString().trimmed();
+    int nScore = pRequest->getInputInteger("score", 0);
+    std::string sSubject = pRequest->getInputString("subject", "");
+    Fallen::trim(sSubject);
 
-    if (sAnswer.length() == 0) {
+    std::string sAnswer = pRequest->getInputString("answer", "");
+    Fallen::trim(sAnswer);
+
+    if (sAnswer.length() == 0) { // TODO to validators
         pRequest->sendMessageError(cmd(), WSJCppError(400, "Answer could not be empty"));
         return;
     }
 
-    QString sAuthor = jsonRequest["author"].toString().trimmed();
+    std::string sAuthor = pRequest->getInputString("author", "");
+    Fallen::trim(sAuthor);
 
-    if (sAuthor.length() == 0) {
+    if (sAuthor.length() == 0) { // TODO to validators
         pRequest->sendMessageError(cmd(), WSJCppError(400, "Author could not be empty"));
         return;
     }
 
-    QString sAnswerFormat = jsonRequest["answer_format"].toString().trimmed();
+    std::string sAnswerFormat = pRequest->getInputString("answer_format", "");
+    Fallen::trim(sAuthor);
 
     if (sAnswerFormat.length() == 0) {
         pRequest->sendMessageError(cmd(), WSJCppError(400, "Answer Format could not be empty"));
         return;
     }
 
-    QString sCopyright = jsonRequest["copyright"].toString().trimmed();
+    std::string sCopyright = pRequest->getInputString("copyright", "");
+    Fallen::trim(sCopyright);
 
     QSqlQuery query(db);
     query.prepare(
@@ -851,14 +864,14 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
         "    )");
     query.bindValue(":userid", nUserID);
     query.bindValue(":gameid", nGameID);
-    query.bindValue(":name", sName);
-    query.bindValue(":text", sText);
-    query.bindValue(":answer", sAnswer);
-    query.bindValue(":answer_format", sAnswerFormat);
+    query.bindValue(":name", QString::fromStdString(sName));
+    query.bindValue(":text", QString::fromStdString(sText));
+    query.bindValue(":answer", QString::fromStdString(sAnswer));
+    query.bindValue(":answer_format", QString::fromStdString(sAnswerFormat));
     query.bindValue(":score", nScore);
-    query.bindValue(":author", sAuthor);
-    query.bindValue(":subject", sSubject);
-    query.bindValue(":copyright", sCopyright);
+    query.bindValue(":author", QString::fromStdString(sAuthor));
+    query.bindValue(":subject", QString::fromStdString(sSubject));
+    query.bindValue(":copyright", QString::fromStdString(sCopyright));
     query.bindValue(":confirmed", 0);
 
     if (!query.exec()) {
@@ -1022,7 +1035,8 @@ CmdHandlerQuestUpdate::CmdHandlerQuestUpdate()
     requireIntegerParam("questid", "Quest ID");
     optionalStringParam("name", "Name of the quest");
     optionalIntegerParam("gameid", "Which game included this quest");
-    optionalStringParam("text", "Description of the quest");
+    optionalStringParam("text", "Description of the quest"); // addModificator (for example ModificatorStringTrim)
+        
     optionalIntegerParam("score", "How much append to user score after solve quest by them").minval(1).maxval(1000); // TODO validator
 
     optionalStringParam("subject", "Subject must be one from types")
@@ -1041,23 +1055,22 @@ CmdHandlerQuestUpdate::CmdHandlerQuestUpdate()
 void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
-    QJsonObject jsonRequest = pRequest->data();
     nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
     int nQuestID = pRequest->getInputInteger("questid", 0);
     std::string sNamePrev = "";
-    QString sTextPrev = "";
+    std::string sTextPrev = "";
     int nScorePrev = 0;
     int nGameIDPrev = 0;
-    QString sSubjectPrev = "";
-    QString sAnswerPrev = "";
-    QString sAuthorPrev = "";
-    QString sAnswerFormatPrev = "";
-    QString sStatePrev = "";
-    QString sCopyrightPrev = "";
-    QString sDescriptionStatePrev = "";
+    std::string sSubjectPrev = "";
+    std::string sAnswerPrev = "";
+    std::string sAuthorPrev = "";
+    std::string sAnswerFormatPrev = "";
+    std::string sStatePrev = "";
+    std::string sCopyrightPrev = "";
+    std::string sDescriptionStatePrev = "";
 
     {
         QSqlQuery query(db);
@@ -1070,16 +1083,16 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
         if (query.next()) {
             QSqlRecord record = query.record();
             sNamePrev = record.value("name").toString().toStdString();
-            sTextPrev = record.value("text").toString();
+            sTextPrev = record.value("text").toString().toStdString();
             nScorePrev = record.value("score").toInt();
             nGameIDPrev = record.value("gameid").toInt();
-            sSubjectPrev = record.value("subject").toString();
-            sAnswerPrev = record.value("answer").toString();
-            sAuthorPrev = record.value("author").toString();
-            sAnswerFormatPrev = record.value("answer_format").toString();
-            sStatePrev = record.value("state").toString();
-            sCopyrightPrev = record.value("copyright").toString();
-            sDescriptionStatePrev = record.value("description_state").toString();
+            sSubjectPrev = record.value("subject").toString().toStdString();
+            sAnswerPrev = record.value("answer").toString().toStdString();
+            sAuthorPrev = record.value("author").toString().toStdString();
+            sAnswerFormatPrev = record.value("answer_format").toString().toStdString();
+            sStatePrev = record.value("state").toString().toStdString();
+            sCopyrightPrev = record.value("copyright").toString().toStdString();
+            sDescriptionStatePrev = record.value("description_state").toString().toStdString();
         } else {
             pRequest->sendMessageError(cmd(), WSJCppError(404, "Quest not found"));
             return;
@@ -1106,7 +1119,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
 
     // Update gameid
     if (pRequest->hasInputParam("gameid")) {
-        int nGameID = jsonRequest["gameid"].toInt();
+        int nGameID = pRequest->getInputInteger("gameid", 0);
         {
             QSqlQuery query(db);
             query.prepare("SELECT * FROM games WHERE id = :id");
@@ -1136,11 +1149,12 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
 
     // Update subject
     if (pRequest->hasInputParam("subject")) {
-        QString sSubject = jsonRequest["subject"].toString().trimmed();
+        std::string sSubject = pRequest->getInputString("subject", "");
+        Fallen::trim(sSubject);
         if (sSubject != sSubjectPrev) {
             QSqlQuery query(db);
             query.prepare("UPDATE quest SET subject = :subject WHERE idquest = :questid");
-            query.bindValue(":subject", sSubject);
+            query.bindValue(":subject", QString::fromStdString(sSubject));
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
                 pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
@@ -1153,11 +1167,12 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
 
     // Update text
     if (pRequest->hasInputParam("text")) {
-        QString sText = jsonRequest["text"].toString().trimmed();
+        std::string sText = pRequest->getInputString("text", "");
+        Fallen::trim(sText);
         if (sText != sTextPrev) {
             QSqlQuery query(db);
             query.prepare("UPDATE quest SET text = :text WHERE idquest = :questid");
-            query.bindValue(":text", sText);
+            query.bindValue(":text", QString::fromStdString(sText));
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
                 pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
@@ -1169,7 +1184,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
 
     // Update score
     if (pRequest->hasInputParam("score")) {
-        int nScore = jsonRequest["score"].toInt();
+        int nScore = pRequest->getInputInteger("score", 0);
         if (nScore != nScorePrev) {
             QSqlQuery query(db);
             query.prepare("UPDATE quest SET score = :score WHERE idquest = :questid");
@@ -1187,11 +1202,12 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
 
     // Update answer
     if (pRequest->hasInputParam("answer")) {
-        QString sAnswer = jsonRequest["answer"].toString();
+        std::string sAnswer = pRequest->getInputString("answer", "");
         if (sAnswer != sAnswerPrev) {
             QSqlQuery query(db);
             query.prepare("UPDATE quest SET answer = :answer WHERE idquest = :questid");
-            query.bindValue(":answer", sAnswer);
+            query.bindValue(":answer", QString::fromStdString(sAnswer));
+            // TODO update md5 upper
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
                 pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
@@ -1203,11 +1219,11 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
 
     // Update author
     if (pRequest->hasInputParam("author")) {
-        QString sAuthor = jsonRequest["author"].toString();
+        std::string sAuthor = pRequest->getInputString("author", "");
         if (sAuthor != sAuthorPrev) {
             QSqlQuery query(db);
             query.prepare("UPDATE quest SET author = :author WHERE idquest = :questid");
-            query.bindValue(":author", sAuthor);
+            query.bindValue(":author", QString::fromStdString(sAuthor));
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
                 pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
@@ -1219,59 +1235,59 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
 
     // Update answer format
     if (pRequest->hasInputParam("answer_format")) {
-        QString sAnswerFormat = jsonRequest["answer_format"].toString();
+        std::string sAnswerFormat = pRequest->getInputString("answer_format", "");
         if (sAnswerFormat != sAnswerFormatPrev) {
             QSqlQuery query(db);
             query.prepare("UPDATE quest SET answer_format = :answer_format WHERE idquest = :questid");
-            query.bindValue(":answer_format", sAnswerFormat);
+            query.bindValue(":answer_format", QString::fromStdString(sAnswerFormat));
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
                 pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
                 return;
             }
-            RunTasks::AddPublicEvents("quests", "Updated answer format of [quest#" + std::to_string(nQuestID) + " " + sNamePrev + " from [" + sAnswerFormatPrev.toStdString() + "] to [" + sAnswerFormat.toStdString() + "]");
+            RunTasks::AddPublicEvents("quests", "Updated answer format of [quest#" + std::to_string(nQuestID) + "](" + sNamePrev + ") from {" + sAnswerFormatPrev + "} to {" + sAnswerFormat + "}");
         }
     }
 
     // Update state
     if (pRequest->hasInputParam("state")) {
-        QString sState = jsonRequest["state"].toString();
+        std::string sState = pRequest->getInputString("state", "");
         if (sState != sStatePrev) {
             QSqlQuery query(db);
             query.prepare("UPDATE quest SET state = :state WHERE idquest = :questid");
-            query.bindValue(":state", sState);
+            query.bindValue(":state", QString::fromStdString(sState));
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
                 pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
                 return;
             }
-            RunTasks::AddPublicEvents("quests", "Updated state of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev + " from [" + sStatePrev.toStdString() + "] to [" + sState.toStdString() + "]");
+            RunTasks::AddPublicEvents("quests", "Updated state of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev + " from {" + sStatePrev + "} to {" + sState + "}");
         }
     }
 
     // Update copyright
     if (pRequest->hasInputParam("copyright")) {
-        QString sCopyright = jsonRequest["copyright"].toString();
+        std::string sCopyright = pRequest->getInputString("copyright", "");
         if (sCopyright != sCopyrightPrev) {
             QSqlQuery query(db);
             query.prepare("UPDATE quest SET copyright = :copyright WHERE idquest = :questid");
-            query.bindValue(":copyright", sCopyright);
+            query.bindValue(":copyright", QString::fromStdString(sCopyright));
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
                 pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
                 return;
             }
-            RunTasks::AddPublicEvents("quests", "Updated copyright of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev + " from {" + sCopyrightPrev.toStdString() + "} to {" + sCopyright.toStdString() + "}");
+            RunTasks::AddPublicEvents("quests", "Updated copyright of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev + " from {" + sCopyrightPrev + "} to {" + sCopyright + "}");
         }
     }
 
     // Update copyright
     if (pRequest->hasInputParam("description_state")) {
-        QString sDescriptionState = jsonRequest["description_state"].toString();
+        std::string sDescriptionState = pRequest->getInputString("description_state", "");
         if (sDescriptionState != sDescriptionStatePrev) {
             QSqlQuery query(db);
             query.prepare("UPDATE quest SET description_state = :description_state WHERE idquest = :questid");
-            query.bindValue(":description_state", sDescriptionState);
+            query.bindValue(":description_state", QString::fromStdString(sDescriptionState));
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
                 pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));

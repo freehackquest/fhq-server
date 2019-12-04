@@ -35,6 +35,17 @@ bool UnitTestBase::compareN(bool &bTestSuccess, const std::string &sPoint, int n
 
 // ---------------------------------------------------------------------
 
+bool UnitTestBase::compareD(bool &bTestSuccess, const std::string &sPoint, double nValue, double nExpected) {
+    if (nValue != nExpected) {
+        Log::err(TAG, " {" + sPoint + "} Expeceted '" + std::to_string(nExpected) + "', but got '" + std::to_string(nValue) + "'");
+        bTestSuccess = false;
+        return false;
+    }
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
 void UnitTestBase::compareB(bool &bTestSuccess, const std::string &sPoint, bool bValue, bool bExpected) {
     if (bValue != bExpected) {
         Log::err(TAG, sPoint + ", expeceted '" + (bExpected ? "true" : "false") + "', but got '" + (bValue ? "true" : "false") + "'");

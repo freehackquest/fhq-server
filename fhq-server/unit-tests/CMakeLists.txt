@@ -37,6 +37,8 @@ list (APPEND UNIT_TESTS_SOURCES "../src/core/storages.h")
 list (APPEND UNIT_TESTS_SOURCES "../src/core/storages.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../src/core/wsjcpp_validators.cpp")
 list (APPEND UNIT_TESTS_SOURCES "../src/core/wsjcpp_validators.h")
+list (APPEND UNIT_TESTS_SOURCES "../src/core/parser_ip_api_com.h")
+list (APPEND UNIT_TESTS_SOURCES "../src/core/parser_ip_api_com.cpp")
 
 # validators
 list (APPEND UNIT_TESTS_SOURCES "../src/validators/validators.cpp")
@@ -76,6 +78,8 @@ list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_tests.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_tests.cpp")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_validators.h")
 list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_validators.cpp")
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_parser_ip_api_com.h")
+list (APPEND UNIT_TESTS_SOURCES "src/unit_tests/unit_test_parser_ip_api_com.cpp")
 
 # main
 list (APPEND UNIT_TESTS_SOURCES "src/main.cpp")
