@@ -39,10 +39,10 @@ bool ParserIpApiCom::parse(const std::string &sIpAddress, const std::string &sJs
     }
 
     try {
-        m_sRegion = obj.at("regionName").get<std::string>();
+        m_sRegionName = obj.at("regionName").get<std::string>();
     } catch (const std::exception &e) {
         Log::err(TAG, "ip-api.com/json/" + sIpAddress + " -> wrong field 'regionName' in struct \n" + sJson + "\n" + std::string(e.what()));
-        m_sRegion = "";
+        m_sRegionName = "";
     }
 
     try {
@@ -77,8 +77,8 @@ std::string ParserIpApiCom::getCountry() {
 
 // ----------------------------------------------------------------------
 
-std::string ParserIpApiCom::getRegion() {
-    return m_sRegion;
+std::string ParserIpApiCom::getRegionName() {
+    return m_sRegionName;
 }
 
 // ----------------------------------------------------------------------

@@ -28,14 +28,14 @@ bool UnitTestParserIpApiCom::run() {
 
     compareB(bTestSuccess, "msg2_status_success", parser.parse("79.120.78.1", msg2), true);
     compareS(bTestSuccess, "msg2_country", parser.getCountry(), "Russia");
-    compareS(bTestSuccess, "msg2_region", parser.getRegion(), "Moscow");
+    compareS(bTestSuccess, "msg2_region", parser.getRegionName(), "Moscow");
     compareS(bTestSuccess, "msg2_city", parser.getCity(), "Moscow");
     compareD(bTestSuccess, "msg2_lat", parser.getLat(), 55.7737);
     compareD(bTestSuccess, "msg2_lon", parser.getLon(), 37.6055);
 
     compareB(bTestSuccess, "msg3_status_success", parser.parse("213.234.222.81", msg3), true);
     compareS(bTestSuccess, "msg3_country", parser.getCountry(), "Russia");
-    compareS(bTestSuccess, "msg3_region", parser.getRegion(), "Moscow");
+    compareS(bTestSuccess, "msg3_region", parser.getRegionName(), "Moscow");
     compareS(bTestSuccess, "msg3_city", parser.getCity(), "Moscow");
     compareD(bTestSuccess, "msg3_lat", parser.getLat(), 55.7315);
     compareD(bTestSuccess, "msg3_lon", parser.getLon(), 37.6457);

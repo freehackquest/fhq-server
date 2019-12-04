@@ -9,7 +9,7 @@ class ParserIpApiCom {
         ParserIpApiCom();
         bool parse(const std::string &sIpAddress, const std::string &sJson);
         std::string getCountry();
-        std::string getRegion();
+        std::string getRegionName();
         std::string getCity();
         double getLat();
         double getLon();
@@ -17,7 +17,7 @@ class ParserIpApiCom {
     private:
         std::string TAG;
         std::string m_sCountry;
-        std::string m_sRegion;
+        std::string m_sRegionName;
         std::string m_sCity;
         double m_nLat;
         double m_nLon;
