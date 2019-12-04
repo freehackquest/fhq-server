@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
     helpArgs.addHelp("version", "-v", FallenHelpParseArgType::SINGLE_OPTION, "Print version");
     helpArgs.addHelp("show-handlers", "-sh", FallenHelpParseArgType::SINGLE_OPTION, "Show handlers");
     helpArgs.addHelp("show-storage-struct", "-sh-ss", FallenHelpParseArgType::SINGLE_OPTION, "Show Storage Struct");
-    helpArgs.addHelp("export-libfhqcli-py", "-exlp", FallenHelpParseArgType::SINGLE_OPTION, "Export libfhqcli-py (python)");
+    helpArgs.addHelp("export-libfreehackquest-client-py", "-exlp", FallenHelpParseArgType::SINGLE_OPTION, "Export libfreehackquest (python)");
     helpArgs.addHelp("export-libfhqcli-web-javascript", "-exlwjs", FallenHelpParseArgType::SINGLE_OPTION, "Export libfhqcli-web-js (javascript)");
     helpArgs.addHelp("export-libfhqcli-java-android", "-exljadr", FallenHelpParseArgType::SINGLE_OPTION, "Export libfhqcli-java-android");
     helpArgs.addHelp("show-employees", "-se", FallenHelpParseArgType::SINGLE_OPTION, "Show employees");
@@ -124,7 +124,7 @@ int main(int argc, char** argv) {
     } else if (helpArgs.has("show-storage-struct")) {
         ExportStructOfStorage::print();
         return 0;
-    } else if (helpArgs.has("export-libfhqcli-py")) {
+    } else if (helpArgs.has("export-libfreehackquest-client-py")) {
         ExportLibWsjCppCliPy *pExportPython = new ExportLibWsjCppCliPy();
         pExportPython->exportLib();
         return 0;

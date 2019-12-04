@@ -3,7 +3,7 @@
 
 import sys
 import os
-import libfhqcli
+from libfreehackquestclient import FreeHackQuestClient
 import string
 import random
 import socket
@@ -114,7 +114,7 @@ def init_enviroment():
     if not os.path.exists(TMP_DIR):
         os.makedirs(TMP_DIR)
 
-    admin_session = libfhqcli.FHQClient(TEST_SERVER)
+    admin_session = FHQClient(TEST_SERVER)
     resp = admin_session.login({"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD})
     alert(resp == None, 'Could not login as admin (1)')
     pprint(resp)
