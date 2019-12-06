@@ -28,7 +28,9 @@ admin_email = "admin" # deprecated
 admin_password = "admin" # deprecated
 ADMIN_EMAIL = "admin"
 ADMIN_PASSWORD = "admin"
-TEST_SERVER = "ws://127.0.0.1:1234/"
+TEST_HOST = "127.0.0.1"
+TEST_SERVER = "ws://" + TEST_HOST + ":1234/"
+TEST_WEB_SERVER = "http://" + TEST_HOST + ":7080/"
 TMP_DIR = "./tmp"
 
 class bcolors:
@@ -114,7 +116,7 @@ def init_enviroment():
     if not os.path.exists(TMP_DIR):
         os.makedirs(TMP_DIR)
 
-    admin_session = FHQClient(TEST_SERVER)
+    admin_session = FreeHackQuestClient(TEST_SERVER)
     resp = admin_session.login({"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD})
     alert(resp == None, 'Could not login as admin (1)')
     pprint(resp)

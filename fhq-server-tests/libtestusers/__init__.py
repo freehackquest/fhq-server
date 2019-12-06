@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import fhqtest
-import libfhqcli
+from libfreehackquestclient import FreeHackQuestClient
 from pprint import pprint
 
 USER1_UUID = "00000000-0000-0000-4001-000000000001"
@@ -60,7 +60,7 @@ def cleanup_user_by_email(email):
 
 def test_login(user):
     fhqtest.print_bold("Login by '" + user + "'... ")
-    __user_session = libfhqcli.FHQClient(fhqtest.TEST_SERVER)
+    __user_session = FreeHackQuestClient(fhqtest.TEST_SERVER)
     user_login = __user_session.login({"email": user, "password": user})
     fhqtest.alert(user_login == None, 'Could not login as ' + user)
     fhqtest.alert(user_login['result'] == 'FAIL', 'Could not login as ' + user + ' (fail)')
@@ -176,7 +176,7 @@ def run_tests():
     test_login('user3')
 
     fhqtest.print_bold("Login by user2... ")
-    user2_session = libfhqcli.FHQClient(fhqtest.TEST_SERVER)
+    user2_session = FreeHackQuestClient(fhqtest.TEST_SERVER)
     user2_login = user2_session.login({"email": "user2", "password": "user2"})
     fhqtest.alert(user2_login == None, 'Could not login as user2 (1)')
     fhqtest.alert(user2_login['result'] == 'FAIL', 'Could not login as user2 (2) (fail)')
