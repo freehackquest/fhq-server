@@ -5,9 +5,10 @@
 
 Backend && Frontend for FreeHackQuest on Qt and WebSockets
 
+Start your game (instance) [here](https://github.com/freehackquest/freehackquest-start-game)!!!
+
 * [HOW-TO-BUILD-AND-DEVELOP](https://github.com/freehackquest/fhq-server/tree/master/install/HOW-TO-BUILD-AND-DEVELOP.md)
 * [PRE-BUILDS](https://github.com/freehackquest/fhq-server/tree/master/install/PRE-BUILDS.md)
-* [DOCKER-COMPOSE](https://github.com/freehackquest/fhq-server/tree/master/install/DOCKER_COMPOSE)
 * [INSTALL_FROM_PPA](https://github.com/freehackquest/fhq-server/tree/master/install/INSTALL_FROM_PPA.md)
 * [DOXYGEN](https://freehackquest.com/doxygen/)
 * Configure autostart
