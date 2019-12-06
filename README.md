@@ -5,9 +5,10 @@
 
 Backend && Frontend for FreeHackQuest on Qt and WebSockets
 
+Start your game (instance) [here](https://github.com/freehackquest/freehackquest-start-game)!!!
+
 * [HOW-TO-BUILD-AND-DEVELOP](https://github.com/freehackquest/fhq-server/tree/master/install/HOW-TO-BUILD-AND-DEVELOP.md)
 * [PRE-BUILDS](https://github.com/freehackquest/fhq-server/tree/master/install/PRE-BUILDS.md)
-* [DOCKER-COMPOSE](https://github.com/freehackquest/fhq-server/tree/master/install/DOCKER_COMPOSE)
 * [INSTALL_FROM_PPA](https://github.com/freehackquest/fhq-server/tree/master/install/INSTALL_FROM_PPA.md)
 * [DOXYGEN](https://freehackquest.com/doxygen/)
 * Configure autostart
@@ -21,7 +22,7 @@ Backend && Frontend for FreeHackQuest on Qt and WebSockets
 | fhq-server     | [ubuntu/ppa](https://launchpad.net/~freehackquest/+archive/ubuntu/fhq-server)  |
 | fhq-server     | [![Docker Pulls](https://img.shields.io/docker/pulls/freehackquest/fhq-server.svg)](https://hub.docker.com/r/freehackquest/fhq-server/)  |
 | client library | [![npm version](https://badge.fury.io/js/libfhqcli-web-js.svg)](https://badge.fury.io/js/libfhqcli-web-js) |
-| client library | [![PyPI version](https://badge.fury.io/py/libfhqcli.svg)](https://badge.fury.io/py/libfhqcli) |
+| client library | [![PyPI version](https://badge.fury.io/py/libfreehackquestclient.svg)](https://badge.fury.io/py/libfreehackquestclient) |
 | frontend       | [github/web](https://github.com/freehackquest/frontend) |
 
 ## 3rdParty

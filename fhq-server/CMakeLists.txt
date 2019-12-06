@@ -4,7 +4,7 @@ project(fhq-server)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/src.wsjcpp/CMakeLists.txt)
 
-add_definitions(-DFHQSRV_VERSION="0.2.23")
+add_definitions(-DFHQSRV_VERSION="0.2.24")
 add_definitions(-DFHQSRV_APP_NAME="fhq-server")
 
 set (CMAKE_AUTOMOC ON)

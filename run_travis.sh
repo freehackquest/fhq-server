@@ -58,8 +58,8 @@ cd ..
 
 cd fhq-server-tests
 check_ret $? "Change directory to tests"
-./update_libfhqcli.sh
-check_ret $? "update libfhqcli-python"
+./update_libfreehackquestclient.sh
+check_ret $? "update libfreehackquestclient python library"
 python3 run_tests.py # run tests
 check_ret $? "tests"
 

@@ -188,8 +188,8 @@ void ExportLibWsjCppCliJavaAndroid::exportAPImd() {
     apimd << " * Date: " << buffer.str() << "\n\n";
     apimd << " Example connect/disconnect:\n"
         << "```\n"
-        << "import libfhqcli \n\n"
-        << "fhq = libfhqcli.FHQCli('ws://localhost:1234')\n"
+        << "from libfreehackquestclient import FreeHackQuestClient \n\n"
+        << "fhq = FreeHackQuestClient('ws://localhost:1234')\n"
         << " ... \n"
         << "fhq.close()\n"
         << "```\n";

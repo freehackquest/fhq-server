@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import libfhqcli
+from libfreehackquestclient import FreeHackQuestClient
 import fhqtest
 import sys, traceback
 import base64
@@ -228,7 +228,7 @@ def run_tests():
         exit(-1)
 
     fhqtest.print_bold("Login by user2... ")
-    user2_session = libfhqcli.FHQCli(fhqtest.TEST_SERVER)
+    user2_session = FreeHackQuestClient(fhqtest.TEST_SERVER)
     user2_login = user2_session.login({"email": "user2", "password": "user2"})
     fhqtest.alert(user2_login == None, 'Could not login as user2')
     fhqtest.alert(user2_login['result'] == 'FAIL', 'Could not login as user2 (fail)')
