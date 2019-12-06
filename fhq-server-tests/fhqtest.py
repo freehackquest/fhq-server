@@ -63,6 +63,10 @@ def log_err(msg):
     global bcolors
     print(bcolors.FAIL + "ERROR: " + msg + bcolors.ENDC)
 
+def log_ok(msg):
+    global bcolors
+    print(bcolors.OKGREEN + "OK: " + msg + bcolors.ENDC)
+
 def throw_err(msg):
     global bcolors
     print(bcolors.FAIL + "ERROR: " + msg + bcolors.ENDC)
@@ -119,7 +123,7 @@ def init_enviroment():
     admin_session = FreeHackQuestClient(TEST_SERVER)
     resp = admin_session.login({"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD})
     alert(resp == None, 'Could not login as admin (1)')
-    pprint(resp)
+    # pprint(resp)
     alert(resp['result'] == 'FAIL', 'Could not login as admin (2)')
     
     # loggined = True
