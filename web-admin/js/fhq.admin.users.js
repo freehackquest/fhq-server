@@ -5,13 +5,14 @@ fhq.createUser = function()  {
 	fhq.showLoader();
 	$('#error_info').hide();
 	var data = {};
+	data["uuid"] = $("#newuser_uuid").val();
 	data["role"] = $("#newuser_role").val();
 	data["email"] = $("#newuser_login").val();
 	data["password"] = $("#newuser_password").val();
 	data["nick"] = $("#newuser_nick").val();
 	data["university"] = $("#newuser_university").val();
 	
-	fhq.ws.user_create(data).done(function(r){
+	fhq.users_add(data).done(function(r){
 		fhq.hideLoader();
 		fhq.pages['users']();
 	}).fail(function(err){
@@ -62,6 +63,12 @@ fhq.pages['user_create'] = function(){
 		+ '				</div>'
 		+ '			</div>'
 		+ '			<div class="form-group row">'
+		+ '				<label for="newuser_uuid" class="col-sm-2 col-form-label">UUID</label>'
+		+ ' 			<div class="col-sm-10">'
+		+ '					<input type="text" class="form-control" value="" id="newuser_uuid">'
+		+ '				</div>'
+		+ '			</div>'
+		+ '			<div class="form-group row">'
 		+ '				<label for="newuser_login" class="col-sm-2 col-form-label">Email or login</label>'
 		+ ' 			<div class="col-sm-10">'
 		+ '					<input type="text" class="form-control" value="" id="newuser_login">'
@@ -100,6 +107,7 @@ fhq.pages['user_create'] = function(){
 		+ '		</div>'
 		+ '</div>'
 	);
+	$('#newuser_uuid').val(fhq.guid());
 }
 
 fhq.pages['users'] = function(){

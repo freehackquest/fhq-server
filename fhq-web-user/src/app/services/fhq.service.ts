@@ -3,6 +3,7 @@ import { PlatformLocation } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 
 declare var fhq: any;
+declare var fhqconfig: any;
 
 @Injectable({
   providedIn: 'root'
@@ -62,15 +63,15 @@ export class FhqService {
     } else {
       this.connectionState = 'WAIT';
     }
+    
+    let baseUrl = fhqconfig.base_url;
+    //if (this.currentProtocol == "https:") {
+    //  baseUrl = 'wss://' + this.serverHost + ':4613/api-wss/';
+    //}
 
-    let baseUrl = 'ws://' + this.serverHost + ':1234/api-ws/';
-    if (this.currentProtocol == "https:") {
-      baseUrl = 'wss://' + this.serverHost + ':4613/api-wss/';
-    }
-
-    if (this.serverHost == 'freehackquest.com') {
-      baseUrl = 'wss://freehackquest.com/api-wss/';
-    }
+    //if (this.serverHost == 'freehackquest.com') {
+    //  baseUrl = 'wss://freehackquest.com/api-wss/';
+    //}
     // baseUrl = 'wss://freehackquest.com/api-wss/';
     // baseUrl = 'ws://freehackquest.com/api-ws/';
 
