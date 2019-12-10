@@ -255,19 +255,19 @@ StorageChangesType StorageCreateTable::getType() const {
 // ---------------------------------------------------------------------
 
 std::string StorageCreateTable::getStartApply() const {
-    return "Creating table " + m_sTableName;
+    return "Creating table '" + m_sTableName + "'";
 }
 
 // ---------------------------------------------------------------------
 
 std::string StorageCreateTable::getAppliedSuccess() const {
-    return "Created table " +  m_sTableName;
+    return "Created table '" +  m_sTableName + "'";
 }
 
 // ---------------------------------------------------------------------
 
 std::string StorageCreateTable::getAppliedFailed() const {
-    return "Could not create table " +  m_sTableName;
+    return "Could not create table '" +  m_sTableName + "'";
 }
 
 // ---------------------------------------------------------------------
