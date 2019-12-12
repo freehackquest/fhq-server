@@ -1711,7 +1711,7 @@ void CmdClassbookProposalApproveHandler::handle(ModelRequest *pRequest) {
     QSqlRecord propRecord = query.record();
     int nClassbookID = propRecord.value("classbookid").toInt();
     std::string sContent = propRecord.value("content").toString().toStdString();
-    std::string sContentMd5_ = md5(sContent);
+    std::string sContentMd5_ = WSJCppHashes::md5_calc_hex(sContent);
 
     // TODO: add lang support
 
@@ -1763,7 +1763,7 @@ void CmdClassbookProposalUpdateHandler::handle(ModelRequest *pRequest) {
     if (jsonRequest.find("content") != jsonRequest.end()) {
         sContent = jsonRequest.at("content").get<std::string>();
     }
-    std::string sContentMd5_ = md5(sContent);
+    std::string sContentMd5_ = WSJCppHashes::md5_calc_hex(sContent);
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
