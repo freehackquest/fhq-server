@@ -3,11 +3,17 @@ import { SpinnerService } from '../../services/spinner.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { FhqService } from '../../services/fhq.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
+import { LocaleService } from 'angular-l10n';
+
 
 @Component({
   selector: 'app-knowledge-base',
   templateUrl: './knowledge-base.component.html',
-  styleUrls: ['./knowledge-base.component.css']
+  styleUrls: [
+    './knowledge-base.component.css'
+  ]
 })
 
 export class KnowledgeBaseComponent implements OnInit {
@@ -15,21 +21,27 @@ export class KnowledgeBaseComponent implements OnInit {
   public errorMessage: String = null;
   public classbookId: Number = -1;
   public articleName: String = '';
-    public articleContentNaked: String = '';
+  public articleContentNaked: String = '';
+  public articleContentNakedOriginal: String = '';
   public articleParents: Array<any> = [];
   public articleChilds: Array<any> = [];
+  public editMode: boolean = false;
+  public editLang: String = null;
+  public infoMessage: String = null;
 
   constructor(
+    public _locale: LocaleService,
     private _spinnerService: SpinnerService,
     private _route: ActivatedRoute,
     private _router: Router,
+    private _modalService: NgbModal,
     private _cdr: ChangeDetectorRef,
     private _zone: NgZone,
     public _fhq: FhqService,
   ) {
       // nothing
   }
-  
+
   ngOnInit() {
     console.log("ngOnInit");
     this._route.params.subscribe( (params) => {
@@ -60,7 +72,6 @@ export class KnowledgeBaseComponent implements OnInit {
   successResponse(r: any) {
     console.log(r);
     this.articleName = `#${this.classbookId} ${r.data.name}`;
-    this.articleContentNaked = r.data.content;
     this.articleParents = []
     r.data.parents.forEach((el: any) => {
       this.articleParents.push(el);
@@ -71,6 +82,9 @@ export class KnowledgeBaseComponent implements OnInit {
     curr_el['name'] = r.data.name;
     this.articleParents.push(curr_el);
     this.loadChilds();
+    this.articleContentNaked = r.data.content;
+    this.articleContentNakedOriginal = this.articleContentNaked;
+    this.editLang = this._locale.getCurrentLanguage();
   }
 
   errorResponse(err: any) {
@@ -121,7 +135,60 @@ export class KnowledgeBaseComponent implements OnInit {
     this.articleContentNaked = '';
     this.articleParents = [];
     this.articleChilds = [];
+    this.update_page(id);
+  }
+
+  start_editing() {
+    if(this._fhq.isAuthorized) {
+      this.editMode = true;
+    } else {
+      this.openDialogSignIn()
+    }
+  }
+
+  cancel_editing() {
+    this.editMode = false;
+    this.articleContentNaked = this.articleContentNakedOriginal;
+  }
+
+  send_editing() {
+    if(this._fhq.isAuthorized) {
+
+      this._fhq.api().classbook_proposal_add_record({
+        "classbookid": this.classbookId,
+        "lang": 'en'/*this.editLang*/,  // TODO: не работает в апи
+        "name": this.articleName,
+        "content": this.articleContentNaked
+      })
+      .done((r: any) => this.successSendEdition(r))
+      .fail((err: any) => this.errorSendEdition(err));
+    } else {
+      this.openDialogSignIn()
+    }
+  }
+
+  successSendEdition(r: any) {
+    this.editMode = false;
+    this.infoMessage = "OK, now wait for the approval of the administrator!";
+    // this.update_page(this.classbookId);
+    this.loadData();
+  }
+
+  errorSendEdition(err: any) {
+    this.errorMessage = "Error sending propolsol: " + err.error;
+    console.error(err);
+  }
+
+  openDialogSignIn() {
+    const modalRef = this._modalService.open(ModalDialogSignInComponent);
+    modalRef.componentInstance.name = 'SignIn';
+  }
+
+  update_page(id) {
     this._zone.run(() => this._router.navigate(['/knowledge-base', id])).then();
   }
 
+  selectEditLang(lang) {
+    this.editLang = lang;
+  }
 }
