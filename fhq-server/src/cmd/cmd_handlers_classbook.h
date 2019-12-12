@@ -124,6 +124,19 @@ class CmdClassbookLocalizationUpdateRecordHandler : public CmdHandlerBase {
 
 REGISTRY_CMD(CmdClassbookLocalizationUpdateRecordHandler)
 
+
+/*!
+ * This handler will be update classbook localization record
+ * */
+
+// class CmdClassbookLocalizationUpdateRecordHandler : public CmdHandlerBase {
+//     public:
+//         CmdClassbookLocalizationUpdateRecordHandler();
+//         virtual void handle(ModelRequest *pRequest);
+// };
+
+// REGISTRY_CMD(CmdClassbookLocalizationUpdateRecordHandler)
+
 /*!
  * This handler will be add classbook proposal record
  * */
@@ -186,6 +199,32 @@ class CmdClassbookProposalPrepareMergeRecordHandler : public CmdHandlerBase {
 };
 
 REGISTRY_CMD(CmdClassbookProposalPrepareMergeRecordHandler)
+
+/*!
+ * This handler will be approve classbook proposal record
+ * */
+
+
+class CmdClassbookProposalApproveHandler : public CmdHandlerBase {
+    public:
+        CmdClassbookProposalApproveHandler();
+        virtual void handle(ModelRequest *pRequest);
+};
+
+REGISTRY_CMD(CmdClassbookProposalApproveHandler)
+
+/*!
+ * This handler will be update classbook proposal record
+ * */
+
+
+class CmdClassbookProposalUpdateHandler : public CmdHandlerBase {
+    public:
+        CmdClassbookProposalUpdateHandler();
+        virtual void handle(ModelRequest *pRequest);
+};
+
+REGISTRY_CMD(CmdClassbookProposalUpdateHandler)
 
 /*!
  * This handler will be return classbook content (duplicate handler ? )

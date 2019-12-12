@@ -1665,6 +1665,123 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
 }
 
 /*!
+ * This handler will be prepare classbook proposal record
+ * */
+CmdClassbookProposalApproveHandler::CmdClassbookProposalApproveHandler()
+    : CmdHandlerBase("classbook_propasal_approve", "Approve updating requests") {
+
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
+
+    // validation and description input fields
+    requireIntegerParam("classbook_proposal_id", "Proposal id");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdClassbookProposalApproveHandler::handle(ModelRequest *pRequest) {
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    nlohmann::json jsonRequest = pRequest->jsonRequest();
+
+    int nClassbookProposalID = -1;
+    if (jsonRequest.find("classbook_proposal_id") != jsonRequest.end()) {
+        nClassbookProposalID = jsonRequest.at("classbook_proposal_id").get<int>();
+    }
+
+    if (nClassbookProposalID == -1) {
+        pRequest->sendMessageError(cmd(), WSJCppError(404, "This proposal doesn't exist"));
+        return;
+    }
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+
+    query.prepare("SELECT classbookid, content FROM classbook_proposal WHERE id = :classbook_proposal_id");
+    query.bindValue(":classbook_proposal_id", nClassbookProposalID);
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+    if (!query.next()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(404, "This proposal doesn't exist"));
+        return;
+    }
+
+    QSqlRecord propRecord = query.record();
+    int nClassbookID = propRecord.value("classbookid").toInt();
+    std::string sContent = propRecord.value("content").toString().toStdString();
+    std::string sContentMd5_ = md5(sContent);
+
+    // TODO: add lang support
+
+    query.prepare("UPDATE classbook SET content = :content, md5_content = :md5_content WHERE id = :classbookid");
+    query.bindValue(":classbookid", nClassbookID);
+    query.bindValue(":content", QString::fromStdString(sContent));
+    query.bindValue(":md5_content", QString::fromStdString(sContentMd5_));
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    nlohmann::json jsonResponse;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+/*!
+ * This handler will be prepare classbook proposal record
+ * */
+CmdClassbookProposalUpdateHandler::CmdClassbookProposalUpdateHandler()
+    : CmdHandlerBase("classbook_propasal_update", "Approve updating requests") {
+
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
+
+    // validation and description input fields
+    requireIntegerParam("classbook_proposal_id", "Proposal id");
+    requireStringParam("content", "new content");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdClassbookProposalUpdateHandler::handle(ModelRequest *pRequest) {
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    nlohmann::json jsonRequest = pRequest->jsonRequest();
+
+    int nClassbookProposalID = -1;
+    if (jsonRequest.find("classbook_proposal_id") != jsonRequest.end()) {
+        nClassbookProposalID = jsonRequest.at("classbook_proposal_id").get<int>();
+    }
+
+    if (nClassbookProposalID == -1) {
+        pRequest->sendMessageError(cmd(), WSJCppError(404, "This proposal doesn't exist"));
+        return;
+    }
+
+    std::string sContent;
+    if (jsonRequest.find("content") != jsonRequest.end()) {
+        sContent = jsonRequest.at("content").get<std::string>();
+    }
+    std::string sContentMd5_ = md5(sContent);
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+
+    query.prepare("UPDATE classbook_proposal SET content = :content, md5_content = :md5_content WHERE id = :classbook_proposal_id");
+    query.bindValue(":classbook_proposal_id", nClassbookProposalID);
+    query.bindValue(":content", QString::fromStdString(sContent));
+    query.bindValue(":md5_content", QString::fromStdString(sContentMd5_));
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    nlohmann::json jsonResponse;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+/*!
  * This handler will be return classbook content (duplicate handler ? )
  * */
 
