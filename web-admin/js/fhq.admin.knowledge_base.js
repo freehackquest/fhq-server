@@ -12,7 +12,7 @@ fhqadmin.openKbItem = function(kbid) {
 	fhq.pages['knowledge_base']();
 }
 
-fhqadmin.knowledge_base_load_current_item = function(kbid) {
+fhqadmin.knowledge_base_load_current_item = function(kbid, proposal_id) {
 	var el = $('#current_kb_item');
 	el.html('');
 	fhq.ws.classbook_info({
@@ -42,6 +42,11 @@ fhqadmin.knowledge_base_load_current_item = function(kbid) {
 			+ '           </div>'
 			+ '       </div>'
 			+ '       <div class="form-group row">'
+			+ '           <label for="edit_quest_id" class="col-sm-2 col-form-label">Proposals</label>'
+			+ '           <div id="proposal_list" class="col-sm-12">'
+			+ '           </div>'
+			+ '       </div>'
+			+ '       <div class="form-group row">'
 			+ '           <label for="edit_quest_id" class="col-sm-2 col-form-label">Content</label>'
 			+ '           <div class="col-sm-12">'
 			+ '               <textarea type="text" class="form-control" style="height: 150px" value="" id="edit_kb_content"></textarea>'
@@ -53,36 +58,176 @@ fhqadmin.knowledge_base_load_current_item = function(kbid) {
 			+ '               <input type="text" class="form-control" value="" id="edit_kb_ordered">'
 			+ '           </div>'
 			+ '       </div>'
-			+ '    <div class="btn btn-danger kbi-save" kbid="' + kbid + '">Save</div>'
+			+ '    <div class="btn btn-danger kbi-approve" kbid="' + kbid + '" propid="' + proposal_id + '">Approve</div>'
+			+ '    <div class="btn btn-danger kbi-save" kbid="' + kbid + '" propid="' + proposal_id + '">Save</div>'
+			+ '    <div class="btn btn-danger kbi-remove" kbid="' + kbid + '" propid="' + proposal_id + '">Remove</div>'
 			+ '   </div>'
 			+ '</div>'
 		);
 		$('#edit_kb_name').val(r.data.name);
 		$('#edit_kb_ordered').val(r.data.ordered);
 		$('#edit_kb_parentid').val(r.data.parentid);
-		
 
 		window['edit_kb_content'] = new SimpleMDE({ element: $("#edit_kb_content")[0] });
-		window['edit_kb_content'].value(r.data.content);
-
+		
 		console.log('Success: ', r);
 
-		$('.kbi-save').unbind().bind('click', function(){
-			// classbook_update_record
+		const list = $('#proposal_list');
+
+		let classes = "btn btn-primary prop_open"
+		if(proposal_id === -1) {
+			classes = "btn btn-secondary"
+		}
+		list.append(`<div class="${classes}" kbid="${kbid}" propid="-1">Original</div> `);
+
+		fhq.classbook_proposal_list({
+			"classbookid": kbid
+		}).done(function(r){
+			for (let idx = 0; idx < r.data.length; idx++) {
+				const prop = r.data[idx];
+				let classes = "btn btn-primary prop_open"
+				if(prop.id === proposal_id) {
+					classes = "btn btn-secondary"
+				}
+
+				list.append(`<div class="${classes}" kbid="${prop.classbookid}" propid="${prop.id}"> id: ${prop.id} (${prop.lang})</div>            `);
+			}
+
+			console.log('Success: ', r);
+
+			if(r.data.length > 0) {
+				$('.prop_open').unbind().bind('click', function() {
+					const propid = parseInt($(this).attr('propid'),10);
+					const kbid = parseInt($(this).attr('kbid'),10);
+					window.fhq.changeLocationState({
+						'knowledge_base': '',
+						'parentid': kbid,
+						'propid': propid
+					});
+					fhq.pages['knowledge_base']();
+				})
+			}
+		}).fail(function(err){
+			el.append('<div class="alert alert-danger">' + err.error + '</div>');
+			console.error('Error:', err);
+		});
+
+
+		if (proposal_id === -1) {
+			window['edit_kb_content'].value(r.data.content);
+			$(".kbi-approve").hide();
+		} else {
+			fhq.classbook_proposal_info({
+				"classbook_proposal_id": proposal_id
+			}).done(function(r) {
+				window['edit_kb_content'].value(r.data.content);
+			}).fail(function(err) {
+				el.append('<div class="alert alert-danger">' + err.error + '</div>');
+				console.error('Error:', err);
+			});
+		}
+
+		$('.kbi-approve').unbind().bind('click', function(){
 			var kbid = parseInt($(this).attr('kbid'),10);
-			fhq.classbook_update_record({
-				"classbookid": kbid,
-				"name": $('#edit_kb_name').val(),
-				"content": window['edit_kb_content'].value(),
-				"ordered": parseInt($('#edit_kb_ordered').val(),10),
-				"parentid": parseInt($('#edit_kb_parentid').val(),10),
+			var propid = parseInt($(this).attr('propid'),10);
+
+			if (propid === -1) {
+				return;
+			}
+
+			// classbook_propasal_approve
+			fhq.classbook_propasal_approve({
+				"classbook_proposal_id": propid
 			}).done(function(r) {
 				console.log('Success: ', r);
-				fhq.pages['knowledge_base']();
-			}).fail(function(err){
+
+				fhq.classbook_proposal_delete_record({
+					"classbook_proposal_id": propid
+				}).done(function(r) {
+					console.log('Success: ', r);
+					window.fhq.changeLocationState({
+						'knowledge_base': '',
+						'parentid': kbid
+					});
+					fhq.pages['knowledge_base']();
+				}).fail(function(err) {
+					console.error('Error:', err);
+				}).finally(function(){
+					window.fhq.changeLocationState({
+						'knowledge_base': '',
+						'parentid': kbid
+					});
+					fhq.pages['knowledge_base']();
+				})
+			}).fail(function(err) {
 				console.error('Error:', err);
 			});
 		});
+
+		$('.kbi-save').unbind().bind('click', function(){
+			var kbid = parseInt($(this).attr('kbid'),10);
+			var propid = parseInt($(this).attr('propid'),10);
+			
+			if (propid === -1) {
+				// classbook_update_record
+				fhq.classbook_update_record({
+					"classbookid": kbid,
+					"name": $('#edit_kb_name').val(),
+					"content": window['edit_kb_content'].value(),
+					"ordered": parseInt($('#edit_kb_ordered').val(),10),
+					"parentid": parseInt($('#edit_kb_parentid').val(),10),
+				}).done(function(r) {
+					console.log('Success: ', r);
+					fhq.pages['knowledge_base']();
+				}).fail(function(err){
+					console.error('Error:', err);
+				});
+			} else {
+				// classbook_propasal_update
+				fhq.classbook_propasal_update({
+					"classbook_proposal_id": propid,
+					"content": window['edit_kb_content'].value(),
+				}).done(function(r) {
+					console.log('Success: ', r);
+					fhq.pages['knowledge_base']();
+				}).fail(function(err){
+					console.error('Error:', err);
+				});
+			}
+		});
+
+		$('.kbi-remove').unbind().bind('click', function() {
+			var kbid = parseInt($(this).attr('kbid'),10);
+			var propid = parseInt($(this).attr('propid'),10);
+
+			if(propid === -1) {
+				// classbook_delete_record
+				fhq.classbook_delete_record({
+					"classbookid": kbid
+				}).done(function(r) {
+					console.log('Success: ', r);
+					fhq.pages['knowledge_base']();
+				}).fail(function(err){
+					console.error('Error:', err);
+				});
+			} else {
+				// classbook_proposal_delete_record
+				fhq.classbook_proposal_delete_record({
+					"classbook_proposal_id": propid
+				}).done(function(r) {
+					console.log('Success: ', r);
+					window.fhq.changeLocationState({
+						'knowledge_base': '',
+						'parentid': kbid
+					});
+					fhq.pages['knowledge_base']();
+				}).fail(function(err) {
+					console.error('Error:', err);
+				});
+				
+			}
+		})
+
 	}).fail(function(err){
 		el.append('<div class="alert alert-danger">' + err.error + '</div>');
 		console.error('Error:', err);
@@ -114,6 +259,11 @@ fhq.pages['knowledge_base'] = function(){
 		parentid = parseInt(fhq.pageParams['parentid'], 10);
 	}
 
+	var propid = -1;
+	if (fhq.containsPageParam("propid")) {
+		propid = parseInt(fhq.pageParams['propid'], 10);
+	}
+
 	var knowledge_base_filter = '';
 	if (fhq.containsPageParam("filter")) {
 		knowledge_base_filter = fhq.pageParams['filter'];
@@ -127,6 +277,7 @@ fhq.pages['knowledge_base'] = function(){
 		'onpage': onpage,
 		'page': page,
 		'parentid': parentid,
+		'propid': propid,
 		'filter': knowledge_base_filter
 	});
 
@@ -163,7 +314,7 @@ fhq.pages['knowledge_base'] = function(){
 				+ '<div id="current_kb_item">'
 				+ '</div><br>'
 			);
-			fhqadmin.knowledge_base_load_current_item(parentid);
+			fhqadmin.knowledge_base_load_current_item(parentid, propid);
 		}
 		
 		el.append(''
