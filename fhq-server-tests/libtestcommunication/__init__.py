@@ -65,13 +65,16 @@ def test_login(user):
 
 
 def send_msg(session, req):
-    res = session.chat_send_message(req)
+    res = session.chats_message_send(req)
 
     pprint(res)
+
+    fhqtest.check_response(res, "succesfull sended")
 
     fhqtest.alert(res['message'] != req['message'], '"message" not equal')
     fhqtest.alert('user_id' not in res, 'Not member "user_id"')
     fhqtest.alert('dt' not in res, 'Not member "dt"')
+    fhqtest.alert(res['dt'] == '', '"dt" empty')
     fhqtest.alert('message_id' not in res, 'Not member "message_id"')
     fhqtest.alert('status' not in res, 'Not member "status"')
 
@@ -82,6 +85,8 @@ def read_msg(session, req):
     res = session.chats_message_read(req)
 
     pprint(res)
+
+    fhqtest.check_response(res, "succesfull readed")
 
     fhqtest.alert('messages' not in res, 'Not member "messages"')
     fhqtest.alert(res['chat'] != req['chat'], '"chat" not equal')
@@ -98,7 +103,8 @@ def edit_msg(session, req):
 
     pprint(res)
 
-    fhqtest.alert(res['message'] == req['message'], '"message" equal after editing')
+    fhqtest.check_response(res, "succesfull edited")
+
     fhqtest.alert('user_id' not in res, 'Not member "user_id"')
     fhqtest.alert('message_id' not in res, 'Not member "message_id"')
 
@@ -107,6 +113,10 @@ def edit_msg(session, req):
 
 def delete_msg(session, req):
     res = session.chats_message_delete(req)
+
+    pprint(res)
+
+    fhqtest.check_response(res, "succesfull deleted")
 
     fhqtest.alert('status' not in res, 'Not member "status"')
 
@@ -182,10 +192,10 @@ def run_tests():
         "chat": "0"
     })
 
-    fhqtest.alert(read_out_3['messages'] != read_out_2['messages'], 'Not equal list messages')
+    fhqtest.check_values("double reading", read_out_3['messages'], read_out_2['messages'])
 
-    fhqtest.alert(read_out_3['messages'][-1]['message'] != send_out_1['message'], 'Not equal messages')
-    fhqtest.alert(read_out_2['messages'][-1]['message'] != send_out_1['message'], 'Not equal messages')
+    fhqtest.check_values("sended message", read_out_3['messages'][-1]['message'], send_out_1['message'])
+    fhqtest.check_values("sended message", read_out_2['messages'][-1]['message'], send_out_1['message'])
 
     #   send  + read + edit + read
 
@@ -209,20 +219,20 @@ def run_tests():
         "chat": "0"
     })
 
-    fhqtest.alert(read_out_1['messages'][-1]['message'] != edit_out_2['message'], 'Not equal last message')
+    fhqtest.check_values("edited message", read_out_1['messages'][-1]['message'], edit_out_2['message'])
 
     #   delete + read
 
-    cnt_befor = read_out_1['messages']
+    cnt_befor = len(read_out_1['messages'])
 
     delete_out_2 = delete_msg(chat_user2_session, {
         "message_id": send_out_2["message_id"]
     })
 
-    fhqtest.alert(delete_out_2['status'] != "ok", 'Deleting not ok')
+    fhqtest.check_values("Deleting message", delete_out_2['status'], "ok")
 
     read_out_1 = read_msg(chat_user1_session, {
         "chat": "0"
     })
 
-    fhqtest.alert(len(read_out_1['messages']) != cnt_befor - 1, 'Message not deleted')
+    fhqtest.check_values("Count message after delete", len(read_out_1['messages']), cnt_befor - 1)
