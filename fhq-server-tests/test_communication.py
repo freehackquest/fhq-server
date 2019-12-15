@@ -1,7 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import libfhqcli
 import fhqtest
 import sys, traceback
 import base64
