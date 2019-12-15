@@ -70,7 +70,7 @@ def send_msg(session, req):
     pprint(res)
 
     fhqtest.alert(res['message'] != req['message'], '"message" not equal')
-    fhqtest.alert('user_uuid' not in res, 'Not member "user_uuid"')
+    fhqtest.alert('user_id' not in res, 'Not member "user_id"')
     fhqtest.alert('dt' not in res, 'Not member "dt"')
     fhqtest.alert('message_id' not in res, 'Not member "message_id"')
     fhqtest.alert('status' not in res, 'Not member "status"')
@@ -84,7 +84,7 @@ def read_msg(session, req):
     pprint(res)
 
     fhqtest.alert('messages' not in res, 'Not member "messages"')
-    fhqtest.alert(res['chat'] != "common", '"chat" not equal')
+    fhqtest.alert(res['chat'] != req['chat'], '"chat" not equal')
     fhqtest.alert(len(res['messages']) < 1, '"messages" empty')
     fhqtest.alert('message' not in res['messages'][0], 'Not member "messages" in list "messages"')
     fhqtest.alert('user' not in res['messages'][0], 'Not member "user" in list "messages"')
@@ -99,7 +99,7 @@ def edit_msg(session, req):
     pprint(res)
 
     fhqtest.alert(res['message'] == req['message'], '"message" equal after editing')
-    fhqtest.alert('user_uuid' not in res, 'Not member "user_uuid"')
+    fhqtest.alert('user_id' not in res, 'Not member "user_id"')
     fhqtest.alert('message_id' not in res, 'Not member "message_id"')
 
     return res
@@ -171,15 +171,15 @@ def run_tests():
 
     send_out_1 = send_msg(chat_user1_session, {
         "message": "hello",
-        "chat": "common"
+        "chat": "0"
     })
 
     read_out_2 = read_msg(chat_user2_session, {
-        "chat": "common"
+        "chat": "0"
     })
 
     read_out_3 = read_msg(chat_user3_session, {
-        "chat": "common"
+        "chat": "0"
     })
 
     fhqtest.alert(read_out_3['messages'] != read_out_2['messages'], 'Not equal list messages')
@@ -191,11 +191,11 @@ def run_tests():
 
     send_out_2 = send_msg(chat_user2_session, {
         "message": "ho",
-        "chat": "common"
+        "chat": "0"
     })
 
     read_out_3 = read_msg(chat_user3_session, {
-        "chat": "common"
+        "chat": "0"
     })
 
     edit_out_2 = edit_msg(chat_user2_session, {
@@ -206,7 +206,7 @@ def run_tests():
     fhqtest.alert(read_out_3['messages'][-1]['message'] == edit_out_2['message'], 'Equal edited message')
 
     read_out_1 = read_msg(chat_user1_session, {
-        "chat": "common"
+        "chat": "0"
     })
 
     fhqtest.alert(read_out_1['messages'][-1]['message'] != edit_out_2['message'], 'Not equal last message')
@@ -222,7 +222,7 @@ def run_tests():
     fhqtest.alert(delete_out_2['status'] != "ok", 'Deleting not ok')
 
     read_out_1 = read_msg(chat_user1_session, {
-        "chat": "common"
+        "chat": "0"
     })
 
     fhqtest.alert(len(read_out_1['messages']) != cnt_befor - 1, 'Message not deleted')
