@@ -28,6 +28,7 @@ Update_mhd92m15nb_snwxenqco0::Update_mhd92m15nb_snwxenqco0()
     chats_messages->addColumn("userid").number().notNull().defaultValue("0");
     chats_messages->addColumn("message").string(1024).notNull().defaultValue("");
     chats_messages->addColumn("status").string(127).notNull().defaultValue("");
-    chats_messages->addColumn("created").datetime().notNull();
-    chats_messages->addColumn("updated").datetime().notNull();
+    chats_messages->addColumn("dt").string(127).notNull().defaultValue("");
+    // chats_messages->addColumn("created").datetime().notNull();
+    // chats_messages->addColumn("updated").datetime().notNull();
 }

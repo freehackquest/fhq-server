@@ -119,10 +119,10 @@ void CmdHandlerChatLastestMessages::handle(ModelRequest *pRequest) {
 
 // ---------------------------------------------------------------------
 
-REGISTRY_CMD(CmdHandlerChatReadMessage)
+REGISTRY_CMD(CmdHandlerChatSendMessage_new)
 
-CmdHandlerChatReadMessage::CmdHandlerChatReadMessage()
-    : CmdHandlerBase("chats_message_read", "Change chat message status from \"unread\" to \"read\"") {
+CmdHandlerChatSendMessage_new::CmdHandlerChatSendMessage_new()
+    : CmdHandlerBase("chats_message_send", "Method will be send chat message and it sent to another users") {
     
     setActivatedFromVersion("0.2.24");
 
@@ -130,13 +130,128 @@ CmdHandlerChatReadMessage::CmdHandlerChatReadMessage()
     setAccessUser(true);
     setAccessAdmin(true);
 
-    // validation and description input fields
+    requireStringParam("chat", "Chat for sending a message");
+    requireStringParam("message", "Message");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerChatSendMessage_new::handle(ModelRequest *pRequest) {
+    
+    nlohmann::json jsonRequest = pRequest->jsonRequest();
+
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
+    int nUserId = pUserSession->userid();
+
+    std::string sMessage = "";
+    if (jsonRequest["message"].is_string()) {
+        sMessage = jsonRequest["message"];
+    }
+
+    Fallen::trim(sMessage);
+    if (sMessage.length() == 0) {
+        pRequest->sendMessageError(cmd(), WSJCppError(400, "Message could not be empty"));
+        return;
+    }
+
+    std::string sChat = "";
+    if (jsonRequest["chat"].is_string()) {
+        sChat = jsonRequest["chat"];
+    }
+
+    if (sChat != "0") {
+        pRequest->sendMessageError(cmd(), WSJCppError(400, "Only '0' (global) chat allowed"));
+        return;
+    }
+
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+
+    query.prepare("INSERT INTO chats_messages(chatid, userid, message, dt, status) VALUES(:chat, :user, :message, NOW(), 'unread')");
+    query.bindValue(":chat", QString::fromStdString(sChat));
+    query.bindValue(":user", nUserId);
+    query.bindValue(":message", QString::fromStdString(sMessage));
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    nlohmann::json jsonResponse;
+
+    QSqlQuery query2(db);
+    query2.prepare("SELECT status, dt, id FROM chats_messages WHERE id = :msg_id");
+
+    query2.bindValue(":msg_id", query.lastInsertId().toInt());
+    
+    if (!query2.exec() || !query2.next()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    QSqlRecord record = query2.record();
+
+    jsonResponse["user_id"] = nUserId;
+    jsonResponse["message"] = sMessage;
+    jsonResponse["dt"] = record.value("dt").toString().toStdString();
+    jsonResponse["message_id"] = record.value("id").toInt();
+    jsonResponse["status"] = record.value("status").toString().toStdString();
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+// ---------------------------------------------------------------------
+
+REGISTRY_CMD(CmdHandlerChatReadMessage)
+
+CmdHandlerChatReadMessage::CmdHandlerChatReadMessage()
+    : CmdHandlerBase("chats_message_read", "Get all messages in chat") {
+    
+    setActivatedFromVersion("0.2.24");
+
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
+
+    requireStringParam("chat", "Chat for reading messages");
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatReadMessage::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+    nlohmann::json jsonRequest = pRequest->jsonRequest();
+    
+    std::string sChat = "";
+    if (jsonRequest["chat"].is_string()) {
+        sChat = jsonRequest["chat"];
+    }
+
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    query.prepare("SELECT id, userid, message, dt, status FROM chats_messages WHERE chatid = :chat ORDER BY dt");
+    query.bindValue(":chat", QString::fromStdString(sChat));
+
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    nlohmann::json jsonMessages = nlohmann::json::array();
+    while (query.next()) {
+        QSqlRecord record = query.record();
+        nlohmann::json jsonChatRow;
+        jsonChatRow["user"] = record.value("userid").toInt();
+        jsonChatRow["message_id"] = record.value("id").toInt();
+        jsonChatRow["message"] = record.value("message").toString().toHtmlEscaped().toStdString();
+        jsonChatRow["dt"] = record.value("dt").toString().toStdString();
+        jsonMessages.push_back(jsonChatRow);
+    }
+    
+    nlohmann::json jsonResponse;
+    jsonResponse["messages"] = jsonMessages;
+    jsonResponse["chat"] = sChat;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -174,13 +289,77 @@ CmdHandlerChatEditMessage::CmdHandlerChatEditMessage()
     setAccessUser(true);
     setAccessAdmin(true);
 
-    // validation and description input fields
+    requireIntegerParam("message_id", "Message id");
+    requireStringParam("message_new", "New message");
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatEditMessage::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+    nlohmann::json jsonRequest = pRequest->jsonRequest();
+
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
+    int nUserId = pUserSession->userid();
+
+    std::string sNewMessage = "";
+    if (jsonRequest["message_new"].is_string()) {
+        sNewMessage = jsonRequest["message_new"];
+    }
+
+    Fallen::trim(sNewMessage);
+    if (sNewMessage.length() == 0) {
+        pRequest->sendMessageError(cmd(), WSJCppError(400, "Message could not be empty"));
+        return;
+    }
+
+    int nIdMessage = 0;
+    if (jsonRequest["message_id"].is_number_integer()) {
+        nIdMessage = jsonRequest["message_id"];
+    }
+
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+
+    query.prepare("SELECT id, userid FROM chats_messages WHERE id = :msg_id");
+    query.bindValue(":msg_id", nIdMessage);
+
+
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    if (!query.next() || query.size() < 1) {
+        pRequest->sendMessageError(cmd(), WSJCppError(400, "Message not found"));
+        return;
+    }
+
+    QSqlRecord record = query.record();
+    int nMsgUserId = record.value("userid").toInt();
+
+    if (nUserId != nMsgUserId) {
+        pRequest->sendMessageError(cmd(), WSJCppError(403, "Editing message allowed only for owner"));
+        return;
+    }
+
+    QSqlQuery query2(db);
+    query2.prepare("UPDATE chats_messages SET message = :message_new WHERE id = :msg_id");
+    query2.bindValue(":msg_id", nIdMessage);
+    query2.bindValue(":message_new", QString::fromStdString(sNewMessage));
+
+    if (!query2.exec()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    nlohmann::json jsonResponse;
+
+    jsonResponse["user_id"] = nUserId;
+    jsonResponse["message_id"] = nIdMessage;
+    jsonResponse["message"] = sNewMessage;
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -196,13 +375,62 @@ CmdHandlerChatDeleteMessage::CmdHandlerChatDeleteMessage()
     setAccessUser(true);
     setAccessAdmin(true);
 
-    // validation and description input fields
+    requireIntegerParam("message_id", "Message id for remove");
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatDeleteMessage::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+   
+    nlohmann::json jsonRequest = pRequest->jsonRequest();
+
+    WSJCppUserSession *pUserSession = pRequest->getUserSession();
+    int nUserId = pUserSession->userid();
+
+    int nIdMessage = 0;
+    if (jsonRequest["message_id"].is_number_integer()) {
+        nIdMessage = jsonRequest["message_id"];
+    }
+
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+
+    query.prepare("SELECT id, userid FROM chats_messages WHERE id = :msg_id");
+    query.bindValue(":msg_id", nIdMessage);
+
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    if (!query.next() || query.size() < 1) {
+        pRequest->sendMessageError(cmd(), WSJCppError(400, "Message not found"));
+        return;
+    }
+
+    QSqlRecord record = query.record();
+    int nMsgUserId = record.value("userid").toInt();
+
+    if (nUserId != nMsgUserId) {
+        pRequest->sendMessageError(cmd(), WSJCppError(403, "Editing message allowed only for owner"));
+        return;
+    }
+
+    QSqlQuery query2(db);
+    query2.prepare("DELETE FROM chats_messages WHERE id = :msg_id");
+    query2.bindValue(":msg_id", nIdMessage);
+
+    if (!query2.exec()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    nlohmann::json jsonResponse;
+
+    jsonResponse["status"] = "ok";
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 // ---------------------------------------------------------------------
