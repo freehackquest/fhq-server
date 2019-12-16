@@ -1,8 +1,13 @@
+<link rel="stylesheet" href="/assets/simplemde.min.css">
 <h1 l10nTranslate>knowledgeBase</h1>
 
 <div class="alert alert-danger" *ngIf="errorMessage != null">
   {{ errorMessage }}
   <div class="btn btn-link" (click)="openArticle(0)">Try Open Root Article</div>
+</div>
+
+<div class="alert alert-info" *ngIf="infoMessage != null">
+  {{ infoMessage }}
 </div>
 
 <nav aria-label="breadcrumb" *ngIf="errorMessage == null">
@@ -30,10 +35,33 @@
   </div>
   <hr>
 
-  <ngx-md [data]="articleContentNaked"></ngx-md>
 
 
-  <!-- or use angular component -->
+  <div *ngIf="articleContentNaked.length != 0 || editMode">
+    <ng-template [ngIf]="editMode" [ngIfElse]="read_md">
+
+      <button class="btn btn-secondary" (click)="cancel_editing()" l10nTranslate>cancel</button>
+      <button class="btn btn-secondary" (click)="send_editing()" l10nTranslate>send</button>
+      <div class="dropdown" style="display: inline-block;">
+        <div class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" style="cursor: pointer" aria-expanded="false">
+          <img height=25px [src]="'assets/img/lang_' + editLang + '.png'"/>
+        </div>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="Preview">
+          <div class="dropdown-item" style="cursor: pointer" (click)="selectEditLang('en');"><img height=25px src="assets/img/lang_en.png"> English</div>
+          <div class="dropdown-item" style="cursor: pointer" (click)="selectEditLang('ru');"><img height=25px src="assets/img/lang_ru.png"> Русский</div>
+          <div class="dropdown-item" style="cursor: pointer" (click)="selectEditLang('de');"><img height=25px src="assets/img/lang_de.png"> Deutch</div>
+        </div>
+      </div>
+      <simplemde *ngIf="editMode" [codemirror]="{ lineNumbers: true }" [(ngModel)]="articleContentNaked"></simplemde>
+
+    </ng-template>
+    <ng-template #read_md>
+
+      <button class="btn btn-secondary" (click)="start_editing()" l10nTranslate>proposalTranslete</button>
+      <ngx-md [data]="articleContentNaked"></ngx-md>
+
+    </ng-template>
+  </div>
 </div>
 
 <br>

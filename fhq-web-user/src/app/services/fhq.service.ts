@@ -21,6 +21,7 @@ export class FhqService {
     private _location: PlatformLocation,
   ) {
     this.serverHost = this._location.hostname;
+    // this.serverHost = 'freehackquest.com';
     this.currentProtocol = this._location.protocol;
 
     fhq.bind('connected', () => this.wsConnected() );

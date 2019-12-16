@@ -55,6 +55,7 @@ import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { NgxMdModule } from 'ngx-md';
 import { FhqJuryAdComponent } from './pages/fhq-jury-ad/fhq-jury-ad.component';
+import { SimplemdeModule } from 'ng2-simplemde'
 
 /*import hljs from 'highlight.js/lib/highlight';
 import javascript from 'highlight.js/lib/languages/javascript';
@@ -123,7 +124,7 @@ const l10nConfig: L10nConfig = {
     BlockContactUsComponent,
     UserSkillsComponent,
     WelcomeComponent,
-    FhqJuryAdComponent,
+    FhqJuryAdComponent
   ],
   imports: [
     BrowserModule,
@@ -141,6 +142,7 @@ const l10nConfig: L10nConfig = {
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
     NgxMdModule.forRoot(),
+    SimplemdeModule.forRoot()
   ],
   providers: [
     {

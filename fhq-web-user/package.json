@@ -33,6 +33,7 @@
     "jquery": "^3.4.1",
     "libfhqcli-web-js": "^0.2.24",
     "marked": "^0.7.0",
+    "ng2-simplemde": "^2.1.0",
     "ngx-ace-wrapper": "^8.0.0",
     "ngx-markdown-editor": "^1.2.0",
     "ngx-md": "^8.0.0",
