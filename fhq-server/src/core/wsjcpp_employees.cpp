@@ -1077,11 +1077,7 @@ EmployServer::EmployServer()
 
     
     std::string sGroupServerFolders = "server_folders";
-    pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_public")
-        .dirPath("/usr/share/fhq-server/public/").inDatabase();
-    pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_public_url")
-        .string("https://freehackquest.com/public/").inDatabase();
-
+    
     // deprecated
     pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_quests")
         .dirPath("/var/www/html/fhq/files/quests/").inDatabase();

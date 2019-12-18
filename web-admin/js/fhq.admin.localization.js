@@ -710,11 +710,11 @@ fhq.localization = {
 		'en': 'Work Dir',
 		'ru': 'Work Dir'
 	},
-	'setting_name_server_folder_public': {
-		'en': 'Public Folder',
-		'ru': 'Public Folder'
+	'setting_name_web_public_folder': {
+		'en': 'Public Folder Path',
+		'ru': 'Public Folder Path'
 	},
-	'setting_name_server_folder_public_url': {
+	'setting_name_web_public_folder_url': {
 		'en': 'Public Folder URL:',
 		'ru': 'Public Folder URL:'
 	},

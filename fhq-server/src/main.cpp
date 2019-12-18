@@ -302,6 +302,7 @@ int main(int argc, char** argv) {
         pGlobalSettings->registrySetting("web_server", "web_admin_folder").dirPath("/usr/share/fhq-server/web-admin").inFile();
         pGlobalSettings->registrySetting("web_server", "web_user_folder").dirPath("/usr/share/fhq-server/fhq-web-user").inFile();
         pGlobalSettings->registrySetting("web_server", "web_public_folder").dirPath("/usr/share/fhq-server/fhq-web-public").inFile();
+        pGlobalSettings->registrySetting("web_server", "web_public_folder_url").string("http://localhost:7080/public/").inFile();
         pGlobalSettings->registrySetting("web_server", "web_fhqjad_store").dirPath("/usr/share/fhq-server/web/fhqjad-store").inFile();
         
         Employees::init({"start_server"});
@@ -328,6 +329,7 @@ int main(int argc, char** argv) {
         std::string sWebAdminFolder = pGlobalSettings->get("web_admin_folder").getDirPathValue();
         std::string sWebUserFolder = pGlobalSettings->get("web_user_folder").getDirPathValue();
         std::string sWebPublicFolder = pGlobalSettings->get("web_public_folder").getDirPathValue(); // TODO must be declared in server
+        std::string sWebPublicFolderUrl = pGlobalSettings->get("web_public_folder_url").getStringValue(); // TODO must be declared in server
 
         Log::info(TAG, "Starting web-server on " + std::to_string(nWebPort)
              + " with " + std::to_string(nWebMaxThreads) + " worker threads");
