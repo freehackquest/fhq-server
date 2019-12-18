@@ -4,7 +4,6 @@ import { SpinnerService } from '../../services/spinner.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
-import { UserProfileMenuComponent } from '../user-profile-menu/user-profile-menu.component';
 
 @Component({
   selector: 'app-user-profile',
