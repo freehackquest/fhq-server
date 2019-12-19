@@ -191,8 +191,8 @@ list (APPEND FHQSRV_SOURCES "src/employees/employ_leaks.h")
 list (APPEND FHQSRV_SOURCES "src/employees/employ_leaks.cpp")
 list (APPEND FHQSRV_SOURCES "src/employees/employ_mails.h")
 list (APPEND FHQSRV_SOURCES "src/employees/employ_mails.cpp")
-list (APPEND FHQSRV_SOURCES "src/employees/include/employ_users.h")
-list (APPEND FHQSRV_SOURCES "src/employees/sources/employ_users.cpp")
+list (APPEND FHQSRV_SOURCES "src/employees/employ_users.h")
+list (APPEND FHQSRV_SOURCES "src/employees/employ_users.cpp")
 
 # tasks
 list (APPEND FHQSRV_SOURCES "src/tasks/runtasks.h")
