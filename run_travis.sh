@@ -50,10 +50,6 @@ check_ret $? "build fhq-server"
 check_ret $? "print version of fhq-server"
 ./fhq-server -wd ../data_travis -cdc
 check_ret $? "test connection to database"
-mkdir -p public/games
-check_ret $? "created public/games"
-./fhq-server -wd ../data_travis -set "server_folder_public=`pwd`/public/"
-check_ret $? "set server_folder"
 cd ..
 
 cd fhq-server-tests

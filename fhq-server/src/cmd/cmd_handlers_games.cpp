@@ -239,7 +239,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
     std::string sGameLogoFilename = "";
     {
         EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
-        std::string sBasePath = pGlobalSettings->get("server_folder_public").getDirPathValue();
+        std::string sBasePath = pGlobalSettings->get("web_public_folder").getDirPathValue();
         sGameLogoFilename = sBasePath + "games/" + std::to_string(nGameID) + ".png";
         if (remove( sGameLogoFilename.c_str() ) != 0) {
             Log::err(TAG, "Could not delete file " + sGameLogoFilename);
@@ -290,7 +290,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
     QString sGameLogoFilename = "";
     {
         EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
-        QString sBasePath = QString::fromStdString(pGlobalSettings->get("server_folder_public").getDirPathValue() + "games/");
+        QString sBasePath = QString::fromStdString(pGlobalSettings->get("web_public_folder").getDirPathValue() + "games/");
         sGameLogoFilename = sBasePath + QString::number(modelGame.localId()) + ".png";
     }
 
@@ -525,7 +525,7 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
     EmployImages *pImages = findEmploy<EmployImages>();
 
-    QString sBasePath = QString::fromStdString(pGlobalSettings->get("server_folder_public").getDirPathValue() + "games/");
+    QString sBasePath = QString::fromStdString(pGlobalSettings->get("web_public_folder").getDirPathValue() + "games/");
 
     QString sFilename = sBasePath + QString::number(nGameID) + ".png";
 
@@ -603,7 +603,7 @@ void CmdHandlerGames::handle(ModelRequest *pRequest) {
 
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
 
-    std::string sBaseUrl = pGlobalSettings->get("server_folder_public_url").getStringValue() + "games/";
+    std::string sBaseUrl = pGlobalSettings->get("web_public_folder_url").getStringValue() + "games/";
     QString base_url = QString::fromStdString(sBaseUrl);
 
     nlohmann::json jsonGames = nlohmann::json::array();

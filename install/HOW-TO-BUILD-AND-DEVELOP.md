@@ -79,13 +79,6 @@ $ npm run build-prod
 
 ## Run server
 
-A small configurations again:
-```
-$ cd ~/freehackquest/fhq-server.git/fhq-server
-$ mkdir -p ../data_travis/public/games  
-$ ./fhq-server -wd ../data_travis/ -set "server_folder_public='pwd'/../data_travis/public/"
-```
-
 Run server:
 ```
 $ cd ~/freehackquest/fhq-server.git/fhq-server
