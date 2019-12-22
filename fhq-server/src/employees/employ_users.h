@@ -1,9 +1,9 @@
-#ifndef EMPLOY_GAMES_H
-#define EMPLOY_GAMES_H
+#ifndef EMPLOY_USERS_H
+#define EMPLOY_USERS_H
 
-#include <employees.h>
+#include <wsjcpp_employees.h>
 
-class EmployUsers : public EmployBase {
+class EmployUsers : public WSJCppEmployBase {
     public:
         EmployUsers();
         static std::string name() { return "EmployUsers"; }
@@ -15,4 +15,4 @@ class EmployUsers : public EmployBase {
         std::string TAG;
 };
 
-#endif // EMPLOY_GAMES_H
+#endif // EMPLOY_USERS_H

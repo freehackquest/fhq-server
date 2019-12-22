@@ -7,7 +7,6 @@
 #include <QtCore>
 #include <wsjcpp_hashes.h>
 #include <fallen.h>
-#include <model_usertoken.h>
 #include <QUuid>
 #include <QDateTime>
 
@@ -1598,12 +1597,12 @@ void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest){
     query.bindValue(":email", sEmail);
     if(!query.exec()){
         Log::err(TAG, query.lastError().text().toStdString());
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
     if (query.next()) {
         Log::err(TAG, "User already exists " + sEmail.toStdString());
-        pRequest->sendMessageError(cmd(), Error(403, "This email already exists"));
+        pRequest->sendMessageError(cmd(), WSJCppError(403, "This email already exists"));
         return;
     }
 
@@ -1617,7 +1616,7 @@ void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest){
         sCode.append(nextChar);
     }
 
-    std::string _code_sha1 = sha1::calc_string_to_hex(sCode.toStdString());
+    std::string _code_sha1 = WSJCppHashes::sha1_calc_hex(sCode.toStdString());
     QString sCode_sha1 = QString(_code_sha1.c_str());
     
     QSqlQuery query_insert(db);
@@ -1642,7 +1641,7 @@ void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest){
     query_insert.bindValue(":data", "");
 
     if(!query_insert.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query_insert.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query_insert.lastError().text().toStdString()));
         return;
     }
 
@@ -1690,7 +1689,7 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
 
     QString sCode = QString::fromStdString(jsonRequest.at("code"));
 
-    std::string _code_sha1 = sha1::calc_string_to_hex(sCode.toStdString());
+    std::string _code_sha1 = WSJCppHashes::sha1_calc_hex(sCode.toStdString());
     QString sCode_sha1 = QString(_code_sha1.c_str()); 
 
     QSqlDatabase db = *(pDatabase->database());
@@ -1699,11 +1698,11 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
     query.bindValue(":code", sCode_sha1);
     if(!query.exec()){
         Log::err(TAG, query.lastError().text().toStdString());
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
     if(!query.next()) {
-        pRequest->sendMessageError(cmd(), Error(401, "Wrong code"));
+        pRequest->sendMessageError(cmd(), WSJCppError(401, "Wrong code"));
         return;
     }
     QSqlRecord record = query.record();
@@ -1715,12 +1714,12 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
     QDateTime dDate_current = QDateTime::currentDateTime();
 
     if (sStatus == "executed") {
-        pRequest->sendMessageError(cmd(), Error(403, "This request is already executed"));
+        pRequest->sendMessageError(cmd(), WSJCppError(403, "This request is already executed"));
         return;
     }
     // code is expired if one hour has passed since the request
     if (dDate_current > dDate_stored.addSecs(3600)) {
-        pRequest->sendMessageError(cmd(), Error(403, "This request is already expired"));
+        pRequest->sendMessageError(cmd(), WSJCppError(403, "This request is already expired"));
         return;
     }   
 
@@ -1746,7 +1745,7 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
     }
 
     QString sPassword_sha1 = sEmail.toUpper() + sPassword;
-    std::string _password_sha1 = sha1::calc_string_to_hex(sPassword_sha1.toStdString());
+    std::string _password_sha1 = WSJCppHashes::sha1_calc_hex(sPassword_sha1.toStdString());
     sPassword_sha1 = QString(_password_sha1.c_str());
 
     QSqlQuery query_insert(db);
@@ -1815,7 +1814,7 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
     query_insert.bindValue(":about", "");
 
     if(!query_insert.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query_insert.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query_insert.lastError().text().toStdString()));
         return;
     }
 
@@ -1824,11 +1823,11 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
     query.prepare("UPDATE user_requests SET status=executed WHERE email=:email");
     query.bindValue(":email", sEmail);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
 
-    RunTasks::AddPublicEvents("users", "New user #" + QString::number(nUserID) + "  " + sNick);
+    RunTasks::AddPublicEvents("users", "New user [#" + std::to_string(nUserID) + "] " + sNick.toStdString());
 
     std::string sSubject = "Registration on FreeHackQuest";
     std::string sContext = "Welcome to FreeHackQuest!\n"
@@ -1838,7 +1837,7 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
     RunTasks::MailSend(sEmail.toStdString(), sSubject, sContext);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
-    RunTasks::UpdateUserLocation(nUserID, sLastIP);
+    RunTasks::UpdateUserLocation(nUserID, sLastIP.toStdString());
 }
 
 /*********************************************
@@ -1870,8 +1869,8 @@ void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest){
     QString sEmail = QString::fromStdString(jsonRequest.at("email"));
     QString sPassword = QString::fromStdString(jsonRequest.at("password"));
     
-    IUserToken *pUserToken = pRequest->userToken();
-    int iUserID = pUserToken->userid();
+    WSJCppUserSession *pSession = pRequest->getUserSession();
+    int iUserID = pSession->userid();
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
@@ -1879,11 +1878,11 @@ void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest){
     query.bindValue(":userid", iUserID); 
     if(!query.exec()){
         Log::err(TAG, query.lastError().text().toStdString());
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
     if(!query.next()) {
-        pRequest->sendMessageError(cmd(), Error(404, "Not found user"));
+        pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found user"));
         return;
     }
     QSqlRecord record = query.record();
@@ -1891,11 +1890,11 @@ void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest){
     QString sPassword_stored = record.value("pass").toString();
     
     QString sPasswordHash = sEmail_stored.toUpper() + sPassword;
-    std::string _sPasswordHash = sha1::calc_string_to_hex(sPasswordHash.toStdString());
+    std::string _sPasswordHash = WSJCppHashes::sha1_calc_hex(sPasswordHash.toStdString());
     sPasswordHash = QString(_sPasswordHash.c_str());
 
     if(sPasswordHash != sPassword_stored){
-        pRequest->sendMessageError(cmd(), Error(401, "Wrong password"));
+        pRequest->sendMessageError(cmd(), WSJCppError(401, "Wrong password"));
         return;
     }
     
@@ -1909,7 +1908,7 @@ void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest){
         sCode.append(nextChar);
     }
 
-    std::string _code_sha1 = sha1::calc_string_to_hex(sCode.toStdString());
+    std::string _code_sha1 = WSJCppHashes::sha1_calc_hex(sCode.toStdString());
     QString sCode_sha1 = QString(_code_sha1.c_str());
     
     QSqlQuery query_insert(db);
@@ -1934,7 +1933,7 @@ void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest){
     query_insert.bindValue(":data", "");
 
     if(!query_insert.exec()){
-        pRequest->sendMessageError(cmd(), Error(500, query_insert.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query_insert.lastError().text().toStdString()));
         return;
     }
     
@@ -1982,7 +1981,7 @@ void CmdHandlerUsersChangeEmailVerification::handle(ModelRequest *pRequest){
 
     QString sCode = QString::fromStdString(jsonRequest.at("code"));
 
-    std::string _code_sha1 = sha1::calc_string_to_hex(sCode.toStdString());
+    std::string _code_sha1 = WSJCppHashes::sha1_calc_hex(sCode.toStdString());
     QString sCode_sha1 = QString(_code_sha1.c_str()); 
 
     QSqlDatabase db = *(pDatabase->database());
@@ -1991,11 +1990,11 @@ void CmdHandlerUsersChangeEmailVerification::handle(ModelRequest *pRequest){
     query.bindValue(":code", sCode_sha1);
     if(!query.exec()){
         Log::err(TAG, query.lastError().text().toStdString());
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
     if(!query.next()) {
-        pRequest->sendMessageError(cmd(), Error(401, "Wrong code"));
+        pRequest->sendMessageError(cmd(), WSJCppError(401, "Wrong code"));
         return;
     }
     QSqlRecord record = query.record();
@@ -2007,30 +2006,30 @@ void CmdHandlerUsersChangeEmailVerification::handle(ModelRequest *pRequest){
     QDateTime dDate_current = QDateTime::currentDateTime();
 
     if (sStatus == "executed") {
-        pRequest->sendMessageError(cmd(), Error(403, "This request is already executed"));
+        pRequest->sendMessageError(cmd(), WSJCppError(403, "This request is already executed"));
         return;
     }
     // code is expired if one hour has passed since the request
     if (dDate_current > dDate_stored.addSecs(3600)) {
-        pRequest->sendMessageError(cmd(), Error(403, "This request is already expired"));
+        pRequest->sendMessageError(cmd(), WSJCppError(403, "This request is already expired"));
         return;
     }   
 
-    IUserToken *pUserToken = pRequest->userToken();
-    int iUserID = pUserToken->userid();
+    WSJCppUserSession *pSession = pRequest->getUserSession();
+    int iUserID = pSession->userid();
 
     query.prepare("UPDATE users SET email=:email WHERE id=:userid");
     query.bindValue(":email", sEmail);
     query.bindValue(":userid", iUserID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
 
     query.prepare("UPDATE user_requests SET status=executed WHERE email=:email");
     query.bindValue(":email", sEmail);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), Error(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
 
