@@ -1,6 +1,6 @@
 # Doxyfile 1.8.11
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = "fhq-server 0.2.21"
+PROJECT_NAME           = "fhq-server 0.2.25"
 PROJECT_NUMBER         =
 PROJECT_BRIEF          =
 PROJECT_LOGO           =
