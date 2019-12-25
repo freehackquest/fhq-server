@@ -123,7 +123,7 @@ CmdHandlerLogin::CmdHandlerLogin()
     setAccessUser(false);
     setAccessAdmin(false);
 
-    requireStringParam("email", "E-mail").addValidator(new ValidatorEmail());
+    requireStringParam("email", "E-mail"); // TODO validator no empty
     requireStringParam("password", "Password"); // TODO validator no empty
 }
 

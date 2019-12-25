@@ -130,9 +130,8 @@ list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_support.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_support.cpp")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_useful_links.h")
 list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_useful_links.cpp")
-
-list (APPEND FHQSRV_SOURCES "src/cmd/include/cmd_handlers_users.h")
-list (APPEND FHQSRV_SOURCES "src/cmd/sources/cmd_handlers_users.cpp")
+list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_users.h")
+list (APPEND FHQSRV_SOURCES "src/cmd/cmd_handlers_users.cpp")
 
 # models
 list (APPEND FHQSRV_SOURCES "src/models/model_notification.cpp")
