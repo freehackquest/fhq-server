@@ -52,7 +52,6 @@ class CmdHandlerRegistration : public CmdHandlerBase {
 
 REGISTRY_CMD(CmdHandlerRegistration)
 
-
 /*********************************************
  * User login by token
 **********************************************/
@@ -142,7 +141,6 @@ REGISTRY_CMD(CmdHandlerUserResetPassword)
 **********************************************/
 
 class CmdHandlerUserSkills : public CmdHandlerBase {
-
     public:
         CmdHandlerUserSkills();
         virtual void handle(ModelRequest *pRequest);
@@ -185,5 +183,53 @@ class CmdHandlerUsers : public CmdHandlerBase {
 };
 
 REGISTRY_CMD(CmdHandlerUsers)
+
+/*********************************************
+ * User registration
+**********************************************/
+
+class CmdHandlerUsersRegistration : public CmdHandlerBase {
+    public:
+        CmdHandlerUsersRegistration();
+        virtual void handle(ModelRequest *pRequest);
+};
+
+REGISTRY_CMD(CmdHandlerUsersRegistration)
+
+/*********************************************
+ * User registration verification 
+**********************************************/
+
+class CmdHandlerUsersRegistrationVerification : public CmdHandlerBase {
+    public:
+        CmdHandlerUsersRegistrationVerification();
+        virtual void handle(ModelRequest *pRequest);
+};
+
+REGISTRY_CMD(CmdHandlerUsersRegistrationVerification)
+
+/*********************************************
+ * Change user's email
+**********************************************/
+ 
+class CmdHandlerUsersChangeEmail : public CmdHandlerBase {
+    public:
+        CmdHandlerUsersChangeEmail();
+        virtual void handle(ModelRequest *pRequest);
+};
+
+REGISTRY_CMD(CmdHandlerUsersChangeEmail)
+
+/*********************************************
+ * Change user's email verification
+**********************************************/
+ 
+class CmdHandlerUsersChangeEmailVerification : public CmdHandlerBase {
+    public:
+        CmdHandlerUsersChangeEmailVerification();
+        virtual void handle(ModelRequest *pRequest);
+};
+
+REGISTRY_CMD(CmdHandlerUsersChangeEmailVerification)
 
 #endif // CMD_HADNLERS_USERS_H

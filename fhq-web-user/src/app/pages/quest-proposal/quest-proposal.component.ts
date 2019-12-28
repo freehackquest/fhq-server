@@ -16,14 +16,14 @@ export class QuestProposalComponent implements OnInit {
   listGames: Array<any> = [];
   successSended: boolean = false;
 
-  @ViewChild('gameId', { static: true }) gameId : ElementRef; 
-  @ViewChild('questName', { static: true }) questName : ElementRef;
-  @ViewChild('questSubject', { static: true }) questSubject : ElementRef;
-  @ViewChild('questScore', { static: true }) questScore : ElementRef;
-  @ViewChild('questAnswerFormat', { static: true }) questAnswerFormat : ElementRef;
-  @ViewChild('questAnswer', { static: true }) questAnswer : ElementRef;
-  @ViewChild('questAuthor', { static: true }) questAuthor : ElementRef;
-  @ViewChild('questCopyright', { static: true }) questCopyright : ElementRef;
+  @ViewChild('gameId', { static: false }) gameId : ElementRef; 
+  @ViewChild('questName', { static: false }) questName : ElementRef;
+  @ViewChild('questSubject', { static: false }) questSubject : ElementRef;
+  @ViewChild('questScore', { static: false }) questScore : ElementRef;
+  @ViewChild('questAnswerFormat', { static: false }) questAnswerFormat : ElementRef;
+  @ViewChild('questAnswer', { static: false }) questAnswer : ElementRef;
+  @ViewChild('questAuthor', { static: false }) questAuthor : ElementRef;
+  @ViewChild('questCopyright', { static: false }) questCopyright : ElementRef;
   
   constructor(
     private _spinner: SpinnerService,
@@ -83,6 +83,7 @@ export class QuestProposalComponent implements OnInit {
     this.errorMessage = null;
     this.successSended = false;
     let _data = {};
+    console.log("this.questName.nativeElement.value: ", this.questName.nativeElement.value)
     _data["gameid"] = parseInt(this.gameId.nativeElement.value, 10);
     _data["name"] = this.questName.nativeElement.value.trim();
     _data["subject"] = this.questSubject.nativeElement.value.trim();

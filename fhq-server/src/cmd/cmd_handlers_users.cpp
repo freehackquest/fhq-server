@@ -7,6 +7,8 @@
 #include <QtCore>
 #include <wsjcpp_hashes.h>
 #include <fallen.h>
+#include <QUuid>
+#include <QDateTime>
 
 /*********************************************
  * This handler will be return scoreboard of user
@@ -227,8 +229,7 @@ CmdHandlerRegistration::CmdHandlerRegistration()
     setAccessAdmin(false);
 
     // validation and description input fields
-    requireStringParam("email", "E-mail")
-        .addValidator(new ValidatorEmail());
+    requireStringParam("email", "E-mail").addValidator(new ValidatorEmail());
     requireStringParam("university", "University");
 }
 
@@ -950,8 +951,7 @@ CmdHandlerUserResetPassword::CmdHandlerUserResetPassword()
     setAccessAdmin(false);
 
     // validation and description input fields
-    requireStringParam("email", "E-mail")
-        .addValidator(new ValidatorEmail());
+    requireStringParam("email", "E-mail").addValidator(new ValidatorEmail());
 }
 
 // ---------------------------------------------------------------------
@@ -985,7 +985,7 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest) {
         return;
     }
 
-    // // generate random password
+    // generate random password
     const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
     const int randomStringLength = 12; // assuming you want random strings of 12 characters
     QString sPassword;
@@ -1561,5 +1561,477 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest) {
     jsonResponse["onpage"] = nOnPage;
     jsonResponse["page"] = nPage;
     jsonResponse["count"] = nCount;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+/*********************************************
+ * User registration
+**********************************************/
+
+CmdHandlerUsersRegistration::CmdHandlerUsersRegistration()
+    : CmdHandlerBase("users_registration", "Method for registration") {
+
+    TAG = "CmdUsersRegistrationHandler";
+
+    setAccessUnauthorized(true);
+    setAccessUser(false);
+    setAccessAdmin(false);
+
+    // validation and description input fields
+    requireStringParam("email", "E-mail").addValidator(new ValidatorEmail());
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest) {
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
+    const auto &jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
+
+    QString sEmail = QString::fromStdString(jsonRequest.at("email"));
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM users WHERE email = :email");
+    query.bindValue(":email", sEmail);
+    if (!query.exec()) {
+        Log::err(TAG, query.lastError().text().toStdString());
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+    if (query.next()) {
+        Log::err(TAG, "User already exists " + sEmail.toStdString());
+        pRequest->sendMessageError(cmd(), WSJCppError(403, "This email already exists"));
+        return;
+    }
+
+    // generate a verification code
+    const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+    const int randomStringLength = 6; 
+    QString sCode;
+    for (int i = 0; i < randomStringLength; ++i) {
+        int index = qrand() % possibleCharacters.length();
+        QChar nextChar = possibleCharacters.at(index);
+        sCode.append(nextChar);
+    }
+
+    std::string _code_sha1 = WSJCppHashes::sha1_calc_hex(sCode.toStdString());
+    QString sCode_sha1 = QString(_code_sha1.c_str());
+    
+    QSqlQuery query_insert(db);
+    query_insert.prepare(""
+                         "INSERT INTO user_requests ("
+                         "   email, "
+                         "   type, "
+                         "   code, "
+                         "   dt, "
+                         "   data) "
+                         "VALUES("
+                         "   :email, "
+                         "   :type, "
+                         "   :code, "
+                         "   NOW(), "
+                         "   :data); "
+    );
+
+    query_insert.bindValue(":email", sEmail);
+    query_insert.bindValue(":type", "registration");
+    query_insert.bindValue(":code", sCode_sha1);
+    query_insert.bindValue(":data", "");
+
+    if (!query_insert.exec()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query_insert.lastError().text().toStdString()));
+        return;
+    }
+
+    std::string sSubject = "Registration on FreeHackQuest";
+    std::string sContext = "You received this email because you (or someone "
+                        "impersonating you) tried to pass the registration "
+                        "on the website https://freehackquest.com. "
+                        "If you didn’t make a registration request, "
+                        "please ignore this email. In case you continue to get "
+                        "emails with similar content - contact the developers."
+                        "\n\n Otherwise, to confirm the change of your email "
+                        "address, enter the following code into the appropriate "
+                        "entry form on the website.\n\n"
+                        "Your code: " + sCode.toStdString() + "\n";                      
+
+    RunTasks::MailSend(sEmail.toStdString(), sSubject, sContext);
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+/*********************************************
+ * User registration verification 
+**********************************************/
+
+CmdHandlerUsersRegistrationVerification::CmdHandlerUsersRegistrationVerification()
+    : CmdHandlerBase("users_registration_verification", "Method for registration verification") {
+
+    TAG = "CmdUsersRegistrationVerificationHandler";
+
+    setAccessUnauthorized(true);
+    setAccessUser(false);
+    setAccessAdmin(false);
+
+    // validation and description input fields
+    requireStringParam("code", "Verification code"); 
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest) {
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
+    const auto &jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
+
+    QString sCode = QString::fromStdString(jsonRequest.at("code"));
+
+    std::string _code_sha1 = WSJCppHashes::sha1_calc_hex(sCode.toStdString());
+    QString sCode_sha1 = QString(_code_sha1.c_str()); 
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM user_requests WHERE code = :code");
+    query.bindValue(":code", sCode_sha1);
+    if (!query.exec()) {
+        Log::err(TAG, query.lastError().text().toStdString());
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+    if (!query.next()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(401, "Wrong code"));
+        return;
+    }
+    QSqlRecord record = query.record();
+    QString sEmail = record.value("email").toString();
+    QString sDate = record.value("dt").toString();
+    QString sStatus = record.value("status").toString();
+    
+    QDateTime dDate_stored = QDateTime::fromString(sDate, "yyyy-mm-dd hh:mm:ss");
+    QDateTime dDate_current = QDateTime::currentDateTime();
+
+    if (sStatus == "executed") {
+        pRequest->sendMessageError(cmd(), WSJCppError(403, "This request is already executed"));
+        return;
+    }
+    // code is expired if one hour has passed since the request
+    if (dDate_current > dDate_stored.addSecs(3600)) {
+        pRequest->sendMessageError(cmd(), WSJCppError(403, "This request is already expired"));
+        return;
+    }   
+
+    // generate random nick
+    const QString possibleCharacters("ABCDEFH0123456789");
+    const int randomStringLength = 8; // assuming you want random strings of 8 characters
+    QString sNick;
+    for (int i = 0; i < randomStringLength; ++i) {
+        int index = qrand() % possibleCharacters.length();
+        QChar nextChar = possibleCharacters.at(index);
+        sNick.append(nextChar);
+    }
+    sNick = "hacker-" + sNick;
+
+    // generate random password
+    const QString possibleCharacters2("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+    const int randomStringLength2 = 12; // assuming you want random strings of 12 characters
+    QString sPassword;
+    for (int i = 0; i < randomStringLength2; ++i) {
+        int index = qrand() % possibleCharacters2.length();
+        QChar nextChar = possibleCharacters2.at(index);
+        sPassword.append(nextChar);
+    }
+
+    QString sPassword_sha1 = sEmail.toUpper() + sPassword;
+    std::string _password_sha1 = WSJCppHashes::sha1_calc_hex(sPassword_sha1.toStdString());
+    sPassword_sha1 = QString(_password_sha1.c_str());
+
+    QSqlQuery query_insert(db);
+    query_insert.prepare(""
+                         "INSERT INTO users ("
+                         "   uuid, "
+                         "   email, "
+                         "   pass, "
+                         "   role, "
+                         "   nick,"
+                         "   logo,"
+                         "   dt_create,"
+                         "   dt_last_login,"
+                         "   last_ip,"
+                         "   status,"
+                         "   country,"
+                         "   region,"
+                         "   city,"
+                         "   university,"
+                         "   latitude,"
+                         "   longitude,"
+                         "   rating,"
+                         "   about)"
+                         "VALUES("
+                         "   :uuid, "
+                         "   :email, "
+                         "   :pass, "
+                         "   :role, "
+                         "   :nick,"
+                         "   :logo,"
+                         "   NOW(),"
+                         "   NOW(),"
+                         "   :last_ip,"
+                         "   :status,"
+                         "   :country,"
+                         "   :region,"
+                         "   :city,"
+                         "   :university,"
+                         "   :latitude,"
+                         "   :longitude,"
+                         "   :rating,"
+                         "   :about);"
+    );
+
+    QString sLastIP = pRequest->client()->peerAddress().toString();
+
+    QString sUuid = QUuid::createUuid().toString();
+    sUuid = sUuid.mid(1,sUuid.length()-2);
+    sUuid = sUuid.toUpper();
+
+    query_insert.bindValue(":uuid", sUuid);
+    query_insert.bindValue(":email", sEmail);
+    query_insert.bindValue(":pass", sPassword_sha1);
+    query_insert.bindValue(":role", "user");
+    query_insert.bindValue(":nick", sNick);
+    query_insert.bindValue(":logo", "files/users/0.png");
+    query_insert.bindValue(":last_ip", "");
+    query_insert.bindValue(":status", "activated");
+    query_insert.bindValue(":country", "");
+    query_insert.bindValue(":region", "");
+    query_insert.bindValue(":city", "");
+    query_insert.bindValue(":university", "");
+    query_insert.bindValue(":latitude", 0);
+    query_insert.bindValue(":longitude", 0);
+    query_insert.bindValue(":rating", 0);
+    query_insert.bindValue(":about", "");
+
+    if (!query_insert.exec()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query_insert.lastError().text().toStdString()));
+        return;
+    }
+
+    int nUserID = query_insert.lastInsertId().toInt();
+
+    query.prepare("UPDATE user_requests SET status=executed WHERE email=:email");
+    query.bindValue(":email", sEmail);
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    RunTasks::AddPublicEvents("users", "New user [#" + std::to_string(nUserID) + "] " + sNick.toStdString());
+
+    std::string sSubject = "Registration on FreeHackQuest";
+    std::string sContext = "Welcome to FreeHackQuest!\n"
+                       "You login: " + sEmail.toStdString() + "\n"
+                       "You password: " + sPassword.toStdString() + "\n";
+
+    RunTasks::MailSend(sEmail.toStdString(), sSubject, sContext);
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    RunTasks::UpdateUserLocation(nUserID, sLastIP.toStdString());
+}
+
+/*********************************************
+ * Change user's email
+**********************************************/
+
+CmdHandlerUsersChangeEmail::CmdHandlerUsersChangeEmail()
+    : CmdHandlerBase("users_change_email", "Method for email changing") {
+
+    TAG = "CmdUsersChangeEmailHandler";
+
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
+
+    // validation and description input fields
+    requireStringParam("email", "New E-mail").addValidator(new ValidatorEmail());
+    requireStringParam("password", "Password"); // TODO validator 'not empty' 
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest) {
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
+    const auto &jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
+
+    QString sEmail = QString::fromStdString(jsonRequest.at("email"));
+    QString sPassword = QString::fromStdString(jsonRequest.at("password"));
+    
+    WSJCppUserSession *pSession = pRequest->getUserSession();
+    int iUserID = pSession->userid();
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM users WHERE id = :userid");
+    query.bindValue(":userid", iUserID); 
+    if (!query.exec()) {
+        Log::err(TAG, query.lastError().text().toStdString());
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+    if (!query.next()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found user"));
+        return;
+    }
+    QSqlRecord record = query.record();
+    QString sEmail_stored = record.value("email").toString();
+    QString sPassword_stored = record.value("pass").toString();
+    
+    QString sPasswordHash = sEmail_stored.toUpper() + sPassword;
+    std::string _sPasswordHash = WSJCppHashes::sha1_calc_hex(sPasswordHash.toStdString());
+    sPasswordHash = QString(_sPasswordHash.c_str());
+
+    if (sPasswordHash != sPassword_stored) {
+        pRequest->sendMessageError(cmd(), WSJCppError(401, "Wrong password"));
+        return;
+    }
+    
+    // generate a verification code
+    const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+    const int randomStringLength = 6; 
+    QString sCode;
+    for (int i=0; i<randomStringLength; ++i) {
+        int index = qrand() % possibleCharacters.length();
+        QChar nextChar = possibleCharacters.at(index);
+        sCode.append(nextChar);
+    }
+
+    std::string _code_sha1 = WSJCppHashes::sha1_calc_hex(sCode.toStdString());
+    QString sCode_sha1 = QString(_code_sha1.c_str());
+    
+    QSqlQuery query_insert(db);
+    query_insert.prepare(""
+                         "INSERT INTO user_requests ("
+                         "   email, "
+                         "   type, "
+                         "   code, "
+                         "   dt, "
+                         "   data) "
+                         "VALUES("
+                         "   :email, "
+                         "   :type, "
+                         "   :code, "
+                         "   NOW(), "
+                         "   :data); "
+    );
+
+    query_insert.bindValue(":email", sEmail);
+    query_insert.bindValue(":type", "change email");
+    query_insert.bindValue(":code", sCode_sha1);
+    query_insert.bindValue(":data", "");
+
+    if (!query_insert.exec()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query_insert.lastError().text().toStdString()));
+        return;
+    }
+    
+    std::string sSubject = "Change of the email address on FreeHackQuest";
+    std::string sContext = "You received this email because you (or someone "
+                        "impersonating you) decided to change your email "
+                        "address on the website https://freehackquest.com. " 
+                        "If you didn’t make a change email request, "
+                        "please ignore this email. In case you continue to get "
+                        "emails with similar content - contact the developers."
+                        "\n\n Otherwise, to confirm the change of your email "
+                        "address, enter the following code into the appropriate "
+                        "entry form on the website.\n\n"
+                        "Your code: " + sCode.toStdString() + "\n";
+
+    RunTasks::MailSend(sEmail.toStdString(), sSubject, sContext);
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+/*********************************************
+ * Change user's email verification
+**********************************************/
+
+CmdHandlerUsersChangeEmailVerification::CmdHandlerUsersChangeEmailVerification()
+    : CmdHandlerBase("users_change_email_verification", "Method for email changing verification") {
+
+    TAG = "CmdUsersChangeEmailVerificationHandler";
+
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
+
+    // validation and description input fields
+    requireStringParam("code", "Verification code"); 
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsersChangeEmailVerification::handle(ModelRequest *pRequest) {
+    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+
+    const auto &jsonRequest = pRequest->jsonRequest();
+    nlohmann::json jsonResponse;
+
+    QString sCode = QString::fromStdString(jsonRequest.at("code"));
+
+    std::string _code_sha1 = WSJCppHashes::sha1_calc_hex(sCode.toStdString());
+    QString sCode_sha1 = QString(_code_sha1.c_str()); 
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM user_requests WHERE code = :code");
+    query.bindValue(":code", sCode_sha1);
+    if (!query.exec()) {
+        Log::err(TAG, query.lastError().text().toStdString());
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+    if (!query.next()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(401, "Wrong code"));
+        return;
+    }
+    QSqlRecord record = query.record();
+    QString sEmail = record.value("email").toString();
+    QString sDate = record.value("dt").toString();
+    QString sStatus = record.value("status").toString();
+    
+    QDateTime dDate_stored = QDateTime::fromString(sDate, "yyyy-mm-dd hh:mm:ss");
+    QDateTime dDate_current = QDateTime::currentDateTime();
+
+    if (sStatus == "executed") {
+        pRequest->sendMessageError(cmd(), WSJCppError(403, "This request is already executed"));
+        return;
+    }
+    // code is expired if one hour has passed since the request
+    if (dDate_current > dDate_stored.addSecs(3600)) {
+        pRequest->sendMessageError(cmd(), WSJCppError(403, "This request is already expired"));
+        return;
+    }   
+
+    WSJCppUserSession *pSession = pRequest->getUserSession();
+    int iUserID = pSession->userid();
+
+    query.prepare("UPDATE users SET email=:email WHERE id=:userid");
+    query.bindValue(":email", sEmail);
+    query.bindValue(":userid", iUserID);
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    query.prepare("UPDATE user_requests SET status=executed WHERE email=:email");
+    query.bindValue(":email", sEmail);
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
