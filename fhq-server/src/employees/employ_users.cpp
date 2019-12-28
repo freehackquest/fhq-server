@@ -15,7 +15,7 @@ EmployUsers::EmployUsers()
 
 // ---------------------------------------------------------------------
 
-bool EmployUsers::init(){
+bool EmployUsers::init() {
     Log::info(TAG, "Start init users");
     return true;
 }

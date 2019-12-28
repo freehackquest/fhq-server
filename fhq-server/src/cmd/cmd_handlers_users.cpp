@@ -1569,7 +1569,7 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest) {
 **********************************************/
 
 CmdHandlerUsersRegistration::CmdHandlerUsersRegistration()
-    : CmdHandlerBase("users_registration", "Method for registration"){
+    : CmdHandlerBase("users_registration", "Method for registration") {
 
     TAG = "CmdUsersRegistrationHandler";
 
@@ -1583,7 +1583,7 @@ CmdHandlerUsersRegistration::CmdHandlerUsersRegistration()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest){
+void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     const auto &jsonRequest = pRequest->jsonRequest();
@@ -1595,7 +1595,7 @@ void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest){
     QSqlQuery query(db);
     query.prepare("SELECT * FROM users WHERE email = :email");
     query.bindValue(":email", sEmail);
-    if(!query.exec()){
+    if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
         pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
@@ -1610,7 +1610,7 @@ void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest){
     const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
     const int randomStringLength = 6; 
     QString sCode;
-    for(int i=0; i<randomStringLength; ++i){
+    for (int i = 0; i < randomStringLength; ++i) {
         int index = qrand() % possibleCharacters.length();
         QChar nextChar = possibleCharacters.at(index);
         sCode.append(nextChar);
@@ -1640,7 +1640,7 @@ void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest){
     query_insert.bindValue(":code", sCode_sha1);
     query_insert.bindValue(":data", "");
 
-    if(!query_insert.exec()){
+    if (!query_insert.exec()) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, query_insert.lastError().text().toStdString()));
         return;
     }
@@ -1667,7 +1667,7 @@ void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerUsersRegistrationVerification::CmdHandlerUsersRegistrationVerification()
-    : CmdHandlerBase("users_registration_verification", "Method for registration verification"){
+    : CmdHandlerBase("users_registration_verification", "Method for registration verification") {
 
     TAG = "CmdUsersRegistrationVerificationHandler";
 
@@ -1681,7 +1681,7 @@ CmdHandlerUsersRegistrationVerification::CmdHandlerUsersRegistrationVerification
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
+void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     const auto &jsonRequest = pRequest->jsonRequest();
@@ -1696,12 +1696,12 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
     QSqlQuery query(db);
     query.prepare("SELECT * FROM user_requests WHERE code = :code");
     query.bindValue(":code", sCode_sha1);
-    if(!query.exec()){
+    if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
         pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
-    if(!query.next()) {
+    if (!query.next()) {
         pRequest->sendMessageError(cmd(), WSJCppError(401, "Wrong code"));
         return;
     }
@@ -1727,7 +1727,7 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
     const QString possibleCharacters("ABCDEFH0123456789");
     const int randomStringLength = 8; // assuming you want random strings of 8 characters
     QString sNick;
-    for(int i=0; i<randomStringLength; ++i){
+    for (int i = 0; i < randomStringLength; ++i) {
         int index = qrand() % possibleCharacters.length();
         QChar nextChar = possibleCharacters.at(index);
         sNick.append(nextChar);
@@ -1738,7 +1738,7 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
     const QString possibleCharacters2("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
     const int randomStringLength2 = 12; // assuming you want random strings of 12 characters
     QString sPassword;
-    for(int i=0; i<randomStringLength2; ++i){
+    for (int i = 0; i < randomStringLength2; ++i) {
         int index = qrand() % possibleCharacters2.length();
         QChar nextChar = possibleCharacters2.at(index);
         sPassword.append(nextChar);
@@ -1813,7 +1813,7 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
     query_insert.bindValue(":rating", 0);
     query_insert.bindValue(":about", "");
 
-    if(!query_insert.exec()){
+    if (!query_insert.exec()) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, query_insert.lastError().text().toStdString()));
         return;
     }
@@ -1845,7 +1845,7 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerUsersChangeEmail::CmdHandlerUsersChangeEmail()
-    : CmdHandlerBase("users_change_email", "Method for email changing"){
+    : CmdHandlerBase("users_change_email", "Method for email changing") {
 
     TAG = "CmdUsersChangeEmailHandler";
 
@@ -1860,7 +1860,7 @@ CmdHandlerUsersChangeEmail::CmdHandlerUsersChangeEmail()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest){
+void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     const auto &jsonRequest = pRequest->jsonRequest();
@@ -1876,12 +1876,12 @@ void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest){
     QSqlQuery query(db);
     query.prepare("SELECT * FROM users WHERE id = :userid");
     query.bindValue(":userid", iUserID); 
-    if(!query.exec()){
+    if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
         pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
-    if(!query.next()) {
+    if (!query.next()) {
         pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found user"));
         return;
     }
@@ -1893,7 +1893,7 @@ void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest){
     std::string _sPasswordHash = WSJCppHashes::sha1_calc_hex(sPasswordHash.toStdString());
     sPasswordHash = QString(_sPasswordHash.c_str());
 
-    if(sPasswordHash != sPassword_stored){
+    if (sPasswordHash != sPassword_stored) {
         pRequest->sendMessageError(cmd(), WSJCppError(401, "Wrong password"));
         return;
     }
@@ -1902,7 +1902,7 @@ void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest){
     const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
     const int randomStringLength = 6; 
     QString sCode;
-    for(int i=0; i<randomStringLength; ++i){
+    for (int i=0; i<randomStringLength; ++i) {
         int index = qrand() % possibleCharacters.length();
         QChar nextChar = possibleCharacters.at(index);
         sCode.append(nextChar);
@@ -1932,7 +1932,7 @@ void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest){
     query_insert.bindValue(":code", sCode_sha1);
     query_insert.bindValue(":data", "");
 
-    if(!query_insert.exec()){
+    if (!query_insert.exec()) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, query_insert.lastError().text().toStdString()));
         return;
     }
@@ -1959,7 +1959,7 @@ void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest){
 **********************************************/
 
 CmdHandlerUsersChangeEmailVerification::CmdHandlerUsersChangeEmailVerification()
-    : CmdHandlerBase("users_change_email_verification", "Method for email changing verification"){
+    : CmdHandlerBase("users_change_email_verification", "Method for email changing verification") {
 
     TAG = "CmdUsersChangeEmailVerificationHandler";
 
@@ -1973,7 +1973,7 @@ CmdHandlerUsersChangeEmailVerification::CmdHandlerUsersChangeEmailVerification()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsersChangeEmailVerification::handle(ModelRequest *pRequest){
+void CmdHandlerUsersChangeEmailVerification::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     const auto &jsonRequest = pRequest->jsonRequest();
@@ -1988,12 +1988,12 @@ void CmdHandlerUsersChangeEmailVerification::handle(ModelRequest *pRequest){
     QSqlQuery query(db);
     query.prepare("SELECT * FROM user_requests WHERE code = :code");
     query.bindValue(":code", sCode_sha1);
-    if(!query.exec()){
+    if (!query.exec()) {
         Log::err(TAG, query.lastError().text().toStdString());
         pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
         return;
     }
-    if(!query.next()) {
+    if (!query.next()) {
         pRequest->sendMessageError(cmd(), WSJCppError(401, "Wrong code"));
         return;
     }
