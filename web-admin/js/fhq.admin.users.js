@@ -140,8 +140,31 @@ fhq.pages['users'] = function(){
 
 	fhq.ws.users({'onpage': onpage, 'page': page, 'filter_text': filter_text}).done(function(r){
 		fhq.hideLoader();
-		
 		el.html('');
+		el.append(''
+			+ '<div>'
+			+ '   <input id="users_search" class="form-control" type="text" placeholder="Search...">'
+			+ '</div><br>'
+		);
+		$('#users_search').val(filter_text);
+		$('#users_search').unbind().bind('keyup', function(e){
+			var new_filter = $('#users_search').val();
+			if (new_filter != filter_text) {
+				window.fhq.changeLocationState({
+					'users': '',
+					'onpage': onpage,
+					'page': page,
+					'filter_text': new_filter,
+				});
+				setTimeout(function() {
+					if ($('#users_search').val() == new_filter) {
+						fhq.pages['users']();
+					}
+				}, 500);
+			}
+		});
+		$('#users_search').focus();
+
         el.append('<button id="user_create" class="btn btn-secondary">Create User</button><hr>');
 		$('#user_create').unbind().bind('click', fhq.pages['user_create']);
 		

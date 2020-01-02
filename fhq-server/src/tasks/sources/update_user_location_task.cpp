@@ -21,6 +21,10 @@ UpdateUserLocationTask::~UpdateUserLocationTask() {
 }
 
 void UpdateUserLocationTask::run() {
+    if (m_sLastIP == "::1" || m_sLastIP == "127.0.0.1") {
+        Log::info(TAG, "Skip " + m_sLastIP);
+        return;
+    }
     Log::info(TAG, "userid = " + std::to_string(m_nUserID) + " start");
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
@@ -41,9 +45,6 @@ void UpdateUserLocationTask::run() {
             Log::info(TAG, "Update user # " + std::to_string(m_nUserID) + " location by ip " + m_sLastIP);
             QNetworkAccessManager manager;
             QUrl url("http://ip-api.com/json/" + QString::fromStdString(m_sLastIP));
-
-            // TODO parse the {"message":"reserved range","query":"127.0.0.1","status":"fail"}
-
             QNetworkRequest request(url);
             QNetworkReply *pReply = manager.get(request);
             QEventLoop eventLoop;

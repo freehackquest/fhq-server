@@ -194,7 +194,8 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WSJCppError(400, sError));
         return;
     }
-
+    
+    std::string sPrevValue = sett.convertValueToString(true);
     if (sett.isLikeString()) {
         pGlobalSettings->update(sName, sValue);
     } else if (sett.isNumber()) {
@@ -206,5 +207,7 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, sError));
         return;
     }
+    std::string sNewValue = pGlobalSettings->get(sName).convertValueToString(true);
+    Log::info(TAG, "Settings '" + sName + "' updated from '" + sPrevValue + "' -> '" + sNewValue + "'");
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
