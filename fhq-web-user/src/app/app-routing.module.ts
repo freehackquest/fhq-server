@@ -19,12 +19,11 @@ import { KnowledgeBaseComponent } from './pages/knowledge-base/knowledge-base.co
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 import { AboutComponent } from './pages/about/about.component';
 import { QuestProposalComponent } from './pages/quest-proposal/quest-proposal.component';
-import { UserChangePasswordComponent } from './pages/user-change-password/user-change-password.component';
 import { ScoreboardComponent } from './pages/scoreboard/scoreboard.component';
 import { QuestsComponent } from './pages/quests/quests.component';
 import { QuestsBySubjectComponent } from './pages/quests-by-subject/quests-by-subject.component';
 import { UserProfileMenuComponent } from './pages/user-profile-menu/user-profile-menu.component';
-import { UserLocationComponent } from './pages/user-location/user-location.component';
+import { UserTokensComponent } from './pages/user-tokens/user-tokens.component';
 import { UserSecurityComponent } from './pages/user-security/user-security.component';
 import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
 import { QuestComponent } from './pages/quest/quest.component';
@@ -59,11 +58,11 @@ const routes: Routes = [{
     path: 'user-skills',
     component: UserSkillsComponent
   }, {
+  path: 'user-tokens',
+    component: UserTokensComponent
+  }, {
     path: 'user-profile-menu',
     component: UserProfileMenuComponent
-  }, {
-    path: 'user-change-password',
-    component: UserChangePasswordComponent
   }, {
     path: 'about',
     component: AboutComponent

@@ -37,7 +37,6 @@ import { UserProfileComponent } from './pages/user-profile/user-profile.componen
 import { UserProfileMenuComponent } from './pages/user-profile-menu/user-profile-menu.component';
 import { AboutComponent } from './pages/about/about.component';
 import { QuestProposalComponent } from './pages/quest-proposal/quest-proposal.component';
-import { UserChangePasswordComponent } from './pages/user-change-password/user-change-password.component';
 import { LMarkdownEditorModule } from 'ngx-markdown-editor';
 import { AceModule } from 'ngx-ace-wrapper';
 import { ACE_CONFIG } from 'ngx-ace-wrapper';
@@ -46,7 +45,6 @@ import hljs from 'highlight.js';
 import { ScoreboardComponent } from './pages/scoreboard/scoreboard.component';
 import { QuestsComponent } from './pages/quests/quests.component';
 import { QuestsBySubjectComponent } from './pages/quests-by-subject/quests-by-subject.component';
-import { UserLocationComponent } from './pages/user-location/user-location.component';
 import { UserSecurityComponent } from './pages/user-security/user-security.component';
 import { QuestComponent } from './pages/quest/quest.component';
 import { ModalDialogQuestFeedbackComponent } from './dialogs/modal-dialog-quest-feedback/modal-dialog-quest-feedback.component';
@@ -55,7 +53,8 @@ import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { NgxMdModule } from 'ngx-md';
 import { FhqJuryAdComponent } from './pages/fhq-jury-ad/fhq-jury-ad.component';
-import { SimplemdeModule } from 'ng2-simplemde'
+import { SimplemdeModule } from 'ng2-simplemde';
+import { UserTokensComponent } from './pages/user-tokens/user-tokens.component'
 
 /*import hljs from 'highlight.js/lib/highlight';
 import javascript from 'highlight.js/lib/languages/javascript';
@@ -112,19 +111,18 @@ const l10nConfig: L10nConfig = {
     UserProfileComponent,
     AboutComponent,
     QuestProposalComponent,
-    UserChangePasswordComponent,
     ScoreboardComponent,
     QuestsComponent,
     QuestsBySubjectComponent,
     UserProfileMenuComponent,
-    UserLocationComponent,
     UserSecurityComponent,
     QuestComponent,
     ModalDialogQuestFeedbackComponent,
     BlockContactUsComponent,
     UserSkillsComponent,
     WelcomeComponent,
-    FhqJuryAdComponent
+    FhqJuryAdComponent,
+    UserTokensComponent
   ],
   imports: [
     BrowserModule,
