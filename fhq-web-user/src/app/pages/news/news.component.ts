@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild, ChangeDetectorRef, ElementRef, SecurityContext } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { SpinnerService } from '../../services/spinner.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,8 +7,11 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/throttleTime';
 import 'rxjs/add/observable/fromEvent';
 import { Subscription } from 'rxjs';
+import { DomSanitizer } from '@angular/platform-browser';
+import { escape } from 'lodash';
 
 declare var fhq: any;
+declare var _: any;
 
 @Component({
   selector: 'app-news',
@@ -32,6 +35,7 @@ export class NewsComponent implements OnInit {
     private _cdr: ChangeDetectorRef,
     private _route: ActivatedRoute,
     private _router: Router,
+    private _sanitized: DomSanitizer
     // private _el: ElementRef,
   ) { }
 
@@ -90,8 +94,10 @@ export class NewsComponent implements OnInit {
 
     this.dataList = []
     r.data.forEach((el: any) => {
-      el['html_message'] = el.message;
-      el['html_message'] = el['html_message'].replace(/\[user#(\d+)\]/g, '<a href="/user/$1">[user#$1]</a>')
+      el.dt_formated = new Date(el.dt + "Z")
+      el.html_message = escape(el.message)
+      // el['html_message'] = el['html_message'].replace(/\[user#(\d+)\]/g, '<a href="/user/$1">[user#$1]</a>')
+      el.html_message = el.html_message.replace(/\[quest#(\d+)\][ ]+\(([\w\u0430-\u044f -]+)\)/ig, 'quest <a href="../quest/$1" class="badge badge-light" target="_blank">$2</a>')
       this.dataList.push(el);
     });
     this._cdr.detectChanges();
