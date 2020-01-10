@@ -20,6 +20,10 @@
     <button class="btn btn-link" [disabled]="currentPage>=countPages" (click)="nextPage()">Next</button>
 </div>
 -->
+<div class="alert alert-light" role="alert">
+  <div class="d-inline-block" l10nTranslate>summaryMaximumPointsByAllGames</div>: <div class="d-inline-block">{{ summaryScore }}</div>
+</div>
+
 
 <table class="table">
   <tbody>
@@ -28,9 +32,9 @@
         <img width=100px height=100px src="{{ g.logo }}">
       </td>
       <td>
-        <h3>{{ g.name }} (Maximum score: {{ g.maxscore }}) </h3>
-        <small>{{ g.date_start }} (UTC) - {{ g.date_stop }} (UTC) </small><br>
-        <small>Organiators: {{ g.organizators }} </small><br>
+        <h3>{{ g.name }} (<div class="d-inline-block" l10nTranslate>maximumPoints</div>: {{ g.maxscore }}) </h3>
+        <small>{{ g.date_start_formated | date:'d MMM y, HH:mm' }} - {{ g.date_stop_formated | date:'d MMM y, HH:mm' }} </small><br>
+        <small><div class="d-inline-block" l10nTranslate>organizators</div>: {{ g.organizators }} </small><br>
         <strong>{{ g.description }}</strong>
       </td>
     </tr>

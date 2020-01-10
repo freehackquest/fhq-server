@@ -22,6 +22,7 @@ export class GamesComponent implements OnInit {
   errorMessage: string = null;
   dataList: Array<any> = [];
   searchValue: String = '';
+  summaryScore: Number = 0;
 
   constructor(
     private _spinnerService: SpinnerService,
@@ -62,7 +63,11 @@ export class GamesComponent implements OnInit {
     this.countPages = Math.ceil(parseInt(r.count, 10) / this.onPage);
 
     this.dataList = []
-    r.data.forEach((el: any) => {  
+    this.summaryScore = 0
+    r.data.forEach((el: any) => {
+      this.summaryScore += el.maxscore
+      el.date_start_formated = new Date(el.date_start+"Z")
+      el.date_stop_formated = new Date(el.date_stop+"Z")
       this.dataList.push(el);
     });
     this._cdr.detectChanges();
