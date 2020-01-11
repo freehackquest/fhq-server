@@ -97,12 +97,94 @@
 </div>
 
 <!-- Footer -->
-<footer class="footer font-small bg-dark">
-    <div class="footer-copyright text-center py-3">
-        © 2011-2019 copyright 
-        <a href="https://sea-kg.com/">sea-kg</a> |
-        <a routerLink="/about">About</a>
-        {{ serverAppName }}: {{ serverAppVersion }} ( lib {{ libVersion }} )
-        State: {{ _fhq.connectionState }}
+<footer class="page-footer font-small bg-dark pt-4">
+
+    <!-- Footer Links -->
+    <div class="container-fluid text-center text-md-left">
+
+      <!-- Grid row -->
+      <div class="row">
+
+        <!-- Grid column -->
+        <div class="col-md-6 mt-md-0 mt-3">
+            <!-- Content -->
+            <h5 class="text-uppercase">Free Hack Quest</h5>
+            <p>This is an open source platform for competitions of computer security.</p>
+            <p>Feel free to contact us by email <a href="mailto:freehackquest@gmail.com">freehackquest@gmail.com</a></p>
+          
+            <p>{{ serverAppName }}: {{ serverAppVersion }} ( lib {{ libVersion }} )
+            <p>Connection State: {{ _fhq.connectionState }}</p>
+        </div>
+        <!-- Grid column -->
+
+        <hr class="clearfix w-100 d-md-none pb-3">
+
+        <!-- Grid column -->
+        <div class="col-md-3 mb-md-0 mb-3">
+
+            <!-- Links -->
+            <h5 class="text-uppercase">Links</h5>
+
+            <ul class="list-unstyled">
+              <li>
+                <a routerLink="/about" l10nTranslate>pageAbout</a>
+              </li>
+              <li>
+                <a routerLink="/quests" l10nTranslate>pageQuests</a>
+              </li>
+              <li>
+                <a routerLink="/news" l10nTranslate>news</a>
+              </li>
+              <li>
+                <a routerLink="/feedback" l10nTranslate>feedbackAdd</a>
+              </li>
+              <li>
+                <a routerLink="/donate" l10nTranslate>pageDonate</a>
+              </li>
+            </ul>
+
+          </div>
+          <!-- Grid column -->
+
+          <!-- Grid column -->
+          <div class="col-md-3 mb-md-0 mb-3">
+
+            <!-- Links -->
+            <h5 class="text-uppercase">SOCIAL</h5>
+
+            <ul class="list-unstyled">
+              <li>
+                <a href="https://github.com/freehackquest/fhq-server">GitHub</a>
+              </li>
+              <li>
+                <a href="https://telegram.me/freehackquest">Telegram</a>
+              </li>
+              <li>
+                <iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" class="twitter-follow-button twitter-follow-button-rendered" title="Twitter Follow Button" src="https://platform.twitter.com/widgets/follow_button.d753e00c3e838c1b2558149bd3f6ecb8.en.html#dnt=false&amp;id=twitter-widget-0&amp;lang=en&amp;screen_name=freehackquest&amp;show_count=false&amp;show_screen_name=true&amp;size=m&amp;time=1559845644982" style="position: static; visibility: visible; width: 147px; height: 20px;" data-screen-name="freehackquest"></iframe>
+              </li>
+              <li>
+                <div class="g-ytsubscribe" data-channelid="UCS0nOltkP5YXxWggoNVE3Gw" data-layout="default" data-count="default"></div>
+              </li>
+              <li>
+                <a href="https://hub.docker.com/r/freehackquest/fhq-server">Docker</a>
+              </li>
+            </ul>
+
+          </div>
+          <!-- Grid column -->
+
+      </div>
+      <!-- Grid row -->
+
     </div>
-</footer>
+    <!-- Footer Links -->
+
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3">
+        © 2011-2020 Copyright:
+        <a href="https://sea-kg.com/">sea-kg</a>
+    </div>
+    <!-- Copyright -->
+
+  </footer>
+  <!-- Footer -->
