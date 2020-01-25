@@ -1,7 +1,9 @@
-#include <utils_levenshtein.h>
+// Author: Igor Polyakov 
+
+#include "wsjcpp_levenshtein.h"
 #include <vector>
 
-int UtilsLevenshtein::distance(const std::string &s1, const std::string &s2)
+int WSJCppLevenshtein::distance(const std::string &s1, const std::string &s2)
 {
     const std::size_t len1 = s1.length(), len2 = s2.length();
     std::vector<std::vector<unsigned int> > d(len1 + 1, std::vector<unsigned int>(len2 + 1));

@@ -1,0 +1,40 @@
+wsjcpp_version: v0.0.1
+cmake_minimum_required: 3.0
+cmake_cxx_standard: 11
+name: wsjcpp-levenshtein
+version: v0.0.1
+description: Calculation Levenshtein Distance
+issues: https://github.com/wsjcpp/wsjcpp-levenstein/issues
+keywords:
+  - "c++"
+  - "sources"
+  - "levenshtein"
+  - "distance"
+
+required-libraries:
+  - pthread
+
+dependencies:
+  - name: "wsjcpp/wsjcpp-core"
+    version: "v0.0.2"
+    url: "https://github.com/wsjcpp/wsjcpp-core:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_wsjcpp_core"
+
+repositories:
+  - type: main
+    url: "https://github.com/wsjcpp/wsjcpp-levenshtein"
+
+authors:
+  - name: "Igor Polyakov"
+    email: "igorpolyakov@protonmail.com"
+
+distribution:
+  - source-file: "src/wsjcpp_levenshtein.cpp"
+    target-file: "wsjcpp_levenshtein.cpp"
+    type: "source-code"
+    sha1: "f981e0154ad7252dbf27f5c40d424a2965090152"
+  - source-file: "src/wsjcpp_levenshtein.h"
+    target-file: "wsjcpp_levenshtein.h"
+    type: "source-code"
+    sha1: "bdb73b23f68999c9fa6cfe6d36241463ae1e769f"

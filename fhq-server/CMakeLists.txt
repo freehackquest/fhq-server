@@ -158,8 +158,6 @@ list (APPEND FHQSRV_SOURCES "src/storages/mysql/mysql_storage.h")
 # utils
 list (APPEND FHQSRV_SOURCES "src/utils/utils_merge_text.h")
 list (APPEND FHQSRV_SOURCES "src/utils/utils_merge_text.cpp")
-list (APPEND FHQSRV_SOURCES "src/utils/utils_levenshtein.h")
-list (APPEND FHQSRV_SOURCES "src/utils/utils_levenshtein.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/utils_prepare_deb_package.h")
 list (APPEND FHQSRV_SOURCES "src/utils/utils_prepare_deb_package.cpp")
 list (APPEND FHQSRV_SOURCES "src/utils/utils_static_analizing_text.h")

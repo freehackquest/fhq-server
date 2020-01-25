@@ -1,6 +1,6 @@
 #include <cmd_handlers_quests.h>
 #include <runtasks.h>
-#include <utils_levenshtein.h>
+#include <wsjcpp_levenshtein.h>
 #include <fallen.h>
 #include <employ_database.h>
 #include <employ_server_info.h>
@@ -425,7 +425,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
 
     bool bPassed = sQuestAnswer.toUpper() == QString::fromStdString(sUserAnswer).toUpper();
     QString sPassed = bPassed ? "Yes" : "No";
-    int nLevenshtein = UtilsLevenshtein::distance(QString::fromStdString(sUserAnswer).toUpper().toStdString(), sQuestAnswer.toUpper().toStdString());
+    int nLevenshtein = WSJCppLevenshtein::distance(QString::fromStdString(sUserAnswer).toUpper().toStdString(), sQuestAnswer.toUpper().toStdString());
 
 
     // insert to user tries
