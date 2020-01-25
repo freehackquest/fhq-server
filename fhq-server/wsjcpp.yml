@@ -1,23 +1,38 @@
-wsjcpp: 1.0.0
-c++: 11
-cmake: 3.0
+wsjcpp_version: v0.0.1
+cmake_minimum_required: 3.0
+cmake_cxx_standard: 11
 
 name: freehackquest/fhq-server
-version: 0.2.23
+version: v0.2.23
 description: This is an open source platform for competitions of computer security.
 issues: https://github.com/freehackquest/fhq-server/issues
-repositories:
-  - "https://github.com/freehackquest/fhq-server"
+
 keywords:
   - c++
-  - yaml
-  - parser
-  - reader
-  - writer
+  - security
+  - ctf-scoreboard
+
+repositories:
+  - type: main
+    url: "https://github.com/freehackquest/fhq-server"
 
 authors:
   - name: Evgenii Sopov
     email: mrseakg@gmail.com
+  - name: "Igor Polyakov"
+    email: "igorpolyakov@protonmail.com"
+
+dependencies:
+  - name: "wsjcpp-levenshtein"
+    version: "v0.0.1"
+    url: "https://github.com/wsjcpp/wsjcpp-levenshtein:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_levenshtein"
+  - name: "wsjcpp/wsjcpp-hashes"
+    version: "v0.0.1"
+    url: "https://github.com/wsjcpp/wsjcpp-hashes:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_wsjcpp_hashes"
 
 requirements:
   libs:
@@ -26,4 +41,3 @@ requirements:
     - name: "wsjcpp/wsjcpp-hashes"
       version: v0.0.2
       url: "https://github.com/wsjcpp/wsjcpp-hashes"
-
