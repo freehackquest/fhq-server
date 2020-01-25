@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter, Inject } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { PlatformLocation } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 

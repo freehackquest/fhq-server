@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { FhqService } from '../../services/fhq.service';
+import { FreeHackQuestClient } from '../../services/libfhqcli-web-js.service';
 import { SpinnerService } from '../../services/spinner.service';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -20,6 +21,7 @@ export class UserTokensComponent implements OnInit {
     private _router: Router,
     private _modalService: NgbModal,
     private _fhq: FhqService,
+    private _fhq2: FreeHackQuestClient,
     private _cdr: ChangeDetectorRef,
     private _spinnerService: SpinnerService,
   ) { }
@@ -35,6 +37,8 @@ export class UserTokensComponent implements OnInit {
   }
 
   updatePage() {
+    this._fhq2.connectToServer({"baseUrl": "ws://localhost:1234/"});
+
     if (this._fhq.isAuthorized) {
       this.userId = parseInt(this._fhq.userdata.id, 10);
       this._cdr.detectChanges();
@@ -63,7 +67,7 @@ export class UserTokensComponent implements OnInit {
 
   updateListOfTokens() {
     this._spinnerService.show();
-    this._fhq.api().user({
+    this._fhq.api().user_tokens({
       "userid": this.userId,
     })
       .done((r: any) => this.successUserTokens(r))
