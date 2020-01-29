@@ -27,7 +27,7 @@ def run_tests():
 	leak1 = fhqtest.admin_session.leaks_add({
 		"uuid": str(leak_uuid1),
 		"game_uuid": fhqtest.GAME_UUID1,
-		"gameid": 0,
+		# "gameid": 0,
 		"name": "test_leak1",
 		"content": "some_secret_content",
 		"score": 100
