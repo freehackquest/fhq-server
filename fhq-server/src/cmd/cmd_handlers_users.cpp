@@ -276,7 +276,7 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest) {
     std::string _password_sha1 = WSJCppHashes::sha1_calc_hex(sPassword_sha1.toStdString());
     sPassword_sha1 = QString(_password_sha1.c_str());
 
-    // generate random nick
+    // TODO remove to generate random nick
     const QString possibleCharacters2("ABCDEFH0123456789");
     const int randomStringLength2 = 8; // assuming you want random strings of 12 characters
     QString sNick;

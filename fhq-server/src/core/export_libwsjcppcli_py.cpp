@@ -494,7 +494,7 @@ void ExportLibWsjCppCliPy::export__init__py() {
             CmdInputDef inDef = vVin[i];
             std::string nameIn = std::string(inDef.getName());
             builder.add(nameIn + " (" + inDef.getType() + "): " + inDef.getRestrict() + ", " + inDef.getDescription());
-        }        
+        }
         builder.end();
         /* 
         Returns:
@@ -507,8 +507,21 @@ void ExportLibWsjCppCliPy::export__init__py() {
             .add("if not self.hasConnection(): return None")
             .add("requestJson = self.generateBaseCommand('" + sCmd + "')");
            
-
         // check required
+        std::string sAllowedInputParamNames = "";
+        for (int i = 0; i < vVin.size(); i++) {
+            if (sAllowedInputParamNames.length() > 0) {
+                sAllowedInputParamNames += ",";
+            }
+            sAllowedInputParamNames += "'" + vVin[i].getName() + "'";
+        }
+        builder
+            .add("allowedParams = [" + sAllowedInputParamNames + "]")
+            .sub("for paramName in req:")
+                .sub("if paramName not in allowedParams:")
+                    .add("raise Exception('Excess parameter \"' + paramName + '\" (lib)')")
+                    .end()
+                .end();
         for (int i = 0; i < vVin.size(); i++) {
             CmdInputDef inDef = vVin[i];
             if (inDef.isRequired()) {

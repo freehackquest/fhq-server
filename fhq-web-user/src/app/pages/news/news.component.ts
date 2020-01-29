@@ -9,8 +9,8 @@ import 'rxjs/add/observable/fromEvent';
 import { Subscription } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { escape } from 'lodash';
+import { FhqService } from '../../services/fhq.service';
 
-declare var fhq: any;
 declare var _: any;
 
 @Component({
@@ -29,13 +29,15 @@ export class NewsComponent implements OnInit {
   onPage = 7;
   errorMessage: string = null;
   dataList: Array<any> = [];
+  subscriptionOnNotify: any = null;
 
   constructor(
     private _spinnerService: SpinnerService,
     private _cdr: ChangeDetectorRef,
     private _route: ActivatedRoute,
     private _router: Router,
-    private _sanitized: DomSanitizer
+    private _sanitized: DomSanitizer,
+    private _fhq: FhqService,
     // private _el: ElementRef,
   ) { }
 
@@ -62,8 +64,17 @@ export class NewsComponent implements OnInit {
         console.log(newValue);
         this.loadData();
       });
+
+      this.subscriptionOnNotify = this._fhq.onNotify
+      .subscribe(() => this.loadData());
   }
   
+  ngOnDestroy() {
+    if (this.subscriptionOnNotify != null) {
+      this.subscriptionOnNotify.unsubscribe();
+    }
+  }
+
   prevPage() {
     this.currentPage--;
     this.loadData();
@@ -82,7 +93,7 @@ export class NewsComponent implements OnInit {
       "search": this.searchValue,
     }
     this._spinnerService.show();
-    fhq.publiceventslist(_data)
+    this._fhq.api().publiceventslist(_data)
       .done((r: any) => this.successResponse(r))
       .fail((err: any) => this.errorResponse(err));
   }

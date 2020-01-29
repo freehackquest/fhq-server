@@ -22,6 +22,7 @@ CmdHandlerQuests::CmdHandlerQuests()
     // validation and description input fields
     optionalStringParam("subject", "Filter by subject")
         .addValidator(new ValidatorQuestSubject());
+    optionalIntegerParam("gameid", "Filter by local gameid");
     optionalStringParam("filter", "Filter by some text");
 }
 
@@ -55,6 +56,13 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest) {
     if (sSubject != "") {
         vWhereQuery.push_back("(q.subject = :subject)");
         vWhereValues.push_back(std::pair<std::string, std::string>(":subject",sSubject));
+    }
+
+    // TODO change to uuid
+    int nGameId =pRequest->getInputInteger("gameid", 0);
+    if (nGameId != 0) {
+        vWhereQuery.push_back("(q.gameid = :gameid)");
+        vWhereValues.push_back(std::pair<std::string, std::string>(":gameid", std::to_string(nGameId)));
     }
 
     if (!pRequest->isAdmin()) {

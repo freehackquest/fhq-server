@@ -219,7 +219,7 @@ def run_tests():
         exit(-1)'''
 
 
-    user2_skills = fhqtest.admin_session.user_skills({"userid": user_found["id"], "password": fhqtest.ADMIN_PASSWORD})
+    user2_skills = fhqtest.admin_session.user_skills({"userid": user_found["id"]})
     fhqtest.alert(user2_skills == None, 'Could not get user skills')
     fhqtest.check_response(user2_skills, "User2 succesfull got skills")
     pprint(user2_skills)

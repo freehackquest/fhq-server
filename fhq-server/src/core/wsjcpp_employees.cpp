@@ -1156,6 +1156,11 @@ bool EmployServer::validateInputParameters(WSJCppError &error, CmdHandlerBase *p
             }
 
             if (itJsonParamName != endJson) {
+                if (itJsonParamName->is_null()) {
+                    error = WSJCppError(400, "Parameter '" + inDef.getName() + "' could not be null");
+                    return false;
+                }
+
                 if (inDef.isInteger()) {
                     if (!itJsonParamName->is_number()) {
                         error = WSJCppError(400, "Parameter '" + inDef.getName() + "' must be integer");

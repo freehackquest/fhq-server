@@ -15,6 +15,7 @@ export class FhqService {
   currentProtocol: string = 'http:';
   userdata: any = {};
   changedState = new EventEmitter<any>();
+  onNotify = new EventEmitter<any>();
 
   constructor(
     private _toastr: ToastrService,
@@ -48,6 +49,7 @@ export class FhqService {
       // unknown type of message
       this._toastr.warning(data.message)
     }
+    this.onNotify.emit();
   }
 
   updateUserData(data: any) {
