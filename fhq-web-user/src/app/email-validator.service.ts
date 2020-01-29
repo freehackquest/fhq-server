@@ -20,6 +20,7 @@ export class EmailValidatorService {
     emailWrongDomains['gmail.ru'] = {prop: ["gmail.com"]};
     emailWrongDomains['gmial.com'] = {prop: ["gmail.com"]};
     emailWrongDomains['gmal.com'] = {prop: ["gmail.com"]};
+    emailWrongDomains['inbox.ry'] = {prop: ["inbox.ru"]};
 
     const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     let ret = {result: false, error: ""}
