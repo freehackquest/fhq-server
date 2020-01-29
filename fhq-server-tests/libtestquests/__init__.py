@@ -140,11 +140,11 @@ def run_tests():
     fhqtest.alert(h2_remove == None, 'Could not get response (hint2_remove)')
     fhqtest.check_response(h2_remove, "Quest hint2 succesfull removed")
 
-    fhqtest.print_bold("Test quests.filter by gameid...")
-    resp = fhqtest.admin_session.games({})
-    gameid = resp['data'][0]['local_id']
     questid = quest1_updated['id']
     resp = fhqtest.admin_session.quests({"gameid": gameid})
+    fhqtest.alert(resp == None, 'Could not get response (quests)')
+    fhqtest.check_response(resp, "quest get filtered")
+    fhqtest.alert(resp['result'] == 'FAIL', 'Wrong response')
     fhqtest.alert(resp['data'][0]['questid'] != questid, 'Wrong work filter by gameid in request quests')
 
     # 
@@ -160,4 +160,6 @@ def run_tests():
 
     # Cleanup
     fhqtest.clean_all_quests()
+
+
 
