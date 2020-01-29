@@ -118,7 +118,7 @@ def run_tests():
     quest1_updated_files = quest1_updated['files']
     quest1_updated_game = quest1_updated['game']
     quest1_updated = quest1_updated['quest']
-    pprint(quest1_updated)
+    print("quest1_updated = " + str(quest1_updated))
 
     fhqtest.check_values("name of quest", quest1_updated['name'], quest_name2)
     fhqtest.check_values("author of quest", quest1_updated['author'], quest_author2)
@@ -140,6 +140,13 @@ def run_tests():
     fhqtest.alert(h2_remove == None, 'Could not get response (hint2_remove)')
     fhqtest.check_response(h2_remove, "Quest hint2 succesfull removed")
 
+    fhqtest.print_bold("Test quests.filter by gameid...")
+    resp = fhqtest.admin_session.games({})
+    gameid = resp['data'][0]['local_id']
+    questid = quest1_updated['id']
+    resp = fhqtest.admin_session.quests({"gameid": gameid})
+    fhqtest.alert(resp['data'][0]['questid'] != questid, 'Wrong work filter by gameid in request quests')
+
     # 
     fhqtest.print_bold("Try answerlist...")
     r_answerlist = fhqtest.admin_session.answerlist({"page": 0, "onpage": 10})
@@ -147,6 +154,9 @@ def run_tests():
     fhqtest.check_response(r_answerlist, "Answer list succesfull got")
     pprint(r_answerlist)
     # TODO check this
+
+    
+
 
     # Cleanup
     fhqtest.clean_all_quests()
