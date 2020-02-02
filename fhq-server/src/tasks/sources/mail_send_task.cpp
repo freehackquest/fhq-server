@@ -112,7 +112,7 @@ static void trim(std::string &s) {
 
 
 void MailSendTask::run() {
-    Log::info(TAG, "Try send mail to '" + m_sTo + "', with subject: '" + m_sSubject + "'");
+    WSJCppLog::info(TAG, "Try send mail to '" + m_sTo + "', with subject: '" + m_sSubject + "'");
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
 
@@ -147,7 +147,7 @@ void MailSendTask::run() {
     query.bindValue(":priority", "");
     query.bindValue(":status", "loaded");
     if (!query.exec()) {
-        Log::err(TAG, query.lastError().text().toStdString());
+        WSJCppLog::err(TAG, query.lastError().text().toStdString());
         return;
     }
 
@@ -210,7 +210,7 @@ void MailSendTask::run() {
 
         // Check for errors
         if (res != CURLE_OK) {
-            Log::err(TAG, "Error send mail to '" + m_sTo + "', with subject: '" + m_sSubject + "'. Error: "
+            WSJCppLog::err(TAG, "Error send mail to '" + m_sTo + "', with subject: '" + m_sSubject + "'. Error: "
                  + std::string(curl_easy_strerror(res)));
             sStatus = "error";
         }
@@ -222,7 +222,7 @@ void MailSendTask::run() {
         query.bindValue(":status", QString::fromStdString(sStatus));
         query.bindValue(":id", nMailID);
         if (!query.exec()) {
-            Log::err(TAG, query.lastError().text().toStdString());
+            WSJCppLog::err(TAG, query.lastError().text().toStdString());
             return;
         }
     }

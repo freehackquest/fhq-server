@@ -25,14 +25,14 @@ PostgreSqlStorageConnection::~PostgreSqlStorageConnection() {
 bool PostgreSqlStorageConnection::executeQuery(const std::string &sQuery) {
     // TODO statistics time
     std::lock_guard<std::mutex> lock(m_mtxConn);
-    // Log::info(TAG, "Try " + sQuery);
+    // WSJCppLog::info(TAG, "Try " + sQuery);
     if (mysql_query(m_pConnection, sQuery.c_str())) {
-        Log::err(TAG, "Problem on executeQuery \r\nQuery: " + sQuery);
+        WSJCppLog::err(TAG, "Problem on executeQuery \r\nQuery: " + sQuery);
         std::string sError(mysql_error(m_pConnection));
-        Log::err(TAG, "executeQuery error " + sError);
+        WSJCppLog::err(TAG, "executeQuery error " + sError);
         return false;
     } else {
-        // Log::ok(TAG, "" + sQuery);
+        // WSJCppLog::ok(TAG, "" + sQuery);
     }
     return true;
 }
@@ -48,7 +48,7 @@ std::string PostgreSqlStorageConnection::lastDatabaseVersion() {
     if (mysql_query(m_pConnection, sQuery.c_str())) {
         std::string sError(mysql_error(m_pConnection));
         if (sError.find("updates' doesn't exist") != std::string::npos) {
-            Log::warn(TAG, "Creating table updates .... ");
+            WSJCppLog::warn(TAG, "Creating table updates .... ");
             std::string sTableDbUpdates = 
                 "CREATE TABLE IF NOT EXISTS updates ("
                 "  id INT NOT NULL AUTO_INCREMENT,"
@@ -59,15 +59,15 @@ std::string PostgreSqlStorageConnection::lastDatabaseVersion() {
                 ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
             if (mysql_query(m_pConnection, sTableDbUpdates.c_str())) {
                 std::string sError2(mysql_error(m_pConnection));
-                Log::err(TAG, "Problem on create table updates " + sError2);
+                WSJCppLog::err(TAG, "Problem on create table updates " + sError2);
                 return "error";
             } else {
-                Log::ok(TAG, "Table updates success created");
+                WSJCppLog::ok(TAG, "Table updates success created");
                 sLastVersion = "";
                 return "";
             }
         } else {
-            Log::err(TAG, "Problem with database " + sError);
+            WSJCppLog::err(TAG, "Problem with database " + sError);
             return "error";
         }
     } else {
@@ -89,7 +89,7 @@ bool PostgreSqlStorageConnection::insertUpdateInfo(const std::string &sVersion, 
     std::string sInsertNewVersion = "INSERT INTO updates(version, description, datetime_update) "
         " VALUES(" + m_pStorage->prepareStringValue(sVersion) + ", " + m_pStorage->prepareStringValue(sDescription) + ",NOW());";
     if (mysql_query(m_pConnection, sInsertNewVersion.c_str())) {
-        Log::err(TAG, "Could not insert row to updates: " + std::string(mysql_error(m_pConnection)));
+        WSJCppLog::err(TAG, "Could not insert row to updates: " + std::string(mysql_error(m_pConnection)));
         return false;
     }
     return true;
@@ -113,27 +113,27 @@ bool PostgreSqlStorage::applyConfigFromFile(const std::string &sFilePath) {
     parseConfig.load();
 
     if (!parseConfig.has("dbhost")) {
-        Log::err(TAG, "Not found 'dbhost' in " + sFilePath);
+        WSJCppLog::err(TAG, "Not found 'dbhost' in " + sFilePath);
         return false;
     }
 
     if (!parseConfig.has("dbport")) {
-        Log::err(TAG, "Not found 'dbport' in " + sFilePath);
+        WSJCppLog::err(TAG, "Not found 'dbport' in " + sFilePath);
         return false;
     }
 
     if (!parseConfig.has("dbname")) {
-        Log::err(TAG, "Not found 'dbname' in " + sFilePath);
+        WSJCppLog::err(TAG, "Not found 'dbname' in " + sFilePath);
         return false;
     }
 
     if (!parseConfig.has("dbuser")) {
-        Log::err(TAG, "Not found 'dbuser' in " + sFilePath);
+        WSJCppLog::err(TAG, "Not found 'dbuser' in " + sFilePath);
         return false;
     }
 
     if (!parseConfig.has("dbpass")) {
-        Log::err(TAG, "Not found 'dbpass' in " + sFilePath);
+        WSJCppLog::err(TAG, "Not found 'dbpass' in " + sFilePath);
         return false;
     }
 
@@ -143,11 +143,11 @@ bool PostgreSqlStorage::applyConfigFromFile(const std::string &sFilePath) {
     m_sDatabaseUser = parseConfig.stringValue("dbuser", m_sDatabaseUser);
     m_sDatabasePass = parseConfig.stringValue("dbpass", m_sDatabasePass);
 
-    Log::info(TAG, "Database host: " + m_sDatabaseHost);
-    Log::info(TAG, "Database port: " + std::to_string(m_nDatabasePort));
-    Log::info(TAG, "Database name: " + m_sDatabaseName);
-    Log::info(TAG, "Database user: " + m_sDatabaseUser);
-    Log::info(TAG, "Database password: (hided)");
+    WSJCppLog::info(TAG, "Database host: " + m_sDatabaseHost);
+    WSJCppLog::info(TAG, "Database port: " + std::to_string(m_nDatabasePort));
+    WSJCppLog::info(TAG, "Database name: " + m_sDatabaseName);
+    WSJCppLog::info(TAG, "Database user: " + m_sDatabaseUser);
+    WSJCppLog::info(TAG, "Database password: (hided)");
 
     return true;
 }
@@ -163,8 +163,8 @@ StorageConnection * PostgreSqlStorage::connect() {
             m_sDatabasePass.c_str(),
             m_sDatabaseName.c_str(), 
             m_nDatabasePort, NULL, 0)) {
-        Log::err(TAG, "Connect error: " + std::string(mysql_error(pDatabase)));
-        Log::err(TAG, "Failed to connect.");
+        WSJCppLog::err(TAG, "Connect error: " + std::string(mysql_error(pDatabase)));
+        WSJCppLog::err(TAG, "Failed to connect.");
     } else {
         pConn = new PostgreSqlStorageConnection(pDatabase, this);
     }
@@ -341,7 +341,7 @@ std::string PostgreSqlStorage::generateLineColumnForSql(StorageStructColumn &c) 
     } else if (c.columnType() == "datetime") {
         sSqlColumn += " DATETIME";
     } else {
-        Log::err(TAG, "Unknown columnType " + c.columnType());
+        WSJCppLog::err(TAG, "Unknown columnType " + c.columnType());
     }
 
     if (c.isNotNull()) {

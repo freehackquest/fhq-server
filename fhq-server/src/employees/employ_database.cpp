@@ -18,7 +18,7 @@ EmployDatabase::EmployDatabase()
     pGlobalSettings->registrySetting(sGroupDatabase, "storage_type").string("mysql").inFile();
     // TODO validator: 
     // if (!Storages::support(m_sStorageType)) {
-    //    Log::err(TAG, "Not support storage " + m_sStorageType);
+    //    WSJCppLog::err(TAG, "Not support storage " + m_sStorageType);
     //    return false;
     //}
     m_nConnectionOutdatedAfterSeconds = 60*60;
@@ -43,14 +43,14 @@ bool EmployDatabase::init() {
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
 
     /*
-        Log::info(TAG, "Database host: " + m_sDatabase_host);
-        Log::info(TAG, "Database port: " + std::to_string(m_nDatabase_port));
-        Log::info(TAG, "Database name: " + m_sDatabase_name);
-        Log::info(TAG, "Database user: " + m_sDatabase_user);
+        WSJCppLog::info(TAG, "Database host: " + m_sDatabase_host);
+        WSJCppLog::info(TAG, "Database port: " + std::to_string(m_nDatabase_port));
+        WSJCppLog::info(TAG, "Database name: " + m_sDatabase_name);
+        WSJCppLog::info(TAG, "Database user: " + m_sDatabase_user);
      */
     m_sStorageType = pGlobalSettings->get("storage_type").getStringValue();
     if (!Storages::support(m_sStorageType)) {
-        Log::err(TAG, "Not support storage " + m_sStorageType);
+        WSJCppLog::err(TAG, "Not support storage " + m_sStorageType);
         return false;
     }
     m_pStorage = Storages::create(m_sStorageType);
@@ -94,7 +94,7 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
 
     m_sStorageType = pGlobalSettings->get("storage_type").getStringValue();
     if (!Storages::support(m_sStorageType)) {
-        Log::err(TAG, "Not support storage " + m_sStorageType);
+        WSJCppLog::err(TAG, "Not support storage " + m_sStorageType);
         return false;
     }
     m_pStorage = Storages::create(m_sStorageType);
@@ -113,11 +113,11 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
     pDatabase->setPassword(QString::fromStdString(sRootPassword));
     if (!pDatabase->open()) {
         sError = "Could not connect to mysql://" + sDatabaseHost + ":" + std::to_string(nDatabasePort);
-        Log::err(TAG, sError);
-        Log::err(TAG, "Maybe wrong root password");
+        WSJCppLog::err(TAG, sError);
+        WSJCppLog::err(TAG, "Maybe wrong root password");
         return false;
     }
-    Log::info(TAG, "Success connected");
+    WSJCppLog::info(TAG, "Success connected");
     
     // check the database exists
     bool bDatabaseAlreadyExists = false;
@@ -126,7 +126,7 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
         query.prepare("SHOW DATABASES;");
         if (!query.exec()) {
             sError = query.lastError().text().toStdString();
-            Log::err(TAG, sError);
+            WSJCppLog::err(TAG, sError);
             return false;
         }
         while (query.next()) {
@@ -147,7 +147,7 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
         query.prepare(QString(sQuery.c_str()));
         if (!query.exec()) {
             sError = query.lastError().text().toStdString();
-            Log::err(TAG, sError);
+            WSJCppLog::err(TAG, sError);
             return false;
         }
         while (query.next()) {
@@ -178,7 +178,7 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
         query.prepare(QString(sQuery.c_str()));
         if (!query.exec()) {
             sError = query.lastError().text().toStdString();
-            Log::err(TAG, sError);
+            WSJCppLog::err(TAG, sError);
             return false;
         }
     }
@@ -191,7 +191,7 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
         query.prepare(QString(sQuery.c_str()));
         if (!query.exec()) {
             sError = query.lastError().text().toStdString();
-            Log::err(TAG, sError);
+            WSJCppLog::err(TAG, sError);
             return false;
         }
     }
@@ -204,7 +204,7 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
         query.prepare(QString(sQuery.c_str()));
         if (!query.exec()) {
             sError = query.lastError().text().toStdString();
-            Log::err(TAG, sError);
+            WSJCppLog::err(TAG, sError);
             return false;
         }
     }
@@ -248,10 +248,10 @@ StorageConnection *EmployDatabase::getStorageConnection() {
     std::lock_guard<std::mutex> lock(m_mtxStorageConnections);
     
     if (m_vDoRemoveStorageConnections.size() > 0) {
-        Log::warn(TAG, "TODO cleanup m_vDoRemoveStorageConnections, size = " + std::to_string(m_vDoRemoveStorageConnections.size()));
+        WSJCppLog::warn(TAG, "TODO cleanup m_vDoRemoveStorageConnections, size = " + std::to_string(m_vDoRemoveStorageConnections.size()));
     }
 
-    std::string sThreadId = Fallen::threadId();
+    std::string sThreadId = WSJCppCore::threadId();
     StorageConnection *pStorageConnection = nullptr;
     std::map<std::string, StorageConnection *>::iterator it;
     it = m_mapStorageConnections.find(sThreadId);
@@ -297,7 +297,7 @@ std::map<std::string, std::string> EmployDatabase::loadAllSettings() {
             if (vRet.count(sName) == 0) {
                 vRet.insert(std::pair<std::string, std::string>(sName, sValue));
             } else {
-                Log::err(TAG, "In databases settings found duplicates '" + sName + "'");
+                WSJCppLog::err(TAG, "In databases settings found duplicates '" + sName + "'");
             }
         }
     }
@@ -318,7 +318,7 @@ void EmployDatabase::updateSettingItem(const WSJCppSettingItem *pSettingItem) {
     query.bindValue(":name", QString::fromStdString(pSettingItem->getName()));
 
     if (!query.exec()) {
-        Log::err(TAG, query.lastError().text().toStdString());
+        WSJCppLog::err(TAG, query.lastError().text().toStdString());
     }
 }
 
@@ -327,7 +327,7 @@ void EmployDatabase::updateSettingItem(const WSJCppSettingItem *pSettingItem) {
 void EmployDatabase::initSettingItem(WSJCppSettingItem *pSettingItem) {
     // StorageConnection *pConn = this->getStorageConnection();
 
-    Log::info(TAG, "Init settings to database: " + pSettingItem->getName());
+    WSJCppLog::info(TAG, "Init settings to database: " + pSettingItem->getName());
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
@@ -337,7 +337,7 @@ void EmployDatabase::initSettingItem(WSJCppSettingItem *pSettingItem) {
     query.bindValue(":group", QString::fromStdString(pSettingItem->getGroupName()));
     query.bindValue(":type", QString::fromStdString(pSettingItem->convertTypeToString()));
     if (!query.exec()) {
-        Log::throw_err(TAG, query.lastError().text().toStdString());
+        WSJCppLog::throw_err(TAG, query.lastError().text().toStdString());
     }
 
 

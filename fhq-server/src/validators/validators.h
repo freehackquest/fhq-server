@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include <wsjcpp_validators.h>
+#include <core/wsjcpp_validators.h>
 
 // ---------------------------------------------------------------------
 

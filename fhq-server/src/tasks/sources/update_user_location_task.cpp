@@ -22,10 +22,10 @@ UpdateUserLocationTask::~UpdateUserLocationTask() {
 
 void UpdateUserLocationTask::run() {
     if (m_sLastIP == "::1" || m_sLastIP == "127.0.0.1") {
-        Log::info(TAG, "Skip " + m_sLastIP);
+        WSJCppLog::info(TAG, "Skip " + m_sLastIP);
         return;
     }
-    Log::info(TAG, "userid = " + std::to_string(m_nUserID) + " start");
+    WSJCppLog::info(TAG, "userid = " + std::to_string(m_nUserID) + " start");
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
 
     QSqlDatabase db = *(pDatabase->database());
@@ -33,7 +33,7 @@ void UpdateUserLocationTask::run() {
     query.prepare("SELECT * FROM users WHERE id = :id");
     query.bindValue(":id", m_nUserID);
     if (!query.exec()) {
-        Log::err(TAG, query.lastError().text().toStdString());
+        WSJCppLog::err(TAG, query.lastError().text().toStdString());
     }
     if (query.next()) {
         QSqlRecord record = query.record();
@@ -42,7 +42,7 @@ void UpdateUserLocationTask::run() {
         if (sLastIP != m_sLastIP) {
             // TODO redesign to curl request
             // TODO redesign check in database same ip first
-            Log::info(TAG, "Update user # " + std::to_string(m_nUserID) + " location by ip " + m_sLastIP);
+            WSJCppLog::info(TAG, "Update user # " + std::to_string(m_nUserID) + " location by ip " + m_sLastIP);
             QNetworkAccessManager manager;
             QUrl url("http://ip-api.com/json/" + QString::fromStdString(m_sLastIP));
             QNetworkRequest request(url);
@@ -62,7 +62,7 @@ void UpdateUserLocationTask::run() {
             double nLat = p.getLat();
             double nLon = p.getLon();
 
-            Log::info(TAG, "userid = " + std::to_string(m_nUserID) + ", update last_ip, city, region, country");
+            WSJCppLog::info(TAG, "userid = " + std::to_string(m_nUserID) + ", update last_ip, city, region, country");
 
             QSqlQuery query_update(db);
             query_update.prepare("UPDATE users SET "
@@ -81,12 +81,12 @@ void UpdateUserLocationTask::run() {
             query_update.bindValue(":longitude", nLon);
             query_update.bindValue(":id", m_nUserID);
             if (!query_update.exec()) {
-                Log::err(TAG, query_update.lastError().text().toStdString());
+                WSJCppLog::err(TAG, query_update.lastError().text().toStdString());
             }
         } else {
-            Log::info(TAG, "IP address same for userid = " + std::to_string(m_nUserID));    
+            WSJCppLog::info(TAG, "IP address same for userid = " + std::to_string(m_nUserID));    
         }
     } else {
-        Log::err(TAG, "failed for userid = " + std::to_string(m_nUserID) + "(not found userid in database)");
+        WSJCppLog::err(TAG, "failed for userid = " + std::to_string(m_nUserID) + "(not found userid in database)");
     }
 };

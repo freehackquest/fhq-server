@@ -8,9 +8,9 @@
 #include <quazipfile.h>
 #include <quazipfileinfo.h>
 #include <utils_merge_text.h>
-#include <md5.h>
 #include <validators.h>
 #include <fallen.h>
+#include <wsjcpp_core.h>
 #include <wsjcpp_hashes.h>
 
 // *******************************************
@@ -73,7 +73,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest) {
             return;
         }
     } else {
-        sUuid = Fallen::createUuid();
+        sUuid = WSJCppCore::createUuid();
     }
 
     //Set md5_content hash
@@ -995,7 +995,7 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest) {
     std::string sContentMd5_ = WSJCppHashes::md5_calc_hex(sContent);
 
     //generate uuid
-    std::string sUuid = Fallen::createUuid();
+    std::string sUuid = WSJCppCore::createUuid();
 
     query.prepare("INSERT INTO classbook_localization("
                   "classbookid,"
@@ -1317,7 +1317,7 @@ void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest) {
     QString md5_content = QString::fromStdString(sContentMd5_);
 
     //generate uuid
-    std::string sUuid = Fallen::createUuid();
+    std::string sUuid = WSJCppCore::createUuid();
 
     query.prepare("INSERT INTO classbook_proposal("
                   "classbookid,"

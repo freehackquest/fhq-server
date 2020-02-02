@@ -23,8 +23,8 @@ check_ret $? "build code-check"
 check_ret $? "code-check"
 cd ..
 
-cd fhq-server/unit-tests
-check_ret $? "change directory to unit-tests"
+cd fhq-server/unit-tests.wsjcpp
+check_ret $? "change directory to unit-tests.wsjcpp"
 ./build_simple.sh
 check_ret $? "build unit-tests"
 ./unit-tests

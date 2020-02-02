@@ -26,7 +26,7 @@ bool EmployQuests::init() {
     query.bindValue(":state", "open");
 
     if (!query.exec()) {
-        Log::err(TAG, query.lastError().text().toStdString());
+        WSJCppLog::err(TAG, query.lastError().text().toStdString());
         return false;
     }
 

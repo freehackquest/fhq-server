@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 add_definitions(-DWSJCPP_VERSION="v0.2.23")
-add_definitions(-DWSJCPP_NAME="freehackquest/fhq-server")
+add_definitions(-DWSJCPP_NAME="fhq-server")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
@@ -19,13 +19,51 @@ list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_levenshtein/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_levenshtein/wsjcpp_levenshtein.cpp")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_levenshtein/wsjcpp_levenshtein.h")
 
-# wsjcpp/wsjcpp-hashes:v0.0.1
-list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_wsjcpp_hashes/")
-list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_wsjcpp_hashes/md5.cpp")
-list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_wsjcpp_hashes/md5.h")
-list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_wsjcpp_hashes/smallsha1.h")
-list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_wsjcpp_hashes/smallsha1.cpp")
-list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_wsjcpp_hashes/wsjcpp_hashes.cpp")
-list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_wsjcpp_hashes/wsjcpp_hashes.h")
+# wsjcpp-hashes:v0.0.1
+list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_hashes/")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_hashes/md5.cpp")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_hashes/md5.h")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_hashes/smallsha1.h")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_hashes/smallsha1.cpp")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_hashes/wsjcpp_hashes.cpp")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_hashes/wsjcpp_hashes.h")
+
+# wsjcpp-core:v0.0.4
+list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_core/")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_core/wsjcpp_core.cpp")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_core/wsjcpp_core.h")
+
+# nlohmann/json:v3.7.3
+list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/nlohmann_json/")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/nlohmann_json/json.hpp")
+
+# required-libraries
+list (APPEND WSJCPP_LIBRARIES "-lpthread")
+
+# required-pkg-config
+## CURL
+FIND_PACKAGE(CURL)
+IF(CURL_FOUND)
+   list (APPEND WSJCPP_INCLUDE_DIRS ${CURL_INCLUDE_DIR})
+   list (APPEND WSJCPP_LIBRARIES ${CURL_LIBRARIES})
+ELSE(CURL_FOUND)
+   MESSAGE(FATAL_ERROR "Could not find the CURL library and development files.")
+ENDIF(CURL_FOUND)
+## PNG
+FIND_PACKAGE(PNG)
+IF(PNG_FOUND)
+   list (APPEND WSJCPP_INCLUDE_DIRS ${PNG_INCLUDE_DIR})
+   list (APPEND WSJCPP_LIBRARIES ${PNG_LIBRARIES})
+ELSE(PNG_FOUND)
+   MESSAGE(FATAL_ERROR "Could not find the PNG library and development files.")
+ENDIF(PNG_FOUND)
+## ZLIB
+FIND_PACKAGE(ZLIB)
+IF(ZLIB_FOUND)
+   list (APPEND WSJCPP_INCLUDE_DIRS ${ZLIB_INCLUDE_DIR})
+   list (APPEND WSJCPP_LIBRARIES ${ZLIB_LIBRARIES})
+ELSE(ZLIB_FOUND)
+   MESSAGE(FATAL_ERROR "Could not find the ZLIB library and development files.")
+ENDIF(ZLIB_FOUND)
 
 

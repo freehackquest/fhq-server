@@ -24,6 +24,7 @@ list (APPEND FHQSRV_SOURCES ${WSJCPP_SOURCES})
 # Sources
 
 # include header dirs
+list (APPEND FHQSRV_INCLUDE_DIRS "src")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/core")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/core/3rdParty")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/quazip-0.7.3/quazip")
@@ -40,9 +41,6 @@ list (APPEND FHQSRV_INCLUDE_DIRS "src/storages/updates")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/web-server")
-
-# core - 3rdParty
-list (APPEND FHQSRV_SOURCES "src/core/3rdParty/json.hpp")
 
 # core
 list (APPEND FHQSRV_SOURCES "src/core/cmd_handlers.h")
@@ -227,6 +225,8 @@ list (APPEND FHQSRV_SOURCES "src/storages/updates/update0101.cpp")
 # web-server
 list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_user_folder.cpp")
 list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_user_folder.h")
+list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_public_folder.cpp")
+list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_public_folder.h")
 list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_admin_folder.cpp")
 list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_admin_folder.h")
 
@@ -255,32 +255,6 @@ if ( ZLIB_FOUND )
 endif( ZLIB_FOUND )
 #####
 ############################
-
-
-############################
-##### LIBPNG
-find_package(PNG REQUIRED)
-if (NOT PNG_FOUND)
-    message(FATAL_ERROR "You don't seem to have libpng development libraries installed (apt isntall libpng-dev)")
-else ()
-    list (APPEND FHQSRV_INCLUDE_DIRS ${PNG_INCLUDE_DIR})
-    list (APPEND FHQSRV_LIBRARIES ${PNG_LIBRARY})
-endif ()
-#####
-############################
-
-############################
-##### CURL
-FIND_PACKAGE(CURL)
-IF(CURL_FOUND)
-  list (APPEND FHQSRV_INCLUDE_DIRS ${CURL_INCLUDE_DIR})
-  list (APPEND FHQSRV_LIBRARIES ${CURL_LIBRARIES})
-ELSE(CURL_FOUND)
-  MESSAGE(FATAL_ERROR "Could not find the CURL library and development files.")
-ENDIF(CURL_FOUND)
-#####
-############################
-
 
 ############################
 ##### mysql 
@@ -312,7 +286,7 @@ find_package (Qt5WebSockets)
 add_executable (fhq-server ${FHQSRV_SOURCES})
 
 qt5_use_modules(fhq-server Core Network Sql WebSockets)
-target_link_libraries(fhq-server -lpthread ${FHQSRV_LIBRARIES} )
+target_link_libraries(fhq-server ${FHQSRV_LIBRARIES} )
 
 # target_link_libraries(fhq-server Qt5::Core)
 

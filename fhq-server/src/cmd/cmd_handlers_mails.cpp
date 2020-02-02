@@ -93,21 +93,21 @@ void CmdHandlerMailsList::handle(ModelRequest *pRequest) {
     int nCount = 0;
 
     std::string sFilterEmail = pRequest->getInputString("filter_email", "");
-    Fallen::trim(sFilterEmail);
+    WSJCppCore::trim(sFilterEmail);
     if (sFilterEmail != "") {
         vFilters.push_back("(ed.to_email LIKE :email)");
         filter_values[":email"] = "%" + QString::fromStdString(sFilterEmail) + "%";
     }
 
     std::string sFilterSubject = pRequest->getInputString("filter_subject", "");
-    Fallen::trim(sFilterSubject);
+    WSJCppCore::trim(sFilterSubject);
     if (sFilterSubject != "") {
         vFilters.push_back("(ed.subject LIKE :subject)");
         filter_values[":subject"] = "%" + QString::fromStdString(sFilterSubject) + "%";
     }
 
     std::string sFilterMessage = pRequest->getInputString("filter_message", "");
-    Fallen::trim(sFilterMessage);
+    WSJCppCore::trim(sFilterMessage);
     if (sFilterMessage != "") {
         vFilters.push_back("(ed.message LIKE :message)");
         filter_values[":message"] = "%" + QString::fromStdString(sFilterMessage) + "%";

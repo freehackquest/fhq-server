@@ -31,7 +31,7 @@ bool EmployServerInfo::init() {
         QSqlQuery query(db);
         query.prepare("SELECT COUNT(*) cnt FROM quest");
         if (!query.exec()) {
-            Log::err(TAG, query.lastError().text().toStdString());
+            WSJCppLog::err(TAG, query.lastError().text().toStdString());
             return false;
         }
         if (query.next()) {
@@ -48,7 +48,7 @@ bool EmployServerInfo::init() {
         QSqlQuery query(db);
         query.prepare("SELECT COUNT(*) cnt FROM users_quests_answers");
         if (!query.exec()) {
-            Log::err(TAG, query.lastError().text().toStdString());
+            WSJCppLog::err(TAG, query.lastError().text().toStdString());
             return false;
         }
         if (query.next()) {
@@ -65,7 +65,7 @@ bool EmployServerInfo::init() {
         QSqlQuery query(db);
         query.prepare("SELECT COUNT(*) cnt FROM users_quests");
         if (!query.exec()) {
-            Log::err(TAG, query.lastError().text().toStdString());
+            WSJCppLog::err(TAG, query.lastError().text().toStdString());
             return false;
         }
         if (query.next()) {

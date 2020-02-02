@@ -179,14 +179,14 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
     QMap<QString,QString> filter_values;
     
     std::string sType = pRequest->getInputString("type", "");
-    Fallen::trim(sType);
+    WSJCppCore::trim(sType);
     if (sType != "") {
         vFilters.push_back("(e.type = :type)");
         filter_values[":type"] = QString::fromStdString(sType);
     }
 
     std::string sSearch = pRequest->getInputString("search", "");
-    Fallen::trim(sSearch);
+    WSJCppCore::trim(sSearch);
     if (sSearch != "") {
         vFilters.push_back("(e.message LIKE :search)");
         filter_values[":search"] = "%" + QString::fromStdString(sSearch) + "%";

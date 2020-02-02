@@ -41,7 +41,7 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest) {
     QSqlDatabase db = *(pDatabase->database());
 
     std::string name = pRequest->getInputString("name", "");
-    Fallen::trim(name);
+    WSJCppCore::trim(name);
     std::string action = pRequest->getInputString("action", "");
 
     std::string sError;
@@ -191,7 +191,7 @@ void CmdHandlerLXDInfo::handle(ModelRequest *pRequest) {
     std::string sError;
     int nErrorCode;
     std::string sName = pRequest->getInputString("name", "");
-    Fallen::trim(sName);
+    WSJCppCore::trim(sName);
     nlohmann::json jsonState;
 
     if (get_state(sName, sError, nErrorCode, jsonState)) {
@@ -213,7 +213,7 @@ bool CmdHandlerLXDInfo::get_state(const std::string& sName, std::string &sError,
     if (!pOrchestra->find_container(sName, pContainer)) {
         sError = "Not found container " + sName;
         nErrorCode = 404;
-        Log::err(TAG, sError);
+        WSJCppLog::err(TAG, sError);
         return false;
     }
 
@@ -283,7 +283,7 @@ void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
     std::string sError;
     int nErrorCode = 500;
     std::string name = pRequest->getInputString("name", "");
-    Fallen::trim(name);
+    WSJCppCore::trim(name);
     std::string command = pRequest->getInputString("command", "");
     std::string sOutput;
 

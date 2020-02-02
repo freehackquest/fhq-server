@@ -34,11 +34,11 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
 
     int nUserID = 0;
     std::string sEmail = pRequest->getInputString("from", "");
-    Fallen::trim(sEmail);
+    WSJCppCore::trim(sEmail);
     std::string sText = pRequest->getInputString("text", "");
-    Fallen::trim(sText);
+    WSJCppCore::trim(sText);
     std::string sType = pRequest->getInputString("type", "");
-    Fallen::trim(sType);
+    WSJCppCore::trim(sType);
 
     WSJCppUserSession *pUserSession = pRequest->getUserSession();
     if (pUserSession != NULL) {

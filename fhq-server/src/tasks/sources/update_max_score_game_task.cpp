@@ -21,7 +21,7 @@ UpdateMaxScoreGameTask::~UpdateMaxScoreGameTask() {
 void UpdateMaxScoreGameTask::run() {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     StorageConnection *pConn = pDatabase->getStorageConnection();
-    Log::info(TAG, "gameid " + std::to_string(m_nGameID));
+    WSJCppLog::info(TAG, "gameid " + std::to_string(m_nGameID));
 
     /*
     int nSummary = 0;
@@ -31,7 +31,7 @@ void UpdateMaxScoreGameTask::run() {
         query.where("state", "open");
         query.where("gameid", m_nGameID);
         if (!query.exec()) {
-            Log::err(TAG, select.getError());
+            WSJCppLog::err(TAG, select.getError());
             return;
         }
         StorageRow r = select.getRow();
@@ -43,7 +43,7 @@ void UpdateMaxScoreGameTask::run() {
         query2.column("maxscore", nSummary); // TODO throw
         query2.where("id", m_nGameID); // TODO throw 
         if (!query2.exec()) { // Will be not need here...
-            Log::err(TAG, query2.getError());
+            WSJCppLog::err(TAG, query2.getError());
         }
     }
     
@@ -52,7 +52,7 @@ void UpdateMaxScoreGameTask::run() {
     // pConn->selectSingleIntValue(SELECT SUM(score) FROM quest WHERE state = :state AND gameid = :gameid);
     // UPDATE games SET maxscore = 
 
-    Log::info(TAG, "gameid " + std::to_string(m_nGameID));
+    WSJCppLog::info(TAG, "gameid " + std::to_string(m_nGameID));
     
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
@@ -61,6 +61,6 @@ void UpdateMaxScoreGameTask::run() {
     query.bindValue(":gameid", m_nGameID);
     query.bindValue(":id", m_nGameID);
     if (!query.exec()) {
-        Log::err(TAG, query.lastError().text().toStdString());
+        WSJCppLog::err(TAG, query.lastError().text().toStdString());
     }
 };

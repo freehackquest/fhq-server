@@ -45,8 +45,8 @@ LightHttpResponse::LightHttpResponse(int nSockFd) {
     m_nSockFd = nSockFd;
     m_bClosed = false;
     noCache();
-    long nSec = Fallen::currentTime_seconds();
-    m_sLastModified = Fallen::formatTimeForWeb(nSec);
+    long nSec = WSJCppCore::currentTime_seconds();
+    m_sLastModified = WSJCppCore::formatTimeForWeb(nSec);
     m_nResponseCode = 500;
     m_sDataType = "text/html";
 }
@@ -169,12 +169,12 @@ void LightHttpResponse::sendText(const std::string &sBody) {
         + "\r\n" + sBody;
     
     if (m_bClosed) {
-        Log::warn(TAG, "Already sended response");
+        WSJCppLog::warn(TAG, "Already sended response");
         return;
     }
     m_bClosed = true;
     
-    Log::info(TAG, "\nResponse: \n>>>\n" + sResponse + "\n<<<");
+    WSJCppLog::info(TAG, "\nResponse: \n>>>\n" + sResponse + "\n<<<");
 
     send(m_nSockFd, sResponse.c_str(), sResponse.length(),0);
     close(m_nSockFd);
@@ -195,12 +195,12 @@ void LightHttpResponse::sendOptions(const std::string &sOptions) {
         + "\r\n\r\n";
     
     if (m_bClosed) {
-        Log::warn(TAG, "Already sended response");
+        WSJCppLog::warn(TAG, "Already sended response");
         return;
     }
     m_bClosed = true;
     
-    Log::info(TAG, "\nResponse: \n>>>\n" + sResponse + "\n<<<");
+    WSJCppLog::info(TAG, "\nResponse: \n>>>\n" + sResponse + "\n<<<");
 
     send(m_nSockFd, sResponse.c_str(), sResponse.length(),0);
     close(m_nSockFd);
@@ -212,12 +212,12 @@ void LightHttpResponse::sendDontUnderstand() {
     std::string sResponse = "I don't understand you! Are you just a machine? Or maybe hacker?";
     
     if (m_bClosed) {
-        Log::warn(TAG, "Already sended response");
+        WSJCppLog::warn(TAG, "Already sended response");
         return;
     }
     m_bClosed = true;
     
-    Log::info(TAG, "\nResponse: \n>>>\n" + sResponse + "\n<<<");
+    WSJCppLog::info(TAG, "\nResponse: \n>>>\n" + sResponse + "\n<<<");
 
     send(m_nSockFd, sResponse.c_str(), sResponse.length(),0);
     close(m_nSockFd);
@@ -263,7 +263,7 @@ void LightHttpResponse::sendBuffer(const std::string &sFilePath, const char *pBu
         + "\r\n";
 
     if (m_bClosed) {
-        Log::warn(TAG, "Already sended response");
+        WSJCppLog::warn(TAG, "Already sended response");
         // delete[] pData;
         return;
     }
@@ -292,8 +292,8 @@ LightHttpRequest::LightHttpRequest(int nSockFd, const std::string &sAddress) {
     m_sRequest = "";
     m_nParserState = EnumParserState::START;
     TAG = "LightHttpRequest";
-    long nSec = Fallen::currentTime_seconds();
-    m_sLastModified = Fallen::formatTimeForWeb(nSec);
+    long nSec = WSJCppCore::currentTime_seconds();
+    m_sLastModified = WSJCppCore::formatTimeForWeb(nSec);
     m_nContentLength = 0;
 }
 
@@ -340,7 +340,7 @@ void LightHttpRequest::appendRecieveRequest(const std::string &sRequestPart) {
     const std::string sContentLengthPrefix = "content-length:";
     if (m_nParserState == EnumParserState::START) {
         m_vHeaders.clear();
-        // Log::info(TAG, "START \n>>>\n" + m_sRequest + "\n<<<\n");
+        // WSJCppLog::info(TAG, "START \n>>>\n" + m_sRequest + "\n<<<\n");
 
         std::istringstream f(m_sRequest);
         std::string sLine = "";
@@ -348,18 +348,18 @@ void LightHttpRequest::appendRecieveRequest(const std::string &sRequestPart) {
         bool bHeadersEnded = false;
         while (getline(f, sLine, '\n')) {
             nSize += sLine.length() + 1;
-            Fallen::trim(sLine);
-            // Log::info(TAG, "Line: {" + sLine + "}, size=" + std::to_string(sLine.length()));
+            WSJCppCore::trim(sLine);
+            // WSJCppLog::info(TAG, "Line: {" + sLine + "}, size=" + std::to_string(sLine.length()));
             if (sLine.length() == 0) {
                 bHeadersEnded = true;
                 break;
             }
             m_vHeaders.push_back(sLine);
 
-            Fallen::to_lower(sLine);
+            WSJCppCore::to_lower(sLine);
             if (!sLine.compare(0, sContentLengthPrefix.size(), sContentLengthPrefix)) {
                 m_nContentLength = atoi(sLine.substr(sContentLengthPrefix.size()).c_str());
-                // Log::warn(TAG, "Content-Length: " + std::to_string(m_nContentLength));
+                // WSJCppLog::warn(TAG, "Content-Length: " + std::to_string(m_nContentLength));
             }
         }
 
@@ -368,10 +368,10 @@ void LightHttpRequest::appendRecieveRequest(const std::string &sRequestPart) {
                 this->parseFirstLine(m_vHeaders[0]);
             }
             m_sRequest.erase(0, nSize);
-            // Log::info(TAG, "AFTER ERASE \n>>>\n" + m_sRequest + "\n<<<\n");
+            // WSJCppLog::info(TAG, "AFTER ERASE \n>>>\n" + m_sRequest + "\n<<<\n");
             m_nParserState = EnumParserState::BODY;
         } else {
-            // Log::info(TAG, "Not ended");
+            // WSJCppLog::info(TAG, "Not ended");
         }
     }
     
@@ -450,7 +450,7 @@ void LightHttpDequeRequests::pushRequest(LightHttpRequest *pRequest) {
     {
         std::lock_guard<std::mutex> guard(this->m_mtxDequeRequests);
         if (m_dequeRequests.size() > 20) {
-            Log::warn(TAG, " deque more than " + std::to_string(m_dequeRequests.size()));
+            WSJCppLog::warn(TAG, " deque more than " + std::to_string(m_dequeRequests.size()));
         }
         m_dequeRequests.push_front(pRequest);
     }
@@ -535,7 +535,7 @@ bool LightHttpHandlers::handle(const std::string &sWorkerId, LightHttpRequest *p
             if (m_pHandlers[i]->handle(sWorkerId, pRequest)) {
                 return true;
             } else {
-                Log::warn("LightHttpHandlers", m_pHandlers[i]->name() + " - could not handle request '" + pRequest->requestPath() + "'");
+                WSJCppLog::warn("LightHttpHandlers", m_pHandlers[i]->name() + " - could not handle request '" + pRequest->requestPath() + "'");
             }
         }
     }
@@ -599,7 +599,7 @@ void LightHttpThreadWorker::run() {
             char *clientip = new char[20];
             memset(clientip, 0, 20);
             strcpy(clientip, inet_ntoa(addr.sin_addr));
-            Log::info(TAG, "IP-address: " + std::string(clientip));
+            WSJCppLog::info(TAG, "IP-address: " + std::string(clientip));
 
             LightHttpResponse *pResponse = new LightHttpResponse(nSockFd);
             int n;
@@ -626,7 +626,7 @@ void LightHttpThreadWorker::run() {
                     //close(nSockFd);
                     break;
                 }
-                Log::info(TAG, "Readed " + std::to_string(n) + " bytes...");
+                WSJCppLog::info(TAG, "Readed " + std::to_string(n) + " bytes...");
                 msg[n] = 0;
                 //send(newsockfd,msg,n,0);
                 sRequest = std::string(msg);
@@ -639,7 +639,7 @@ void LightHttpThreadWorker::run() {
                 }
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
-            Log::info(TAG, "\nRequest: \n>>>\n" + sRequest + "\n<<<");
+            WSJCppLog::info(TAG, "\nRequest: \n>>>\n" + sRequest + "\n<<<");
 
             if (bErrorRead) {
                 pResponse->sendDontUnderstand();
@@ -686,9 +686,8 @@ void LightHttpServer::setPort(int nPort) {
     if (nPort > 10 && nPort < 65536) {
         m_nPort = nPort;
     } else {
-        Log::warn(TAG, "Port must be 10...65535");
+        WSJCppLog::throw_err(TAG, "Port must be 10...65535");
     }
-
     m_nPort = nPort;
 }
 
@@ -698,7 +697,7 @@ void LightHttpServer::setMaxWorkers(int nMaxWorkers) {
     if (nMaxWorkers > 0 && nMaxWorkers <= 100) {
         m_nMaxWorkers = nMaxWorkers;
     } else {
-        Log::warn(TAG, "Max workers must be 1...100");
+        WSJCppLog::warn(TAG, "Max workers must be 1...100");
     }
 }
 
@@ -708,12 +707,12 @@ void LightHttpServer::startSync() {
     
     m_nSockFd = socket(AF_INET, SOCK_STREAM, 0);
     if (m_nSockFd <= 0) {
-        Log::err(TAG, "Failed to establish socket connection");
+        WSJCppLog::err(TAG, "Failed to establish socket connection");
         return;
     }
     int enable = 1;
     if (setsockopt(m_nSockFd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0) {
-        Log::err(TAG, "setsockopt(SO_REUSEADDR) failed");
+        WSJCppLog::err(TAG, "setsockopt(SO_REUSEADDR) failed");
         return;
     }
 
@@ -722,11 +721,11 @@ void LightHttpServer::startSync() {
     m_serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
     m_serverAddress.sin_port = htons(m_nPort);
     if (bind(m_nSockFd, (struct sockaddr *)&m_serverAddress, sizeof(m_serverAddress)) == -1) {
-        Log::err(TAG, "Error binding to port " + std::to_string(m_nPort));
+        WSJCppLog::err(TAG, "Error binding to port " + std::to_string(m_nPort));
         return;
     }
-     listen(m_nSockFd, 5);
-    Log::info("LightHttpServer", "Light Http Server started on " + std::to_string(m_nPort) + " port.");
+    listen(m_nSockFd, 5);
+    WSJCppLog::info("LightHttpServer", "Light Http Server started on " + std::to_string(m_nPort) + " port.");
 
     for (int i = 0; i < m_nMaxWorkers; i++) {
         m_vWorkers.push_back(new LightHttpThreadWorker("worker" + std::to_string(i), m_pDeque, m_pHandlers));

@@ -197,7 +197,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     
     for (int i = 0; i < vInserts.size(); i++) {
         StorageInsert ins = vInserts[i];
-        Log::info(TAG, "Inserting row to table " + ins.tableName());
+        WSJCppLog::info(TAG, "Inserting row to table " + ins.tableName());
         bool bFound = false;
         // is valid
         for (int x = 0; x < m_vStructChanges.size(); x++) {
@@ -222,10 +222,10 @@ UpdatesInitDatabase::UpdatesInitDatabase()
                 error = "Insert not valid";
                 return false;
         }
-        Log::ok(TAG, "Inserted.");
+        WSJCppLog::ok(TAG, "Inserted.");
     }
 
-    Log::info(TAG, "exit");
+    WSJCppLog::info(TAG, "exit");
     */
 
 

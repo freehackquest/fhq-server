@@ -1,4 +1,4 @@
-#include <utils_merge_text.h>
+#include <utils/utils_merge_text.h>
 #include <sstream>
 
 void UtilsMergeText::compare(std::string &txt1, std::string &txt2, std::vector<UtilsMergeTextRow *> &arr) {
