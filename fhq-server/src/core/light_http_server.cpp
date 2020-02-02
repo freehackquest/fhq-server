@@ -45,8 +45,8 @@ LightHttpResponse::LightHttpResponse(int nSockFd) {
     m_nSockFd = nSockFd;
     m_bClosed = false;
     noCache();
-    long nSec = Fallen::currentTime_seconds();
-    m_sLastModified = Fallen::formatTimeForWeb(nSec);
+    long nSec = WSJCppCore::currentTime_seconds();
+    m_sLastModified = WSJCppCore::formatTimeForWeb(nSec);
     m_nResponseCode = 500;
     m_sDataType = "text/html";
 }
@@ -292,8 +292,8 @@ LightHttpRequest::LightHttpRequest(int nSockFd, const std::string &sAddress) {
     m_sRequest = "";
     m_nParserState = EnumParserState::START;
     TAG = "LightHttpRequest";
-    long nSec = Fallen::currentTime_seconds();
-    m_sLastModified = Fallen::formatTimeForWeb(nSec);
+    long nSec = WSJCppCore::currentTime_seconds();
+    m_sLastModified = WSJCppCore::formatTimeForWeb(nSec);
     m_nContentLength = 0;
 }
 
@@ -348,7 +348,7 @@ void LightHttpRequest::appendRecieveRequest(const std::string &sRequestPart) {
         bool bHeadersEnded = false;
         while (getline(f, sLine, '\n')) {
             nSize += sLine.length() + 1;
-            Fallen::trim(sLine);
+            WSJCppCore::trim(sLine);
             // Log::info(TAG, "Line: {" + sLine + "}, size=" + std::to_string(sLine.length()));
             if (sLine.length() == 0) {
                 bHeadersEnded = true;
@@ -356,7 +356,7 @@ void LightHttpRequest::appendRecieveRequest(const std::string &sRequestPart) {
             }
             m_vHeaders.push_back(sLine);
 
-            Fallen::to_lower(sLine);
+            WSJCppCore::to_lower(sLine);
             if (!sLine.compare(0, sContentLengthPrefix.size(), sContentLengthPrefix)) {
                 m_nContentLength = atoi(sLine.substr(sContentLengthPrefix.size()).c_str());
                 // Log::warn(TAG, "Content-Length: " + std::to_string(m_nContentLength));

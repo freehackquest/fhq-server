@@ -350,7 +350,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
 
     int nQuestID = pRequest->getInputInteger("questid", 0);
     std::string sUserAnswer = pRequest->getInputString("answer", "");
-    Fallen::trim(sUserAnswer);
+    WSJCppCore::trim(sUserAnswer);
 
     QString sState = "";
     QString sQuestAnswer = "";
@@ -552,7 +552,7 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
     }
 
     std::string sName = pRequest->getInputString("name", "");
-    Fallen::trim(sName);
+    WSJCppCore::trim(sName);
 
     /*if (sName.length() == 0) {
         pRequest->sendMessageError(cmd(), Error(400, "Name could not be empty"));
@@ -560,23 +560,23 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
     }*/
 
     std::string sText = pRequest->getInputString("text", "");
-    Fallen::trim(sText);
+    WSJCppCore::trim(sText);
     int nScore = pRequest->getInputInteger("score", 0);
     std::string sSubject = pRequest->getInputString("subject", "");
-    Fallen::trim(sSubject);
+    WSJCppCore::trim(sSubject);
 
     std::string sAnswer = pRequest->getInputString("answer", "");
-    Fallen::trim(sAnswer);
+    WSJCppCore::trim(sAnswer);
     std::string sAuthor = pRequest->getInputString("author", "");
-    Fallen::trim(sAuthor);
+    WSJCppCore::trim(sAuthor);
     std::string sAnswerFormat = pRequest->getInputString("answer_format", "");
-    Fallen::trim(sAnswerFormat);
+    WSJCppCore::trim(sAnswerFormat);
     std::string sState = pRequest->getInputString("state", "");
-    Fallen::trim(sState);
+    WSJCppCore::trim(sState);
     std::string sCopyright = pRequest->getInputString("copyright", "");
-    Fallen::trim(sCopyright);
+    WSJCppCore::trim(sCopyright);
     std::string sDescriptionState = pRequest->getInputString("description_state", "");
-    Fallen::trim(sDescriptionState);
+    WSJCppCore::trim(sDescriptionState);
 
     QSqlQuery query(db);
     query.prepare(
@@ -797,7 +797,7 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     }
 
     std::string sName = pRequest->getInputString("name", "");
-    Fallen::trim(sName);
+    WSJCppCore::trim(sName);
 
     if (sName.length() == 0) { // TODO to validators
         pRequest->sendMessageError(cmd(), WSJCppError(400, "Name could not be empty"));
@@ -805,14 +805,14 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     }
 
     std::string sText = pRequest->getInputString("text", "");
-    Fallen::trim(sText);
+    WSJCppCore::trim(sText);
 
     int nScore = pRequest->getInputInteger("score", 0);
     std::string sSubject = pRequest->getInputString("subject", "");
-    Fallen::trim(sSubject);
+    WSJCppCore::trim(sSubject);
 
     std::string sAnswer = pRequest->getInputString("answer", "");
-    Fallen::trim(sAnswer);
+    WSJCppCore::trim(sAnswer);
 
     if (sAnswer.length() == 0) { // TODO to validators
         pRequest->sendMessageError(cmd(), WSJCppError(400, "Answer could not be empty"));
@@ -820,7 +820,7 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     }
 
     std::string sAuthor = pRequest->getInputString("author", "");
-    Fallen::trim(sAuthor);
+    WSJCppCore::trim(sAuthor);
 
     if (sAuthor.length() == 0) { // TODO to validators
         pRequest->sendMessageError(cmd(), WSJCppError(400, "Author could not be empty"));
@@ -828,7 +828,7 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     }
 
     std::string sAnswerFormat = pRequest->getInputString("answer_format", "");
-    Fallen::trim(sAuthor);
+    WSJCppCore::trim(sAuthor);
 
     if (sAnswerFormat.length() == 0) {
         pRequest->sendMessageError(cmd(), WSJCppError(400, "Answer Format could not be empty"));
@@ -836,7 +836,7 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     }
 
     std::string sCopyright = pRequest->getInputString("copyright", "");
-    Fallen::trim(sCopyright);
+    WSJCppCore::trim(sCopyright);
 
     QSqlQuery query(db);
     query.prepare(
@@ -1110,7 +1110,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
     // Update name
     if (pRequest->hasInputParam("name")) {
         std::string sName = pRequest->getInputString("name", "");
-        Fallen::trim(sName);
+        WSJCppCore::trim(sName);
         if (sName != sNamePrev) {
             QSqlQuery query(db);
             query.prepare("UPDATE quest SET name = :name WHERE idquest = :questid");
@@ -1158,7 +1158,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
     // Update subject
     if (pRequest->hasInputParam("subject")) {
         std::string sSubject = pRequest->getInputString("subject", "");
-        Fallen::trim(sSubject);
+        WSJCppCore::trim(sSubject);
         if (sSubject != sSubjectPrev) {
             QSqlQuery query(db);
             query.prepare("UPDATE quest SET subject = :subject WHERE idquest = :questid");
@@ -1176,7 +1176,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
     // Update text
     if (pRequest->hasInputParam("text")) {
         std::string sText = pRequest->getInputString("text", "");
-        Fallen::trim(sText);
+        WSJCppCore::trim(sText);
         if (sText != sTextPrev) {
             QSqlQuery query(db);
             query.prepare("UPDATE quest SET text = :text WHERE idquest = :questid");
@@ -1461,7 +1461,7 @@ void CmdHandlerAnswerList::handle(ModelRequest *pRequest) {
 
     if (pRequest->hasInputParam("user")) {
         std::string user = pRequest->getInputString("user", "");
-        Fallen::trim(user);
+        WSJCppCore::trim(user);
         filters << "(u.email like :email OR u.nick like :nick)";
         filter_values[":email"] = "%" + QString::fromStdString(user) + "%";
         filter_values[":nick"] = "%" + QString::fromStdString(user) + "%";
@@ -1475,7 +1475,7 @@ void CmdHandlerAnswerList::handle(ModelRequest *pRequest) {
 
     if (pRequest->hasInputParam("questname")) {
         std::string questname = pRequest->getInputString("questname", "");
-        Fallen::trim(questname);
+        WSJCppCore::trim(questname);
         if (questname != "") {
             filters << "(q.name LIKE :questname)";
             filter_values[":questname"] = "%" + QString::fromStdString(questname) + "%";
@@ -1484,7 +1484,7 @@ void CmdHandlerAnswerList::handle(ModelRequest *pRequest) {
 
     if (pRequest->hasInputParam("questsubject")) {
         std::string questsubject = pRequest->getInputString("questsubject", "");
-        Fallen::trim(questsubject);
+        WSJCppCore::trim(questsubject);
         if (questsubject != "") {
             filters << "(q.subject = :questsubject)";
             filter_values[":questsubject"] = QString::fromStdString(questsubject);
@@ -1493,7 +1493,7 @@ void CmdHandlerAnswerList::handle(ModelRequest *pRequest) {
 
     if (pRequest->hasInputParam("passed")) {
         std::string passed = pRequest->getInputString("passed", "");
-        Fallen::trim(passed);
+        WSJCppCore::trim(passed);
         if (passed != "") {
             filters << "(uqa.passed = :passed)";
             filter_values[":passed"] = QString::fromStdString(passed);

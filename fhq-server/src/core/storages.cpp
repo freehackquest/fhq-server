@@ -779,7 +779,7 @@ void StorageTable::mergeWith(StorageModifyTable &modifyTable) {
 // ***********************
 
 StorageConnection::StorageConnection() {
-    m_nCreated = Fallen::currentTime_milliseconds();
+    m_nCreated = WSJCppCore::currentTime_milliseconds();
     TAG = "StorageConnection";
 }
 
@@ -796,7 +796,7 @@ long StorageConnection::created() { // TODO
 // ---------------------------------------------------------------------
 
 long StorageConnection::getConnectionDurationInSeconds() {
-    long nRet = Fallen::currentTime_milliseconds() - m_nCreated;
+    long nRet = WSJCppCore::currentTime_milliseconds() - m_nCreated;
     nRet = nRet / 1000;
     return nRet;
 }

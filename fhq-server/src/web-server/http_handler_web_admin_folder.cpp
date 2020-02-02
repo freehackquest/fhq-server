@@ -35,14 +35,14 @@ bool HttpHandlerWebAdminFolder::canHandle(const std::string &sWorkerId, LightHtt
         return false;
     }
 
-    if (!Fallen::dirExists(m_sWebFolder)) {
+    if (!WSJCppCore::dirExists(m_sWebFolder)) {
         Log::warn(_tag, "Directory " + m_sWebFolder + " does not exists");
     }
     sRequestPath = sRequestPath.substr(6); // remove /admin
 
     std::string sFilePath = m_sWebFolder + sRequestPath; // TODO check /../ in path
     // Log::warn(_tag, "Response Resources " + sFilePath);
-    if (!Fallen::fileExists(sFilePath)) { // TODO check the file exists not dir
+    if (!WSJCppCore::fileExists(sFilePath)) { // TODO check the file exists not dir
         return false;
     }
     return true;
@@ -66,7 +66,7 @@ bool HttpHandlerWebAdminFolder::handle(const std::string &sWorkerId, LightHttpRe
     sRequestPath = sRequestPath.substr(6); // remove /admin
     
     std::string sFilePath = m_sWebFolder + sRequestPath; // TODO check /../ in path
-    if (!Fallen::fileExists(sFilePath)) {
+    if (!WSJCppCore::fileExists(sFilePath)) {
         // std::string sResPath = "html" + sRequestPath;
         /*if (ResourcesManager::has(sResPath)) {
             // Log::warn(_tag, "Response Resources " + sResPath);

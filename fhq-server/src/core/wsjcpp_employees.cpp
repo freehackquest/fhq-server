@@ -926,7 +926,7 @@ bool EmployGlobalSettings::findFileConfig() {
         sDirPath = WSJCppCore::doNormalizePath(sDirPath);
         std::string sFilePathConf = sDirPath + "/fhq-server.conf";
         sFilePathConf = WSJCppCore::doNormalizePath(sFilePathConf);
-        if (Fallen::fileExists(sFilePathConf)) {
+        if (WSJCppCore::fileExists(sFilePathConf)) {
             m_sFilepathConf = sFilePathConf;
             m_sWorkDir = sDirPath;
             Log::info(TAG, "Found config file " + sFilePathConf);
@@ -972,7 +972,7 @@ bool EmployGlobalSettings::initFromFile() {
                     sDirPath = m_sWorkDir + "/" + sDirPath;
                     sDirPath = WSJCppCore::doNormalizePath(sDirPath);
                 }
-                if (!Fallen::dirExists(sDirPath)) {
+                if (!WSJCppCore::dirExists(sDirPath)) {
                     Log::throw_err(TAG, "Wrong settings '" + pItem->getName() + "', because folder '" + sDirPath + "' does not exists");
                 }
                 pItem->setDirPathValue(sDirPath);
@@ -984,7 +984,7 @@ bool EmployGlobalSettings::initFromFile() {
                     sFilePath = m_sWorkDir + "/" + sFilePath;
                     sFilePath = WSJCppCore::doNormalizePath(sFilePath);
                 }
-                if (!Fallen::fileExists(sFilePath)) {
+                if (!WSJCppCore::fileExists(sFilePath)) {
                     Log::throw_err(TAG, "Wrong settings '" + pItem->getName() + "', because file '" + sFilePath + "' does not exists");
                 }
                 pItem->setFilePathValue(sFilePath);

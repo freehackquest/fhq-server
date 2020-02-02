@@ -109,7 +109,7 @@ void ExportLibWsjCppCliJavaAndroid::exportPrepareDirs() {
     for (int i = 0; i < vDirectories.size(); i++) {
         std::string sDir = vDirectories[i];
         Log::info(TAG, "Try create dir " + sDir);
-        if (Fallen::makeDir(sDir)) {
+        if (WSJCppCore::makeDir(sDir)) {
             Log::ok(TAG, "Created dir " + sDir);
         } else {
             Log::warn(TAG, "Could not create dir " + sDir);

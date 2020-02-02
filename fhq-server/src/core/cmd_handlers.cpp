@@ -179,7 +179,7 @@ WSJCppSocketClient::~WSJCppSocketClient() {
 
 void WSJCppSocketClient::processTextMessage(const QString &message) {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    Log::warn(TAG, "QWebSocket *pClient = " + Fallen::getPointerAsHex(pClient));
+    Log::warn(TAG, "QWebSocket *pClient = " + WSJCppCore::getPointerAsHex(pClient));
     Log::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
     // processTextMessage
 }
@@ -188,7 +188,7 @@ void WSJCppSocketClient::processTextMessage(const QString &message) {
 
 void WSJCppSocketClient::processBinaryMessage(QByteArray message) {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    Log::warn(TAG, "QWebSocket *pClient = " + Fallen::getPointerAsHex(pClient));
+    Log::warn(TAG, "QWebSocket *pClient = " + WSJCppCore::getPointerAsHex(pClient));
     Log::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
 }
 
@@ -196,11 +196,11 @@ void WSJCppSocketClient::processBinaryMessage(QByteArray message) {
 
 void WSJCppSocketClient::socketDisconnected() {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    Log::warn(TAG, "QWebSocket *pClient = " + Fallen::getPointerAsHex(pClient));
+    Log::warn(TAG, "QWebSocket *pClient = " + WSJCppCore::getPointerAsHex(pClient));
     Log::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
 
     // TODO hex print
-    Log::info(TAG, "socketDisconnected:" + Fallen::getPointerAsHex(pClient));
+    Log::info(TAG, "socketDisconnected:" + WSJCppCore::getPointerAsHex(pClient));
     if (pClient) {
         // this->removeWSJCppUserSession(pClient);
         // m_clients.removeAll(pClient);

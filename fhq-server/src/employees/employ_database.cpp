@@ -251,7 +251,7 @@ StorageConnection *EmployDatabase::getStorageConnection() {
         Log::warn(TAG, "TODO cleanup m_vDoRemoveStorageConnections, size = " + std::to_string(m_vDoRemoveStorageConnections.size()));
     }
 
-    std::string sThreadId = Fallen::threadId();
+    std::string sThreadId = WSJCppCore::threadId();
     StorageConnection *pStorageConnection = nullptr;
     std::map<std::string, StorageConnection *>::iterator it;
     it = m_mapStorageConnections.find(sThreadId);

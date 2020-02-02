@@ -19,274 +19,6 @@
 
 // ---------------------------------------------------------------------
 
-long Fallen::currentTime_milliseconds() {
-    long nTimeStart = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-    return nTimeStart;
-}
-
-// ---------------------------------------------------------------------
-
-long Fallen::currentTime_seconds() {
-    long nTimeStart = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-    return nTimeStart;
-}
-
-// ---------------------------------------------------------------------
-
-std::string Fallen::currentTime_logformat() {
-    long nTimeStart = Fallen::currentTime_milliseconds();
-    std::string sMilliseconds = std::to_string(int(nTimeStart % 1000));
-    nTimeStart = nTimeStart / 1000;
-
-    std::time_t tm_ = long(nTimeStart);
-    // struct tm tstruct = *localtime(&tm_);
-    struct tm tstruct = *gmtime ( &tm_ );
-
-    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
-    // for more information about date/time format
-    char buf[80];
-    strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &tstruct);
-    return std::string(buf) + "." + std::string( 3 - sMilliseconds.length(), '0').append(sMilliseconds);
-}
-
-// ---------------------------------------------------------------------
-
-std::string Fallen::threadId() {
-    std::thread::id this_id = std::this_thread::get_id();
-    std::stringstream stream;
-    stream << std::hex << this_id;
-    return "0x" + std::string(stream.str());
-}
-
-// ---------------------------------------------------------------------
-
-std::string Fallen::formatTimeForWeb(long nTimeInSec) {
-    std::time_t tm_ = long(nTimeInSec);
-    // struct tm tstruct = *localtime(&tm_);
-    struct tm tstruct = *gmtime ( &tm_ );
-
-    
-    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
-    // for more information about date/time format
-    char buf[80];
-    // Like: Wed, 22 Jul 2009 19:15:56 GMT
-    strftime(buf, sizeof(buf), "%a, %d %b %Y %H:%M:%S GMT", &tstruct);
-    return std::string(buf);
-}
-
-// ---------------------------------------------------------------------
-
-std::string Fallen::currentTime_forFilename() {
-    long nTimeStart = Fallen::currentTime_seconds();
-    return Fallen::formatTimeForFilename(nTimeStart);
-}
-
-// ---------------------------------------------------------------------
-
-std::string Fallen::formatTimeForFilename(long nTimeInSec) {
-    std::time_t tm_ = long(nTimeInSec);
-    // struct tm tstruct = *localtime(&tm_);
-    struct tm tstruct = *gmtime ( &tm_ );
-
-    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
-    // for more information about date/time format
-    char buf[80];
-    strftime(buf, sizeof(buf), "%Y%m%d_%H%M%S", &tstruct);
-    return std::string(buf);
-}
-
-// ---------------------------------------------------------------------
-
-std::string Fallen::formatTimeUTC(int nTimeInSec) {
-    // datetime
-    std::time_t tm_ = long(nTimeInSec);
-    // struct tm tstruct = *localtime(&tm_);
-    struct tm tstruct = *gmtime ( &tm_ );
-
-    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
-    // for more information about date/time format
-    char buf[80];
-    strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &tstruct);
-    return std::string(buf);
-}
-
-// ---------------------------------------------------------------------
-
-bool Fallen::fileExists(const std::string &sFilename) {
-    struct stat st;
-    bool bExists = (stat(sFilename.c_str(), &st) == 0);
-    if (bExists) {
-        return (st.st_mode & S_IFDIR) == 0;
-    }
-    return false;
-}
-
-// ---------------------------------------------------------------------
-
-bool Fallen::dirExists(const std::string &sDirname) {
-    struct stat st;
-    bool bExists = (stat(sDirname.c_str(), &st) == 0);
-    if (bExists) {
-        return (st.st_mode & S_IFDIR) != 0;
-    }
-    return false;
-}
-
-// ---------------------------------------------------------------------
-
-std::vector<std::string> Fallen::listOfDirs(const std::string &sDirname) {
-    std::vector<std::string> vDirs;
-    if (!Fallen::dirExists(sDirname)) {
-        return vDirs;
-    }
-    DIR *dir = opendir(sDirname.c_str());
-    struct dirent *entry = readdir(dir);
-    while (entry != NULL) {
-        if (entry->d_type == DT_DIR) {
-            std::string sDir(entry->d_name);
-            if (sDir != "." && sDir != "..") {
-                vDirs.push_back(sDir);
-            }
-        }
-        entry = readdir(dir);
-    }
-    closedir(dir);
-    return vDirs;
-}
-
-// ---------------------------------------------------------------------
-
-std::vector<std::string> Fallen::listOfFiles(const std::string &sDirname) {
-    std::vector<std::string> vFiles;
-    if (!Fallen::dirExists(sDirname)) {
-        return vFiles;
-    }
-    DIR *dir = opendir(sDirname.c_str());
-    struct dirent *entry = readdir(dir);
-    while (entry != NULL) {
-        if (entry->d_type != DT_DIR) {
-            std::string sDir(entry->d_name);
-            if (sDir != "." && sDir != "..") {
-                vFiles.push_back(sDir);
-            }
-        }
-        entry = readdir(dir);
-    }
-    closedir(dir);
-    return vFiles;
-}
-
-// ---------------------------------------------------------------------
-
-bool Fallen::makeDir(const std::string &sDirname) {
-    struct stat st;
-    int nStatus = mkdir(sDirname.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    if (nStatus == 0) {
-        return true;
-    }
-    if (nStatus == EACCES) {
-        std::cout << "FAILED create folder " << sDirname << std::endl;
-        return false;
-    }
-    std::cout << "nStatus: " << nStatus << std::endl;
-    return true;
-}
-
-// ---------------------------------------------------------------------
-
-bool Fallen::writeFile(const std::string &sFilename, const std::string &sContent) {
-    
-    std::ofstream f(sFilename, std::ios::out);
-    if (!f) {
-        std::cout << "FAILED could not create file to wtite " << sFilename << std::endl;
-        return false;
-    }
-
-    f << sContent << std::endl;
-    f.close();
-    return true;
-}
-
-// ---------------------------------------------------------------------
-
-bool Fallen::writeFile(const std::string &sFilename, const char *pBuffer, const int nBufferSize) {
-    std::ofstream f(sFilename, std::ios::out | std::ios::binary);
-    if (!f) {
-        std::cout << "FAILED could not create file to wtite " << sFilename << std::endl;
-        return false;
-    }
-    f.write(pBuffer, nBufferSize);
-    f.close();
-    return true;
-}
-
-
-// ---------------------------------------------------------------------
-
-std::string& Fallen::ltrim(std::string& str, const std::string& chars) {
-    str.erase(0, str.find_first_not_of(chars));
-    return str;
-}
-
-// ---------------------------------------------------------------------
-
-std::string& Fallen::rtrim(std::string& str, const std::string& chars) {
-    str.erase(str.find_last_not_of(chars) + 1);
-    return str;
-}
-
-// ---------------------------------------------------------------------
-
-std::string& Fallen::trim(std::string& str, const std::string& chars) {
-    return Fallen::ltrim(Fallen::rtrim(str, chars), chars);
-}
-
-// ---------------------------------------------------------------------
-
-std::string& Fallen::to_lower(std::string& str) {
-    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
-    return str;
-}
-
-// ---------------------------------------------------------------------
-
-unsigned long Fallen::convertVoid2Int(void *p) {
-    unsigned long ret = *(unsigned long *)p;
-    return ret;
-}
-
-// ---------------------------------------------------------------------
-
-std::string Fallen::getPointerAsHex(void *p) {
-    std::uintptr_t i = reinterpret_cast<std::uintptr_t>(p);
-    std::stringstream stream;
-    stream << std::hex << i;
-    return "0x" + std::string(stream.str());
-}
-
-// ---------------------------------------------------------------------
-
-void Fallen::initRandom() {
-    std::srand(std::rand() + std::time(0));
-}
-
-// ---------------------------------------------------------------------
-
-std::string Fallen::createUuid() {
-    std::string sRet = "00000000-0000-0000-0000-000000000000";
-    const std::string sAlphabet = "0123456789abcdef";
-    // unsigned t = std::time(0);
-    for (int i = 0; i < 36; i++) {
-        if (i != 8 && i != 13 && i != 18 && i != 23) {
-            sRet[i] = sAlphabet[std::rand() % sAlphabet.length()];
-        }
-    }
-    // Fallen::initRandom();
-    return sRet;
-}
-
-// ---------------------------------------------------------------------
-
 FallenHelpParseArg::FallenHelpParseArg(const std::string &sName, const std::string &sAlias, FallenHelpParseArgType nType, const std::string &sDescription) {
      m_sName = sName;
      m_sAlias = sAlias;
@@ -473,32 +205,32 @@ long Log::g_LOG_START_TIME = 0;
 // ---------------------------------------------------------------------
 
 void Log::doLogRotateUpdateFilename(bool bForce) {
-    long t = Fallen::currentTime_seconds();
+    long t = WSJCppCore::currentTime_seconds();
     long nEverySeconds = 51000; // rotate log if started now or if time left more then 1 day
     if (g_LOG_START_TIME == 0 || t - g_LOG_START_TIME > nEverySeconds || bForce) {
         g_LOG_START_TIME = t;
-        g_LOG_FILE = g_LOG_DIR + "/" + Log::g_PREFIX_LOG_FILE + "_" + Fallen::formatTimeForFilename(g_LOG_START_TIME) + ".log";
+        g_LOG_FILE = g_LOG_DIR + "/" + Log::g_PREFIX_LOG_FILE + "_" + WSJCppCore::formatTimeForFilename(g_LOG_START_TIME) + ".log";
     }
 }
 
 // ---------------------------------------------------------------------
 
 void Log::info(const std::string & sTag, const std::string &sMessage) {
-    Color::Modifier def(Color::FG_DEFAULT);
+    WSJCppColorModifier def(WSJCppColorCode::FG_DEFAULT);
     Log::add(def, "INFO", sTag, sMessage);
 }
 
 // ---------------------------------------------------------------------
 
 void Log::err(const std::string & sTag, const std::string &sMessage) {
-    Color::Modifier red(Color::FG_RED);
+    WSJCppColorModifier red(WSJCppColorCode::FG_RED);
     Log::add(red, "ERR", sTag, sMessage);
 }
 
 // ---------------------------------------------------------------------
 
 void Log::throw_err(const std::string &sTag, const std::string &sMessage) {
-    Color::Modifier red(Color::FG_RED);
+    WSJCppColorModifier red(WSJCppColorCode::FG_RED);
     Log::add(red, "ERR", sTag, sMessage);
     throw std::runtime_error(sMessage);
 }
@@ -506,14 +238,14 @@ void Log::throw_err(const std::string &sTag, const std::string &sMessage) {
 // ---------------------------------------------------------------------
 
 void Log::warn(const std::string & sTag, const std::string &sMessage) {
-    Color::Modifier yellow(Color::FG_YELLOW);
+    WSJCppColorModifier yellow(WSJCppColorCode::FG_YELLOW);
     Log::add(yellow, "WARN",sTag, sMessage);
 }
 
 // ---------------------------------------------------------------------
 
 void Log::ok(const std::string &sTag, const std::string &sMessage) {
-    Color::Modifier green(Color::FG_GREEN);
+    WSJCppColorModifier green(WSJCppColorCode::FG_GREEN);
     Log::add(green, "OK", sTag, sMessage);
 }
 
@@ -561,14 +293,14 @@ nlohmann::json Log::getLastLogs() {
 
 // ---------------------------------------------------------------------
 
-void Log::add(Color::Modifier &clr, const std::string &sType, const std::string &sTag, const std::string &sMessage) {
+void Log::add(WSJCppColorModifier &clr, const std::string &sType, const std::string &sTag, const std::string &sMessage) {
     Log::initGlobalVariables();
     Log::doLogRotateUpdateFilename();
 
     std::lock_guard<std::mutex> lock(*g_LOG_MUTEX);
-    Color::Modifier def(Color::FG_DEFAULT);
+    WSJCppColorModifier def(WSJCppColorCode::FG_DEFAULT);
 
-    std::string sLogMessage = Fallen::currentTime_logformat() + ", " + Fallen::threadId()
+    std::string sLogMessage = WSJCppCore::currentTime_logformat() + ", " + WSJCppCore::threadId()
          + " [" + sType + "] " + sTag + ": " + sMessage;
     std::cout << clr << sLogMessage << def << std::endl;
 
@@ -611,7 +343,7 @@ bool WJSCppParseConfig::load() {
             sLine.erase(sLine.begin() + nFoundComment, sLine.end());
         }
 
-        Fallen::trim(sLine);
+        WSJCppCore::trim(sLine);
         if (sLine == "") { // skip empty strings
             continue;
         }
@@ -626,8 +358,8 @@ bool WJSCppParseConfig::load() {
             
             sParamName.erase (sParamName.begin() + nFoundEqualChar, sParamName.end());
             sParamValue.erase (sParamValue.begin(), sParamValue.begin() + nFoundEqualChar + 1);
-            Fallen::trim(sParamName);
-            Fallen::trim(sParamValue);
+            WSJCppCore::trim(sParamName);
+            WSJCppCore::trim(sParamValue);
             
             // std::cout << " [" << sParamName << "]  => [" << sParamValue << "]" << std::endl;
             

@@ -36,7 +36,7 @@ void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest) {
     if (jsonRequest["message"].is_string()) {
         sMessage = jsonRequest["message"];
     }
-    Fallen::trim(sMessage);
+    WSJCppCore::trim(sMessage);
     if (sMessage.length() == 0) {
         pRequest->sendMessageError(cmd(), WSJCppError(400, "Message could not be empty"));
         return;

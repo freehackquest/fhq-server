@@ -176,7 +176,7 @@ void WebSocketServer::processTextMessage(const QString &message) {
     EmployServer *pServer = findEmploy<EmployServer>();
 
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    Log::warn(TAG, "QWebSocket *pClient = " + Fallen::getPointerAsHex(pClient));
+    Log::warn(TAG, "QWebSocket *pClient = " + WSJCppCore::getPointerAsHex(pClient));
     Log::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
 
     std::string sCmd = "";
@@ -360,7 +360,7 @@ void WebSocketServer::slot_sendToOne(QWebSocket *pClient, QString message) {
 void WebSocketServer::setWSJCppUserSession(QWebSocket *pClient, WSJCppUserSession *pWSJCppUserSession) {
     std::lock_guard<std::mutex> lock(m_mtxUserSession);
     if (m_mapUserSession.find(pClient) == m_mapUserSession.end()) {
-        Log::err(TAG, "pWSJCppUserSession pointer: " + Fallen::getPointerAsHex(pWSJCppUserSession));
+        Log::err(TAG, "pWSJCppUserSession pointer: " + WSJCppCore::getPointerAsHex(pWSJCppUserSession));
         m_mapUserSession.insert(std::pair<QWebSocket *, WSJCppUserSession *>(pClient, pWSJCppUserSession));
     } else {
         Log::err(TAG, "User Session already exists");

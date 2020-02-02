@@ -26,7 +26,7 @@ bool HttpHandlerWebUserFolder::canHandle(const std::string &sWorkerId, LightHttp
         sRequestPath = "/index.html";
     }
 
-    if (!Fallen::dirExists(m_sWebFolder)) {
+    if (!WSJCppCore::dirExists(m_sWebFolder)) {
         Log::warn(_tag, "Directory " + m_sWebFolder + " does not exists");
     }
     return true;
@@ -44,7 +44,7 @@ bool HttpHandlerWebUserFolder::handle(const std::string &sWorkerId, LightHttpReq
     }
     
     std::string sFilePath = m_sWebFolder + sRequestPath; // TODO check /../ in path
-    if (Fallen::fileExists(sFilePath)) {
+    if (WSJCppCore::fileExists(sFilePath)) {
         LightHttpResponse resp(pRequest->sockFd());
         resp.cacheSec(60).ok().sendFile(sFilePath);
     } else {

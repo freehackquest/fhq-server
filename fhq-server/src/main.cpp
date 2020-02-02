@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
     std::string TAG = "MAIN";
     Log::setPrefixLogFile(appName);
     std::string sLogDir = "/var/log/" + appName;
-    if (!Fallen::dirExists(sLogDir)) {
+    if (!WSJCppCore::dirExists(sLogDir)) {
         sLogDir = WSJCppCore::getCurrentDirectory() + "./";
         sLogDir = WSJCppCore::doNormalizePath(sLogDir);
     }
@@ -97,7 +97,7 @@ int main(int argc, char** argv) {
         sWorkDir = WSJCppCore::doNormalizePath(sWorkDir);
 
         std::cout << "\n Workdir: " << sWorkDir << " \n\n";
-        if (!Fallen::dirExists(sWorkDir)) {
+        if (!WSJCppCore::dirExists(sWorkDir)) {
             Log::err(TAG, "Directory '" + sWorkDir + "' did'not exists");
             return -1;
         }
@@ -109,8 +109,8 @@ int main(int argc, char** argv) {
         }
 
         std::string sDirLogs = WSJCppCore::doNormalizePath(sWorkDir + "/logs");
-        if (!Fallen::dirExists(sDirLogs)) {
-            Fallen::makeDir(sDirLogs);
+        if (!WSJCppCore::dirExists(sDirLogs)) {
+            WSJCppCore::makeDir(sDirLogs);
         }
         pGlobalSettings->update("log_dir", sDirLogs);
         Log::setLogDirectory(sDirLogs);

@@ -42,7 +42,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
     QMap<QString,QString> filter_values;
 
     std::string sName = pRequest->getInputString("name", "");
-    Fallen::trim(sName);
+    WSJCppCore::trim(sName);
     if (sName != "") {
         vFilters.push_back("(l.name = :name)");
         filter_values[":name"] = QString::fromStdString(sName);
@@ -51,7 +51,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
 
     bool bAdmin = pRequest->isAdmin();
     std::string sSearch = pRequest->getInputString("search", "");
-    Fallen::trim(sSearch);
+    WSJCppCore::trim(sSearch);
 
     if (sSearch != "" && bAdmin) {
         vFilters.push_back("(l.message LIKE :search)");
@@ -243,7 +243,7 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest) {
 
     if (pRequest->hasInputParam("name")) {
         std::string sName = pRequest->getInputString("name", "");
-        Fallen::trim(sName);
+        WSJCppCore::trim(sName);
         query.prepare("UPDATE leaks SET name=:name WHERE id = :id");
         query.bindValue(":name", QString::fromStdString(sName));
         query.bindValue(":id", id);
@@ -255,7 +255,7 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest) {
 
     if (pRequest->hasInputParam("content")) {
         std::string sContent = pRequest->getInputString("content", "");
-        Fallen::trim(sContent);
+        WSJCppCore::trim(sContent);
         query.prepare("UPDATE leaks SET content=:content WHERE id = :id");
         query.bindValue(":content", QString::fromStdString(sContent));
         query.bindValue(":id", id);

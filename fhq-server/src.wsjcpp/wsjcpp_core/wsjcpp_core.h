@@ -51,6 +51,8 @@ class WSJCppCore {
         static std::string createUuid();
         static bool isIPv4(const std::string& str);
         static bool isIPv6(const std::string& str);
+
+        static std::string getPointerAsHex(void *p);
 };
 
 
