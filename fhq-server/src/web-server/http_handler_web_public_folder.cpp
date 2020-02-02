@@ -20,8 +20,11 @@ bool HttpHandlerWebPublicFolder::canHandle(const std::string &sWorkerId, LightHt
     if (!WSJCppCore::dirExists(m_sWebPublicFolder)) {
         WSJCppLog::warn(_tag, "Directory '" + m_sWebPublicFolder + "' does not exists");
     }
-    sRequestPath = sRequestPath.substr(7); // remove /public
+    if (sRequestPath.rfind("/public/", 0) != 0) {
+        return false;
+    }
 
+    sRequestPath = sRequestPath.substr(7); // remove /public
     std::string sFilePath = m_sWebPublicFolder + sRequestPath; // TODO check /../ in path
     // WSJCppLog::warn(_tag, "Response Resources " + sFilePath);
     if (!WSJCppCore::fileExists(sFilePath)) { // TODO check the file exists not dir
