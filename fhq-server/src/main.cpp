@@ -33,6 +33,7 @@
 #include <runtasks.h>
 #include <light_http_server.h>
 #include <http_handler_web_user_folder.h>
+#include <http_handler_web_public_folder.h>
 #include <http_handler_web_admin_folder.h>
 #include <jobs_pool.h>
 #include <fallen.h>
@@ -335,6 +336,7 @@ int main(int argc, char** argv) {
         WSJCppLog::info(TAG, "Starting web-server on " + std::to_string(nWebPort)
              + " with " + std::to_string(nWebMaxThreads) + " worker threads");
         g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebAdminFolder(sWebAdminFolder));
+        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebPublicFolder(sWebPublicFolder));
         g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebUserFolder(sWebUserFolder));
         
         g_httpServer.setPort(nWebPort);

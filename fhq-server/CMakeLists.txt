@@ -225,6 +225,8 @@ list (APPEND FHQSRV_SOURCES "src/storages/updates/update0101.cpp")
 # web-server
 list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_user_folder.cpp")
 list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_user_folder.h")
+list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_public_folder.cpp")
+list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_public_folder.h")
 list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_admin_folder.cpp")
 list (APPEND FHQSRV_SOURCES "src/web-server/http_handler_web_admin_folder.h")
 

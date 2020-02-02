@@ -178,6 +178,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
         query.prepare("SELECT "
             "    q.idquest, "
             "    q.gameid, "
+            "    q.uuid, "
             "    q.name, "
             "    q.text, "
             "    q.answer_format, "
@@ -208,6 +209,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
             QSqlRecord record = query.record();
             nlohmann::json jsonQuest;
             jsonQuest["id"] = record.value("idquest").toInt();
+            jsonQuest["uuid"] = record.value("uuid").toString().toStdString();
             int nGameID = record.value("gameid").toInt();
             QString sState = record.value("state").toString();
             QString sPassed = record.value("dt_passed2").toString();
@@ -1795,10 +1797,10 @@ CmdHandlerQuestsFilesUpload::CmdHandlerQuestsFilesUpload()
     setAccessAdmin(true);
 
     // validation and description input fields
-    requireStringParam("questuuid", "Quest UUID")
+    requireStringParam("quest_uuid", "Quest UUID")
         .addValidator(new ValidatorUUID());
-    requireStringParam("filebase64", "");
-    requireStringParam("filename", "");
+    requireStringParam("file_base64", "");
+    requireStringParam("file_name", "");
 }
 
 // ---------------------------------------------------------------------
@@ -1806,166 +1808,75 @@ CmdHandlerQuestsFilesUpload::CmdHandlerQuestsFilesUpload()
 void CmdHandlerQuestsFilesUpload::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     nlohmann::json jsonResponse;
-
+    QSqlDatabase db = *(pDatabase->database());
 
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
     std::string sPublicFolder = pGlobalSettings->get("web_public_folder").getDirPathValue();
+    // std::string sPublicFolderURL = pGlobalSettings->get("web_public_folder_url").getDirPathValue();
 
-    std::string sQuestUUID = pRequest->getInputString("questuuid", "");
-    std::string sFileBase64 = pRequest->getInputString("filebase64", "");
-    std::string sFileName = pRequest->getInputString("filename", "");
-
-
-    
-    QSqlDatabase db = *(pDatabase->database());
-
-    QString sBaseGamesURL = QString::fromStdString(pGlobalSettings->get("server_folder_games_url").getStringValue());
-
-    WSJCppUserSession *pUserSession = pRequest->getUserSession();
-    bool bAdmin = false;
-    int nUserID = 0;
-    if (pUserSession != nullptr) {
-        bAdmin = pUserSession->isAdmin();
-        nUserID = pUserSession->userid();
-    }
-
-    int nQuestID = pRequest->getInputInteger("questid", 0);
+    std::string sQuestUUID = pRequest->getInputString("quest_uuid", "");
+    std::string sFileBase64 = pRequest->getInputString("file_base64", "");
+    std::string sFileName = pRequest->getInputString("file_name", "");
+    int nQuestID = 0;
 
     {
         QSqlQuery query(db);
-        query.prepare("SELECT "
-            "    q.idquest, "
-            "    q.gameid, "
-            "    q.name, "
-            "    q.text, "
-            "    q.answer_format, "
-            "    q.score, "
-            "    q.subject, "
-            "    q.copyright, "
-            "    q.state, "
-            "    q.author, "
-            "    q.count_user_solved, "
-            "    q.answer, "
-            "    q.description_state, "
-            "     users_quests.dt_passed as dt_passed2"
-            " FROM "
-            "    quest q "
-            " LEFT JOIN "
-            "    users_quests ON users_quests.questid = q.idquest AND users_quests.userid = :userid"
-            " WHERE "
-            "    q.idquest = :questid"
-        );
-        query.bindValue(":userid", nUserID);
-        query.bindValue(":questid", nQuestID);
+        query.prepare("SELECT idquest FROM quest WHERE uuid = :questuuid");
+        query.bindValue(":questuuid", QString::fromStdString(sQuestUUID));
         if (!query.exec()) {
             pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
             return;
         }
-
         if (query.next()) {
-            QSqlRecord record = query.record();
-            nlohmann::json jsonQuest;
-            jsonQuest["id"] = record.value("idquest").toInt();
-            int nGameID = record.value("gameid").toInt();
-            QString sState = record.value("state").toString();
-            QString sPassed = record.value("dt_passed2").toString();
-
-            if (sState == "open" || bAdmin) {
-                jsonQuest["gameid"] = nGameID;
-                jsonQuest["name"] = record.value("name").toString().toStdString();
-                jsonQuest["text"] = record.value("text").toString().toStdString();
-                jsonQuest["answer_format"] = record.value("answer_format").toString().toStdString();
-                jsonQuest["score"] = record.value("score").toInt();
-                jsonQuest["subject"] = record.value("subject").toString().toStdString();
-                jsonQuest["copyright"] = record.value("copyright").toString().toStdString();
-                jsonQuest["state"] = record.value("state").toString().toStdString();
-                jsonQuest["author"] = record.value("author").toString().toStdString();
-                jsonQuest["count_user_solved"] = record.value("count_user_solved").toString().toStdString();
-            }
-
-            // user completed quest
-            jsonQuest["completed"] = !record.isNull("dt_passed2");
-            jsonQuest["dt_passed"] = sPassed.toStdString();
-
-            if (bAdmin) {
-                jsonQuest["answer"] = record.value("answer").toString().toStdString();
-                jsonQuest["description_state"] = record.value("description_state").toString().toStdString();
-            }
-            jsonResponse["quest"] = jsonQuest;
-
-            // game info
-            {
-                nlohmann::json jsonGame;
-                QSqlQuery query_game(db);
-                query_game.prepare("SELECT * FROM games WHERE id = :id");
-                query_game.bindValue(":id", nGameID);
-                if (!query_game.exec()) {
-                    pRequest->sendMessageError(cmd(), WSJCppError(500, query_game.lastError().text().toStdString()));
-                    return;
-                }
-                if (query_game.next()) {
-                    QSqlRecord record_game = query_game.record();
-                    int nGameID = record_game.value("id").toInt();
-                    jsonGame["id"] = nGameID;
-                    jsonGame["title"] = record_game.value("title").toString().toStdString();
-                    jsonGame["logo"] = QString(sBaseGamesURL + QString::number(nGameID) + ".png").toStdString();
-                } else {
-                    pRequest->sendMessageError(cmd(), WSJCppError(404, "Game not found"));
-                    return;
-                }
-                jsonResponse["game"] = jsonGame;
-            }
-
-
-            // files
-            {
-                nlohmann::json jsonFiles = nlohmann::json::array();
-                QSqlQuery query_files(db);
-                query_files.prepare("SELECT * FROM quests_files WHERE questid = :questid");
-                query_files.bindValue(":questid", nQuestID);
-                if (!query_files.exec()) {
-                    pRequest->sendMessageError(cmd(), WSJCppError(500, query_files.lastError().text().toStdString()));
-                    return;
-                }
-                while (query_files.next()) {
-                    QSqlRecord record_game = query_files.record();
-                    nlohmann::json jsonFileInfo;
-                    jsonFileInfo["id"] = record_game.value("id").toInt();
-                    jsonFileInfo["uuid"] = record_game.value("uuid").toInt();
-                    jsonFileInfo["filename"] = record_game.value("filename").toString().toStdString();
-                    jsonFileInfo["size"] = record_game.value("size").toString().toStdString();
-                    jsonFileInfo["dt"] = record_game.value("dt").toString().toStdString();
-                    jsonFileInfo["filepath"] = record_game.value("filepath").toString().toStdString();
-                    jsonFiles.push_back(jsonFileInfo);
-                }
-                jsonResponse["files"] = jsonFiles;
-            }
-
-            // TODO: deprecated
-            // hints 
-            {
-                nlohmann::json jsonHints = nlohmann::json::array();
-
-                QSqlQuery query_hints(db);
-                query_hints.prepare("SELECT * FROM quests_hints WHERE questid = :questid");
-                query_hints.bindValue(":questid", nQuestID);
-                if (!query_hints.exec()) {
-                    pRequest->sendMessageError(cmd(), WSJCppError(500, query_hints.lastError().text().toStdString()));
-                    return;
-                }
-                while (query_hints.next()) {
-                    QSqlRecord record_game = query_hints.record();
-                    nlohmann::json jsonHint;
-                    jsonHint["id"] = record_game.value("id").toInt();
-                    jsonHint["text"] = record_game.value("text").toString().toStdString();
-                    jsonHints.push_back(jsonHint);
-                }
-                jsonResponse["hints"] = jsonHints;
-            }
+            QSqlRecord quest = query.record();
+            nQuestID = quest.value("idquest").toInt();
         } else {
-            pRequest->sendMessageError(cmd(), WSJCppError(404, "Quest not found"));
+            pRequest->sendMessageError(cmd(), WSJCppError(404, "Game not found"));
             return;
         }
+    }
+
+    QByteArray baFileBase64;
+    QString sImagePngBase64 = QString::fromStdString(sFileBase64);
+    baFileBase64.append(sImagePngBase64);
+    // TODO replace decode base64 to std
+    QByteArray baFile = QByteArray::fromBase64(baFileBase64); // .fromBase64(baImagePNGBase64);
+
+    if (baFile.size() == 0) {
+        pRequest->sendMessageError(cmd(), WSJCppError(400, "Could not decode base64"));
+        return;
+    }
+    
+    if (!WSJCppCore::dirExists(sPublicFolder + "/quests/")) {
+        WSJCppCore::makeDir(sPublicFolder + "/quests/");
+    }
+    // TODO replace in filename all dots
+    std::string sFileUuid = WSJCppCore::createUuid();
+    sFileUuid = WSJCppCore::toUpper(sFileUuid);
+    std::string sPath = sPublicFolder + "/quests/" + WSJCppCore::toUpper(sQuestUUID) + "_" + sFileUuid;
+    
+    int nFileSize = baFile.size();
+    FILE * pFile = fopen(sPath.c_str(), "wb");
+    fwrite (baFile.constData(), sizeof(char), nFileSize, pFile);
+    fclose (pFile);
+    
+    // insert to user tries
+    {
+        QSqlQuery query(db);
+        query.prepare("INSERT INTO quests_files(uuid, questid, filename, size, dt, filepath) "
+                      "VALUES(:uuid, :questid, :filename, :size, NOW(), :filepath)");
+        
+        query.bindValue(":uuid", QString::fromStdString(sFileUuid));
+        query.bindValue(":questid", nQuestID);
+        query.bindValue(":filename", QString::fromStdString(sFileName));
+        query.bindValue(":size", nFileSize);
+        query.bindValue(":filepath", QString::fromStdString("public/quests/" + WSJCppCore::toUpper(sQuestUUID) + "_" + sFileUuid));
+
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            return;
+        }
+        
     }
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);

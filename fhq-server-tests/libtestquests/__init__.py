@@ -140,6 +140,17 @@ def run_tests():
     fhqtest.alert(h2_remove == None, 'Could not get response (hint2_remove)')
     fhqtest.check_response(h2_remove, "Quest hint2 succesfull removed")
 
+    fhqtest.print_bold("Try upload file to quest...")
+    # pprint(quest1_updated)
+    quest_uuid = quest1_updated['uuid']
+    resp = fhqtest.admin_session.quests_files_upload({
+        "quest_uuid": quest_uuid,
+        "file_base64": "SGVsbG8gd29ybGQh",
+        "file_name": "test1.txt",
+    })
+    fhqtest.alert(resp['result'] == 'FAIL', 'Wrong response')
+    fhqtest.check_response(resp, "Quest quests_files_upload succesfull")
+
     questid = quest1_updated['id']
     resp = fhqtest.admin_session.quests({"gameid": gameid})
     fhqtest.alert(resp == None, 'Could not get response (quests)')
@@ -154,8 +165,6 @@ def run_tests():
     fhqtest.check_response(r_answerlist, "Answer list succesfull got")
     pprint(r_answerlist)
     # TODO check this
-
-    
 
 
     # Cleanup
