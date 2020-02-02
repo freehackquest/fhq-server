@@ -1,5 +1,5 @@
-#include <utils_static_analizing_text.h>
-#include <fallen.h>
+#include <utils/utils_static_analizing_text.h>
+#include <core/fallen.h>
 
 double UtilsStaticAnalizingText::calcWeightOfOneChar(int strLen) {
   return 100.0/static_cast<double>(strLen);

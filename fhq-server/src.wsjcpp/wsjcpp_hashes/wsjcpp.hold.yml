@@ -1,0 +1,70 @@
+wsjcpp_version: v0.0.1
+cmake_cxx_standard: 11
+cmake_minimum_required: 3.0
+
+name: wsjcpp-hashes
+version: v0.0.1
+description: Small Collection of hashes
+issues: https://github.com/wsjcpp/wsjcpp-hashes/issues
+
+repositories:
+  - type: main
+    url: "https://github.com/wsjcpp/wsjcpp-hashes"
+
+keywords:
+  - c++
+  - wsjcpp
+  - sha1
+  - md5
+  - hash
+
+authors:
+  # sha1
+  - name: Micael Hildenborg
+    email: ""
+  # md5
+  - name: Frank Thilo
+    email: thilo@unix-ag.org
+  # wrapper
+  - name: Evgenii Sopov
+    email: mrseakg@gmail.com
+
+dependencies:
+  - name: "wsjcpp-core"
+    version: "v0.0.4"
+    url: "https://github.com/wsjcpp/wsjcpp-core:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_core"
+
+distribution:
+  - source-file: src/md5.cpp
+    target-file: md5.cpp
+    sha1: "b9a2f18170280e20d001f3c8a41cb52f4c2428e8"
+    type: "source-code"
+  - source-file: src/md5.h
+    target-file: md5.h
+    sha1: "6792979b9334d1853d3562fa17ca1db7de7d4ee3"
+    type: "source-code"
+  - source-file: src/smallsha1.h
+    target-file: smallsha1.h
+    sha1: "44d204561dc64fdc0a603b02872f10cb6387e7c6"
+    type: "source-code"
+  - source-file: src/smallsha1.cpp
+    target-file: smallsha1.cpp
+    sha1: "4ce3e44851139bdd2acd6c6e9a440a9c75022322"
+    type: "source-code"
+  - source-file: src/wsjcpp_hashes.cpp
+    target-file: wsjcpp_hashes.cpp
+    sha1: "fbbd17bf3a73110c502676ee09e657711ce32bc1"
+    type: "source-code"
+  - source-file: src/wsjcpp_hashes.h
+    target-file: wsjcpp_hashes.h
+    sha1: "35197d7d82ffb756b3af11021ee94c4dc68ddd0a"
+    type: "source-code"
+
+unit-tests:
+  cases:
+    - name: "Md5"
+      description: "check md5"
+    - name: "Sha1"
+      description: "check sha1"

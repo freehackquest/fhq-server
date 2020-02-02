@@ -3,6 +3,7 @@
 #include <employ_server_info.h>
 #include <algorithm>
 #include <storages.h>
+#include <wsjcpp_core.h>
 #include <iostream>
 
 // ---------------------------------------------------------------------

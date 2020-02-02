@@ -1790,23 +1790,34 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
 CmdHandlerQuestsFilesUpload::CmdHandlerQuestsFilesUpload()
     : CmdHandlerBase("quests_files_upload", "Update the quest ") {
 
-    setAccessUnauthorized(true);
-    setAccessUser(true);
+    setAccessUnauthorized(false);
+    setAccessUser(false);
     setAccessAdmin(true);
 
     // validation and description input fields
-    requireIntegerParam("questid", "Quest ID");
+    requireStringParam("questuuid", "Quest UUID")
+        .addValidator(new ValidatorUUID());
+    requireStringParam("filebase64", "");
+    requireStringParam("filename", "");
 }
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuest::handle(ModelRequest *pRequest) {
+void CmdHandlerQuestsFilesUpload::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     nlohmann::json jsonResponse;
 
-    QSqlDatabase db = *(pDatabase->database());
 
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    std::string sPublicFolder = pGlobalSettings->get("web_public_folder").getDirPathValue();
+
+    std::string sQuestUUID = pRequest->getInputString("questuuid", "");
+    std::string sFileBase64 = pRequest->getInputString("filebase64", "");
+    std::string sFileName = pRequest->getInputString("filename", "");
+
+
+    
+    QSqlDatabase db = *(pDatabase->database());
 
     QString sBaseGamesURL = QString::fromStdString(pGlobalSettings->get("server_folder_games_url").getStringValue());
 

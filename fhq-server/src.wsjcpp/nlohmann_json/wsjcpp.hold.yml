@@ -1,0 +1,32 @@
+wsjcpp_version: v0.0.1
+cmake_minimum_required: 3.0
+cmake_cxx_standard: 11
+name: nlohmann/json
+version: v3.7.3
+description: JSON for Modern C++
+issues: "https://github.com/nlohmann/json/issues"
+keywords:
+  - "c++"
+  - "json"
+
+required-libraries:
+  - pthread
+
+required-pkg-config:
+  - CURL
+
+repositories:
+  - type: main
+    url: "https://github.com/nlohmann/json"
+  - type: fork
+    url: "https://github.com/wsjcpp/json"
+
+authors:
+  - name: "Niels Lohmann"
+    email: "mail@nlohmann.me"
+
+distribution:
+  - source-file: "single_include/nlohmann/json.hpp"
+    target-file: "json.hpp"
+    type: "source-code"
+    sha1: "b751743a150fa0286984dd4dbfc1fd1a5580feea"

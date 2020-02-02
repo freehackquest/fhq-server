@@ -1,5 +1,5 @@
-#include <mysql_storage.h>
-#include <fallen.h>
+#include <storages/mysql/mysql_storage.h>
+#include <core/fallen.h>
 #include <mysql/mysql.h>
 
 REGISTRY_STORAGE(MySqlStorage)

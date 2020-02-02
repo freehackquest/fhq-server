@@ -24,6 +24,7 @@ list (APPEND FHQSRV_SOURCES ${WSJCPP_SOURCES})
 # Sources
 
 # include header dirs
+list (APPEND FHQSRV_INCLUDE_DIRS "src")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/core")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/core/3rdParty")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/3rdParty/quazip-0.7.3/quazip")
@@ -256,32 +257,6 @@ endif( ZLIB_FOUND )
 #####
 ############################
 
-
-############################
-##### LIBPNG
-find_package(PNG REQUIRED)
-if (NOT PNG_FOUND)
-    message(FATAL_ERROR "You don't seem to have libpng development libraries installed (apt isntall libpng-dev)")
-else ()
-    list (APPEND FHQSRV_INCLUDE_DIRS ${PNG_INCLUDE_DIR})
-    list (APPEND FHQSRV_LIBRARIES ${PNG_LIBRARY})
-endif ()
-#####
-############################
-
-############################
-##### CURL
-FIND_PACKAGE(CURL)
-IF(CURL_FOUND)
-  list (APPEND FHQSRV_INCLUDE_DIRS ${CURL_INCLUDE_DIR})
-  list (APPEND FHQSRV_LIBRARIES ${CURL_LIBRARIES})
-ELSE(CURL_FOUND)
-  MESSAGE(FATAL_ERROR "Could not find the CURL library and development files.")
-ENDIF(CURL_FOUND)
-#####
-############################
-
-
 ############################
 ##### mysql 
 # Find and make sure the system have the header file
@@ -312,7 +287,7 @@ find_package (Qt5WebSockets)
 add_executable (fhq-server ${FHQSRV_SOURCES})
 
 qt5_use_modules(fhq-server Core Network Sql WebSockets)
-target_link_libraries(fhq-server -lpthread ${FHQSRV_LIBRARIES} )
+target_link_libraries(fhq-server ${FHQSRV_LIBRARIES} )
 
 # target_link_libraries(fhq-server Qt5::Core)
 
