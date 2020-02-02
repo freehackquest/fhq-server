@@ -102,11 +102,11 @@ bool LXDContainer::create() {
         std::string operation_id = jsonResponse.at("operation").get<std::string>();
         if ((!operation_id.empty()) &&
             (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
-            Log::err(TAG, "The asynchronous " + m_sError);
+            WSJCppLog::err(TAG, "The asynchronous " + m_sError);
             return false;
         }
     }
-    Log::info(TAG, "Created container " + full_name());
+    WSJCppLog::info(TAG, "Created container " + full_name());
     return true;
 
 }
@@ -134,12 +134,12 @@ bool LXDContainer::start() {
         nlohmann::json jsonAsyncResponse;
         if ((!operation_id.empty()) &&
             (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
-            Log::err(TAG, "The asynchronous " + m_sError);
+            WSJCppLog::err(TAG, "The asynchronous " + m_sError);
             return false;
         }
     }
 
-    Log::info(TAG, "Started container " + full_name());
+    WSJCppLog::info(TAG, "Started container " + full_name());
     return get_status() == "Running";
 }
 
@@ -162,11 +162,11 @@ bool LXDContainer::stop() {
         std::string operation_id = jsonResponse.at("operation").get<std::string>();
         if ((!operation_id.empty()) &&
             (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
-            Log::err(TAG, "The asynchronous " + m_sError);
+            WSJCppLog::err(TAG, "The asynchronous " + m_sError);
             return false;
         }
     }
-    Log::info(TAG, "Stopped container " + full_name());
+    WSJCppLog::info(TAG, "Stopped container " + full_name());
     return true;
 }
 
@@ -184,11 +184,11 @@ bool LXDContainer::remove() {
         std::string operation_id = jsonResponse.at("operation").get<std::string>();
         if ((!operation_id.empty()) &&
             (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
-            Log::err(TAG, "The asynchronous " + m_sError);
+            WSJCppLog::err(TAG, "The asynchronous " + m_sError);
             return false;
         }
     }
-    Log::info(TAG, "Deleted container " + full_name());
+    WSJCppLog::info(TAG, "Deleted container " + full_name());
     return true;
 }
 
@@ -223,16 +223,16 @@ bool LXDContainer::exec(const std::string &sCommand) {
         std::string operation_id = jsonResponse.at("operation").get<std::string>();
         if ((!operation_id.empty()) &&
             (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
-            Log::err(TAG, "The asynchronous " + m_sError);
+            WSJCppLog::err(TAG, "The asynchronous " + m_sError);
             return false;
         }
         if (jsonAsyncResponse["metadata"]["metadata"]["return"].get<int>() != 0) {
             m_sError = "The command '" + sCommand + "' could not be executed in " + full_name() + " container";
-            Log::err(TAG, "Failed to execute " + sCommand + " in container " + full_name());
+            WSJCppLog::err(TAG, "Failed to execute " + sCommand + " in container " + full_name());
             return false;
         }
     }
-    Log::info(TAG, "Success execution " + sCommand + " in container " + full_name());
+    WSJCppLog::info(TAG, "Success execution " + sCommand + " in container " + full_name());
     return true;
 }
 
@@ -256,11 +256,11 @@ bool LXDContainer::push_file(const std::string &sPath, const std::string &sRawDa
     auto jsonResponse = nlohmann::json::parse(sResponse);
     if (!jsonResponse["error"].get<std::string>().empty()) {
         m_sError = "Cant push file in service. Error: " + jsonResponse["error"].get<std::string>();
-        Log::err(TAG, m_sError);
+        WSJCppLog::err(TAG, m_sError);
         return false;
     }
 
-    Log::info(TAG, "In container " + name + " pushed file " + sPath);
+    WSJCppLog::info(TAG, "In container " + name + " pushed file " + sPath);
     return true;
 }
 

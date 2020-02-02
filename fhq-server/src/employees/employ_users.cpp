@@ -16,6 +16,6 @@ EmployUsers::EmployUsers()
 // ---------------------------------------------------------------------
 
 bool EmployUsers::init() {
-    Log::info(TAG, "Start init users");
+    WSJCppLog::info(TAG, "Start init users");
     return true;
 }

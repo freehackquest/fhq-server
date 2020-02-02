@@ -30,7 +30,7 @@ class JobWaiterResult {
         };
 
         void onFail(const std::string &sError) {
-            Log::err("JobWaiterResult", "Failed job");
+            WSJCppLog::err("JobWaiterResult", "Failed job");
         };
 
         int finishedJobs() {
@@ -50,9 +50,9 @@ class JobAsyncWaiter : public JobAsync {
             m_pJobWaiterResult = pJobWaiterResult;
         };
         virtual bool run(const std::string &sWorkerId) {
-            Log::info(sWorkerId, "begin job " + std::to_string(m_nNumber));
+            WSJCppLog::info(sWorkerId, "begin job " + std::to_string(m_nNumber));
             std::this_thread::sleep_for(std::chrono::milliseconds(m_nMilliseconds));
-            Log::info(sWorkerId, "end job  " + std::to_string(m_nNumber));
+            WSJCppLog::info(sWorkerId, "end job  " + std::to_string(m_nNumber));
             m_pJobWaiterResult->onDone();
         }
 
@@ -69,7 +69,7 @@ bool UnitTestJobsPool::run() {
 
     // TEST waitForDone
     int nCountJobs = 5;
-    Log::info(TAG, "Check waitForDone...");
+    WSJCppLog::info(TAG, "Check waitForDone...");
     JobWaiterResult *pJobWaiterResult = new JobWaiterResult();
     for (int i = 0; i < nCountJobs; i++) {
         JobsPool::addJobFast(new JobAsyncWaiter(i, 500, pJobWaiterResult));
@@ -77,7 +77,7 @@ bool UnitTestJobsPool::run() {
 
     JobsPool::waitForDone();
     if (pJobWaiterResult->finishedJobs() != nCountJobs) {
-        Log::err(TAG, "Test waitForDone FAILED expected " + std::to_string(nCountJobs) + ", but got " + std::to_string(pJobWaiterResult->finishedJobs()));
+        WSJCppLog::err(TAG, "Test waitForDone FAILED expected " + std::to_string(nCountJobs) + ", but got " + std::to_string(pJobWaiterResult->finishedJobs()));
         return false;
     }
 

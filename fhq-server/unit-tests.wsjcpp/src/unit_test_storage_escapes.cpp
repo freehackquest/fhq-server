@@ -44,7 +44,7 @@ bool UnitTestStorageEscapes::run() {
         if (s3 == s2) {
             nSuccess++;
         } else {
-            Log::err(TAG, "Expected [" + s2 + "], but got [" + s3 + "] for [" + s1 + "]");
+            WSJCppLog::err(TAG, "Expected [" + s2 + "], but got [" + s3 + "] for [" + s1 + "]");
         }
     }
     return nSuccess == tests.size();

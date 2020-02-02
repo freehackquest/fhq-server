@@ -1404,7 +1404,7 @@ void CmdHandlerAddHint::handle(ModelRequest *pRequest) {
     query.bindValue(":questid", nQuestId);
     query.bindValue(":text", QString(sHint.c_str()));
     if (!query.exec()) {
-        Log::err(TAG, query.lastError().text().toStdString());
+        WSJCppLog::err(TAG, query.lastError().text().toStdString());
     }
 
     RunTasks::AddPublicEvents("quests", "Added hint for [quest#" + std::to_string(nQuestId) + "]");

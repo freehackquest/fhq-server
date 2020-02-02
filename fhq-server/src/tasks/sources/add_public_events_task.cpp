@@ -21,7 +21,7 @@ AddPublicEventsTask::~AddPublicEventsTask() {
 }
 
 void AddPublicEventsTask::run() {
-    Log::info(TAG, "message " + m_sMessage);
+    WSJCppLog::info(TAG, "message " + m_sMessage);
     EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
@@ -29,6 +29,6 @@ void AddPublicEventsTask::run() {
     query.bindValue(":type", QString::fromStdString(m_sType));
     query.bindValue(":message", QString::fromStdString(m_sMessage));
     if (!query.exec()) {
-        Log::err(TAG, query.lastError().text().toStdString());
+        WSJCppLog::err(TAG, query.lastError().text().toStdString());
     }
 };

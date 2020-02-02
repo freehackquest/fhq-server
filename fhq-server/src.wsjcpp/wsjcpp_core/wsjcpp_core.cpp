@@ -528,6 +528,18 @@ void WSJCppLog::ok(const std::string &sTag, const std::string &sMessage) {
 
 // ---------------------------------------------------------------------
 
+std::vector<std::string> WSJCppLog::getLastLogMessages() {
+    WSJCppLog::initGlobalVariables();
+    std::lock_guard<std::mutex> lock(*WSJCppLog::g_WSJCPP_LOG_MUTEX);
+    std::vector<std::string> vRet;
+    for (int i = 0; i < g_WSJCPP_LOG_LAST_MESSAGES->size(); i++) {
+        vRet.push_back(g_WSJCPP_LOG_LAST_MESSAGES->at(i));
+    }
+    return vRet;
+}
+
+// ---------------------------------------------------------------------
+
 void WSJCppLog::setLogDirectory(const std::string &sDirectoryPath) {
     WSJCppLog::g_WSJCPP_LOG_DIR = sDirectoryPath;
     WSJCppLog::doLogRotateUpdateFilename(true);

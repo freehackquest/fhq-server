@@ -14,11 +14,11 @@ HttpHandlerWebAdminFolder::HttpHandlerWebAdminFolder(const std::string &sWebFold
 
 bool HttpHandlerWebAdminFolder::canHandle(const std::string &sWorkerId, LightHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
-    // Log::warn(_tag, "canHandle: " + pRequest->requestPath());
+    // WSJCppLog::warn(_tag, "canHandle: " + pRequest->requestPath());
     std::string sRequestPath = pRequest->requestPath();
     
     if (sRequestPath == "") {
-        Log::err(_tag, "Request path is empty");
+        WSJCppLog::err(_tag, "Request path is empty");
         return false;
     }
 
@@ -36,12 +36,12 @@ bool HttpHandlerWebAdminFolder::canHandle(const std::string &sWorkerId, LightHtt
     }
 
     if (!WSJCppCore::dirExists(m_sWebFolder)) {
-        Log::warn(_tag, "Directory " + m_sWebFolder + " does not exists");
+        WSJCppLog::warn(_tag, "Directory " + m_sWebFolder + " does not exists");
     }
     sRequestPath = sRequestPath.substr(6); // remove /admin
 
     std::string sFilePath = m_sWebFolder + sRequestPath; // TODO check /../ in path
-    // Log::warn(_tag, "Response Resources " + sFilePath);
+    // WSJCppLog::warn(_tag, "Response Resources " + sFilePath);
     if (!WSJCppCore::fileExists(sFilePath)) { // TODO check the file exists not dir
         return false;
     }
@@ -53,7 +53,7 @@ bool HttpHandlerWebAdminFolder::canHandle(const std::string &sWorkerId, LightHtt
 bool HttpHandlerWebAdminFolder::handle(const std::string &sWorkerId, LightHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
     std::string sRequestPath = pRequest->requestPath();
-    // Log::warn(_tag, pRequest->requestPath());
+    // WSJCppLog::warn(_tag, pRequest->requestPath());
     
     if (sRequestPath == "/admin") {
         sRequestPath = "/admin/";
@@ -69,7 +69,7 @@ bool HttpHandlerWebAdminFolder::handle(const std::string &sWorkerId, LightHttpRe
     if (!WSJCppCore::fileExists(sFilePath)) {
         // std::string sResPath = "html" + sRequestPath;
         /*if (ResourcesManager::has(sResPath)) {
-            // Log::warn(_tag, "Response Resources " + sResPath);
+            // WSJCppLog::warn(_tag, "Response Resources " + sResPath);
             // ResourceFile *pFile = ResourcesManager::get(sResPath);
             // pRequest->responseBuffer(sResPath, pFile->buffer(), pFile->bufferSize());
             return true;
@@ -80,7 +80,7 @@ bool HttpHandlerWebAdminFolder::handle(const std::string &sWorkerId, LightHttpRe
     // TODO 1. if file exists and last date change more that in cache so need update
     // TODO 2. if file not exists but in in resources - response them
     LightHttpResponse resp(pRequest->sockFd());
-    // Log::warn(_tag, "Response File " + sFilePath);
+    // WSJCppLog::warn(_tag, "Response File " + sFilePath);
     resp.cacheSec(60).ok().sendFile(sFilePath);
     return true;
 }

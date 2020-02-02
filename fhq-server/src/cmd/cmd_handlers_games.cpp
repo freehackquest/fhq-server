@@ -242,7 +242,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         std::string sBasePath = pGlobalSettings->get("web_public_folder").getDirPathValue();
         sGameLogoFilename = sBasePath + "games/" + std::to_string(nGameID) + ".png";
         if (remove( sGameLogoFilename.c_str() ) != 0) {
-            Log::err(TAG, "Could not delete file " + sGameLogoFilename);
+            WSJCppLog::err(TAG, "Could not delete file " + sGameLogoFilename);
         }
     }
 
@@ -314,7 +314,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
             export_zipfile.write(baLogo);
             export_zipfile.close();
         } else {
-            Log::warn(TAG, QString("Logo not found " + sGameLogoFilename).toStdString());
+            WSJCppLog::warn(TAG, QString("Logo not found " + sGameLogoFilename).toStdString());
         }
     }
 
@@ -556,7 +556,7 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
     fclose (pFile);
 
     std::string targetImageFile = sFilename.toStdString();
-    // Log::info(TAG, "targetImageFile " + targetImageFile);
+    // WSJCppLog::info(TAG, "targetImageFile " + targetImageFile);
     if (!pImages->doThumbnailImagePng(sSourceImageFile, targetImageFile, 100, 100)) {
         pRequest->sendMessageError(cmd(), WSJCppError(400, "Could not decode bytearray to png"));
         // cleanup - redesign try finnaly
@@ -565,7 +565,7 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
     }
 
     if (remove(sSourceImageFile.c_str()) != 0) {
-        Log::err(TAG, "Could not delete file " + sSourceImageFile);
+        WSJCppLog::err(TAG, "Could not delete file " + sSourceImageFile);
     }
 
     if (FILE *file = fopen(targetImageFile.c_str(), "r")) {

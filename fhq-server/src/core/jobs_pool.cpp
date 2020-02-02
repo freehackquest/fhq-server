@@ -31,7 +31,7 @@ JobAsync *JobAsyncDeque::pop() {
 void JobAsyncDeque::push(JobAsync *pJobAsync) {
     std::lock_guard<std::mutex> guard(this->m_mtxJobsAsyncDeque);
     if (m_dequeJobsAsync.size() > 20) {
-        Log::warn(TAG, " deque more than " + std::to_string(m_dequeJobsAsync.size()));
+        WSJCppLog::warn(TAG, " deque more than " + std::to_string(m_dequeJobsAsync.size()));
     }
     m_dequeJobsAsync.push_front(pJobAsync);
 }
@@ -153,7 +153,7 @@ void JobsPool::addJobFast(JobAsync *pJobAsync) {
 // better keep this list of jobs to storage
 void JobsPool::addJobSlow(JobAsync *pJobAsync) {
     JobsPool::initGlobalVariables();
-    Log::warn("JobsPool", "addJobSlow not implemented yet");
+    WSJCppLog::warn("JobsPool", "addJobSlow not implemented yet");
     // g_pJobsLong->push(pJobAsync);
 }
 
@@ -162,7 +162,7 @@ void JobsPool::addJobSlow(JobAsync *pJobAsync) {
 // jobs with delay
 void JobsPool::addJobDelay(int nMilliseconds, JobAsync *pJobAsync) {
     JobsPool::initGlobalVariables();
-    Log::warn("JobsPool", "addJobDelay not implemented yet");
+    WSJCppLog::warn("JobsPool", "addJobDelay not implemented yet");
     // g_pJobsShort->push(pJobAsync);
 }
 
@@ -171,7 +171,7 @@ void JobsPool::addJobDelay(int nMilliseconds, JobAsync *pJobAsync) {
 // jobs by cron, for example every 5 minutes execute some job
 void JobsPool::addJobCron(JobSchedule *pJobSchedule, JobAsync *pJobAsync) {
     JobsPool::initGlobalVariables();
-    Log::warn("JobsPool", "addJobCron not implemented yet");
+    WSJCppLog::warn("JobsPool", "addJobCron not implemented yet");
     // g_pJobsShort->push(pJobAsync);
 }
 

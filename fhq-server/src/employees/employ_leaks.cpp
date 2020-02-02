@@ -32,7 +32,7 @@ bool EmployLeaks::init() {
     QSqlQuery query(db);
     query.prepare("SELECT * FROM leaks");
     if (!query.exec()) {
-        Log::err(TAG, query.lastError().text().toStdString());
+        WSJCppLog::err(TAG, query.lastError().text().toStdString());
         return false;
     }
     while (query.next()) {
@@ -47,7 +47,7 @@ bool EmployLeaks::init() {
         if (pEmployGames->findGame(nGameId, modelGame)) {
             pModelLeak->setGameUuid(modelGame.uuid());
         } else {
-            Log::err(TAG, "Game not found by localId: " + std::to_string(nGameId));
+            WSJCppLog::err(TAG, "Game not found by localId: " + std::to_string(nGameId));
         }
         pModelLeak->setName(record.value("name").toString().toStdString());
         pModelLeak->setContent(record.value("content").toString().toStdString());
@@ -58,7 +58,7 @@ bool EmployLeaks::init() {
         // leak["created"] = record.value("created").toString().toHtmlEscaped();
         // leak["updated"] = record.value("updated").toString().toHtmlEscaped();
         if (m_mapCacheLeaks.count(sUuid)) {
-            Log::err(TAG, "Inconsistent list leaks in database uuid: " + sUuid);
+            WSJCppLog::err(TAG, "Inconsistent list leaks in database uuid: " + sUuid);
         } else {
             m_mapCacheLeaks.insert(std::pair<std::string, ModelLeak*>(sUuid,pModelLeak));
         }

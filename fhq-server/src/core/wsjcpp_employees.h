@@ -67,11 +67,11 @@ template <class T> T* findEmploy() {
         pEmploy = g_pEmployees->at(sEmployName);
     }
     if (pEmploy == NULL) {
-        Log::throw_err(TAG, "Not found employ " + sEmployName);
+        WSJCppLog::throw_err(TAG, "Not found employ " + sEmployName);
     }
     T *pTEmploy = dynamic_cast<T*>(pEmploy);
     if (pTEmploy == NULL) {
-        Log::throw_err(TAG, "Employ could not cast to T [" + sEmployName + "]");
+        WSJCppLog::throw_err(TAG, "Employ could not cast to T [" + sEmployName + "]");
     }
     return pTEmploy;
 }

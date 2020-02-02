@@ -42,7 +42,7 @@ StorageColumnDef &StorageColumnDef::notNull() {
 
 StorageColumnDef &StorageColumnDef::string(int nValue) {
     if (m_sType != "") {
-        Log::throw_err(TAG, "Datatype already defined: " + m_sType);
+        WSJCppLog::throw_err(TAG, "Datatype already defined: " + m_sType);
         return *this;
     }
     m_sType = "string";
@@ -54,7 +54,7 @@ StorageColumnDef &StorageColumnDef::string(int nValue) {
 
 StorageColumnDef &StorageColumnDef::text() {
     if (m_sType != "") {
-        Log::throw_err(TAG, "Datatype already defined: " + m_sType);
+        WSJCppLog::throw_err(TAG, "Datatype already defined: " + m_sType);
         return *this;
     }
     m_sType = "text";
@@ -65,7 +65,7 @@ StorageColumnDef &StorageColumnDef::text() {
 
 StorageColumnDef &StorageColumnDef::datetime() {
     if (m_sType != "") {
-        Log::throw_err(TAG, "Datatype already defined: " + m_sType);
+        WSJCppLog::throw_err(TAG, "Datatype already defined: " + m_sType);
         return *this;
     }
     m_sType = "datetime";
@@ -76,7 +76,7 @@ StorageColumnDef &StorageColumnDef::datetime() {
 
 StorageColumnDef &StorageColumnDef::number() {
     if (m_sType != "") {
-        Log::throw_err(TAG, "Datatype already defined: " + m_sType);
+        WSJCppLog::throw_err(TAG, "Datatype already defined: " + m_sType);
         return *this;
     }
     m_sType = "number";
@@ -87,7 +87,7 @@ StorageColumnDef &StorageColumnDef::number() {
 
 StorageColumnDef &StorageColumnDef::doubleNumber() {
     if (m_sType != "") {
-        Log::throw_err(TAG, "Datatype already defined: " + m_sType);
+        WSJCppLog::throw_err(TAG, "Datatype already defined: " + m_sType);
         return *this;
     }
     m_sType = "doubleNumber";
@@ -276,7 +276,7 @@ StorageColumnDef &StorageCreateTable::addColumn(const std::string &sColumnName) 
     for (int i = 0; i < m_vColumns.size(); i++) {
         if (m_vColumns[i].columnName() == sColumnName) {
             std::string sError = "Column '" + sColumnName + "' in table '" + m_sTableName + "' already exists";
-            Log::err(TAG, sError);
+            WSJCppLog::err(TAG, sError);
             throw std::runtime_error(sError);
         }
     }
@@ -331,7 +331,7 @@ std::string StorageModifyTable::getAppliedFailed() const {
 StorageColumnDef &StorageModifyTable::addColumn(const std::string &sColumnName) {
     std::string sError;
     if (isColumnDefined(sColumnName, sError)) {
-        Log::throw_err(TAG, "addColumn, " + sError);
+        WSJCppLog::throw_err(TAG, "addColumn, " + sError);
     }
     m_vAddColumns.push_back(StorageColumnDef(sColumnName));
     return m_vAddColumns[m_vAddColumns.size()-1];
@@ -342,7 +342,7 @@ StorageColumnDef &StorageModifyTable::addColumn(const std::string &sColumnName) 
 StorageColumnDef &StorageModifyTable::alterColumn(const std::string &sColumnName) {
     std::string sError;
     if (isColumnDefined(sColumnName, sError)) {
-        Log::throw_err(TAG, "alterColumn, " + sError);
+        WSJCppLog::throw_err(TAG, "alterColumn, " + sError);
     }
     m_vAlterColumns.push_back(StorageColumnDef(sColumnName));
     return m_vAlterColumns[m_vAlterColumns.size()-1];
@@ -353,7 +353,7 @@ StorageColumnDef &StorageModifyTable::alterColumn(const std::string &sColumnName
 std::string StorageModifyTable::dropColumn(const std::string &sColumnName) {
     std::string sError;
     if (isColumnDefined(sColumnName, sError)) {
-        Log::throw_err(TAG, "dropColumn, " + sError);
+        WSJCppLog::throw_err(TAG, "dropColumn, " + sError);
     }
     m_vDropColumns.push_back(sColumnName);
     return m_vDropColumns[m_vDropColumns.size()-1];
@@ -539,7 +539,7 @@ std::string StorageInsert::getAppliedFailed() const {
 
 void StorageInsert::bindValue(const std::string &sColumnName, const std::string &sValue) {
     if (this->exists(sColumnName)) {
-        Log::throw_err(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
+        WSJCppLog::throw_err(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
         return;
     }
     StorageColumnValue val(sColumnName, StorageColumnType::STRING);
@@ -551,7 +551,7 @@ void StorageInsert::bindValue(const std::string &sColumnName, const std::string 
 
 void StorageInsert::bindValue(const std::string &sColumnName, int nValue) {
     if (this->exists(sColumnName)) {
-        Log::throw_err(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
+        WSJCppLog::throw_err(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
         return;
     }
     StorageColumnValue val(sColumnName, StorageColumnType::NUMBER);
@@ -563,7 +563,7 @@ void StorageInsert::bindValue(const std::string &sColumnName, int nValue) {
 
 void StorageInsert::bindValue(const std::string &sColumnName, double nValue) {
     if (this->exists(sColumnName)) {
-        Log::throw_err(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
+        WSJCppLog::throw_err(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
         return;
     }
     StorageColumnValue val(sColumnName, StorageColumnType::DOUBLE_NUMBER);
@@ -592,7 +592,7 @@ bool StorageInsert::exists(const std::string &sColumnName) {
 
 bool StorageInsert::isValid(const StorageTable &storageTable) const {
     if (storageTable.getTableName() != m_sTableName) {
-        Log::err(TAG, "Expeceted '" + m_sTableName + "', but got '" + storageTable.getTableName() + "'");
+        WSJCppLog::err(TAG, "Expeceted '" + m_sTableName + "', but got '" + storageTable.getTableName() + "'");
         return false;
     }
 
@@ -617,14 +617,14 @@ bool StorageInsert::isValid(const StorageTable &storageTable) const {
                     bFound = true;
                     break;
                 } else {
-                    Log::err(TAG, "StorageInsert::isValid. In struct '" + m_sTableName + "' column '" + val.getColumnName() + "'."
+                    WSJCppLog::err(TAG, "StorageInsert::isValid. In struct '" + m_sTableName + "' column '" + val.getColumnName() + "'."
                         " Expected datatype '" + st.columnType() + "', but got '" + std::to_string(val.getColumnType()) + "'");
                     return false;
                 }
             }
         }
         if (!bFound) {
-            Log::err(TAG, "StorageInsert::isValid. Struct '" + m_sTableName + "' has not column '" + val.getColumnName() + "'");
+            WSJCppLog::err(TAG, "StorageInsert::isValid. Struct '" + m_sTableName + "' has not column '" + val.getColumnName() + "'");
             return false;
         }
     }
@@ -632,7 +632,7 @@ bool StorageInsert::isValid(const StorageTable &storageTable) const {
     for (int i = 0; i < vColumns.size(); i++) {
         if (!vColumns[i].isAutoIncrement() && vColumns[i].isNotNull()) {
             if (std::find(vCurrentColumns.begin(), vCurrentColumns.end(), vColumns[i].columnName()) == vCurrentColumns.end()) {
-                Log::err(TAG, "Missing require field '" + m_sTableName + "." + vColumns[i].columnName() + "'");
+                WSJCppLog::err(TAG, "Missing require field '" + m_sTableName + "." + vColumns[i].columnName() + "'");
                 return false;
             }
         }
@@ -732,7 +732,7 @@ void StorageTable::mergeWith(StorageModifyTable &modifyTable) {
             }
         }
         if (!bFound) {
-            Log::throw_err(TAG, "Not found column " + sColumnName + " in table " + m_sTableName);
+            WSJCppLog::throw_err(TAG, "Not found column " + sColumnName + " in table " + m_sTableName);
         }
     }
 
@@ -746,7 +746,7 @@ void StorageTable::mergeWith(StorageModifyTable &modifyTable) {
             }
         }
         if (bFound) {
-            Log::throw_err(TAG, "Column already defined " + c.columnName() + " in table " + m_sTableName);
+            WSJCppLog::throw_err(TAG, "Column already defined " + c.columnName() + " in table " + m_sTableName);
         } else {
             m_vColumns.push_back(c);
         }
@@ -767,7 +767,7 @@ void StorageTable::mergeWith(StorageModifyTable &modifyTable) {
             }
         }
         if (!bFound) {
-            Log::throw_err(TAG, "Problem with alter column '" + c.columnName() + "'. It's not defined in table '" + m_sTableName + "'");
+            WSJCppLog::throw_err(TAG, "Problem with alter column '" + c.columnName() + "'. It's not defined in table '" + m_sTableName + "'");
         }
     }
 }
@@ -819,26 +819,26 @@ bool Storage::addStorageChanges(StorageChanges &storageChanges) {
 
     if (storageChanges.getType() == StorageChangesType::CREATE_TABLE) {
         if (it != m_mapTables.end()) {
-            Log::err(TAG, "Table '" + sTableName + "' already defined");
-            Log::warn(TAG, "TODO need drop table");
+            WSJCppLog::err(TAG, "Table '" + sTableName + "' already defined");
+            WSJCppLog::warn(TAG, "TODO need drop table");
             return false;
         }
         StorageTable tbl((StorageCreateTable &)storageChanges);
         m_mapTables.insert(std::pair<std::string,StorageTable>(sTableName,tbl) );
     } else if (storageChanges.getType() == StorageChangesType::DROP_TABLE) {
         if (it == m_mapTables.end()) {
-            Log::throw_err(TAG, "Not found table '" + sTableName + "'");
+            WSJCppLog::throw_err(TAG, "Not found table '" + sTableName + "'");
         }
         m_mapTables.erase(sTableName);
     } else if (storageChanges.getType() == StorageChangesType::MODIFY_TABLE) {
         if (it == m_mapTables.end()) {
-            Log::throw_err(TAG, "Not found table '" + sTableName + "'");
+            WSJCppLog::throw_err(TAG, "Not found table '" + sTableName + "'");
         }
         it->second.mergeWith((StorageModifyTable &)storageChanges);
     } else if (storageChanges.getType() == StorageChangesType::INSERT_ROW) {
         // skip
     } else {
-        Log::throw_err(TAG, "addStorageChanges, Unknown operation with table");
+        WSJCppLog::throw_err(TAG, "addStorageChanges, Unknown operation with table");
     }
     return true;
 }
@@ -862,27 +862,27 @@ bool Storage::executeStorageChanges(StorageConnection *pConn, StorageChanges &st
         StorageInsert insRow = (StorageInsert &)storageChanges;
         StorageTable tableDef = getTableDef(insRow.getTableName());
         if (!insRow.isValid(tableDef)) {
-            Log::throw_err(TAG, "Insert into table '" + insRow.getTableName() + "' is invalid");
+            WSJCppLog::throw_err(TAG, "Insert into table '" + insRow.getTableName() + "' is invalid");
         }
         vQueries = this->prepareSqlQueries(insRow);
     } else {
         throw std::runtime_error("Could not support type of StorageChanges");
     }
 
-    Log::info(TAG, storageChanges.getStartApply());
+    WSJCppLog::info(TAG, storageChanges.getStartApply());
     for (int i = 0; i < vQueries.size(); i++) {
         std::string sQuery = vQueries[i];
         if (!pConn->executeQuery(sQuery)) {
-            Log::throw_err(TAG, storageChanges.getAppliedFailed() + "\n    query -> " + sQuery);
+            WSJCppLog::throw_err(TAG, storageChanges.getAppliedFailed() + "\n    query -> " + sQuery);
             return false;
         }
     }
 
     if (!this->addStorageChanges(storageChanges)) {
-        Log::throw_err(TAG, storageChanges.getAppliedFailed());
+        WSJCppLog::throw_err(TAG, storageChanges.getAppliedFailed());
         return false;
     }
-    Log::ok(TAG, storageChanges.getAppliedSuccess());
+    WSJCppLog::ok(TAG, storageChanges.getAppliedSuccess());
     return true;
 }
 
@@ -925,7 +925,7 @@ bool Storage::existsTable(const std::string &sTableName) {
 const StorageTable &Storage::getTableDef(const std::string &sTableName) {
     std::map<std::string, StorageTable>::iterator it = m_mapTables.find(sTableName);
     if (it == m_mapTables.end()) {
-        Log::throw_err(TAG, "Table " + sTableName + " does not exists");
+        WSJCppLog::throw_err(TAG, "Table " + sTableName + " does not exists");
     }
     return it->second; 
 }
@@ -938,7 +938,7 @@ std::map<std::string, IFabricStorage*> *g_pFabricStorages = NULL;
 
 void Storages::initGlobalVariables() {
     if (g_pFabricStorages == NULL) {
-        // Log::info(std::string(), "Create employees map");
+        // WSJCppLog::info(std::string(), "Create employees map");
         g_pFabricStorages = new std::map<std::string, IFabricStorage*>();
     }
 }
@@ -949,10 +949,10 @@ void Storages::add(const std::string &sType, IFabricStorage* pStorage) {
     Storages::initGlobalVariables();
     const std::string TAG = "addStorage";
     if (g_pFabricStorages->count(sType) > 0) {
-        Log::err(TAG, sType + " - storage already registered");
+        WSJCppLog::err(TAG, sType + " - storage already registered");
     } else {
         g_pFabricStorages->insert(std::pair<std::string, IFabricStorage*>(sType,pStorage));
-        // Log::info(sType, "Registered");
+        // WSJCppLog::info(sType, "Registered");
     }
 }
 
@@ -1000,14 +1000,14 @@ StorageUpdateBase::StorageUpdateBase(const std::string &sFromVersion, const std:
     if (sFromVersion != "") {
         StorageUpdateBase *pUpdate = StorageUpdates::findUpdateVersion(sFromVersion);
         if (pUpdate == nullptr) {
-            Log::throw_err(TAG, "Not found storage update version: '" + sFromVersion + "'");
+            WSJCppLog::throw_err(TAG, "Not found storage update version: '" + sFromVersion + "'");
         }
     }
 
     {
         StorageUpdateBase *pUpdate = StorageUpdates::findUpdateVersion(sVersion);
         if (pUpdate != nullptr) {
-            Log::throw_err(TAG, "Storage updates already has update with this version: '" + sVersion + "'");
+            WSJCppLog::throw_err(TAG, "Storage updates already has update with this version: '" + sVersion + "'");
         }
     }
     
@@ -1099,7 +1099,7 @@ std::vector<StorageUpdateBase*> *g_pStorageUpdates = nullptr;
 
 void StorageUpdates::initGlobalVariables() {
     if (g_pStorageUpdates == NULL) {
-        // Log::info(std::string(), "Create list updates");
+        // WSJCppLog::info(std::string(), "Create list updates");
         g_pStorageUpdates = new std::vector<StorageUpdateBase*>();
     }
 }
@@ -1199,7 +1199,7 @@ StorageUpdateBase* StorageUpdates::findUpdateFromVersion(const std::string &sFro
             if (pRet == nullptr) {
                 pRet = pUpdate;
             } else {
-                Log::throw_err(TAG, "Already defined update with from_version " + sFromVersion);
+                WSJCppLog::throw_err(TAG, "Already defined update with from_version " + sFromVersion);
             }
         }
     }
@@ -1218,7 +1218,7 @@ StorageUpdateBase* StorageUpdates::findUpdateVersion(const std::string &sVersion
             if (pRet == nullptr) {
                 pRet = pUpdate;
             } else {
-                Log::throw_err(TAG, "Already defined update with version " + sVersion);
+                WSJCppLog::throw_err(TAG, "Already defined update with version " + sVersion);
             }
         }
     }
@@ -1233,15 +1233,15 @@ bool StorageUpdates::apply(Storage *pStorage) {
 
     StorageConnection *pConn = pStorage->connect();
     if (pConn == nullptr) {
-        Log::err(TAG, "Could not connect to database");
+        WSJCppLog::err(TAG, "Could not connect to database");
         return false;
     } else {
-        Log::ok(TAG, "Successfully connection to database");
+        WSJCppLog::ok(TAG, "Successfully connection to database");
     }
 
     std::string sFirstVersion = "";
     std::string sLastVersion = pConn->lastDatabaseVersion();
-    Log::info(TAG, "Last Version -> '" + sLastVersion + "'");
+    WSJCppLog::info(TAG, "Last Version -> '" + sLastVersion + "'");
 
     // restore struct of storage before sLastVersion
     bool bHasUpdates = true;
@@ -1254,14 +1254,14 @@ bool StorageUpdates::apply(Storage *pStorage) {
                 bHasUpdates = true;
                 std::string error = "";
 
-                Log::info(TAG, "Apply changes '" + pUpdate->from_version() + "' -> '" + pUpdate->version() + "'");
+                WSJCppLog::info(TAG, "Apply changes '" + pUpdate->from_version() + "' -> '" + pUpdate->version() + "'");
                 // Apply changes
                 std::vector<StorageChanges *> vStorageChanges = pUpdate->getChanges();
                 for (int i = 0; i < vStorageChanges.size(); i++) {
                     StorageChanges *pChanges = vStorageChanges[i];
                     if (pChanges->getType() == StorageChangesType::NOPE) {
                         std::string sError = "Not allowed use a StorageChangesType::NOPE";
-                        Log::throw_err(TAG, sError);
+                        WSJCppLog::throw_err(TAG, sError);
                     }
 
                     if (!pStorage->addStorageChanges(*pChanges)) {
@@ -1275,13 +1275,13 @@ bool StorageUpdates::apply(Storage *pStorage) {
     }
 
     // apply new updates
-    Log::info(TAG, "apply new updates");
+    WSJCppLog::info(TAG, "apply new updates");
     bHasUpdates = true;
     while (bHasUpdates) {
         bHasUpdates = false;
         StorageUpdateBase* pUpdate = StorageUpdates::findUpdateFromVersion(sLastVersion);
         if (pUpdate != nullptr) {
-            Log::info(TAG, "Installing update '" + pUpdate->from_version() + "' -> '" + pUpdate->version() + "': " + pUpdate->description());
+            WSJCppLog::info(TAG, "Installing update '" + pUpdate->from_version() + "' -> '" + pUpdate->version() + "': " + pUpdate->description());
             sLastVersion = pUpdate->version();
             bHasUpdates = true;
             std::string error = "";
@@ -1292,7 +1292,7 @@ bool StorageUpdates::apply(Storage *pStorage) {
                 StorageChanges *pChanges = vStorageChanges[i];
                 if (pChanges->getType() == StorageChangesType::NOPE) {
                     std::string sError = "Not allowed use a StorageChangesType::NOPE";
-                    Log::err(TAG, sError);
+                    WSJCppLog::err(TAG, sError);
                     throw std::runtime_error(sError);
                 }
                 if (!pStorage->executeStorageChanges(pConn, *pChanges)) {
@@ -1311,18 +1311,18 @@ bool StorageUpdates::apply(Storage *pStorage) {
 
 void StorageUpdates::applyAllStorageChanges(Storage *pStorage, StorageUpdateBase *pUpdate) {
     std::string TAG = "StorageUpdates::applyAllStorageChanges";
-    Log::info(TAG, "Apply changes '" + pUpdate->from_version() + "' -> '" + pUpdate->version() + "'");
+    WSJCppLog::info(TAG, "Apply changes '" + pUpdate->from_version() + "' -> '" + pUpdate->version() + "'");
 
     // Apply changes
     std::vector<StorageChanges *> vStorageChanges = pUpdate->getChanges();
     for (int i = 0; i < vStorageChanges.size(); i++) {
         StorageChanges *pChanges = vStorageChanges[i];
         if (pChanges->getType() == StorageChangesType::NOPE) {
-            Log::throw_err(TAG, "Not allowed use a StorageChangesType::NOPE");
+            WSJCppLog::throw_err(TAG, "Not allowed use a StorageChangesType::NOPE");
         }
 
         if (!pStorage->addStorageChanges(*pChanges)) {
-            Log::throw_err(TAG,"Problem add storage changes '" + pChanges->getTableName() + "' in version " + pUpdate->version());
+            WSJCppLog::throw_err(TAG,"Problem add storage changes '" + pChanges->getTableName() + "' in version " + pUpdate->version());
         }
     }
 }
@@ -1331,17 +1331,17 @@ void StorageUpdates::applyAllStorageChanges(Storage *pStorage, StorageUpdateBase
 
 void StorageUpdates::executeAllStorageChanges(Storage *pStorage, StorageConnection *pConn, StorageUpdateBase *pUpdate) {
     std::string TAG = "StorageUpdates::executeAllStorageChanges";
-    Log::info(TAG, "Installing update '" + pUpdate->from_version() + "' -> '" + pUpdate->version() + "': " + pUpdate->description());
+    WSJCppLog::info(TAG, "Installing update '" + pUpdate->from_version() + "' -> '" + pUpdate->version() + "': " + pUpdate->description());
 
     // Apply changes
     std::vector<StorageChanges *> vStorageChanges = pUpdate->getChanges();
     for (int i = 0; i < vStorageChanges.size(); i++) {
         StorageChanges *pChanges = vStorageChanges[i];
         if (pChanges->getType() == StorageChangesType::NOPE) {
-            Log::throw_err(TAG, "Not allowed use a StorageChangesType::NOPE");
+            WSJCppLog::throw_err(TAG, "Not allowed use a StorageChangesType::NOPE");
         }
         if (!pStorage->executeStorageChanges(pConn, *pChanges)) {
-            Log::throw_err(TAG, "Problem with table '" + pChanges->getTableName() + "' in version " + pUpdate->version());
+            WSJCppLog::throw_err(TAG, "Problem with table '" + pChanges->getTableName() + "' in version " + pUpdate->version());
         }
     }
     pConn->insertUpdateInfo(pUpdate->version(), pUpdate->description());

@@ -59,7 +59,7 @@ std::vector<UnitTestBase*> *g_pUnitTests = NULL;
 
 void UnitTests::initGlobalVariables() {
     if (g_pUnitTests == NULL) {
-        // Log::info(std::string(), "Create handlers map");
+        // WSJCppLog::info(std::string(), "Create handlers map");
         g_pUnitTests = new std::vector<UnitTestBase*>();
     }
 }
@@ -80,7 +80,7 @@ void UnitTests::addUnitTest(const std::string &sTestName, UnitTestBase* pUnitTes
         WSJCppLog::err(sTestName, "Already registered");
     } else {
         g_pUnitTests->push_back(pUnitTest);
-        // Log::info(sCmd, "Registered");
+        // WSJCppLog::info(sCmd, "Registered");
     }
 }
 

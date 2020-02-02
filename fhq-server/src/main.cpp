@@ -49,13 +49,13 @@ int main(int argc, char** argv) {
 
     QCoreApplication a(argc, argv);
     std::string TAG = "MAIN";
-    Log::setPrefixLogFile(appName);
+    WSJCppLog::setPrefixLogFile(appName);
     std::string sLogDir = "/var/log/" + appName;
     if (!WSJCppCore::dirExists(sLogDir)) {
         sLogDir = WSJCppCore::getCurrentDirectory() + "./";
         sLogDir = WSJCppCore::doNormalizePath(sLogDir);
     }
-    Log::setLogDirectory(sLogDir);
+    WSJCppLog::setLogDirectory(sLogDir);
 
     EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
     pGlobalSettings->update("app_name", appName);
@@ -98,7 +98,7 @@ int main(int argc, char** argv) {
 
         std::cout << "\n Workdir: " << sWorkDir << " \n\n";
         if (!WSJCppCore::dirExists(sWorkDir)) {
-            Log::err(TAG, "Directory '" + sWorkDir + "' did'not exists");
+            WSJCppLog::err(TAG, "Directory '" + sWorkDir + "' did'not exists");
             return -1;
         }
 
@@ -113,7 +113,7 @@ int main(int argc, char** argv) {
             WSJCppCore::makeDir(sDirLogs);
         }
         pGlobalSettings->update("log_dir", sDirLogs);
-        Log::setLogDirectory(sDirLogs);
+        WSJCppLog::setLogDirectory(sDirLogs);
     }
 
     if (helpArgs.has("help")) {
@@ -179,13 +179,13 @@ int main(int argc, char** argv) {
     } else if (helpArgs.has("check-database-connection")) {
         std::cout << "\n * Check Database Connection\n\n";
         if (!Employees::init({})) {
-            Log::err(TAG, "Could not init database module");
+            WSJCppLog::err(TAG, "Could not init database module");
             return -1;
         }
         EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
         QSqlDatabase *db = pDatabase->database();
         if (!db->open()) {
-            Log::err(TAG, "Could not connect to database, please check config");
+            WSJCppLog::err(TAG, "Could not connect to database, please check config");
             return -1;
         }
         std::cout << "\n * Success\n\n";
@@ -204,12 +204,12 @@ int main(int argc, char** argv) {
         std::istringstream f(sSetting);
         getline(f, sSettName, '=');
         if (sSettName.length() == sSetting.length()) {
-            Log::err(TAG, "Could not split by '=' for a '" + sSetting + "'");
+            WSJCppLog::err(TAG, "Could not split by '=' for a '" + sSetting + "'");
             return -1;
         }
         std::string sSettValue = sSetting.substr(sSettName.length()+1);
         if (!pGlobalSettings->exists(sSettName)) {
-            Log::err(TAG, "Not support settings with name '" + sSettName + "'");
+            WSJCppLog::err(TAG, "Not support settings with name '" + sSettName + "'");
             return -1;
         }
 
@@ -218,7 +218,7 @@ int main(int argc, char** argv) {
             pGlobalSettings->update(sSettName, sSettValue);
         } else if (item.isBoolean()) {
             if (sSettValue != "true" && sSettValue != "yes" && sSettValue != "false" && sSettValue != "no") {
-                Log::err(TAG, "Expected value boolean (true|yes|false|no), but got '" + sSettValue + "' for '" + sSettName + "'");
+                WSJCppLog::err(TAG, "Expected value boolean (true|yes|false|no), but got '" + sSettValue + "' for '" + sSettName + "'");
                 return -1;
             }
             pGlobalSettings->update(sSettName, sSettValue == "true" || sSettValue == "yes");
@@ -226,7 +226,7 @@ int main(int argc, char** argv) {
             int nSettValue = std::stoi(sSettValue);
             pGlobalSettings->update(sSettName, nSettValue);
         } else {
-            Log::err(TAG, "Not support settings datatype with name '" + sSettName + "'");
+            WSJCppLog::err(TAG, "Not support settings datatype with name '" + sSettName + "'");
             return -1;
         }
         return 0;
@@ -270,7 +270,7 @@ int main(int argc, char** argv) {
         if (UtilsLXDAuth::check_trust_certs(sError)) {
             std::cout << "\nGOOD HTTPS connection with LXD\n\n";
         } else if (!sError.empty()) {
-            Log::err(TAG, "\nBAD HTTPS connection with LXD\n\n: " + sError);
+            WSJCppLog::err(TAG, "\nBAD HTTPS connection with LXD\n\n: " + sError);
             return -1;
         } else {
             char *pPassword=getpass("\nPlease enter your password for LXD:");
@@ -311,7 +311,7 @@ int main(int argc, char** argv) {
         QThreadPool::globalInstance()->setMaxThreadCount(5);
         WebSocketServer *pServer = new WebSocketServer(); // here will be init settings
         if (pServer->isFailed()) {
-            Log::err(TAG, "Could not start server");
+            WSJCppLog::err(TAG, "Could not start server");
             return -1;
         }
 
@@ -332,7 +332,7 @@ int main(int argc, char** argv) {
         std::string sWebPublicFolder = pGlobalSettings->get("web_public_folder").getDirPathValue(); // TODO must be declared in server
         std::string sWebPublicFolderUrl = pGlobalSettings->get("web_public_folder_url").getStringValue(); // TODO must be declared in server
 
-        Log::info(TAG, "Starting web-server on " + std::to_string(nWebPort)
+        WSJCppLog::info(TAG, "Starting web-server on " + std::to_string(nWebPort)
              + " with " + std::to_string(nWebMaxThreads) + " worker threads");
         g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebAdminFolder(sWebAdminFolder));
         g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebUserFolder(sWebUserFolder));

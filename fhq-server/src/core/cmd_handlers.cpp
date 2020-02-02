@@ -55,8 +55,8 @@ void WSJCppUserSession::fillFrom(const nlohmann::json &obj) {
         try {
             m_sRole = user.at("role").get<std::string>();
         } catch (const std::exception &e) {
-            Log::err(TAG, "JSON: " + obj.dump());
-            Log::err(TAG, "Something wrong param user.role in struct. " + std::string(e.what()));
+            WSJCppLog::err(TAG, "JSON: " + obj.dump());
+            WSJCppLog::err(TAG, "Something wrong param user.role in struct. " + std::string(e.what()));
             m_sRole = "";
         }
 
@@ -66,8 +66,8 @@ void WSJCppUserSession::fillFrom(const nlohmann::json &obj) {
         try {
             m_nUserID = user.at("id").get<int>();
         } catch (const std::exception &e) {
-            Log::err(TAG, "JSON: " + obj.dump());
-            Log::err(TAG, "Something wrong param user.id in struct. " + std::string(e.what()));
+            WSJCppLog::err(TAG, "JSON: " + obj.dump());
+            WSJCppLog::err(TAG, "Something wrong param user.id in struct. " + std::string(e.what()));
             m_nUserID = -1;
         }
         
@@ -75,8 +75,8 @@ void WSJCppUserSession::fillFrom(const nlohmann::json &obj) {
         try {
             m_sEmail = user.at("email").get<std::string>();
         } catch (const std::exception &e) {
-            Log::err(TAG, "JSON: " + obj.dump());
-            Log::err(TAG, "Something wrong param user.email in struct. " + std::string(e.what()));
+            WSJCppLog::err(TAG, "JSON: " + obj.dump());
+            WSJCppLog::err(TAG, "Something wrong param user.email in struct. " + std::string(e.what()));
             m_sEmail = "";
         }
 
@@ -84,8 +84,8 @@ void WSJCppUserSession::fillFrom(const nlohmann::json &obj) {
         try {
             m_sNick = user.at("nick").get<std::string>();
         } catch (const std::exception &e) {
-            Log::err(TAG, "JSON: " + obj.dump());
-            Log::err(TAG, "Something wrong param user.nick in struct. " + std::string(e.what()));
+            WSJCppLog::err(TAG, "JSON: " + obj.dump());
+            WSJCppLog::err(TAG, "Something wrong param user.nick in struct. " + std::string(e.what()));
             m_sNick = "";
         }
 
@@ -93,13 +93,13 @@ void WSJCppUserSession::fillFrom(const nlohmann::json &obj) {
         try {
             m_sUserUuid = user.at("uuid").get<std::string>();
         } catch (const std::exception &e) {
-            Log::err(TAG, "JSON: " + obj.dump());
-            Log::err(TAG, "Something wrong param user.uuid in struct. " + std::string(e.what()));
+            WSJCppLog::err(TAG, "JSON: " + obj.dump());
+            WSJCppLog::err(TAG, "Something wrong param user.uuid in struct. " + std::string(e.what()));
             m_sUserUuid = "";
         }
         
     } else {
-        Log::warn(TAG, "Not found param 'user' in struct");
+        WSJCppLog::warn(TAG, "Not found param 'user' in struct");
     }
 }
 
@@ -179,8 +179,8 @@ WSJCppSocketClient::~WSJCppSocketClient() {
 
 void WSJCppSocketClient::processTextMessage(const QString &message) {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    Log::warn(TAG, "QWebSocket *pClient = " + WSJCppCore::getPointerAsHex(pClient));
-    Log::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
+    WSJCppLog::warn(TAG, "QWebSocket *pClient = " + WSJCppCore::getPointerAsHex(pClient));
+    WSJCppLog::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
     // processTextMessage
 }
 
@@ -188,19 +188,19 @@ void WSJCppSocketClient::processTextMessage(const QString &message) {
 
 void WSJCppSocketClient::processBinaryMessage(QByteArray message) {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    Log::warn(TAG, "QWebSocket *pClient = " + WSJCppCore::getPointerAsHex(pClient));
-    Log::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
+    WSJCppLog::warn(TAG, "QWebSocket *pClient = " + WSJCppCore::getPointerAsHex(pClient));
+    WSJCppLog::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
 }
 
 // ---------------------------------------------------------------------
 
 void WSJCppSocketClient::socketDisconnected() {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    Log::warn(TAG, "QWebSocket *pClient = " + WSJCppCore::getPointerAsHex(pClient));
-    Log::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
+    WSJCppLog::warn(TAG, "QWebSocket *pClient = " + WSJCppCore::getPointerAsHex(pClient));
+    WSJCppLog::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
 
     // TODO hex print
-    Log::info(TAG, "socketDisconnected:" + WSJCppCore::getPointerAsHex(pClient));
+    WSJCppLog::info(TAG, "socketDisconnected:" + WSJCppCore::getPointerAsHex(pClient));
     if (pClient) {
         // this->removeWSJCppUserSession(pClient);
         // m_clients.removeAll(pClient);
@@ -808,7 +808,7 @@ std::map<std::string, CmdHandlerBase*> *g_pCmdHandlers = NULL;
 
 void CmdHandlers::initGlobalVariables() {
     if (g_pCmdHandlers == NULL) {
-        // Log::info(std::string(), "Create handlers map");
+        // WSJCppLog::info(std::string(), "Create handlers map");
         g_pCmdHandlers = new std::map<std::string, CmdHandlerBase*>();
     }
 }
@@ -818,10 +818,10 @@ void CmdHandlers::initGlobalVariables() {
 void CmdHandlers::addHandler(const std::string &sCmd, CmdHandlerBase* pCmdHandler) {
     CmdHandlers::initGlobalVariables();
     if (g_pCmdHandlers->count(sCmd)) {
-        Log::err(sCmd, "Already registered");
+        WSJCppLog::err(sCmd, "Already registered");
     } else {
         g_pCmdHandlers->insert(std::pair<std::string, CmdHandlerBase*>(sCmd,pCmdHandler));
-        // Log::info(sCmd, "Registered");
+        // WSJCppLog::info(sCmd, "Registered");
     }
 }
 
@@ -836,7 +836,7 @@ CmdHandlerBase * CmdHandlers::findCmdHandler(const std::string &sCmd) {
     }
 
     if (pCmdHandler == NULL) {
-        Log::err(sCmd, "Not found");
+        WSJCppLog::err(sCmd, "Not found");
     }
 
     return pCmdHandler;

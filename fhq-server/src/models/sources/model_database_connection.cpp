@@ -50,12 +50,12 @@ bool ModelDatabaseConnection::connect() {
     m_pDatabase->setUserName(QString(sDatabaseUser.c_str()));
     m_pDatabase->setPassword(QString(sDatabasePassword.c_str()));
     if (!m_pDatabase->open()) {
-        Log::err(TAG, "Failed to connect." + m_pDatabase->lastError().text().toStdString());
+        WSJCppLog::err(TAG, "Failed to connect." + m_pDatabase->lastError().text().toStdString());
         m_pDatabase = NULL;
         return false;
     }
     m_nOpened = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
-    Log::info(TAG, "Success connection to database (Opened: " + m_sNameConnection.toStdString() + ")");
+    WSJCppLog::info(TAG, "Success connection to database (Opened: " + m_sNameConnection.toStdString() + ")");
     return true;
 }
 
@@ -70,19 +70,19 @@ bool ModelDatabaseConnection::isOutdated() {
 
 QSqlDatabase *ModelDatabaseConnection::db() {
     if (m_pDatabase == NULL) {
-        Log::err(TAG, "Database is not connected");
+        WSJCppLog::err(TAG, "Database is not connected");
         return NULL;
     }
     if (!m_pDatabase->isOpen()) {
-        Log::err(TAG, "Database is not open");
+        WSJCppLog::err(TAG, "Database is not open");
     }
     
     if (m_pDatabase->isOpenError()) {
-        Log::err(TAG, "Database connection has error");
+        WSJCppLog::err(TAG, "Database connection has error");
     }
     
     if (!m_pDatabase->isValid()) {
-        Log::err(TAG, "Database connection invalid");
+        WSJCppLog::err(TAG, "Database connection invalid");
     }
     
     return m_pDatabase;
@@ -104,6 +104,6 @@ void ModelDatabaseConnection::close() {
         delete m_pDatabase;
         m_pDatabase = NULL;
         QSqlDatabase::removeDatabase(m_sNameConnection);
-        Log::info(TAG, "Closed connection to database (" + m_sNameConnection.toStdString() + ")");
+        WSJCppLog::info(TAG, "Closed connection to database (" + m_sNameConnection.toStdString() + ")");
     }
 }

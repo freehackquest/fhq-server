@@ -56,35 +56,6 @@ class FallenHelpParseArgs {
 };
 
 // ---------------------------------------------------------------------
-// TODO rename WSJCppLog
-class Log {
-    public:
-        static std::string g_LOG_DIR;
-        static std::string g_PREFIX_LOG_FILE;
-        static std::string g_LOG_FILE;
-        static long g_LOG_START_TIME;
-        static void doLogRotateUpdateFilename(bool bForce = false);
-
-        static void info(const std::string &sTag, const std::string &sMessage);
-        static void err(const std::string &sTag, const std::string &sMessage);
-        static void throw_err(const std::string &sTag, const std::string &sMessage);
-        static void warn(const std::string &sTag, const std::string &sMessage);
-        static void ok(const std::string &sTag, const std::string &sMessage);
-        static void setLogDirectory(const std::string &sDirectoryPath);
-        static void setPrefixLogFile(const std::string &sPrefixLogFile);
-        static nlohmann::json getLastLogs();
-        static void initGlobalVariables();
-
-    private:
-        static void add(WSJCppColorModifier &clr, const std::string &sType, const std::string &sTag, const std::string &sMessage);
-};
-
-// TODO redesign to extern
-
-extern std::mutex *g_LOG_MUTEX;
-extern std::deque<std::string> *g_LAST_LOG_MESSAGES;
-
-// ---------------------------------------------------------------------
 
 class WJSCppParseConfig {
 

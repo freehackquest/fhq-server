@@ -127,7 +127,8 @@ void CmdHandlerServerInfo::handle(ModelRequest *pRequest) {
     qint64 updatime = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
     updatime = updatime - pServerInfo->getServerStart().toMSecsSinceEpoch();
     data["server_uptime_sec"] = updatime/1000;
-    data["last_log_messages"] = Log::getLastLogs();
+    // nlohmann::json lastLogMessages = nlohmann::json::array();
+    data["last_log_messages"] = WSJCppLog::getLastLogMessages();
     jsonResponse["data"] = data;
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -208,6 +209,6 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
         return;
     }
     std::string sNewValue = pGlobalSettings->get(sName).convertValueToString(true);
-    Log::info(TAG, "Settings '" + sName + "' updated from '" + sPrevValue + "' -> '" + sNewValue + "'");
+    WSJCppLog::info(TAG, "Settings '" + sName + "' updated from '" + sPrevValue + "' -> '" + sNewValue + "'");
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

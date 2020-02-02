@@ -15,11 +15,11 @@ std::vector<std::string> *g_pInitEmployees = NULL;
 
 void Employees::initGlobalVariables() {
     if (g_pEmployees == NULL) {
-        // Log::info(std::string(), "Create employees map");
+        // WSJCppLog::info(std::string(), "Create employees map");
         g_pEmployees = new std::map<std::string, WSJCppEmployBase*>();
     }
     if (g_pInitEmployees == NULL) {
-        // Log::info(std::string(), "Create init employees vector");
+        // WSJCppLog::info(std::string(), "Create init employees vector");
         g_pInitEmployees = new std::vector<std::string>();
     }
 }
@@ -29,10 +29,10 @@ void Employees::initGlobalVariables() {
 void Employees::addEmploy(const std::string &sName, WSJCppEmployBase* pEmploy) {
     Employees::initGlobalVariables();
     if (g_pEmployees->count(sName)) {
-        Log::err(sName, "Already registered");
+        WSJCppLog::err(sName, "Already registered");
     } else {
         g_pEmployees->insert(std::pair<std::string, WSJCppEmployBase*>(sName,pEmploy));
-        // Log::info(sName, "Registered");
+        // WSJCppLog::info(sName, "Registered");
     }
 }
 
@@ -67,12 +67,12 @@ bool Employees::init(const std::vector<std::string> &vStart) {
             }
             if (pEmploy->loadAfter().size() == nRequireLoaded) {
                 if (!pEmploy->init()) {
-                    Log::err(TAG, "Init " + sEmployName + " ... FAIL");
+                    WSJCppLog::err(TAG, "Init " + sEmployName + " ... FAIL");
                     return false;
                 }
                 g_pInitEmployees->push_back(sEmployName);
                 bRepeat = true;
-                Log::ok(TAG, "Init " + sEmployName + " ... OK");
+                WSJCppLog::ok(TAG, "Init " + sEmployName + " ... OK");
             }
         }
     }
@@ -136,7 +136,7 @@ WSJCppSettingItem::WSJCppSettingItem(const std::string &sSettingGroup, const std
 
 WSJCppSettingItem & WSJCppSettingItem::inFile() {
     if (m_nStorageType != WJSCPP_SETTING_IN_NONE) {
-        Log::throw_err(TAG, "inFile: already defined another storage type");
+        WSJCppLog::throw_err(TAG, "inFile: already defined another storage type");
     }
     m_nStorageType = WJSCPP_SETTING_IN_FILE;
     m_sStorageType = "file";
@@ -148,7 +148,7 @@ WSJCppSettingItem & WSJCppSettingItem::inFile() {
 
 WSJCppSettingItem & WSJCppSettingItem::inDatabase() {
     if (m_nStorageType != WJSCPP_SETTING_IN_NONE) {
-        Log::throw_err(TAG, "inDatabase: already defined another storage type");
+        WSJCppLog::throw_err(TAG, "inDatabase: already defined another storage type");
     }
     m_nStorageType = WJSCPP_SETTING_IN_DATABASE;
     m_sStorageType = "database";
@@ -159,7 +159,7 @@ WSJCppSettingItem & WSJCppSettingItem::inDatabase() {
 
 WSJCppSettingItem & WSJCppSettingItem::inRuntime() {
     if (m_nStorageType != WJSCPP_SETTING_IN_NONE) {
-        Log::throw_err(TAG, "inRuntime: already defined another storage type");
+        WSJCppLog::throw_err(TAG, "inRuntime: already defined another storage type");
     }
 
     m_nStorageType = WJSCPP_SETTING_IN_RUNTIME;
@@ -178,7 +178,7 @@ WSJCppSettingItem & WSJCppSettingItem::readonly() {
 
 WSJCppSettingItem & WSJCppSettingItem::string(const std::string &sDefaultStringValue) {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_NONE) {
-        Log::throw_err(TAG, "string: already defined another data type");
+        WSJCppLog::throw_err(TAG, "string: already defined another data type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_STRING;
     m_sSettingType = "string";
@@ -190,7 +190,7 @@ WSJCppSettingItem & WSJCppSettingItem::string(const std::string &sDefaultStringV
 
 WSJCppSettingItem & WSJCppSettingItem::password(const std::string &sDefaultPasswordValue) {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_NONE) {
-        Log::throw_err(TAG, "password: already defined another data type");
+        WSJCppLog::throw_err(TAG, "password: already defined another data type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_PASSWORD;
     m_sSettingType = "password";
@@ -202,7 +202,7 @@ WSJCppSettingItem & WSJCppSettingItem::password(const std::string &sDefaultPassw
 
 WSJCppSettingItem & WSJCppSettingItem::dirPath(const std::string &sDefaultDirPathValue) {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_NONE) {
-        Log::throw_err(TAG, "dirPath: already defined another data type");
+        WSJCppLog::throw_err(TAG, "dirPath: already defined another data type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_DIRPATH;
     m_sSettingType = "dir_path";
@@ -214,7 +214,7 @@ WSJCppSettingItem & WSJCppSettingItem::dirPath(const std::string &sDefaultDirPat
 
 WSJCppSettingItem & WSJCppSettingItem::filePath(const std::string &sDefaultFilePathValue) {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_NONE) {
-        Log::throw_err(TAG, "filePath: already defined another data type");
+        WSJCppLog::throw_err(TAG, "filePath: already defined another data type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_FILEPATH;
     m_sSettingType = "file_path";
@@ -226,7 +226,7 @@ WSJCppSettingItem & WSJCppSettingItem::filePath(const std::string &sDefaultFileP
 
 WSJCppSettingItem & WSJCppSettingItem::text(const std::string &sDefaultTextValue) {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_NONE) {
-        Log::throw_err(TAG, "text: already defined another data type");
+        WSJCppLog::throw_err(TAG, "text: already defined another data type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_TEXT;
     m_sSettingType = "text";
@@ -238,7 +238,7 @@ WSJCppSettingItem & WSJCppSettingItem::text(const std::string &sDefaultTextValue
 
 WSJCppSettingItem & WSJCppSettingItem::number(int nDefaultNumberValue) {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_NONE) {
-        Log::throw_err(TAG, "number: already defined another storage type");
+        WSJCppLog::throw_err(TAG, "number: already defined another storage type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_NUMBER;
     m_sSettingType = "number";
@@ -250,7 +250,7 @@ WSJCppSettingItem & WSJCppSettingItem::number(int nDefaultNumberValue) {
 
 WSJCppSettingItem & WSJCppSettingItem::boolean(bool bDefaultBooleanValue) {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_NONE) {
-        Log::throw_err(TAG, "boolean: already defined another storage type");
+        WSJCppLog::throw_err(TAG, "boolean: already defined another storage type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_BOOLEAN;
     m_sSettingType = "boolean";
@@ -261,10 +261,10 @@ WSJCppSettingItem & WSJCppSettingItem::boolean(bool bDefaultBooleanValue) {
 // ----------------------------------------------------------------------
 
 WSJCppSettingItem & WSJCppSettingItem::json() {
-    Log::throw_err(TAG, "json, Not implemented yet");
+    WSJCppLog::throw_err(TAG, "json, Not implemented yet");
 
     if (m_nSettingType != WJSCPP_SETTING_TYPE_NONE) {
-        Log::throw_err(TAG, "json: already defined another storage type");
+        WSJCppLog::throw_err(TAG, "json: already defined another storage type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_JSON;
     m_sSettingType = "json";
@@ -274,10 +274,10 @@ WSJCppSettingItem & WSJCppSettingItem::json() {
 // ----------------------------------------------------------------------
 
 WSJCppSettingItem & WSJCppSettingItem::list() {
-    Log::throw_err(TAG, "list, Not implemented yet");
+    WSJCppLog::throw_err(TAG, "list, Not implemented yet");
 
     if (m_nSettingType != WJSCPP_SETTING_TYPE_NONE) {
-        Log::throw_err(TAG, "json: already defined another storage type");
+        WSJCppLog::throw_err(TAG, "json: already defined another storage type");
     }
     m_nSettingType = WJSCPP_SETTING_TYPE_LIST;
     m_sSettingType = "list";
@@ -288,15 +288,15 @@ WSJCppSettingItem & WSJCppSettingItem::list() {
 
 void WSJCppSettingItem::checkWithThrow() const {
     if (m_nSettingType == WJSCPP_SETTING_TYPE_NONE) {
-        Log::throw_err(TAG, "check: settings type could be NONE");
+        WSJCppLog::throw_err(TAG, "check: settings type could be NONE");
     }
 
     if (m_nStorageType == WJSCPP_SETTING_IN_NONE) {
-        Log::throw_err(TAG, "check: storage type could not be IN_NONE");
+        WSJCppLog::throw_err(TAG, "check: storage type could not be IN_NONE");
     }
     
     if (m_sSettingName == "") {
-        Log::throw_err(TAG, "check: name could not be empty");
+        WSJCppLog::throw_err(TAG, "check: name could not be empty");
     }
 }
 
@@ -411,7 +411,7 @@ bool WSJCppSettingItem::isLikeString() const {
 
 std::string WSJCppSettingItem::getDefaultStringValue() const {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_STRING) {
-        Log::throw_err(TAG, "getDefaultStringValue: Expected type string");
+        WSJCppLog::throw_err(TAG, "getDefaultStringValue: Expected type string");
     }
     return m_sDefaultStringValue;
 }
@@ -420,7 +420,7 @@ std::string WSJCppSettingItem::getDefaultStringValue() const {
 
 std::string WSJCppSettingItem::getStringValue() const {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_STRING) {
-        Log::throw_err(TAG, "getStringValue: Expected type string");
+        WSJCppLog::throw_err(TAG, "getStringValue: Expected type string");
     }
     return m_bInited ? m_sStringValue : m_sDefaultStringValue;
 }
@@ -429,10 +429,10 @@ std::string WSJCppSettingItem::getStringValue() const {
 
 void WSJCppSettingItem::setStringValue(const std::string &sStringValue) {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_STRING) {
-        Log::throw_err(TAG, "setStringValue: Expected type string");
+        WSJCppLog::throw_err(TAG, "setStringValue: Expected type string");
     }
     if (m_bInited && m_bReadonly) {
-        Log::throw_err(TAG, "setStringValue: Could not change value for readonly setting");
+        WSJCppLog::throw_err(TAG, "setStringValue: Could not change value for readonly setting");
     }
     m_bInited = true;
     m_sStringValue = sStringValue;
@@ -442,7 +442,7 @@ void WSJCppSettingItem::setStringValue(const std::string &sStringValue) {
 
 std::string WSJCppSettingItem::getDefaultPasswordValue() const {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_PASSWORD) {
-        Log::throw_err(TAG, "getDefaultPasswordValue: Expected type password");
+        WSJCppLog::throw_err(TAG, "getDefaultPasswordValue: Expected type password");
     }
     return m_sDefaultPasswordValue;
 }
@@ -451,7 +451,7 @@ std::string WSJCppSettingItem::getDefaultPasswordValue() const {
 
 std::string WSJCppSettingItem::getPasswordValue() const {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_PASSWORD) {
-        Log::throw_err(TAG, "getPasswordValue: Expected type password");
+        WSJCppLog::throw_err(TAG, "getPasswordValue: Expected type password");
     }
     return m_bInited ? m_sPasswordValue : m_sDefaultPasswordValue;
 }
@@ -460,10 +460,10 @@ std::string WSJCppSettingItem::getPasswordValue() const {
 
 void WSJCppSettingItem::setPasswordValue(const std::string &sPasswordValue) {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_PASSWORD) {
-        Log::throw_err(TAG, "setStringValue: Expected type password");
+        WSJCppLog::throw_err(TAG, "setStringValue: Expected type password");
     }
     if (m_bInited && m_bReadonly) {
-        Log::throw_err(TAG, "setPasswordValue: Could not change value for readonly setting");
+        WSJCppLog::throw_err(TAG, "setPasswordValue: Could not change value for readonly setting");
     }
     m_bInited = true;
     m_sPasswordValue = sPasswordValue;
@@ -473,7 +473,7 @@ void WSJCppSettingItem::setPasswordValue(const std::string &sPasswordValue) {
 
 std::string WSJCppSettingItem::getDefaultDirPathValue() const {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_DIRPATH) {
-        Log::throw_err(TAG, "getDefaultDirPathValue: Expected type dirpath");
+        WSJCppLog::throw_err(TAG, "getDefaultDirPathValue: Expected type dirpath");
     }
     return m_sDefaultDirPathValue;
 }
@@ -482,7 +482,7 @@ std::string WSJCppSettingItem::getDefaultDirPathValue() const {
 
 std::string WSJCppSettingItem::getDirPathValue() const {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_DIRPATH) {
-        Log::throw_err(TAG, "getDirPathValue: Expected type dirpath");
+        WSJCppLog::throw_err(TAG, "getDirPathValue: Expected type dirpath");
     }
     return m_bInited ? m_sDirPathValue : m_sDefaultDirPathValue;
 }
@@ -491,10 +491,10 @@ std::string WSJCppSettingItem::getDirPathValue() const {
 
 void WSJCppSettingItem::setDirPathValue(const std::string &sDirPathValue) {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_DIRPATH) {
-        Log::throw_err(TAG, "setDirPathValue: Expected type dirpath");
+        WSJCppLog::throw_err(TAG, "setDirPathValue: Expected type dirpath");
     }
     if (m_bInited && m_bReadonly) {
-        Log::throw_err(TAG, "setDirPathValue: Could not change value for readonly setting");
+        WSJCppLog::throw_err(TAG, "setDirPathValue: Could not change value for readonly setting");
     }
     m_bInited = true;
     m_sDirPathValue = sDirPathValue;
@@ -504,7 +504,7 @@ void WSJCppSettingItem::setDirPathValue(const std::string &sDirPathValue) {
 
 std::string WSJCppSettingItem::getDefaultFilePathValue() const {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_FILEPATH) {
-        Log::throw_err(TAG, "getDefaultFilePathValue: Expected type filepath");
+        WSJCppLog::throw_err(TAG, "getDefaultFilePathValue: Expected type filepath");
     }
     return m_sDefaultFilePathValue;
 }
@@ -513,7 +513,7 @@ std::string WSJCppSettingItem::getDefaultFilePathValue() const {
 
 std::string WSJCppSettingItem::getFilePathValue() const {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_FILEPATH) {
-        Log::throw_err(TAG, "getFilePathValue: Expected type filepath");
+        WSJCppLog::throw_err(TAG, "getFilePathValue: Expected type filepath");
     }
     return m_bInited ? m_sFilePathValue : m_sDefaultFilePathValue;
 }
@@ -522,10 +522,10 @@ std::string WSJCppSettingItem::getFilePathValue() const {
 
 void WSJCppSettingItem::setFilePathValue(const std::string &sFilePathValue) {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_FILEPATH) {
-        Log::throw_err(TAG, "setFilePathValue: Expected type filepath");
+        WSJCppLog::throw_err(TAG, "setFilePathValue: Expected type filepath");
     }
     if (m_bInited && m_bReadonly) {
-        Log::throw_err(TAG, "setFilePathValue: Could not change value for readonly setting");
+        WSJCppLog::throw_err(TAG, "setFilePathValue: Could not change value for readonly setting");
     }
     m_bInited = true;
     m_sFilePathValue = sFilePathValue;
@@ -535,7 +535,7 @@ void WSJCppSettingItem::setFilePathValue(const std::string &sFilePathValue) {
 
 std::string WSJCppSettingItem::getDefaultTextValue() const {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_TEXT) {
-        Log::throw_err(TAG, "getDefaultTextValue: Expected type text");
+        WSJCppLog::throw_err(TAG, "getDefaultTextValue: Expected type text");
     }
     return m_sDefaultTextValue;
 }
@@ -544,7 +544,7 @@ std::string WSJCppSettingItem::getDefaultTextValue() const {
 
 std::string WSJCppSettingItem::getTextValue() const {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_TEXT) {
-        Log::throw_err(TAG, "getTextValue: Expected type text");
+        WSJCppLog::throw_err(TAG, "getTextValue: Expected type text");
     }
     return m_bInited ? m_sTextValue : m_sDefaultTextValue;
 }
@@ -553,10 +553,10 @@ std::string WSJCppSettingItem::getTextValue() const {
 
 void WSJCppSettingItem::setTextValue(const std::string &sTextValue) {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_TEXT) {
-        Log::throw_err(TAG, "setTextValue: Expected type text");
+        WSJCppLog::throw_err(TAG, "setTextValue: Expected type text");
     }
     if (m_bInited && m_bReadonly) {
-        Log::throw_err(TAG, "setTextValue: Could not change value for readonly setting");
+        WSJCppLog::throw_err(TAG, "setTextValue: Could not change value for readonly setting");
     }
     m_bInited = true;
     m_sTextValue = sTextValue;
@@ -566,7 +566,7 @@ void WSJCppSettingItem::setTextValue(const std::string &sTextValue) {
 
 int WSJCppSettingItem::getDefaultNumberValue() const {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_NUMBER) {
-        Log::throw_err(TAG, "getDefaultNumberValue: Expected type number");
+        WSJCppLog::throw_err(TAG, "getDefaultNumberValue: Expected type number");
     }
     return m_nDefaultNumberValue;
 }
@@ -575,7 +575,7 @@ int WSJCppSettingItem::getDefaultNumberValue() const {
 
 int WSJCppSettingItem::getNumberValue() const {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_NUMBER) {
-        Log::throw_err(TAG, "getNumberValue: Expected type number");
+        WSJCppLog::throw_err(TAG, "getNumberValue: Expected type number");
     }
     return m_bInited ? m_nNumberValue : m_nDefaultNumberValue;
 }
@@ -584,11 +584,11 @@ int WSJCppSettingItem::getNumberValue() const {
 
 void WSJCppSettingItem::setNumberValue(int nNumberValue) {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_NUMBER) {
-        Log::throw_err(TAG, "setNumberValue: Expected type number");
+        WSJCppLog::throw_err(TAG, "setNumberValue: Expected type number");
     }
 
     if (m_bInited && m_bReadonly) {
-        Log::throw_err(TAG, "setNumberValue: Could not change value for readonly setting");
+        WSJCppLog::throw_err(TAG, "setNumberValue: Could not change value for readonly setting");
     }
     m_bInited = true;
     m_nNumberValue = nNumberValue;
@@ -598,7 +598,7 @@ void WSJCppSettingItem::setNumberValue(int nNumberValue) {
 
 bool WSJCppSettingItem::getDefaultBooleanValue() const {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_BOOLEAN) {
-        Log::throw_err(TAG, "getBooleanValue: Expected type boolean");
+        WSJCppLog::throw_err(TAG, "getBooleanValue: Expected type boolean");
     }
     return m_bDefaultBooleanValue;
 }
@@ -607,7 +607,7 @@ bool WSJCppSettingItem::getDefaultBooleanValue() const {
 
 bool WSJCppSettingItem::getBooleanValue() const {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_BOOLEAN) {
-        Log::throw_err(TAG, "getBooleanValue: Expected type boolean");
+        WSJCppLog::throw_err(TAG, "getBooleanValue: Expected type boolean");
     }
     return m_bInited ? m_bBooleanValue : m_bDefaultBooleanValue;
 }
@@ -616,11 +616,11 @@ bool WSJCppSettingItem::getBooleanValue() const {
 
 void WSJCppSettingItem::setBooleanValue(bool bBooleanValue) {
     if (m_nSettingType != WJSCPP_SETTING_TYPE_BOOLEAN) {
-        Log::throw_err(TAG, "setBooleanValue: Expected type boolean");
+        WSJCppLog::throw_err(TAG, "setBooleanValue: Expected type boolean");
     }
 
     if (m_bInited && m_bReadonly) {
-        Log::throw_err(TAG, "setBooleanValue: Could not change value for readonly setting");
+        WSJCppLog::throw_err(TAG, "setBooleanValue: Could not change value for readonly setting");
     }
     m_bInited = true;
     m_bBooleanValue = bBooleanValue;
@@ -676,7 +676,7 @@ std::string WSJCppSettingItem::convertValueToString(bool bHidePassword) const {
     } else if (m_nSettingType == WJSCPP_SETTING_TYPE_TEXT) {
         sRet = getTextValue();
     } else {
-        Log::throw_err(TAG, "convertValueToString, Not implemented type of setting");
+        WSJCppLog::throw_err(TAG, "convertValueToString, Not implemented type of setting");
     }
     return sRet;
 }
@@ -711,7 +711,7 @@ EmployGlobalSettings::EmployGlobalSettings()
 
 bool EmployGlobalSettings::EmployGlobalSettings::init() {
     // checking settings
-    Log::info(TAG, "EmployGlobalSettings");
+    WSJCppLog::info(TAG, "EmployGlobalSettings");
     std::map<std::string, WSJCppSettingItem*>::iterator it;
     for (it = m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
         WSJCppSettingItem *pItem = it->second;
@@ -733,7 +733,7 @@ WSJCppSettingItem &EmployGlobalSettings::registrySetting(const std::string &sSet
     std::map<std::string, WSJCppSettingItem*>::iterator it;
     it = m_mapSettingItems.find(sSettingName);
     if (it != m_mapSettingItems.end()) {
-        Log::throw_err(TAG, "Setting '" + sSettingName + "' already registered");
+        WSJCppLog::throw_err(TAG, "Setting '" + sSettingName + "' already registered");
     }
     WSJCppSettingItem *pItem = new WSJCppSettingItem(sSettingGroup, sSettingName);
     m_mapSettingItems.insert(std::pair<std::string, WSJCppSettingItem*>(sSettingName, pItem));
@@ -746,7 +746,7 @@ const WSJCppSettingItem &EmployGlobalSettings::get(const std::string &sSettingNa
     std::map<std::string, WSJCppSettingItem*>::iterator it;
     it = m_mapSettingItems.find(sSettingName);
     if (it == m_mapSettingItems.end()) {
-        Log::throw_err(TAG, "Setting '" + sSettingName + "' - not found");
+        WSJCppLog::throw_err(TAG, "Setting '" + sSettingName + "' - not found");
     }
     return *(it->second);
 }
@@ -765,7 +765,7 @@ void EmployGlobalSettings::update(const std::string &sSettingName, const std::st
     std::map<std::string, WSJCppSettingItem*>::iterator it;
     it = m_mapSettingItems.find(sSettingName);
     if (it == m_mapSettingItems.end()) {
-        Log::throw_err(TAG, "Setting '" + sSettingName + "' - not found");
+        WSJCppLog::throw_err(TAG, "Setting '" + sSettingName + "' - not found");
     }
     WSJCppSettingItem* pItem = it->second;
     if (pItem->isString()) {
@@ -781,7 +781,7 @@ void EmployGlobalSettings::update(const std::string &sSettingName, const std::st
     } else if (pItem->isBoolean()) {
         pItem->setBooleanValue(sValue == "yes");
     } else {
-        Log::throw_err(TAG, "Error on updating setting '" + sSettingName + "' ");
+        WSJCppLog::throw_err(TAG, "Error on updating setting '" + sSettingName + "' ");
     }
     if (pItem->isFromDatabase()) {
         m_pDatabaseSettingsStore->updateSettingItem(pItem);
@@ -795,13 +795,13 @@ void EmployGlobalSettings::update(const std::string &sSettingName, int nValue) {
     std::map<std::string, WSJCppSettingItem*>::iterator it;
     it = m_mapSettingItems.find(sSettingName);
     if (it == m_mapSettingItems.end()) {
-        Log::throw_err(TAG, "Setting '" + sSettingName + "' - not found");
+        WSJCppLog::throw_err(TAG, "Setting '" + sSettingName + "' - not found");
     }
     WSJCppSettingItem* pItem = it->second;
     if (pItem->isNumber()) {
         pItem->setNumberValue(nValue);
     } else {
-        Log::throw_err(TAG, "Error on updating number setting '" + sSettingName + "' ");
+        WSJCppLog::throw_err(TAG, "Error on updating number setting '" + sSettingName + "' ");
     }
     if (pItem->isFromDatabase()) {
         m_pDatabaseSettingsStore->updateSettingItem(pItem);
@@ -815,13 +815,13 @@ void EmployGlobalSettings::update(const std::string &sSettingName, bool bValue) 
     std::map<std::string, WSJCppSettingItem*>::iterator it;
     it = m_mapSettingItems.find(sSettingName);
     if (it == m_mapSettingItems.end()) {
-        Log::throw_err(TAG, "Setting '" + sSettingName + "' - not found");
+        WSJCppLog::throw_err(TAG, "Setting '" + sSettingName + "' - not found");
     }
     WSJCppSettingItem* pItem = it->second;
     if (pItem->isBoolean()) {
         pItem->setBooleanValue(bValue);
     } else {
-        Log::throw_err(TAG, "Error on updating boolean setting '" + sSettingName + "' ");
+        WSJCppLog::throw_err(TAG, "Error on updating boolean setting '" + sSettingName + "' ");
     }
     if (pItem->isFromDatabase()) {
         m_pDatabaseSettingsStore->updateSettingItem(pItem);
@@ -842,34 +842,34 @@ bool EmployGlobalSettings::initFromDatabase(WSJCppSettingsStore *pDatabaseSettin
         std::string sValue = itDb->second;
         it = m_mapSettingItems.find(sName);
         if (it == m_mapSettingItems.end()) {
-            Log::warn(TAG, "Excess setting in database, name '" + sName + "'");
+            WSJCppLog::warn(TAG, "Excess setting in database, name '" + sName + "'");
         } else {
             WSJCppSettingItem *pItem = it->second;
             if (pItem->isString()) {
                 pItem->setStringValue(sValue);
-                Log::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
+                WSJCppLog::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
             } else if (pItem->isPassword()) {
                 pItem->setPasswordValue(sValue);
-                Log::info(TAG, "Applyed settings from database: " + sName + " = (hidden)");
+                WSJCppLog::info(TAG, "Applyed settings from database: " + sName + " = (hidden)");
             } else if (pItem->isBoolean()) {
                 pItem->setBooleanValue(sValue == "yes");
-                Log::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
+                WSJCppLog::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
             } else if (pItem->isDirPath()) {
                 pItem->setDirPathValue(sValue);
-                Log::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
+                WSJCppLog::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
                 // TODO check folder ?
             } else if (pItem->isFilePath()) {
                 pItem->setFilePathValue(sValue);
-                Log::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
+                WSJCppLog::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
             } else if (pItem->isNumber()) {
                 int nValue = std::stoi(sValue);
                 pItem->setNumberValue(nValue);
-                Log::info(TAG, "Applyed settings from database: " + sName + " = " + std::to_string(nValue));
+                WSJCppLog::info(TAG, "Applyed settings from database: " + sName + " = " + std::to_string(nValue));
             } else if (pItem->isText()) {
                 pItem->setTextValue(sValue);
-                Log::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
+                WSJCppLog::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
             } else {
-                Log::throw_err(TAG, "type of setting (from database) not match with delared, name '" + sName + "'");
+                WSJCppLog::throw_err(TAG, "type of setting (from database) not match with delared, name '" + sName + "'");
             }
         }
     }
@@ -929,15 +929,15 @@ bool EmployGlobalSettings::findFileConfig() {
         if (WSJCppCore::fileExists(sFilePathConf)) {
             m_sFilepathConf = sFilePathConf;
             m_sWorkDir = sDirPath;
-            Log::info(TAG, "Found config file " + sFilePathConf);
+            WSJCppLog::info(TAG, "Found config file " + sFilePathConf);
             break;
         } else {
-            Log::warn(TAG, "Not found possible config file " + sFilePathConf);
+            WSJCppLog::warn(TAG, "Not found possible config file " + sFilePathConf);
         }
     }
     
     if (m_sFilepathConf == "") {
-        Log::err(TAG, "Not found config file");
+        WSJCppLog::err(TAG, "Not found config file");
         return false;
     }
     return true;
@@ -960,12 +960,12 @@ bool EmployGlobalSettings::initFromFile() {
             if (pItem->isString()) {
                 std::string s = parseConfig.stringValue(pItem->getName(), pItem->getDefaultStringValue());
                 pItem->setStringValue(s);
-                Log::info(TAG, pItem->getName() + " = " + s);
+                WSJCppLog::info(TAG, pItem->getName() + " = " + s);
                 // TODO run validators
             } else if (pItem->isPassword()) {
                 std::string sPassword = parseConfig.stringValue(pItem->getName(), pItem->getDefaultPasswordValue());
                 pItem->setPasswordValue(sPassword);
-                Log::info(TAG, pItem->getName() + " = (hidden)");
+                WSJCppLog::info(TAG, pItem->getName() + " = (hidden)");
             } else if (pItem->isDirPath()) {
                 std::string sDirPath = parseConfig.stringValue(pItem->getName(), pItem->getDefaultDirPathValue());
                 if (sDirPath.length() > 0 && sDirPath[0] != '/') {
@@ -973,10 +973,10 @@ bool EmployGlobalSettings::initFromFile() {
                     sDirPath = WSJCppCore::doNormalizePath(sDirPath);
                 }
                 if (!WSJCppCore::dirExists(sDirPath)) {
-                    Log::throw_err(TAG, "Wrong settings '" + pItem->getName() + "', because folder '" + sDirPath + "' does not exists");
+                    WSJCppLog::throw_err(TAG, "Wrong settings '" + pItem->getName() + "', because folder '" + sDirPath + "' does not exists");
                 }
                 pItem->setDirPathValue(sDirPath);
-                Log::info(TAG, pItem->getName() + " = " + sDirPath);
+                WSJCppLog::info(TAG, pItem->getName() + " = " + sDirPath);
                 // TODO run validators
              } else if (pItem->isFilePath()) {
                 std::string sFilePath = parseConfig.stringValue(pItem->getName(), pItem->getDefaultFilePathValue());
@@ -985,23 +985,23 @@ bool EmployGlobalSettings::initFromFile() {
                     sFilePath = WSJCppCore::doNormalizePath(sFilePath);
                 }
                 if (!WSJCppCore::fileExists(sFilePath)) {
-                    Log::throw_err(TAG, "Wrong settings '" + pItem->getName() + "', because file '" + sFilePath + "' does not exists");
+                    WSJCppLog::throw_err(TAG, "Wrong settings '" + pItem->getName() + "', because file '" + sFilePath + "' does not exists");
                 }
                 pItem->setFilePathValue(sFilePath);
-                Log::info(TAG, pItem->getName() + " = " + sFilePath);
+                WSJCppLog::info(TAG, pItem->getName() + " = " + sFilePath);
                 // TODO run validators
             } else if (pItem->isNumber()) {
                 int nValue = parseConfig.intValue(pItem->getName(), pItem->getDefaultNumberValue());
                 pItem->setNumberValue(nValue);
-                Log::info(TAG, pItem->getName() + " = " + std::to_string(nValue));
+                WSJCppLog::info(TAG, pItem->getName() + " = " + std::to_string(nValue));
                 // TODO run validators
             } else if (pItem->isBoolean()) {
                 bool bValue = parseConfig.boolValue(pItem->getName(), pItem->getDefaultBooleanValue());
                 pItem->setBooleanValue(bValue);
-                Log::info(TAG, pItem->getName() + " = " + (bValue ? "yes" : "no"));
+                WSJCppLog::info(TAG, pItem->getName() + " = " + (bValue ? "yes" : "no"));
                 // TODO run validators
             } else {
-                Log::throw_err(TAG, "initFromFile, Not implemented yet");
+                WSJCppLog::throw_err(TAG, "initFromFile, Not implemented yet");
             }
         }
     }
@@ -1010,7 +1010,7 @@ bool EmployGlobalSettings::initFromFile() {
     for (it = m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
         WSJCppSettingItem *pItem = it->second;
         if (pItem->isFromFile() && !pItem->isInited()) {
-            Log::warn(TAG, "Missing setting: '" + pItem->getName() + "' in file '" + m_sFilepathConf + "'");
+            WSJCppLog::warn(TAG, "Missing setting: '" + pItem->getName() + "' in file '" + m_sFilepathConf + "'");
         }
     }
 
@@ -1021,7 +1021,7 @@ bool EmployGlobalSettings::initFromFile() {
         std::string sSettingName = itV->first;
         it = m_mapSettingItems.find(sSettingName);
         if (it == m_mapSettingItems.end()) {
-            Log::warn(TAG, "Excess setting: '" + sSettingName + "' in file '" + m_sFilepathConf + "'");
+            WSJCppLog::warn(TAG, "Excess setting: '" + sSettingName + "' in file '" + m_sFilepathConf + "'");
         }
     }
     return true;
@@ -1112,11 +1112,11 @@ bool EmployServer::init() {
     // TODO move to validators
     int nWeb_max_threads = pGlobalSettings->get("web_max_threads").getNumberValue();
     if (nWeb_max_threads <= 0) {
-        Log::err(TAG, "Wrong option 'web_max_threads', values must be more then 0");
+        WSJCppLog::err(TAG, "Wrong option 'web_max_threads', values must be more then 0");
         return false;
     }
     if (nWeb_max_threads > 100) {
-        Log::err(TAG, "Wrong option 'web_max_threads', values must be less then 0");
+        WSJCppLog::err(TAG, "Wrong option 'web_max_threads', values must be less then 0");
         return false;
     }
 
@@ -1195,7 +1195,7 @@ bool EmployServer::validateInputParameters(WSJCppError &error, CmdHandlerBase *p
         return true;
     } catch(std::exception const &e) {
         error = WSJCppError(500, "InternalServerError");
-        Log::err(TAG, std::string("validateInputParameters, ") + e.what());
+        WSJCppLog::err(TAG, std::string("validateInputParameters, ") + e.what());
         return false;
     }
 }

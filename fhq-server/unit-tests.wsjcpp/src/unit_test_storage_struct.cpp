@@ -66,7 +66,7 @@ void UnitTestStorageStruct::dropTestTable0(bool &bTestSuccess, Storage *pStorage
     }
     pStorage->addStorageChanges(test_tbl0_drop); 
     if (pStorage->existsTable("test_tbl0")) {
-        Log::err(TAG, "Table 'test_tbl0' must be disappeared");
+        WSJCppLog::err(TAG, "Table 'test_tbl0' must be disappeared");
         bTestSuccess = false;
     }
 }
@@ -169,7 +169,7 @@ void UnitTestStorageStruct::checkModifiedTable1(bool &bTestSuccess, Storage *pSt
 
     // TEST merge structs
     /*if (!test_tbl1.mergeWith(modify_test_tbl1)) {
-        Log::err(TAG, "Problem with merge structs");
+        WSJCppLog::err(TAG, "Problem with merge structs");
         bTestSuccess = false;
     }
 

@@ -42,9 +42,6 @@ list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/cmd/include")
 list (APPEND FHQSRV_INCLUDE_DIRS "src/web-server")
 
-# core - 3rdParty
-list (APPEND FHQSRV_SOURCES "src/core/3rdParty/json.hpp")
-
 # core
 list (APPEND FHQSRV_SOURCES "src/core/cmd_handlers.h")
 list (APPEND FHQSRV_SOURCES "src/core/cmd_handlers.cpp")

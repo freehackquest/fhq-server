@@ -213,7 +213,7 @@ bool CmdHandlerLXDInfo::get_state(const std::string& sName, std::string &sError,
     if (!pOrchestra->find_container(sName, pContainer)) {
         sError = "Not found container " + sName;
         nErrorCode = 404;
-        Log::err(TAG, sError);
+        WSJCppLog::err(TAG, sError);
         return false;
     }
 

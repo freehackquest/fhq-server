@@ -27,13 +27,13 @@ bool EmployGames::init() {
 
     FILE * pFile = fopen(targetTestFile.c_str(), "wb");
     if (pFile == NULL) {
-        Log::err(TAG, "Cannot access to write " + targetTestFile);
+        WSJCppLog::err(TAG, "Cannot access to write " + targetTestFile);
         return false;
     }
     fclose(pFile);
 
     if (remove(targetTestFile.c_str()) != 0) {
-        Log::err(TAG, "Could not delete file " + targetTestFile);
+        WSJCppLog::err(TAG, "Could not delete file " + targetTestFile);
         return false;
     }
 
@@ -45,7 +45,7 @@ bool EmployGames::init() {
     query.prepare("SELECT * FROM games");
 
     if (!query.exec()) {
-        Log::err(TAG, query.lastError().text().toStdString());
+        WSJCppLog::err(TAG, query.lastError().text().toStdString());
         return false;
     }
 
@@ -62,7 +62,7 @@ bool EmployGames::init() {
         // TODO must be cached all fields
 
         if (m_mapCacheGames.count(sUuid)) {
-            Log::err(TAG, "Inconsistent list games in database uuid: " + sUuid);
+            WSJCppLog::err(TAG, "Inconsistent list games in database uuid: " + sUuid);
             return false;
         } else {
             m_mapCacheGames.insert(std::pair<std::string, ModelGame*>(sUuid,pModelGame));

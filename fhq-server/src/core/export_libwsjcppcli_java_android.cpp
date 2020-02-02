@@ -108,11 +108,11 @@ void ExportLibWsjCppCliJavaAndroid::exportPrepareDirs() {
 
     for (int i = 0; i < vDirectories.size(); i++) {
         std::string sDir = vDirectories[i];
-        Log::info(TAG, "Try create dir " + sDir);
+        WSJCppLog::info(TAG, "Try create dir " + sDir);
         if (WSJCppCore::makeDir(sDir)) {
-            Log::ok(TAG, "Created dir " + sDir);
+            WSJCppLog::ok(TAG, "Created dir " + sDir);
         } else {
-            Log::warn(TAG, "Could not create dir " + sDir);
+            WSJCppLog::warn(TAG, "Could not create dir " + sDir);
         }
     }
 }
@@ -121,7 +121,7 @@ void ExportLibWsjCppCliJavaAndroid::exportPrepareDirs() {
 
 void ExportLibWsjCppCliJavaAndroid::exportManifest() {
     std::ofstream fManifest;
-    Log::info(TAG, "write code to libfhqcli-java-android/libfhqcli/src/main/AndroidManifest.xml");
+    WSJCppLog::info(TAG, "write code to libfhqcli-java-android/libfhqcli/src/main/AndroidManifest.xml");
     fManifest.open ("libfhqcli-java-android/libfhqcli/src/main/AndroidManifest.xml");
 
     fManifest << ""
@@ -137,7 +137,7 @@ void ExportLibWsjCppCliJavaAndroid::exportManifest() {
 
 void ExportLibWsjCppCliJavaAndroid::exportBuildGradle() {
     std::ofstream fBuildGradle;
-    Log::info(TAG, "write code to libfhqcli-java-android/libfhqcli/build.gradle ");
+    WSJCppLog::info(TAG, "write code to libfhqcli-java-android/libfhqcli/build.gradle ");
     fBuildGradle.open ("libfhqcli-java-android/libfhqcli/build.gradle");
 
     // TODO version code must be date + time
