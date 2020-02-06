@@ -1,0 +1,74 @@
+wsjcpp_version: v0.0.1
+cmake_minimum_required: 3.0
+cmake_cxx_standard: 11
+
+name: wsjcpp-validators
+version: v0.0.3
+description: Classes for data validation
+issues: https://github.com/wsjcpp/wsjcpp-validators/issues
+
+keywords:
+  - c++
+  - validator
+
+required-libraries:
+  - pthread
+  
+repositories:
+  - type: main
+    url: "https://github.com/wsjcpp/wsjcpp-validators"
+
+authors:
+  - name: Evgenii Sopov
+    email: mrseakg@gmail.com
+
+dependencies:
+  - name: "wsjcpp-core"
+    version: "v0.0.5"
+    url: "https://github.com/wsjcpp/wsjcpp-core:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_core"
+
+distribution:
+  - source-file: "src/wsjcpp_validators.h"
+    target-file: "wsjcpp_validators.h"
+    type: "source-code"
+    sha1: ""
+  - source-file: "src/wsjcpp_validators.cpp"
+    target-file: "wsjcpp_validators.cpp"
+    type: "source-code"
+    sha1: ""
+
+
+unit-tests:
+  cases:
+    - name: "ValidatorEmail"
+      description: "Test email validator"
+    - name: "ValidatorUuid"
+      description: "Test uuid validator"
+    - name: "ValidatorStringList"
+      description: "Test validator from a string list"
+    - name: "ValidatorJwt"
+      description: "JSON Web Token"
+    - name: "ValidatorDate"
+      description: "Date"
+    - name: "ValidatorTimeH24"
+      description: "TimeH24"
+    - name: "ValidatorDateTime"
+      description: "DateTime"
+    - name: "ValidatorRegExp"
+      description: "Regular expression"
+    - name: "ValidatorBase64"
+      description: "Validator Base64 format"
+    # - name: "ValidatorUrl"
+    # description: "Validator URL-format"
+    - name: "ValidatorNumber"
+      description: "Number validator"
+    - name: "ValidatorHex"
+      description: "Hex"
+    - name: "ValidatorStringLength"
+      description: "String Length"
+    - name: "isValidIpV4"
+      description: "test valid ipv4"
+    - name: "isValidIpV6"
+      description: "test valid ipv6"

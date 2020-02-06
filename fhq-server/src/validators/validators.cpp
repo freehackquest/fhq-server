@@ -4,7 +4,7 @@
 // ---------------------------------------------------------------------
 // ValidatorEventType
 
-ValidatorEventType::ValidatorEventType() : ValidatorStringBase("event_type") {
+ValidatorEventType::ValidatorEventType() : WSJCppValidatorStringBase("event_type") {
     TAG = "ValidatorEventType";
     m_vEventTypes = {"info", "users", "games", "quests", "warning"};
 };
@@ -23,7 +23,7 @@ bool ValidatorEventType::isValid(const std::string &sValue, std::string &sError)
 // ---------------------------------------------------------------------
 // ValidatorQuestSubject
  
-ValidatorQuestSubject::ValidatorQuestSubject() : ValidatorStringBase("quest_subject") {
+ValidatorQuestSubject::ValidatorQuestSubject() : WSJCppValidatorStringBase("quest_subject") {
     TAG = "ValidatorQuestSubject";
     m_vQuestSubjects = {
         "trivia", "hashes", "stego", "reverse",
@@ -53,7 +53,7 @@ bool ValidatorQuestSubject::isValid(const std::string &sValue, std::string &sErr
 // ---------------------------------------------------------------------
 // ValidatorQuestSubject
  
-ValidatorQuestState::ValidatorQuestState() : ValidatorStringBase("quest_state") {
+ValidatorQuestState::ValidatorQuestState() : WSJCppValidatorStringBase("quest_state") {
     TAG = "ValidatorQuestState";
     m_vQuestStates = {"open", "broken", "closed"};
 };
@@ -79,7 +79,7 @@ bool ValidatorQuestState::isValid(const std::string &sValue, std::string &sError
 // ---------------------------------------------------------------------
 // ValidatorGameForm
  
-ValidatorGameForm::ValidatorGameForm() : ValidatorStringBase("game_form") {
+ValidatorGameForm::ValidatorGameForm() : WSJCppValidatorStringBase("game_form") {
     TAG = "ValidatorGameForm";
     m_vGameForms = {"online", "offline"};
 };
@@ -106,7 +106,7 @@ bool ValidatorGameForm::isValid(const std::string &sValue, std::string &sError) 
 // ---------------------------------------------------------------------
 // ValidatorGameState
  
-ValidatorGameState::ValidatorGameState() : ValidatorStringBase("game_state") {
+ValidatorGameState::ValidatorGameState() : WSJCppValidatorStringBase("game_state") {
     TAG = "ValidatorGameForm";
     m_vGameStates = {"original", "copy", "unlicensed_copy"};
 };
@@ -132,7 +132,7 @@ bool ValidatorGameState::isValid(const std::string &sValue, std::string &sError)
 // ---------------------------------------------------------------------
 // ValidatorGameType
  
-ValidatorGameType::ValidatorGameType() : ValidatorStringBase("game_type") {
+ValidatorGameType::ValidatorGameType() : WSJCppValidatorStringBase("game_type") {
     TAG = "ValidatorGameType";
     m_vGameTypes = {"jeopardy"};
 };
@@ -158,7 +158,7 @@ bool ValidatorGameType::isValid(const std::string &sValue, std::string &sError) 
 // ---------------------------------------------------------------------
 // ValidatorLXDFileActionType
  
-ValidatorLXDFileActionType::ValidatorLXDFileActionType() : ValidatorStringBase("lxd_action_type") {
+ValidatorLXDFileActionType::ValidatorLXDFileActionType() : WSJCppValidatorStringBase("lxd_action_type") {
     TAG = "ValidatorLXDFileActionType";
     m_vActionTypes = {"pull", "push", "delete"};
 };
@@ -179,6 +179,16 @@ bool ValidatorLXDFileActionType::isValid(const std::string &sValue, std::string 
     }
     sError += "]";
     return false;
+}
+
+// ----------------------------------------------------------------------
+// ValidatorLanguage
+
+ValidatorLanguage::ValidatorLanguage() 
+: WSJCppValidatorStringListBase(
+    "lang", {"en", "ru", "de"} 
+) {
+    TAG = "ValidatorLanguage";
 }
 
 // ---------------------------------------------------------------------

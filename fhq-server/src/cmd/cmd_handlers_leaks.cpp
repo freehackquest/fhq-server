@@ -139,10 +139,10 @@ CmdHandlerLeaksAdd::CmdHandlerLeaksAdd()
     setAccessAdmin(true);
 
     requireStringParam("uuid", "UUID of the leak")
-        .addValidator(new ValidatorUUID()); // may be optional ?
+        .addValidator(new WSJCppValidatorUUID()); // may be optional ?
 
     requireStringParam("game_uuid", "UUID of the game")
-        .addValidator(new ValidatorUUID());
+        .addValidator(new WSJCppValidatorUUID());
 
     requireStringParam("name", "Visible part of the content");
     requireStringParam("content", "Content of the leak");

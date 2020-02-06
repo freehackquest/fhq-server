@@ -133,9 +133,9 @@ class CmdInputDef {
         bool isMaxVal(); // TODO: redesign to validators
         int getMaxVal(); // TODO: redesign to validators
 
-        CmdInputDef &addValidator(ValidatorStringBase *pValidatorStringBase);
+        CmdInputDef &addValidator(WSJCppValidatorStringBase *pValidatorStringBase);
         
-        const std::vector<ValidatorStringBase *> &listOfValidators();
+        const std::vector<WSJCppValidatorStringBase *> &listOfValidators();
 
     private:
         std::string m_sType;
@@ -152,7 +152,7 @@ class CmdInputDef {
         std::string CMD_INPUT_DEF_TYPE_BOOL = "boolean";
         std::string CMD_INPUT_DEF_TYPE_ANY = "any";
 
-        std::vector<ValidatorStringBase *> m_vValidatorsString;
+        std::vector<WSJCppValidatorStringBase *> m_vValidatorsString;
 };
 
 // ---------------------------------------------------------------------

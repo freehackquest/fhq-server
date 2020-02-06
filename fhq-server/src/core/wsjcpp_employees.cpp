@@ -1182,7 +1182,7 @@ bool EmployServer::validateInputParameters(WSJCppError &error, CmdHandlerBase *p
                 if (inDef.isString()) {
                     std::string sVal = itJsonParamName->get_ref<std::string const&>();
                     std::string sError;
-                    const std::vector<ValidatorStringBase *> vValidators = inDef.listOfValidators();
+                    const std::vector<WSJCppValidatorStringBase *> vValidators = inDef.listOfValidators();
                     for (int i = 0; i < vValidators.size(); i++) {
                         if (!vValidators[i]->isValid(sVal, sError)) {
                             error = WSJCppError(400, "Wrong param '" + inDef.getName() + "': " + sError);

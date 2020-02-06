@@ -500,7 +500,7 @@ CmdHandlerCreateQuest::CmdHandlerCreateQuest()
     setAccessAdmin(true);
 
     requireStringParam("uuid", "Global Identificator of the quest")
-        .addValidator(new ValidatorUUID());
+        .addValidator(new WSJCppValidatorUUID());
 
     requireIntegerParam("gameid", "Which game included this quest");
     requireStringParam("name", "Name of the quest");
@@ -1798,7 +1798,7 @@ CmdHandlerQuestsFilesUpload::CmdHandlerQuestsFilesUpload()
 
     // validation and description input fields
     requireStringParam("quest_uuid", "Quest UUID")
-        .addValidator(new ValidatorUUID());
+        .addValidator(new WSJCppValidatorUUID());
     requireStringParam("file_base64", "");
     requireStringParam("file_name", "");
 }
