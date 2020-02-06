@@ -32,7 +32,7 @@ CmdHandlerGameCreate::CmdHandlerGameCreate()
     
     // validation and description input fields
     requireStringParam("uuid", "Global Identificator of the Game")
-        .addValidator(new ValidatorUUID());
+        .addValidator(new WSJCppValidatorUUID());
     requireStringParam("name", "Name of the Game");
     requireStringParam("description", "Description of the Game");
     requireStringParam("state", "State of the game")
@@ -104,7 +104,7 @@ CmdHandlerGameDelete::CmdHandlerGameDelete()
 
     // validation and description input fields
     requireStringParam("uuid", "Global Identificator of the Game")
-        .addValidator(new ValidatorUUID());
+        .addValidator(new WSJCppValidatorUUID());
 
     requireStringParam("admin_password", "Admin Password");
 }
@@ -267,7 +267,7 @@ CmdHandlerGameExport::CmdHandlerGameExport()
 
     // validation and description input fields
     requireStringParam("uuid", "Global Identificator of the Game")
-        .addValidator(new ValidatorUUID());
+        .addValidator(new WSJCppValidatorUUID());
 }
 
 // ---------------------------------------------------------------------
@@ -359,7 +359,7 @@ CmdHandlerGameImport::CmdHandlerGameImport()
     setAccessAdmin(true);
 
     requireStringParam("uuid", "Global Identificator of the Game")
-        .addValidator(new ValidatorUUID());
+        .addValidator(new WSJCppValidatorUUID());
 }
 
 // ---------------------------------------------------------------------
@@ -390,7 +390,7 @@ CmdHandlerGameInfo::CmdHandlerGameInfo()
 
     // validation and description input fields
     requireStringParam("uuid", "Global Identificator of the Game")
-        .addValidator(new ValidatorUUID());
+        .addValidator(new WSJCppValidatorUUID());
 }
 
 // ---------------------------------------------------------------------
@@ -424,7 +424,7 @@ CmdHandlerGameUpdate::CmdHandlerGameUpdate()
 
     // validation and description input fields
     requireStringParam("uuid", "Global Identificator of the Game")
-        .addValidator(new ValidatorUUID());
+        .addValidator(new WSJCppValidatorUUID());
     optionalStringParam("name", "Name of the Game");
     optionalStringParam("description", "Description of the Game");
     optionalStringParam("state", "State of the game")
@@ -501,7 +501,7 @@ CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
 
     // validation and description input fields
     requireStringParam("uuid", "Global Identificator of the Game")
-        .addValidator(new ValidatorUUID());
+        .addValidator(new WSJCppValidatorUUID());
 
     requireStringParam("image_png_base64", "Image PNG in Base64");
 }

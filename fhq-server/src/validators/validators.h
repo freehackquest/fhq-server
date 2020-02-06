@@ -3,11 +3,11 @@
 
 #include <string>
 #include <vector>
-#include <core/wsjcpp_validators.h>
+#include <wsjcpp_validators.h>
 
 // ---------------------------------------------------------------------
 
-class ValidatorEventType : public ValidatorStringBase {
+class ValidatorEventType : public WSJCppValidatorStringBase {
     public:
         ValidatorEventType();
         virtual bool isValid(const std::string &sValue, std::string &sError);
@@ -19,7 +19,7 @@ class ValidatorEventType : public ValidatorStringBase {
 
 // ---------------------------------------------------------------------
 
-class ValidatorQuestSubject : public ValidatorStringBase {
+class ValidatorQuestSubject : public WSJCppValidatorStringBase {
     public:
         ValidatorQuestSubject();
         virtual bool isValid(const std::string &sValue, std::string &sError);
@@ -31,7 +31,7 @@ class ValidatorQuestSubject : public ValidatorStringBase {
 
 // ---------------------------------------------------------------------
 
-class ValidatorQuestState : public ValidatorStringBase {
+class ValidatorQuestState : public WSJCppValidatorStringBase {
     public:
         ValidatorQuestState();
         virtual bool isValid(const std::string &sValue, std::string &sError);
@@ -43,7 +43,7 @@ class ValidatorQuestState : public ValidatorStringBase {
 
 // ---------------------------------------------------------------------
 
-class ValidatorGameForm : public ValidatorStringBase {
+class ValidatorGameForm : public WSJCppValidatorStringBase {
     public:
         ValidatorGameForm();
         virtual bool isValid(const std::string &sValue, std::string &sError);
@@ -55,7 +55,7 @@ class ValidatorGameForm : public ValidatorStringBase {
 
 // ---------------------------------------------------------------------
 
-class ValidatorGameState : public ValidatorStringBase {
+class ValidatorGameState : public WSJCppValidatorStringBase {
     public:
         ValidatorGameState();
         virtual bool isValid(const std::string &sValue, std::string &sError);
@@ -67,7 +67,7 @@ class ValidatorGameState : public ValidatorStringBase {
 
 // ---------------------------------------------------------------------
 
-class ValidatorGameType : public ValidatorStringBase {
+class ValidatorGameType : public WSJCppValidatorStringBase {
     public:
         ValidatorGameType();
         virtual bool isValid(const std::string &sValue, std::string &sError);
@@ -79,7 +79,7 @@ class ValidatorGameType : public ValidatorStringBase {
 
 // ---------------------------------------------------------------------
 
-class ValidatorLXDFileActionType : public ValidatorStringBase {
+class ValidatorLXDFileActionType : public WSJCppValidatorStringBase {
     public:
         ValidatorLXDFileActionType();
         virtual bool isValid(const std::string &sValue, std::string &sError);
@@ -88,5 +88,14 @@ class ValidatorLXDFileActionType : public ValidatorStringBase {
         std::string TAG;
         std::vector<std::string> m_vActionTypes;
 };
+
+// ----------------------------------------------------------------------
+
+class ValidatorLanguage : public WSJCppValidatorStringListBase {
+    public:
+        ValidatorLanguage();
+};
+
+// ----------------------------------------------------------------------
 
 #endif // VALIDATORS_H

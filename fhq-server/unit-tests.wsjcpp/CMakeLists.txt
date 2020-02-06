@@ -46,8 +46,6 @@ list (APPEND WSJCPP_SOURCES "../src/core/fallen.cpp")
 list (APPEND WSJCPP_SOURCES "../src/core/fallen.h")
 list (APPEND WSJCPP_SOURCES "../src/validators/validators.h")
 list (APPEND WSJCPP_SOURCES "../src/validators/validators.cpp")
-list (APPEND WSJCPP_SOURCES "../src/core/wsjcpp_validators.h")
-list (APPEND WSJCPP_SOURCES "../src/core/wsjcpp_validators.cpp")
 list (APPEND WSJCPP_SOURCES "../src/core/storages.h")
 list (APPEND WSJCPP_SOURCES "../src/core/storages.cpp")
 list (APPEND WSJCPP_SOURCES "../src/core/parser_ip_api_com.h")
@@ -60,6 +58,11 @@ list (APPEND WSJCPP_SOURCES "../src/utils/utils_merge_text.cpp")
 list (APPEND WSJCPP_SOURCES "../src/utils/utils_merge_text.h")
 list (APPEND WSJCPP_SOURCES "../src/storages/mysql/mysql_storage.h")
 list (APPEND WSJCPP_SOURCES "../src/storages/mysql/mysql_storage.cpp")
+
+# wsjcpp-validators:v0.0.3
+list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_validators/")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_validators/wsjcpp_validators.h")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_validators/wsjcpp_validators.cpp")
 
 # unit-tests
 list (APPEND WSJCPP_INCLUDE_DIRS "src")
@@ -108,6 +111,8 @@ IF(ZLIB_FOUND)
 ELSE(ZLIB_FOUND)
    MESSAGE(FATAL_ERROR "Could not find the ZLIB library and development files.")
 ENDIF(ZLIB_FOUND)
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.custom.txt)
 
 ############################
 ##### mysql 

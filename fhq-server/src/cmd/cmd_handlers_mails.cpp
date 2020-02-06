@@ -40,7 +40,7 @@ CmdHandlerMailSend::CmdHandlerMailSend()
 
     // validation and description input fields
     requireStringParam("to", "E-mail of the recipient")
-        .addValidator(new ValidatorEmail());
+        .addValidator(new WSJCppValidatorEmail());
     requireStringParam("subject", "Subject of the message");
     requireStringParam("body", "Body of the message");
 

@@ -230,7 +230,8 @@ CmdHandlerRegistration::CmdHandlerRegistration()
     setAccessAdmin(false);
 
     // validation and description input fields
-    requireStringParam("email", "E-mail").addValidator(new ValidatorEmail());
+    requireStringParam("email", "E-mail")
+        .addValidator(new WSJCppValidatorEmail());
     requireStringParam("university", "University");
 }
 
@@ -587,13 +588,13 @@ CmdHandlerUsersAdd::CmdHandlerUsersAdd()
 
     // validation and description input fields
     requireStringParam("uuid", "User's Global Unique Identifier")
-        .addValidator(new ValidatorUUID());
+        .addValidator(new WSJCppValidatorUUID());
 
     requireStringParam("email", "User's E-mail");
     requireStringParam("nick", "User's nick")
-        .addValidator(new ValidatorStringLength(4, 127));
+        .addValidator(new WSJCppValidatorStringLength(4, 127));
     requireStringParam("password", "Password")
-        .addValidator(new ValidatorStringLength(4, 127));
+        .addValidator(new WSJCppValidatorStringLength(4, 127));
     requireStringParam("role", "User's role"); // TODO role validator
     optionalStringParam("university", "University");
 }
@@ -952,7 +953,8 @@ CmdHandlerUserResetPassword::CmdHandlerUserResetPassword()
     setAccessAdmin(false);
 
     // validation and description input fields
-    requireStringParam("email", "E-mail").addValidator(new ValidatorEmail());
+    requireStringParam("email", "E-mail")
+        .addValidator(new WSJCppValidatorEmail());
 }
 
 // ---------------------------------------------------------------------
@@ -1579,7 +1581,8 @@ CmdHandlerUsersRegistration::CmdHandlerUsersRegistration()
     setAccessAdmin(false);
 
     // validation and description input fields
-    requireStringParam("email", "E-mail").addValidator(new ValidatorEmail());
+    requireStringParam("email", "E-mail")
+        .addValidator(new WSJCppValidatorEmail());
 }
 
 // ---------------------------------------------------------------------
@@ -1853,7 +1856,8 @@ CmdHandlerUsersChangeEmail::CmdHandlerUsersChangeEmail()
     setAccessAdmin(true);
 
     // validation and description input fields
-    requireStringParam("email", "New E-mail").addValidator(new ValidatorEmail());
+    requireStringParam("email", "New E-mail")
+        .addValidator(new WSJCppValidatorEmail());
     requireStringParam("password", "Password"); // TODO validator 'not empty' 
 }
 

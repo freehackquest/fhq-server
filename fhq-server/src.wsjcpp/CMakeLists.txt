@@ -37,6 +37,11 @@ list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_core/wsjcpp_core.h")
 list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/nlohmann_json/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/nlohmann_json/json.hpp")
 
+# wsjcpp-validators:v0.0.3
+list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_validators/")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_validators/wsjcpp_validators.h")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_validators/wsjcpp_validators.cpp")
+
 # required-libraries
 list (APPEND WSJCPP_LIBRARIES "-lpthread")
 

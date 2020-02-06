@@ -19,7 +19,7 @@ CmdHandlerFeedbackAdd::CmdHandlerFeedbackAdd()
 
     // validation and description input fields
     requireStringParam("from", "From user")
-        .addValidator(new ValidatorEmail());
+        .addValidator(new WSJCppValidatorEmail());
     requireStringParam("text", "Text of feedback");
     requireStringParam("type", "Type of feedback"); // TODO validator
 }

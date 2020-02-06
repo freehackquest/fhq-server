@@ -29,7 +29,7 @@ CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler()
     requireStringParam("name", "name of article");
     requireStringParam("content", "content of article");
     optionalStringParam("uuid", "uuid of article")
-        .addValidator(new ValidatorUUID());
+        .addValidator(new WSJCppValidatorUUID());
     optionalIntegerParam("ordered", "order of article");
 }
 

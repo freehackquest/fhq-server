@@ -407,13 +407,13 @@ int CmdInputDef::getMaxVal() {
 
 // ---------------------------------------------------------------------
 
-const std::vector<ValidatorStringBase *> &CmdInputDef::listOfValidators() {
+const std::vector<WSJCppValidatorStringBase *> &CmdInputDef::listOfValidators() {
     return m_vValidatorsString;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef &CmdInputDef::addValidator(ValidatorStringBase *pValidatorStringBase) {
+CmdInputDef &CmdInputDef::addValidator(WSJCppValidatorStringBase *pValidatorStringBase) {
     // TODO check type
     m_vValidatorsString.push_back(pValidatorStringBase);
     return *this;
