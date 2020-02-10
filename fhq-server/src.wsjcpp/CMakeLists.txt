@@ -14,6 +14,9 @@ set (WSJCPP_LIBRARIES "")
 set (WSJCPP_INCLUDE_DIRS "")
 set (WSJCPP_SOURCES "")
 
+find_package(Threads REQUIRED)
+list (APPEND WSJCPP_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
+
 # wsjcpp-levenshtein:v0.0.1
 list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_levenshtein/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_levenshtein/wsjcpp_levenshtein.cpp")
@@ -42,8 +45,10 @@ list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_validators/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_validators/wsjcpp_validators.h")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_validators/wsjcpp_validators.cpp")
 
-# required-libraries
-list (APPEND WSJCPP_LIBRARIES "-lpthread")
+# wsjcpp-print-tree:v0.0.1
+list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_print_tree/")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_print_tree/wsjcpp_print_tree.h")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_print_tree/wsjcpp_print_tree.cpp")
 
 # required-pkg-config
 ## CURL

@@ -38,6 +38,7 @@
 #include <jobs_pool.h>
 #include <fallen.h>
 #include <wsjcpp_core.h>
+#include <wsjcpp_print_tree.h>
 
 LightHttpServer g_httpServer;
 
@@ -149,19 +150,22 @@ int main(int argc, char** argv) {
         pExportJavaAndroid->exportLib();
         return 0;
     } else if (helpArgs.has("show-employees")) {
-        std::cout << " * Employees (" << g_pEmployees->size() << "):\n";
+        WSJCppPrintTree tree("Employees (" + std::to_string(g_pEmployees->size()) + ")");
+
         std::map<std::string, WSJCppEmployBase*>::iterator it = g_pEmployees->begin();
         for (; it != g_pEmployees->end(); ++it) {
             std::string sEmployName = it->first;
             WSJCppEmployBase* pEmployBase = it->second;
-            std::cout << " |--- * " << sEmployName << "\n";
+            tree.addChild(sEmployName);
+            tree.switchToLatestChild();
             if (pEmployBase->loadAfter().size() > 0) {
                 for (int i = 0; i < pEmployBase->loadAfter().size(); i++) {
-                    std::cout << " |    +--- * after: " << pEmployBase->loadAfter().at(i) << "\n";
+                    tree.addChild("after: " + pEmployBase->loadAfter().at(i));
                 }
             }
-            std::cout << " |  \n";
+            tree.switchToParent();
         }
+        std::cout << tree.printTree() << std::endl;        
         return 0;
     } else if (helpArgs.has("version")) {
         std::cout << FHQSRV_APP_NAME << "-" << FHQSRV_VERSION << "\n";
