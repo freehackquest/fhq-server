@@ -18,6 +18,7 @@ import libtestquests
 import libtestleaks
 import libtestgames
 import libtestknowledgebase
+import libtestserversettings
 
 tests_passed = False
 tests = [
@@ -29,6 +30,7 @@ tests = [
     libtestpublicevents,
     libtestleaks,
     libtestknowledgebase,
+    libtestserversettings,
     libteststats
 ]
 
