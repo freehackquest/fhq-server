@@ -5,7 +5,7 @@
 REGISTRY_UNIT_TEST(UnitTestStaticAnalizingText)
 
 UnitTestStaticAnalizingText::UnitTestStaticAnalizingText()
-    : UnitTestBase("UnitTestStaticAnalizingText") {
+    : WSJCppUnitTestBase("UnitTestStaticAnalizingText") {
     // 
 }
 

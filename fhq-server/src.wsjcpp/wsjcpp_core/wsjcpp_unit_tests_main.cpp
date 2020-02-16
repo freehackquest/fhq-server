@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    if (!UnitTests::runUnitTests()) {
+    if (!WSJCppUnitTests::runUnitTests()) {
         WSJCppLog::err(TAG, "Some unit tests failed");
         return -1;
     }

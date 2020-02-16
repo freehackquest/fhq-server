@@ -4,7 +4,7 @@
 #include <wsjcpp_unit_tests.h>
 #include <core/storages.h>
 
-class UnitTestStorageStruct : public UnitTestBase {
+class UnitTestStorageStruct : public WSJCppUnitTestBase {
     public:
         UnitTestStorageStruct();
         virtual void init();

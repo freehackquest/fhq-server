@@ -8,7 +8,7 @@ REGISTRY_UNIT_TEST(UnitTestParserIpApiCom)
 
 
 UnitTestParserIpApiCom::UnitTestParserIpApiCom()
-    : UnitTestBase("UnitTestParserIpApiCom") {
+    : WSJCppUnitTestBase("UnitTestParserIpApiCom") {
     //
 }
 

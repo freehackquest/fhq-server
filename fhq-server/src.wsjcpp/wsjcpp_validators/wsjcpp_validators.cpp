@@ -1,5 +1,6 @@
 #include "wsjcpp_validators.h"
 #include <arpa/inet.h>
+#include <wsjcpp_core.h>
 
 bool WSJCppValidators::isValidDate(const std::string &sValue, std::string &sError) {
     int nSize = sValue.size();
@@ -208,6 +209,40 @@ bool WSJCppValidators::isValidDomainName(const std::string &sValue, std::string 
             sError += "'";
             return false;
         }
+    }
+    return true;
+}
+
+// ----------------------------------------------------------------------
+
+bool WSJCppValidators::isValidPort(const std::string &sValue, std::string &sError) {
+    int nPort = std::atoi(sValue.c_str());
+    return WSJCppValidators::isValidPort(nPort, sError);
+}
+
+// ----------------------------------------------------------------------
+
+bool WSJCppValidators::isValidPort(int nValue, std::string &sError) {
+    if (nValue < 1 || nValue > 65535) {
+        sError = "Port '" + std::to_string(nValue) + "' must be more then 0 and less then 65536";
+        return false;
+    }
+    return true;
+}
+
+// ----------------------------------------------------------------------
+
+bool WSJCppValidators::isValidURLProtocol(const std::string &sValue, std::string &sError) {
+    if (
+        sValue != "http" 
+        && sValue != "https" 
+        && sValue != "ws"
+        && sValue != "wss"
+        && sValue != "ftp"
+        && sValue != "ssl"
+    ) {
+        sError = "Unexpected protocol '" + sValue + "'";
+        return false;
     }
     return true;
 }
@@ -490,11 +525,10 @@ bool WSJCppValidatorDateTime::isValid(const std::string &sValue, std::string &sE
 // ----------------------------------------------------------------------
 // WSJCppValidatorURL
 
-/*
 WSJCppValidatorURL::WSJCppValidatorURL() 
 : WSJCppValidatorStringBase("url") {
     TAG = "WSJCppValidatorURL";
-    m_rxLikeIPv4Format = std::regex("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(:\\d{1,5}){0,1}$");
+    m_rxLikeIPv4Format = std::regex("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$");
 }
 
 // ----------------------------------------------------------------------
@@ -507,26 +541,13 @@ bool WSJCppValidatorURL::isValid(const std::string &sValue, std::string &sError)
     if (sValue.find(".") == std::string::npos) {
         sError = "Must contain at least one dot";
         return false;
-    }
-
-    int nPosProtocol = sValue.find("://");
-    if (nPosProtocol == std::string::npos) {
-        sError = "Value must contains '://'";
-        return false;
-    }
-    std::string sProtocol = sValue.substr(0, nPosProtocol);
-    if (
-        sProtocol != "http" 
-        && sProtocol != "https" 
-        && sProtocol != "ws"
-        && sProtocol != "wss"
-        && sProtocol != "ftp"
-    ) {
-        sError = "Unexpected protocol '" + sProtocol + "'";
+    }    
+    std::string sProtocol = WSJCppCore::extractURLProtocol(sValue);
+    if (!WSJCppValidators::isValidURLProtocol(sProtocol, sError)) {
         return false;
     }
 
-    int nStartPos = nPosProtocol + 3;
+    int nStartPos = sProtocol.length() + 3;
     std::string sAuthorityAddressPath = "";
     for (int i = nStartPos; i < sValue.size(); i++) {
         char c = sValue[i];
@@ -535,7 +556,7 @@ bool WSJCppValidatorURL::isValid(const std::string &sValue, std::string &sError)
         }
         sAuthorityAddressPath += c;
     }
-    std::string sQuery = sValue.substr(nPosProtocol + 3 + sAuthorityAddressPath.size());
+    std::string sQuery = sValue.substr(sProtocol.length() + 3 + sAuthorityAddressPath.size());
     std::string sAddressAndPath = sAuthorityAddressPath;
 
     int nPosAuthority = sAuthorityAddressPath.find("@");
@@ -545,9 +566,10 @@ bool WSJCppValidatorURL::isValid(const std::string &sValue, std::string &sError)
         sAddressAndPath = sAuthorityAddressPath.substr(nPosAuthority + 1);
     }
     if (sAuthority != "") {
-        sError = "TODO check username and password sAuthority= [" + sAuthority + "]";
+        // sError = "TODO check username and password sAuthority= [" + sAuthority + "]";
         // -.~_!$&'()*+,;=:%40:80%2f::::::
-        return false;
+        // WSJCppLog::warn(TAG, sError);
+        // return false;
     }
     std::string sAddress = sAddressAndPath;
     std::string sPath = "";
@@ -562,13 +584,20 @@ bool WSJCppValidatorURL::isValid(const std::string &sValue, std::string &sError)
         return false;
     }
 
-    if (std::regex_match(sAddress, m_rxLikeIPv4Format)) {
-        int nPosPort = sAddress.find(":");
-        std::string sPort = "";
-        if (sAddress.find(":") != std::string::npos) {
-            sPort = sAddress.substr(nPosPort + 1);
-            sAddress = sAddress.substr(0, nPosPort);
+    int nPosPort = sAddress.find(":");
+    std::string sPort = "";
+    if (sAddress.find(":") != std::string::npos) {
+        sPort = sAddress.substr(nPosPort + 1);
+        sAddress = sAddress.substr(0, nPosPort);
+    }
+    
+    if (sPort != "") {
+        if (!WSJCppValidators::isValidPort(sPort, sError)) {
+            return false;
         }
+    }
+
+    if (std::regex_match(sAddress, m_rxLikeIPv4Format)) {
         if (!WSJCppValidators::isValidIPv4(sAddress, sError)) {
             return false;
         }
@@ -590,19 +619,28 @@ bool WSJCppValidatorURL::isValid(const std::string &sValue, std::string &sError)
     }
 
     if (sPath != "") {
-        sError = "TODO check path sPath=" + sPath;
-        return false;
+        for (int i = 0; i < sPath.length(); i++) {
+            char c = sPath[i];
+            if (c == ' ') {
+                sError = "Path could not contains whitespace ' '";
+                return false;
+            }
+        }
     }
 
     if (sQuery != "") {
-        sError = "TODO check query sQuery=[" + sQuery + "]";
-        return false;
+        for (int i = 0; i < sQuery.length(); i++) {
+            char c = sQuery[i];
+            if (c == ' ') {
+                sError = "Query could not contains whitespace ' ' (must be encoded)";
+                return false;
+            }
+        }
     }
 
-    sError = "sAddressAndPath=[" + sAddressAndPath + "], , sAddress=[" + sAddress + "]";
+    // sError = "sAddressAndPath=[" + sAddressAndPath + "], , sAddress=[" + sAddress + "]";
     return true;
 }
-*/
 
 // ----------------------------------------------------------------------
 // WSJCppValidatorBase64

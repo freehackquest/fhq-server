@@ -3,7 +3,7 @@
 
 #include <wsjcpp_unit_tests.h>
 
-class UnitTestMergeText : public UnitTestBase {
+class UnitTestMergeText : public WSJCppUnitTestBase {
     public:
         UnitTestMergeText();
         virtual void init();

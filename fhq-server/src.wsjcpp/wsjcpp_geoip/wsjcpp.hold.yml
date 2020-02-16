@@ -1,0 +1,63 @@
+wsjcpp_version: v0.0.1
+cmake_minimum_required: 3.0
+cmake_cxx_standard: 11
+name: wsjcpp-geoip
+version: v0.0.2
+description: C++. Call request to another services for get location coordinates by IP-address
+issues: https://github.com/wsjcpp/wsjcpp-geoip/issues
+keywords:
+  - "c++"
+  - "geoip"
+
+required-libraries:
+  - pthread
+
+required-pkg-config:
+  - CURL
+
+dependencies:
+  - name: "wsjcpp-core"
+    version: "v0.0.5"
+    url: "https://github.com/wsjcpp/wsjcpp-core:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_core"
+  - name: "nlohmann/json"
+    version: "v3.7.3"
+    url: "https://github.com/wsjcpp/json:develop"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/nlohmann_json"
+  - name: "wsjcpp-validators"
+    version: "v0.0.3"
+    url: "https://github.com/wsjcpp/wsjcpp-validators:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_validators"
+
+repositories:
+  - type: main
+    url: "https://github.com/wsjcpp/wsjcpp-geoip"
+
+authors:
+  - name: "Evgenii Sopov"
+    email: "mrseakg@gmail.com"
+
+distribution:
+  - source-file: "src/wsjcpp_geoip.cpp"
+    target-file: "wsjcpp_geoip.cpp"
+    type: "source-code"
+    sha1: "e2224f330995487bfa0a643a24e2772d9d9d94cc"
+  - source-file: "src/wsjcpp_geoip.h"
+    target-file: "wsjcpp_geoip.h"
+    type: "source-code"
+    sha1: "b067fb17b5370fb12aea405a844234bf45735cac"
+
+unit-tests:
+  cases:
+    - name: ParserIpApiCom
+      description: "Test parser"
+    - name: "CompareIpV4"
+      description: "Test comparator"
+      enabled: "yes"
+    - name: "GeoIpV4Class"
+      description: "Test for class ipv4"
+    - name: "IpV4InReservedRange"
+      description: "Test reserved ranges"

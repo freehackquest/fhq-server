@@ -5,7 +5,7 @@
 REGISTRY_UNIT_TEST(UnitTestStorageStruct)
 
 UnitTestStorageStruct::UnitTestStorageStruct() 
-    : UnitTestBase("UnitTestStorageStruct") {
+    : WSJCppUnitTestBase("UnitTestStorageStruct") {
     // 
 }
 

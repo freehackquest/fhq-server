@@ -3,7 +3,7 @@
 
 #include <wsjcpp_unit_tests.h>
 
-class UnitTestParserIpApiCom : public UnitTestBase {
+class UnitTestParserIpApiCom : public WSJCppUnitTestBase {
     public:
         UnitTestParserIpApiCom();
         virtual void init();

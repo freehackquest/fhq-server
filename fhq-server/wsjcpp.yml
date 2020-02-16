@@ -39,7 +39,7 @@ dependencies:
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_hashes"
   - name: "wsjcpp-core"
-    version: "v0.0.4"
+    version: "v0.0.5"
     url: "https://github.com/wsjcpp/wsjcpp-core:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_core"
@@ -58,6 +58,11 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-print-tree:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_print_tree"
+  - name: "wsjcpp-geoip"
+    version: "v0.0.2"
+    url: "https://github.com/wsjcpp/wsjcpp-geoip:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_geoip"
 
 distribution:
   - source-file: "src/core/fallen.cpp"

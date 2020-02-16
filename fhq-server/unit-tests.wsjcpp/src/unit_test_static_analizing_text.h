@@ -3,7 +3,7 @@
 
 #include <wsjcpp_unit_tests.h>
 
-class UnitTestStaticAnalizingText : public UnitTestBase {
+class UnitTestStaticAnalizingText : public WSJCppUnitTestBase {
     public:
         UnitTestStaticAnalizingText();
         virtual void init();

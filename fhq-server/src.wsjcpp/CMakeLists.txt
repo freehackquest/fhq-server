@@ -31,7 +31,7 @@ list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_hashes/smallsha1.cpp")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_hashes/wsjcpp_hashes.cpp")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_hashes/wsjcpp_hashes.h")
 
-# wsjcpp-core:v0.0.4
+# wsjcpp-core:v0.0.5
 list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_core/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_core/wsjcpp_core.cpp")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_core/wsjcpp_core.h")
@@ -49,6 +49,11 @@ list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_validators/wsjcpp_validators.cp
 list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_print_tree/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_print_tree/wsjcpp_print_tree.h")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_print_tree/wsjcpp_print_tree.cpp")
+
+# wsjcpp-geoip:v0.0.2
+list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_geoip/")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_geoip/wsjcpp_geoip.cpp")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_geoip/wsjcpp_geoip.h")
 
 # required-pkg-config
 ## CURL

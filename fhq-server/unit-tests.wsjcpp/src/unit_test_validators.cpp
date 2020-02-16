@@ -7,7 +7,7 @@ REGISTRY_UNIT_TEST(UnitTestValidators)
 
 
 UnitTestValidators::UnitTestValidators()
-    : UnitTestBase("UnitTestValidators") {
+    : WSJCppUnitTestBase("UnitTestValidators") {
     //
 }
 

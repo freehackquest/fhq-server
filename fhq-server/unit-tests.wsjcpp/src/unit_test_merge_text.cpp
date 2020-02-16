@@ -6,7 +6,7 @@
 REGISTRY_UNIT_TEST(UnitTestMergeText)
 
 UnitTestMergeText::UnitTestMergeText()
-    : UnitTestBase("UnitTestMergeText") {
+    : WSJCppUnitTestBase("UnitTestMergeText") {
     // 
 }
 
