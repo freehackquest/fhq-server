@@ -8,7 +8,7 @@
 #include <employ_database.h>
 #include <QSqlQuery> // TODO redesign
 #include <QSqlRecord> // TODO redesign
-#include <parser_ip_api_com.h>
+#include <wsjcpp_geoip.h>
 
 UpdateUserLocationTask::UpdateUserLocationTask(int userid, const std::string &sLastIP) {
     m_nUserID = userid;
@@ -21,7 +21,7 @@ UpdateUserLocationTask::~UpdateUserLocationTask() {
 }
 
 void UpdateUserLocationTask::run() {
-    if (m_sLastIP == "::1" || m_sLastIP == "127.0.0.1") {
+    if (m_sLastIP == "::1") {
         WSJCppLog::info(TAG, "Skip " + m_sLastIP);
         return;
     }
@@ -44,44 +44,32 @@ void UpdateUserLocationTask::run() {
             // TODO redesign check in database same ip first
             WSJCppLog::info(TAG, "Update user # " + std::to_string(m_nUserID) + " location by ip " + m_sLastIP);
             QNetworkAccessManager manager;
-            QUrl url("http://ip-api.com/json/" + QString::fromStdString(m_sLastIP));
-            QNetworkRequest request(url);
-            QNetworkReply *pReply = manager.get(request);
-            QEventLoop eventLoop;
-            QObject::connect(pReply, SIGNAL(finished()), &eventLoop, SLOT(quit()));
-            eventLoop.exec();
-            QByteArray data = pReply->readAll();
-            std::string sJson = data.toStdString();
-            ParserIpApiCom p;
-            if (!p.parse(m_sLastIP, sJson)) {
-                return;
-            }
-            std::string sCountry = p.getCountry();
-            std::string sRegion = p.getRegionName();
-            std::string sCity = p.getCity();
-            double nLat = p.getLat();
-            double nLon = p.getLon();
 
-            WSJCppLog::info(TAG, "userid = " + std::to_string(m_nUserID) + ", update last_ip, city, region, country");
+            WSJCppGeoIPResult res = WSJCppGeoIP::requestToIpApiCom(m_sLastIP);
+            if (res.hasError()) {
+                WSJCppLog::info(TAG, m_sLastIP + " -> " + res.getErrorDescription());
+            } else {
+                WSJCppLog::info(TAG, "userid = " + std::to_string(m_nUserID) + ", update last_ip, city, region, country");
 
-            QSqlQuery query_update(db);
-            query_update.prepare("UPDATE users SET "
-                "last_ip = :lastip,"
-                "country = :country,"
-                "region = :region,"
-                "city = :city,"
-                "latitude = :latitude,"
-                "longitude = :longitude "
-                " WHERE id = :id");
-            query_update.bindValue(":lastip", QString::fromStdString(m_sLastIP));
-            query_update.bindValue(":country", QString::fromStdString(sCountry));
-            query_update.bindValue(":region", QString::fromStdString(sRegion));
-            query_update.bindValue(":city", QString::fromStdString(sCity));
-            query_update.bindValue(":latitude", nLat);
-            query_update.bindValue(":longitude", nLon);
-            query_update.bindValue(":id", m_nUserID);
-            if (!query_update.exec()) {
-                WSJCppLog::err(TAG, query_update.lastError().text().toStdString());
+                QSqlQuery query_update(db);
+                query_update.prepare("UPDATE users SET "
+                    "last_ip = :lastip,"
+                    "country = :country,"
+                    "region = :region,"
+                    "city = :city,"
+                    "latitude = :latitude,"
+                    "longitude = :longitude "
+                    " WHERE id = :id");
+                query_update.bindValue(":lastip", QString::fromStdString(m_sLastIP));
+                query_update.bindValue(":country", QString::fromStdString(res.getCountry()));
+                query_update.bindValue(":region", QString::fromStdString(res.getRegionName()));
+                query_update.bindValue(":city", QString::fromStdString(res.getCity()));
+                query_update.bindValue(":latitude", res.getLatitude());
+                query_update.bindValue(":longitude", res.getLongitude());
+                query_update.bindValue(":id", m_nUserID);
+                if (!query_update.exec()) {
+                    WSJCppLog::err(TAG, query_update.lastError().text().toStdString());
+                }
             }
         } else {
             WSJCppLog::info(TAG, "IP address same for userid = " + std::to_string(m_nUserID));    
