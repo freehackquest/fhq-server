@@ -5,7 +5,7 @@
 REGISTRY_UNIT_TEST(UnitTestStorageEscapes)
 
 UnitTestStorageEscapes::UnitTestStorageEscapes() 
-    : UnitTestBase("UnitTestStorageEscapes") {
+    : WSJCppUnitTestBase("UnitTestStorageEscapes") {
     // 
 }
 

@@ -3,7 +3,7 @@
 
 #include <wsjcpp_unit_tests.h>
 
-class UnitTestJobsPool : public UnitTestBase {
+class UnitTestJobsPool : public WSJCppUnitTestBase {
     public:
         UnitTestJobsPool();
         virtual void init();

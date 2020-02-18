@@ -49,10 +49,10 @@ class WSJCppCore {
 
         static void initRandom();
         static std::string createUuid();
-        static bool isIPv4(const std::string& str);
-        static bool isIPv6(const std::string& str);
 
+        static unsigned long convertVoidToULong(void *p);
         static std::string getPointerAsHex(void *p);
+        static std::string extractURLProtocol(const std::string& sValue);
 };
 
 

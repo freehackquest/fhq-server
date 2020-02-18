@@ -3,7 +3,7 @@
 
 #include <wsjcpp_unit_tests.h>
 
-class UnitTestValidators : public UnitTestBase {
+class UnitTestValidators : public WSJCppUnitTestBase {
     public:
         UnitTestValidators();
         virtual void init();

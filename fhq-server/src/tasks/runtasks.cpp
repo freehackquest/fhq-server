@@ -10,7 +10,7 @@
 
 #include <QRunnable>
 #include <QThreadPool>
-#include <include/lxd_async_operation_task.h>
+#include <lxd_async_operation_task.h>
 
 void RunTasks::AddPublicEvents(const std::string &type, const std::string &message) {
     AddPublicEventsTask *pAddPublicEventsTask = new AddPublicEventsTask(type, message);

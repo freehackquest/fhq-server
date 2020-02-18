@@ -33,7 +33,7 @@ list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_hashes/smallsha1.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_hashes/wsjcpp_hashes.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_hashes/wsjcpp_hashes.h")
 
-# wsjcpp-core:v0.0.4
+# wsjcpp-core:v0.0.5
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_core/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_core.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_core.h")
@@ -55,6 +55,11 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_print_tree/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_print_tree/wsjcpp_print_tree.h")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_print_tree/wsjcpp_print_tree.cpp")
 
+# wsjcpp-geoip:v0.0.2
+list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_geoip/")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_geoip/wsjcpp_geoip.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_geoip/wsjcpp_geoip.h")
+
 # fhq-server:v0.2.23
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 list (APPEND WSJCPP_SOURCES "../src/core/fallen.cpp")
@@ -63,8 +68,6 @@ list (APPEND WSJCPP_SOURCES "../src/validators/validators.h")
 list (APPEND WSJCPP_SOURCES "../src/validators/validators.cpp")
 list (APPEND WSJCPP_SOURCES "../src/core/storages.h")
 list (APPEND WSJCPP_SOURCES "../src/core/storages.cpp")
-list (APPEND WSJCPP_SOURCES "../src/core/parser_ip_api_com.h")
-list (APPEND WSJCPP_SOURCES "../src/core/parser_ip_api_com.cpp")
 list (APPEND WSJCPP_SOURCES "../src/utils/utils_static_analizing_text.cpp")
 list (APPEND WSJCPP_SOURCES "../src/utils/utils_static_analizing_text.h")
 list (APPEND WSJCPP_SOURCES "../src/core/jobs_pool.h")
@@ -80,8 +83,6 @@ list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_validators.h")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_validators.cpp")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_merge_text.h")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_merge_text.cpp")
-list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_parser_ip_api_com.h")
-list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_parser_ip_api_com.cpp")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_jobs_pool.h")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_jobs_pool.cpp")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_static_analizing_text.h")

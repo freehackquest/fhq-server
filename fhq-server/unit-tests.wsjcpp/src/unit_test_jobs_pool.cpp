@@ -7,7 +7,7 @@
 REGISTRY_UNIT_TEST(UnitTestJobsPool)
 
 UnitTestJobsPool::UnitTestJobsPool()
-    : UnitTestBase("UnitTestJobsPool") {
+    : WSJCppUnitTestBase("UnitTestJobsPool") {
     //
 }
 

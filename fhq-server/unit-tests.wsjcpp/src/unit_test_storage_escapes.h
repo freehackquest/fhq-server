@@ -3,7 +3,7 @@
 
 #include <wsjcpp_unit_tests.h>
 
-class UnitTestStorageEscapes : public UnitTestBase {
+class UnitTestStorageEscapes : public WSJCppUnitTestBase {
     public:
         UnitTestStorageEscapes();
         virtual void init();

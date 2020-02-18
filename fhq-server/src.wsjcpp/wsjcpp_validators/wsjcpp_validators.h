@@ -16,7 +16,10 @@ class WSJCppValidators {
     public:
         static bool isValidDate(const std::string &sValue, std::string &sError);
         static bool isValidTimeH24(const std::string &sValue, std::string &sError);
+        static bool isValidURLProtocol(const std::string &sValue, std::string &sError);
         static bool isValidDomainName(const std::string &sValue, std::string &sError);
+        static bool isValidPort(const std::string &sValue, std::string &sError);
+        static bool isValidPort(int nValue, std::string &sError);
         static bool isValidBase64(const std::string &sValue, std::string &sError);
         static bool isValidIPv4(const std::string &sValue, std::string &sError);
         static bool isValidIPv6(const std::string &sValue, std::string &sError);
@@ -139,7 +142,7 @@ class WSJCppValidatorDateTime : public WSJCppValidatorStringBase {
 };
 
 // ----------------------------------------------------------------------
-/*
+
 class WSJCppValidatorURL : public WSJCppValidatorStringBase {
     public:
         WSJCppValidatorURL();
@@ -149,7 +152,7 @@ class WSJCppValidatorURL : public WSJCppValidatorStringBase {
         std::string TAG;
         std::regex m_rxLikeIPv4Format;
 };
-*/
+
 // ----------------------------------------------------------------------
 
 class WSJCppValidatorBase64 : public WSJCppValidatorStringBase {

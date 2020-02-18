@@ -3,7 +3,7 @@ cmake_cxx_standard: 11
 cmake_minimum_required: 3.0
 
 name: wsjcpp-core
-version: v0.0.4
+version: v0.0.5
 description: Basic Utils for wsjcpp
 issues: https://github.com/wsjcpp/wsjcpp-core/issues
 repositories:
@@ -23,12 +23,12 @@ required-libraries:
 distribution:
   - source-file: src/wsjcpp_core.cpp
     target-file: wsjcpp_core.cpp
-    sha1: "a80af85d404179f9514990e59696287810ead4eb"
+    sha1: "d892bfee196af88dcada57b39bc6bd65ce2ce075"
     type: "source-code"
   - source-file: src/wsjcpp_core.h
     target-file: wsjcpp_core.h
-    sha1: "a8a5197a0b6f6230cd8f75ee536bb590ed61125a"
-    type: "source-code"
+    sha1: "8f5e7b7ada06814ed123a08e49acffe2e12d398a"
+    type: "source-code" # todo must be header-file
   - source-file: "src/wsjcpp_unit_tests.cpp"
     target-file: "wsjcpp_unit_tests.cpp"
     type: "unit-tests"
@@ -50,9 +50,7 @@ unit-tests:
       description: Check test generate uuid function
     - name: CoreExtractFilename
       description: Check function extract filenane from path
-    - name: IpV4
-      description: Check function isIPv4
-    - name: IpV6
-      description: Check function isIPv6
     - name: "ToUpper"
       description: "String to upper"
+    - name: "CreateUuid"
+      description: "Test generation uuids"
