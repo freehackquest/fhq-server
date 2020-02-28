@@ -63,6 +63,11 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-geoip:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_geoip"
+  - name: "wsjcpp-light-web-server"
+    version: "v0.0.1"
+    url: "https://github.com/wsjcpp/wsjcpp-light-web-server:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_light_web_server"
 
 distribution:
   - source-file: "src/core/fallen.cpp"
