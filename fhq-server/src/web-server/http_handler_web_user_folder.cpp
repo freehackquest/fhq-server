@@ -4,7 +4,7 @@
 // ----------------------------------------------------------------------
 
 HttpHandlerWebUserFolder::HttpHandlerWebUserFolder(const std::string &sWebFolder)
-    : LightHttpHandlerBase("web-user-folder") {
+    : WSJCppLightWebHttpHandlerBase("web-user-folder") {
 
     TAG = "HttpHandlerWebUserFolder";
     m_sWebFolder = sWebFolder;
@@ -12,10 +12,10 @@ HttpHandlerWebUserFolder::HttpHandlerWebUserFolder(const std::string &sWebFolder
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerWebUserFolder::canHandle(const std::string &sWorkerId, LightHttpRequest *pRequest) {
+bool HttpHandlerWebUserFolder::canHandle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
     // WSJCppLog::warn(_tag, "canHandle: " + pRequest->requestPath());
-    std::string sRequestPath = pRequest->requestPath();
+    std::string sRequestPath = pRequest->getRequestPath();
     
     if (sRequestPath == "") {
         sRequestPath = "/";
@@ -34,9 +34,9 @@ bool HttpHandlerWebUserFolder::canHandle(const std::string &sWorkerId, LightHttp
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerWebUserFolder::handle(const std::string &sWorkerId, LightHttpRequest *pRequest) {
+bool HttpHandlerWebUserFolder::handle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
-    std::string sRequestPath = pRequest->requestPath();
+    std::string sRequestPath = pRequest->getRequestPath();
     // WSJCppLog::warn(_tag, pRequest->requestPath());
     
     if (sRequestPath == "") {
@@ -45,11 +45,11 @@ bool HttpHandlerWebUserFolder::handle(const std::string &sWorkerId, LightHttpReq
     
     std::string sFilePath = m_sWebFolder + sRequestPath; // TODO check /../ in path
     if (WSJCppCore::fileExists(sFilePath)) {
-        LightHttpResponse resp(pRequest->sockFd());
+        WSJCppLightWebHttpResponse resp(pRequest->getSockFd());
         resp.cacheSec(60).ok().sendFile(sFilePath);
     } else {
         std::string sFilePath = m_sWebFolder + "/index.html";
-        LightHttpResponse resp(pRequest->sockFd());
+        WSJCppLightWebHttpResponse resp(pRequest->getSockFd());
         resp.cacheSec(60).ok().sendFile(sFilePath);    
     }
     return true;

@@ -4,7 +4,7 @@
 // ----------------------------------------------------------------------
 
 HttpHandlerWebAdminFolder::HttpHandlerWebAdminFolder(const std::string &sWebFolder)
-    : LightHttpHandlerBase("web-admin-folder") {
+    : WSJCppLightWebHttpHandlerBase("web-admin-folder") {
 
     TAG = "HttpHandlerWebAdminFolder";
     m_sWebFolder = sWebFolder;
@@ -12,10 +12,10 @@ HttpHandlerWebAdminFolder::HttpHandlerWebAdminFolder(const std::string &sWebFold
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerWebAdminFolder::canHandle(const std::string &sWorkerId, LightHttpRequest *pRequest) {
+bool HttpHandlerWebAdminFolder::canHandle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
     // WSJCppLog::warn(_tag, "canHandle: " + pRequest->requestPath());
-    std::string sRequestPath = pRequest->requestPath();
+    std::string sRequestPath = pRequest->getRequestPath();
     
     if (sRequestPath == "") {
         WSJCppLog::err(_tag, "Request path is empty");
@@ -50,9 +50,9 @@ bool HttpHandlerWebAdminFolder::canHandle(const std::string &sWorkerId, LightHtt
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerWebAdminFolder::handle(const std::string &sWorkerId, LightHttpRequest *pRequest) {
+bool HttpHandlerWebAdminFolder::handle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
-    std::string sRequestPath = pRequest->requestPath();
+    std::string sRequestPath = pRequest->getRequestPath();
     // WSJCppLog::warn(_tag, pRequest->requestPath());
     
     if (sRequestPath == "/admin") {
@@ -79,7 +79,7 @@ bool HttpHandlerWebAdminFolder::handle(const std::string &sWorkerId, LightHttpRe
 
     // TODO 1. if file exists and last date change more that in cache so need update
     // TODO 2. if file not exists but in in resources - response them
-    LightHttpResponse resp(pRequest->sockFd());
+    WSJCppLightWebHttpResponse resp(pRequest->getSockFd());
     // WSJCppLog::warn(_tag, "Response File " + sFilePath);
     resp.cacheSec(60).ok().sendFile(sFilePath);
     return true;

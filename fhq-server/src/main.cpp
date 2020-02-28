@@ -31,7 +31,7 @@
 #include <export_libwsjcppcli_py.h>
 #include <export_libwsjcppcli_java_android.h>
 #include <runtasks.h>
-#include <light_http_server.h>
+#include <wsjcpp_light_web_server.h>
 #include <http_handler_web_user_folder.h>
 #include <http_handler_web_public_folder.h>
 #include <http_handler_web_admin_folder.h>
@@ -40,7 +40,7 @@
 #include <wsjcpp_core.h>
 #include <wsjcpp_print_tree.h>
 
-LightHttpServer g_httpServer;
+WSJCppLightWebServer g_httpServer;
 
 int main(int argc, char** argv) {
     std::string appName(FHQSRV_APP_NAME);
@@ -339,9 +339,10 @@ int main(int argc, char** argv) {
 
         WSJCppLog::info(TAG, "Starting web-server on " + std::to_string(nWebPort)
              + " with " + std::to_string(nWebMaxThreads) + " worker threads");
-        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebAdminFolder(sWebAdminFolder));
-        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebPublicFolder(sWebPublicFolder));
-        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebUserFolder(sWebUserFolder));
+        
+        g_httpServer.addHandler((WSJCppLightWebHttpHandlerBase *) new HttpHandlerWebAdminFolder(sWebAdminFolder));
+        g_httpServer.addHandler((WSJCppLightWebHttpHandlerBase *) new HttpHandlerWebPublicFolder(sWebPublicFolder));
+        g_httpServer.addHandler((WSJCppLightWebHttpHandlerBase *) new HttpHandlerWebUserFolder(sWebUserFolder));
         
         g_httpServer.setPort(nWebPort);
         g_httpServer.setMaxWorkers(nWebMaxThreads);

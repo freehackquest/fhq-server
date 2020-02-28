@@ -4,7 +4,7 @@
 // ----------------------------------------------------------------------
 
 HttpHandlerWebPublicFolder::HttpHandlerWebPublicFolder(const std::string &sWebPublicFolder)
-    : LightHttpHandlerBase("web-public-folder") {
+    : WSJCppLightWebHttpHandlerBase("web-public-folder") {
 
     TAG = "HttpHandlerWebPublicFolder";
     m_sWebPublicFolder = sWebPublicFolder;
@@ -12,10 +12,10 @@ HttpHandlerWebPublicFolder::HttpHandlerWebPublicFolder(const std::string &sWebPu
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerWebPublicFolder::canHandle(const std::string &sWorkerId, LightHttpRequest *pRequest) {
+bool HttpHandlerWebPublicFolder::canHandle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
     // WSJCppLog::warn(_tag, "canHandle: " + pRequest->requestPath());
-    std::string sRequestPath = pRequest->requestPath();
+    std::string sRequestPath = pRequest->getRequestPath();
 
     if (!WSJCppCore::dirExists(m_sWebPublicFolder)) {
         WSJCppLog::warn(_tag, "Directory '" + m_sWebPublicFolder + "' does not exists");
@@ -35,18 +35,18 @@ bool HttpHandlerWebPublicFolder::canHandle(const std::string &sWorkerId, LightHt
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerWebPublicFolder::handle(const std::string &sWorkerId, LightHttpRequest *pRequest) {
+bool HttpHandlerWebPublicFolder::handle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
-    std::string sRequestPath = pRequest->requestPath();
+    std::string sRequestPath = pRequest->getRequestPath();
     sRequestPath = sRequestPath.substr(7); // remove /public
 
     std::string sFilePath = m_sWebPublicFolder + sRequestPath; // TODO check /../ in path
     if (!WSJCppCore::fileExists(sFilePath)) {
-        LightHttpResponse resp(pRequest->sockFd());
+        WSJCppLightWebHttpResponse resp(pRequest->getSockFd());
         resp.cacheSec(0).notFound();
         return true;
     }
-    LightHttpResponse resp(pRequest->sockFd());
+    WSJCppLightWebHttpResponse resp(pRequest->getSockFd());
     resp.cacheSec(0).ok().sendFile(sFilePath);
     return true;
 }
