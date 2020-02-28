@@ -60,6 +60,21 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_geoip/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_geoip/wsjcpp_geoip.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_geoip/wsjcpp_geoip.h")
 
+# wsjcpp-light-web-server:v0.0.1
+list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_light_web_server/")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_request.h")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_request.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_response.h")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_response.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_deque_http_requests.h")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_deque_http_requests.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_handler_rewrite_folder.h")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_handler_rewrite_folder.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_handler_web_folder.h")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_handler_web_folder.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_server.h")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_server.cpp")
+
 # fhq-server:v0.2.23
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 list (APPEND WSJCPP_SOURCES "../src/core/fallen.cpp")

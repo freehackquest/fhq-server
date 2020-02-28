@@ -545,7 +545,7 @@ bool LightHttpHandlers::handle(const std::string &sWorkerId, LightHttpRequest *p
 // ----------------------------------------------------------------------
 // LightHttpThreadWorker
 
-void* processRequest(void *arg) {
+void* _processRequest(void *arg) {
     LightHttpThreadWorker *pWorker = (LightHttpThreadWorker *)arg;
     pthread_detach(pthread_self());
     pWorker->run();
@@ -566,7 +566,7 @@ LightHttpThreadWorker::LightHttpThreadWorker(const std::string &sName, LightHttp
 
 void LightHttpThreadWorker::start() {
     m_bStop = false;
-    pthread_create(&m_serverThread, NULL, &processRequest, (void *)this);
+    pthread_create(&m_serverThread, NULL, &_processRequest, (void *)this);
 }
 
 // ----------------------------------------------------------------------
@@ -759,7 +759,7 @@ void LightHttpServer::startSync() {
 
 // ----------------------------------------------------------------------
 
-void* processWebServerStart(void *arg) {
+void* _processWebServerStart(void *arg) {
     LightHttpServer *pWebServer = (LightHttpServer *)arg;
     pthread_detach(pthread_self());
     pWebServer->startSync();
@@ -770,7 +770,7 @@ void* processWebServerStart(void *arg) {
 
 void LightHttpServer::start() {
     m_bStop = false;
-    pthread_create(&m_serverThread, NULL, &processWebServerStart, (void *)this);
+    pthread_create(&m_serverThread, NULL, &_processWebServerStart, (void *)this);
 }
 // ----------------------------------------------------------------------
 
