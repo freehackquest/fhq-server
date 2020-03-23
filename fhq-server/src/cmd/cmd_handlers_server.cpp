@@ -22,8 +22,8 @@ CmdHandlerPublicInfo::CmdHandlerPublicInfo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-    EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployServerInfo *pServerInfo = findWSJCppEmploy<EmployServerInfo>();
 
     nlohmann::json jsonResponse;
 
@@ -116,7 +116,7 @@ CmdHandlerServerInfo::CmdHandlerServerInfo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerServerInfo::handle(ModelRequest *pRequest) {
-    EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
+    EmployServerInfo *pServerInfo = findWSJCppEmploy<EmployServerInfo>();
     nlohmann::json jsonResponse;
     nlohmann::json data;
 
@@ -153,7 +153,7 @@ CmdHandlerServerSettings::CmdHandlerServerSettings()
 void CmdHandlerServerSettings::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
 
-    EmployGlobalSettings *pGloablSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGloablSettings = findWSJCppEmploy<EmployGlobalSettings>();
 
     jsonResponse["data"] = pGloablSettings->toJson(true); // TODO how much db connections and time
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -182,7 +182,7 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
     std::string sName = pRequest->getInputString("name", "");
     std::string sValue = pRequest->getInputString("value", "");
 
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
     if (!pGlobalSettings->exists(sName)) {
         std::string sError = "Setting with name: " + sName + " did not found";
         pRequest->sendMessageError(cmd(), WSJCppError(404, sError));

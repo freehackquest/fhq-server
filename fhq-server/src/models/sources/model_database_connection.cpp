@@ -1,5 +1,5 @@
 #include <model_database_connection.h>
-#include <wsjcpp_employees.h>
+#include <employees.h>
 #include <fallen.h>
 
 ModelDatabaseConnection::ModelDatabaseConnection(QString sNameConnection) {
@@ -36,7 +36,7 @@ void ModelDatabaseConnection::setNameConnection(QString sNameConnection) {
 // ---------------------------------------------------------------------
 
 bool ModelDatabaseConnection::connect() {
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
     std::string sDatabaseHost = pGlobalSettings->get("dbhost").getStringValue();
     int nDatabasePort = pGlobalSettings->get("dbport").getNumberValue();
     std::string sDatabaseName = pGlobalSettings->get("dbname").getStringValue();

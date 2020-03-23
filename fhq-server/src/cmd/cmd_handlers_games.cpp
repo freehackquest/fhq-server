@@ -51,7 +51,7 @@ CmdHandlerGameCreate::CmdHandlerGameCreate()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameCreate::handle(ModelRequest *pRequest) {
-    EmployGames *pEmployGames = findEmploy<EmployGames>();
+    EmployGames *pEmployGames = findWSJCppEmploy<EmployGames>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -112,7 +112,7 @@ CmdHandlerGameDelete::CmdHandlerGameDelete()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
     std::string sUuid = pRequest->getInputString("uuid", "");
@@ -177,7 +177,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         }
     }
 
-    EmployGames *pEmployGames = findEmploy<EmployGames>();
+    EmployGames *pEmployGames = findWSJCppEmploy<EmployGames>();
     pEmployGames->removeGame(sUuid); // TODO just removed from cache
 
     // delete from users_games
@@ -238,7 +238,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
     // delete game logo if exists
     std::string sGameLogoFilename = "";
     {
-        EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+        EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
         std::string sBasePath = pGlobalSettings->get("web_public_folder").getDirPathValue();
         sGameLogoFilename = sBasePath + "games/" + std::to_string(nGameID) + ".png";
         if (remove( sGameLogoFilename.c_str() ) != 0) {
@@ -246,7 +246,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         }
     }
 
-    EmployNotify *pNotify = findEmploy<EmployNotify>();
+    EmployNotify *pNotify = findWSJCppEmploy<EmployNotify>();
     ModelNotification notification("warning", "games", "Removed [game#" + sUuid + "] " + sName);
     pNotify->sendNotification(notification);
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -273,8 +273,8 @@ CmdHandlerGameExport::CmdHandlerGameExport()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
-    // EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-    EmployGames *pEmployGames = findEmploy<EmployGames>();
+    // EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployGames *pEmployGames = findWSJCppEmploy<EmployGames>();
 
     nlohmann::json jsonResponse;
 
@@ -289,7 +289,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
     // find logo for game
     QString sGameLogoFilename = "";
     {
-        EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+        EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
         QString sBasePath = QString::fromStdString(pGlobalSettings->get("web_public_folder").getDirPathValue() + "games/");
         sGameLogoFilename = sBasePath + QString::number(modelGame.localId()) + ".png";
     }
@@ -396,7 +396,7 @@ CmdHandlerGameInfo::CmdHandlerGameInfo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameInfo::handle(ModelRequest *pRequest) {
-    EmployGames *pEmployGames = findEmploy<EmployGames>();
+    EmployGames *pEmployGames = findWSJCppEmploy<EmployGames>();
 
     std::string sUuid = pRequest->getInputString("uuid", "");
 
@@ -442,7 +442,7 @@ CmdHandlerGameUpdate::CmdHandlerGameUpdate()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameUpdate::handle(ModelRequest *pRequest) {
-    EmployGames *pEmployGames = findEmploy<EmployGames>();
+    EmployGames *pEmployGames = findWSJCppEmploy<EmployGames>();
 
     ModelGame updatedModelGame;
     updatedModelGame.fillFrom(pRequest->jsonRequest());
@@ -509,7 +509,7 @@ CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
-    EmployGames *pEmployGames = findEmploy<EmployGames>();
+    EmployGames *pEmployGames = findWSJCppEmploy<EmployGames>();
 
     ModelGame modelGame;
     modelGame.fillFrom(pRequest->jsonRequest());
@@ -522,8 +522,8 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
 
     nlohmann::json jsonResponse;
 
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
-    EmployImages *pImages = findEmploy<EmployImages>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
+    EmployImages *pImages = findWSJCppEmploy<EmployImages>();
 
     QString sBasePath = QString::fromStdString(pGlobalSettings->get("web_public_folder").getDirPathValue() + "games/");
 
@@ -597,11 +597,11 @@ CmdHandlerGames::CmdHandlerGames()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGames::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
 
     std::string sBaseUrl = pGlobalSettings->get("web_public_folder_url").getStringValue() + "games/";
     QString base_url = QString::fromStdString(sBaseUrl);

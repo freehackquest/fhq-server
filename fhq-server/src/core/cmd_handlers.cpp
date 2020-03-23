@@ -1,7 +1,7 @@
 #include "cmd_handlers.h"
 #include <QtGlobal>
 #include <fallen.h>
-#include <wsjcpp_employees.h>
+#include <employees.h>
 
 /*! 
  * WSJCppError - 
@@ -784,7 +784,7 @@ const std::vector<CmdInputDef> &CmdHandlerBase::inputs() {
 
 /*
 void CmdHandlerBase::success(nlohmann::json jsonResponse) {
-    EmployWsServer *pEmployWsServer = findEmploy<EmployWsServer>();
+    EmployWsServer *pEmployWsServer = findWSJCppEmploy<EmployWsServer>();
     // TODO sendMessageSuccess
     // and remove from ModelRequests
 }
@@ -792,7 +792,7 @@ void CmdHandlerBase::success(nlohmann::json jsonResponse) {
 // ---------------------------------------------------------------------
 
 void CmdHandlerBase::error(int nCode, const std::string &sErrorMessage) {
-    EmployWsServer *pEmployWsServer = findEmploy<EmployWsServer>();
+    EmployWsServer *pEmployWsServer = findWSJCppEmploy<EmployWsServer>();
     // TODO sendMessageError
     // and remove from ModelRequests
 
@@ -861,7 +861,7 @@ void WJSCppCmdHandlerServerApi::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
     jsonResponse["version"] = FHQSRV_VERSION; // TODO redesign, what?
 
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
     int nWsPort = pGlobalSettings->get("port").getNumberValue();
     bool bSslOn = pGlobalSettings->get("ssl_on").getBooleanValue();
     int nWssPort = pGlobalSettings->get("ssl_port").getNumberValue();

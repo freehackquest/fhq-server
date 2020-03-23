@@ -58,7 +58,7 @@ void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest) {
         where = "WHERE " + where;
     }
 
-    EmployScoreboard *pScoreboard = findEmploy<EmployScoreboard>();
+    EmployScoreboard *pScoreboard = findWSJCppEmploy<EmployScoreboard>();
     pScoreboard->loadSync();
 
     jsonResponse["count"] = pScoreboard->count();
@@ -82,11 +82,11 @@ CmdHandlerGetMap::CmdHandlerGetMap()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGetMap::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
 
     nlohmann::json coords;
     QSqlDatabase db = *(pDatabase->database());
@@ -131,7 +131,7 @@ CmdHandlerLogin::CmdHandlerLogin()
 // ---------------------------------------------------------------------
 
 void CmdHandlerLogin::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json const & jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -238,12 +238,12 @@ CmdHandlerRegistration::CmdHandlerRegistration()
 // ---------------------------------------------------------------------
 
 void CmdHandlerRegistration::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     const nlohmann::json &jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    //EmploySettings *pSettings = findEmploy<EmploySettings>();
+    //EmploySettings *pSettings = findWSJCppEmploy<EmploySettings>();
 
     QString sEmail = QString::fromStdString(jsonRequest.at("email"));
     QString sUniversity = QString::fromStdString(jsonRequest.at("university"));
@@ -390,7 +390,7 @@ CmdHandlerToken::CmdHandlerToken()
 // ---------------------------------------------------------------------
 
 void CmdHandlerToken::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     const nlohmann::json & jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -449,7 +449,7 @@ CmdHandlerUpdateUserLocation::CmdHandlerUpdateUserLocation()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     const nlohmann::json & jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -512,7 +512,7 @@ CmdHandlerUserChangePassword::CmdHandlerUserChangePassword()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -602,7 +602,7 @@ CmdHandlerUsersAdd::CmdHandlerUsersAdd()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsersAdd::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     const nlohmann::json& jsonRequest = pRequest->jsonRequest();
 
@@ -746,7 +746,7 @@ CmdHandlerUser::CmdHandlerUser()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUser::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -854,7 +854,7 @@ CmdHandlerUsersInfo::CmdHandlerUsersInfo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsersInfo::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -960,7 +960,7 @@ CmdHandlerUserResetPassword::CmdHandlerUserResetPassword()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -1044,7 +1044,7 @@ CmdHandlerUserSkills::CmdHandlerUserSkills()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUserSkills::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -1116,7 +1116,7 @@ CmdHandlerUserUpdate::CmdHandlerUserUpdate()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUserUpdate::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -1247,7 +1247,7 @@ CmdHandlerUserDelete::CmdHandlerUserDelete()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -1458,7 +1458,7 @@ CmdHandlerUsers::CmdHandlerUsers()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsers::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     const nlohmann::json& jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -1588,7 +1588,7 @@ CmdHandlerUsersRegistration::CmdHandlerUsersRegistration()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     const auto &jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -1686,7 +1686,7 @@ CmdHandlerUsersRegistrationVerification::CmdHandlerUsersRegistrationVerification
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     const auto &jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -1864,7 +1864,7 @@ CmdHandlerUsersChangeEmail::CmdHandlerUsersChangeEmail()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     const auto &jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -1977,7 +1977,7 @@ CmdHandlerUsersChangeEmailVerification::CmdHandlerUsersChangeEmailVerification()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsersChangeEmailVerification::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     const auto &jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;

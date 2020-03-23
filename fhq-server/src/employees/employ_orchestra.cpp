@@ -22,7 +22,7 @@ EmployOrchestra::EmployOrchestra()
     TAG = "EmployOrchestra";
     m_bTrusted = false;
 
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
 
     std::string  sGroupLXD = "lxd";
     pGlobalSettings->registrySetting(sGroupLXD, "path_dir_lxc_ssl").string("/etc/fhq-server/lxd").inDatabase();
@@ -35,7 +35,7 @@ EmployOrchestra::EmployOrchestra()
 
 bool EmployOrchestra::init() {
     WSJCppLog::info(TAG, "Start init settings");
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
     bool bLXDMode = pGlobalSettings->get("lxd_mode").getBooleanValue();
  
     if (!bLXDMode)
@@ -54,6 +54,13 @@ bool EmployOrchestra::init() {
                  "Type ./fhq-server -mclxd");
         return false;
     }
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+bool EmployOrchestra::deinit() {
+    // TODO
     return true;
 }
 

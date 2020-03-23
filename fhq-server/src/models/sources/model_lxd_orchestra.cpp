@@ -74,14 +74,14 @@ std::string LXDContainer::full_name() const {
 }
 
 bool LXDContainer::get_state(nlohmann::json &jsonState) {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0/containers/" + full_name() + "/state";
 
     return pOrchestra->send_get_request(sUrl, jsonState, m_sError);
 }
 
 bool LXDContainer::create() {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0/containers";
     auto jsonData = R"(
     {
@@ -117,7 +117,7 @@ bool LXDContainer::start() {
         return true;
     }
 
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0/containers/" + full_name() + "/state";
     auto jsonData = R"(
         {
@@ -144,7 +144,7 @@ bool LXDContainer::start() {
 }
 
 bool LXDContainer::stop() {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0/containers/" + full_name() + "/state";
     auto jsonData = R"(
         {
@@ -171,7 +171,7 @@ bool LXDContainer::stop() {
 }
 
 bool LXDContainer::remove() {
-    auto pOrchestra = findEmploy<EmployOrchestra>();
+    auto pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     auto sUrl = "/1.0/containers/" + full_name();
     nlohmann::json jsonResponse;
 
@@ -201,7 +201,7 @@ std::vector<std::string> LXDContainer::split(const std::string &str) {
 
 bool LXDContainer::exec(const std::string &sCommand) {
     // Allows to execute shell script. Does not return command stdout.
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     auto sUrl = "/1.0/containers/" + full_name() + "/exec";
     nlohmann::json jsonData = R"(
         {
@@ -238,14 +238,14 @@ bool LXDContainer::exec(const std::string &sCommand) {
 
 
 bool LXDContainer::read_file(const std::string &sPath, std::string &sRawData) {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     auto sUrl = "/1.0/containers/" + full_name() + "/files?path=" + sPath;
 
     return pOrchestra->send_get_request(sUrl, sRawData, m_sError);
 }
 
 bool LXDContainer::push_file(const std::string &sPath, const std::string &sRawData) {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     auto sUrl = "/1.0/containers/" + full_name() + "/files?path=" + sPath;
     std::string sResponse;
 
@@ -273,7 +273,7 @@ std::string LXDContainer::get_port() {
 }
 
 bool LXDContainer::open_port(const std::string &sPort, const std::string &sProto) {
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     auto sUrl = "/1.0/containers/" + full_name();
     nlohmann::json jsonResponse;
     nlohmann::json jsonRequest;
@@ -303,7 +303,7 @@ bool LXDContainer::open_port(const int &nPort, const std::string &sProto) {
 ServiceLXD::ServiceLXD(const ServiceConfig &reqService) : m_configService(reqService) {
     m_sName = m_configService.name;
 
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     if (!pOrchestra->find_container(m_sName, m_Container)) {
         m_Container = nullptr;
     }
@@ -314,7 +314,7 @@ bool ServiceLXD::create_container() {
         return true;
     }
 
-    auto *pOrchestra = findEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     LXDContainer *pContainer;
 
     if (m_sName.empty()) {

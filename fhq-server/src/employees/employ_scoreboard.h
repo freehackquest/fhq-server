@@ -1,22 +1,22 @@
 #ifndef EMPLOY_SCOREBOARD_H
 #define EMPLOY_SCOREBOARD_H
 
-#include <wsjcpp_employees.h>
+#include <employees.h>
 #include <json.hpp>
 
 class EmployScoreboard : public WSJCppEmployBase {
     public:
-       EmployScoreboard();
-       static std::string name() { return "EmployScoreboard"; }
-       virtual bool init();
-
-       void loadSync();
-       int count();
-       nlohmann::json toJson();
+        EmployScoreboard();
+        static std::string name() { return "EmployScoreboard"; }
+        virtual bool init();
+        virtual bool deinit() override;
+        void loadSync();
+        int count();
+        nlohmann::json toJson();
        
-       void asyncUpdatedQuestScore(int nQuestID);
-       void asyncUpdatedUserRating(int nUserID);
-       void asyncUpdatedLeaksScore(int nUserID);
+        void asyncUpdatedQuestScore(int nQuestID);
+        void asyncUpdatedUserRating(int nUserID);
+        void asyncUpdatedLeaksScore(int nUserID);
 
    private:
        struct User{

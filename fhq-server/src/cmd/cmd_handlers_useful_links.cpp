@@ -38,7 +38,7 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
         sWhere = " WHERE status = 'ok' ";
     }
 
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     // TODO paginator
@@ -94,7 +94,7 @@ void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest) {
     std::string sDescription = pRequest->getInputString("description", "");
     std::string sAuthor = pRequest->getInputString("author", "");
 
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);

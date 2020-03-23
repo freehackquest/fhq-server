@@ -49,7 +49,7 @@ void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest) {
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("INSERT INTO chatmessages(user, message, dt) VALUES(:user,:message, NOW())");
@@ -66,7 +66,7 @@ void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest) {
 
     pRequest->server()->sendToAll(jsonData2);
 
-    EmployNotify *pNotify = findEmploy<EmployNotify>();
+    EmployNotify *pNotify = findWSJCppEmploy<EmployNotify>();
     ModelNotification notification("info", "chat", "Income chat message " + sMessage);
     pNotify->sendNotification(notification);
 
@@ -92,7 +92,7 @@ CmdHandlerChatLastestMessages::CmdHandlerChatLastestMessages()
 void CmdHandlerChatLastestMessages::handle(ModelRequest *pRequest) {
     nlohmann::json jsonMessages = nlohmann::json::array();
 
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("SELECT user, message, dt FROM chatmessages ORDER BY dt DESC LIMIT 0,25");

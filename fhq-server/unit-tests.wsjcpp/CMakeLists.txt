@@ -75,6 +75,11 @@ list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_server.h")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_server.cpp")
 
+# wsjcpp-employees:v0.0.1
+list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_employees/")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_employees/wsjcpp_employees.h")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_employees/wsjcpp_employees.cpp")
+
 # fhq-server:v0.2.23
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 list (APPEND WSJCPP_SOURCES "../src/core/fallen.cpp")

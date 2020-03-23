@@ -4,7 +4,7 @@
 #include <lxd_async_operation_task.h>
 #include <iostream>
 #include <QtCore/QThread>
-#include <wsjcpp_employees.h>
+#include <employees.h>
 
 
 LXDAsyncOperationTask::LXDAsyncOperationTask(void (*func)(const std::string&, std::string &, int &),
@@ -26,7 +26,7 @@ void LXDAsyncOperationTask::run() {
     std::string sError;
     int nErrorCode = 500;
 
-    auto *pWsServer = findEmploy<EmployServer>();
+    auto *pWsServer = findWSJCppEmploy<EmployServer>();
     auto jsonPrepare = jsonResponse;
     jsonPrepare["result"] = "Operation began";
     pWsServer->sendToOne(m_pRequestClient, jsonPrepare);

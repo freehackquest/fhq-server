@@ -24,7 +24,7 @@ CmdHandlerLeaksList::CmdHandlerLeaksList()
 
 void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
 
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
@@ -163,7 +163,7 @@ void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest) {
         return;
     }
 
-    EmployLeaks *pEmployLeaks = findEmploy<EmployLeaks>();
+    EmployLeaks *pEmployLeaks = findWSJCppEmploy<EmployLeaks>();
     std::string sError = "";
     int nResult = pEmployLeaks->addLeak(pModelLeak, sError);
 
@@ -218,7 +218,7 @@ CmdHandlerLeaksUpdate::CmdHandlerLeaksUpdate()
 
 void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest) {
 
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     
     nlohmann::json jsonResponse;
@@ -299,7 +299,7 @@ CmdHandlerLeaksDelete::CmdHandlerLeaksDelete()
 
 void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest) {
 
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
@@ -373,7 +373,7 @@ CmdHandlerLeaksBuy::CmdHandlerLeaksBuy()
 
 void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest) {
 
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());

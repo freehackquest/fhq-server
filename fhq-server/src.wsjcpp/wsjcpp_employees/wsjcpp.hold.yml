@@ -1,0 +1,33 @@
+name: "wsjcpp-employees"
+version: "v0.0.1"
+cmake_minimum_required: "3.0"
+cmake_cxx_standard: "11"
+description: "c++ classes for service-architecture"
+authors:
+  - name: "Evgenii Sopov"
+    email: "mrseakg@gmail.com"
+origins:
+  - address: "https://sea-kg.com/wsjcpp-package-registry/"
+    type: "package-registry"
+keywords:
+  - "c++"
+dependencies:
+  - name: "wsjcpp-core"
+    version: "v0.0.8"
+    url: "https://github.com/wsjcpp/wsjcpp-core:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_core"
+
+distribution:
+  - source-file: "src/wsjcpp_employees.h"
+    target-file: "wsjcpp_employees.h"
+    type: "source-code"
+  - source-file: "src/wsjcpp_employees.cpp"
+    target-file: "wsjcpp_employees.cpp"
+    type: "source-code"
+unit-tests:
+  cases:
+    - name: "Employ1"
+      description: "Test employ1"
+    - name: "EmployRuntimeGlobalCache"
+      description: "WSJCppEmployRuntimeGlobalCache"

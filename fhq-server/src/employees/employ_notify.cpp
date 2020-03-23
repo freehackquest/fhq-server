@@ -1,5 +1,5 @@
 
-#include <wsjcpp_employees.h>
+#include <employees.h>
 #include <employ_notify.h>
 #include <employ_database.h>
 #include <QSqlDatabase>
@@ -29,6 +29,13 @@ EmployNotify::EmployNotify()
 
 bool EmployNotify::init() {
     // nothing
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+bool EmployNotify::deinit() {
+    // TODO
     return true;
 }
 

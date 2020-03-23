@@ -22,7 +22,7 @@ CmdHandlerQuestsWriteUpsList::CmdHandlerQuestsWriteUpsList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -108,7 +108,7 @@ CmdHandlerQuestsWriteUpsProposal::CmdHandlerQuestsWriteUpsProposal()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -160,11 +160,11 @@ void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
     }
     int nWriteUpID = query.lastInsertId().toInt();
     if (bAdmin) {
-        EmployNotify *pNotify = findEmploy<EmployNotify>();
+        EmployNotify *pNotify = findWSJCppEmploy<EmployNotify>();
         ModelNotification notification("info", "quests", "Added [writeup#" + std::to_string(nWriteUpID) + "] for [quest#" + std::to_string(nQuestID) + "]");
         pNotify->sendNotification(notification);
     } else {
-        EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+        EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
         std::string sMailToAdmin = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();
         std::string sMessageSubject = "Quest WriteUp Proposal (FreeHackQuest)";
         std::string sContext = "Quest WriteUp Proposal\n"
@@ -206,7 +206,7 @@ CmdHandlerQuestsWriteUpsUpdate::CmdHandlerQuestsWriteUpsUpdate()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestsWriteUpsUpdate::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -256,7 +256,7 @@ void CmdHandlerQuestsWriteUpsUpdate::handle(ModelRequest *pRequest) {
             return;
         }
         if (nApprove == 1) {
-            EmployNotify *pNotify = findEmploy<EmployNotify>();
+            EmployNotify *pNotify = findWSJCppEmploy<EmployNotify>();
             ModelNotification notification("info", "quests", "Approved [writeup#" + std::to_string(nWriteUpID) + "] for [quest#" + std::to_string(nQuestIDValue) + "]");
             pNotify->sendNotification(notification);
         }
@@ -288,7 +288,7 @@ CmdHandlerQuestsWriteUpsDelete::CmdHandlerQuestsWriteUpsDelete()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestsWriteUpsDelete::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -328,7 +328,7 @@ void CmdHandlerQuestsWriteUpsDelete::handle(ModelRequest *pRequest) {
         return;
     }
     
-    EmployNotify *pNotify = findEmploy<EmployNotify>();
+    EmployNotify *pNotify = findWSJCppEmploy<EmployNotify>();
     ModelNotification notification("warning", "quests", "Removed [writeup#" + std::to_string(nWriteUpID) + "] for [quest#" + std::to_string(nQuestIDValue) + "]");
     pNotify->sendNotification(notification);
        

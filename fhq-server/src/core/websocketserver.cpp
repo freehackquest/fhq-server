@@ -11,7 +11,7 @@
 
 #include <fallen.h>
 
-#include <wsjcpp_employees.h>
+#include <employees.h>
 #include <employ_server_info.h>
 #include <cmd_handlers.h>
 
@@ -21,18 +21,18 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
     TAG = "WebSocketServer";
 
     m_bFailed = false;
-    if (!Employees::init({"start_ws_server"})) {
+    if (!WSJCppEmployees::init({"start_ws_server"})) {
         m_bFailed = true;
         return;
     }
     
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
     int nWsPort = pGlobalSettings->get("port").getNumberValue();
     int bSslEnabled = pGlobalSettings->get("ssl_on").getBooleanValue();
     int nWssPort = pGlobalSettings->get("ssl_port").getNumberValue();
 
-    EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
-    EmployServer *pServer = findEmploy<EmployServer>();
+    EmployServerInfo *pServerInfo = findWSJCppEmploy<EmployServerInfo>();
+    EmployServer *pServer = findWSJCppEmploy<EmployServer>();
 
     m_pWebSocketServer = new QWebSocketServer(QStringLiteral("fhq-server"), QWebSocketServer::NonSecureMode, this);
     m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("fhq-server"), QWebSocketServer::SecureMode, this);
@@ -110,7 +110,7 @@ void WebSocketServer::sendServerMessage(QWebSocket *pSocket) {
     jsonServer["app"] = "fhq-server";
     jsonServer["version"] = FHQSRV_VERSION;
 
-    EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
+    EmployServerInfo *pServerInfo = findWSJCppEmploy<EmployServerInfo>();
     jsonServer["developers"] = pServerInfo->developers();
 
     sendMessage(pSocket, jsonServer);
@@ -172,8 +172,8 @@ void WebSocketServer::onNewConnectionSSL() {
 // ---------------------------------------------------------------------
 
 void WebSocketServer::processTextMessage(const QString &message) {
-    EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
-    EmployServer *pServer = findEmploy<EmployServer>();
+    EmployServerInfo *pServerInfo = findWSJCppEmploy<EmployServerInfo>();
+    EmployServer *pServer = findWSJCppEmploy<EmployServer>();
 
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     WSJCppLog::warn(TAG, "QWebSocket *pClient = " + WSJCppCore::getPointerAsHex(pClient));

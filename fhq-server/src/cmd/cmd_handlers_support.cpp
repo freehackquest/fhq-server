@@ -27,7 +27,7 @@ CmdHandlerFeedbackAdd::CmdHandlerFeedbackAdd()
 // ---------------------------------------------------------------------
 
 void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
@@ -45,7 +45,7 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
         sEmail = pUserSession->email().toStdString();
         nUserID = pUserSession->userid();
     }
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
 
     QSqlQuery query(db);
     query.prepare("INSERT INTO feedback(`type`, `from`, `text`, `userid`, `dt`) VALUES(:type,:from,:text,:userid,NOW());");

@@ -20,7 +20,7 @@ UpdateQuestSolvedTask::~UpdateQuestSolvedTask() {
 
 void UpdateQuestSolvedTask::run() {
     WSJCppLog::info(TAG, "questid " + std::to_string(m_nQuestID));
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);

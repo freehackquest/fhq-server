@@ -1,13 +1,14 @@
 #ifndef EMPLOY_USERS_H
 #define EMPLOY_USERS_H
 
-#include <wsjcpp_employees.h>
+#include <employees.h>
 
 class EmployUsers : public WSJCppEmployBase {
     public:
         EmployUsers();
         static std::string name() { return "EmployUsers"; }
         virtual bool init();
+        virtual bool deinit() override;
         
         // TODO employee 
 

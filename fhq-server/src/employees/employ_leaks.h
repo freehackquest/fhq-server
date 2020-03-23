@@ -1,7 +1,7 @@
 #ifndef EMPLOY_LEAKS_H
 #define EMPLOY_LEAKS_H
 
-#include <wsjcpp_employees.h>
+#include <employees.h>
 #include <model_leak.h>
 
 class EmployLeaks : public WSJCppEmployBase {
@@ -9,6 +9,7 @@ class EmployLeaks : public WSJCppEmployBase {
         EmployLeaks();
         static std::string name() { return "EmployLeaks"; }
         virtual bool init();
+        virtual bool deinit();
 
         int addLeak(ModelLeak* pModelLeak, std::string &sError);
         const ModelLeak* findLeakByUuid(std::string sUuid);

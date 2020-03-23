@@ -18,7 +18,7 @@
 #include <websocketserver.h>
 #include <utils_prepare_deb_package.h>
 #include <utils_lxd.h>
-#include <wsjcpp_employees.h>
+#include <employees.h>
 #include <employ_server_info.h>
 #include <employ_database.h>
 #include <employ_images.h>
@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
     }
     WSJCppLog::setLogDirectory(sLogDir);
 
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
     pGlobalSettings->update("app_name", appName);
     pGlobalSettings->update("app_version", appVersion);
     pGlobalSettings->update("app_author", appAuthor);
@@ -150,10 +150,10 @@ int main(int argc, char** argv) {
         pExportJavaAndroid->exportLib();
         return 0;
     } else if (helpArgs.has("show-employees")) {
-        WSJCppPrintTree tree("Employees (" + std::to_string(g_pEmployees->size()) + ")");
+        WSJCppPrintTree tree("WSJCppEmployees (" + std::to_string(g_pWSJCppEmployees->size()) + ")");
 
-        std::map<std::string, WSJCppEmployBase*>::iterator it = g_pEmployees->begin();
-        for (; it != g_pEmployees->end(); ++it) {
+        std::map<std::string, WSJCppEmployBase*>::iterator it = g_pWSJCppEmployees->begin();
+        for (; it != g_pWSJCppEmployees->end(); ++it) {
             std::string sEmployName = it->first;
             WSJCppEmployBase* pEmployBase = it->second;
             tree.addChild(sEmployName);
@@ -183,11 +183,11 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("check-database-connection")) {
         std::cout << "\n * Check Database Connection\n\n";
-        if (!Employees::init({})) {
+        if (!WSJCppEmployees::init({})) {
             WSJCppLog::err(TAG, "Could not init database module");
             return -1;
         }
-        EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+        EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
         QSqlDatabase *db = pDatabase->database();
         if (!db->open()) {
             WSJCppLog::err(TAG, "Could not connect to database, please check config");
@@ -196,13 +196,13 @@ int main(int argc, char** argv) {
         std::cout << "\n * Success\n\n";
         return 0;
     } else if (helpArgs.has("show-settings")) {
-        Employees::init({});
+        WSJCppEmployees::init({});
         std::cout << "\n * Show settings\n\n";
         pGlobalSettings->printSettings();
         std::cout << "\n * Done\n\n";
         return 0;
     } else if (helpArgs.has("set-setting")) {
-        Employees::init({});
+        WSJCppEmployees::init({});
         std::string sSetting = helpArgs.option("set-setting");
         std::cout << "\n Try set setting " << sSetting << " \n\n";
         std::string sSettName = "";
@@ -236,7 +236,7 @@ int main(int argc, char** argv) {
         }
         return 0;
     } else if (helpArgs.has("send-test-mail")) {
-        Employees::init({});
+        WSJCppEmployees::init({});
         std::cout << "\n * Send test mail\n\n";
         std::string sTo = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();
         std::string sSubject = "Test Mail";
@@ -250,7 +250,7 @@ int main(int argc, char** argv) {
             std::cout << "\n * Failed on init server config\n\n";
             return -1;
         }
-        EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+        EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
         // enter mysql root password
         char *pPassword=getpass("Enter MySQL root password: ");
@@ -271,7 +271,7 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("manual-configure-lxd")) {
         std::string sError;
-        Employees::init({});
+        WSJCppEmployees::init({});
         if (UtilsLXDAuth::check_trust_certs(sError)) {
             std::cout << "\nGOOD HTTPS connection with LXD\n\n";
         } else if (!sError.empty()) {
@@ -289,7 +289,7 @@ int main(int argc, char** argv) {
         }
         return 0;
     } else if (helpArgs.has("lxd-enable") || helpArgs.has("lxd-disable")) {
-        Employees::init({});
+        WSJCppEmployees::init({});
         bool bLXDMode;
         if (helpArgs.has("lxd-enable")) {
             bLXDMode = true;
@@ -311,7 +311,7 @@ int main(int argc, char** argv) {
         pGlobalSettings->registrySetting("web_server", "web_public_folder_url").string("http://localhost:7080/public/").inFile();
         pGlobalSettings->registrySetting("web_server", "web_fhqjad_store").dirPath("/usr/share/fhq-server/web/fhqjad-store").inFile();
         
-        Employees::init({"start_server"});
+        WSJCppEmployees::init({"start_server"});
 
         QThreadPool::globalInstance()->setMaxThreadCount(5);
         WebSocketServer *pServer = new WebSocketServer(); // here will be init settings
@@ -321,7 +321,7 @@ int main(int argc, char** argv) {
         }
 
         QObject::connect(pServer, &WebSocketServer::closed, &a, &QCoreApplication::quit);
-        EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+        EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
         // TODO redesign to check config
         QSqlDatabase *db = pDatabase->database();
         if (!db->open()) {

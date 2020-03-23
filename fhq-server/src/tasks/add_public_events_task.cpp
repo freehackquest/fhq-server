@@ -22,7 +22,7 @@ AddPublicEventsTask::~AddPublicEventsTask() {
 
 void AddPublicEventsTask::run() {
     WSJCppLog::info(TAG, "message " + m_sMessage);
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("INSERT INTO public_events(type,dt,message) VALUES(:type,NOW(),:message)");
