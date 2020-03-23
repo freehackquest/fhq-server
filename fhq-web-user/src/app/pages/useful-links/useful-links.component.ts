@@ -337,6 +337,9 @@ export class UsefulLinksComponent implements OnInit {
   }, {
     "link" : "http://roothack.org/",
     "description" : "Wargames",
+  }, {
+    "link" : "https://ctf.saarland/",
+    "description" : "SaarCTF is a classical attack-defense CTF.",
   }];
   
   filteredDataList: Array<any> = [];
