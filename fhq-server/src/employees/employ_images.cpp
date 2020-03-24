@@ -26,6 +26,13 @@ bool EmployImages::init() {
 
 // ---------------------------------------------------------------------
 
+bool EmployImages::deinit() {
+    // TODO
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
 struct avrgClr {
     avrgClr(int x1, int x2, int y1, int y2, bool bAlpha) : x1(x1), x2(x2), y1(y1), y2(y2), bAlpha(bAlpha) {
         // nothing

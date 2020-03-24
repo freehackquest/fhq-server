@@ -82,7 +82,7 @@ CmdHandlerMailsList::CmdHandlerMailsList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerMailsList::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonResponse;
 
     std::vector<std::string> vFilters;

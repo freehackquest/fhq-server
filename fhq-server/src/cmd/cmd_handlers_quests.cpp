@@ -29,7 +29,7 @@ CmdHandlerQuests::CmdHandlerQuests()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuests::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
@@ -154,12 +154,12 @@ CmdHandlerQuest::CmdHandlerQuest()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuest::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
 
     QString sBaseGamesURL = QString::fromStdString(pGlobalSettings->get("server_folder_games_url").getStringValue());
 
@@ -335,8 +335,8 @@ CmdHandlerQuestPass::CmdHandlerQuestPass()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-    EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployServerInfo *pServerInfo = findWSJCppEmploy<EmployServerInfo>();
 
     nlohmann::json jsonResponse;
 
@@ -476,7 +476,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
     }
     pServerInfo->incrementQuestsCompleted();
 
-    EmployNotify *pEmployNotify = findEmploy<EmployNotify>();
+    EmployNotify *pEmployNotify = findWSJCppEmploy<EmployNotify>();
 
     pEmployNotify->notifyInfo("quests", "[user#" + std::to_string(nUserID) + "](" + sNick.toStdString() + ") "
                               + " passed [quest#" + std::to_string(nQuestID) + "] (" + sQuestName.toStdString() + ")");
@@ -522,8 +522,8 @@ CmdHandlerCreateQuest::CmdHandlerCreateQuest()
 // ---------------------------------------------------------------------
 
 void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-    EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployServerInfo *pServerInfo = findWSJCppEmploy<EmployServerInfo>();
 
     nlohmann::json jsonResponse;
 
@@ -670,8 +670,8 @@ CmdHandlerQuestDelete::CmdHandlerQuestDelete()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestDelete::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-    EmployServerInfo *pServerInfo = findEmploy<EmployServerInfo>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployServerInfo *pServerInfo = findWSJCppEmploy<EmployServerInfo>();
 
     nlohmann::json jsonResponse;
 
@@ -769,11 +769,11 @@ CmdHandlerQuestProposal::CmdHandlerQuestProposal()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -927,7 +927,7 @@ CmdHandlerQuestStatistics::CmdHandlerQuestStatistics()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
@@ -1063,7 +1063,7 @@ CmdHandlerQuestUpdate::CmdHandlerQuestUpdate()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
@@ -1326,7 +1326,7 @@ CmdHandlerQuestsSubjects::CmdHandlerQuestsSubjects()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestsSubjects::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
@@ -1376,7 +1376,7 @@ CmdHandlerAddHint::CmdHandlerAddHint()
 // ---------------------------------------------------------------------
 
 void CmdHandlerAddHint::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse; // TODO redesign to nlohmann::json
@@ -1437,7 +1437,7 @@ CmdHandlerAnswerList::CmdHandlerAnswerList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerAnswerList::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
@@ -1609,7 +1609,7 @@ CmdHandlerDeleteHint::CmdHandlerDeleteHint()
 // ---------------------------------------------------------------------
 
 void CmdHandlerDeleteHint::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
@@ -1646,7 +1646,7 @@ CmdHandlerHints::CmdHandlerHints()
 // ---------------------------------------------------------------------
 
 void CmdHandlerHints::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
@@ -1702,7 +1702,7 @@ CmdHandlerQuestsProposalList::CmdHandlerQuestsProposalList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
@@ -1806,11 +1806,11 @@ CmdHandlerQuestsFilesUpload::CmdHandlerQuestsFilesUpload()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestsFilesUpload::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonResponse;
     QSqlDatabase db = *(pDatabase->database());
 
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
     std::string sPublicFolder = pGlobalSettings->get("web_public_folder").getDirPathValue();
     // std::string sPublicFolderURL = pGlobalSettings->get("web_public_folder_url").getDirPathValue();
 

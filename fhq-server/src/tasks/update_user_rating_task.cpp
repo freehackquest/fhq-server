@@ -20,7 +20,7 @@ UpdateUserRatingTask::~UpdateUserRatingTask() {
 
 void UpdateUserRatingTask::run() {
     WSJCppLog::info(TAG, "userid " + std::to_string(m_nUserID));
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare(""

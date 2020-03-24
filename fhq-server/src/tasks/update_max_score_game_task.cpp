@@ -19,7 +19,7 @@ UpdateMaxScoreGameTask::~UpdateMaxScoreGameTask() {
 }
 
 void UpdateMaxScoreGameTask::run() {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     StorageConnection *pConn = pDatabase->getStorageConnection();
     WSJCppLog::info(TAG, "gameid " + std::to_string(m_nGameID));
 

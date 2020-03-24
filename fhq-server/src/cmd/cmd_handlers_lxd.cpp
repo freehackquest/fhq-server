@@ -36,7 +36,7 @@ CmdHandlerLXDContainers::CmdHandlerLXDContainers()
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDContainers::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -73,7 +73,7 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest) {
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDContainers::create_container(const std::string &name, std::string &sError, int &nErrorCode) {
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     LXDContainer *pContainer;
 
     //Переместить в Orchestra
@@ -98,7 +98,7 @@ void CmdHandlerLXDContainers::create_container(const std::string &name, std::str
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDContainers::start_container(const std::string &name, std::string &sError, int &nErrorCode) {
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()) {
         sError = "Can\'t connect to LXD server";
@@ -122,7 +122,7 @@ void CmdHandlerLXDContainers::start_container(const std::string &name, std::stri
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDContainers::stop_container(const std::string &name, std::string &sError, int &nErrorCode) {
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()) {
         sError = "Can\'t connect to LXD server";
@@ -146,7 +146,7 @@ void CmdHandlerLXDContainers::stop_container(const std::string &name, std::strin
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDContainers::delete_container(const std::string &name, std::string &sError, int &nErrorCode) {
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     LXDContainer *pContainer;
 
     if (!pOrchestra->initConnection()) {
@@ -204,7 +204,7 @@ void CmdHandlerLXDInfo::handle(ModelRequest *pRequest) {
 // ---------------------------------------------------------------------
 
 bool CmdHandlerLXDInfo::get_state(const std::string& sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState) {
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         return false;
     }
@@ -240,7 +240,7 @@ CmdHandlerLXDList::CmdHandlerLXDList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDList::handle(ModelRequest *pRequest) {
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, pOrchestra->lastError()));
         return;
@@ -274,7 +274,7 @@ CmdHandlerLXDExec::CmdHandlerLXDExec()
 // ---------------------------------------------------------------------
 
 void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, pOrchestra->lastError()));
         return;
@@ -299,7 +299,7 @@ void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
 
 bool CmdHandlerLXDExec::exec_command(const std::string &sName, const std::string &sCommand, std::string &sError,
                                      int &nErrorCode, std::string &sOutput) {
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()) {
         sError = "Can\'t connect to LXD server";
@@ -340,7 +340,7 @@ CmdHandlerLXDFile::CmdHandlerLXDFile()
 }
 
 void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, pOrchestra->lastError()));
         return;
@@ -446,7 +446,7 @@ CmdHandlerLXDOpenPort::CmdHandlerLXDOpenPort()
 }
 
 void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, pOrchestra->lastError()));
         return;
@@ -520,7 +520,7 @@ CmdHandlerLXDImportService::CmdHandlerLXDImportService()
 }
 
 void CmdHandlerLXDImportService::handle(ModelRequest *pRequest) {
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, pOrchestra->lastError()));
         return;
@@ -578,7 +578,7 @@ CmdHandlerLXDImportServiceFromZip::CmdHandlerLXDImportServiceFromZip()
 }
 
 void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, pOrchestra->lastError()));
         return;
@@ -694,7 +694,7 @@ CmdHandlerLXDStartService::CmdHandlerLXDStartService()
 }
 
 void CmdHandlerLXDStartService::handle(ModelRequest *pRequest) {
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), WSJCppError(500, pOrchestra->lastError()));
         return;

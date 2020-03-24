@@ -1,17 +1,13 @@
 #include <utility>
-
-#include <utility>
-
 #include <utils_lxd.h>
 #include <json.hpp>
 #include <employ_orchestra.h>
-#include <wsjcpp_employees.h>
-
+#include <employees.h>
 
 bool UtilsLXDAuth::check_trust_certs(std::string &sError) {
     std::string sUrl = "/1.0";
     nlohmann::json jsonResponse;
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()) {
         sError = "Can\'t connect to LXD server";
@@ -52,7 +48,7 @@ bool UtilsLXDAuth::set_trusted(const std::string &sPass, std::string &sError) {
     })"_json;
     jsonData["password"] = sPass;
     nlohmann::json jsonResponse;
-    EmployOrchestra *pOrchestra = findEmploy<EmployOrchestra>();
+    EmployOrchestra *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
 
     if (!pOrchestra->initConnection()) {
         sError = "Can\'t connect to LXD server";

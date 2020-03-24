@@ -26,7 +26,7 @@ void UpdateUserLocationTask::run() {
         return;
     }
     WSJCppLog::info(TAG, "userid = " + std::to_string(m_nUserID) + " start");
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);

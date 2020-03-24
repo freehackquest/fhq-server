@@ -1,7 +1,7 @@
 #ifndef EMPLOY_GAMES_H
 #define EMPLOY_GAMES_H
 
-#include <wsjcpp_employees.h>
+#include <employees.h>
 #include <model_game.h>
 
 class EmployGames : public WSJCppEmployBase {
@@ -10,6 +10,7 @@ class EmployGames : public WSJCppEmployBase {
         EmployGames();
         static std::string name() { return "EmployGames"; }
         virtual bool init();
+        virtual bool deinit();
 
         bool findGame(int nLocalId, ModelGame &modelGame);
         bool findGame(const std::string &sUuid, ModelGame &modelGame);

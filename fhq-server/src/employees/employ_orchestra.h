@@ -1,7 +1,7 @@
 #ifndef EMPLOY_ORCHESTRA
 #define EMPLOY_ORCHESTRA
 
-#include <wsjcpp_employees.h>
+#include <employees.h>
 #include <model_lxd_orchestra.h>
 
 #include <list>
@@ -17,7 +17,8 @@ public:
 
     static std::string name() { return "EmployOrchestra"; }
 
-    bool init() override;
+    virtual bool init() override;
+    virtual bool deinit() override;
 
     bool initConnection();
     bool create_container(const std::string &sName, std::string &sError);

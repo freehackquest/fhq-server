@@ -1,102 +1,10 @@
 #include <fallen.h>
-#include <wsjcpp_employees.h>
+#include <employees.h>
 #include <employ_server_info.h>
 #include <algorithm>
 #include <storages.h>
 #include <wsjcpp_core.h>
 #include <iostream>
-
-// ---------------------------------------------------------------------
-
-std::map<std::string, WSJCppEmployBase*> *g_pEmployees = NULL;
-std::vector<std::string> *g_pInitEmployees = NULL;
-
-// ---------------------------------------------------------------------
-
-void Employees::initGlobalVariables() {
-    if (g_pEmployees == NULL) {
-        // WSJCppLog::info(std::string(), "Create employees map");
-        g_pEmployees = new std::map<std::string, WSJCppEmployBase*>();
-    }
-    if (g_pInitEmployees == NULL) {
-        // WSJCppLog::info(std::string(), "Create init employees vector");
-        g_pInitEmployees = new std::vector<std::string>();
-    }
-}
-
-// ---------------------------------------------------------------------
-
-void Employees::addEmploy(const std::string &sName, WSJCppEmployBase* pEmploy) {
-    Employees::initGlobalVariables();
-    if (g_pEmployees->count(sName)) {
-        WSJCppLog::err(sName, "Already registered");
-    } else {
-        g_pEmployees->insert(std::pair<std::string, WSJCppEmployBase*>(sName,pEmploy));
-        // WSJCppLog::info(sName, "Registered");
-    }
-}
-
-// ---------------------------------------------------------------------
-
-bool Employees::init(const std::vector<std::string> &vStart) {
-    Employees::initGlobalVariables();
-
-    for (unsigned int i = 0; i < vStart.size(); i++) {
-        g_pInitEmployees->push_back(vStart[i]);
-    }
-
-    std::string TAG = "Employees_init";
-    bool bRepeat = true;
-    while (bRepeat) {
-        bRepeat = false;
-        std::map<std::string, WSJCppEmployBase*>::iterator it = g_pEmployees->begin();
-        for (; it!=g_pEmployees->end(); ++it) {
-            std::string sEmployName = it->first;
-            WSJCppEmployBase *pEmploy = it->second;
-
-            if (std::find(g_pInitEmployees->begin(), g_pInitEmployees->end(), sEmployName) != g_pInitEmployees->end()) {
-                continue;
-            }
-
-            unsigned int nRequireLoaded = 0;
-            for (unsigned int i = 0; i < pEmploy->loadAfter().size(); i++) {
-                std::string sRequireEmploy = pEmploy->loadAfter()[i];
-                if (std::find(g_pInitEmployees->begin(), g_pInitEmployees->end(), sRequireEmploy) != g_pInitEmployees->end()) {
-                    nRequireLoaded++;
-                }
-            }
-            if (pEmploy->loadAfter().size() == nRequireLoaded) {
-                if (!pEmploy->init()) {
-                    WSJCppLog::err(TAG, "Init " + sEmployName + " ... FAIL");
-                    return false;
-                }
-                g_pInitEmployees->push_back(sEmployName);
-                bRepeat = true;
-                WSJCppLog::ok(TAG, "Init " + sEmployName + " ... OK");
-            }
-        }
-    }
-    return true;
-}
-
-// ---------------------------------------------------------------------
-
-// WSJCppEmployBase
-WSJCppEmployBase::WSJCppEmployBase(const std::string &sName, const std::vector<std::string> &vAfter) {
-    TAG = sName;
-    m_sName = sName;
-
-    for (unsigned int i = 0; i < vAfter.size(); i++) {
-        m_vLoadAfter.push_back(vAfter[i]);
-    }
-    Employees::addEmploy(m_sName, this);
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<std::string> &WSJCppEmployBase::loadAfter() {
-    return m_vLoadAfter;
-}
 
 // ----------------------------------------------------------------------
 // WSJCppSettingItem
@@ -722,6 +630,12 @@ bool EmployGlobalSettings::EmployGlobalSettings::init() {
 
 // ---------------------------------------------------------------------
 
+bool EmployGlobalSettings::deinit() {
+    // TODO
+}
+
+// ---------------------------------------------------------------------
+
 // TODO redesign to ->update
 void EmployGlobalSettings::setWorkDir(const std::string &sWorkDir) {
     m_sWorkDir = sWorkDir;
@@ -1064,7 +978,7 @@ EmployServer::EmployServer()
     TAG = EmployServer::name();
     m_pWebSocketServer = NULL;
 
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
     pGlobalSettings->registrySetting("ws_server", "port").number(1234).inFile();
     pGlobalSettings->registrySetting("ws_server", "ssl_on").boolean(false).inFile();
     pGlobalSettings->registrySetting("ws_server", "ssl_port").number(4613).inFile();
@@ -1107,7 +1021,7 @@ EmployServer::EmployServer()
 // ---------------------------------------------------------------------
 
 bool EmployServer::init() {
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
 
     // TODO move to validators
     int nWeb_max_threads = pGlobalSettings->get("web_max_threads").getNumberValue();
@@ -1121,6 +1035,12 @@ bool EmployServer::init() {
     }
 
     return true;
+}
+
+// ---------------------------------------------------------------------
+
+bool EmployServer::deinit() {
+    // TODO
 }
 
 // ---------------------------------------------------------------------

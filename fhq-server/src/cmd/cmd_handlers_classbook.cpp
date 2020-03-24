@@ -36,7 +36,7 @@ CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler()
 // ---------------------------------------------------------------------
 
 void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -187,7 +187,7 @@ CmdClassbookDeleteRecordHandler::CmdClassbookDeleteRecordHandler()
 // ---------------------------------------------------------------------
 
 void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     
@@ -250,7 +250,7 @@ CmdClassbookExportHandler::CmdClassbookExportHandler()
 // ---------------------------------------------------------------------
 
 void CmdClassbookExportHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -458,7 +458,7 @@ CmdClassbookInfoHandler::CmdClassbookInfoHandler()
 // ---------------------------------------------------------------------
 
 void CmdClassbookInfoHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
     QSqlDatabase db = *(pDatabase->database());
@@ -624,7 +624,7 @@ CmdClassbookListHandler::CmdClassbookListHandler()
 // ---------------------------------------------------------------------
 
 void CmdClassbookListHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
     nlohmann::json jsonData = nlohmann::json::array();
@@ -791,7 +791,7 @@ CmdClassbookUpdateRecordHandler::CmdClassbookUpdateRecordHandler()
 // ---------------------------------------------------------------------
 
 void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
     int nClassbookID = pRequest->getInputInteger("classbookid", 0);
@@ -950,7 +950,7 @@ CmdClassbookLocalizationAddRecordHandler::CmdClassbookLocalizationAddRecordHandl
 // ---------------------------------------------------------------------
 
 void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
@@ -1057,7 +1057,7 @@ CmdClassbookLocalizationDeleteRecordHandler::CmdClassbookLocalizationDeleteRecor
 // ---------------------------------------------------------------------
 
 void CmdClassbookLocalizationDeleteRecordHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
     int nClassbookLocalizationID = -1;
@@ -1109,7 +1109,7 @@ CmdClassbookLocalizationInfoHandler::CmdClassbookLocalizationInfoHandler()
 // ---------------------------------------------------------------------
 
 void CmdClassbookLocalizationInfoHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
     int nClassbookLocalizationID = -1;
@@ -1173,7 +1173,7 @@ CmdClassbookLocalizationUpdateRecordHandler::CmdClassbookLocalizationUpdateRecor
 // ---------------------------------------------------------------------
 
 void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
     int nClassbookLocalizationID = -1;
@@ -1260,7 +1260,7 @@ CmdClassbookProposalAddRecordHandler::CmdClassbookProposalAddRecordHandler()
 // ---------------------------------------------------------------------
 
 void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
     int nClassbookID = -1;
@@ -1386,7 +1386,7 @@ CmdClassbookProposalDeleteRecordHandler::CmdClassbookProposalDeleteRecordHandler
 // ---------------------------------------------------------------------
 
 void CmdClassbookProposalDeleteRecordHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     
     int nClassbookProposalID = -1;
@@ -1440,7 +1440,7 @@ CmdClassbookProposalInfoHandler::CmdClassbookProposalInfoHandler()
 // ---------------------------------------------------------------------
 
 void CmdClassbookProposalInfoHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
     int nClassbookProposalID = -1;
@@ -1507,7 +1507,7 @@ CmdClassbookProposalListHandler::CmdClassbookProposalListHandler()
 // ---------------------------------------------------------------------
 
 void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
@@ -1611,7 +1611,7 @@ CmdClassbookProposalPrepareMergeRecordHandler::CmdClassbookProposalPrepareMergeR
 // ---------------------------------------------------------------------
 
 void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -1681,7 +1681,7 @@ CmdClassbookProposalApproveHandler::CmdClassbookProposalApproveHandler()
 // ---------------------------------------------------------------------
 
 void CmdClassbookProposalApproveHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
     int nClassbookProposalID = -1;
@@ -1746,7 +1746,7 @@ CmdClassbookProposalUpdateHandler::CmdClassbookProposalUpdateHandler()
 // ---------------------------------------------------------------------
 
 void CmdClassbookProposalUpdateHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
     int nClassbookProposalID = -1;
@@ -1797,7 +1797,7 @@ CmdClassbookHandler::CmdClassbookHandler()
 // ---------------------------------------------------------------------
 
 void CmdClassbookHandler::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 

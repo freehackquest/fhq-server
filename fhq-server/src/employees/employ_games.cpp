@@ -21,7 +21,7 @@ EmployGames::EmployGames()
 bool EmployGames::init() {
     // TODO mutex
     // check the access to games folder
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
     std::string sBasePath = pGlobalSettings->get("web_public_folder").getDirPathValue();
     std::string targetTestFile = sBasePath + "games/test"; // normalize path
 
@@ -38,7 +38,7 @@ bool EmployGames::init() {
     }
 
     // load list of games to cache
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
@@ -70,6 +70,13 @@ bool EmployGames::init() {
         }
     }
 
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+bool EmployGames::deinit() {
+    // TODO
     return true;
 }
 
@@ -110,7 +117,7 @@ EmployResult EmployGames::addGame(const ModelGame &modelGame, std::string &sErro
 
     ModelGame *pModelGame = modelGame.clone(); // clone of original game
 
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
 
     {
@@ -165,7 +172,7 @@ EmployResult EmployGames::addGame(const ModelGame &modelGame, std::string &sErro
     m_mapCacheGames.insert(std::pair<std::string, ModelGame*>(pModelGame->uuid(),pModelGame));
     m_vectCacheGame.push_back(pModelGame);
 
-    EmployNotify *pEmployNotify = findEmploy<EmployNotify>();
+    EmployNotify *pEmployNotify = findWSJCppEmploy<EmployNotify>();
     pEmployNotify->notifyInfo("games", "New [game#" + pModelGame->uuid() + "] " + pModelGame->name());
     return EmployResult::OK;
 }
@@ -183,8 +190,8 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
 
     ModelGame *pOrigModelGame = m_mapCacheGames[sUuid];
 
-    EmployNotify *pEmployNotify = findEmploy<EmployNotify>();
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployNotify *pEmployNotify = findWSJCppEmploy<EmployNotify>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
 
     // game name

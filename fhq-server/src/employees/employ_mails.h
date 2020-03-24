@@ -1,13 +1,14 @@
 #ifndef EMPLOY_MAILS_H
 #define EMPLOY_MAILS_H
 
-#include <wsjcpp_employees.h>
+#include <employees.h>
 
 class EmployMails : public WSJCppEmployBase {
     public:
         EmployMails();
         static std::string name() { return "EmployMails"; }
         virtual bool init();
+        virtual bool deinit();
 
     private:
         std::string TAG;

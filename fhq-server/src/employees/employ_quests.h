@@ -1,13 +1,14 @@
 #ifndef EMPLOY_QUESTS_H
 #define EMPLOY_QUESTS_H
 
-#include <wsjcpp_employees.h>
+#include <employees.h>
 
 class EmployQuests : public WSJCppEmployBase {
     public:
-       EmployQuests();
-       static std::string name() { return "EmployQuests"; }
-       virtual bool init();
+        EmployQuests();
+        static std::string name() { return "EmployQuests"; }
+        virtual bool init();
+        virtual bool deinit() override;
 
    private:
         std::string TAG;

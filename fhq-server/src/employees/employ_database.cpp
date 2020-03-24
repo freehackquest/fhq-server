@@ -1,5 +1,5 @@
 #include <employ_database.h>
-#include <wsjcpp_employees.h>
+#include <employees.h>
 #include <QThread>
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -14,7 +14,7 @@ EmployDatabase::EmployDatabase()
     TAG = EmployDatabase::name();
     
     std::string sGroupDatabase = "database";
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
     pGlobalSettings->registrySetting(sGroupDatabase, "storage_type").string("mysql").inFile();
     // TODO validator: 
     // if (!Storages::support(m_sStorageType)) {
@@ -40,7 +40,7 @@ EmployDatabase::EmployDatabase()
 // ---------------------------------------------------------------------
 
 bool EmployDatabase::init() {
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
 
     /*
         WSJCppLog::info(TAG, "Database host: " + m_sDatabase_host);
@@ -89,8 +89,15 @@ bool EmployDatabase::init() {
 
 // ---------------------------------------------------------------------
 
+bool EmployDatabase::deinit() {
+    // TODO
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
 bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std::string& sError) {
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
 
     m_sStorageType = pGlobalSettings->get("storage_type").getStringValue();
     if (!Storages::support(m_sStorageType)) {
@@ -281,7 +288,7 @@ StorageConnection *EmployDatabase::getStorageConnection() {
 std::map<std::string, std::string> EmployDatabase::loadAllSettings() {
     std::map<std::string, std::string> vRet;
 
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
 
     {
@@ -307,7 +314,7 @@ std::map<std::string, std::string> EmployDatabase::loadAllSettings() {
 // ---------------------------------------------------------------------
 
 void EmployDatabase::updateSettingItem(const WSJCppSettingItem *pSettingItem) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("UPDATE settings SET `value` = :value, `group` = :group, `type` = :type WHERE `name` = :name");
@@ -328,7 +335,7 @@ void EmployDatabase::initSettingItem(WSJCppSettingItem *pSettingItem) {
     // StorageConnection *pConn = this->getStorageConnection();
 
     WSJCppLog::info(TAG, "Init settings to database: " + pSettingItem->getName());
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("INSERT INTO settings (`name`, `value`, `group`, `type`) VALUES (:name, :value, :group, :type)");

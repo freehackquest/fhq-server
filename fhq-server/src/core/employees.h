@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <fallen.h>
+#include <wsjcpp_employees.h>
 #include <cmd_handlers.h>
 
 // ---------------------------------------------------------------------
@@ -19,62 +20,6 @@ enum EmployResult {
     LEAK_NOT_FOUND,
     ERROR_NAME_IS_EMPTY,
 };
-
-// ---------------------------------------------------------------------
-// base employ class
-
-class WSJCppEmployBase {
-public:
-    WSJCppEmployBase(
-        const std::string &sName,
-        const std::vector<std::string> &vLoadAfter);
-    virtual bool init() = 0;
-    const std::vector<std::string> &loadAfter();
-
-private:
-    std::string TAG;
-    std::string m_sName;
-    std::vector<std::string> m_vLoadAfter;
-};
-
-// ---------------------------------------------------------------------
-// public employees
-
-extern std::map<std::string, WSJCppEmployBase*> *g_pEmployees;
-extern std::vector<std::string> *g_pInitEmployees;
-
-class Employees {
-    public:
-        static void initGlobalVariables();
-        static void addEmploy(const std::string &sName, WSJCppEmployBase* pEmploy);
-        static bool init(const std::vector<std::string> &vLoadAfter);
-};
-
-// ---------------------------------------------------------------------
-// RegistryEmploy
-#define REGISTRY_WJSCPP_EMPLOY( classname ) \
-    static classname * pWJSCppRegistry ## classname = new classname(); \
-
-// ---------------------------------------------------------------------
-// findEmploy
-
-template <class T> T* findEmploy() {
-    Employees::initGlobalVariables();
-    std::string TAG = "findEmploy";
-    std::string sEmployName = T::name();
-    WSJCppEmployBase *pEmploy = NULL;
-    if (g_pEmployees->count(sEmployName)) {
-        pEmploy = g_pEmployees->at(sEmployName);
-    }
-    if (pEmploy == NULL) {
-        WSJCppLog::throw_err(TAG, "Not found employ " + sEmployName);
-    }
-    T *pTEmploy = dynamic_cast<T*>(pEmploy);
-    if (pTEmploy == NULL) {
-        WSJCppLog::throw_err(TAG, "Employ could not cast to T [" + sEmployName + "]");
-    }
-    return pTEmploy;
-}
 
 // ----------------------------------------------------------------------
 
@@ -237,6 +182,7 @@ class EmployGlobalSettings : public WSJCppEmployBase {
         EmployGlobalSettings();
         static std::string name() { return "EmployGlobalSettings"; }
         virtual bool init(); // here will be init from file
+        virtual bool deinit();
         void setWorkDir(const std::string &sWorkDir); // TODO deprecated
 
         WSJCppSettingItem &registrySetting(const std::string &sSettingGroup, const std::string &sSettingName);
@@ -275,6 +221,7 @@ class EmployServer : public WSJCppEmployBase {
         EmployServer();
         static std::string name() { return "EmployServer"; }
         virtual bool init();
+        virtual bool deinit();
         bool validateInputParameters(WSJCppError &error, CmdHandlerBase *pCmdHandler, const nlohmann::json& jsonMessage);
         void setServer(IWebSocketServer *pWebSocketServer);
         void sendToAll(const nlohmann::json& jsonMessage);

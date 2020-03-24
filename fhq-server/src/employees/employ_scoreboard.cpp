@@ -23,8 +23,15 @@ bool EmployScoreboard::init() {
 
 // ---------------------------------------------------------------------
 
+bool EmployScoreboard::deinit() {
+    // TODO
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
 void EmployScoreboard::loadSync() {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     QSqlDatabase db = *(pDatabase->database());
     m_vRows.clear(); // TODO fix memory leaks

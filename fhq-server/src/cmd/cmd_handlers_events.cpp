@@ -27,7 +27,7 @@ CmdHandlerEventAdd::CmdHandlerEventAdd()
 // ---------------------------------------------------------------------
 
 void CmdHandlerEventAdd::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
     std::string sType = pRequest->getInputString("type", "");
@@ -64,7 +64,7 @@ CmdHandlerEventDelete::CmdHandlerEventDelete()
 // ---------------------------------------------------------------------
 
 void CmdHandlerEventDelete::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
@@ -110,7 +110,7 @@ CmdHandlerEventInfo::CmdHandlerEventInfo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerEventInfo::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
     int nEventId = pRequest->getInputInteger("eventid", -1);
@@ -161,7 +161,7 @@ CmdHandlerEventsList::CmdHandlerEventsList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 

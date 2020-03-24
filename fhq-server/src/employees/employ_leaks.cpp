@@ -24,8 +24,8 @@ EmployLeaks::EmployLeaks()
 
 bool EmployLeaks::init() {
     // load list of leaks to cache
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-    EmployGames *pEmployGames = findEmploy<EmployGames>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployGames *pEmployGames = findWSJCppEmploy<EmployGames>();
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -68,6 +68,13 @@ bool EmployLeaks::init() {
 
 // ---------------------------------------------------------------------
 
+bool EmployLeaks::deinit() {
+    // TODO
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
 int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError) {
     std::string sUuid = pModelLeak->uuid();
     std::string sGameUuid = pModelLeak->gameUuid();
@@ -79,7 +86,7 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError) {
     }
 
     // check the game
-    EmployGames *pEmployGames = findEmploy<EmployGames>();
+    EmployGames *pEmployGames = findWSJCppEmploy<EmployGames>();
     ModelGame modelGame;
     if (!pEmployGames->findGame(sGameUuid, modelGame)) {
         return EmployResult::GAME_NOT_FOUND;
@@ -87,7 +94,7 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError) {
 
     pModelLeak->setGameId(modelGame.localId());
 
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
 
     {
@@ -120,7 +127,7 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError) {
 
     m_mapCacheLeaks.insert(std::pair<std::string, ModelLeak*>(sUuid,pModelLeak));
 
-    EmployNotify *pEmployNotify = findEmploy<EmployNotify>();
+    EmployNotify *pEmployNotify = findWSJCppEmploy<EmployNotify>();
     pEmployNotify->notifyInfo("leaks", "New [leak#" + sUuid + "] " + sName);
 
     return EmployResult::OK;

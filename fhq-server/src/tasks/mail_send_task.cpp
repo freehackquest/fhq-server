@@ -113,8 +113,8 @@ static void trim(std::string &s) {
 
 void MailSendTask::run() {
     WSJCppLog::info(TAG, "Try send mail to '" + m_sTo + "', with subject: '" + m_sSubject + "'");
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
-    EmployGlobalSettings *pGlobalSettings = findEmploy<EmployGlobalSettings>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
 
     std::string sMailHost = pGlobalSettings->get("mail_host").getStringValue();
     long nMailPort = pGlobalSettings->get("mail_port").getNumberValue();

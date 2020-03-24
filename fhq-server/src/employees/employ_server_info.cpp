@@ -1,5 +1,5 @@
 #include <employ_server_info.h>
-#include <wsjcpp_employees.h>
+#include <employees.h>
 #include <employ_database.h>
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -22,7 +22,7 @@ EmployServerInfo::EmployServerInfo()
 
 bool EmployServerInfo::init() {
 
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
 
@@ -77,6 +77,13 @@ bool EmployServerInfo::init() {
         }
     }
 
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+bool EmployServerInfo::deinit() {
+    // TODO
     return true;
 }
 
