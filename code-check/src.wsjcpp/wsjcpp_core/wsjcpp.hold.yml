@@ -1,0 +1,70 @@
+wsjcpp_version: v0.0.1
+cmake_cxx_standard: 11
+cmake_minimum_required: 3.0
+
+name: wsjcpp-core
+version: v0.1.1
+description: Basic Utils for wsjcpp
+issues: https://github.com/wsjcpp/wsjcpp-core/issues
+repositories:
+  - type: main
+    url: "https://github.com/wsjcpp/wsjcpp-core"
+keywords:
+  - c++
+  - wsjcpp
+
+authors:
+  - name: Evgenii Sopov
+    email: mrseakg@gmail.com
+
+distribution:
+  - source-file: src/wsjcpp_core.cpp
+    target-file: wsjcpp_core.cpp
+    type: "source-code"
+  - source-file: src/wsjcpp_core.h
+    target-file: wsjcpp_core.h
+    type: "source-code" # todo must be header-file
+  - source-file: "src/wsjcpp_unit_tests.cpp"
+    target-file: "wsjcpp_unit_tests.cpp"
+    type: "unit-tests"
+  - source-file: "src/wsjcpp_unit_tests.h"
+    target-file: "wsjcpp_unit_tests.h"
+    type: "unit-tests"
+  - source-file: "src/wsjcpp_unit_tests_main.cpp"
+    target-file: "wsjcpp_unit_tests_main.cpp"
+    type: "unit-tests"
+
+unit-tests:
+  cases:
+    - name: CoreNormalizePath
+      description: Check function normalizePath
+    - name: CoreUuid
+      description: Check test generate uuid function
+    - name: CoreExtractFilename
+      description: Check function extract filenane from path
+    - name: "ToUpper"
+      description: "String to upper"
+    - name: "CreateUuid"
+      description: "Test generation uuids"
+    - name: "GetEnv"
+      description: "Test getEnv function"
+    - name: "ToLower"
+      description: "Test toLower"
+    - name: "ReplaceAll"
+      description: "Test replace all"
+    - name: "DecodeUriComponent"
+      description: "Check decoding"
+    - name: "EncodeUriComponent"
+      description: "Check encoding"
+    - name: "Uint2HexString"
+      description: "Test convert unsigned int to hex string"
+    - name: "Split"
+      description: "Test split function"
+    - name: "CreateEmptyFile"
+      description: "Test create empty file"
+    - name: "ReadFileToBuffer"
+      description: "test for readFileToBuffer"
+    - name: "Join"
+      description: "Test join function"
+    - name: "getHumanSizeBytes"
+      description: "Test function get human size in bytes"

@@ -1,2 +1,4 @@
 tmp
 code-check
+.wsjcpp/*
+.logs/*
