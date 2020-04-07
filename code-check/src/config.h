@@ -2,7 +2,7 @@
 #define CONFIG_H
 #include <string>
 #include <vector>
-#include "json.hpp"
+#include <json.hpp>
 
 class CodeCheckConfig {
     public:

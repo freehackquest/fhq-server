@@ -1,13 +1,12 @@
 #include <string>
 #include <iostream>
-#include "helpers.h"
-#include "json.hpp"
-#include "logger.h"
+#include <json.hpp>
 #include <fstream>
 #include <sstream>
 #include <regex>
 #include "line_checkers.h"
 #include "config.h"
+#include <wsjcpp_core.h>
 
 nlohmann::json g_jsonWarnings;
 nlohmann::json g_jsonErrors;
@@ -20,11 +19,20 @@ int startRecoursiveCheckSimpleFormat(const std::string &sRootDir, const std::str
 // ---------------------------------------------------------------------
 
 int main(int argc, char** argv) {
+    std::string TAG = "MAIN";
+    std::string appName = std::string(WSJCPP_NAME);
+    std::string appVersion = std::string(WSJCPP_VERSION);
+
+    std::string appLogPath = ".logs";
+    if (!WsjcppCore::dirExists(appLogPath)) {
+        WsjcppCore::makeDir(appLogPath);
+    }
+    WsjcppLog::setPrefixLogFile(appName);
+    WsjcppLog::setLogDirectory(".logs");
+
     CodeCheckConfig *pConfig = new CodeCheckConfig();
 
     pConfig->applyArguments(argc, argv);
-
-    std::string TAG = "MAIN";
 
     // registry line checkers
     g_vLineCheckers.push_back((LineCheckerBase *)new LineCheckerTabsInLine(pConfig));
@@ -53,8 +61,8 @@ int main(int argc, char** argv) {
     for (int i = 0; i < vPaths.size(); i++) {
         std::string sBasePath = vPaths[i];
         sBasePath = pConfig->getRootDir() + "/" + sBasePath;
-        if (!Helpers::dirExists(sBasePath)) {
-            Log::throw_err(TAG, "Path '" + sBasePath + "' does not exists " + sBasePath);
+        if (!WsjcppCore::dirExists(sBasePath)) {
+            WsjcppLog::throw_err(TAG, "Path '" + sBasePath + "' does not exists " + sBasePath);
         }
         startRecoursiveCheckSimpleFormat(pConfig->getRootDir(), sBasePath, pConfig->getJsonConfig());
     }
@@ -101,7 +109,7 @@ int startRecoursiveCheckSimpleFormat(const std::string &sRootDir, const std::str
         vExludes.push_back(_vExludes[e]);
     }
 
-    std::vector<std::string> vListOfDirs = Helpers::listOfDirs(sBasePath);
+    std::vector<std::string> vListOfDirs = WsjcppCore::listOfDirs(sBasePath);
     for (int i = 0; i < vListOfDirs.size(); i++) {
         
         std::string sNewPath = sBasePath + vListOfDirs[i] + "/";
@@ -115,10 +123,10 @@ int startRecoursiveCheckSimpleFormat(const std::string &sRootDir, const std::str
             // std::cout << "Dir: " << sNewPath << std::endl;
             startRecoursiveCheckSimpleFormat(sRootDir, sNewPath, jsonConfig);
         } else {
-            Log::warn(TAG, "Skipped Dir: " + sNewPath);
+            WsjcppLog::warn(TAG, "Skipped Dir: " + sNewPath);
         }
     }
-    std::vector<std::string> vListOfFiles = Helpers::listOfFiles(sBasePath); 
+    std::vector<std::string> vListOfFiles = WsjcppCore::listOfFiles(sBasePath); 
     for (int i = 0; i < vListOfFiles.size(); i++) {
         std::string sNewPath = sBasePath + vListOfFiles[i];
         bool bExclude = false;
@@ -131,7 +139,7 @@ int startRecoursiveCheckSimpleFormat(const std::string &sRootDir, const std::str
             // std::cout << "Check file: " << sNewPath << std::endl;
             readFileAndCheckSimpleFormat(sNewPath, jsonConfig);
         } else {
-            Log::warn(TAG, "Skipped File: " + sNewPath);
+            WsjcppLog::warn(TAG, "Skipped File: " + sNewPath);
         }
     }
 

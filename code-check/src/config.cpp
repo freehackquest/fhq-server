@@ -1,8 +1,8 @@
 #include "config.h"
-#include <logger.h>
-#include <helpers.h>
 #include <fstream>
 #include <sstream>
+#include <iostream>
+#include <wsjcpp_core.h>
 
 CodeCheckConfig::CodeCheckConfig() {
     TAG = "CodeCheckConfig";
@@ -17,14 +17,14 @@ void CodeCheckConfig::applyArguments(int argc, char** argv) {
     }
     
     if (m_vArgs.size() < 2) {
-        Log::throw_err(TAG, "Usage: " + std::string(m_vArgs[0]) + " [options] <dir>");
+        WsjcppLog::throw_err(TAG, "Usage: " + std::string(m_vArgs[0]) + " [options] <dir>");
     }
 
     m_sRootDir = m_vArgs[m_vArgs.size()-1];
-    Log::ok(TAG, "Root Directory: " + m_sRootDir);
+    WsjcppLog::ok(TAG, "Root Directory: " + m_sRootDir);
     std::string fileConfig = m_sRootDir + "/.code-check.json";
-    if (!Helpers::fileExists(fileConfig)) {
-        Log::throw_err(TAG, "Expected file: " + fileConfig);
+    if (!WsjcppCore::fileExists(fileConfig)) {
+        WsjcppLog::throw_err(TAG, "Expected file: " + fileConfig);
     }
 
     for (int i = 1; i < m_vArgs.size()-1; i++) {
@@ -41,7 +41,7 @@ void CodeCheckConfig::applyArguments(int argc, char** argv) {
     }
     
     if (!nlohmann::json::accept(sConfig)) {
-        Log::throw_err(TAG, " Wrong JSON format \n"
+        WsjcppLog::throw_err(TAG, " Wrong JSON format \n"
             "\nFile-config: " + fileConfig
             + "\nFile-content: " + sConfig + "\n"
         );

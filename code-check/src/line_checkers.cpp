@@ -1,5 +1,5 @@
 #include "line_checkers.h"
-#include "logger.h"
+#include <wsjcpp_core.h>
 
 FileLine::FileLine(const std::string &sFilePath, int nLineNumber, const std::string &sLine) {
     m_sFilePath = sFilePath;
@@ -35,11 +35,11 @@ LineCheckerBase::LineCheckerBase(const std::string &sName, CodeCheckConfig *pCon
     nlohmann::json jsonConfig = pConfig->getJsonConfig();
     const nlohmann::json line_checkers = jsonConfig["line-checkers"];
     if (line_checkers.find(m_sName) == line_checkers.end()) {
-        Log::throw_err(TAG, "'line-checkers' must contains '" + m_sName + "'");
+        WsjcppLog::throw_err(TAG, "'line-checkers' must contains '" + m_sName + "'");
     }
     m_sType = line_checkers[m_sName]; // TODO move check in CodeCheckConfig
     if (m_sType != "err" && m_sType != "warn" && m_sType != "ignore") {
-        Log::throw_err(TAG, "'line-checkers'['" + m_sName + "'] "
+        WsjcppLog::throw_err(TAG, "'line-checkers'['" + m_sName + "'] "
             "expected one of ['err', 'warn', 'ignoroe'] but got '" + m_sType + "'");
     }
 }
@@ -66,15 +66,15 @@ void LineCheckerBase::printWrongLine(const FileLine &line, const std::string &sE
         + "\n    What: " + sError;
 
     if (m_sType == "err") {
-        Log::err(TAG, sMessage);
+        WsjcppLog::err(TAG, sMessage);
     } else if (m_sType == "warn") {
         if (!m_pConfig->isShowOnlyErrors()) {
-            Log::warn(TAG, sMessage);
+           WsjcppLog::warn(TAG, sMessage);
         }
     } else if (m_sType == "ignore") {
         // silent
     } else {
-        Log::throw_err(TAG, sMessage);
+        WsjcppLog::throw_err(TAG, sMessage);
     }
 }
 
@@ -89,11 +89,11 @@ bool LineCheckerBase::isSuccess() {
 void LineCheckerBase::printResult() {
     std::string sMessage = std::to_string(m_nCounter) + " times in code";
     if (isSuccess()) {
-        Log::ok(getName(), sMessage);
+        WsjcppLog::ok(getName(), sMessage);
     } else if (m_sType == "warn") {
-        Log::warn(getName(), sMessage);
+        WsjcppLog::warn(getName(), sMessage);
     } else {
-        Log::err(getName(), sMessage);
+        WsjcppLog::err(getName(), sMessage);
     }
 }
 

@@ -1,0 +1,24 @@
+name: "code-check"
+version: "v0.0.1"
+cmake_minimum_required: "3.0"
+cmake_cxx_standard: "11"
+description: "code-check"
+authors:
+  - name: "Evgenii Sopov"
+    email: "mrseakg@gmail.com"
+origins:
+  - address: "https://sea-kg.com/wsjcpp-package-registry/"
+    type: "package-registry"
+keywords:
+  - "c++"
+dependencies:
+  - name: "wsjcpp-core"
+    version: "v0.1.1"
+    url: "https://github.com/wsjcpp/wsjcpp-core:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_core"
+  - name: "nlohmann/json"
+    version: "v3.7.3"
+    url: "https://github.com/wsjcpp/json:develop"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/nlohmann_json"
