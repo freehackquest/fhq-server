@@ -5,9 +5,9 @@
 #include <vector>
 #include <wsjcpp_core.h>
 
-class WSJCppUnitTestBase {
+class WsjcppUnitTestBase {
     public:
-        WSJCppUnitTestBase(const std::string &sTestName);
+        WsjcppUnitTestBase(const std::string &sTestName);
         std::string name();
         virtual void init() = 0;
         virtual bool run() = 0;
@@ -23,18 +23,17 @@ class WSJCppUnitTestBase {
         std::string m_sTestName;
 };
 
-extern std::vector<WSJCppUnitTestBase*> *g_pUnitTests;
+extern std::vector<WsjcppUnitTestBase*> *g_pWsjcppUnitTests;
 
-class WSJCppUnitTests {
+class WsjcppUnitTests {
     public:
         static void initGlobalVariables();
-        static void addUnitTest(const std::string &sTestName, WSJCppUnitTestBase* pCmdHandler);
-        static bool runUnitTests();
+        static void addUnitTest(const std::string &sTestName, WsjcppUnitTestBase* pUnitTest);
 };
 
 // RegistryCmdHandler
-#define REGISTRY_UNIT_TEST( classname ) \
-    static classname * pRegistryWSJCppUnitTest ## classname = new classname(); \
+#define REGISTRY_WSJCPP_UNIT_TEST( classname ) \
+    static classname * pRegistryWsjcppUnitTest ## classname = new classname(); \
 
 
 #endif // WSJCPP_UNIT_TESTS_H

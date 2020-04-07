@@ -19,8 +19,8 @@ UpdateQuestSolvedTask::~UpdateQuestSolvedTask() {
 }
 
 void UpdateQuestSolvedTask::run() {
-    WSJCppLog::info(TAG, "questid " + std::to_string(m_nQuestID));
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    WsjcppLog::info(TAG, "questid " + std::to_string(m_nQuestID));
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
@@ -36,6 +36,6 @@ void UpdateQuestSolvedTask::run() {
     query.bindValue(":questid2", m_nQuestID);
 
     if (!query.exec()) {
-        WSJCppLog::err(TAG, query.lastError().text().toStdString());
+        WsjcppLog::err(TAG, query.lastError().text().toStdString());
     }
 }

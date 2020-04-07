@@ -4,7 +4,7 @@
 #include <employees.h>
 #include <model_game.h>
 
-class EmployGames : public WSJCppEmployBase {
+class EmployGames : public WsjcppEmployBase {
     public:
 
         EmployGames();

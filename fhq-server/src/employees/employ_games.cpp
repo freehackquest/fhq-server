@@ -12,7 +12,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployGames)
 // ---------------------------------------------------------------------
 
 EmployGames::EmployGames()
-    : WSJCppEmployBase(EmployGames::name(), { EmployDatabase::name(), EmployGlobalSettings::name(), EmployNotify::name() }) {
+    : WsjcppEmployBase(EmployGames::name(), { EmployDatabase::name(), EmployGlobalSettings::name(), EmployNotify::name() }) {
     TAG = EmployGames::name();
 }
 
@@ -21,31 +21,31 @@ EmployGames::EmployGames()
 bool EmployGames::init() {
     // TODO mutex
     // check the access to games folder
-    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
     std::string sBasePath = pGlobalSettings->get("web_public_folder").getDirPathValue();
     std::string targetTestFile = sBasePath + "games/test"; // normalize path
 
     FILE * pFile = fopen(targetTestFile.c_str(), "wb");
     if (pFile == NULL) {
-        WSJCppLog::err(TAG, "Cannot access to write " + targetTestFile);
+        WsjcppLog::err(TAG, "Cannot access to write " + targetTestFile);
         return false;
     }
     fclose(pFile);
 
     if (remove(targetTestFile.c_str()) != 0) {
-        WSJCppLog::err(TAG, "Could not delete file " + targetTestFile);
+        WsjcppLog::err(TAG, "Could not delete file " + targetTestFile);
         return false;
     }
 
     // load list of games to cache
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
     query.prepare("SELECT * FROM games");
 
     if (!query.exec()) {
-        WSJCppLog::err(TAG, query.lastError().text().toStdString());
+        WsjcppLog::err(TAG, query.lastError().text().toStdString());
         return false;
     }
 
@@ -62,7 +62,7 @@ bool EmployGames::init() {
         // TODO must be cached all fields
 
         if (m_mapCacheGames.count(sUuid)) {
-            WSJCppLog::err(TAG, "Inconsistent list games in database uuid: " + sUuid);
+            WsjcppLog::err(TAG, "Inconsistent list games in database uuid: " + sUuid);
             return false;
         } else {
             m_mapCacheGames.insert(std::pair<std::string, ModelGame*>(sUuid,pModelGame));
@@ -117,7 +117,7 @@ EmployResult EmployGames::addGame(const ModelGame &modelGame, std::string &sErro
 
     ModelGame *pModelGame = modelGame.clone(); // clone of original game
 
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
 
     {
@@ -172,7 +172,7 @@ EmployResult EmployGames::addGame(const ModelGame &modelGame, std::string &sErro
     m_mapCacheGames.insert(std::pair<std::string, ModelGame*>(pModelGame->uuid(),pModelGame));
     m_vectCacheGame.push_back(pModelGame);
 
-    EmployNotify *pEmployNotify = findWSJCppEmploy<EmployNotify>();
+    EmployNotify *pEmployNotify = findWsjcppEmploy<EmployNotify>();
     pEmployNotify->notifyInfo("games", "New [game#" + pModelGame->uuid() + "] " + pModelGame->name());
     return EmployResult::OK;
 }
@@ -190,8 +190,8 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
 
     ModelGame *pOrigModelGame = m_mapCacheGames[sUuid];
 
-    EmployNotify *pEmployNotify = findWSJCppEmploy<EmployNotify>();
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployNotify *pEmployNotify = findWsjcppEmploy<EmployNotify>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
 
     // game name

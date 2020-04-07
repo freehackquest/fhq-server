@@ -95,9 +95,9 @@ void ExportLibCliWebJS::exportPrepareDirs(const std::string &sBasicDir) {
     
     for (int i = 0; i < vDirs.size(); i++) {
         std::string sDir = vDirs[i];
-        if (!WSJCppCore::dirExists(sDir)) {
+        if (!WsjcppCore::dirExists(sDir)) {
             std::cout << " * mkdir " << sDir << std::endl
-                << (WSJCppCore::makeDir(sDir) ? "\t> OK" : "\t> FAILED") << std::endl;
+                << (WsjcppCore::makeDir(sDir) ? "\t> OK" : "\t> FAILED") << std::endl;
         } else {
             std::cout << " * Directory already exists " << sDir << std::endl;
         }

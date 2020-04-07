@@ -83,7 +83,7 @@ const std::string &ModelGame::state() const {
 void ModelGame::setState(const std::string &sState) {
     std::string sError;
     if (!m_pValidatorGameState->isValid(sState, sError)) {
-        WSJCppLog::err(TAG, "Game state unknown:" + sError);
+        WsjcppLog::err(TAG, "Game state unknown:" + sError);
     }
     m_sState = sState;
 }
@@ -99,7 +99,7 @@ const std::string &ModelGame::form() const {
 void ModelGame::setForm(std::string sForm) {
     std::string sError;
     if (!m_pValidatorGameForm->isValid(sForm, sError)) {
-        WSJCppLog::err(TAG, "Game form unknown: '" + sForm + "' " + sError);
+        WsjcppLog::err(TAG, "Game form unknown: '" + sForm + "' " + sError);
     }
     m_sForm = sForm;
 }
@@ -115,7 +115,7 @@ const std::string &ModelGame::type() const {
 void ModelGame::setType(std::string sType) {
     std::string sError;
     if (!m_pValidatorGameType->isValid(sType, sError)) {
-        WSJCppLog::err(TAG, "Game type unknown:" + sError);
+        WsjcppLog::err(TAG, "Game type unknown:" + sError);
     }
     m_sType = sType;
 }

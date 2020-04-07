@@ -7,23 +7,23 @@
 
 // ---------------------------------------------------------------------
 
-class WSJCppLightWebHttpResponse {
+class WsjcppLightWebHttpResponse {
     public:
         static std::map<int, std::string> *g_mapReponseDescription;
         
-        WSJCppLightWebHttpResponse(int nSockFd);
+        WsjcppLightWebHttpResponse(int nSockFd);
 
-        WSJCppLightWebHttpResponse &ok();
-        WSJCppLightWebHttpResponse &badRequest();
-        WSJCppLightWebHttpResponse &forbidden();
-        WSJCppLightWebHttpResponse &notFound();
-        WSJCppLightWebHttpResponse &payloadTooLarge();
-        WSJCppLightWebHttpResponse &internalServerError();
-        WSJCppLightWebHttpResponse &notImplemented();
-        WSJCppLightWebHttpResponse &requestTimeout();
+        WsjcppLightWebHttpResponse &ok();
+        WsjcppLightWebHttpResponse &badRequest();
+        WsjcppLightWebHttpResponse &forbidden();
+        WsjcppLightWebHttpResponse &notFound();
+        WsjcppLightWebHttpResponse &payloadTooLarge();
+        WsjcppLightWebHttpResponse &internalServerError();
+        WsjcppLightWebHttpResponse &notImplemented();
+        WsjcppLightWebHttpResponse &requestTimeout();
 
-        WSJCppLightWebHttpResponse &noCache();
-        WSJCppLightWebHttpResponse &cacheSec(int nCacheSec);
+        WsjcppLightWebHttpResponse &noCache();
+        WsjcppLightWebHttpResponse &cacheSec(int nCacheSec);
 
         void sendText(const std::string &sBody);
         void sendJson(const nlohmann::json &json);

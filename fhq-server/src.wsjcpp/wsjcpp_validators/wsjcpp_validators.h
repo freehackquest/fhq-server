@@ -5,14 +5,14 @@
 #include <vector>
 #include <regex>
 
-enum WSJCppValidatorType {
+enum WsjcppValidatorType {
     WSJCPP_VALIDATOR_STRING,
     WSJCPP_VALIDATOR_NUMBER
 };
 
 // ----------------------------------------------------------------------
 
-class WSJCppValidators {
+class WsjcppValidators {
     public:
         static bool isValidDate(const std::string &sValue, std::string &sError);
         static bool isValidTimeH24(const std::string &sValue, std::string &sError);
@@ -28,10 +28,10 @@ class WSJCppValidators {
 /*
 // ----------------------------------------------------------------------
 
-class WSJCppValidatorBase {
+class WsjcppValidatorBase {
     public:
-        WSJCppValidatorBase(const std::string &sTypeName, WSJCppValidatorType nValidatorType);
-        virtual WSJCppValidatorType getBaseType();
+        WsjcppValidatorBase(const std::string &sTypeName, WsjcppValidatorType nValidatorType);
+        virtual WsjcppValidatorType getBaseType();
         virtual std::string getTypeName();
         virtual bool isValid(const std::string &sValue, std::string &sError) = 0;
     protected:
@@ -44,10 +44,10 @@ class WSJCppValidatorBase {
 
 // ----------------------------------------------------------------------
 
-class WSJCppValidatorStringBase {
+class WsjcppValidatorStringBase {
     public:
-        WSJCppValidatorStringBase(const std::string &typeName);
-        virtual WSJCppValidatorType getBaseType();
+        WsjcppValidatorStringBase(const std::string &typeName);
+        virtual WsjcppValidatorType getBaseType();
         virtual std::string getTypeName();
         virtual bool isValid(const std::string &sValue, std::string &sError) = 0;
     protected:
@@ -58,9 +58,9 @@ class WSJCppValidatorStringBase {
 
 // ----------------------------------------------------------------------
 
-class WSJCppValidatorStringRegexpBase : public WSJCppValidatorStringBase {
+class WsjcppValidatorStringRegexpBase : public WsjcppValidatorStringBase {
     public:
-        WSJCppValidatorStringRegexpBase(const std::string &typeName, const std::string &sValidator);
+        WsjcppValidatorStringRegexpBase(const std::string &typeName, const std::string &sValidator);
         virtual bool isValid(const std::string &sValue, std::string &sError) override;
     private:
         std::string m_sValidator;
@@ -69,9 +69,9 @@ class WSJCppValidatorStringRegexpBase : public WSJCppValidatorStringBase {
 
 // ----------------------------------------------------------------------
 
-class WSJCppValidatorStringListBase : public WSJCppValidatorStringBase {
+class WsjcppValidatorStringListBase : public WsjcppValidatorStringBase {
     public:
-        WSJCppValidatorStringListBase(const std::string &typeName, const std::vector<std::string> &vListValues);
+        WsjcppValidatorStringListBase(const std::string &typeName, const std::vector<std::string> &vListValues);
         virtual bool isValid(const std::string &sValue, std::string &sError) override;
     private:
         std::vector<std::string> m_vListValues;
@@ -79,23 +79,23 @@ class WSJCppValidatorStringListBase : public WSJCppValidatorStringBase {
 
 // ----------------------------------------------------------------------
 
-class WSJCppValidatorEmail : public WSJCppValidatorStringRegexpBase {
+class WsjcppValidatorEmail : public WsjcppValidatorStringRegexpBase {
     public:
-        WSJCppValidatorEmail();
+        WsjcppValidatorEmail();
 };
 
 // ----------------------------------------------------------------------
 
-class WSJCppValidatorUUID : public WSJCppValidatorStringRegexpBase {
+class WsjcppValidatorUUID : public WsjcppValidatorStringRegexpBase {
     public:
-        WSJCppValidatorUUID();
+        WsjcppValidatorUUID();
 };
 
 // ----------------------------------------------------------------------
 
-class WSJCppValidatorStringLength : public WSJCppValidatorStringBase {
+class WsjcppValidatorStringLength : public WsjcppValidatorStringBase {
     public:
-        WSJCppValidatorStringLength(int nMinLength, int nMaxLength);
+        WsjcppValidatorStringLength(int nMinLength, int nMaxLength);
         virtual bool isValid(const std::string &sValue, std::string &sError);
 
     private:
@@ -106,16 +106,16 @@ class WSJCppValidatorStringLength : public WSJCppValidatorStringBase {
 
 // ----------------------------------------------------------------------
 
-class WSJCppValidatorJWT : public WSJCppValidatorStringRegexpBase {
+class WsjcppValidatorJWT : public WsjcppValidatorStringRegexpBase {
     public:
-        WSJCppValidatorJWT();
+        WsjcppValidatorJWT();
 };
 
 // ----------------------------------------------------------------------
 
-class WSJCppValidatorDate : public WSJCppValidatorStringBase {
+class WsjcppValidatorDate : public WsjcppValidatorStringBase {
     public:
-        WSJCppValidatorDate();
+        WsjcppValidatorDate();
         virtual bool isValid(const std::string &sValue, std::string &sError);
     private:
         std::string TAG;
@@ -123,9 +123,9 @@ class WSJCppValidatorDate : public WSJCppValidatorStringBase {
 
 // ----------------------------------------------------------------------
 
-class WSJCppValidatorTimeH24 : public WSJCppValidatorStringBase {
+class WsjcppValidatorTimeH24 : public WsjcppValidatorStringBase {
     public:
-        WSJCppValidatorTimeH24();
+        WsjcppValidatorTimeH24();
         virtual bool isValid(const std::string &sValue, std::string &sError);
     private:
         std::string TAG;
@@ -133,9 +133,9 @@ class WSJCppValidatorTimeH24 : public WSJCppValidatorStringBase {
 
 // ----------------------------------------------------------------------
 
-class WSJCppValidatorDateTime : public WSJCppValidatorStringBase {
+class WsjcppValidatorDateTime : public WsjcppValidatorStringBase {
     public:
-        WSJCppValidatorDateTime();
+        WsjcppValidatorDateTime();
         virtual bool isValid(const std::string &sValue, std::string &sError);
     private:
         std::string TAG;
@@ -143,9 +143,9 @@ class WSJCppValidatorDateTime : public WSJCppValidatorStringBase {
 
 // ----------------------------------------------------------------------
 
-class WSJCppValidatorURL : public WSJCppValidatorStringBase {
+class WsjcppValidatorURL : public WsjcppValidatorStringBase {
     public:
-        WSJCppValidatorURL();
+        WsjcppValidatorURL();
         virtual bool isValid(const std::string &sValue, std::string &sError);
 
     private:
@@ -155,9 +155,9 @@ class WSJCppValidatorURL : public WSJCppValidatorStringBase {
 
 // ----------------------------------------------------------------------
 
-class WSJCppValidatorBase64 : public WSJCppValidatorStringBase {
+class WsjcppValidatorBase64 : public WsjcppValidatorStringBase {
     public:
-        WSJCppValidatorBase64();
+        WsjcppValidatorBase64();
         virtual bool isValid(const std::string &sValue, std::string &sError);
 
     private:
@@ -166,9 +166,9 @@ class WSJCppValidatorBase64 : public WSJCppValidatorStringBase {
 
 // ----------------------------------------------------------------------
 
-class WSJCppValidatorNumber : public WSJCppValidatorStringBase {
+class WsjcppValidatorNumber : public WsjcppValidatorStringBase {
     public:
-        WSJCppValidatorNumber();
+        WsjcppValidatorNumber();
         virtual bool isValid(const std::string &sValue, std::string &sError);
 
     private:
@@ -177,9 +177,9 @@ class WSJCppValidatorNumber : public WSJCppValidatorStringBase {
 
 // ----------------------------------------------------------------------
 
-class WSJCppValidatorHex : public WSJCppValidatorStringBase {
+class WsjcppValidatorHex : public WsjcppValidatorStringBase {
     public:
-        WSJCppValidatorHex();
+        WsjcppValidatorHex();
         virtual bool isValid(const std::string &sValue, std::string &sError);
 
     private:

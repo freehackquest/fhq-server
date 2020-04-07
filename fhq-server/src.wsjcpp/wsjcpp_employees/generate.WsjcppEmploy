@@ -1,0 +1,101 @@
+#!/usr/bin/wsjcpp-safe-scripting
+
+# log_info rootdir
+# log_info script_filename
+
+make_dir "src"
+
+var employ_name
+set_value employ_name arg1
+normalize_class_name employ_name
+convert_CamelCase_to_snake_case employ_name employ_name
+
+var class_name
+concat class_name "Employ" arg1
+normalize_class_name class_name
+
+var base_filename
+convert_CamelCase_to_snake_case class_name base_filename
+# log_info base_filename
+
+var filename_cpp
+concat filename_cpp "./src/" base_filename ".cpp"
+
+var filename_h
+concat filename_h "./src/" base_filename ".h"
+
+var ifndef_header
+set_value ifndef_header base_filename
+concat ifndef_header "_H"
+
+to_upper_case ifndef_header
+
+var content_header
+concat content_header "#ifndef " ifndef_header "
+#define " ifndef_header "
+
+#include <wsjcpp_employees.h>
+
+class " class_name " : public WsjcppEmployBase {
+    public:
+        " class_name "();
+        static std::string name() { return \"" class_name "\"; }
+        virtual bool init() override;
+        virtual bool deinit() override;
+
+    private:
+        std::string TAG;
+};
+
+#endif // " ifndef_header
+
+ 
+var content_source
+concat content_source  "
+#include \"" base_filename ".h\"
+#include <wsjcpp_core.h>
+
+// ---------------------------------------------------------------------
+// " class_name "
+
+REGISTRY_WJSCPP_EMPLOY(" class_name ")
+
+" class_name "::" class_name "() 
+: WsjcppEmployBase(" class_name "::name(), {}) {
+    TAG = " class_name "::name();
+}
+
+// ---------------------------------------------------------------------
+
+bool " class_name "::init() {
+    WsjcppLog::info(TAG, \"init\");
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+bool " class_name "::deinit() {
+    WsjcppLog::info(TAG, \"deinit\");
+    return true;
+}
+
+"
+
+var file_source
+concat file_source "src/" filename_cpp
+
+write_file filename_h content_header
+write_file filename_cpp content_source
+
+log_info "
+======
+Generated class:
+    - " class_name "
+Generated files:
+    - " filename_h "
+    - " filename_cpp "
+======
+"
+
+cmakelists_txt_append_wsjcpp filename_h
+cmakelists_txt_append_wsjcpp filename_cpp

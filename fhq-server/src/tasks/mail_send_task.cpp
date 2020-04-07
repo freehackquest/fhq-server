@@ -112,9 +112,9 @@ static void trim(std::string &s) {
 
 
 void MailSendTask::run() {
-    WSJCppLog::info(TAG, "Try send mail to '" + m_sTo + "', with subject: '" + m_sSubject + "'");
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
-    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
+    WsjcppLog::info(TAG, "Try send mail to '" + m_sTo + "', with subject: '" + m_sSubject + "'");
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
 
     std::string sMailHost = pGlobalSettings->get("mail_host").getStringValue();
     long nMailPort = pGlobalSettings->get("mail_port").getNumberValue();
@@ -147,7 +147,7 @@ void MailSendTask::run() {
     query.bindValue(":priority", "");
     query.bindValue(":status", "loaded");
     if (!query.exec()) {
-        WSJCppLog::err(TAG, query.lastError().text().toStdString());
+        WsjcppLog::err(TAG, query.lastError().text().toStdString());
         return;
     }
 
@@ -210,7 +210,7 @@ void MailSendTask::run() {
 
         // Check for errors
         if (res != CURLE_OK) {
-            WSJCppLog::err(TAG, "Error send mail to '" + m_sTo + "', with subject: '" + m_sSubject + "'. Error: "
+            WsjcppLog::err(TAG, "Error send mail to '" + m_sTo + "', with subject: '" + m_sSubject + "'. Error: "
                  + std::string(curl_easy_strerror(res)));
             sStatus = "error";
         }
@@ -222,7 +222,7 @@ void MailSendTask::run() {
         query.bindValue(":status", QString::fromStdString(sStatus));
         query.bindValue(":id", nMailID);
         if (!query.exec()) {
-            WSJCppLog::err(TAG, query.lastError().text().toStdString());
+            WsjcppLog::err(TAG, query.lastError().text().toStdString());
             return;
         }
     }

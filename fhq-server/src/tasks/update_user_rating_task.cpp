@@ -19,8 +19,8 @@ UpdateUserRatingTask::~UpdateUserRatingTask() {
 }
 
 void UpdateUserRatingTask::run() {
-    WSJCppLog::info(TAG, "userid " + std::to_string(m_nUserID));
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    WsjcppLog::info(TAG, "userid " + std::to_string(m_nUserID));
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare(""
@@ -35,7 +35,7 @@ void UpdateUserRatingTask::run() {
     );
     query.bindValue(":userid", m_nUserID);
     if (!query.exec()) {
-        WSJCppLog::err(TAG, query.lastError().text().toStdString());
+        WsjcppLog::err(TAG, query.lastError().text().toStdString());
         return;
     }
 
@@ -51,7 +51,7 @@ void UpdateUserRatingTask::run() {
     query_update.bindValue(":userid", m_nUserID);
 
     if (!query_update.exec()) {
-        WSJCppLog::err(TAG, query_update.lastError().text().toStdString());
+        WsjcppLog::err(TAG, query_update.lastError().text().toStdString());
         return;
     }
 }

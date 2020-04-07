@@ -9,11 +9,11 @@
 
 // ---------------------------------------------------------------------
 
-class WSJCppLightWebDequeHttpRequests {
+class WsjcppLightWebDequeHttpRequests {
     public:
-        WSJCppLightWebDequeHttpRequests();
-        WSJCppLightWebHttpRequest *popRequest();
-        void pushRequest(WSJCppLightWebHttpRequest *pRequest);
+        WsjcppLightWebDequeHttpRequests();
+        WsjcppLightWebHttpRequest *popRequest();
+        void pushRequest(WsjcppLightWebHttpRequest *pRequest);
         void cleanup();
 
     private:
@@ -21,7 +21,7 @@ class WSJCppLightWebDequeHttpRequests {
 
         std::mutex m_mtxDequeRequests;
         std::mutex m_mtxWaiterRequests;
-        std::deque<WSJCppLightWebHttpRequest *> m_dequeRequests;
+        std::deque<WsjcppLightWebHttpRequest *> m_dequeRequests;
 };
 
 #endif // WSJCPP_LIGHT_WEB_DEQUE_HTTP_REQUESTS_H

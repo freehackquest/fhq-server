@@ -6,7 +6,7 @@
 #include <QDateTime>
 #include <QMap>
 
-class EmployServerInfo : public WSJCppEmployBase {
+class EmployServerInfo : public WsjcppEmployBase {
     public:
         EmployServerInfo();
         static std::string name() { return "EmployServerInfo"; }

@@ -7,9 +7,9 @@
 
 // ---------------------------------------------------------------------
 
-class WSJCppLightWebHttpRequestQueryValue {
+class WsjcppLightWebHttpRequestQueryValue {
     public:
-        WSJCppLightWebHttpRequestQueryValue(const std::string &sName, const std::string &sValue);
+        WsjcppLightWebHttpRequestQueryValue(const std::string &sName, const std::string &sValue);
         std::string getName() const;
         std::string getValue() const;
     private:
@@ -19,13 +19,13 @@ class WSJCppLightWebHttpRequestQueryValue {
 
 // ---------------------------------------------------------------------
 
-class WSJCppLightWebHttpRequest {
+class WsjcppLightWebHttpRequest {
     public:
-        WSJCppLightWebHttpRequest(
+        WsjcppLightWebHttpRequest(
             int nSockFd,
             const std::string &sAddress
         );
-        ~WSJCppLightWebHttpRequest() {};
+        ~WsjcppLightWebHttpRequest() {};
 
         int getSockFd() const;
         std::string getUniqueId() const;
@@ -37,13 +37,12 @@ class WSJCppLightWebHttpRequest {
         std::string getRequestPath() const;
         std::string getRequestBody() const;
         std::string getRequestHttpVersion() const;
-        const std::vector<WSJCppLightWebHttpRequestQueryValue> &getRequestQueryParams();
+        const std::vector<WsjcppLightWebHttpRequestQueryValue> &getRequestQueryParams();
 
     private:
         std::string TAG;
 
         void parseFirstLine(const std::string &sHeader);
-        std::string decodeURIElement(const std::string &sElement); // TODO move to WSJCppCore
 
         enum EnumParserState {
             START,
@@ -61,7 +60,7 @@ class WSJCppLightWebHttpRequest {
         std::string m_sRequestType;
         std::string m_sRequestPath;
         std::string m_sRequestBody;
-        std::vector<WSJCppLightWebHttpRequestQueryValue> m_vRequestQueryParams;
+        std::vector<WsjcppLightWebHttpRequestQueryValue> m_vRequestQueryParams;
         std::string m_sRequestHttpVersion;
 
         std::string m_sResponseCacheControl;

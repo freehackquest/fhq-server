@@ -9,7 +9,7 @@ double UtilsStaticAnalizingText::calcWeightOfOneChar(int strLen) {
 std::map<char, double> UtilsStaticAnalizingText::calc(const std::string &text) {
     std::map<char, double> map;
     std::string str = text;
-    WSJCppCore::to_lower(str);
+    str = WsjcppCore::toLower(str);
 
     int strLen = str.length();
     double weightOfOneChar = calcWeightOfOneChar(strLen);

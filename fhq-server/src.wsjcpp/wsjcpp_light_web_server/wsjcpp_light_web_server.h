@@ -11,12 +11,12 @@
 
 // ---------------------------------------------------------------------
 
-class WSJCppLightWebHttpHandlerBase {
+class WsjcppLightWebHttpHandlerBase {
     public:
-        WSJCppLightWebHttpHandlerBase(const std::string &sName);
+        WsjcppLightWebHttpHandlerBase(const std::string &sName);
         const std::string &name();
-        virtual bool canHandle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) = 0;
-        virtual bool handle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) = 0;
+        virtual bool canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) = 0;
+        virtual bool handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) = 0;
 
     private:
         std::string m_sName;
@@ -24,13 +24,13 @@ class WSJCppLightWebHttpHandlerBase {
 
 // ---------------------------------------------------------------------
 
-class WSJCppLightWebHttpThreadWorker {
+class WsjcppLightWebHttpThreadWorker {
     public:
 
-        WSJCppLightWebHttpThreadWorker(
+        WsjcppLightWebHttpThreadWorker(
             const std::string &sName, 
-            WSJCppLightWebDequeHttpRequests *pDeque, 
-            std::vector<WSJCppLightWebHttpHandlerBase *> *pVHandlers
+            WsjcppLightWebDequeHttpRequests *pDeque, 
+            std::vector<WsjcppLightWebHttpHandlerBase *> *pVHandlers
         );
 
         void start();
@@ -38,11 +38,11 @@ class WSJCppLightWebHttpThreadWorker {
         void run();
 
     private:
-        bool handle(WSJCppLightWebHttpRequest *pRequest);
+        bool handle(WsjcppLightWebHttpRequest *pRequest);
         std::string TAG;
         std::string m_sName;
-        WSJCppLightWebDequeHttpRequests *m_pDeque;
-        std::vector<WSJCppLightWebHttpHandlerBase *> *m_pVHandlers;
+        WsjcppLightWebDequeHttpRequests *m_pDeque;
+        std::vector<WsjcppLightWebHttpHandlerBase *> *m_pVHandlers;
         bool m_bStop;
         bool m_bStopped;
         pthread_t m_serverThread;
@@ -50,29 +50,29 @@ class WSJCppLightWebHttpThreadWorker {
 
 // ---------------------------------------------------------------------
 
-class WSJCppLightWebServer {
+class WsjcppLightWebServer {
     public:
 
-        WSJCppLightWebServer();
+        WsjcppLightWebServer();
         void setPort(int nPort);
         void setMaxWorkers(int nMaxWorkers);
         void startSync();
         void start();
         void stop();
-        void addHandler(WSJCppLightWebHttpHandlerBase *pHandler);
+        void addHandler(WsjcppLightWebHttpHandlerBase *pHandler);
 
     private:
         void checkAndRestartWorkers();
         void stopAndRemoveWorkers();
         std::string readAddress(int nSockFd);
         std::string TAG;
-        WSJCppLightWebDequeHttpRequests *m_pDeque;
+        WsjcppLightWebDequeHttpRequests *m_pDeque;
         bool m_bStop;
 
         int m_nMaxWorkers;
         int m_nPort;
-        std::vector<WSJCppLightWebHttpHandlerBase *> *m_pVHandlers;
-        std::vector<WSJCppLightWebHttpThreadWorker *> m_vWorkers;
+        std::vector<WsjcppLightWebHttpHandlerBase *> *m_pVHandlers;
+        std::vector<WsjcppLightWebHttpThreadWorker *> m_vWorkers;
 
         int m_nSockFd;
         struct sockaddr_in m_serverAddress;

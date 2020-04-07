@@ -3,11 +3,11 @@
 
 #include <wsjcpp_light_web_server.h>
 
-class WSJCppLightWebHttpHandlerWebFolder : WSJCppLightWebHttpHandlerBase {
+class WsjcppLightWebHttpHandlerWebFolder : public WsjcppLightWebHttpHandlerBase {
     public:
-        WSJCppLightWebHttpHandlerWebFolder(const std::string &sPrefixPath, const std::string &sWebFolder);
-        virtual bool canHandle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest);
-        virtual bool handle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest);
+        WsjcppLightWebHttpHandlerWebFolder(const std::string &sPrefixPath, const std::string &sWebFolder);
+        virtual bool canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest);
+        virtual bool handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest);
 
     private:
         std::string TAG;

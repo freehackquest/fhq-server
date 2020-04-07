@@ -29,16 +29,16 @@ void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    WSJCppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppUserSession *pUserSession = pRequest->getUserSession();
     std::string sUsername = pUserSession->nick().toStdString();
 
     std::string sMessage = "";
     if (jsonRequest["message"].is_string()) {
         sMessage = jsonRequest["message"];
     }
-    WSJCppCore::trim(sMessage);
+    WsjcppCore::trim(sMessage);
     if (sMessage.length() == 0) {
-        pRequest->sendMessageError(cmd(), WSJCppError(400, "Message could not be empty"));
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "Message could not be empty"));
         return;
     }
 
@@ -49,7 +49,7 @@ void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest) {
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("INSERT INTO chatmessages(user, message, dt) VALUES(:user,:message, NOW())");
@@ -66,7 +66,7 @@ void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest) {
 
     pRequest->server()->sendToAll(jsonData2);
 
-    EmployNotify *pNotify = findWSJCppEmploy<EmployNotify>();
+    EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
     ModelNotification notification("info", "chat", "Income chat message " + sMessage);
     pNotify->sendNotification(notification);
 
@@ -92,13 +92,13 @@ CmdHandlerChatLastestMessages::CmdHandlerChatLastestMessages()
 void CmdHandlerChatLastestMessages::handle(ModelRequest *pRequest) {
     nlohmann::json jsonMessages = nlohmann::json::array();
 
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("SELECT user, message, dt FROM chatmessages ORDER BY dt DESC LIMIT 0,25");
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -136,7 +136,7 @@ CmdHandlerChatReadMessage::CmdHandlerChatReadMessage()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatReadMessage::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------
@@ -158,7 +158,7 @@ CmdHandlerChatShowDialogs::CmdHandlerChatShowDialogs()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatShowDialogs::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------
@@ -180,7 +180,7 @@ CmdHandlerChatEditMessage::CmdHandlerChatEditMessage()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatEditMessage::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------
@@ -202,7 +202,7 @@ CmdHandlerChatDeleteMessage::CmdHandlerChatDeleteMessage()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatDeleteMessage::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------
@@ -224,7 +224,7 @@ CmdHandlerChatAddToChat::CmdHandlerChatAddToChat()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatAddToChat::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------
@@ -246,7 +246,7 @@ CmdHandlerChatDeleteFromChat::CmdHandlerChatDeleteFromChat()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatDeleteFromChat::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------
@@ -268,7 +268,7 @@ CmdHandlerChatChangeOwner::CmdHandlerChatChangeOwner()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatChangeOwner::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------
@@ -290,7 +290,7 @@ CmdHandlerChatAddToBlackList::CmdHandlerChatAddToBlackList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatAddToBlackList::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------
@@ -312,7 +312,7 @@ CmdHandlerChatDeleteFromBlackList::CmdHandlerChatDeleteFromBlackList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatDeleteFromBlackList::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------
@@ -334,7 +334,7 @@ CmdHandlerChatCreateGroupChat::CmdHandlerChatCreateGroupChat()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatCreateGroupChat::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------

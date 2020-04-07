@@ -2,10 +2,10 @@
 #include "unit_test_storage_escapes.h"
 #include <core/storages.h>
 
-REGISTRY_UNIT_TEST(UnitTestStorageEscapes)
+REGISTRY_WSJCPP_UNIT_TEST(UnitTestStorageEscapes)
 
 UnitTestStorageEscapes::UnitTestStorageEscapes() 
-    : WSJCppUnitTestBase("UnitTestStorageEscapes") {
+    : WsjcppUnitTestBase("UnitTestStorageEscapes") {
     // 
 }
 
@@ -18,7 +18,7 @@ void UnitTestStorageEscapes::init() {
 
 bool UnitTestStorageEscapes::run() {
     if (!Storages::support("mysql")) {
-        WSJCppLog::err(TAG, "Not supported mysql");
+        WsjcppLog::err(TAG, "Not supported mysql");
         return false;
     }
     Storage *pStorage = Storages::create("mysql");
@@ -44,7 +44,7 @@ bool UnitTestStorageEscapes::run() {
         if (s3 == s2) {
             nSuccess++;
         } else {
-            WSJCppLog::err(TAG, "Expected [" + s2 + "], but got [" + s3 + "] for [" + s1 + "]");
+            WsjcppLog::err(TAG, "Expected [" + s2 + "], but got [" + s3 + "] for [" + s1 + "]");
         }
     }
     return nSuccess == tests.size();

@@ -1,0 +1,107 @@
+#!/usr/bin/wsjcpp-safe-scripting
+
+# log_info rootdir
+# log_info script_filename
+
+make_dir "src"
+
+var http_handler_name
+set_value http_handler_name arg1
+normalize_class_name http_handler_name
+convert_CamelCase_to_snake_case http_handler_name http_handler_name
+
+var class_name
+concat class_name "LightWebHttpHandler" arg1
+normalize_class_name class_name
+
+var base_filename
+convert_CamelCase_to_snake_case class_name base_filename
+# log_info base_filename
+
+var filename_cpp
+concat filename_cpp "./src/" base_filename ".cpp"
+
+var filename_h
+concat filename_h "./src/" base_filename ".h"
+
+var ifndef_header
+set_value ifndef_header base_filename
+concat ifndef_header "_H"
+
+to_upper_case ifndef_header
+
+var content_header
+concat content_header "#ifndef " ifndef_header "
+#define " ifndef_header "
+
+#include <wsjcpp_light_web_server.h>
+
+class " class_name " : public WsjcppLightWebHttpHandlerBase {
+    public:
+        " class_name "();
+        virtual bool canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest);
+        virtual bool handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest);
+
+    private:
+        std::string TAG;
+};
+
+#endif // " ifndef_header
+
+ 
+var content_source
+concat content_source  "
+#include \"" base_filename ".h\"
+#include <wsjcpp_core.h>
+
+// ---------------------------------------------------------------------
+// " class_name "
+
+" class_name "::" class_name "() 
+: WsjcppLightWebHttpHandlerBase(\"" http_handler_name "\") {
+    TAG = \"" class_name "\";
+}
+
+// ---------------------------------------------------------------------
+
+bool " class_name "::canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) {
+    std::string _tag = TAG + \"-\" + sWorkerId;
+    std::string sRequestPath = pRequest->getRequestPath();
+    WsjcppLog::warn(_tag, \"canHandle: \" + sRequestPath);
+    
+    // TODO
+    WsjcppLog::err(TAG, \"Not implemented\");
+    return false;
+}
+
+// ---------------------------------------------------------------------
+
+bool " class_name "::handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) {
+    std::string _tag = TAG + \"-\" + sWorkerId;
+    std::string sRequestPath = pRequest->getRequestPath();
+    WsjcppLog::warn(_tag, sRequestPath);
+    WsjcppLightWebHttpResponse resp(pRequest->getSockFd());
+    resp.noCache().notImplemented().sendEmpty();
+    return true;
+}
+
+"
+
+var file_source
+concat file_source "src/" filename_cpp
+
+write_file filename_h content_header
+write_file filename_cpp content_source
+
+log_info "
+======
+Generated class:
+    - " class_name "
+Generated files:
+    - " filename_h "
+    - " filename_cpp "
+======
+"
+
+cmakelists_txt_append_wsjcpp filename_h
+cmakelists_txt_append_wsjcpp filename_cpp

@@ -14,7 +14,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployLeaks)
 // ---------------------------------------------------------------------
 
 EmployLeaks::EmployLeaks()
-    : WSJCppEmployBase(EmployLeaks::name(), {EmployDatabase::name(), EmployNotify::name(), EmployGames::name()}) {
+    : WsjcppEmployBase(EmployLeaks::name(), {EmployDatabase::name(), EmployNotify::name(), EmployGames::name()}) {
     TAG = EmployLeaks::name();
     m_mapCacheLeaks.clear();
     m_vectCacheLeaks.clear();
@@ -24,15 +24,15 @@ EmployLeaks::EmployLeaks()
 
 bool EmployLeaks::init() {
     // load list of leaks to cache
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
-    EmployGames *pEmployGames = findWSJCppEmploy<EmployGames>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+    EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
 
     QSqlDatabase db = *(pDatabase->database());
 
     QSqlQuery query(db);
     query.prepare("SELECT * FROM leaks");
     if (!query.exec()) {
-        WSJCppLog::err(TAG, query.lastError().text().toStdString());
+        WsjcppLog::err(TAG, query.lastError().text().toStdString());
         return false;
     }
     while (query.next()) {
@@ -47,7 +47,7 @@ bool EmployLeaks::init() {
         if (pEmployGames->findGame(nGameId, modelGame)) {
             pModelLeak->setGameUuid(modelGame.uuid());
         } else {
-            WSJCppLog::err(TAG, "Game not found by localId: " + std::to_string(nGameId));
+            WsjcppLog::err(TAG, "Game not found by localId: " + std::to_string(nGameId));
         }
         pModelLeak->setName(record.value("name").toString().toStdString());
         pModelLeak->setContent(record.value("content").toString().toStdString());
@@ -58,7 +58,7 @@ bool EmployLeaks::init() {
         // leak["created"] = record.value("created").toString().toHtmlEscaped();
         // leak["updated"] = record.value("updated").toString().toHtmlEscaped();
         if (m_mapCacheLeaks.count(sUuid)) {
-            WSJCppLog::err(TAG, "Inconsistent list leaks in database uuid: " + sUuid);
+            WsjcppLog::err(TAG, "Inconsistent list leaks in database uuid: " + sUuid);
         } else {
             m_mapCacheLeaks.insert(std::pair<std::string, ModelLeak*>(sUuid,pModelLeak));
         }
@@ -86,7 +86,7 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError) {
     }
 
     // check the game
-    EmployGames *pEmployGames = findWSJCppEmploy<EmployGames>();
+    EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
     ModelGame modelGame;
     if (!pEmployGames->findGame(sGameUuid, modelGame)) {
         return EmployResult::GAME_NOT_FOUND;
@@ -94,7 +94,7 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError) {
 
     pModelLeak->setGameId(modelGame.localId());
 
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
 
     {
@@ -127,7 +127,7 @@ int EmployLeaks::addLeak(ModelLeak* pModelLeak, std::string &sError) {
 
     m_mapCacheLeaks.insert(std::pair<std::string, ModelLeak*>(sUuid,pModelLeak));
 
-    EmployNotify *pEmployNotify = findWSJCppEmploy<EmployNotify>();
+    EmployNotify *pEmployNotify = findWsjcppEmploy<EmployNotify>();
     pEmployNotify->notifyInfo("leaks", "New [leak#" + sUuid + "] " + sName);
 
     return EmployResult::OK;

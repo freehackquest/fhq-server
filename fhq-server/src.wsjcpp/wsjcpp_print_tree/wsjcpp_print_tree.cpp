@@ -1,33 +1,33 @@
 #include "wsjcpp_print_tree.h"
 #include <wsjcpp_core.h>
 
-WSJCppPrintNode::WSJCppPrintNode(WSJCppPrintNode *pParent, const std::string &sTitle) {
-    TAG = "WSJCppPrintNode";
+WsjcppPrintNode::WsjcppPrintNode(WsjcppPrintNode *pParent, const std::string &sTitle) {
+    TAG = "WsjcppPrintNode";
     m_pParent = pParent;
     m_sTitle = sTitle;
 }
 
 // ----------------------------------------------------------------------
 
-std::string WSJCppPrintNode::getTitle() {
+std::string WsjcppPrintNode::getTitle() {
     return m_sTitle;
 }
 
 // ----------------------------------------------------------------------
 
-WSJCppPrintNode *WSJCppPrintNode::getParent() {
+WsjcppPrintNode *WsjcppPrintNode::getParent() {
     return m_pParent;
 }
 
 // ----------------------------------------------------------------------
 
-std::vector<WSJCppPrintNode *> WSJCppPrintNode::getChildsList() {
+std::vector<WsjcppPrintNode *> WsjcppPrintNode::getChildsList() {
     return m_vChilds;
 }
 
 // ----------------------------------------------------------------------
 
-WSJCppPrintNode *WSJCppPrintNode::getLastChild() {
+WsjcppPrintNode *WsjcppPrintNode::getLastChild() {
     if (m_vChilds.size() == 0) {
         return nullptr;
     }
@@ -36,45 +36,45 @@ WSJCppPrintNode *WSJCppPrintNode::getLastChild() {
 
 // ----------------------------------------------------------------------
 
-WSJCppPrintNode *WSJCppPrintNode::addChild(const std::string &sTitle) {
-    WSJCppPrintNode *pNode = new WSJCppPrintNode(this, sTitle);
+WsjcppPrintNode *WsjcppPrintNode::addChild(const std::string &sTitle) {
+    WsjcppPrintNode *pNode = new WsjcppPrintNode(this, sTitle);
     m_vChilds.push_back(pNode);
     return pNode;
 }
 
 // ----------------------------------------------------------------------
 
-bool WSJCppPrintNode::hasChilds() {
+bool WsjcppPrintNode::hasChilds() {
     return m_vChilds.size() > 0;
 }
 
 // ----------------------------------------------------------------------
-// WSJCppPrintTree
+// WsjcppPrintTree
 
-WSJCppPrintTree::WSJCppPrintTree(const std::string &sTitle) {
-    TAG = "WSJCppPrintTree";
-    m_pRootNode = new WSJCppPrintNode(nullptr, sTitle);
+WsjcppPrintTree::WsjcppPrintTree(const std::string &sTitle) {
+    TAG = "WsjcppPrintTree";
+    m_pRootNode = new WsjcppPrintNode(nullptr, sTitle);
     m_pCurrentNode = m_pRootNode;
 }
 
 // ----------------------------------------------------------------------
 
-WSJCppPrintNode *WSJCppPrintTree::getRootNode() {
+WsjcppPrintNode *WsjcppPrintTree::getRootNode() {
     return m_pRootNode;
 }
 
 // ----------------------------------------------------------------------
 
-WSJCppPrintNode *WSJCppPrintTree::getCurrentNode() {
+WsjcppPrintNode *WsjcppPrintTree::getCurrentNode() {
     return m_pCurrentNode;
 }
 
 // ----------------------------------------------------------------------
 
-WSJCppPrintTree &WSJCppPrintTree::switchToLatestChild() {
-    WSJCppPrintNode *pChild = m_pCurrentNode->getLastChild();
+WsjcppPrintTree &WsjcppPrintTree::switchToLatestChild() {
+    WsjcppPrintNode *pChild = m_pCurrentNode->getLastChild();
     if (pChild == nullptr) {
-        WSJCppLog::throw_err(TAG, "Could not found last child");
+        WsjcppLog::throw_err(TAG, "Could not found last child");
     }
     m_pCurrentNode = pChild;
     return *this;
@@ -82,17 +82,17 @@ WSJCppPrintTree &WSJCppPrintTree::switchToLatestChild() {
 
 // ----------------------------------------------------------------------
 
-WSJCppPrintTree &WSJCppPrintTree::addChild(const std::string &sTitle) {
+WsjcppPrintTree &WsjcppPrintTree::addChild(const std::string &sTitle) {
     m_pCurrentNode->addChild(sTitle);
     return *this;
 }
 
 // ----------------------------------------------------------------------
 
-WSJCppPrintTree &WSJCppPrintTree::switchToParent() {
-    WSJCppPrintNode *pParent = m_pCurrentNode->getParent();
+WsjcppPrintTree &WsjcppPrintTree::switchToParent() {
+    WsjcppPrintNode *pParent = m_pCurrentNode->getParent();
     if (pParent == nullptr) {
-        WSJCppLog::throw_err(TAG, "Parent is null");
+        WsjcppLog::throw_err(TAG, "Parent is null");
     }
     m_pCurrentNode = pParent;
     return *this;
@@ -100,7 +100,7 @@ WSJCppPrintTree &WSJCppPrintTree::switchToParent() {
 
 // ----------------------------------------------------------------------
 
-std::string WSJCppPrintTree::printTree() {
+std::string WsjcppPrintTree::printTree() {
     return 
         m_pRootNode->getTitle() + "\n"
         + printRecoursive("", m_pRootNode);
@@ -108,13 +108,13 @@ std::string WSJCppPrintTree::printTree() {
 
 // ----------------------------------------------------------------------
 
-std::string WSJCppPrintTree::printRecoursive(const std::string &sPrefix, WSJCppPrintNode *pParentNode) {
+std::string WsjcppPrintTree::printRecoursive(const std::string &sPrefix, WsjcppPrintNode *pParentNode) {
     std::string sRet = "";
-    std::vector<WSJCppPrintNode *>  v = pParentNode->getChildsList();
+    std::vector<WsjcppPrintNode *>  v = pParentNode->getChildsList();
     int nLen = v.size();
     for (int i = 0; i < nLen; i++) {
         bool bLatestChild = (i == nLen-1);
-        WSJCppPrintNode *pNode = v[i];
+        WsjcppPrintNode *pNode = v[i];
         sRet += sPrefix;
         sRet += bLatestChild ? "└─ " : "├─ ";
         sRet += pNode->getTitle() + "\n";

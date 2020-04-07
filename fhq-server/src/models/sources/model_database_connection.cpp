@@ -36,7 +36,7 @@ void ModelDatabaseConnection::setNameConnection(QString sNameConnection) {
 // ---------------------------------------------------------------------
 
 bool ModelDatabaseConnection::connect() {
-    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
     std::string sDatabaseHost = pGlobalSettings->get("dbhost").getStringValue();
     int nDatabasePort = pGlobalSettings->get("dbport").getNumberValue();
     std::string sDatabaseName = pGlobalSettings->get("dbname").getStringValue();
@@ -50,12 +50,12 @@ bool ModelDatabaseConnection::connect() {
     m_pDatabase->setUserName(QString(sDatabaseUser.c_str()));
     m_pDatabase->setPassword(QString(sDatabasePassword.c_str()));
     if (!m_pDatabase->open()) {
-        WSJCppLog::err(TAG, "Failed to connect." + m_pDatabase->lastError().text().toStdString());
+        WsjcppLog::err(TAG, "Failed to connect." + m_pDatabase->lastError().text().toStdString());
         m_pDatabase = NULL;
         return false;
     }
     m_nOpened = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
-    WSJCppLog::info(TAG, "Success connection to database (Opened: " + m_sNameConnection.toStdString() + ")");
+    WsjcppLog::info(TAG, "Success connection to database (Opened: " + m_sNameConnection.toStdString() + ")");
     return true;
 }
 
@@ -70,19 +70,19 @@ bool ModelDatabaseConnection::isOutdated() {
 
 QSqlDatabase *ModelDatabaseConnection::db() {
     if (m_pDatabase == NULL) {
-        WSJCppLog::err(TAG, "Database is not connected");
+        WsjcppLog::err(TAG, "Database is not connected");
         return NULL;
     }
     if (!m_pDatabase->isOpen()) {
-        WSJCppLog::err(TAG, "Database is not open");
+        WsjcppLog::err(TAG, "Database is not open");
     }
     
     if (m_pDatabase->isOpenError()) {
-        WSJCppLog::err(TAG, "Database connection has error");
+        WsjcppLog::err(TAG, "Database connection has error");
     }
     
     if (!m_pDatabase->isValid()) {
-        WSJCppLog::err(TAG, "Database connection invalid");
+        WsjcppLog::err(TAG, "Database connection invalid");
     }
     
     return m_pDatabase;
@@ -104,6 +104,6 @@ void ModelDatabaseConnection::close() {
         delete m_pDatabase;
         m_pDatabase = NULL;
         QSqlDatabase::removeDatabase(m_sNameConnection);
-        WSJCppLog::info(TAG, "Closed connection to database (" + m_sNameConnection.toStdString() + ")");
+        WsjcppLog::info(TAG, "Closed connection to database (" + m_sNameConnection.toStdString() + ")");
     }
 }

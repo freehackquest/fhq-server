@@ -2,7 +2,7 @@
 #include <arpa/inet.h>
 #include <wsjcpp_core.h>
 
-bool WSJCppValidators::isValidDate(const std::string &sValue, std::string &sError) {
+bool WsjcppValidators::isValidDate(const std::string &sValue, std::string &sError) {
     int nSize = sValue.size();
     if (nSize != 10) {
         sError = "Invalid size format expected length 10";
@@ -61,7 +61,7 @@ bool WSJCppValidators::isValidDate(const std::string &sValue, std::string &sErro
 
 // ----------------------------------------------------------------------
 
-bool WSJCppValidators::isValidTimeH24(const std::string &sValue, std::string &sError) {
+bool WsjcppValidators::isValidTimeH24(const std::string &sValue, std::string &sError) {
     int nSize = sValue.size();
     if (nSize != 8) {
         sError = "Invalid size format expected length 8";
@@ -112,7 +112,7 @@ bool WSJCppValidators::isValidTimeH24(const std::string &sValue, std::string &sE
 
 // ----------------------------------------------------------------------
 
-bool WSJCppValidators::isValidDomainName(const std::string &sValue, std::string &sError) {
+bool WsjcppValidators::isValidDomainName(const std::string &sValue, std::string &sError) {
     std::vector<std::string> vSubDomains;
     std::string sTmpDomain = "";
     int nAddressLen = sValue.size();
@@ -215,14 +215,14 @@ bool WSJCppValidators::isValidDomainName(const std::string &sValue, std::string 
 
 // ----------------------------------------------------------------------
 
-bool WSJCppValidators::isValidPort(const std::string &sValue, std::string &sError) {
+bool WsjcppValidators::isValidPort(const std::string &sValue, std::string &sError) {
     int nPort = std::atoi(sValue.c_str());
-    return WSJCppValidators::isValidPort(nPort, sError);
+    return WsjcppValidators::isValidPort(nPort, sError);
 }
 
 // ----------------------------------------------------------------------
 
-bool WSJCppValidators::isValidPort(int nValue, std::string &sError) {
+bool WsjcppValidators::isValidPort(int nValue, std::string &sError) {
     if (nValue < 1 || nValue > 65535) {
         sError = "Port '" + std::to_string(nValue) + "' must be more then 0 and less then 65536";
         return false;
@@ -232,7 +232,7 @@ bool WSJCppValidators::isValidPort(int nValue, std::string &sError) {
 
 // ----------------------------------------------------------------------
 
-bool WSJCppValidators::isValidURLProtocol(const std::string &sValue, std::string &sError) {
+bool WsjcppValidators::isValidURLProtocol(const std::string &sValue, std::string &sError) {
     if (
         sValue != "http" 
         && sValue != "https" 
@@ -249,7 +249,7 @@ bool WSJCppValidators::isValidURLProtocol(const std::string &sValue, std::string
 
 // ----------------------------------------------------------------------
 
-bool WSJCppValidators::isValidBase64(const std::string &sValue, std::string &sError) {
+bool WsjcppValidators::isValidBase64(const std::string &sValue, std::string &sError) {
     int nSize = sValue.size();
     if (nSize % 4 != 0) {
         sError = "Value size must be a multiple of 4";
@@ -291,7 +291,7 @@ bool WSJCppValidators::isValidBase64(const std::string &sValue, std::string &sEr
 
 // ----------------------------------------------------------------------
 
-bool WSJCppValidators::isValidIPv4(const std::string &sValue, std::string &sError) {
+bool WsjcppValidators::isValidIPv4(const std::string &sValue, std::string &sError) {
     int n = 0;
     std::string s[4] = {"", "", "", ""};
     for (int i = 0; i < sValue.length(); i++) {
@@ -327,7 +327,7 @@ bool WSJCppValidators::isValidIPv4(const std::string &sValue, std::string &sErro
 
 // ----------------------------------------------------------------------
 
-bool WSJCppValidators::isValidIPv6(const std::string &sValue, std::string &sError) {
+bool WsjcppValidators::isValidIPv6(const std::string &sValue, std::string &sError) {
     // TODO redesign without arpa
     unsigned char buf[sizeof(struct in6_addr)];
     bool isValid = inet_pton(AF_INET6, sValue.c_str(), buf);
@@ -338,30 +338,30 @@ bool WSJCppValidators::isValidIPv6(const std::string &sValue, std::string &sErro
 }
 
 // ----------------------------------------------------------------------
-// WSJCppValidatorStringBase
+// WsjcppValidatorStringBase
 
-WSJCppValidatorStringBase::WSJCppValidatorStringBase(const std::string &sTypeName) {
-    TAG = "WSJCppValidatorStringBase";
+WsjcppValidatorStringBase::WsjcppValidatorStringBase(const std::string &sTypeName) {
+    TAG = "WsjcppValidatorStringBase";
     m_sTypeName = sTypeName;
 }
 
 // ----------------------------------------------------------------------
 
-WSJCppValidatorType WSJCppValidatorStringBase::getBaseType() {
-    return WSJCppValidatorType::WSJCPP_VALIDATOR_STRING;
+WsjcppValidatorType WsjcppValidatorStringBase::getBaseType() {
+    return WsjcppValidatorType::WSJCPP_VALIDATOR_STRING;
 }
 
 // ----------------------------------------------------------------------
 
-std::string WSJCppValidatorStringBase::getTypeName() {
+std::string WsjcppValidatorStringBase::getTypeName() {
     return m_sTypeName;
 }
 
 // ----------------------------------------------------------------------
-// WSJCppValidatorStringRegexpBase
+// WsjcppValidatorStringRegexpBase
 
-WSJCppValidatorStringRegexpBase::WSJCppValidatorStringRegexpBase(const std::string &typeName, const std::string &sValidator)
-: WSJCppValidatorStringBase(typeName) {
+WsjcppValidatorStringRegexpBase::WsjcppValidatorStringRegexpBase(const std::string &typeName, const std::string &sValidator)
+: WsjcppValidatorStringBase(typeName) {
     TAG = "ValidatorStringRegexpBase"; 
     m_sValidator = sValidator;
     m_rxValidator = std::regex(sValidator);
@@ -369,7 +369,7 @@ WSJCppValidatorStringRegexpBase::WSJCppValidatorStringRegexpBase(const std::stri
 
 // ----------------------------------------------------------------------
 
-bool WSJCppValidatorStringRegexpBase::isValid(const std::string &sValue, std::string &sError) {
+bool WsjcppValidatorStringRegexpBase::isValid(const std::string &sValue, std::string &sError) {
     if (!std::regex_match(sValue, m_rxValidator)) {
         sError = getTypeName() + " - Value must match regular expression " + m_sValidator;
         return false;
@@ -378,16 +378,16 @@ bool WSJCppValidatorStringRegexpBase::isValid(const std::string &sValue, std::st
 }
 
 // ----------------------------------------------------------------------
-// WSJCppValidatorStringListBase
+// WsjcppValidatorStringListBase
 
-WSJCppValidatorStringListBase::WSJCppValidatorStringListBase(const std::string &sTypeName, const std::vector<std::string> &vListValues)
-: WSJCppValidatorStringBase(sTypeName) {
+WsjcppValidatorStringListBase::WsjcppValidatorStringListBase(const std::string &sTypeName, const std::vector<std::string> &vListValues)
+: WsjcppValidatorStringBase(sTypeName) {
     m_vListValues = vListValues;
 }
 
 // ----------------------------------------------------------------------
 
-bool WSJCppValidatorStringListBase::isValid(const std::string &sValue, std::string &sError) {
+bool WsjcppValidatorStringListBase::isValid(const std::string &sValue, std::string &sError) {
     if (std::find(m_vListValues.begin(), m_vListValues.end(), sValue) != m_vListValues.end()) {
         return true;
     }
@@ -403,40 +403,40 @@ bool WSJCppValidatorStringListBase::isValid(const std::string &sValue, std::stri
 }
 
 // ----------------------------------------------------------------------
-// WSJCppValidatorEmail
+// WsjcppValidatorEmail
 
-WSJCppValidatorEmail::WSJCppValidatorEmail()
-: WSJCppValidatorStringRegexpBase(
+WsjcppValidatorEmail::WsjcppValidatorEmail()
+: WsjcppValidatorStringRegexpBase(
     "email",
     "^[0-9a-zA-Z]{1}[0-9a-zA-Z-._]*[0-9a-zA-Z]{1}@[0-9a-zA-Z]{1}[-.0-9a-zA-Z]*[0-9a-zA-Z]{1}\\.[a-zA-Z]{2,6}$"
 ) {
-    TAG = "WSJCppValidatorEmail";
+    TAG = "WsjcppValidatorEmail";
 }
 
 // ----------------------------------------------------------------------
-// WSJCppValidatorUUID
+// WsjcppValidatorUUID
 
-WSJCppValidatorUUID::WSJCppValidatorUUID()
-: WSJCppValidatorStringRegexpBase(
+WsjcppValidatorUUID::WsjcppValidatorUUID()
+: WsjcppValidatorStringRegexpBase(
     "uuid",
     "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$"
 ) {
-    TAG = "WSJCppValidatorUUID";
+    TAG = "WsjcppValidatorUUID";
 }
 
 // ----------------------------------------------------------------------
-// WSJCppValidatorStringLenght
+// WsjcppValidatorStringLenght
 
-WSJCppValidatorStringLength::WSJCppValidatorStringLength(int nMinLength, int nMaxLength) 
-: WSJCppValidatorStringBase("string_length") {
-    TAG = "WSJCppValidatorStringLenght";
+WsjcppValidatorStringLength::WsjcppValidatorStringLength(int nMinLength, int nMaxLength) 
+: WsjcppValidatorStringBase("string_length") {
+    TAG = "WsjcppValidatorStringLenght";
     m_nMinLength = nMinLength;
     m_nMaxLength = nMaxLength;
 }
 
 // ----------------------------------------------------------------------
 
-bool WSJCppValidatorStringLength::isValid(const std::string &sValue, std::string &sError) {
+bool WsjcppValidatorStringLength::isValid(const std::string &sValue, std::string &sError) {
     if (sValue.length() < m_nMinLength) {
         sError = "Value must have more than " + std::to_string(m_nMinLength) + " simbols";
         return false;
@@ -450,55 +450,55 @@ bool WSJCppValidatorStringLength::isValid(const std::string &sValue, std::string
 }
 
 // ----------------------------------------------------------------------
-// WSJCppValidatorJWT
+// WsjcppValidatorJWT
 
-WSJCppValidatorJWT::WSJCppValidatorJWT()
-: WSJCppValidatorStringRegexpBase(
+WsjcppValidatorJWT::WsjcppValidatorJWT()
+: WsjcppValidatorStringRegexpBase(
     "jwt",
     "^[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
 ) {
-    TAG = "WSJCppValidatorJWT";
+    TAG = "WsjcppValidatorJWT";
 }
 
 // ----------------------------------------------------------------------
-// WSJCppValidatorDate
+// WsjcppValidatorDate
 
-WSJCppValidatorDate::WSJCppValidatorDate()
-: WSJCppValidatorStringBase("date") {
-    TAG = "WSJCppValidatorDate";
-}
-
-// ----------------------------------------------------------------------
-
-bool WSJCppValidatorDate::isValid(const std::string &sValue, std::string &sError) {
-    return WSJCppValidators::isValidDate(sValue, sError);
-}
-
-// ----------------------------------------------------------------------
-// WSJCppValidatorTimeH24
-
-WSJCppValidatorTimeH24::WSJCppValidatorTimeH24()
-: WSJCppValidatorStringBase("time_h24") {
-    TAG = "WSJCppValidatorTime";
+WsjcppValidatorDate::WsjcppValidatorDate()
+: WsjcppValidatorStringBase("date") {
+    TAG = "WsjcppValidatorDate";
 }
 
 // ----------------------------------------------------------------------
 
-bool WSJCppValidatorTimeH24::isValid(const std::string &sValue, std::string &sError) {
-    return WSJCppValidators::isValidTimeH24(sValue, sError);
+bool WsjcppValidatorDate::isValid(const std::string &sValue, std::string &sError) {
+    return WsjcppValidators::isValidDate(sValue, sError);
 }
 
 // ----------------------------------------------------------------------
-// WSJCppValidatorDateTime
+// WsjcppValidatorTimeH24
 
-WSJCppValidatorDateTime::WSJCppValidatorDateTime()
-: WSJCppValidatorStringBase("datetime") {
-    TAG = "WSJCppValidatorDateTime";
+WsjcppValidatorTimeH24::WsjcppValidatorTimeH24()
+: WsjcppValidatorStringBase("time_h24") {
+    TAG = "WsjcppValidatorTime";
 }
 
 // ----------------------------------------------------------------------
 
-bool WSJCppValidatorDateTime::isValid(const std::string &sValue, std::string &sError) {
+bool WsjcppValidatorTimeH24::isValid(const std::string &sValue, std::string &sError) {
+    return WsjcppValidators::isValidTimeH24(sValue, sError);
+}
+
+// ----------------------------------------------------------------------
+// WsjcppValidatorDateTime
+
+WsjcppValidatorDateTime::WsjcppValidatorDateTime()
+: WsjcppValidatorStringBase("datetime") {
+    TAG = "WsjcppValidatorDateTime";
+}
+
+// ----------------------------------------------------------------------
+
+bool WsjcppValidatorDateTime::isValid(const std::string &sValue, std::string &sError) {
     int nSize = sValue.size();
     // '2020-01-01T00:00:00'
     if (nSize != 19) {
@@ -506,7 +506,7 @@ bool WSJCppValidatorDateTime::isValid(const std::string &sValue, std::string &sE
         return false;
     }
     std::string sDate = sValue.substr(0,10);
-    if (!WSJCppValidators::isValidDate(sDate, sError)) {
+    if (!WsjcppValidators::isValidDate(sDate, sError)) {
         return false;
     }
     if (sValue[10] != 'T') {
@@ -516,24 +516,24 @@ bool WSJCppValidatorDateTime::isValid(const std::string &sValue, std::string &sE
         return false;
     }
     std::string sTime = sValue.substr(11,8);
-    if (!WSJCppValidators::isValidTimeH24(sTime, sError)) {
+    if (!WsjcppValidators::isValidTimeH24(sTime, sError)) {
         return false;
     }
     return true;
 }
 
 // ----------------------------------------------------------------------
-// WSJCppValidatorURL
+// WsjcppValidatorURL
 
-WSJCppValidatorURL::WSJCppValidatorURL() 
-: WSJCppValidatorStringBase("url") {
-    TAG = "WSJCppValidatorURL";
+WsjcppValidatorURL::WsjcppValidatorURL() 
+: WsjcppValidatorStringBase("url") {
+    TAG = "WsjcppValidatorURL";
     m_rxLikeIPv4Format = std::regex("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$");
 }
 
 // ----------------------------------------------------------------------
 
-bool WSJCppValidatorURL::isValid(const std::string &sValue, std::string &sError) {
+bool WsjcppValidatorURL::isValid(const std::string &sValue, std::string &sError) {
     if (sValue.size() == 0) {
         sError = "Value is empty";
         return false;
@@ -542,8 +542,8 @@ bool WSJCppValidatorURL::isValid(const std::string &sValue, std::string &sError)
         sError = "Must contain at least one dot";
         return false;
     }    
-    std::string sProtocol = WSJCppCore::extractURLProtocol(sValue);
-    if (!WSJCppValidators::isValidURLProtocol(sProtocol, sError)) {
+    std::string sProtocol = WsjcppCore::extractURLProtocol(sValue);
+    if (!WsjcppValidators::isValidURLProtocol(sProtocol, sError)) {
         return false;
     }
 
@@ -568,7 +568,7 @@ bool WSJCppValidatorURL::isValid(const std::string &sValue, std::string &sError)
     if (sAuthority != "") {
         // sError = "TODO check username and password sAuthority= [" + sAuthority + "]";
         // -.~_!$&'()*+,;=:%40:80%2f::::::
-        // WSJCppLog::warn(TAG, sError);
+        // WsjcppLog::warn(TAG, sError);
         // return false;
     }
     std::string sAddress = sAddressAndPath;
@@ -592,13 +592,13 @@ bool WSJCppValidatorURL::isValid(const std::string &sValue, std::string &sError)
     }
     
     if (sPort != "") {
-        if (!WSJCppValidators::isValidPort(sPort, sError)) {
+        if (!WsjcppValidators::isValidPort(sPort, sError)) {
             return false;
         }
     }
 
     if (std::regex_match(sAddress, m_rxLikeIPv4Format)) {
-        if (!WSJCppValidators::isValidIPv4(sAddress, sError)) {
+        if (!WsjcppValidators::isValidIPv4(sAddress, sError)) {
             return false;
         }
         if (sPort != "") {
@@ -609,7 +609,7 @@ bool WSJCppValidatorURL::isValid(const std::string &sValue, std::string &sError)
             }
         }
     } else {
-        if (!WSJCppValidators::isValidDomainName(sAddress, sError)) {
+        if (!WsjcppValidators::isValidDomainName(sAddress, sError)) {
             return false;
         }
     }
@@ -643,30 +643,30 @@ bool WSJCppValidatorURL::isValid(const std::string &sValue, std::string &sError)
 }
 
 // ----------------------------------------------------------------------
-// WSJCppValidatorBase64
+// WsjcppValidatorBase64
 
-WSJCppValidatorBase64::WSJCppValidatorBase64() 
-: WSJCppValidatorStringBase("base64") {
-    TAG = "WSJCppValidatorBase64";
+WsjcppValidatorBase64::WsjcppValidatorBase64() 
+: WsjcppValidatorStringBase("base64") {
+    TAG = "WsjcppValidatorBase64";
 }
 
 // ----------------------------------------------------------------------
 
-bool WSJCppValidatorBase64::isValid(const std::string &sValue, std::string &sError) {
-    return WSJCppValidators::isValidBase64(sValue, sError);
+bool WsjcppValidatorBase64::isValid(const std::string &sValue, std::string &sError) {
+    return WsjcppValidators::isValidBase64(sValue, sError);
 }
 
 // ----------------------------------------------------------------------
-// WSJCppValidatorNumber
+// WsjcppValidatorNumber
 
-WSJCppValidatorNumber::WSJCppValidatorNumber() 
-: WSJCppValidatorStringBase("number") {
-    TAG = "WSJCppValidatorNumber";
+WsjcppValidatorNumber::WsjcppValidatorNumber() 
+: WsjcppValidatorStringBase("number") {
+    TAG = "WsjcppValidatorNumber";
 }
 
 // ----------------------------------------------------------------------
 
-bool WSJCppValidatorNumber::isValid(const std::string &sValue, std::string &sError) {
+bool WsjcppValidatorNumber::isValid(const std::string &sValue, std::string &sError) {
     int nSize = sValue.size();
     bool bHasOneAndMoreNumbers = false;
     for (int i = 0; i < nSize; i++) {
@@ -686,16 +686,16 @@ bool WSJCppValidatorNumber::isValid(const std::string &sValue, std::string &sErr
 }
 
 // ----------------------------------------------------------------------
-// WSJCppValidatorHex
+// WsjcppValidatorHex
 
-WSJCppValidatorHex::WSJCppValidatorHex() 
-: WSJCppValidatorStringBase("hex") {
-    TAG = "WSJCppValidatorHex";
+WsjcppValidatorHex::WsjcppValidatorHex() 
+: WsjcppValidatorStringBase("hex") {
+    TAG = "WsjcppValidatorHex";
 }
 
 // ----------------------------------------------------------------------
 
-bool WSJCppValidatorHex::isValid(const std::string &sValue, std::string &sError) {
+bool WsjcppValidatorHex::isValid(const std::string &sValue, std::string &sError) {
     int nSize = sValue.size();
     if (nSize == 0) {
         sError = "Empty string";

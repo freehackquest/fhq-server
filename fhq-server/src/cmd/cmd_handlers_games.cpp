@@ -32,7 +32,7 @@ CmdHandlerGameCreate::CmdHandlerGameCreate()
     
     // validation and description input fields
     requireStringParam("uuid", "Global Identificator of the Game")
-        .addValidator(new WSJCppValidatorUUID());
+        .addValidator(new WsjcppValidatorUUID());
     requireStringParam("name", "Name of the Game");
     requireStringParam("description", "Description of the Game");
     requireStringParam("state", "State of the game")
@@ -51,7 +51,7 @@ CmdHandlerGameCreate::CmdHandlerGameCreate()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameCreate::handle(ModelRequest *pRequest) {
-    EmployGames *pEmployGames = findWSJCppEmploy<EmployGames>();
+    EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -63,17 +63,17 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest) {
     switch (nResult) {
 
         case EmployResult::DATABASE_ERROR: {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, sError));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, sError));
             break;
         }
 
         case EmployResult::ALREADY_EXISTS: {
-            pRequest->sendMessageError(cmd(), WSJCppError(403, "Game already exists with this uuid"));
+            pRequest->sendMessageError(cmd(), WsjcppError(403, "Game already exists with this uuid"));
             break;
         }
 
         case EmployResult::ERROR_NAME_IS_EMPTY: {
-            pRequest->sendMessageError(cmd(), WSJCppError(400, "Game has empty name"));
+            pRequest->sendMessageError(cmd(), WsjcppError(400, "Game has empty name"));
             break;
         }
 
@@ -86,7 +86,7 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest) {
         }
 
         default: {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, "Server error"));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, "Server error"));
         }
     }
 }
@@ -104,7 +104,7 @@ CmdHandlerGameDelete::CmdHandlerGameDelete()
 
     // validation and description input fields
     requireStringParam("uuid", "Global Identificator of the Game")
-        .addValidator(new WSJCppValidatorUUID());
+        .addValidator(new WsjcppValidatorUUID());
 
     requireStringParam("admin_password", "Admin Password");
 }
@@ -112,7 +112,7 @@ CmdHandlerGameDelete::CmdHandlerGameDelete()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
     std::string sUuid = pRequest->getInputString("uuid", "");
@@ -129,7 +129,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         query.prepare("SELECT * FROM users WHERE id = :userid");
         query.bindValue(":userid", nUserID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -141,14 +141,14 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
             sEmail = record.value("email").toString().toUpper().toStdString();
             sPass = record.value("pass").toString().toStdString();
         } else {
-            pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found user"));
+            pRequest->sendMessageError(cmd(), WsjcppError(404, "Not found user"));
             return;
         }
 
-        std::string sAdminPasswordHash = WSJCppHashes::sha1_calc_hex(sEmail + sAdminPassword);
+        std::string sAdminPasswordHash = WsjcppHashes::sha1_calc_hex(sEmail + sAdminPassword);
 
         if (sAdminPasswordHash != sPass) {
-            pRequest->sendMessageError(cmd(), WSJCppError(401, "Wrong password"));
+            pRequest->sendMessageError(cmd(), WsjcppError(401, "Wrong password"));
             return;
         }
     }
@@ -163,12 +163,12 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         query.bindValue(":uuid", QString::fromStdString(sUuid));
 
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
 
         if (!query.next()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(404, "Game not found"));
+            pRequest->sendMessageError(cmd(), WsjcppError(404, "Game not found"));
             return;
         } else {
             QSqlRecord record = query.record();
@@ -177,7 +177,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         }
     }
 
-    EmployGames *pEmployGames = findWSJCppEmploy<EmployGames>();
+    EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
     pEmployGames->removeGame(sUuid); // TODO just removed from cache
 
     // delete from users_games
@@ -186,7 +186,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM users_games WHERE gameid = :gameid");
         query_del.bindValue(":gameid", nGameID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -197,7 +197,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM users_quests_answers WHERE questid IN (SELECT idquest FROM quest q WHERE q.gameid = :gameid)");
         query_del.bindValue(":gameid", nGameID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -208,7 +208,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM users_quests WHERE questid IN (SELECT idquest FROM quest q WHERE q.gameid = :gameid)");
         query_del.bindValue(":gameid", nGameID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -219,7 +219,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM quest WHERE gameid = :gameid");
         query_del.bindValue(":gameid", nGameID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -230,7 +230,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM games WHERE id = :gameid");
         query_del.bindValue(":gameid", nGameID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -238,15 +238,15 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
     // delete game logo if exists
     std::string sGameLogoFilename = "";
     {
-        EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
+        EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
         std::string sBasePath = pGlobalSettings->get("web_public_folder").getDirPathValue();
         sGameLogoFilename = sBasePath + "games/" + std::to_string(nGameID) + ".png";
         if (remove( sGameLogoFilename.c_str() ) != 0) {
-            WSJCppLog::err(TAG, "Could not delete file " + sGameLogoFilename);
+            WsjcppLog::err(TAG, "Could not delete file " + sGameLogoFilename);
         }
     }
 
-    EmployNotify *pNotify = findWSJCppEmploy<EmployNotify>();
+    EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
     ModelNotification notification("warning", "games", "Removed [game#" + sUuid + "] " + sName);
     pNotify->sendNotification(notification);
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -267,14 +267,14 @@ CmdHandlerGameExport::CmdHandlerGameExport()
 
     // validation and description input fields
     requireStringParam("uuid", "Global Identificator of the Game")
-        .addValidator(new WSJCppValidatorUUID());
+        .addValidator(new WsjcppValidatorUUID());
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
-    // EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
-    EmployGames *pEmployGames = findWSJCppEmploy<EmployGames>();
+    // EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+    EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
 
     nlohmann::json jsonResponse;
 
@@ -282,14 +282,14 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
 
     ModelGame modelGame;
     if (!pEmployGames->findGame(sUuid, modelGame)) {
-        pRequest->sendMessageError(cmd(), WSJCppError(404, "Game not found"));
+        pRequest->sendMessageError(cmd(), WsjcppError(404, "Game not found"));
         return;
     }
 
     // find logo for game
     QString sGameLogoFilename = "";
     {
-        EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
+        EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
         QString sBasePath = QString::fromStdString(pGlobalSettings->get("web_public_folder").getDirPathValue() + "games/");
         sGameLogoFilename = sBasePath + QString::number(modelGame.localId()) + ".png";
     }
@@ -314,7 +314,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
             export_zipfile.write(baLogo);
             export_zipfile.close();
         } else {
-            WSJCppLog::warn(TAG, QString("Logo not found " + sGameLogoFilename).toStdString());
+            WsjcppLog::warn(TAG, QString("Logo not found " + sGameLogoFilename).toStdString());
         }
     }
 
@@ -331,7 +331,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
     {
         QFile fileZip(tmpZipFile);
         if (!fileZip.open(QIODevice::ReadOnly)) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, "Could not open zip file"));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, "Could not open zip file"));
             return;
         }
         QByteArray baZip = fileZip.readAll();
@@ -359,7 +359,7 @@ CmdHandlerGameImport::CmdHandlerGameImport()
     setAccessAdmin(true);
 
     requireStringParam("uuid", "Global Identificator of the Game")
-        .addValidator(new WSJCppValidatorUUID());
+        .addValidator(new WsjcppValidatorUUID());
 }
 
 // ---------------------------------------------------------------------
@@ -368,7 +368,7 @@ void CmdHandlerGameImport::handle(ModelRequest *pRequest) {
     // nlohmann::json jsonRequest = pRequest->jsonRequest();
     // nlohmann::json jsonResponse;
 
-    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
     return;
 
     // TODO
@@ -390,19 +390,19 @@ CmdHandlerGameInfo::CmdHandlerGameInfo()
 
     // validation and description input fields
     requireStringParam("uuid", "Global Identificator of the Game")
-        .addValidator(new WSJCppValidatorUUID());
+        .addValidator(new WsjcppValidatorUUID());
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameInfo::handle(ModelRequest *pRequest) {
-    EmployGames *pEmployGames = findWSJCppEmploy<EmployGames>();
+    EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
 
     std::string sUuid = pRequest->getInputString("uuid", "");
 
     ModelGame modelGame;
     if (!pEmployGames->findGame(sUuid, modelGame)) {
-        pRequest->sendMessageError(cmd(), WSJCppError(404, "Game not found"));
+        pRequest->sendMessageError(cmd(), WsjcppError(404, "Game not found"));
         return;
     }
 
@@ -424,7 +424,7 @@ CmdHandlerGameUpdate::CmdHandlerGameUpdate()
 
     // validation and description input fields
     requireStringParam("uuid", "Global Identificator of the Game")
-        .addValidator(new WSJCppValidatorUUID());
+        .addValidator(new WsjcppValidatorUUID());
     optionalStringParam("name", "Name of the Game");
     optionalStringParam("description", "Description of the Game");
     optionalStringParam("state", "State of the game")
@@ -442,14 +442,14 @@ CmdHandlerGameUpdate::CmdHandlerGameUpdate()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameUpdate::handle(ModelRequest *pRequest) {
-    EmployGames *pEmployGames = findWSJCppEmploy<EmployGames>();
+    EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
 
     ModelGame updatedModelGame;
     updatedModelGame.fillFrom(pRequest->jsonRequest());
 
     ModelGame modelGame;
     if (!pEmployGames->findGame(updatedModelGame.uuid(), modelGame)) {
-        pRequest->sendMessageError(cmd(), WSJCppError(404, "Game not found"));
+        pRequest->sendMessageError(cmd(), WsjcppError(404, "Game not found"));
         return;
     }
 
@@ -462,13 +462,13 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest) {
     switch (nResult) {
 
         case EmployResult::DATABASE_ERROR: {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, sError));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, sError));
             break;
         }
         
 
         case EmployResult::GAME_NOT_FOUND: {
-            pRequest->sendMessageError(cmd(), WSJCppError(404, "Game not found"));
+            pRequest->sendMessageError(cmd(), WsjcppError(404, "Game not found"));
             break;
         }
 
@@ -481,7 +481,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest) {
         }
 
         default: {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, "Server error"));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, "Server error"));
         }
     }
 }
@@ -501,7 +501,7 @@ CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
 
     // validation and description input fields
     requireStringParam("uuid", "Global Identificator of the Game")
-        .addValidator(new WSJCppValidatorUUID());
+        .addValidator(new WsjcppValidatorUUID());
 
     requireStringParam("image_png_base64", "Image PNG in Base64");
 }
@@ -509,12 +509,12 @@ CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
-    EmployGames *pEmployGames = findWSJCppEmploy<EmployGames>();
+    EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
 
     ModelGame modelGame;
     modelGame.fillFrom(pRequest->jsonRequest());
     if (!pEmployGames->findGame(modelGame.uuid(), modelGame)) {
-        pRequest->sendMessageError(cmd(), WSJCppError(404, "Game not found"));
+        pRequest->sendMessageError(cmd(), WsjcppError(404, "Game not found"));
         return;
     }
 
@@ -522,8 +522,8 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
 
     nlohmann::json jsonResponse;
 
-    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
-    EmployImages *pImages = findWSJCppEmploy<EmployImages>();
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+    EmployImages *pImages = findWsjcppEmploy<EmployImages>();
 
     QString sBasePath = QString::fromStdString(pGlobalSettings->get("web_public_folder").getDirPathValue() + "games/");
 
@@ -539,7 +539,7 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
     QByteArray baImagePNG = QByteArray::fromBase64(baImagePNGBase64); // .fromBase64(baImagePNGBase64);
 
     if (baImagePNG.size() == 0) {
-        pRequest->sendMessageError(cmd(), WSJCppError(400, "Could not decode base64"));
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "Could not decode base64"));
         return;
     }
 
@@ -556,23 +556,23 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
     fclose (pFile);
 
     std::string targetImageFile = sFilename.toStdString();
-    // WSJCppLog::info(TAG, "targetImageFile " + targetImageFile);
+    // WsjcppLog::info(TAG, "targetImageFile " + targetImageFile);
     if (!pImages->doThumbnailImagePng(sSourceImageFile, targetImageFile, 100, 100)) {
-        pRequest->sendMessageError(cmd(), WSJCppError(400, "Could not decode bytearray to png"));
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "Could not decode bytearray to png"));
         // cleanup - redesign try finnaly
         remove( sSourceImageFile.c_str());
         return;
     }
 
     if (remove(sSourceImageFile.c_str()) != 0) {
-        WSJCppLog::err(TAG, "Could not delete file " + sSourceImageFile);
+        WsjcppLog::err(TAG, "Could not delete file " + sSourceImageFile);
     }
 
     if (FILE *file = fopen(targetImageFile.c_str(), "r")) {
         fclose(file);
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     } else {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, "Problem with creation file"));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, "Problem with creation file"));
     }
 }
 
@@ -597,11 +597,11 @@ CmdHandlerGames::CmdHandlerGames()
 // ---------------------------------------------------------------------
 
 void CmdHandlerGames::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
-    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
 
     std::string sBaseUrl = pGlobalSettings->get("web_public_folder_url").getStringValue() + "games/";
     QString base_url = QString::fromStdString(sBaseUrl);
@@ -614,7 +614,7 @@ void CmdHandlerGames::handle(ModelRequest *pRequest) {
     query.prepare("SELECT * FROM games ORDER BY games.date_start");
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
 

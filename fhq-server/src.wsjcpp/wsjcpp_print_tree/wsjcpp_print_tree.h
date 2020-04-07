@@ -4,40 +4,40 @@
 #include <string>
 #include <vector>
 
-class WSJCppPrintNode {
+class WsjcppPrintNode {
     public:
-        WSJCppPrintNode(WSJCppPrintNode *pParent, const std::string &sTitle);
+        WsjcppPrintNode(WsjcppPrintNode *pParent, const std::string &sTitle);
         std::string getTitle();
-        WSJCppPrintNode *getParent();
-        std::vector<WSJCppPrintNode *> getChildsList();
-        WSJCppPrintNode *getLastChild();
-        WSJCppPrintNode *addChild(const std::string &sTitle);
+        WsjcppPrintNode *getParent();
+        std::vector<WsjcppPrintNode *> getChildsList();
+        WsjcppPrintNode *getLastChild();
+        WsjcppPrintNode *addChild(const std::string &sTitle);
         bool hasChilds();
     private:
         std::string TAG;
-        WSJCppPrintNode *m_pParent;
+        WsjcppPrintNode *m_pParent;
         std::string m_sTitle;
-        std::vector<WSJCppPrintNode *> m_vChilds;
+        std::vector<WsjcppPrintNode *> m_vChilds;
 };
 
 // ----------------------------------------------------------------------
 
-class WSJCppPrintTree {
+class WsjcppPrintTree {
     public:
-        WSJCppPrintTree(const std::string &sTitle);
-        WSJCppPrintNode *getRootNode();
-        WSJCppPrintNode *getCurrentNode();
-        WSJCppPrintTree &switchToLatestChild();
-        WSJCppPrintTree &addChild(const std::string &sTitle);
-        WSJCppPrintTree &switchToParent();
+        WsjcppPrintTree(const std::string &sTitle);
+        WsjcppPrintNode *getRootNode();
+        WsjcppPrintNode *getCurrentNode();
+        WsjcppPrintTree &switchToLatestChild();
+        WsjcppPrintTree &addChild(const std::string &sTitle);
+        WsjcppPrintTree &switchToParent();
         std::string printTree();
 
     private:
         std::string TAG;
-        WSJCppPrintNode *m_pRootNode;
-        WSJCppPrintNode *m_pCurrentNode;
+        WsjcppPrintNode *m_pRootNode;
+        WsjcppPrintNode *m_pCurrentNode;
 
-        std::string printRecoursive(const std::string &sPrefix, WSJCppPrintNode *pParentNode);
+        std::string printRecoursive(const std::string &sPrefix, WsjcppPrintNode *pParentNode);
 };
 
 #endif // WSJCPP_PRINT_TREE_H

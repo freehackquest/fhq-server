@@ -4,7 +4,7 @@
 // ----------------------------------------------------------------------
 
 HttpHandlerWebAdminFolder::HttpHandlerWebAdminFolder(const std::string &sWebFolder)
-    : WSJCppLightWebHttpHandlerBase("web-admin-folder") {
+    : WsjcppLightWebHttpHandlerBase("web-admin-folder") {
 
     TAG = "HttpHandlerWebAdminFolder";
     m_sWebFolder = sWebFolder;
@@ -12,13 +12,13 @@ HttpHandlerWebAdminFolder::HttpHandlerWebAdminFolder(const std::string &sWebFold
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerWebAdminFolder::canHandle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
+bool HttpHandlerWebAdminFolder::canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
-    // WSJCppLog::warn(_tag, "canHandle: " + pRequest->requestPath());
+    // WsjcppLog::warn(_tag, "canHandle: " + pRequest->requestPath());
     std::string sRequestPath = pRequest->getRequestPath();
     
     if (sRequestPath == "") {
-        WSJCppLog::err(_tag, "Request path is empty");
+        WsjcppLog::err(_tag, "Request path is empty");
         return false;
     }
 
@@ -35,14 +35,14 @@ bool HttpHandlerWebAdminFolder::canHandle(const std::string &sWorkerId, WSJCppLi
         return false;
     }
 
-    if (!WSJCppCore::dirExists(m_sWebFolder)) {
-        WSJCppLog::warn(_tag, "Directory " + m_sWebFolder + " does not exists");
+    if (!WsjcppCore::dirExists(m_sWebFolder)) {
+        WsjcppLog::warn(_tag, "Directory " + m_sWebFolder + " does not exists");
     }
     sRequestPath = sRequestPath.substr(6); // remove /admin
 
     std::string sFilePath = m_sWebFolder + sRequestPath; // TODO check /../ in path
-    // WSJCppLog::warn(_tag, "Response Resources " + sFilePath);
-    if (!WSJCppCore::fileExists(sFilePath)) { // TODO check the file exists not dir
+    // WsjcppLog::warn(_tag, "Response Resources " + sFilePath);
+    if (!WsjcppCore::fileExists(sFilePath)) { // TODO check the file exists not dir
         return false;
     }
     return true;
@@ -50,10 +50,10 @@ bool HttpHandlerWebAdminFolder::canHandle(const std::string &sWorkerId, WSJCppLi
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerWebAdminFolder::handle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
+bool HttpHandlerWebAdminFolder::handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
     std::string sRequestPath = pRequest->getRequestPath();
-    // WSJCppLog::warn(_tag, pRequest->requestPath());
+    // WsjcppLog::warn(_tag, pRequest->requestPath());
     
     if (sRequestPath == "/admin") {
         sRequestPath = "/admin/";
@@ -66,10 +66,10 @@ bool HttpHandlerWebAdminFolder::handle(const std::string &sWorkerId, WSJCppLight
     sRequestPath = sRequestPath.substr(6); // remove /admin
     
     std::string sFilePath = m_sWebFolder + sRequestPath; // TODO check /../ in path
-    if (!WSJCppCore::fileExists(sFilePath)) {
+    if (!WsjcppCore::fileExists(sFilePath)) {
         // std::string sResPath = "html" + sRequestPath;
         /*if (ResourcesManager::has(sResPath)) {
-            // WSJCppLog::warn(_tag, "Response Resources " + sResPath);
+            // WsjcppLog::warn(_tag, "Response Resources " + sResPath);
             // ResourceFile *pFile = ResourcesManager::get(sResPath);
             // pRequest->responseBuffer(sResPath, pFile->buffer(), pFile->bufferSize());
             return true;
@@ -79,8 +79,8 @@ bool HttpHandlerWebAdminFolder::handle(const std::string &sWorkerId, WSJCppLight
 
     // TODO 1. if file exists and last date change more that in cache so need update
     // TODO 2. if file not exists but in in resources - response them
-    WSJCppLightWebHttpResponse resp(pRequest->getSockFd());
-    // WSJCppLog::warn(_tag, "Response File " + sFilePath);
+    WsjcppLightWebHttpResponse resp(pRequest->getSockFd());
+    // WsjcppLog::warn(_tag, "Response File " + sFilePath);
     resp.cacheSec(60).ok().sendFile(sFilePath);
     return true;
 }

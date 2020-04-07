@@ -4,7 +4,7 @@
 #include <employees.h>
 #include <model_notification.h>
 
-class EmployNotify : public WSJCppEmployBase {
+class EmployNotify : public WsjcppEmployBase {
     public:
 
         EmployNotify();

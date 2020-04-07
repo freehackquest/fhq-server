@@ -23,7 +23,7 @@ enum EmployResult {
 
 // ----------------------------------------------------------------------
 
-enum WSJCppSettingStorageType {
+enum WsjcppSettingStorageType {
     WJSCPP_SETTING_IN_NONE,
     WJSCPP_SETTING_IN_FILE,
     WJSCPP_SETTING_IN_DATABASE,
@@ -32,7 +32,7 @@ enum WSJCppSettingStorageType {
 
 // ----------------------------------------------------------------------
 
-enum WSJCppSettingDataType {
+enum WsjcppSettingDataType {
     WJSCPP_SETTING_TYPE_NONE,
     WJSCPP_SETTING_TYPE_STRING,
     WJSCPP_SETTING_TYPE_PASSWORD,
@@ -47,23 +47,23 @@ enum WSJCppSettingDataType {
 
 // ----------------------------------------------------------------------
 
-class WSJCppSettingItem {
+class WsjcppSettingItem {
     public:
-        WSJCppSettingItem(const std::string &sSettingGroup, const std::string &sSettingName);
-        // WSJCppSettingItem(const WSJCppSettingItem &item);
-        WSJCppSettingItem &inFile();
-        WSJCppSettingItem &inDatabase();
-        WSJCppSettingItem &inRuntime();
-        WSJCppSettingItem &readonly();
-        WSJCppSettingItem &string(const std::string &sDefaultStringValue);
-        WSJCppSettingItem &password(const std::string &sDefaultPasswordValue);
-        WSJCppSettingItem &dirPath(const std::string &sDefaultDirPathValue);
-        WSJCppSettingItem &filePath(const std::string &sDefaultFilePathValue);
-        WSJCppSettingItem &text(const std::string &sDefaultTextValue);
-        WSJCppSettingItem &number(int nDefaultNumberValue);
-        WSJCppSettingItem &boolean(bool bDefaultBooleanValue);
-        WSJCppSettingItem &json();
-        WSJCppSettingItem &list();
+        WsjcppSettingItem(const std::string &sSettingGroup, const std::string &sSettingName);
+        // WsjcppSettingItem(const WsjcppSettingItem &item);
+        WsjcppSettingItem &inFile();
+        WsjcppSettingItem &inDatabase();
+        WsjcppSettingItem &inRuntime();
+        WsjcppSettingItem &readonly();
+        WsjcppSettingItem &string(const std::string &sDefaultStringValue);
+        WsjcppSettingItem &password(const std::string &sDefaultPasswordValue);
+        WsjcppSettingItem &dirPath(const std::string &sDefaultDirPathValue);
+        WsjcppSettingItem &filePath(const std::string &sDefaultFilePathValue);
+        WsjcppSettingItem &text(const std::string &sDefaultTextValue);
+        WsjcppSettingItem &number(int nDefaultNumberValue);
+        WsjcppSettingItem &boolean(bool bDefaultBooleanValue);
+        WsjcppSettingItem &json();
+        WsjcppSettingItem &list();
         
         void checkWithThrow() const;
         bool isInited() const;
@@ -123,9 +123,9 @@ class WSJCppSettingItem {
         std::string m_sSettingName;
         std::string m_sSettingGroup;
         bool m_bReadonly;
-        WSJCppSettingStorageType m_nStorageType;
+        WsjcppSettingStorageType m_nStorageType;
         std::string m_sStorageType;
-        WSJCppSettingDataType m_nSettingType;
+        WsjcppSettingDataType m_nSettingType;
         std::string m_sSettingType;
         bool m_bInited;
 
@@ -160,24 +160,24 @@ class WSJCppSettingItem {
 
 // ----------------------------------------------------------------------
 
-class WSJCppSettingListener {
+class WsjcppSettingListener {
     public:
-        virtual void onSettingsChanged(const WSJCppSettingItem *pSettingItem) = 0;
+        virtual void onSettingsChanged(const WsjcppSettingItem *pSettingItem) = 0;
 };
 
 // ----------------------------------------------------------------------
 
-class WSJCppSettingsStore {
+class WsjcppSettingsStore {
     public:
         virtual std::map<std::string, std::string> loadAllSettings() = 0;
-        virtual void updateSettingItem(const WSJCppSettingItem *pSettingItem) = 0;
-        virtual void initSettingItem(WSJCppSettingItem *pSettingItem) = 0;
+        virtual void updateSettingItem(const WsjcppSettingItem *pSettingItem) = 0;
+        virtual void initSettingItem(WsjcppSettingItem *pSettingItem) = 0;
 };
 
 // ---------------------------------------------------------------------
-// WSJCppEmployGlobalSettings
+// WsjcppEmployGlobalSettings
 
-class EmployGlobalSettings : public WSJCppEmployBase {
+class EmployGlobalSettings : public WsjcppEmployBase {
     public:
         EmployGlobalSettings();
         static std::string name() { return "EmployGlobalSettings"; }
@@ -185,17 +185,17 @@ class EmployGlobalSettings : public WSJCppEmployBase {
         virtual bool deinit();
         void setWorkDir(const std::string &sWorkDir); // TODO deprecated
 
-        WSJCppSettingItem &registrySetting(const std::string &sSettingGroup, const std::string &sSettingName);
+        WsjcppSettingItem &registrySetting(const std::string &sSettingGroup, const std::string &sSettingName);
 
-        const WSJCppSettingItem &get(const std::string &sSettingName);
+        const WsjcppSettingItem &get(const std::string &sSettingName);
         bool exists(const std::string &sSettingName);
         void update(const std::string &sSettingName, const std::string &sValue);
         void update(const std::string &sSettingName, int nValue);
         void update(const std::string &sSettingName, bool bValue);
 
-        void addListener(WSJCppSettingListener *);
-        void removeListener(WSJCppSettingListener *);
-        bool initFromDatabase(WSJCppSettingsStore *pDatabaseSettingsStore);
+        void addListener(WsjcppSettingListener *);
+        void removeListener(WsjcppSettingListener *);
+        bool initFromDatabase(WsjcppSettingsStore *pDatabaseSettingsStore);
         std::string getFilepathConf() const;
         nlohmann::json toJson(bool bHidePassword);
         void printSettings() const;
@@ -204,25 +204,25 @@ class EmployGlobalSettings : public WSJCppEmployBase {
         std::string TAG;
         std::string m_sWorkDir;
         std::string m_sFilepathConf;
-        WSJCppSettingsStore *m_pDatabaseSettingsStore;
+        WsjcppSettingsStore *m_pDatabaseSettingsStore;
 
         bool findFileConfig();
         bool initFromFile();
-        void eventSettingsChanged(const WSJCppSettingItem *pSettingItem);
-        std::map <std::string, WSJCppSettingItem *> m_mapSettingItems;
-        std::vector<WSJCppSettingListener *> m_vListeners;
+        void eventSettingsChanged(const WsjcppSettingItem *pSettingItem);
+        std::map <std::string, WsjcppSettingItem *> m_mapSettingItems;
+        std::vector<WsjcppSettingListener *> m_vListeners;
 };
 
 // ---------------------------------------------------------------------
 // WJSCppEmployServer
 
-class EmployServer : public WSJCppEmployBase {
+class EmployServer : public WsjcppEmployBase {
     public:
         EmployServer();
         static std::string name() { return "EmployServer"; }
         virtual bool init();
         virtual bool deinit();
-        bool validateInputParameters(WSJCppError &error, CmdHandlerBase *pCmdHandler, const nlohmann::json& jsonMessage);
+        bool validateInputParameters(WsjcppError &error, CmdHandlerBase *pCmdHandler, const nlohmann::json& jsonMessage);
         void setServer(IWebSocketServer *pWebSocketServer);
         void sendToAll(const nlohmann::json& jsonMessage);
         void sendToOne(QWebSocket *pClient, const nlohmann::json& jsonMessage);
