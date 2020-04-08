@@ -5,93 +5,93 @@
 
 // ----------------------------------------------------------------------
 
-WSJCppLightWebHttpRequestQueryValue::WSJCppLightWebHttpRequestQueryValue(const std::string &sName, const std::string &sValue) {
+WsjcppLightWebHttpRequestQueryValue::WsjcppLightWebHttpRequestQueryValue(const std::string &sName, const std::string &sValue) {
     m_sName = sName;
     m_sValue = sValue;
 }
 
 // ----------------------------------------------------------------------
 
-std::string WSJCppLightWebHttpRequestQueryValue::getName() const {
+std::string WsjcppLightWebHttpRequestQueryValue::getName() const {
     return m_sName;
 }
 
 // ----------------------------------------------------------------------
 
-std::string WSJCppLightWebHttpRequestQueryValue::getValue() const {
+std::string WsjcppLightWebHttpRequestQueryValue::getValue() const {
     return m_sValue;
 }
 
 // ----------------------------------------------------------------------
-// WSJCppLightWebHttpRequest
+// WsjcppLightWebHttpRequest
 
-WSJCppLightWebHttpRequest::WSJCppLightWebHttpRequest(int nSockFd, const std::string &sAddress) {
-    TAG = "WSJCppLightWebHttpRequest";
-    m_sUniqueId = WSJCppCore::createUuid();
+WsjcppLightWebHttpRequest::WsjcppLightWebHttpRequest(int nSockFd, const std::string &sAddress) {
+    TAG = "WsjcppLightWebHttpRequest";
+    m_sUniqueId = WsjcppCore::createUuid();
     m_nSockFd = nSockFd;
     m_sAddress = sAddress;
     m_bClosed = false;
     m_sRequest = "";
     m_nParserState = EnumParserState::START;
-    long nSec = WSJCppCore::currentTime_seconds();
-    m_sLastModified = WSJCppCore::formatTimeForWeb(nSec);
+    long nSec = WsjcppCore::currentTime_seconds();
+    m_sLastModified = WsjcppCore::formatTimeForWeb(nSec);
     m_nContentLength = 0;
 }
 
 // ----------------------------------------------------------------------
 
-int WSJCppLightWebHttpRequest::getSockFd() const {
+int WsjcppLightWebHttpRequest::getSockFd() const {
     return m_nSockFd;
 }
 
 // ----------------------------------------------------------------------
 
-std::string WSJCppLightWebHttpRequest::getUniqueId() const {
+std::string WsjcppLightWebHttpRequest::getUniqueId() const {
     return m_sUniqueId;
 }
 
 // ----------------------------------------------------------------------
 
-std::string WSJCppLightWebHttpRequest::getRequestType() const {
+std::string WsjcppLightWebHttpRequest::getRequestType() const {
     return m_sRequestType;
 }
 
 // ----------------------------------------------------------------------
 
-std::string WSJCppLightWebHttpRequest::getRequestPath() const {
+std::string WsjcppLightWebHttpRequest::getRequestPath() const {
     return m_sRequestPath;
 }
 
-std::string WSJCppLightWebHttpRequest::getRequestBody() const {
+std::string WsjcppLightWebHttpRequest::getRequestBody() const {
     return m_sRequestBody;
 }
 
 // ----------------------------------------------------------------------
 
-std::string WSJCppLightWebHttpRequest::getRequestHttpVersion() const {
+std::string WsjcppLightWebHttpRequest::getRequestHttpVersion() const {
     return m_sRequestHttpVersion;
 }
 
 // ----------------------------------------------------------------------
 
-const std::vector<WSJCppLightWebHttpRequestQueryValue> &WSJCppLightWebHttpRequest::getRequestQueryParams() {
+const std::vector<WsjcppLightWebHttpRequestQueryValue> &WsjcppLightWebHttpRequest::getRequestQueryParams() {
     return m_vRequestQueryParams;
 }
 
 // ----------------------------------------------------------------------
 
-std::string WSJCppLightWebHttpRequest::getAddress() const {
+std::string WsjcppLightWebHttpRequest::getAddress() const {
     return m_sAddress;
 }
 
 // ----------------------------------------------------------------------
 
-void WSJCppLightWebHttpRequest::appendRecieveRequest(const std::string &sRequestPart) {
+void WsjcppLightWebHttpRequest::appendRecieveRequest(const std::string &sRequestPart) {
     m_sRequest += sRequestPart;
     const std::string sContentLengthPrefix = "content-length:";
     if (m_nParserState == EnumParserState::START) {
         m_vHeaders.clear();
-        // WSJCppLog::info(TAG, "START \n>>>\n" + m_sRequest + "\n<<<\n");
+        // WsjcppLog::info(TAG, "START \n>>>\n" + m_sRequest + "\n<<<\n");
 
         std::istringstream f(m_sRequest);
         std::string sLine = "";
@@ -99,18 +99,18 @@ void WSJCppLightWebHttpRequest::appendRecieveRequest(const std::string &sRequest
         bool bHeadersEnded = false;
         while (getline(f, sLine, '\n')) {
             nSize += sLine.length() + 1;
-            WSJCppCore::trim(sLine);
-            // WSJCppLog::info(TAG, "Line: {" + sLine + "}, size=" + std::to_string(sLine.length()));
+            WsjcppCore::trim(sLine);
+            // WsjcppLog::info(TAG, "Line: {" + sLine + "}, size=" + std::to_string(sLine.length()));
             if (sLine.length() == 0) {
                 bHeadersEnded = true;
                 break;
             }
             m_vHeaders.push_back(sLine);
 
-            WSJCppCore::to_lower(sLine);
+            sLine = WsjcppCore::toLower(sLine);
             if (!sLine.compare(0, sContentLengthPrefix.size(), sContentLengthPrefix)) {
                 m_nContentLength = atoi(sLine.substr(sContentLengthPrefix.size()).c_str());
-                // WSJCppLog::warn(TAG, "Content-Length: " + std::to_string(m_nContentLength));
+                // WsjcppLog::warn(TAG, "Content-Length: " + std::to_string(m_nContentLength));
             }
         }
 
@@ -119,10 +119,10 @@ void WSJCppLightWebHttpRequest::appendRecieveRequest(const std::string &sRequest
                 this->parseFirstLine(m_vHeaders[0]);
             }
             m_sRequest.erase(0, nSize);
-            // WSJCppLog::info(TAG, "AFTER ERASE \n>>>\n" + m_sRequest + "\n<<<\n");
+            // WsjcppLog::info(TAG, "AFTER ERASE \n>>>\n" + m_sRequest + "\n<<<\n");
             m_nParserState = EnumParserState::BODY;
         } else {
-            // WSJCppLog::info(TAG, "Not ended");
+            // WsjcppLog::info(TAG, "Not ended");
         }
     }
     
@@ -134,13 +134,13 @@ void WSJCppLightWebHttpRequest::appendRecieveRequest(const std::string &sRequest
 
 // ----------------------------------------------------------------------
 
-bool WSJCppLightWebHttpRequest::isEnoughAppendReceived() const {
+bool WsjcppLightWebHttpRequest::isEnoughAppendReceived() const {
     return m_nParserState == EnumParserState::ENDED;
 }
 
 // ----------------------------------------------------------------------
 
-void WSJCppLightWebHttpRequest::parseFirstLine(const std::string &sHeader) {
+void WsjcppLightWebHttpRequest::parseFirstLine(const std::string &sHeader) {
     if (sHeader.size() > 0) {
         std::istringstream f(sHeader);
         std::vector<std::string> params;
@@ -165,11 +165,11 @@ void WSJCppLightWebHttpRequest::parseFirstLine(const std::string &sHeader) {
     if (m_sRequestPath.length() == 0) {
         m_sRequestPath = "/";
     }
-    m_sRequestPath = WSJCppCore::doNormalizePath(m_sRequestPath);
+    m_sRequestPath = WsjcppCore::doNormalizePath(m_sRequestPath);
 
     // TODO url path encoding
     while (m_sRequestPath.length() > 2 && m_sRequestPath.substr(0,2) == "..") {
-        m_sRequestPath = WSJCppCore::doNormalizePath("/erase/" + m_sRequestPath);
+        m_sRequestPath = WsjcppCore::doNormalizePath("/erase/" + m_sRequestPath);
     }
 
     // parse query
@@ -183,9 +183,9 @@ void WSJCppLightWebHttpRequest::parseFirstLine(const std::string &sHeader) {
             std::size_t nFound2 = sParam.find("=");
             std::string sValue = sParam.substr(nFound2+1);
             std::string sName = sParam.substr(0, nFound2);
-            m_vRequestQueryParams.push_back(WSJCppLightWebHttpRequestQueryValue(
-                this->decodeURIElement(sName), 
-                this->decodeURIElement(sValue)
+            m_vRequestQueryParams.push_back(WsjcppLightWebHttpRequestQueryValue(
+                WsjcppCore::decodeUriComponent(sName), 
+                WsjcppCore::decodeUriComponent(sValue)
             ));
         }
     }
@@ -193,7 +193,3 @@ void WSJCppLightWebHttpRequest::parseFirstLine(const std::string &sHeader) {
 
 // ----------------------------------------------------------------------
 
-std::string WSJCppLightWebHttpRequest::decodeURIElement(const std::string &sElement) { // TODO move to WSJCppCore
-    WSJCppLog::warn(TAG, "TODO Implement decodeURIElement");
-    return sElement;
-}

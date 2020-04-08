@@ -8,7 +8,7 @@
 #include <mutex>
 #include <QMap>
 
-class EmployDatabase : public WSJCppEmployBase, public WSJCppSettingsStore {
+class EmployDatabase : public WsjcppEmployBase, public WsjcppSettingsStore {
     public:
         EmployDatabase();
         static std::string name() { return "EmployDatabase"; }
@@ -18,10 +18,10 @@ class EmployDatabase : public WSJCppEmployBase, public WSJCppSettingsStore {
         bool manualCreateDatabase(const std::string& sRootPassword, std::string& sError);
         StorageConnection *getStorageConnection();
         
-        // WSJCppSettingsStore
+        // WsjcppSettingsStore
         virtual std::map<std::string, std::string> loadAllSettings();
-        virtual void updateSettingItem(const WSJCppSettingItem *pSettingItem);
-        virtual void initSettingItem(WSJCppSettingItem *pSettingItem);
+        virtual void updateSettingItem(const WsjcppSettingItem *pSettingItem);
+        virtual void initSettingItem(WsjcppSettingItem *pSettingItem);
 
     private:
         std::string TAG;

@@ -74,14 +74,14 @@ std::string LXDContainer::full_name() const {
 }
 
 bool LXDContainer::get_state(nlohmann::json &jsonState) {
-    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0/containers/" + full_name() + "/state";
 
     return pOrchestra->send_get_request(sUrl, jsonState, m_sError);
 }
 
 bool LXDContainer::create() {
-    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0/containers";
     auto jsonData = R"(
     {
@@ -102,11 +102,11 @@ bool LXDContainer::create() {
         std::string operation_id = jsonResponse.at("operation").get<std::string>();
         if ((!operation_id.empty()) &&
             (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
-            WSJCppLog::err(TAG, "The asynchronous " + m_sError);
+            WsjcppLog::err(TAG, "The asynchronous " + m_sError);
             return false;
         }
     }
-    WSJCppLog::info(TAG, "Created container " + full_name());
+    WsjcppLog::info(TAG, "Created container " + full_name());
     return true;
 
 }
@@ -117,7 +117,7 @@ bool LXDContainer::start() {
         return true;
     }
 
-    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0/containers/" + full_name() + "/state";
     auto jsonData = R"(
         {
@@ -134,17 +134,17 @@ bool LXDContainer::start() {
         nlohmann::json jsonAsyncResponse;
         if ((!operation_id.empty()) &&
             (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
-            WSJCppLog::err(TAG, "The asynchronous " + m_sError);
+            WsjcppLog::err(TAG, "The asynchronous " + m_sError);
             return false;
         }
     }
 
-    WSJCppLog::info(TAG, "Started container " + full_name());
+    WsjcppLog::info(TAG, "Started container " + full_name());
     return get_status() == "Running";
 }
 
 bool LXDContainer::stop() {
-    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     std::string sUrl = "/1.0/containers/" + full_name() + "/state";
     auto jsonData = R"(
         {
@@ -162,16 +162,16 @@ bool LXDContainer::stop() {
         std::string operation_id = jsonResponse.at("operation").get<std::string>();
         if ((!operation_id.empty()) &&
             (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
-            WSJCppLog::err(TAG, "The asynchronous " + m_sError);
+            WsjcppLog::err(TAG, "The asynchronous " + m_sError);
             return false;
         }
     }
-    WSJCppLog::info(TAG, "Stopped container " + full_name());
+    WsjcppLog::info(TAG, "Stopped container " + full_name());
     return true;
 }
 
 bool LXDContainer::remove() {
-    auto pOrchestra = findWSJCppEmploy<EmployOrchestra>();
+    auto pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     auto sUrl = "/1.0/containers/" + full_name();
     nlohmann::json jsonResponse;
 
@@ -184,11 +184,11 @@ bool LXDContainer::remove() {
         std::string operation_id = jsonResponse.at("operation").get<std::string>();
         if ((!operation_id.empty()) &&
             (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
-            WSJCppLog::err(TAG, "The asynchronous " + m_sError);
+            WsjcppLog::err(TAG, "The asynchronous " + m_sError);
             return false;
         }
     }
-    WSJCppLog::info(TAG, "Deleted container " + full_name());
+    WsjcppLog::info(TAG, "Deleted container " + full_name());
     return true;
 }
 
@@ -201,7 +201,7 @@ std::vector<std::string> LXDContainer::split(const std::string &str) {
 
 bool LXDContainer::exec(const std::string &sCommand) {
     // Allows to execute shell script. Does not return command stdout.
-    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     auto sUrl = "/1.0/containers/" + full_name() + "/exec";
     nlohmann::json jsonData = R"(
         {
@@ -223,29 +223,29 @@ bool LXDContainer::exec(const std::string &sCommand) {
         std::string operation_id = jsonResponse.at("operation").get<std::string>();
         if ((!operation_id.empty()) &&
             (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
-            WSJCppLog::err(TAG, "The asynchronous " + m_sError);
+            WsjcppLog::err(TAG, "The asynchronous " + m_sError);
             return false;
         }
         if (jsonAsyncResponse["metadata"]["metadata"]["return"].get<int>() != 0) {
             m_sError = "The command '" + sCommand + "' could not be executed in " + full_name() + " container";
-            WSJCppLog::err(TAG, "Failed to execute " + sCommand + " in container " + full_name());
+            WsjcppLog::err(TAG, "Failed to execute " + sCommand + " in container " + full_name());
             return false;
         }
     }
-    WSJCppLog::info(TAG, "Success execution " + sCommand + " in container " + full_name());
+    WsjcppLog::info(TAG, "Success execution " + sCommand + " in container " + full_name());
     return true;
 }
 
 
 bool LXDContainer::read_file(const std::string &sPath, std::string &sRawData) {
-    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     auto sUrl = "/1.0/containers/" + full_name() + "/files?path=" + sPath;
 
     return pOrchestra->send_get_request(sUrl, sRawData, m_sError);
 }
 
 bool LXDContainer::push_file(const std::string &sPath, const std::string &sRawData) {
-    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     auto sUrl = "/1.0/containers/" + full_name() + "/files?path=" + sPath;
     std::string sResponse;
 
@@ -256,11 +256,11 @@ bool LXDContainer::push_file(const std::string &sPath, const std::string &sRawDa
     auto jsonResponse = nlohmann::json::parse(sResponse);
     if (!jsonResponse["error"].get<std::string>().empty()) {
         m_sError = "Cant push file in service. Error: " + jsonResponse["error"].get<std::string>();
-        WSJCppLog::err(TAG, m_sError);
+        WsjcppLog::err(TAG, m_sError);
         return false;
     }
 
-    WSJCppLog::info(TAG, "In container " + name + " pushed file " + sPath);
+    WsjcppLog::info(TAG, "In container " + name + " pushed file " + sPath);
     return true;
 }
 
@@ -273,7 +273,7 @@ std::string LXDContainer::get_port() {
 }
 
 bool LXDContainer::open_port(const std::string &sPort, const std::string &sProto) {
-    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     auto sUrl = "/1.0/containers/" + full_name();
     nlohmann::json jsonResponse;
     nlohmann::json jsonRequest;
@@ -303,7 +303,7 @@ bool LXDContainer::open_port(const int &nPort, const std::string &sProto) {
 ServiceLXD::ServiceLXD(const ServiceConfig &reqService) : m_configService(reqService) {
     m_sName = m_configService.name;
 
-    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     if (!pOrchestra->find_container(m_sName, m_Container)) {
         m_Container = nullptr;
     }
@@ -314,7 +314,7 @@ bool ServiceLXD::create_container() {
         return true;
     }
 
-    auto *pOrchestra = findWSJCppEmploy<EmployOrchestra>();
+    auto *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     LXDContainer *pContainer;
 
     if (m_sName.empty()) {

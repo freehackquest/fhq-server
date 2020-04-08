@@ -4,7 +4,7 @@
 #include <employees.h>
 #include <json.hpp>
 
-class EmployScoreboard : public WSJCppEmployBase {
+class EmployScoreboard : public WsjcppEmployBase {
     public:
         EmployScoreboard();
         static std::string name() { return "EmployScoreboard"; }

@@ -19,7 +19,7 @@ CmdHandlerFeedbackAdd::CmdHandlerFeedbackAdd()
 
     // validation and description input fields
     requireStringParam("from", "From user")
-        .addValidator(new WSJCppValidatorEmail());
+        .addValidator(new WsjcppValidatorEmail());
     requireStringParam("text", "Text of feedback");
     requireStringParam("type", "Type of feedback"); // TODO validator
 }
@@ -27,25 +27,25 @@ CmdHandlerFeedbackAdd::CmdHandlerFeedbackAdd()
 // ---------------------------------------------------------------------
 
 void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
 
     int nUserID = 0;
     std::string sEmail = pRequest->getInputString("from", "");
-    WSJCppCore::trim(sEmail);
+    WsjcppCore::trim(sEmail);
     std::string sText = pRequest->getInputString("text", "");
-    WSJCppCore::trim(sText);
+    WsjcppCore::trim(sText);
     std::string sType = pRequest->getInputString("type", "");
-    WSJCppCore::trim(sType);
+    WsjcppCore::trim(sType);
 
-    WSJCppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppUserSession *pUserSession = pRequest->getUserSession();
     if (pUserSession != NULL) {
         sEmail = pUserSession->email().toStdString();
         nUserID = pUserSession->userid();
     }
-    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
 
     QSqlQuery query(db);
     query.prepare("INSERT INTO feedback(`type`, `from`, `text`, `userid`, `dt`) VALUES(:type,:from,:text,:userid,NOW());");
@@ -54,7 +54,7 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
     query.bindValue(":text", QString::fromStdString(sText));
     query.bindValue(":userid", nUserID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
 

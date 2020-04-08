@@ -24,7 +24,7 @@ CmdHandlerLeaksList::CmdHandlerLeaksList()
 
 void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
 
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
@@ -33,7 +33,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
 
     int nOnPage = pRequest->getInputInteger("onpage", 10);
     if (nOnPage > 50) {
-        pRequest->sendMessageError(cmd(), WSJCppError(400, "Parameter 'onpage' could not be more then 50"));
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "Parameter 'onpage' could not be more then 50"));
         return;
     }
     jsonResponse["onpage"] = nOnPage;
@@ -42,7 +42,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
     QMap<QString,QString> filter_values;
 
     std::string sName = pRequest->getInputString("name", "");
-    WSJCppCore::trim(sName);
+    WsjcppCore::trim(sName);
     if (sName != "") {
         vFilters.push_back("(l.name = :name)");
         filter_values[":name"] = QString::fromStdString(sName);
@@ -51,7 +51,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
 
     bool bAdmin = pRequest->isAdmin();
     std::string sSearch = pRequest->getInputString("search", "");
-    WSJCppCore::trim(sSearch);
+    WsjcppCore::trim(sSearch);
 
     if (sSearch != "" && bAdmin) {
         vFilters.push_back("(l.message LIKE :search)");
@@ -82,7 +82,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
             query.bindValue(key, filter_values.value(key));
         }
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {
@@ -104,7 +104,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
             query.bindValue(key, filter_values.value(key));
         }
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
         while (query.next()) {
@@ -139,10 +139,10 @@ CmdHandlerLeaksAdd::CmdHandlerLeaksAdd()
     setAccessAdmin(true);
 
     requireStringParam("uuid", "UUID of the leak")
-        .addValidator(new WSJCppValidatorUUID()); // may be optional ?
+        .addValidator(new WsjcppValidatorUUID()); // may be optional ?
 
     requireStringParam("game_uuid", "UUID of the game")
-        .addValidator(new WSJCppValidatorUUID());
+        .addValidator(new WsjcppValidatorUUID());
 
     requireStringParam("name", "Visible part of the content");
     requireStringParam("content", "Content of the leak");
@@ -159,28 +159,28 @@ void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest) {
 
     if (pModelLeak->score() <= 0) {
         // todo this check move to cmd input def
-        pRequest->sendMessageError(cmd(), WSJCppError(400, "Score must be more then 0"));
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "Score must be more then 0"));
         return;
     }
 
-    EmployLeaks *pEmployLeaks = findWSJCppEmploy<EmployLeaks>();
+    EmployLeaks *pEmployLeaks = findWsjcppEmploy<EmployLeaks>();
     std::string sError = "";
     int nResult = pEmployLeaks->addLeak(pModelLeak, sError);
 
     if (nResult == EmployResult::DATABASE_ERROR) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, sError));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, sError));
         delete pModelLeak;
         return;
     }
 
     if (nResult == EmployResult::ALREADY_EXISTS) {
-        pRequest->sendMessageError(cmd(), WSJCppError(403, "Leak already exists with this uuid"));
+        pRequest->sendMessageError(cmd(), WsjcppError(403, "Leak already exists with this uuid"));
         delete pModelLeak;
         return;
     }
 
     if (nResult == EmployResult::GAME_NOT_FOUND) {
-        pRequest->sendMessageError(cmd(), WSJCppError(404, "Game does not exists with this uuid"));
+        pRequest->sendMessageError(cmd(), WsjcppError(404, "Game does not exists with this uuid"));
         delete pModelLeak;
         return;
     }
@@ -191,7 +191,7 @@ void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest) {
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
         return;
     } else {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, "Server error"));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, "Server error"));
         delete pModelLeak;
     }
 }
@@ -218,7 +218,7 @@ CmdHandlerLeaksUpdate::CmdHandlerLeaksUpdate()
 
 void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest) {
 
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     
     nlohmann::json jsonResponse;
@@ -232,35 +232,35 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest) {
         query.prepare("SELECT id FROM leaks WHERE id = :id");
         query.bindValue(":id", id);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
         if (!query.next()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(404, "leak with this id"));
+            pRequest->sendMessageError(cmd(), WsjcppError(404, "leak with this id"));
             return;
         }
     }
 
     if (pRequest->hasInputParam("name")) {
         std::string sName = pRequest->getInputString("name", "");
-        WSJCppCore::trim(sName);
+        WsjcppCore::trim(sName);
         query.prepare("UPDATE leaks SET name=:name WHERE id = :id");
         query.bindValue(":name", QString::fromStdString(sName));
         query.bindValue(":id", id);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
     }
 
     if (pRequest->hasInputParam("content")) {
         std::string sContent = pRequest->getInputString("content", "");
-        WSJCppCore::trim(sContent);
+        WsjcppCore::trim(sContent);
         query.prepare("UPDATE leaks SET content=:content WHERE id = :id");
         query.bindValue(":content", QString::fromStdString(sContent));
         query.bindValue(":id", id);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -271,7 +271,7 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest) {
         query.bindValue(":score", nScore);
         query.bindValue(":id", id);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -299,7 +299,7 @@ CmdHandlerLeaksDelete::CmdHandlerLeaksDelete()
 
 void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest) {
 
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
@@ -312,11 +312,11 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest) {
         query.prepare("SELECT id FROM leaks WHERE id = :id");
         query.bindValue(":id", id);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
         if (!query.next()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found leak with this id"));
+            pRequest->sendMessageError(cmd(), WsjcppError(404, "Not found leak with this id"));
             return;
         }
     }
@@ -326,7 +326,7 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest) {
         query.prepare("DELETE FROM users_leaks WHERE leakid = :id");
         query.bindValue(":id", id);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -336,7 +336,7 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest) {
         query.prepare("DELETE FROM leaks_files WHERE leakid = :id");
         query.bindValue(":id", id);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -346,7 +346,7 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest) {
         query.prepare("DELETE FROM leaks WHERE id = :id");
         query.bindValue(":id", id);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -373,7 +373,7 @@ CmdHandlerLeaksBuy::CmdHandlerLeaksBuy()
 
 void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest) {
 
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     nlohmann::json jsonResponse;
 
     QSqlDatabase db = *(pDatabase->database());
@@ -385,16 +385,16 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest) {
         query.prepare("SELECT id FROM leaks WHERE id = :id");
         query.bindValue(":id", id);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
         if (!query.next()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found leak with this id"));
+            pRequest->sendMessageError(cmd(), WsjcppError(404, "Not found leak with this id"));
             return;
         }
     }
 
-    WSJCppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppUserSession *pUserSession = pRequest->getUserSession();
     int nUserID = 0;
     if (pUserSession != nullptr) {
         nUserID = pUserSession->userid();
@@ -405,11 +405,11 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest) {
         query.prepare("SELECT score FROM leaks WHERE id = :id");
         query.bindValue(":id", id);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
         if (!query.next()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found leak with this id"));
+            pRequest->sendMessageError(cmd(), WsjcppError(404, "Not found leak with this id"));
             return;
         } else {
             QSqlRecord record = query.record();
@@ -423,7 +423,7 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest) {
         query.bindValue(":score", nScore);
         query.bindValue(":id", nUserID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -445,7 +445,7 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest) {
     query.bindValue(":userid", nUserID);
     query.bindValue(":grade", -1);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -454,7 +454,7 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest) {
         query.prepare("UPDATE leaks SET sold = sold + 1 WHERE id = :id");
         query.bindValue(":id", id);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
     }

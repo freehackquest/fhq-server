@@ -27,7 +27,7 @@ CmdHandlerEventAdd::CmdHandlerEventAdd()
 // ---------------------------------------------------------------------
 
 void CmdHandlerEventAdd::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
     std::string sType = pRequest->getInputString("type", "");
@@ -39,7 +39,7 @@ void CmdHandlerEventAdd::handle(ModelRequest *pRequest) {
     query.bindValue(":type", QString::fromStdString(sType));
     query.bindValue(":message", QString::fromStdString(sMessage));
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -64,7 +64,7 @@ CmdHandlerEventDelete::CmdHandlerEventDelete()
 // ---------------------------------------------------------------------
 
 void CmdHandlerEventDelete::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
@@ -79,7 +79,7 @@ void CmdHandlerEventDelete::handle(ModelRequest *pRequest) {
     query.bindValue(":eventid", nEventId);
     query.exec();
     if (!query.next()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(404, "Event not found"));
+        pRequest->sendMessageError(cmd(), WsjcppError(404, "Event not found"));
         return;
     }
 
@@ -110,7 +110,7 @@ CmdHandlerEventInfo::CmdHandlerEventInfo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerEventInfo::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
     int nEventId = pRequest->getInputInteger("eventid", -1);
@@ -131,7 +131,7 @@ void CmdHandlerEventInfo::handle(ModelRequest *pRequest) {
         jsonEvent["type"] = record.value("type").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
         jsonEvent["message"] = record.value("message").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
     } else {
-        pRequest->sendMessageError(cmd(), WSJCppError(404, "Event not found"));
+        pRequest->sendMessageError(cmd(), WsjcppError(404, "Event not found"));
         return;
     }
 
@@ -161,7 +161,7 @@ CmdHandlerEventsList::CmdHandlerEventsList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
 
@@ -170,7 +170,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
 
     int nOnPage = pRequest->getInputInteger("onpage", 10);
     if (nOnPage > 50) {
-        pRequest->sendMessageError(cmd(), WSJCppError(400, "Parameter 'onpage' could not be more then 50"));
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "Parameter 'onpage' could not be more then 50"));
         return;
     }
     jsonResponse["onpage"] = nOnPage;
@@ -179,14 +179,14 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
     QMap<QString,QString> filter_values;
     
     std::string sType = pRequest->getInputString("type", "");
-    WSJCppCore::trim(sType);
+    WsjcppCore::trim(sType);
     if (sType != "") {
         vFilters.push_back("(e.type = :type)");
         filter_values[":type"] = QString::fromStdString(sType);
     }
 
     std::string sSearch = pRequest->getInputString("search", "");
-    WSJCppCore::trim(sSearch);
+    WsjcppCore::trim(sSearch);
     if (sSearch != "") {
         vFilters.push_back("(e.message LIKE :search)");
         filter_values[":search"] = "%" + QString::fromStdString(sSearch) + "%";

@@ -40,26 +40,26 @@
 #include <wsjcpp_core.h>
 #include <wsjcpp_print_tree.h>
 
-WSJCppLightWebServer g_httpServer;
+WsjcppLightWebServer g_httpServer;
 
 int main(int argc, char** argv) {
     std::string appName(FHQSRV_APP_NAME);
     std::string appVersion(FHQSRV_VERSION);
     std::string appAuthor("FreeHackQuest Team");
     std::string sLibraryNameForExports("fhq");
-    WSJCppCore::init(argc, argv, appName, appVersion, appAuthor, sLibraryNameForExports);
+    WsjcppCore::init(argc, argv, appName, appVersion, appAuthor, sLibraryNameForExports);
 
     QCoreApplication a(argc, argv);
     std::string TAG = "MAIN";
-    WSJCppLog::setPrefixLogFile(appName);
+    WsjcppLog::setPrefixLogFile(appName);
     std::string sLogDir = "/var/log/" + appName;
-    if (!WSJCppCore::dirExists(sLogDir)) {
-        sLogDir = WSJCppCore::getCurrentDirectory() + "./";
-        sLogDir = WSJCppCore::doNormalizePath(sLogDir);
+    if (!WsjcppCore::dirExists(sLogDir)) {
+        sLogDir = WsjcppCore::getCurrentDirectory() + "./";
+        sLogDir = WsjcppCore::doNormalizePath(sLogDir);
     }
-    WSJCppLog::setLogDirectory(sLogDir);
+    WsjcppLog::setLogDirectory(sLogDir);
 
-    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
     pGlobalSettings->update("app_name", appName);
     pGlobalSettings->update("app_version", appVersion);
     pGlobalSettings->update("app_author", appAuthor);
@@ -95,12 +95,12 @@ int main(int argc, char** argv) {
     std::string sWorkDir = "";
     if (helpArgs.has("--workdir")) {
         sWorkDir = helpArgs.option("--workdir");
-        sWorkDir = WSJCppCore::getCurrentDirectory() + sWorkDir;
-        sWorkDir = WSJCppCore::doNormalizePath(sWorkDir);
+        sWorkDir = WsjcppCore::getCurrentDirectory() + sWorkDir;
+        sWorkDir = WsjcppCore::doNormalizePath(sWorkDir);
 
         std::cout << "\n Workdir: " << sWorkDir << " \n\n";
-        if (!WSJCppCore::dirExists(sWorkDir)) {
-            WSJCppLog::err(TAG, "Directory '" + sWorkDir + "' did'not exists");
+        if (!WsjcppCore::dirExists(sWorkDir)) {
+            WsjcppLog::err(TAG, "Directory '" + sWorkDir + "' did'not exists");
             return -1;
         }
 
@@ -110,12 +110,12 @@ int main(int argc, char** argv) {
             pGlobalSettings->update("work_dir", sWorkDir);
         }
 
-        std::string sDirLogs = WSJCppCore::doNormalizePath(sWorkDir + "/logs");
-        if (!WSJCppCore::dirExists(sDirLogs)) {
-            WSJCppCore::makeDir(sDirLogs);
+        std::string sDirLogs = WsjcppCore::doNormalizePath(sWorkDir + "/logs");
+        if (!WsjcppCore::dirExists(sDirLogs)) {
+            WsjcppCore::makeDir(sDirLogs);
         }
         pGlobalSettings->update("log_dir", sDirLogs);
-        WSJCppLog::setLogDirectory(sDirLogs);
+        WsjcppLog::setLogDirectory(sDirLogs);
     }
 
     if (helpArgs.has("help")) {
@@ -150,12 +150,12 @@ int main(int argc, char** argv) {
         pExportJavaAndroid->exportLib();
         return 0;
     } else if (helpArgs.has("show-employees")) {
-        WSJCppPrintTree tree("WSJCppEmployees (" + std::to_string(g_pWSJCppEmployees->size()) + ")");
+        WsjcppPrintTree tree("WsjcppEmployees (" + std::to_string(g_pWsjcppEmployees->size()) + ")");
 
-        std::map<std::string, WSJCppEmployBase*>::iterator it = g_pWSJCppEmployees->begin();
-        for (; it != g_pWSJCppEmployees->end(); ++it) {
+        std::map<std::string, WsjcppEmployBase*>::iterator it = g_pWsjcppEmployees->begin();
+        for (; it != g_pWsjcppEmployees->end(); ++it) {
             std::string sEmployName = it->first;
-            WSJCppEmployBase* pEmployBase = it->second;
+            WsjcppEmployBase* pEmployBase = it->second;
             tree.addChild(sEmployName);
             tree.switchToLatestChild();
             if (pEmployBase->loadAfter().size() > 0) {
@@ -183,47 +183,47 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("check-database-connection")) {
         std::cout << "\n * Check Database Connection\n\n";
-        if (!WSJCppEmployees::init({})) {
-            WSJCppLog::err(TAG, "Could not init database module");
+        if (!WsjcppEmployees::init({})) {
+            WsjcppLog::err(TAG, "Could not init database module");
             return -1;
         }
-        EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+        EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
         QSqlDatabase *db = pDatabase->database();
         if (!db->open()) {
-            WSJCppLog::err(TAG, "Could not connect to database, please check config");
+            WsjcppLog::err(TAG, "Could not connect to database, please check config");
             return -1;
         }
         std::cout << "\n * Success\n\n";
         return 0;
     } else if (helpArgs.has("show-settings")) {
-        WSJCppEmployees::init({});
+        WsjcppEmployees::init({});
         std::cout << "\n * Show settings\n\n";
         pGlobalSettings->printSettings();
         std::cout << "\n * Done\n\n";
         return 0;
     } else if (helpArgs.has("set-setting")) {
-        WSJCppEmployees::init({});
+        WsjcppEmployees::init({});
         std::string sSetting = helpArgs.option("set-setting");
         std::cout << "\n Try set setting " << sSetting << " \n\n";
         std::string sSettName = "";
         std::istringstream f(sSetting);
         getline(f, sSettName, '=');
         if (sSettName.length() == sSetting.length()) {
-            WSJCppLog::err(TAG, "Could not split by '=' for a '" + sSetting + "'");
+            WsjcppLog::err(TAG, "Could not split by '=' for a '" + sSetting + "'");
             return -1;
         }
         std::string sSettValue = sSetting.substr(sSettName.length()+1);
         if (!pGlobalSettings->exists(sSettName)) {
-            WSJCppLog::err(TAG, "Not support settings with name '" + sSettName + "'");
+            WsjcppLog::err(TAG, "Not support settings with name '" + sSettName + "'");
             return -1;
         }
 
-        WSJCppSettingItem item = pGlobalSettings->get(sSettName);
+        WsjcppSettingItem item = pGlobalSettings->get(sSettName);
         if (item.isLikeString()) {
             pGlobalSettings->update(sSettName, sSettValue);
         } else if (item.isBoolean()) {
             if (sSettValue != "true" && sSettValue != "yes" && sSettValue != "false" && sSettValue != "no") {
-                WSJCppLog::err(TAG, "Expected value boolean (true|yes|false|no), but got '" + sSettValue + "' for '" + sSettName + "'");
+                WsjcppLog::err(TAG, "Expected value boolean (true|yes|false|no), but got '" + sSettValue + "' for '" + sSettName + "'");
                 return -1;
             }
             pGlobalSettings->update(sSettName, sSettValue == "true" || sSettValue == "yes");
@@ -231,12 +231,12 @@ int main(int argc, char** argv) {
             int nSettValue = std::stoi(sSettValue);
             pGlobalSettings->update(sSettName, nSettValue);
         } else {
-            WSJCppLog::err(TAG, "Not support settings datatype with name '" + sSettName + "'");
+            WsjcppLog::err(TAG, "Not support settings datatype with name '" + sSettName + "'");
             return -1;
         }
         return 0;
     } else if (helpArgs.has("send-test-mail")) {
-        WSJCppEmployees::init({});
+        WsjcppEmployees::init({});
         std::cout << "\n * Send test mail\n\n";
         std::string sTo = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();
         std::string sSubject = "Test Mail";
@@ -250,7 +250,7 @@ int main(int argc, char** argv) {
             std::cout << "\n * Failed on init server config\n\n";
             return -1;
         }
-        EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+        EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
         // enter mysql root password
         char *pPassword=getpass("Enter MySQL root password: ");
@@ -271,11 +271,11 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("manual-configure-lxd")) {
         std::string sError;
-        WSJCppEmployees::init({});
+        WsjcppEmployees::init({});
         if (UtilsLXDAuth::check_trust_certs(sError)) {
             std::cout << "\nGOOD HTTPS connection with LXD\n\n";
         } else if (!sError.empty()) {
-            WSJCppLog::err(TAG, "\nBAD HTTPS connection with LXD\n\n: " + sError);
+            WsjcppLog::err(TAG, "\nBAD HTTPS connection with LXD\n\n: " + sError);
             return -1;
         } else {
             char *pPassword=getpass("\nPlease enter your password for LXD:");
@@ -289,7 +289,7 @@ int main(int argc, char** argv) {
         }
         return 0;
     } else if (helpArgs.has("lxd-enable") || helpArgs.has("lxd-disable")) {
-        WSJCppEmployees::init({});
+        WsjcppEmployees::init({});
         bool bLXDMode;
         if (helpArgs.has("lxd-enable")) {
             bLXDMode = true;
@@ -311,17 +311,17 @@ int main(int argc, char** argv) {
         pGlobalSettings->registrySetting("web_server", "web_public_folder_url").string("http://localhost:7080/public/").inFile();
         pGlobalSettings->registrySetting("web_server", "web_fhqjad_store").dirPath("/usr/share/fhq-server/web/fhqjad-store").inFile();
         
-        WSJCppEmployees::init({"start_server"});
+        WsjcppEmployees::init({"start_server"});
 
         QThreadPool::globalInstance()->setMaxThreadCount(5);
         WebSocketServer *pServer = new WebSocketServer(); // here will be init settings
         if (pServer->isFailed()) {
-            WSJCppLog::err(TAG, "Could not start server");
+            WsjcppLog::err(TAG, "Could not start server");
             return -1;
         }
 
         QObject::connect(pServer, &WebSocketServer::closed, &a, &QCoreApplication::quit);
-        EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+        EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
         // TODO redesign to check config
         QSqlDatabase *db = pDatabase->database();
         if (!db->open()) {
@@ -337,12 +337,12 @@ int main(int argc, char** argv) {
         std::string sWebPublicFolder = pGlobalSettings->get("web_public_folder").getDirPathValue(); // TODO must be declared in server
         std::string sWebPublicFolderUrl = pGlobalSettings->get("web_public_folder_url").getStringValue(); // TODO must be declared in server
 
-        WSJCppLog::info(TAG, "Starting web-server on " + std::to_string(nWebPort)
+        WsjcppLog::info(TAG, "Starting web-server on " + std::to_string(nWebPort)
              + " with " + std::to_string(nWebMaxThreads) + " worker threads");
         
-        g_httpServer.addHandler((WSJCppLightWebHttpHandlerBase *) new HttpHandlerWebAdminFolder(sWebAdminFolder));
-        g_httpServer.addHandler((WSJCppLightWebHttpHandlerBase *) new HttpHandlerWebPublicFolder(sWebPublicFolder));
-        g_httpServer.addHandler((WSJCppLightWebHttpHandlerBase *) new HttpHandlerWebUserFolder(sWebUserFolder));
+        g_httpServer.addHandler((WsjcppLightWebHttpHandlerBase *) new HttpHandlerWebAdminFolder(sWebAdminFolder));
+        g_httpServer.addHandler((WsjcppLightWebHttpHandlerBase *) new HttpHandlerWebPublicFolder(sWebPublicFolder));
+        g_httpServer.addHandler((WsjcppLightWebHttpHandlerBase *) new HttpHandlerWebUserFolder(sWebUserFolder));
         
         g_httpServer.setPort(nWebPort);
         g_httpServer.setMaxWorkers(nWebMaxThreads);

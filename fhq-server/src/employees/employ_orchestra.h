@@ -11,7 +11,7 @@
 #include <future>
 
 
-class EmployOrchestra : public WSJCppEmployBase {
+class EmployOrchestra : public WsjcppEmployBase {
 public:
     EmployOrchestra();
 

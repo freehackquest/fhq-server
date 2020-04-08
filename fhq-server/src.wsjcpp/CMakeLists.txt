@@ -31,7 +31,7 @@ list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_hashes/smallsha1.cpp")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_hashes/wsjcpp_hashes.cpp")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_hashes/wsjcpp_hashes.h")
 
-# wsjcpp-core:v0.0.5
+# wsjcpp-core:v0.1.1
 list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_core/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_core/wsjcpp_core.cpp")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_core/wsjcpp_core.h")
@@ -40,22 +40,22 @@ list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_core/wsjcpp_core.h")
 list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/nlohmann_json/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/nlohmann_json/json.hpp")
 
-# wsjcpp-validators:v0.0.3
+# wsjcpp-validators:v0.1.0
 list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_validators/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_validators/wsjcpp_validators.h")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_validators/wsjcpp_validators.cpp")
 
-# wsjcpp-print-tree:v0.0.1
+# wsjcpp-print-tree:v0.1.0
 list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_print_tree/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_print_tree/wsjcpp_print_tree.h")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_print_tree/wsjcpp_print_tree.cpp")
 
-# wsjcpp-geoip:v0.0.2
+# wsjcpp-geoip:v0.1.0
 list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_geoip/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_geoip/wsjcpp_geoip.cpp")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_geoip/wsjcpp_geoip.h")
 
-# wsjcpp-light-web-server:v0.0.1
+# wsjcpp-light-web-server:v0.1.0
 list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_light_web_server/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_request.h")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_request.cpp")
@@ -70,7 +70,7 @@ list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_w
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_server.h")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_server.cpp")
 
-# wsjcpp-employees:v0.0.1
+# wsjcpp-employees:v0.1.1
 list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_employees/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_employees/wsjcpp_employees.h")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_employees/wsjcpp_employees.cpp")

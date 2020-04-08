@@ -1,5 +1,5 @@
 name: "wsjcpp-print-tree"
-version: "v0.0.1"
+version: "v0.1.0"
 description: "Helper class for print tree in console"
 cmake_minimum_required: 3.0
 cmake_cxx_standard: 11
@@ -21,15 +21,13 @@ distribution:
   - source-file: "src/wsjcpp_print_tree.h"
     target-file: "wsjcpp_print_tree.h"
     type: "source-code"
-    sha1: ""
   - source-file: "src/wsjcpp_print_tree.cpp"
     target-file: "wsjcpp_print_tree.cpp"
     type: "source-code"
-    sha1: ""
 
 dependencies:
   - name: "wsjcpp-core"
-    version: "v0.0.5"
+    version: "v0.1.1"
     url: "https://github.com/wsjcpp/wsjcpp-core:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_core"

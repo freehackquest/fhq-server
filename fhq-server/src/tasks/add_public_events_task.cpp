@@ -21,14 +21,14 @@ AddPublicEventsTask::~AddPublicEventsTask() {
 }
 
 void AddPublicEventsTask::run() {
-    WSJCppLog::info(TAG, "message " + m_sMessage);
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    WsjcppLog::info(TAG, "message " + m_sMessage);
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("INSERT INTO public_events(type,dt,message) VALUES(:type,NOW(),:message)");
     query.bindValue(":type", QString::fromStdString(m_sType));
     query.bindValue(":message", QString::fromStdString(m_sMessage));
     if (!query.exec()) {
-        WSJCppLog::err(TAG, query.lastError().text().toStdString());
+        WsjcppLog::err(TAG, query.lastError().text().toStdString());
     }
 };

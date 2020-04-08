@@ -18,11 +18,11 @@ REGISTRY_WJSCPP_EMPLOY(EmployOrchestra)
 // ---------------------------------------------------------------------
 
 EmployOrchestra::EmployOrchestra()
-        : WSJCppEmployBase(EmployOrchestra::name(), { EmployGlobalSettings::name() }) {
+        : WsjcppEmployBase(EmployOrchestra::name(), { EmployGlobalSettings::name() }) {
     TAG = "EmployOrchestra";
     m_bTrusted = false;
 
-    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
 
     std::string  sGroupLXD = "lxd";
     pGlobalSettings->registrySetting(sGroupLXD, "path_dir_lxc_ssl").string("/etc/fhq-server/lxd").inDatabase();
@@ -34,8 +34,8 @@ EmployOrchestra::EmployOrchestra()
 // ---------------------------------------------------------------------
 
 bool EmployOrchestra::init() {
-    WSJCppLog::info(TAG, "Start init settings");
-    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
+    WsjcppLog::info(TAG, "Start init settings");
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
     bool bLXDMode = pGlobalSettings->get("lxd_mode").getBooleanValue();
  
     if (!bLXDMode)
@@ -49,7 +49,7 @@ bool EmployOrchestra::init() {
     std::string sError;
     m_bTrusted = UtilsLXDAuth::check_trust_certs(sError);
     if (!m_bTrusted) {
-        WSJCppLog::err(TAG,
+        WsjcppLog::err(TAG,
                  "SSL certificates are not trusted.\nPlease configure the connection with the LXD. "
                  "Type ./fhq-server -mclxd");
         return false;
@@ -68,7 +68,7 @@ bool EmployOrchestra::deinit() {
 
 bool EmployOrchestra::initConnection() {
 
-    WSJCppLog::info(TAG, "Start init connection");
+    WsjcppLog::info(TAG, "Start init connection");
 
     //Pull existing containers
     return !(m_bTrusted && !pull_container_names());
@@ -83,11 +83,11 @@ std::string EmployOrchestra::lastError() {
 // ---------------------------------------------------------------------
 
 bool EmployOrchestra::create_container(const std::string &sName, std::string &sError) {
-    WSJCppLog::info(TAG, "Starting creation container " + sName);
+    WsjcppLog::info(TAG, "Starting creation container " + sName);
     LXDContainer *const pContainer = new LXDContainer(sName);
 
     if (pContainer->create()) {
-        WSJCppLog::info(TAG, "Created container " + sName);
+        WsjcppLog::info(TAG, "Created container " + sName);
     }
 
     if (!pContainer->get_error().empty()) {
@@ -104,11 +104,11 @@ bool EmployOrchestra::create_container(const std::string &sName, std::string &sE
 bool EmployOrchestra::create_service(const ServiceConfig &serviceReq, std::string &sError) {
     ServiceLXD *const pService = new ServiceLXD(serviceReq);
 
-    WSJCppLog::info(TAG, "Starting creation container " + serviceReq.name);
+    WsjcppLog::info(TAG, "Starting creation container " + serviceReq.name);
 
     if (!pService->create_container()) {
         sError = pService->get_error();
-        WSJCppLog::err(TAG, "Failed created service. I can't create container.");
+        WsjcppLog::err(TAG, "Failed created service. I can't create container.");
         return false;
     }
 
@@ -215,7 +215,7 @@ bool EmployOrchestra::send_post_request_file(const std::string &sUrl, const std:
 
     if (ret != CURLE_OK) {
         m_sLastError = " Failed send POST request with error " + std::string(errorBuffer);
-        WSJCppLog::err(TAG, " Failed send POST request with error " + std::string(errorBuffer));
+        WsjcppLog::err(TAG, " Failed send POST request with error " + std::string(errorBuffer));
         sError = std::string(errorBuffer);
         return false;
     }
@@ -257,7 +257,7 @@ bool EmployOrchestra::send_post_request(const std::string &sUrl, const nlohmann:
 
     if (ret != CURLE_OK) {
         m_sLastError = " Failed send POST request with error " + std::string(errorBuffer);
-        WSJCppLog::err(TAG, " Failed send POST request with error " + std::string(errorBuffer));
+        WsjcppLog::err(TAG, " Failed send POST request with error " + std::string(errorBuffer));
         sError = std::string(errorBuffer);
         return false;
     }
@@ -305,7 +305,7 @@ bool EmployOrchestra::send_patch_request(const std::string &sUrl, const nlohmann
 
     if (ret != CURLE_OK) {
         m_sLastError = " Failed send PATCH request with error " + std::string(errorBuffer);
-        WSJCppLog::err(TAG, m_sLastError);
+        WsjcppLog::err(TAG, m_sLastError);
         sError = std::string(errorBuffer);
         return false;
     }
@@ -355,7 +355,7 @@ bool EmployOrchestra::send_put_request(const std::string &sUrl, const nlohmann::
 
     if (ret != CURLE_OK) {
         m_sLastError = " Failed send POST request with error " + std::string(errorBuffer);
-        WSJCppLog::err(TAG, "Failed send PUT request " + std::string(errorBuffer));
+        WsjcppLog::err(TAG, "Failed send PUT request " + std::string(errorBuffer));
         sError = std::string(errorBuffer);
         return false;
     }
@@ -400,7 +400,7 @@ bool EmployOrchestra::send_get_request_raw(const std::string &sUrl, std::string 
 
     if (ret != CURLE_OK) {
         m_sLastError = " Failed send POST request with error " + std::string(errorBuffer);
-        WSJCppLog::err(TAG, "Failed send GET request " + std::string(errorBuffer));
+        WsjcppLog::err(TAG, "Failed send GET request " + std::string(errorBuffer));
         sError = std::string(errorBuffer);
         return false;
     }
@@ -461,7 +461,7 @@ bool EmployOrchestra::send_delete_request(const std::string &sUrl, nlohmann::jso
 
     if (ret != CURLE_OK) {
         m_sLastError = " Failed send POST request with error " + std::string(errorBuffer);
-        WSJCppLog::err(TAG, "Failed send DELETE request " + std::string(errorBuffer));
+        WsjcppLog::err(TAG, "Failed send DELETE request " + std::string(errorBuffer));
         sError = std::string(errorBuffer);
         return false;
     }
@@ -484,7 +484,7 @@ bool EmployOrchestra::pull_container_names() {
     nlohmann::json jsonResponse;
 
     if (!send_get_request(sUrl, jsonResponse, sError)) {
-        WSJCppLog::err(TAG, "Can't pull container names " + sError);
+        WsjcppLog::err(TAG, "Can't pull container names " + sError);
         return false;
     }
 
@@ -525,7 +525,7 @@ bool EmployOrchestra::check_response(const nlohmann::json &jsonResponse, std::st
     if (!jsonResponse.at("error").get<std::string>().empty()) {
         error = jsonResponse.at("error").get<std::string>();
         sError = "request failed: " + error;
-        WSJCppLog::err(TAG, sError);
+        WsjcppLog::err(TAG, sError);
         return false;
     }
 
@@ -537,7 +537,7 @@ bool EmployOrchestra::check_response(const nlohmann::json &jsonResponse, std::st
     if (!metadata_error.empty()) {
         error = metadata_error;
         sError = "request failed: " + error;
-        WSJCppLog::err(TAG, sError);
+        WsjcppLog::err(TAG, sError);
         return false;
     }
 
@@ -551,18 +551,18 @@ bool EmployOrchestra::remove_container(const std::string &name, std::string &sEr
 
     if (!find_container(name, pContainer)) {
         sError = "Not found container " + name;
-        WSJCppLog::err(TAG, sError);
+        WsjcppLog::err(TAG, sError);
         return false;
     }
 
     if (pContainer->remove()) {
         m_mapContainers.erase(name);
-        WSJCppLog::info(TAG, "Deleted container " + pContainer->full_name());
+        WsjcppLog::info(TAG, "Deleted container " + pContainer->full_name());
         delete pContainer;
         return true;
     }
 
-    WSJCppLog::err(TAG, "Don't delete container " + pContainer->full_name());
+    WsjcppLog::err(TAG, "Don't delete container " + pContainer->full_name());
     m_sLastError = "Don't delete container " + pContainer->full_name();
     sError = pContainer->get_error();
     return false;

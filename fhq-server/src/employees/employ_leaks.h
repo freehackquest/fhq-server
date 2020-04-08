@@ -4,7 +4,7 @@
 #include <employees.h>
 #include <model_leak.h>
 
-class EmployLeaks : public WSJCppEmployBase {
+class EmployLeaks : public WsjcppEmployBase {
     public:
         EmployLeaks();
         static std::string name() { return "EmployLeaks"; }

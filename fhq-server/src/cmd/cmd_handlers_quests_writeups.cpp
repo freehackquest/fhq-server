@@ -22,7 +22,7 @@ CmdHandlerQuestsWriteUpsList::CmdHandlerQuestsWriteUpsList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -33,13 +33,13 @@ void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest) {
     }
 
     if (nQuestID == 0) {
-        pRequest->sendMessageError(cmd(), WSJCppError(400, "'questid' must be none zero"));
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "'questid' must be none zero"));
         return;
     }
 
 
     // user session
-    WSJCppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppUserSession *pUserSession = pRequest->getUserSession();
     bool bAdmin = pRequest->isAdmin();
     int nUserID = 0;
     if (pUserSession != nullptr) { // TODO refactor to pRequest->userId()
@@ -108,7 +108,7 @@ CmdHandlerQuestsWriteUpsProposal::CmdHandlerQuestsWriteUpsProposal()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -119,7 +119,7 @@ void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
     }
 
     if (nQuestID == 0) {
-        pRequest->sendMessageError(cmd(), WSJCppError(400, "'questid' must be none zero"));
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "'questid' must be none zero"));
         return;
     }
 
@@ -130,14 +130,14 @@ void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
     }
 
     if (sWriteUpLink.rfind(m_sLinkPrefix, 0) != 0) {
-        pRequest->sendMessageError(cmd(), WSJCppError(400, "Expected link starts from '" + m_sLinkPrefix + "'"));
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "Expected link starts from '" + m_sLinkPrefix + "'"));
         return;
     }
 
     sWriteUpLink = "https://www.youtube.com/embed/" + sWriteUpLink.substr(m_sLinkPrefix.length());
 
     // user token
-    WSJCppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppUserSession *pUserSession = pRequest->getUserSession();
     bool bAdmin = pRequest->isAdmin();
     int nUserID = 0;
     QString sUserEmail = "";
@@ -155,16 +155,16 @@ void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
     query.bindValue(":userid", nUserID);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
     int nWriteUpID = query.lastInsertId().toInt();
     if (bAdmin) {
-        EmployNotify *pNotify = findWSJCppEmploy<EmployNotify>();
+        EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
         ModelNotification notification("info", "quests", "Added [writeup#" + std::to_string(nWriteUpID) + "] for [quest#" + std::to_string(nQuestID) + "]");
         pNotify->sendNotification(notification);
     } else {
-        EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
+        EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
         std::string sMailToAdmin = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();
         std::string sMessageSubject = "Quest WriteUp Proposal (FreeHackQuest)";
         std::string sContext = "Quest WriteUp Proposal\n"
@@ -206,7 +206,7 @@ CmdHandlerQuestsWriteUpsUpdate::CmdHandlerQuestsWriteUpsUpdate()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestsWriteUpsUpdate::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -231,7 +231,7 @@ void CmdHandlerQuestsWriteUpsUpdate::handle(ModelRequest *pRequest) {
     query.prepare("SELECT * FROM quests_writeups WHERE id = :writeupid");
     query.bindValue(":writeupid", nWriteUpID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
     
@@ -242,7 +242,7 @@ void CmdHandlerQuestsWriteUpsUpdate::handle(ModelRequest *pRequest) {
         jsonWriteUp["questid"] = nQuestIDValue;
         nCurrentApproveValue = record.value("approve").toInt();
     } else {
-        pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found writeup"));
+        pRequest->sendMessageError(cmd(), WsjcppError(404, "Not found writeup"));
         return;
     }
 
@@ -252,11 +252,11 @@ void CmdHandlerQuestsWriteUpsUpdate::handle(ModelRequest *pRequest) {
         query2.bindValue(":approve", nApprove);
         query2.bindValue(":writeupid", nWriteUpID);
         if (!query2.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query2.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query2.lastError().text().toStdString()));
             return;
         }
         if (nApprove == 1) {
-            EmployNotify *pNotify = findWSJCppEmploy<EmployNotify>();
+            EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
             ModelNotification notification("info", "quests", "Approved [writeup#" + std::to_string(nWriteUpID) + "] for [quest#" + std::to_string(nQuestIDValue) + "]");
             pNotify->sendNotification(notification);
         }
@@ -288,7 +288,7 @@ CmdHandlerQuestsWriteUpsDelete::CmdHandlerQuestsWriteUpsDelete()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestsWriteUpsDelete::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -306,7 +306,7 @@ void CmdHandlerQuestsWriteUpsDelete::handle(ModelRequest *pRequest) {
     query.prepare("SELECT * FROM quests_writeups WHERE id = :writeupid");
     query.bindValue(":writeupid", nWriteUpID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
     
@@ -315,7 +315,7 @@ void CmdHandlerQuestsWriteUpsDelete::handle(ModelRequest *pRequest) {
         nlohmann::json jsonWriteup;
         nQuestIDValue = record.value("questid").toInt();
     } else {
-        pRequest->sendMessageError(cmd(), WSJCppError(404, "Not found writeup"));
+        pRequest->sendMessageError(cmd(), WsjcppError(404, "Not found writeup"));
         return;
     }
 
@@ -324,11 +324,11 @@ void CmdHandlerQuestsWriteUpsDelete::handle(ModelRequest *pRequest) {
     query2.prepare("DELETE FROM quests_writeups WHERE id = :writeupid");
     query2.bindValue(":writeupid", nWriteUpID);
     if (!query2.exec()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query2.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query2.lastError().text().toStdString()));
         return;
     }
     
-    EmployNotify *pNotify = findWSJCppEmploy<EmployNotify>();
+    EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
     ModelNotification notification("warning", "quests", "Removed [writeup#" + std::to_string(nWriteUpID) + "] for [quest#" + std::to_string(nQuestIDValue) + "]");
     pNotify->sendNotification(notification);
        

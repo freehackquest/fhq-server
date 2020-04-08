@@ -12,7 +12,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployServerInfo)
 // ---------------------------------------------------------------------
 
 EmployServerInfo::EmployServerInfo()
-    : WSJCppEmployBase(EmployServerInfo::name(), {EmployDatabase::name()}) {
+    : WsjcppEmployBase(EmployServerInfo::name(), {EmployDatabase::name()}) {
     m_nCountQuests = 0;
     m_nCountQuestsAttempt = 0;
     m_nCountQuestsCompleted = 0;
@@ -22,7 +22,7 @@ EmployServerInfo::EmployServerInfo()
 
 bool EmployServerInfo::init() {
 
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
 
@@ -31,7 +31,7 @@ bool EmployServerInfo::init() {
         QSqlQuery query(db);
         query.prepare("SELECT COUNT(*) cnt FROM quest");
         if (!query.exec()) {
-            WSJCppLog::err(TAG, query.lastError().text().toStdString());
+            WsjcppLog::err(TAG, query.lastError().text().toStdString());
             return false;
         }
         if (query.next()) {
@@ -48,7 +48,7 @@ bool EmployServerInfo::init() {
         QSqlQuery query(db);
         query.prepare("SELECT COUNT(*) cnt FROM users_quests_answers");
         if (!query.exec()) {
-            WSJCppLog::err(TAG, query.lastError().text().toStdString());
+            WsjcppLog::err(TAG, query.lastError().text().toStdString());
             return false;
         }
         if (query.next()) {
@@ -65,7 +65,7 @@ bool EmployServerInfo::init() {
         QSqlQuery query(db);
         query.prepare("SELECT COUNT(*) cnt FROM users_quests");
         if (!query.exec()) {
-            WSJCppLog::err(TAG, query.lastError().text().toStdString());
+            WsjcppLog::err(TAG, query.lastError().text().toStdString());
             return false;
         }
         if (query.next()) {

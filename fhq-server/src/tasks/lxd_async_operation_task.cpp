@@ -26,7 +26,7 @@ void LXDAsyncOperationTask::run() {
     std::string sError;
     int nErrorCode = 500;
 
-    auto *pWsServer = findWSJCppEmploy<EmployServer>();
+    auto *pWsServer = findWsjcppEmploy<EmployServer>();
     auto jsonPrepare = jsonResponse;
     jsonPrepare["result"] = "Operation began";
     pWsServer->sendToOne(m_pRequestClient, jsonPrepare);

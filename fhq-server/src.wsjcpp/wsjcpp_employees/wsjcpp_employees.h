@@ -10,13 +10,13 @@
 // ---------------------------------------------------------------------
 // base employ class
 
-class WSJCppEmployBase {
+class WsjcppEmployBase {
 public:
-    WSJCppEmployBase(
+    WsjcppEmployBase(
         const std::string &sName,
         const std::vector<std::string> &vLoadAfter
     );
-    virtual ~WSJCppEmployBase();
+    virtual ~WsjcppEmployBase();
     virtual bool init() = 0;
     virtual bool deinit() = 0;
     const std::vector<std::string> &loadAfter();
@@ -30,14 +30,14 @@ private:
 // ---------------------------------------------------------------------
 // public employees
 
-extern std::map<std::string, WSJCppEmployBase*> *g_pWSJCppEmployees;
-extern std::vector<std::string> *g_pWSJCppInitEmployees;
+extern std::map<std::string, WsjcppEmployBase*> *g_pWsjcppEmployees;
+extern std::vector<std::string> *g_pWsjcppInitEmployees;
 
-class WSJCppEmployees {
+class WsjcppEmployees {
     public:
         static void initGlobalVariables();
         static void deinitGlobalVariables();
-        static void addEmploy(const std::string &sName, WSJCppEmployBase* pEmploy);
+        static void addEmploy(const std::string &sName, WsjcppEmployBase* pEmploy);
         static bool init(const std::vector<std::string> &vLoadAfter);
         static bool deinit();
 };
@@ -48,22 +48,22 @@ class WSJCppEmployees {
     static classname * pWJSCppRegistryEmploy ## classname = new classname(); \
 
 // ---------------------------------------------------------------------
-// findWSJCppEmploy
+// findWsjcppEmploy
 
-template <class T> T* findWSJCppEmploy() {
-    WSJCppEmployees::initGlobalVariables();
-    std::string TAG = "findWSJCppEmploy";
+template <class T> T* findWsjcppEmploy() {
+    WsjcppEmployees::initGlobalVariables();
+    std::string TAG = "findWsjcppEmploy";
     std::string sEmployName = T::name();
-    WSJCppEmployBase *pEmploy = NULL;
-    if (g_pWSJCppEmployees->count(sEmployName)) {
-        pEmploy = g_pWSJCppEmployees->at(sEmployName);
+    WsjcppEmployBase *pEmploy = NULL;
+    if (g_pWsjcppEmployees->count(sEmployName)) {
+        pEmploy = g_pWsjcppEmployees->at(sEmployName);
     }
     if (pEmploy == NULL) {
-        WSJCppLog::throw_err(TAG, "Not found employ " + sEmployName);
+        WsjcppLog::throw_err(TAG, "Not found employ " + sEmployName);
     }
     T *pTEmploy = dynamic_cast<T*>(pEmploy);
     if (pTEmploy == NULL) {
-        WSJCppLog::throw_err(TAG, "Employ could not cast to T [" + sEmployName + "]");
+        WsjcppLog::throw_err(TAG, "Employ could not cast to T [" + sEmployName + "]");
     }
     return pTEmploy;
 }
@@ -71,7 +71,7 @@ template <class T> T* findWSJCppEmploy() {
 // ---------------------------------------------------------------------
 // WJSCppEmployRuntimeGlobalCache
 
-class WJSCppEmployRuntimeGlobalCache : public WSJCppEmployBase {
+class WJSCppEmployRuntimeGlobalCache : public WsjcppEmployBase {
     public:
         WJSCppEmployRuntimeGlobalCache();
         static std::string name() { return "WJSCppEmployRuntimeGlobalCache"; }

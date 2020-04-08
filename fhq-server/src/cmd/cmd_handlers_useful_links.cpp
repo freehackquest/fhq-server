@@ -38,14 +38,14 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
         sWhere = " WHERE status = 'ok' ";
     }
 
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     // TODO paginator
     query.prepare("SELECT * FROM useful_links " + sWhere + " ORDER BY stars, dt DESC LIMIT 0,25");
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -94,7 +94,7 @@ void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest) {
     std::string sDescription = pRequest->getInputString("description", "");
     std::string sAuthor = pRequest->getInputString("author", "");
 
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
@@ -105,7 +105,7 @@ void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest) {
     query.bindValue(":author", QString::fromStdString(sAuthor));
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
     nlohmann::json jsonResult;
@@ -141,7 +141,7 @@ CmdHandlerUsefulLinksDelete::CmdHandlerUsefulLinksDelete()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
 }
 
 /*********************************************
@@ -169,7 +169,7 @@ CmdHandlerUsefulLinksUpdate::CmdHandlerUsefulLinksUpdate()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksUpdate::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
 }
 
 /*********************************************
@@ -193,7 +193,7 @@ CmdHandlerUsefulLinksStar::CmdHandlerUsefulLinksStar()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksStar::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
 }
 
 /*********************************************
@@ -217,5 +217,5 @@ CmdHandlerUsefulLinksUnstar::CmdHandlerUsefulLinksUnstar()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksUnstar::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
 }

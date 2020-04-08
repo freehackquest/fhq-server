@@ -4,10 +4,10 @@
 #include <core/jobs_pool.h>
 
 
-REGISTRY_UNIT_TEST(UnitTestJobsPool)
+REGISTRY_WSJCPP_UNIT_TEST(UnitTestJobsPool)
 
 UnitTestJobsPool::UnitTestJobsPool()
-    : WSJCppUnitTestBase("UnitTestJobsPool") {
+    : WsjcppUnitTestBase("UnitTestJobsPool") {
     //
 }
 
@@ -30,7 +30,7 @@ class JobWaiterResult {
         };
 
         void onFail(const std::string &sError) {
-            WSJCppLog::err("JobWaiterResult", "Failed job");
+            WsjcppLog::err("JobWaiterResult", "Failed job");
         };
 
         int finishedJobs() {
@@ -50,9 +50,9 @@ class JobAsyncWaiter : public JobAsync {
             m_pJobWaiterResult = pJobWaiterResult;
         };
         virtual bool run(const std::string &sWorkerId) {
-            WSJCppLog::info(sWorkerId, "begin job " + std::to_string(m_nNumber));
+            WsjcppLog::info(sWorkerId, "begin job " + std::to_string(m_nNumber));
             std::this_thread::sleep_for(std::chrono::milliseconds(m_nMilliseconds));
-            WSJCppLog::info(sWorkerId, "end job  " + std::to_string(m_nNumber));
+            WsjcppLog::info(sWorkerId, "end job  " + std::to_string(m_nNumber));
             m_pJobWaiterResult->onDone();
         }
 
@@ -69,7 +69,7 @@ bool UnitTestJobsPool::run() {
 
     // TEST waitForDone
     int nCountJobs = 5;
-    WSJCppLog::info(TAG, "Check waitForDone...");
+    WsjcppLog::info(TAG, "Check waitForDone...");
     JobWaiterResult *pJobWaiterResult = new JobWaiterResult();
     for (int i = 0; i < nCountJobs; i++) {
         JobsPool::addJobFast(new JobAsyncWaiter(i, 500, pJobWaiterResult));
@@ -77,7 +77,7 @@ bool UnitTestJobsPool::run() {
 
     JobsPool::waitForDone();
     if (pJobWaiterResult->finishedJobs() != nCountJobs) {
-        WSJCppLog::err(TAG, "Test waitForDone FAILED expected " + std::to_string(nCountJobs) + ", but got " + std::to_string(pJobWaiterResult->finishedJobs()));
+        WsjcppLog::err(TAG, "Test waitForDone FAILED expected " + std::to_string(nCountJobs) + ", but got " + std::to_string(pJobWaiterResult->finishedJobs()));
         return false;
     }
 

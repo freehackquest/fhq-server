@@ -3,7 +3,7 @@
 
 #include <employees.h>
 
-class EmployImages : public WSJCppEmployBase {
+class EmployImages : public WsjcppEmployBase {
 private:
     std::string TAG;
     

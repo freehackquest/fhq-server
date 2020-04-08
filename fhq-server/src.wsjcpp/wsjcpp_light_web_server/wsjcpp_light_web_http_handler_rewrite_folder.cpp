@@ -3,19 +3,19 @@
 
 // ----------------------------------------------------------------------
 
-WSJCppLightWebHttpHandlerRewriteFolder::WSJCppLightWebHttpHandlerRewriteFolder(const std::string &sPrefixPath, const std::string &sWebFolder)
-: WSJCppLightWebHttpHandlerBase("rewrite-folder") {
+WsjcppLightWebHttpHandlerRewriteFolder::WsjcppLightWebHttpHandlerRewriteFolder(const std::string &sPrefixPath, const std::string &sWebFolder)
+: WsjcppLightWebHttpHandlerBase("rewrite-folder") {
 
-    TAG = "WSJCppLightWebHttpHandlerRewriteFolder";
-    m_sPrefixPath = sPrefixPath;
-    m_sWebFolder = sWebFolder;
+    TAG = "WsjcppLightWebHttpHandlerRewriteFolder";
+    m_sPrefixPath = WsjcppCore::doNormalizePath(sPrefixPath + "/");
+    m_sWebFolder = WsjcppCore::doNormalizePath(sWebFolder + "/");
 }
 
 // ----------------------------------------------------------------------
 
-bool WSJCppLightWebHttpHandlerRewriteFolder::canHandle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
+bool WsjcppLightWebHttpHandlerRewriteFolder::canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
-    // WSJCppLog::warn(_tag, "canHandle: " + pRequest->requestPath());
+    // WsjcppLog::warn(_tag, "canHandle: " + pRequest->requestPath());
     std::string sRequestPath = pRequest->getRequestPath();
     
     if (m_sPrefixPath.length() > sRequestPath.length()) {
@@ -27,26 +27,28 @@ bool WSJCppLightWebHttpHandlerRewriteFolder::canHandle(const std::string &sWorke
         return false;
     }
 
-    if (!WSJCppCore::dirExists(m_sWebFolder)) {
-        WSJCppLog::warn(_tag, "Directory " + m_sWebFolder + " does not exists");
+    if (!WsjcppCore::dirExists(m_sWebFolder)) {
+        WsjcppLog::warn(_tag, "Directory " + m_sWebFolder + " does not exists");
     }
     return true;
 }
 
 // ----------------------------------------------------------------------
 
-bool WSJCppLightWebHttpHandlerRewriteFolder::handle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
+bool WsjcppLightWebHttpHandlerRewriteFolder::handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
     std::string sRequestPath = pRequest->getRequestPath();
-    // WSJCppLog::warn(_tag, pRequest->requestPath());
-    
-    std::string sFilePath = m_sWebFolder + sRequestPath;
-    if (WSJCppCore::fileExists(sFilePath)) {
-        WSJCppLightWebHttpResponse resp(pRequest->getSockFd());
+    // WsjcppLog::warn(_tag, pRequest->requestPath());
+
+    // cat subfolder
+    std::string sRequestPath2 = sRequestPath.substr(m_sPrefixPath.length(), sRequestPath.length() - m_sPrefixPath.length());
+    std::string sFilePath = m_sWebFolder + sRequestPath2;
+    if (WsjcppCore::fileExists(sFilePath)) {
+        WsjcppLightWebHttpResponse resp(pRequest->getSockFd());
         resp.cacheSec(60).ok().sendFile(sFilePath);
     } else {
         std::string sFilePath = m_sWebFolder + "/index.html";
-        WSJCppLightWebHttpResponse resp(pRequest->getSockFd());
+        WsjcppLightWebHttpResponse resp(pRequest->getSockFd());
         resp.cacheSec(60).ok().sendFile(sFilePath);    
     }
     return true;

@@ -3,19 +3,19 @@
 
 // ----------------------------------------------------------------------
 
-WSJCppLightWebHttpHandlerWebFolder::WSJCppLightWebHttpHandlerWebFolder(const std::string &sPrefixPath, const std::string &sWebFolder)
-: WSJCppLightWebHttpHandlerBase("web-folder") {
+WsjcppLightWebHttpHandlerWebFolder::WsjcppLightWebHttpHandlerWebFolder(const std::string &sPrefixPath, const std::string &sWebFolder)
+: WsjcppLightWebHttpHandlerBase("web-folder") {
 
-    TAG = "WSJCppLightWebHttpHandlerWebFolder";
-    m_sPrefixPath = sPrefixPath;
-    m_sWebFolder = sWebFolder;
+    TAG = "WsjcppLightWebHttpHandlerWebFolder";
+    m_sPrefixPath = WsjcppCore::doNormalizePath(sPrefixPath + "/");
+    m_sWebFolder = WsjcppCore::doNormalizePath(sWebFolder + "/");
 }
 
 // ----------------------------------------------------------------------
 
-bool WSJCppLightWebHttpHandlerWebFolder::canHandle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
+bool WsjcppLightWebHttpHandlerWebFolder::canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
-    // WSJCppLog::warn(_tag, "canHandle: " + pRequest->requestPath());
+    // WsjcppLog::warn(_tag, "canHandle: " + pRequest->requestPath());
     std::string sRequestPath = pRequest->getRequestPath();
     
     if (m_sPrefixPath.length() > sRequestPath.length()) {
@@ -27,27 +27,31 @@ bool WSJCppLightWebHttpHandlerWebFolder::canHandle(const std::string &sWorkerId,
         return false;
     }
 
-    if (!WSJCppCore::dirExists(m_sWebFolder)) {
-        WSJCppLog::warn(_tag, "Directory " + m_sWebFolder + " does not exists");
+    if (!WsjcppCore::dirExists(m_sWebFolder)) {
+        WsjcppLog::warn(_tag, "Directory " + m_sWebFolder + " does not exists");
     }
     return true;
 }
 
 // ----------------------------------------------------------------------
 
-bool WSJCppLightWebHttpHandlerWebFolder::handle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
+bool WsjcppLightWebHttpHandlerWebFolder::handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
     std::string sRequestPath = pRequest->getRequestPath();
-    // WSJCppLog::warn(_tag, pRequest->requestPath());
-    if (sRequestPath == "/") {
-        sRequestPath = "/index.html";
+    // WsjcppLog::warn(_tag, sRequestPath);
+    std::string sRequestPath2 = sRequestPath.substr(m_sPrefixPath.length(), sRequestPath.length() - m_sPrefixPath.length());
+    // WsjcppLog::warn(_tag, sRequestPath2);
+    if (sRequestPath2 == "") {
+        sRequestPath2 = "index.html";
     }
-    std::string sFilePath = m_sWebFolder + sRequestPath;
-    if (WSJCppCore::fileExists(sFilePath)) {
-        WSJCppLightWebHttpResponse resp(pRequest->getSockFd());
+    std::string sFilePath = m_sWebFolder + sRequestPath2;
+    // WsjcppLog::warn(_tag, sFilePath);
+    
+    if (WsjcppCore::fileExists(sFilePath)) {
+        WsjcppLightWebHttpResponse resp(pRequest->getSockFd());
         resp.cacheSec(60).ok().sendFile(sFilePath);
     } else {
-        WSJCppLightWebHttpResponse resp(pRequest->getSockFd());
+        WsjcppLightWebHttpResponse resp(pRequest->getSockFd());
         resp.noCache().notFound().sendEmpty();
     }
     return true;

@@ -3,7 +3,7 @@
 
 #include <employees.h>
 
-class EmployMails : public WSJCppEmployBase {
+class EmployMails : public WsjcppEmployBase {
     public:
         EmployMails();
         static std::string name() { return "EmployMails"; }

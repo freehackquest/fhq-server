@@ -5,10 +5,10 @@
 #include <string>
 #include <json.hpp>
 
-class WSJCppGeoIPResult {
+class WsjcppGeoIPResult {
     public:
         // ok
-        WSJCppGeoIPResult(
+        WsjcppGeoIPResult(
             const std::string &sServiceName,
             const std::string &sIpAddress,
             const std::string &sCountry,
@@ -18,7 +18,7 @@ class WSJCppGeoIPResult {
             double nLongitude
         );
         // error
-        WSJCppGeoIPResult(
+        WsjcppGeoIPResult(
             const std::string &sServiceName,
             const std::string &sIpAddress,
             const std::string &sErrorDescription
@@ -49,29 +49,29 @@ class WSJCppGeoIPResult {
 
 // ---------------------------------------------------------------------
 
-class WSJCppGeoIPv4 {
+class WsjcppGeoIPv4 {
     public:
-        WSJCppGeoIPv4();
-        WSJCppGeoIPv4(const unsigned char arrIpLeft[4]);
-        WSJCppGeoIPv4(unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4);
+        WsjcppGeoIPv4();
+        WsjcppGeoIPv4(const unsigned char arrIpLeft[4]);
+        WsjcppGeoIPv4(unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4);
         bool fromString(const std::string &sIpAddress);
         std::string toString();
-        bool operator==(const WSJCppGeoIPv4& rhs);
-        bool operator<(const WSJCppGeoIPv4& rhs);
-        bool operator>(const WSJCppGeoIPv4& rhs);
-        bool operator<=(const WSJCppGeoIPv4& rhs);
-        bool operator>=(const WSJCppGeoIPv4& rhs);
+        bool operator==(const WsjcppGeoIPv4& rhs);
+        bool operator<(const WsjcppGeoIPv4& rhs);
+        bool operator>(const WsjcppGeoIPv4& rhs);
+        bool operator<=(const WsjcppGeoIPv4& rhs);
+        bool operator>=(const WsjcppGeoIPv4& rhs);
     private:
         unsigned char m_arrIP[4];
 };
 
 // ---------------------------------------------------------------------
 
-class WSJCppGeoIP {
+class WsjcppGeoIP {
     public:
-        static WSJCppGeoIPResult requestToIpApiCom(const std::string &sIpAddress);
-        static WSJCppGeoIPResult parseResponseIpApiCom(const std::string &sIpAddress, const std::string &sJson);
-        static bool isIPv4InReservedRange(const WSJCppGeoIPv4& ipV4, std::string &sError);
+        static WsjcppGeoIPResult requestToIpApiCom(const std::string &sIpAddress);
+        static WsjcppGeoIPResult parseResponseIpApiCom(const std::string &sIpAddress, const std::string &sJson);
+        static bool isIPv4InReservedRange(const WsjcppGeoIPv4& ipV4, std::string &sError);
 };
 
 // ---------------------------------------------------------------------

@@ -3,11 +3,11 @@
 #include <iostream>
 #include <validators/validators.h>
 
-REGISTRY_UNIT_TEST(UnitTestValidators)
+REGISTRY_WSJCPP_UNIT_TEST(UnitTestValidators)
 
 
 UnitTestValidators::UnitTestValidators()
-    : WSJCppUnitTestBase("UnitTestValidators") {
+    : WsjcppUnitTestBase("UnitTestValidators") {
     //
 }
 
@@ -18,13 +18,13 @@ void UnitTestValidators::init() {
 bool UnitTestValidators::run() {
 
     struct LTestVld {
-        LTestVld(WSJCppValidatorStringBase *pValidator, std::string sValue, bool bExpectedResult) {
+        LTestVld(WsjcppValidatorStringBase *pValidator, std::string sValue, bool bExpectedResult) {
             m_pValidator = pValidator;
             m_sValue = sValue;
             m_bExpectedResult = bExpectedResult;
         }
 
-        WSJCppValidatorStringBase *m_pValidator;
+        WsjcppValidatorStringBase *m_pValidator;
         std::string m_sValue;
         int m_bExpectedResult;
     };
@@ -41,7 +41,7 @@ bool UnitTestValidators::run() {
     bool bTestSuccess = true;
     for (unsigned int i = 0; i < tests.size(); i++) {
         std::string sValue = tests[i]->m_sValue;
-        WSJCppValidatorStringBase *pValidator = tests[i]->m_pValidator;
+        WsjcppValidatorStringBase *pValidator = tests[i]->m_pValidator;
         bool bExpectedResult = tests[i]->m_bExpectedResult;
         std::string sError = "";
         bool bGotResult = pValidator->isValid(sValue, sError);

@@ -2,10 +2,10 @@
 #include "unit_test_storage_struct.h"
 #include <core/storages.h>
 
-REGISTRY_UNIT_TEST(UnitTestStorageStruct)
+REGISTRY_WSJCPP_UNIT_TEST(UnitTestStorageStruct)
 
 UnitTestStorageStruct::UnitTestStorageStruct() 
-    : WSJCppUnitTestBase("UnitTestStorageStruct") {
+    : WsjcppUnitTestBase("UnitTestStorageStruct") {
     // 
 }
 
@@ -18,7 +18,7 @@ void UnitTestStorageStruct::init() {
 
 bool UnitTestStorageStruct::run() {
     if (!Storages::support("mysql")) {
-        WSJCppLog::err(TAG, "Not supported mysql");
+        WsjcppLog::err(TAG, "Not supported mysql");
         return false;
     }
     Storage *pStorage = Storages::create("mysql");
@@ -66,7 +66,7 @@ void UnitTestStorageStruct::dropTestTable0(bool &bTestSuccess, Storage *pStorage
     }
     pStorage->addStorageChanges(test_tbl0_drop); 
     if (pStorage->existsTable("test_tbl0")) {
-        WSJCppLog::err(TAG, "Table 'test_tbl0' must be disappeared");
+        WsjcppLog::err(TAG, "Table 'test_tbl0' must be disappeared");
         bTestSuccess = false;
     }
 }
@@ -169,7 +169,7 @@ void UnitTestStorageStruct::checkModifiedTable1(bool &bTestSuccess, Storage *pSt
 
     // TEST merge structs
     /*if (!test_tbl1.mergeWith(modify_test_tbl1)) {
-        WSJCppLog::err(TAG, "Problem with merge structs");
+        WsjcppLog::err(TAG, "Problem with merge structs");
         bTestSuccess = false;
     }
 

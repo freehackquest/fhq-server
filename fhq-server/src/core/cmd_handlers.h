@@ -12,12 +12,12 @@
 #include <QVariant> // TODO deprecated
 
 /*! 
- * WSJCppError - helper class for errors
+ * WsjcppError - helper class for errors
  * */
 
-class WSJCppError {
+class WsjcppError {
     public:
-        WSJCppError(int nCodeError, const std::string &sMessage);
+        WsjcppError(int nCodeError, const std::string &sMessage);
         int codeError();
         std::string message();
     private:
@@ -26,13 +26,13 @@ class WSJCppError {
 };
 
 /*! 
- * WSJCppUserSession - 
+ * WsjcppUserSession - 
  * */
 
-class WSJCppUserSession {
+class WsjcppUserSession {
     public:
-        WSJCppUserSession();
-        WSJCppUserSession(nlohmann::json const& obj);
+        WsjcppUserSession();
+        WsjcppUserSession(nlohmann::json const& obj);
         void fillFrom(nlohmann::json const& obj);
 
         // IUserToken
@@ -57,20 +57,20 @@ class WSJCppUserSession {
 };
 
 /*! 
- * WSJCppSocketClient - 
+ * WsjcppSocketClient - 
  * */
 
-class WSJCppSocketClient : public QObject {
+class WsjcppSocketClient : public QObject {
     private:
         Q_OBJECT
         
     public:
-        WSJCppSocketClient(QWebSocket *pSocket);
-        ~WSJCppSocketClient();
+        WsjcppSocketClient(QWebSocket *pSocket);
+        ~WsjcppSocketClient();
         
     private:
         std::string TAG;
-        WSJCppUserSession *m_pUserSession;
+        WsjcppUserSession *m_pUserSession;
         QWebSocket *m_pSocket;
 
     private Q_SLOTS:
@@ -86,12 +86,12 @@ class WSJCppSocketClient : public QObject {
 class IWebSocketServer {
     public:
         virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse) = 0;
-        virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, WSJCppError error) = 0;
+        virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, WsjcppError error) = 0;
         virtual void sendToAll(const nlohmann::json& jsonMessage) = 0;
         virtual void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) = 0;
         virtual int getConnectedUsers() = 0;
-        virtual void setWSJCppUserSession(QWebSocket *pClient, WSJCppUserSession *pUserSession) = 0; 
-        virtual WSJCppUserSession *getWSJCppUserSession(QWebSocket *pClient) = 0;
+        virtual void setWsjcppUserSession(QWebSocket *pClient, WsjcppUserSession *pUserSession) = 0; 
+        virtual WsjcppUserSession *getWsjcppUserSession(QWebSocket *pClient) = 0;
 };
 
 /*! 
@@ -133,9 +133,9 @@ class CmdInputDef {
         bool isMaxVal(); // TODO: redesign to validators
         int getMaxVal(); // TODO: redesign to validators
 
-        CmdInputDef &addValidator(WSJCppValidatorStringBase *pValidatorStringBase);
+        CmdInputDef &addValidator(WsjcppValidatorStringBase *pValidatorStringBase);
         
-        const std::vector<WSJCppValidatorStringBase *> &listOfValidators();
+        const std::vector<WsjcppValidatorStringBase *> &listOfValidators();
 
     private:
         std::string m_sType;
@@ -152,7 +152,7 @@ class CmdInputDef {
         std::string CMD_INPUT_DEF_TYPE_BOOL = "boolean";
         std::string CMD_INPUT_DEF_TYPE_ANY = "any";
 
-        std::vector<WSJCppValidatorStringBase *> m_vValidatorsString;
+        std::vector<WsjcppValidatorStringBase *> m_vValidatorsString;
 };
 
 // ---------------------------------------------------------------------
@@ -163,7 +163,7 @@ class ModelRequest {
         QWebSocket *client();
         std::string getIpAddress();
         IWebSocketServer *server();
-        WSJCppUserSession *getUserSession();
+        WsjcppUserSession *getUserSession();
         bool isAdmin();
         bool isUser();
         bool isUnauthorized();
@@ -178,7 +178,7 @@ class ModelRequest {
         bool hasM();
         std::string command();
         bool hasCommand();
-        void sendMessageError(const std::string &cmd, WSJCppError error);
+        void sendMessageError(const std::string &cmd, WsjcppError error);
         void sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse);
         void sendResponse(nlohmann::json& jsonResult);
 
@@ -187,7 +187,7 @@ class ModelRequest {
         std::string TAG;
         QWebSocket *m_pClient;
         IWebSocketServer *m_pServer;
-        WSJCppUserSession *m_pWSJCppUserSession;
+        WsjcppUserSession *m_pWsjcppUserSession;
         nlohmann::json m_jsonRequest;
         std::string m_sMessageId;
         std::string m_sCommand;

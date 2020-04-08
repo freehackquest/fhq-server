@@ -7,10 +7,10 @@ REGISTRY_WJSCPP_EMPLOY(EmployMails)
 // ---------------------------------------------------------------------
 
 EmployMails::EmployMails()
-    : WSJCppEmployBase(EmployMails::name(), { EmployGlobalSettings::name(), EmployDatabase::name(), EmployNotify::name() }) {
+    : WsjcppEmployBase(EmployMails::name(), { EmployGlobalSettings::name(), EmployDatabase::name(), EmployNotify::name() }) {
     TAG = EmployMails::name();
 
-    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
     
     std::string  sGroupMail = "mail";
     pGlobalSettings->registrySetting(sGroupMail, "mail_from").string("freehackquest@gmail.com").inDatabase();

@@ -91,7 +91,7 @@ std::string FallenHelpParseArgs::option(const std::string &sName) {
     }
     if (pHpa == NULL) {
         std::cout << "Error: Not defined attribute \n";
-        // WSJCppLog::err(TAG, "Not defined attribute");
+        // WsjcppLog::err(TAG, "Not defined attribute");
         return "";
     }
 
@@ -126,7 +126,7 @@ bool FallenHelpParseArgs::has(const std::string &sName) {
     }
     if (pHpa == NULL) {
         std::cout << "Error: Not defined attribute for '" << sName << "'\n";
-        // WSJCppLog::err(TAG, "Not defined attribute");
+        // WsjcppLog::err(TAG, "Not defined attribute");
         return false;
     }
 
@@ -215,7 +215,7 @@ bool WJSCppParseConfig::load() {
             sLine.erase(sLine.begin() + nFoundComment, sLine.end());
         }
 
-        WSJCppCore::trim(sLine);
+        WsjcppCore::trim(sLine);
         if (sLine == "") { // skip empty strings
             continue;
         }
@@ -230,18 +230,18 @@ bool WJSCppParseConfig::load() {
             
             sParamName.erase (sParamName.begin() + nFoundEqualChar, sParamName.end());
             sParamValue.erase (sParamValue.begin(), sParamValue.begin() + nFoundEqualChar + 1);
-            WSJCppCore::trim(sParamName);
-            WSJCppCore::trim(sParamValue);
+            WsjcppCore::trim(sParamName);
+            WsjcppCore::trim(sParamValue);
             
             // std::cout << " [" << sParamName << "]  => [" << sParamValue << "]" << std::endl;
             
             if (m_mapConfigValues.count(sParamName)) {
-                WSJCppLog::warn(TAG, "Ignoring duplicate of option line(" + std::to_string(nLineNumber) + ") in config: " + m_sFilepathConf);
+                WsjcppLog::warn(TAG, "Ignoring duplicate of option line(" + std::to_string(nLineNumber) + ") in config: " + m_sFilepathConf);
             } else {
                 m_mapConfigValues.insert(std::pair<std::string,std::string>(sParamName, sParamValue));    
             }
         } else {
-            WSJCppLog::warn(TAG, "Ignoring invalid line(" + std::to_string(nLineNumber) + ") in config: " + m_sFilepathConf);
+            WsjcppLog::warn(TAG, "Ignoring invalid line(" + std::to_string(nLineNumber) + ") in config: " + m_sFilepathConf);
         }
         
     }
@@ -261,7 +261,7 @@ std::string WJSCppParseConfig::stringValue(const std::string &sParamName, const 
     if (m_mapConfigValues.count(sParamName)) {
         sResult = m_mapConfigValues.at(sParamName);
     } else {
-        WSJCppLog::warn(TAG, sParamName + " - not found in " + m_sFilepathConf + "\n\t Will be used default value: " + defaultValue);
+        WsjcppLog::warn(TAG, sParamName + " - not found in " + m_sFilepathConf + "\n\t Will be used default value: " + defaultValue);
     }
     return sResult;
 }
@@ -275,7 +275,7 @@ int WJSCppParseConfig::intValue(const std::string &sParamName, int defaultValue)
         std::istringstream isBuffer(sParamValue);
         isBuffer >> nResult;
     } else {
-        WSJCppLog::warn(TAG, sParamName + " - not found in " + m_sFilepathConf + "\n\t Will be used default value: " + std::to_string(defaultValue));
+        WsjcppLog::warn(TAG, sParamName + " - not found in " + m_sFilepathConf + "\n\t Will be used default value: " + std::to_string(defaultValue));
     }
     return nResult;
 }
@@ -290,7 +290,7 @@ bool WJSCppParseConfig::boolValue(const std::string &sParamName, bool defaultVal
         std::transform(sParamValue.begin(), sParamValue.end(), sParamValue.begin(), ::tolower);
         bResult = (sParamValue == "yes");
     } else {
-        WSJCppLog::warn(TAG, sParamName + " - not found in " + m_sFilepathConf + "\n\t Will be used default value: " + (defaultValue ? "yes" : "no"));
+        WsjcppLog::warn(TAG, sParamName + " - not found in " + m_sFilepathConf + "\n\t Will be used default value: " + (defaultValue ? "yes" : "no"));
     }
     return bResult;
 }

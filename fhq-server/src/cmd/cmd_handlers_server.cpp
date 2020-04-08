@@ -22,8 +22,8 @@ CmdHandlerPublicInfo::CmdHandlerPublicInfo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
-    EmployServerInfo *pServerInfo = findWSJCppEmploy<EmployServerInfo>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+    EmployServerInfo *pServerInfo = findWsjcppEmploy<EmployServerInfo>();
 
     nlohmann::json jsonResponse;
 
@@ -58,7 +58,7 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
         query.bindValue(":morethan", nMoreThen);
         query.bindValue(":citieslimit", nCitiesLimit);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
         while (query.next()) {
@@ -76,7 +76,7 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
         query.prepare("SELECT u.nick, u.university, u.rating FROM users u WHERE u.role = :role ORDER BY u.rating DESC LIMIT 0,10");
         query.bindValue(":role", "user");
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
         int nPlace = 1;
@@ -116,7 +116,7 @@ CmdHandlerServerInfo::CmdHandlerServerInfo()
 // ---------------------------------------------------------------------
 
 void CmdHandlerServerInfo::handle(ModelRequest *pRequest) {
-    EmployServerInfo *pServerInfo = findWSJCppEmploy<EmployServerInfo>();
+    EmployServerInfo *pServerInfo = findWsjcppEmploy<EmployServerInfo>();
     nlohmann::json jsonResponse;
     nlohmann::json data;
 
@@ -128,7 +128,7 @@ void CmdHandlerServerInfo::handle(ModelRequest *pRequest) {
     updatime = updatime - pServerInfo->getServerStart().toMSecsSinceEpoch();
     data["server_uptime_sec"] = updatime/1000;
     // nlohmann::json lastLogMessages = nlohmann::json::array();
-    data["last_log_messages"] = WSJCppLog::getLastLogMessages();
+    data["last_log_messages"] = WsjcppLog::getLastLogMessages();
     jsonResponse["data"] = data;
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -153,7 +153,7 @@ CmdHandlerServerSettings::CmdHandlerServerSettings()
 void CmdHandlerServerSettings::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
 
-    EmployGlobalSettings *pGloablSettings = findWSJCppEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGloablSettings = findWsjcppEmploy<EmployGlobalSettings>();
 
     jsonResponse["data"] = pGloablSettings->toJson(true); // TODO how much db connections and time
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -182,17 +182,17 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
     std::string sName = pRequest->getInputString("name", "");
     std::string sValue = pRequest->getInputString("value", "");
 
-    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
     if (!pGlobalSettings->exists(sName)) {
         std::string sError = "Setting with name: " + sName + " did not found";
-        pRequest->sendMessageError(cmd(), WSJCppError(404, sError));
+        pRequest->sendMessageError(cmd(), WsjcppError(404, sError));
         return;
     }
 
-    const WSJCppSettingItem sett = pGlobalSettings->get(sName);
+    const WsjcppSettingItem sett = pGlobalSettings->get(sName);
     if (sett.isReadonly()) {
         std::string sError = "Setting with name: " + sName + " readonly";
-        pRequest->sendMessageError(cmd(), WSJCppError(400, sError));
+        pRequest->sendMessageError(cmd(), WsjcppError(400, sError));
         return;
     }
     
@@ -205,10 +205,10 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
         pGlobalSettings->update(sName, sValue == "yes");
     } else {
         std::string sError = "Setting with name: " + sName + " unknown type";
-        pRequest->sendMessageError(cmd(), WSJCppError(500, sError));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, sError));
         return;
     }
     std::string sNewValue = pGlobalSettings->get(sName).convertValueToString(true);
-    WSJCppLog::info(TAG, "Settings '" + sName + "' updated from '" + sPrevValue + "' -> '" + sNewValue + "'");
+    WsjcppLog::info(TAG, "Settings '" + sName + "' updated from '" + sPrevValue + "' -> '" + sNewValue + "'");
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

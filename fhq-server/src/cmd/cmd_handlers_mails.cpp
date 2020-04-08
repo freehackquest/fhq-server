@@ -24,7 +24,7 @@ CmdHandlerMailInfo::CmdHandlerMailInfo()
 
 void CmdHandlerMailInfo::handle(ModelRequest *pRequest) {
 
-    pRequest->sendMessageError(cmd(), WSJCppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
 }
 
 /*****************************************
@@ -40,7 +40,7 @@ CmdHandlerMailSend::CmdHandlerMailSend()
 
     // validation and description input fields
     requireStringParam("to", "E-mail of the recipient")
-        .addValidator(new WSJCppValidatorEmail());
+        .addValidator(new WsjcppValidatorEmail());
     requireStringParam("subject", "Subject of the message");
     requireStringParam("body", "Body of the message");
 
@@ -82,7 +82,7 @@ CmdHandlerMailsList::CmdHandlerMailsList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerMailsList::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findWSJCppEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     nlohmann::json jsonResponse;
 
     std::vector<std::string> vFilters;
@@ -93,21 +93,21 @@ void CmdHandlerMailsList::handle(ModelRequest *pRequest) {
     int nCount = 0;
 
     std::string sFilterEmail = pRequest->getInputString("filter_email", "");
-    WSJCppCore::trim(sFilterEmail);
+    WsjcppCore::trim(sFilterEmail);
     if (sFilterEmail != "") {
         vFilters.push_back("(ed.to_email LIKE :email)");
         filter_values[":email"] = "%" + QString::fromStdString(sFilterEmail) + "%";
     }
 
     std::string sFilterSubject = pRequest->getInputString("filter_subject", "");
-    WSJCppCore::trim(sFilterSubject);
+    WsjcppCore::trim(sFilterSubject);
     if (sFilterSubject != "") {
         vFilters.push_back("(ed.subject LIKE :subject)");
         filter_values[":subject"] = "%" + QString::fromStdString(sFilterSubject) + "%";
     }
 
     std::string sFilterMessage = pRequest->getInputString("filter_message", "");
-    WSJCppCore::trim(sFilterMessage);
+    WsjcppCore::trim(sFilterMessage);
     if (sFilterMessage != "") {
         vFilters.push_back("(ed.message LIKE :message)");
         filter_values[":message"] = "%" + QString::fromStdString(sFilterMessage) + "%";
@@ -134,7 +134,7 @@ void CmdHandlerMailsList::handle(ModelRequest *pRequest) {
             query.bindValue(key, filter_values.value(key));
         }
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {

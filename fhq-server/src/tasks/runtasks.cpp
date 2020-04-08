@@ -55,7 +55,7 @@ void RunTasks::LXDAsyncOperation(void (*func)(const std::string &, std::string &
 
 void RunTasks::waitForDone() {
     while (!QThreadPool::globalInstance()->waitForDone(1000)) {
-        WSJCppLog::info(std::string("RunTasks"), "Wait tasks for done...");
+        WsjcppLog::info(std::string("RunTasks"), "Wait tasks for done...");
     }
 }
 

@@ -21,28 +21,28 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
     TAG = "WebSocketServer";
 
     m_bFailed = false;
-    if (!WSJCppEmployees::init({"start_ws_server"})) {
+    if (!WsjcppEmployees::init({"start_ws_server"})) {
         m_bFailed = true;
         return;
     }
     
-    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
     int nWsPort = pGlobalSettings->get("port").getNumberValue();
     int bSslEnabled = pGlobalSettings->get("ssl_on").getBooleanValue();
     int nWssPort = pGlobalSettings->get("ssl_port").getNumberValue();
 
-    EmployServerInfo *pServerInfo = findWSJCppEmploy<EmployServerInfo>();
-    EmployServer *pServer = findWSJCppEmploy<EmployServer>();
+    EmployServerInfo *pServerInfo = findWsjcppEmploy<EmployServerInfo>();
+    EmployServer *pServer = findWsjcppEmploy<EmployServer>();
 
     m_pWebSocketServer = new QWebSocketServer(QStringLiteral("fhq-server"), QWebSocketServer::NonSecureMode, this);
     m_pWebSocketServerSSL = new QWebSocketServer(QStringLiteral("fhq-server"), QWebSocketServer::SecureMode, this);
 
     if (m_pWebSocketServer->listen(QHostAddress::Any, nWsPort)) {
-        WSJCppLog::info(TAG, "fhq-server listening on port " + std::to_string(nWsPort));
+        WsjcppLog::info(TAG, "fhq-server listening on port " + std::to_string(nWsPort));
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnection);
         connect(m_pWebSocketServer, &QWebSocketServer::closed, this, &WebSocketServer::closed);
     } else {
-        WSJCppLog::err(TAG, "fhq-server can not listening on port " + std::to_string(nWsPort));
+        WsjcppLog::err(TAG, "fhq-server can not listening on port " + std::to_string(nWsPort));
         m_bFailed = true;
         return;
     }
@@ -67,11 +67,11 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
         m_pWebSocketServerSSL->setSslConfiguration(sslConfiguration);
 
         if (m_pWebSocketServerSSL->listen(QHostAddress::Any, nWssPort)) {
-            WSJCppLog::info(TAG, "fhq-server listening (via ssl) on port" + std::to_string(nWssPort));
+            WsjcppLog::info(TAG, "fhq-server listening (via ssl) on port" + std::to_string(nWssPort));
             connect(m_pWebSocketServerSSL, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnectionSSL);
             connect(m_pWebSocketServerSSL, &QWebSocketServer::sslErrors, this, &WebSocketServer::onSslErrors);
         } else {
-            WSJCppLog::err(TAG, "fhq-server can not listening (via ssl) on port " + std::to_string(nWssPort));
+            WsjcppLog::err(TAG, "fhq-server can not listening (via ssl) on port " + std::to_string(nWssPort));
             m_bFailed = true;
             return;
         }
@@ -110,7 +110,7 @@ void WebSocketServer::sendServerMessage(QWebSocket *pSocket) {
     jsonServer["app"] = "fhq-server";
     jsonServer["version"] = FHQSRV_VERSION;
 
-    EmployServerInfo *pServerInfo = findWSJCppEmploy<EmployServerInfo>();
+    EmployServerInfo *pServerInfo = findWsjcppEmploy<EmployServerInfo>();
     jsonServer["developers"] = pServerInfo->developers();
 
     sendMessage(pSocket, jsonServer);
@@ -134,7 +134,7 @@ void WebSocketServer::initNewConnection(const std::string &sPrefix, QWebSocket *
         }        
     #endif
 
-    WSJCppLog::info(TAG, sInitMessage);
+    WsjcppLog::info(TAG, sInitMessage);
 
     connect(pSocket, &QWebSocket::textMessageReceived, this, &WebSocketServer::processTextMessage);
     connect(pSocket, &QWebSocket::binaryMessageReceived, this, &WebSocketServer::processBinaryMessage);
@@ -154,7 +154,7 @@ void WebSocketServer::onNewConnection()
 {
     QWebSocket *pSocket = m_pWebSocketServer->nextPendingConnection();
     initNewConnection("", pSocket);
-    // WSJCppSocketClient *pClient = new WSJCppSocketClient(pSocket);
+    // WsjcppSocketClient *pClient = new WsjcppSocketClient(pSocket);
 }
 
 // ---------------------------------------------------------------------
@@ -166,24 +166,24 @@ void WebSocketServer::onNewConnection()
 void WebSocketServer::onNewConnectionSSL() {
     QWebSocket *pSocket = m_pWebSocketServerSSL->nextPendingConnection();
     initNewConnection("SSL", pSocket);
-    // WSJCppSocketClient *pClient = new WSJCppSocketClient(pSocket);
+    // WsjcppSocketClient *pClient = new WsjcppSocketClient(pSocket);
 }
 
 // ---------------------------------------------------------------------
 
 void WebSocketServer::processTextMessage(const QString &message) {
-    EmployServerInfo *pServerInfo = findWSJCppEmploy<EmployServerInfo>();
-    EmployServer *pServer = findWSJCppEmploy<EmployServer>();
+    EmployServerInfo *pServerInfo = findWsjcppEmploy<EmployServerInfo>();
+    EmployServer *pServer = findWsjcppEmploy<EmployServer>();
 
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    WSJCppLog::warn(TAG, "QWebSocket *pClient = " + WSJCppCore::getPointerAsHex(pClient));
-    WSJCppLog::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
+    WsjcppLog::warn(TAG, "QWebSocket *pClient = " + WsjcppCore::getPointerAsHex(pClient));
+    WsjcppLog::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
 
     std::string sCmd = "";
     std::string sM = "";
     try {
         if (!nlohmann::json::accept(message.toStdString())) {
-            this->sendMessageError(pClient, sCmd, sM, WSJCppError(400, "Not JSON data"));
+            this->sendMessageError(pClient, sCmd, sM, WsjcppError(400, "Not JSON data"));
             return;
         }
 
@@ -191,25 +191,25 @@ void WebSocketServer::processTextMessage(const QString &message) {
         ModelRequest *pModelRequest = new ModelRequest(pClient, this, jsonRequest_);
         
         if (!pModelRequest->hasCommand()) {
-            this->sendMessageError(pClient, sCmd, sM, WSJCppError(404, "Not found requare parameter 'cmd'"));
+            this->sendMessageError(pClient, sCmd, sM, WsjcppError(404, "Not found requare parameter 'cmd'"));
             // pModelRequestData->sendError(Error(404, "Not found command '" + QString(cmd.c_str()) + "'"));
             return;
         }
 
         sCmd = pModelRequest->command();
         if (!pModelRequest->hasM()) {
-            WSJCppLog::info(TAG, "[WS] >>> " + sCmd);
-            this->sendMessageError(pClient, sCmd, sM, WSJCppError(404, "Not found requare parameter 'm' - messageid"));
+            WsjcppLog::info(TAG, "[WS] >>> " + sCmd);
+            this->sendMessageError(pClient, sCmd, sM, WsjcppError(404, "Not found requare parameter 'm' - messageid"));
             return;
         }
         sM = pModelRequest->m();
 
-        WSJCppLog::info(TAG, "[WS] >>> " + sCmd + ":" + sM);
+        WsjcppLog::info(TAG, "[WS] >>> " + sCmd + ":" + sM);
 
         CmdHandlerBase *pCmdHandler = CmdHandlers::findCmdHandler(sCmd);
         if (pCmdHandler == NULL) {
-            WSJCppLog::warn(TAG, "Unknown command: " + sCmd);
-            pModelRequest->sendMessageError(sCmd, WSJCppError(404, "Not found command '" + sCmd + "'"));
+            WsjcppLog::warn(TAG, "Unknown command: " + sCmd);
+            pModelRequest->sendMessageError(sCmd, WsjcppError(404, "Not found command '" + sCmd + "'"));
             return;
         }
 
@@ -223,15 +223,15 @@ void WebSocketServer::processTextMessage(const QString &message) {
 
         // allow access
         // TODO move to ModelRequest
-        WSJCppError error(404, "none");
+        WsjcppError error(404, "none");
         if (!pServer->validateInputParameters(error, pCmdHandler, jsonRequest_)) {
             pModelRequest->sendMessageError(pCmdHandler->cmd(), error);
             return;
         }
         pCmdHandler->handle(pModelRequest);
     } catch (const std::exception &e) {
-        this->sendMessageError(pClient, sCmd, sM, WSJCppError(500, "InternalServerError"));
-        WSJCppLog::err(TAG, e.what());
+        this->sendMessageError(pClient, sCmd, sM, WsjcppError(500, "InternalServerError"));
+        WsjcppLog::err(TAG, e.what());
     }
 }
 
@@ -240,7 +240,7 @@ void WebSocketServer::processTextMessage(const QString &message) {
 void WebSocketServer::processBinaryMessage(QByteArray /*message*/) {
     // QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     // NOT SUPPORTED
-    // WSJCppLog::info(TAG, "Binary Message received: " + message.toHex());
+    // WsjcppLog::info(TAG, "Binary Message received: " + message.toHex());
     /*if (pClient) {
         pClient->sendBinaryMessage(message);
     }*/
@@ -252,9 +252,9 @@ void WebSocketServer::socketDisconnected() {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     long long nClient = (long long) pClient;
     // TODO hex print
-    WSJCppLog::info(TAG, "socketDisconnected:" + std::to_string(nClient));
+    WsjcppLog::info(TAG, "socketDisconnected:" + std::to_string(nClient));
     if (pClient) {
-        this->removeWSJCppUserSession(pClient);
+        this->removeWsjcppUserSession(pClient);
         m_clients.removeAll(pClient);
         pClient->deleteLater();
     }
@@ -263,7 +263,7 @@ void WebSocketServer::socketDisconnected() {
 // ---------------------------------------------------------------------
 
 void WebSocketServer::onSslErrors(const QList<QSslError> &) {
-    WSJCppLog::err(TAG, "Ssl errors occurred");
+    WsjcppLog::err(TAG, "Ssl errors occurred");
 }
 
 // ---------------------------------------------------------------------
@@ -287,31 +287,31 @@ void WebSocketServer::sendMessage(QWebSocket *pClient, const nlohmann::json& jso
         }
         std::string sMessage = jsonResponse.dump();
 
-        WSJCppLog::info(TAG, "[WS] <<< " + sCmd + ":" + sM);
+        WsjcppLog::info(TAG, "[WS] <<< " + sCmd + ":" + sM);
         if (m_clients.contains(pClient)) {
             try {
                 pClient->sendTextMessage(QString::fromStdString(sMessage));
             } catch(...) {
-                WSJCppLog::err(TAG, "Could not send message <<< " + sMessage);
+                WsjcppLog::err(TAG, "Could not send message <<< " + sMessage);
             }
         } else {
-            WSJCppLog::warn(TAG, "Could not send message, client disappeared");
+            WsjcppLog::warn(TAG, "Could not send message, client disappeared");
         }
    } else {
-        WSJCppLog::warn(TAG, "Client is wrong");
+        WsjcppLog::warn(TAG, "Client is wrong");
    }
 }
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string &sM, WSJCppError error) {
+void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string &sM, WsjcppError error) {
     nlohmann::json jsonResponse;
     jsonResponse["cmd"] = sCmd;
     jsonResponse["m"] = sM;
     jsonResponse["result"] = "FAIL";
     jsonResponse["error"] = error.message();
     jsonResponse["code"] = error.codeError();
-    WSJCppLog::err(TAG, "WS-ERROR >>> " + sCmd + ":" + sM + ", messsage: " + error.message());
+    WsjcppLog::err(TAG, "WS-ERROR >>> " + sCmd + ":" + sM + ", messsage: " + error.message());
     this->sendMessage(pClient, jsonResponse);
     return;
 }
@@ -357,20 +357,20 @@ void WebSocketServer::slot_sendToOne(QWebSocket *pClient, QString message) {
 
 // TODO move to EmployServer
 
-void WebSocketServer::setWSJCppUserSession(QWebSocket *pClient, WSJCppUserSession *pWSJCppUserSession) {
+void WebSocketServer::setWsjcppUserSession(QWebSocket *pClient, WsjcppUserSession *pWsjcppUserSession) {
     std::lock_guard<std::mutex> lock(m_mtxUserSession);
     if (m_mapUserSession.find(pClient) == m_mapUserSession.end()) {
-        WSJCppLog::err(TAG, "pWSJCppUserSession pointer: " + WSJCppCore::getPointerAsHex(pWSJCppUserSession));
-        m_mapUserSession.insert(std::pair<QWebSocket *, WSJCppUserSession *>(pClient, pWSJCppUserSession));
+        WsjcppLog::err(TAG, "pWsjcppUserSession pointer: " + WsjcppCore::getPointerAsHex(pWsjcppUserSession));
+        m_mapUserSession.insert(std::pair<QWebSocket *, WsjcppUserSession *>(pClient, pWsjcppUserSession));
     } else {
-        WSJCppLog::err(TAG, "User Session already exists");
+        WsjcppLog::err(TAG, "User Session already exists");
     }
 }
 
 // ---------------------------------------------------------------------
 // TODO EmployServer
 
-WSJCppUserSession *WebSocketServer::getWSJCppUserSession(QWebSocket *pClient) {
+WsjcppUserSession *WebSocketServer::getWsjcppUserSession(QWebSocket *pClient) {
     std::lock_guard<std::mutex> lock(m_mtxUserSession);
     if (m_mapUserSession.find(pClient) != m_mapUserSession.end()) {
         return m_mapUserSession[pClient];
@@ -380,11 +380,11 @@ WSJCppUserSession *WebSocketServer::getWSJCppUserSession(QWebSocket *pClient) {
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::removeWSJCppUserSession(QWebSocket *pClient) {
+void WebSocketServer::removeWsjcppUserSession(QWebSocket *pClient) {
     std::lock_guard<std::mutex> lock(m_mtxUserSession);
-    std::map<QWebSocket *, WSJCppUserSession *>::iterator it = m_mapUserSession.find(pClient);
+    std::map<QWebSocket *, WsjcppUserSession *>::iterator it = m_mapUserSession.find(pClient);
     if (it != m_mapUserSession.end()) {
-        WSJCppUserSession* pUserSession = it->second;
+        WsjcppUserSession* pUserSession = it->second;
         m_mapUserSession.erase(it);
         delete pUserSession;
     }
@@ -443,5 +443,5 @@ void WebSocketServer::logSocketError(QAbstractSocket::SocketError socketError) {
     } else if (socketError == QAbstractSocket::UnknownSocketError) {
         msg = "QAbstractSocket::UnknownSocketError, An unidentified error occurred.";
     }
-    WSJCppLog::err(TAG, msg);
+    WsjcppLog::err(TAG, msg);
 }

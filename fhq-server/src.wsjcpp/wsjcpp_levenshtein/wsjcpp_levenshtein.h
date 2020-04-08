@@ -5,7 +5,7 @@
 
 #include <string>
 
-class WSJCppLevenshtein {
+class WsjcppLevenshtein {
     public:
         static int distance(const std::string &str1, const std::string &str2);
 };

@@ -3,7 +3,7 @@
 
 #include <employees.h>
 
-class EmployUsers : public WSJCppEmployBase {
+class EmployUsers : public WsjcppEmployBase {
     public:
         EmployUsers();
         static std::string name() { return "EmployUsers"; }

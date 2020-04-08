@@ -2,10 +2,10 @@
 #include "unit_test_storage_updates.h"
 #include <core/storages.h>
 
-REGISTRY_UNIT_TEST(UnitTestStorageUpdates)
+REGISTRY_WSJCPP_UNIT_TEST(UnitTestStorageUpdates)
 
 UnitTestStorageUpdates::UnitTestStorageUpdates() 
-    : WSJCppUnitTestBase("UnitTestStorageUpdates") {
+    : WsjcppUnitTestBase("UnitTestStorageUpdates") {
     // 
 }
 
@@ -18,7 +18,7 @@ void UnitTestStorageUpdates::init() {
 
 bool UnitTestStorageUpdates::run() {
     if (!Storages::support("mysql")) {
-        WSJCppLog::err(TAG, "Not supported mysql");
+        WsjcppLog::err(TAG, "Not supported mysql");
         return false;
     }
 

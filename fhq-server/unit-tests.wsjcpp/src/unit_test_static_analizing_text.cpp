@@ -2,10 +2,10 @@
 #include <utils/utils_static_analizing_text.h>
 #include <vector>
 
-REGISTRY_UNIT_TEST(UnitTestStaticAnalizingText)
+REGISTRY_WSJCPP_UNIT_TEST(UnitTestStaticAnalizingText)
 
 UnitTestStaticAnalizingText::UnitTestStaticAnalizingText()
-    : WSJCppUnitTestBase("UnitTestStaticAnalizingText") {
+    : WsjcppUnitTestBase("UnitTestStaticAnalizingText") {
     // 
 }
 
@@ -43,7 +43,7 @@ bool UnitTestStaticAnalizingText::run() {
         std::map<char, double> n = tests[i]->n;
         std::map<char, double> n1 = UtilsStaticAnalizingText::calc(s1);
         if (n1 != n) {
-            WSJCppLog::err(TAG, "Failed test #" + std::to_string(i));
+            WsjcppLog::err(TAG, "Failed test #" + std::to_string(i));
         } else {
             nSuccess++;
         }

@@ -3,10 +3,10 @@
 #include <vector>
 #include <iostream>
 
-REGISTRY_UNIT_TEST(UnitTestMergeText)
+REGISTRY_WSJCPP_UNIT_TEST(UnitTestMergeText)
 
 UnitTestMergeText::UnitTestMergeText()
-    : WSJCppUnitTestBase("UnitTestMergeText") {
+    : WsjcppUnitTestBase("UnitTestMergeText") {
     // 
 }
 
@@ -101,7 +101,7 @@ bool UnitTestMergeText::run() {
         if (arr1.size()==n) {
             nSuccess++;
         } else {
-            WSJCppLog::err(TAG, "In the test №" + std::to_string(i + 1) + " the length of the vector is expected: "
+            WsjcppLog::err(TAG, "In the test №" + std::to_string(i + 1) + " the length of the vector is expected: "
                  + std::to_string(n) + ", but obtained: " + std::to_string(arr1.size()));
         }
         arr1.clear(), arr2.clear();
@@ -175,18 +175,18 @@ bool UnitTestMergeText::run() {
         if (id1==id2 && key1==key2 && line1==line2) {
             Success+=1;
         } else {
-            WSJCppLog::info(TAG, "In the sort test in the element №" + std::to_string(i+1) + ":");
+            WsjcppLog::info(TAG, "In the sort test in the element №" + std::to_string(i+1) + ":");
 
             if (id1!=id2) {
-                WSJCppLog::err(TAG, "expected id: '" + std::to_string(id2) + "', but obtained: '" + std::to_string(id1) + "'");
+                WsjcppLog::err(TAG, "expected id: '" + std::to_string(id2) + "', but obtained: '" + std::to_string(id1) + "'");
             }
 
             if (key1!=key2) {
-                WSJCppLog::err(TAG, "expected key: '" + key2 + "', but obtained: '" + key1 + "'");
+                WsjcppLog::err(TAG, "expected key: '" + key2 + "', but obtained: '" + key1 + "'");
             }
 
             if (line1!=line2) {
-                WSJCppLog::err(TAG, "expected line: '" + line2 + "', but obtained: '" + line1 + "'");
+                WsjcppLog::err(TAG, "expected line: '" + line2 + "', but obtained: '" + line1 + "'");
             }
         }
     }

@@ -13,14 +13,14 @@ REGISTRY_WJSCPP_EMPLOY(EmployImages)
 // ---------------------------------------------------------------------
 
 EmployImages::EmployImages()
-    : WSJCppEmployBase(EmployImages::name(), {}) {
+    : WsjcppEmployBase(EmployImages::name(), {}) {
     TAG = EmployImages::name();
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployImages::init() {
-    WSJCppLog::info(TAG, "Start init images");
+    WsjcppLog::info(TAG, "Start init images");
     return true;
 }
 
@@ -69,7 +69,7 @@ void avarage_color(avrgClr &a) {
         }
     }
     if (nCount == 0) {
-        WSJCppLog::info("avarage_color", "nCount == 0");
+        WsjcppLog::info("avarage_color", "nCount == 0");
         a.ptrResult[0] = 0;
         a.ptrResult[1] = 0;
         a.ptrResult[2] = 0;
@@ -89,7 +89,7 @@ void avarage_color(avrgClr &a) {
 bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const std::string &targetImageFile, int width_resize, int height_resize) {
     // TODO keep proportional (will be got from web)
 
-    WSJCppLog::info(TAG, "doThumbnailImagePng");
+    WsjcppLog::info(TAG, "doThumbnailImagePng");
     
     int x, y;
     int width, height;
@@ -110,7 +110,7 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
         /* open file and test for it being a png */
         FILE *fp = fopen(sourceImageFile.c_str(), "rb");
         if (!fp) {
-            WSJCppLog::err(TAG, "[read_png_file] File " + sourceImageFile + " could not be opened for reading");
+            WsjcppLog::err(TAG, "[read_png_file] File " + sourceImageFile + " could not be opened for reading");
             return false;
         }
         fread(header, 1, 8, fp);
@@ -119,7 +119,7 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
         // png_const_bytep *png_header = (png_const_bytep *)header;
         /*bool is_png = !png_sig_cmp(header, (png_size_t)0, (png_size_t)PNG_BYTES_TO_CHECK);
         if (!is_png) {
-            WSJCppLog::err(TAG, "[read_png_file] File " + sourceFilepath + " is not recognized as a PNG file");
+            WsjcppLog::err(TAG, "[read_png_file] File " + sourceFilepath + " is not recognized as a PNG file");
             return false;
         }*/
 
@@ -127,18 +127,18 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
         png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
         if (!png_ptr) {
-            WSJCppLog::err(TAG, "[read_png_file] png_create_read_struct failed");
+            WsjcppLog::err(TAG, "[read_png_file] png_create_read_struct failed");
             return false;
         }
 
         info_ptr = png_create_info_struct(png_ptr);
         if (!info_ptr) {
-            WSJCppLog::err(TAG, "[read_png_file] png_create_info_struct failed");
+            WsjcppLog::err(TAG, "[read_png_file] png_create_info_struct failed");
             return false;
         }
 
         if (setjmp(png_jmpbuf(png_ptr))) {
-            WSJCppLog::err(TAG, "[read_png_file] Error during init_io");
+            WsjcppLog::err(TAG, "[read_png_file] Error during init_io");
             return false;
         }
 
@@ -158,7 +158,7 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
 
         /* read file */
         if (setjmp(png_jmpbuf(png_ptr))) {
-            WSJCppLog::err(TAG, "[read_png_file] Error during read_image");
+            WsjcppLog::err(TAG, "[read_png_file] Error during read_image");
             return false;
         }
         row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * height);
@@ -178,7 +178,7 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
         
         
         if (nType != PNG_COLOR_TYPE_RGB && nType != PNG_COLOR_TYPE_RGBA) {
-            WSJCppLog::err(TAG, "[process_file] input file is not PNG_COLOR_TYPE_RGB or PNG_COLOR_TYPE_RGBA (lacks the alpha channel)");
+            WsjcppLog::err(TAG, "[process_file] input file is not PNG_COLOR_TYPE_RGB or PNG_COLOR_TYPE_RGBA (lacks the alpha channel)");
             return false;
         }
 
@@ -230,7 +230,7 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
         /* create file */
         FILE *fp = fopen(targetImageFile.c_str(), "wb");
         if (!fp) {
-            WSJCppLog::err(TAG, "[write_png_file] File " + targetImageFile + " could not be opened for writing");
+            WsjcppLog::err(TAG, "[write_png_file] File " + targetImageFile + " could not be opened for writing");
             return false;
         }
 
@@ -239,18 +239,18 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
         png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
         if (!png_ptr) {
-            WSJCppLog::err(TAG, "[write_png_file] png_create_write_struct failed");
+            WsjcppLog::err(TAG, "[write_png_file] png_create_write_struct failed");
             return false;
         }
 
         info_ptr = png_create_info_struct(png_ptr);
         if (!info_ptr) {
-            WSJCppLog::err(TAG, "[write_png_file] png_create_info_struct failed");
+            WsjcppLog::err(TAG, "[write_png_file] png_create_info_struct failed");
             return false;
         }
 
         if (setjmp(png_jmpbuf(png_ptr))) {
-            WSJCppLog::err(TAG, "[write_png_file] Error during init_io");
+            WsjcppLog::err(TAG, "[write_png_file] Error during init_io");
             return false;
         }
 
@@ -259,7 +259,7 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
 
         /* write header */
         if (setjmp(png_jmpbuf(png_ptr))) {
-            WSJCppLog::err(TAG, "[write_png_file] Error during writing header");
+            WsjcppLog::err(TAG, "[write_png_file] Error during writing header");
             return false;
         }
 
@@ -272,7 +272,7 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
 
         /* write bytes */
         if (setjmp(png_jmpbuf(png_ptr))) {
-            WSJCppLog::err(TAG, "[write_png_file] Error during writing bytes");
+            WsjcppLog::err(TAG, "[write_png_file] Error during writing bytes");
             return false;
         }
 
@@ -281,7 +281,7 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
 
         /* end write */
         if (setjmp(png_jmpbuf(png_ptr))) {
-            WSJCppLog::err(TAG, "[write_png_file] Error during end of write");
+            WsjcppLog::err(TAG, "[write_png_file] Error during end of write");
             return false;
         }
 

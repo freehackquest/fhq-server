@@ -5,108 +5,108 @@
 
 // ---------------------------------------------------------------------
 
-std::map<std::string, WSJCppEmployBase*> *g_pWSJCppEmployees = nullptr;
-std::vector<std::string> *g_pWSJCppInitEmployees = nullptr;
-std::vector<std::string> *g_pWSJCppInitWith = nullptr;
+std::map<std::string, WsjcppEmployBase*> *g_pWsjcppEmployees = nullptr;
+std::vector<std::string> *g_pWsjcppInitEmployees = nullptr;
+std::vector<std::string> *g_pWsjcppInitWith = nullptr;
 
 // ---------------------------------------------------------------------
 
-void WSJCppEmployees::initGlobalVariables() {
-    if (g_pWSJCppEmployees == nullptr) {
-        // WSJCppLog::info(std::string(), "Create employees map");
-        g_pWSJCppEmployees = new std::map<std::string, WSJCppEmployBase*>();
+void WsjcppEmployees::initGlobalVariables() {
+    if (g_pWsjcppEmployees == nullptr) {
+        // WsjcppLog::info(std::string(), "Create employees map");
+        g_pWsjcppEmployees = new std::map<std::string, WsjcppEmployBase*>();
     }
-    if (g_pWSJCppInitEmployees == nullptr) {
-        // WSJCppLog::info(std::string(), "Create init employees vector");
-        g_pWSJCppInitEmployees = new std::vector<std::string>();
+    if (g_pWsjcppInitEmployees == nullptr) {
+        // WsjcppLog::info(std::string(), "Create init employees vector");
+        g_pWsjcppInitEmployees = new std::vector<std::string>();
     }
-    if (g_pWSJCppInitWith == nullptr) {
-        // WSJCppLog::info(std::string(), "Create init employees vector");
-        g_pWSJCppInitWith = new std::vector<std::string>();
+    if (g_pWsjcppInitWith == nullptr) {
+        // WsjcppLog::info(std::string(), "Create init employees vector");
+        g_pWsjcppInitWith = new std::vector<std::string>();
     }    
 }
 
 // ---------------------------------------------------------------------
 
-void WSJCppEmployees::deinitGlobalVariables() {
-    const std::string TAG = "WSJCppEmployees::deinit";
-    if (g_pWSJCppEmployees != nullptr) {
-        std::map<std::string, WSJCppEmployBase*>::iterator it;
-        for (it = g_pWSJCppEmployees->begin(); it != g_pWSJCppEmployees->end(); ++it) {
+void WsjcppEmployees::deinitGlobalVariables() {
+    const std::string TAG = "WsjcppEmployees::deinit";
+    if (g_pWsjcppEmployees != nullptr) {
+        std::map<std::string, WsjcppEmployBase*>::iterator it;
+        for (it = g_pWsjcppEmployees->begin(); it != g_pWsjcppEmployees->end(); ++it) {
             std::string sEmployName = it->first;
-            WSJCppLog::ok(TAG, sEmployName + " ... UNREGISTERED");
+            WsjcppLog::ok(TAG, sEmployName + " ... UNREGISTERED");
             delete it->second;
             it->second = nullptr;
         }
-        g_pWSJCppEmployees->clear();
-        delete g_pWSJCppEmployees;
-        g_pWSJCppEmployees = nullptr;
+        g_pWsjcppEmployees->clear();
+        delete g_pWsjcppEmployees;
+        g_pWsjcppEmployees = nullptr;
     }
 
-    if (g_pWSJCppInitEmployees != nullptr) {
-        g_pWSJCppInitEmployees->clear();
-        delete g_pWSJCppInitEmployees;
-        g_pWSJCppInitEmployees = nullptr;
+    if (g_pWsjcppInitEmployees != nullptr) {
+        g_pWsjcppInitEmployees->clear();
+        delete g_pWsjcppInitEmployees;
+        g_pWsjcppInitEmployees = nullptr;
     }
 
-    if (g_pWSJCppInitWith != nullptr) {
-        g_pWSJCppInitWith->clear();
-        delete g_pWSJCppInitWith;
-        g_pWSJCppInitWith = nullptr;
+    if (g_pWsjcppInitWith != nullptr) {
+        g_pWsjcppInitWith->clear();
+        delete g_pWsjcppInitWith;
+        g_pWsjcppInitWith = nullptr;
     }
 }
 
 // ---------------------------------------------------------------------
 
-void WSJCppEmployees::addEmploy(const std::string &sName, WSJCppEmployBase* pEmploy) {
-    WSJCppEmployees::initGlobalVariables();
-    if (g_pWSJCppEmployees->find(sName) != g_pWSJCppEmployees->end()) {
-        WSJCppLog::err(sName, "Already registered");
+void WsjcppEmployees::addEmploy(const std::string &sName, WsjcppEmployBase* pEmploy) {
+    WsjcppEmployees::initGlobalVariables();
+    if (g_pWsjcppEmployees->find(sName) != g_pWsjcppEmployees->end()) {
+        WsjcppLog::err(sName, "Already registered");
     } else {
-        g_pWSJCppEmployees->insert(std::pair<std::string, WSJCppEmployBase*>(sName,pEmploy));
-        // WSJCppLog::info(sName, "Registered");
+        g_pWsjcppEmployees->insert(std::pair<std::string, WsjcppEmployBase*>(sName,pEmploy));
+        // WsjcppLog::info(sName, "Registered");
     }
 }
 
 // ---------------------------------------------------------------------
 
-bool WSJCppEmployees::init(const std::vector<std::string> &vStart) {
-    WSJCppEmployees::initGlobalVariables();
-    std::string TAG = "WSJCppEmployees::init";
+bool WsjcppEmployees::init(const std::vector<std::string> &vStart) {
+    WsjcppEmployees::initGlobalVariables();
+    std::string TAG = "WsjcppEmployees::init";
 
     for (unsigned int i = 0; i < vStart.size(); i++) {
-        g_pWSJCppInitEmployees->push_back(vStart[i]);
-        g_pWSJCppInitWith->push_back(vStart[i]);
-        WSJCppLog::info(TAG, "with " + vStart[i]);
+        g_pWsjcppInitEmployees->push_back(vStart[i]);
+        g_pWsjcppInitWith->push_back(vStart[i]);
+        WsjcppLog::info(TAG, "with " + vStart[i]);
     }
     
     bool bRepeat = true;
     while (bRepeat) {
         bRepeat = false;
-        std::map<std::string, WSJCppEmployBase*>::iterator it = g_pWSJCppEmployees->begin();
-        for (; it!=g_pWSJCppEmployees->end(); ++it) {
+        std::map<std::string, WsjcppEmployBase*>::iterator it = g_pWsjcppEmployees->begin();
+        for (; it!=g_pWsjcppEmployees->end(); ++it) {
             std::string sEmployName = it->first;
-            WSJCppEmployBase *pEmploy = it->second;
+            WsjcppEmployBase *pEmploy = it->second;
 
-            if (std::find(g_pWSJCppInitEmployees->begin(), g_pWSJCppInitEmployees->end(), sEmployName) != g_pWSJCppInitEmployees->end()) {
+            if (std::find(g_pWsjcppInitEmployees->begin(), g_pWsjcppInitEmployees->end(), sEmployName) != g_pWsjcppInitEmployees->end()) {
                 continue;
             }
 
             unsigned int nRequireLoaded = 0;
             for (unsigned int i = 0; i < pEmploy->loadAfter().size(); i++) {
                 std::string sRequireEmploy = pEmploy->loadAfter()[i];
-                if (std::find(g_pWSJCppInitEmployees->begin(), g_pWSJCppInitEmployees->end(), sRequireEmploy) != g_pWSJCppInitEmployees->end()) {
+                if (std::find(g_pWsjcppInitEmployees->begin(), g_pWsjcppInitEmployees->end(), sRequireEmploy) != g_pWsjcppInitEmployees->end()) {
                     nRequireLoaded++;
                 }
             }
             if (pEmploy->loadAfter().size() == nRequireLoaded) {
                 if (!pEmploy->init()) {
-                    WSJCppLog::err(TAG, sEmployName + " ... INIT_FAIL");
+                    WsjcppLog::err(TAG, sEmployName + " ... INIT_FAIL");
                     return false;
                 }
-                g_pWSJCppInitEmployees->push_back(sEmployName);
+                g_pWsjcppInitEmployees->push_back(sEmployName);
                 bRepeat = true;
-                WSJCppLog::ok(TAG, sEmployName + " ... INIT_OK");
+                WsjcppLog::ok(TAG, sEmployName + " ... INIT_OK");
             }
         }
     }
@@ -115,72 +115,72 @@ bool WSJCppEmployees::init(const std::vector<std::string> &vStart) {
 
 // ---------------------------------------------------------------------
 
-bool WSJCppEmployees::deinit() {
-    const std::string TAG = "WSJCppEmployees::deinit";
-    if (g_pWSJCppInitEmployees == nullptr
-        || g_pWSJCppInitWith == nullptr 
-        || g_pWSJCppEmployees == nullptr
+bool WsjcppEmployees::deinit() {
+    const std::string TAG = "WsjcppEmployees::deinit";
+    if (g_pWsjcppInitEmployees == nullptr
+        || g_pWsjcppInitWith == nullptr 
+        || g_pWsjcppEmployees == nullptr
     ) {
-        WSJCppLog::err(TAG, "You must call WSJCppEmployees::init before deinit");
+        WsjcppLog::err(TAG, "You must call WsjcppEmployees::init before deinit");
         return false;
     }
 
-    int nInitedCount = g_pWSJCppInitEmployees->size();
+    int nInitedCount = g_pWsjcppInitEmployees->size();
     for (int i = nInitedCount-1; i >= 0; i--) {
-        std::string sEmployName = g_pWSJCppInitEmployees->at(i);
-        if (std::find(g_pWSJCppInitWith->begin(), g_pWSJCppInitWith->end(), sEmployName) != g_pWSJCppInitWith->end()) {
-            WSJCppLog::info(TAG,  sEmployName + " ... SKIP_INIT_WITH");
+        std::string sEmployName = g_pWsjcppInitEmployees->at(i);
+        if (std::find(g_pWsjcppInitWith->begin(), g_pWsjcppInitWith->end(), sEmployName) != g_pWsjcppInitWith->end()) {
+            WsjcppLog::info(TAG,  sEmployName + " ... SKIP_INIT_WITH");
             continue;
         } 
 
-        std::map<std::string, WSJCppEmployBase*>::iterator it;
-        it = g_pWSJCppEmployees->find(sEmployName);
-        if (it == g_pWSJCppEmployees->end()) {
-            WSJCppLog::err(TAG,  sEmployName + " ... DEINIT_NOT_FOUND");
+        std::map<std::string, WsjcppEmployBase*>::iterator it;
+        it = g_pWsjcppEmployees->find(sEmployName);
+        if (it == g_pWsjcppEmployees->end()) {
+            WsjcppLog::err(TAG,  sEmployName + " ... DEINIT_NOT_FOUND");
             return false;
         }
-        WSJCppEmployBase *pEmploy = it->second;
+        WsjcppEmployBase *pEmploy = it->second;
         if (pEmploy->deinit()) {
-            WSJCppLog::ok(TAG, sEmployName + " ... DEINIT_OK");
+            WsjcppLog::ok(TAG, sEmployName + " ... DEINIT_OK");
         } else {
-            WSJCppLog::err(TAG,  sEmployName + " ... DEINIT_FAIL");
+            WsjcppLog::err(TAG,  sEmployName + " ... DEINIT_FAIL");
             return false;
         }
     };
 
-    g_pWSJCppInitEmployees->clear();
-    delete g_pWSJCppInitEmployees;
-    g_pWSJCppInitEmployees = nullptr;
+    g_pWsjcppInitEmployees->clear();
+    delete g_pWsjcppInitEmployees;
+    g_pWsjcppInitEmployees = nullptr;
 
-    g_pWSJCppInitWith->clear();
-    delete g_pWSJCppInitWith;
-    g_pWSJCppInitWith = nullptr;
+    g_pWsjcppInitWith->clear();
+    delete g_pWsjcppInitWith;
+    g_pWsjcppInitWith = nullptr;
     return true;
 }
 
 
 // ---------------------------------------------------------------------
 
-// WSJCppEmployBase
-WSJCppEmployBase::WSJCppEmployBase(const std::string &sName, const std::vector<std::string> &vAfter) {
+// WsjcppEmployBase
+WsjcppEmployBase::WsjcppEmployBase(const std::string &sName, const std::vector<std::string> &vAfter) {
     TAG = sName;
     m_sName = sName;
 
     for (unsigned int i = 0; i < vAfter.size(); i++) {
         m_vLoadAfter.push_back(vAfter[i]);
     }
-    WSJCppEmployees::addEmploy(m_sName, this);
+    WsjcppEmployees::addEmploy(m_sName, this);
 }
 
 // ---------------------------------------------------------------------
 
-WSJCppEmployBase::~WSJCppEmployBase() {
+WsjcppEmployBase::~WsjcppEmployBase() {
     // nothing
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<std::string> &WSJCppEmployBase::loadAfter() {
+const std::vector<std::string> &WsjcppEmployBase::loadAfter() {
     return m_vLoadAfter;
 }
 
@@ -193,7 +193,7 @@ REGISTRY_WJSCPP_EMPLOY(WJSCppEmployRuntimeGlobalCache)
 // ---------------------------------------------------------------------
 
 WJSCppEmployRuntimeGlobalCache::WJSCppEmployRuntimeGlobalCache()
-    : WSJCppEmployBase(WJSCppEmployRuntimeGlobalCache::name(), {}) {
+    : WsjcppEmployBase(WJSCppEmployRuntimeGlobalCache::name(), {}) {
 
     TAG = WJSCppEmployRuntimeGlobalCache::name();
 }
@@ -202,7 +202,7 @@ WJSCppEmployRuntimeGlobalCache::WJSCppEmployRuntimeGlobalCache()
 
 bool WJSCppEmployRuntimeGlobalCache::init() {
     // checking settings
-    WSJCppLog::info(TAG, "init");
+    WsjcppLog::info(TAG, "init");
     return true;
 }
 
@@ -210,7 +210,7 @@ bool WJSCppEmployRuntimeGlobalCache::init() {
 
 bool WJSCppEmployRuntimeGlobalCache::deinit() {
     // checking settings
-    WSJCppLog::info(TAG, "deinit");
+    WsjcppLog::info(TAG, "deinit");
     m_sStringMap.clear();
     return true;
 }

@@ -3,20 +3,20 @@
 #include <wsjcpp_core.h>
 
 // ----------------------------------------------------------------------
-// WSJCppLightWebDequeHttpRequests
+// WsjcppLightWebDequeHttpRequests
 
-WSJCppLightWebDequeHttpRequests::WSJCppLightWebDequeHttpRequests() {
-    TAG = "WSJCppLightWebDequeHttpRequests";
+WsjcppLightWebDequeHttpRequests::WsjcppLightWebDequeHttpRequests() {
+    TAG = "WsjcppLightWebDequeHttpRequests";
 }
 
 // ----------------------------------------------------------------------
 
-WSJCppLightWebHttpRequest *WSJCppLightWebDequeHttpRequests::popRequest() {
+WsjcppLightWebHttpRequest *WsjcppLightWebDequeHttpRequests::popRequest() {
     if (m_dequeRequests.size() == 0) {
         m_mtxWaiterRequests.lock();
     }
     std::lock_guard<std::mutex> guard(this->m_mtxDequeRequests);
-    WSJCppLightWebHttpRequest *pRequest = nullptr;
+    WsjcppLightWebHttpRequest *pRequest = nullptr;
     int nSize = m_dequeRequests.size();
     if (nSize > 0) {
         pRequest = m_dequeRequests.back();
@@ -27,11 +27,11 @@ WSJCppLightWebHttpRequest *WSJCppLightWebDequeHttpRequests::popRequest() {
 
 // ----------------------------------------------------------------------
 
-void WSJCppLightWebDequeHttpRequests::pushRequest(WSJCppLightWebHttpRequest *pRequest) {
+void WsjcppLightWebDequeHttpRequests::pushRequest(WsjcppLightWebHttpRequest *pRequest) {
     {
         std::lock_guard<std::mutex> guard(this->m_mtxDequeRequests);
         if (m_dequeRequests.size() > 20) {
-            WSJCppLog::warn(TAG, " deque more than " + std::to_string(m_dequeRequests.size()));
+            WsjcppLog::warn(TAG, " deque more than " + std::to_string(m_dequeRequests.size()));
         }
         m_dequeRequests.push_front(pRequest);
     }
@@ -43,7 +43,7 @@ void WSJCppLightWebDequeHttpRequests::pushRequest(WSJCppLightWebHttpRequest *pRe
 
 // ----------------------------------------------------------------------
 
-void WSJCppLightWebDequeHttpRequests::cleanup() {
+void WsjcppLightWebDequeHttpRequests::cleanup() {
     std::lock_guard<std::mutex> guard(this->m_mtxDequeRequests);
     while (m_dequeRequests.size() > 0) {
         delete m_dequeRequests.back();

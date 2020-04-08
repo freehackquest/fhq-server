@@ -4,34 +4,34 @@
 #include <employees.h>
 
 /*! 
- * WSJCppError - 
+ * WsjcppError - 
  * */
 
-WSJCppError::WSJCppError(int nCodeError, const std::string &sMessage) {
+WsjcppError::WsjcppError(int nCodeError, const std::string &sMessage) {
     m_nCodeError = nCodeError;
     m_sMessage = sMessage;
 }
 
 // ---------------------------------------------------------------------
 
-int WSJCppError::codeError() {
+int WsjcppError::codeError() {
     return m_nCodeError;
 }
 
 // ---------------------------------------------------------------------
 
-std::string WSJCppError::message() {
+std::string WsjcppError::message() {
     return m_sMessage;
 }
 
 // ---------------------------------------------------------------------
 
 /*! 
- * WSJCppUserSession - all data by current user session
+ * WsjcppUserSession - all data by current user session
  * */
 
-WSJCppUserSession::WSJCppUserSession() {
-    TAG = "WSJCppUserSession";
+WsjcppUserSession::WsjcppUserSession() {
+    TAG = "WsjcppUserSession";
     m_nUserID = -1;
     m_sRole = "";
     m_sEmail = "";
@@ -41,13 +41,13 @@ WSJCppUserSession::WSJCppUserSession() {
 
 // ---------------------------------------------------------------------
 
-WSJCppUserSession::WSJCppUserSession(nlohmann::json const& obj) : WSJCppUserSession() {
+WsjcppUserSession::WsjcppUserSession(nlohmann::json const& obj) : WsjcppUserSession() {
     this->fillFrom(obj);
 }
 
 // ---------------------------------------------------------------------
 
-void WSJCppUserSession::fillFrom(const nlohmann::json &obj) {
+void WsjcppUserSession::fillFrom(const nlohmann::json &obj) {
     if (obj.find("user") != obj.end()) {
         nlohmann::json user = obj.at("user");
 
@@ -55,8 +55,8 @@ void WSJCppUserSession::fillFrom(const nlohmann::json &obj) {
         try {
             m_sRole = user.at("role").get<std::string>();
         } catch (const std::exception &e) {
-            WSJCppLog::err(TAG, "JSON: " + obj.dump());
-            WSJCppLog::err(TAG, "Something wrong param user.role in struct. " + std::string(e.what()));
+            WsjcppLog::err(TAG, "JSON: " + obj.dump());
+            WsjcppLog::err(TAG, "Something wrong param user.role in struct. " + std::string(e.what()));
             m_sRole = "";
         }
 
@@ -66,8 +66,8 @@ void WSJCppUserSession::fillFrom(const nlohmann::json &obj) {
         try {
             m_nUserID = user.at("id").get<int>();
         } catch (const std::exception &e) {
-            WSJCppLog::err(TAG, "JSON: " + obj.dump());
-            WSJCppLog::err(TAG, "Something wrong param user.id in struct. " + std::string(e.what()));
+            WsjcppLog::err(TAG, "JSON: " + obj.dump());
+            WsjcppLog::err(TAG, "Something wrong param user.id in struct. " + std::string(e.what()));
             m_nUserID = -1;
         }
         
@@ -75,8 +75,8 @@ void WSJCppUserSession::fillFrom(const nlohmann::json &obj) {
         try {
             m_sEmail = user.at("email").get<std::string>();
         } catch (const std::exception &e) {
-            WSJCppLog::err(TAG, "JSON: " + obj.dump());
-            WSJCppLog::err(TAG, "Something wrong param user.email in struct. " + std::string(e.what()));
+            WsjcppLog::err(TAG, "JSON: " + obj.dump());
+            WsjcppLog::err(TAG, "Something wrong param user.email in struct. " + std::string(e.what()));
             m_sEmail = "";
         }
 
@@ -84,8 +84,8 @@ void WSJCppUserSession::fillFrom(const nlohmann::json &obj) {
         try {
             m_sNick = user.at("nick").get<std::string>();
         } catch (const std::exception &e) {
-            WSJCppLog::err(TAG, "JSON: " + obj.dump());
-            WSJCppLog::err(TAG, "Something wrong param user.nick in struct. " + std::string(e.what()));
+            WsjcppLog::err(TAG, "JSON: " + obj.dump());
+            WsjcppLog::err(TAG, "Something wrong param user.nick in struct. " + std::string(e.what()));
             m_sNick = "";
         }
 
@@ -93,116 +93,116 @@ void WSJCppUserSession::fillFrom(const nlohmann::json &obj) {
         try {
             m_sUserUuid = user.at("uuid").get<std::string>();
         } catch (const std::exception &e) {
-            WSJCppLog::err(TAG, "JSON: " + obj.dump());
-            WSJCppLog::err(TAG, "Something wrong param user.uuid in struct. " + std::string(e.what()));
+            WsjcppLog::err(TAG, "JSON: " + obj.dump());
+            WsjcppLog::err(TAG, "Something wrong param user.uuid in struct. " + std::string(e.what()));
             m_sUserUuid = "";
         }
         
     } else {
-        WSJCppLog::warn(TAG, "Not found param 'user' in struct");
+        WsjcppLog::warn(TAG, "Not found param 'user' in struct");
     }
 }
 
 // ---------------------------------------------------------------------
 
-bool WSJCppUserSession::isAdmin() {
+bool WsjcppUserSession::isAdmin() {
     return m_sRole == "admin";
 }
 
 // ---------------------------------------------------------------------
 
-bool WSJCppUserSession::isUser() {
+bool WsjcppUserSession::isUser() {
     return m_sRole == "user";
 }
 
 // ---------------------------------------------------------------------
 
-bool WSJCppUserSession::isTester() {
+bool WsjcppUserSession::isTester() {
     return m_sRole == "tester";
 }
 
 // ---------------------------------------------------------------------
 
-bool WSJCppUserSession::hasRole() {
+bool WsjcppUserSession::hasRole() {
     return m_sRole != "";
 }
 
 // ---------------------------------------------------------------------
 
-QString WSJCppUserSession::nick() {
+QString WsjcppUserSession::nick() {
     return QString::fromStdString(m_sNick);
 }
 
 // ---------------------------------------------------------------------
 
-void WSJCppUserSession::setNick(QString sNick) {
+void WsjcppUserSession::setNick(QString sNick) {
     m_sNick = sNick.toStdString();
 }
 
 // ---------------------------------------------------------------------
 
-int WSJCppUserSession::userid() {
+int WsjcppUserSession::userid() {
     return m_nUserID;
 }
 
-std::string WSJCppUserSession::userUuid() {
+std::string WsjcppUserSession::userUuid() {
     return m_sUserUuid;
 }
 
 // ---------------------------------------------------------------------
 
-QString WSJCppUserSession::email() {
+QString WsjcppUserSession::email() {
     return QString::fromStdString(m_sEmail);
 }
 
 
 /*! 
- * WSJCppSocketClient - 
+ * WsjcppSocketClient - 
  * */
 
-WSJCppSocketClient::WSJCppSocketClient(QWebSocket *pSocket) {
-    TAG = "WSJCppSocketClient";
+WsjcppSocketClient::WsjcppSocketClient(QWebSocket *pSocket) {
+    TAG = "WsjcppSocketClient";
     m_pUserSession = nullptr;
     m_pSocket = pSocket;
-    connect(m_pSocket, &QWebSocket::textMessageReceived, this, &WSJCppSocketClient::processTextMessage);
-    connect(m_pSocket, &QWebSocket::binaryMessageReceived, this, &WSJCppSocketClient::processBinaryMessage);
-    connect(m_pSocket, &QWebSocket::disconnected, this, &WSJCppSocketClient::socketDisconnected);
+    connect(m_pSocket, &QWebSocket::textMessageReceived, this, &WsjcppSocketClient::processTextMessage);
+    connect(m_pSocket, &QWebSocket::binaryMessageReceived, this, &WsjcppSocketClient::processBinaryMessage);
+    connect(m_pSocket, &QWebSocket::disconnected, this, &WsjcppSocketClient::socketDisconnected);
 }
 
 // ---------------------------------------------------------------------
 
-WSJCppSocketClient::~WSJCppSocketClient() {
+WsjcppSocketClient::~WsjcppSocketClient() {
     m_pSocket->deleteLater();
 }
 
 // ---------------------------------------------------------------------
 
-void WSJCppSocketClient::processTextMessage(const QString &message) {
+void WsjcppSocketClient::processTextMessage(const QString &message) {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    WSJCppLog::warn(TAG, "QWebSocket *pClient = " + WSJCppCore::getPointerAsHex(pClient));
-    WSJCppLog::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
+    WsjcppLog::warn(TAG, "QWebSocket *pClient = " + WsjcppCore::getPointerAsHex(pClient));
+    WsjcppLog::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
     // processTextMessage
 }
 
 // ---------------------------------------------------------------------
 
-void WSJCppSocketClient::processBinaryMessage(QByteArray message) {
+void WsjcppSocketClient::processBinaryMessage(QByteArray message) {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    WSJCppLog::warn(TAG, "QWebSocket *pClient = " + WSJCppCore::getPointerAsHex(pClient));
-    WSJCppLog::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
+    WsjcppLog::warn(TAG, "QWebSocket *pClient = " + WsjcppCore::getPointerAsHex(pClient));
+    WsjcppLog::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
 }
 
 // ---------------------------------------------------------------------
 
-void WSJCppSocketClient::socketDisconnected() {
+void WsjcppSocketClient::socketDisconnected() {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    WSJCppLog::warn(TAG, "QWebSocket *pClient = " + WSJCppCore::getPointerAsHex(pClient));
-    WSJCppLog::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
+    WsjcppLog::warn(TAG, "QWebSocket *pClient = " + WsjcppCore::getPointerAsHex(pClient));
+    WsjcppLog::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
 
     // TODO hex print
-    WSJCppLog::info(TAG, "socketDisconnected:" + WSJCppCore::getPointerAsHex(pClient));
+    WsjcppLog::info(TAG, "socketDisconnected:" + WsjcppCore::getPointerAsHex(pClient));
     if (pClient) {
-        // this->removeWSJCppUserSession(pClient);
+        // this->removeWsjcppUserSession(pClient);
         // m_clients.removeAll(pClient);
         // pClient->deleteLater();
     }
@@ -407,13 +407,13 @@ int CmdInputDef::getMaxVal() {
 
 // ---------------------------------------------------------------------
 
-const std::vector<WSJCppValidatorStringBase *> &CmdInputDef::listOfValidators() {
+const std::vector<WsjcppValidatorStringBase *> &CmdInputDef::listOfValidators() {
     return m_vValidatorsString;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef &CmdInputDef::addValidator(WSJCppValidatorStringBase *pValidatorStringBase) {
+CmdInputDef &CmdInputDef::addValidator(WsjcppValidatorStringBase *pValidatorStringBase) {
     // TODO check type
     m_vValidatorsString.push_back(pValidatorStringBase);
     return *this;
@@ -440,7 +440,7 @@ ModelRequest::ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServ
         m_sMessageId = m_jsonRequest["m"];
     }
 
-    m_pWSJCppUserSession = m_pServer->getWSJCppUserSession(m_pClient);
+    m_pWsjcppUserSession = m_pServer->getWsjcppUserSession(m_pClient);
 }
 
 // ---------------------------------------------------------------------
@@ -515,15 +515,15 @@ std::string ModelRequest::m() {
 
 // ---------------------------------------------------------------------
 
-WSJCppUserSession *ModelRequest::getUserSession() {
-    return m_pWSJCppUserSession;
+WsjcppUserSession *ModelRequest::getUserSession() {
+    return m_pWsjcppUserSession;
 }
 
 // ---------------------------------------------------------------------
 
 bool ModelRequest::isAdmin() {
-    if (m_pWSJCppUserSession != nullptr) {
-        return m_pWSJCppUserSession->isAdmin();
+    if (m_pWsjcppUserSession != nullptr) {
+        return m_pWsjcppUserSession->isAdmin();
     }
     return false;
 }
@@ -531,8 +531,8 @@ bool ModelRequest::isAdmin() {
 // ---------------------------------------------------------------------
 
 bool ModelRequest::isUser() {
-    if (m_pWSJCppUserSession != nullptr) {
-        return m_pWSJCppUserSession->isUser();
+    if (m_pWsjcppUserSession != nullptr) {
+        return m_pWsjcppUserSession->isUser();
     }
     return false;
 }
@@ -540,12 +540,12 @@ bool ModelRequest::isUser() {
 // ---------------------------------------------------------------------
 
 bool ModelRequest::isUnauthorized() {
-    return m_pWSJCppUserSession == nullptr;
+    return m_pWsjcppUserSession == nullptr;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelRequest::sendMessageError(const std::string &cmd, WSJCppError error) {
+void ModelRequest::sendMessageError(const std::string &cmd, WsjcppError error) {
     m_pServer->sendMessageError(m_pClient,cmd,m_sMessageId,error);
 }
 
@@ -649,22 +649,22 @@ bool CmdHandlerBase::accessAdmin() {
 // TODO write unit-test for this
 
 bool CmdHandlerBase::checkAccess(ModelRequest *pRequest) {
-    WSJCppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppUserSession *pUserSession = pRequest->getUserSession();
     if (!accessUnauthorized()) {
         if (pUserSession == nullptr) {
-            pRequest->sendMessageError(cmd(), WSJCppError(401, "Not Authorized Request"));
+            pRequest->sendMessageError(cmd(), WsjcppError(401, "Not Authorized Request"));
             return false;
         }
 
         // access user
         if (pUserSession->isUser() && !accessUser()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(403, "Access deny for user"));
+            pRequest->sendMessageError(cmd(), WsjcppError(403, "Access deny for user"));
             return false;
         }
 
         // access admin
         if (pUserSession->isAdmin() && !accessAdmin()) {
-            pRequest->sendMessageError(cmd(), WSJCppError(403, "Access deny for admin"));
+            pRequest->sendMessageError(cmd(), WsjcppError(403, "Access deny for admin"));
             return false;
         }
     }
@@ -784,7 +784,7 @@ const std::vector<CmdInputDef> &CmdHandlerBase::inputs() {
 
 /*
 void CmdHandlerBase::success(nlohmann::json jsonResponse) {
-    EmployWsServer *pEmployWsServer = findWSJCppEmploy<EmployWsServer>();
+    EmployWsServer *pEmployWsServer = findWsjcppEmploy<EmployWsServer>();
     // TODO sendMessageSuccess
     // and remove from ModelRequests
 }
@@ -792,7 +792,7 @@ void CmdHandlerBase::success(nlohmann::json jsonResponse) {
 // ---------------------------------------------------------------------
 
 void CmdHandlerBase::error(int nCode, const std::string &sErrorMessage) {
-    EmployWsServer *pEmployWsServer = findWSJCppEmploy<EmployWsServer>();
+    EmployWsServer *pEmployWsServer = findWsjcppEmploy<EmployWsServer>();
     // TODO sendMessageError
     // and remove from ModelRequests
 
@@ -808,7 +808,7 @@ std::map<std::string, CmdHandlerBase*> *g_pCmdHandlers = NULL;
 
 void CmdHandlers::initGlobalVariables() {
     if (g_pCmdHandlers == NULL) {
-        // WSJCppLog::info(std::string(), "Create handlers map");
+        // WsjcppLog::info(std::string(), "Create handlers map");
         g_pCmdHandlers = new std::map<std::string, CmdHandlerBase*>();
     }
 }
@@ -818,10 +818,10 @@ void CmdHandlers::initGlobalVariables() {
 void CmdHandlers::addHandler(const std::string &sCmd, CmdHandlerBase* pCmdHandler) {
     CmdHandlers::initGlobalVariables();
     if (g_pCmdHandlers->count(sCmd)) {
-        WSJCppLog::err(sCmd, "Already registered");
+        WsjcppLog::err(sCmd, "Already registered");
     } else {
         g_pCmdHandlers->insert(std::pair<std::string, CmdHandlerBase*>(sCmd,pCmdHandler));
-        // WSJCppLog::info(sCmd, "Registered");
+        // WsjcppLog::info(sCmd, "Registered");
     }
 }
 
@@ -836,7 +836,7 @@ CmdHandlerBase * CmdHandlers::findCmdHandler(const std::string &sCmd) {
     }
 
     if (pCmdHandler == NULL) {
-        WSJCppLog::err(sCmd, "Not found");
+        WsjcppLog::err(sCmd, "Not found");
     }
 
     return pCmdHandler;
@@ -861,7 +861,7 @@ void WJSCppCmdHandlerServerApi::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
     jsonResponse["version"] = FHQSRV_VERSION; // TODO redesign, what?
 
-    EmployGlobalSettings *pGlobalSettings = findWSJCppEmploy<EmployGlobalSettings>();
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
     int nWsPort = pGlobalSettings->get("port").getNumberValue();
     bool bSslOn = pGlobalSettings->get("ssl_on").getBooleanValue();
     int nWssPort = pGlobalSettings->get("ssl_port").getNumberValue();
