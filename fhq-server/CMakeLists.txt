@@ -4,6 +4,9 @@ project(fhq-server)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/src.wsjcpp/CMakeLists.txt)
 
+#### BEGIN_WSJCPP_APPEND
+#### END_WSJCPP_APPEND
+
 add_definitions(-DFHQSRV_VERSION="0.2.25")
 add_definitions(-DFHQSRV_APP_NAME="fhq-server")
 
@@ -137,8 +140,6 @@ list (APPEND WSJCPP_SOURCES "src/storages/mysql/mysql_storage.cpp")
 list (APPEND WSJCPP_SOURCES "src/storages/mysql/mysql_storage.h")
 
 # utils
-list (APPEND WSJCPP_SOURCES "src/utils/utils_merge_text.h")
-list (APPEND WSJCPP_SOURCES "src/utils/utils_merge_text.cpp")
 list (APPEND WSJCPP_SOURCES "src/utils/utils_prepare_deb_package.h")
 list (APPEND WSJCPP_SOURCES "src/utils/utils_prepare_deb_package.cpp")
 list (APPEND WSJCPP_SOURCES "src/utils/utils_static_analizing_text.h")

@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(unit-tests C CXX)
-add_definitions(-DWSJCPP_VERSION="ut-v0.2.23")
+add_definitions(-DWSJCPP_VERSION="ut-v0.2.25")
 add_definitions(-DWSJCPP_NAME="unit-tests-fhq-server")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -85,7 +85,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_diff_text/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_diff_text/wsjcpp_diff_text.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_diff_text/wsjcpp_diff_text.h")
 
-# fhq-server:v0.2.23
+# fhq-server:v0.2.25
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 list (APPEND WSJCPP_SOURCES "../src/core/fallen.cpp")
 list (APPEND WSJCPP_SOURCES "../src/core/fallen.h")
@@ -97,8 +97,6 @@ list (APPEND WSJCPP_SOURCES "../src/utils/utils_static_analizing_text.cpp")
 list (APPEND WSJCPP_SOURCES "../src/utils/utils_static_analizing_text.h")
 list (APPEND WSJCPP_SOURCES "../src/core/jobs_pool.h")
 list (APPEND WSJCPP_SOURCES "../src/core/jobs_pool.cpp")
-list (APPEND WSJCPP_SOURCES "../src/utils/utils_merge_text.cpp")
-list (APPEND WSJCPP_SOURCES "../src/utils/utils_merge_text.h")
 list (APPEND WSJCPP_SOURCES "../src/storages/mysql/mysql_storage.h")
 list (APPEND WSJCPP_SOURCES "../src/storages/mysql/mysql_storage.cpp")
 
@@ -106,8 +104,6 @@ list (APPEND WSJCPP_SOURCES "../src/storages/mysql/mysql_storage.cpp")
 list (APPEND WSJCPP_INCLUDE_DIRS "src")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_validators.h")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_validators.cpp")
-list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_merge_text.h")
-list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_merge_text.cpp")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_jobs_pool.h")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_jobs_pool.cpp")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_static_analizing_text.h")
