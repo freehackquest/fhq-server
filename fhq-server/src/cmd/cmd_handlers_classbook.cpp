@@ -7,7 +7,7 @@
 #include <quazip.h>
 #include <quazipfile.h>
 #include <quazipfileinfo.h>
-#include <utils_merge_text.h>
+#include <wsjcpp_diff_text.h>
 #include <validators.h>
 #include <fallen.h>
 #include <wsjcpp_core.h>
@@ -1655,10 +1655,10 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
     }
     std::string txt1 = record.value("content").toString().toStdString();
     std::string txt2 = record.value("content_before").toString().toStdString();
-    std::vector<UtilsMergeTextRow *> arr1, arr2;
-    UtilsMergeText::merge(curtxt, txt1, txt2, arr1, arr2);
+    std::vector<WsjcppDiffTextRow *> arr1, arr2;
+    WsjcppDiffText::merge(curtxt, txt1, txt2, arr1, arr2);
 
-    //TO DO final merge, lang checkout, update output (with data)
+    // TODO final merge, lang checkout, update output (with data)
 
     jsonResponse["data"] = jsonData;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);

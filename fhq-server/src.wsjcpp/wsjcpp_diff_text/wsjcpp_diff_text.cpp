@@ -1,7 +1,20 @@
-#include <utils/utils_merge_text.h>
+
+#include "wsjcpp_diff_text.h"
 #include <sstream>
 
-void UtilsMergeText::compare(std::string &txt1, std::string &txt2, std::vector<UtilsMergeTextRow *> &arr) {
+// ---------------------------------------------------------------------
+// WsjcppDiffTextRow
+
+WsjcppDiffTextRow::WsjcppDiffTextRow(int id, std::string key, std::string line) {
+    this->id = id;
+    this->key = key; 
+    this->line = line;
+}
+
+// ---------------------------------------------------------------------
+// WsjcppDiffText
+
+void WsjcppDiffText::compare(std::string &txt1, std::string &txt2, std::vector<WsjcppDiffTextRow *> &arr) {
     std::vector<std::string> list1;
     std::istringstream isTxt1(txt1);
     std::string sLine = "";
@@ -30,7 +43,7 @@ void UtilsMergeText::compare(std::string &txt1, std::string &txt2, std::vector<U
             for (int k = j + 1; k < len2; ++k) {
                 if (list1[i] == list2[k]) {
                     while (j<k) {
-                        arr.push_back(new UtilsMergeTextRow(j, sWord.at(0), list2.at(j)));
+                        arr.push_back(new WsjcppDiffTextRow(j, sWord.at(0), list2.at(j)));
                         j++;
                     }
                     goto exit;
@@ -40,34 +53,36 @@ void UtilsMergeText::compare(std::string &txt1, std::string &txt2, std::vector<U
             for (int k=i+1;k<len1;++k) {
                 if (list1[k]==list2[j]) {
                     while (i<k) {
-                        arr.push_back(new UtilsMergeTextRow(i, sWord.at(1), list1.at(i)));
+                        arr.push_back(new WsjcppDiffTextRow(i, sWord.at(1), list1.at(i)));
                         i++;
                     }
                     goto exit;
                 }
             }
-            arr.push_back(new UtilsMergeTextRow(i, list1.at(i), list2.at(j)));
+            arr.push_back(new WsjcppDiffTextRow(i, list1.at(i), list2.at(j)));
             exit:;
         }
         i++, j++;
     }
     //work with the end of the texts
     while (j<len2) {
-        arr.push_back(new UtilsMergeTextRow(j, sWord.at(0), list2.at(j)));
+        arr.push_back(new WsjcppDiffTextRow(j, sWord.at(0), list2.at(j)));
         j++;
     }
     while (i<len1) {
-        arr.push_back(new UtilsMergeTextRow(i, sWord.at(1), list1.at(i)));
+        arr.push_back(new WsjcppDiffTextRow(i, sWord.at(1), list1.at(i)));
         i++;
     }
 }
 
-void UtilsMergeText::merge(
+// ---------------------------------------------------------------------
+
+void WsjcppDiffText::merge(
     std::string &curtxt,
     std::string &txt1,
     std::string &txt2,
-    std::vector<UtilsMergeTextRow *> &arr1,
-    std::vector<UtilsMergeTextRow *> &arr2
+    std::vector<WsjcppDiffTextRow *> &arr1,
+    std::vector<WsjcppDiffTextRow *> &arr2
 ) {
     compare(txt1, txt2, arr1);
     compare(txt1, curtxt, arr2);

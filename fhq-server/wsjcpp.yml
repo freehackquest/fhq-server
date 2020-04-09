@@ -1,11 +1,11 @@
-wsjcpp_version: v0.0.1
+wsjcpp_version: "v0.1.1"
 cmake_minimum_required: 3.0
 cmake_cxx_standard: 11
 
-name: fhq-server
-version: v0.2.23
+name: "fhq-server"
+version: "v0.2.25"
 description: "This is an open source platform for competitions of computer security."
-issues: https://github.com/freehackquest/fhq-server/issues
+issues: "https://github.com/freehackquest/fhq-server/issues"
 
 keywords:
   - c++
@@ -26,6 +26,10 @@ authors:
     email: mrseakg@gmail.com
   - name: "Igor Polyakov"
     email: "igorpolyakov@protonmail.com"
+  - name: "Sergey Ushev"
+    email: "sergo.moreno@gmail.com"
+  - name: "Danil Dudkin"
+    email: "shikamaru740@gmail.com"
 
 dependencies:
   - name: "wsjcpp-levenshtein"
@@ -73,71 +77,54 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-employees:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_employees"
+  - name: "wsjcpp-diff-text"
+    version: "v0.1.0"
+    url: "https://github.com/wsjcpp/wsjcpp-diff-text:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_diff_text"
 
 distribution:
   - source-file: "src/core/fallen.cpp"
     target-file: "fallen.cpp"
     type: "source-code"
-    sha1: "ebde2b67cae9d8fa11b34bcdb5782f6340d5ef26"
   - source-file: "src/core/fallen.h"
     target-file: "fallen.h"
     type: "source-code"
-    sha1: "7b48708bb52b46c5b706fbc6613ad030ebe55dfe"
   - source-file: "src/validators/validators.h"
     target-file: "validators.h"
     type: "source-code"
-    sha1: "b09624eea489935d0394730996713e58777068c8"
   - source-file: "src/validators/validators.cpp"
     target-file: "validators.cpp"
     type: "source-code"
-    sha1: "736c890105ae814ea40c6c1ff6fb94377675d35d"
   - source-file: "src/core/storages.h"
     target-file: "storages.h"
     type: "source-code"
-    sha1: "da692416ec3d971059e31de316f02c91fed9aa3f"
   - source-file: "src/core/storages.cpp"
     target-file: "storages.cpp"
     type: "source-code"
-    sha1: "86b02521668970349bf3f8c94a8fe557416682d5"
   - source-file: "src/utils/utils_static_analizing_text.cpp"
     target-file: "utils_static_analizing_text.cpp"
     type: "source-code"
-    sha1: "d2e91f3c42543d96ef29104023f21eead8f57d97"
   - source-file: "src/utils/utils_static_analizing_text.h"
     target-file: "utils_static_analizing_text.h"
     type: "source-code"
-    sha1: "828b8c00215c4696e76db31aa03c9a2668181d54"
   - source-file: "src/core/jobs_pool.h"
     target-file: "jobs_pool.h"
     type: "source-code"
-    sha1: "43c1b85721cf1bef4e4bdb6d462f75c72a214778"
   - source-file: "src/core/jobs_pool.cpp"
     target-file: "jobs_pool.cpp"
     type: "source-code"
-    sha1: "2f40687b060952f606f09d913fc781a725992006"
-  - source-file: "src/utils/utils_merge_text.cpp"
-    target-file: "utils_merge_text.cpp"
-    type: "source-code"
-    sha1: "e39f68e9fcb25508874634cc02e5bf5741b7bc50"
-  - source-file: "src/utils/utils_merge_text.h"
-    target-file: "utils_merge_text.h"
-    type: "source-code"
-    sha1: "fc40b33665d20defae9dcc779c64e94359d282e9"
   - source-file: "src/storages/mysql/mysql_storage.h"
     target-file: "mysql_storage.h"
     type: "source-code"
-    sha1: "4cece6e8711959be6c9737675a4ebea8292479f8"
   - source-file: "src/storages/mysql/mysql_storage.cpp"
     target-file: "mysql_storage.cpp"
     type: "source-code"
-    sha1: "80aac071953191fb492df9e68e6e8824cfec150e"
 
 unit-tests:
   cases:
     - name: "Validators"
       description: "Test Validators"
-    - name: "MergeText"
-      description: "Merge text"
     - name: "JobsPool"
       description: "Test async jobs pool"
     - name: "StaticAnalizingText"

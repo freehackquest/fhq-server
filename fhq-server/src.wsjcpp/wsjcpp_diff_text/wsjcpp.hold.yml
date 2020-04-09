@@ -1,0 +1,35 @@
+name: "wsjcpp-diff-text"
+version: "v0.1.0"
+cmake_minimum_required: "3.0"
+cmake_cxx_standard: "11"
+description: "Diff texts"
+authors:
+  - name: "Evgenii Sopov"
+    email: "mrseakg@gmail.com"
+
+origins:
+  - address: "https://sea-kg.com/wsjcpp-package-registry/"
+    type: "package-registry"
+
+keywords:
+  - "c++"
+
+dependencies:
+  - name: "wsjcpp-core"
+    version: "v0.1.1"
+    url: "https://github.com/wsjcpp/wsjcpp-core:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_core"
+
+distribution:
+  - source-file: "src/wsjcpp_diff_text.cpp"
+    target-file: "wsjcpp_diff_text.cpp"
+    type: "source-code"
+  - source-file: "src/wsjcpp_diff_text.h"
+    target-file: "wsjcpp_diff_text.h"
+    type: "source-code"
+
+unit-tests:
+  cases:
+    - name: "Basic"
+      description: "Basic test"
