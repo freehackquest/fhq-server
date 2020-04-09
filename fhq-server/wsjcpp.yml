@@ -73,6 +73,11 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-employees:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_employees"
+  - name: "wsjcpp-diff-text"
+    version: "v0.1.0"
+    url: "https://github.com/wsjcpp/wsjcpp-diff-text:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_diff_text"
 
 distribution:
   - source-file: "src/core/fallen.cpp"

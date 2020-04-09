@@ -80,6 +80,11 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_employees/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_employees/wsjcpp_employees.h")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_employees/wsjcpp_employees.cpp")
 
+# wsjcpp-diff-text:v0.1.0
+list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_diff_text/")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_diff_text/wsjcpp_diff_text.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_diff_text/wsjcpp_diff_text.h")
+
 # fhq-server:v0.2.23
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 list (APPEND WSJCPP_SOURCES "../src/core/fallen.cpp")
