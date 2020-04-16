@@ -140,7 +140,7 @@ void CmdHandlerChatSendMessage_new::handle(ModelRequest *pRequest) {
     
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
-    WSJCppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppUserSession *pUserSession = pRequest->getUserSession();
     int nUserId = pUserSession->userid();
 
     std::string sMessage = "";
@@ -148,9 +148,9 @@ void CmdHandlerChatSendMessage_new::handle(ModelRequest *pRequest) {
         sMessage = jsonRequest["message"];
     }
 
-    Fallen::trim(sMessage);
+    sMessage = WsjcppCore::trim(sMessage);
     if (sMessage.length() == 0) {
-        pRequest->sendMessageError(cmd(), WSJCppError(400, "Message could not be empty"));
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "Message could not be empty"));
         return;
     }
 
@@ -160,11 +160,11 @@ void CmdHandlerChatSendMessage_new::handle(ModelRequest *pRequest) {
     }
 
     if (sChat != "0") {
-        pRequest->sendMessageError(cmd(), WSJCppError(400, "Only '0' (global) chat allowed"));
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "Only '0' (global) chat allowed"));
         return;
     }
 
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
 
@@ -173,7 +173,7 @@ void CmdHandlerChatSendMessage_new::handle(ModelRequest *pRequest) {
     query.bindValue(":user", nUserId);
     query.bindValue(":message", QString::fromStdString(sMessage));
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -185,7 +185,7 @@ void CmdHandlerChatSendMessage_new::handle(ModelRequest *pRequest) {
     query2.bindValue(":msg_id", query.lastInsertId().toInt());
     
     if (!query2.exec() || !query2.next()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -226,14 +226,14 @@ void CmdHandlerChatReadMessage::handle(ModelRequest *pRequest) {
         sChat = jsonRequest["chat"];
     }
 
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("SELECT id, userid, message, dt, status FROM chats_messages WHERE chatid = :chat ORDER BY dt");
     query.bindValue(":chat", QString::fromStdString(sChat));
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -298,7 +298,7 @@ CmdHandlerChatEditMessage::CmdHandlerChatEditMessage()
 void CmdHandlerChatEditMessage::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
-    WSJCppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppUserSession *pUserSession = pRequest->getUserSession();
     int nUserId = pUserSession->userid();
 
     std::string sNewMessage = "";
@@ -306,9 +306,9 @@ void CmdHandlerChatEditMessage::handle(ModelRequest *pRequest) {
         sNewMessage = jsonRequest["message_new"];
     }
 
-    Fallen::trim(sNewMessage);
+    sNewMessage = WsjcppCore::trim(sNewMessage);
     if (sNewMessage.length() == 0) {
-        pRequest->sendMessageError(cmd(), WSJCppError(400, "Message could not be empty"));
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "Message could not be empty"));
         return;
     }
 
@@ -317,7 +317,7 @@ void CmdHandlerChatEditMessage::handle(ModelRequest *pRequest) {
         nIdMessage = jsonRequest["message_id"];
     }
 
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
 
@@ -326,12 +326,12 @@ void CmdHandlerChatEditMessage::handle(ModelRequest *pRequest) {
 
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
 
     if (!query.next() || query.size() < 1) {
-        pRequest->sendMessageError(cmd(), WSJCppError(400, "Message not found"));
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "Message not found"));
         return;
     }
 
@@ -339,7 +339,7 @@ void CmdHandlerChatEditMessage::handle(ModelRequest *pRequest) {
     int nMsgUserId = record.value("userid").toInt();
 
     if (nUserId != nMsgUserId) {
-        pRequest->sendMessageError(cmd(), WSJCppError(403, "Editing message allowed only for owner"));
+        pRequest->sendMessageError(cmd(), WsjcppError(403, "Editing message allowed only for owner"));
         return;
     }
 
@@ -349,7 +349,7 @@ void CmdHandlerChatEditMessage::handle(ModelRequest *pRequest) {
     query2.bindValue(":message_new", QString::fromStdString(sNewMessage));
 
     if (!query2.exec()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -384,7 +384,7 @@ void CmdHandlerChatDeleteMessage::handle(ModelRequest *pRequest) {
    
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
-    WSJCppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppUserSession *pUserSession = pRequest->getUserSession();
     int nUserId = pUserSession->userid();
 
     int nIdMessage = 0;
@@ -392,7 +392,7 @@ void CmdHandlerChatDeleteMessage::handle(ModelRequest *pRequest) {
         nIdMessage = jsonRequest["message_id"];
     }
 
-    EmployDatabase *pDatabase = findEmploy<EmployDatabase>();
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
 
@@ -400,12 +400,12 @@ void CmdHandlerChatDeleteMessage::handle(ModelRequest *pRequest) {
     query.bindValue(":msg_id", nIdMessage);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
 
     if (!query.next() || query.size() < 1) {
-        pRequest->sendMessageError(cmd(), WSJCppError(400, "Message not found"));
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "Message not found"));
         return;
     }
 
@@ -413,7 +413,7 @@ void CmdHandlerChatDeleteMessage::handle(ModelRequest *pRequest) {
     int nMsgUserId = record.value("userid").toInt();
 
     if (nUserId != nMsgUserId) {
-        pRequest->sendMessageError(cmd(), WSJCppError(403, "Editing message allowed only for owner"));
+        pRequest->sendMessageError(cmd(), WsjcppError(403, "Editing message allowed only for owner"));
         return;
     }
 
@@ -422,7 +422,7 @@ void CmdHandlerChatDeleteMessage::handle(ModelRequest *pRequest) {
     query2.bindValue(":msg_id", nIdMessage);
 
     if (!query2.exec()) {
-        pRequest->sendMessageError(cmd(), WSJCppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
 
