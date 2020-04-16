@@ -1,0 +1,45 @@
+wsjcpp_version: v0.0.1
+cmake_minimum_required: 3.0
+cmake_cxx_standard: 11
+name: wsjcpp-storages
+version: v0.1.2
+description: Abstraction Model for work with different databases
+issues: https://github.com/wsjcpp/wsjcpp-storages/issues
+keywords:
+  - "c++"
+  - "sources"
+  - "storages"
+  - "database"
+
+required-libraries:
+  - pthread
+
+dependencies:
+  - name: "wsjcpp-core"
+    version: "v0.1.4"
+    url: "https://github.com/wsjcpp/wsjcpp-core:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_core"
+
+repositories:
+  - type: main
+    url: "https://github.com/wsjcpp/wsjcpp-storages"
+
+authors:
+  - name: "Evgenii Sopov"
+    email: "mrseakg@gmail.com"
+
+distribution:
+  - source-file: "src/wsjcpp_storages.cpp"
+    target-file: "wsjcpp_storages.cpp"
+    type: "source-code"
+    sha1: "2d79f51f45743abf376ff0b85e4dd37e622c669b"
+  - source-file: "src/wsjcpp_storages.h"
+    target-file: "wsjcpp_storages.h"
+    type: "source-code"
+    sha1: "75922bcfbbd33484b887650f9f44a06bdb35a712"
+
+unit-tests:
+  cases:
+    - name: StorageSortUpdates
+      description: StorageSortUpdates

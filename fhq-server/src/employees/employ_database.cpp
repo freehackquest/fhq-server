@@ -49,11 +49,11 @@ bool EmployDatabase::init() {
         WsjcppLog::info(TAG, "Database user: " + m_sDatabase_user);
      */
     m_sStorageType = pGlobalSettings->get("storage_type").getStringValue();
-    if (!Storages::support(m_sStorageType)) {
+    if (!WsjcppStorages::support(m_sStorageType)) {
         WsjcppLog::err(TAG, "Not support storage " + m_sStorageType);
         return false;
     }
-    m_pStorage = Storages::create(m_sStorageType);
+    m_pStorage = WsjcppStorages::create(m_sStorageType);
     // TODO redesign init in global settings
     if (!m_pStorage->applyConfigFromFile(pGlobalSettings->getFilepathConf())) {
         return false;
@@ -62,7 +62,7 @@ bool EmployDatabase::init() {
     /*if (!StorageUpdates::apply(m_pStorage)) {
         return false;
     }*/
-    StorageUpdates::apply2(m_pStorage);
+    WsjcppStorageUpdates::apply2(m_pStorage);
 
     // deprecated
     m_pDBConnection = new ModelDatabaseConnection("qt_sql_default_connection_1");
@@ -100,11 +100,11 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
     EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
 
     m_sStorageType = pGlobalSettings->get("storage_type").getStringValue();
-    if (!Storages::support(m_sStorageType)) {
+    if (!WsjcppStorages::support(m_sStorageType)) {
         WsjcppLog::err(TAG, "Not support storage " + m_sStorageType);
         return false;
     }
-    m_pStorage = Storages::create(m_sStorageType);
+    m_pStorage = WsjcppStorages::create(m_sStorageType);
     std::string sDatabaseHost = pGlobalSettings->get("dbhost").getStringValue();
     int nDatabasePort = pGlobalSettings->get("dbport").getNumberValue();
     std::string sDatabaseName = pGlobalSettings->get("dbname").getStringValue();
@@ -251,7 +251,7 @@ QSqlDatabase *EmployDatabase::database() {
 // - need close connection after hour
 // - control of count of connections (must be < 100)
 
-StorageConnection *EmployDatabase::getStorageConnection() {
+WsjcppStorageConnection *EmployDatabase::getStorageConnection() {
     std::lock_guard<std::mutex> lock(m_mtxStorageConnections);
     
     if (m_vDoRemoveStorageConnections.size() > 0) {
@@ -259,8 +259,8 @@ StorageConnection *EmployDatabase::getStorageConnection() {
     }
 
     std::string sThreadId = WsjcppCore::threadId();
-    StorageConnection *pStorageConnection = nullptr;
-    std::map<std::string, StorageConnection *>::iterator it;
+    WsjcppStorageConnection *pStorageConnection = nullptr;
+    std::map<std::string, WsjcppStorageConnection *>::iterator it;
     it = m_mapStorageConnections.find(sThreadId);
     if (it == m_mapStorageConnections.end()) {
         pStorageConnection = m_pStorage->connect();

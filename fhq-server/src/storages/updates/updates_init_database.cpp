@@ -1,11 +1,11 @@
 #include <updates_init_database.h>
 
-REGISTRY_STORAGE_UPDATE(UpdatesInitDatabase)
+REGISTRY_WSJCPP_STORAGE_UPDATE(UpdatesInitDatabase)
 
 UpdatesInitDatabase::UpdatesInitDatabase()
-    : StorageUpdateBase("", "u0099", "Init database u0099") {
+    : WsjcppStorageUpdateBase("", "u0099", "Init database u0099") {
     {
-        StorageCreateTable *email_delivery = createTable("email_delivery");
+        WsjcppStorageCreateTable *email_delivery = createTable("email_delivery");
         email_delivery->addColumn("id").number().autoIncrement().primaryKey().notNull();
         email_delivery->addColumn("to_email").string(255).notNull();
         email_delivery->addColumn("subject").string(255).notNull();
@@ -16,7 +16,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *feedback = createTable("feedback");
+        WsjcppStorageCreateTable *feedback = createTable("feedback");
         feedback->addColumn("id").number().autoIncrement().primaryKey().notNull();
         feedback->addColumn("dt").datetime().notNull();
         feedback->addColumn("type").string(255).notNull().defaultValue("''");
@@ -26,7 +26,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *feedback_msg = createTable("feedback_msg");
+        WsjcppStorageCreateTable *feedback_msg = createTable("feedback_msg");
         feedback_msg->addColumn("id").number().autoIncrement().primaryKey().notNull();
         feedback_msg->addColumn("dt").datetime().notNull();
         feedback_msg->addColumn("type").string(255).notNull().defaultValue("''");
@@ -36,7 +36,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *games = createTable("games");
+        WsjcppStorageCreateTable *games = createTable("games");
         games->addColumn("id").number().autoIncrement().primaryKey().notNull();
         games->addColumn("uuid").string(255).notNull().enableUniqueIndex("idx_game_uuid");
         games->addColumn("title").string(255).notNull();
@@ -56,7 +56,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *public_events = createTable("public_events");
+        WsjcppStorageCreateTable *public_events = createTable("public_events");
         public_events->addColumn("id").number().autoIncrement().primaryKey().notNull();
         public_events->addColumn("type").string(255).notNull();
         public_events->addColumn("dt").datetime().notNull();
@@ -64,7 +64,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *quest = createTable("quest");
+        WsjcppStorageCreateTable *quest = createTable("quest");
         quest->addColumn("idquest").number().autoIncrement().primaryKey().notNull();
         quest->addColumn("uuid").string(255).notNull();
         quest->addColumn("name").string(300).notNull();
@@ -86,7 +86,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *quests_files = createTable("quests_files");
+        WsjcppStorageCreateTable *quests_files = createTable("quests_files");
         quests_files->addColumn("id").number().autoIncrement().primaryKey().notNull();
         quests_files->addColumn("uuid").string(255).notNull();
         quests_files->addColumn("questid").number().notNull();
@@ -97,7 +97,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *quests_hints = createTable("quests_hints");
+        WsjcppStorageCreateTable *quests_hints = createTable("quests_hints");
         quests_hints->addColumn("id").number().autoIncrement().primaryKey().notNull();
         quests_hints->addColumn("questid").number().notNull();
         quests_hints->addColumn("text").string(4048).notNull();
@@ -105,7 +105,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *quests_proposal = createTable("quests_proposal");
+        WsjcppStorageCreateTable *quests_proposal = createTable("quests_proposal");
         quests_proposal->addColumn("id").number().autoIncrement().primaryKey().notNull();
         quests_proposal->addColumn("userid").number().notNull();
         quests_proposal->addColumn("gameid").number().notNull();
@@ -123,7 +123,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *users_quests_answers = createTable("users_quests_answers");
+        WsjcppStorageCreateTable *users_quests_answers = createTable("users_quests_answers");
         users_quests_answers->addColumn("id").number().autoIncrement().primaryKey().notNull();
         users_quests_answers->addColumn("userid").number().notNull();
         users_quests_answers->addColumn("questid").number().notNull();
@@ -135,7 +135,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *users = createTable("users");
+        WsjcppStorageCreateTable *users = createTable("users");
         users->addColumn("id").number().autoIncrement().primaryKey().notNull();
         users->addColumn("uuid").string(255).notNull();
         users->addColumn("email").string(255).notNull();
@@ -158,7 +158,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageInsert *pAddDefailtAdmin = insertIntoTable("users");
+        WsjcppStorageInsert *pAddDefailtAdmin = insertIntoTable("users");
         pAddDefailtAdmin->bindValue("uuid", "39A551F4-3BF0-A1C8-8686-06A5C510DDA3");
         pAddDefailtAdmin->bindValue("email", "admin");
         pAddDefailtAdmin->bindValue("pass", "06976539736714f7eaaa9409a643855029717a9d"); // admin
@@ -230,7 +230,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
 
 
     {
-        StorageCreateTable *users_games = createTable("users_games");
+        WsjcppStorageCreateTable *users_games = createTable("users_games");
         users_games->addColumn("id").number().autoIncrement().primaryKey().notNull();
         users_games->addColumn("userid").number().notNull();
         users_games->addColumn("gameid").number().notNull();
@@ -240,7 +240,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
 
      
     {
-        StorageCreateTable *users_profile = createTable("users_profile");
+        WsjcppStorageCreateTable *users_profile = createTable("users_profile");
         users_profile->addColumn("id").number().autoIncrement().primaryKey().notNull();
         users_profile->addColumn("userid").number().notNull();
         users_profile->addColumn("name").string(255).notNull();
@@ -250,14 +250,14 @@ UpdatesInitDatabase::UpdatesInitDatabase()
 
      
     {
-        StorageCreateTable *users_quests = createTable("users_quests");
+        WsjcppStorageCreateTable *users_quests = createTable("users_quests");
         users_quests->addColumn("userid").number().notNull().enableUniqueIndex("idx_user_quest");
         users_quests->addColumn("questid").number().notNull().enableUniqueIndex("idx_user_quest");
         users_quests->addColumn("dt_passed").datetime().notNull();
     }
 
     {
-        StorageCreateTable *users_tokens = createTable("users_tokens");
+        WsjcppStorageCreateTable *users_tokens = createTable("users_tokens");
         users_tokens->addColumn("id").number().autoIncrement().primaryKey().notNull();
         users_tokens->addColumn("userid").number().notNull();
         users_tokens->addColumn("token").string(255).notNull();
@@ -268,7 +268,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *users_tokens_invalid = createTable("users_tokens_invalid");
+        WsjcppStorageCreateTable *users_tokens_invalid = createTable("users_tokens_invalid");
         users_tokens_invalid->addColumn("id").number().autoIncrement().primaryKey().notNull();
         users_tokens_invalid->addColumn("userid").number().notNull();
         users_tokens_invalid->addColumn("token").string(255).notNull();
@@ -279,7 +279,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *classbook = createTable("classbook");
+        WsjcppStorageCreateTable *classbook = createTable("classbook");
         classbook->addColumn("id").number().autoIncrement().primaryKey().notNull();
         classbook->addColumn("parentid").number().notNull();
         classbook->addColumn("ordered").number().notNull();
@@ -293,7 +293,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *classbook_proposal = createTable("classbook_proposal");
+        WsjcppStorageCreateTable *classbook_proposal = createTable("classbook_proposal");
         classbook_proposal->addColumn("id").number().autoIncrement().primaryKey().notNull();
         classbook_proposal->addColumn("classbookid").number().notNull();
         classbook_proposal->addColumn("uuid").string(128).notNull();
@@ -307,7 +307,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *classbook_localization = createTable("classbook_localization");
+        WsjcppStorageCreateTable *classbook_localization = createTable("classbook_localization");
         classbook_localization->addColumn("id").number().autoIncrement().primaryKey().notNull();
         classbook_localization->addColumn("classbookid").number().notNull();
         classbook_localization->addColumn("uuid").string(128).notNull();
@@ -320,7 +320,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *chatmessages = createTable("chatmessages");
+        WsjcppStorageCreateTable *chatmessages = createTable("chatmessages");
         chatmessages->addColumn("id").number().autoIncrement().primaryKey().notNull();
         chatmessages->addColumn("user").string(128).notNull();
         chatmessages->addColumn("message").string(255).notNull();
@@ -328,7 +328,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *users_captcha = createTable("users_captcha");
+        WsjcppStorageCreateTable *users_captcha = createTable("users_captcha");
         users_captcha->addColumn("id").number().autoIncrement().primaryKey().notNull();
         users_captcha->addColumn("captcha_uuid").string(127).notNull();
         users_captcha->addColumn("captcha_val").string(127).notNull();
@@ -336,7 +336,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *quests_writeups = createTable("quests_writeups");
+        WsjcppStorageCreateTable *quests_writeups = createTable("quests_writeups");
         quests_writeups->addColumn("id").number().autoIncrement().primaryKey().notNull();
         quests_writeups->addColumn("questid").number().notNull();
         quests_writeups->addColumn("type").string(64).notNull();
@@ -346,7 +346,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *users_offers = createTable("users_offers");
+        WsjcppStorageCreateTable *users_offers = createTable("users_offers");
         users_offers->addColumn("id").number().autoIncrement().primaryKey().notNull();
         users_offers->addColumn("userid").number().notNull();
         users_offers->addColumn("data").text().notNull();
@@ -358,7 +358,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *settings = createTable("settings");
+        WsjcppStorageCreateTable *settings = createTable("settings");
         settings->addColumn("id").number().autoIncrement().primaryKey().notNull();
         settings->addColumn("name").string(128).notNull();
         settings->addColumn("value").string(1024).notNull();
@@ -367,7 +367,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *leaks = createTable("leaks");
+        WsjcppStorageCreateTable *leaks = createTable("leaks");
         leaks->addColumn("id").number().autoIncrement().primaryKey().notNull();
         leaks->addColumn("uuid").string(255).notNull();
         leaks->addColumn("gameid").number().notNull();
@@ -380,7 +380,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
     }
 
     {
-        StorageCreateTable *users_leaks = createTable("users_leaks");
+        WsjcppStorageCreateTable *users_leaks = createTable("users_leaks");
         users_leaks->addColumn("id").number().autoIncrement().primaryKey().notNull();
         users_leaks->addColumn("leakid").number().notNull();
         users_leaks->addColumn("userid").number().notNull();
@@ -390,7 +390,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
 
     {
 
-        StorageCreateTable *leaks_files = createTable("leaks_files");
+        WsjcppStorageCreateTable *leaks_files = createTable("leaks_files");
         leaks_files->addColumn("id").number().autoIncrement().primaryKey().notNull();
         leaks_files->addColumn("uuid").string(255).notNull();
         leaks_files->addColumn("leakid").number().notNull();

@@ -1,6 +1,6 @@
 
 #include "unit_test_storage_escapes.h"
-#include <core/storages.h>
+#include <wsjcpp_storages.h>
 
 REGISTRY_WSJCPP_UNIT_TEST(UnitTestStorageEscapes)
 
@@ -17,11 +17,11 @@ void UnitTestStorageEscapes::init() {
 // ---------------------------------------------------------------------
 
 bool UnitTestStorageEscapes::run() {
-    if (!Storages::support("mysql")) {
+    if (!WsjcppStorages::support("mysql")) {
         WsjcppLog::err(TAG, "Not supported mysql");
         return false;
     }
-    Storage *pStorage = Storages::create("mysql");
+    WsjcppStorage *pStorage = WsjcppStorages::create("mysql");
     
     struct LTest {
         LTest(std::string s1, std::string s2) : s1(s1), s2(s2) {}

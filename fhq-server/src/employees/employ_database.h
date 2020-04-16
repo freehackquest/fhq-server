@@ -4,7 +4,7 @@
 #include <model_database_connection.h>
 #include <employees.h>
 
-#include <storages.h>
+#include <wsjcpp_storages.h>
 #include <mutex>
 #include <QMap>
 
@@ -16,7 +16,7 @@ class EmployDatabase : public WsjcppEmployBase, public WsjcppSettingsStore {
         virtual bool deinit();
         QSqlDatabase *database();
         bool manualCreateDatabase(const std::string& sRootPassword, std::string& sError);
-        StorageConnection *getStorageConnection();
+        WsjcppStorageConnection *getStorageConnection();
         
         // WsjcppSettingsStore
         virtual std::map<std::string, std::string> loadAllSettings();
@@ -27,11 +27,11 @@ class EmployDatabase : public WsjcppEmployBase, public WsjcppSettingsStore {
         std::string TAG;
         std::string m_sStorageType;
         int m_nConnectionOutdatedAfterSeconds;
-        Storage *m_pStorage;
+        WsjcppStorage *m_pStorage;
 
         // new new
-        std::map<std::string, StorageConnection*> m_mapStorageConnections;
-        std::vector<StorageConnection*> m_vDoRemoveStorageConnections;
+        std::map<std::string, WsjcppStorageConnection*> m_mapStorageConnections;
+        std::vector<WsjcppStorageConnection*> m_vDoRemoveStorageConnections;
         std::mutex m_mtxStorageConnections;
 
         // db two connections

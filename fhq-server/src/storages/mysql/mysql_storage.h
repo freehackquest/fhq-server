@@ -1,14 +1,14 @@
 #ifndef MYSQL_STORAGE_H
 #define MYSQL_STORAGE_H
 
-#include <core/storages.h>
+#include <wsjcpp_storages.h>
 #include <map>
 #include <mysql/mysql.h>
 #include <mutex>
 
-class MySqlStorageConnection : public StorageConnection {
+class MySqlStorageConnection : public WsjcppStorageConnection {
     public:
-        MySqlStorageConnection(MYSQL *pConn, Storage *pStorage);
+        MySqlStorageConnection(MYSQL *pConn, WsjcppStorage *pStorage);
         virtual ~MySqlStorageConnection();
         virtual bool executeQuery(const std::string &sQuery);
         virtual std::string lastDatabaseVersion();
@@ -17,24 +17,24 @@ class MySqlStorageConnection : public StorageConnection {
     private:
         MYSQL *m_pConnection;
         std::mutex m_mtxConn;
-        Storage *m_pStorage;
+        WsjcppStorage *m_pStorage;
 };
 
-class MySqlStorage : public Storage {
+class MySqlStorage : public WsjcppStorage {
     public:
         MySqlStorage();
         static std::string type() { return "mysql"; };
         virtual bool applyConfigFromFile(const std::string &sFilePath);
-        virtual StorageConnection *connect();
+        virtual WsjcppStorageConnection *connect();
         virtual void clean();
-        virtual std::vector<std::string> prepareSqlQueries(const StorageInsert &storageInsert);
-        virtual std::vector<std::string> prepareSqlQueries(const StorageCreateTable &storageCreateTable);
-        virtual std::vector<std::string> prepareSqlQueries(const StorageModifyTable &storageModifyTable);
-        virtual std::vector<std::string> prepareSqlQueries(const StorageDropTable &storageDropTable);
+        virtual std::vector<std::string> prepareSqlQueries(const WsjcppStorageInsert &storageInsert);
+        virtual std::vector<std::string> prepareSqlQueries(const WsjcppStorageCreateTable &storageCreateTable);
+        virtual std::vector<std::string> prepareSqlQueries(const WsjcppStorageModifyTable &storageModifyTable);
+        virtual std::vector<std::string> prepareSqlQueries(const WsjcppStorageDropTable &storageDropTable);
         virtual std::string prepareStringValue(const std::string &sValue);
         
     private:
-        std::string generateLineColumnForSql(StorageColumnDef &c);
+        std::string generateLineColumnForSql(WsjcppStorageColumnDef &c);
         std::string TAG;
         std::string m_sDatabaseHost;
         std::string m_sDatabaseName;
