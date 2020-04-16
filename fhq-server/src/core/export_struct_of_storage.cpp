@@ -1,6 +1,6 @@
 #include "export_struct_of_storage.h"
 #include <iostream>
-#include <storages.h>
+#include <wsjcpp_storages.h>
 
 class FakeVersion {
     public:
@@ -22,7 +22,7 @@ class FakeVersion {
 
 // ----------------------------------------------------------------------
 
-class FakeStorageConnection : public StorageConnection {
+class FakeStorageConnection : public WsjcppStorageConnection {
     public:
         FakeStorageConnection(FakeVersion *pVersion) {
             m_pVersion = pVersion;
@@ -48,7 +48,7 @@ class FakeStorageConnection : public StorageConnection {
 
 // ----------------------------------------------------------------------
 
-class FakeStorage : public Storage {
+class FakeStorage : public WsjcppStorage {
     public:
         FakeStorage() {
             m_pVersion = new FakeVersion();
@@ -56,7 +56,7 @@ class FakeStorage : public Storage {
         virtual bool applyConfigFromFile(const std::string &sFilePath) {
             return true;
         };
-        virtual StorageConnection *connect() {
+        virtual WsjcppStorageConnection *connect() {
             return new FakeStorageConnection(m_pVersion);
         };
         virtual void clean() {
@@ -65,16 +65,16 @@ class FakeStorage : public Storage {
         virtual std::string prepareStringValue(const std::string &sValue) {
             return sValue;
         };
-        virtual std::vector<std::string> prepareSqlQueries(const StorageInsert &storageInsert) {
+        virtual std::vector<std::string> prepareSqlQueries(const WsjcppStorageInsert &storageInsert) {
             return std::vector<std::string>();
         };
-        virtual std::vector<std::string> prepareSqlQueries(const StorageCreateTable &storageCreateTable) {
+        virtual std::vector<std::string> prepareSqlQueries(const WsjcppStorageCreateTable &storageCreateTable) {
             return std::vector<std::string>();
         };
-        virtual std::vector<std::string> prepareSqlQueries(const StorageModifyTable &storageModifyTable) {
+        virtual std::vector<std::string> prepareSqlQueries(const WsjcppStorageModifyTable &storageModifyTable) {
             return std::vector<std::string>();
         };
-        virtual std::vector<std::string> prepareSqlQueries(const StorageDropTable &storageDropTable) {
+        virtual std::vector<std::string> prepareSqlQueries(const WsjcppStorageDropTable &storageDropTable) {
             return std::vector<std::string>();
         };
 
@@ -86,19 +86,19 @@ class FakeStorage : public Storage {
 
 void ExportStructOfStorage::print() {
     FakeStorage *pStorage = new FakeStorage();
-    StorageUpdates::apply2(pStorage);
+    WsjcppStorageUpdates::apply2(pStorage);
 
     std::cout << std::endl << std::endl << " * Tables: " << std::endl;
-    std::map<std::string, StorageTable> tables = pStorage->getTables();
-    std::map<std::string, StorageTable>::iterator it = tables.begin();
+    std::map<std::string, WsjcppStorageTable> tables = pStorage->getTables();
+    std::map<std::string, WsjcppStorageTable>::iterator it = tables.begin();
     while (it != tables.end()) {
         std::string sTableName = it->first;
-        StorageTable st = it->second;
+        WsjcppStorageTable st = it->second;
         std::cout << " + Table '" << st.getTableName() << "' " << std::endl;
         std::cout << " |---* Columns: " << std::endl;
-        std::vector<StorageColumnDef> vColumns = st.getColumns();
+        std::vector<WsjcppStorageColumnDef> vColumns = st.getColumns();
         for (int i = 0; i < vColumns.size(); i++) {
-            StorageColumnDef c = vColumns[i];
+            WsjcppStorageColumnDef c = vColumns[i];
             std::cout << " |   | - '" 
                 << c.columnName() << "' as " << c.columnType() << " (" << c.columnTypeSize() << ") " 
                 // TODO c.columnDescription()

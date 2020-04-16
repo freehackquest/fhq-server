@@ -5,7 +5,7 @@
 // #include <fs.h>
 // #include <ts.h>
 
-REGISTRY_STORAGE(PostgreSqlStorage)
+REGISTRY_WSJCPP_STORAGE(PostgreSqlStorage)
 
 PostgreSqlStorageConnection::PostgreSqlStorageConnection(MYSQL *pConn, Storage *pStorage) : StorageConnection() {
     m_pConnection = pConn;

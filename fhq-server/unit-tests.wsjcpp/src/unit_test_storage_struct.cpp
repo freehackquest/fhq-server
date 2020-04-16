@@ -1,6 +1,6 @@
 
 #include "unit_test_storage_struct.h"
-#include <core/storages.h>
+#include <wsjcpp_storages.h>
 
 REGISTRY_WSJCPP_UNIT_TEST(UnitTestStorageStruct)
 
@@ -17,11 +17,11 @@ void UnitTestStorageStruct::init() {
 // ---------------------------------------------------------------------
 
 bool UnitTestStorageStruct::run() {
-    if (!Storages::support("mysql")) {
+    if (!WsjcppStorages::support("mysql")) {
         WsjcppLog::err(TAG, "Not supported mysql");
         return false;
     }
-    Storage *pStorage = Storages::create("mysql");
+    WsjcppStorage *pStorage = WsjcppStorages::create("mysql");
     bool bTestSuccess = true;
     int nExpectedSize = 0;
     std::string sExpectedQuery = "";
@@ -39,8 +39,8 @@ bool UnitTestStorageStruct::run() {
 
 // ---------------------------------------------------------------------
 
-void UnitTestStorageStruct::createTestTable0(bool &bTestSuccess, Storage *pStorage) {
-    StorageCreateTable test_tbl0("test_tbl0");
+void UnitTestStorageStruct::createTestTable0(bool &bTestSuccess, WsjcppStorage *pStorage) {
+    WsjcppStorageCreateTable test_tbl0("test_tbl0");
     test_tbl0.addColumn("id").number().autoIncrement().primaryKey().notNull();
     test_tbl0.addColumn("filed1").string(255).notNull().enableIndex();
     std::vector<std::string> vQueries0 = pStorage->prepareSqlQueries(test_tbl0);
@@ -58,8 +58,8 @@ void UnitTestStorageStruct::createTestTable0(bool &bTestSuccess, Storage *pStora
 
 // ---------------------------------------------------------------------
 
-void UnitTestStorageStruct::dropTestTable0(bool &bTestSuccess, Storage *pStorage) {
-    StorageDropTable test_tbl0_drop("test_tbl0");
+void UnitTestStorageStruct::dropTestTable0(bool &bTestSuccess, WsjcppStorage *pStorage) {
+    WsjcppStorageDropTable test_tbl0_drop("test_tbl0");
     std::vector<std::string> vQueries2 = pStorage->prepareSqlQueries(test_tbl0_drop);
     if (compareN(bTestSuccess, "dropTestTable0", vQueries2.size(), 1)) {
         compareS(bTestSuccess, "dropTestTable0", vQueries2[0], "DROP TABLE IF EXISTS `test_tbl0`;");
@@ -73,8 +73,8 @@ void UnitTestStorageStruct::dropTestTable0(bool &bTestSuccess, Storage *pStorage
 
 // ---------------------------------------------------------------------
 
-void UnitTestStorageStruct::createTestTable1(bool &bTestSuccess, Storage *pStorage) {
-    StorageCreateTable test_tbl1("test_tbl1");
+void UnitTestStorageStruct::createTestTable1(bool &bTestSuccess, WsjcppStorage *pStorage) {
+    WsjcppStorageCreateTable test_tbl1("test_tbl1");
     test_tbl1.addColumn("id").number().autoIncrement().primaryKey().notNull();
     test_tbl1.addColumn("filed1").string(255).notNull().enableIndex();
     test_tbl1.addColumn("filed2").text().notNull();
@@ -111,8 +111,8 @@ void UnitTestStorageStruct::createTestTable1(bool &bTestSuccess, Storage *pStora
 
 // ---------------------------------------------------------------------
 
-void UnitTestStorageStruct::modifyTestTable1(bool &bTestSuccess, Storage *pStorage) {
-    StorageModifyTable modify_test_tbl1("test_tbl1");
+void UnitTestStorageStruct::modifyTestTable1(bool &bTestSuccess, WsjcppStorage *pStorage) {
+    WsjcppStorageModifyTable modify_test_tbl1("test_tbl1");
     modify_test_tbl1.dropColumn("filed1");
     modify_test_tbl1.dropColumn("filed2");
     modify_test_tbl1.addColumn("filed10").number().notNull();
@@ -129,27 +129,27 @@ void UnitTestStorageStruct::modifyTestTable1(bool &bTestSuccess, Storage *pStora
 
 // ---------------------------------------------------------------------
 
-void UnitTestStorageStruct::checkModifiedTable1(bool &bTestSuccess, Storage *pStorage) {
-    StorageTable tableDef = pStorage->getTableDef("test_tbl1");
-    std::vector<StorageColumnDef> vColumns = tableDef.getColumns();
+void UnitTestStorageStruct::checkModifiedTable1(bool &bTestSuccess, WsjcppStorage *pStorage) {
+    WsjcppStorageTable tableDef = pStorage->getTableDef("test_tbl1");
+    std::vector<WsjcppStorageColumnDef> vColumns = tableDef.getColumns();
     if (!compareN(bTestSuccess, "checkModifiedTable1", vColumns.size(), 9)) {
         return;
     }
-    std::vector<StorageColumnDef> vExpectedColumns;
-    vExpectedColumns.push_back(StorageColumnDef("id").number().autoIncrement().primaryKey().notNull());
-    vExpectedColumns.push_back(StorageColumnDef("filed3").datetime().notNull());
-    vExpectedColumns.push_back(StorageColumnDef("filed4").string(1500).notNull().enableIndex());
-    vExpectedColumns.push_back(StorageColumnDef("filed5").number().notNull().enableUniqueIndex("idx_f5_and_f7"));
-    vExpectedColumns.push_back(StorageColumnDef("filed6").number().notNull().enableUniqueIndex("idx_f6_and_f8"));
-    vExpectedColumns.push_back(StorageColumnDef("filed7").number().notNull().enableUniqueIndex("idx_f5_and_f7"));
-    vExpectedColumns.push_back(StorageColumnDef("filed8").number().notNull().enableUniqueIndex("idx_f6_and_f8"));
-    vExpectedColumns.push_back(StorageColumnDef("filed9").doubleNumber().defaultValue("0.0"));
-    vExpectedColumns.push_back(StorageColumnDef("filed10").number().notNull());
+    std::vector<WsjcppStorageColumnDef> vExpectedColumns;
+    vExpectedColumns.push_back(WsjcppStorageColumnDef("id").number().autoIncrement().primaryKey().notNull());
+    vExpectedColumns.push_back(WsjcppStorageColumnDef("filed3").datetime().notNull());
+    vExpectedColumns.push_back(WsjcppStorageColumnDef("filed4").string(1500).notNull().enableIndex());
+    vExpectedColumns.push_back(WsjcppStorageColumnDef("filed5").number().notNull().enableUniqueIndex("idx_f5_and_f7"));
+    vExpectedColumns.push_back(WsjcppStorageColumnDef("filed6").number().notNull().enableUniqueIndex("idx_f6_and_f8"));
+    vExpectedColumns.push_back(WsjcppStorageColumnDef("filed7").number().notNull().enableUniqueIndex("idx_f5_and_f7"));
+    vExpectedColumns.push_back(WsjcppStorageColumnDef("filed8").number().notNull().enableUniqueIndex("idx_f6_and_f8"));
+    vExpectedColumns.push_back(WsjcppStorageColumnDef("filed9").doubleNumber().defaultValue("0.0"));
+    vExpectedColumns.push_back(WsjcppStorageColumnDef("filed10").number().notNull());
 
 
     for (int i = 0; i < vColumns.size(); i++) {
-        StorageColumnDef c = vColumns[i];
-        StorageColumnDef expectedC = vExpectedColumns[i];
+        WsjcppStorageColumnDef c = vColumns[i];
+        WsjcppStorageColumnDef expectedC = vExpectedColumns[i];
         compareB(bTestSuccess, "isAutoIncrement for " + c.columnName(), c.isAutoIncrement(), expectedC.isAutoIncrement());
         compareB(bTestSuccess, "isPrimaryKey for " + c.columnName(), c.isPrimaryKey(), expectedC.isPrimaryKey());
         compareB(bTestSuccess, "isNotNull for " + c.columnName(), c.isNotNull(), expectedC.isNotNull());
@@ -198,10 +198,10 @@ void UnitTestStorageStruct::checkModifiedTable1(bool &bTestSuccess, Storage *pSt
 
 // ---------------------------------------------------------------------
 
-void UnitTestStorageStruct::insertTestTable1(bool &bTestSuccess, Storage *pStorage) {
-    StorageTable tableDef = pStorage->getTableDef("test_tbl1");
+void UnitTestStorageStruct::insertTestTable1(bool &bTestSuccess, WsjcppStorage *pStorage) {
+    WsjcppStorageTable tableDef = pStorage->getTableDef("test_tbl1");
 
-    StorageInsert tbl1_ins("test_tbl1");
+    WsjcppStorageInsert tbl1_ins("test_tbl1");
     tbl1_ins.bindValue("filed3", "so\"me"); // TODO datetime
     tbl1_ins.bindValue("filed4", "some");
     tbl1_ins.bindValue("filed5", 123);
@@ -224,8 +224,8 @@ void UnitTestStorageStruct::insertTestTable1(bool &bTestSuccess, Storage *pStora
 // ---------------------------------------------------------------------
 
 
-void UnitTestStorageStruct::createTestTable3(bool &bTestSuccess, Storage *pStorage) {
-    StorageCreateTable test_tbl3("test_tbl3");
+void UnitTestStorageStruct::createTestTable3(bool &bTestSuccess, WsjcppStorage *pStorage) {
+    WsjcppStorageCreateTable test_tbl3("test_tbl3");
     test_tbl3.addColumn("id").number().autoIncrement().primaryKey().notNull();
     test_tbl3.addColumn("field1").string(123).notNull();
     test_tbl3.addColumn("field2").string(223).notNull();
@@ -246,9 +246,9 @@ void UnitTestStorageStruct::createTestTable3(bool &bTestSuccess, Storage *pStora
 
 // ---------------------------------------------------------------------
 
-void UnitTestStorageStruct::modifyTestTable3(bool &bTestSuccess, Storage *pStorage) {
+void UnitTestStorageStruct::modifyTestTable3(bool &bTestSuccess, WsjcppStorage *pStorage) {
     std::string fn = "modifyTestTable3";
-    StorageModifyTable test_tbl3("test_tbl3");
+    WsjcppStorageModifyTable test_tbl3("test_tbl3");
     test_tbl3.dropColumn("field2");
     test_tbl3.dropColumn("field3");
     test_tbl3.addColumn("field5").string(123).notNull();

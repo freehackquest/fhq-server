@@ -1,14 +1,13 @@
-#include <core/storages.h>
+#include "wsjcpp_storages.h"
 #include <algorithm>
-#include <core/fallen.h>
 
 // ***********************
-// *** StorageColumnDef
+// *** WsjcppStorageColumnDef
 // ***********************
 
 // ---------------------------------------------------------------------
 
-StorageColumnDef::StorageColumnDef(const std::string &sColumnName) {
+WsjcppStorageColumnDef::WsjcppStorageColumnDef(const std::string &sColumnName) {
     TAG = "StorageColumnDef_" + sColumnName;
     // TODO validate column name
 
@@ -26,21 +25,21 @@ StorageColumnDef::StorageColumnDef(const std::string &sColumnName) {
 
 // ---------------------------------------------------------------------
 
-StorageColumnDef &StorageColumnDef::autoIncrement() {
+WsjcppStorageColumnDef &WsjcppStorageColumnDef::autoIncrement() {
     m_bAutoIncrement = true;
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-StorageColumnDef &StorageColumnDef::notNull() {
+WsjcppStorageColumnDef &WsjcppStorageColumnDef::notNull() {
     m_bNotNull = true;
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-StorageColumnDef &StorageColumnDef::string(int nValue) {
+WsjcppStorageColumnDef &WsjcppStorageColumnDef::string(int nValue) {
     if (m_sType != "") {
         WsjcppLog::throw_err(TAG, "Datatype already defined: " + m_sType);
         return *this;
@@ -52,7 +51,7 @@ StorageColumnDef &StorageColumnDef::string(int nValue) {
 
 // ---------------------------------------------------------------------
 
-StorageColumnDef &StorageColumnDef::text() {
+WsjcppStorageColumnDef &WsjcppStorageColumnDef::text() {
     if (m_sType != "") {
         WsjcppLog::throw_err(TAG, "Datatype already defined: " + m_sType);
         return *this;
@@ -63,7 +62,7 @@ StorageColumnDef &StorageColumnDef::text() {
 
 // ---------------------------------------------------------------------
 
-StorageColumnDef &StorageColumnDef::datetime() {
+WsjcppStorageColumnDef &WsjcppStorageColumnDef::datetime() {
     if (m_sType != "") {
         WsjcppLog::throw_err(TAG, "Datatype already defined: " + m_sType);
         return *this;
@@ -74,7 +73,7 @@ StorageColumnDef &StorageColumnDef::datetime() {
 
 // ---------------------------------------------------------------------
 
-StorageColumnDef &StorageColumnDef::number() {
+WsjcppStorageColumnDef &WsjcppStorageColumnDef::number() {
     if (m_sType != "") {
         WsjcppLog::throw_err(TAG, "Datatype already defined: " + m_sType);
         return *this;
@@ -85,7 +84,7 @@ StorageColumnDef &StorageColumnDef::number() {
 
 // ---------------------------------------------------------------------
 
-StorageColumnDef &StorageColumnDef::doubleNumber() {
+WsjcppStorageColumnDef &WsjcppStorageColumnDef::doubleNumber() {
     if (m_sType != "") {
         WsjcppLog::throw_err(TAG, "Datatype already defined: " + m_sType);
         return *this;
@@ -97,14 +96,14 @@ StorageColumnDef &StorageColumnDef::doubleNumber() {
 
 // ---------------------------------------------------------------------
 
-StorageColumnDef &StorageColumnDef::primaryKey() {
+WsjcppStorageColumnDef &WsjcppStorageColumnDef::primaryKey() {
     m_bPrimaryKey = true;
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-StorageColumnDef &StorageColumnDef::defaultValue(const std::string& sDefaultValue) {
+WsjcppStorageColumnDef &WsjcppStorageColumnDef::defaultValue(const std::string& sDefaultValue) {
     m_sDefaultValue = sDefaultValue;
     m_bDefaultValue = true;
     return *this;
@@ -112,14 +111,14 @@ StorageColumnDef &StorageColumnDef::defaultValue(const std::string& sDefaultValu
 
 // ---------------------------------------------------------------------
 
-StorageColumnDef &StorageColumnDef::enableIndex() {
+WsjcppStorageColumnDef &WsjcppStorageColumnDef::enableIndex() {
     m_bEnableIndex = true;
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-StorageColumnDef &StorageColumnDef::enableUniqueIndex(const std::string& sIndexName) {
+WsjcppStorageColumnDef &WsjcppStorageColumnDef::enableUniqueIndex(const std::string& sIndexName) {
     m_sNameOfUniqueIndex = sIndexName;
     m_bEnableUniqueIndex = true;
     return *this;
@@ -127,67 +126,67 @@ StorageColumnDef &StorageColumnDef::enableUniqueIndex(const std::string& sIndexN
 
 // ---------------------------------------------------------------------
 
-std::string StorageColumnDef::columnName() const {
+std::string WsjcppStorageColumnDef::columnName() const {
     return m_sColumnName;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageColumnDef::columnType() {
+std::string WsjcppStorageColumnDef::columnType() {
     return m_sType;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageColumnDef::columnDefaultValue() {
+std::string WsjcppStorageColumnDef::columnDefaultValue() {
     return m_sDefaultValue;
 }
 
 // ---------------------------------------------------------------------
 
-bool StorageColumnDef::isDefaultValue() {
+bool WsjcppStorageColumnDef::isDefaultValue() {
     return m_bDefaultValue;
 }
 
 // ---------------------------------------------------------------------
 
-int StorageColumnDef::columnTypeSize() {
+int WsjcppStorageColumnDef::columnTypeSize() {
     return m_nTypeSize;
 }
 
 // ---------------------------------------------------------------------
 
-bool StorageColumnDef::isAutoIncrement() {
+bool WsjcppStorageColumnDef::isAutoIncrement() {
     return m_bAutoIncrement;
 }
 
 // ---------------------------------------------------------------------
 
-bool StorageColumnDef::isPrimaryKey() {
+bool WsjcppStorageColumnDef::isPrimaryKey() {
     return m_bPrimaryKey;
 }
 
 // ---------------------------------------------------------------------
 
-bool StorageColumnDef::isNotNull() {
+bool WsjcppStorageColumnDef::isNotNull() {
     return m_bNotNull;
 }
 
 // ---------------------------------------------------------------------
 
-bool StorageColumnDef::isEnableIndex() {
+bool WsjcppStorageColumnDef::isEnableIndex() {
     return m_bEnableIndex;
 }
 
 // ---------------------------------------------------------------------
 
-bool StorageColumnDef::isEnableUniqueIndex() {
+bool WsjcppStorageColumnDef::isEnableUniqueIndex() {
     return m_bEnableUniqueIndex;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageColumnDef::nameOfUniqueIndex() {
+std::string WsjcppStorageColumnDef::nameOfUniqueIndex() {
     return m_sNameOfUniqueIndex;
 }
 
@@ -199,38 +198,38 @@ std::string StorageColumnDef::nameOfUniqueIndex() {
 
 // ---------------------------------------------------------------------
 
-StorageChanges::StorageChanges(const std::string &sTableName) {
+WsjcppStorageChanges::WsjcppStorageChanges(const std::string &sTableName) {
     TAG = "StorageChanges";
     m_sTableName = sTableName;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageChanges::getTableName() const {
+std::string WsjcppStorageChanges::getTableName() const {
     return m_sTableName;
 }
 
 // ---------------------------------------------------------------------
 
-StorageChangesType StorageChanges::getType() const {
-    return StorageChangesType::NOPE;
+WsjcppStorageChangesType WsjcppStorageChanges::getType() const {
+    return WSJCPP_STORAGE_CHANGES_TYPE_NOPE;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageChanges::getStartApply() const {
+std::string WsjcppStorageChanges::getStartApply() const {
     return "Appling changes for table " + m_sTableName;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageChanges::getAppliedSuccess() const {
+std::string WsjcppStorageChanges::getAppliedSuccess() const {
     return "Changes success applied for table " + m_sTableName;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageChanges::getAppliedFailed() const {
+std::string WsjcppStorageChanges::getAppliedFailed() const {
     return "Could not apply changes for table " + m_sTableName;
 }
 
@@ -240,53 +239,52 @@ std::string StorageChanges::getAppliedFailed() const {
 // *** StorageCreateTable
 // ***********************
 
-StorageCreateTable::StorageCreateTable(const std::string &sTableName) 
-    : StorageChanges(sTableName) {
-    TAG = "StorageCreateTable";
+WsjcppStorageCreateTable::WsjcppStorageCreateTable(const std::string &sTableName) 
+    : WsjcppStorageChanges(sTableName) {
+    TAG = "WsjcppStorageCreateTable";
     // TODO validate table of name
 }
 
 // ---------------------------------------------------------------------
 
-StorageChangesType StorageCreateTable::getType() const {
-    return StorageChangesType::CREATE_TABLE;
+WsjcppStorageChangesType WsjcppStorageCreateTable::getType() const {
+    return WSJCPP_STORAGE_CHANGES_TYPE_CREATE_TABLE;
 };
 
 // ---------------------------------------------------------------------
 
-std::string StorageCreateTable::getStartApply() const {
+std::string WsjcppStorageCreateTable::getStartApply() const {
     return "Creating table '" + m_sTableName + "'";
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageCreateTable::getAppliedSuccess() const {
+std::string WsjcppStorageCreateTable::getAppliedSuccess() const {
     return "Created table '" +  m_sTableName + "'";
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageCreateTable::getAppliedFailed() const {
+std::string WsjcppStorageCreateTable::getAppliedFailed() const {
     return "Could not create table '" +  m_sTableName + "'";
 }
 
 // ---------------------------------------------------------------------
 
-StorageColumnDef &StorageCreateTable::addColumn(const std::string &sColumnName) {
+WsjcppStorageColumnDef &WsjcppStorageCreateTable::addColumn(const std::string &sColumnName) {
     for (int i = 0; i < m_vColumns.size(); i++) {
         if (m_vColumns[i].columnName() == sColumnName) {
             std::string sError = "Column '" + sColumnName + "' in table '" + m_sTableName + "' already exists";
-            WsjcppLog::err(TAG, sError);
-            throw std::runtime_error(sError);
+            WsjcppLog::throw_err(TAG, sError);
         }
     }
-    m_vColumns.push_back(StorageColumnDef(sColumnName));
+    m_vColumns.push_back(WsjcppStorageColumnDef(sColumnName));
     return m_vColumns[m_vColumns.size()-1];
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<StorageColumnDef> &StorageCreateTable::getColumns() const {
+const std::vector<WsjcppStorageColumnDef> &WsjcppStorageCreateTable::getColumns() const {
     return m_vColumns;
 }
 
@@ -296,61 +294,61 @@ const std::vector<StorageColumnDef> &StorageCreateTable::getColumns() const {
 // *** StorageModifyTable
 // ***********************
 
-StorageModifyTable::StorageModifyTable(const std::string &sTableName) 
-    : StorageChanges(sTableName) {
-    TAG = "StorageModifyTable";
+WsjcppStorageModifyTable::WsjcppStorageModifyTable(const std::string &sTableName) 
+    : WsjcppStorageChanges(sTableName) {
+    TAG = "WsjcppStorageModifyTable";
     // TODO validate table of name
 }
 
 // ---------------------------------------------------------------------
 
-StorageChangesType StorageModifyTable::getType() const {
-    return StorageChangesType::MODIFY_TABLE;
+WsjcppStorageChangesType WsjcppStorageModifyTable::getType() const {
+    return WSJCPP_STORAGE_CHANGES_TYPE_MODIFY_TABLE;
 };
 
 // ---------------------------------------------------------------------
 
-std::string StorageModifyTable::getStartApply() const {
+std::string WsjcppStorageModifyTable::getStartApply() const {
     return "Modifing table " + m_sTableName;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageModifyTable::getAppliedSuccess() const {
+std::string WsjcppStorageModifyTable::getAppliedSuccess() const {
     return "Modified table " +  m_sTableName;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageModifyTable::getAppliedFailed() const {
+std::string WsjcppStorageModifyTable::getAppliedFailed() const {
     return "Could not modify table " +  m_sTableName;
 }
 
 // ---------------------------------------------------------------------
 
-StorageColumnDef &StorageModifyTable::addColumn(const std::string &sColumnName) {
+WsjcppStorageColumnDef &WsjcppStorageModifyTable::addColumn(const std::string &sColumnName) {
     std::string sError;
     if (isColumnDefined(sColumnName, sError)) {
         WsjcppLog::throw_err(TAG, "addColumn, " + sError);
     }
-    m_vAddColumns.push_back(StorageColumnDef(sColumnName));
+    m_vAddColumns.push_back(WsjcppStorageColumnDef(sColumnName));
     return m_vAddColumns[m_vAddColumns.size()-1];
 }
 
 // ---------------------------------------------------------------------
 
-StorageColumnDef &StorageModifyTable::alterColumn(const std::string &sColumnName) {
+WsjcppStorageColumnDef &WsjcppStorageModifyTable::alterColumn(const std::string &sColumnName) {
     std::string sError;
     if (isColumnDefined(sColumnName, sError)) {
         WsjcppLog::throw_err(TAG, "alterColumn, " + sError);
     }
-    m_vAlterColumns.push_back(StorageColumnDef(sColumnName));
+    m_vAlterColumns.push_back(WsjcppStorageColumnDef(sColumnName));
     return m_vAlterColumns[m_vAlterColumns.size()-1];
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageModifyTable::dropColumn(const std::string &sColumnName) {
+std::string WsjcppStorageModifyTable::dropColumn(const std::string &sColumnName) {
     std::string sError;
     if (isColumnDefined(sColumnName, sError)) {
         WsjcppLog::throw_err(TAG, "dropColumn, " + sError);
@@ -361,25 +359,25 @@ std::string StorageModifyTable::dropColumn(const std::string &sColumnName) {
 
 // ---------------------------------------------------------------------
 
-const std::vector<StorageColumnDef> &StorageModifyTable::getAddColumns() const {
+const std::vector<WsjcppStorageColumnDef> &WsjcppStorageModifyTable::getAddColumns() const {
     return m_vAddColumns;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<StorageColumnDef> &StorageModifyTable::getAlterColumns() const {
+const std::vector<WsjcppStorageColumnDef> &WsjcppStorageModifyTable::getAlterColumns() const {
     return m_vAlterColumns;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<std::string> &StorageModifyTable::getDropColumns() const {
+const std::vector<std::string> &WsjcppStorageModifyTable::getDropColumns() const {
     return m_vDropColumns;
 }
 
 // ---------------------------------------------------------------------
 
-bool StorageModifyTable::isColumnDefined(const std::string &sColumnName, std::string &sError) const {
+bool WsjcppStorageModifyTable::isColumnDefined(const std::string &sColumnName, std::string &sError) const {
     for (int i = 0; i < m_vAddColumns.size(); i++) {
         if (m_vAddColumns[i].columnName() == sColumnName) {
             sError = "Column '" + sColumnName + "' in table '" + m_sTableName + "' already defined as 'add' ";
@@ -410,33 +408,33 @@ bool StorageModifyTable::isColumnDefined(const std::string &sColumnName, std::st
 // *** StorageDropTable
 // ***********************
 
-StorageDropTable::StorageDropTable(const std::string &sTableName) 
-    : StorageChanges(sTableName) {
-    TAG = "StorageDropTable";
+WsjcppStorageDropTable::WsjcppStorageDropTable(const std::string &sTableName) 
+    : WsjcppStorageChanges(sTableName) {
+    TAG = "WsjcppStorageDropTable";
     // TODO validate table of name
 }
 
 // ---------------------------------------------------------------------
 
-StorageChangesType StorageDropTable::getType() const {
-    return StorageChangesType::DROP_TABLE;
+WsjcppStorageChangesType WsjcppStorageDropTable::getType() const {
+    return WSJCPP_STORAGE_CHANGES_TYPE_DROP_TABLE;
 };
 
 // ---------------------------------------------------------------------
 
-std::string StorageDropTable::getStartApply() const {
+std::string WsjcppStorageDropTable::getStartApply() const {
     return "Dropping table " + m_sTableName;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageDropTable::getAppliedSuccess() const {
+std::string WsjcppStorageDropTable::getAppliedSuccess() const {
     return "Dropped table " +  m_sTableName;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageDropTable::getAppliedFailed() const {
+std::string WsjcppStorageDropTable::getAppliedFailed() const {
     return "Could not drop table " +  m_sTableName;
 }
 
@@ -446,140 +444,140 @@ std::string StorageDropTable::getAppliedFailed() const {
 // *** StorageColumnValue
 // ***********************
 
-StorageColumnValue::StorageColumnValue(const std::string &sColumnName, StorageColumnType nType) {
+WsjcppStorageColumnValue::WsjcppStorageColumnValue(const std::string &sColumnName, WsjcppStorageColumnType nType) {
     m_sColumnName = sColumnName;
     m_nColumnType = nType;
 }
 
 // ---------------------------------------------------------------------
 
-void StorageColumnValue::setValue(std::string sValue) {
+void WsjcppStorageColumnValue::setValue(std::string sValue) {
     m_sStringValue = sValue;
 }
 
 // ---------------------------------------------------------------------
 
-void StorageColumnValue::setValue(int nValue) {
+void WsjcppStorageColumnValue::setValue(int nValue) {
     m_nIntValue = nValue;
 }
 
 // ---------------------------------------------------------------------
 
-void StorageColumnValue::setValue(double nValue) {
+void WsjcppStorageColumnValue::setValue(double nValue) {
     m_nDoubleValue = nValue;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageColumnValue::getColumnName() {
+std::string WsjcppStorageColumnValue::getColumnName() {
     return m_sColumnName;
 }
 
 // ---------------------------------------------------------------------
 
-StorageColumnType StorageColumnValue::getColumnType() {
+WsjcppStorageColumnType WsjcppStorageColumnValue::getColumnType() {
     return m_nColumnType;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageColumnValue::getString() {
+std::string WsjcppStorageColumnValue::getString() {
     return m_sStringValue;
 }
 
 // ---------------------------------------------------------------------
 
-int StorageColumnValue::getInt() {
+int WsjcppStorageColumnValue::getInt() {
     return m_nIntValue;
 }
 
 // ---------------------------------------------------------------------
 
-double StorageColumnValue::getDouble() {
+double WsjcppStorageColumnValue::getDouble() {
     return m_nDoubleValue;
 }
 
 // ---------------------------------------------------------------------
 
 // ***********************
-// *** StorageInsert
+// *** WsjcppStorageInsert
 // ***********************
 
-StorageInsert::StorageInsert(const std::string &sTableName)
-    : StorageChanges(sTableName) {
-    TAG = "StorageInsert";
+WsjcppStorageInsert::WsjcppStorageInsert(const std::string &sTableName)
+    : WsjcppStorageChanges(sTableName) {
+    TAG = "WsjcppStorageInsert";
     m_sTableName = sTableName;
 }
 
 // ---------------------------------------------------------------------
 
-StorageChangesType StorageInsert::getType() const {
-    return StorageChangesType::INSERT_ROW;
+WsjcppStorageChangesType WsjcppStorageInsert::getType() const {
+    return WSJCPP_STORAGE_CHANGES_TYPE_INSERT_ROW;
 };
 
 // ---------------------------------------------------------------------
 
-std::string StorageInsert::getStartApply() const {
+std::string WsjcppStorageInsert::getStartApply() const {
     return "Inserting into table " + m_sTableName;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageInsert::getAppliedSuccess() const {
+std::string WsjcppStorageInsert::getAppliedSuccess() const {
     return "Inserted into table " +  m_sTableName;
 }
 
 // ---------------------------------------------------------------------
 
-std::string StorageInsert::getAppliedFailed() const {
+std::string WsjcppStorageInsert::getAppliedFailed() const {
     return "Could not insert into table " +  m_sTableName;
 }
 
 // ---------------------------------------------------------------------
 
-void StorageInsert::bindValue(const std::string &sColumnName, const std::string &sValue) {
+void WsjcppStorageInsert::bindValue(const std::string &sColumnName, const std::string &sValue) {
     if (this->exists(sColumnName)) {
         WsjcppLog::throw_err(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
         return;
     }
-    StorageColumnValue val(sColumnName, StorageColumnType::STRING);
+    WsjcppStorageColumnValue val(sColumnName, WSJCPP_STORAGE_COLUMN_TYPE_STRING);
     val.setValue(sValue);
     m_vValues.push_back(val);
 }
 
 // ---------------------------------------------------------------------
 
-void StorageInsert::bindValue(const std::string &sColumnName, int nValue) {
+void WsjcppStorageInsert::bindValue(const std::string &sColumnName, int nValue) {
     if (this->exists(sColumnName)) {
         WsjcppLog::throw_err(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
         return;
     }
-    StorageColumnValue val(sColumnName, StorageColumnType::NUMBER);
+    WsjcppStorageColumnValue val(sColumnName, WSJCPP_STORAGE_COLUMN_TYPE_NUMBER);
     val.setValue(nValue);
     m_vValues.push_back(val);
 }
 
 // ---------------------------------------------------------------------
 
-void StorageInsert::bindValue(const std::string &sColumnName, double nValue) {
+void WsjcppStorageInsert::bindValue(const std::string &sColumnName, double nValue) {
     if (this->exists(sColumnName)) {
         WsjcppLog::throw_err(TAG, "Skip. Already defined " + m_sTableName + "." + sColumnName);
         return;
     }
-    StorageColumnValue val(sColumnName, StorageColumnType::DOUBLE_NUMBER);
+    WsjcppStorageColumnValue val(sColumnName, WSJCPP_STORAGE_COLUMN_TYPE_DOUBLE_NUMBER);
     val.setValue(nValue);
     m_vValues.push_back(val);
 }
 
 // ---------------------------------------------------------------------
 
-std::vector<StorageColumnValue> StorageInsert::values() const {
+std::vector<WsjcppStorageColumnValue> WsjcppStorageInsert::values() const {
     return m_vValues;
 }
 
 // ---------------------------------------------------------------------
 
-bool StorageInsert::exists(const std::string &sColumnName) {
+bool WsjcppStorageInsert::exists(const std::string &sColumnName) {
     for (int i = 0; i < m_vValues.size(); i++) {
         if (m_vValues[i].getColumnName() == sColumnName) {
             return true;
@@ -590,30 +588,30 @@ bool StorageInsert::exists(const std::string &sColumnName) {
 
 // ---------------------------------------------------------------------
 
-bool StorageInsert::isValid(const StorageTable &storageTable) const {
+bool WsjcppStorageInsert::isValid(const WsjcppStorageTable &storageTable) const {
     if (storageTable.getTableName() != m_sTableName) {
         WsjcppLog::err(TAG, "Expeceted '" + m_sTableName + "', but got '" + storageTable.getTableName() + "'");
         return false;
     }
 
-    std::vector<StorageColumnDef> vColumns = storageTable.getColumns();
+    std::vector<WsjcppStorageColumnDef> vColumns = storageTable.getColumns();
     std::vector<std::string> vCurrentColumns;
     
     for (int x = 0; x < m_vValues.size(); x++) {
         bool bFound = false;
-        StorageColumnValue val = m_vValues[x];
+        WsjcppStorageColumnValue val = m_vValues[x];
         vCurrentColumns.push_back(val.getColumnName());
         for (int y = 0; y < vColumns.size(); y++) {
-            StorageColumnDef st = vColumns[y];
+            WsjcppStorageColumnDef st = vColumns[y];
             if (st.columnName() == val.getColumnName()) {
-                if (val.getColumnType() == StorageColumnType::STRING
+                if (val.getColumnType() == WSJCPP_STORAGE_COLUMN_TYPE_STRING
                     && (st.columnType() == "string" || st.columnType() == "datetime" || st.columnType() == "text")) {
                     bFound = true;
                     break;
-                } else if (val.getColumnType() == StorageColumnType::NUMBER && st.columnType() == "number") {
+                } else if (val.getColumnType() == WSJCPP_STORAGE_COLUMN_TYPE_NUMBER && st.columnType() == "number") {
                     bFound = true;
                     break;
-                } else if (val.getColumnType() == StorageColumnType::DOUBLE_NUMBER && st.columnType() == "doubleNumber") {
+                } else if (val.getColumnType() == WSJCPP_STORAGE_COLUMN_TYPE_DOUBLE_NUMBER && st.columnType() == "doubleNumber") {
                     bFound = true;
                     break;
                 } else {
@@ -649,55 +647,40 @@ bool StorageInsert::isValid(const StorageTable &storageTable) const {
 // ---------------------------------------------------------------------
 
 /*
-StorageUpdate::StorageUpdate(const StorageStruct &storageStruct) {
+WsjcppStorageUpdate::WsjcppStorageUpdate(const StorageStruct &storageStruct) {
     m_storageStruct = storageStruct;
 }
-
 // ---------------------------------------------------------------------
-
-void StorageUpdate::bindValue(const std::string &sColumnName, const std::string &sValue) {
-
+void WsjcppStorageUpdate::bindValue(const std::string &sColumnName, const std::string &sValue) {
 }
-
 // ---------------------------------------------------------------------
-
-void StorageUpdate::bindValue(const std::string &sColumnName, int nValue) {
-
+void WsjcppStorageUpdate::bindValue(const std::string &sColumnName, int nValue) {
 }
-
 // ---------------------------------------------------------------------
-
-void StorageUpdate::bindValue(const std::string &sColumnName, double nValue) {
-
+void WsjcppStorageUpdate::bindValue(const std::string &sColumnName, double nValue) {
 }
-
 // ---------------------------------------------------------------------
-
-std::vector<StorageColumnValue> StorageUpdate::values() const {
-
+std::vector<WsjcppStorageColumnValue> StorageUpdate::values() const {
 }
-
 // ---------------------------------------------------------------------
-
-bool StorageUpdate::isValid() const {
+bool WsjcppStorageUpdate::isValid() const {
     return false;
 }
-
 // ---------------------------------------------------------------------
 */
 
 // ---------------------------------------------------------------------
 
-StorageTable::StorageTable(const std::string &sTableName) {
+WsjcppStorageTable::WsjcppStorageTable(const std::string &sTableName) {
     m_sTableName = sTableName;
-    TAG = "StorageTable";
+    TAG = "WsjcppStorageTable";
 }
 
 // ---------------------------------------------------------------------
 
-StorageTable::StorageTable(StorageCreateTable &createTable) {
+WsjcppStorageTable::WsjcppStorageTable(WsjcppStorageCreateTable &createTable) {
     m_sTableName = createTable.getTableName();
-    const std::vector<StorageColumnDef> &list = createTable.getColumns();
+    const std::vector<WsjcppStorageColumnDef> &list = createTable.getColumns();
     for (int i = 0; i < list.size(); i++) {
         m_vColumns.push_back(list[i]);
     }
@@ -705,19 +688,19 @@ StorageTable::StorageTable(StorageCreateTable &createTable) {
 
 // ---------------------------------------------------------------------
 
-std::string StorageTable::getTableName() const {
+std::string WsjcppStorageTable::getTableName() const {
     return m_sTableName;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<StorageColumnDef> &StorageTable::getColumns() const {
+const std::vector<WsjcppStorageColumnDef> &WsjcppStorageTable::getColumns() const {
     return m_vColumns;
 }
 
 // ---------------------------------------------------------------------
 
-void StorageTable::mergeWith(StorageModifyTable &modifyTable) {
+void WsjcppStorageTable::mergeWith(WsjcppStorageModifyTable &modifyTable) {
 
     // TODO check indexes
     std::vector<std::string> vDropColumns = modifyTable.getDropColumns();
@@ -736,10 +719,10 @@ void StorageTable::mergeWith(StorageModifyTable &modifyTable) {
         }
     }
 
-    std::vector<StorageColumnDef> vAddColumns = modifyTable.getAddColumns();
+    std::vector<WsjcppStorageColumnDef> vAddColumns = modifyTable.getAddColumns();
     for (int i = 0; i < vAddColumns.size(); i++) {
         bool bFound = false;
-        StorageColumnDef c = vAddColumns[i];
+        WsjcppStorageColumnDef c = vAddColumns[i];
         for (int i = 0; i < m_vColumns.size(); i++) {
             if (m_vColumns[i].columnName() == c.columnName()) {
                 bFound = true;
@@ -753,10 +736,10 @@ void StorageTable::mergeWith(StorageModifyTable &modifyTable) {
     }
 
     // TODO check indexes
-    std::vector<StorageColumnDef> vAlterColumns = modifyTable.getAlterColumns();
+    std::vector<WsjcppStorageColumnDef> vAlterColumns = modifyTable.getAlterColumns();
     for (int i = 0; i < vAlterColumns.size(); i++) {
         bool bFound = false;
-        StorageColumnDef c = vAlterColumns[i];
+        WsjcppStorageColumnDef c = vAlterColumns[i];
         for (int i = 0; i < m_vColumns.size(); i++) {
             if (m_vColumns[i].columnName() == c.columnName()) {
                 if (m_vColumns[i].isEnableIndex()) {
@@ -778,24 +761,24 @@ void StorageTable::mergeWith(StorageModifyTable &modifyTable) {
 // *** StorageConnection
 // ***********************
 
-StorageConnection::StorageConnection() {
+WsjcppStorageConnection::WsjcppStorageConnection() {
     m_nCreated = WsjcppCore::currentTime_milliseconds();
-    TAG = "StorageConnection";
+    TAG = "WsjcppStorageConnection";
 }
 
-StorageConnection::~StorageConnection() {
+WsjcppStorageConnection::~WsjcppStorageConnection() {
     // Nothing
 }
 
 // ---------------------------------------------------------------------
 
-long StorageConnection::created() { // TODO 
+long WsjcppStorageConnection::created() { // TODO 
     return m_nCreated;
 }
 
 // ---------------------------------------------------------------------
 
-long StorageConnection::getConnectionDurationInSeconds() {
+long WsjcppStorageConnection::getConnectionDurationInSeconds() {
     long nRet = WsjcppCore::currentTime_milliseconds() - m_nCreated;
     nRet = nRet / 1000;
     return nRet;
@@ -807,35 +790,35 @@ long StorageConnection::getConnectionDurationInSeconds() {
 // *** Storage
 // ***********************
 
-Storage::Storage() {
-    TAG = "Storage";
+WsjcppStorage::WsjcppStorage() {
+    TAG = "WsjcppStorage";
 }
 
 // ---------------------------------------------------------------------
 
-bool Storage::addStorageChanges(StorageChanges &storageChanges) {
+bool WsjcppStorage::addStorageChanges(WsjcppStorageChanges &storageChanges) {
     std::string sTableName = storageChanges.getTableName();
-    std::map<std::string,StorageTable>::iterator it = m_mapTables.find(sTableName);
+    std::map<std::string, WsjcppStorageTable>::iterator it = m_mapTables.find(sTableName);
 
-    if (storageChanges.getType() == StorageChangesType::CREATE_TABLE) {
+    if (storageChanges.getType() == WSJCPP_STORAGE_CHANGES_TYPE_CREATE_TABLE) {
         if (it != m_mapTables.end()) {
             WsjcppLog::err(TAG, "Table '" + sTableName + "' already defined");
             WsjcppLog::warn(TAG, "TODO need drop table");
             return false;
         }
-        StorageTable tbl((StorageCreateTable &)storageChanges);
-        m_mapTables.insert(std::pair<std::string,StorageTable>(sTableName,tbl) );
-    } else if (storageChanges.getType() == StorageChangesType::DROP_TABLE) {
+        WsjcppStorageTable tbl((WsjcppStorageCreateTable &)storageChanges);
+        m_mapTables.insert(std::pair<std::string,WsjcppStorageTable>(sTableName,tbl) );
+    } else if (storageChanges.getType() == WSJCPP_STORAGE_CHANGES_TYPE_DROP_TABLE) {
         if (it == m_mapTables.end()) {
             WsjcppLog::throw_err(TAG, "Not found table '" + sTableName + "'");
         }
         m_mapTables.erase(sTableName);
-    } else if (storageChanges.getType() == StorageChangesType::MODIFY_TABLE) {
+    } else if (storageChanges.getType() == WSJCPP_STORAGE_CHANGES_TYPE_MODIFY_TABLE) {
         if (it == m_mapTables.end()) {
             WsjcppLog::throw_err(TAG, "Not found table '" + sTableName + "'");
         }
-        it->second.mergeWith((StorageModifyTable &)storageChanges);
-    } else if (storageChanges.getType() == StorageChangesType::INSERT_ROW) {
+        it->second.mergeWith((WsjcppStorageModifyTable &)storageChanges);
+    } else if (storageChanges.getType() == WSJCPP_STORAGE_CHANGES_TYPE_INSERT_ROW) {
         // skip
     } else {
         WsjcppLog::throw_err(TAG, "addStorageChanges, Unknown operation with table");
@@ -845,22 +828,22 @@ bool Storage::addStorageChanges(StorageChanges &storageChanges) {
 
 // ---------------------------------------------------------------------
 
-bool Storage::executeStorageChanges(StorageConnection *pConn, StorageChanges &storageChanges) {
+bool WsjcppStorage::executeStorageChanges(WsjcppStorageConnection *pConn, WsjcppStorageChanges &storageChanges) {
     std::string sTableName = storageChanges.getTableName();
     std::vector<std::string> vQueries;
 
-    if (storageChanges.getType() == StorageChangesType::CREATE_TABLE) {
-        StorageCreateTable createTable = (StorageCreateTable &)storageChanges;
+    if (storageChanges.getType() == WSJCPP_STORAGE_CHANGES_TYPE_CREATE_TABLE) {
+        WsjcppStorageCreateTable createTable = (WsjcppStorageCreateTable &)storageChanges;
         vQueries = this->prepareSqlQueries(createTable);
-    } else if (storageChanges.getType() == StorageChangesType::MODIFY_TABLE) {
-        StorageModifyTable modifyTable = (StorageModifyTable &)storageChanges;
+    } else if (storageChanges.getType() == WSJCPP_STORAGE_CHANGES_TYPE_MODIFY_TABLE) {
+        WsjcppStorageModifyTable modifyTable = (WsjcppStorageModifyTable &)storageChanges;
         vQueries = this->prepareSqlQueries(modifyTable);
-    } else if (storageChanges.getType() == StorageChangesType::DROP_TABLE) {
-        StorageDropTable dropTable = (StorageDropTable &)storageChanges;
+    } else if (storageChanges.getType() == WSJCPP_STORAGE_CHANGES_TYPE_DROP_TABLE) {
+        WsjcppStorageDropTable dropTable = (WsjcppStorageDropTable &)storageChanges;
         vQueries = this->prepareSqlQueries(dropTable);
-    } else if (storageChanges.getType() == StorageChangesType::INSERT_ROW) {
-        StorageInsert insRow = (StorageInsert &)storageChanges;
-        StorageTable tableDef = getTableDef(insRow.getTableName());
+    } else if (storageChanges.getType() == WSJCPP_STORAGE_CHANGES_TYPE_INSERT_ROW) {
+        WsjcppStorageInsert insRow = (WsjcppStorageInsert &)storageChanges;
+        WsjcppStorageTable tableDef = getTableDef(insRow.getTableName());
         if (!insRow.isValid(tableDef)) {
             WsjcppLog::throw_err(TAG, "Insert into table '" + insRow.getTableName() + "' is invalid");
         }
@@ -888,10 +871,10 @@ bool Storage::executeStorageChanges(StorageConnection *pConn, StorageChanges &st
 
 // ---------------------------------------------------------------------
 
-bool Storage::insertRow(StorageConnection *pConn, const StorageInsert &storageInsert) {
+bool WsjcppStorage::insertRow(WsjcppStorageConnection *pConn, const WsjcppStorageInsert &storageInsert) {
 
     std::string sTableName = storageInsert.getTableName();
-    StorageTable tableDef = getTableDef(sTableName);
+    WsjcppStorageTable tableDef = getTableDef(sTableName);
 
     if (!storageInsert.isValid(tableDef)) {
         return false;
@@ -909,21 +892,21 @@ bool Storage::insertRow(StorageConnection *pConn, const StorageInsert &storageIn
 
 // ---------------------------------------------------------------------
 
-const std::map<std::string, StorageTable> &Storage::getTables() {
+const std::map<std::string, WsjcppStorageTable> &WsjcppStorage::getTables() {
     return m_mapTables;
 }
 
 // ---------------------------------------------------------------------
 
-bool Storage::existsTable(const std::string &sTableName) {
-    std::map<std::string, StorageTable>::iterator it = m_mapTables.find(sTableName);
+bool WsjcppStorage::existsTable(const std::string &sTableName) {
+    std::map<std::string, WsjcppStorageTable>::iterator it = m_mapTables.find(sTableName);
     return (it != m_mapTables.end());
 }
 
 // ---------------------------------------------------------------------
 
-const StorageTable &Storage::getTableDef(const std::string &sTableName) {
-    std::map<std::string, StorageTable>::iterator it = m_mapTables.find(sTableName);
+const WsjcppStorageTable &WsjcppStorage::getTableDef(const std::string &sTableName) {
+    std::map<std::string, WsjcppStorageTable>::iterator it = m_mapTables.find(sTableName);
     if (it == m_mapTables.end()) {
         WsjcppLog::throw_err(TAG, "Table " + sTableName + " does not exists");
     }
@@ -932,37 +915,37 @@ const StorageTable &Storage::getTableDef(const std::string &sTableName) {
 
 // ---------------------------------------------------------------------
 
-std::map<std::string, IFabricStorage*> *g_pFabricStorages = NULL;
+std::map<std::string, IFabricWsjcppStorage*> *g_pFabricWsjcppStorages = NULL;
 
 // ---------------------------------------------------------------------
 
-void Storages::initGlobalVariables() {
-    if (g_pFabricStorages == NULL) {
+void WsjcppStorages::initGlobalVariables() {
+    if (g_pFabricWsjcppStorages == NULL) {
         // WsjcppLog::info(std::string(), "Create employees map");
-        g_pFabricStorages = new std::map<std::string, IFabricStorage*>();
+        g_pFabricWsjcppStorages = new std::map<std::string, IFabricWsjcppStorage*>();
     }
 }
 
 // ---------------------------------------------------------------------
 
-void Storages::add(const std::string &sType, IFabricStorage* pStorage) {
-    Storages::initGlobalVariables();
+void WsjcppStorages::add(const std::string &sType, IFabricWsjcppStorage* pStorage) {
+    WsjcppStorages::initGlobalVariables();
     const std::string TAG = "addStorage";
-    if (g_pFabricStorages->count(sType) > 0) {
+    if (g_pFabricWsjcppStorages->count(sType) > 0) {
         WsjcppLog::err(TAG, sType + " - storage already registered");
     } else {
-        g_pFabricStorages->insert(std::pair<std::string, IFabricStorage*>(sType,pStorage));
+        g_pFabricWsjcppStorages->insert(std::pair<std::string, IFabricWsjcppStorage*>(sType,pStorage));
         // WsjcppLog::info(sType, "Registered");
     }
 }
 
 // ---------------------------------------------------------------------
 
-std::vector<std::string> Storages::list() {
-    Storages::initGlobalVariables();
+std::vector<std::string> WsjcppStorages::list() {
+    WsjcppStorages::initGlobalVariables();
     std::vector<std::string> vResult;
-    std::map<std::string, IFabricStorage*>::iterator it;
-    for (it = g_pFabricStorages->begin(); it != g_pFabricStorages->end(); it++) {
+    std::map<std::string, IFabricWsjcppStorage*>::iterator it;
+    for (it = g_pFabricWsjcppStorages->begin(); it != g_pFabricWsjcppStorages->end(); it++) {
         vResult.push_back(it->first);
     }
     return vResult;
@@ -970,152 +953,153 @@ std::vector<std::string> Storages::list() {
 
 // ---------------------------------------------------------------------
 
-bool Storages::support(const std::string &sType) {
-    Storages::initGlobalVariables();
-    return g_pFabricStorages->count(sType) != 0;
+bool WsjcppStorages::support(const std::string &sType) {
+    WsjcppStorages::initGlobalVariables();
+    return g_pFabricWsjcppStorages->count(sType) != 0;
 }
 
 // ---------------------------------------------------------------------
 
-Storage* Storages::create(const std::string &sType) {
-    Storages::initGlobalVariables();
-    std::string TAG = "findStorage";
-    IFabricStorage *pFabricStorage = nullptr;
-    if (g_pFabricStorages->count(sType)) {
-        pFabricStorage = g_pFabricStorages->at(sType);
-        return pFabricStorage->create();
+WsjcppStorage* WsjcppStorages::create(const std::string &sType) {
+    WsjcppStorages::initGlobalVariables();
+    std::string TAG = "create";
+    IFabricWsjcppStorage *pFabricWsjcppStorage = nullptr;
+    if (g_pFabricWsjcppStorages->count(sType)) {
+        pFabricWsjcppStorage = g_pFabricWsjcppStorages->at(sType);
+        return pFabricWsjcppStorage->create();
     }
+    WsjcppLog::throw_err(TAG, "Not found storage by name '" + sType + "'");
     return nullptr;
 }
 
 // ---------------------------------------------------------------------
 // class StorageUpdateBase
 
-StorageUpdateBase::StorageUpdateBase(const std::string &sFromVersion, const std::string &sVersion, const std::string &sDescription) {
+WsjcppStorageUpdateBase::WsjcppStorageUpdateBase(const std::string &sFromVersion, const std::string &sVersion, const std::string &sDescription) {
     TAG = "Update_" + sVersion;
     m_sFromVersion = sFromVersion;
     m_sVersion = sVersion;
     m_sDescription = sDescription;
     
     if (sFromVersion != "") {
-        StorageUpdateBase *pUpdate = StorageUpdates::findUpdateVersion(sFromVersion);
+        WsjcppStorageUpdateBase *pUpdate = WsjcppStorageUpdates::findUpdateVersion(sFromVersion);
         if (pUpdate == nullptr) {
             WsjcppLog::throw_err(TAG, "Not found storage update version: '" + sFromVersion + "'");
         }
     }
 
     {
-        StorageUpdateBase *pUpdate = StorageUpdates::findUpdateVersion(sVersion);
+        WsjcppStorageUpdateBase *pUpdate = WsjcppStorageUpdates::findUpdateVersion(sVersion);
         if (pUpdate != nullptr) {
             WsjcppLog::throw_err(TAG, "Storage updates already has update with this version: '" + sVersion + "'");
         }
     }
     
-    StorageUpdates::initGlobalVariables();
-    g_pStorageUpdates->push_back(this);
+    WsjcppStorageUpdates::initGlobalVariables();
+    g_pWsjcppStorageUpdates->push_back(this);
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &StorageUpdateBase::from_version() {
+const std::string &WsjcppStorageUpdateBase::from_version() {
     return m_sFromVersion;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &StorageUpdateBase::version() {
+const std::string &WsjcppStorageUpdateBase::version() {
     return m_sVersion;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &StorageUpdateBase::description() {
+const std::string &WsjcppStorageUpdateBase::description() {
     return m_sDescription;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<StorageChanges *> &StorageUpdateBase::getChanges() {
+const std::vector<WsjcppStorageChanges *> &WsjcppStorageUpdateBase::getChanges() {
     return m_vStorageChanges;
 }
 
 // ---------------------------------------------------------------------
 
-void StorageUpdateBase::setWeight(int nWeight) {
+void WsjcppStorageUpdateBase::setWeight(int nWeight) {
     m_nWeight = nWeight;
 }
 
 // ---------------------------------------------------------------------
 
-int StorageUpdateBase::getWeight() {
+int WsjcppStorageUpdateBase::getWeight() {
     return m_nWeight;
 }
 
 // ---------------------------------------------------------------------
 
-StorageCreateTable *StorageUpdateBase::createTable(std::string sTableName) {
+WsjcppStorageCreateTable *WsjcppStorageUpdateBase::createTable(std::string sTableName) {
     checkTableName(sTableName);
-    StorageCreateTable *pCreateTable = new StorageCreateTable(sTableName);
+    WsjcppStorageCreateTable *pCreateTable = new WsjcppStorageCreateTable(sTableName);
     m_vStorageChanges.push_back(pCreateTable);
     return pCreateTable;
 }
 
 // ---------------------------------------------------------------------
 
-StorageModifyTable *StorageUpdateBase::modifyTable(std::string sTableName) {
+WsjcppStorageModifyTable *WsjcppStorageUpdateBase::modifyTable(std::string sTableName) {
     checkTableName(sTableName);
-    StorageModifyTable *pModifyTable = new StorageModifyTable(sTableName);
+    WsjcppStorageModifyTable *pModifyTable = new WsjcppStorageModifyTable(sTableName);
     m_vStorageChanges.push_back(pModifyTable);
     return pModifyTable;
 }
 
 // ---------------------------------------------------------------------
 
-StorageDropTable *StorageUpdateBase::dropTable(std::string sTableName) {
+WsjcppStorageDropTable *WsjcppStorageUpdateBase::dropTable(std::string sTableName) {
     checkTableName(sTableName);
-    StorageDropTable *pDropTable = new StorageDropTable(sTableName);
+    WsjcppStorageDropTable *pDropTable = new WsjcppStorageDropTable(sTableName);
     m_vStorageChanges.push_back(pDropTable);
     return pDropTable;
 }
 
-StorageInsert *StorageUpdateBase::insertIntoTable(std::string sTableName) {
-    StorageInsert *pInsert = new StorageInsert(sTableName);
+WsjcppStorageInsert *WsjcppStorageUpdateBase::insertIntoTable(std::string sTableName) {
+    WsjcppStorageInsert *pInsert = new WsjcppStorageInsert(sTableName);
     m_vStorageChanges.push_back(pInsert);
     return pInsert;
 }
 
 // ---------------------------------------------------------------------
 
-void StorageUpdateBase::checkTableName(std::string sTableName) {
+void WsjcppStorageUpdateBase::checkTableName(std::string sTableName) {
     // TODO check table name + runtime error
 }
 
 // ---------------------------------------------------------------------
 // StorageUpdates
 
-std::vector<StorageUpdateBase*> *g_pStorageUpdates = nullptr;
+std::vector<WsjcppStorageUpdateBase *> *g_pWsjcppStorageUpdates = nullptr;
 
 // ---------------------------------------------------------------------
 
-void StorageUpdates::initGlobalVariables() {
-    if (g_pStorageUpdates == NULL) {
+void WsjcppStorageUpdates::initGlobalVariables() {
+    if (g_pWsjcppStorageUpdates == NULL) {
         // WsjcppLog::info(std::string(), "Create list updates");
-        g_pStorageUpdates = new std::vector<StorageUpdateBase*>();
+        g_pWsjcppStorageUpdates = new std::vector<WsjcppStorageUpdateBase *>();
     }
 }
 
 // ---------------------------------------------------------------------
 
-int StorageUpdates::calculateWeight(int nWeight, const std::string &sVersion) {
+int WsjcppStorageUpdates::calculateWeight(int nWeight, const std::string &sVersion) {
     int nRet = nWeight;
-    StorageUpdateBase* pCurrentUpdate = StorageUpdates::findUpdateVersion(sVersion);
+    WsjcppStorageUpdateBase *pCurrentUpdate = WsjcppStorageUpdates::findUpdateVersion(sVersion);
     if (pCurrentUpdate == nullptr) {
         return nRet;
     }
     nRet++;
-    std::vector<StorageUpdateBase*> vChildUpdates;
-    for (int i = 0; i < g_pStorageUpdates->size(); i++) {
-        StorageUpdateBase* pUpdate = g_pStorageUpdates->at(i);
+    std::vector<WsjcppStorageUpdateBase *> vChildUpdates;
+    for (int i = 0; i < g_pWsjcppStorageUpdates->size(); i++) {
+        WsjcppStorageUpdateBase *pUpdate = g_pWsjcppStorageUpdates->at(i);
         if (sVersion == pUpdate->from_version()) {
             nRet = calculateWeight(nRet, pUpdate->version());
         }
@@ -1125,7 +1109,7 @@ int StorageUpdates::calculateWeight(int nWeight, const std::string &sVersion) {
 
 // ---------------------------------------------------------------------
 
-void StorageUpdates::sortByWeight(std::vector<StorageUpdateBase*> &vUpdates) {
+void WsjcppStorageUpdates::sortByWeight(std::vector<WsjcppStorageUpdateBase*> &vUpdates) {
     if (vUpdates.size() <= 1) {
         return;
     }
@@ -1139,7 +1123,7 @@ void StorageUpdates::sortByWeight(std::vector<StorageUpdateBase*> &vUpdates) {
         bSorted = true;
         for (int i = 0; i < vUpdates.size()-1; i++) {
             if (vUpdates[i]->getWeight() > vUpdates[i+1]->getWeight()) {
-                StorageUpdateBase* p = vUpdates[i];
+                WsjcppStorageUpdateBase *p = vUpdates[i];
                 vUpdates[i] = vUpdates[i+1];
                 vUpdates[i+1] = p;
                 bSorted = false;
@@ -1150,10 +1134,10 @@ void StorageUpdates::sortByWeight(std::vector<StorageUpdateBase*> &vUpdates) {
 
 // ---------------------------------------------------------------------
 
-std::vector<StorageUpdateBase*> StorageUpdates::findUpdatesFromVersion(const std::string &sFromVersion) {
-    std::vector<StorageUpdateBase*> vFoundUpdates;
-    for (int i = 0; i < g_pStorageUpdates->size(); i++) {
-        StorageUpdateBase* pUpdate = g_pStorageUpdates->at(i);
+std::vector<WsjcppStorageUpdateBase *> WsjcppStorageUpdates::findUpdatesFromVersion(const std::string &sFromVersion) {
+    std::vector<WsjcppStorageUpdateBase *> vFoundUpdates;
+    for (int i = 0; i < g_pWsjcppStorageUpdates->size(); i++) {
+        WsjcppStorageUpdateBase * pUpdate = g_pWsjcppStorageUpdates->at(i);
         if (pUpdate->from_version() == sFromVersion) {
             vFoundUpdates.push_back(pUpdate);
         }
@@ -1163,8 +1147,8 @@ std::vector<StorageUpdateBase*> StorageUpdates::findUpdatesFromVersion(const std
 
 // ---------------------------------------------------------------------
 
-void StorageUpdates::pushUpdatesFromVersion(std::vector<StorageUpdateBase*> &vSortedUpdates, const std::string &sFromVersion) {
-    std::vector<StorageUpdateBase*> vFoundUpdates = findUpdatesFromVersion(sFromVersion);
+void WsjcppStorageUpdates::pushUpdatesFromVersion(std::vector<WsjcppStorageUpdateBase *> &vSortedUpdates, const std::string &sFromVersion) {
+    std::vector<WsjcppStorageUpdateBase *> vFoundUpdates = findUpdatesFromVersion(sFromVersion);
     sortByWeight(vFoundUpdates);
     // std::cout << std::to_string(vFoundUpdates.size()) << std::endl;
     if (vFoundUpdates.size() == 0) {
@@ -1179,22 +1163,22 @@ void StorageUpdates::pushUpdatesFromVersion(std::vector<StorageUpdateBase*> &vSo
 
 // ---------------------------------------------------------------------
 
-std::vector<StorageUpdateBase*> StorageUpdates::getSortedStorageUpdates() {
-    StorageUpdates::initGlobalVariables();
+std::vector<WsjcppStorageUpdateBase *> WsjcppStorageUpdates::getSortedStorageUpdates() {
+    WsjcppStorageUpdates::initGlobalVariables();
     // calculate weights
-    std::vector<StorageUpdateBase*> vSortedUpdates;
+    std::vector<WsjcppStorageUpdateBase *> vSortedUpdates;
     pushUpdatesFromVersion(vSortedUpdates, "");
     return vSortedUpdates;
 }
 
 // ---------------------------------------------------------------------
 
-StorageUpdateBase* StorageUpdates::findUpdateFromVersion(const std::string &sFromVersion) {
-    StorageUpdates::initGlobalVariables();
+WsjcppStorageUpdateBase* WsjcppStorageUpdates::findUpdateFromVersion(const std::string &sFromVersion) {
+    WsjcppStorageUpdates::initGlobalVariables();
     std::string TAG = "StorageUpdates::findUpdateFromVersion";
-    StorageUpdateBase* pRet = nullptr;
-    for (int i = 0; i < g_pStorageUpdates->size(); i++) {
-        StorageUpdateBase* pUpdate = g_pStorageUpdates->at(i);
+    WsjcppStorageUpdateBase* pRet = nullptr;
+    for (int i = 0; i < g_pWsjcppStorageUpdates->size(); i++) {
+        WsjcppStorageUpdateBase* pUpdate = g_pWsjcppStorageUpdates->at(i);
         if (sFromVersion == pUpdate->from_version()) {
             if (pRet == nullptr) {
                 pRet = pUpdate;
@@ -1208,12 +1192,12 @@ StorageUpdateBase* StorageUpdates::findUpdateFromVersion(const std::string &sFro
 
 // ---------------------------------------------------------------------
 
-StorageUpdateBase* StorageUpdates::findUpdateVersion(const std::string &sVersion) {
-    StorageUpdates::initGlobalVariables();
-    std::string TAG = "StorageUpdates::findUpdateVersion";
-    StorageUpdateBase* pRet = nullptr;
-    for (int i = 0; i < g_pStorageUpdates->size(); i++) {
-        StorageUpdateBase* pUpdate = g_pStorageUpdates->at(i);
+WsjcppStorageUpdateBase* WsjcppStorageUpdates::findUpdateVersion(const std::string &sVersion) {
+    WsjcppStorageUpdates::initGlobalVariables();
+    std::string TAG = "WsjcppStorageUpdates::findUpdateVersion";
+    WsjcppStorageUpdateBase* pRet = nullptr;
+    for (int i = 0; i < g_pWsjcppStorageUpdates->size(); i++) {
+        WsjcppStorageUpdateBase* pUpdate = g_pWsjcppStorageUpdates->at(i);
         if (sVersion == pUpdate->version()) {
             if (pRet == nullptr) {
                 pRet = pUpdate;
@@ -1230,7 +1214,6 @@ StorageUpdateBase* StorageUpdates::findUpdateVersion(const std::string &sVersion
 bool StorageUpdates::apply(Storage *pStorage) {
     StorageUpdates::initGlobalVariables();
     std::string TAG = "StorageUpdates::apply";
-
     StorageConnection *pConn = pStorage->connect();
     if (pConn == nullptr) {
         WsjcppLog::err(TAG, "Could not connect to database");
@@ -1238,11 +1221,9 @@ bool StorageUpdates::apply(Storage *pStorage) {
     } else {
         WsjcppLog::ok(TAG, "Successfully connection to database");
     }
-
     std::string sFirstVersion = "";
     std::string sLastVersion = pConn->lastDatabaseVersion();
     WsjcppLog::info(TAG, "Last Version -> '" + sLastVersion + "'");
-
     // restore struct of storage before sLastVersion
     bool bHasUpdates = true;
     while (bHasUpdates) {
@@ -1253,17 +1234,15 @@ bool StorageUpdates::apply(Storage *pStorage) {
                 sFirstVersion = pUpdate->version();
                 bHasUpdates = true;
                 std::string error = "";
-
                 WsjcppLog::info(TAG, "Apply changes '" + pUpdate->from_version() + "' -> '" + pUpdate->version() + "'");
                 // Apply changes
                 std::vector<StorageChanges *> vStorageChanges = pUpdate->getChanges();
                 for (int i = 0; i < vStorageChanges.size(); i++) {
                     StorageChanges *pChanges = vStorageChanges[i];
-                    if (pChanges->getType() == StorageChangesType::NOPE) {
-                        std::string sError = "Not allowed use a StorageChangesType::NOPE";
+                    if (pChanges->getType() == WsjcppStorageChangesType::NOPE) {
+                        std::string sError = "Not allowed use a WsjcppStorageChangesType::NOPE";
                         WsjcppLog::throw_err(TAG, sError);
                     }
-
                     if (!pStorage->addStorageChanges(*pChanges)) {
                         error = "Problem add storage changes '" + pChanges->getTableName() + "' in version " + pUpdate->version();
                         delete pConn;
@@ -1273,7 +1252,6 @@ bool StorageUpdates::apply(Storage *pStorage) {
             }
         }
     }
-
     // apply new updates
     WsjcppLog::info(TAG, "apply new updates");
     bHasUpdates = true;
@@ -1285,13 +1263,12 @@ bool StorageUpdates::apply(Storage *pStorage) {
             sLastVersion = pUpdate->version();
             bHasUpdates = true;
             std::string error = "";
-
             // Apply changes
             std::vector<StorageChanges *> vStorageChanges = pUpdate->getChanges();
             for (int i = 0; i < vStorageChanges.size(); i++) {
                 StorageChanges *pChanges = vStorageChanges[i];
-                if (pChanges->getType() == StorageChangesType::NOPE) {
-                    std::string sError = "Not allowed use a StorageChangesType::NOPE";
+                if (pChanges->getType() == WsjcppStorageChangesType::NOPE) {
+                    std::string sError = "Not allowed use a WsjcppStorageChangesType::NOPE";
                     WsjcppLog::err(TAG, sError);
                     throw std::runtime_error(sError);
                 }
@@ -1309,16 +1286,16 @@ bool StorageUpdates::apply(Storage *pStorage) {
 */
 // ---------------------------------------------------------------------
 
-void StorageUpdates::applyAllStorageChanges(Storage *pStorage, StorageUpdateBase *pUpdate) {
+void WsjcppStorageUpdates::applyAllStorageChanges(WsjcppStorage *pStorage, WsjcppStorageUpdateBase *pUpdate) {
     std::string TAG = "StorageUpdates::applyAllStorageChanges";
     WsjcppLog::info(TAG, "Apply changes '" + pUpdate->from_version() + "' -> '" + pUpdate->version() + "'");
 
     // Apply changes
-    std::vector<StorageChanges *> vStorageChanges = pUpdate->getChanges();
+    std::vector<WsjcppStorageChanges *> vStorageChanges = pUpdate->getChanges();
     for (int i = 0; i < vStorageChanges.size(); i++) {
-        StorageChanges *pChanges = vStorageChanges[i];
-        if (pChanges->getType() == StorageChangesType::NOPE) {
-            WsjcppLog::throw_err(TAG, "Not allowed use a StorageChangesType::NOPE");
+        WsjcppStorageChanges *pChanges = vStorageChanges[i];
+        if (pChanges->getType() == WSJCPP_STORAGE_CHANGES_TYPE_NOPE) {
+            WsjcppLog::throw_err(TAG, "Not allowed use a WSJCPP_STORAGE_CHANGES_TYPE_NOPE");
         }
 
         if (!pStorage->addStorageChanges(*pChanges)) {
@@ -1329,16 +1306,16 @@ void StorageUpdates::applyAllStorageChanges(Storage *pStorage, StorageUpdateBase
 
 // ---------------------------------------------------------------------
 
-void StorageUpdates::executeAllStorageChanges(Storage *pStorage, StorageConnection *pConn, StorageUpdateBase *pUpdate) {
+void WsjcppStorageUpdates::executeAllStorageChanges(WsjcppStorage *pStorage, WsjcppStorageConnection *pConn, WsjcppStorageUpdateBase *pUpdate) {
     std::string TAG = "StorageUpdates::executeAllStorageChanges";
     WsjcppLog::info(TAG, "Installing update '" + pUpdate->from_version() + "' -> '" + pUpdate->version() + "': " + pUpdate->description());
 
     // Apply changes
-    std::vector<StorageChanges *> vStorageChanges = pUpdate->getChanges();
+    std::vector<WsjcppStorageChanges *> vStorageChanges = pUpdate->getChanges();
     for (int i = 0; i < vStorageChanges.size(); i++) {
-        StorageChanges *pChanges = vStorageChanges[i];
-        if (pChanges->getType() == StorageChangesType::NOPE) {
-            WsjcppLog::throw_err(TAG, "Not allowed use a StorageChangesType::NOPE");
+        WsjcppStorageChanges *pChanges = vStorageChanges[i];
+        if (pChanges->getType() == WSJCPP_STORAGE_CHANGES_TYPE_NOPE) {
+            WsjcppLog::throw_err(TAG, "Not allowed use a WSJCPP_STORAGE_CHANGES_TYPE_NOPE");
         }
         if (!pStorage->executeStorageChanges(pConn, *pChanges)) {
             WsjcppLog::throw_err(TAG, "Problem with table '" + pChanges->getTableName() + "' in version " + pUpdate->version());
@@ -1349,17 +1326,17 @@ void StorageUpdates::executeAllStorageChanges(Storage *pStorage, StorageConnecti
 
 // ---------------------------------------------------------------------
 
-bool StorageUpdates::apply2(Storage *pStorage) {
-    StorageUpdates::initGlobalVariables();
-    std::string TAG = "StorageUpdates::apply";
-    StorageConnection *pConn = pStorage->connect();
+bool WsjcppStorageUpdates::apply2(WsjcppStorage *pStorage) {
+    WsjcppStorageUpdates::initGlobalVariables();
+    std::string TAG = "WsjcppStorageUpdates::apply2";
+    WsjcppStorageConnection *pConn = pStorage->connect();
 
     std::vector<std::string> vVersions = pConn->getInstalledVersions();
-    std::vector<StorageUpdateBase*> vUpdates = getSortedStorageUpdates();
+    std::vector<WsjcppStorageUpdateBase*> vUpdates = getSortedStorageUpdates();
 
     for (int i = 0; i < vUpdates.size(); i++) {
         std::string sVersion = vUpdates[i]->version();
-        StorageUpdateBase* pUpdate = vUpdates[i];
+        WsjcppStorageUpdateBase* pUpdate = vUpdates[i];
         bool bUpdatedAlreadyInstalled = std::find(vVersions.begin(), vVersions.end(), sVersion) != vVersions.end();
 
         if (bUpdatedAlreadyInstalled) {

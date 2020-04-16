@@ -1,10 +1,10 @@
-#ifndef STORAGES_H
-#define STORAGES_H
+#ifndef WSJCPP_STORAGES_H
+#define WSJCPP_STORAGES_H
 
 #include <map>
 #include <string>
 #include <vector>
-#include <core/fallen.h>
+#include <wsjcpp_core.h>
 
 #include <string>
 #include <vector>
@@ -12,31 +12,31 @@
 
 // ---------------------------------------------------------------------
 
-enum StorageColumnType {
-    DATETIME,
-    STRING,
-    NUMBER,
-    DOUBLE_NUMBER
+enum WsjcppStorageColumnType {
+    WSJCPP_STORAGE_COLUMN_TYPE_DATETIME,
+    WSJCPP_STORAGE_COLUMN_TYPE_STRING,
+    WSJCPP_STORAGE_COLUMN_TYPE_NUMBER,
+    WSJCPP_STORAGE_COLUMN_TYPE_DOUBLE_NUMBER
 };
 
 // TODO cast to string
 
 // ---------------------------------------------------------------------
 
-class StorageColumnDef {
+class WsjcppStorageColumnDef {
     public:
-        StorageColumnDef(const std::string &sColumnName);
-        StorageColumnDef &autoIncrement();
-        StorageColumnDef &notNull();
-        StorageColumnDef &string(int nSize);
-        StorageColumnDef &text();
-        StorageColumnDef &datetime();
-        StorageColumnDef &number();
-        StorageColumnDef &doubleNumber();
-        StorageColumnDef &primaryKey();
-        StorageColumnDef &defaultValue(const std::string& sDefault);
-        StorageColumnDef &enableIndex();
-        StorageColumnDef &enableUniqueIndex(const std::string& sIndexName);
+        WsjcppStorageColumnDef(const std::string &sColumnName);
+        WsjcppStorageColumnDef &autoIncrement();
+        WsjcppStorageColumnDef &notNull();
+        WsjcppStorageColumnDef &string(int nSize);
+        WsjcppStorageColumnDef &text();
+        WsjcppStorageColumnDef &datetime();
+        WsjcppStorageColumnDef &number();
+        WsjcppStorageColumnDef &doubleNumber();
+        WsjcppStorageColumnDef &primaryKey();
+        WsjcppStorageColumnDef &defaultValue(const std::string& sDefault);
+        WsjcppStorageColumnDef &enableIndex();
+        WsjcppStorageColumnDef &enableUniqueIndex(const std::string& sIndexName);
 
         std::string columnName() const;
         std::string columnType();
@@ -71,30 +71,30 @@ class StorageColumnDef {
 
 // TODO redesign
 
-class StorageColumnDefIndex {
+class WsjcppStorageColumnDefIndex {
 
 };
 
 // ---------------------------------------------------------------------
 
-enum StorageChangesType {
-    NOPE,
-    DROP_TABLE,
-    MODIFY_TABLE,
-    CREATE_TABLE,
-    INSERT_ROW,
-    DELETE_ROW,
-    UPDATE_ROW,
-    SELECT_ROWS
+enum WsjcppStorageChangesType {
+    WSJCPP_STORAGE_CHANGES_TYPE_NOPE,
+    WSJCPP_STORAGE_CHANGES_TYPE_DROP_TABLE,
+    WSJCPP_STORAGE_CHANGES_TYPE_MODIFY_TABLE,
+    WSJCPP_STORAGE_CHANGES_TYPE_CREATE_TABLE,
+    WSJCPP_STORAGE_CHANGES_TYPE_INSERT_ROW,
+    WSJCPP_STORAGE_CHANGES_TYPE_DELETE_ROW,
+    WSJCPP_STORAGE_CHANGES_TYPE_UPDATE_ROW,
+    WSJCPP_STORAGE_CHANGES_TYPE_SELECT_ROWS
 };
 
 // ---------------------------------------------------------------------
 
-class StorageChanges {
+class WsjcppStorageChanges {
     public:
-        StorageChanges(const std::string &sTableName);
+        WsjcppStorageChanges(const std::string &sTableName);
         std::string getTableName() const;
-        virtual StorageChangesType getType() const;
+        virtual WsjcppStorageChangesType getType() const;
         virtual std::string getStartApply() const;
         virtual std::string getAppliedSuccess() const;
         virtual std::string getAppliedFailed() const;
@@ -106,55 +106,55 @@ class StorageChanges {
 
 // ---------------------------------------------------------------------
 
-class StorageCreateTable : public StorageChanges {
+class WsjcppStorageCreateTable : public WsjcppStorageChanges {
     public:
-        StorageCreateTable(const std::string &sTableName);
-        virtual StorageChangesType getType() const override;
+        WsjcppStorageCreateTable(const std::string &sTableName);
+        virtual WsjcppStorageChangesType getType() const override;
         virtual std::string getStartApply() const override;
         virtual std::string getAppliedSuccess() const override;
         virtual std::string getAppliedFailed() const override;
 
-        StorageColumnDef &addColumn(const std::string &sColumnName);
-        const std::vector<StorageColumnDef> &getColumns() const;
+        WsjcppStorageColumnDef &addColumn(const std::string &sColumnName);
+        const std::vector<WsjcppStorageColumnDef> &getColumns() const;
 
     private:
         std::string TAG;
         std::string m_sTableName;
-        std::vector<StorageColumnDef> m_vColumns;
+        std::vector<WsjcppStorageColumnDef> m_vColumns;
 };
 
 // ---------------------------------------------------------------------
 
-class StorageModifyTable : public StorageChanges {
+class WsjcppStorageModifyTable : public WsjcppStorageChanges {
     public:
-        StorageModifyTable(const std::string &sTableName);
-        virtual StorageChangesType getType() const override;
+        WsjcppStorageModifyTable(const std::string &sTableName);
+        virtual WsjcppStorageChangesType getType() const override;
         virtual std::string getStartApply() const override;
         virtual std::string getAppliedSuccess() const override;
         virtual std::string getAppliedFailed() const override;
 
-        StorageColumnDef &addColumn(const std::string &sColumnName);
-        StorageColumnDef &alterColumn(const std::string &sColumnName);
+        WsjcppStorageColumnDef &addColumn(const std::string &sColumnName);
+        WsjcppStorageColumnDef &alterColumn(const std::string &sColumnName);
         std::string dropColumn(const std::string &sColumnName);
-        const std::vector<StorageColumnDef> &getAddColumns() const;
-        const std::vector<StorageColumnDef> &getAlterColumns() const;
+        const std::vector<WsjcppStorageColumnDef> &getAddColumns() const;
+        const std::vector<WsjcppStorageColumnDef> &getAlterColumns() const;
         const std::vector<std::string> &getDropColumns() const;
         bool isColumnDefined(const std::string &sColumnName, std::string &sError) const;
 
     private:
         std::string TAG;
         std::string m_sTableName;
-        std::vector<StorageColumnDef> m_vAddColumns;
-        std::vector<StorageColumnDef> m_vAlterColumns;
+        std::vector<WsjcppStorageColumnDef> m_vAddColumns;
+        std::vector<WsjcppStorageColumnDef> m_vAlterColumns;
         std::vector<std::string> m_vDropColumns;
 };
 
 // ---------------------------------------------------------------------
 
-class StorageDropTable : public StorageChanges {
+class WsjcppStorageDropTable : public WsjcppStorageChanges {
     public:
-        StorageDropTable(const std::string &sTableName);
-        virtual StorageChangesType getType() const override;
+        WsjcppStorageDropTable(const std::string &sTableName);
+        virtual WsjcppStorageChangesType getType() const override;
         virtual std::string getStartApply() const override;
         virtual std::string getAppliedSuccess() const override;
         virtual std::string getAppliedFailed() const override;
@@ -166,21 +166,21 @@ class StorageDropTable : public StorageChanges {
 
 // ---------------------------------------------------------------------
 
-class StorageColumnValue {
+class WsjcppStorageColumnValue {
     public:
-        StorageColumnValue(const std::string &sColumnName, StorageColumnType nType);
+        WsjcppStorageColumnValue(const std::string &sColumnName, WsjcppStorageColumnType nType);
         void setValue(std::string sValue);
         void setValue(int nValue);
         void setValue(double nValue);
         std::string getColumnName();
-        StorageColumnType getColumnType();
+        WsjcppStorageColumnType getColumnType();
         std::string getString();
         int getInt();
         double getDouble();
 
     private:
         std::string m_sColumnName;
-        StorageColumnType m_nColumnType;
+        WsjcppStorageColumnType m_nColumnType;
 
         std::string m_sStringValue;
         int m_nIntValue;
@@ -189,26 +189,26 @@ class StorageColumnValue {
 
 // ---------------------------------------------------------------------
 
-class StorageTable {
+class WsjcppStorageTable {
     public:
-        StorageTable(const std::string &sTableName);
-        StorageTable(StorageCreateTable &createTable);
+        WsjcppStorageTable(const std::string &sTableName);
+        WsjcppStorageTable(WsjcppStorageCreateTable &createTable);
         std::string getTableName() const;
-        const std::vector<StorageColumnDef> &getColumns() const;
-        void mergeWith(StorageModifyTable &modifyTable);
+        const std::vector<WsjcppStorageColumnDef> &getColumns() const;
+        void mergeWith(WsjcppStorageModifyTable &modifyTable);
         
     private:
         std::string TAG;
         std::string m_sTableName;
-        std::vector<StorageColumnDef> m_vColumns;
+        std::vector<WsjcppStorageColumnDef> m_vColumns;
 };
 
 // ---------------------------------------------------------------------
 
-class StorageInsert : public StorageChanges {
+class WsjcppStorageInsert : public WsjcppStorageChanges {
     public:
-        StorageInsert(const std::string &sTableName);
-        virtual StorageChangesType getType() const override;
+        WsjcppStorageInsert(const std::string &sTableName);
+        virtual WsjcppStorageChangesType getType() const override;
         virtual std::string getStartApply() const override;
         virtual std::string getAppliedSuccess() const override;
         virtual std::string getAppliedFailed() const override;
@@ -216,14 +216,14 @@ class StorageInsert : public StorageChanges {
         void bindValue(const std::string &sColumnName, const std::string &sValue);
         void bindValue(const std::string &sColumnName, int nValue);
         void bindValue(const std::string &sColumnName, double nValue);
-        std::vector<StorageColumnValue> values() const;
-        bool isValid(const StorageTable &storageTable) const;
+        std::vector<WsjcppStorageColumnValue> values() const;
+        bool isValid(const WsjcppStorageTable &storageTable) const;
 
     private:
         bool exists(const std::string &sColumnName);
         std::string TAG;
         std::string m_sTableName;
-        std::vector<StorageColumnValue> m_vValues;
+        std::vector<WsjcppStorageColumnValue> m_vValues;
 };
 
 // ---------------------------------------------------------------------
@@ -233,13 +233,11 @@ class StorageUpdate {
     public:
         StorageUpdate(const StorageStruct &storageStruct);
         std::string tableName() const;
-
         void bindValue(const std::string &sColumnName, const std::string &sValue);
         void bindValue(const std::string &sColumnName, int nValue);
         void bindValue(const std::string &sColumnName, double nValue);
         std::vector<StorageColumnValue> values() const;
         bool isValid() const;
-
     private:
         StorageStruct m_storageStruct;
         bool exists(const std::string &sColumnName);
@@ -251,10 +249,10 @@ class StorageUpdate {
 
 // ---------------------------------------------------------------------
 
-class StorageConnection {
+class WsjcppStorageConnection {
     public:
-        StorageConnection();
-        virtual ~StorageConnection();
+        WsjcppStorageConnection();
+        virtual ~WsjcppStorageConnection();
         virtual bool executeQuery(const std::string &sQuery) = 0; // TODO redesign in future
         virtual std::string lastDatabaseVersion() = 0;
         virtual std::vector<std::string> getInstalledVersions() = 0;
@@ -272,98 +270,98 @@ class StorageConnection {
 
 // ---------------------------------------------------------------------
 
-class Storage {
+class WsjcppStorage {
     public:
-        Storage();
-        // Storage(const std::string &sType);
+        WsjcppStorage();
+        // WsjcppStorage(const std::string &sType);
         static std::string type() { return "unknown"; };
         virtual bool applyConfigFromFile(const std::string &sFilePath) = 0;
-        virtual StorageConnection *connect() = 0;
+        virtual WsjcppStorageConnection *connect() = 0;
         virtual void clean() = 0;
         virtual std::string prepareStringValue(const std::string &sValue) = 0;
 
         // virtual std::vector<std::string> prepareSqlQueries(StorageStruct &storageStruct) = 0; // TODO deprecated
 
-        bool executeStorageChanges(StorageConnection *pConn, StorageChanges &storageChanges);
-        bool addStorageChanges(StorageChanges &storageChanges);
+        bool executeStorageChanges(WsjcppStorageConnection *pConn, WsjcppStorageChanges &storageChanges);
+        bool addStorageChanges(WsjcppStorageChanges &storageChanges);
 
-        virtual std::vector<std::string> prepareSqlQueries(const StorageInsert &storageInsert) = 0;
-        virtual std::vector<std::string> prepareSqlQueries(const StorageCreateTable &storageCreateTable) = 0;
-        virtual std::vector<std::string> prepareSqlQueries(const StorageModifyTable &storageModifyTable) = 0;
-        virtual std::vector<std::string> prepareSqlQueries(const StorageDropTable &storageDropTable) = 0;
+        virtual std::vector<std::string> prepareSqlQueries(const WsjcppStorageInsert &storageInsert) = 0;
+        virtual std::vector<std::string> prepareSqlQueries(const WsjcppStorageCreateTable &storageCreateTable) = 0;
+        virtual std::vector<std::string> prepareSqlQueries(const WsjcppStorageModifyTable &storageModifyTable) = 0;
+        virtual std::vector<std::string> prepareSqlQueries(const WsjcppStorageDropTable &storageDropTable) = 0;
         
-        bool insertRow(StorageConnection *pConn, const StorageInsert &storageInsert);
-        const std::map<std::string, StorageTable> &getTables();
+        bool insertRow(WsjcppStorageConnection *pConn, const WsjcppStorageInsert &storageInsert);
+        const std::map<std::string, WsjcppStorageTable> &getTables();
         bool existsTable(const std::string &sTableName);
-        const StorageTable &getTableDef(const std::string &sTableName);
+        const WsjcppStorageTable &getTableDef(const std::string &sTableName);
 
     protected:
         std::string TAG;
 
     private:
-        std::map<std::string, StorageTable> m_mapTables;
+        std::map<std::string, WsjcppStorageTable> m_mapTables;
 };
 
 // ---------------------------------------------------------------------
 
-class IFabricStorage {
+class IFabricWsjcppStorage {
     public:
-        virtual Storage *create() = 0;
+        virtual WsjcppStorage *create() = 0;
 };
 
 // ---------------------------------------------------------------------
 
-extern std::map<std::string, IFabricStorage*> *g_pFabricStorages;
+extern std::map<std::string, IFabricWsjcppStorage*> *g_pFabricWsjcppStorages;
 
-class Storages {
+class WsjcppStorages {
     public:
         static void initGlobalVariables();
-        static void add(const std::string &sType, IFabricStorage* pStorage);
+        static void add(const std::string &sType, IFabricWsjcppStorage* pStorage);
         static std::vector<std::string> list();
         static bool support(const std::string &sType);
-        static Storage* create(const std::string &sType);
+        static WsjcppStorage* create(const std::string &sType);
 };
 
 // ---------------------------------------------------------------------
 
 template<class T>
-class FabricStorage : IFabricStorage {
+class FabricWsjcppStorage : IFabricWsjcppStorage {
     public:
-        FabricStorage() {
-            Storages::add(T::type(), this);
+        FabricWsjcppStorage() {
+            WsjcppStorages::add(T::type(), this);
         };
-        virtual Storage *create() {
+        virtual WsjcppStorage *create() {
             return new T();
         };
 };
 
 // ---------------------------------------------------------------------
 // RegistryStorage
-#define REGISTRY_STORAGE( classname ) \
-    static FabricStorage<classname> * pRegistryFabric ## classname = new FabricStorage<classname>(); \
+#define REGISTRY_WSJCPP_STORAGE( classname ) \
+    static FabricWsjcppStorage<classname> * pRegistryFabric ## classname = new FabricWsjcppStorage<classname>(); \
 
 // ---------------------------------------------------------------------
 
-class StorageUpdateBase {
+class WsjcppStorageUpdateBase {
 
     public:
-        StorageUpdateBase(const std::string &sFromVersion, const std::string &sVersion, const std::string &sDescription);
+        WsjcppStorageUpdateBase(const std::string &sFromVersion, const std::string &sVersion, const std::string &sDescription);
         const std::string &from_version();
         const std::string &version();
         const std::string &description();
-        const std::vector<StorageChanges *> &getChanges();
+        const std::vector<WsjcppStorageChanges *> &getChanges();
         void setWeight(int nWeight);
         int getWeight();
     protected:
         std::string TAG;
-        StorageCreateTable *createTable(std::string sTableName);
-        StorageModifyTable *modifyTable(std::string sTableName);
-        StorageDropTable *dropTable(std::string sTableName);
-        StorageInsert *insertIntoTable(std::string sTableName);
+        WsjcppStorageCreateTable *createTable(std::string sTableName);
+        WsjcppStorageModifyTable *modifyTable(std::string sTableName);
+        WsjcppStorageDropTable *dropTable(std::string sTableName);
+        WsjcppStorageInsert *insertIntoTable(std::string sTableName);
         
     private:
         void checkTableName(std::string sTableName);
-        std::vector<StorageChanges *> m_vStorageChanges;
+        std::vector<WsjcppStorageChanges *> m_vStorageChanges;
         std::string m_sFromVersion;
         std::string m_sVersion;
         std::string m_sDescription;
@@ -372,31 +370,31 @@ class StorageUpdateBase {
 
 // ---------------------------------------------------------------------
 
-extern std::vector<StorageUpdateBase*> *g_pStorageUpdates;
+extern std::vector<WsjcppStorageUpdateBase *> *g_pWsjcppStorageUpdates;
 
-class StorageUpdates {
+class WsjcppStorageUpdates {
     private:
         static int calculateWeight(int nWeight, const std::string &sVersion);
-        static void sortByWeight(std::vector<StorageUpdateBase*> &vUpdates);
-        static std::vector<StorageUpdateBase*> findUpdatesFromVersion(const std::string &sVersion);
-        static void pushUpdatesFromVersion(std::vector<StorageUpdateBase*> &vUpdates, const std::string &sVersion);
-        static void applyAllStorageChanges(Storage *pStorage, StorageUpdateBase *pUpdate);
-        static void executeAllStorageChanges(Storage *pStorage, StorageConnection *pConn, StorageUpdateBase *pUpdate);
+        static void sortByWeight(std::vector<WsjcppStorageUpdateBase*> &vUpdates);
+        static std::vector<WsjcppStorageUpdateBase*> findUpdatesFromVersion(const std::string &sVersion);
+        static void pushUpdatesFromVersion(std::vector<WsjcppStorageUpdateBase*> &vUpdates, const std::string &sVersion);
+        static void applyAllStorageChanges(WsjcppStorage *pStorage, WsjcppStorageUpdateBase *pUpdate);
+        static void executeAllStorageChanges(WsjcppStorage *pStorage, WsjcppStorageConnection *pConn, WsjcppStorageUpdateBase *pUpdate);
 
     public:
-        static std::vector<StorageUpdateBase*> getSortedStorageUpdates();
+        static std::vector<WsjcppStorageUpdateBase*> getSortedStorageUpdates();
         static void initGlobalVariables();
-        static StorageUpdateBase* findUpdateFromVersion(const std::string &sFromVersion);
-        static StorageUpdateBase* findUpdateVersion(const std::string &sVersion);
+        static WsjcppStorageUpdateBase* findUpdateFromVersion(const std::string &sFromVersion);
+        static WsjcppStorageUpdateBase* findUpdateVersion(const std::string &sVersion);
         // static bool apply(Storage *pStorage);
-        static bool apply2(Storage *pStorage);
+        static bool apply2(WsjcppStorage *pStorage);
 };
 
 // ---------------------------------------------------------------------
 
 // RegistryCmdHandler
-#define REGISTRY_STORAGE_UPDATE( classname ) \
+#define REGISTRY_WSJCPP_STORAGE_UPDATE( classname ) \
     static classname * pRegistry ## classname = new classname();
 
 
-#endif // STORAGES_H
+#endif // WSJCPP_STORAGES_H

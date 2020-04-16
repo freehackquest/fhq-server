@@ -1,9 +1,9 @@
 #ifndef UPDATES_INIT_DATABASE_H
 #define UPDATES_INIT_DATABASE_H
 
-#include <storages.h>
+#include <wsjcpp_storages.h>
 
-class UpdatesInitDatabase : public StorageUpdateBase {
+class UpdatesInitDatabase : public WsjcppStorageUpdateBase {
     public:
         UpdatesInitDatabase();
 };
