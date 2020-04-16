@@ -119,7 +119,6 @@ class WsjcppStorageCreateTable : public WsjcppStorageChanges {
 
     private:
         std::string TAG;
-        std::string m_sTableName;
         std::vector<WsjcppStorageColumnDef> m_vColumns;
 };
 
@@ -143,7 +142,6 @@ class WsjcppStorageModifyTable : public WsjcppStorageChanges {
 
     private:
         std::string TAG;
-        std::string m_sTableName;
         std::vector<WsjcppStorageColumnDef> m_vAddColumns;
         std::vector<WsjcppStorageColumnDef> m_vAlterColumns;
         std::vector<std::string> m_vDropColumns;
@@ -161,7 +159,6 @@ class WsjcppStorageDropTable : public WsjcppStorageChanges {
 
     private:
         std::string TAG;
-        std::string m_sTableName;
 };
 
 // ---------------------------------------------------------------------
