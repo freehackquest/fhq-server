@@ -1,4 +1,4 @@
-#include <fallen.h>
+#include <wsjcpp_parse_conf.h>
 #include <employees.h>
 #include <employ_server_info.h>
 #include <algorithm>
@@ -864,7 +864,7 @@ bool EmployGlobalSettings::initFromFile() {
         return false;
     }
 
-    WJSCppParseConfig parseConfig(m_sFilepathConf);
+    WsjcppParseConf parseConfig(m_sFilepathConf);
     parseConfig.load();
 
     std::map<std::string, WsjcppSettingItem*>::iterator it;
@@ -872,16 +872,16 @@ bool EmployGlobalSettings::initFromFile() {
         WsjcppSettingItem *pItem = it->second;
         if (pItem->isFromFile()) {
             if (pItem->isString()) {
-                std::string s = parseConfig.stringValue(pItem->getName(), pItem->getDefaultStringValue());
+                std::string s = parseConfig.getStringValue(pItem->getName(), pItem->getDefaultStringValue());
                 pItem->setStringValue(s);
                 WsjcppLog::info(TAG, pItem->getName() + " = " + s);
                 // TODO run validators
             } else if (pItem->isPassword()) {
-                std::string sPassword = parseConfig.stringValue(pItem->getName(), pItem->getDefaultPasswordValue());
+                std::string sPassword = parseConfig.getStringValue(pItem->getName(), pItem->getDefaultPasswordValue());
                 pItem->setPasswordValue(sPassword);
                 WsjcppLog::info(TAG, pItem->getName() + " = (hidden)");
             } else if (pItem->isDirPath()) {
-                std::string sDirPath = parseConfig.stringValue(pItem->getName(), pItem->getDefaultDirPathValue());
+                std::string sDirPath = parseConfig.getStringValue(pItem->getName(), pItem->getDefaultDirPathValue());
                 if (sDirPath.length() > 0 && sDirPath[0] != '/') {
                     sDirPath = m_sWorkDir + "/" + sDirPath;
                     sDirPath = WsjcppCore::doNormalizePath(sDirPath);
@@ -893,7 +893,7 @@ bool EmployGlobalSettings::initFromFile() {
                 WsjcppLog::info(TAG, pItem->getName() + " = " + sDirPath);
                 // TODO run validators
              } else if (pItem->isFilePath()) {
-                std::string sFilePath = parseConfig.stringValue(pItem->getName(), pItem->getDefaultFilePathValue());
+                std::string sFilePath = parseConfig.getStringValue(pItem->getName(), pItem->getDefaultFilePathValue());
                 if (sFilePath.length() > 0 && sFilePath[0] != '/') {
                     sFilePath = m_sWorkDir + "/" + sFilePath;
                     sFilePath = WsjcppCore::doNormalizePath(sFilePath);
@@ -905,12 +905,12 @@ bool EmployGlobalSettings::initFromFile() {
                 WsjcppLog::info(TAG, pItem->getName() + " = " + sFilePath);
                 // TODO run validators
             } else if (pItem->isNumber()) {
-                int nValue = parseConfig.intValue(pItem->getName(), pItem->getDefaultNumberValue());
+                int nValue = parseConfig.getIntValue(pItem->getName(), pItem->getDefaultNumberValue());
                 pItem->setNumberValue(nValue);
                 WsjcppLog::info(TAG, pItem->getName() + " = " + std::to_string(nValue));
                 // TODO run validators
             } else if (pItem->isBoolean()) {
-                bool bValue = parseConfig.boolValue(pItem->getName(), pItem->getDefaultBooleanValue());
+                bool bValue = parseConfig.getBoolValue(pItem->getName(), pItem->getDefaultBooleanValue());
                 pItem->setBooleanValue(bValue);
                 WsjcppLog::info(TAG, pItem->getName() + " = " + (bValue ? "yes" : "no"));
                 // TODO run validators

@@ -55,23 +55,4 @@ class FallenHelpParseArgs {
         std::string m_sAppVersion;
 };
 
-// ---------------------------------------------------------------------
-
-class WJSCppParseConfig {
-
-    public:
-        WJSCppParseConfig(const std::string &sFilepathConf);
-        bool load();
-
-        bool has(const std::string &sParamName);
-        std::string stringValue(const std::string &sParamName, const std::string &defaultValue);
-        int intValue(const std::string &sParamName, int defaultValue);
-        bool boolValue(const std::string &sParamName, bool defaultValue);
-        std::map<std::string,std::string> getValues();
-    private:
-        std::string TAG;
-        std::string m_sFilepathConf;
-        std::map<std::string,std::string> m_mapConfigValues;
-};
-
 #endif // FALLEN_H

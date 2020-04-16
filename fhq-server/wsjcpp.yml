@@ -87,6 +87,11 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-storages:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_storages"
+  - name: "wsjcpp-parse-conf"
+    version: "v0.1.0"
+    url: "https://github.com/wsjcpp/wsjcpp-parse-conf:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_parse_conf"
 
 distribution:
   - source-file: "src/core/fallen.cpp"

@@ -1,5 +1,5 @@
 #include <storages/mysql/mysql_storage.h>
-#include <core/fallen.h>
+#include <wsjcpp_parse_conf.h>
 #include <mysql/mysql.h>
 
 REGISTRY_WSJCPP_STORAGE(MySqlStorage)
@@ -148,7 +148,7 @@ MySqlStorage::MySqlStorage() {
 // ----------------------------------------------------------------------
 
 bool MySqlStorage::applyConfigFromFile(const std::string &sFilePath) {
-    WJSCppParseConfig parseConfig(sFilePath);
+    WsjcppParseConf parseConfig(sFilePath);
     parseConfig.load();
 
     if (!parseConfig.has("dbhost")) {
@@ -176,11 +176,11 @@ bool MySqlStorage::applyConfigFromFile(const std::string &sFilePath) {
         return false;
     }
 
-    m_sDatabaseHost = parseConfig.stringValue("dbhost", m_sDatabaseHost);
-    m_nDatabasePort = parseConfig.intValue("dbport", m_nDatabasePort);
-    m_sDatabaseName = parseConfig.stringValue("dbname", m_sDatabaseName);
-    m_sDatabaseUser = parseConfig.stringValue("dbuser", m_sDatabaseUser);
-    m_sDatabasePass = parseConfig.stringValue("dbpass", m_sDatabasePass);
+    m_sDatabaseHost = parseConfig.getStringValue("dbhost", m_sDatabaseHost);
+    m_nDatabasePort = parseConfig.getIntValue("dbport", m_nDatabasePort);
+    m_sDatabaseName = parseConfig.getStringValue("dbname", m_sDatabaseName);
+    m_sDatabaseUser = parseConfig.getStringValue("dbuser", m_sDatabaseUser);
+    m_sDatabasePass = parseConfig.getStringValue("dbpass", m_sDatabasePass);
 
     WsjcppLog::info(TAG, "Database host: " + m_sDatabaseHost);
     WsjcppLog::info(TAG, "Database port: " + std::to_string(m_nDatabasePort));
