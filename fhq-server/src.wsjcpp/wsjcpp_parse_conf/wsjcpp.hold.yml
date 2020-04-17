@@ -1,0 +1,34 @@
+name: "wsjcpp-parse-conf"
+version: "v0.1.0"
+
+cmake_minimum_required: "3.0"
+cmake_cxx_standard: "11"
+
+description: "Primitive parser for *.conf files"
+
+authors:
+  - name: "Evgenii Sopov"
+    email: "mrseakg@gmail.com"
+
+origins:
+  - address: "https://sea-kg.com/wsjcpp-package-registry/"
+    type: "package-registry"
+
+keywords:
+  - "c++"
+  - "conf"
+  - "parser"
+
+dependencies:
+  - name: "wsjcpp-core"
+    version: "v0.1.5"
+    url: "https://github.com/wsjcpp/wsjcpp-core:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_core"
+distribution:
+  - source-file: "src/wsjcpp_parse_conf.cpp"
+    target-file: "wsjcpp_parse_conf.cpp"
+    type: "source-code"
+  - source-file: "src/wsjcpp_parse_conf.h"
+    target-file: "wsjcpp_parse_conf.h"
+    type: "source-code"
