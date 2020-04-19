@@ -13,6 +13,12 @@ class CmdHandlerChatSendMessage : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
+class CmdHandlerChatSendMessage_new : public CmdHandlerBase {
+    public:
+        CmdHandlerChatSendMessage_new();
+        virtual void handle(ModelRequest *pRequest);
+};
+
 class CmdHandlerChatLastestMessages : public CmdHandlerBase {
     public:
         CmdHandlerChatLastestMessages();
