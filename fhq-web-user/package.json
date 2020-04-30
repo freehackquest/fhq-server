@@ -30,7 +30,7 @@
     "core-js": "^3.4.8",
     "font-awesome": "^4.7.0",
     "highlight.js": "^9.16.2",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "libfhqcli-web-js": "^0.2.24",
     "marked": "^0.7.0",
     "ng2-simplemde": "^2.1.0",
