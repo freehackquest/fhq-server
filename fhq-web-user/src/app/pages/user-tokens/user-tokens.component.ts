@@ -66,11 +66,13 @@ export class UserTokensComponent implements OnInit {
   }
 
   updateListOfTokens() {
-    this._spinnerService.show();
+    // not implemented yet
+    /*this._spinnerService.show();
     this._fhq.api().user_tokens({
       "userid": this.userId,
     })
       .done((r: any) => this.successUserTokens(r))
       .fail((err: any) => this.errorUserTokens(err));
+      */
   }
 }
