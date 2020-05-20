@@ -2086,9 +2086,16 @@ void CmdHandlerUsersTokens::handle(ModelRequest *pRequest) {
         nlohmann::json jsonToken;
         jsonToken["id"] = record.value("id").toInt();
         jsonToken["userid"] = record.value("userid").toInt();
-        jsonToken["token"] = record.value("token").toString().toStdString();
+        std::string sToken = record.value("token").toString().toStdString();
+        for (int i = 0; i < sToken.size(); i++) {
+            if (i > 7 && i < 22) {
+                sToken[i] = '*';
+            }
+        }
+        jsonToken["token"] = sToken;
         jsonToken["status"] = record.value("status").toString().toStdString();
-        jsonToken["data"] = record.value("data").toString().toStdString();
+        // Hided by security
+        // jsonToken["data"] = record.value("data").toString().toStdString();
         jsonToken["start_date"] = record.value("start_date").toInt();
         jsonToken["end_date"] = record.value("end_date").toInt();
         jsonResponseData.push_back(jsonToken);

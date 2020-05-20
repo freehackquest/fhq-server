@@ -15,7 +15,7 @@ export class UserTokensComponent implements OnInit {
   errorMessage: string = null;
   subscription: any;
   userId: number = 0;
-
+  listOfTokens: any = []
   constructor(
     private _spinner: SpinnerService,
     private _router: Router,
@@ -53,8 +53,7 @@ export class UserTokensComponent implements OnInit {
   successUserTokens(r: any) {
     console.log("successResponse: ", r);
     this._spinner.hide();
-    // this.userOldPassword.nativeElement.value = "";
-    // this.userNewPassword.nativeElement.value = "";
+    this.listOfTokens = r.data
     // this._router.navigate(['/user-tokens'])
   }
 
@@ -66,13 +65,11 @@ export class UserTokensComponent implements OnInit {
   }
 
   updateListOfTokens() {
-    // not implemented yet
-    /*this._spinnerService.show();
-    this._fhq.api().user_tokens({
+    this._spinnerService.show();
+    this._fhq.api().users_tokens({
       "userid": this.userId,
     })
       .done((r: any) => this.successUserTokens(r))
       .fail((err: any) => this.errorUserTokens(err));
-      */
   }
 }
