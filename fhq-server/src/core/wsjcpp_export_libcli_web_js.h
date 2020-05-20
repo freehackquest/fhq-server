@@ -28,6 +28,7 @@ class ExportLibCliWebJS {
         void exportPackageJson(const std::string &sBasicDir);
         void exportAPImd(const std::string &sBasicDir);
         void exportLibCliWebJSFile(const std::string &sBasicDir);
+        void exportLibCliWebServiceTSFile(const std::string &sBasicDir);
         void exportSampleHtmlFile(const std::string &sBasicDir);
         void exportPrepareDirs(const std::string &sBasicDir);
 };

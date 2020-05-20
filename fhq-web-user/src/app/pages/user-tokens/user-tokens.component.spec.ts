@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserLocationComponent } from './user-location.component';
+import { UserTokensComponent } from './user-tokens.component';
 
-describe('UserLocationComponent', () => {
-  let component: UserLocationComponent;
-  let fixture: ComponentFixture<UserLocationComponent>;
+describe('UserTokensComponent', () => {
+  let component: UserTokensComponent;
+  let fixture: ComponentFixture<UserTokensComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserLocationComponent ]
+      declarations: [ UserTokensComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UserLocationComponent);
+    fixture = TestBed.createComponent(UserTokensComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

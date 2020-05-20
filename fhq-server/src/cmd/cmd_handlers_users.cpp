@@ -1960,6 +1960,7 @@ void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest) {
 /*********************************************
  * Change user's email verification
 **********************************************/
+REGISTRY_CMD(CmdHandlerUsersChangeEmailVerification)
 
 CmdHandlerUsersChangeEmailVerification::CmdHandlerUsersChangeEmailVerification()
     : CmdHandlerBase("users_change_email_verification", "Method for email changing verification") {
@@ -2038,3 +2039,70 @@ void CmdHandlerUsersChangeEmailVerification::handle(ModelRequest *pRequest) {
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
+
+
+/*********************************************
+ * List of active user tokens
+**********************************************/
+REGISTRY_CMD(CmdHandlerUsersTokens)
+
+CmdHandlerUsersTokens::CmdHandlerUsersTokens()
+    : CmdHandlerBase("users_tokens", "List of active user tokens") {
+
+    TAG = "CmdHandlerUsersTokens";
+
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
+    setActivatedFromVersion("0.2.26");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsersTokens::handle(ModelRequest *pRequest) {
+    
+    int nUserID = 0;
+    WsjcppUserSession *pUserSession = pRequest->getUserSession();
+    if (pUserSession != nullptr) {
+        nUserID = pUserSession->userid();
+    }
+    
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM users_tokens WHERE userid = :userid");
+    query.bindValue(":userid", nUserID);
+    if (!query.exec()) {
+        WsjcppLog::err(TAG, query.lastError().text().toStdString());
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    nlohmann::json jsonResponse;
+    nlohmann::json jsonResponseData = nlohmann::json::array();
+
+    while (query.next()) {
+        QSqlRecord record = query.record();
+        nlohmann::json jsonToken;
+        jsonToken["id"] = record.value("id").toInt();
+        jsonToken["userid"] = record.value("userid").toInt();
+        std::string sToken = record.value("token").toString().toStdString();
+        for (int i = 0; i < sToken.size(); i++) {
+            if (i > 7 && i < 22) {
+                sToken[i] = '*';
+            }
+        }
+        jsonToken["token"] = sToken;
+        jsonToken["status"] = record.value("status").toString().toStdString();
+        // Hided by security
+        // jsonToken["data"] = record.value("data").toString().toStdString();
+        jsonToken["start_date"] = record.value("start_date").toInt();
+        jsonToken["end_date"] = record.value("end_date").toInt();
+        jsonResponseData.push_back(jsonToken);
+    }
+    jsonResponse["data"] = jsonResponseData;
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+// ---------------------------------------------------------------------

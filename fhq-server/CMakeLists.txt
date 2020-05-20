@@ -7,9 +7,6 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/src.wsjcpp/CMakeLists.txt)
 #### BEGIN_WSJCPP_APPEND
 #### END_WSJCPP_APPEND
 
-add_definitions(-DFHQSRV_VERSION="0.2.25")
-add_definitions(-DFHQSRV_APP_NAME="fhq-server")
-
 set (CMAKE_AUTOMOC ON)
 set (CMAKE_CXX_STANDARD 11)
 set (EXECUTABLE_OUTPUT_PATH ${fhq-server_SOURCE_DIR})
@@ -216,7 +213,7 @@ list (APPEND WSJCPP_SOURCES "src/main.cpp")
 
 ############################
 #####
-#foreach (_headerFile ${FHQSRV_HEADERS})
+#foreach (_headerFile ${WSJCPP_HEADERS})
 #    get_filename_component(_dir ${_headerFile} PATH)
 #    list (APPEND WSJCPP_INCLUDE_DIRS ${_dir})
 #endforeach()

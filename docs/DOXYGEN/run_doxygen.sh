@@ -1,11 +1,11 @@
 #!/bin/bash
 
-FHQSRV_VERSION=$(cat ../../fhq-server/CMakeLists.txt | grep -Po '(?<=FHQSRV_VERSION=")\d+\.\d+\.\d+')
-echo $FHQSRV_VERSION
+APP_VERSION=$(cat ../../fhq-server/src.wsjcpp/CMakeLists.txt | grep -Po '(?<=WSJCPP_APP_VERSION=")v\d+\.\d+\.\d+')
+echo "Version=$APP_VERSION"
 
 rm doxygen_objdb_*.tmp
 rm doxygen_entrydb_*.tmp
 
-export FHQSRV_VERSION="$FHQSRV_VERSION" 
+export APP_VERSION="$APP_VERSION" 
 
 doxygen

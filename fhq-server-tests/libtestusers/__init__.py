@@ -182,9 +182,15 @@ def run_tests():
     fhqtest.alert(user2_login['result'] == 'FAIL', 'Could not login as user2 (2) (fail)')
     if user2_login['result'] == 'DONE':
         fhqtest.print_success("User2 login success - OK")
+        fhqtest.print_bold("User tokens... ")
+        user2_tokens = user2_session.users_tokens({})
         user2_session.close()
         user2_session = None
-
+        if user2_tokens['result'] != 'DONE':
+            fhqtest.log_err("User2 tokens failed")
+            exit(-1)
+        else:
+            fhqtest.print_success("User2 tokens success - OK")
 
     # deprecated method
     user2_found1 = fhqtest.admin_session.user({"userid": user_found["id"]})

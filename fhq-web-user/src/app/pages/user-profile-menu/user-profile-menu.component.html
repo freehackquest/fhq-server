@@ -5,6 +5,9 @@
   <a routerLink="/user-security" 
     *ngIf="userRole == 'user' || userRole == 'admin'" 
     href="#" class="list-group-item list-group-item-action" l10nTranslate>security</a>
+    <a routerLink="/user-tokens" 
+    *ngIf="userRole == 'user' || userRole == 'admin'" 
+    href="#" class="list-group-item list-group-item-action" l10nTranslate>user-tokens</a>
   <a routerLink="/user-skills"
     *ngIf="userRole == 'user' || userRole == 'admin'" 
     href="#" class="list-group-item list-group-item-action" l10nTranslate>skills</a>
