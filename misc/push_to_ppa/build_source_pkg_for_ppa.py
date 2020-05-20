@@ -111,12 +111,12 @@ print( " -> DONE ")
 
 print( " -> Read version of package ")
 
-cmakelist="./fhq-server/CMakeLists.txt"
+cmakelist="./fhq-server/src.wsjcpp/CMakeLists.txt"
 f = open(cmakelist,'r')
 filedata = f.read()
 f.close()
 
-m = re.search('DFHQSRV_VERSION=\"(.+)\"', filedata)
+m = re.search('DWSJCPP_APP_VERSION=\"(.+)\"', filedata)
 if m:
     current_version = m.group(1)
 

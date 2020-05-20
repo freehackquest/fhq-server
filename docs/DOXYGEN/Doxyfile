@@ -1,7 +1,7 @@
 # Doxyfile 1.8.11
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "fhq-server"
-PROJECT_NUMBER         = $(FHQSRV_VERSION)
+PROJECT_NUMBER         = $(APP_VERSION)
 PROJECT_BRIEF          = "Documentation for fhq-server. FreeHackQuest is an open source platform for competitions of computer security."
 PROJECT_LOGO           =
 OUTPUT_DIRECTORY       =

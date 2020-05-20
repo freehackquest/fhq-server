@@ -859,7 +859,7 @@ WJSCppCmdHandlerServerApi::WJSCppCmdHandlerServerApi()
 
 void WJSCppCmdHandlerServerApi::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
-    jsonResponse["version"] = FHQSRV_VERSION; // TODO redesign, what?
+    jsonResponse["version"] = WSJCPP_APP_VERSION; // TODO redesign, what?
 
     EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
     int nWsPort = pGlobalSettings->get("port").getNumberValue();

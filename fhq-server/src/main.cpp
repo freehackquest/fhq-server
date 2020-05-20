@@ -43,8 +43,8 @@
 WsjcppLightWebServer g_httpServer;
 
 int main(int argc, char** argv) {
-    std::string appName(FHQSRV_APP_NAME);
-    std::string appVersion(FHQSRV_VERSION);
+    std::string appName(WSJCPP_APP_NAME);
+    std::string appVersion(WSJCPP_APP_VERSION);
     std::string appAuthor("FreeHackQuest Team");
     std::string sLibraryNameForExports("fhq");
     WsjcppCore::init(argc, argv, appName, appVersion, appAuthor, sLibraryNameForExports);
@@ -145,7 +145,7 @@ int main(int argc, char** argv) {
         ExportLibWsjCppCliJavaAndroid *pExportJavaAndroid = new ExportLibWsjCppCliJavaAndroid();
         // pExportJavaAndroid->setLibraryName("libfhqcli-java-android");
         // pExportJavaAndroid->setAuthor("FreeHackQuest Team");
-        pExportJavaAndroid->setVersion(std::string(FHQSRV_VERSION));
+        pExportJavaAndroid->setVersion(std::string(WSJCPP_APP_VERSION));
         // pExportJavaAndroid->setPrefixRepositoryURL("https://github.com/freehackquest/");
         pExportJavaAndroid->exportLib();
         return 0;
@@ -168,7 +168,7 @@ int main(int argc, char** argv) {
         std::cout << tree.printTree() << std::endl;        
         return 0;
     } else if (helpArgs.has("version")) {
-        std::cout << FHQSRV_APP_NAME << "-" << FHQSRV_VERSION << "\n";
+        std::cout << WSJCPP_APP_NAME << "-" << WSJCPP_APP_VERSION << "\n";
         return 0;
     } else if (helpArgs.has("prepare-deb")) {
         UtilsPrepareDebPackage::prepare("","tmpdeb");

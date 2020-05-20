@@ -108,7 +108,7 @@ void WebSocketServer::sendServerMessage(QWebSocket *pSocket) {
     jsonServer["cmd"] = "server";
     jsonServer["m"] = "s0";
     jsonServer["app"] = "fhq-server";
-    jsonServer["version"] = FHQSRV_VERSION;
+    jsonServer["version"] = WSJCPP_APP_VERSION;
 
     EmployServerInfo *pServerInfo = findWsjcppEmploy<EmployServerInfo>();
     jsonServer["developers"] = pServerInfo->developers();
