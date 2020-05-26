@@ -26,7 +26,7 @@
     "angular-font-awesome": "^3.1.2",
     "angular-highlight-js": "^2.0.1",
     "angular-l10n": "^8.1.2",
-    "bootstrap": "~4.3.1",
+    "bootstrap": "~4.5.0",
     "core-js": "^3.4.8",
     "font-awesome": "^4.7.0",
     "highlight.js": "^9.16.2",
