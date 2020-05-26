@@ -1,5 +1,4 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, ChangeDetectorRef, ElementRef, SecurityContext } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { SpinnerService } from '../../services/spinner.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable }  from 'rxjs/Observable';
@@ -10,6 +9,8 @@ import { Subscription } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { escape } from 'lodash';
 import { FhqService } from '../../services/fhq.service';
+import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
 
 declare var _: any;
 
@@ -30,6 +31,11 @@ export class NewsComponent implements OnInit {
   errorMessage: string = null;
   dataList: Array<any> = [];
   subscriptionOnNotify: any = null;
+
+  emailFormControl = new FormControl('', [
+    Validators.required,
+    Validators.email,
+  ]);
 
   constructor(
     private _spinnerService: SpinnerService,

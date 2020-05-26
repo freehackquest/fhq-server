@@ -1,5 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import {
+  MatButtonModule,
+  MatFormFieldModule, 
+  MatInputModule,
+  MatIconModule,
+  MatRippleModule
+} from '@angular/material';
+
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -140,7 +148,19 @@ const l10nConfig: L10nConfig = {
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
     NgxMdModule.forRoot(),
-    SimplemdeModule.forRoot()
+    SimplemdeModule.forRoot(),
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatRippleModule
+  ],
+  exports: [
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatRippleModule
   ],
   providers: [
     {
