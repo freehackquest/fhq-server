@@ -5,6 +5,8 @@ import {
   MatFormFieldModule, 
   MatInputModule,
   MatIconModule,
+  MatTableModule,
+  MatPaginatorModule,
   MatRippleModule
 } from '@angular/material';
 
@@ -153,6 +155,8 @@ const l10nConfig: L10nConfig = {
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
+    MatTableModule,
+    MatPaginatorModule,
     MatRippleModule
   ],
   exports: [
@@ -160,6 +164,8 @@ const l10nConfig: L10nConfig = {
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
+    MatTableModule,
+    MatPaginatorModule,
     MatRippleModule
   ],
   providers: [

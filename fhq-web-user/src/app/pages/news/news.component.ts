@@ -1,7 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, ChangeDetectorRef, ElementRef, SecurityContext } from '@angular/core';
 import { SpinnerService } from '../../services/spinner.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable }  from 'rxjs/Observable';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/throttleTime';
 import 'rxjs/add/observable/fromEvent';
@@ -9,8 +8,8 @@ import { Subscription } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { escape } from 'lodash';
 import { FhqService } from '../../services/fhq.service';
-import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
+import { FormControl, Validators } from '@angular/forms';
+import { PageEvent } from '@angular/material';
 
 declare var _: any;
 
@@ -25,9 +24,11 @@ export class NewsComponent implements OnInit {
   searchControl = new FormControl('');
   formCtrlSub: Subscription;
 
-  countPages = 0;
-  currentPage = 0;
-  onPage = 7;
+  pageEvent: PageEvent;
+  pageIndex: number = 0;
+  pageSize: number = 7;
+  length: number = 0;
+  pageSizeOptions = [7, 10, 25, 50];
   errorMessage: string = null;
   dataList: Array<any> = [];
   subscriptionOnNotify: any = null;
@@ -48,7 +49,7 @@ export class NewsComponent implements OnInit {
   ) { }
 
   onSearchBoxValueChange() {
-    this.currentPage = 1;
+    this.pageIndex = 1;
   }
 
   ngOnInit() {
@@ -57,7 +58,7 @@ export class NewsComponent implements OnInit {
         this._router.navigate(['/news', 0]);
         return;
       }
-      this.currentPage = parseInt(params['id'], 10);
+      this.pageIndex = parseInt(params['id'], 10);
       this.loadData();
     });
 
@@ -66,7 +67,7 @@ export class NewsComponent implements OnInit {
       .debounceTime(1000)
       .subscribe((newValue) => {
         this.searchValue = newValue
-        this.currentPage = 0;
+        this.pageIndex = 0;
         console.log(newValue);
         this.loadData();
       });
@@ -81,21 +82,20 @@ export class NewsComponent implements OnInit {
     }
   }
 
-  prevPage() {
-    this.currentPage--;
-    this.loadData();
-  }
+  public getServerData(event?: PageEvent){
+    console.log(event);
 
-  nextPage() {
-    this.currentPage++;
+    this.pageIndex = event.pageIndex
+    this.pageSize = event.pageSize
     this.loadData();
+    return event;
   }
 
   loadData() {
     // this.searchTaskControl.value
     const _data = {
-      "page": this.currentPage,
-      "onpage": this.onPage,
+      "page": this.pageIndex,
+      "onpage": this.pageSize,
       "search": this.searchValue,
     }
     this._spinnerService.show();
@@ -107,8 +107,7 @@ export class NewsComponent implements OnInit {
   successResponse(r: any) {
     console.log(r);
     this._spinnerService.hide();
-    this.countPages = Math.ceil(parseInt(r.count, 10) / this.onPage);
-
+    this.length = r.count
     this.dataList = []
     r.data.forEach((el: any) => {
       el.dt_formated = new Date(el.dt + "Z")
