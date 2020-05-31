@@ -10,8 +10,12 @@ import {
   MatCardModule,
   MatDividerModule,
   MatListModule,
+  MatSidenavModule,
+  MatProgressBarModule,
   MatRippleModule
 } from '@angular/material';
+
+// import {MatSidenavModule} from '@angular/material/sidenav';
 
 import { HttpClientModule } from '@angular/common/http';
 
@@ -163,6 +167,8 @@ const l10nConfig: L10nConfig = {
     MatCardModule,
     MatDividerModule,
     MatListModule,
+    MatSidenavModule,
+    MatProgressBarModule,
     MatRippleModule
   ],
   exports: [
@@ -175,6 +181,8 @@ const l10nConfig: L10nConfig = {
     MatCardModule,
     MatDividerModule,
     MatListModule,
+    MatSidenavModule,
+    MatProgressBarModule,
     MatRippleModule
   ],
   providers: [

@@ -1,4 +1,3 @@
-<h1 l10nTranslate>yourProfile</h1>
 <div class="alert alert-danger" *ngIf="userId == 0">
   Please authorize
   <div class="btn btn-primary" (click)="openDialogSignIn()" l10nTranslate>signin</div>
@@ -10,6 +9,9 @@
   </div>
 
   <div class="col-lg-10">
+    
+    <h1 l10nTranslate>yourProfile</h1>
+
     <div class="card" *ngIf="userId != 0">
       <div class="card-body">
         <div class="row no-gutters">
@@ -34,6 +36,8 @@
         </div>
       </div>
     </div>
+    <a href="/admin/" *ngIf="userRole == 'admin'" l10nTranslate>adminPanel</a>
+
     <br>
     <div class="card" *ngIf="userId != 0">
       <div class="card-header" l10nTranslate>changeUserInfo</div>
