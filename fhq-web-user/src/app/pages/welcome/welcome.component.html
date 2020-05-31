@@ -1,17 +1,43 @@
-<h1 l10nTranslate>pageWelcome</h1>
+<mat-card class="example-card">
+  <mat-card-header>
+    <div mat-card-avatar class="example-header-image"></div>
+    <mat-card-title l10nTranslate>pageWelcome</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p l10nTranslate>pageWelcomeAbout</p>
+    <p>We have a public <a routerLink="/chat" l10nTranslate>chatPage</a></p>
+    <p l10nTranslate>welcomeAllEventsOutputHere</p>
+    <button mat-stroked-button color="primary" routerLink="/news" l10nTranslate>news</button>
+    
+    
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button>LIKE</button>
+    <button mat-button>SHARE</button>
+  </mat-card-actions>
+</mat-card>
+
 <p><a routerLink="/about" l10nTranslate>pageAbout</a></p>
 
-<p l10nTranslate>pageWelcomeAbout</p>
+<mat-card class="example-card">
+  <mat-card-header>
+    <div mat-card-avatar class="example-header-image"></div>
+    <mat-card-title l10nTranslate>pageWelcomeFirstTime</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p l10nTranslate>pageWelcomeFirstTimeText</p> <a routerLink="/quests" l10nTranslate>quests</a>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button>LIKE</button>
+    <button mat-button>SHARE</button>
+  </mat-card-actions>
+</mat-card>
 
-<div class="d-inline-block" l10nTranslate>pageWelcomeFirstTime</div> <a routerLink="/quests" l10nTranslate>quests</a>
 <br/><br/>
 
 
 <p>Also you can propose your quests (or from another games) <a routerLink="/quest-proposal" l10nTranslate>proposalQuest</a></p>
 
-<p>We have a public <a routerLink="/chat" l10nTranslate>chatPage</a></p>
-
-<p>All event printed here <a routerLink="/news" l10nTranslate>news</a></p>
 
 <p>Also we have a some <a routerLink="/knowledge-base" l10nTranslate>knowledgeBase</a> (need your help for correct and fix errors in this base)</p>
 
@@ -20,3 +46,25 @@
 <p><a routerLink="/feedback" l10nTranslate>newFeedback</a></p>
 
 <p><a routerLink="/donate" l10nTranslate>pageDonate</a></p>
+
+<!--
+<mat-card class="example-card">
+    <mat-card-header>
+      <div mat-card-avatar class="example-header-image"></div>
+      <mat-card-title>Shiba Inu</mat-card-title>
+      <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+    <mat-card-content>
+      <p>
+        The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
+        A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
+        bred for hunting.
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button>LIKE</button>
+      <button mat-button>SHARE</button>
+    </mat-card-actions>
+  </mat-card>
+  -->

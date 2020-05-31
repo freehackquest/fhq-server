@@ -144,10 +144,12 @@
     "pleaseAuthorize": "Please authorize",
     "pageWelcome": "Welcome to freehackquest!",
     "pageWelcomeAbout": "This site with archive of quests (and sometimes writeups) from different ctf task-based (jeopardy) games.",
-    "pageWelcomeFirstTime": "If you is first time visit so, please go here:",
+    "pageWelcomeFirstTime": "For those who are first on this resource",
+    "pageWelcomeFirstTimeText": "If you is first time visit so, please go here:",
     "placeAndScore": "Place and Score",
     "users": "Users",
     "pageJuryAttackDefence": "Jury for Attack-Defence",
     "user-tokens": "Tokens",
+    "welcomeAllEventsOutputHere": "All events output here:",
     "": ""
 }

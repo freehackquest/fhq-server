@@ -7,6 +7,7 @@ import {
   MatIconModule,
   MatTableModule,
   MatPaginatorModule,
+  MatCardModule,
   MatRippleModule
 } from '@angular/material';
 
@@ -157,6 +158,7 @@ const l10nConfig: L10nConfig = {
     MatIconModule,
     MatTableModule,
     MatPaginatorModule,
+    MatCardModule,
     MatRippleModule
   ],
   exports: [
@@ -166,6 +168,7 @@ const l10nConfig: L10nConfig = {
     MatIconModule,
     MatTableModule,
     MatPaginatorModule,
+    MatCardModule,
     MatRippleModule
   ],
   providers: [

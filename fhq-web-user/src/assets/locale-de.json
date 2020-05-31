@@ -131,10 +131,12 @@
     "pleaseAuthorize": "Bitte autorisieren",
     "pageWelcome": "Willkommen zu freehackquest!",
     "pageWelcomeAbout": "Diese Seite enthält ein Archiv von Quests (und manchmal auch Beschreibungen) aus verschiedenen aufgabenbasierten (Gefährdungs-) Spielen von CTF.",
-    "pageWelcomeFirstTime": "Wenn Sie dies zum ersten Mal besuchen, gehen Sie bitte hier:",
+    "pageWelcomeFirstTime": "For those who are first on this resource",
+    "pageWelcomeFirstTimeText": "Wenn Sie dies zum ersten Mal besuchen, gehen Sie bitte hier:",
     "placeAndScore": "Platzieren und punkten",
     "users": "Benutzer",
     "pageJuryAttackDefence": "Jury für Angriffsabwehr",
     "user-tokens": "Zeichen",
+    "welcomeAllEventsOutputHere": "All events output here:",
     "": ""
 }
