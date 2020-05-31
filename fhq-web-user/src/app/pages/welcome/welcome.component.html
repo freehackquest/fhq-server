@@ -1,51 +1,120 @@
-<mat-card class="example-card">
+<mat-card class="welcome-card">
   <mat-card-header>
-    <div mat-card-avatar class="example-header-image"></div>
+    <div mat-card-avatar class="welcome-header-image"></div>
     <mat-card-title l10nTranslate>pageWelcome</mat-card-title>
+    <mat-card-subtitle l10nTranslate>pageWelcomeAbout</mat-card-subtitle>
   </mat-card-header>
+  <img mat-card-image src="../../../assets/img/welcome/about.png" alt="Photo of a project">
   <mat-card-content>
-    <p l10nTranslate>pageWelcomeAbout</p>
-    <p>We have a public <a routerLink="/chat" l10nTranslate>chatPage</a></p>
-    <p l10nTranslate>welcomeAllEventsOutputHere</p>
-    <button mat-stroked-button color="primary" routerLink="/news" l10nTranslate>news</button>
-    
-    
+    <mat-list>
+      <mat-list-item>
+        <button mat-stroked-button color="primary" routerLink="/quests" l10nTranslate>quests</button>
+        <div class="welcome-description" l10nTranslate>pageWelcomeQuestsDescription</div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <button mat-stroked-button color="primary" routerLink="/quest-proposal" l10nTranslate>proposalQuest</button>
+        <div class="welcome-description" l10nTranslate>pageWelcomeProposalQuestDescription</div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <button mat-stroked-button color="primary" routerLink="/chat" l10nTranslate>chatPage</button>
+        <div class="welcome-description" l10nTranslate>welcomeWeHaveAPublicChat</div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <button mat-stroked-button color="primary" routerLink="/news" l10nTranslate>news</button>
+        <div class="welcome-description" l10nTranslate>welcomeAllEventsOutputHere</div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <button mat-stroked-button color="primary" routerLink="/feedback" l10nTranslate>newFeedback</button>
+        <div class="welcome-description" l10nTranslate>welcomeFeedbackDescription</div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <button mat-stroked-button color="primary" routerLink="/donate" l10nTranslate>pageDonate</button>
+        <div class="welcome-description" l10nTranslate>welcomeHelpToProject</div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <button mat-stroked-button color="primary" routerLink="/automation-ussr" l10nTranslate>automationUssr</button>
+        <div class="welcome-description" l10nTranslate>welcomeAutomationUssrDescription</div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <button mat-stroked-button color="primary" routerLink="/knowledge-base" l10nTranslate>knowledgeBase</button>
+        <div class="welcome-description" l10nTranslate>welcomeKnowledgeBaseDescription</div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <button mat-stroked-button color="primary" routerLink="/useful-links" l10nTranslate>usefulLinks</button>
+        <div class="welcome-description" l10nTranslate>welcomeUsefulLinksDescription</div>
+      </mat-list-item>
+    </mat-list>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button>LIKE</button>
-    <button mat-button>SHARE</button>
-  </mat-card-actions>
-</mat-card>
-
-<p><a routerLink="/about" l10nTranslate>pageAbout</a></p>
-
-<mat-card class="example-card">
-  <mat-card-header>
-    <div mat-card-avatar class="example-header-image"></div>
-    <mat-card-title l10nTranslate>pageWelcomeFirstTime</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <p l10nTranslate>pageWelcomeFirstTimeText</p> <a routerLink="/quests" l10nTranslate>quests</a>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button>LIKE</button>
-    <button mat-button>SHARE</button>
+    <button mat-button routerLink="/about" l10nTranslate>pageAbout</button>
+    <a href="https://github.com/freehackquest/fhq-server" target="_blank" mat-button>GitHub</a>
+    <a href="https://hub.docker.com/r/freehackquest/fhq-server" target="_blank" mat-button>Docker</a>
   </mat-card-actions>
 </mat-card>
 
 <br/><br/>
 
+<mat-card class="welcome-card">
+  <mat-card-header>
+    <div mat-card-avatar class="welcome-header-image"></div>
+    <mat-card-title l10nTranslate>thanksFor</mat-card-title>
+    <mat-card-subtitle l10nTranslate>thanksForDescription</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list>
+      <mat-list-item>
+        <a href="http://www.chartjs.org/docs/" target="_blank">Charts.js</a>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        Sergey Belov (found xss!)
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        Igor Polyakov
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        Maxim Samoilov (Nitive)
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        Dmitrii Mukovkin
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        Team Keva
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        Alexey Gulyaev
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        Alexander Menschikov
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        Ilya Bokov
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        Extrim Code
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>
 
-<p>Also you can propose your quests (or from another games) <a routerLink="/quest-proposal" l10nTranslate>proposalQuest</a></p>
+<br/><br/>
 
-
-<p>Also we have a some <a routerLink="/knowledge-base" l10nTranslate>knowledgeBase</a> (need your help for correct and fix errors in this base)</p>
-
-<p>Training service: <a routerLink="/automation-ussr" l10nTranslate>automationUssr</a></p>
-
-<p><a routerLink="/feedback" l10nTranslate>newFeedback</a></p>
-
-<p><a routerLink="/donate" l10nTranslate>pageDonate</a></p>
 
 <!--
 <mat-card class="example-card">

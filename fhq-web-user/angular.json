@@ -145,5 +145,8 @@
       }
     }
   },
-  "defaultProject": "fhq-frontend"
+  "defaultProject": "fhq-frontend",
+  "cli": {
+    "analytics": false
+  }
 }
