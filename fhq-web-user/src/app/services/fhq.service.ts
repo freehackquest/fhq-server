@@ -1,6 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { PlatformLocation } from '@angular/common';
-import { ToastrService } from 'ngx-toastr';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 declare var fhq: any;
 declare var fhqconfig: any;
@@ -18,7 +18,7 @@ export class FhqService {
   onNotify = new EventEmitter<any>();
 
   constructor(
-    private _toastr: ToastrService,
+    private _snackBar: MatSnackBar,
     private _location: PlatformLocation,
   ) {
     this.serverHost = this._location.hostname;
@@ -37,18 +37,25 @@ export class FhqService {
   showNotification(data: any) {
     console.log(data);
 
+    var message: string = '';
+    var action: string = '';
     if (data.type === 'info') {
-      this._toastr.info(data.message)
+      message = "Info: " + data.message
     } else if (data.type === 'success') {
-      this._toastr.success(data.message)
+      message = "Success: " + data.message
     } else if (data.type === 'danger') {
-      this._toastr.error(data.message)
+      message = "Danger: " + data.message
     } else if (data.type === 'warning') {
-      this._toastr.warning(data.message)
+      message = "Warning: " + data.message
     } else {
       // unknown type of message
-      this._toastr.warning(data.message)
+      message = "Warning: " + data.message
     }
+    this._snackBar.open(message, action, {
+      duration: 3000,
+      panelClass: ['blue-snackbar']
+    });
+
     this.onNotify.emit();
   }
 

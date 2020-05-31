@@ -12,6 +12,7 @@ import {
   MatListModule,
   MatSidenavModule,
   MatProgressBarModule,
+  MatSnackBarModule,
   MatRippleModule
 } from '@angular/material';
 
@@ -49,7 +50,6 @@ import { ConfidencialComponent } from './pages/confidencial/confidencial.compone
 import { KnowledgeBaseComponent } from './pages/knowledge-base/knowledge-base.component';
 import { ModalDialogSignInComponent } from './dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ToastrModule } from 'ngx-toastr';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 import { UserProfileMenuComponent } from './pages/user-profile-menu/user-profile-menu.component';
 import { AboutComponent } from './pages/about/about.component';
@@ -155,7 +155,6 @@ const l10nConfig: L10nConfig = {
     LMarkdownEditorModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot(),
     NgxMdModule.forRoot(),
     SimplemdeModule.forRoot(),
     MatButtonModule,
@@ -169,6 +168,7 @@ const l10nConfig: L10nConfig = {
     MatListModule,
     MatSidenavModule,
     MatProgressBarModule,
+    MatSnackBarModule,
     MatRippleModule
   ],
   exports: [
@@ -183,6 +183,7 @@ const l10nConfig: L10nConfig = {
     MatListModule,
     MatSidenavModule,
     MatProgressBarModule,
+    MatSnackBarModule,
     MatRippleModule
   ],
   providers: [

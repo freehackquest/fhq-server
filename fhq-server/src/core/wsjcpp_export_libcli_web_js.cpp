@@ -691,7 +691,6 @@ void ExportLibCliWebJS::exportLibCliWebServiceTSFile(const std::string &sBasicDi
         "  private _lastConnectionParams: any = null;\r\n"
         "\r\n"
         "  constructor(\r\n"
-        "    private _toastr: ToastrService,\r\n"
         "    private _location: PlatformLocation,\r\n"
         "  ) {\r\n"
         "    this.serverHost = this._location.hostname;\r\n"
