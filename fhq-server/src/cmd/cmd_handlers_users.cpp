@@ -1972,7 +1972,7 @@ CmdHandlerUsersChangeEmailVerification::CmdHandlerUsersChangeEmailVerification()
     setAccessAdmin(true);
 
     // validation and description input fields
-    requireStringParam("code", "Verification code"); 
+    requireStringParam("code", "Verification code");
 }
 
 // ---------------------------------------------------------------------
@@ -2070,7 +2070,7 @@ void CmdHandlerUsersTokens::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
-    query.prepare("SELECT * FROM users_tokens WHERE userid = :userid");
+    query.prepare("SELECT * FROM users_tokens WHERE userid = :userid ORDER BY id DESC");
     query.bindValue(":userid", nUserID);
     if (!query.exec()) {
         WsjcppLog::err(TAG, query.lastError().text().toStdString());
@@ -2103,6 +2103,67 @@ void CmdHandlerUsersTokens::handle(ModelRequest *pRequest) {
     jsonResponse["data"] = jsonResponseData;
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+// ---------------------------------------------------------------------
+
+/*********************************************
+ * Deletee user tokens
+**********************************************/
+REGISTRY_CMD(CmdHandlerUsersTokensDelete)
+
+CmdHandlerUsersTokensDelete::CmdHandlerUsersTokensDelete()
+    : CmdHandlerBase("users_tokens_delete", "Delete user tokens") {
+
+    TAG = "CmdHandlerUsersTokens";
+
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
+    setActivatedFromVersion("0.2.27");
+
+    // validation and description input fields
+    requireIntegerParam("tokenid", "Token ID");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsersTokensDelete::handle(ModelRequest *pRequest) {
+    
+    int nUserID = 0;
+    WsjcppUserSession *pUserSession = pRequest->getUserSession();
+    if (pUserSession != nullptr) {
+        nUserID = pUserSession->userid();
+    }
+    int nTokenID = pRequest->getInputInteger("tokenid", 0);
+
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM users_tokens WHERE userid = :userid AND id = :tokenid ORDER BY id DESC");
+    query.bindValue(":userid", nUserID);
+    query.bindValue(":tokenid", nTokenID);
+    if (!query.exec()) {
+        WsjcppLog::err(TAG, query.lastError().text().toStdString());
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    nlohmann::json jsonResponse;
+    if (query.next()) {
+        QSqlQuery queryDelete(db);
+        queryDelete.prepare("DELETE FROM users_tokens WHERE userid = :userid AND id = :tokenid");
+        queryDelete.bindValue(":userid", nUserID);
+        queryDelete.bindValue(":tokenid", nTokenID);
+        if (!queryDelete.exec()) {
+            WsjcppLog::err(TAG, queryDelete.lastError().text().toStdString());
+            pRequest->sendMessageError(cmd(), WsjcppError(500, queryDelete.lastError().text().toStdString()));
+            return;
+        }
+        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    } else {
+        pRequest->sendMessageError(cmd(), WsjcppError(404, "Not found token"));
+    }
 }
 
 // ---------------------------------------------------------------------

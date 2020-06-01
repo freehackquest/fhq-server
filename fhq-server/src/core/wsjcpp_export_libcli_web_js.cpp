@@ -360,7 +360,7 @@ void ExportLibCliWebJS::exportLibCliWebJSFile(const std::string &sBasicDir) {
     libwjscppcli_web_js_file <<
         "    };\r\n"
         "    function _lm() { _lastm++; return 'm' + _lastm; };\r\n"
-        "    console.warn('" + m_sLibraryName + " (v" + m_sAppVersion + ")');\r\n"
+        "    console.warn('" + m_sLibraryName + " (" + m_sAppVersion + ")');\r\n"
         "    self.promise = function() {\r\n"
         "        return {\r\n"
         "            completed: false, failed: false, successed: false, \r\n"
