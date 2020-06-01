@@ -40,7 +40,6 @@ export class UserSkillsComponent implements OnInit {
 
   userSkillsData: UserSkillsElement[] = [];
   displayedColumns: string[] = ['name', 'userPoints'];
-  // displayedColumns: string[] = ['name', 'userPoints', 'maxPoints', 'inProcents'];
 
   @ViewChild('drawer', { static: true }) drawer: MatDrawer;
 

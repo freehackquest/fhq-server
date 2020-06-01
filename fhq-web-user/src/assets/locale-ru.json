@@ -161,5 +161,9 @@
     "welcomeUsefulLinksDescription": "- список интересных ссылок",
     "thanksFor": "Благодарности",
     "thanksForDescription": "Благодарность людям или проектам которые помогли или внесли вклад",
+    "status": "Статус",
+    "token": "Токен",
+    "startDate": "Начало",
+    "endDate": "Конец",
     "": ""
 }

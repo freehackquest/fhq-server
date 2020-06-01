@@ -147,5 +147,9 @@
     "welcomeUsefulLinksDescription": "- list of interesting links",
     "thanksFor": "Thanks for",
     "thanksForDescription": "Благодарность лидям или проектам которые помогли или внесли вклад",
+    "status": "Status",
+    "token": "Token",
+    "startDate": "Start",
+    "endDate": "End",
     "": ""
 }
