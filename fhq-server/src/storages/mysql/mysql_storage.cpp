@@ -477,6 +477,8 @@ std::string MySqlStorage::generateLineColumnForSql(WsjcppStorageColumnDef &c) {
     
     if (c.columnType() == "number") {
         sSqlColumn += " INT";
+    } else if (c.columnType() == "bigNumber") {
+        sSqlColumn += " BIGINT";
     } else if (c.columnType() == "string") {
         sSqlColumn += " VARCHAR(" + std::to_string(c.columnTypeSize()) + ")";
     } else if (c.columnType() == "text") {

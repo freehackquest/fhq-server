@@ -83,7 +83,7 @@ dependencies:
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_diff_text"
   - name: "wsjcpp-storages"
-    version: "v0.1.2"
+    version: "v0.1.3"
     url: "https://github.com/wsjcpp/wsjcpp-storages:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_storages"

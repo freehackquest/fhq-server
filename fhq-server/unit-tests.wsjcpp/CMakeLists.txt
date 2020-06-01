@@ -85,7 +85,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_diff_text/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_diff_text/wsjcpp_diff_text.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_diff_text/wsjcpp_diff_text.h")
 
-# wsjcpp-storages:v0.1.2
+# wsjcpp-storages:v0.1.3
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_storages/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_storages/wsjcpp_storages.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_storages/wsjcpp_storages.h")
