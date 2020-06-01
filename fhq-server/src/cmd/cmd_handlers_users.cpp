@@ -184,15 +184,18 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
         
         std::string sUuid = WsjcppCore::createUuid();
         QString token = QString::fromStdString(sUuid);
-        token = token.mid(1,token.length()-2);
         token = token.toUpper();
 
         QSqlQuery query_token(db);
-        query_token.prepare("INSERT INTO users_tokens (userid, token, status, data, start_date, end_date) VALUES(:userid, :token, :status, :data, NOW(), NOW() + INTERVAL 1 DAY)");
+        query_token.prepare("INSERT INTO users_tokens (userid, token, status, data, start_date, end_date, start_dt, end_dt) VALUES(:userid, :token, :status, :data, NOW(), NOW() + INTERVAL 1 DAY, :start_dt, :end_dt)");
         query_token.bindValue(":userid", nUserId);
         query_token.bindValue(":token", token);
         query_token.bindValue(":status", "active");
         query_token.bindValue(":data", data);
+        long nStartDate = WsjcppCore::currentTime_milliseconds();
+        std::cout << nStartDate << std::endl;
+        query_token.bindValue(":start_dt", (long long)nStartDate);
+        query_token.bindValue(":end_dt", (long long)(nStartDate + 86400000)); // + 24 hours // TODO must be configurable
 
         if (!query_token.exec()) {
             WsjcppLog::err(TAG, query_token.lastError().text().toStdString());
@@ -200,7 +203,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
             return;
         }
 
-        jsonResponse["token"] = token.toStdString();
+        jsonResponse["token"] = sUuid;
         jsonResponse["user"] = user;
 
         pRequest->server()->setWsjcppUserSession(pRequest->client(), new WsjcppUserSession(user_token));
@@ -2096,8 +2099,8 @@ void CmdHandlerUsersTokens::handle(ModelRequest *pRequest) {
         jsonToken["status"] = record.value("status").toString().toStdString();
         // Hided by security
         // jsonToken["data"] = record.value("data").toString().toStdString();
-        jsonToken["start_date"] = record.value("start_date").toInt();
-        jsonToken["end_date"] = record.value("end_date").toInt();
+        jsonToken["start_date"] = record.value("start_dt").toLongLong();
+        jsonToken["end_date"] = record.value("end_dt").toLongLong();
         jsonResponseData.push_back(jsonToken);
     }
     jsonResponse["data"] = jsonResponseData;

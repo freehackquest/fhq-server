@@ -15,7 +15,9 @@
       <ng-container matColumnDef="tokenValue">
         <th mat-header-cell *matHeaderCellDef l10nTranslate>token</th>
         <td mat-cell *matCellDef="let element">
-          {{element.token}}
+          <strong>{{element.token}}</strong><br>
+          <small>{{ element.startDate | date:'EEEE, d MMM y, HH:mm:ss' }}</small><br>
+          <small> - {{ element.endDate | date:'EEEE, d MMM y, HH:mm:ss' }}</small>
         </td>
       </ng-container>
 
@@ -25,26 +27,13 @@
           {{element.status}}
         </td>
       </ng-container>
-
-      <ng-container matColumnDef="tokenStartDate">
-        <th mat-header-cell *matHeaderCellDef l10nTranslate>startDate</th>
-        <td mat-cell *matCellDef="let element">
-          {{element.startDate}}
-        </td>
-      </ng-container>
+      
       <ng-container matColumnDef="deleteToken">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">
           <button mat-raised-button color="warn" (click)="deleteToken(element.id)">
             <mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon>
           </button>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="tokenEndDate">
-        <th mat-header-cell *matHeaderCellDef l10nTranslate>endDate</th>
-        <td mat-cell *matCellDef="let element">
-          {{element.endDate}}
         </td>
       </ng-container>
 

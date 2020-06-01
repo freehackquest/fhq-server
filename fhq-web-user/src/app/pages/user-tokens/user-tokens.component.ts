@@ -12,8 +12,8 @@ export interface UserTokensElement {
   id: number;
   token: string;
   status: string;
-  startDate: number;
-  endDate: number;
+  startDate: Date;
+  endDate: Date;
 }
 
 @Component({
@@ -27,7 +27,7 @@ export class UserTokensComponent implements OnInit {
   userId: number = 0;
   dataSource = new MatTableDataSource<UserTokensElement>();
   userTokensData: UserTokensElement[] = [];
-  displayedColumns: string[] = ['idToken', 'tokenValue', 'tokenStatus', 'tokenStartDate', 'tokenEndDate', 'deleteToken'];
+  displayedColumns: string[] = ['idToken', 'tokenValue', 'tokenStatus', 'deleteToken'];
   @ViewChild('drawer', { static: true }) drawer: MatDrawer;
 
   constructor(
@@ -67,14 +67,15 @@ export class UserTokensComponent implements OnInit {
 
   successUserTokens(r: any) {
     this._spinner.hide();
+    this.userTokensData = [];
     for (let i in r.data) {
       let userToken = r.data[i];
       this.userTokensData.push({
         id: userToken['id'],
         token: userToken['token'],
         status: userToken['status'],
-        startDate: userToken['start_date'],
-        endDate: userToken['end_date'],
+        startDate: new Date(userToken['start_date']),
+        endDate: new Date(userToken['end_date'])
       })
     }
     this.dataSource = new MatTableDataSource<UserTokensElement>(this.userTokensData);
@@ -96,9 +97,9 @@ export class UserTokensComponent implements OnInit {
   }
 
   successUserTokensDelete(r: any) {
-    this._spinner.hide();
-    // this.dataSource = new MatTableDataSource<UserTokensElement>(this.userTokensData);
-    this._cdr.detectChanges();
+    // this._spinner.hide();
+    console.log("successUserTokensDelete", r);
+    this.updateListOfTokens();
   }
 
   errorUserTokensDelete(err: any) {
@@ -108,10 +109,10 @@ export class UserTokensComponent implements OnInit {
     this._cdr.detectChanges();
   }
 
-  deleteToken(id: number) {
+  deleteToken(tokenId: number) {
     this._spinnerService.show();
     this._fhq.api().users_tokens_delete({
-      "tokenid": this.userId,
+      "tokenid": tokenId,
     })
       .done((r: any) => this.successUserTokensDelete(r))
       .fail((err: any) => this.errorUserTokensDelete(err));
