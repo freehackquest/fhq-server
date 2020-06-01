@@ -5,6 +5,16 @@ import { SpinnerService } from '../../services/spinner.service';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
+import { MatDrawer } from '@angular/material/sidenav';
+import { MatTableDataSource } from '@angular/material';
+
+export interface UserTokensElement {
+  id: number;
+  token: string;
+  status: string;
+  startDate: Date;
+  endDate: Date;
+}
 
 @Component({
   selector: 'app-user-tokens',
@@ -15,7 +25,11 @@ export class UserTokensComponent implements OnInit {
   errorMessage: string = null;
   subscription: any;
   userId: number = 0;
-  listOfTokens: any = []
+  dataSource = new MatTableDataSource<UserTokensElement>();
+  userTokensData: UserTokensElement[] = [];
+  displayedColumns: string[] = ['idToken', 'tokenValue', 'tokenStatus', 'deleteToken'];
+  @ViewChild('drawer', { static: true }) drawer: MatDrawer;
+
   constructor(
     private _spinner: SpinnerService,
     private _router: Router,
@@ -30,6 +44,7 @@ export class UserTokensComponent implements OnInit {
     this.updatePage();
     this.subscription = this._fhq.changedState
       .subscribe(() => this.updatePage());
+    this.drawer.open();
   }
 
   ngOnDestroy() {
@@ -37,7 +52,7 @@ export class UserTokensComponent implements OnInit {
   }
 
   updatePage() {
-    this._fhq2.connectToServer({"baseUrl": "ws://localhost:1234/"});
+    //this._fhq2.connectToServer({"baseUrl": "ws://localhost:1234/"});
 
     if (this._fhq.isAuthorized) {
       this.userId = parseInt(this._fhq.userdata.id, 10);
@@ -51,10 +66,20 @@ export class UserTokensComponent implements OnInit {
   }
 
   successUserTokens(r: any) {
-    console.log("successResponse: ", r);
     this._spinner.hide();
-    this.listOfTokens = r.data
-    // this._router.navigate(['/user-tokens'])
+    this.userTokensData = [];
+    for (let i in r.data) {
+      let userToken = r.data[i];
+      this.userTokensData.push({
+        id: userToken['id'],
+        token: userToken['token'],
+        status: userToken['status'],
+        startDate: new Date(userToken['start_date']),
+        endDate: new Date(userToken['end_date'])
+      })
+    }
+    this.dataSource = new MatTableDataSource<UserTokensElement>(this.userTokensData);
+    this._cdr.detectChanges();
   }
 
   errorUserTokens(err: any) {
@@ -66,10 +91,30 @@ export class UserTokensComponent implements OnInit {
 
   updateListOfTokens() {
     this._spinnerService.show();
-    this._fhq.api().users_tokens({
-      "userid": this.userId,
-    })
+    this._fhq.api().users_tokens({})
       .done((r: any) => this.successUserTokens(r))
       .fail((err: any) => this.errorUserTokens(err));
+  }
+
+  successUserTokensDelete(r: any) {
+    // this._spinner.hide();
+    console.log("successUserTokensDelete", r);
+    this.updateListOfTokens();
+  }
+
+  errorUserTokensDelete(err: any) {
+    console.error("errorResponse: ", err);
+    this._spinner.hide();
+    // this.resultOfChangePassword = err.error;
+    this._cdr.detectChanges();
+  }
+
+  deleteToken(tokenId: number) {
+    this._spinnerService.show();
+    this._fhq.api().users_tokens_delete({
+      "tokenid": tokenId,
+    })
+      .done((r: any) => this.successUserTokensDelete(r))
+      .fail((err: any) => this.errorUserTokensDelete(err));
   }
 }

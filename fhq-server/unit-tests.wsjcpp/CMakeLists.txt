@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(unit-tests C CXX)
-add_definitions(-DWSJCPP_APP_VERSION="ut-v0.2.26")
+add_definitions(-DWSJCPP_APP_VERSION="ut-v0.2.27")
 add_definitions(-DWSJCPP_APP_NAME="unit-tests-fhq-server")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -85,7 +85,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_diff_text/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_diff_text/wsjcpp_diff_text.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_diff_text/wsjcpp_diff_text.h")
 
-# wsjcpp-storages:v0.1.2
+# wsjcpp-storages:v0.1.3
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_storages/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_storages/wsjcpp_storages.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_storages/wsjcpp_storages.h")
@@ -95,7 +95,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_parse_conf/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_parse_conf/wsjcpp_parse_conf.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_parse_conf/wsjcpp_parse_conf.h")
 
-# fhq-server:v0.2.26
+# fhq-server:v0.2.27
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 list (APPEND WSJCPP_SOURCES "../src/core/fallen.cpp")
 list (APPEND WSJCPP_SOURCES "../src/core/fallen.h")

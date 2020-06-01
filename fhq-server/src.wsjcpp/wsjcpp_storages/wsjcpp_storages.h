@@ -32,6 +32,7 @@ class WsjcppStorageColumnDef {
         WsjcppStorageColumnDef &text();
         WsjcppStorageColumnDef &datetime();
         WsjcppStorageColumnDef &number();
+        WsjcppStorageColumnDef &bigNumber();
         WsjcppStorageColumnDef &doubleNumber();
         WsjcppStorageColumnDef &primaryKey();
         WsjcppStorageColumnDef &defaultValue(const std::string& sDefault);

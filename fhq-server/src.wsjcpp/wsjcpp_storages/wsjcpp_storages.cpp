@@ -84,6 +84,17 @@ WsjcppStorageColumnDef &WsjcppStorageColumnDef::number() {
 
 // ---------------------------------------------------------------------
 
+WsjcppStorageColumnDef &WsjcppStorageColumnDef::bigNumber() {
+    if (m_sType != "") {
+        WsjcppLog::throw_err(TAG, "Datatype already defined: " + m_sType);
+        return *this;
+    }
+    m_sType = "bigNumber";
+    return *this;
+}
+
+// ---------------------------------------------------------------------
+
 WsjcppStorageColumnDef &WsjcppStorageColumnDef::doubleNumber() {
     if (m_sType != "") {
         WsjcppLog::throw_err(TAG, "Datatype already defined: " + m_sType);

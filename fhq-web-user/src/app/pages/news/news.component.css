@@ -1,0 +1,9 @@
+.news-search-form-field {
+    width: 300px;
+}
+
+.news-paginator-field {
+    display: inline-block;
+    width: calc(100% - 300px);
+    min-width: 450px;
+}

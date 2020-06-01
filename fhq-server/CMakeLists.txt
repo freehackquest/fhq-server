@@ -197,6 +197,9 @@ list (APPEND WSJCPP_SOURCES "src/storages/updates/update_u0100_mhd92m15nb.h")
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update_u0100_mhd92m15nb.cpp")
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update_mhd92m15nb_snwxenqco0.h")
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update_mhd92m15nb_snwxenqco0.cpp")
+list (APPEND WSJCPP_SOURCES "src/storages/updates/update_snwxenqco0_csww6lwcrp.h")
+list (APPEND WSJCPP_SOURCES "src/storages/updates/update_snwxenqco0_csww6lwcrp.cpp")
+
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update0101.h")
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update0101.cpp")
 

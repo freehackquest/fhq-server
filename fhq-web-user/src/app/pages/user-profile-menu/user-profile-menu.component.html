@@ -1,16 +1,29 @@
-<div class="list-group">
-  <a routerLink="/user-profile" 
+<div class="user-profile-menu-sidenav">
+  <button routerLink="/user-profile"
     *ngIf="userRole == 'user' || userRole == 'admin'"
-    href="#" class="list-group-item list-group-item-action" l10nTranslate>profile</a>
-  <a routerLink="/user-security" 
-    *ngIf="userRole == 'user' || userRole == 'admin'" 
-    href="#" class="list-group-item list-group-item-action" l10nTranslate>security</a>
-    <a routerLink="/user-tokens" 
-    *ngIf="userRole == 'user' || userRole == 'admin'" 
-    href="#" class="list-group-item list-group-item-action" l10nTranslate>user-tokens</a>
-  <a routerLink="/user-skills"
-    *ngIf="userRole == 'user' || userRole == 'admin'" 
-    href="#" class="list-group-item list-group-item-action" l10nTranslate>skills</a>
-  <!-- a routerLink="/user-sessions" href="#" class="list-group-item list-group-item-action" l10nTranslate>sessions</a -->
-  <a href="/admin/" *ngIf="userRole == 'admin'" class="list-group-item list-group-item-action" l10nTranslate>adminPanel</a>
+    mat-raised-button
+    l10nTranslate>
+    profile
+  </button>
+  <br/><br/>
+  <button routerLink="/user-security"
+    *ngIf="userRole == 'user' || userRole == 'admin'"
+    mat-raised-button
+    l10nTranslate>
+    security
+  </button>
+  <br/><br/>
+  <button routerLink="/user-tokens"
+    *ngIf="userRole == 'user' || userRole == 'admin'"
+    mat-raised-button
+    l10nTranslate>
+    user-tokens
+  </button>
+  <br/><br/>
+  <button routerLink="/user-skills"
+    *ngIf="userRole == 'user' || userRole == 'admin'"
+    mat-raised-button
+    l10nTranslate>
+    skills
+  </button>
 </div>

@@ -1,30 +1,44 @@
-<h1 l10nTranslate>user-tokens</h1>
-
-<div class="row">
-  <div class="col-lg-2">
+<mat-drawer-container class="user-tokens-container">
+  <mat-drawer #drawer mode="side">
     <app-user-profile-menu></app-user-profile-menu>
-  </div>
-  <div class="col-lg-10">
-    <div class="card" *ngIf="userId != 0">
-        <div class="card-header" l10nTranslate>Token</div>
-        <div class="card-body">
-          <table class="table">
-            <tr>
-              <th>ID</th>
-              <th>Token</th>
-              <th>Status</th>
-              <th>Start date</th>
-              <th>End date</th>
-            </tr>
-            <tr *ngFor="let tkn of listOfTokens">
-              <td>#{{ tkn.id }}</td>
-              <td>{{ tkn.token }}</td>
-              <td>{{ tkn.status }}</td>
-              <td>{{ tkn.start_date }}</td>
-              <td>{{ tkn.end_date }}</td>
-            </tr>
-          </table>
-        </div>
-      </div>
-  </div>
-</div>
+  </mat-drawer>
+  <mat-drawer-content>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="idToken">
+        <th mat-header-cell *matHeaderCellDef>#</th>
+        <td mat-cell *matCellDef="let element"> 
+          {{ element.id }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tokenValue">
+        <th mat-header-cell *matHeaderCellDef l10nTranslate>token</th>
+        <td mat-cell *matCellDef="let element">
+          <strong>{{element.token}}</strong><br>
+          <small>{{ element.startDate | date:'EEEE, d MMM y, HH:mm:ss' }}</small><br>
+          <small> - {{ element.endDate | date:'EEEE, d MMM y, HH:mm:ss' }}</small>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tokenStatus">
+        <th mat-header-cell *matHeaderCellDef l10nTranslate>status</th>
+        <td mat-cell *matCellDef="let element">
+          {{element.status}}
+        </td>
+      </ng-container>
+      
+      <ng-container matColumnDef="deleteToken">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-raised-button color="warn" (click)="deleteToken(element.id)">
+            <mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-drawer-content>
+</mat-drawer-container>

@@ -360,7 +360,7 @@ void ExportLibCliWebJS::exportLibCliWebJSFile(const std::string &sBasicDir) {
     libwjscppcli_web_js_file <<
         "    };\r\n"
         "    function _lm() { _lastm++; return 'm' + _lastm; };\r\n"
-        "    console.warn('" + m_sLibraryName + " (v" + m_sAppVersion + ")');\r\n"
+        "    console.warn('" + m_sLibraryName + " (" + m_sAppVersion + ")');\r\n"
         "    self.promise = function() {\r\n"
         "        return {\r\n"
         "            completed: false, failed: false, successed: false, \r\n"
@@ -691,7 +691,6 @@ void ExportLibCliWebJS::exportLibCliWebServiceTSFile(const std::string &sBasicDi
         "  private _lastConnectionParams: any = null;\r\n"
         "\r\n"
         "  constructor(\r\n"
-        "    private _toastr: ToastrService,\r\n"
         "    private _location: PlatformLocation,\r\n"
         "  ) {\r\n"
         "    this.serverHost = this._location.hostname;\r\n"

@@ -1,24 +1,29 @@
 <h1 l10nTranslate>news</h1>
 
-<form class="form-inline waves-light" mdbWavesEffect>
-  <div class="md-form mt-0">
-    <input 
-      class="form-control mr-sm-2" 
-      type="text" 
-      placeholder="Search"
-      [formControl]="searchControl"
-      [value]="searchValue"
-    >
-  </div>
-</form>
+<mat-form-field class="news-search-form-field">
+  <input
+    matInput
+    type="text"
+    placeholder="Search"
+    [(ngModel)]="searchValue"
+    [formControl]="searchControl"
+    [value]="searchValue"
+  >
+  <button mat-button *ngIf="searchValue" matSuffix mat-icon-button aria-label="Clear" (click)="searchValue=''">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-form-field>
 
-<br>
+<mat-paginator #paginator
+  class="news-paginator-field"
+  [length]="length"
+  [pageIndex]="pageIndex"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="pageSizeOptions"
+  (page)="pageEvent = getServerData($event)"
+>
+</mat-paginator>
 
-<div>
-    <button class="btn btn-link" [disabled]="currentPage==0" (click)="prevPage()">Prev</button>
-    <div class="d-inline-block">{{ currentPage+1 }} of {{ countPages }} pages </div>
-    <button class="btn btn-link" [disabled]="currentPage>=countPages" (click)="nextPage()">Next</button>
-</div>
 
 <table class="table">
   <tbody>

@@ -232,12 +232,23 @@ class CmdHandlerUsersChangeEmailVerification : public CmdHandlerBase {
 
 
 /*********************************************
- * List of active user tokens
+ * List of user tokens
 **********************************************/
  
 class CmdHandlerUsersTokens : public CmdHandlerBase {
     public:
         CmdHandlerUsersTokens();
+        virtual void handle(ModelRequest *pRequest);
+};
+
+
+/*********************************************
+ * Delete user tokens
+**********************************************/
+ 
+class CmdHandlerUsersTokensDelete : public CmdHandlerBase {
+    public:
+        CmdHandlerUsersTokensDelete();
         virtual void handle(ModelRequest *pRequest);
 };
 
