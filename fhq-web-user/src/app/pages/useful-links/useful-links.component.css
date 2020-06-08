@@ -1,0 +1,22 @@
+
+.usefullinks-search-form-field {
+    width: 300px;
+}
+
+.usefullinks-paginator-field {
+    display: inline-block;
+    width: calc(100% - 300px);
+    min-width: 450px;
+}
+
+.useful-links-container {
+    margin-left: 20px;
+}
+
+.mat-column-usefulLinkData {
+    padding: 20px;
+}
+
+.usefulLinks-tag {
+    margin-right: 10px;
+}

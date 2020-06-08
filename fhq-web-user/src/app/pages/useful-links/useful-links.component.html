@@ -7,6 +7,7 @@
 </a>
 <br/>
 <br/>
+
 Большая часть ссылок спирована из этих мест:
 <ul>
   <li><a href="https://2ch.pm/wrk/arch/2018-03-05/res/1065136.html">https://2ch.pm/wrk/arch/2018-03-05/res/1065136.html</a></li>
@@ -15,28 +16,62 @@
 </ul>
 <br>
 
-<form class="form-inline waves-light" mdbWavesEffect>
-  <div class="md-form mt-0">
-    <input 
-      class="form-control mr-sm-2" 
-      type="text" 
-      placeholder="Search"
-      [formControl]="searchControl"
-      [value]="searchValue"
-    >
-  </div>
-</form>
-<br>
+<mat-form-field class="usefullinks-search-form-field">
+  <input
+    matInput
+    type="text"
+    placeholder="Search"
+    [(ngModel)]="searchValue"
+    [formControl]="searchControl"
+    [value]="searchValue"
+  >
+  <button mat-button *ngIf="searchValue" matSuffix mat-icon-button aria-label="Clear" (click)="searchValue=''">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-form-field>
 
-<div *ngFor="let l of filteredDataList;">
-  <div class="card">
-    <div class="card-body">
-      <p class="card-text">{{ l.description }}</p>
-      <a href="{{ l.link }}" class="card-link">{{ l.link }}</a>
-    </div>
-  </div>
-  <br/>
-</div>
+<!-- mat-paginator #paginator
+  class="usefullinks-paginator-field"
+  [length]="length"
+  [pageIndex]="pageIndex"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="pageSizeOptions"
+  (page)="pageEvent = getServerData($event)"
+>
+</mat-paginator -->
+
+<mat-drawer-container class="useful-links-container">
+  <mat-drawer #drawer mode="side">
+    <app-user-profile-menu></app-user-profile-menu>
+  </mat-drawer>
+  <mat-drawer-content>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="idUsefulLink">
+        <th mat-header-cell *matHeaderCellDef>#</th>
+        <td mat-cell *matCellDef="let element"> 
+          {{ element.id }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="usefulLinkData">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <a mat-raised-button color="accent" href="{{ element.link }}" target="_blank">{{element.link}}</a><br><br>
+          <strong>{{element.description}}</strong><br>
+          <div *ngIf="element.tags.length > 0"> 
+            <small>Tags({{ element.tags.length }}):</small>
+            <button mat-stroked-button class="usefulLinks-tag" *ngFor="let tag of element.tags;">{{ tag }}</button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-drawer-content>
+</mat-drawer-container>
+
 <br/>
 <br/>
 <br/>

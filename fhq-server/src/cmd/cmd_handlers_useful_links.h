@@ -13,6 +13,12 @@ class CmdHandlerUsefulLinksList : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
+class CmdHandlerUsefulLinksRetrieve : public CmdHandlerBase {
+    public:
+        CmdHandlerUsefulLinksRetrieve();
+        virtual void handle(ModelRequest *pRequest);
+};
+
 class CmdHandlerUsefulLinksAdd : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksAdd();

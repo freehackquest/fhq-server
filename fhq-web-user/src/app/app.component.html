@@ -47,31 +47,14 @@
             </div>
         </li>
 
-
-        <li class="nav-item dropdown" *ngIf="_fhq.isAuthorized">
-            <div class="nav-link dropdown-toggle"
-                data-toggle="dropdown" id="Preview"
-                href="#" role="button"
-                aria-haspopup="true"
-                aria-expanded="false"
+        <li class="nav-item" *ngIf="_fhq.isAuthorized">
+            <div class="nav-link"
+                href="#"
+                role="button"
+                routerLink="/user-profile"
             >
                 <img class="user-logo" src="../{{ _fhq.userdata.logo }}">
                 <div class="d-inline-block">{{ _fhq.userdata.nick }}</div>
-            </div>
-
-            <div class="nav-link dropdown-toggle"
-                data-toggle="dropdown" id="Preview"
-                href="#" role="button"
-                aria-haspopup="true"
-                aria-expanded="false"
-                *ngIf="_fhq.userdata.nick ? false : true"
-            >
-                <img class="user-logo" src="assets/img/menu_user.png">
-                <div class="d-inline-block" l10nTranslate>menuAccount</div>
-            </div>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="Preview">
-                <a class="dropdown-item auth-menu" routerLink="/user-profile" l10nTranslate>yourProfile</a>
-                <div class="dropdown-item auth-menu" (click)="userSignout()" l10nTranslate>signout</div>
             </div>
         </li>
         <li class="nav-item" *ngIf="!_fhq.isAuthorized">

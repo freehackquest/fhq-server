@@ -73,10 +73,6 @@ export class AppComponent implements OnInit {
     this._cdr.detectChanges()
   }
 
-  userSignout() {
-    this._fhq.logout();
-  }
-
   selectLanguage(language: string): void {
     this._locale.setCurrentLanguage(language);
     this.updateLanguage();
