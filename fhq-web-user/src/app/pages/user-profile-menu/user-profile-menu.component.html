@@ -26,4 +26,11 @@
     l10nTranslate>
     skills
   </button>
+  <br/><br/>
+  <button (click)="userSignout()"
+    *ngIf="userRole == 'user' || userRole == 'admin'"
+    mat-raised-button
+    l10nTranslate>
+      signout
+  </button>
 </div>

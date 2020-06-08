@@ -32,4 +32,7 @@ export class UserProfileMenuComponent implements OnInit {
     }
   }
 
+  userSignout() {
+    this._fhq.logout();
+  }
 }
