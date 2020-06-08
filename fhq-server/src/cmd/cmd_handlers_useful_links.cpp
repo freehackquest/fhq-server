@@ -52,6 +52,7 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     while (query.next()) {
         QSqlRecord record = query.record();
         nlohmann::json jsonLink;
+        jsonLink["id"] = record.value("id").toInt();
         jsonLink["url"] = record.value("url").toString().toHtmlEscaped().toStdString();
         jsonLink["description"] = record.value("description").toString().toHtmlEscaped().toStdString();
         jsonLink["author"] = record.value("message").toString().toHtmlEscaped().toStdString();
@@ -64,6 +65,59 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     jsonResponse["data"] = jsonData;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
+
+/*********************************************
+ * Useful Links Retrieve
+**********************************************/
+
+REGISTRY_CMD(CmdHandlerUsefulLinksRetrieve)
+
+CmdHandlerUsefulLinksRetrieve::CmdHandlerUsefulLinksRetrieve()
+    : CmdHandlerBase("useful_links_retrieve", "Method for retrieve useful link") {
+
+    setActivatedFromVersion("0.2.28");
+
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
+
+    // validation and description input fields
+    requireIntegerParam("useful_link_id", "Id of useful link");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsefulLinksRetrieve::handle(ModelRequest *pRequest) {
+    int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
+
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM useful_links WHERE id = :useful_link_id");
+    query.bindValue(":useful_link_id", nUsefulLinkId);
+
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    nlohmann::json jsonLink;
+    if (query.next()) {
+        QSqlRecord record = query.record();
+        jsonLink["id"] = record.value("id").toInt();
+        jsonLink["url"] = record.value("url").toString().toHtmlEscaped().toStdString();
+        jsonLink["description"] = record.value("description").toString().toHtmlEscaped().toStdString();
+        jsonLink["author"] = record.value("message").toString().toHtmlEscaped().toStdString();
+        jsonLink["stars"] = record.value("stars").toInt();
+        jsonLink["dt"] = record.value("dt").toString().toStdString();
+    }
+    
+    nlohmann::json jsonResponse;
+    jsonResponse["data"] = jsonLink;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
 
 /*********************************************
  * Useful Links Add
@@ -133,15 +187,29 @@ CmdHandlerUsefulLinksDelete::CmdHandlerUsefulLinksDelete()
     setAccessAdmin(true);
 
     // validation and description input fields
-    requireStringParam("url", "URL"); // TODO validator
-    requireStringParam("description", "Description"); 
-    requireStringParam("author", "Author");
+    requireIntegerParam("useful_link_id", "Id of useful link");
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+
+    int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
+    
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    // TODO uuid
+    query.prepare("DELETE FROM useful_links WHERE id = :useful_link_id");
+    query.bindValue(":useful_link_id", nUsefulLinkId);
+
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+    nlohmann::json jsonResponse;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 /*********************************************
@@ -160,16 +228,38 @@ CmdHandlerUsefulLinksUpdate::CmdHandlerUsefulLinksUpdate()
     setAccessAdmin(true);
 
     // validation and description input fields
+    requireIntegerParam("useful_link_id", "Id of useful link");
     requireStringParam("url", "URL"); // TODO validator
     requireStringParam("description", "Description");
     requireStringParam("author", "Author");
-    requireStringParam("status", "Status"); // TODO validator
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksUpdate::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+    
+    int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
+    std::string sUrl = pRequest->getInputString("url", "");
+    std::string sDescription = pRequest->getInputString("description", "");
+    std::string sAuthor = pRequest->getInputString("author", "");
+
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    // TODO uuid
+    query.prepare("UPDATE useful_links SET url = :url, description = :description WHERE id = :useful_link_id");
+    query.bindValue(":url", QString::fromStdString(sUrl));
+    query.bindValue(":description", QString::fromStdString(sDescription));
+    query.bindValue(":useful_link_id", nUsefulLinkId);
+
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    nlohmann::json jsonResponse;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 /*********************************************

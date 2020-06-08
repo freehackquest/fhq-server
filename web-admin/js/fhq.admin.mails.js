@@ -96,8 +96,6 @@ fhq.pages['mails'] = function(){
 		el.append('<button id="mail_send" class="btn btn-secondary">Mail Send</button><hr>');
 		$('#mail_send').unbind().bind('click', fhq.pages['mail_send']);
 		
-		
-		
 		el.append(fhq.paginator(0, r.count, r.onpage, r.page));
 		el.append('<table class="table table-striped">'
 			+ '		<thead>'
