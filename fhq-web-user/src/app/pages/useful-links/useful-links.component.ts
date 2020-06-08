@@ -4,9 +4,8 @@ import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material';
-import { MatDrawer } from '@angular/material/sidenav';
 import { MatTableDataSource } from '@angular/material';
-
+import { FhqService } from '../../services/fhq.service';
 
 export interface UsefulLinkElement {
   id: number;
@@ -704,15 +703,16 @@ export class UsefulLinksComponent implements OnInit {
 
   dataSource = new MatTableDataSource<UsefulLinkElement>();
   displayedColumns: string[] = ['idUsefulLink', 'usefulLinkData'];
-  @ViewChild('drawer', { static: true }) drawer: MatDrawer;
 
   constructor(
     private _spinner: SpinnerService,
     private _cdr: ChangeDetectorRef,
     private _router: Router,
+    private _fhq: FhqService,
   ) { }
 
   ngOnInit() {
+    this.updatePage();
 
     this._spinner.hide();
     this.formCtrlSub = this.searchControl.valueChanges
@@ -723,6 +723,37 @@ export class UsefulLinksComponent implements OnInit {
     });
     this.applyFilter();
     this.dataSource = new MatTableDataSource<UsefulLinkElement>(this.usefullLinksData);
+  }
+
+  successUsefulLinksList(r: any) {
+    this._spinner.hide();
+    // this.usefullLinksData = [];
+    for (let i in r.data) {
+      let usefulLink = r.data[i];
+      this.usefullLinksData.push({
+        id: usefulLink['id'],
+        link: usefulLink['url'],
+        description: usefulLink['description'],
+        rating: 0,
+        tags: [],
+      })
+    }
+    this.dataSource = new MatTableDataSource<UsefulLinkElement>(this.usefullLinksData);
+    this._cdr.detectChanges();
+  }
+
+  errorUsefulLinksList(err: any) {
+    console.error("errorResponse: ", err);
+    this._spinner.hide();
+    // this.resultOfChangePassword = err.error;
+    // this._cdr.detectChanges();
+  }
+
+  updatePage() {
+    this._spinner.show();
+    this._fhq.api().useful_links_list({})
+      .done((r: any) => this.successUsefulLinksList(r))
+      .fail((err: any) => this.errorUsefulLinksList(err));
   }
 
   applyFilter() {
