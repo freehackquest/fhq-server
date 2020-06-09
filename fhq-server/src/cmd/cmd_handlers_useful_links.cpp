@@ -78,7 +78,7 @@ CmdHandlerUsefulLinksRetrieve::CmdHandlerUsefulLinksRetrieve()
     setActivatedFromVersion("0.2.28");
 
     setAccessUnauthorized(false);
-    setAccessUser(false);
+    setAccessUser(true);
     setAccessAdmin(true);
 
     // validation and description input fields
@@ -262,40 +262,15 @@ void CmdHandlerUsefulLinksUpdate::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * Useful Links Star
-**********************************************/
-
-REGISTRY_CMD(CmdHandlerUsefulLinksStar)
-
-CmdHandlerUsefulLinksStar::CmdHandlerUsefulLinksStar()
-    : CmdHandlerBase("useful_links_star", "Method set star") {
-    
-    setActivatedFromVersion("0.2.21");
-
-    setAccessUnauthorized(false);
-    setAccessUser(false);
-    setAccessAdmin(true);
-
-    // validation and description input fields
-}
-
 // ---------------------------------------------------------------------
+// Useful Links list of favorite
 
-void CmdHandlerUsefulLinksStar::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
-}
+REGISTRY_CMD(CmdHandlerUsefulLinksUserFavoriteList)
 
-/*********************************************
- * Useful Links Unstar
-**********************************************/
-
-REGISTRY_CMD(CmdHandlerUsefulLinksUnstar)
-
-CmdHandlerUsefulLinksUnstar::CmdHandlerUsefulLinksUnstar()
-    : CmdHandlerBase("useful_links_unstar", "Method set unstar") {
+CmdHandlerUsefulLinksUserFavoriteList::CmdHandlerUsefulLinksUserFavoriteList()
+    : CmdHandlerBase("useful_links_user_favorite_list", "Useful Links list of favorite") {
     
-    setActivatedFromVersion("0.2.21");
+    setActivatedFromVersion("0.2.29");
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -306,6 +281,255 @@ CmdHandlerUsefulLinksUnstar::CmdHandlerUsefulLinksUnstar()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksUnstar::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksUserFavoriteList::handle(ModelRequest *pRequest) {
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+}
+
+// ---------------------------------------------------------------------
+// Useful Links add to favorite
+
+REGISTRY_CMD(CmdHandlerUsefulLinksUserFavorite)
+
+CmdHandlerUsefulLinksUserFavorite::CmdHandlerUsefulLinksUserFavorite()
+    : CmdHandlerBase("useful_links_user_favorite", "Useful Links add to favorite") {
+    
+    setActivatedFromVersion("0.2.29");
+
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
+
+    // validation and description input fields
+    requireIntegerParam("useful_link_id", "Id of useful link");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsefulLinksUserFavorite::handle(ModelRequest *pRequest) {
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+}
+
+// ---------------------------------------------------------------------
+// Useful Links removed from favorite
+
+REGISTRY_CMD(CmdHandlerUsefulLinksUserUnfavorite)
+
+CmdHandlerUsefulLinksUserUnfavorite::CmdHandlerUsefulLinksUserUnfavorite()
+    : CmdHandlerBase("useful_links_user_unfavorite", "Useful Links removed from favorite") {
+    
+    setActivatedFromVersion("0.2.29");
+
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
+
+    // validation and description input fields
+    requireIntegerParam("useful_link_id", "Id of useful link");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsefulLinksUserUnfavorite::handle(ModelRequest *pRequest) {
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+}
+
+// ---------------------------------------------------------------------
+// Useful Links counter clicker
+
+REGISTRY_CMD(CmdHandlerUsefulLinksClicked)
+
+CmdHandlerUsefulLinksClicked::CmdHandlerUsefulLinksClicked()
+    : CmdHandlerBase("useful_links_clicked", "Useful Links removed from favorite") {
+    
+    setActivatedFromVersion("0.2.29");
+
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
+
+    // validation and description input fields
+    requireIntegerParam("useful_link_id", "Id of useful link");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsefulLinksClicked::handle(ModelRequest *pRequest) {
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+}
+
+// ---------------------------------------------------------------------
+// Useful Links list of comments
+
+REGISTRY_CMD(CmdHandlerUsefulLinksCommentList)
+
+CmdHandlerUsefulLinksCommentList::CmdHandlerUsefulLinksCommentList()
+    : CmdHandlerBase("useful_links_comment_list", "Useful Links list of comments") {
+    
+    setActivatedFromVersion("0.2.29");
+
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
+
+    // validation and description input fields
+    requireIntegerParam("useful_link_id", "Id of useful link");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsefulLinksCommentList::handle(ModelRequest *pRequest) {
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+}
+
+// ---------------------------------------------------------------------
+// Useful Links add comment
+
+CmdHandlerUsefulLinksCommentAdd::CmdHandlerUsefulLinksCommentAdd()
+    : CmdHandlerBase("useful_links_comment_add", "Useful Links add comment") {
+    
+    setActivatedFromVersion("0.2.29");
+
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
+
+    // validation and description input fields
+    requireIntegerParam("useful_link_id", "Id of useful link");
+    requireStringParam("comment", "Comment");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsefulLinksCommentAdd::handle(ModelRequest *pRequest) {
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+}
+
+// ---------------------------------------------------------------------
+// Useful Links remove comment
+
+CmdHandlerUsefulLinksCommentDelete::CmdHandlerUsefulLinksCommentDelete()
+    : CmdHandlerBase("useful_links_comment_delete", "Useful Links remove comment") {
+    
+    setActivatedFromVersion("0.2.29");
+
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
+
+    // validation and description input fields
+    requireIntegerParam("useful_link_comment_id", "Comment Id for useful link");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsefulLinksCommentDelete::handle(ModelRequest *pRequest) {
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+}
+
+
+// ---------------------------------------------------------------------
+// Useful Links List of tags
+
+CmdHandlerUsefulLinksTagList::CmdHandlerUsefulLinksTagList()
+    : CmdHandlerBase("useful_links_tag_list", "Useful Links - List of tags") {
+    
+    setActivatedFromVersion("0.2.29");
+
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
+
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsefulLinksTagList::handle(ModelRequest *pRequest) {
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+}
+
+// ---------------------------------------------------------------------
+// Useful Links add tag
+
+CmdHandlerUsefulLinksTagAdd::CmdHandlerUsefulLinksTagAdd()
+    : CmdHandlerBase("useful_links_tag_add", "Useful Links add tag") {
+    
+    setActivatedFromVersion("0.2.29");
+
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
+
+    requireIntegerParam("useful_link_id", "Id of useful link");
+    requireStringParam("tagname", "tag name");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsefulLinksTagAdd::handle(ModelRequest *pRequest) {
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+}
+
+// ---------------------------------------------------------------------
+// Useful Links remove tag
+
+CmdHandlerUsefulLinksTagDelete::CmdHandlerUsefulLinksTagDelete()
+    : CmdHandlerBase("useful_links_tag_delete", "Useful Links remove tag") {
+    
+    setActivatedFromVersion("0.2.29");
+
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
+
+    requireIntegerParam("useful_link_tag_id", "Tag Id for useful link");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsefulLinksTagDelete::handle(ModelRequest *pRequest) {
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+}
+
+// ---------------------------------------------------------------------
+// Useful Links propose link by user
+
+CmdHandlerUsefulLinksUserPropose::CmdHandlerUsefulLinksUserPropose()
+    : CmdHandlerBase("useful_links_user_propose", "Useful Links propose link by user") {
+    
+    setActivatedFromVersion("0.2.29");
+
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(true);
+
+    requireStringParam("url", "Url");
+    requireStringParam("description", "Description");
+    requireStringParam("tags", "tags");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsefulLinksUserPropose::handle(ModelRequest *pRequest) {
+    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+}
+
+// ---------------------------------------------------------------------
+// Useful Links propose link by user
+
+CmdHandlerUsefulLinksUserProposeApprove::CmdHandlerUsefulLinksUserProposeApprove()
+    : CmdHandlerBase("useful_links_user_propose_approve", "Useful Links Approve propose link by admin") {
+    
+    setActivatedFromVersion("0.2.29");
+
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
+
+    requireIntegerParam("useful_links_propose_id", "Id of propose for useful_links");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerUsefulLinksUserProposeApprove::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
 }
