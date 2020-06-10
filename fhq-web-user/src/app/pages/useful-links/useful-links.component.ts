@@ -116,4 +116,48 @@ export class UsefulLinksComponent implements OnInit {
   openLink(link) {
     console.log(link);
   }
+
+  successUsefulLinksFavorite(r: any) {
+    this._spinner.hide();
+    console.log(r)
+  }
+
+  errorUsefulLinksFavorite(err: any) {
+    console.error("errorResponse: ", err);
+    this._spinner.hide();
+    // this.resultOfChangePassword = err.error;
+    // this._cdr.detectChanges();
+  }
+
+  addToFavorite(id: number) {
+    console.log("addToFavorite", id );
+    this._spinner.show();
+    this._fhq.api().useful_links_user_favorite({
+      "useful_link_id": id
+    })
+      .done((r: any) => this.successUsefulLinksFavorite(r))
+      .fail((err: any) => this.errorUsefulLinksFavorite(err));
+  }
+
+  successUsefulLinksUserUnfavorite(r: any) {
+    this._spinner.hide();
+    console.log(r)
+  }
+
+  errorUsefulLinksUserUnfavorite(err: any) {
+    console.error("errorResponse: ", err);
+    this._spinner.hide();
+    // this.resultOfChangePassword = err.error;
+    // this._cdr.detectChanges();
+  }
+
+  removeFromFavorite(id: number) {
+    console.log("removeFromFavorite", id );
+    this._spinner.show();
+    this._fhq.api().useful_links_user_unfavorite({
+      "useful_link_id": id
+    })
+      .done((r: any) => this.successUsefulLinksUserUnfavorite(r))
+      .fail((err: any) => this.errorUsefulLinksUserUnfavorite(err));
+  }
 }
