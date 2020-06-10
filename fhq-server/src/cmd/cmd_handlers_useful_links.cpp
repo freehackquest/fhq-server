@@ -35,7 +35,7 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     nlohmann::json jsonData = nlohmann::json::array();
     QString sWhere = "";
     if (!bIsAdmin) {
-        sWhere = " WHERE status = 'ok' ";
+        // sWhere = " WHERE status = 'ok' ";
     }
 
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
