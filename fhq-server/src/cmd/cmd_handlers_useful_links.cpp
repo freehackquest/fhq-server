@@ -306,7 +306,36 @@ CmdHandlerUsefulLinksUserFavorite::CmdHandlerUsefulLinksUserFavorite()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksUserFavorite::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+    int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
+    int nUserId = 0;
+    WsjcppUserSession *pSession = pRequest->getUserSession();
+    if (pSession != NULL) {
+        nUserId = pSession->userid();
+    }
+
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    // TODO datetime
+    // TODO check existing link
+    // TODO check existing same row
+    // TODO calculate count of favorites 
+    query.prepare("INSERT INTO useful_links_user_favorites(usefullinkid,userid,dt) VALUES(:usefullinkid,:userid, NOW())");
+    query.bindValue(":usefullinkid", nUsefulLinkId);
+    query.bindValue(":userid", nUserId);
+
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+    nlohmann::json jsonResult;
+    jsonResult["id"] = query.lastInsertId().toInt();
+
+    nlohmann::json jsonResponse;
+    jsonResponse["data"] = jsonResult;
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -330,7 +359,31 @@ CmdHandlerUsefulLinksUserUnfavorite::CmdHandlerUsefulLinksUserUnfavorite()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksUserUnfavorite::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+    int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
+    int nUserId = 0;
+    WsjcppUserSession *pSession = pRequest->getUserSession();
+    if (pSession != NULL) {
+        nUserId = pSession->userid();
+    }
+
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    // TODO datetime
+    // TODO check existing link
+    // TODO check existing same row
+    query.prepare("DELETE FROM useful_links_user_favorites WHERE usefullinkid = :usefullinkid AND userid = :userid");
+    query.bindValue(":usefullinkid", nUsefulLinkId);
+    query.bindValue(":userid", nUserId);
+
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+    nlohmann::json jsonResponse;
+
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 // ---------------------------------------------------------------------
