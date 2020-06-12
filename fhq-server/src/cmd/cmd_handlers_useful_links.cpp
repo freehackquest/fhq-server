@@ -28,6 +28,12 @@ CmdHandlerUsefulLinksList::CmdHandlerUsefulLinksList()
 
 void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
+    int nUserId = 0;
+    WsjcppUserSession *pSession = pRequest->getUserSession();
+    if (pSession != nullptr) {
+        nUserId = pSession->userid();
+    }
+
     bool bIsAdmin = pRequest->isAdmin();
 
     std::string sFilter = pRequest->getInputString("filter", "");
@@ -41,8 +47,12 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
+
+    // SELECT t0.*, t1.userid FROM useful_links t0 LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid = t0.id WHERE (t1.userid = 50 OR ISNULL(t1.userid)) ORDER BY user_favorites DESC
+
     // TODO paginator
-    query.prepare("SELECT * FROM useful_links " + sWhere + " ORDER BY stars, dt DESC LIMIT 0,25");
+    query.prepare("SELECT t0.*, t1.userid FROM useful_links t0 LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid = t0.id AND t1.userid = :userid ORDER BY user_favorites DESC");
+    query.bindValue(":userid", nUserId);
 
     if (!query.exec()) {
         pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
@@ -56,8 +66,13 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
         jsonLink["url"] = record.value("url").toString().toHtmlEscaped().toStdString();
         jsonLink["description"] = record.value("description").toString().toHtmlEscaped().toStdString();
         jsonLink["author"] = record.value("message").toString().toHtmlEscaped().toStdString();
-        jsonLink["stars"] = record.value("stars").toInt();
+        jsonLink["user_favorites"] = record.value("user_favorites").toInt();
         jsonLink["dt"] = record.value("dt").toString().toStdString();
+        if (record.value("userid").toInt() == nUserId && nUserId != 0) {
+            jsonLink["favorite"] = true;
+        } else {
+            jsonLink["favorite"] = false;
+        }
         jsonData.push_back(jsonLink);
     }
     
@@ -89,12 +104,18 @@ CmdHandlerUsefulLinksRetrieve::CmdHandlerUsefulLinksRetrieve()
 
 void CmdHandlerUsefulLinksRetrieve::handle(ModelRequest *pRequest) {
     int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
+    int nUserId = 0;
+    WsjcppUserSession *pSession = pRequest->getUserSession();
+    if (pSession != nullptr) {
+        nUserId = pSession->userid();
+    }
 
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
-    query.prepare("SELECT * FROM useful_links WHERE id = :useful_link_id");
+    query.prepare("SELECT t0.*, t1.userid FROM useful_links t0 LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid = t0.id AND t1.userid = :userid WHERE t0.id = :useful_link_id");
+    query.bindValue(":userid", nUserId);
     query.bindValue(":useful_link_id", nUsefulLinkId);
 
     if (!query.exec()) {
@@ -109,8 +130,13 @@ void CmdHandlerUsefulLinksRetrieve::handle(ModelRequest *pRequest) {
         jsonLink["url"] = record.value("url").toString().toHtmlEscaped().toStdString();
         jsonLink["description"] = record.value("description").toString().toHtmlEscaped().toStdString();
         jsonLink["author"] = record.value("message").toString().toHtmlEscaped().toStdString();
-        jsonLink["stars"] = record.value("stars").toInt();
+        jsonLink["user_favorites"] = record.value("user_favorites").toInt();
         jsonLink["dt"] = record.value("dt").toString().toStdString();
+        if (record.value("userid").toInt() == nUserId && nUserId != 0) {
+            jsonLink["favorite"] = true;
+        } else {
+            jsonLink["favorite"] = false;
+        }
     }
     
     nlohmann::json jsonResponse;
@@ -208,6 +234,23 @@ void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
+
+    query.prepare("DELETE FROM useful_links_comments WHERE usefullinkid = :useful_link_id");
+    query.bindValue(":useful_link_id", nUsefulLinkId);
+    
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    query.prepare("DELETE FROM useful_links_user_favorites WHERE usefullinkid = :useful_link_id");
+    query.bindValue(":useful_link_id", nUsefulLinkId);
+    
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
     nlohmann::json jsonResponse;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -309,7 +352,7 @@ void CmdHandlerUsefulLinksUserFavorite::handle(ModelRequest *pRequest) {
     int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
     int nUserId = 0;
     WsjcppUserSession *pSession = pRequest->getUserSession();
-    if (pSession != NULL) {
+    if (pSession != nullptr) {
         nUserId = pSession->userid();
     }
 
@@ -317,6 +360,21 @@ void CmdHandlerUsefulLinksUserFavorite::handle(ModelRequest *pRequest) {
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
+
+    query.prepare("SELECT * FROM useful_links_user_favorites WHERE usefullinkid = :usefullinkid AND userid = :userid");
+    query.bindValue(":usefullinkid", nUsefulLinkId);
+    query.bindValue(":userid", nUserId);
+
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    if (query.next()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(403, "Already exists"));
+        return;
+    }
+
     // TODO datetime
     // TODO check existing link
     // TODO check existing same row
@@ -331,9 +389,18 @@ void CmdHandlerUsefulLinksUserFavorite::handle(ModelRequest *pRequest) {
     }
     nlohmann::json jsonResult;
     jsonResult["id"] = query.lastInsertId().toInt();
+    jsonResult["useful_link_id"] = nUsefulLinkId;
 
     nlohmann::json jsonResponse;
     jsonResponse["data"] = jsonResult;
+
+    query.prepare("UPDATE `useful_links` SET user_favorites = (SELECT COUNT(*) FROM useful_links_user_favorites WHERE usefullinkid = :usefullinkid0) WHERE id = :usefullinkid1");
+    query.bindValue(":usefullinkid0", nUsefulLinkId);
+    query.bindValue(":usefullinkid1", nUsefulLinkId);
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -362,7 +429,7 @@ void CmdHandlerUsefulLinksUserUnfavorite::handle(ModelRequest *pRequest) {
     int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
     int nUserId = 0;
     WsjcppUserSession *pSession = pRequest->getUserSession();
-    if (pSession != NULL) {
+    if (pSession != nullptr) {
         nUserId = pSession->userid();
     }
 
@@ -381,7 +448,19 @@ void CmdHandlerUsefulLinksUserUnfavorite::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
+    nlohmann::json jsonResult;
+    jsonResult["useful_link_id"] = nUsefulLinkId;
+
     nlohmann::json jsonResponse;
+    jsonResponse["data"] = jsonResult;
+
+    query.prepare("UPDATE `useful_links` SET user_favorites = (SELECT COUNT(*) FROM useful_links_user_favorites WHERE usefullinkid = :usefullinkid0) WHERE id = :usefullinkid1");
+    query.bindValue(":usefullinkid0", nUsefulLinkId);
+    query.bindValue(":usefullinkid1", nUsefulLinkId);
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

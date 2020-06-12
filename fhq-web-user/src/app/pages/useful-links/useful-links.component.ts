@@ -12,6 +12,8 @@ export interface UsefulLinkElement {
   link: string;
   description: string;
   rating: number;
+  userFavorites: number;
+  favorite: boolean;
   tags: Array<string>;
 }
 
@@ -22,7 +24,7 @@ export interface UsefulLinkElement {
 })
 export class UsefulLinksComponent implements OnInit {
   public usefullLinksData: UsefulLinkElement[] = [];
-  
+  subscription: any;
   pageEvent: PageEvent;
   pageIndex: number = 0;
   pageSize: number = 7;
@@ -47,6 +49,8 @@ export class UsefulLinksComponent implements OnInit {
 
   ngOnInit() {
     this.updatePage();
+    this.subscription = this._fhq.changedState
+      .subscribe(() => this.updatePage());
 
     this._spinner.hide();
     this.formCtrlSub = this.searchControl.valueChanges
@@ -61,19 +65,21 @@ export class UsefulLinksComponent implements OnInit {
 
   successUsefulLinksList(r: any) {
     this._spinner.hide();
-    // this.usefullLinksData = [];
+    this.usefullLinksData = [];
+    console.log(r);
     for (let i in r.data) {
       let usefulLink = r.data[i];
       this.usefullLinksData.push({
         id: usefulLink['id'],
         link: usefulLink['url'],
         description: usefulLink['description'],
+        userFavorites: usefulLink['user_favorites'],
+        favorite: usefulLink['favorite'],
         rating: 0,
         tags: [],
       })
     }
-    this.dataSource = new MatTableDataSource<UsefulLinkElement>(this.usefullLinksData);
-    this._cdr.detectChanges();
+    this.applyFilter();
   }
 
   errorUsefulLinksList(err: any) {
@@ -92,25 +98,60 @@ export class UsefulLinksComponent implements OnInit {
 
   applyFilter() {
     const _sv = this.searchValue.toUpperCase();
-    console.log(_sv);
     this.filteredUsefullLinksData = []
     this.usefullLinksData.forEach((el: any) => {
-      var filteredLink = {
-        link: el.link,
-        description: el.description
-      }
       if (el.link.toUpperCase().indexOf(_sv) !== -1
         || el.description.toUpperCase().indexOf(_sv) !== -1) {
           this.filteredUsefullLinksData.push({
             id: el.id,
             link: el.link,
             description: el.description,
+            userFavorites: el.userFavorites,
+            favorite: el.favorite,
             rating: el.rating,
             tags: el.tags
           })
       }
     });
     this.dataSource = new MatTableDataSource<UsefulLinkElement>(this.filteredUsefullLinksData);
+    this._cdr.detectChanges();
+  }
+
+  successUsefulLinksOneItem(r: any) {
+    this._spinner.hide();
+    console.log(this.filteredUsefullLinksData)
+    this.filteredUsefullLinksData.forEach((el: any) => {
+      if (el.id == r.data.id) {
+        el.userFavorites = r.data.user_favorites
+        el.favorite = r.data.favorite
+      }
+    })
+    this.usefullLinksData.forEach((el: any) => {
+      if (el.id == r.data.id) {
+        el.userFavorites = r.data.user_favorites
+        el.favorite = r.data.favorite
+        console.log(el)
+      }
+    })
+    this.dataSource = new MatTableDataSource<UsefulLinkElement>(this.filteredUsefullLinksData);
+    this._cdr.detectChanges();
+  }
+
+  errorUsefulLinksOneItem(err: any) {
+    console.error("errorResponse: ", err);
+    this._spinner.hide();
+    // this.resultOfChangePassword = err.error;
+    // this._cdr.detectChanges();
+    
+  }
+
+  updateOneItem(usefulLinkId: number) {
+    this._spinner.show();
+    this._fhq.api().useful_links_retrieve({
+      "useful_link_id": usefulLinkId
+    })
+      .done((r: any) => this.successUsefulLinksOneItem(r))
+      .fail((err: any) => this.errorUsefulLinksOneItem(err));
   }
 
   openLink(link) {
@@ -118,8 +159,7 @@ export class UsefulLinksComponent implements OnInit {
   }
 
   successUsefulLinksFavorite(r: any) {
-    this._spinner.hide();
-    console.log(r)
+    this.updateOneItem(r.data.useful_link_id)
   }
 
   errorUsefulLinksFavorite(err: any) {
@@ -127,10 +167,14 @@ export class UsefulLinksComponent implements OnInit {
     this._spinner.hide();
     // this.resultOfChangePassword = err.error;
     // this._cdr.detectChanges();
+    
   }
 
   addToFavorite(id: number) {
     console.log("addToFavorite", id );
+    if (this._fhq.isAuthorized) {
+
+    }
     this._spinner.show();
     this._fhq.api().useful_links_user_favorite({
       "useful_link_id": id
@@ -140,8 +184,7 @@ export class UsefulLinksComponent implements OnInit {
   }
 
   successUsefulLinksUserUnfavorite(r: any) {
-    this._spinner.hide();
-    console.log(r)
+    this.updateOneItem(r.data.useful_link_id)
   }
 
   errorUsefulLinksUserUnfavorite(err: any) {
