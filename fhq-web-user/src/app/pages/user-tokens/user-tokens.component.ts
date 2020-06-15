@@ -117,4 +117,9 @@ export class UserTokensComponent implements OnInit {
       .done((r: any) => this.successUserTokensDelete(r))
       .fail((err: any) => this.errorUserTokensDelete(err));
   }
+
+  openDialogSignIn() {
+    const modalRef = this._modalService.open(ModalDialogSignInComponent);
+    modalRef.componentInstance.name = 'SignIn';
+  }
 }

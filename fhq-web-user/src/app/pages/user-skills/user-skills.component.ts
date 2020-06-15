@@ -1,9 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { FhqService } from '../../services/fhq.service';
 import { SpinnerService } from '../../services/spinner.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
 import { MatDrawer } from '@angular/material/sidenav';
 import { MatTableDataSource } from '@angular/material';
-
 
 export interface UserSkillsElement {
   skillName: string;
@@ -33,6 +34,7 @@ export class UserSkillsComponent implements OnInit {
     private _cdr: ChangeDetectorRef,
     private _fhq: FhqService,
     private _spinnerService: SpinnerService,
+    private _modalService: NgbModal,
   ) {
 
   }
@@ -56,6 +58,7 @@ export class UserSkillsComponent implements OnInit {
       this.userId = 0;
       this.userSkills = [];
     }
+    this._spinnerService.hide();
   }
 
   loadUserSkills() {
@@ -91,5 +94,10 @@ export class UserSkillsComponent implements OnInit {
 
   errorUserSkills(err: any) {
     console.error("errorUserSkills: ", err);
+  }
+
+  openDialogSignIn() {
+    const modalRef = this._modalService.open(ModalDialogSignInComponent);
+    modalRef.componentInstance.name = 'SignIn';
   }
 }
