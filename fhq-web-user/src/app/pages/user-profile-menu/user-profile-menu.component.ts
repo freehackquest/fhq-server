@@ -18,6 +18,7 @@ export class UserProfileMenuComponent implements OnInit {
     this.updatePage();
     this.subscription = this._fhq.changedState
       .subscribe(() => this.updatePage());
+    
   }
 
   ngOnDestroy() {

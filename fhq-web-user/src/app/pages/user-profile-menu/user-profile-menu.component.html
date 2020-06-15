@@ -27,6 +27,13 @@
     skills
   </button>
   <br/><br/>
+  <button routerLink="/user-favorites-useful-links"
+    *ngIf="userRole == 'user' || userRole == 'admin'"
+    mat-raised-button
+    l10nTranslate>
+    myFavoritesUsefulLinks
+  </button>
+  <br/><br/>
   <button (click)="userSignout()"
     *ngIf="userRole == 'user' || userRole == 'admin'"
     mat-raised-button

@@ -1,4 +1,8 @@
-<mat-drawer-container class="user-tokens-container">
+<div class="alert alert-danger" *ngIf="userId == 0">
+  Please authorize
+  <div class="btn btn-primary" (click)="openDialogSignIn()" l10nTranslate>signin</div>
+</div>
+<mat-drawer-container class="user-profile-container">
   <mat-drawer #drawer mode="side">
     <app-user-profile-menu></app-user-profile-menu>
   </mat-drawer>

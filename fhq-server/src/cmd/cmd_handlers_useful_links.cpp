@@ -325,7 +325,55 @@ CmdHandlerUsefulLinksUserFavoriteList::CmdHandlerUsefulLinksUserFavoriteList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksUserFavoriteList::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+    nlohmann::json jsonRequest = pRequest->jsonRequest();
+    int nUserId = 0;
+    WsjcppUserSession *pSession = pRequest->getUserSession();
+    if (pSession != nullptr) {
+        nUserId = pSession->userid();
+    }
+
+    bool bIsAdmin = pRequest->isAdmin();
+
+    std::string sFilter = pRequest->getInputString("filter", "");
+
+    nlohmann::json jsonData = nlohmann::json::array();
+    QString sWhere = "";
+    if (!bIsAdmin) {
+        // sWhere = " WHERE status = 'ok' ";
+    }
+
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+
+    query.prepare("SELECT t0.*, t1.userid FROM useful_links t0 INNER JOIN useful_links_user_favorites t1 ON t1.usefullinkid = t0.id AND t1.userid = :userid ORDER BY user_favorites DESC");
+    query.bindValue(":userid", nUserId);
+
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    while (query.next()) {
+        QSqlRecord record = query.record();
+        nlohmann::json jsonLink;
+        jsonLink["id"] = record.value("id").toInt();
+        jsonLink["url"] = record.value("url").toString().toHtmlEscaped().toStdString();
+        jsonLink["description"] = record.value("description").toString().toHtmlEscaped().toStdString();
+        jsonLink["author"] = record.value("message").toString().toHtmlEscaped().toStdString();
+        jsonLink["user_favorites"] = record.value("user_favorites").toInt();
+        jsonLink["dt"] = record.value("dt").toString().toStdString();
+        if (record.value("userid").toInt() == nUserId && nUserId != 0) {
+            jsonLink["favorite"] = true;
+        } else {
+            jsonLink["favorite"] = false;
+        }
+        jsonData.push_back(jsonLink);
+    }
+    
+    nlohmann::json jsonResponse;
+    jsonResponse["data"] = jsonData;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 // ---------------------------------------------------------------------
