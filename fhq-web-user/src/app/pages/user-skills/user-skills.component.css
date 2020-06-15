@@ -1,8 +1,3 @@
 .mat-column-name {
     width: 170px;
 }
-
-table {
-    width: calc(100% - 40px);
-    margin: 20px;
-}

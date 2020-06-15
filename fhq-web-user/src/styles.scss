@@ -171,3 +171,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     height: 100%;
     min-height: 450px;
 }
+
+.user-profile-table {
+    width: calc(100% - 40px);
+    margin: 20px;
+}

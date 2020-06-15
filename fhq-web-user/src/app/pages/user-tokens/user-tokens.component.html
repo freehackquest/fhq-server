@@ -3,11 +3,11 @@
   <div class="btn btn-primary" (click)="openDialogSignIn()" l10nTranslate>signin</div>
 </div>
 <mat-drawer-container class="user-profile-container">
-  <mat-drawer #drawer mode="side">
+  <mat-drawer #drawer mode="side" opened>
     <app-user-profile-menu></app-user-profile-menu>
   </mat-drawer>
   <mat-drawer-content>
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" class="user-profile-table mat-elevation-z8">
 
       <ng-container matColumnDef="idToken">
         <th mat-header-cell *matHeaderCellDef>#</th>

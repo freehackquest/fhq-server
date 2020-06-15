@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { FhqService } from '../../services/fhq.service';
-import { FreeHackQuestClient } from '../../services/libfhqcli-web-js.service';
+// import { FreeHackQuestClient } from '../../services/libfhqcli-web-js.service';
 import { SpinnerService } from '../../services/spinner.service';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -35,7 +35,7 @@ export class UserTokensComponent implements OnInit {
     private _router: Router,
     private _modalService: NgbModal,
     private _fhq: FhqService,
-    private _fhq2: FreeHackQuestClient,
+    // private _fhq2: FreeHackQuestClient,
     private _cdr: ChangeDetectorRef,
     private _spinnerService: SpinnerService,
   ) { }
