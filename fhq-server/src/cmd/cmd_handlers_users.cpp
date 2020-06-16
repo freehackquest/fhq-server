@@ -517,7 +517,19 @@ CmdHandlerUserChangePassword::CmdHandlerUserChangePassword()
 void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
-    const nlohmann::json& jsonRequest = pRequest->jsonRequest();
+    std::string sOldPassword = pRequest->getInputString("password_old", "");
+    std::string sNewPassword = pRequest->getInputString("password_new", "");
+
+    if (sNewPassword.length() == 0) {
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "New password could not be empty"));
+        return;
+    }
+
+    if (sNewPassword.length() < 3) {
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "New password must be more then 3 symbols"));
+        return;
+    }
+
     nlohmann::json jsonResponse;
 
     WsjcppUserSession *pUserSession = pRequest->getUserSession();
@@ -533,46 +545,38 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest) {
         return;
     }
 
-    QString sPass = "";
-    QString sEmail = "";
+    std::string sEmail = "";
+    std::string sCurrentPassSha1 = "";
 
     if (query.next()) {
         QSqlRecord record = query.record();
-        sEmail = record.value("email").toString();
-        sPass = record.value("pass").toString();
+        sEmail = record.value("email").toString().toStdString();
+        sCurrentPassSha1 = record.value("pass").toString().toStdString();
     } else {
         pRequest->sendMessageError(cmd(), WsjcppError(404, "Not found user"));
         return;
     }
+    std::string sUpperEmail = WsjcppCore::toUpper(sEmail);
+    std::string sOldPassword_sha1 = WsjcppHashes::sha1_calc_hex(sUpperEmail + sOldPassword);
 
-    QString sOldPassword = QString::fromStdString(jsonRequest.at("password_old"));
-    QString sNewPassword = QString::fromStdString(jsonRequest.at("password_new"));
-
-    QString sOldPassword_sha1 = sEmail.toUpper() + sOldPassword;
-
-    std::string _sOldPassword_sha1 = WsjcppHashes::sha1_calc_hex(sOldPassword_sha1.toStdString());
-    sOldPassword_sha1 = QString(_sOldPassword_sha1.c_str());
-
-    if (sOldPassword_sha1 != sPass) {
-        pRequest->sendMessageError(cmd(), WsjcppError(401, "Wrong password"));
+    if (sOldPassword_sha1 != sCurrentPassSha1) {
+        pRequest->sendMessageError(cmd(), WsjcppError(401, "Old Password wrong"));
         return;
     }
 
-    QString sNewPassword_sha1 = sEmail.toUpper() + sNewPassword;
-
-    std::string _sNewPassword_sha1 = WsjcppHashes::sha1_calc_hex(sNewPassword_sha1.toStdString());
-    sNewPassword_sha1 = QString(_sNewPassword_sha1.c_str());
+    std::string sNewPassword_sha1 = WsjcppHashes::sha1_calc_hex(sUpperEmail + sNewPassword);
 
     QSqlQuery query_update(db);
     query_update.prepare("UPDATE users SET pass = :pass WHERE id = :userid AND email = :email");
-    query_update.bindValue(":pass", sNewPassword_sha1);
+    query_update.bindValue(":pass", QString::fromStdString(sNewPassword_sha1));
     query_update.bindValue(":userid", nUserID);
-    query_update.bindValue(":email", sEmail);
+    query_update.bindValue(":email", QString::fromStdString(sEmail));
 
     if (!query_update.exec()) {
         pRequest->sendMessageError(cmd(), WsjcppError(500, query_update.lastError().text().toStdString()));
         return;
     }
+    // TODO send email
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
