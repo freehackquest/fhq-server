@@ -2,5 +2,9 @@
     padding: 20px;
     height: 450px;
     min-height: 450px;
-    width: 250px;
+    width: 265px;
+}
+
+.user-profile-menu-btn {
+    width: 100%;
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FhqService } from '../../services/fhq.service';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-user-profile-menu',
@@ -9,16 +10,19 @@ import { FhqService } from '../../services/fhq.service';
 export class UserProfileMenuComponent implements OnInit {
   subscription: any;
   userRole: String = "";
-
+  urlPath:  String = "";
   constructor(
-    private _fhq: FhqService
+    private _fhq: FhqService,
+    private _router: Router,
+    private _activatedRoute: ActivatedRoute,
   ) { }
 
   ngOnInit() {
     this.updatePage();
     this.subscription = this._fhq.changedState
-      .subscribe(() => this.updatePage());
-    
+    .subscribe(() => this.updatePage());
+
+    this.urlPath = this._activatedRoute.snapshot.url[0].path
   }
 
   ngOnDestroy() {
