@@ -1,5 +1,5 @@
 
-<mat-list class="user-profile-menu-sidenav">
+<mat-list class="user-profile-menu-sidenav" *ngIf="userRole == 'user' || userRole == 'admin'">
   <mat-list-item>
     <button routerLink="/user-profile"
       *ngIf="userRole == 'user' || userRole == 'admin'"

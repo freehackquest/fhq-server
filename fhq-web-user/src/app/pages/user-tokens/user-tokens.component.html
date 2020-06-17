@@ -2,8 +2,8 @@
   Please authorize
   <div class="btn btn-primary" (click)="openDialogSignIn()" l10nTranslate>signin</div>
 </div>
-<mat-drawer-container class="user-profile-container">
-  <mat-drawer #drawer mode="side" opened>
+<mat-drawer-container class="user-profile-container" autosize>
+  <mat-drawer mode="side" opened>
     <app-user-profile-menu></app-user-profile-menu>
   </mat-drawer>
   <mat-drawer-content>

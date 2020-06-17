@@ -4,6 +4,7 @@ import { SpinnerService } from '../../services/spinner.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-user-profile',
@@ -27,10 +28,15 @@ export class UserProfileComponent implements OnInit {
   userUniversity: string = "";
   userUuid: string = "";
 
-  @ViewChild('userNewNick', { static: false }) userNewNick: ElementRef;
-  @ViewChild('userNewUniversity', { static: false }) userNewUniversity: ElementRef;
-  @ViewChild('userNewAbout', { static: false }) userNewAbout: ElementRef;
   resultOfChangeUserInfo: string = null;
+
+  userNewNickFormControl = new FormControl('', [
+    Validators.required
+  ]);
+  userNewUniversityFormControl = new FormControl('', [
+  ]);
+  userNewAboutFormControl = new FormControl('', [
+  ]);
 
   constructor(
     private _spinnerService: SpinnerService,
@@ -67,6 +73,9 @@ export class UserProfileComponent implements OnInit {
       this.userStatus = this._fhq.userdata.status;
       this.userUniversity = this._fhq.userdata.university;
       this.userUuid = this._fhq.userdata.uuid;
+      this.userNewNickFormControl.setValue(this.userNick);
+      this.userNewUniversityFormControl.setValue(this.userUniversity);
+      this.userNewAboutFormControl.setValue(this.userAbout);
       this._cdr.detectChanges();
     } else {
       this.userId = 0;
@@ -83,9 +92,9 @@ export class UserProfileComponent implements OnInit {
     this.resultOfChangeUserInfo = null;
     this._cdr.detectChanges();
 
-    const userNewNickValue = this.userNewNick.nativeElement.value.trim();
-    const userNewUniversityValue = this.userNewUniversity.nativeElement.value.trim();
-    const userNewAboutValue = this.userNewAbout.nativeElement.value.trim();
+    const userNewNickValue = this.userNewNickFormControl.value.trim();
+    const userNewUniversityValue = this.userNewUniversityFormControl.value.trim();
+    const userNewAboutValue = this.userNewAboutFormControl.value.trim();
 
     this._spinnerService.show();
     this._fhq.api().user_update({

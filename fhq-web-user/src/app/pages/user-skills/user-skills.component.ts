@@ -3,7 +3,6 @@ import { FhqService } from '../../services/fhq.service';
 import { SpinnerService } from '../../services/spinner.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
-import { MatDrawer } from '@angular/material/sidenav';
 import { MatTableDataSource } from '@angular/material';
 
 export interface UserSkillsElement {
@@ -28,8 +27,6 @@ export class UserSkillsComponent implements OnInit {
   userSkillsData: UserSkillsElement[] = [];
   displayedColumns: string[] = ['name', 'userPoints'];
 
-  @ViewChild('drawer', { static: true }) drawer: MatDrawer;
-
   constructor(
     private _cdr: ChangeDetectorRef,
     private _fhq: FhqService,
@@ -43,7 +40,6 @@ export class UserSkillsComponent implements OnInit {
     this.updatePage();
     this.subscription = this._fhq.changedState
       .subscribe(() => this.updatePage());
-    this.drawer.open();
   }
 
   ngOnDestroy() {
