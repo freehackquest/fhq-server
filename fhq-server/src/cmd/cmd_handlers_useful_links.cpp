@@ -126,7 +126,7 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     query.prepare("SELECT t0.*, t1.userid FROM useful_links t0 "
         " LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid = t0.id AND t1.userid = :userid "
         + QString::fromStdString(queryFilters.compileWhere()) +
-        " ORDER BY user_favorites DESC"
+        " ORDER BY user_favorites DESC, user_clicks DESC, dt DESC "
         " LIMIT " + QString::number(nPageIndex*nPageSize) + "," + QString::number(nPageSize)
     );
     query.bindValue(":userid", nUserId);
@@ -146,6 +146,7 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
         jsonLink["description"] = record.value("description").toString().toHtmlEscaped().toStdString();
         jsonLink["author"] = record.value("message").toString().toHtmlEscaped().toStdString();
         jsonLink["user_favorites"] = record.value("user_favorites").toInt();
+        jsonLink["user_clicks"] = record.value("user_clicks").toInt();
         jsonLink["dt"] = record.value("dt").toString().toStdString();
         if (record.value("userid").toInt() == nUserId && nUserId != 0) {
             jsonLink["favorite"] = true;
@@ -214,6 +215,7 @@ void CmdHandlerUsefulLinksRetrieve::handle(ModelRequest *pRequest) {
         jsonLink["description"] = record.value("description").toString().toHtmlEscaped().toStdString();
         jsonLink["author"] = record.value("message").toString().toHtmlEscaped().toStdString();
         jsonLink["user_favorites"] = record.value("user_favorites").toInt();
+        jsonLink["user_clicks"] = record.value("user_clicks").toInt();
         jsonLink["dt"] = record.value("dt").toString().toStdString();
         if (record.value("userid").toInt() == nUserId && nUserId != 0) {
             jsonLink["favorite"] = true;
@@ -445,6 +447,7 @@ void CmdHandlerUsefulLinksUserFavoriteList::handle(ModelRequest *pRequest) {
         jsonLink["description"] = record.value("description").toString().toHtmlEscaped().toStdString();
         jsonLink["author"] = record.value("message").toString().toHtmlEscaped().toStdString();
         jsonLink["user_favorites"] = record.value("user_favorites").toInt();
+        jsonLink["user_clicks"] = record.value("user_clicks").toInt();
         jsonLink["dt"] = record.value("dt").toString().toStdString();
         if (record.value("userid").toInt() == nUserId && nUserId != 0) {
             jsonLink["favorite"] = true;
@@ -617,7 +620,26 @@ CmdHandlerUsefulLinksClicked::CmdHandlerUsefulLinksClicked()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksClicked::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+    int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+
+    query.prepare("UPDATE useful_links SET user_clicks = user_clicks + 1 WHERE id = :useful_link_id");
+    query.bindValue(":useful_link_id", nUsefulLinkId);
+
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    nlohmann::json jsonData;
+    jsonData["useful_link_id"] = nUsefulLinkId;
+
+    nlohmann::json jsonResponse;
+    jsonResponse["data"] = jsonData;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 // ---------------------------------------------------------------------

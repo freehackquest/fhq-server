@@ -41,12 +41,29 @@
       <ng-container matColumnDef="usefulLinkData">
         <th mat-header-cell *matHeaderCellDef l10nTranslate>usefulLinks</th>
         <td mat-cell *matCellDef="let element">
-          <a mat-raised-button color="accent" href="{{ element.link }}" target="_blank">{{element.link}}</a>
-          <button mat-stroked-button class="useful-links-favorite-btn" *ngIf="!element.favorite && _fhq.isAuthorized" (click)="addToFavorite(element.id)">
+          
+
+          <button mat-stroked-button disabled *ngIf="element.userClicks > 0">
+            <mat-icon aria-hidden="false">mouse</mat-icon>
+            {{ element.userClicksLabel }}
+          </button>
+
+          <a 
+            mat-raised-button 
+            class="useful-links-left-btn"
+            color="accent" 
+            href="{{ element.link }}" 
+            (mousedown)="linkClicked(element.id)" 
+            target="_blank"
+          >{{ element.link }}</a> 
+
+          
+
+          <button mat-stroked-button class="useful-links-left-btn" *ngIf="!element.favorite && _fhq.isAuthorized" (click)="addToFavorite(element.id)">
             <mat-icon aria-hidden="false">star</mat-icon>
             Favorite ({{ element.userFavorites }})
           </button>
-          <button mat-stroked-button class="useful-links-favorite-btn" *ngIf="element.favorite && _fhq.isAuthorized" (click)="removeFromFavorite(element.id)">
+          <button mat-stroked-button class="useful-links-left-btn" *ngIf="element.favorite && _fhq.isAuthorized" (click)="removeFromFavorite(element.id)">
             <mat-icon aria-hidden="false">star_outline</mat-icon>
             Unfavorite ({{ element.userFavorites }})
           </button>

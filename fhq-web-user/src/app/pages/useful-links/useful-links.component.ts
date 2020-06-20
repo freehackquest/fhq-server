@@ -14,6 +14,8 @@ export interface UsefulLinkElement {
   description: string;
   rating: number;
   userFavorites: number;
+  userClicks: number;
+  userClicksLabel: string;
   favorite: boolean;
   tags: Array<string>;
 }
@@ -101,11 +103,14 @@ export class UsefulLinksComponent implements OnInit {
     this.length = r.data.total;
     for (let i in r.data.items) {
       let usefulLink = r.data.items[i];
+      const userClicksLabel = this.prepareUserClicksLabel(usefulLink['user_clicks'])
       this.usefullLinksData.push({
         id: usefulLink['id'],
         link: usefulLink['url'],
         description: usefulLink['description'],
         userFavorites: usefulLink['user_favorites'],
+        userClicks: usefulLink['user_clicks'],
+        userClicksLabel: userClicksLabel,
         favorite: usefulLink['favorite'],
         rating: 0,
         tags: [],
@@ -141,11 +146,24 @@ export class UsefulLinksComponent implements OnInit {
     return event;
   }
 
+  prepareUserClicksLabel(n: number) {
+    console.log("prepareUserClicksLabel", n)
+    if (n >= 1000 && n < 1000000) {
+      console.log("prepareUserClicksLabel > 999 ", n)
+      return Math.floor(n / 1000) + "k";
+    } else if (n >= 1000000) {
+      return Math.floor(n / 1000000) + "M";
+    }
+    return "" + n;
+  }
+
   successUsefulLinksOneItem(r: any) {
     this._spinner.hide();
     this.usefullLinksData.forEach((el: any) => {
       if (el.id == r.data.id) {
         el.userFavorites = r.data.user_favorites
+        el.userClicks = r.data.user_clicks
+        el.userClicksLabel = this.prepareUserClicksLabel(r.data.user_clicks)
         el.favorite = r.data.favorite
       }
     })
@@ -162,16 +180,13 @@ export class UsefulLinksComponent implements OnInit {
   }
 
   updateOneItem(usefulLinkId: number) {
+    console.log("updateOneItem", usefulLinkId);
     this._spinner.show();
     this._fhq.api().useful_links_retrieve({
       "useful_link_id": usefulLinkId
     })
       .done((r: any) => this.successUsefulLinksOneItem(r))
       .fail((err: any) => this.errorUsefulLinksOneItem(err));
-  }
-
-  openLink(link) {
-    console.log(link);
   }
 
   successUsefulLinksFavorite(r: any) {
@@ -218,5 +233,24 @@ export class UsefulLinksComponent implements OnInit {
     })
       .done((r: any) => this.successUsefulLinksUserUnfavorite(r))
       .fail((err: any) => this.errorUsefulLinksUserUnfavorite(err));
+  }
+
+  successUsefulLinkClicked(r: any) {
+    console.log("successUsefulLinkClicked", r);
+    this.updateOneItem(r.data.useful_link_id)
+  }
+
+  errorUsefulLinkClicked(err: any) {
+    console.error("errorUsefulLinkClicked", err);
+    this._spinner.hide();
+  }
+
+  linkClicked(id: number) {
+    console.log("linkClicked", id );
+    this._fhq.api().useful_links_clicked({
+      "useful_link_id": id
+    })
+      .done((r: any) => this.successUsefulLinkClicked(r))
+      .fail((err: any) => this.errorUsefulLinkClicked(err));
   }
 }
