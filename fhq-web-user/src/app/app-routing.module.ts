@@ -29,6 +29,7 @@ import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
 import { QuestComponent } from './pages/quest/quest.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { FhqJuryAdComponent } from './pages/fhq-jury-ad/fhq-jury-ad.component';
+import { UserFavoritesUsefulLinksComponent } from './pages/user-favorites-useful-links/user-favorites-useful-links.component'
 
 const routes: Routes = [{
     path: 'knowledge-base',
@@ -57,6 +58,9 @@ const routes: Routes = [{
   }, {
     path: 'user-skills',
     component: UserSkillsComponent
+  }, {
+    path: 'user-favorites-useful-links',
+    component: UserFavoritesUsefulLinksComponent
   }, {
   path: 'user-tokens',
     component: UserTokensComponent

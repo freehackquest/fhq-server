@@ -3,71 +3,80 @@
   <div class="btn btn-primary" (click)="openDialogSignIn()" l10nTranslate>signin</div>
 </div>
 
-<div class="row">
-  <div class="col-lg-2">
+<mat-drawer-container class="user-profile-container" autosize>
+  <mat-drawer mode="side" opened>
     <app-user-profile-menu></app-user-profile-menu>
-  </div>
+  </mat-drawer>
+  <mat-drawer-content class="user-profile-drawer-content">
 
-  <div class="col-lg-10">
-    
-    <h1 l10nTranslate>yourProfile</h1>
+    <mat-card *ngIf="userId != 0">
+      <mat-card-header>
+        <div mat-card-avatar 
+          [style.background]="'url(' + userLogo + ')'"
+          class="example-header-image"></div>
+        <mat-card-title>{{ userNick }} (Rating: {{ userRating }})</mat-card-title>
+        <mat-card-subtitle>User {{ userStatus }}. User has '{{ userRole }}' privileges.</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <small> [user#{{ userId }}] </small> or <small> [user#{{ userUuid }}] </small><br/>
+        <small>Last Login:</small><small> {{ userDtLastLogin }} (UTC) </small><br/>
+        <small l10nTranslate>university</small><small>: {{ userUniversity }} </small><br/>
+        
+        <p *ngIf="userAbout == ''">Информация отсутсвует</p>
+        {{ userAbout }}
+      </mat-card-content>
+    </mat-card>
 
-    <div class="card" *ngIf="userId != 0">
-      <div class="card-body">
-        <div class="row no-gutters">
-          <div class="col-auto">
-            <img src="{{ userLogo }}" class="img-fluid" alt="">
-          </div>
-          <div class="col">
-            <div class="card-block px-2">
-              <h4 class="card-title">{{ userNick }} (Rating: {{ userRating }}) </h4>
-              <p class="card-text">User {{ userStatus }}. User has {{ userRole }} privileges.</p>
-              <p class="card-text">
-                <!-- TODO link to public user page -->
-                <small> [user#{{ userId }}] </small> or <small> [user#{{ userUuid }}] </small>
-              </p>
-              <p class="card-text">
-                <small>Last Login:</small><small> {{ userDtLastLogin }} (UTC) </small>
-              </p>
-              <p *ngIf="userAbout == ''">Информация отсутсвует</p>
-              {{ userAbout }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <a href="/admin/" *ngIf="userRole == 'admin'" l10nTranslate>adminPanel</a>
+    <mat-card *ngIf="userRole == 'admin'" class="user-profile-item-card-list">
+      <mat-card-content>
+        <a href="/admin/" target="_blank" *ngIf="userRole == 'admin'" l10nTranslate>adminPanel</a>
+      </mat-card-content>
+    </mat-card>
 
-    <br>
-    <div class="card" *ngIf="userId != 0">
-      <div class="card-header" l10nTranslate>changeUserInfo</div>
-      <div class="card-body">
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label" l10nTranslate>nick</label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" value="{{ userNick }}" #userNewNick />
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label" l10nTranslate>university</label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" value="{{ userUniversity }}" #userNewUniversity />
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label" l10nTranslate>aboutUser</label>
-          <div class="col-sm-10">
-            <textarea type="text" class="form-control" value="{{ userAbout }}" #userNewAbout></textarea>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label"></label>
-          <div class="col-sm-10">
-            <div class="btn btn-danger" (click)="doChangeUserInfo()" l10nTranslate>changeUserInfo</div>
-            <div class="alert alert-danger" *ngIf="resultOfChangeUserInfo != null">{{ resultOfChangeUserInfo }}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+    <mat-card *ngIf="userId != 0" class="user-profile-item-card-list">
+      <mat-card-header>
+        <mat-card-title l10nTranslate>changeUserInfo</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form class="example-form">
+          <mat-form-field class="user-profile-input-half-width" l10nTranslate>
+            <input matInput
+              autocomplete="off" 
+              l10n-placeholder
+              value="{{ userNick }}"
+              placeholder="nick"
+              [formControl]="userNewNickFormControl"
+              type="text"
+            >
+            <mat-error *ngIf="userNewNickFormControl.hasError('required')">
+              Nick <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="user-profile-input-half-width" l10nTranslate>
+            <input matInput 
+              autocomplete="off" 
+              l10n-placeholder 
+              value="{{ userUniversity }}"
+              placeholder="university" 
+              [formControl]="userNewUniversityFormControl"
+              type="text"
+            >
+          </mat-form-field>
+          <br/><br/>
+          <mat-form-field class="user-profile-input-full-width" l10nTranslate>
+            <textarea matInput 
+              l10n-placeholder
+              [formControl]="userNewAboutFormControl"
+              value="{{ userAbout }}"
+              placeholder="aboutUser"></textarea>
+          </mat-form-field>
+          <br/><br/>
+          <button mat-raised-button color="warn" (click)="doChangeUserInfo()" l10nTranslate>changeUserInfo</button>
+          <br/><br/>
+          <div class="alert alert-danger" *ngIf="resultOfChangeUserInfo != null">{{ resultOfChangeUserInfo }}</div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+  </mat-drawer-content>
+</mat-drawer-container>

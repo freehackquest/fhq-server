@@ -4,6 +4,7 @@ import { SpinnerService } from '../../services/spinner.service';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-user-security',
@@ -13,15 +14,21 @@ import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/m
 export class UserSecurityComponent implements OnInit {
   errorMessage: string = null;
   subscription: any;
-  userId: number = 0;
+  userId: number = -1;
   userLastIp: string = "";
   userCountry: string = "";
   userRegion: string = "";
   userCity: string = "";
-  
-  @ViewChild('userOldPassword', { static: false }) userOldPassword : ElementRef;
-  @ViewChild('userNewPassword', { static: false }) userNewPassword : ElementRef;
+
   resultOfChangePassword: string = null;
+
+  oldPasswordFormControl = new FormControl('', [
+    Validators.required
+  ]);
+
+  newPasswordFormControl = new FormControl('', [
+    Validators.required
+  ]);
 
   constructor(
     private _spinner: SpinnerService,
@@ -60,14 +67,10 @@ export class UserSecurityComponent implements OnInit {
   doChangePassword() {
     this.resultOfChangePassword = null;
     this._cdr.detectChanges();
-
-    const userOldPasswordValue = this.userOldPassword.nativeElement.value;
-    const userNewPasswordValue = this.userNewPassword.nativeElement.value;
-
     this._spinner.show();
     this._fhq.api().user_change_password({
-      "password_old": userOldPasswordValue,
-      "password_new": userNewPasswordValue,
+      "password_old": this.oldPasswordFormControl.value,
+      "password_new": this.newPasswordFormControl.value,
     })
       .done((r: any) => this.successChangedPassword(r))
       .fail((err: any) => this.errorChangedPassword(err));
@@ -76,8 +79,8 @@ export class UserSecurityComponent implements OnInit {
   successChangedPassword(r: any) {
     // console.log("successResponse: ", r);
     this._spinner.hide();
-    this.userOldPassword.nativeElement.value = "";
-    this.userNewPassword.nativeElement.value = "";
+    this.oldPasswordFormControl.setValue("");
+    this.newPasswordFormControl.setValue("");
     this._router.navigate(['/user-security'])
   }
 

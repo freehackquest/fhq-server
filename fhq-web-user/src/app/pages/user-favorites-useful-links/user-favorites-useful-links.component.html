@@ -1,0 +1,43 @@
+<div class="alert alert-danger" *ngIf="userId == 0">
+  Please authorize
+  <div class="btn btn-primary" (click)="openDialogSignIn()" l10nTranslate>signin</div>
+</div>
+<mat-drawer-container class="user-profile-container" autosize>
+  <mat-drawer #drawer mode="side" opened>
+    <app-user-profile-menu></app-user-profile-menu>
+  </mat-drawer>
+  <mat-drawer-content>
+    <table mat-table [dataSource]="dataSource" class="user-profile-table mat-elevation-z8">
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="idFavoriteLinks">
+        <th mat-header-cell *matHeaderCellDef >#</th>
+        <td mat-cell *matCellDef="let element"> 
+          {{element.id}}
+        </td>
+      </ng-container>
+  
+      <!-- Points Column -->
+      <ng-container matColumnDef="listOfFavoriteLinks">
+        <th mat-header-cell *matHeaderCellDef l10nTranslate>listOfFavoriteLinks</th>
+        <td mat-cell *matCellDef="let element">
+          <a mat-raised-button color="accent" href="{{ element.link }}" target="_blank">{{element.link}}</a>
+          <button mat-stroked-button class="useful-links-favorite-btn" *ngIf="element.favorite && _fhq.isAuthorized" (click)="removeFromFavorite(element.id)">
+            <mat-icon aria-hidden="false">star_outline</mat-icon>
+            Unfavorite ({{ element.userFavorites }})
+          </button>
+          <br><br>
+          <strong>{{element.description}}</strong><br>
+          <div *ngIf="element.tags.length > 0"> 
+            <small>Tags({{ element.tags.length }}):</small>
+            <button mat-stroked-button class="usefulLinks-tag" *ngFor="let tag of element.tags;">{{ tag }}</button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-drawer-content>
+</mat-drawer-container>
+  

@@ -1,11 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { FhqService } from '../../services/fhq.service';
-import { FreeHackQuestClient } from '../../services/libfhqcli-web-js.service';
+// import { FreeHackQuestClient } from '../../services/libfhqcli-web-js.service';
 import { SpinnerService } from '../../services/spinner.service';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
-import { MatDrawer } from '@angular/material/sidenav';
 import { MatTableDataSource } from '@angular/material';
 
 export interface UserTokensElement {
@@ -28,14 +27,13 @@ export class UserTokensComponent implements OnInit {
   dataSource = new MatTableDataSource<UserTokensElement>();
   userTokensData: UserTokensElement[] = [];
   displayedColumns: string[] = ['idToken', 'tokenValue', 'tokenStatus', 'deleteToken'];
-  @ViewChild('drawer', { static: true }) drawer: MatDrawer;
 
   constructor(
     private _spinner: SpinnerService,
     private _router: Router,
     private _modalService: NgbModal,
     private _fhq: FhqService,
-    private _fhq2: FreeHackQuestClient,
+    // private _fhq2: FreeHackQuestClient,
     private _cdr: ChangeDetectorRef,
     private _spinnerService: SpinnerService,
   ) { }
@@ -44,7 +42,6 @@ export class UserTokensComponent implements OnInit {
     this.updatePage();
     this.subscription = this._fhq.changedState
       .subscribe(() => this.updatePage());
-    this.drawer.open();
   }
 
   ngOnDestroy() {
@@ -116,5 +113,10 @@ export class UserTokensComponent implements OnInit {
     })
       .done((r: any) => this.successUserTokensDelete(r))
       .fail((err: any) => this.errorUserTokensDelete(err));
+  }
+
+  openDialogSignIn() {
+    const modalRef = this._modalService.open(ModalDialogSignInComponent);
+    modalRef.componentInstance.name = 'SignIn';
   }
 }

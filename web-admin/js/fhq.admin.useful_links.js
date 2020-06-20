@@ -32,9 +32,9 @@ fhq.pages['useful_links'] = function(){
     var el = $("#page_content");
     el.html('Loading...')
     
-    window.fhq.changeLocationState({'useful_links': '', 'onpage': onpage, 'page': page});
+    window.fhq.changeLocationState({'useful_links': '', 'page_size': onpage, 'page_index': page});
 
-    fhq.ws.useful_links_list({'onpage': onpage, 'page': page, 'filter': ''}).done(function(r){
+    fhq.ws.useful_links_list({'page_size': onpage, 'page_index': page, 'filter': ''}).done(function(r){
         fhq.hideLoader();
         console.log(r);
         el.html('');
@@ -43,7 +43,7 @@ fhq.pages['useful_links'] = function(){
         $('#useful_links_add').unbind().bind('click', fhq.pages['useful_links_add']);
         el.append('<hr>');
 
-        el.append(fhq.paginator(0, r.count, r.onpage, r.page));
+        el.append(fhq.paginator(0, r.data.total, r.data.page_size, r.page_index));
         el.append(
             `<table class="table table-striped">
                 <thead>
@@ -57,8 +57,8 @@ fhq.pages['useful_links'] = function(){
                 </tbody>
             </table>`
         )
-        for(var i in r.data){
-            var ul = r.data[i];
+        for(var i in r.data.items){
+            var ul = r.data.items[i];
             console.log(ul);
             $('#list').append(
                 `<tr>

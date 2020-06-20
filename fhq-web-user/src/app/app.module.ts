@@ -13,6 +13,7 @@ import {
   MatSidenavModule,
   MatProgressBarModule,
   MatSnackBarModule,
+  MatBadgeModule,
   MatRippleModule
 } from '@angular/material';
 
@@ -71,7 +72,8 @@ import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { NgxMdModule } from 'ngx-md';
 import { FhqJuryAdComponent } from './pages/fhq-jury-ad/fhq-jury-ad.component';
 import { SimplemdeModule } from 'ng2-simplemde';
-import { UserTokensComponent } from './pages/user-tokens/user-tokens.component'
+import { UserTokensComponent } from './pages/user-tokens/user-tokens.component';
+import { UserFavoritesUsefulLinksComponent } from './pages/user-favorites-useful-links/user-favorites-useful-links.component'
 
 /*import hljs from 'highlight.js/lib/highlight';
 import javascript from 'highlight.js/lib/languages/javascript';
@@ -139,7 +141,8 @@ const l10nConfig: L10nConfig = {
     UserSkillsComponent,
     WelcomeComponent,
     FhqJuryAdComponent,
-    UserTokensComponent
+    UserTokensComponent,
+    UserFavoritesUsefulLinksComponent
   ],
   imports: [
     BrowserModule,
@@ -169,6 +172,7 @@ const l10nConfig: L10nConfig = {
     MatSidenavModule,
     MatProgressBarModule,
     MatSnackBarModule,
+    MatBadgeModule,
     MatRippleModule
   ],
   exports: [

@@ -166,3 +166,21 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .blue-snackbar {
     background: blueviolet;
 }
+
+.user-profile-container {
+    height: 100%;
+    min-height: 450px;
+}
+
+.user-profile-drawer-content {
+    padding: 20px;
+}
+
+.user-profile-table {
+    width: calc(100% - 40px);
+    margin: 20px;
+}
+
+.user-profile-item-card-list {
+    margin-top: 20px;
+}
