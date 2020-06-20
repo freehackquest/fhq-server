@@ -33,7 +33,6 @@ export class UsefulLinksComponent implements OnInit {
   pageSizeOptions = [5, 10, 25, 50];
   errorMessage: string = null;
 
-  filteredUsefullLinksData: UsefulLinkElement[] 
   searchValue: String = '';
   searchControl = new FormControl('');
   formCtrlSub: Subscription;
@@ -51,7 +50,6 @@ export class UsefulLinksComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
     this._activatedRoute.queryParams.subscribe(params => {
       if (params["search"]) {
         this.searchValue = params["search"];
@@ -64,8 +62,6 @@ export class UsefulLinksComponent implements OnInit {
       if (params["page_size"]) {
         this.pageSize = parseInt(params["page_size"],0);
       }
-
-      this.updatePage();
       this.subscription = this._fhq.changedState
         .subscribe(() => this.updatePage());
     });
@@ -75,60 +71,13 @@ export class UsefulLinksComponent implements OnInit {
     .debounceTime(1000)
     .subscribe((newValue) => {
       this.searchValue = newValue
-      this.applyFilter();
+      this.updatePage();
     });
-    this.applyFilter();
-    this.dataSource = new MatTableDataSource<UsefulLinkElement>(this.usefullLinksData);
   }
 
   successUsefulLinksList(r: any) {
     this._spinner.hide();
-    this.usefullLinksData = [];
-    console.log(r);
-    this.pageIndex = r.data.page_index;
-    this.length = r.data.total;
-    for (let i in r.data.items) {
-      let usefulLink = r.data.items[i];
-      this.usefullLinksData.push({
-        id: usefulLink['id'],
-        link: usefulLink['url'],
-        description: usefulLink['description'],
-        userFavorites: usefulLink['user_favorites'],
-        favorite: usefulLink['favorite'],
-        rating: 0,
-        tags: [],
-      })
-    }
-    this.applyFilter();
-  }
 
-  errorUsefulLinksList(err: any) {
-    console.error("errorResponse: ", err);
-    this._spinner.hide();
-    // this.resultOfChangePassword = err.error;
-    // this._cdr.detectChanges();
-  }
-
-  updatePage() {
-    this._spinner.show();
-    this._fhq.api().useful_links_list({
-      "page_index": this.pageIndex,
-      "page_size": this.pageSize,
-    })
-      .done((r: any) => this.successUsefulLinksList(r))
-      .fail((err: any) => this.errorUsefulLinksList(err));
-  }
-
-  public getServerData(event?: PageEvent){
-    console.log(event);
-
-    this.pageIndex = event.pageIndex
-    this.pageSize = event.pageSize
-    this.updatePage();
-    return event;
-  }
-
-  applyFilter() {
     let newQueryParams = {}
     if (this.searchValue != "") {
       newQueryParams["search"] = this.searchValue;
@@ -146,43 +95,61 @@ export class UsefulLinksComponent implements OnInit {
     }).toString()
     this._location.go(url);
 
-    const _sv = this.searchValue.toUpperCase();
-    this.filteredUsefullLinksData = []
-    this.usefullLinksData.forEach((el: any) => {
-      if (el.link.toUpperCase().indexOf(_sv) !== -1
-        || el.description.toUpperCase().indexOf(_sv) !== -1) {
-          this.filteredUsefullLinksData.push({
-            id: el.id,
-            link: el.link,
-            description: el.description,
-            userFavorites: el.userFavorites,
-            favorite: el.favorite,
-            rating: el.rating,
-            tags: el.tags
-          })
-      }
-    });
-    this.dataSource = new MatTableDataSource<UsefulLinkElement>(this.filteredUsefullLinksData);
-    this._cdr.detectChanges();
+    this.usefullLinksData = [];
+    console.log(r);
+    this.pageIndex = r.data.page_index;
+    this.length = r.data.total;
+    for (let i in r.data.items) {
+      let usefulLink = r.data.items[i];
+      this.usefullLinksData.push({
+        id: usefulLink['id'],
+        link: usefulLink['url'],
+        description: usefulLink['description'],
+        userFavorites: usefulLink['user_favorites'],
+        favorite: usefulLink['favorite'],
+        rating: 0,
+        tags: [],
+      })
+    }
+    this.dataSource = new MatTableDataSource<UsefulLinkElement>(this.usefullLinksData);
+  }
+
+  errorUsefulLinksList(err: any) {
+    console.error("errorResponse: ", err);
+    this._spinner.hide();
+    // this.resultOfChangePassword = err.error;
+    // this._cdr.detectChanges();
+  }
+
+  updatePage() {
+    this._spinner.show();
+    this._fhq.api().useful_links_list({
+      "page_index": this.pageIndex,
+      "page_size": this.pageSize,
+      "filter": this.searchValue,
+    })
+      .done((r: any) => this.successUsefulLinksList(r))
+      .fail((err: any) => this.errorUsefulLinksList(err));
+  }
+
+  public getServerData(event?: PageEvent){
+    console.log(event);
+
+    this.pageIndex = event.pageIndex
+    this.pageSize = event.pageSize
+    this.updatePage();
+    return event;
   }
 
   successUsefulLinksOneItem(r: any) {
     this._spinner.hide();
-    console.log(this.filteredUsefullLinksData)
-    this.filteredUsefullLinksData.forEach((el: any) => {
-      if (el.id == r.data.id) {
-        el.userFavorites = r.data.user_favorites
-        el.favorite = r.data.favorite
-      }
-    })
     this.usefullLinksData.forEach((el: any) => {
       if (el.id == r.data.id) {
         el.userFavorites = r.data.user_favorites
         el.favorite = r.data.favorite
-        console.log(el)
       }
     })
-    this.dataSource = new MatTableDataSource<UsefulLinkElement>(this.filteredUsefullLinksData);
+    this.dataSource = new MatTableDataSource<UsefulLinkElement>(this.usefullLinksData);
     this._cdr.detectChanges();
   }
 

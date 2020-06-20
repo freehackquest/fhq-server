@@ -26,6 +26,53 @@ CmdHandlerUsefulLinksList::CmdHandlerUsefulLinksList()
     
 }
 
+struct QueryFilter {
+    std::string sColumnName;
+    std::string sFilterName;
+    std::string sValue;
+};
+
+struct QueryFilters {
+    void like(std::vector<std::string> vFields, std::string sValue) {
+        std::string sWhere = "";
+        for (int i = 0; i < vFields.size(); i++) {
+            QueryFilter f;
+            f.sColumnName = vFields[i];
+            f.sFilterName = ":" + vFields[i];
+            f.sValue = "%" + sValue + "%";
+            vFilters.push_back(f);
+            if (sWhere == "") {
+                sWhere = "(";
+            } else {
+                sWhere += " OR ";
+            }
+            sWhere +=  f.sColumnName + " LIKE " + f.sFilterName;
+        }
+        sWhere += ")";
+        vCompiledWhere.push_back(sWhere);
+    };
+    std::string compileWhere() {
+        if (vCompiledWhere.size() == 0) {
+            return "";
+        }
+        std::string sWhere = " WHERE ";
+        for (int i = 0; i < vCompiledWhere.size(); i++) {
+            sWhere += (i > 0 ? " AND " : "") + vCompiledWhere[i];
+        }
+        return sWhere;
+    };
+
+    void bind(QSqlQuery &query) {
+        for (int i = 0; i < vFilters.size(); i++) {
+            query.bindValue(
+                QString::fromStdString(vFilters[i].sFilterName),
+                QString::fromStdString(vFilters[i].sValue)
+            );
+        }
+    };
+    std::vector<QueryFilter> vFilters;
+    std::vector<std::string> vCompiledWhere;
+};
 
 // ---------------------------------------------------------------------
 
@@ -44,11 +91,12 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     int nPageSize = pRequest->getInputInteger("page_size", 10);
     int nLength = 0;
     nlohmann::json jsonData;
-    
-    QString sWhere = "";
-    if (!bIsAdmin) {
-        // sWhere = " WHERE status = 'ok' ";
+    QueryFilters queryFilters;
+    sFilter = WsjcppCore::trim(sFilter);
+    if (sFilter != "") {
+        queryFilters.like({"url", "description"}, sFilter);
     }
+    QString sWhere = "";
 
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
@@ -57,8 +105,10 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     // count
     query.prepare("SELECT COUNT(*) AS cnt FROM useful_links t0 "
         " LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid = t0.id AND t1.userid = :userid "
+        + QString::fromStdString(queryFilters.compileWhere())
     );
     query.bindValue(":userid", nUserId);
+    queryFilters.bind(query);
 
     if (!query.exec()) {
         pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
@@ -75,10 +125,12 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
 
     query.prepare("SELECT t0.*, t1.userid FROM useful_links t0 "
         " LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid = t0.id AND t1.userid = :userid "
+        + QString::fromStdString(queryFilters.compileWhere()) +
         " ORDER BY user_favorites DESC"
         " LIMIT " + QString::number(nPageIndex*nPageSize) + "," + QString::number(nPageSize)
     );
     query.bindValue(":userid", nUserId);
+    queryFilters.bind(query);
 
     if (!query.exec()) {
         pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
