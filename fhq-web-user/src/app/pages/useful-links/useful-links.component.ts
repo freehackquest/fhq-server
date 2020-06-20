@@ -2,10 +2,11 @@ import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { SpinnerService } from '../../services/spinner.service';
 import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { PageEvent } from '@angular/material';
 import { MatTableDataSource } from '@angular/material';
 import { FhqService } from '../../services/fhq.service';
+import { Location } from '@angular/common';
 
 export interface UsefulLinkElement {
   id: number;
@@ -27,9 +28,9 @@ export class UsefulLinksComponent implements OnInit {
   subscription: any;
   pageEvent: PageEvent;
   pageIndex: number = 0;
-  pageSize: number = 7;
+  pageSize: number = 5;
   length: number = 0;
-  pageSizeOptions = [7, 10, 25, 50];
+  pageSizeOptions = [5, 10, 25, 50];
   errorMessage: string = null;
 
   filteredUsefullLinksData: UsefulLinkElement[] 
@@ -45,12 +46,29 @@ export class UsefulLinksComponent implements OnInit {
     private _cdr: ChangeDetectorRef,
     private _router: Router,
     private _fhq: FhqService,
+    private _location: Location,
+    private _activatedRoute: ActivatedRoute,
   ) { }
 
   ngOnInit() {
-    this.updatePage();
-    this.subscription = this._fhq.changedState
-      .subscribe(() => this.updatePage());
+
+    this._activatedRoute.queryParams.subscribe(params => {
+      if (params["search"]) {
+        this.searchValue = params["search"];
+      }
+
+      if (params["page_index"]) {
+        this.pageIndex = parseInt(params["page_index"],0);
+      }
+
+      if (params["page_size"]) {
+        this.pageSize = parseInt(params["page_size"],0);
+      }
+
+      this.updatePage();
+      this.subscription = this._fhq.changedState
+        .subscribe(() => this.updatePage());
+    });
 
     this._spinner.hide();
     this.formCtrlSub = this.searchControl.valueChanges
@@ -67,8 +85,10 @@ export class UsefulLinksComponent implements OnInit {
     this._spinner.hide();
     this.usefullLinksData = [];
     console.log(r);
-    for (let i in r.data) {
-      let usefulLink = r.data[i];
+    this.pageIndex = r.data.page_index;
+    this.length = r.data.total;
+    for (let i in r.data.items) {
+      let usefulLink = r.data.items[i];
       this.usefullLinksData.push({
         id: usefulLink['id'],
         link: usefulLink['url'],
@@ -91,12 +111,41 @@ export class UsefulLinksComponent implements OnInit {
 
   updatePage() {
     this._spinner.show();
-    this._fhq.api().useful_links_list({})
+    this._fhq.api().useful_links_list({
+      "page_index": this.pageIndex,
+      "page_size": this.pageSize,
+    })
       .done((r: any) => this.successUsefulLinksList(r))
       .fail((err: any) => this.errorUsefulLinksList(err));
   }
 
+  public getServerData(event?: PageEvent){
+    console.log(event);
+
+    this.pageIndex = event.pageIndex
+    this.pageSize = event.pageSize
+    this.updatePage();
+    return event;
+  }
+
   applyFilter() {
+    let newQueryParams = {}
+    if (this.searchValue != "") {
+      newQueryParams["search"] = this.searchValue;
+    }
+    if (this.pageIndex != 0) {
+      newQueryParams["page_index"] = this.pageIndex;
+    }
+    if (this.pageSize != this.pageSizeOptions[0]) {
+      newQueryParams["page_size"] = this.pageSize;
+    }
+    
+    const url = this._router.createUrlTree([], {
+      relativeTo: this._activatedRoute, 
+      queryParams: newQueryParams
+    }).toString()
+    this._location.go(url);
+
     const _sv = this.searchValue.toUpperCase();
     this.filteredUsefullLinksData = []
     this.usefullLinksData.forEach((el: any) => {

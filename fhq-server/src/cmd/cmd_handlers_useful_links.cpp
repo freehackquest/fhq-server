@@ -21,6 +21,9 @@ CmdHandlerUsefulLinksList::CmdHandlerUsefulLinksList()
     setAccessAdmin(true);
 
     optionalStringParam("filter", "Filter by word");
+    optionalIntegerParam("page_index", "Page Index");
+    optionalIntegerParam("page_size", "Page Size (default 10)");
+    
 }
 
 
@@ -37,8 +40,11 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     bool bIsAdmin = pRequest->isAdmin();
 
     std::string sFilter = pRequest->getInputString("filter", "");
-
-    nlohmann::json jsonData = nlohmann::json::array();
+    int nPageIndex = pRequest->getInputInteger("page_index", 0);
+    int nPageSize = pRequest->getInputInteger("page_size", 10);
+    int nLength = 0;
+    nlohmann::json jsonData;
+    
     QString sWhere = "";
     if (!bIsAdmin) {
         // sWhere = " WHERE status = 'ok' ";
@@ -48,17 +54,38 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
 
-    // SELECT t0.*, t1.userid FROM useful_links t0 LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid = t0.id WHERE (t1.userid = 50 OR ISNULL(t1.userid)) ORDER BY user_favorites DESC
-
-    // TODO paginator
-    query.prepare("SELECT t0.*, t1.userid FROM useful_links t0 LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid = t0.id AND t1.userid = :userid ORDER BY user_favorites DESC");
+    // count
+    query.prepare("SELECT COUNT(*) AS cnt FROM useful_links t0 "
+        " LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid = t0.id AND t1.userid = :userid "
+    );
     query.bindValue(":userid", nUserId);
 
     if (!query.exec()) {
         pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
+    if (query.next()) {
+        QSqlRecord record = query.record();
+        nlohmann::json jsonLink;
+        jsonData["total"] = record.value("cnt").toInt();
+    }
 
+    jsonData["page_index"] = nPageIndex;
+    jsonData["page_size"] = nPageSize;
+
+    query.prepare("SELECT t0.*, t1.userid FROM useful_links t0 "
+        " LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid = t0.id AND t1.userid = :userid "
+        " ORDER BY user_favorites DESC"
+        " LIMIT " + QString::number(nPageIndex*nPageSize) + "," + QString::number(nPageSize)
+    );
+    query.bindValue(":userid", nUserId);
+
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+    
+    nlohmann::json jsonItems = nlohmann::json::array();
     while (query.next()) {
         QSqlRecord record = query.record();
         nlohmann::json jsonLink;
@@ -73,8 +100,9 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
         } else {
             jsonLink["favorite"] = false;
         }
-        jsonData.push_back(jsonLink);
+        jsonItems.push_back(jsonLink);
     }
+    jsonData["items"] = jsonItems;
     
     nlohmann::json jsonResponse;
     jsonResponse["data"] = jsonData;
@@ -114,7 +142,10 @@ void CmdHandlerUsefulLinksRetrieve::handle(ModelRequest *pRequest) {
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
-    query.prepare("SELECT t0.*, t1.userid FROM useful_links t0 LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid = t0.id AND t1.userid = :userid WHERE t0.id = :useful_link_id");
+    query.prepare("SELECT t0.*, t1.userid FROM useful_links t0 "
+        " LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid = t0.id AND t1.userid = :userid "
+        " WHERE t0.id = :useful_link_id"
+    );
     query.bindValue(":userid", nUserId);
     query.bindValue(":useful_link_id", nUsefulLinkId);
 

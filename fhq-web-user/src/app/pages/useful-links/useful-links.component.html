@@ -1,21 +1,5 @@
 <h1 l10nTranslate>usefulLinks</h1>
 
-Что то добавить или исправить то pull request сюда:
-<br/>
-<a href="https://github.com/freehackquest/fhq-server/blob/master/fhq-web-user/src/app/pages/useful-links/useful-links.component.ts">
-  https://github.com/freehackquest/fhq-server/blob/master/fhq-web-user/src/app/pages/useful-links/useful-links.component.ts
-</a>
-<br/>
-<br/>
-
-Большая часть ссылок спирована из этих мест:
-<ul>
-  <li><a href="https://2ch.pm/wrk/arch/2018-03-05/res/1065136.html">https://2ch.pm/wrk/arch/2018-03-05/res/1065136.html</a></li>
-  <li><a href="https://ru.similarsites.com/site/hackerdom.ru">https://ru.similarsites.com/site/hackerdom.ru</a></li>
-  <li><a href="http://captf.com/practice-ctf/">http://captf.com/practice-ctf/</a></li>
-</ul>
-<br>
-
 <mat-form-field class="usefullinks-search-form-field">
   <input
     matInput
@@ -30,7 +14,7 @@
   </button>
 </mat-form-field>
 
-<!-- mat-paginator #paginator
+<mat-paginator #paginator
   class="usefullinks-paginator-field"
   [length]="length"
   [pageIndex]="pageIndex"
@@ -38,7 +22,7 @@
   [pageSizeOptions]="pageSizeOptions"
   (page)="pageEvent = getServerData($event)"
 >
-</mat-paginator -->
+</mat-paginator>
 
 <mat-drawer-container class="useful-links-container">
   <mat-drawer #drawer mode="side">
