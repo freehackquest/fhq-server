@@ -31,7 +31,7 @@
               "node_modules/highlight.js/styles/dark.css"
             ],
             "scripts": [
-              "node_modules/libfhqcli-web-js/dist/libfhqcli-web-js.js",
+              "node_modules/freehackquest-libclient-web-js/dist/freehackquest-libclient-web-js.js",
               "node_modules/jquery/dist/jquery.slim.min.js",
               "node_modules/popper.js/dist/umd/popper.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.js",
