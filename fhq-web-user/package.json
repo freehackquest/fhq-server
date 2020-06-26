@@ -1,6 +1,6 @@
 {
   "name": "fhq-web-user",
-  "version": "0.2.29",
+  "version": "0.2.30",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -29,10 +29,10 @@
     "bootstrap": "~4.5.0",
     "core-js": "^3.4.8",
     "font-awesome": "^4.7.0",
+    "freehackquest-libclient-web-js": "^0.2.30",
     "hammerjs": "^2.0.8",
     "highlight.js": "^9.16.2",
     "jquery": "^3.5.0",
-    "libfhqcli-web-js": "^0.2.29",
     "marked": "^0.7.0",
     "ng2-simplemde": "^2.1.0",
     "ngx-ace-wrapper": "^8.0.0",
