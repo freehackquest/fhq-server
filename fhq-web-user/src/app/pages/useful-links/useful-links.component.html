@@ -69,8 +69,15 @@
           <br><br>
           <strong>{{element.description}}</strong><br>
           <div *ngIf="element.tags.length > 0"> 
-            <small>Tags({{ element.tags.length }}):</small>
-            <button mat-stroked-button class="usefulLinks-tag" *ngFor="let tag of element.tags;">{{ tag }}</button>
+            <mat-chip-list>
+              <mat-chip 
+                *ngFor="let tag of element.tags;" 
+                (click)="applyFilterByTag(tag)"
+                [selected]="tag == filterByTag"
+              >
+                {{ tag }}
+              </mat-chip>
+            </mat-chip-list>
           </div>
           <!-- hr/>
           <button mat-stroked-button>

@@ -52,6 +52,19 @@ struct QueryFilters {
         sWhere += ")";
         vCompiledWhere.push_back(sWhere);
     };
+
+    void equal(std::string sField, std::string sValue) {
+        std::string sWhere = "(";
+        QueryFilter f;
+        f.sColumnName = sField;
+        f.sFilterName = ":" + sField;
+        f.sValue = sValue;
+        vFilters.push_back(f);
+        sWhere +=  f.sColumnName + " = " + f.sFilterName;
+        sWhere += ")";
+        vCompiledWhere.push_back(sWhere);
+    };
+
     std::string compileWhere() {
         if (vCompiledWhere.size() == 0) {
             return "";
@@ -98,8 +111,11 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     if (sFilter != "") {
         queryFilters.like({"url", "description"}, sFilter);
     }
+
+    std::string sInnerJoinTags = "";
     if (sFilterByTag != "") {
-        WsjcppLog::info(TAG, "sFilterByTag = " + sFilterByTag);
+        sInnerJoinTags = " INNER JOIN useful_links_tags t2 ON t0.id = t2.usefullinkid ";
+        queryFilters.equal("tagvalue", sFilterByTag);
     }
     QString sWhere = "";
 
@@ -110,6 +126,7 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     // count
     query.prepare("SELECT COUNT(*) AS cnt FROM useful_links t0 "
         " LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid = t0.id AND t1.userid = :userid "
+        + QString::fromStdString(sInnerJoinTags)
         + QString::fromStdString(queryFilters.compileWhere())
     );
     query.bindValue(":userid", nUserId);
@@ -130,6 +147,7 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
 
     query.prepare("SELECT t0.*, t1.userid FROM useful_links t0 "
         " LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid = t0.id AND t1.userid = :userid "
+        + QString::fromStdString(sInnerJoinTags)
         + QString::fromStdString(queryFilters.compileWhere()) +
         " ORDER BY user_favorites DESC, user_clicks DESC, dt DESC "
         " LIMIT " + QString::number(nPageIndex*nPageSize) + "," + QString::number(nPageSize)
@@ -158,6 +176,8 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
         } else {
             jsonLink["favorite"] = false;
         }
+        std::string sTags = record.value("tags").toString().toStdString();
+        jsonLink["tags"] = WsjcppCore::split(sTags, ",");
         jsonItems.push_back(jsonLink);
     }
     jsonData["items"] = jsonItems;
@@ -352,6 +372,14 @@ void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest) {
     }
 
     query.prepare("DELETE FROM useful_links_user_favorites WHERE usefullinkid = :useful_link_id");
+    query.bindValue(":useful_link_id", nUsefulLinkId);
+    
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    query.prepare("DELETE FROM useful_links_tags WHERE usefullinkid = :useful_link_id");
     query.bindValue(":useful_link_id", nUsefulLinkId);
     
     if (!query.exec()) {
@@ -840,6 +868,30 @@ void CmdHandlerUsefulLinksTagAdd::handle(ModelRequest *pRequest) {
             pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;
         }
+        
+        // update field useful_links.tags
+        query.prepare("SELECT * FROM useful_links_tags WHERE usefullinkid = :useful_link_id");
+        query.bindValue(":useful_link_id", nUsefulLinkId);
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            return;
+        }
+
+        std::string sTags = "";
+        while (query.next()) {
+            QSqlRecord record = query.record();
+            std::string sTag = record.value("tagvalue").toString().toHtmlEscaped().toStdString();
+            sTags += sTags.length() == 0 ? "": ",";
+            sTags += sTag;
+        }
+
+        query.prepare("UPDATE useful_links SET tags = :tags WHERE id = :useful_link_id");
+        query.bindValue(":tags", QString::fromStdString(sTags));
+        query.bindValue(":useful_link_id", nUsefulLinkId);
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            return;
+        }
     }
     nlohmann::json jsonResponse;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -893,6 +945,30 @@ void CmdHandlerUsefulLinksTagDelete::handle(ModelRequest *pRequest) {
         query.prepare("DELETE FROM useful_links_tags WHERE usefullinkid = :useful_link_id AND tagvalue = :tagvalue");
         query.bindValue(":useful_link_id", nUsefulLinkId);
         query.bindValue(":tagvalue", QString::fromStdString(sTagValue));
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            return;
+        }
+
+        // update field useful_links.tags
+        query.prepare("SELECT * FROM useful_links_tags WHERE usefullinkid = :useful_link_id");
+        query.bindValue(":useful_link_id", nUsefulLinkId);
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            return;
+        }
+
+        std::string sTags = "";
+        while (query.next()) {
+            QSqlRecord record = query.record();
+            std::string sTag = record.value("tagvalue").toString().toHtmlEscaped().toStdString();
+            sTags += sTags.length() == 0 ? "": ",";
+            sTags += sTag;
+        }
+
+        query.prepare("UPDATE useful_links SET tags = :tags WHERE id = :useful_link_id");
+        query.bindValue(":tags", QString::fromStdString(sTags));
+        query.bindValue(":useful_link_id", nUsefulLinkId);
         if (!query.exec()) {
             pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
             return;

@@ -66,6 +66,10 @@ export class UsefulLinksComponent implements OnInit {
         this.searchValue = params["search"];
       }
 
+      if (params["tag"]) {
+        this.filterByTag = params["tag"];
+      }
+
       if (params["page_index"]) {
         this.pageIndex = parseInt(params["page_index"],0);
       }
@@ -92,6 +96,9 @@ export class UsefulLinksComponent implements OnInit {
     let newQueryParams = {}
     if (this.searchValue != "") {
       newQueryParams["search"] = this.searchValue;
+    }
+    if (this.filterByTag != "") {
+      newQueryParams["tag"] = this.filterByTag;
     }
     if (this.pageIndex != 0) {
       newQueryParams["page_index"] = this.pageIndex;
@@ -122,7 +129,7 @@ export class UsefulLinksComponent implements OnInit {
         userClicksLabel: userClicksLabel,
         favorite: usefulLink['favorite'],
         rating: 0,
-        tags: [],
+        tags: usefulLink['tags'],
       })
     }
     this.dataSource = new MatTableDataSource<UsefulLinkElement>(this.usefullLinksData);
@@ -136,7 +143,7 @@ export class UsefulLinksComponent implements OnInit {
   }
 
   updatePage() {
-    this._spinner.show();
+    // this._spinner.show();
     this.loadListOftags();
     this._fhq.api().useful_links_list({
       "page_index": this.pageIndex,
