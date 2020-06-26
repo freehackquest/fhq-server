@@ -623,3 +623,15 @@ fhq.ws.useful_links_update = function(data){
     data.cmd = 'useful_links_update';
     return fhq.ws.send(data);
 }
+
+fhq.ws.useful_links_tag_add = function(data){
+    data = data || {};
+    data.cmd = 'useful_links_tag_add';
+    return fhq.ws.send(data);
+}
+
+fhq.ws.useful_links_tag_delete = function(data){
+    data = data || {};
+    data.cmd = 'useful_links_tag_delete';
+    return fhq.ws.send(data);
+}

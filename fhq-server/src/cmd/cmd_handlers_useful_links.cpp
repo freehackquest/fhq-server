@@ -173,7 +173,7 @@ CmdHandlerUsefulLinksRetrieve::CmdHandlerUsefulLinksRetrieve()
 
     setActivatedFromVersion("0.2.28");
 
-    setAccessUnauthorized(false);
+    setAccessUnauthorized(true);
     setAccessUser(true);
     setAccessAdmin(true);
 
@@ -224,6 +224,23 @@ void CmdHandlerUsefulLinksRetrieve::handle(ModelRequest *pRequest) {
         }
     }
     
+    // tags
+    query.prepare("SELECT * FROM useful_links_tags WHERE usefullinkid = :useful_link_id");
+    query.bindValue(":useful_link_id", nUsefulLinkId);
+
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    nlohmann::json jsonLinkTags = nlohmann::json::array();
+    while (query.next()) {
+         QSqlRecord record = query.record();
+         std::string sTag = record.value("tagvalue").toString().toHtmlEscaped().toStdString();
+         jsonLinkTags.push_back(sTag);
+    }
+    jsonLink["tags"] = jsonLinkTags;
+
     nlohmann::json jsonResponse;
     jsonResponse["data"] = jsonLink;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -264,10 +281,11 @@ void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest) {
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     // TODO uuid
-    query.prepare("INSERT INTO useful_links(url,description,author,stars,dt) VALUES(:url, :description, :author, 0, NOW())");
+    query.prepare("INSERT INTO useful_links(url,description,author,tags,dt) VALUES(:url, :description, :author, :tags, NOW())");
     query.bindValue(":url", QString::fromStdString(sUrl));
     query.bindValue(":description", QString::fromStdString(sDescription));
     query.bindValue(":author", QString::fromStdString(sAuthor));
+    query.bindValue(":tags", QString::fromStdString(""));
 
     if (!query.exec()) {
         pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
@@ -669,6 +687,8 @@ void CmdHandlerUsefulLinksCommentList::handle(ModelRequest *pRequest) {
 // ---------------------------------------------------------------------
 // Useful Links add comment
 
+REGISTRY_CMD(CmdHandlerUsefulLinksCommentAdd)
+
 CmdHandlerUsefulLinksCommentAdd::CmdHandlerUsefulLinksCommentAdd()
     : CmdHandlerBase("useful_links_comment_add", "Useful Links add comment") {
     
@@ -691,6 +711,8 @@ void CmdHandlerUsefulLinksCommentAdd::handle(ModelRequest *pRequest) {
 
 // ---------------------------------------------------------------------
 // Useful Links remove comment
+
+REGISTRY_CMD(CmdHandlerUsefulLinksCommentDelete)
 
 CmdHandlerUsefulLinksCommentDelete::CmdHandlerUsefulLinksCommentDelete()
     : CmdHandlerBase("useful_links_comment_delete", "Useful Links remove comment") {
@@ -715,6 +737,8 @@ void CmdHandlerUsefulLinksCommentDelete::handle(ModelRequest *pRequest) {
 // ---------------------------------------------------------------------
 // Useful Links List of tags
 
+REGISTRY_CMD(CmdHandlerUsefulLinksTagList)
+
 CmdHandlerUsefulLinksTagList::CmdHandlerUsefulLinksTagList()
     : CmdHandlerBase("useful_links_tag_list", "Useful Links - List of tags") {
     
@@ -735,6 +759,8 @@ void CmdHandlerUsefulLinksTagList::handle(ModelRequest *pRequest) {
 // ---------------------------------------------------------------------
 // Useful Links add tag
 
+REGISTRY_CMD(CmdHandlerUsefulLinksTagAdd)
+
 CmdHandlerUsefulLinksTagAdd::CmdHandlerUsefulLinksTagAdd()
     : CmdHandlerBase("useful_links_tag_add", "Useful Links add tag") {
     
@@ -745,17 +771,55 @@ CmdHandlerUsefulLinksTagAdd::CmdHandlerUsefulLinksTagAdd()
     setAccessAdmin(true);
 
     requireIntegerParam("useful_link_id", "Id of useful link");
-    requireStringParam("tagname", "tag name");
+    requireStringParam("tag", "Tag Value");
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksTagAdd::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+    int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
+    std::string sTagValue = pRequest->getInputString("tag", "");
+    sTagValue = WsjcppCore::trim(sTagValue);
+    if (sTagValue == "") {
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "tag could not be empty"));
+        return;
+    }
+
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+
+    // TODO get from employ
+    query.prepare("SELECT * FROM useful_links_tags WHERE usefullinkid = :useful_link_id AND tagvalue = :tagvalue");
+    query.bindValue(":useful_link_id", nUsefulLinkId);
+    query.bindValue(":tagvalue", QString::fromStdString(sTagValue));
+
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    if (query.next()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "TAG_ALREADY_EXISTS"));
+        return;
+    } else {
+        query.prepare("INSERT INTO useful_links_tags(usefullinkid, tagvalue) VALUES(:useful_link_id, :tagvalue)");
+        query.bindValue(":useful_link_id", nUsefulLinkId);
+        query.bindValue(":tagvalue", QString::fromStdString(sTagValue));
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            return;
+        }
+    }
+    nlohmann::json jsonResponse;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 // ---------------------------------------------------------------------
 // Useful Links remove tag
+
+REGISTRY_CMD(CmdHandlerUsefulLinksTagDelete)
 
 CmdHandlerUsefulLinksTagDelete::CmdHandlerUsefulLinksTagDelete()
     : CmdHandlerBase("useful_links_tag_delete", "Useful Links remove tag") {
@@ -765,18 +829,54 @@ CmdHandlerUsefulLinksTagDelete::CmdHandlerUsefulLinksTagDelete()
     setAccessUnauthorized(false);
     setAccessUser(false);
     setAccessAdmin(true);
-
-    requireIntegerParam("useful_link_tag_id", "Tag Id for useful link");
+    
+    requireIntegerParam("useful_link_id", "Useful Link Id");
+    requireStringParam("tag", "Tag Value");
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksTagDelete::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+    int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
+    std::string sTagValue = pRequest->getInputString("tag", "");
+    sTagValue = WsjcppCore::trim(sTagValue);
+    if (sTagValue == "") {
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "tag could not be empty"));
+        return;
+    }
+
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+
+    // TODO get from employ
+    query.prepare("SELECT * FROM useful_links_tags WHERE usefullinkid = :useful_link_id AND tagvalue = :tagvalue");
+    query.bindValue(":useful_link_id", nUsefulLinkId);
+    query.bindValue(":tagvalue", QString::fromStdString(sTagValue));
+
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    if (query.next()) {
+        query.prepare("DELETE FROM useful_links_tags WHERE usefullinkid = :useful_link_id AND tagvalue = :tagvalue");
+        query.bindValue(":useful_link_id", nUsefulLinkId);
+        query.bindValue(":tagvalue", QString::fromStdString(sTagValue));
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            return;
+        }
+    }
+    nlohmann::json jsonResponse;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 // ---------------------------------------------------------------------
 // Useful Links propose link by user
+
+REGISTRY_CMD(CmdHandlerUsefulLinksUserPropose)
 
 CmdHandlerUsefulLinksUserPropose::CmdHandlerUsefulLinksUserPropose()
     : CmdHandlerBase("useful_links_user_propose", "Useful Links propose link by user") {
@@ -800,6 +900,8 @@ void CmdHandlerUsefulLinksUserPropose::handle(ModelRequest *pRequest) {
 
 // ---------------------------------------------------------------------
 // Useful Links propose link by user
+
+REGISTRY_CMD(CmdHandlerUsefulLinksUserProposeApprove)
 
 CmdHandlerUsefulLinksUserProposeApprove::CmdHandlerUsefulLinksUserProposeApprove()
     : CmdHandlerBase("useful_links_user_propose_approve", "Useful Links Approve propose link by admin") {

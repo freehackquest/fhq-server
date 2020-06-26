@@ -27,3 +27,28 @@ pre {
     cursor: pointer;
 }
 
+.tag-item {
+    display: inline-block;
+    padding: 10px;
+    background-color: #000;
+    color: #fff;
+    border-radius: 20px;
+    padding-left: 20px;
+    margin-right: 10px;
+}
+
+.tag-item-remove {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    color: #000;
+    border-radius: 20px;
+    text-align: center;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.fhq-card {
+
+}
