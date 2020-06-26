@@ -20,6 +20,11 @@ export interface UsefulLinkElement {
   tags: Array<string>;
 }
 
+export interface UsefulLinkTag {
+  name: string;
+  counter: number;
+}
+
 @Component({
   selector: 'app-useful-links',
   templateUrl: './useful-links.component.html',
@@ -33,6 +38,10 @@ export class UsefulLinksComponent implements OnInit {
   pageSize: number = 5;
   length: number = 0;
   pageSizeOptions = [5, 10, 25, 50];
+
+  tagList: UsefulLinkTag[] = [];
+  filterByTag: string = "";
+
   errorMessage: string = null;
 
   searchValue: String = '';
@@ -40,7 +49,7 @@ export class UsefulLinksComponent implements OnInit {
   formCtrlSub: Subscription;
 
   dataSource = new MatTableDataSource<UsefulLinkElement>();
-  displayedColumns: string[] = ['idUsefulLink', 'usefulLinkData'];
+  displayedColumns: string[] = ['usefulLinkData'];
 
   constructor(
     private _spinner: SpinnerService,
@@ -128,10 +137,12 @@ export class UsefulLinksComponent implements OnInit {
 
   updatePage() {
     this._spinner.show();
+    this.loadListOftags();
     this._fhq.api().useful_links_list({
       "page_index": this.pageIndex,
       "page_size": this.pageSize,
       "filter": this.searchValue,
+      "filter_by_tag": this.filterByTag,
     })
       .done((r: any) => this.successUsefulLinksList(r))
       .fail((err: any) => this.errorUsefulLinksList(err));
@@ -147,9 +158,9 @@ export class UsefulLinksComponent implements OnInit {
   }
 
   prepareUserClicksLabel(n: number) {
-    console.log("prepareUserClicksLabel", n)
+    // console.log("prepareUserClicksLabel", n)
     if (n >= 1000 && n < 1000000) {
-      console.log("prepareUserClicksLabel > 999 ", n)
+      // console.log("prepareUserClicksLabel > 999 ", n)
       return Math.floor(n / 1000) + "k";
     } else if (n >= 1000000) {
       return Math.floor(n / 1000000) + "M";
@@ -246,11 +257,45 @@ export class UsefulLinksComponent implements OnInit {
   }
 
   linkClicked(id: number) {
-    console.log("linkClicked", id );
+    // console.log("linkClicked", id );
     this._fhq.api().useful_links_clicked({
       "useful_link_id": id
     })
       .done((r: any) => this.successUsefulLinkClicked(r))
       .fail((err: any) => this.errorUsefulLinkClicked(err));
+  }
+
+  successLoadListOftags(r: any) {
+    // console.log("successLoadListOftags", r);
+    this.tagList = [];
+    r.data.forEach(el => {
+      this.tagList.push({
+        name: el.tag,
+        counter: el.counter,
+      })
+    });
+    this._cdr.detectChanges();
+  }
+
+  errorLoadListOftags(err: any) {
+    console.error("errorLoadListOftags", err);
+    // this._spinner.hide();
+  }
+
+  loadListOftags() {
+    this._fhq.api().useful_links_tag_list({
+      // nothing yet
+    })
+      .done((r: any) => this.successLoadListOftags(r))
+      .fail((err: any) => this.errorLoadListOftags(err));
+  }
+
+  applyFilterByTag(tag: string) {
+    if (this.filterByTag == tag) {
+      this.filterByTag = "";
+    } else {
+      this.filterByTag = tag;
+    }
+    this.updatePage();
   }
 }

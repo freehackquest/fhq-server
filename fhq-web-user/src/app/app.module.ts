@@ -14,6 +14,7 @@ import {
   MatProgressBarModule,
   MatSnackBarModule,
   MatBadgeModule,
+  MatChipsModule,
   MatRippleModule
 } from '@angular/material';
 
@@ -173,6 +174,7 @@ const l10nConfig: L10nConfig = {
     MatProgressBarModule,
     MatSnackBarModule,
     MatBadgeModule,
+    MatChipsModule,
     MatRippleModule
   ],
   exports: [

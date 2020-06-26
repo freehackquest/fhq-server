@@ -21,6 +21,7 @@ CmdHandlerUsefulLinksList::CmdHandlerUsefulLinksList()
     setAccessAdmin(true);
 
     optionalStringParam("filter", "Filter by word");
+    optionalStringParam("filter_by_tag", "Filter by tag");
     optionalIntegerParam("page_index", "Page Index");
     optionalIntegerParam("page_size", "Page Size (default 10)");
     
@@ -87,6 +88,7 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     bool bIsAdmin = pRequest->isAdmin();
 
     std::string sFilter = pRequest->getInputString("filter", "");
+    std::string sFilterByTag = pRequest->getInputString("filter_by_tag", "");
     int nPageIndex = pRequest->getInputInteger("page_index", 0);
     int nPageSize = pRequest->getInputInteger("page_size", 10);
     int nLength = 0;
@@ -95,6 +97,9 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     sFilter = WsjcppCore::trim(sFilter);
     if (sFilter != "") {
         queryFilters.like({"url", "description"}, sFilter);
+    }
+    if (sFilterByTag != "") {
+        WsjcppLog::info(TAG, "sFilterByTag = " + sFilterByTag);
     }
     QString sWhere = "";
 
@@ -753,7 +758,31 @@ CmdHandlerUsefulLinksTagList::CmdHandlerUsefulLinksTagList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksTagList::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+
+    // TODO get from employ
+    query.prepare("SELECT tagvalue, COUNT(*) AS cnt FROM `useful_links_tags` GROUP BY tagvalue");
+
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    nlohmann::json jsonData = nlohmann::json::array();
+    while (query.next()) {
+        QSqlRecord record = query.record();
+        nlohmann::json jsonTagInfo;
+        jsonTagInfo["tag"] = record.value("tagvalue").toString().toHtmlEscaped().toStdString();
+        jsonTagInfo["counter"] = record.value("cnt").toInt();
+        jsonData.push_back(jsonTagInfo);
+    }
+    nlohmann::json jsonResponse;
+    jsonResponse["data"] = jsonData;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 // ---------------------------------------------------------------------

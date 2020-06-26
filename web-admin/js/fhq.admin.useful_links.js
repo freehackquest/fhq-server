@@ -219,7 +219,6 @@ fhq.usefulLinksUpdate = function(useful_link_id)  {
     })
 };
 
-
 fhq.usefulLinksUpdateAndClose = function(useful_link_id)  {
     fhq.showLoader();
     $('#error_info').hide();
