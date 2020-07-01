@@ -1,6 +1,6 @@
 {
   "name": "fhq-web-user",
-  "version": "0.2.30",
+  "version": "0.2.31",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
