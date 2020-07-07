@@ -4,6 +4,10 @@ import { Router } from '@angular/router';
 import { FhqService } from '../../services/fhq.service';
 import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import 'rxjs/add/operator/switchMap';
+
+// import { switch } from 'rxjs/operators/switchMap'; // <- Please read the update!
 
 @Component({
   selector: 'app-scoreboard',
@@ -30,7 +34,8 @@ export class ScoreboardComponent implements OnInit {
 
 	// debounce keystroke events
     this.formCtrlSub = this.searchControl.valueChanges
-      .debounceTime(1000)
+	  .pipe(debounceTime(2000))
+	  // .switchMap(inputVal => this.service.get(inputVal))
       .subscribe((newValue) => {
         this.searchValue = newValue
 		this.applyFilter();

@@ -3,8 +3,8 @@ import { SpinnerService } from '../../services/spinner.service';
 import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
-import { PageEvent } from '@angular/material';
-import { MatTableDataSource } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { FhqService } from '../../services/fhq.service';
 import { Location } from '@angular/common';
 

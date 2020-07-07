@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
-import { TranslationService } from 'angular-l10n';
+import { L10nTranslationService } from 'angular-l10n';
 import { SpinnerService } from '../../services/spinner.service';
 import { EmailValidatorService } from '../../email-validator.service';
 
@@ -13,10 +13,10 @@ declare var fhq: any;
 export class ResetPasswordComponent implements OnInit {
   errorMessage: string = null;
   successReseted: boolean = false;
-  @ViewChild('resetPasswordEmail', { static: false }) resetPasswordEmail : ElementRef;
+  @ViewChild('resetPasswordEmail') resetPasswordEmail : ElementRef;
 
   constructor(
-    public _translation: TranslationService,
+    public _translation: L10nTranslationService,
     private _spinnerService: SpinnerService,
 	private _cdr: ChangeDetectorRef,
 	private _emailValidator: EmailValidatorService,

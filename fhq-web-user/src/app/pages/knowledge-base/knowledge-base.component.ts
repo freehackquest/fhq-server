@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { FhqService } from '../../services/fhq.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
-import { LocaleService } from 'angular-l10n';
+import { L10nTranslationService } from 'angular-l10n';
 
 
 @Component({
@@ -30,7 +30,7 @@ export class KnowledgeBaseComponent implements OnInit {
   public infoMessage: String = null;
 
   constructor(
-    public _locale: LocaleService,
+    public _translation: L10nTranslationService,
     private _spinnerService: SpinnerService,
     private _route: ActivatedRoute,
     private _router: Router,
@@ -84,7 +84,7 @@ export class KnowledgeBaseComponent implements OnInit {
     this.loadChilds();
     this.articleContentNaked = r.data.content;
     this.articleContentNakedOriginal = this.articleContentNaked;
-    this.editLang = this._locale.getCurrentLanguage();
+    this.editLang = this._translation.getLocale().language;
   }
 
   errorResponse(err: any) {

@@ -1,6 +1,9 @@
 {
     "title": "FreeHackQuest",
     "changeLanguage": "Сменить язык",
+    "can-try-this-later": {
+        "some1": "some"
+    },
     "greeting": "Привет!",
     "quests": "Задачи",
     "scoreboard": "Рейтинг",

@@ -9,7 +9,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { escape } from 'lodash';
 import { FhqService } from '../../services/fhq.service';
 import { FormControl, Validators } from '@angular/forms';
-import { PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
 
 declare var _: any;
 

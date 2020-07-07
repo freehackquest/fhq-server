@@ -65,10 +65,10 @@
             <div class="nav-link dropdown-toggle" data-toggle="dropdown" id="Preview" href="#" role="button" aria-haspopup="true" style="cursor: pointer" aria-expanded="false">
                 <img height=25px [src]="menuLangIcon"/>
             </div>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="Preview">
-                <div class="dropdown-item" style="cursor: pointer" (click)="selectLanguage('en');"><img height=25px src="assets/img/lang_en.png"> English</div>
-                <div class="dropdown-item" style="cursor: pointer" (click)="selectLanguage('ru');"><img height=25px src="assets/img/lang_ru.png"> Русский</div>
-                <div class="dropdown-item" style="cursor: pointer" (click)="selectLanguage('de');"><img height=25px src="assets/img/lang_de.png"> Deutch</div>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="">
+              <div class="dropdown-item" *ngFor="let item of schema" style="cursor: pointer" (click)="setLocale(item.locale)">
+                <img height=25px src="assets/img/lang_{{ item.locale.language }}.png"> {{ item.text }}
+              </div>
             </div>
         </li>
     </ul>

@@ -1,5 +1,11 @@
 import { Component, OnInit, Inject, ChangeDetectorRef, Input } from '@angular/core';
-import { LocaleService, TranslationService, Language } from 'angular-l10n';
+import {
+  L10N_CONFIG,
+  L10nConfig,
+  L10N_LOCALE,
+  L10nLocale,
+  L10nTranslationService
+} from "angular-l10n";
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalDialogSignInComponent } from './dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
 import { FhqService } from './services/fhq.service';
@@ -20,10 +26,12 @@ export class AppComponent implements OnInit {
   serverAppVersion: string = '';
   libVersion: string = '';
   brokenConnection: boolean = false;
+  schema = this.l10nConfig.schema;
 
   constructor(
-    public _locale: LocaleService,
-    public _translation: TranslationService,
+    @Inject(L10N_LOCALE) public _locale: L10nLocale,
+    @Inject(L10N_CONFIG) private l10nConfig: L10nConfig,
+    public _translationService: L10nTranslationService,
     private _cdr: ChangeDetectorRef,
     private _modalService: NgbModal,
     public _fhq: FhqService,
@@ -41,11 +49,12 @@ export class AppComponent implements OnInit {
           window.scrollTo(0, 0);
       }
     });
+    
   }
 
   ngOnInit(): void {
-    this.updateLanguage();
-    console.log("lang: ", this._locale.getCurrentLanguage());
+    console.log("lang: ", this._translationService.getLocale().language);
+        
     this._fhq.api().bind('server', (data: any) => this.serverInfo(data));
 
     this.subscription = this._fhq.changedState
@@ -53,6 +62,13 @@ export class AppComponent implements OnInit {
     
     this._spinner.show();
     this._fhq.connectToServer();
+
+    this._translationService.onChange().subscribe({
+      next: () => {
+        this.menuLangIcon = "assets/img/lang_" + this._translationService.getLocale().language + ".png";
+      }
+  });
+
   }
 
   ngOnDestroy() {
@@ -73,15 +89,9 @@ export class AppComponent implements OnInit {
     this._cdr.detectChanges()
   }
 
-  selectLanguage(language: string): void {
-    this._locale.setCurrentLanguage(language);
-    this.updateLanguage();
-  }
-
-  updateLanguage() {
-    const l = this._locale.getCurrentLanguage();
-    this.menuLangIcon = "assets/img/lang_" + l + ".png";
-    this._cdr.detectChanges();
+  setLocale(locale: L10nLocale): void {
+    this._translationService.setLocale(locale);
+    // this.menuLangIcon = "assets/img/lang_" + locale.language + ".png";
   }
 
   openDialogSignIn() {
