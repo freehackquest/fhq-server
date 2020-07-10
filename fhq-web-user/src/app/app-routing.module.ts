@@ -30,6 +30,7 @@ import { QuestComponent } from './pages/quest/quest.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { FhqJuryAdComponent } from './pages/fhq-jury-ad/fhq-jury-ad.component';
 import { UserFavoritesUsefulLinksComponent } from './pages/user-favorites-useful-links/user-favorites-useful-links.component'
+import { UsefulLinkViewComponent } from './pages/useful-link-view/useful-link-view.component';
 
 const routes: Routes = [{
     path: 'knowledge-base',
@@ -94,6 +95,9 @@ const routes: Routes = [{
   }, {
     path: 'useful-links',
     component: UsefulLinksComponent
+  }, {
+    path: 'useful-links/:id',
+    component: UsefulLinkViewComponent
   }, {
     path: 'games',
     component: GamesComponent

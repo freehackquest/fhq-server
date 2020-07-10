@@ -67,6 +67,10 @@
             <mat-icon aria-hidden="false">star_outline</mat-icon>
             Unfavorite ({{ element.userFavorites }})
           </button>
+          <button mat-stroked-button class="useful-links-left-btn" routerLink="/useful-links/{{ element.id }}">
+            <mat-icon aria-hidden="false">comment</mat-icon>
+            Comments (0)
+          </button>
           <br><br>
           <strong>{{element.description}}</strong><br>
           <div *ngIf="element.tags.length > 0"> 
@@ -80,11 +84,6 @@
               </mat-chip>
             </mat-chip-list>
           </div>
-          <!-- hr/>
-          <button mat-stroked-button>
-            <mat-icon aria-hidden="false">comment</mat-icon>
-            Comments (0)
-          </button -->
         </td>
       </ng-container>
 
