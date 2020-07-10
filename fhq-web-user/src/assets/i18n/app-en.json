@@ -82,6 +82,10 @@
     "feedbackFrom": "From",
     "feedbackMessage": "Message",
     "userLocation": "Location",
+    "questProposal": {
+        "uploadFileHint" : "Files please upload to your cloud disk (google/yandex/dropbox...) or to any web resource which admin has access for download it. And put link to quest text. ",
+        "writeUpLink": "Suggest a link"
+    },
     "notDetected": "Not detected",
     "userCountry": "Country: ",
     "userRegion": "Region: ",
@@ -136,7 +140,6 @@
     "questWriteUps": "Write Ups",
     "questMyAnswers": "My Answers",
     "questMyAnswersNotFound": "Your answers to this quest was not found",
-    "questProposalWriteUpLink": "Suggest a link",
     "questStatistics": "Statistics",
     "questStatisticsTries": "Wrong answers",
     "questStatisticsSolved": "Correct answers",

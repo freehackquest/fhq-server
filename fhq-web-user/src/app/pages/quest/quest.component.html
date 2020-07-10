@@ -168,7 +168,7 @@
         <input class="form-control" #questWriteUpProposalLink 
           type="url" value="" placeholder="https://www.youtube.com/watch?v=gJeOeTGI7T8" />
         <br/>
-        <div class="btn btn-info" (click)="proposalWriteUp()" l10nTranslate>questProposalWriteUpLink</div>
+        <div class="btn btn-info" (click)="proposalWriteUp()" l10nTranslate>questProposal.writeUpLink</div>
         <div class="alert alert-danger" *ngIf="errorProposalWriteUpMessage != null"> {{ errorProposalWriteUpMessage }} </div>
     </li>
     <li class="list-group-item" *ngFor="let qw of questWriteUps">

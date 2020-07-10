@@ -86,6 +86,10 @@
     "feedbackFrom": "От",
     "feedbackMessage": "Сообщение",
     "userLocation": "Местонахождение",
+    "questProposal": {
+        "uploadFileHint" : "Пожалуйста, файлы, загружайте на свой облачный диск (google / yandex / dropbox ...) или на любой веб-ресурс, доступ к которому есть у администратора. И добавьте ссылку в текст квеста.",
+        "writeUpLink": "Предложить ссылку"
+    },
     "notDetected": "Не обнаружено",
     "userCountry": "Страна: ",
     "userRegion": "Регион: ",
@@ -140,7 +144,6 @@
     "questWriteUps": "Решения",
     "questMyAnswers": "Мои ответы",
     "questMyAnswersNotFound": "Не найдено ни одного вашего ответа к этому квесту",
-    "questProposalWriteUpLink": "Предложить ссылку",
     "questStatistics": "Статистика",
     "questStatisticsTries": "Не правильных ответов",
     "questStatisticsSolved": "Правильных ответов",

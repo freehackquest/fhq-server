@@ -73,6 +73,10 @@
     "feedbackFrom": "Aus",
     "feedbackMessage": "Meldung",
     "userLocation": "Location",
+    "questProposal": {
+        "uploadFileHint" : "Files please upload to your cloud disk (google/yandex/dropbox...) or to any web resource which admin has access for download it. And put link to quest text. ",
+        "writeUpLink": "Schlagen Sie einen Link vor"
+    },
     "notDetected": "Not detected",
     "userCountry": "Country: ",
     "userRegion": "Region: ",
@@ -123,7 +127,6 @@
     "questWriteUps": "Schreiben Sie Ups",
     "questMyAnswers": "Meine Antworten",
     "questMyAnswersNotFound": "Ihre Antworten auf diese Quest wurden nicht gefunden",
-    "questProposalWriteUpLink": "Schlagen Sie einen Link vor",
     "questStatistics": "Statistiken",
     "questStatisticsTries": "Falsche Antworten",
     "questStatisticsSolved": "Korrekte Antworten",

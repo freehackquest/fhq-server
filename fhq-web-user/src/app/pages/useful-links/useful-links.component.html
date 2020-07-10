@@ -60,6 +60,7 @@
 
           <button mat-stroked-button class="useful-links-left-btn" *ngIf="!element.favorite && _fhq.isAuthorized" (click)="addToFavorite(element.id)">
             <mat-icon aria-hidden="false">star</mat-icon>
+            
             Favorite ({{ element.userFavorites }})
           </button>
           <button mat-stroked-button class="useful-links-left-btn" *ngIf="element.favorite && _fhq.isAuthorized" (click)="removeFromFavorite(element.id)">
