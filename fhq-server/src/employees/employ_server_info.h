@@ -25,7 +25,7 @@ class EmployServerInfo : public WsjcppEmployBase {
         void initCounters();
         nlohmann::json developers();
 
-        QDateTime getServerStart();
+        long getServerStart();
         nlohmann::json toJson();
 
    private:
@@ -34,7 +34,7 @@ class EmployServerInfo : public WsjcppEmployBase {
        QMutex m_mtxIncrementRequests;
 
        std::string TAG;
-       QDateTime m_dtServerStarted;
+       long m_dtServerStarted;
        int m_nCountQuests;
        int m_nCountQuestsAttempt;
        int m_nCountQuestsCompleted;

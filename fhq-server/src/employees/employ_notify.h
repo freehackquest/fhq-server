@@ -18,7 +18,7 @@ class EmployNotify : public WsjcppEmployBase {
         static std::string SCOREBOARD;
         static std::string LEAKS;
 
-        void sendNotification(ModelNotification &modelNotification); // wrong
+        void sendNotification(ModelNotification &modelNotification); // TODO wrong
 
         void notifyWarning(const std::string &sSection, const std::string &sMessage);
         void notifyDanger(const std::string &sSection, const std::string &sMessage);

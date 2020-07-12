@@ -1,6 +1,7 @@
 #include <employ_server_info.h>
 #include <employees.h>
 #include <employ_database.h>
+#include <employ_notify.h>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QMap>
@@ -12,7 +13,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployServerInfo)
 // ---------------------------------------------------------------------
 
 EmployServerInfo::EmployServerInfo()
-    : WsjcppEmployBase(EmployServerInfo::name(), {EmployDatabase::name()}) {
+    : WsjcppEmployBase(EmployServerInfo::name(), { EmployDatabase::name(), EmployNotify::name() }) {
     m_nCountQuests = 0;
     m_nCountQuestsAttempt = 0;
     m_nCountQuestsCompleted = 0;
@@ -113,12 +114,14 @@ nlohmann::json EmployServerInfo::toJson() {
 
 void EmployServerInfo::serverStarted() {
     // TODO redesign this to helpers lib
-    m_dtServerStarted = QDateTime::currentDateTimeUtc();
+    m_dtServerStarted = WsjcppCore::currentTime_milliseconds();
+    EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
+    pNotify->notifySuccess("server", "Server started");
 }
 
 // ---------------------------------------------------------------------
 
-QDateTime EmployServerInfo::getServerStart() {
+long EmployServerInfo::getServerStart() {
     return m_dtServerStarted;
 }
 

@@ -123,9 +123,9 @@ void CmdHandlerServerInfo::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequestStatistics = pServerInfo->toJson(); // TODO how much db connections and time
 
     data["request_statistics"] = jsonRequestStatistics;
-    data["server_started"] = pServerInfo->getServerStart().toString(Qt::ISODate).toStdString();
-    qint64 updatime = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
-    updatime = updatime - pServerInfo->getServerStart().toMSecsSinceEpoch();
+    data["server_started"] = pServerInfo->getServerStart(); // in millseconds
+    long updatime = WsjcppCore::currentTime_milliseconds();
+    updatime = updatime - pServerInfo->getServerStart(); // in seconds
     data["server_uptime_sec"] = updatime/1000;
     // nlohmann::json lastLogMessages = nlohmann::json::array();
     data["last_log_messages"] = WsjcppLog::getLastLogMessages();
