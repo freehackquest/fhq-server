@@ -328,9 +328,10 @@ void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest) {
 
     EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
     nlohmann::json jsonMeta;
-    jsonMeta["usefullink"] = nlohmann::json();
-    jsonMeta["usefullink"]["id"] = nRowId;
-    jsonMeta["usefullink"]["url"] = sUrl;
+    jsonMeta["useful_link"] = nlohmann::json();
+    jsonMeta["useful_link"]["id"] = nRowId;
+    jsonMeta["useful_link"]["url"] = sUrl;
+    jsonMeta["useful_link"]["action"] = "added";
     pNotify->notifyInfo(
         "useful_links",
         "Added [useful_link#" + std::to_string(nRowId) + "] " + sUrl + "",
@@ -404,8 +405,9 @@ void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest) {
 
     EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
     nlohmann::json jsonMeta;
-    jsonMeta["usefullink"] = nlohmann::json();
-    jsonMeta["usefullink"]["id"] = nUsefulLinkId;
+    jsonMeta["useful_link"] = nlohmann::json();
+    jsonMeta["useful_link"]["id"] = nUsefulLinkId;
+    jsonMeta["useful_link"]["action"] = "removed";
     pNotify->notifyInfo(
         "useful_links",
         "Removed [useful_link#" + std::to_string(nUsefulLinkId) + "]",
@@ -464,9 +466,10 @@ void CmdHandlerUsefulLinksUpdate::handle(ModelRequest *pRequest) {
 
     EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
     nlohmann::json jsonMeta;
-    jsonMeta["usefullink"] = nlohmann::json();
-    jsonMeta["usefullink"]["id"] = nUsefulLinkId;
-    jsonMeta["usefullink"]["url"] = sUrl;
+    jsonMeta["useful_link"] = nlohmann::json();
+    jsonMeta["useful_link"]["id"] = nUsefulLinkId;
+    jsonMeta["useful_link"]["url"] = sUrl;
+    jsonMeta["useful_link"]["action"] = "updated";
     pNotify->notifyInfo(
         "useful_links",
         "Updated [useful_link#" + std::to_string(nUsefulLinkId) + "] " + sUrl + "",

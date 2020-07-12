@@ -99,11 +99,6 @@ export class AppComponent implements OnInit {
     modalRef.componentInstance.name = 'SignIn';
   }
 
-  openPageNews() {
-    this._router.navigate(['/news', 0]);
-    // $('.navbar-collapse').collapse('hide');
-  }
-
   serverInfo(data: any) {
     this.serverAppName = data.app;
     this.serverAppVersion = data.version;

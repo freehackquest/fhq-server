@@ -48,9 +48,6 @@ const routes: Routes = [{
     path: 'news',
     component: NewsComponent
   }, {
-    path: 'news/:id',
-    component: NewsComponent
-  }, {
     path: 'user-profile',
     component: UserProfileComponent
   }, {
