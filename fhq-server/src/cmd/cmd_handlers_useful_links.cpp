@@ -316,11 +316,19 @@ void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
+
+    int nRowId = query.lastInsertId().toInt();
+
     nlohmann::json jsonResult;
-    jsonResult["id"] = query.lastInsertId().toInt();
+    jsonResult["id"] = nRowId;
 
     nlohmann::json jsonResponse;
     jsonResponse["data"] = jsonResult;
+
+    // nlohmann::json jsonMeta;
+    // jsonMeta["usefullink"] = nlohmann::json();
+    // jsonMeta["usefullink"]["id"] = nRowId;
+    // RunTasks::AddPublicEvents("quests", "New [quest#" + std::to_string(nRowId) + "] " + sName + " (subject: " + sSubject + ")", jsonMeta);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

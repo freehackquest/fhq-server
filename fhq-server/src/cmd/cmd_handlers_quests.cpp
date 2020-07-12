@@ -554,7 +554,7 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
     }
 
     std::string sName = pRequest->getInputString("name", "");
-    WsjcppCore::trim(sName);
+    sName = WsjcppCore::trim(sName);
 
     /*if (sName.length() == 0) {
         pRequest->sendMessageError(cmd(), Error(400, "Name could not be empty"));
@@ -562,23 +562,23 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
     }*/
 
     std::string sText = pRequest->getInputString("text", "");
-    WsjcppCore::trim(sText);
+    sText = WsjcppCore::trim(sText);
     int nScore = pRequest->getInputInteger("score", 0);
     std::string sSubject = pRequest->getInputString("subject", "");
-    WsjcppCore::trim(sSubject);
+    sSubject = WsjcppCore::trim(sSubject);
 
     std::string sAnswer = pRequest->getInputString("answer", "");
-    WsjcppCore::trim(sAnswer);
+    sAnswer = WsjcppCore::trim(sAnswer);
     std::string sAuthor = pRequest->getInputString("author", "");
-    WsjcppCore::trim(sAuthor);
+    sAuthor = WsjcppCore::trim(sAuthor);
     std::string sAnswerFormat = pRequest->getInputString("answer_format", "");
-    WsjcppCore::trim(sAnswerFormat);
+    sAnswerFormat = WsjcppCore::trim(sAnswerFormat);
     std::string sState = pRequest->getInputString("state", "");
-    WsjcppCore::trim(sState);
+    sState = WsjcppCore::trim(sState);
     std::string sCopyright = pRequest->getInputString("copyright", "");
-    WsjcppCore::trim(sCopyright);
+    sCopyright = WsjcppCore::trim(sCopyright);
     std::string sDescriptionState = pRequest->getInputString("description_state", "");
-    WsjcppCore::trim(sDescriptionState);
+    sDescriptionState = WsjcppCore::trim(sDescriptionState);
 
     QSqlQuery query(db);
     query.prepare(
@@ -642,10 +642,13 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
     pServerInfo->incrementQuests();
 
 
-    int rowid = query.lastInsertId().toInt();
-    jsonResponse["questid"] = rowid;
+    int nRowId = query.lastInsertId().toInt();
+    jsonResponse["questid"] = nRowId;
 
-    RunTasks::AddPublicEvents("quests", "New [quest#" + std::to_string(rowid) + "] " + sName + " (subject: " + sSubject + ")");
+    nlohmann::json jsonMeta;
+    jsonMeta["questid"] = nRowId;
+
+    RunTasks::AddPublicEvents("quests", "New [quest#" + std::to_string(nRowId) + "] " + sName + " (subject: " + sSubject + ")", jsonMeta);
     RunTasks::UpdateMaxScoreGame(nGameID);
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -732,7 +735,10 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest) {
     }
     pServerInfo->decrementQuests();
 
-    RunTasks::AddPublicEvents("quests", "Removed [quest#" + std::to_string(questid) + "] " + sName + " (subject: " + sSubject + ")");
+    nlohmann::json jsonMeta;
+    jsonMeta["questid"] = questid;
+
+    RunTasks::AddPublicEvents("quests", "Removed [quest#" + std::to_string(questid) + "] " + sName + " (subject: " + sSubject + ")", jsonMeta);
 
     // TODO recalculate rating/score for users how solved this quest
 
@@ -1082,6 +1088,10 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
     std::string sCopyrightPrev = "";
     std::string sDescriptionStatePrev = "";
 
+    nlohmann::json jsonMeta;
+    jsonMeta["questid"] = nQuestID;
+    jsonMeta["name"] = sNamePrev;
+
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM quest WHERE idquest = :questid");
@@ -1123,7 +1133,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
                 return;
             }
             sNamePrev = sName;
-            RunTasks::AddPublicEvents("quests", "Updated name of [quest#" + std::to_string(nQuestID) + "] from [" + sNamePrev + "] to [" + sName + "]");
+            RunTasks::AddPublicEvents("quests", "Updated name of [quest#" + std::to_string(nQuestID) + "] from [" + sNamePrev + "] to [" + sName + "]", jsonMeta);
         }
     }
 
@@ -1152,7 +1162,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
             }
             RunTasks::UpdateMaxScoreGame(nGameID);
             RunTasks::UpdateMaxScoreGame(nGameIDPrev);
-            RunTasks::AddPublicEvents("quests", "Moved [quest#" + std::to_string(nQuestID) + "] from " + std::to_string(nGameIDPrev) + " to " + std::to_string(nGameID));
+            RunTasks::AddPublicEvents("quests", "Moved [quest#" + std::to_string(nQuestID) + "] from " + std::to_string(nGameIDPrev) + " to " + std::to_string(nGameID), jsonMeta);
             nGameIDPrev = nGameID;
         }
     }
@@ -1170,7 +1180,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
                 pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
                 return;
             }
-            RunTasks::AddPublicEvents("quests", "Updated subject of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev);
+            RunTasks::AddPublicEvents("quests", "Updated subject of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev, jsonMeta);
             // TODO update skills of users in future
         }
     }
@@ -1188,7 +1198,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
                 pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
                 return;
             }
-            RunTasks::AddPublicEvents("quests", "Updated text of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev);
+            RunTasks::AddPublicEvents("quests", "Updated text of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev, jsonMeta);
         }
     }
 
@@ -1204,7 +1214,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
                 pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
                 return;
             }
-            RunTasks::AddPublicEvents("quests", "Updated score of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev + " from " + std::to_string(nScorePrev) + " to " + std::to_string(nScore));
+            RunTasks::AddPublicEvents("quests", "Updated score of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev + " from " + std::to_string(nScorePrev) + " to " + std::to_string(nScore), jsonMeta);
             RunTasks::UpdateMaxScoreGame(nGameIDPrev);
             // TODO update users rating/score task
         }
@@ -1223,7 +1233,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
                 pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
                 return;
             }
-            RunTasks::AddPublicEvents("quests", "Updated answer of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev);
+            RunTasks::AddPublicEvents("quests", "Updated answer of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev, jsonMeta);
         }
     }
 
@@ -1239,7 +1249,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
                 pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
                 return;
             }
-            RunTasks::AddPublicEvents("quests", "Updated author of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev);
+            RunTasks::AddPublicEvents("quests", "Updated author of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev, jsonMeta);
         }
     }
 
@@ -1255,7 +1265,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
                 pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
                 return;
             }
-            RunTasks::AddPublicEvents("quests", "Updated answer format of [quest#" + std::to_string(nQuestID) + "](" + sNamePrev + ") from {" + sAnswerFormatPrev + "} to {" + sAnswerFormat + "}");
+            RunTasks::AddPublicEvents("quests", "Updated answer format of [quest#" + std::to_string(nQuestID) + "](" + sNamePrev + ") from {" + sAnswerFormatPrev + "} to {" + sAnswerFormat + "}", jsonMeta);
         }
     }
 
@@ -1271,7 +1281,11 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
                 pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
                 return;
             }
-            RunTasks::AddPublicEvents("quests", "Updated state of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev + " from {" + sStatePrev + "} to {" + sState + "}");
+            RunTasks::AddPublicEvents(
+                "quests",
+                "Updated state of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev + " from {" + sStatePrev + "} to {" + sState + "}",
+                jsonMeta
+            );
         }
     }
 
@@ -1287,7 +1301,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
                 pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
                 return;
             }
-            RunTasks::AddPublicEvents("quests", "Updated copyright of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev + " from {" + sCopyrightPrev + "} to {" + sCopyright + "}");
+            RunTasks::AddPublicEvents("quests", "Updated copyright of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev + " from {" + sCopyrightPrev + "} to {" + sCopyright + "}", jsonMeta);
         }
     }
 
@@ -1409,7 +1423,9 @@ void CmdHandlerAddHint::handle(ModelRequest *pRequest) {
         WsjcppLog::err(TAG, query.lastError().text().toStdString());
     }
 
-    RunTasks::AddPublicEvents("quests", "Added hint for [quest#" + std::to_string(nQuestId) + "]");
+    nlohmann::json jsonMeta;
+    jsonMeta["questid"] = nQuestId;
+    RunTasks::AddPublicEvents("quests", "Added hint for [quest#" + std::to_string(nQuestId) + "]", jsonMeta);
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 

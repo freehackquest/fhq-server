@@ -203,6 +203,8 @@ list (APPEND WSJCPP_SOURCES "src/storages/updates/update_csww6lwcrp_722kt134lq.h
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update_csww6lwcrp_722kt134lq.cpp")
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update_722kt134lq_6c8d4zm6u2.h")
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update_722kt134lq_6c8d4zm6u2.cpp")
+list (APPEND WSJCPP_SOURCES "src/storages/updates/update_6c8d4zm6u2_pmlyt8k7nm.h")
+list (APPEND WSJCPP_SOURCES "src/storages/updates/update_6c8d4zm6u2_pmlyt8k7nm.cpp")
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update0101.h")
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update0101.cpp")
 

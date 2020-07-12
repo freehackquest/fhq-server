@@ -34,11 +34,11 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
 
     int nUserID = 0;
     std::string sEmail = pRequest->getInputString("from", "");
-    WsjcppCore::trim(sEmail);
+    sEmail = WsjcppCore::trim(sEmail);
     std::string sText = pRequest->getInputString("text", "");
-    WsjcppCore::trim(sText);
+    sText = WsjcppCore::trim(sText);
     std::string sType = pRequest->getInputString("type", "");
-    WsjcppCore::trim(sType);
+    sType = WsjcppCore::trim(sType);
 
     WsjcppUserSession *pUserSession = pRequest->getUserSession();
     if (pUserSession != NULL) {
@@ -58,7 +58,8 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
         return;
     }
 
-    RunTasks::AddPublicEvents("users", "Added feedback");
+    nlohmann::json jsonMeta;
+    RunTasks::AddPublicEvents("users", "Added feedback", jsonMeta);
 
     // TODO move to EmployMails
     std::string sMailToAdmin = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();

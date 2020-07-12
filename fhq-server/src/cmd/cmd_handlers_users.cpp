@@ -8,8 +8,8 @@
 #include <wsjcpp_hashes.h>
 #include <fallen.h>
 #include <wsjcpp_core.h>
-#include <QUuid>
 #include <QDateTime>
+#include <json.hpp>
 
 /*********************************************
  * This handler will be return scoreboard of user
@@ -362,7 +362,11 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest) {
 
     int nUserID = query_insert.lastInsertId().toInt();
 
-    RunTasks::AddPublicEvents("users", "New [user#" + std::to_string(nUserID) + "]  " + sNick.toStdString());
+    nlohmann::json jsonMeta;
+    jsonMeta["userid"] = nUserID;
+    jsonMeta["usernick"] = sNick.toStdString();
+
+    RunTasks::AddPublicEvents("users", "New [user#" + std::to_string(nUserID) + "]  " + sNick.toStdString(), jsonMeta);
 
     std::string sSubject = "Registration on FreeHackQuest";
     std::string sContext = "Welcome to FreeHackQuest!\n"
@@ -730,7 +734,11 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest) {
     nlohmann::json jsonData;
     jsonData["userid"] = nUserID;
     jsonResponse["data"] = jsonData;
-    RunTasks::AddPublicEvents("users", "New [user#" + std::to_string(nUserID) + "] " + sNick.toStdString());
+
+    nlohmann::json jsonMeta;
+    jsonMeta["userid"] = nUserID;
+    jsonMeta["usernick"] = sNick.toStdString();
+    RunTasks::AddPublicEvents("users", "New [user#" + std::to_string(nUserID) + "] " + sNick.toStdString(), jsonMeta);
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -1020,8 +1028,10 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WsjcppError(500, query_update.lastError().text().toStdString()));
         return;
     }
-
-    RunTasks::AddPublicEvents("users", "User comeback [user#" + std::to_string(nUserID) + "] " + sNick.toStdString());
+    nlohmann::json jsonMeta;
+    jsonMeta["userid"] = nUserID;
+    jsonMeta["usernick"] = sNick.toStdString();
+    RunTasks::AddPublicEvents("users", "User comeback [user#" + std::to_string(nUserID) + "] " + sNick.toStdString(), jsonMeta);
 
     std::string sSubject = "Reset Password from FreeHackQuest";
     std::string sContext = "Welcome back to FreeHackQuest!\n"
@@ -1216,8 +1226,11 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest) {
     }
 
     pUserSession->setNick(sNick);
+    nlohmann::json jsonMeta;
+    jsonMeta["userid"] = nUserID;
+    jsonMeta["usernick"] = sNick.toStdString();
     RunTasks::AddPublicEvents("users", "User [user#" + std::to_string(nUserID) + "]  " + sNick.toStdString()
-                              + " updated info");
+                              + " updated info", jsonMeta);
 
     data["id"] = nUserID;
     data["nick"] = sNick.toHtmlEscaped().toStdString();
@@ -1836,7 +1849,9 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest) {
         return;
     }
 
-    RunTasks::AddPublicEvents("users", "New user [#" + std::to_string(nUserID) + "] " + sNick.toStdString());
+    nlohmann::json jsonMeta;
+    jsonMeta["userid"] = nUserID;
+    RunTasks::AddPublicEvents("users", "New user [#" + std::to_string(nUserID) + "] " + sNick.toStdString(), jsonMeta);
 
     std::string sSubject = "Registration on FreeHackQuest";
     std::string sContext = "Welcome to FreeHackQuest!\n"

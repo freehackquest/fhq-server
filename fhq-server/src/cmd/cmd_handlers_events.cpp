@@ -245,6 +245,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
             jsonEvent["id"] = record.value("id").toInt();
             jsonEvent["type"] = record.value("type").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
             jsonEvent["message"] = record.value("message").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
+            jsonEvent["meta"] = record.value("meta").toString().toStdString(); // TODO htmlspecialchars
 
             jsonPublicEventsList.push_back(jsonEvent);
         }

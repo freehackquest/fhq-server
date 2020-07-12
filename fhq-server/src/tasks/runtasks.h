@@ -5,7 +5,7 @@
 
 class RunTasks {
     public:
-        static void AddPublicEvents(const std::string &sType, const std::string &sMessage);
+        static void AddPublicEvents(const std::string &sType, const std::string &sMessage, const nlohmann::json &jsonMeta);
         static void UpdateUserLocation(int userid, const std::string &sLastip);
         static void UpdateMaxScoreGame(int gameid);
         static void UpdateUserRating(int nUserID);
