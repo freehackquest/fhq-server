@@ -11,8 +11,9 @@
     "e2e": "ng e2e"
   },
   "browserslist": [
-    "> 1%",
-    "last 2 versions"
+    "last 2 versions",
+    "not ie <= 10",
+    "not ie_mob <= 10"
   ],
   "private": true,
   "dependencies": {

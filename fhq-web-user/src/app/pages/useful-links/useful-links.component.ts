@@ -7,6 +7,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { FhqService } from '../../services/fhq.service';
 import { Location } from '@angular/common';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 export interface UsefulLinkElement {
   id: number;
@@ -46,7 +47,6 @@ export class UsefulLinksComponent implements OnInit {
 
   searchValue: String = '';
   searchControl = new FormControl('');
-  formCtrlSub: Subscription;
 
   dataSource = new MatTableDataSource<UsefulLinkElement>();
   displayedColumns: string[] = ['usefulLinkData'];
@@ -82,10 +82,15 @@ export class UsefulLinksComponent implements OnInit {
     });
 
     this._spinner.hide();
-    this.formCtrlSub = this.searchControl.valueChanges
-    .debounceTime(1000)
-    .subscribe((newValue) => {
-      this.searchValue = newValue
+    this.searchControl.valueChanges
+    .pipe(
+      debounceTime(1000),
+      distinctUntilChanged(),
+    )
+    .subscribe((newValue): void => {
+      this.searchValue = newValue;
+      this.pageIndex = 0;
+      console.log(newValue);
       this.updatePage();
     });
   }

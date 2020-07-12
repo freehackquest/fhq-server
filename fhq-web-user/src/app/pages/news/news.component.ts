@@ -1,10 +1,11 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, ChangeDetectorRef, ElementRef, SecurityContext } from '@angular/core';
 import { SpinnerService } from '../../services/spinner.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/throttleTime';
-import 'rxjs/add/observable/fromEvent';
-import { Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
+// import 'rxjs/add/operator/throttleTime';
+// import 'rxjs/add/observable/fromEvent';
+
 import { DomSanitizer } from '@angular/platform-browser';
 import { escape } from 'lodash';
 import { FhqService } from '../../services/fhq.service';
@@ -23,7 +24,7 @@ export class NewsComponent implements OnInit {
   @Output() loading = new EventEmitter<boolean>();
   searchValue: String = '';
   searchControl = new FormControl('');
-  formCtrlSub: Subscription;
+  // formCtrlSub = new Subject<string>();
 
   pageEvent: PageEvent;
   pageIndex: number = 0;
@@ -72,11 +73,13 @@ export class NewsComponent implements OnInit {
       this.loadData();
     });
 
-    // debounce keystroke events
-    this.formCtrlSub = this.searchControl.valueChanges
-      .debounceTime(1000)
-      .subscribe((newValue) => {
-        this.searchValue = newValue
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(1000),
+        distinctUntilChanged(),
+      )
+      .subscribe((newValue): void => {
+        this.searchValue = newValue;
         this.pageIndex = 0;
         console.log(newValue);
         this.loadData();
