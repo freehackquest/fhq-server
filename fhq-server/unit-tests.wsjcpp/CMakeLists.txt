@@ -60,7 +60,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_geoip/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_geoip/wsjcpp_geoip.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_geoip/wsjcpp_geoip.h")
 
-# wsjcpp-light-web-server:v0.1.0
+# wsjcpp-light-web-server:v0.1.1
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_light_web_server/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_request.h")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_request.cpp")

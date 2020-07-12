@@ -68,7 +68,7 @@ dependencies:
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_geoip"
   - name: "wsjcpp-light-web-server"
-    version: "v0.1.0"
+    version: "v0.1.1"
     url: "https://github.com/wsjcpp/wsjcpp-light-web-server:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_light_web_server"
