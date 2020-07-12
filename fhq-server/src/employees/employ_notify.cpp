@@ -69,7 +69,13 @@ void EmployNotify::notifyDanger(const std::string &sSection, const std::string &
 
 // ---------------------------------------------------------------------
 
-void EmployNotify::notifyInfo(const std::string &sSection, const std::string &sMessage) {
+void EmployNotify::notifyInfo(const std::string &sSection, const std::string &sMessage, const nlohmann::json &jsonMeta) {
+    sendNotification("info", sSection, sMessage, jsonMeta);
+}
+
+// ---------------------------------------------------------------------
+
+void EmployNotify::notifyInfo(const std::string &sSection, const std::string &sMessage) { // TODO deprecated
     sendNotification("info", sSection, sMessage);
 }
 
@@ -91,6 +97,26 @@ void EmployNotify::sendNotification(
     jsonMeta["type"] = sType;
     jsonMeta["section"] = sSection;
 
+    RunTasks::AddPublicEvents(sType, sMessage, jsonMeta);
+
+    nlohmann::json jsonMessage;
+    jsonMessage["type"] = sType;
+    jsonMessage["section"] = sSection;
+    jsonMessage["message"] = sMessage;
+    jsonMessage["cmd"] = "notify";
+    jsonMessage["m"] = "s0";
+
+    RunTasks::NotifyToAll(jsonMessage);
+}
+
+// ---------------------------------------------------------------------
+
+void EmployNotify::sendNotification(
+    const std::string &sType,
+    const std::string &sSection,
+    const std::string &sMessage,
+    const nlohmann::json &jsonMeta
+) {
     RunTasks::AddPublicEvents(sType, sMessage, jsonMeta);
 
     nlohmann::json jsonMessage;

@@ -4,6 +4,7 @@
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <employ_notify.h>
+#include <runtasks.h>
 
 /*********************************************
  * Useful Links List
@@ -325,10 +326,16 @@ void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
     jsonResponse["data"] = jsonResult;
 
-    // nlohmann::json jsonMeta;
-    // jsonMeta["usefullink"] = nlohmann::json();
-    // jsonMeta["usefullink"]["id"] = nRowId;
-    // RunTasks::AddPublicEvents("quests", "New [quest#" + std::to_string(nRowId) + "] " + sName + " (subject: " + sSubject + ")", jsonMeta);
+    EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
+    nlohmann::json jsonMeta;
+    jsonMeta["usefullink"] = nlohmann::json();
+    jsonMeta["usefullink"]["id"] = nRowId;
+    jsonMeta["usefullink"]["url"] = sUrl;
+    pNotify->notifyInfo(
+        "useful_links",
+        "Added [useful_link#" + std::to_string(nRowId) + "] " + sUrl + "",
+        jsonMeta
+    );
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -395,6 +402,16 @@ void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest) {
         return;
     }
 
+    EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
+    nlohmann::json jsonMeta;
+    jsonMeta["usefullink"] = nlohmann::json();
+    jsonMeta["usefullink"]["id"] = nUsefulLinkId;
+    pNotify->notifyInfo(
+        "useful_links",
+        "Removed [useful_link#" + std::to_string(nUsefulLinkId) + "]",
+        jsonMeta
+    );
+
     nlohmann::json jsonResponse;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -444,6 +461,17 @@ void CmdHandlerUsefulLinksUpdate::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
+
+    EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
+    nlohmann::json jsonMeta;
+    jsonMeta["usefullink"] = nlohmann::json();
+    jsonMeta["usefullink"]["id"] = nUsefulLinkId;
+    jsonMeta["usefullink"]["url"] = sUrl;
+    pNotify->notifyInfo(
+        "useful_links",
+        "Updated [useful_link#" + std::to_string(nUsefulLinkId) + "] " + sUrl + "",
+        jsonMeta
+    );
 
     nlohmann::json jsonResponse;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);

@@ -22,13 +22,22 @@ class EmployNotify : public WsjcppEmployBase {
 
         void notifyWarning(const std::string &sSection, const std::string &sMessage);
         void notifyDanger(const std::string &sSection, const std::string &sMessage);
-        void notifyInfo(const std::string &sSection, const std::string &sMessage);
+        void notifyInfo(const std::string &sSection, const std::string &sMessage); // TODO deprated
+        void notifyInfo(const std::string &sSection, const std::string &sMessage, const nlohmann::json &jsonMeta);
         void notifySuccess(const std::string &sSection, const std::string &sMessage);
 
     private:
-        void sendNotification(const std::string &sType,
-                              const std::string &sSection,
-                              const std::string &sMessage);
+        void sendNotification(
+            const std::string &sType,
+            const std::string &sSection,
+            const std::string &sMessage
+        );
+        void sendNotification(
+            const std::string &sType,
+            const std::string &sSection,
+            const std::string &sMessage,
+            const nlohmann::json &jsonMeta
+        );
         std::string TAG;
 
 };
