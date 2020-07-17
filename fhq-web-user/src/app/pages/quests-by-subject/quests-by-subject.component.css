@@ -1,0 +1,20 @@
+.quests-by-subject-table {
+    width: 100%;
+}
+
+.quests-by-subject-row {
+    cursor: pointer;
+}
+
+.quests-by-subject-row:hover {
+    background-color: rgba(0,0,0,0.2);
+}
+
+.quests-by-subject-row-completed {
+    text-decoration: line-through;
+    background-color: rgba(0,0,0,0.1);
+}
+
+.quests-by-subject-row-completed .mat-column-questName {
+    text-decoration: line-through;
+}

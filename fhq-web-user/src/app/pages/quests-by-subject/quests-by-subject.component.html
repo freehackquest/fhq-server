@@ -10,30 +10,53 @@
   </ol>
 </nav>
 
-<button class="btn btn-secondary" routerLink="/quest-proposal" l10nTranslate>proposalQuest</button>
-<br>
-<br>
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8 quests-by-subject-table">
+  <ng-container matColumnDef="usefulLinkData">
+    <th mat-header-cell *matHeaderCellDef l10nTranslate>#</th>
+    <td mat-cell *matCellDef="let element">
+      [quest#{{ element.id }}]
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="questScore">
+    <th mat-header-cell *matHeaderCellDef l10nTranslate>Score</th>
+    <td mat-cell *matCellDef="let element">
+      <mat-icon aria-hidden="false" *ngIf="element.status == 'completed'" aria-label="Example home icon">done_all</mat-icon>
+      <strong>{{ element.subject }} +{{ element.score }}</strong>
+    </td>
+  </ng-container>
 
-<table class="table table-hover table-striped">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Score and Name</th>
-      <th>Solved</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tr *ngFor="let q of dataList"
-    [class.table-success]="q.status !== 'completed'"
-    [ngStyle]="{'text-decoration':q.status === 'completed' ? 'line-through' : 'none', 'cursor': 'pointer' }"
-    routerLink="/quest/{{ q.questid }}"
-  >
-    <td>[quest#{{ q.questid }}]</td>
-    <td>({{ subject + ' +' + q.score }}) {{ q.name }} </td>
-    <td>{{ q.solved }}</td>
-    <td>{{ q.status }}</td>
-  </tr>
+  <ng-container matColumnDef="questName">
+    <th mat-header-cell *matHeaderCellDef l10nTranslate>Name</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.name }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="questSolved">
+    <th mat-header-cell *matHeaderCellDef l10nTranslate>Solved</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.solved }} user(s)
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="questStatus">
+    <th mat-header-cell *matHeaderCellDef l10nTranslate>Status</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.status }}
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+    class="quests-by-subject-row" 
+    [ngClass]="{'quests-by-subject-row-completed': row.status == 'completed' }"
+    routerLink="/quest/{{ row.id }}"
+  ></tr>
 </table>
 
 <br/>
 <br/>
+
+<button class="btn btn-secondary" routerLink="/quest-proposal" l10nTranslate>proposalQuest</button>
+<br>
+<br>
