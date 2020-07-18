@@ -62,6 +62,8 @@ export class UsefulLinksComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log("ngOnInit");
+
     this._activatedRoute.queryParams.subscribe(params => {
       if (params["search"]) {
         this.searchValue = params["search"];
@@ -77,6 +79,10 @@ export class UsefulLinksComponent implements OnInit {
 
       if (params["page_size"]) {
         this.pageSize = parseInt(params["page_size"],0);
+      }
+
+      if (this._fhq.connectionState == "OK") {
+        this.updatePage();
       }
 
       this.subscription = this._fhq.changedState
