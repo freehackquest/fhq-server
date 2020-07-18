@@ -699,7 +699,7 @@ CmdHandlerUsefulLinksClicked::CmdHandlerUsefulLinksClicked()
     
     setActivatedFromVersion("0.2.29");
 
-    setAccessUnauthorized(false);
+    setAccessUnauthorized(true);
     setAccessUser(true);
     setAccessAdmin(true);
 
