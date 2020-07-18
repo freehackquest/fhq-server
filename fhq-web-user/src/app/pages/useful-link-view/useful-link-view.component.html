@@ -1,1 +1,51 @@
-<p>useful-link-view works!</p>
+
+
+
+
+<mat-card class="example-card">
+    <mat-card-header>
+        <mat-card-subtitle>
+            [useful-link#{{this.usefullinkid}}]
+        </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <a 
+            mat-raised-button 
+            class="useful-links-left-btn"
+            color="accent" 
+            href="{{ element.url }}" 
+            (mousedown)="linkClicked(element.id)" 
+            target="_blank"
+            >{{ element.url }}</a> <br><br>
+        <p>
+            {{element.description}}
+        </p>
+        <div *ngIf="element.tags && element.tags.length > 0"> 
+            <mat-chip-list>
+                <mat-chip 
+                *ngFor="let tag of element.tags;" 
+                (click)="applyFilterByTag(tag)"
+                >
+                {{ tag }}
+                </mat-chip>
+            </mat-chip-list>
+        </div>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-stroked-button disabled *ngIf="element.user_clicks > 0">
+            <mat-icon aria-hidden="false">mouse</mat-icon>
+            {{ element.user_clicks }}
+        </button>
+
+        <button mat-stroked-button class="useful-links-left-btn" *ngIf="!element.favorite && _fhq.isAuthorized" (click)="addToFavorite(element.id)">
+            <mat-icon aria-hidden="false">star</mat-icon>
+            Favorite ({{ element.user_favorites }})
+        </button>
+        
+        <button mat-stroked-button class="useful-links-left-btn" *ngIf="element.favorite && _fhq.isAuthorized" (click)="removeFromFavorite(element.id)">
+            <mat-icon aria-hidden="false">star_outline</mat-icon>
+            Unfavorite ({{ element.user_favorites }})
+        </button>
+    </mat-card-actions>
+</mat-card>
+

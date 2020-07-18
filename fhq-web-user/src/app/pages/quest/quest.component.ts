@@ -109,10 +109,6 @@ export class QuestComponent implements OnInit {
     console.error(err);
   }
 
-  openQuest(questid: number) {
-    window.open("/?quest=" + questid, "_blank");
-  }
-
   openDialogSignIn() {
     const modalRef = this._modalService.open(ModalDialogSignInComponent);
     modalRef.componentInstance.name = 'SignIn';
