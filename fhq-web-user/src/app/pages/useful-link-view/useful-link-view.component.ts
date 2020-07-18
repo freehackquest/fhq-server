@@ -13,6 +13,8 @@ export class UsefulLinkViewComponent implements OnInit {
   usefullinkid: number = 0;
   subscription: any = null;
   element: any = {};
+  comments = []
+  commentText: string = "";
 
   constructor(
     private _spinner: SpinnerService,
@@ -42,7 +44,7 @@ export class UsefulLinkViewComponent implements OnInit {
     });
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy() {
     if (this.subscription != null) {
       this.subscription.unsubscribe();
     }
@@ -52,6 +54,7 @@ export class UsefulLinkViewComponent implements OnInit {
     this._spinner.hide();
     console.log(r)
     this.element = r.data
+    this.loadComments();
   }
 
   errorUsefulLinksRetrieve(err) {
@@ -66,6 +69,29 @@ export class UsefulLinkViewComponent implements OnInit {
     })
       .done((r: any) => this.successUsefulLinksRetrieve(r))
       .fail((err: any) => this.errorUsefulLinksRetrieve(err));
+  }
+
+  successUsefulLinksComments(r: any) {
+    this._spinner.hide();
+    console.log(r)
+    this.comments = [];
+    r.data.forEach(element => {
+      element.dt_formatted = new Date(element.dt + "Z");
+      this.comments.push(element)
+    });
+  }
+
+  errorUsefulLinksComments(err: any) {
+    this._spinner.hide();
+    console.log(err)
+  }
+
+  loadComments() {
+    this._fhq.api().useful_links_comment_list({
+      "useful_link_id": this.usefullinkid
+    })
+      .done((r: any) => this.successUsefulLinksComments(r))
+      .fail((err: any) => this.errorUsefulLinksComments(err));
   }
 
   successUsefulLinkClicked(r: any) {
@@ -131,5 +157,32 @@ export class UsefulLinkViewComponent implements OnInit {
     })
       .done((r: any) => this.successUsefulLinksUserUnfavorite(r))
       .fail((err: any) => this.errorUsefulLinksUserUnfavorite(err));
+  }
+
+  successUsefulLinksSendComment(r: any) {
+    this.commentText = "";
+    this.loadComments()
+  }
+
+  errorUsefulLinksSendComment(err: any) {
+    console.error("errorResponse: ", err);
+    this._spinner.hide();
+    // this.resultOfChangePassword = err.error;
+    // this._cdr.detectChanges();
+  }
+
+  sendComment() {
+    this._fhq.api().useful_links_comment_add ({
+      "useful_link_id": this.usefullinkid,
+      "comment": this.commentText
+    })
+      .done((r: any) => this.successUsefulLinksSendComment(r))
+      .fail((err: any) => this.errorUsefulLinksSendComment(err));
+  }
+
+  getStyleListUserLogo(user: any) {
+    return {
+      'background-image': 'url(https://freehackquest.com/' + user.logo + ')'
+    };
   }
 }

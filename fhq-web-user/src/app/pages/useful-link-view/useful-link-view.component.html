@@ -1,8 +1,4 @@
-
-
-
-
-<mat-card class="example-card">
+<mat-card>
     <mat-card-header>
         <mat-card-subtitle>
             [useful-link#{{this.usefullinkid}}]
@@ -49,3 +45,37 @@
     </mat-card-actions>
 </mat-card>
 
+<div *ngIf="!_fhq.isAuthorized">
+    TODO
+</div>
+
+<div class="useful-link-view-leave-comment-form" *ngIf="_fhq.isAuthorized">
+    <mat-form-field class="useful-link-view-leave-comment-form-width">
+        <mat-label>Leave a comment</mat-label>
+        <input matInput type="text" [(ngModel)]="commentText">
+        <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-form-field>
+    <button mat-raised-button color="primary" 
+        [disabled]="this.commentText.length == 0" 
+        (click)="sendComment()">Send comment</button>
+</div>
+
+<mat-card class="useful-link-view-comment-card" *ngFor="let item of comments">
+    <mat-card-header>
+      <div mat-card-avatar class="useful-link-view-comment-user-logo" [ngStyle]="getStyleListUserLogo(item.user)"></div>
+      <mat-card-title>{{item.user.role }}: [{{ item.user.university }}] {{ item.user.nick }}</mat-card-title>
+      <mat-card-subtitle>{{ item.dt_formatted }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        {{ item.comment }}
+      </p>
+    </mat-card-content>
+</mat-card>
+
+
+
+  
+  
