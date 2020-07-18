@@ -46,6 +46,7 @@ export class UsefulLinksComponent implements OnInit {
   errorMessage: string = null;
 
   searchValue: String = '';
+  private prevSearchValue: String = '';
   searchControl = new FormControl('');
 
   dataSource = new MatTableDataSource<UsefulLinkElement>();
@@ -60,7 +61,7 @@ export class UsefulLinksComponent implements OnInit {
     private _activatedRoute: ActivatedRoute,
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this._activatedRoute.queryParams.subscribe(params => {
       if (params["search"]) {
         this.searchValue = params["search"];
@@ -77,6 +78,7 @@ export class UsefulLinksComponent implements OnInit {
       if (params["page_size"]) {
         this.pageSize = parseInt(params["page_size"],0);
       }
+
       this.subscription = this._fhq.changedState
         .subscribe(() => this.updatePage());
     });
@@ -88,10 +90,12 @@ export class UsefulLinksComponent implements OnInit {
       distinctUntilChanged(),
     )
     .subscribe((newValue): void => {
-      this.searchValue = newValue;
-      this.pageIndex = 0;
-      console.log(newValue);
-      this.updatePage();
+      if (this.prevSearchValue != newValue) {
+        this.searchValue = newValue;
+        this.prevSearchValue = newValue;
+        this.pageIndex = 0;
+        this.updatePage();
+      }
     });
   }
 
@@ -119,7 +123,7 @@ export class UsefulLinksComponent implements OnInit {
     this._location.go(url);
 
     this.usefullLinksData = [];
-    console.log(r);
+    // console.log(r);
     this.pageIndex = r.data.page_index;
     this.length = r.data.total;
     for (let i in r.data.items) {
@@ -148,12 +152,14 @@ export class UsefulLinksComponent implements OnInit {
   }
 
   updatePage() {
+    // console.log("console.log(this._fhq.connectionState): ", this._fhq.connectionState)
+
     // this._spinner.show();
     this.loadListOftags();
     this._fhq.api().useful_links_list({
       "page_index": this.pageIndex,
       "page_size": this.pageSize,
-      "filter": this.searchValue,
+      "filter": this.prevSearchValue,
       "filter_by_tag": this.filterByTag,
     })
       .done((r: any) => this.successUsefulLinksList(r))
