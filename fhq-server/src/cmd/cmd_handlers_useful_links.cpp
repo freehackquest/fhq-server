@@ -835,6 +835,7 @@ void CmdHandlerUsefulLinksCommentAdd::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     // TODO redesign dt to long
+
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("INSERT INTO useful_links_comments(usefullinkid, userid, comment, dt) VALUES(:useful_link_id, :userid, :comment, NOW())");
@@ -852,17 +853,26 @@ void CmdHandlerUsefulLinksCommentAdd::handle(ModelRequest *pRequest) {
     nlohmann::json jsonMeta;
     jsonMeta["useful_link"] = nlohmann::json();
     jsonMeta["useful_link"]["id"] = nUsefulLinkId;
-    jsonMeta["useful_link"]["url"] = "link";
+    jsonMeta["useful_link"]["url"] = "link"; // TODO add url
     jsonMeta["useful_link"]["action"] = "comment_added";
     jsonMeta["user"] = nlohmann::json();
     jsonMeta["user"]["id"] = nUserId;
     jsonMeta["user"]["nick"] = pRequest->getUserSession()->nick().toStdString();
 
-    pNotify->notifyInfo(
-        "useful_links",
-        "Added comment to [useful_link#" + std::to_string(nUsefulLinkId) + "]",
-        jsonMeta
-    );
+    std::string sMessage = "User added comment to [useful_link#" + std::to_string(nUsefulLinkId) + "]";
+
+    pNotify->notifyInfo("useful_links", sMessage, jsonMeta);
+
+    
+    // TODO add url
+    std::string sBody = "[user#" + std::to_string(nUserId) + "] "
+        + pRequest->getUserSession()->nick().toStdString() + " added comment to "
+        "[useful_link#" + std::to_string(nUsefulLinkId) + "] : \n " + sCommentValue;
+
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+    std::string sMailToAdmin = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();
+
+    RunTasks::MailSend(sMailToAdmin, sMessage, sBody);
 
     // TODO email
 
