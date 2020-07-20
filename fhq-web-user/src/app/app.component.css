@@ -1,0 +1,20 @@
+.main-container {
+    margin-top: 70px;
+    height: auto;
+    min-height: calc(100% - 330px);
+}
+
+.main-left-menu {
+    width: 250px;
+    height: 100%;
+}
+
+.main-left-menu-item {
+    width: 100%;
+    text-align: left;
+}
+
+
+.main-content {
+    padding: 20px;
+}
