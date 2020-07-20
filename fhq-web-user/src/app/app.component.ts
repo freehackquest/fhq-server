@@ -9,8 +9,9 @@ import {
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalDialogSignInComponent } from './dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
 import { FhqService } from './services/fhq.service';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { SpinnerService } from './services/spinner.service';
+import { Location } from '@angular/common';
 
 declare var $: any;
 
@@ -26,6 +27,9 @@ export class AppComponent implements OnInit {
   serverAppVersion: string = '';
   libVersion: string = '';
   brokenConnection: boolean = false;
+  profileMenuExpanded: boolean = false;
+  urlPath: String = "";
+  userRole: String = "";
   schema = this.l10nConfig.schema;
 
   constructor(
@@ -36,7 +40,9 @@ export class AppComponent implements OnInit {
     private _modalService: NgbModal,
     public _fhq: FhqService,
     private _router: Router,
+    private _location: Location,
     private _spinner: SpinnerService,
+    private _activatedRoute: ActivatedRoute,
   ) {
     //
     this._router.routeReuseStrategy.shouldReuseRoute = function(){
@@ -47,13 +53,13 @@ export class AppComponent implements OnInit {
       if (evt instanceof NavigationEnd) {
           this._router.navigated = false;
           window.scrollTo(0, 0);
+          this.updateUrlPath(this._location.path());
       }
     });
-    
   }
 
   ngOnInit(): void {
-    console.log("lang: ", this._translationService.getLocale().language);
+    // console.log("lang: ", this._translationService.getLocale().language);
         
     this._fhq.api().bind('server', (data: any) => this.serverInfo(data));
 
@@ -67,8 +73,36 @@ export class AppComponent implements OnInit {
       next: () => {
         this.menuLangIcon = "assets/img/lang_" + this._translationService.getLocale().language + ".png";
       }
-  });
+    });
+  }
 
+  toggleUserProfileMenu() {
+    this.profileMenuExpanded = !this.profileMenuExpanded;
+  }
+
+  updateUrlPath(newPath: string) {
+    const _prefixLangugePath = "/" + this._translationService.getLocale().language;
+    if (newPath.indexOf(_prefixLangugePath) == 0) {
+      newPath = newPath.slice(_prefixLangugePath.length);
+    }
+
+    if (newPath.indexOf("/") == 0) {
+      newPath = newPath.slice(1);
+    }
+    if (newPath.indexOf("?") > 0) {
+      newPath = newPath.slice(0, newPath.indexOf("?"));
+    }
+    this.urlPath = newPath;
+
+    if (
+        this.urlPath == "user-profile"
+        || this.urlPath == "user-security"
+        || this.urlPath == "user-tokens"
+        || this.urlPath == "user-skills"
+        || this.urlPath == "user-favorites-useful-links"
+    ) {
+      this.profileMenuExpanded = true;
+    }
   }
 
   ngOnDestroy() {
@@ -80,11 +114,17 @@ export class AppComponent implements OnInit {
       this.brokenConnection = true;
       this._spinner.show();
     }
+
     if (this._fhq.connectionState == 'OK' && this.brokenConnection === true) {
       this.brokenConnection = false;
       console.log(this._router.url);
       this._router.navigateByUrl(this._router.url);
       this._spinner.hide();
+    }
+    if (this._fhq.isAuthorized) {
+      this.userRole = this._fhq.userdata.role;
+    } else {
+      this.userRole = ''
     }
     this._cdr.detectChanges()
   }
@@ -103,5 +143,9 @@ export class AppComponent implements OnInit {
     this.serverAppName = data.app;
     this.serverAppVersion = data.version;
     this.libVersion = this._fhq.api().appVersion;
+  }
+
+  userSignout() {
+    this._fhq.logout();
   }
 }

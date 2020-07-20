@@ -32,11 +32,6 @@
 >
 </mat-paginator>
 
-<mat-drawer-container>
-  <mat-drawer #drawer mode="side">
-    <app-user-profile-menu></app-user-profile-menu>
-  </mat-drawer>
-  <mat-drawer-content>
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 useful-links-table">
       <ng-container matColumnDef="usefulLinkData">
         <th mat-header-cell *matHeaderCellDef l10nTranslate>usefulLinks</th>
@@ -87,15 +82,3 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-  </mat-drawer-content>
-</mat-drawer-container>
-
-<br/>
-<br/>
-<br/>
-
-
-
-
-
-

@@ -22,7 +22,6 @@ import { QuestProposalComponent } from './pages/quest-proposal/quest-proposal.co
 import { ScoreboardComponent } from './pages/scoreboard/scoreboard.component';
 import { QuestsComponent } from './pages/quests/quests.component';
 import { QuestsBySubjectComponent } from './pages/quests-by-subject/quests-by-subject.component';
-import { UserProfileMenuComponent } from './pages/user-profile-menu/user-profile-menu.component';
 import { UserTokensComponent } from './pages/user-tokens/user-tokens.component';
 import { UserSecurityComponent } from './pages/user-security/user-security.component';
 import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
@@ -62,9 +61,6 @@ const routes: Routes = [{
   }, {
   path: 'user-tokens',
     component: UserTokensComponent
-  }, {
-    path: 'user-profile-menu',
-    component: UserProfileMenuComponent
   }, {
     path: 'about',
     component: AboutComponent

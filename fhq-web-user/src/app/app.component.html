@@ -1,19 +1,87 @@
 <mat-drawer-container class="main-container">
   <mat-drawer mode="side" class="main-left-menu" opened>
     <mat-list>
-
+      <!-- user menu -->
+      <mat-list-item *ngIf="!_fhq.isAuthorized">
+        <button mat-raised-button color="primary" class="main-left-menu-item" (click)="openDialogSignIn();" l10nTranslate>signin</button>
+      </mat-list-item>
+      
       <mat-list-item *ngIf="_fhq.isAuthorized">
-        <button mat-button routerLink="/user-profile" class="main-left-menu-item">
+        <button mat-button (click)="toggleUserProfileMenu()" class="main-left-menu-item">
+          <mat-icon>
+            {{ !profileMenuExpanded ? 'keyboard_arrow_right' : 'keyboard_arrow_down' }}
+          </mat-icon>
             <img class="user-logo" src="../{{ _fhq.userdata.logo }}">
             {{ _fhq.userdata.nick }}
         </button>
       </mat-list-item>
-      <mat-list-item *ngIf="!_fhq.isAuthorized">
-        <button mat-raised-button color="primary" class="main-left-menu-item" (click)="openDialogSignIn();" l10nTranslate>signin</button>
+
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <button routerLink="/user-profile"
+          *ngIf="userRole == 'user' || userRole == 'admin'"
+          [disabled]="urlPath === 'user-profile' ? '' : null"
+          mat-raised-button
+          class="main-left-menu-item"
+          l10nTranslate>profile
+        </button>
       </mat-list-item>
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <button routerLink="/user-security"
+          *ngIf="userRole == 'user' || userRole == 'admin'"
+          mat-raised-button
+          class="main-left-menu-item"
+          [disabled]="urlPath === 'user-security' ? '' : null"
+          l10nTranslate>security</button>
+      </mat-list-item>
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <button routerLink="/user-tokens"
+          *ngIf="userRole == 'user' || userRole == 'admin'"
+          mat-raised-button
+          [disabled]="urlPath === 'user-tokens' ? '' : null"
+          class="main-left-menu-item"
+          l10nTranslate>
+          user-tokens
+        </button>
+      </mat-list-item>
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <button routerLink="/user-skills"
+          *ngIf="userRole == 'user' || userRole == 'admin'"
+          mat-raised-button
+          [disabled]="urlPath === 'user-skills' ? '' : null"
+          class="main-left-menu-item"
+          l10nTranslate>
+          skills
+        </button>
+      </mat-list-item>
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <button routerLink="/user-favorites-useful-links"
+          *ngIf="userRole == 'user' || userRole == 'admin'"
+          [disabled]="urlPath === 'user-favorites-useful-links' ? '' : null"
+          mat-raised-button
+          class="main-left-menu-item"
+          l10nTranslate>
+          myFavoritesUsefulLinks
+        </button>
+      </mat-list-item>
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <button (click)="userSignout()"
+          *ngIf="userRole == 'user' || userRole == 'admin'"
+          mat-raised-button
+          class="main-left-menu-item"
+          color="warn"
+          l10nTranslate>
+            signout
+        </button>
+      </mat-list-item>
+
       <mat-divider></mat-divider>
       <mat-list-item>
-        <button mat-button class="main-left-menu-item" routerLink="/quests" l10nTranslate> pageQuests </button>
+        <button mat-button 
+          class="main-left-menu-item" 
+          [disabled]="urlPath === 'quests' ? '' : null"
+          routerLink="/quests" l10nTranslate>
+          pageQuests
+        </button>
       </mat-list-item>
       <mat-list-item>
         <button mat-button class="main-left-menu-item" routerLink="/scoreboard" l10nTranslate>pageScoreboard</button>

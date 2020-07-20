@@ -22,7 +22,7 @@ export const l10nConfig: L10nConfig = {
         { name: 'app', asset: './assets/i18n/app', options: { version: '9.0.0' } }
     ],
     fallback: false,
-    cache: true,
+    cache: false,
     keySeparator: '.',
     defaultLocale: { language: 'ru' },
     schema: [
@@ -30,7 +30,7 @@ export const l10nConfig: L10nConfig = {
         { locale: { language: 'en' }, dir: 'ltr', text: 'English' },
         { locale: { language: 'de' }, dir: 'ltr', text: 'Deutch' },
     ],
-    defaultRouting: false
+    defaultRouting: true
 };
 
 export function initL10n(l10nLoader: L10nLoader): () => Promise<void> {

@@ -14,6 +14,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTreeModule } from '@angular/material/tree';
 import { MatTableModule } from '@angular/material/table';
 
 // import {MatSidenavModule} from '@angular/material/sidenav';
@@ -52,7 +53,6 @@ import { KnowledgeBaseComponent } from './pages/knowledge-base/knowledge-base.co
 import { ModalDialogSignInComponent } from './dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
-import { UserProfileMenuComponent } from './pages/user-profile-menu/user-profile-menu.component';
 import { AboutComponent } from './pages/about/about.component';
 import { QuestProposalComponent } from './pages/quest-proposal/quest-proposal.component';
 import { LMarkdownEditorModule } from 'ngx-markdown-editor';
@@ -114,7 +114,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     ScoreboardComponent,
     QuestsComponent,
     QuestsBySubjectComponent,
-    UserProfileMenuComponent,
     UserSecurityComponent,
     QuestComponent,
     ModalDialogQuestFeedbackComponent,
@@ -166,6 +165,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     MatSnackBarModule,
     MatBadgeModule,
     MatChipsModule,
+    MatTreeModule,
     MatRippleModule
   ],
   exports: [
@@ -181,6 +181,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     MatSidenavModule,
     MatProgressBarModule,
     MatSnackBarModule,
+    MatTreeModule,
     MatRippleModule
   ],
   providers: [
