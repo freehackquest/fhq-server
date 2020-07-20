@@ -1,7 +1,7 @@
 <mat-drawer-container class="main-container">
   <mat-drawer mode="side" class="main-left-menu" opened>
     <mat-list>
-      
+
       <mat-list-item *ngIf="_fhq.isAuthorized">
         <button mat-button routerLink="/user-profile" class="main-left-menu-item">
             <img class="user-logo" src="../{{ _fhq.userdata.logo }}">
@@ -104,10 +104,6 @@
     </ul>
   </div>
 </nav>
-
-<!-- div class="container fhq-content">
-    <router-outlet></router-outlet>
-</div -->
 
 <!-- Footer -->
 <footer class="page-footer font-small bg-dark pt-4">

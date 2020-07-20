@@ -173,5 +173,8 @@
     "endDate": "Конец",
     "myFavoritesUsefulLinks": "Мои избранные ссылки",
     "listOfFavoriteLinks": "Избранные ссылки",
+    "comments": "Комментарии",
+    "unfavorite": "Удалить из избранного",
+    "favorite": "В избранное",
     "": ""
 }

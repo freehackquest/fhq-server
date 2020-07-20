@@ -170,6 +170,7 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
         jsonLink["description"] = record.value("description").toString().toHtmlEscaped().toStdString();
         jsonLink["author"] = record.value("message").toString().toHtmlEscaped().toStdString();
         jsonLink["user_favorites"] = record.value("user_favorites").toInt();
+        jsonLink["user_comments"] = record.value("user_comments").toInt();
         jsonLink["user_clicks"] = record.value("user_clicks").toInt();
         jsonLink["dt"] = record.value("dt").toString().toStdString();
         if (record.value("userid").toInt() == nUserId && nUserId != 0) {
@@ -241,6 +242,7 @@ void CmdHandlerUsefulLinksRetrieve::handle(ModelRequest *pRequest) {
         jsonLink["description"] = record.value("description").toString().toHtmlEscaped().toStdString();
         jsonLink["author"] = record.value("message").toString().toHtmlEscaped().toStdString();
         jsonLink["user_favorites"] = record.value("user_favorites").toInt();
+        jsonLink["user_comments"] = record.value("user_comments").toInt();
         jsonLink["user_clicks"] = record.value("user_clicks").toInt();
         jsonLink["dt"] = record.value("dt").toString().toStdString();
         if (record.value("userid").toInt() == nUserId && nUserId != 0) {
@@ -846,8 +848,13 @@ void CmdHandlerUsefulLinksCommentAdd::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
-
-    // TODO update count in useful_links.user_comments
+    
+    query.prepare("UPDATE useful_links ul SET user_comments = (SELECT COUNT(*) FROM useful_links_comments WHERE usefullinkid = ul.id) WHERE ul.id = :useful_link_id");
+    query.bindValue(":useful_link_id", nUsefulLinkId);
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
 
     EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
     nlohmann::json jsonMeta;

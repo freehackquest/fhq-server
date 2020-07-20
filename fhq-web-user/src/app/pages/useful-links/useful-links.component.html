@@ -44,33 +44,32 @@
         <th mat-header-cell *matHeaderCellDef l10nTranslate>usefulLinks</th>
         <td mat-cell *matCellDef="let element">
           <small>[usefullink#{{ element.id }}]</small> <br>
-          <button mat-stroked-button disabled *ngIf="element.userClicks > 0">
-            <mat-icon aria-hidden="false">mouse</mat-icon>
-            {{ element.userClicksLabel }}
-          </button>
-
           <a 
             mat-raised-button 
-            class="useful-links-left-btn"
             color="accent" 
             href="{{ element.link }}" 
             (mousedown)="linkClicked(element.id)" 
             target="_blank"
           >{{ element.link }}</a> 
-
+          <br>
+          <br>
+          <button mat-stroked-button disabled *ngIf="element.userClicks > 0">
+            <mat-icon aria-hidden="false">mouse</mat-icon>
+            {{ element.userClicksLabel }}
+          </button>
           <button mat-stroked-button class="useful-links-left-btn" *ngIf="!element.favorite && _fhq.isAuthorized" (click)="addToFavorite(element.id)">
             <mat-icon aria-hidden="false">star</mat-icon>
-            
-            Favorite ({{ element.userFavorites }})
+            <span l10nTranslate>favorite</span> ({{ element.userFavorites }})
           </button>
           <button mat-stroked-button class="useful-links-left-btn" *ngIf="element.favorite && _fhq.isAuthorized" (click)="removeFromFavorite(element.id)">
             <mat-icon aria-hidden="false">star_outline</mat-icon>
-            Unfavorite ({{ element.userFavorites }})
+            <span l10nTranslate>unfavorite</span> ({{ element.userFavorites }})
           </button>
           <button mat-stroked-button class="useful-links-left-btn" routerLink="/useful-links/{{ element.id }}">
             <mat-icon aria-hidden="false">comment</mat-icon>
-            Comments (0)
+            <span l10nTranslate>comments</span> ({{ element.userComments }})
           </button>
+          
           <br><br>
           <strong>{{element.description}}</strong><br>
           <div *ngIf="element.tags.length > 0"> 

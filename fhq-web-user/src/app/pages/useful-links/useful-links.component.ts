@@ -15,6 +15,7 @@ export interface UsefulLinkElement {
   description: string;
   rating: number;
   userFavorites: number;
+  userComments: number;
   userClicks: number;
   userClicksLabel: string;
   favorite: boolean;
@@ -129,7 +130,7 @@ export class UsefulLinksComponent implements OnInit {
     this._location.go(url);
 
     this.usefullLinksData = [];
-    // console.log(r);
+    console.log(r);
     this.pageIndex = r.data.page_index;
     this.length = r.data.total;
     for (let i in r.data.items) {
@@ -140,6 +141,7 @@ export class UsefulLinksComponent implements OnInit {
         link: usefulLink['url'],
         description: usefulLink['description'],
         userFavorites: usefulLink['user_favorites'],
+        userComments: usefulLink['user_comments'],
         userClicks: usefulLink['user_clicks'],
         userClicksLabel: userClicksLabel,
         favorite: usefulLink['favorite'],
