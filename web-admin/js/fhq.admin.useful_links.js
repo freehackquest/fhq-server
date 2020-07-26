@@ -24,17 +24,17 @@ fhq.pages['useful_links'] = function(){
         onpage = parseInt(fhq.pageParams['onpage'], 10);
     }
 
-    var page = 0;
-    if(fhq.containsPageParam("page")){
-        page = parseInt(fhq.pageParams['page'], 10);
+    var page_index = 0;
+    if(fhq.containsPageParam("page_index")){
+        page_index = parseInt(fhq.pageParams['page_index'], 10);
     }
     
     var el = $("#page_content");
     el.html('Loading...')
     
-    window.fhq.changeLocationState({'useful_links': '', 'page_size': onpage, 'page_index': page});
+    window.fhq.changeLocationState({'useful_links': '', 'page_size': onpage, 'page_index': page_index});
 
-    fhq.ws.useful_links_list({'page_size': onpage, 'page_index': page, 'filter': ''}).done(function(r){
+    fhq.ws.useful_links_list({'page_size': onpage, 'page_index': page_index, 'filter': ''}).done(function(r){
         fhq.hideLoader();
         console.log(r);
         el.html('');
@@ -43,7 +43,18 @@ fhq.pages['useful_links'] = function(){
         $('#useful_links_add').unbind().bind('click', fhq.pages['useful_links_add']);
         el.append('<hr>');
 
-        el.append(fhq.paginator(0, r.data.total, r.data.page_size, r.page_index));
+        var pg = new SwaPaginator(0, r.data.total, r.data.page_size, r.data.page_index);
+        el.append(pg.getHtml());
+        pg.bindPrev(function() {
+            window.fhq.changeLocationState({'useful_links': '', 'page_size': onpage, 'page_index': page_index - 1});
+            fhq.pages['useful_links']();
+        });
+
+        pg.bindNext(function() {
+            window.fhq.changeLocationState({'useful_links': '', 'page_size': onpage, 'page_index': page_index + 1});
+            fhq.pages['useful_links']();
+        });
+        
         el.append(
             `<table class="table table-striped">
                 <thead>

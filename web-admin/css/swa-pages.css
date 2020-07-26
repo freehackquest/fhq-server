@@ -1,0 +1,11 @@
+.swa-pg-container {
+    padding: 10px;
+}
+
+.swa-pg-prev, .swa-pg-next {
+    display: inline-block;
+    cursor: pointer;
+    color: white;
+    background-color: black;
+    padding: 5px;
+}
