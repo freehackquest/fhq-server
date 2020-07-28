@@ -38,7 +38,8 @@ fhq.pages['useful_links'] = function(){
         fhq.hideLoader();
         console.log(r);
         el.html('');
-        
+        el.append('<input id="search" value=""></input><br>');
+
         el.append('<button id="useful_links_add" class="btn btn-secondary">Add</button>');
         $('#useful_links_add').unbind().bind('click', fhq.pages['useful_links_add']);
         el.append('<hr>');
@@ -299,6 +300,9 @@ fhq.pages['useful_links_edit'] = function(useful_link_id){
         + '<button class="btn btn-default" id="useful_links_addtag_btn">Add</button>'
         + '<div class="alert alert-danger" style="display: none" id="useful_links_addtag_error"></div>'
         + '<hr>'
+        + '<h2>COMMENTS:</h2><br>'
+        + '<div id="useful_links_comments"></div>'
+        + '<hr>'
     );
 
     $('#useful_links_addtag_btn').unbind().bind('click', function() {
@@ -351,5 +355,24 @@ fhq.pages['useful_links_edit'] = function(useful_link_id){
 
     }).fail(function(err) {
         console.log(err)
-    }) 
+    })
+
+    fhq.ws.useful_links_comment_list({
+        "useful_link_id": useful_link_id
+    }).done(function(r){
+        console.log(r);
+        $('#useful_links_comments').html('');
+        for (var i in r.data) {
+            var c = r.data[i];
+            $('#useful_links_comments').append(
+                '<div>[' + c.user.university + '] ' + c.user.nick + ': ' + c.comment
+
+                + '</div>'
+            );
+        }
+    }).fail(function(err){
+        console.error(err);
+        $('#error_info').show();
+        $('#error_info .alert').html('ERROR: ' + err.error);
+    })
 }
