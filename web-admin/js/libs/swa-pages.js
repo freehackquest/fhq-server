@@ -56,3 +56,41 @@ class SwaPaginator {
         document.getElementById(this.randId + "_next").onclick = f;
     }
 }
+
+class SwaMenu {
+    constructor() {
+    }
+
+    onclick(e) {
+        var page = e.target.getAttribute('page');
+        var elems = document.getElementsByClassName("swa-menu");
+        for(var i = 0; i < elems.length; i++) {
+            elems[i].classList.remove('active');
+        }
+        e.target.classList.add('active');
+        if (fhq.pages[page]) {
+            fhq.pages[page]();
+        } else {
+            console.error("Swa: not found page '" + page + "'");
+        }
+    }
+
+    init() {
+        var elems = document.getElementsByClassName("swa-menu");
+        console.log(elems);
+        for(var i = 0; i < elems.length; i++) {
+            console.log(elems[i]);
+            elems[i].onclick = this.onclick
+            var page = elems[i].getAttribute('page');
+            if (fhq.containsPageParam(page)) {
+                elems[i].classList.add('active');
+            }
+        }
+    }
+}
+
+
+document.addEventListener("DOMContentLoaded", function(event) {
+    window.swaMenu = new SwaMenu();
+    swaMenu.init();
+});

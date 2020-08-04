@@ -1,3 +1,10 @@
+body {
+    font-family: "Lucida Console", Monaco, monospace;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+}
+
 .swa-pg-container {
     padding: 10px;
 }
@@ -8,4 +15,65 @@
     color: white;
     background-color: black;
     padding: 5px;
+}
+
+.swa-page-left-sidebar {
+    width: 180px;
+    height: 100%;
+    color: #00ff00;
+    background-color: #000000;
+    z-index: 1000;
+    position: fixed;
+    padding: 20px;
+}
+
+.swa-page-right-content {
+    width: 100%;
+    min-height: 100%;
+    padding-left: 180px;
+    padding-top: 0px;
+    /*color: #00ff00;
+    background-color: #000000;
+    z-index: 1000;
+    position: fixed;
+    padding: 20px;*/
+}
+
+.swa-page-sidebar-title {
+    color: #00ff00;
+    background-color: #000000;
+    width: 100%;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    border: 2px solid #0f0;
+    text-align: center;
+}
+
+.swa-page-sidebar-space {
+    background-color: #00ff00;
+    height: 2px;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.swa-page-sidebar-button {
+    color: #00ff00;
+    background-color: #000000;
+    padding: 5px;
+    cursor: pointer;
+    text-align: right;
+}
+
+.swa-page-sidebar-button:hover {
+    background-color: #222;
+}
+
+.swa-page-sidebar-button.active {
+    color: #000000;
+    background-color: #00ff00;
+    padding: 5px;
+    cursor: pointer;
+    text-align: right;
 }
