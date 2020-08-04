@@ -43,8 +43,8 @@ class SwaPaginator {
         }
         return "<div class='swa-pg-container'>Items per page: [" + this.page_size + "] " 
             + page_from + "-" + to + " of " + this.total 
-            + " <div class='swa-pg-prev' id='" + this.randId + "_prev'>Prev</div> "
-            + "<div class='swa-pg-next' id='" + this.randId + "_next'>Next</div> "
+            + " <div class='swa-button' id='" + this.randId + "_prev'>Prev</div> "
+            + "<div class='swa-button' id='" + this.randId + "_next'>Next</div> "
         + "</div>";
     }
 
