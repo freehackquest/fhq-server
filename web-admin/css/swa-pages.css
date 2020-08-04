@@ -45,6 +45,7 @@ body {
     min-height: 100%;
     padding-left: 190px;
     padding-top: 0px;
+    background-color: #000;
 }
 
 .swa-page-right-content {
@@ -128,7 +129,7 @@ h1, h2, h3 {
 }
 
 .swa-table tr {
-    border-top: 1px solid #0f0;
+    border-top: 1px solid #090;
 }
 
 .swa-table td {
@@ -174,4 +175,12 @@ h1, h2, h3 {
     margin: 10px;
     color: #fff;
     font-weight: bold;
+}
+
+.swa-card {
+    border-top: 2px solid #0f0;
+    border-right: 2px solid #0f0;
+    border-left: 2px solid #080;
+    margin-bottom: 10px;
+    padding: 10px;
 }

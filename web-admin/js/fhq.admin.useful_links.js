@@ -272,28 +272,30 @@ fhq.pages['useful_links_edit'] = function(useful_link_id){
         + '<h3>TAGS:</h3><br>'
         + '<div class="swa-tag-list" id="useful_links_tags"></div><br><br>'
         + '<input id="useful_links_addtag_value" type="text" placeholder="new tag name" value=""/> '
-        + '<button class="swa-button" id="useful_links_addtag_btn">Add</button>'
         + '<div class="swa-error-alert" style="display: none" id="useful_links_addtag_error"></div>'
         + '<hr>'
         + '<h3>COMMENTS:</h3><br>'
+        + '<input type="text" value="" style="width: 100%" placeholder="Add new comment..." id="useful_link_new_comment_text"><br/><hr/>'
         + '<div id="useful_links_comments"></div>'
         + '<hr>'
     );
 
-    $('#useful_links_addtag_btn').unbind().bind('click', function() {
-        $('#useful_links_addtag_error').hide();
-        fhq.ws.useful_links_tag_add({
-            "useful_link_id": useful_link_id,
-            "tag": $('#useful_links_addtag_value').val(),
-        }).done(function(r){
-            console.log(r)
-            $('#useful_links_addtag_value').val("")
-            fhq.pages['useful_links_edit'](useful_link_id);
-        }).fail(function(err) {
-            console.log(err)
-            $('#useful_links_addtag_error').html(err.error);
-            $('#useful_links_addtag_error').show();
-        })
+    $('#useful_links_addtag_value').unbind().bind('keypress', function(e) {
+        if (e.which == 13) {
+            $('#useful_links_addtag_error').hide();
+            fhq.ws.useful_links_tag_add({
+                "useful_link_id": useful_link_id,
+                "tag": $('#useful_links_addtag_value').val(),
+            }).done(function(r){
+                console.log(r)
+                $('#useful_links_addtag_value').val("")
+                fhq.pages['useful_links_edit'](useful_link_id);
+            }).fail(function(err) {
+                console.log(err)
+                $('#useful_links_addtag_error').html(err.error);
+                $('#useful_links_addtag_error').show();
+            })
+        }
     })
 
     function useful_link_tag_remove(e) {
@@ -310,6 +312,24 @@ fhq.pages['useful_links_edit'] = function(useful_link_id){
             $('#useful_links_addtag_error').show();
         })
     }
+
+    
+    $('#useful_link_new_comment_text').unbind().bind('keypress', function(e) {
+        if (e.which == 13) {
+            var val = $('#useful_link_new_comment_text').val();
+            fhq.ws.useful_links_comment_add({
+                "useful_link_id": useful_link_id,
+                "comment": val,
+            }).done(function(r){
+                console.log(r)
+                fhq.pages['useful_links_edit'](useful_link_id);
+            }).fail(function(err) {
+                console.log(err)
+                $('#useful_links_addtag_error').html(err.error);
+                $('#useful_links_addtag_error').show();
+            })
+        }
+    });
 
     fhq.ws.useful_links_retrieve({
         "useful_link_id": useful_link_id
@@ -332,6 +352,20 @@ fhq.pages['useful_links_edit'] = function(useful_link_id){
         console.log(err)
     })
 
+    function deleteComment(comment_id) {
+        $('.useful-comments-delete-comment-error').hide();
+        fhq.ws.useful_links_comment_delete({
+            "useful_link_comment_id": comment_id,
+        }).done(function(r){
+            console.log(r)
+            fhq.pages['useful_links_edit'](useful_link_id);
+        }).fail(function(err) {
+            console.log(err)
+            $('.useful-comments-delete-comment-error[comment_id=' + comment_id + ']').html(err.error);
+            $('.useful-comments-delete-comment-error[comment_id=' + comment_id + ']').show();
+        })
+    }
+
     fhq.ws.useful_links_comment_list({
         "useful_link_id": useful_link_id
     }).done(function(r){
@@ -340,11 +374,25 @@ fhq.pages['useful_links_edit'] = function(useful_link_id){
         for (var i in r.data) {
             var c = r.data[i];
             $('#useful_links_comments').append(
-                '<div>[' + c.user.university + '] ' + c.user.nick + ': ' + c.comment
-
+                '<div class="swa-card">'
+                + 'Identifier: ' + c.id + ' <br/>'
+                + 'User: [' + c.user.university + '] ' + c.user.nick + ' <br/>'
+                + 'Date & Time: ' + new Date(c.dt + "Z") + ' <br/></br>'
+                + 'Comment: ' + c.comment + ' <br/></br>'
+                + '<div class="swa-button useful-comments-delete-comment" comment_id=' + c.id + ' >Delete</div> '
+                + '<div class="swa-error-alert useful-comments-delete-comment-error" style="display: none;" comment_id=' + c.id + ' ></div> '
+                // + '<div class="swa-button">TODO: Issue a warning to a user for violation</div> '
                 + '</div>'
             );
+            
         }
+
+        $('.useful-comments-delete-comment').unbind().bind('click', function(e) {
+            var comment_id = $(e.target).attr("comment_id");
+            comment_id = parseInt(comment_id, 10);
+            deleteComment(comment_id);
+            console.log("comment_id=", comment_id)
+        })
     }).fail(function(err){
         console.error(err);
         $('#error_info').show();

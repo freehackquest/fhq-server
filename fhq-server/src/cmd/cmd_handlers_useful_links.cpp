@@ -782,6 +782,7 @@ void CmdHandlerUsefulLinksCommentList::handle(ModelRequest *pRequest) {
     while (query.next()) {
         QSqlRecord record = query.record();
         nlohmann::json jsonComment;
+        jsonComment["id"] = record.value("id").toInt();
         jsonComment["comment"] = record.value("comment").toString().toHtmlEscaped().toStdString();
         jsonComment["dt"] = record.value("dt").toString().toStdString();
         nlohmann::json jsonCommentUser;
@@ -881,8 +882,6 @@ void CmdHandlerUsefulLinksCommentAdd::handle(ModelRequest *pRequest) {
 
     RunTasks::MailSend(sMailToAdmin, sMessage, sBody);
 
-    // TODO email
-
     nlohmann::json jsonResponse;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -908,7 +907,51 @@ CmdHandlerUsefulLinksCommentDelete::CmdHandlerUsefulLinksCommentDelete()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksCommentDelete::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+
+    int nUsefulLinkCommentId = pRequest->getInputInteger("useful_link_comment_id", 0);
+
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+
+    // TODO redesign database like Json = findInTable("useful_links_comments").where("id", nUsefulLinkCommentId);
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+
+    query.prepare("SELECT * FROM useful_links_comments WHERE id = :comment_id");
+    query.bindValue(":comment_id", nUsefulLinkCommentId);
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    int nUsefulLinkId = 0;
+    if (query.next()) {
+        QSqlRecord record = query.record();
+        nUsefulLinkId = record.value("usefullinkid").toInt();
+    } else {
+        pRequest->sendMessageError(cmd(), WsjcppError(404, "COMMENT_NOT_FOUND"));
+        return;
+    }
+
+    query.prepare("DELETE FROM useful_links_comments WHERE id = :comment_id");
+    query.bindValue(":comment_id", nUsefulLinkCommentId);
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    // update count of comments
+    query.prepare("UPDATE useful_links ul SET user_comments = (SELECT COUNT(*) FROM useful_links_comments WHERE usefullinkid = ul.id) WHERE ul.id = :useful_link_id");
+    query.bindValue(":useful_link_id", nUsefulLinkId);
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    // TODO add notification about removed comments
+
+    nlohmann::json jsonResponse;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 
