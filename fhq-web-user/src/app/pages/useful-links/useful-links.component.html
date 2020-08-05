@@ -31,8 +31,12 @@
   (page)="pageEvent = getServerData($event)"
 >
 </mat-paginator>
+    <mat-card *ngIf="usefullLinksData.length == 0">
+      <span l10nTranslate>nothingToFoundByYourRequest</span> '{{ searchValue }}'
+    </mat-card>
 
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 useful-links-table">
+
+    <table mat-table [dataSource]="dataSource" *ngIf="usefullLinksData.length > 0" class="mat-elevation-z8 useful-links-table">
       <ng-container matColumnDef="usefulLinkData">
         <th mat-header-cell *matHeaderCellDef l10nTranslate>usefulLinks</th>
         <td mat-cell *matCellDef="let element">
