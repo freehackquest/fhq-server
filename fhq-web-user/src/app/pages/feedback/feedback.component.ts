@@ -14,6 +14,8 @@ export class FeedbackComponent implements OnInit {
   @ViewChild('feedbackTarget') feedbackTarget : ElementRef; 
   @ViewChild('feedbackFrom') feedbackFrom : ElementRef;
   @ViewChild('feedbackMessage') feedbackMessage : ElementRef;
+  _feedbackTarget: string = 'question';
+  targetOptions: any = [];
 
   constructor(
     private _cdr: ChangeDetectorRef,
@@ -22,6 +24,11 @@ export class FeedbackComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.targetOptions = [];
+    this.targetOptions.push({
+      "value": "question",
+      "caption": "feedbackTargetQuestion"
+    })
     this.subscription = this._fhq.changedState
       .subscribe(() => this._cdr.detectChanges());
     this._spinner.hide();
@@ -34,12 +41,12 @@ export class FeedbackComponent implements OnInit {
   sendFeedback() {
     // this._spinnerService.show();
     this.errorMessage = null;
-    const target = this.feedbackTarget.nativeElement.value;
-    console.log("target", target);
+    const target = this._feedbackTarget;
+    // console.log("target", target);
     const from = this.feedbackFrom.nativeElement.value;
-    console.log("from", from);
+    // console.log("from", from);
     const msg = this.feedbackMessage.nativeElement.value;
-    console.log("msg", msg);
+    // console.log("msg", msg);
     this._fhq.api().feedback_add({
       "type": target,
       "from": from,
