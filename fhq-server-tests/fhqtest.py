@@ -13,6 +13,15 @@ admin_session = None
 user_session = None
 anon_session = None
 loggined = False
+TEST_USER_DATA = {
+    "uuid": "03E51000-2222-0000-0000-000000000001",
+    "email": "user@freehackquest.com",
+    "nick": "test_user",
+    "password": "user",
+    "role": "user"
+}
+TEST_USER_ID = None
+
 GAME_UUID1 = "00000000-0000-0000-1000-000000000001"
 GAME_UUID2 = "00000000-0000-0000-1000-000000000002"
 CLASSBOOK_RECORD1 = "C1A55800-0000-0000-0000-000000000001"
@@ -24,8 +33,6 @@ QUEST_UUID2 = "03E51000-0000-0000-0000-000000000002"
 QUEST_UUID3 = "03E51000-0000-0000-0000-000000000003"
 QUEST_UUID4 = "03E51000-0000-0000-0000-000000000004"
 GAME1 = None
-admin_email = "admin" # deprecated
-admin_password = "admin" # deprecated
 ADMIN_EMAIL = "admin"
 ADMIN_PASSWORD = "admin"
 TEST_HOST = "127.0.0.1"
@@ -113,9 +120,12 @@ def check_values(what, got, expected):
 
 def init_enviroment():
     global admin_session
+    global user_session
     global ADMIN_EMAIL
     global ADMIN_PASSWORD
     global TEST_SERVER
+    global TEST_USER_ID
+    global TEST_USER_DATA
     
     if not os.path.exists(TMP_DIR):
         os.makedirs(TMP_DIR)
@@ -125,7 +135,22 @@ def init_enviroment():
     alert(resp == None, 'Could not login as admin (1)')
     # pprint(resp)
     alert(resp['result'] == 'FAIL', 'Could not login as admin (2)')
-    
+
+    # create test user if it's not exists 
+    # TODO easy filter 
+    resp = admin_session.users({"onpage": 10, "page": 0, "filter_text": TEST_USER_DATA['nick']})
+    for usr in resp["data"]:
+        if usr['email'] == TEST_USER_DATA['email']:
+            pprint(usr["id"])
+            TEST_USER_ID = usr["id"]
+    if TEST_USER_ID == None:
+        resp = admin_session.users_add(TEST_USER_DATA)
+        alert(resp['result'] == 'FAIL', 'Could not create test_user')
+        TEST_USER_ID = resp['data']['userid']
+    user_session = FreeHackQuestClient(TEST_SERVER)
+    resp = user_session.login({"email": TEST_USER_DATA['email'], "password": TEST_USER_DATA['password']})
+    alert(resp == None, 'Could not login as test_user (1)')
+
     # loggined = True
     GAME1 = admin_session.game_info({"uuid": GAME_UUID1})
     alert(resp == None, 'Could not get test game (2)')

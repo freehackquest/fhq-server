@@ -1,0 +1,81 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-subtitle>
+            [useful-link#{{this.usefullinkid}}]
+        </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <a 
+            mat-raised-button 
+            class="useful-links-left-btn"
+            color="accent" 
+            href="{{ element.url }}" 
+            (mousedown)="linkClicked(element.id)" 
+            target="_blank"
+            >{{ element.url }}</a> <br><br>
+        <p>
+            {{element.description}}
+        </p>
+        <div *ngIf="element.tags && element.tags.length > 0"> 
+            <mat-chip-list>
+                <mat-chip 
+                *ngFor="let tag of element.tags;" 
+                (click)="applyFilterByTag(tag)"
+                >
+                {{ tag }}
+                </mat-chip>
+            </mat-chip-list>
+        </div>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-stroked-button disabled *ngIf="element.user_clicks > 0">
+            <mat-icon aria-hidden="false">mouse</mat-icon>
+            {{ element.user_clicks }}
+        </button>
+
+        <button mat-stroked-button class="useful-links-left-btn" *ngIf="!element.favorite && _fhq.isAuthorized" (click)="addToFavorite(element.id)">
+            <mat-icon aria-hidden="false">star</mat-icon>
+            Favorite ({{ element.user_favorites }})
+        </button>
+        
+        <button mat-stroked-button class="useful-links-left-btn" *ngIf="element.favorite && _fhq.isAuthorized" (click)="removeFromFavorite(element.id)">
+            <mat-icon aria-hidden="false">star_outline</mat-icon>
+            Unfavorite ({{ element.user_favorites }})
+        </button>
+    </mat-card-actions>
+</mat-card>
+
+<div *ngIf="!_fhq.isAuthorized">
+    TODO
+</div>
+
+<div class="useful-link-view-leave-comment-form" *ngIf="_fhq.isAuthorized">
+    <mat-form-field class="useful-link-view-leave-comment-form-width">
+        <mat-label>Leave a comment</mat-label>
+        <input matInput type="text" [(ngModel)]="commentText">
+        <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-form-field>
+    <button mat-raised-button color="primary" 
+        [disabled]="this.commentText.length == 0" 
+        (click)="sendComment()">Send comment</button>
+</div>
+
+<mat-card class="useful-link-view-comment-card" *ngFor="let item of comments">
+    <mat-card-header>
+      <div mat-card-avatar class="useful-link-view-comment-user-logo" [ngStyle]="getStyleListUserLogo(item.user)"></div>
+      <mat-card-title>{{item.user.role }}: [{{ item.user.university }}] {{ item.user.nick }}</mat-card-title>
+      <mat-card-subtitle>{{ item.dt_formatted }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        {{ item.comment }}
+      </p>
+    </mat-card-content>
+</mat-card>
+
+
+
+  
+  

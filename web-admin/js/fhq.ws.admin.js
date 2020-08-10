@@ -635,3 +635,21 @@ fhq.ws.useful_links_tag_delete = function(data){
     data.cmd = 'useful_links_tag_delete';
     return fhq.ws.send(data);
 }
+
+fhq.ws.useful_links_comment_list = function(data){
+    data = data || {};
+    data.cmd = 'useful_links_comment_list';
+    return fhq.ws.send(data);
+}
+
+fhq.ws.useful_links_comment_delete = function(data){
+    data = data || {};
+    data.cmd = 'useful_links_comment_delete';
+    return fhq.ws.send(data);
+}
+
+fhq.ws.useful_links_comment_add = function(data){
+    data = data || {};
+    data.cmd = 'useful_links_comment_add';
+    return fhq.ws.send(data);
+}

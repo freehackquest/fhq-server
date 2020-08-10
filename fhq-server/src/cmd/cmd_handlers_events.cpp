@@ -35,9 +35,10 @@ void CmdHandlerEventAdd::handle(ModelRequest *pRequest) {
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
-    query.prepare("INSERT INTO public_events(type,message,dt) VALUES(:type,:message,NOW())");
+    query.prepare("INSERT INTO public_events(type,message,meta,dt) VALUES(:type,:message,:meta,NOW())");
     query.bindValue(":type", QString::fromStdString(sType));
     query.bindValue(":message", QString::fromStdString(sMessage));
+    query.bindValue(":meta", "{}");
     if (!query.exec()) {
         pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
@@ -245,6 +246,12 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
             jsonEvent["id"] = record.value("id").toInt();
             jsonEvent["type"] = record.value("type").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
             jsonEvent["message"] = record.value("message").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
+            std::string sMeta = record.value("meta").toString().toStdString();
+            if (nlohmann::json::accept(sMeta)) {
+                jsonEvent["meta"] = nlohmann::json::parse(sMeta);
+            } else {
+                jsonEvent["meta"] = "";
+            }
 
             jsonPublicEventsList.push_back(jsonEvent);
         }

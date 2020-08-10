@@ -123,7 +123,7 @@ def run_tests():
 
     fhqtest.print_bold("Find user by nick...")
     users = fhqtest.admin_session.users({"onpage": 10, "page": 0, "filter_text": "nick_user2"})
-    users_count = users["count"]
+    # users_count = users["count"]
     user_found = None
     for usr in users["data"]:
         if usr['email'] == "user2":

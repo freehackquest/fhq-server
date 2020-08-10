@@ -3,10 +3,11 @@ import { SpinnerService } from '../../services/spinner.service';
 import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
-import { PageEvent } from '@angular/material';
-import { MatTableDataSource } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { FhqService } from '../../services/fhq.service';
 import { Location } from '@angular/common';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 export interface UsefulLinkElement {
   id: number;
@@ -14,6 +15,7 @@ export interface UsefulLinkElement {
   description: string;
   rating: number;
   userFavorites: number;
+  userComments: number;
   userClicks: number;
   userClicksLabel: string;
   favorite: boolean;
@@ -45,8 +47,8 @@ export class UsefulLinksComponent implements OnInit {
   errorMessage: string = null;
 
   searchValue: String = '';
+  private prevSearchValue: String = '';
   searchControl = new FormControl('');
-  formCtrlSub: Subscription;
 
   dataSource = new MatTableDataSource<UsefulLinkElement>();
   displayedColumns: string[] = ['usefulLinkData'];
@@ -60,7 +62,9 @@ export class UsefulLinksComponent implements OnInit {
     private _activatedRoute: ActivatedRoute,
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    console.log("ngOnInit");
+
     this._activatedRoute.queryParams.subscribe(params => {
       if (params["search"]) {
         this.searchValue = params["search"];
@@ -77,16 +81,28 @@ export class UsefulLinksComponent implements OnInit {
       if (params["page_size"]) {
         this.pageSize = parseInt(params["page_size"],0);
       }
+
+      if (this._fhq.connectionState == "OK") {
+        this.updatePage();
+      }
+
       this.subscription = this._fhq.changedState
         .subscribe(() => this.updatePage());
     });
 
     this._spinner.hide();
-    this.formCtrlSub = this.searchControl.valueChanges
-    .debounceTime(1000)
-    .subscribe((newValue) => {
-      this.searchValue = newValue
-      this.updatePage();
+    this.searchControl.valueChanges
+    .pipe(
+      debounceTime(1000),
+      distinctUntilChanged(),
+    )
+    .subscribe((newValue): void => {
+      if (this.prevSearchValue != newValue) {
+        this.searchValue = newValue;
+        this.prevSearchValue = newValue;
+        this.pageIndex = 0;
+        this.updatePage();
+      }
     });
   }
 
@@ -125,6 +141,7 @@ export class UsefulLinksComponent implements OnInit {
         link: usefulLink['url'],
         description: usefulLink['description'],
         userFavorites: usefulLink['user_favorites'],
+        userComments: usefulLink['user_comments'],
         userClicks: usefulLink['user_clicks'],
         userClicksLabel: userClicksLabel,
         favorite: usefulLink['favorite'],
@@ -143,12 +160,14 @@ export class UsefulLinksComponent implements OnInit {
   }
 
   updatePage() {
+    // console.log("console.log(this._fhq.connectionState): ", this._fhq.connectionState)
+
     // this._spinner.show();
     this.loadListOftags();
     this._fhq.api().useful_links_list({
       "page_index": this.pageIndex,
       "page_size": this.pageSize,
-      "filter": this.searchValue,
+      "filter": this.prevSearchValue,
       "filter_by_tag": this.filterByTag,
     })
       .done((r: any) => this.successUsefulLinksList(r))

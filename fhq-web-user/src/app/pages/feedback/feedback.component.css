@@ -1,0 +1,15 @@
+.feedback-card {
+    text-align: center;
+}
+.feedback-field {
+    display: block;
+    width: 450px;
+}
+
+
+.feedback-field-w100 {
+    display: block;
+    width: 100%;
+}
+
+

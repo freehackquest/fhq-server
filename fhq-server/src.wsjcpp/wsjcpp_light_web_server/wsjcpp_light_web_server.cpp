@@ -19,7 +19,7 @@ const std::string &WsjcppLightWebHttpHandlerBase::name() {
 // ----------------------------------------------------------------------
 // WsjcppLightWebHttpThreadWorker
 
-void* processRequest(void *arg) {
+void* wsjcppLightWebServerProcessRequest(void *arg) {
     WsjcppLightWebHttpThreadWorker *pWorker = (WsjcppLightWebHttpThreadWorker *)arg;
     pthread_detach(pthread_self());
     pWorker->run();
@@ -47,7 +47,7 @@ void WsjcppLightWebHttpThreadWorker::start() {
     m_bStop = false;
     m_bStopped = false;
     WsjcppLog::info(TAG, "Start");
-    pthread_create(&m_serverThread, NULL, &processRequest, (void *)this);
+    pthread_create(&m_serverThread, NULL, &wsjcppLightWebServerProcessRequest, (void *)this);
 }
 
 // ----------------------------------------------------------------------
@@ -250,7 +250,7 @@ void WsjcppLightWebServer::startSync() {
 
 // ----------------------------------------------------------------------
 
-void* processWebServerStart(void *arg) {
+void* wsjcppLightWebServerProcessServerStart(void *arg) {
     WsjcppLightWebServer *pLightWebServer = (WsjcppLightWebServer *)arg;
     pthread_detach(pthread_self());
     pLightWebServer->startSync();
@@ -261,7 +261,7 @@ void* processWebServerStart(void *arg) {
 
 void WsjcppLightWebServer::start() {
     m_bStop = false;
-    pthread_create(&m_serverThread, NULL, &processWebServerStart, (void *)this);
+    pthread_create(&m_serverThread, NULL, &wsjcppLightWebServerProcessServerStart, (void *)this);
 }
 
 // ----------------------------------------------------------------------

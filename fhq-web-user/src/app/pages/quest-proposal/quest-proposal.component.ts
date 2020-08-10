@@ -16,14 +16,14 @@ export class QuestProposalComponent implements OnInit {
   listGames: Array<any> = [];
   successSended: boolean = false;
 
-  @ViewChild('gameId', { static: false }) gameId : ElementRef; 
-  @ViewChild('questName', { static: false }) questName : ElementRef;
-  @ViewChild('questSubject', { static: false }) questSubject : ElementRef;
-  @ViewChild('questScore', { static: false }) questScore : ElementRef;
-  @ViewChild('questAnswerFormat', { static: false }) questAnswerFormat : ElementRef;
-  @ViewChild('questAnswer', { static: false }) questAnswer : ElementRef;
-  @ViewChild('questAuthor', { static: false }) questAuthor : ElementRef;
-  @ViewChild('questCopyright', { static: false }) questCopyright : ElementRef;
+  @ViewChild('gameId') gameId : ElementRef; 
+  @ViewChild('questName') questName : ElementRef;
+  @ViewChild('questSubject') questSubject : ElementRef;
+  @ViewChild('questScore') questScore : ElementRef;
+  @ViewChild('questAnswerFormat') questAnswerFormat : ElementRef;
+  @ViewChild('questAnswer') questAnswer : ElementRef;
+  @ViewChild('questAuthor') questAuthor : ElementRef;
+  @ViewChild('questCopyright') questCopyright : ElementRef;
   
   constructor(
     private _spinner: SpinnerService,

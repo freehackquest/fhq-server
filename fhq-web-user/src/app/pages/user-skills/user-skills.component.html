@@ -2,33 +2,27 @@
   Please authorize
   <div class="btn btn-primary" (click)="openDialogSignIn()" l10nTranslate>signin</div>
 </div>
-<mat-drawer-container class="user-profile-container" autosize>
-  <mat-drawer mode="side" opened>
-    <app-user-profile-menu></app-user-profile-menu>
-  </mat-drawer>
-  <mat-drawer-content>
-    <table mat-table [dataSource]="dataSource" class="user-profile-table mat-elevation-z8">
 
-      <!-- Name Column -->
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef l10nTranslate>skills</th>
-        <td mat-cell *matCellDef="let element"> 
-          <mat-icon aria-hidden="false" *ngIf="element.inProcents >= 100" aria-label="Example home icon">done_all</mat-icon>
-          {{element.skillName}} ({{element.inProcents}}%)
-        </td>
-      </ng-container>
+<table mat-table [dataSource]="dataSource" class="user-profile-table mat-elevation-z8">
 
-      <!-- Points Column -->
-      <ng-container matColumnDef="userPoints">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let element">
-          {{element.userPoints}} <span l10nTranslate>of</span> {{element.maxPoints}} <span l10nTranslate>points</span>
-          <mat-progress-bar mode="determinate" value="{{ element.inProcents }}"></mat-progress-bar>
-        </td>
-      </ng-container>
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef l10nTranslate>skills</th>
+    <td mat-cell *matCellDef="let element"> 
+      <mat-icon aria-hidden="false" *ngIf="element.inProcents >= 100" aria-label="Example home icon">done_all</mat-icon>
+      {{element.skillName}} ({{element.inProcents}}%)
+    </td>
+  </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  </mat-drawer-content>
-</mat-drawer-container>
+  <!-- Points Column -->
+  <ng-container matColumnDef="userPoints">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      {{element.userPoints}} <span l10nTranslate>of</span> {{element.maxPoints}} <span l10nTranslate>points</span>
+      <mat-progress-bar mode="determinate" value="{{ element.inProcents }}"></mat-progress-bar>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

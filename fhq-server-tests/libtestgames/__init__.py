@@ -219,7 +219,7 @@ def run_tests():
 
     # remove game
     fhqtest.print_bold("Remove game by uuid... ")
-    resp = fhqtest.admin_session.game_delete({ "uuid": fhqtest.GAME_UUID2, "admin_password": fhqtest.admin_password })
+    resp = fhqtest.admin_session.game_delete({ "uuid": fhqtest.GAME_UUID2, "admin_password": fhqtest.ADMIN_PASSWORD })
     fhqtest.check_response(resp, "Game removed")
 
     fhqtest.check_response(resp, "TODO Game import")

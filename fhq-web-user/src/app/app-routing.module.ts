@@ -22,7 +22,6 @@ import { QuestProposalComponent } from './pages/quest-proposal/quest-proposal.co
 import { ScoreboardComponent } from './pages/scoreboard/scoreboard.component';
 import { QuestsComponent } from './pages/quests/quests.component';
 import { QuestsBySubjectComponent } from './pages/quests-by-subject/quests-by-subject.component';
-import { UserProfileMenuComponent } from './pages/user-profile-menu/user-profile-menu.component';
 import { UserTokensComponent } from './pages/user-tokens/user-tokens.component';
 import { UserSecurityComponent } from './pages/user-security/user-security.component';
 import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
@@ -30,6 +29,7 @@ import { QuestComponent } from './pages/quest/quest.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { FhqJuryAdComponent } from './pages/fhq-jury-ad/fhq-jury-ad.component';
 import { UserFavoritesUsefulLinksComponent } from './pages/user-favorites-useful-links/user-favorites-useful-links.component'
+import { UsefulLinkViewComponent } from './pages/useful-link-view/useful-link-view.component';
 
 const routes: Routes = [{
     path: 'knowledge-base',
@@ -47,9 +47,6 @@ const routes: Routes = [{
     path: 'news',
     component: NewsComponent
   }, {
-    path: 'news/:id',
-    component: NewsComponent
-  }, {
     path: 'user-profile',
     component: UserProfileComponent
   }, {
@@ -64,9 +61,6 @@ const routes: Routes = [{
   }, {
   path: 'user-tokens',
     component: UserTokensComponent
-  }, {
-    path: 'user-profile-menu',
-    component: UserProfileMenuComponent
   }, {
     path: 'about',
     component: AboutComponent
@@ -94,6 +88,9 @@ const routes: Routes = [{
   }, {
     path: 'useful-links',
     component: UsefulLinksComponent
+  }, {
+    path: 'useful-links/:id',
+    component: UsefulLinkViewComponent
   }, {
     path: 'games',
     component: GamesComponent
@@ -134,7 +131,7 @@ const routes: Routes = [{
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  imports: [ RouterModule.forRoot(routes) ],
+  exports: [ RouterModule ]
 })
 export class AppRoutingModule { }

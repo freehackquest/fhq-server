@@ -44,7 +44,7 @@ fhq.pages['server_info'] = function(){
 			+ '<div class="card">'
 			+ '	<div class="card-header">Server uptime</div>'
 			+ '	<div class="card-body">'
-			+ ' 	<p>Server started: ' + r.data.server_started + '</p>'
+			+ ' 	<p>Server started: ' + new Date(r.data.server_started) + '</p>'
 			+ ' 	<p id="server_uptime">Server uptime: ' + fhq.formatUptime(r.data.server_uptime_sec) + ' sec</p>'
 			+ '	</div>'
 			+ '</div><br>'

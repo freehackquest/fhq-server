@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="assets/vendor/fonts/flag-icon-css/flag-icon.min.css"/>
     
     <link rel="stylesheet" type="text/css" href="css/simplemde.min.css?ver=1"/>
+    <link rel="stylesheet" type="text/css" href="css/swa-pages.css?ver=1"/>
 
     <!-- link rel="stylesheet" type="text/css" href="css/bootstrap.min.css?ver=1"/>
     <link rel="stylesheet" type="text/css" href="css/bootstrap-grid.min.css?ver=1"/>
@@ -31,263 +32,37 @@
 
 </head>
 <body>
-    <!-- ============================================================== -->
-    <!-- main wrapper -->
-    <!-- ============================================================== -->
-    <div class="dashboard-main-wrapper">
-<!-- ============================================================== -->
-<!-- navbar -->
-<!-- ============================================================== -->
-<div class="dashboard-header">
-    <nav class="navbar navbar-expand-lg bg-white fixed-top">
-        <a class="navbar-brand" href="index.html">FHQ Admin</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse " id="navbarSupportedContent">
-            <ul class="navbar-nav ml-auto navbar-right-top">
-                <!-- li class="nav-item">
-                    <div id="custom-search" class="top-search-bar">
-                        <input class="form-control" type="text" placeholder="Search..">
-                    </div>
-                </li -->
-                <li class="nav-item dropdown notification">
-                    <a class="nav-link nav-icons" href="#" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-bell"></i> <span class="indicator"></span></a>
-                    <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
-                        <li>
-                            <div class="notification-title"> Notification</div>
-                            <div class="notification-list">
-                                <div class="list-group">
-                                    <a href="#" class="list-group-item list-group-item-action active">
-                                        <div class="notification-info">
-                                            <div class="notification-list-user-img"><img src="assets/images/avatar-2.jpg" alt="" class="user-avatar-md rounded-circle"></div>
-                                            <div class="notification-list-user-block"><span class="notification-list-user-name">Jeremy Rakestraw</span>accepted your invitation to join the team.
-                                                <div class="notification-date">2 min ago</div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="list-group-item list-group-item-action">
-                                        <div class="notification-info">
-                                            <div class="notification-list-user-img"><img src="assets/images/avatar-3.jpg" alt="" class="user-avatar-md rounded-circle"></div>
-                                            <div class="notification-list-user-block"><span class="notification-list-user-name">John Abraham </span>is now following you
-                                                <div class="notification-date">2 days ago</div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="list-group-item list-group-item-action">
-                                        <div class="notification-info">
-                                            <div class="notification-list-user-img"><img src="assets/images/avatar-4.jpg" alt="" class="user-avatar-md rounded-circle"></div>
-                                            <div class="notification-list-user-block"><span class="notification-list-user-name">Monaan Pechi</span> is watching your main repository
-                                                <div class="notification-date">2 min ago</div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="list-group-item list-group-item-action">
-                                        <div class="notification-info">
-                                            <div class="notification-list-user-img"><img src="assets/images/avatar-5.jpg" alt="" class="user-avatar-md rounded-circle"></div>
-                                            <div class="notification-list-user-block"><span class="notification-list-user-name">Jessica Caruso</span>accepted your invitation to join the team.
-                                                <div class="notification-date">2 min ago</div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="list-footer"> <a href="#">View all notifications</a></div>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown connection">
-                    <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-fw fa-th"></i> </a>
-                    <ul class="dropdown-menu dropdown-menu-right connection-dropdown">
-                        <li class="connection-list">
-                            <div class="row">
-                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                    <a href="#" class="connection-item"><img src="assets/images/github.png" alt="" > <span>Github</span></a>
-                                </div>
-                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                    <a href="#" class="connection-item"><img src="assets/images/dribbble.png" alt="" > <span>Dribbble</span></a>
-                                </div>
-                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                    <a href="#" class="connection-item"><img src="assets/images/dropbox.png" alt="" > <span>Dropbox</span></a>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                    <a href="#" class="connection-item"><img src="assets/images/bitbucket.png" alt=""> <span>Bitbucket</span></a>
-                                </div>
-                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                    <a href="#" class="connection-item"><img src="assets/images/mail_chimp.png" alt="" ><span>Mail chimp</span></a>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="conntection-footer"><a href="#">More</a></div>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown nav-user">
-                    <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="assets/images/avatar-1.jpg" alt="" class="user-avatar-md rounded-circle"></a>
-                    <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
-                        <div class="nav-user-info">
-                            <h5 class="mb-0 text-white nav-user-name">John Abraham</h5>
-                            <span class="status"></span><span class="ml-2">Available</span>
-                        </div>
-                        <a class="dropdown-item" href="#"><i class="fas fa-user mr-2"></i>Account</a>
-                        <a class="dropdown-item" href="javascript:void(0);" onclick="fhq.logout()"><i class="fas fa-power-off mr-2"></i>Logout</a>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </nav>
-</div>
-<!-- ============================================================== -->
-<!-- end navbar -->
-<!-- ============================================================== -->
-<!-- ============================================================== -->
-<!-- left sidebar -->
-<!-- ============================================================== -->
-<div class="nav-left-sidebar sidebar-dark">
-    <div class="menu-list">
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav flex-column">
-                    <li class="nav-divider">
-                        Menu
-                    </li>
-                    <!-- li class="nav-item ">
-                        <a class="nav-link active" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1" aria-controls="submenu-1"><i class="fa fa-fw fa-user-circle"></i>Dashboard <span class="badge badge-success">6</span></a>
-                        <div id="submenu-1" class="collapse submenu" style="">
-                            <ul class="nav flex-column">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2">E-Commerce</a>
-                                    <div id="submenu-1-2" class="collapse submenu" style="">
-                                        <ul class="nav flex-column">
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="index.html">E Commerce Dashboard</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="ecommerce-product.html">Product List</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="ecommerce-product-single.html">Product Single</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="ecommerce-product-checkout.html">Product Checkout</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="dashboard-finance.html">Finance</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="dashboard-sales.html">Sales</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-1" aria-controls="submenu-1-1">Infulencer</a>
-                                    <div id="submenu-1-1" class="collapse submenu" style="">
-                                        <ul class="nav flex-column">
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="dashboard-influencer.html">Influencer</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="influencer-finder.html">Influencer Finder</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="influencer-profile.html">Influencer Profile</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </li -->
-                    
-                    <li class="nav-item">
-                        <a class="nav-link main-menu" id="menu_server_info" href="javascript:void(0);" onclick="fhq.pages.server_info()">Server Info</a>
-                    </li>
+    <div class="swa-page-left-sidebar">
+        <div class="swa-page-sidebar-title">FreeHackQuest Admin</div>
+        <div class="swa-page-sidebar-space"></div>
 
-                    <li class="nav-item">
-                        <a class="nav-link main-menu" id="menu_users" href="javascript:void(0);" onclick="fhq.pages.users()">Users</a>
-                    </li>
+        <div class="swa-page-sidebar-button swa-menu" page="server_info">Server Info ></div>
+        <div class="swa-page-sidebar-button swa-menu" page="settings" id="menu_settings" onclick="fhq.pages.settings()">Settings ></div>
+        <div class="swa-page-sidebar-button swa-menu" page="users" id="menu_users" onclick="fhq.pages.users()">Users ></div>
 
-                    <li class="nav-item">
-                        <a class="nav-link main-menu" id="menu_users_answers" href="javascript:void(0);" onclick="fhq.pages.users_answers()">Users Answers</a>
-                    </li>
+        <div class="swa-page-sidebar-button swa-menu" page="games">Games ></div>
+        <div class="swa-page-sidebar-button swa-menu" page="quests">Quests ></div>
+        <div class="swa-page-sidebar-button swa-menu" page="users_answers">Users Answers ></div>
+        <div class="swa-page-sidebar-button swa-menu" page="quests_proposal">Quests Proposals ></div>
+        <div class="swa-page-sidebar-button swa-menu" page="mails">Mails ></div>
+        <div class="swa-page-sidebar-button swa-menu" page="orchestra">Orchestra ></div>
+        <div class="swa-page-sidebar-button swa-menu" page="useful_links">Useful Links ></div>
+        <div class="swa-page-sidebar-button swa-menu" page="knowledge_base">Knowledge Base ></div>
+        
+        <div class="swa-page-sidebar-space"></div>
 
-                    <li class="nav-item">
-                        <a class="nav-link main-menu" id="menu_games" href="javascript:void(0);" onclick="fhq.pages.games()">Games</a>
-                    </li>
+        <div class="swa-page-sidebar-button" onclick="fhq.logout()">Logout</div>
 
-                    <li class="nav-item">
-                        <a class="nav-link main-menu" id="menu_quests" href="javascript:void(0);" onclick="fhq.pages.quests()">Quests</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link main-menu" id="menu_quests_proposal" href="javascript:void(0);" onclick="fhq.pages.quests_proposal()">Quests Proposals</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link main-menu" id="menu_mails" href="javascript:void(0);" onclick="fhq.pages.mails()">Mails</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link main-menu" id="menu_orchestra" href="javascript:void(0);" onclick="fhq.pages.orchestra()">Orchestra</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link main-menu" id="menu_useful_links" href="javascript:void(0);" onclick="fhq.pages.useful_links()">Useful Links</a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link main-menu" id="menu_knowledge_base" href="javascript:void(0);" onclick="fhq.pages.knowledge_base()">Knowledge Base</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link main-menu" id="menu_settings" href="javascript:void(0);" onclick="fhq.pages.settings()">Settings</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
     </div>
-</div>
-<!-- ============================================================== -->
-<!-- end left sidebar -->
-<!-- ============================================================== -->
-<!-- ============================================================== -->
-<!-- wrapper  -->
-<!-- ============================================================== -->
-<div class="dashboard-wrapper">
-<div class="dashboard-ecommerce">
-    <div class="container-fluid dashboard-content">
-        <div class="row">
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                <div class="page-header">
-                    <h2 class="pageheader-title" id="page_name"></h2>
-                    <!-- p class="pageheader-text">Nulla euismod urna eros, sit amet scelerisque torton lectus vel mauris facilisis faucibus at enim quis massa lobortis rutrum.</p>
-                    <div class="page-breadcrumb">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Dashboard</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">E-Commerce Dashboard Template</li>
-                            </ol>
-                        </nav>
-                    </div -->
-                </div>
-            </div>
+
+    <div class="swa-page-right-content-box">
+        <div class="swa-page-right-title-box">
+            <div class="swa-page-right-title" id="page_name"></div>
         </div>
-        <div class="ecommerce-widget" id="page_content">
+        <div class="swa-page-right-content" id="page_content">
         </div>
     </div>
-    </div>
-</div>
-</div>
+
 
 <!-- Modal --> 
 <div class="modal fade" id="modalSignIn" tabindex="-1" role="dialog" aria-labelledby="modalSignIn" aria-hidden="true">
@@ -368,7 +143,6 @@
     <script defer src="./js/libs/popper.min.js"></script>
     <script defer src="./js/libs/bootstrap.min.js"></script>
     <script defer src="./js/libs/simplemde.min.js"></script>
-    <script defer src="./js/libs/swa-pages.js"></script>
     <script defer src="fhq.ws.config.js"></script>
     <script defer src="./js/fhq.admin.localization.js"></script>
     <script defer src="./js/fhq.admin.js"></script>
@@ -384,8 +158,9 @@
     <script defer src="./js/fhq.admin.orchestra.js"></script>
     <script defer src="./js/fhq.admin.server.js"></script>
     <script defer src="./js/fhq.admin.version.js"></script>
+    <script src="./js/libs/swa-pages.js"></script>
     <script defer src="./js/fhq.ws.admin.js"></script>
-    <script src="./js/libs/libfhqcli-web-js.js"></script>
+    <script defer src="./js/libs/libfhqcli-web-js.js"></script>
     <script>
         var _hostname = window.location.hostname;
         var _protocol = window.location.protocol;
@@ -473,6 +248,8 @@
             fhq.deinit();
             window.location.reload();
         }
+
+        
     </script>
 </body>
 </html>

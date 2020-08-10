@@ -2,47 +2,41 @@
   Please authorize
   <div class="btn btn-primary" (click)="openDialogSignIn()" l10nTranslate>signin</div>
 </div>
-<mat-drawer-container class="user-profile-container" autosize>
-  <mat-drawer mode="side" opened>
-    <app-user-profile-menu></app-user-profile-menu>
-  </mat-drawer>
-  <mat-drawer-content>
-    <table mat-table [dataSource]="dataSource" class="user-profile-table mat-elevation-z8">
 
-      <ng-container matColumnDef="idToken">
-        <th mat-header-cell *matHeaderCellDef>#</th>
-        <td mat-cell *matCellDef="let element"> 
-          {{ element.id }}
-        </td>
-      </ng-container>
+<table mat-table [dataSource]="dataSource" class="user-profile-table mat-elevation-z8">
 
-      <ng-container matColumnDef="tokenValue">
-        <th mat-header-cell *matHeaderCellDef l10nTranslate>token</th>
-        <td mat-cell *matCellDef="let element">
-          <strong>{{element.token}}</strong><br>
-          <small>{{ element.startDate | date:'EEEE, d MMM y, HH:mm:ss' }}</small><br>
-          <small> - {{ element.endDate | date:'EEEE, d MMM y, HH:mm:ss' }}</small>
-        </td>
-      </ng-container>
+  <ng-container matColumnDef="idToken">
+    <th mat-header-cell *matHeaderCellDef>#</th>
+    <td mat-cell *matCellDef="let element"> 
+      {{ element.id }}
+    </td>
+  </ng-container>
 
-      <ng-container matColumnDef="tokenStatus">
-        <th mat-header-cell *matHeaderCellDef l10nTranslate>status</th>
-        <td mat-cell *matCellDef="let element">
-          {{element.status}}
-        </td>
-      </ng-container>
-      
-      <ng-container matColumnDef="deleteToken">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let element">
-          <button mat-raised-button color="warn" (click)="deleteToken(element.id)">
-            <mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon>
-          </button>
-        </td>
-      </ng-container>
+  <ng-container matColumnDef="tokenValue">
+    <th mat-header-cell *matHeaderCellDef l10nTranslate>token</th>
+    <td mat-cell *matCellDef="let element">
+      <strong>{{element.token}}</strong><br>
+      <small>{{ element.startDate | date:'EEEE, d MMM y, HH:mm:ss' }}</small><br>
+      <small> - {{ element.endDate | date:'EEEE, d MMM y, HH:mm:ss' }}</small>
+    </td>
+  </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  </mat-drawer-content>
-</mat-drawer-container>
+  <ng-container matColumnDef="tokenStatus">
+    <th mat-header-cell *matHeaderCellDef l10nTranslate>status</th>
+    <td mat-cell *matCellDef="let element">
+      {{element.status}}
+    </td>
+  </ng-container>
+  
+  <ng-container matColumnDef="deleteToken">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-raised-button color="warn" (click)="deleteToken(element.id)">
+        <mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

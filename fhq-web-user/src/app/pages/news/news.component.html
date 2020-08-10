@@ -24,7 +24,6 @@
 >
 </mat-paginator>
 
-
 <table class="table">
   <tbody>
     <tr *ngFor="let n of dataList">
@@ -34,6 +33,10 @@
       <td>
         <small>{{ n.dt_formated | date:'EEEE, d MMM y, HH:mm:ss' }}</small><br>
         <strong [innerHTML]="n.html_message"></strong>
+        <br>
+        <button mat-stroked-button class="useful-links-left-btn" *ngFor="let l of n.links" routerLink="{{ l.routeLink }}">
+          {{ l.text }}
+        </button>
       </td>
     </tr>
   </tbody>

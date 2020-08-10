@@ -15,7 +15,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   dataList: Array<any> = [];
   errorMessage: string = null;
   subscription: any;
-  @ViewChild('yourMessage', { static: false }) yourMessage : ElementRef;
+  @ViewChild('yourMessage') yourMessage : ElementRef;
   @ViewChild('chatMessages', { static: true }) private chatMessages: ElementRef;
   
   constructor(

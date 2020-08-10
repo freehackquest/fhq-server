@@ -1,22 +1,22 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import {
-  MatButtonModule,
-  MatFormFieldModule, 
-  MatInputModule,
-  MatIconModule,
-  MatTableModule,
-  MatPaginatorModule,
-  MatCardModule,
-  MatDividerModule,
-  MatListModule,
-  MatSidenavModule,
-  MatProgressBarModule,
-  MatSnackBarModule,
-  MatBadgeModule,
-  MatChipsModule,
-  MatRippleModule
-} from '@angular/material';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatRippleModule } from '@angular/material/core';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatListModule } from '@angular/material/list';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTreeModule } from '@angular/material/tree';
+import { MatTableModule } from '@angular/material/table';
 
 // import {MatSidenavModule} from '@angular/material/sidenav';
 
@@ -26,11 +26,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { NgbModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import {APP_BASE_HREF} from '@angular/common';
+import { APP_BASE_HREF } from '@angular/common';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { L10nConfig, L10nLoader, TranslationModule, StorageStrategy, ProviderType, LogLevel } from 'angular-l10n';
-import { RouterModule, Routes } from '@angular/router';
+import { L10nTranslationModule, L10nIntlModule, L10nValidationModule, L10nRoutingModule, L10nLoader } from 'angular-l10n';
+import { l10nConfig, initL10n, AppStorage, HttpTranslationLoader, LocaleValidation } from './l10n-config';
+
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -53,14 +54,12 @@ import { KnowledgeBaseComponent } from './pages/knowledge-base/knowledge-base.co
 import { ModalDialogSignInComponent } from './dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
-import { UserProfileMenuComponent } from './pages/user-profile-menu/user-profile-menu.component';
 import { AboutComponent } from './pages/about/about.component';
 import { QuestProposalComponent } from './pages/quest-proposal/quest-proposal.component';
 import { LMarkdownEditorModule } from 'ngx-markdown-editor';
 import { AceModule } from 'ngx-ace-wrapper';
 import { ACE_CONFIG } from 'ngx-ace-wrapper';
 import { AceConfigInterface } from 'ngx-ace-wrapper';
-import hljs from 'highlight.js';
 import { ScoreboardComponent } from './pages/scoreboard/scoreboard.component';
 import { QuestsComponent } from './pages/quests/quests.component';
 import { QuestsBySubjectComponent } from './pages/quests-by-subject/quests-by-subject.component';
@@ -75,36 +74,18 @@ import { FhqJuryAdComponent } from './pages/fhq-jury-ad/fhq-jury-ad.component';
 import { SimplemdeModule } from 'ng2-simplemde';
 import { UserTokensComponent } from './pages/user-tokens/user-tokens.component';
 import { UserFavoritesUsefulLinksComponent } from './pages/user-favorites-useful-links/user-favorites-useful-links.component'
+import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
+import { UsefulLinkViewComponent } from './pages/useful-link-view/useful-link-view.component';
 
-/*import hljs from 'highlight.js/lib/highlight';
-import javascript from 'highlight.js/lib/languages/javascript';
-import typescript from 'highlight.js/lib/languages/typescript';
-hljs.registerLanguage('javascript', javascript);
-hljs.registerLanguage('typescript', typescript);*/
+export function getHighlightLanguages() {
+  return {
+    typescript: () => import('highlight.js/lib/languages/typescript'),
+    css: () => import('highlight.js/lib/languages/css'),
+    xml: () => import('highlight.js/lib/languages/xml')
+  };
+}
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
-};
-
-const l10nConfig: L10nConfig = {
-    logger: {
-        level: LogLevel.Warn
-    },
-    locale: {
-        languages: [
-            { code: 'en', dir: 'ltr' },
-            { code: 'it', dir: 'ltr' }
-        ],
-        language: 'en',
-        storage: StorageStrategy.Cookie
-    },
-    translation: {
-        providers: [
-            { type: ProviderType.Static, prefix: './assets/locale-' }
-        ],
-        caching: true,
-        composedKeySeparator: '.',
-        missingValue: 'No key',
-    }
 };
 
 @NgModule({
@@ -134,7 +115,6 @@ const l10nConfig: L10nConfig = {
     ScoreboardComponent,
     QuestsComponent,
     QuestsBySubjectComponent,
-    UserProfileMenuComponent,
     UserSecurityComponent,
     QuestComponent,
     ModalDialogQuestFeedbackComponent,
@@ -143,7 +123,8 @@ const l10nConfig: L10nConfig = {
     WelcomeComponent,
     FhqJuryAdComponent,
     UserTokensComponent,
-    UserFavoritesUsefulLinksComponent
+    UserFavoritesUsefulLinksComponent,
+    UsefulLinkViewComponent
   ],
   imports: [
     BrowserModule,
@@ -151,7 +132,16 @@ const l10nConfig: L10nConfig = {
     BrowserModule,
     NgbModule,
     HttpClientModule,
-    TranslationModule.forRoot(l10nConfig),
+    L10nTranslationModule.forRoot(
+      l10nConfig,
+      {
+          storage: AppStorage,
+          translationLoader: HttpTranslationLoader
+      }
+    ),
+    L10nIntlModule,
+    L10nValidationModule.forRoot({ validation: LocaleValidation }),
+    L10nRoutingModule.forRoot(),
     AppRoutingModule,
     OverlayModule,
     FormsModule,
@@ -161,9 +151,11 @@ const l10nConfig: L10nConfig = {
     BrowserAnimationsModule,
     NgxMdModule.forRoot(),
     SimplemdeModule.forRoot(),
+    HighlightModule,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSelectModule,
     MatIconModule,
     MatTableModule,
     MatPaginatorModule,
@@ -175,6 +167,7 @@ const l10nConfig: L10nConfig = {
     MatSnackBarModule,
     MatBadgeModule,
     MatChipsModule,
+    MatTreeModule,
     MatRippleModule
   ],
   exports: [
@@ -190,6 +183,7 @@ const l10nConfig: L10nConfig = {
     MatSidenavModule,
     MatProgressBarModule,
     MatSnackBarModule,
+    MatTreeModule,
     MatRippleModule
   ],
   providers: [
@@ -199,6 +193,16 @@ const l10nConfig: L10nConfig = {
     }, {
       provide: ACE_CONFIG,
       useValue: DEFAULT_ACE_CONFIG
+    }, {
+      provide: APP_INITIALIZER,
+      useFactory: initL10n,
+      deps: [L10nLoader],
+      multi: true
+    }, {
+      provide: HIGHLIGHT_OPTIONS,
+      useValue: {
+        languages: getHighlightLanguages()
+      }
     },
     NgbActiveModal
   ],
@@ -212,6 +216,6 @@ const l10nConfig: L10nConfig = {
 
 export class AppModule {
   constructor(public l10nLoader: L10nLoader) {
-    this.l10nLoader.load();
+    // this.l10nLoader.load();
   }
 }

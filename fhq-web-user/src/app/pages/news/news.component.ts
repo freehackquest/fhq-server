@@ -1,15 +1,17 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, ChangeDetectorRef, ElementRef, SecurityContext } from '@angular/core';
 import { SpinnerService } from '../../services/spinner.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/throttleTime';
-import 'rxjs/add/observable/fromEvent';
-import { Subscription } from 'rxjs';
+import { Router, ActivatedRoute } from '@angular/router';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
+// import 'rxjs/add/operator/throttleTime';
+// import 'rxjs/add/observable/fromEvent';
+
 import { DomSanitizer } from '@angular/platform-browser';
 import { escape } from 'lodash';
 import { FhqService } from '../../services/fhq.service';
 import { FormControl, Validators } from '@angular/forms';
-import { PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
+import { Location } from '@angular/common';
 
 declare var _: any;
 
@@ -22,7 +24,7 @@ export class NewsComponent implements OnInit {
   @Output() loading = new EventEmitter<boolean>();
   searchValue: String = '';
   searchControl = new FormControl('');
-  formCtrlSub: Subscription;
+  // formCtrlSub = new Subject<string>();
 
   pageEvent: PageEvent;
   pageIndex: number = 0;
@@ -45,34 +47,45 @@ export class NewsComponent implements OnInit {
     private _router: Router,
     private _sanitized: DomSanitizer,
     private _fhq: FhqService,
-    // private _el: ElementRef,
+    private _location: Location,
+    private _activatedRoute: ActivatedRoute,
   ) { }
 
   onSearchBoxValueChange() {
-    this.pageIndex = 1;
+    this.pageIndex = 0;
   }
 
   ngOnInit() {
-    this._route.params.subscribe( (params) => {
-      if (!params['id']) {
-        this._router.navigate(['/news', 0]);
-        return;
+    this._activatedRoute.queryParams.subscribe(params => {
+      if (params["search"]) {
+        this.searchValue = params["search"];
       }
-      this.pageIndex = parseInt(params['id'], 10);
+
+      if (params["page_index"]) {
+        this.pageIndex = parseInt(params["page_index"],0);
+      }
+
+      if (params["page_size"]) {
+        this.pageSize = parseInt(params["page_size"],0);
+      }
+      /*this.subscription = this._fhq.changedState
+        .subscribe(() => this.updatePage());*/
       this.loadData();
     });
 
-    // debounce keystroke events
-    this.formCtrlSub = this.searchControl.valueChanges
-      .debounceTime(1000)
-      .subscribe((newValue) => {
-        this.searchValue = newValue
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(1000),
+        distinctUntilChanged(),
+      )
+      .subscribe((newValue): void => {
+        this.searchValue = newValue;
         this.pageIndex = 0;
         console.log(newValue);
         this.loadData();
       });
 
-      this.subscriptionOnNotify = this._fhq.onNotify
+    this.subscriptionOnNotify = this._fhq.onNotify
       .subscribe(() => this.loadData());
   }
   
@@ -106,16 +119,66 @@ export class NewsComponent implements OnInit {
 
   successResponse(r: any) {
     console.log(r);
+    let newQueryParams = {}
+    if (this.searchValue != "") {
+      newQueryParams["search"] = this.searchValue;
+    }
+    if (this.pageIndex != 0) {
+      newQueryParams["page_index"] = this.pageIndex;
+    }
+    if (this.pageSize != this.pageSizeOptions[0]) {
+      newQueryParams["page_size"] = this.pageSize;
+    }
+    
+    const url = this._router.createUrlTree([], {
+      relativeTo: this._activatedRoute, 
+      queryParams: newQueryParams
+    }).toString()
+    this._location.go(url);
+
     this._spinnerService.hide();
     this.length = r.count
     this.dataList = []
     r.data.forEach((el: any) => {
       el.dt_formated = new Date(el.dt + "Z")
+      el["links"] = [];
       el.html_message = escape(el.message)
       // el['html_message'] = el['html_message'].replace(/\[user#(\d+)\]/g, '<a href="/user/$1">[user#$1]</a>')
       el.html_message = el.html_message.replace(/\[quest#(\d+)\][ ]+\(([\w\u0430-\u044f -]+)\)/ig, 'quest <a href="../quest/$1" class="badge badge-light" target="_blank">$2</a>')
+      if (el.meta) {
+        if (el.meta["useful_link"]) {
+          const ul = el.meta["useful_link"];
+          if (ul["action"] == "added" || ul["action"] == "updated") {
+            el["links"].push({
+              "routeLink": "/useful-links/" + ul["id"],
+              "text": ul["url"]
+            });
+          }
+        }
+
+        if (el.meta["quest"]) {
+          const quest = el.meta["quest"];
+          if (quest["action"] == "added" || quest["action"] == "updated" || quest["action"] == "passed") {
+            el["links"].push({
+              "routeLink": "/quest/" + quest["id"],
+              "text": quest["name"]
+            });
+          }
+        }
+
+        if (el.meta["user"]) {
+          const u = el.meta["user"];
+          if (u["action"] == "added" || u["action"] == "updated") {
+            el["links"].push({
+              "routeLink": "/user/" + u["id"],
+              "text": u["nick"]
+            });
+          }
+        }
+      }
       this.dataList.push(el);
     });
+    console.log(this.dataList);
     this._cdr.detectChanges();
   }
 

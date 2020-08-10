@@ -1,3 +1,146 @@
+<mat-drawer-container class="main-container">
+  <mat-drawer mode="side" class="main-left-menu" opened>
+    <mat-list>
+      <!-- user menu -->
+      <mat-list-item *ngIf="!_fhq.isAuthorized">
+        <button mat-raised-button color="primary" class="main-left-menu-item" (click)="openDialogSignIn();" l10nTranslate>signin</button>
+      </mat-list-item>
+      
+      <mat-list-item *ngIf="_fhq.isAuthorized">
+        <button mat-button (click)="toggleUserProfileMenu()" class="main-left-menu-item">
+          <mat-icon>
+            {{ !profileMenuExpanded ? 'keyboard_arrow_right' : 'keyboard_arrow_down' }}
+          </mat-icon>
+            <img class="user-logo" src="../{{ _fhq.userdata.logo }}">
+            {{ _fhq.userdata.nick }}
+        </button>
+      </mat-list-item>
+
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <button routerLink="/user-profile"
+          *ngIf="userRole == 'user' || userRole == 'admin'"
+          [disabled]="urlPath === 'user-profile' ? '' : null"
+          mat-raised-button
+          class="main-left-menu-item"
+          l10nTranslate>profile
+        </button>
+      </mat-list-item>
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <button routerLink="/user-security"
+          *ngIf="userRole == 'user' || userRole == 'admin'"
+          mat-raised-button
+          class="main-left-menu-item"
+          [disabled]="urlPath === 'user-security' ? '' : null"
+          l10nTranslate>security</button>
+      </mat-list-item>
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <button routerLink="/user-tokens"
+          *ngIf="userRole == 'user' || userRole == 'admin'"
+          mat-raised-button
+          [disabled]="urlPath === 'user-tokens' ? '' : null"
+          class="main-left-menu-item"
+          l10nTranslate>
+          user-tokens
+        </button>
+      </mat-list-item>
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <button routerLink="/user-skills"
+          *ngIf="userRole == 'user' || userRole == 'admin'"
+          mat-raised-button
+          [disabled]="urlPath === 'user-skills' ? '' : null"
+          class="main-left-menu-item"
+          l10nTranslate>
+          skills
+        </button>
+      </mat-list-item>
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <button routerLink="/user-favorites-useful-links"
+          *ngIf="userRole == 'user' || userRole == 'admin'"
+          [disabled]="urlPath === 'user-favorites-useful-links' ? '' : null"
+          mat-raised-button
+          class="main-left-menu-item"
+          l10nTranslate>
+          myFavoritesUsefulLinks
+        </button>
+      </mat-list-item>
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <button (click)="userSignout()"
+          *ngIf="userRole == 'user' || userRole == 'admin'"
+          mat-raised-button
+          class="main-left-menu-item"
+          color="warn"
+          l10nTranslate>
+            signout
+        </button>
+      </mat-list-item>
+
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <button mat-button 
+          class="main-left-menu-item" 
+          [disabled]="urlPath === 'quests' ? '' : null"
+          routerLink="/quests" l10nTranslate>
+          pageQuests
+        </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button class="main-left-menu-item" routerLink="/scoreboard" l10nTranslate>pageScoreboard</button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button class="main-left-menu-item" routerLink="/news" l10nTranslate> pageNews </button>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <button mat-button class="main-left-menu-item" routerLink="/" l10nTranslate> pageWelcome </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button class="main-left-menu-item" routerLink="/about" l10nTranslate> pageAbout </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button class="main-left-menu-item" routerLink="/donate" l10nTranslate> pageDonate </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button class="main-left-menu-item" routerLink="/map-activity" l10nTranslate> mapActivity </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button class="main-left-menu-item" routerLink="/chat" l10nTranslate> chatPage </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button class="main-left-menu-item" routerLink="/automation-ussr" l10nTranslate> automationUssr </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button class="main-left-menu-item" routerLink="/useful-links" l10nTranslate> usefulLinks </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button class="main-left-menu-item" routerLink="/games" l10nTranslate> gamesListPage </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button class="main-left-menu-item" routerLink="/fhq-jury-ad" l10nTranslate> pageJuryAttackDefence </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button class="main-left-menu-item" routerLink="/knowledge-base" l10nTranslate> knowledgeBase </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button class="main-left-menu-item" routerLink="/server-api"> FreeHackQuest API </button>
+      </mat-list-item>
+      <!-- mat-list-item>
+        <button mat-button class="main-left-menu-item" onclick="fhq.ui.playStopMusic()" routerLink="/server-api"> Play Sound </button>
+      </mat-list-item -->
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <button mat-button class="main-left-menu-item" routerLink="/feedback" l10nTranslate>feedbackAdd</button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button class="main-left-menu-item" routerLink="/quest-proposal" l10nTranslate>proposalQuest</button>
+      </mat-list-item>
+     </mat-list>
+  </mat-drawer>
+  <mat-drawer-content class="main-content">
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container>
+
+
 <nav class="navbar navbar-expand-sm fixed-top navbar-dark bg-dark">
   <!-- nav class="navbar fixed-top navbar-expand-sm navbar-dark bg-dark" -->
       
@@ -15,69 +158,20 @@
   <!-- Links -->
   <div class="collapse navbar-collapse justify-content-end" id="nav-content">   
     <ul class="navbar-nav">
-        <li class="nav-item">
-            <a class="nav-link" routerLink="/quests" l10nTranslate>pageQuests</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" routerLink="/scoreboard" l10nTranslate>pageScoreboard</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" (click)="openPageNews()" l10nTranslate>pageNews</a>
-        </li>
-        <li class="nav-item dropdown" id="btnmenu_other">
-            <div class="nav-link dropdown-toggle" data-toggle="dropdown" id="Preview" href="#" role="button" aria-haspopup="true" aria-expanded="false" l10nTranslate>menuMore</div>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="Preview">
-                <a class="dropdown-item" routerLink="/" l10nTranslate>pageWelcome</a>
-                <a class="dropdown-item" routerLink="/about" l10nTranslate>pageAbout</a>
-                <a class="dropdown-item" routerLink="/donate" l10nTranslate>pageDonate</a>
-                <a class="dropdown-item" routerLink="/map-activity" l10nTranslate>mapActivity</a>
-                <a class="dropdown-item" routerLink="/chat" l10nTranslate>chatPage</a>
-                <a class="dropdown-item" routerLink="/automation-ussr" l10nTranslate>automationUssr</a>
-                <a class="dropdown-item" routerLink="/useful-links" l10nTranslate>usefulLinks</a>
-                <a class="dropdown-item" routerLink="/games" l10nTranslate>gamesListPage</a>
-                <a class="dropdown-item" routerLink="/fhq-jury-ad" l10nTranslate>pageJuryAttackDefence</a>
-                <!-- div class="dropdown-item" id="btnmenu_tools" onclick="fhq.ui.loadTools();">Tools</div -->
-                <a class="dropdown-item" routerLink="/knowledge-base" l10nTranslate>knowledgeBase</a>
-                <a class="dropdown-item" routerLink="/server-api">FreeHackQuest API</a>
-                <!-- a class="dropdown-item" onclick="fhq.ui.playStopMusic()">Play Sound</a -->
-
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" routerLink="/feedback" l10nTranslate>feedbackAdd</a>
-                <a class="dropdown-item" routerLink="/quest-proposal" l10nTranslate>proposalQuest</a>
-            </div>
-        </li>
-
-        <li class="nav-item" *ngIf="_fhq.isAuthorized">
-            <div class="nav-link"
-                href="#"
-                role="button"
-                routerLink="/user-profile"
-            >
-                <img class="user-logo" src="../{{ _fhq.userdata.logo }}">
-                <div class="d-inline-block">{{ _fhq.userdata.nick }}</div>
-            </div>
-        </li>
-        <li class="nav-item" *ngIf="!_fhq.isAuthorized">
-            <a class="nav-link btn btn-primary" (click)="openDialogSignIn();" l10nTranslate>signin</a>
-        </li>
 
         <li class="nav-item dropdown" id="btnmenu_other">
             <div class="nav-link dropdown-toggle" data-toggle="dropdown" id="Preview" href="#" role="button" aria-haspopup="true" style="cursor: pointer" aria-expanded="false">
                 <img height=25px [src]="menuLangIcon"/>
             </div>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="Preview">
-                <div class="dropdown-item" style="cursor: pointer" (click)="selectLanguage('en');"><img height=25px src="assets/img/lang_en.png"> English</div>
-                <div class="dropdown-item" style="cursor: pointer" (click)="selectLanguage('ru');"><img height=25px src="assets/img/lang_ru.png"> Русский</div>
-                <div class="dropdown-item" style="cursor: pointer" (click)="selectLanguage('de');"><img height=25px src="assets/img/lang_de.png"> Deutch</div>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="">
+              <div class="dropdown-item" *ngFor="let item of schema" style="cursor: pointer" (click)="setLocale(item.locale)">
+                <img height=25px src="assets/img/lang_{{ item.locale.language }}.png"> {{ item.text }}
+              </div>
             </div>
         </li>
     </ul>
   </div>
 </nav>
-
-<div class="container fhq-content">
-    <router-outlet></router-outlet>
-</div>
 
 <!-- Footer -->
 <footer class="page-footer font-small bg-dark pt-4">
@@ -143,10 +237,10 @@
                 <a href="https://telegram.me/freehackquest">Telegram</a>
               </li>
               <li>
-                <iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" class="twitter-follow-button twitter-follow-button-rendered" title="Twitter Follow Button" src="https://platform.twitter.com/widgets/follow_button.d753e00c3e838c1b2558149bd3f6ecb8.en.html#dnt=false&amp;id=twitter-widget-0&amp;lang=en&amp;screen_name=freehackquest&amp;show_count=false&amp;show_screen_name=true&amp;size=m&amp;time=1559845644982" style="position: static; visibility: visible; width: 147px; height: 20px;" data-screen-name="freehackquest"></iframe>
+                <a href="https://twitter.com/freehackquest/">Twitter</a>
               </li>
               <li>
-                <div class="g-ytsubscribe" data-channelid="UCS0nOltkP5YXxWggoNVE3Gw" data-layout="default" data-count="default"></div>
+                <a href="https://www.youtube.com/channel/UCS0nOltkP5YXxWggoNVE3Gw/videos?view_as=subscriber">Youtube</a>
               </li>
               <li>
                 <a href="https://hub.docker.com/r/freehackquest/fhq-server">Docker</a>

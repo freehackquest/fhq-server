@@ -4,6 +4,7 @@
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <employ_notify.h>
+#include <runtasks.h>
 
 /*********************************************
  * Useful Links List
@@ -169,6 +170,7 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
         jsonLink["description"] = record.value("description").toString().toHtmlEscaped().toStdString();
         jsonLink["author"] = record.value("message").toString().toHtmlEscaped().toStdString();
         jsonLink["user_favorites"] = record.value("user_favorites").toInt();
+        jsonLink["user_comments"] = record.value("user_comments").toInt();
         jsonLink["user_clicks"] = record.value("user_clicks").toInt();
         jsonLink["dt"] = record.value("dt").toString().toStdString();
         if (record.value("userid").toInt() == nUserId && nUserId != 0) {
@@ -240,6 +242,7 @@ void CmdHandlerUsefulLinksRetrieve::handle(ModelRequest *pRequest) {
         jsonLink["description"] = record.value("description").toString().toHtmlEscaped().toStdString();
         jsonLink["author"] = record.value("message").toString().toHtmlEscaped().toStdString();
         jsonLink["user_favorites"] = record.value("user_favorites").toInt();
+        jsonLink["user_comments"] = record.value("user_comments").toInt();
         jsonLink["user_clicks"] = record.value("user_clicks").toInt();
         jsonLink["dt"] = record.value("dt").toString().toStdString();
         if (record.value("userid").toInt() == nUserId && nUserId != 0) {
@@ -316,11 +319,26 @@ void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
+
+    int nRowId = query.lastInsertId().toInt();
+
     nlohmann::json jsonResult;
-    jsonResult["id"] = query.lastInsertId().toInt();
+    jsonResult["id"] = nRowId;
 
     nlohmann::json jsonResponse;
     jsonResponse["data"] = jsonResult;
+
+    EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
+    nlohmann::json jsonMeta;
+    jsonMeta["useful_link"] = nlohmann::json();
+    jsonMeta["useful_link"]["id"] = nRowId;
+    jsonMeta["useful_link"]["url"] = sUrl;
+    jsonMeta["useful_link"]["action"] = "added";
+    pNotify->notifyInfo(
+        "useful_links",
+        "Added [useful_link#" + std::to_string(nRowId) + "] " + sUrl + "",
+        jsonMeta
+    );
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -387,6 +405,17 @@ void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest) {
         return;
     }
 
+    EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
+    nlohmann::json jsonMeta;
+    jsonMeta["useful_link"] = nlohmann::json();
+    jsonMeta["useful_link"]["id"] = nUsefulLinkId;
+    jsonMeta["useful_link"]["action"] = "removed";
+    pNotify->notifyInfo(
+        "useful_links",
+        "Removed [useful_link#" + std::to_string(nUsefulLinkId) + "]",
+        jsonMeta
+    );
+
     nlohmann::json jsonResponse;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -436,6 +465,18 @@ void CmdHandlerUsefulLinksUpdate::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
         return;
     }
+
+    EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
+    nlohmann::json jsonMeta;
+    jsonMeta["useful_link"] = nlohmann::json();
+    jsonMeta["useful_link"]["id"] = nUsefulLinkId;
+    jsonMeta["useful_link"]["url"] = sUrl;
+    jsonMeta["useful_link"]["action"] = "updated";
+    pNotify->notifyInfo(
+        "useful_links",
+        "Updated [useful_link#" + std::to_string(nUsefulLinkId) + "] " + sUrl + "",
+        jsonMeta
+    );
 
     nlohmann::json jsonResponse;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -660,7 +701,7 @@ CmdHandlerUsefulLinksClicked::CmdHandlerUsefulLinksClicked()
     
     setActivatedFromVersion("0.2.29");
 
-    setAccessUnauthorized(false);
+    setAccessUnauthorized(true);
     setAccessUser(true);
     setAccessAdmin(true);
 
@@ -703,7 +744,7 @@ CmdHandlerUsefulLinksCommentList::CmdHandlerUsefulLinksCommentList()
     
     setActivatedFromVersion("0.2.29");
 
-    setAccessUnauthorized(false);
+    setAccessUnauthorized(true);
     setAccessUser(true);
     setAccessAdmin(true);
 
@@ -714,7 +755,48 @@ CmdHandlerUsefulLinksCommentList::CmdHandlerUsefulLinksCommentList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksCommentList::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+
+    int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
+
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+
+    
+    query.prepare(""
+        " SELECT ulc.*, u.nick, u.role, u.logo, u.university "
+        " FROM useful_links_comments ulc "
+        " INNER JOIN users u ON u.id = ulc.userid "
+        " WHERE usefullinkid = :usefullinkid "
+        " ORDER BY dt DESC"
+    );
+    query.bindValue(":usefullinkid", nUsefulLinkId);
+
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    nlohmann::json jsonData = nlohmann::json::array();
+    while (query.next()) {
+        QSqlRecord record = query.record();
+        nlohmann::json jsonComment;
+        jsonComment["id"] = record.value("id").toInt();
+        jsonComment["comment"] = record.value("comment").toString().toHtmlEscaped().toStdString();
+        jsonComment["dt"] = record.value("dt").toString().toStdString();
+        nlohmann::json jsonCommentUser;
+        jsonCommentUser["role"] = record.value("role").toString().toStdString();
+        jsonCommentUser["nick"] = record.value("nick").toString().toHtmlEscaped().toStdString();
+        jsonCommentUser["logo"] = record.value("logo").toString().toStdString();
+        jsonCommentUser["university"] = record.value("university").toString().toHtmlEscaped().toStdString();
+        jsonComment["user"] = jsonCommentUser;
+
+        jsonData.push_back(jsonComment);
+    }
+    nlohmann::json jsonResponse;
+    jsonResponse["data"] = jsonData;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -739,7 +821,69 @@ CmdHandlerUsefulLinksCommentAdd::CmdHandlerUsefulLinksCommentAdd()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksCommentAdd::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+    int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
+    std::string sCommentValue = pRequest->getInputString("comment", "");
+    int nUserId = pRequest->getUserSession()->userid();
+    sCommentValue = WsjcppCore::trim(sCommentValue);
+    if (sCommentValue == "") {
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "comment could not be empty"));
+        return;
+    }
+
+    if (sCommentValue.length() > 1024) {
+        pRequest->sendMessageError(cmd(), WsjcppError(400, "comment must be less then < 1024"));
+        return;
+    }
+
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+
+    // TODO redesign dt to long
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+    query.prepare("INSERT INTO useful_links_comments(usefullinkid, userid, comment, dt) VALUES(:useful_link_id, :userid, :comment, NOW())");
+    query.bindValue(":useful_link_id", nUsefulLinkId);
+    query.bindValue(":userid", nUserId);
+    query.bindValue(":comment", QString::fromStdString(sCommentValue));
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+    
+    query.prepare("UPDATE useful_links ul SET user_comments = (SELECT COUNT(*) FROM useful_links_comments WHERE usefullinkid = ul.id) WHERE ul.id = :useful_link_id");
+    query.bindValue(":useful_link_id", nUsefulLinkId);
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
+    nlohmann::json jsonMeta;
+    jsonMeta["useful_link"] = nlohmann::json();
+    jsonMeta["useful_link"]["id"] = nUsefulLinkId;
+    jsonMeta["useful_link"]["url"] = "link"; // TODO add url
+    jsonMeta["useful_link"]["action"] = "comment_added";
+    jsonMeta["user"] = nlohmann::json();
+    jsonMeta["user"]["id"] = nUserId;
+    jsonMeta["user"]["nick"] = pRequest->getUserSession()->nick().toStdString();
+
+    std::string sMessage = "User added comment to [useful_link#" + std::to_string(nUsefulLinkId) + "]";
+
+    pNotify->notifyInfo("useful_links", sMessage, jsonMeta);
+
+    
+    // TODO add url
+    std::string sBody = "[user#" + std::to_string(nUserId) + "] "
+        + pRequest->getUserSession()->nick().toStdString() + " added comment to "
+        "[useful_link#" + std::to_string(nUsefulLinkId) + "] : \n " + sCommentValue;
+
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+    std::string sMailToAdmin = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();
+
+    RunTasks::MailSend(sMailToAdmin, sMessage, sBody);
+
+    nlohmann::json jsonResponse;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -763,7 +907,51 @@ CmdHandlerUsefulLinksCommentDelete::CmdHandlerUsefulLinksCommentDelete()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksCommentDelete::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+
+    int nUsefulLinkCommentId = pRequest->getInputInteger("useful_link_comment_id", 0);
+
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+
+    // TODO redesign database like Json = findInTable("useful_links_comments").where("id", nUsefulLinkCommentId);
+
+    QSqlDatabase db = *(pDatabase->database());
+    QSqlQuery query(db);
+
+    query.prepare("SELECT * FROM useful_links_comments WHERE id = :comment_id");
+    query.bindValue(":comment_id", nUsefulLinkCommentId);
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    int nUsefulLinkId = 0;
+    if (query.next()) {
+        QSqlRecord record = query.record();
+        nUsefulLinkId = record.value("usefullinkid").toInt();
+    } else {
+        pRequest->sendMessageError(cmd(), WsjcppError(404, "COMMENT_NOT_FOUND"));
+        return;
+    }
+
+    query.prepare("DELETE FROM useful_links_comments WHERE id = :comment_id");
+    query.bindValue(":comment_id", nUsefulLinkCommentId);
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    // update count of comments
+    query.prepare("UPDATE useful_links ul SET user_comments = (SELECT COUNT(*) FROM useful_links_comments WHERE usefullinkid = ul.id) WHERE ul.id = :useful_link_id");
+    query.bindValue(":useful_link_id", nUsefulLinkId);
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        return;
+    }
+
+    // TODO add notification about removed comments
+
+    nlohmann::json jsonResponse;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 

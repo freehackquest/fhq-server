@@ -2,6 +2,16 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SpinnerService } from '../../services/spinner.service';
 import { FhqService } from 'src/app/services/fhq.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatTableDataSource } from '@angular/material/table';
+
+export interface QuestInfoElement {
+  id: number;
+  subject: string;
+  score: number;
+  name: string;
+  solved: number;
+  status: string;
+}
 
 @Component({
   selector: 'app-quests-by-subject',
@@ -10,10 +20,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class QuestsBySubjectComponent implements OnInit {
   errorMessage: string = null;
-  dataList: Array<any> = [];
   subject: string = "";
   subscription: any = null;
   count: number = 0;
+  questsSubhjectsData: Array<QuestInfoElement> = [];
+  dataSource = new MatTableDataSource<QuestInfoElement>();
+  displayedColumns: string[] = ['usefulLinkData', 'questScore', 'questName', 'questSolved', 'questStatus'];
 
   constructor(
     private _spinner: SpinnerService,
@@ -58,13 +70,20 @@ export class QuestsBySubjectComponent implements OnInit {
     console.log(r);
     this._spinner.hide();
 
-    this.dataList = []
+    this.questsSubhjectsData = []
     r.data.forEach((el: any) => {  
-      this.dataList.push(el);
+      this.questsSubhjectsData.push({
+        id: el['questid'],
+        subject: el['subject'],
+        score: el['score'],
+        name: el['name'],
+        solved: el['solved'],
+        status: el['status'],
+      })
     });
-    this.count = this.dataList.length;
+    this.count = this.questsSubhjectsData.length;
     
-    this.dataList.sort((a:any, b: any) => {
+    this.questsSubhjectsData.sort((a:any, b: any) => {
       if (a.status === "open" && b.status === "completed") {
         return -1;
       }
@@ -74,6 +93,7 @@ export class QuestsBySubjectComponent implements OnInit {
       return b.solved - a.solved;
     });
 
+    this.dataSource = new MatTableDataSource<QuestInfoElement>(this.questsSubhjectsData);
     this._cdr.detectChanges();
   }
 
@@ -82,9 +102,5 @@ export class QuestsBySubjectComponent implements OnInit {
     this.errorMessage = err.error;
     this._cdr.detectChanges();
     console.error(err);
-  }
-
-  openQuest(questid: number) {
-    window.open("/?quest=" + questid, "_blank");
   }
 }

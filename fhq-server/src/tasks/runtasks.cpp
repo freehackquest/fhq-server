@@ -12,9 +12,14 @@
 #include <QThreadPool>
 #include <lxd_async_operation_task.h>
 
-void RunTasks::AddPublicEvents(const std::string &type, const std::string &message) {
-    AddPublicEventsTask *pAddPublicEventsTask = new AddPublicEventsTask(type, message);
+void RunTasks::AddPublicEvents(
+    const std::string &sType,
+    const std::string &sMessage,
+    const nlohmann::json &jsonMeta
+) {
+    AddPublicEventsTask *pAddPublicEventsTask = new AddPublicEventsTask(sType, sMessage, jsonMeta);
     QThreadPool::globalInstance()->start(pAddPublicEventsTask);
+    // TODO memory leak
 }
 
 void RunTasks::UpdateMaxScoreGame(int gameid) {

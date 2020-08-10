@@ -19,33 +19,44 @@ fhq.pages['useful_links'] = function(){
     $('#page_content').html('');
     fhq.showLoader();
     
-    var onpage = 5;
-    if(fhq.containsPageParam("onpage")){
-        onpage = parseInt(fhq.pageParams['onpage'], 10);
+    var onpage = 10;
+    if (fhq.containsPageParam("page_size")) {
+        onpage = parseInt(fhq.pageParams['page_size'], 10);
     }
 
-    var page = 0;
-    if(fhq.containsPageParam("page")){
-        page = parseInt(fhq.pageParams['page'], 10);
+    var page_index = 0;
+    if(fhq.containsPageParam("page_index")){
+        page_index = parseInt(fhq.pageParams['page_index'], 10);
     }
     
     var el = $("#page_content");
     el.html('Loading...')
     
-    window.fhq.changeLocationState({'useful_links': '', 'page_size': onpage, 'page_index': page});
+    window.fhq.changeLocationState({'useful_links': '', 'page_size': onpage, 'page_index': page_index});
 
-    fhq.ws.useful_links_list({'page_size': onpage, 'page_index': page, 'filter': ''}).done(function(r){
+    fhq.ws.useful_links_list({'page_size': onpage, 'page_index': page_index, 'filter': ''}).done(function(r){
         fhq.hideLoader();
         console.log(r);
         el.html('');
-        
-        el.append('<button id="useful_links_add" class="btn btn-secondary">Add</button>');
+        el.append('<button id="useful_links_add" class="swa-button">Create a new one</button>');
         $('#useful_links_add').unbind().bind('click', fhq.pages['useful_links_add']);
         el.append('<hr>');
+        el.append('<input id="search" placeholder="search..." value=""></input><br>');
 
-        el.append(fhq.paginator(0, r.data.total, r.data.page_size, r.page_index));
+        var pg = new SwaPaginator(0, r.data.total, r.data.page_size, r.data.page_index);
+        el.append(pg.getHtml());
+        pg.bindPrev(function() {
+            window.fhq.changeLocationState({'useful_links': '', 'page_size': onpage, 'page_index': page_index - 1});
+            fhq.pages['useful_links']();
+        });
+
+        pg.bindNext(function() {
+            window.fhq.changeLocationState({'useful_links': '', 'page_size': onpage, 'page_index': page_index + 1});
+            fhq.pages['useful_links']();
+        });
+        
         el.append(
-            `<table class="table table-striped">
+            `<table class="swa-table">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -65,8 +76,8 @@ fhq.pages['useful_links'] = function(){
                     <td>` + ul.id + `</td>
                     <td>` + ul.url + `<br>` + ul.description + `</td>
                     <td>
-                        <div class="btn btn-primary useful-link-edit" useful_link_id="` + ul.id + `">Edit</div>
-                        <div class="btn btn-secondary useful-link-remove" useful_link_id="` + ul.id + `">Delete</div>
+                        <div class="swa-button useful-link-edit" useful_link_id="` + ul.id + `">Edit</div>
+                        <div class="swa-button useful-link-remove" useful_link_id="` + ul.id + `">Delete</div>
                     </td>
                 </tr>`
             );
@@ -87,8 +98,8 @@ fhq.pages['useful_links'] = function(){
                 '<div class=" alert alert-danger" style="display: none" id="useful_link_delete_error"></div>'
             );
             $('#modalInfoButtons').html(''
-                + '<button type="button" class="btn btn-secondary" id="useful_link_delete_btn" useful_link_id="' + useful_link_id + '" onclick="fhq.usefulLinkDelete(this);">Delete</button> '
-                + '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'
+                + '<button type="button" class="swa-button" id="useful_link_delete_btn" useful_link_id="' + useful_link_id + '" onclick="fhq.usefulLinkDelete(this);">Delete</button> '
+                + '<button type="button" class="swa-button" data-dismiss="modal">Close</button>'
             );
             $('#modalInfo').modal('show');
         });
@@ -183,8 +194,8 @@ fhq.pages['useful_links_add'] = function(){
         + '            <div class="form-group row">'
         + '                <label class="col-sm-2 col-form-label"></label>'
         + '             <div class="col-sm-10">'
-        + '                    <div class="btn btn-secondary" onclick="fhq.usefulLinksCreateAndNew();">Create && New</div>'
-        + '                    <div class="btn btn-secondary" onclick="fhq.usefulLinksCreateAndEdit();">Create && Edit</div>'
+        + '                    <div class="swa-button" onclick="fhq.usefulLinksCreateAndNew();">Create && New</div>'
+        + '                    <div class="swa-button" onclick="fhq.usefulLinksCreateAndEdit();">Create && Edit</div>'
         + '                </div>'
         + '            </div>'
         + '            <div class="form-group row" id="error_info" style="display: none">'
@@ -251,59 +262,40 @@ fhq.pages['useful_links_edit'] = function(useful_link_id){
     var el = $('#page_content');
     fhq.hideLoader();
     el.html(''
-        + '<div class="card">'
-        + '     <div class="card-header">Update useful link</div>'
-        + '     <div class="card-body">'
-        + '         <div class="form-group row">'
-        + '             <label for="mail_to" class="col-sm-2 col-form-label">Link</label>'
-        + '          <div class="col-sm-10">'
-        + '                 <input type="email" class="form-control" value="" id="useful_link_url">'
-        + '             </div>'
-        + '         </div>'
-        + '         <div class="form-group row">'
-        + '             <label for="mail_body" class="col-sm-2 col-form-label">Description</label>'
-        + '          <div class="col-sm-10">'
-        + '                 <textarea class="form-control" style="height: 220px;" id="useful_link_description"></textarea>'
-        + '             </div>'
-        + '         </div>'
-        + '         <div class="form-group row">'
-        + '             <label class="col-sm-2 col-form-label"></label>'
-        + '          <div class="col-sm-10">'
-        + '                 <div class="btn btn-secondary" onclick="fhq.usefulLinksUpdate(' + useful_link_id + ');">Update</div>'
-        + '                 <div class="btn btn-secondary" onclick="fhq.usefulLinksUpdateAndClose(' + useful_link_id + ');">Update && Close</div>'
-        + '             </div>'
-        + '         </div>'
-        + '         <div class="form-group row" id="error_info" style="display: none">'
-        + '             <label class="col-sm-2 col-form-label"></label>'
-        + '          <div class="col-sm-10">'
-        + '                 <div class="alert alert-danger"></div>'
-        + '             </div>'
-        + '         </div>'
-        + '     </div>'
-        + '</div>'
+        + '<h3>Update useful link</h3>'
+        + 'Link: <br/> <input type="text" value="" style="width: 100%" id="useful_link_url"><br/><br/>'
+        + 'Description: <br/><textarea style="height: 220px; width: 100%" id="useful_link_description"></textarea><br/><br/>'
+        + '<div class="swa-button" onclick="fhq.usefulLinksUpdate(' + useful_link_id + ');">Update</div> '
+        + '<div class="swa-button" onclick="fhq.usefulLinksUpdateAndClose(' + useful_link_id + ');">Update && Close</div>'
+        + '<div class="swa-error-alert" id="error_info" style="display: none">Some error</div>'
         + '<hr>'
-        + '<h2>TAGS:</h2><br>'
-        + '<div id="useful_links_tags"></div><br><br>'
-        + '<input id="useful_links_addtag_value" type="text" value=""/>'
-        + '<button class="btn btn-default" id="useful_links_addtag_btn">Add</button>'
-        + '<div class="alert alert-danger" style="display: none" id="useful_links_addtag_error"></div>'
+        + '<h3>TAGS:</h3><br>'
+        + '<div class="swa-tag-list" id="useful_links_tags"></div><br><br>'
+        + '<input id="useful_links_addtag_value" type="text" placeholder="new tag name" value=""/> '
+        + '<div class="swa-error-alert" style="display: none" id="useful_links_addtag_error"></div>'
+        + '<hr>'
+        + '<h3>COMMENTS:</h3><br>'
+        + '<input type="text" value="" style="width: 100%" placeholder="Add new comment..." id="useful_link_new_comment_text"><br/><hr/>'
+        + '<div id="useful_links_comments"></div>'
         + '<hr>'
     );
 
-    $('#useful_links_addtag_btn').unbind().bind('click', function() {
-        $('#useful_links_addtag_error').hide();
-        fhq.ws.useful_links_tag_add({
-            "useful_link_id": useful_link_id,
-            "tag": $('#useful_links_addtag_value').val(),
-        }).done(function(r){
-            console.log(r)
-            $('#useful_links_addtag_value').val("")
-            fhq.pages['useful_links_edit'](useful_link_id);
-        }).fail(function(err) {
-            console.log(err)
-            $('#useful_links_addtag_error').html(err.error);
-            $('#useful_links_addtag_error').show();
-        })
+    $('#useful_links_addtag_value').unbind().bind('keypress', function(e) {
+        if (e.which == 13) {
+            $('#useful_links_addtag_error').hide();
+            fhq.ws.useful_links_tag_add({
+                "useful_link_id": useful_link_id,
+                "tag": $('#useful_links_addtag_value').val(),
+            }).done(function(r){
+                console.log(r)
+                $('#useful_links_addtag_value').val("")
+                fhq.pages['useful_links_edit'](useful_link_id);
+            }).fail(function(err) {
+                console.log(err)
+                $('#useful_links_addtag_error').html(err.error);
+                $('#useful_links_addtag_error').show();
+            })
+        }
     })
 
     function useful_link_tag_remove(e) {
@@ -321,6 +313,24 @@ fhq.pages['useful_links_edit'] = function(useful_link_id){
         })
     }
 
+    
+    $('#useful_link_new_comment_text').unbind().bind('keypress', function(e) {
+        if (e.which == 13) {
+            var val = $('#useful_link_new_comment_text').val();
+            fhq.ws.useful_links_comment_add({
+                "useful_link_id": useful_link_id,
+                "comment": val,
+            }).done(function(r){
+                console.log(r)
+                fhq.pages['useful_links_edit'](useful_link_id);
+            }).fail(function(err) {
+                console.log(err)
+                $('#useful_links_addtag_error').html(err.error);
+                $('#useful_links_addtag_error').show();
+            })
+        }
+    });
+
     fhq.ws.useful_links_retrieve({
         "useful_link_id": useful_link_id
     }).done(function(r){
@@ -330,8 +340,8 @@ fhq.pages['useful_links_edit'] = function(useful_link_id){
         $('#useful_links_tags').html('');
         for (var i in r.data.tags) {
             $('#useful_links_tags').append(''
-                + '<div class="tag-item">' + r.data.tags[i] + ' '
-                + '<div class="tag-item-remove tag-remove" tagval="' + r.data.tags[i] + '">-</div>'
+                + '<div class="swa-tag-item">' + r.data.tags[i] + ' '
+                + '<div class="swa-tag-item-remove tag-remove" tagval="' + r.data.tags[i] + '">X</div>'
                 + '</div>'
             );
         }
@@ -340,5 +350,52 @@ fhq.pages['useful_links_edit'] = function(useful_link_id){
 
     }).fail(function(err) {
         console.log(err)
-    }) 
+    })
+
+    function deleteComment(comment_id) {
+        $('.useful-comments-delete-comment-error').hide();
+        fhq.ws.useful_links_comment_delete({
+            "useful_link_comment_id": comment_id,
+        }).done(function(r){
+            console.log(r)
+            fhq.pages['useful_links_edit'](useful_link_id);
+        }).fail(function(err) {
+            console.log(err)
+            $('.useful-comments-delete-comment-error[comment_id=' + comment_id + ']').html(err.error);
+            $('.useful-comments-delete-comment-error[comment_id=' + comment_id + ']').show();
+        })
+    }
+
+    fhq.ws.useful_links_comment_list({
+        "useful_link_id": useful_link_id
+    }).done(function(r){
+        console.log(r);
+        $('#useful_links_comments').html('');
+        for (var i in r.data) {
+            var c = r.data[i];
+            $('#useful_links_comments').append(
+                '<div class="swa-card">'
+                + 'Identifier: ' + c.id + ' <br/>'
+                + 'User: [' + c.user.university + '] ' + c.user.nick + ' <br/>'
+                + 'Date & Time: ' + new Date(c.dt + "Z") + ' <br/></br>'
+                + 'Comment: ' + c.comment + ' <br/></br>'
+                + '<div class="swa-button useful-comments-delete-comment" comment_id=' + c.id + ' >Delete</div> '
+                + '<div class="swa-error-alert useful-comments-delete-comment-error" style="display: none;" comment_id=' + c.id + ' ></div> '
+                // + '<div class="swa-button">TODO: Issue a warning to a user for violation</div> '
+                + '</div>'
+            );
+            
+        }
+
+        $('.useful-comments-delete-comment').unbind().bind('click', function(e) {
+            var comment_id = $(e.target).attr("comment_id");
+            comment_id = parseInt(comment_id, 10);
+            deleteComment(comment_id);
+            console.log("comment_id=", comment_id)
+        })
+    }).fail(function(err){
+        console.error(err);
+        $('#error_info').show();
+        $('#error_info .alert').html('ERROR: ' + err.error);
+    })
 }

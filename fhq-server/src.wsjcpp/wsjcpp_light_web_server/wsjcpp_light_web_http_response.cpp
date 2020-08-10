@@ -143,7 +143,7 @@ std::string WsjcppLightWebHttpResponse::detectTypeOfFile(const std::string &sFil
     } else if (sFileExt == "xml") {
         sType = "application/xml";
     } else if (sFileExt == "png") {
-        sType = "application/xml";
+        sType = "image/png";
     } else if (sFileExt == "jpg" || sFileExt == "jpeg") {
         sType = "image/jpeg";
     } else if (sFileExt == "svg") {

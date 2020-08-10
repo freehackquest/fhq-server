@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TranslationService } from 'angular-l10n';
+import { L10nTranslationService } from 'angular-l10n';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +7,7 @@ import { TranslationService } from 'angular-l10n';
 export class EmailValidatorService {
 
   constructor(
-    public _translation: TranslationService,
+    public _translation: L10nTranslationService,
   ) { }
 
   checkEmail(email: string) {
