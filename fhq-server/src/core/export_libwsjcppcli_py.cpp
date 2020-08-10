@@ -219,7 +219,7 @@ void ExportLibWsjCppCliPy::exportAPImd() {
 <details>
   <summary>addhint</summary>
   
-  Methid add hint to quest
+  Method add hint to quest
 
 Access: unauthorized - **no**,  user - **no**,  admin - **yes**
 

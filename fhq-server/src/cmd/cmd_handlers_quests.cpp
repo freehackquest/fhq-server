@@ -1376,7 +1376,7 @@ void CmdHandlerQuestsSubjects::handle(ModelRequest *pRequest) {
 
 
 CmdHandlerAddHint::CmdHandlerAddHint()
-    : CmdHandlerBase("addhint", "Methid add hint to quest") {
+    : CmdHandlerBase("addhint", "Method add hint to quest") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
