@@ -58,7 +58,7 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
         query.bindValue(":morethan", nMoreThen);
         query.bindValue(":citieslimit", nCitiesLimit);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
         while (query.next()) {
@@ -76,7 +76,7 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
         query.prepare("SELECT u.nick, u.university, u.rating FROM users u WHERE u.role = :role ORDER BY u.rating DESC LIMIT 0,10");
         query.bindValue(":role", "user");
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
         int nPlace = 1;
@@ -185,14 +185,14 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
     EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
     if (!pGlobalSettings->exists(sName)) {
         std::string sError = "Setting with name: " + sName + " did not found";
-        pRequest->sendMessageError(cmd(), WsjcppError(404, sError));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, sError));
         return;
     }
 
     const WsjcppSettingItem sett = pGlobalSettings->get(sName);
     if (sett.isReadonly()) {
         std::string sError = "Setting with name: " + sName + " readonly";
-        pRequest->sendMessageError(cmd(), WsjcppError(400, sError));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, sError));
         return;
     }
     
@@ -205,7 +205,7 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
         pGlobalSettings->update(sName, sValue == "yes");
     } else {
         std::string sError = "Setting with name: " + sName + " unknown type";
-        pRequest->sendMessageError(cmd(), WsjcppError(500, sError));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, sError));
         return;
     }
     std::string sNewValue = pGlobalSettings->get(sName).convertValueToString(true);

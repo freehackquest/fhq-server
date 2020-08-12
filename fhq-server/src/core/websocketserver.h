@@ -36,7 +36,7 @@ class WebSocketServer : public QObject, public IWebSocketServer {
         // IWebSocketServer
         virtual int getConnectedUsers() override;
         virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse) override;
-        virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, WsjcppError error) override;
+        virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, WsjcppJsonRpc20Error error) override;
         virtual void sendToAll(const nlohmann::json& jsonMessage) override;
         void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) override;
         virtual void setWsjcppJsonRpc20UserSession(QWebSocket *pClient, WsjcppJsonRpc20UserSession *pWsjcppJsonRpc20UserSession) override; 

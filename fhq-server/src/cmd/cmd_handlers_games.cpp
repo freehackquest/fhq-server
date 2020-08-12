@@ -63,17 +63,17 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest) {
     switch (nResult) {
 
         case EmployResult::DATABASE_ERROR: {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, sError));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, sError));
             break;
         }
 
         case EmployResult::ALREADY_EXISTS: {
-            pRequest->sendMessageError(cmd(), WsjcppError(403, "Game already exists with this uuid"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Game already exists with this uuid"));
             break;
         }
 
         case EmployResult::ERROR_NAME_IS_EMPTY: {
-            pRequest->sendMessageError(cmd(), WsjcppError(400, "Game has empty name"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Game has empty name"));
             break;
         }
 
@@ -86,7 +86,7 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest) {
         }
 
         default: {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, "Server error"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Server error"));
         }
     }
 }
@@ -129,7 +129,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         query.prepare("SELECT * FROM users WHERE id = :userid");
         query.bindValue(":userid", nUserID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -141,14 +141,14 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
             sEmail = record.value("email").toString().toUpper().toStdString();
             sPass = record.value("pass").toString().toStdString();
         } else {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Not found user"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Not found user"));
             return;
         }
 
         std::string sAdminPasswordHash = WsjcppHashes::sha1_calc_hex(sEmail + sAdminPassword);
 
         if (sAdminPasswordHash != sPass) {
-            pRequest->sendMessageError(cmd(), WsjcppError(401, "Wrong password"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(401, "Wrong password"));
             return;
         }
     }
@@ -163,12 +163,12 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         query.bindValue(":uuid", QString::fromStdString(sUuid));
 
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
 
         if (!query.next()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Game not found"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Game not found"));
             return;
         } else {
             QSqlRecord record = query.record();
@@ -186,7 +186,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM users_games WHERE gameid = :gameid");
         query_del.bindValue(":gameid", nGameID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -197,7 +197,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM users_quests_answers WHERE questid IN (SELECT idquest FROM quest q WHERE q.gameid = :gameid)");
         query_del.bindValue(":gameid", nGameID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -208,7 +208,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM users_quests WHERE questid IN (SELECT idquest FROM quest q WHERE q.gameid = :gameid)");
         query_del.bindValue(":gameid", nGameID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -219,7 +219,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM quest WHERE gameid = :gameid");
         query_del.bindValue(":gameid", nGameID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -230,7 +230,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
         query_del.prepare("DELETE FROM games WHERE id = :gameid");
         query_del.bindValue(":gameid", nGameID);
         if (!query_del.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query_del.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query_del.lastError().text().toStdString()));
             return;
         }
     }
@@ -282,7 +282,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
 
     ModelGame modelGame;
     if (!pEmployGames->findGame(sUuid, modelGame)) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "Game not found"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Game not found"));
         return;
     }
 
@@ -331,7 +331,7 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
     {
         QFile fileZip(tmpZipFile);
         if (!fileZip.open(QIODevice::ReadOnly)) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, "Could not open zip file"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Could not open zip file"));
             return;
         }
         QByteArray baZip = fileZip.readAll();
@@ -368,7 +368,7 @@ void CmdHandlerGameImport::handle(ModelRequest *pRequest) {
     // nlohmann::json jsonRequest = pRequest->jsonRequest();
     // nlohmann::json jsonResponse;
 
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
     return;
 
     // TODO
@@ -402,7 +402,7 @@ void CmdHandlerGameInfo::handle(ModelRequest *pRequest) {
 
     ModelGame modelGame;
     if (!pEmployGames->findGame(sUuid, modelGame)) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "Game not found"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Game not found"));
         return;
     }
 
@@ -449,7 +449,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest) {
 
     ModelGame modelGame;
     if (!pEmployGames->findGame(updatedModelGame.uuid(), modelGame)) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "Game not found"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Game not found"));
         return;
     }
 
@@ -462,13 +462,13 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest) {
     switch (nResult) {
 
         case EmployResult::DATABASE_ERROR: {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, sError));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, sError));
             break;
         }
         
 
         case EmployResult::GAME_NOT_FOUND: {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Game not found"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Game not found"));
             break;
         }
 
@@ -481,7 +481,7 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest) {
         }
 
         default: {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, "Server error"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Server error"));
         }
     }
 }
@@ -514,7 +514,7 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
     ModelGame modelGame;
     modelGame.fillFrom(pRequest->jsonRequest());
     if (!pEmployGames->findGame(modelGame.uuid(), modelGame)) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "Game not found"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Game not found"));
         return;
     }
 
@@ -539,7 +539,7 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
     QByteArray baImagePNG = QByteArray::fromBase64(baImagePNGBase64); // .fromBase64(baImagePNGBase64);
 
     if (baImagePNG.size() == 0) {
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "Could not decode base64"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Could not decode base64"));
         return;
     }
 
@@ -558,7 +558,7 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
     std::string targetImageFile = sFilename.toStdString();
     // WsjcppLog::info(TAG, "targetImageFile " + targetImageFile);
     if (!pImages->doThumbnailImagePng(sSourceImageFile, targetImageFile, 100, 100)) {
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "Could not decode bytearray to png"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Could not decode bytearray to png"));
         // cleanup - redesign try finnaly
         remove( sSourceImageFile.c_str());
         return;
@@ -572,7 +572,7 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
         fclose(file);
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     } else {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, "Problem with creation file"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Problem with creation file"));
     }
 }
 
@@ -614,7 +614,7 @@ void CmdHandlerGames::handle(ModelRequest *pRequest) {
     query.prepare("SELECT * FROM games ORDER BY games.date_start");
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 

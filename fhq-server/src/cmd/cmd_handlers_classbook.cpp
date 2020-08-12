@@ -51,7 +51,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest) {
         query.bindValue(":parentid", nParentID);
         query.exec();
         if (!query.next()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Not found article with this id"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Not found article with this id"));
             return;
         }
     }
@@ -65,11 +65,11 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest) {
         query.prepare("SELECT uuid FROM classbook WHERE uuid = :uuid");
         query.bindValue(":uuid", QString::fromStdString(sUuid));
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(403, "Uuid already exist"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Uuid already exist"));
             return;
         }
     } else {
@@ -110,7 +110,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest) {
                     QSqlRecord record = query.record();
                     nOrdered = record.value("ordered").toInt() + 1;
                 } else {
-                    pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+                    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
                     return;
                 }
             } else {
@@ -151,7 +151,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest) {
     query.bindValue(":content", QString::fromStdString(sContent));
     query.bindValue(":md5_content", QString::fromStdString(sContentMd5));
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -206,14 +206,14 @@ void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest) {
         query.bindValue(":classbookid", nClassbookID);
         query.exec(); // TODO check db error
         if (query.next()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(403, "Could not delete, because childs exists. Please remove childs first."));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Could not delete, because childs exists. Please remove childs first."));
             return;
         }
         //Delete record in classbook
         query.prepare("DELETE FROM classbook WHERE id=:classbookid");
         query.bindValue(":classbookid", nClassbookID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -221,7 +221,7 @@ void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest) {
         query.prepare("DELETE FROM classbook_localization WHERE classbookid=:classbookid");
         query.bindValue(":classbookid", nClassbookID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -270,13 +270,13 @@ void CmdClassbookExportHandler::handle(ModelRequest *pRequest) {
 
     //Check parametrs
     if (sOutput != "html" && sOutput != "markdown") {
-        pRequest->sendMessageError(cmd(), WsjcppError(403, "The output is not supported."));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "The output is not supported."));
         return;
     }
     QList<QString> langs;
     langs << "en" << "de" << "ru"; // TODO move to basic support employ
     if (!langs.contains(QString::fromStdString(sLang))) {
-        pRequest->sendMessageError(cmd(), WsjcppError(403, "The language is not supported."));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "The language is not supported."));
         return;
     }
 
@@ -312,7 +312,7 @@ void CmdClassbookExportHandler::handle(ModelRequest *pRequest) {
             zip.close();
             QFile fileZip(tmpZipFile);
             if (!fileZip.open(QIODevice::ReadOnly)) {
-                pRequest->sendMessageError(cmd(), WsjcppError(500, "Could not open zip file"));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Could not open zip file"));
                 return;
             }
             QByteArray baZip = fileZip.readAll();
@@ -481,7 +481,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest) {
         jsonInfo["parentid"] = record.value("parentid").toInt();
         jsonInfo["uuid"] = record.value("uuid").toString().toStdString();
     } else {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "Not found the article"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Not found the article"));
         return;
     }
 
@@ -491,7 +491,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest) {
         sLang = jsonRequest["lang"];
         QList<QString> allow_lang = {"en", "ru","de"};
         if (!allow_lang.contains(QString::fromStdString(sLang))) {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Language is not support"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Language is not support"));
             return;
         }
     } else {
@@ -523,7 +523,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest) {
                 jsonInfo["content"] = record.value("content").toString().toStdString();
                 jsonInfo["ordered"] = record.value("ordered").toInt();
             } else {
-                pRequest->sendMessageError(cmd(), WsjcppError(404, "Not found the article"));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Not found the article"));
                 return;
             }
         }
@@ -539,7 +539,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest) {
             jsonInfo["content"] = record.value("content").toString().toStdString();
             jsonInfo["ordered"] = record.value("ordered").toInt();
         } else {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Not found the article"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Not found the article"));
             return;
         }
     }
@@ -591,7 +591,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest) {
             jsonParents.push_back(jsonParent);
             set_of_parent.insert(nClassBookId_);
         } else {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Error in PATHFINDER. Not found the article with a given classbookid"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Error in PATHFINDER. Not found the article with a given classbookid"));
             return;
         }
     }
@@ -649,7 +649,7 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest) {
         }
 
         if (!query1.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query1.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query1.lastError().text().toStdString()));
             return;
         }
         while (query1.next()) {
@@ -703,7 +703,7 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest) {
         query.bindValue(":parentid", nParentID);
         query.exec(); // TODO check errors
         if (!query.next() && nParentID != 0) {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Not found the article with a given parentid"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Not found the article with a given parentid"));
             return;
         }
 
@@ -802,7 +802,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest) {
 
     //IF classbookid = 0, THEN reject request
     if (nClassbookID == 0) {
-        pRequest->sendMessageError(cmd(), WsjcppError(403, "Not today. It's root article id"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Not today. It's root article id"));
         return;
     }
 
@@ -811,11 +811,11 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest) {
     query.prepare("SELECT name FROM classbook WHERE id = :classbookid");
     query.bindValue(":classbookid", nClassbookID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     if (!query.next()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "Not found a article with a given classbookid"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Not found a article with a given classbookid"));
         return;
     }
 
@@ -825,7 +825,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest) {
         || jsonRequest.find("ordered") == jsonRequest.end()
         || jsonRequest.find("parentid") == jsonRequest.end()
     ) {
-        pRequest->sendMessageError(cmd(), WsjcppError(403, "Not found a charges. Not enough parameters"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Not found a charges. Not enough parameters"));
         return;
     }
 
@@ -839,11 +839,11 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest) {
             query.prepare("SELECT name FROM classbook WHERE id=:parentid");
             query.bindValue(":parentid", nParentID);
             if (!query.exec()) {
-                 pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+                 pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
                 return;
             }
             if (!query.next()) {
-                pRequest->sendMessageError(cmd(), WsjcppError(404, "Not found a article with a given parentid"));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Not found a article with a given parentid"));
                 return;
             }
         }
@@ -852,7 +852,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest) {
         query.bindValue(":classbookid", nClassbookID);
         query.bindValue(":parentid", nParentID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -864,7 +864,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest) {
         query.bindValue(":classbookid", nClassbookID);
         query.bindValue(":name", QString::fromStdString(sName));
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -878,7 +878,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest) {
         query.bindValue(":content", QString::fromStdString(sContent));
         query.bindValue(":md5_content", QString::fromStdString(sContentMd5_));
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -890,7 +890,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest) {
         query.bindValue(":classbookid", nClassbookID);
         query.bindValue(":ordered", ordered);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -899,7 +899,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest) {
     query.prepare("UPDATE classbook SET updated = NOW() WHERE id = :classbookid");
     query.bindValue(":classbookid", nClassbookID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -908,7 +908,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest) {
     query.prepare("SELECT id, name, content, md5_content, ordered, parentid FROM classbook WHERE id = :classbookid");
     query.bindValue(":classbookid", nClassbookID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     if (query.next()) {
@@ -920,7 +920,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest) {
         jsonInfo["md5_content"] = record.value("md5_content").toString().toStdString();
         jsonInfo["ordered"] = record.value("ordered").toInt();
     } else {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "Not found article"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Not found article"));
         return;
     }
 
@@ -983,11 +983,11 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest) {
     query.bindValue(":lang", QString::fromStdString(sLang));
     query.bindValue(":classbookid", nClassbookID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     if (query.next()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "This lang already exist"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "This lang already exist"));
         return;
     }
 
@@ -1024,7 +1024,7 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest) {
     query.bindValue(":content", QString::fromStdString(sContent));
     query.bindValue(":md5_content", QString::fromStdString(sContentMd5_));
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     int rowid = query.lastInsertId().toInt();
@@ -1073,17 +1073,17 @@ void CmdClassbookLocalizationDeleteRecordHandler::handle(ModelRequest *pRequest)
     query.prepare("SELECT id FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", nClassbookLocalizationID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     if (!query.next()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "This localization doesn't exist"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "This localization doesn't exist"));
         return;
     }
     query.prepare("DELETE FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", nClassbookLocalizationID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -1127,18 +1127,18 @@ void CmdClassbookLocalizationInfoHandler::handle(ModelRequest *pRequest) {
     query.prepare("SELECT id FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", nClassbookLocalizationID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     if (!query.next()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "This localization doesn't exist"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "This localization doesn't exist"));
         return;
     }
 
     query.prepare("SELECT classbookid, lang, name, content FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", nClassbookLocalizationID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     query.next();
@@ -1201,11 +1201,11 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest)
     query.prepare("SELECT id FROM classbook_localization WHERE id = :classbook_localizationid");
     query.bindValue(":classbook_localizationid", nClassbookLocalizationID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     if (!query.next()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "This localization doesn't exist"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "This localization doesn't exist"));
         return;
     }
 
@@ -1220,7 +1220,7 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest)
     query.bindValue(":content", QString::fromStdString(sContent));
     query.bindValue(":md5_content", md5_content);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     query.prepare("SELECT classbookid, lang FROM classbook_localization WHERE id=:id");
@@ -1301,11 +1301,11 @@ void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest) {
     }
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     if (!query.next()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "This article or localization doesn't exist"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "This article or localization doesn't exist"));
         return;
     }
     QSqlRecord record = query.record();
@@ -1350,7 +1350,7 @@ void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest) {
     query.bindValue(":content_before", content_before);
     query.bindValue(":md5_content", md5_content);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -1403,19 +1403,19 @@ void CmdClassbookProposalDeleteRecordHandler::handle(ModelRequest *pRequest) {
     query.prepare("SELECT id FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", nClassbookProposalID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
     if (!query.next()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "This proposal doesn't exist"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "This proposal doesn't exist"));
         return;
     }
 
     query.prepare("DELETE FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", nClassbookProposalID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -1458,22 +1458,22 @@ void CmdClassbookProposalInfoHandler::handle(ModelRequest *pRequest) {
     query.prepare("SELECT id FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", nClassbookProposalID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     if (!query.next()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "This proposal doesn't exist"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "This proposal doesn't exist"));
         return;
     }
 
     query.prepare("SELECT classbookid, lang, name, content FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", nClassbookProposalID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     if (!query.next()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "This proposal doesn't exist"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "This proposal doesn't exist"));
         return;
     }
 
@@ -1527,11 +1527,11 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest) {
         query.prepare("SELECT id FROM classbook WHERE id = :classbookid");
         query.bindValue(":classbookid", nClassbookID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (!query.next()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "This article doesn't exist"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "This article doesn't exist"));
             return;
         }
         mapFilter.insert("classbookid", nClassbookID);
@@ -1572,7 +1572,7 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest) {
         }
     }
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -1631,18 +1631,18 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
     query.prepare("SELECT id FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", nClassbookProposalID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     if (!query.next()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "This proposal doesn't exist"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "This proposal doesn't exist"));
         return;
     }
 
     query.prepare("SELECT content FROM classbook WHERE id IN (SELECT classbookid FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", nClassbookProposalID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     std::string curtxt = record.value("content").toString().toStdString();
@@ -1650,7 +1650,7 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
     query.prepare("SELECT content, content_before FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", nClassbookProposalID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     std::string txt1 = record.value("content").toString().toStdString();
@@ -1690,7 +1690,7 @@ void CmdClassbookProposalApproveHandler::handle(ModelRequest *pRequest) {
     }
 
     if (nClassbookProposalID == -1) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "This proposal doesn't exist"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "This proposal doesn't exist"));
         return;
     }
 
@@ -1700,11 +1700,11 @@ void CmdClassbookProposalApproveHandler::handle(ModelRequest *pRequest) {
     query.prepare("SELECT classbookid, content FROM classbook_proposal WHERE id = :classbook_proposal_id");
     query.bindValue(":classbook_proposal_id", nClassbookProposalID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     if (!query.next()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "This proposal doesn't exist"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "This proposal doesn't exist"));
         return;
     }
 
@@ -1720,7 +1720,7 @@ void CmdClassbookProposalApproveHandler::handle(ModelRequest *pRequest) {
     query.bindValue(":content", QString::fromStdString(sContent));
     query.bindValue(":md5_content", QString::fromStdString(sContentMd5_));
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -1755,7 +1755,7 @@ void CmdClassbookProposalUpdateHandler::handle(ModelRequest *pRequest) {
     }
 
     if (nClassbookProposalID == -1) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "This proposal doesn't exist"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "This proposal doesn't exist"));
         return;
     }
 
@@ -1773,7 +1773,7 @@ void CmdClassbookProposalUpdateHandler::handle(ModelRequest *pRequest) {
     query.bindValue(":content", QString::fromStdString(sContent));
     query.bindValue(":md5_content", QString::fromStdString(sContentMd5_));
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 

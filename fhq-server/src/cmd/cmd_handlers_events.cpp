@@ -40,7 +40,7 @@ void CmdHandlerEventAdd::handle(ModelRequest *pRequest) {
     query.bindValue(":message", QString::fromStdString(sMessage));
     query.bindValue(":meta", "{}");
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -80,7 +80,7 @@ void CmdHandlerEventDelete::handle(ModelRequest *pRequest) {
     query.bindValue(":eventid", nEventId);
     query.exec();
     if (!query.next()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "Event not found"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Event not found"));
         return;
     }
 
@@ -132,7 +132,7 @@ void CmdHandlerEventInfo::handle(ModelRequest *pRequest) {
         jsonEvent["type"] = record.value("type").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
         jsonEvent["message"] = record.value("message").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
     } else {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "Event not found"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Event not found"));
         return;
     }
 
@@ -171,7 +171,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
 
     int nOnPage = pRequest->getInputInteger("onpage", 10);
     if (nOnPage > 50) {
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "Parameter 'onpage' could not be more then 50"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Parameter 'onpage' could not be more then 50"));
         return;
     }
     jsonResponse["onpage"] = nOnPage;

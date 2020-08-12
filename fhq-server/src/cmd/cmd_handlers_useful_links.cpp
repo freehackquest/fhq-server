@@ -134,7 +134,7 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     queryFilters.bind(query);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     if (query.next()) {
@@ -157,7 +157,7 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     queryFilters.bind(query);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     
@@ -230,7 +230,7 @@ void CmdHandlerUsefulLinksRetrieve::handle(ModelRequest *pRequest) {
     query.bindValue(":useful_link_id", nUsefulLinkId);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -257,7 +257,7 @@ void CmdHandlerUsefulLinksRetrieve::handle(ModelRequest *pRequest) {
     query.bindValue(":useful_link_id", nUsefulLinkId);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -316,7 +316,7 @@ void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest) {
     query.bindValue(":tags", QString::fromStdString(""));
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -377,7 +377,7 @@ void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest) {
     query.bindValue(":useful_link_id", nUsefulLinkId);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -385,7 +385,7 @@ void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest) {
     query.bindValue(":useful_link_id", nUsefulLinkId);
     
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -393,7 +393,7 @@ void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest) {
     query.bindValue(":useful_link_id", nUsefulLinkId);
     
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -401,7 +401,7 @@ void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest) {
     query.bindValue(":useful_link_id", nUsefulLinkId);
     
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -462,7 +462,7 @@ void CmdHandlerUsefulLinksUpdate::handle(ModelRequest *pRequest) {
     query.bindValue(":useful_link_id", nUsefulLinkId);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -527,7 +527,7 @@ void CmdHandlerUsefulLinksUserFavoriteList::handle(ModelRequest *pRequest) {
     query.bindValue(":userid", nUserId);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -592,12 +592,12 @@ void CmdHandlerUsefulLinksUserFavorite::handle(ModelRequest *pRequest) {
     query.bindValue(":userid", nUserId);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
     if (query.next()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(403, "Already exists"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Already exists"));
         return;
     }
 
@@ -610,7 +610,7 @@ void CmdHandlerUsefulLinksUserFavorite::handle(ModelRequest *pRequest) {
     query.bindValue(":userid", nUserId);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     nlohmann::json jsonResult;
@@ -624,7 +624,7 @@ void CmdHandlerUsefulLinksUserFavorite::handle(ModelRequest *pRequest) {
     query.bindValue(":usefullinkid0", nUsefulLinkId);
     query.bindValue(":usefullinkid1", nUsefulLinkId);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -671,7 +671,7 @@ void CmdHandlerUsefulLinksUserUnfavorite::handle(ModelRequest *pRequest) {
     query.bindValue(":userid", nUserId);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     nlohmann::json jsonResult;
@@ -684,7 +684,7 @@ void CmdHandlerUsefulLinksUserUnfavorite::handle(ModelRequest *pRequest) {
     query.bindValue(":usefullinkid0", nUsefulLinkId);
     query.bindValue(":usefullinkid1", nUsefulLinkId);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -722,7 +722,7 @@ void CmdHandlerUsefulLinksClicked::handle(ModelRequest *pRequest) {
     query.bindValue(":useful_link_id", nUsefulLinkId);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -774,7 +774,7 @@ void CmdHandlerUsefulLinksCommentList::handle(ModelRequest *pRequest) {
     query.bindValue(":usefullinkid", nUsefulLinkId);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -826,12 +826,12 @@ void CmdHandlerUsefulLinksCommentAdd::handle(ModelRequest *pRequest) {
     int nUserId = pRequest->getUserSession()->getUserId();
     sCommentValue = WsjcppCore::trim(sCommentValue);
     if (sCommentValue == "") {
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "comment could not be empty"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "comment could not be empty"));
         return;
     }
 
     if (sCommentValue.length() > 1024) {
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "comment must be less then < 1024"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "comment must be less then < 1024"));
         return;
     }
 
@@ -846,14 +846,14 @@ void CmdHandlerUsefulLinksCommentAdd::handle(ModelRequest *pRequest) {
     query.bindValue(":userid", nUserId);
     query.bindValue(":comment", QString::fromStdString(sCommentValue));
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     
     query.prepare("UPDATE useful_links ul SET user_comments = (SELECT COUNT(*) FROM useful_links_comments WHERE usefullinkid = ul.id) WHERE ul.id = :useful_link_id");
     query.bindValue(":useful_link_id", nUsefulLinkId);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -920,7 +920,7 @@ void CmdHandlerUsefulLinksCommentDelete::handle(ModelRequest *pRequest) {
     query.prepare("SELECT * FROM useful_links_comments WHERE id = :comment_id");
     query.bindValue(":comment_id", nUsefulLinkCommentId);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -929,14 +929,14 @@ void CmdHandlerUsefulLinksCommentDelete::handle(ModelRequest *pRequest) {
         QSqlRecord record = query.record();
         nUsefulLinkId = record.value("usefullinkid").toInt();
     } else {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "COMMENT_NOT_FOUND"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "COMMENT_NOT_FOUND"));
         return;
     }
 
     query.prepare("DELETE FROM useful_links_comments WHERE id = :comment_id");
     query.bindValue(":comment_id", nUsefulLinkCommentId);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -944,7 +944,7 @@ void CmdHandlerUsefulLinksCommentDelete::handle(ModelRequest *pRequest) {
     query.prepare("UPDATE useful_links ul SET user_comments = (SELECT COUNT(*) FROM useful_links_comments WHERE usefullinkid = ul.id) WHERE ul.id = :useful_link_id");
     query.bindValue(":useful_link_id", nUsefulLinkId);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -984,7 +984,7 @@ void CmdHandlerUsefulLinksTagList::handle(ModelRequest *pRequest) {
     query.prepare("SELECT tagvalue, COUNT(*) AS cnt FROM `useful_links_tags` GROUP BY tagvalue");
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -1026,7 +1026,7 @@ void CmdHandlerUsefulLinksTagAdd::handle(ModelRequest *pRequest) {
     std::string sTagValue = pRequest->getInputString("tag", "");
     sTagValue = WsjcppCore::trim(sTagValue);
     if (sTagValue == "") {
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "tag could not be empty"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "tag could not be empty"));
         return;
     }
 
@@ -1041,19 +1041,19 @@ void CmdHandlerUsefulLinksTagAdd::handle(ModelRequest *pRequest) {
     query.bindValue(":tagvalue", QString::fromStdString(sTagValue));
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
     if (query.next()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "TAG_ALREADY_EXISTS"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "TAG_ALREADY_EXISTS"));
         return;
     } else {
         query.prepare("INSERT INTO useful_links_tags(usefullinkid, tagvalue) VALUES(:useful_link_id, :tagvalue)");
         query.bindValue(":useful_link_id", nUsefulLinkId);
         query.bindValue(":tagvalue", QString::fromStdString(sTagValue));
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
         
@@ -1061,7 +1061,7 @@ void CmdHandlerUsefulLinksTagAdd::handle(ModelRequest *pRequest) {
         query.prepare("SELECT * FROM useful_links_tags WHERE usefullinkid = :useful_link_id");
         query.bindValue(":useful_link_id", nUsefulLinkId);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -1077,7 +1077,7 @@ void CmdHandlerUsefulLinksTagAdd::handle(ModelRequest *pRequest) {
         query.bindValue(":tags", QString::fromStdString(sTags));
         query.bindValue(":useful_link_id", nUsefulLinkId);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -1110,7 +1110,7 @@ void CmdHandlerUsefulLinksTagDelete::handle(ModelRequest *pRequest) {
     std::string sTagValue = pRequest->getInputString("tag", "");
     sTagValue = WsjcppCore::trim(sTagValue);
     if (sTagValue == "") {
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "tag could not be empty"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "tag could not be empty"));
         return;
     }
 
@@ -1125,7 +1125,7 @@ void CmdHandlerUsefulLinksTagDelete::handle(ModelRequest *pRequest) {
     query.bindValue(":tagvalue", QString::fromStdString(sTagValue));
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -1134,7 +1134,7 @@ void CmdHandlerUsefulLinksTagDelete::handle(ModelRequest *pRequest) {
         query.bindValue(":useful_link_id", nUsefulLinkId);
         query.bindValue(":tagvalue", QString::fromStdString(sTagValue));
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -1142,7 +1142,7 @@ void CmdHandlerUsefulLinksTagDelete::handle(ModelRequest *pRequest) {
         query.prepare("SELECT * FROM useful_links_tags WHERE usefullinkid = :useful_link_id");
         query.bindValue(":useful_link_id", nUsefulLinkId);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -1158,7 +1158,7 @@ void CmdHandlerUsefulLinksTagDelete::handle(ModelRequest *pRequest) {
         query.bindValue(":tags", QString::fromStdString(sTags));
         query.bindValue(":useful_link_id", nUsefulLinkId);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -1188,7 +1188,7 @@ CmdHandlerUsefulLinksUserPropose::CmdHandlerUsefulLinksUserPropose()
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksUserPropose::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------
@@ -1211,5 +1211,5 @@ CmdHandlerUsefulLinksUserProposeApprove::CmdHandlerUsefulLinksUserProposeApprove
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksUserProposeApprove::handle(ModelRequest *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
