@@ -94,9 +94,9 @@ struct QueryFilters {
 void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     int nUserId = 0;
-    WsjcppUserSession *pSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pSession = pRequest->getUserSession();
     if (pSession != nullptr) {
-        nUserId = pSession->userid();
+        nUserId = pSession->getUserId();
     }
 
     bool bIsAdmin = pRequest->isAdmin();
@@ -213,9 +213,9 @@ CmdHandlerUsefulLinksRetrieve::CmdHandlerUsefulLinksRetrieve()
 void CmdHandlerUsefulLinksRetrieve::handle(ModelRequest *pRequest) {
     int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
     int nUserId = 0;
-    WsjcppUserSession *pSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pSession = pRequest->getUserSession();
     if (pSession != nullptr) {
-        nUserId = pSession->userid();
+        nUserId = pSession->getUserId();
     }
 
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
@@ -504,9 +504,9 @@ CmdHandlerUsefulLinksUserFavoriteList::CmdHandlerUsefulLinksUserFavoriteList()
 void CmdHandlerUsefulLinksUserFavoriteList::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     int nUserId = 0;
-    WsjcppUserSession *pSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pSession = pRequest->getUserSession();
     if (pSession != nullptr) {
-        nUserId = pSession->userid();
+        nUserId = pSession->getUserId();
     }
 
     bool bIsAdmin = pRequest->isAdmin();
@@ -577,9 +577,9 @@ CmdHandlerUsefulLinksUserFavorite::CmdHandlerUsefulLinksUserFavorite()
 void CmdHandlerUsefulLinksUserFavorite::handle(ModelRequest *pRequest) {
     int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
     int nUserId = 0;
-    WsjcppUserSession *pSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pSession = pRequest->getUserSession();
     if (pSession != nullptr) {
-        nUserId = pSession->userid();
+        nUserId = pSession->getUserId();
     }
 
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
@@ -654,9 +654,9 @@ CmdHandlerUsefulLinksUserUnfavorite::CmdHandlerUsefulLinksUserUnfavorite()
 void CmdHandlerUsefulLinksUserUnfavorite::handle(ModelRequest *pRequest) {
     int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
     int nUserId = 0;
-    WsjcppUserSession *pSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pSession = pRequest->getUserSession();
     if (pSession != nullptr) {
-        nUserId = pSession->userid();
+        nUserId = pSession->getUserId();
     }
 
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
@@ -823,7 +823,7 @@ CmdHandlerUsefulLinksCommentAdd::CmdHandlerUsefulLinksCommentAdd()
 void CmdHandlerUsefulLinksCommentAdd::handle(ModelRequest *pRequest) {
     int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
     std::string sCommentValue = pRequest->getInputString("comment", "");
-    int nUserId = pRequest->getUserSession()->userid();
+    int nUserId = pRequest->getUserSession()->getUserId();
     sCommentValue = WsjcppCore::trim(sCommentValue);
     if (sCommentValue == "") {
         pRequest->sendMessageError(cmd(), WsjcppError(400, "comment could not be empty"));
@@ -865,7 +865,7 @@ void CmdHandlerUsefulLinksCommentAdd::handle(ModelRequest *pRequest) {
     jsonMeta["useful_link"]["action"] = "comment_added";
     jsonMeta["user"] = nlohmann::json();
     jsonMeta["user"]["id"] = nUserId;
-    jsonMeta["user"]["nick"] = pRequest->getUserSession()->nick().toStdString();
+    jsonMeta["user"]["nick"] = pRequest->getUserSession()->getUserName();
 
     std::string sMessage = "User added comment to [useful_link#" + std::to_string(nUsefulLinkId) + "]";
 
@@ -874,7 +874,7 @@ void CmdHandlerUsefulLinksCommentAdd::handle(ModelRequest *pRequest) {
     
     // TODO add url
     std::string sBody = "[user#" + std::to_string(nUserId) + "] "
-        + pRequest->getUserSession()->nick().toStdString() + " added comment to "
+        + pRequest->getUserSession()->getUserName() + " added comment to "
         "[useful_link#" + std::to_string(nUsefulLinkId) + "] : \n " + sCommentValue;
 
     EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();

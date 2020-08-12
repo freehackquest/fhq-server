@@ -34,9 +34,9 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
 
     int nUserID = 0;
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
     if (pUserSession != nullptr) {
-        nUserID = pUserSession->userid();
+        nUserID = pUserSession->getUserId();
     }
 
     std::vector<std::string> vWhereQuery;
@@ -163,12 +163,12 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
 
     QString sBaseGamesURL = QString::fromStdString(pGlobalSettings->get("server_folder_games_url").getStringValue());
 
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
     bool bAdmin = false;
     int nUserID = 0;
     if (pUserSession != nullptr) {
         bAdmin = pUserSession->isAdmin();
-        nUserID = pUserSession->userid();
+        nUserID = pUserSession->getUserId();
     }
 
     int nQuestID = pRequest->getInputInteger("questid", 0);
@@ -342,12 +342,12 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
 
     QSqlDatabase db = *(pDatabase->database());
 
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
     int nUserID = 0;
     QString sNick = "";
     if (pUserSession != NULL) {
-        nUserID = pUserSession->userid();
-        sNick = pUserSession->nick();
+        nUserID = pUserSession->getUserId();
+        sNick = QString::fromStdString(pUserSession->getUserName());
     }
 
     int nQuestID = pRequest->getInputInteger("questid", 0);
@@ -783,12 +783,12 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
 
     QSqlDatabase db = *(pDatabase->database());
 
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
     int nUserID = 0;
-    QString sUserEmail = "";
+    std::string sUserEmail = "";
     if (pUserSession != nullptr) {
-        nUserID = pUserSession->userid();
-        sUserEmail = pUserSession->email();
+        nUserID = pUserSession->getUserId();
+        sUserEmail = pUserSession->getUserEmail();
     }
 
     // check the user already sended quest
@@ -905,7 +905,7 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     std::string sMessageSubject = "Quest Proposal (FreeHackQuest)";
     std::string sContext = "Quest Proposal \n"
                        "UserID: " + QString::number(nUserID).toStdString() + "\n"
-                       "From: " + sUserEmail.toStdString() + "\n"
+                       "From: " + sUserEmail + "\n"
                        "QuestProposalId: #" + QString::number(nQuestProposalId).toStdString() + "\n";
 
     RunTasks::MailSend(sMailToAdmin, sMessageSubject, sContext);

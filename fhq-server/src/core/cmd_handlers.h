@@ -26,34 +26,64 @@ class WsjcppError {
 };
 
 /*! 
- * WsjcppUserSession - 
+ * WsjcppJsonRpc20UserSession - 
+ * WsjcppJsonRpc20UserSession - user data session
  * */
 
-class WsjcppUserSession {
+class WsjcppJsonRpc20UserSession {
     public:
-        WsjcppUserSession();
-        WsjcppUserSession(nlohmann::json const& obj);
+        WsjcppJsonRpc20UserSession();
+        WsjcppJsonRpc20UserSession(nlohmann::json const& obj);
         void fillFrom(nlohmann::json const& obj);
+
+        std::string getSessionUuid();
+        void setSessionUuid(const std::string &sSessionUuid);
+
+        long getSessionCreated();
+        void setSessionCreated(long nSessionCreated);
+
+        long getSessionUpdated();
+        void setSessionUpdated(long nSessionUpdated);
+
+        long getSessionExpire();
+        void setSessionExpire(long nSessionExpire);
+
+        int getUserId();
+        void setUserId(int nId);
+
+        std::string getUserUuid();
+        void setUserUuid(const std::string &sUserUuid);
+
+        std::string getUserName();
+        void setUserName(const std::string &sUserName);
+
+        std::string getUserEmail();
+        void setUserEmail(const std::string &sUserEmail);
+
+        std::string getUserRole();
+        void setUserRole(const std::string &sUserRole);
 
         // IUserToken
         bool isAdmin();
         bool isUser();
         bool isTester();
         bool hasRole();
-        QString nick();
-        void setNick(QString);
-        QString email();
-        int userid();
-        std::string userUuid();
-        // TODO json field for customization
-    private:
+        
+        nlohmann::json getUserCustom();
+        void setUserCustom(const nlohmann::json &jsonCustom);
 
-        std::string m_sRole;
-        std::string m_sEmail;
-        std::string m_sNick;
+    private:
+        std::string TAG;
+        std::string m_sSessionUuid;
+        long m_nSessionCreated;
+        long m_nSessionUpdated;
+        long m_nSessionExpire;
         int m_nUserID;
         std::string m_sUserUuid;
-        std::string TAG;
+        std::string m_sUserName;
+        std::string m_sUserEmail;
+        std::string m_sUserRole;
+        nlohmann::json m_jsonUserCustom;
 };
 
 /*! 
@@ -70,7 +100,7 @@ class WsjcppSocketClient : public QObject {
         
     private:
         std::string TAG;
-        WsjcppUserSession *m_pUserSession;
+        WsjcppJsonRpc20UserSession *m_pUserSession;
         QWebSocket *m_pSocket;
 
     private Q_SLOTS:
@@ -90,8 +120,8 @@ class IWebSocketServer {
         virtual void sendToAll(const nlohmann::json& jsonMessage) = 0;
         virtual void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) = 0;
         virtual int getConnectedUsers() = 0;
-        virtual void setWsjcppUserSession(QWebSocket *pClient, WsjcppUserSession *pUserSession) = 0; 
-        virtual WsjcppUserSession *getWsjcppUserSession(QWebSocket *pClient) = 0;
+        virtual void setWsjcppJsonRpc20UserSession(QWebSocket *pClient, WsjcppJsonRpc20UserSession *pUserSession) = 0; 
+        virtual WsjcppJsonRpc20UserSession *getWsjcppJsonRpc20UserSession(QWebSocket *pClient) = 0;
 };
 
 /*! 
@@ -163,7 +193,7 @@ class ModelRequest {
         QWebSocket *client();
         std::string getIpAddress();
         IWebSocketServer *server();
-        WsjcppUserSession *getUserSession();
+        WsjcppJsonRpc20UserSession *getUserSession();
         bool isAdmin();
         bool isUser();
         bool isUnauthorized();
@@ -187,7 +217,7 @@ class ModelRequest {
         std::string TAG;
         QWebSocket *m_pClient;
         IWebSocketServer *m_pServer;
-        WsjcppUserSession *m_pWsjcppUserSession;
+        WsjcppJsonRpc20UserSession *m_pWsjcppJsonRpc20UserSession;
         nlohmann::json m_jsonRequest;
         std::string m_sMessageId;
         std::string m_sCommand;

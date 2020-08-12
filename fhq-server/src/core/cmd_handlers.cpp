@@ -27,37 +27,39 @@ std::string WsjcppError::message() {
 // ---------------------------------------------------------------------
 
 /*! 
- * WsjcppUserSession - all data by current user session
+ * WsjcppJsonRpc20UserSession - all data by current user session
  * */
 
-WsjcppUserSession::WsjcppUserSession() {
-    TAG = "WsjcppUserSession";
+WsjcppJsonRpc20UserSession::WsjcppJsonRpc20UserSession() {
+    TAG = "WsjcppJsonRpc20UserSession";
+    m_sSessionUuid = "";
     m_nUserID = -1;
-    m_sRole = "";
-    m_sEmail = "";
-    m_sNick = "";
+    m_sUserRole = "";
+    m_sUserEmail = "";
     m_sUserUuid = "";
+    m_sUserName = "";
+    m_sSessionUuid = "";
 }
 
 // ---------------------------------------------------------------------
 
-WsjcppUserSession::WsjcppUserSession(nlohmann::json const& obj) : WsjcppUserSession() {
+WsjcppJsonRpc20UserSession::WsjcppJsonRpc20UserSession(nlohmann::json const& obj) : WsjcppJsonRpc20UserSession() {
     this->fillFrom(obj);
 }
 
 // ---------------------------------------------------------------------
 
-void WsjcppUserSession::fillFrom(const nlohmann::json &obj) {
+void WsjcppJsonRpc20UserSession::fillFrom(const nlohmann::json &obj) {
     if (obj.find("user") != obj.end()) {
         nlohmann::json user = obj.at("user");
 
         // user.role
         try {
-            m_sRole = user.at("role").get<std::string>();
+            m_sUserRole = user.at("role").get<std::string>();
         } catch (const std::exception &e) {
             WsjcppLog::err(TAG, "JSON: " + obj.dump());
             WsjcppLog::err(TAG, "Something wrong param user.role in struct. " + std::string(e.what()));
-            m_sRole = "";
+            m_sUserRole = "";
         }
 
         // TODO check allow roles
@@ -73,20 +75,20 @@ void WsjcppUserSession::fillFrom(const nlohmann::json &obj) {
         
         // user.email
         try {
-            m_sEmail = user.at("email").get<std::string>();
+            m_sUserEmail = user.at("email").get<std::string>();
         } catch (const std::exception &e) {
             WsjcppLog::err(TAG, "JSON: " + obj.dump());
             WsjcppLog::err(TAG, "Something wrong param user.email in struct. " + std::string(e.what()));
-            m_sEmail = "";
+            m_sUserEmail = "";
         }
 
         // user.nick
         try {
-            m_sNick = user.at("nick").get<std::string>();
+            m_sUserName = user.at("nick").get<std::string>();
         } catch (const std::exception &e) {
             WsjcppLog::err(TAG, "JSON: " + obj.dump());
             WsjcppLog::err(TAG, "Something wrong param user.nick in struct. " + std::string(e.what()));
-            m_sNick = "";
+            m_sUserName = "";
         }
 
         // user.uuid
@@ -105,56 +107,149 @@ void WsjcppUserSession::fillFrom(const nlohmann::json &obj) {
 
 // ---------------------------------------------------------------------
 
-bool WsjcppUserSession::isAdmin() {
-    return m_sRole == "admin";
+std::string WsjcppJsonRpc20UserSession::getSessionUuid() {
+    return m_sSessionUuid;
 }
 
 // ---------------------------------------------------------------------
 
-bool WsjcppUserSession::isUser() {
-    return m_sRole == "user";
+void WsjcppJsonRpc20UserSession::setSessionUuid(const std::string& sSessionUuid) {
+    m_sSessionUuid = sSessionUuid;
 }
 
 // ---------------------------------------------------------------------
 
-bool WsjcppUserSession::isTester() {
-    return m_sRole == "tester";
+long WsjcppJsonRpc20UserSession::getSessionCreated() {
+    return m_nSessionCreated;
 }
 
 // ---------------------------------------------------------------------
 
-bool WsjcppUserSession::hasRole() {
-    return m_sRole != "";
+void WsjcppJsonRpc20UserSession::setSessionCreated(long nSessionCreated) {
+    m_nSessionCreated = nSessionCreated;
 }
 
 // ---------------------------------------------------------------------
 
-QString WsjcppUserSession::nick() {
-    return QString::fromStdString(m_sNick);
+long WsjcppJsonRpc20UserSession::getSessionUpdated() {
+    return m_nSessionUpdated;
 }
 
 // ---------------------------------------------------------------------
 
-void WsjcppUserSession::setNick(QString sNick) {
-    m_sNick = sNick.toStdString();
+void WsjcppJsonRpc20UserSession::setSessionUpdated(long nSessionUpdated) {
+    m_nSessionUpdated = nSessionUpdated;
 }
 
 // ---------------------------------------------------------------------
 
-int WsjcppUserSession::userid() {
+long WsjcppJsonRpc20UserSession::getSessionExpire() {
+    return m_nSessionExpire;
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20UserSession::setSessionExpire(long nSessionExpire) {
+    m_nSessionExpire = nSessionExpire;
+}
+
+// ---------------------------------------------------------------------
+
+int WsjcppJsonRpc20UserSession::getUserId() {
     return m_nUserID;
 }
 
-std::string WsjcppUserSession::userUuid() {
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20UserSession::setUserId(int nUserId) {
+    m_nUserID = nUserId;
+}
+
+// ---------------------------------------------------------------------
+
+std::string WsjcppJsonRpc20UserSession::getUserUuid() {
     return m_sUserUuid;
 }
 
 // ---------------------------------------------------------------------
 
-QString WsjcppUserSession::email() {
-    return QString::fromStdString(m_sEmail);
+void WsjcppJsonRpc20UserSession::setUserUuid(const std::string& sUserUuid) {
+    m_sUserUuid = sUserUuid;
 }
 
+// ---------------------------------------------------------------------
+
+std::string WsjcppJsonRpc20UserSession::getUserName() {
+    return m_sUserName;
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20UserSession::setUserName(const std::string &sUserName) {
+    m_sUserName = sUserName;
+}
+
+// ---------------------------------------------------------------------
+
+std::string WsjcppJsonRpc20UserSession::getUserEmail() {
+    return m_sUserEmail;
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20UserSession::setUserEmail(const std::string &sUserEmail) {
+    m_sUserEmail = sUserEmail;
+}
+
+// ---------------------------------------------------------------------
+
+std::string WsjcppJsonRpc20UserSession::getUserRole() {
+    return m_sUserRole;
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20UserSession::setUserRole(const std::string &sUserRole) {
+    m_sUserRole = sUserRole;
+}
+
+// ---------------------------------------------------------------------
+
+bool WsjcppJsonRpc20UserSession::isAdmin() {
+    return m_sUserRole == "admin";
+}
+
+// ---------------------------------------------------------------------
+
+bool WsjcppJsonRpc20UserSession::isUser() {
+    return m_sUserRole == "user";
+}
+
+// ---------------------------------------------------------------------
+
+bool WsjcppJsonRpc20UserSession::isTester() {
+    return m_sUserRole == "tester";
+}
+
+// ---------------------------------------------------------------------
+
+bool WsjcppJsonRpc20UserSession::hasRole() {
+    return m_sUserRole != "";
+}
+
+// ---------------------------------------------------------------------
+
+nlohmann::json WsjcppJsonRpc20UserSession::getUserCustom() {
+    return m_jsonUserCustom;
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20UserSession::setUserCustom(const nlohmann::json &jsonCustom) {
+    m_jsonUserCustom = jsonCustom;
+}
+
+// ---------------------------------------------------------------------
 
 /*! 
  * WsjcppSocketClient - 
@@ -202,7 +297,7 @@ void WsjcppSocketClient::socketDisconnected() {
     // TODO hex print
     WsjcppLog::info(TAG, "socketDisconnected:" + WsjcppCore::getPointerAsHex(pClient));
     if (pClient) {
-        // this->removeWsjcppUserSession(pClient);
+        // this->removeWsjcppJsonRpc20UserSession(pClient);
         // m_clients.removeAll(pClient);
         // pClient->deleteLater();
     }
@@ -440,7 +535,7 @@ ModelRequest::ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServ
         m_sMessageId = m_jsonRequest["m"];
     }
 
-    m_pWsjcppUserSession = m_pServer->getWsjcppUserSession(m_pClient);
+    m_pWsjcppJsonRpc20UserSession = m_pServer->getWsjcppJsonRpc20UserSession(m_pClient);
 }
 
 // ---------------------------------------------------------------------
@@ -515,15 +610,15 @@ std::string ModelRequest::m() {
 
 // ---------------------------------------------------------------------
 
-WsjcppUserSession *ModelRequest::getUserSession() {
-    return m_pWsjcppUserSession;
+WsjcppJsonRpc20UserSession *ModelRequest::getUserSession() {
+    return m_pWsjcppJsonRpc20UserSession;
 }
 
 // ---------------------------------------------------------------------
 
 bool ModelRequest::isAdmin() {
-    if (m_pWsjcppUserSession != nullptr) {
-        return m_pWsjcppUserSession->isAdmin();
+    if (m_pWsjcppJsonRpc20UserSession != nullptr) {
+        return m_pWsjcppJsonRpc20UserSession->isAdmin();
     }
     return false;
 }
@@ -531,8 +626,8 @@ bool ModelRequest::isAdmin() {
 // ---------------------------------------------------------------------
 
 bool ModelRequest::isUser() {
-    if (m_pWsjcppUserSession != nullptr) {
-        return m_pWsjcppUserSession->isUser();
+    if (m_pWsjcppJsonRpc20UserSession != nullptr) {
+        return m_pWsjcppJsonRpc20UserSession->isUser();
     }
     return false;
 }
@@ -540,7 +635,7 @@ bool ModelRequest::isUser() {
 // ---------------------------------------------------------------------
 
 bool ModelRequest::isUnauthorized() {
-    return m_pWsjcppUserSession == nullptr;
+    return m_pWsjcppJsonRpc20UserSession == nullptr;
 }
 
 // ---------------------------------------------------------------------
@@ -649,7 +744,7 @@ bool CmdHandlerBase::accessAdmin() {
 // TODO write unit-test for this
 
 bool CmdHandlerBase::checkAccess(ModelRequest *pRequest) {
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
     if (!accessUnauthorized()) {
         if (pUserSession == nullptr) {
             pRequest->sendMessageError(cmd(), WsjcppError(401, "Not Authorized Request"));

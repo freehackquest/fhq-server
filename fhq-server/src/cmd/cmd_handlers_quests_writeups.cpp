@@ -39,11 +39,11 @@ void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest) {
 
 
     // user session
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
     bool bAdmin = pRequest->isAdmin();
     int nUserID = 0;
     if (pUserSession != nullptr) { // TODO refactor to pRequest->userId()
-        nUserID = pUserSession->userid();
+        nUserID = pUserSession->getUserId();
     }
 
     std::string sSQLRequest = ""
@@ -137,13 +137,13 @@ void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
     sWriteUpLink = "https://www.youtube.com/embed/" + sWriteUpLink.substr(m_sLinkPrefix.length());
 
     // user token
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
     bool bAdmin = pRequest->isAdmin();
     int nUserID = 0;
     QString sUserEmail = "";
     if (pUserSession != nullptr) {
-        nUserID = pUserSession->userid();
-        sUserEmail = pUserSession->email();
+        nUserID = pUserSession->getUserId();
+        sUserEmail = QString::fromStdString(pUserSession->getUserEmail());
     }
 
     QSqlDatabase db = *(pDatabase->database());

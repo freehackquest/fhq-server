@@ -394,10 +394,10 @@ void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest) {
         }
     }
 
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
     int nUserID = 0;
     if (pUserSession != nullptr) {
-        nUserID = pUserSession->userid();
+        nUserID = pUserSession->getUserId();
     }
 
     int nScore = 0;

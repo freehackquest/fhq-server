@@ -136,7 +136,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
     nlohmann::json const & jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
     if (pUserSession != nullptr) {
         WsjcppLog::err(TAG, "pUserSession must be nullptr");
     }
@@ -206,7 +206,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
         jsonResponse["token"] = sUuid;
         jsonResponse["user"] = user;
 
-        pRequest->server()->setWsjcppUserSession(pRequest->client(), new WsjcppUserSession(user_token));
+        pRequest->server()->setWsjcppJsonRpc20UserSession(pRequest->client(), new WsjcppJsonRpc20UserSession(user_token));
 
         // update user location
         std::string sLastIP = pRequest->getIpAddress();
@@ -425,7 +425,7 @@ void CmdHandlerToken::handle(ModelRequest *pRequest) {
         QString end_date = record.value("end_date").toString();
         std::string sLastIP = pRequest->getIpAddress();
         nlohmann::json jsonUserSession = nlohmann::json::parse(data);
-        pRequest->server()->setWsjcppUserSession(pRequest->client(), new WsjcppUserSession(jsonUserSession));
+        pRequest->server()->setWsjcppJsonRpc20UserSession(pRequest->client(), new WsjcppJsonRpc20UserSession(jsonUserSession));
         WsjcppLog::info(TAG, "userid: " + QString::number(userid).toStdString());
         // TODO redesign this
         RunTasks::UpdateUserLocation(userid, sLastIP);
@@ -536,8 +536,8 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest) {
 
     nlohmann::json jsonResponse;
 
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
-    int nUserID = pUserSession->userid();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
+    int nUserID = pUserSession->getUserId();
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -766,7 +766,7 @@ void CmdHandlerUser::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
 
     if (jsonRequest.find("userid") != jsonRequest.end() && pUserSession == nullptr) {
         pRequest->sendMessageError(cmd(), WsjcppError(401, "Not Authorized Request"));
@@ -777,7 +777,7 @@ void CmdHandlerUser::handle(ModelRequest *pRequest) {
 
     int nUserID = 0;
     if (pUserSession != nullptr) {
-        nUserID = pUserSession->userid();
+        nUserID = pUserSession->getUserId();
         bCurrentUserOrAdmin = true;
     }
 
@@ -874,7 +874,7 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
 
      if (jsonRequest.find("userid") == jsonRequest.end() && pUserSession == nullptr) {
         pRequest->sendMessageError(cmd(), WsjcppError(401, "Not Authorized Request"));
@@ -885,7 +885,7 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest) {
 
     int nUserID = 0;
     if (pUserSession != nullptr) {
-        nUserID = pUserSession->userid();
+        nUserID = pUserSession->getUserId();
         bCurrentUserOrAdmin = true;
     }
 
@@ -1139,8 +1139,8 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest) {
     nlohmann::json jsonResponse;
     nlohmann::json data;
 
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
-    int nUserIDFromToken = pUserSession->userid();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
+    int nUserIDFromToken = pUserSession->getUserId();
     int nUserID = pRequest->getInputInteger("userid", 0);
     if (nUserIDFromToken != nUserID && !pRequest->isAdmin()) {
         pRequest->sendMessageError(cmd(), WsjcppError(403, "Deny change inmormation about user"));
@@ -1225,7 +1225,7 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest) {
         };
     }
 
-    pUserSession->setNick(sNick);
+    pUserSession->setUserName(sNick.toStdString());
     nlohmann::json jsonMeta;
     jsonMeta["userid"] = nUserID;
     jsonMeta["usernick"] = sNick.toStdString();
@@ -1274,8 +1274,8 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
 
     QString sAdminPassword = QString::fromStdString(jsonRequest.at("password"));
 
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
-    int nAdminUserID = pUserSession->userid();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
+    int nAdminUserID = pUserSession->getUserId();
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -1894,8 +1894,8 @@ void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest) {
     QString sEmail = QString::fromStdString(jsonRequest.at("email"));
     QString sPassword = QString::fromStdString(jsonRequest.at("password"));
     
-    WsjcppUserSession *pSession = pRequest->getUserSession();
-    int iUserID = pSession->userid();
+    WsjcppJsonRpc20UserSession *pSession = pRequest->getUserSession();
+    int iUserID = pSession->getUserId();
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
@@ -2041,8 +2041,8 @@ void CmdHandlerUsersChangeEmailVerification::handle(ModelRequest *pRequest) {
         return;
     }   
 
-    WsjcppUserSession *pSession = pRequest->getUserSession();
-    int iUserID = pSession->userid();
+    WsjcppJsonRpc20UserSession *pSession = pRequest->getUserSession();
+    int iUserID = pSession->getUserId();
 
     query.prepare("UPDATE users SET email=:email WHERE id=:userid");
     query.bindValue(":email", sEmail);
@@ -2084,9 +2084,9 @@ CmdHandlerUsersTokens::CmdHandlerUsersTokens()
 void CmdHandlerUsersTokens::handle(ModelRequest *pRequest) {
     
     int nUserID = 0;
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
     if (pUserSession != nullptr) {
-        nUserID = pUserSession->userid();
+        nUserID = pUserSession->getUserId();
     }
     
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
@@ -2153,9 +2153,9 @@ CmdHandlerUsersTokensDelete::CmdHandlerUsersTokensDelete()
 void CmdHandlerUsersTokensDelete::handle(ModelRequest *pRequest) {
     
     int nUserID = 0;
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
     if (pUserSession != nullptr) {
-        nUserID = pUserSession->userid();
+        nUserID = pUserSession->getUserId();
     }
     int nTokenID = pRequest->getInputInteger("tokenid", 0);
 

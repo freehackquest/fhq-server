@@ -40,10 +40,10 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
     std::string sType = pRequest->getInputString("type", "");
     sType = WsjcppCore::trim(sType);
 
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
     if (pUserSession != NULL) {
-        sEmail = pUserSession->email().toStdString();
-        nUserID = pUserSession->userid();
+        sEmail = pUserSession->getUserEmail();
+        nUserID = pUserSession->getUserId();
     }
     EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
 

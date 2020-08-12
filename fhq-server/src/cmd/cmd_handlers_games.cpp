@@ -119,7 +119,7 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
     std::string sAdminPassword = pRequest->getInputString("admin_password", "");
 
 
-    int nUserID = pRequest->getUserSession()->userid();
+    int nUserID = pRequest->getUserSession()->getUserId();
 
     QSqlDatabase db = *(pDatabase->database());
 

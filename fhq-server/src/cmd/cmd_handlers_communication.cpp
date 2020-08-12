@@ -29,8 +29,8 @@ void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
-    std::string sUsername = pUserSession->nick().toStdString();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
+    std::string sUsername = pUserSession->getUserName();
 
     std::string sMessage = "";
     if (jsonRequest["message"].is_string()) {
@@ -140,8 +140,8 @@ void CmdHandlerChatSendMessage_new::handle(ModelRequest *pRequest) {
     
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
-    int nUserId = pUserSession->userid();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
+    int nUserId = pUserSession->getUserId();
 
     std::string sMessage = "";
     if (jsonRequest["message"].is_string()) {
@@ -298,8 +298,8 @@ CmdHandlerChatEditMessage::CmdHandlerChatEditMessage()
 void CmdHandlerChatEditMessage::handle(ModelRequest *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
-    int nUserId = pUserSession->userid();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
+    int nUserId = pUserSession->getUserId();
 
     std::string sNewMessage = "";
     if (jsonRequest["message_new"].is_string()) {
@@ -384,8 +384,8 @@ void CmdHandlerChatDeleteMessage::handle(ModelRequest *pRequest) {
    
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
-    int nUserId = pUserSession->userid();
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
+    int nUserId = pUserSession->getUserId();
 
     int nIdMessage = 0;
     if (jsonRequest["message_id"].is_number_integer()) {
