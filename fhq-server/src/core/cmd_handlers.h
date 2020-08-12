@@ -127,22 +127,22 @@ class IWebSocketServer {
 };
 
 /*! 
- * CmdInputDef - helper api for define input params and descrip it for docs.
+ * WsjcppJsonRpc20ParamDef - helper api for define input params and descrip it for docs.
  * */
     
-class CmdInputDef {
+class WsjcppJsonRpc20ParamDef {
     public:
-        CmdInputDef(const std::string &sName, const std::string &sDescription);
-        CmdInputDef();
-        CmdInputDef & optional();
-        CmdInputDef & required();
-        CmdInputDef & string_();
-        CmdInputDef & integer_();
-        CmdInputDef & any_();
-        CmdInputDef & bool_();
-        CmdInputDef & description(const std::string &sDescription);
-        CmdInputDef & minval(int minval);
-        CmdInputDef & maxval(int maxval);
+        WsjcppJsonRpc20ParamDef(const std::string &sName, const std::string &sDescription);
+        WsjcppJsonRpc20ParamDef();
+        WsjcppJsonRpc20ParamDef & optional();
+        WsjcppJsonRpc20ParamDef & required();
+        WsjcppJsonRpc20ParamDef & string_();
+        WsjcppJsonRpc20ParamDef & integer_();
+        WsjcppJsonRpc20ParamDef & any_();
+        WsjcppJsonRpc20ParamDef & bool_();
+        WsjcppJsonRpc20ParamDef & description(const std::string &sDescription);
+        WsjcppJsonRpc20ParamDef & minval(int minval);
+        WsjcppJsonRpc20ParamDef & maxval(int maxval);
         nlohmann::json toJson();
         
         const std::string &getType();
@@ -165,7 +165,7 @@ class CmdInputDef {
         bool isMaxVal(); // TODO: redesign to validators
         int getMaxVal(); // TODO: redesign to validators
 
-        CmdInputDef &addValidator(WsjcppValidatorStringBase *pValidatorStringBase);
+        WsjcppJsonRpc20ParamDef &addValidator(WsjcppValidatorStringBase *pValidatorStringBase);
         
         const std::vector<WsjcppValidatorStringBase *> &listOfValidators();
 
@@ -244,7 +244,7 @@ class CmdHandlerBase { // TODO rename to WJSCppHandler
         bool accessAdmin();
         bool checkAccess(ModelRequest *pRequest);
 
-        virtual const std::vector<CmdInputDef> &inputs();
+        virtual const std::vector<WsjcppJsonRpc20ParamDef> &inputs();
         virtual void handle(ModelRequest *pRequest) = 0;
 
         // virtual void success(nlohmann::json jsonResponse);
@@ -257,20 +257,20 @@ class CmdHandlerBase { // TODO rename to WJSCppHandler
         void setActivatedFromVersion(const std::string &sActivatedFromVersion);
         void setDeprecatedFromVersion(const std::string &sDeprecatedFromVersion);
 
-        CmdInputDef &requireStringParam(const std::string &sName, const std::string &sDescription);
-        CmdInputDef &optionalStringParam(const std::string &sName, const std::string &sDescription);
-        CmdInputDef &requireIntegerParam(const std::string &sName, const std::string &sDescription);
-        CmdInputDef &optionalIntegerParam(const std::string &sName, const std::string &sDescription);
-        CmdInputDef &requireBooleanParam(const std::string &sName, const std::string &sDescription);
-        CmdInputDef &optionalBooleanParam(const std::string &sName, const std::string &sDescription);
+        WsjcppJsonRpc20ParamDef &requireStringParam(const std::string &sName, const std::string &sDescription);
+        WsjcppJsonRpc20ParamDef &optionalStringParam(const std::string &sName, const std::string &sDescription);
+        WsjcppJsonRpc20ParamDef &requireIntegerParam(const std::string &sName, const std::string &sDescription);
+        WsjcppJsonRpc20ParamDef &optionalIntegerParam(const std::string &sName, const std::string &sDescription);
+        WsjcppJsonRpc20ParamDef &requireBooleanParam(const std::string &sName, const std::string &sDescription);
+        WsjcppJsonRpc20ParamDef &optionalBooleanParam(const std::string &sName, const std::string &sDescription);
 
         std::string TAG;
         std::string m_sCmd;
         std::string m_sDescription;
 
     private:
-        std::vector<CmdInputDef> m_vInputs; // TODO redesign to map
-        // std::map<std::string, CmdInputDef*> *m_vCmdInputDefs;
+        std::vector<WsjcppJsonRpc20ParamDef> m_vInputs; // TODO redesign to map
+        // std::map<std::string, WsjcppJsonRpc20ParamDef*> *m_vWsjcppJsonRpc20ParamDefs;
         std::string m_sActivatedFromVersion;
         std::string m_sDeprecatedFromVersion;
         bool m_bAccessUnauthorized;

@@ -204,9 +204,9 @@ void ExportLibCliWebJS::exportAPImd(const std::string &sBasicDir) {
 
         std::string jsTemplate = "";
 
-        std::vector<CmdInputDef> vVin = pCmdHandlerBase->inputs();
+        std::vector<WsjcppJsonRpc20ParamDef> vVin = pCmdHandlerBase->inputs();
         for (int i = 0; i < vVin.size(); i++) {
-            CmdInputDef inDef = vVin[i];
+            WsjcppJsonRpc20ParamDef inDef = vVin[i];
             std::string nameIn = std::string(inDef.getName());
 
             apimd << " * " << inDef.getName() << " - " << inDef.getType() << ", " << inDef.getRestrict() << "; " << inDef.getDescription() << "\n";
@@ -564,13 +564,13 @@ void ExportLibCliWebJS::exportLibCliWebJSFile(const std::string &sBasicDir) {
                 "       // Deprecated From Version: " + pCmdHandlerBase->deprecatedFromVersion() << "\r\n";
         }
         
-        std::vector<CmdInputDef> vVin = pCmdHandlerBase->inputs();
+        std::vector<WsjcppJsonRpc20ParamDef> vVin = pCmdHandlerBase->inputs();
         if (vVin.size() > 0) {
             libwjscppcli_web_js_file <<
                 "       // Input params:\r\n"; 
         }
         for (int i = 0; i < vVin.size(); i++) {
-            CmdInputDef inDef = vVin[i];
+            WsjcppJsonRpc20ParamDef inDef = vVin[i];
             std::string nameIn = std::string(inDef.getName());
             libwjscppcli_web_js_file <<
                 "       // * " + nameIn + " - " + inDef.getType() + ", " + inDef.getRestrict() + " (" + inDef.getDescription() + ") \r\n";
@@ -581,7 +581,7 @@ void ExportLibCliWebJS::exportLibCliWebJSFile(const std::string &sBasicDir) {
             "        params.cmd = '" << sCmd << "';\r\n";
             // check required
         for (int i = 0; i < vVin.size(); i++) {
-            CmdInputDef inDef = vVin[i];
+            WsjcppJsonRpc20ParamDef inDef = vVin[i];
             if (inDef.isRequired()) {
                 std::string nameIn = std::string(vVin[i].getName());
                 libwjscppcli_web_js_file <<
@@ -992,13 +992,13 @@ void ExportLibCliWebJS::exportLibCliWebServiceTSFile(const std::string &sBasicDi
                 "       // Deprecated From Version: " + pCmdHandlerBase->deprecatedFromVersion() << "\r\n";
         }
         
-        std::vector<CmdInputDef> vVin = pCmdHandlerBase->inputs();
+        std::vector<WsjcppJsonRpc20ParamDef> vVin = pCmdHandlerBase->inputs();
         if (vVin.size() > 0) {
             libwjscppcli_web_service_ts_file <<
                 "       // Input params:\r\n"; 
         }
         for (int i = 0; i < vVin.size(); i++) {
-            CmdInputDef inDef = vVin[i];
+            WsjcppJsonRpc20ParamDef inDef = vVin[i];
             std::string nameIn = std::string(inDef.getName());
             libwjscppcli_web_service_ts_file <<
                 "       // * " + nameIn + " - " + inDef.getType() + ", " + inDef.getRestrict() + " (" + inDef.getDescription() + ") \r\n";
@@ -1009,7 +1009,7 @@ void ExportLibCliWebJS::exportLibCliWebServiceTSFile(const std::string &sBasicDi
             "        params.cmd = '" << sCmd << "';\r\n";
             // check required
         for (int i = 0; i < vVin.size(); i++) {
-            CmdInputDef inDef = vVin[i];
+            WsjcppJsonRpc20ParamDef inDef = vVin[i];
             if (inDef.isRequired()) {
                 std::string nameIn = std::string(vVin[i].getName());
                 libwjscppcli_web_service_ts_file <<

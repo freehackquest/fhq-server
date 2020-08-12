@@ -1067,7 +1067,7 @@ bool EmployServer::validateInputParameters(WsjcppJsonRpc20Error &error, CmdHandl
     try {
         // TODO check extra params
 
-        for (CmdInputDef inDef : pCmdHandler->inputs()) {
+        for (WsjcppJsonRpc20ParamDef inDef : pCmdHandler->inputs()) {
             
             auto itJsonParamName = jsonMessage.find(inDef.getName());
             const auto endJson = jsonMessage.end();

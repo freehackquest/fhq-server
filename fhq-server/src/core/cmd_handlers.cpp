@@ -313,10 +313,10 @@ void WsjcppSocketClient::socketDisconnected() {
 }
 
 // ****************************
-// **** CmdInputDef
+// **** WsjcppJsonRpc20ParamDef
 // ****************************
 
-CmdInputDef::CmdInputDef(const std::string &sName, const std::string &sDescription) {
+WsjcppJsonRpc20ParamDef::WsjcppJsonRpc20ParamDef(const std::string &sName, const std::string &sDescription) {
     m_sName = sName;
     m_sDescription = sDescription;
     m_bSettedMinVal = false;
@@ -325,63 +325,63 @@ CmdInputDef::CmdInputDef(const std::string &sName, const std::string &sDescripti
 
 // ---------------------------------------------------------------------
 
-CmdInputDef::CmdInputDef() {
+WsjcppJsonRpc20ParamDef::WsjcppJsonRpc20ParamDef() {
     m_bSettedMinVal = false;
     m_bSettedMaxVal = false;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::optional() {
+WsjcppJsonRpc20ParamDef & WsjcppJsonRpc20ParamDef::optional() {
     m_sRestrict = "optional";
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::required() {
+WsjcppJsonRpc20ParamDef & WsjcppJsonRpc20ParamDef::required() {
     m_sRestrict = "required";
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::string_() {
+WsjcppJsonRpc20ParamDef & WsjcppJsonRpc20ParamDef::string_() {
     m_sType = std::string(CMD_INPUT_DEF_TYPE_STRING);
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::integer_() {
+WsjcppJsonRpc20ParamDef & WsjcppJsonRpc20ParamDef::integer_() {
     m_sType = CMD_INPUT_DEF_TYPE_INTEGER;
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::bool_() {
+WsjcppJsonRpc20ParamDef & WsjcppJsonRpc20ParamDef::bool_() {
     m_sType = std::string(CMD_INPUT_DEF_TYPE_BOOL);
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::any_() {
+WsjcppJsonRpc20ParamDef & WsjcppJsonRpc20ParamDef::any_() {
     m_sType = std::string(CMD_INPUT_DEF_TYPE_ANY);
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::description(const std::string& s) {
+WsjcppJsonRpc20ParamDef & WsjcppJsonRpc20ParamDef::description(const std::string& s) {
     m_sDescription = s;
     return *this;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::minval(int minval) {
+WsjcppJsonRpc20ParamDef & WsjcppJsonRpc20ParamDef::minval(int minval) {
     m_bSettedMinVal = true;
     m_nMinVal = minval;
     return *this;
@@ -389,7 +389,7 @@ CmdInputDef & CmdInputDef::minval(int minval) {
 
 // ---------------------------------------------------------------------
 
-CmdInputDef & CmdInputDef::maxval(int maxval) {
+WsjcppJsonRpc20ParamDef & WsjcppJsonRpc20ParamDef::maxval(int maxval) {
     m_bSettedMaxVal = true;
     m_nMaxVal = maxval;
     return *this;
@@ -397,7 +397,7 @@ CmdInputDef & CmdInputDef::maxval(int maxval) {
 
 // ---------------------------------------------------------------------
 
-nlohmann::json CmdInputDef::toJson() {
+nlohmann::json WsjcppJsonRpc20ParamDef::toJson() {
     nlohmann::json obj;
     obj["name"] = m_sName;
     obj["type"] = m_sType;
@@ -409,115 +409,115 @@ nlohmann::json CmdInputDef::toJson() {
 
 // ---------------------------------------------------------------------
 
-const std::string &CmdInputDef::getType() {
+const std::string &WsjcppJsonRpc20ParamDef::getType() {
     return m_sType;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &CmdInputDef::getType() const {
+const std::string &WsjcppJsonRpc20ParamDef::getType() const {
     return m_sType;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &CmdInputDef::getName() {
+const std::string &WsjcppJsonRpc20ParamDef::getName() {
     return m_sName;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &CmdInputDef::getName() const {
+const std::string &WsjcppJsonRpc20ParamDef::getName() const {
     return m_sName;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &CmdInputDef::getRestrict() {
+const std::string &WsjcppJsonRpc20ParamDef::getRestrict() {
     return m_sRestrict;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &CmdInputDef::getRestrict() const {
+const std::string &WsjcppJsonRpc20ParamDef::getRestrict() const {
     return m_sRestrict;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &CmdInputDef::getDescription() {
+const std::string &WsjcppJsonRpc20ParamDef::getDescription() {
     return m_sDescription;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &CmdInputDef::getDescription() const {
+const std::string &WsjcppJsonRpc20ParamDef::getDescription() const {
     return m_sDescription;
 }
 
 // ---------------------------------------------------------------------
 
-bool CmdInputDef::isRequired() {
+bool WsjcppJsonRpc20ParamDef::isRequired() {
     return m_sRestrict == "required";
 }
 
 // ---------------------------------------------------------------------
 
-bool CmdInputDef::isInteger() {
+bool WsjcppJsonRpc20ParamDef::isInteger() {
     return m_sType == CMD_INPUT_DEF_TYPE_INTEGER;
 }
 
 // ---------------------------------------------------------------------
 
-bool CmdInputDef::isString() {
+bool WsjcppJsonRpc20ParamDef::isString() {
     return m_sType == CMD_INPUT_DEF_TYPE_STRING;
 }
 
 // ---------------------------------------------------------------------
 
-bool CmdInputDef::isBool() {
+bool WsjcppJsonRpc20ParamDef::isBool() {
     return m_sType == CMD_INPUT_DEF_TYPE_BOOL;
 }
 
 // ---------------------------------------------------------------------
 
-bool CmdInputDef::isAny() {
+bool WsjcppJsonRpc20ParamDef::isAny() {
     return m_sType == CMD_INPUT_DEF_TYPE_ANY;
 }
 
 // ---------------------------------------------------------------------
 
-bool CmdInputDef::isMinVal() {
+bool WsjcppJsonRpc20ParamDef::isMinVal() {
     return m_bSettedMaxVal;
 }
 
 // ---------------------------------------------------------------------
 
-int CmdInputDef::getMinVal() {
+int WsjcppJsonRpc20ParamDef::getMinVal() {
     return m_nMinVal;
 }
 
 // ---------------------------------------------------------------------
 
-bool CmdInputDef::isMaxVal() {
+bool WsjcppJsonRpc20ParamDef::isMaxVal() {
     return m_bSettedMaxVal;
 }
 
 // ---------------------------------------------------------------------
 
-int CmdInputDef::getMaxVal() {
+int WsjcppJsonRpc20ParamDef::getMaxVal() {
     return m_nMaxVal;
 }
 
 // ---------------------------------------------------------------------
 
-const std::vector<WsjcppValidatorStringBase *> &CmdInputDef::listOfValidators() {
+const std::vector<WsjcppValidatorStringBase *> &WsjcppJsonRpc20ParamDef::listOfValidators() {
     return m_vValidatorsString;
 }
 
 // ---------------------------------------------------------------------
 
-CmdInputDef &CmdInputDef::addValidator(WsjcppValidatorStringBase *pValidatorStringBase) {
+WsjcppJsonRpc20ParamDef &WsjcppJsonRpc20ParamDef::addValidator(WsjcppValidatorStringBase *pValidatorStringBase) {
     // TODO check type
     m_vValidatorsString.push_back(pValidatorStringBase);
     return *this;
@@ -820,9 +820,9 @@ void CmdHandlerBase::setDeprecatedFromVersion(const std::string &sDeprecatedFrom
 
 // ---------------------------------------------------------------------
 
-CmdInputDef &CmdHandlerBase::requireStringParam(const std::string &sName, const std::string &sDescription) {
+WsjcppJsonRpc20ParamDef &CmdHandlerBase::requireStringParam(const std::string &sName, const std::string &sDescription) {
     // TODO check duplicates
-    CmdInputDef pStringDef(sName, sDescription);
+    WsjcppJsonRpc20ParamDef pStringDef(sName, sDescription);
     pStringDef.string_().required();
     m_vInputs.push_back(pStringDef);
     return m_vInputs[m_vInputs.size()-1];
@@ -830,9 +830,9 @@ CmdInputDef &CmdHandlerBase::requireStringParam(const std::string &sName, const 
 
 // ---------------------------------------------------------------------
 
-CmdInputDef &CmdHandlerBase::optionalStringParam(const std::string &sName, const std::string &sDescription) {
+WsjcppJsonRpc20ParamDef &CmdHandlerBase::optionalStringParam(const std::string &sName, const std::string &sDescription) {
     // TODO check duplicates
-    CmdInputDef pStringDef(sName, sDescription);
+    WsjcppJsonRpc20ParamDef pStringDef(sName, sDescription);
     pStringDef.string_().optional();
     m_vInputs.push_back(pStringDef);
     return m_vInputs[m_vInputs.size()-1];
@@ -840,9 +840,9 @@ CmdInputDef &CmdHandlerBase::optionalStringParam(const std::string &sName, const
 
 // ---------------------------------------------------------------------
 
-CmdInputDef &CmdHandlerBase::requireIntegerParam(const std::string &sName, const std::string &sDescription) {
+WsjcppJsonRpc20ParamDef &CmdHandlerBase::requireIntegerParam(const std::string &sName, const std::string &sDescription) {
     // TODO check duplicates
-    CmdInputDef pIntegerDef(sName, sDescription);
+    WsjcppJsonRpc20ParamDef pIntegerDef(sName, sDescription);
     pIntegerDef.integer_().required();
     m_vInputs.push_back(pIntegerDef);
     return m_vInputs[m_vInputs.size()-1];
@@ -850,9 +850,9 @@ CmdInputDef &CmdHandlerBase::requireIntegerParam(const std::string &sName, const
 
 // ---------------------------------------------------------------------
 
-CmdInputDef &CmdHandlerBase::optionalIntegerParam(const std::string &sName, const std::string &sDescription) {
+WsjcppJsonRpc20ParamDef &CmdHandlerBase::optionalIntegerParam(const std::string &sName, const std::string &sDescription) {
     // TODO check duplicates
-    CmdInputDef pIntegerDef(sName, sDescription);
+    WsjcppJsonRpc20ParamDef pIntegerDef(sName, sDescription);
     pIntegerDef.integer_().optional();
     m_vInputs.push_back(pIntegerDef);
     return m_vInputs[m_vInputs.size()-1];
@@ -860,9 +860,9 @@ CmdInputDef &CmdHandlerBase::optionalIntegerParam(const std::string &sName, cons
 
 // ---------------------------------------------------------------------
 
-CmdInputDef &CmdHandlerBase::requireBooleanParam(const std::string &sName, const std::string &sDescription) {
+WsjcppJsonRpc20ParamDef &CmdHandlerBase::requireBooleanParam(const std::string &sName, const std::string &sDescription) {
     // TODO check duplicates
-    CmdInputDef pBooleanDef(sName, sDescription);
+    WsjcppJsonRpc20ParamDef pBooleanDef(sName, sDescription);
     pBooleanDef.bool_().required();
     m_vInputs.push_back(pBooleanDef);
     return m_vInputs[m_vInputs.size()-1];
@@ -870,9 +870,9 @@ CmdInputDef &CmdHandlerBase::requireBooleanParam(const std::string &sName, const
 
 // ---------------------------------------------------------------------
 
-CmdInputDef &CmdHandlerBase::optionalBooleanParam(const std::string &sName, const std::string &sDescription) {
+WsjcppJsonRpc20ParamDef &CmdHandlerBase::optionalBooleanParam(const std::string &sName, const std::string &sDescription) {
     // TODO check duplicates
-    CmdInputDef pBooleanDef(sName, sDescription);
+    WsjcppJsonRpc20ParamDef pBooleanDef(sName, sDescription);
     pBooleanDef.bool_().optional();
     m_vInputs.push_back(pBooleanDef);
     return m_vInputs[m_vInputs.size()-1];
@@ -880,7 +880,7 @@ CmdInputDef &CmdHandlerBase::optionalBooleanParam(const std::string &sName, cons
 
 // ---------------------------------------------------------------------
 
-const std::vector<CmdInputDef> &CmdHandlerBase::inputs() {
+const std::vector<WsjcppJsonRpc20ParamDef> &CmdHandlerBase::inputs() {
     return m_vInputs;
 }
 
@@ -990,7 +990,7 @@ void WJSCppCmdHandlerServerApi::handle(ModelRequest *pRequest) {
         jsonHandler["access_admin"] = pHandler->accessAdmin();
 
         nlohmann::json jsonInputs = nlohmann::json::array();
-        std::vector<CmdInputDef> ins = pHandler->inputs();
+        std::vector<WsjcppJsonRpc20ParamDef> ins = pHandler->inputs();
         for (unsigned int i = 0; i < ins.size(); i++) {
             jsonInputs.push_back(ins[i].toJson());
         }

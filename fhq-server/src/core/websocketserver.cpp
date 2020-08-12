@@ -304,14 +304,17 @@ void WebSocketServer::sendMessage(QWebSocket *pClient, const nlohmann::json& jso
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string &sM, WsjcppJsonRpc20Error error) {
+void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string &sId, WsjcppJsonRpc20Error error) {
     nlohmann::json jsonResponse;
-    jsonResponse["cmd"] = sCmd;
-    jsonResponse["m"] = sM;
-    jsonResponse["result"] = "FAIL";
-    jsonResponse["error"] = error.getErrorMessage();
-    jsonResponse["code"] = error.getErrorCode();
-    WsjcppLog::err(TAG, "WS-ERROR >>> " + sCmd + ":" + sM + ", messsage: " + error.getErrorMessage());
+    jsonResponse["method"] = sCmd;
+    jsonResponse["jsonrpc"] = "2.0";
+    jsonResponse["id"] = sId;
+    jsonResponse["cmd"] = sCmd; // deprecated
+    jsonResponse["m"] = sId; // deprecated
+    jsonResponse["result"] = "FAIL"; // deprecated
+    jsonResponse["error"] = error.getErrorMessage(); // deprecated
+    jsonResponse["code"] = error.getErrorCode(); // deprecated
+    WsjcppLog::err(TAG, "WS-ERROR >>> " + sCmd + ":" + sId + ", messsage: " + error.getErrorMessage());
     this->sendMessage(pClient, jsonResponse);
     // TODO jsonrpc20
     // {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method not found."}, "id": "1"}

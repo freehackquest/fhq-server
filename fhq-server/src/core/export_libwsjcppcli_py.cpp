@@ -260,9 +260,9 @@ Access: unauthorized - **no**,  user - **no**,  admin - **yes**
 
         std::string pythonTemplate = "";
 
-        std::vector<CmdInputDef> vVin = pCmdHandlerBase->inputs();
+        std::vector<WsjcppJsonRpc20ParamDef> vVin = pCmdHandlerBase->inputs();
         for (int i = 0; i < vVin.size(); i++) {
-            CmdInputDef inDef = vVin[i];
+            WsjcppJsonRpc20ParamDef inDef = vVin[i];
             std::string nameIn = std::string(inDef.getName());
 
             apimd << " * " << inDef.getName() << " - " << inDef.getType() << ", " << inDef.getRestrict() << "; " << inDef.getDescription() << "\n";
@@ -489,9 +489,9 @@ void ExportLibWsjCppCliPy::export__init__py() {
         builder
             .sub("Args:");
         
-        std::vector<CmdInputDef> vVin = pCmdHandlerBase->inputs();
+        std::vector<WsjcppJsonRpc20ParamDef> vVin = pCmdHandlerBase->inputs();
         for (int i = 0; i < vVin.size(); i++) {
-            CmdInputDef inDef = vVin[i];
+            WsjcppJsonRpc20ParamDef inDef = vVin[i];
             std::string nameIn = std::string(inDef.getName());
             builder.add(nameIn + " (" + inDef.getType() + "): " + inDef.getRestrict() + ", " + inDef.getDescription());
         }
@@ -523,7 +523,7 @@ void ExportLibWsjCppCliPy::export__init__py() {
                     .end()
                 .end();
         for (int i = 0; i < vVin.size(); i++) {
-            CmdInputDef inDef = vVin[i];
+            WsjcppJsonRpc20ParamDef inDef = vVin[i];
             if (inDef.isRequired()) {
                 std::string nameIn = std::string(vVin[i].getName());
                 builder
