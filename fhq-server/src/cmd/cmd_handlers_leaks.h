@@ -11,7 +11,7 @@ class CmdHandlerLeaksList : public CmdHandlerBase {
 
     public:
         CmdHandlerLeaksList();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerLeaksList)
@@ -24,7 +24,7 @@ class CmdHandlerLeaksAdd : public CmdHandlerBase {
 
     public:
         CmdHandlerLeaksAdd();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerLeaksAdd)
@@ -37,7 +37,7 @@ class CmdHandlerLeaksUpdate : public CmdHandlerBase {
 
     public:
         CmdHandlerLeaksUpdate();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerLeaksUpdate)
@@ -50,7 +50,7 @@ class CmdHandlerLeaksDelete : public CmdHandlerBase {
 
     public:
         CmdHandlerLeaksDelete();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerLeaksDelete)
@@ -63,7 +63,7 @@ class CmdHandlerLeaksBuy : public CmdHandlerBase {
 
     public:
         CmdHandlerLeaksBuy();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerLeaksBuy)

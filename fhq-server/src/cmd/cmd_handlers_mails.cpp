@@ -22,7 +22,7 @@ CmdHandlerMailInfo::CmdHandlerMailInfo()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerMailInfo::handle(ModelRequest *pRequest) {
+void CmdHandlerMailInfo::handle(WsjcppJsonRpc20Request *pRequest) {
 
     pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
@@ -48,7 +48,7 @@ CmdHandlerMailSend::CmdHandlerMailSend()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerMailSend::handle(ModelRequest *pRequest) {
+void CmdHandlerMailSend::handle(WsjcppJsonRpc20Request *pRequest) {
     nlohmann::json jsonResponse;
 
     std::string sEmail = pRequest->getInputString("to", "");
@@ -81,7 +81,7 @@ CmdHandlerMailsList::CmdHandlerMailsList()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerMailsList::handle(ModelRequest *pRequest) {
+void CmdHandlerMailsList::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     nlohmann::json jsonResponse;
 

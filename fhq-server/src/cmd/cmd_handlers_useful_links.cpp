@@ -91,7 +91,7 @@ struct QueryFilters {
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksList::handle(WsjcppJsonRpc20Request *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     int nUserId = 0;
     WsjcppJsonRpc20UserSession *pSession = pRequest->getUserSession();
@@ -210,7 +210,7 @@ CmdHandlerUsefulLinksRetrieve::CmdHandlerUsefulLinksRetrieve()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksRetrieve::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksRetrieve::handle(WsjcppJsonRpc20Request *pRequest) {
     int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
     int nUserId = 0;
     WsjcppJsonRpc20UserSession *pSession = pRequest->getUserSession();
@@ -299,7 +299,7 @@ CmdHandlerUsefulLinksAdd::CmdHandlerUsefulLinksAdd()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksAdd::handle(WsjcppJsonRpc20Request *pRequest) {
     std::string sUrl = pRequest->getInputString("url", "");
     std::string sDescription = pRequest->getInputString("description", "");
     std::string sAuthor = pRequest->getInputString("author", "");
@@ -364,7 +364,7 @@ CmdHandlerUsefulLinksDelete::CmdHandlerUsefulLinksDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksDelete::handle(WsjcppJsonRpc20Request *pRequest) {
 
     int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
     
@@ -444,7 +444,7 @@ CmdHandlerUsefulLinksUpdate::CmdHandlerUsefulLinksUpdate()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksUpdate::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
     
     int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
     std::string sUrl = pRequest->getInputString("url", "");
@@ -501,7 +501,7 @@ CmdHandlerUsefulLinksUserFavoriteList::CmdHandlerUsefulLinksUserFavoriteList()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksUserFavoriteList::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksUserFavoriteList::handle(WsjcppJsonRpc20Request *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     int nUserId = 0;
     WsjcppJsonRpc20UserSession *pSession = pRequest->getUserSession();
@@ -574,7 +574,7 @@ CmdHandlerUsefulLinksUserFavorite::CmdHandlerUsefulLinksUserFavorite()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksUserFavorite::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksUserFavorite::handle(WsjcppJsonRpc20Request *pRequest) {
     int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
     int nUserId = 0;
     WsjcppJsonRpc20UserSession *pSession = pRequest->getUserSession();
@@ -651,7 +651,7 @@ CmdHandlerUsefulLinksUserUnfavorite::CmdHandlerUsefulLinksUserUnfavorite()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksUserUnfavorite::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksUserUnfavorite::handle(WsjcppJsonRpc20Request *pRequest) {
     int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
     int nUserId = 0;
     WsjcppJsonRpc20UserSession *pSession = pRequest->getUserSession();
@@ -711,7 +711,7 @@ CmdHandlerUsefulLinksClicked::CmdHandlerUsefulLinksClicked()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksClicked::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksClicked::handle(WsjcppJsonRpc20Request *pRequest) {
     int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
@@ -754,7 +754,7 @@ CmdHandlerUsefulLinksCommentList::CmdHandlerUsefulLinksCommentList()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksCommentList::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksCommentList::handle(WsjcppJsonRpc20Request *pRequest) {
 
     int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
 
@@ -820,7 +820,7 @@ CmdHandlerUsefulLinksCommentAdd::CmdHandlerUsefulLinksCommentAdd()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksCommentAdd::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksCommentAdd::handle(WsjcppJsonRpc20Request *pRequest) {
     int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
     std::string sCommentValue = pRequest->getInputString("comment", "");
     int nUserId = pRequest->getUserSession()->getUserId();
@@ -906,7 +906,7 @@ CmdHandlerUsefulLinksCommentDelete::CmdHandlerUsefulLinksCommentDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksCommentDelete::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksCommentDelete::handle(WsjcppJsonRpc20Request *pRequest) {
 
     int nUsefulLinkCommentId = pRequest->getInputInteger("useful_link_comment_id", 0);
 
@@ -973,7 +973,7 @@ CmdHandlerUsefulLinksTagList::CmdHandlerUsefulLinksTagList()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksTagList::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksTagList::handle(WsjcppJsonRpc20Request *pRequest) {
 
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
@@ -1021,7 +1021,7 @@ CmdHandlerUsefulLinksTagAdd::CmdHandlerUsefulLinksTagAdd()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksTagAdd::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksTagAdd::handle(WsjcppJsonRpc20Request *pRequest) {
     int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
     std::string sTagValue = pRequest->getInputString("tag", "");
     sTagValue = WsjcppCore::trim(sTagValue);
@@ -1105,7 +1105,7 @@ CmdHandlerUsefulLinksTagDelete::CmdHandlerUsefulLinksTagDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksTagDelete::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksTagDelete::handle(WsjcppJsonRpc20Request *pRequest) {
     int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
     std::string sTagValue = pRequest->getInputString("tag", "");
     sTagValue = WsjcppCore::trim(sTagValue);
@@ -1187,7 +1187,7 @@ CmdHandlerUsefulLinksUserPropose::CmdHandlerUsefulLinksUserPropose()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksUserPropose::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksUserPropose::handle(WsjcppJsonRpc20Request *pRequest) {
     pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
@@ -1210,6 +1210,6 @@ CmdHandlerUsefulLinksUserProposeApprove::CmdHandlerUsefulLinksUserProposeApprove
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsefulLinksUserProposeApprove::handle(ModelRequest *pRequest) {
+void CmdHandlerUsefulLinksUserProposeApprove::handle(WsjcppJsonRpc20Request *pRequest) {
     pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }

@@ -10,7 +10,7 @@
 class CmdClassbookAddRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookAddRecordHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdClassbookAddRecordHandler)
@@ -21,7 +21,7 @@ REGISTRY_CMD(CmdClassbookAddRecordHandler)
 class CmdClassbookDeleteRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookDeleteRecordHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdClassbookDeleteRecordHandler)
@@ -32,7 +32,7 @@ REGISTRY_CMD(CmdClassbookDeleteRecordHandler)
 class CmdClassbookExportHandler : public CmdHandlerBase {
     public:
         CmdClassbookExportHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 
     private:
         void createHtml(QFile *file, const std::string &sLang, QSqlQuery query);
@@ -47,7 +47,7 @@ REGISTRY_CMD(CmdClassbookExportHandler)
 class CmdClassbookInfoHandler : public CmdHandlerBase {
     public:
         CmdClassbookInfoHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdClassbookInfoHandler)
@@ -58,7 +58,7 @@ REGISTRY_CMD(CmdClassbookInfoHandler)
 class CmdClassbookListHandler : public CmdHandlerBase {
     public:
         CmdClassbookListHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdClassbookListHandler)
@@ -69,7 +69,7 @@ REGISTRY_CMD(CmdClassbookListHandler)
 class CmdClassbookUpdateRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookUpdateRecordHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdClassbookUpdateRecordHandler)
@@ -81,7 +81,7 @@ REGISTRY_CMD(CmdClassbookUpdateRecordHandler)
 class CmdClassbookLocalizationAddRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookLocalizationAddRecordHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdClassbookLocalizationAddRecordHandler)
@@ -94,7 +94,7 @@ REGISTRY_CMD(CmdClassbookLocalizationAddRecordHandler)
 class CmdClassbookLocalizationDeleteRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookLocalizationDeleteRecordHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdClassbookLocalizationDeleteRecordHandler)
@@ -106,7 +106,7 @@ REGISTRY_CMD(CmdClassbookLocalizationDeleteRecordHandler)
 class CmdClassbookLocalizationInfoHandler : public CmdHandlerBase {
     public:
         CmdClassbookLocalizationInfoHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdClassbookLocalizationInfoHandler)
@@ -119,7 +119,7 @@ REGISTRY_CMD(CmdClassbookLocalizationInfoHandler)
 class CmdClassbookLocalizationUpdateRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookLocalizationUpdateRecordHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdClassbookLocalizationUpdateRecordHandler)
@@ -132,7 +132,7 @@ REGISTRY_CMD(CmdClassbookLocalizationUpdateRecordHandler)
 // class CmdClassbookLocalizationUpdateRecordHandler : public CmdHandlerBase {
 //     public:
 //         CmdClassbookLocalizationUpdateRecordHandler();
-//         virtual void handle(ModelRequest *pRequest);
+//         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 // };
 
 // REGISTRY_CMD(CmdClassbookLocalizationUpdateRecordHandler)
@@ -144,7 +144,7 @@ REGISTRY_CMD(CmdClassbookLocalizationUpdateRecordHandler)
 class CmdClassbookProposalAddRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookProposalAddRecordHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdClassbookProposalAddRecordHandler)
@@ -156,7 +156,7 @@ REGISTRY_CMD(CmdClassbookProposalAddRecordHandler)
 class CmdClassbookProposalDeleteRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookProposalDeleteRecordHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdClassbookProposalDeleteRecordHandler)
@@ -169,7 +169,7 @@ REGISTRY_CMD(CmdClassbookProposalDeleteRecordHandler)
 class CmdClassbookProposalInfoHandler : public CmdHandlerBase {
     public:
         CmdClassbookProposalInfoHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdClassbookProposalInfoHandler)
@@ -182,7 +182,7 @@ REGISTRY_CMD(CmdClassbookProposalInfoHandler)
 class CmdClassbookProposalListHandler : public CmdHandlerBase {
     public:
         CmdClassbookProposalListHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdClassbookProposalListHandler)
@@ -195,7 +195,7 @@ REGISTRY_CMD(CmdClassbookProposalListHandler)
 class CmdClassbookProposalPrepareMergeRecordHandler : public CmdHandlerBase {
     public:
         CmdClassbookProposalPrepareMergeRecordHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdClassbookProposalPrepareMergeRecordHandler)
@@ -208,7 +208,7 @@ REGISTRY_CMD(CmdClassbookProposalPrepareMergeRecordHandler)
 class CmdClassbookProposalApproveHandler : public CmdHandlerBase {
     public:
         CmdClassbookProposalApproveHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdClassbookProposalApproveHandler)
@@ -221,7 +221,7 @@ REGISTRY_CMD(CmdClassbookProposalApproveHandler)
 class CmdClassbookProposalUpdateHandler : public CmdHandlerBase {
     public:
         CmdClassbookProposalUpdateHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdClassbookProposalUpdateHandler)
@@ -233,7 +233,7 @@ REGISTRY_CMD(CmdClassbookProposalUpdateHandler)
 class CmdClassbookHandler : public CmdHandlerBase {
     public:
         CmdClassbookHandler();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 #endif // CMD_HADNLERS_CLASSBOOK_H

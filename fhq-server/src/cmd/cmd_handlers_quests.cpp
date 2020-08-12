@@ -28,7 +28,7 @@ CmdHandlerQuests::CmdHandlerQuests()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuests::handle(ModelRequest *pRequest) {
+void CmdHandlerQuests::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
@@ -153,7 +153,7 @@ CmdHandlerQuest::CmdHandlerQuest()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuest::handle(ModelRequest *pRequest) {
+void CmdHandlerQuest::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     nlohmann::json jsonResponse;
 
@@ -334,7 +334,7 @@ CmdHandlerQuestPass::CmdHandlerQuestPass()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
+void CmdHandlerQuestPass::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     EmployServerInfo *pServerInfo = findWsjcppEmploy<EmployServerInfo>();
 
@@ -521,7 +521,7 @@ CmdHandlerCreateQuest::CmdHandlerCreateQuest()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
+void CmdHandlerCreateQuest::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     EmployServerInfo *pServerInfo = findWsjcppEmploy<EmployServerInfo>();
 
@@ -672,7 +672,7 @@ CmdHandlerQuestDelete::CmdHandlerQuestDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestDelete::handle(ModelRequest *pRequest) {
+void CmdHandlerQuestDelete::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     EmployServerInfo *pServerInfo = findWsjcppEmploy<EmployServerInfo>();
 
@@ -774,7 +774,7 @@ CmdHandlerQuestProposal::CmdHandlerQuestProposal()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
+void CmdHandlerQuestProposal::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
@@ -932,7 +932,7 @@ CmdHandlerQuestStatistics::CmdHandlerQuestStatistics()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest) {
+void CmdHandlerQuestStatistics::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
@@ -1068,7 +1068,7 @@ CmdHandlerQuestUpdate::CmdHandlerQuestUpdate()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
+void CmdHandlerQuestUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
@@ -1339,7 +1339,7 @@ CmdHandlerQuestsSubjects::CmdHandlerQuestsSubjects()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestsSubjects::handle(ModelRequest *pRequest) {
+void CmdHandlerQuestsSubjects::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
@@ -1389,7 +1389,7 @@ CmdHandlerAddHint::CmdHandlerAddHint()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerAddHint::handle(ModelRequest *pRequest) {
+void CmdHandlerAddHint::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
@@ -1452,7 +1452,7 @@ CmdHandlerAnswerList::CmdHandlerAnswerList()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerAnswerList::handle(ModelRequest *pRequest) {
+void CmdHandlerAnswerList::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
@@ -1624,7 +1624,7 @@ CmdHandlerDeleteHint::CmdHandlerDeleteHint()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerDeleteHint::handle(ModelRequest *pRequest) {
+void CmdHandlerDeleteHint::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
@@ -1661,7 +1661,7 @@ CmdHandlerHints::CmdHandlerHints()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerHints::handle(ModelRequest *pRequest) {
+void CmdHandlerHints::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
@@ -1717,7 +1717,7 @@ CmdHandlerQuestsProposalList::CmdHandlerQuestsProposalList()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
+void CmdHandlerQuestsProposalList::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
@@ -1821,7 +1821,7 @@ CmdHandlerQuestsFilesUpload::CmdHandlerQuestsFilesUpload()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestsFilesUpload::handle(ModelRequest *pRequest) {
+void CmdHandlerQuestsFilesUpload::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     nlohmann::json jsonResponse;
     QSqlDatabase db = *(pDatabase->database());

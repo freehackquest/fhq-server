@@ -21,7 +21,7 @@ CmdHandlerQuestsWriteUpsList::CmdHandlerQuestsWriteUpsList()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest) {
+void CmdHandlerQuestsWriteUpsList::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
@@ -107,7 +107,7 @@ CmdHandlerQuestsWriteUpsProposal::CmdHandlerQuestsWriteUpsProposal()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
+void CmdHandlerQuestsWriteUpsProposal::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
@@ -205,7 +205,7 @@ CmdHandlerQuestsWriteUpsUpdate::CmdHandlerQuestsWriteUpsUpdate()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestsWriteUpsUpdate::handle(ModelRequest *pRequest) {
+void CmdHandlerQuestsWriteUpsUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
@@ -287,7 +287,7 @@ CmdHandlerQuestsWriteUpsDelete::CmdHandlerQuestsWriteUpsDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerQuestsWriteUpsDelete::handle(ModelRequest *pRequest) {
+void CmdHandlerQuestsWriteUpsDelete::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();

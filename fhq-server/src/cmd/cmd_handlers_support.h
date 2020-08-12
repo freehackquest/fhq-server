@@ -10,7 +10,7 @@ class CmdHandlerFeedbackAdd : public CmdHandlerBase {
 
     public:
         CmdHandlerFeedbackAdd();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerFeedbackAdd)

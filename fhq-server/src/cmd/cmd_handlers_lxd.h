@@ -12,7 +12,7 @@ class CmdHandlerLXDContainers : public CmdHandlerBase {
 
 public:
     CmdHandlerLXDContainers();
-    virtual void handle(ModelRequest *pRequest);
+    virtual void handle(WsjcppJsonRpc20Request *pRequest);
 
 private:
     std::string TAG;
@@ -33,7 +33,7 @@ class CmdHandlerLXDInfo : public CmdHandlerBase {
 
 public:
     CmdHandlerLXDInfo();
-    virtual void handle(ModelRequest *pRequest);
+    virtual void handle(WsjcppJsonRpc20Request *pRequest);
     bool get_state(const std::string& sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState);
 };
 
@@ -47,7 +47,7 @@ class CmdHandlerLXDList : public CmdHandlerBase {
 
 public:
     CmdHandlerLXDList();
-    virtual void handle(ModelRequest *pRequest);
+    virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerLXDList)
@@ -60,7 +60,7 @@ class CmdHandlerLXDExec : public CmdHandlerBase {
 
 public:
     CmdHandlerLXDExec();
-    void handle(ModelRequest *pRequest) override;
+    void handle(WsjcppJsonRpc20Request *pRequest) override;
 
     static bool exec_command(const std::string &sName, const std::string &sCommand, std::string &sError,
                              int &nErrorCode, std::string &sOutput);
@@ -76,7 +76,7 @@ class CmdHandlerLXDFile : public CmdHandlerBase {
 
 public:
     CmdHandlerLXDFile();
-    void handle(ModelRequest *pRequest) override;
+    void handle(WsjcppJsonRpc20Request *pRequest) override;
 
     void pull_file(LXDContainer *pContainer, const std::string &sPath, std::string &sb64File,
                    std::string &sError, int &nErrorCode, bool &isDirectory);
@@ -96,7 +96,7 @@ class CmdHandlerLXDOpenPort : public CmdHandlerBase {
 
 public:
     CmdHandlerLXDOpenPort();
-    void handle(ModelRequest *pRequest) override;
+    void handle(WsjcppJsonRpc20Request *pRequest) override;
     bool is_port_valide(const std::string &sProto, const int &nPort, std::string &sError,
                         int &nErrorCode);
 
@@ -112,7 +112,7 @@ class CmdHandlerLXDImportService : public CmdHandlerBase {
 
 public:
     CmdHandlerLXDImportService();
-    void handle(ModelRequest *pRequest) override;
+    void handle(WsjcppJsonRpc20Request *pRequest) override;
 };
 
 REGISTRY_CMD(CmdHandlerLXDImportService)
@@ -126,7 +126,7 @@ class CmdHandlerLXDImportServiceFromZip : public CmdHandlerBase {
 
 public:
     CmdHandlerLXDImportServiceFromZip();
-    void handle(ModelRequest *pRequest) override;
+    void handle(WsjcppJsonRpc20Request *pRequest) override;
 };
 
 REGISTRY_CMD(CmdHandlerLXDImportServiceFromZip)
@@ -140,7 +140,7 @@ class CmdHandlerLXDStartService : public CmdHandlerBase {
 
 public:
     CmdHandlerLXDStartService();
-    void handle(ModelRequest *pRequest) override;
+    void handle(WsjcppJsonRpc20Request *pRequest) override;
 };
 
 REGISTRY_CMD(CmdHandlerLXDStartService)

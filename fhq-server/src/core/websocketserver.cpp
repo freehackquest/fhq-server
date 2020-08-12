@@ -188,28 +188,28 @@ void WebSocketServer::processTextMessage(const QString &message) {
         }
 
         nlohmann::json jsonRequest_ = nlohmann::json::parse(message.toStdString());
-        ModelRequest *pModelRequest = new ModelRequest(pClient, this, jsonRequest_);
+        WsjcppJsonRpc20Request *pWsjcppJsonRpc20Request = new WsjcppJsonRpc20Request(pClient, this, jsonRequest_);
         
-        if (!pModelRequest->hasCommand()) {
+        if (!pWsjcppJsonRpc20Request->hasCommand()) {
             this->sendMessageError(pClient, sCmd, sM, WsjcppJsonRpc20Error(404, "Not found requare parameter 'cmd'"));
-            // pModelRequestData->sendError(Error(404, "Not found command '" + QString(cmd.c_str()) + "'"));
+            // pWsjcppJsonRpc20RequestData->sendError(Error(404, "Not found command '" + QString(cmd.c_str()) + "'"));
             return;
         }
 
-        sCmd = pModelRequest->command();
-        if (!pModelRequest->hasM()) {
+        sCmd = pWsjcppJsonRpc20Request->command();
+        if (!pWsjcppJsonRpc20Request->hasM()) {
             WsjcppLog::info(TAG, "[WS] >>> " + sCmd);
             this->sendMessageError(pClient, sCmd, sM, WsjcppJsonRpc20Error(404, "Not found requare parameter 'm' - messageid"));
             return;
         }
-        sM = pModelRequest->m();
+        sM = pWsjcppJsonRpc20Request->m();
 
         WsjcppLog::info(TAG, "[WS] >>> " + sCmd + ":" + sM);
 
         CmdHandlerBase *pCmdHandler = CmdHandlers::findCmdHandler(sCmd);
         if (pCmdHandler == NULL) {
             WsjcppLog::warn(TAG, "Unknown command: " + sCmd);
-            pModelRequest->sendMessageError(sCmd, WsjcppJsonRpc20Error(404, "Not found command '" + sCmd + "'"));
+            pWsjcppJsonRpc20Request->sendMessageError(sCmd, WsjcppJsonRpc20Error(404, "Not found command '" + sCmd + "'"));
             return;
         }
 
@@ -217,18 +217,18 @@ void WebSocketServer::processTextMessage(const QString &message) {
 
         // check access
         // TODO move check inside in CmdHandler
-        if (!pCmdHandler->checkAccess(pModelRequest)) {
+        if (!pCmdHandler->checkAccess(pWsjcppJsonRpc20Request)) {
             return;
         }
 
         // allow access
-        // TODO move to ModelRequest
+        // TODO move to WsjcppJsonRpc20Request
         WsjcppJsonRpc20Error error(404, "none");
         if (!pServer->validateInputParameters(error, pCmdHandler, jsonRequest_)) {
-            pModelRequest->sendMessageError(pCmdHandler->cmd(), error);
+            pWsjcppJsonRpc20Request->sendMessageError(pCmdHandler->cmd(), error);
             return;
         }
-        pCmdHandler->handle(pModelRequest);
+        pCmdHandler->handle(pWsjcppJsonRpc20Request);
     } catch (const std::exception &e) {
         this->sendMessageError(pClient, sCmd, sM, WsjcppJsonRpc20Error(500, "InternalServerError"));
         WsjcppLog::err(TAG, e.what());

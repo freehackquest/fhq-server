@@ -50,7 +50,7 @@ CmdHandlerGameCreate::CmdHandlerGameCreate()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGameCreate::handle(ModelRequest *pRequest) {
+void CmdHandlerGameCreate::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
@@ -111,7 +111,7 @@ CmdHandlerGameDelete::CmdHandlerGameDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
+void CmdHandlerGameDelete::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
@@ -272,7 +272,7 @@ CmdHandlerGameExport::CmdHandlerGameExport()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
+void CmdHandlerGameExport::handle(WsjcppJsonRpc20Request *pRequest) {
     // EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
 
@@ -364,7 +364,7 @@ CmdHandlerGameImport::CmdHandlerGameImport()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGameImport::handle(ModelRequest *pRequest) {
+void CmdHandlerGameImport::handle(WsjcppJsonRpc20Request *pRequest) {
     // nlohmann::json jsonRequest = pRequest->jsonRequest();
     // nlohmann::json jsonResponse;
 
@@ -395,7 +395,7 @@ CmdHandlerGameInfo::CmdHandlerGameInfo()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGameInfo::handle(ModelRequest *pRequest) {
+void CmdHandlerGameInfo::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
 
     std::string sUuid = pRequest->getInputString("uuid", "");
@@ -441,7 +441,7 @@ CmdHandlerGameUpdate::CmdHandlerGameUpdate()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGameUpdate::handle(ModelRequest *pRequest) {
+void CmdHandlerGameUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
 
     ModelGame updatedModelGame;
@@ -508,7 +508,7 @@ CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
+void CmdHandlerGameUpdateLogo::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
 
     ModelGame modelGame;
@@ -596,7 +596,7 @@ CmdHandlerGames::CmdHandlerGames()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGames::handle(ModelRequest *pRequest) {
+void CmdHandlerGames::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;

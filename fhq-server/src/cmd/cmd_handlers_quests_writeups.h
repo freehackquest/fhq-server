@@ -9,7 +9,7 @@
 class CmdHandlerQuestsWriteUpsList : public CmdHandlerBase {
     public:
         CmdHandlerQuestsWriteUpsList();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 // ---------------------------------------------------------------------
@@ -18,7 +18,7 @@ class CmdHandlerQuestsWriteUpsList : public CmdHandlerBase {
 class CmdHandlerQuestsWriteUpsProposal : public CmdHandlerBase {
     public:
         CmdHandlerQuestsWriteUpsProposal();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
     private:
         std::string m_sLinkPrefix;
 };
@@ -29,7 +29,7 @@ class CmdHandlerQuestsWriteUpsProposal : public CmdHandlerBase {
 class CmdHandlerQuestsWriteUpsUpdate : public CmdHandlerBase {
     public:
         CmdHandlerQuestsWriteUpsUpdate();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 // ---------------------------------------------------------------------
@@ -38,7 +38,7 @@ class CmdHandlerQuestsWriteUpsUpdate : public CmdHandlerBase {
 class CmdHandlerQuestsWriteUpsDelete : public CmdHandlerBase {
     public:
         CmdHandlerQuestsWriteUpsDelete();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 #endif // CMD_HANDLERS_QUESTS_WRITEUPS_H

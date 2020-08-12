@@ -11,7 +11,7 @@ class CmdHandlerGameCreate : public CmdHandlerBase {
 
     public:
         CmdHandlerGameCreate();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerGameCreate)
@@ -24,7 +24,7 @@ class CmdHandlerGameDelete : public CmdHandlerBase {
 
     public:
         CmdHandlerGameDelete();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerGameDelete)
@@ -36,7 +36,7 @@ REGISTRY_CMD(CmdHandlerGameDelete)
 class CmdHandlerGameExport : public CmdHandlerBase {
     public:
         CmdHandlerGameExport();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerGameExport)
@@ -49,7 +49,7 @@ class CmdHandlerGameImport : public CmdHandlerBase {
 
     public:
         CmdHandlerGameImport();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerGameImport)
@@ -62,7 +62,7 @@ class CmdHandlerGameInfo : public CmdHandlerBase {
 
     public:
         CmdHandlerGameInfo();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerGameInfo)
@@ -75,7 +75,7 @@ class CmdHandlerGameUpdate : public CmdHandlerBase {
 
     public:
         CmdHandlerGameUpdate();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerGameUpdate)
@@ -88,7 +88,7 @@ class CmdHandlerGameUpdateLogo : public CmdHandlerBase {
 
     public:
         CmdHandlerGameUpdateLogo();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerGameUpdateLogo)
@@ -101,7 +101,7 @@ class CmdHandlerGames : public CmdHandlerBase {
 
     public:
         CmdHandlerGames();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerGames)

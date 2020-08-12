@@ -21,7 +21,7 @@ CmdHandlerPublicInfo::CmdHandlerPublicInfo()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
+void CmdHandlerPublicInfo::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     EmployServerInfo *pServerInfo = findWsjcppEmploy<EmployServerInfo>();
 
@@ -115,7 +115,7 @@ CmdHandlerServerInfo::CmdHandlerServerInfo()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerServerInfo::handle(ModelRequest *pRequest) {
+void CmdHandlerServerInfo::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployServerInfo *pServerInfo = findWsjcppEmploy<EmployServerInfo>();
     nlohmann::json jsonResponse;
     nlohmann::json data;
@@ -150,7 +150,7 @@ CmdHandlerServerSettings::CmdHandlerServerSettings()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerServerSettings::handle(ModelRequest *pRequest) {
+void CmdHandlerServerSettings::handle(WsjcppJsonRpc20Request *pRequest) {
     nlohmann::json jsonResponse;
 
     EmployGlobalSettings *pGloablSettings = findWsjcppEmploy<EmployGlobalSettings>();
@@ -176,7 +176,7 @@ CmdHandlerServerSettingsUpdate::CmdHandlerServerSettingsUpdate()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
+void CmdHandlerServerSettingsUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
     nlohmann::json jsonResponse;
 
     std::string sName = pRequest->getInputString("name", "");

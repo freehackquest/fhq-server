@@ -22,7 +22,7 @@ CmdHandlerLeaksList::CmdHandlerLeaksList()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
+void CmdHandlerLeaksList::handle(WsjcppJsonRpc20Request *pRequest) {
 
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
@@ -151,7 +151,7 @@ CmdHandlerLeaksAdd::CmdHandlerLeaksAdd()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest) {
+void CmdHandlerLeaksAdd::handle(WsjcppJsonRpc20Request *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
     ModelLeak *pModelLeak = new ModelLeak();
@@ -216,7 +216,7 @@ CmdHandlerLeaksUpdate::CmdHandlerLeaksUpdate()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest) {
+void CmdHandlerLeaksUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
 
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
@@ -297,7 +297,7 @@ CmdHandlerLeaksDelete::CmdHandlerLeaksDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest) {
+void CmdHandlerLeaksDelete::handle(WsjcppJsonRpc20Request *pRequest) {
 
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
@@ -371,7 +371,7 @@ CmdHandlerLeaksBuy::CmdHandlerLeaksBuy()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLeaksBuy::handle(ModelRequest *pRequest) {
+void CmdHandlerLeaksBuy::handle(WsjcppJsonRpc20Request *pRequest) {
 
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     nlohmann::json jsonResponse;

@@ -11,7 +11,7 @@ class CmdHandlerUsersScoreboard : public CmdHandlerBase {
     
     public:
         CmdHandlerUsersScoreboard();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerUsersScoreboard)
@@ -23,7 +23,7 @@ REGISTRY_CMD(CmdHandlerUsersScoreboard)
 class CmdHandlerGetMap : public CmdHandlerBase {
     public:
         CmdHandlerGetMap();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerGetMap)
@@ -35,7 +35,7 @@ REGISTRY_CMD(CmdHandlerGetMap)
 class CmdHandlerLogin : public CmdHandlerBase {
     public:
         CmdHandlerLogin();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerLogin)
@@ -47,7 +47,7 @@ REGISTRY_CMD(CmdHandlerLogin)
 class CmdHandlerRegistration : public CmdHandlerBase {
     public:
         CmdHandlerRegistration();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerRegistration)
@@ -59,7 +59,7 @@ REGISTRY_CMD(CmdHandlerRegistration)
 class CmdHandlerToken : public CmdHandlerBase {
     public:
         CmdHandlerToken();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerToken)
@@ -71,7 +71,7 @@ REGISTRY_CMD(CmdHandlerToken)
 class CmdHandlerUpdateUserLocation : public CmdHandlerBase {
     public:
         CmdHandlerUpdateUserLocation();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerUpdateUserLocation)
@@ -83,7 +83,7 @@ REGISTRY_CMD(CmdHandlerUpdateUserLocation)
 class CmdHandlerUserChangePassword : public CmdHandlerBase {
     public:
         CmdHandlerUserChangePassword();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerUserChangePassword)
@@ -95,7 +95,7 @@ REGISTRY_CMD(CmdHandlerUserChangePassword)
 class CmdHandlerUsersAdd : public CmdHandlerBase {
     public:
         CmdHandlerUsersAdd();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerUsersAdd)
@@ -107,7 +107,7 @@ REGISTRY_CMD(CmdHandlerUsersAdd)
 class CmdHandlerUser : public CmdHandlerBase {
     public:
         CmdHandlerUser();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerUser)
@@ -119,7 +119,7 @@ REGISTRY_CMD(CmdHandlerUser)
 class CmdHandlerUsersInfo : public CmdHandlerBase {
     public:
         CmdHandlerUsersInfo();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerUsersInfo)
@@ -131,7 +131,7 @@ REGISTRY_CMD(CmdHandlerUsersInfo)
 class CmdHandlerUserResetPassword : public CmdHandlerBase {
     public:
         CmdHandlerUserResetPassword();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerUserResetPassword)
@@ -143,7 +143,7 @@ REGISTRY_CMD(CmdHandlerUserResetPassword)
 class CmdHandlerUserSkills : public CmdHandlerBase {
     public:
         CmdHandlerUserSkills();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerUserSkills)
@@ -155,7 +155,7 @@ REGISTRY_CMD(CmdHandlerUserSkills)
 class CmdHandlerUserUpdate : public CmdHandlerBase {
     public:
         CmdHandlerUserUpdate();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerUserUpdate)
@@ -167,7 +167,7 @@ REGISTRY_CMD(CmdHandlerUserUpdate)
 class CmdHandlerUserDelete : public CmdHandlerBase {
     public:
         CmdHandlerUserDelete();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerUserDelete)
@@ -179,7 +179,7 @@ REGISTRY_CMD(CmdHandlerUserDelete)
 class CmdHandlerUsers : public CmdHandlerBase {
     public:
         CmdHandlerUsers();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerUsers)
@@ -191,7 +191,7 @@ REGISTRY_CMD(CmdHandlerUsers)
 class CmdHandlerUsersRegistration : public CmdHandlerBase {
     public:
         CmdHandlerUsersRegistration();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerUsersRegistration)
@@ -203,7 +203,7 @@ REGISTRY_CMD(CmdHandlerUsersRegistration)
 class CmdHandlerUsersRegistrationVerification : public CmdHandlerBase {
     public:
         CmdHandlerUsersRegistrationVerification();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerUsersRegistrationVerification)
@@ -215,7 +215,7 @@ REGISTRY_CMD(CmdHandlerUsersRegistrationVerification)
 class CmdHandlerUsersChangeEmail : public CmdHandlerBase {
     public:
         CmdHandlerUsersChangeEmail();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerUsersChangeEmail)
@@ -227,7 +227,7 @@ REGISTRY_CMD(CmdHandlerUsersChangeEmail)
 class CmdHandlerUsersChangeEmailVerification : public CmdHandlerBase {
     public:
         CmdHandlerUsersChangeEmailVerification();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 
@@ -238,7 +238,7 @@ class CmdHandlerUsersChangeEmailVerification : public CmdHandlerBase {
 class CmdHandlerUsersTokens : public CmdHandlerBase {
     public:
         CmdHandlerUsersTokens();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 
@@ -249,7 +249,7 @@ class CmdHandlerUsersTokens : public CmdHandlerBase {
 class CmdHandlerUsersTokensDelete : public CmdHandlerBase {
     public:
         CmdHandlerUsersTokensDelete();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 #endif // CMD_HADNLERS_USERS_H

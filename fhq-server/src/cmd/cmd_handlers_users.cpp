@@ -28,7 +28,7 @@ CmdHandlerUsersScoreboard::CmdHandlerUsersScoreboard()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest) {
+void CmdHandlerUsersScoreboard::handle(WsjcppJsonRpc20Request *pRequest) {
     const nlohmann::json &jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
@@ -81,7 +81,7 @@ CmdHandlerGetMap::CmdHandlerGetMap()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGetMap::handle(ModelRequest *pRequest) {
+void CmdHandlerGetMap::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
@@ -130,7 +130,7 @@ CmdHandlerLogin::CmdHandlerLogin()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLogin::handle(ModelRequest *pRequest) {
+void CmdHandlerLogin::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json const & jsonRequest = pRequest->jsonRequest();
@@ -240,7 +240,7 @@ CmdHandlerRegistration::CmdHandlerRegistration()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerRegistration::handle(ModelRequest *pRequest) {
+void CmdHandlerRegistration::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     const nlohmann::json &jsonRequest = pRequest->jsonRequest();
@@ -396,7 +396,7 @@ CmdHandlerToken::CmdHandlerToken()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerToken::handle(ModelRequest *pRequest) {
+void CmdHandlerToken::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     const nlohmann::json & jsonRequest = pRequest->jsonRequest();
@@ -455,7 +455,7 @@ CmdHandlerUpdateUserLocation::CmdHandlerUpdateUserLocation()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest) {
+void CmdHandlerUpdateUserLocation::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     const nlohmann::json & jsonRequest = pRequest->jsonRequest();
@@ -518,7 +518,7 @@ CmdHandlerUserChangePassword::CmdHandlerUserChangePassword()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest) {
+void CmdHandlerUserChangePassword::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     std::string sOldPassword = pRequest->getInputString("password_old", "");
@@ -612,7 +612,7 @@ CmdHandlerUsersAdd::CmdHandlerUsersAdd()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsersAdd::handle(ModelRequest *pRequest) {
+void CmdHandlerUsersAdd::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     const nlohmann::json& jsonRequest = pRequest->jsonRequest();
@@ -760,7 +760,7 @@ CmdHandlerUser::CmdHandlerUser()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUser::handle(ModelRequest *pRequest) {
+void CmdHandlerUser::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
@@ -868,7 +868,7 @@ CmdHandlerUsersInfo::CmdHandlerUsersInfo()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsersInfo::handle(ModelRequest *pRequest) {
+void CmdHandlerUsersInfo::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonRequest = pRequest->jsonRequest();
@@ -974,7 +974,7 @@ CmdHandlerUserResetPassword::CmdHandlerUserResetPassword()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest) {
+void CmdHandlerUserResetPassword::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     const nlohmann::json& jsonRequest = pRequest->jsonRequest();
@@ -1060,7 +1060,7 @@ CmdHandlerUserSkills::CmdHandlerUserSkills()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUserSkills::handle(ModelRequest *pRequest) {
+void CmdHandlerUserSkills::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     const nlohmann::json& jsonRequest = pRequest->jsonRequest();
@@ -1132,7 +1132,7 @@ CmdHandlerUserUpdate::CmdHandlerUserUpdate()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUserUpdate::handle(ModelRequest *pRequest) {
+void CmdHandlerUserUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     const nlohmann::json& jsonRequest = pRequest->jsonRequest();
@@ -1266,7 +1266,7 @@ CmdHandlerUserDelete::CmdHandlerUserDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
+void CmdHandlerUserDelete::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     const nlohmann::json& jsonRequest = pRequest->jsonRequest();
@@ -1477,7 +1477,7 @@ CmdHandlerUsers::CmdHandlerUsers()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsers::handle(ModelRequest *pRequest) {
+void CmdHandlerUsers::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     const nlohmann::json& jsonRequest = pRequest->jsonRequest();
@@ -1607,7 +1607,7 @@ CmdHandlerUsersRegistration::CmdHandlerUsersRegistration()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest) {
+void CmdHandlerUsersRegistration::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     const auto &jsonRequest = pRequest->jsonRequest();
@@ -1705,7 +1705,7 @@ CmdHandlerUsersRegistrationVerification::CmdHandlerUsersRegistrationVerification
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest) {
+void CmdHandlerUsersRegistrationVerification::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     const auto &jsonRequest = pRequest->jsonRequest();
@@ -1885,7 +1885,7 @@ CmdHandlerUsersChangeEmail::CmdHandlerUsersChangeEmail()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest) {
+void CmdHandlerUsersChangeEmail::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     const auto &jsonRequest = pRequest->jsonRequest();
@@ -1999,7 +1999,7 @@ CmdHandlerUsersChangeEmailVerification::CmdHandlerUsersChangeEmailVerification()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsersChangeEmailVerification::handle(ModelRequest *pRequest) {
+void CmdHandlerUsersChangeEmailVerification::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     const auto &jsonRequest = pRequest->jsonRequest();
@@ -2081,7 +2081,7 @@ CmdHandlerUsersTokens::CmdHandlerUsersTokens()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsersTokens::handle(ModelRequest *pRequest) {
+void CmdHandlerUsersTokens::handle(WsjcppJsonRpc20Request *pRequest) {
     
     int nUserID = 0;
     WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
@@ -2150,7 +2150,7 @@ CmdHandlerUsersTokensDelete::CmdHandlerUsersTokensDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUsersTokensDelete::handle(ModelRequest *pRequest) {
+void CmdHandlerUsersTokensDelete::handle(WsjcppJsonRpc20Request *pRequest) {
     
     int nUserID = 0;
     WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();

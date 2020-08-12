@@ -189,9 +189,9 @@ class WsjcppJsonRpc20ParamDef {
 
 // ---------------------------------------------------------------------
 
-class ModelRequest {
+class WsjcppJsonRpc20Request {
     public:
-        ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_);
+        WsjcppJsonRpc20Request(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_);
         QWebSocket *client();
         std::string getIpAddress();
         IWebSocketServer *server();
@@ -242,10 +242,10 @@ class CmdHandlerBase { // TODO rename to WJSCppHandler
         bool accessUnauthorized();
         bool accessUser();
         bool accessAdmin();
-        bool checkAccess(ModelRequest *pRequest);
+        bool checkAccess(WsjcppJsonRpc20Request *pRequest);
 
         virtual const std::vector<WsjcppJsonRpc20ParamDef> &inputs();
-        virtual void handle(ModelRequest *pRequest) = 0;
+        virtual void handle(WsjcppJsonRpc20Request *pRequest) = 0;
 
         // virtual void success(nlohmann::json jsonResponse);
         // virtual void error(int nCode, const std::string &sErrorMessage);
@@ -307,7 +307,7 @@ class WJSCppCmdHandlerServerApi : public CmdHandlerBase {
 
     public:
         WJSCppCmdHandlerServerApi();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 #endif // CMD_HADNLERS_H

@@ -35,7 +35,7 @@ CmdHandlerLXDContainers::CmdHandlerLXDContainers()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLXDContainers::handle(ModelRequest *pRequest) {
+void CmdHandlerLXDContainers::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     QSqlDatabase db = *(pDatabase->database());
@@ -186,7 +186,7 @@ CmdHandlerLXDInfo::CmdHandlerLXDInfo()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLXDInfo::handle(ModelRequest *pRequest) {
+void CmdHandlerLXDInfo::handle(WsjcppJsonRpc20Request *pRequest) {
     nlohmann::json jsonResponse;
     std::string sError;
     int nErrorCode;
@@ -239,7 +239,7 @@ CmdHandlerLXDList::CmdHandlerLXDList()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLXDList::handle(ModelRequest *pRequest) {
+void CmdHandlerLXDList::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, pOrchestra->lastError()));
@@ -273,7 +273,7 @@ CmdHandlerLXDExec::CmdHandlerLXDExec()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
+void CmdHandlerLXDExec::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, pOrchestra->lastError()));
@@ -339,7 +339,7 @@ CmdHandlerLXDFile::CmdHandlerLXDFile()
     requireStringParam("path", "Path to file inside the container");
 }
 
-void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
+void CmdHandlerLXDFile::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, pOrchestra->lastError()));
@@ -445,7 +445,7 @@ CmdHandlerLXDOpenPort::CmdHandlerLXDOpenPort()
     requireStringParam("protocol", "Protocol");
 }
 
-void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
+void CmdHandlerLXDOpenPort::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, pOrchestra->lastError()));
@@ -519,7 +519,7 @@ CmdHandlerLXDImportService::CmdHandlerLXDImportService()
     requireStringParam("config", "Container's configuration in json dumped string.");
 }
 
-void CmdHandlerLXDImportService::handle(ModelRequest *pRequest) {
+void CmdHandlerLXDImportService::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, pOrchestra->lastError()));
@@ -577,7 +577,7 @@ CmdHandlerLXDImportServiceFromZip::CmdHandlerLXDImportServiceFromZip()
     requireStringParam("zip_file", "Service's configuration in Base64 zip archive.");
 }
 
-void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
+void CmdHandlerLXDImportServiceFromZip::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, pOrchestra->lastError()));
@@ -693,7 +693,7 @@ CmdHandlerLXDStartService::CmdHandlerLXDStartService()
     requireStringParam("name", "Service's name.");
 }
 
-void CmdHandlerLXDStartService::handle(ModelRequest *pRequest) {
+void CmdHandlerLXDStartService::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
         pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, pOrchestra->lastError()));

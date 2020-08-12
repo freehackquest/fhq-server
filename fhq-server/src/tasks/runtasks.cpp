@@ -53,7 +53,7 @@ void RunTasks::NotifyToAll(const nlohmann::json &jsonMessage) {
 }
 
 void RunTasks::LXDAsyncOperation(void (*func)(const std::string &, std::string &, int &),
-                                 const std::string &sName, const std::string &sCMD, ModelRequest *pRequest) {
+                                 const std::string &sName, const std::string &sCMD, WsjcppJsonRpc20Request *pRequest) {
     LXDAsyncOperationTask *pLXDAsyncTask = new LXDAsyncOperationTask(func, sName, sCMD, pRequest);
     QThreadPool::globalInstance()->start(pLXDAsyncTask);
 }

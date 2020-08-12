@@ -12,8 +12,12 @@ class RunTasks {
         static void UpdateQuestSolved(int nQuestID);
         static void MailSend(const std::string &sTo, const std::string &sSubject, const std::string &sContent);
         static void NotifyToAll(const nlohmann::json &jsonMessage);
-        static void LXDAsyncOperation(void (*func)(const std::string &, std::string &, int &),
-                                      const std::string &sName, const std::string &sCMD, ModelRequest *pRequest);
+        static void LXDAsyncOperation(
+            void (*func)(const std::string &, std::string &, int &),
+            const std::string &sName,
+            const std::string &sCMD,
+            WsjcppJsonRpc20Request *pRequest // TODO wrong
+        );
         static void waitForDone();
 };
 

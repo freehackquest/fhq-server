@@ -526,12 +526,12 @@ WsjcppJsonRpc20ParamDef &WsjcppJsonRpc20ParamDef::addValidator(WsjcppValidatorSt
 // ---------------------------------------------------------------------
 
 // ****************************
-// **** ModelRequest
+// **** WsjcppJsonRpc20Request
 // ****************************
 
 
-ModelRequest::ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_) {
-    TAG = "ModelRequest";
+WsjcppJsonRpc20Request::WsjcppJsonRpc20Request(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_) {
+    TAG = "WsjcppJsonRpc20Request";
     m_pClient = pClient;
     m_pServer = pWebSocketServer;
     m_jsonRequest = jsonRequest_;
@@ -549,13 +549,13 @@ ModelRequest::ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServ
 
 // ---------------------------------------------------------------------
 
-QWebSocket *ModelRequest::client() {
+QWebSocket *WsjcppJsonRpc20Request::client() {
     return m_pClient;
 }
 
 // ---------------------------------------------------------------------
 
-std::string ModelRequest::getIpAddress() {
+std::string WsjcppJsonRpc20Request::getIpAddress() {
     std::string sAddress = m_pClient->peerAddress().toString().toStdString();
     #if QT_VERSION >= 0x050600
         QNetworkRequest r = m_pClient->request();
@@ -569,20 +569,20 @@ std::string ModelRequest::getIpAddress() {
 
 // ---------------------------------------------------------------------
 
-IWebSocketServer *ModelRequest::server() {
+IWebSocketServer *WsjcppJsonRpc20Request::server() {
     return m_pServer;
 }
 
 // ---------------------------------------------------------------------
 
 // TODO deprecated
-const nlohmann::json& ModelRequest::jsonRequest() {
+const nlohmann::json& WsjcppJsonRpc20Request::jsonRequest() {
     return m_jsonRequest;
 }
 
 // ---------------------------------------------------------------------
 
-bool ModelRequest::hasInputParam(const std::string &sParamName) {
+bool WsjcppJsonRpc20Request::hasInputParam(const std::string &sParamName) {
     if (m_jsonRequest.find(sParamName) != m_jsonRequest.end()) {
         return true;
     } 
@@ -591,7 +591,7 @@ bool ModelRequest::hasInputParam(const std::string &sParamName) {
 
 // ---------------------------------------------------------------------
 
-std::string ModelRequest::getInputString(const std::string &sParamName, const std::string &sDefaultValue) {
+std::string WsjcppJsonRpc20Request::getInputString(const std::string &sParamName, const std::string &sDefaultValue) {
     // TODO check by input defs
     std::string sRet = sDefaultValue;
     if (m_jsonRequest[sParamName].is_string()) {
@@ -602,7 +602,7 @@ std::string ModelRequest::getInputString(const std::string &sParamName, const st
 
 // ---------------------------------------------------------------------
 
-int ModelRequest::getInputInteger(const std::string &sParamName, int nDefaultValue) {
+int WsjcppJsonRpc20Request::getInputInteger(const std::string &sParamName, int nDefaultValue) {
     // TODO check by input defs
     int nRet = nDefaultValue;
     if (m_jsonRequest[sParamName].is_number()) {
@@ -613,19 +613,19 @@ int ModelRequest::getInputInteger(const std::string &sParamName, int nDefaultVal
 
 // ---------------------------------------------------------------------
 
-std::string ModelRequest::m() {
+std::string WsjcppJsonRpc20Request::m() {
     return m_sMessageId;
 }
 
 // ---------------------------------------------------------------------
 
-WsjcppJsonRpc20UserSession *ModelRequest::getUserSession() {
+WsjcppJsonRpc20UserSession *WsjcppJsonRpc20Request::getUserSession() {
     return m_pWsjcppJsonRpc20UserSession;
 }
 
 // ---------------------------------------------------------------------
 
-bool ModelRequest::isAdmin() {
+bool WsjcppJsonRpc20Request::isAdmin() {
     if (m_pWsjcppJsonRpc20UserSession != nullptr) {
         return m_pWsjcppJsonRpc20UserSession->isAdmin();
     }
@@ -634,7 +634,7 @@ bool ModelRequest::isAdmin() {
 
 // ---------------------------------------------------------------------
 
-bool ModelRequest::isUser() {
+bool WsjcppJsonRpc20Request::isUser() {
     if (m_pWsjcppJsonRpc20UserSession != nullptr) {
         return m_pWsjcppJsonRpc20UserSession->isUser();
     }
@@ -643,19 +643,19 @@ bool ModelRequest::isUser() {
 
 // ---------------------------------------------------------------------
 
-bool ModelRequest::isUnauthorized() {
+bool WsjcppJsonRpc20Request::isUnauthorized() {
     return m_pWsjcppJsonRpc20UserSession == nullptr;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelRequest::sendMessageError(const std::string &cmd, WsjcppJsonRpc20Error error) {
+void WsjcppJsonRpc20Request::sendMessageError(const std::string &cmd, WsjcppJsonRpc20Error error) {
     m_pServer->sendMessageError(m_pClient,cmd,m_sMessageId,error);
 }
 
 // ---------------------------------------------------------------------
 
-void ModelRequest::sendMessageSuccess(const std::string &sMethod, nlohmann::json& jsonResponse) {
+void WsjcppJsonRpc20Request::sendMessageSuccess(const std::string &sMethod, nlohmann::json& jsonResponse) {
     jsonResponse["cmd"] = sMethod; // deprecated
     jsonResponse["jsonrpc"] = "2.0";
     jsonResponse["method"] = sMethod;
@@ -667,7 +667,7 @@ void ModelRequest::sendMessageSuccess(const std::string &sMethod, nlohmann::json
 // ---------------------------------------------------------------------
 // TODO new for jsonrpc
 
-void ModelRequest::sendResponse(nlohmann::json& jsonResult) {
+void WsjcppJsonRpc20Request::sendResponse(nlohmann::json& jsonResult) {
     nlohmann::json jsonResponse;
     jsonResponse["jsonrpc"] = "2.0";
     jsonResponse["method"] = m_sCommand;
@@ -678,25 +678,25 @@ void ModelRequest::sendResponse(nlohmann::json& jsonResult) {
 
 // ---------------------------------------------------------------------
 
-bool ModelRequest::hasM() {
+bool WsjcppJsonRpc20Request::hasM() {
     return m_sMessageId != "";
 }
 
 // ---------------------------------------------------------------------
 
-std::string ModelRequest::command() {
+std::string WsjcppJsonRpc20Request::command() {
     return m_sCommand;
 }
 
 // ---------------------------------------------------------------------
 
-bool ModelRequest::hasCommand() {
+bool WsjcppJsonRpc20Request::hasCommand() {
     return m_sCommand != "";
 }
 
 // ---------------------------------------------------------------------
 
-// bool ModelRequest::validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler) {
+// bool WsjcppJsonRpc20Request::validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler) {
 
 // }
 
@@ -752,7 +752,7 @@ bool CmdHandlerBase::accessAdmin() {
 // ---------------------------------------------------------------------
 // TODO write unit-test for this
 
-bool CmdHandlerBase::checkAccess(ModelRequest *pRequest) {
+bool CmdHandlerBase::checkAccess(WsjcppJsonRpc20Request *pRequest) {
     WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
     if (!accessUnauthorized()) {
         if (pUserSession == nullptr) {
@@ -890,7 +890,7 @@ const std::vector<WsjcppJsonRpc20ParamDef> &CmdHandlerBase::inputs() {
 void CmdHandlerBase::success(nlohmann::json jsonResponse) {
     EmployWsServer *pEmployWsServer = findWsjcppEmploy<EmployWsServer>();
     // TODO sendMessageSuccess
-    // and remove from ModelRequests
+    // and remove from WsjcppJsonRpc20Requests
 }
 
 // ---------------------------------------------------------------------
@@ -898,7 +898,7 @@ void CmdHandlerBase::success(nlohmann::json jsonResponse) {
 void CmdHandlerBase::error(int nCode, const std::string &sErrorMessage) {
     EmployWsServer *pEmployWsServer = findWsjcppEmploy<EmployWsServer>();
     // TODO sendMessageError
-    // and remove from ModelRequests
+    // and remove from WsjcppJsonRpc20Requests
 
 }
 // ---------------------------------------------------------------------
@@ -961,7 +961,7 @@ WJSCppCmdHandlerServerApi::WJSCppCmdHandlerServerApi()
 
 // ---------------------------------------------------------------------
 
-void WJSCppCmdHandlerServerApi::handle(ModelRequest *pRequest) {
+void WJSCppCmdHandlerServerApi::handle(WsjcppJsonRpc20Request *pRequest) {
     nlohmann::json jsonResponse;
     jsonResponse["version"] = WSJCPP_APP_VERSION; // TODO redesign, what?
 

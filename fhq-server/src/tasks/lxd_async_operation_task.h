@@ -14,7 +14,7 @@ class LXDAsyncOperationTask : public QRunnable {
 
 public:
     LXDAsyncOperationTask(void (*func)(const std::string&, std::string &, int &),
-                          const std::string& sName, const std::string& sCMD, ModelRequest *pRequest);
+                          const std::string& sName, const std::string& sCMD, WsjcppJsonRpc20Request *pRequest);
 
     ~LXDAsyncOperationTask() override;
 

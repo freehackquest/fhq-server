@@ -25,7 +25,7 @@ CmdHandlerChatSendMessage::CmdHandlerChatSendMessage()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest) {
+void CmdHandlerChatSendMessage::handle(WsjcppJsonRpc20Request *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     nlohmann::json jsonResponse;
 
@@ -89,7 +89,7 @@ CmdHandlerChatLastestMessages::CmdHandlerChatLastestMessages()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerChatLastestMessages::handle(ModelRequest *pRequest) {
+void CmdHandlerChatLastestMessages::handle(WsjcppJsonRpc20Request *pRequest) {
     nlohmann::json jsonMessages = nlohmann::json::array();
 
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
@@ -136,7 +136,7 @@ CmdHandlerChatSendMessage_new::CmdHandlerChatSendMessage_new()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerChatSendMessage_new::handle(ModelRequest *pRequest) {
+void CmdHandlerChatSendMessage_new::handle(WsjcppJsonRpc20Request *pRequest) {
     
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -218,7 +218,7 @@ CmdHandlerChatReadMessage::CmdHandlerChatReadMessage()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerChatReadMessage::handle(ModelRequest *pRequest) {
+void CmdHandlerChatReadMessage::handle(WsjcppJsonRpc20Request *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
     
     std::string sChat = "";
@@ -272,7 +272,7 @@ CmdHandlerChatShowDialogs::CmdHandlerChatShowDialogs()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerChatShowDialogs::handle(ModelRequest *pRequest) {
+void CmdHandlerChatShowDialogs::handle(WsjcppJsonRpc20Request *pRequest) {
     pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
@@ -295,7 +295,7 @@ CmdHandlerChatEditMessage::CmdHandlerChatEditMessage()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerChatEditMessage::handle(ModelRequest *pRequest) {
+void CmdHandlerChatEditMessage::handle(WsjcppJsonRpc20Request *pRequest) {
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
     WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
@@ -380,7 +380,7 @@ CmdHandlerChatDeleteMessage::CmdHandlerChatDeleteMessage()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerChatDeleteMessage::handle(ModelRequest *pRequest) {
+void CmdHandlerChatDeleteMessage::handle(WsjcppJsonRpc20Request *pRequest) {
    
     nlohmann::json jsonRequest = pRequest->jsonRequest();
 
@@ -451,7 +451,7 @@ CmdHandlerChatAddToChat::CmdHandlerChatAddToChat()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerChatAddToChat::handle(ModelRequest *pRequest) {
+void CmdHandlerChatAddToChat::handle(WsjcppJsonRpc20Request *pRequest) {
     pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
@@ -473,7 +473,7 @@ CmdHandlerChatDeleteFromChat::CmdHandlerChatDeleteFromChat()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerChatDeleteFromChat::handle(ModelRequest *pRequest) {
+void CmdHandlerChatDeleteFromChat::handle(WsjcppJsonRpc20Request *pRequest) {
     pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
@@ -495,7 +495,7 @@ CmdHandlerChatChangeOwner::CmdHandlerChatChangeOwner()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerChatChangeOwner::handle(ModelRequest *pRequest) {
+void CmdHandlerChatChangeOwner::handle(WsjcppJsonRpc20Request *pRequest) {
     pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
@@ -517,7 +517,7 @@ CmdHandlerChatAddToBlackList::CmdHandlerChatAddToBlackList()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerChatAddToBlackList::handle(ModelRequest *pRequest) {
+void CmdHandlerChatAddToBlackList::handle(WsjcppJsonRpc20Request *pRequest) {
     pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
@@ -539,7 +539,7 @@ CmdHandlerChatDeleteFromBlackList::CmdHandlerChatDeleteFromBlackList()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerChatDeleteFromBlackList::handle(ModelRequest *pRequest) {
+void CmdHandlerChatDeleteFromBlackList::handle(WsjcppJsonRpc20Request *pRequest) {
     pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
@@ -561,7 +561,7 @@ CmdHandlerChatCreateGroupChat::CmdHandlerChatCreateGroupChat()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerChatCreateGroupChat::handle(ModelRequest *pRequest) {
+void CmdHandlerChatCreateGroupChat::handle(WsjcppJsonRpc20Request *pRequest) {
     pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 

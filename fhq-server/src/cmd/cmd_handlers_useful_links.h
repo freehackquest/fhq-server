@@ -10,25 +10,25 @@
 class CmdHandlerUsefulLinksList : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksList();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 class CmdHandlerUsefulLinksRetrieve : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksRetrieve();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 class CmdHandlerUsefulLinksAdd : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksAdd();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 class CmdHandlerUsefulLinksDelete : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksDelete();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 // ---------------------------------------------------------------------
@@ -37,7 +37,7 @@ class CmdHandlerUsefulLinksDelete : public CmdHandlerBase {
 class CmdHandlerUsefulLinksUpdate : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksUpdate();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 // ---------------------------------------------------------------------
@@ -46,7 +46,7 @@ class CmdHandlerUsefulLinksUpdate : public CmdHandlerBase {
 class CmdHandlerUsefulLinksUserFavoriteList : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksUserFavoriteList();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 // ---------------------------------------------------------------------
@@ -55,7 +55,7 @@ class CmdHandlerUsefulLinksUserFavoriteList : public CmdHandlerBase {
 class CmdHandlerUsefulLinksUserFavorite : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksUserFavorite();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 // ---------------------------------------------------------------------
@@ -64,7 +64,7 @@ class CmdHandlerUsefulLinksUserFavorite : public CmdHandlerBase {
 class CmdHandlerUsefulLinksUserUnfavorite : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksUserUnfavorite();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 // ---------------------------------------------------------------------
@@ -73,7 +73,7 @@ class CmdHandlerUsefulLinksUserUnfavorite : public CmdHandlerBase {
 class CmdHandlerUsefulLinksClicked : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksClicked();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 
@@ -83,7 +83,7 @@ class CmdHandlerUsefulLinksClicked : public CmdHandlerBase {
 class CmdHandlerUsefulLinksCommentList : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksCommentList();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 // ---------------------------------------------------------------------
@@ -92,7 +92,7 @@ class CmdHandlerUsefulLinksCommentList : public CmdHandlerBase {
 class CmdHandlerUsefulLinksCommentAdd : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksCommentAdd();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 // ---------------------------------------------------------------------
@@ -101,7 +101,7 @@ class CmdHandlerUsefulLinksCommentAdd : public CmdHandlerBase {
 class CmdHandlerUsefulLinksCommentDelete : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksCommentDelete();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 // ---------------------------------------------------------------------
@@ -110,7 +110,7 @@ class CmdHandlerUsefulLinksCommentDelete : public CmdHandlerBase {
 class CmdHandlerUsefulLinksTagList : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksTagList();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 // ---------------------------------------------------------------------
@@ -119,7 +119,7 @@ class CmdHandlerUsefulLinksTagList : public CmdHandlerBase {
 class CmdHandlerUsefulLinksTagAdd : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksTagAdd();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 // ---------------------------------------------------------------------
@@ -128,7 +128,7 @@ class CmdHandlerUsefulLinksTagAdd : public CmdHandlerBase {
 class CmdHandlerUsefulLinksTagDelete : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksTagDelete();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 // ---------------------------------------------------------------------
@@ -137,7 +137,7 @@ class CmdHandlerUsefulLinksTagDelete : public CmdHandlerBase {
 class CmdHandlerUsefulLinksUserPropose : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksUserPropose();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 // ---------------------------------------------------------------------
@@ -146,7 +146,7 @@ class CmdHandlerUsefulLinksUserPropose : public CmdHandlerBase {
 class CmdHandlerUsefulLinksUserProposeApprove : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksUserProposeApprove();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 #endif // CMD_HANDLERS_USEFUL_LINKS_H

@@ -8,7 +8,7 @@
 
 
 LXDAsyncOperationTask::LXDAsyncOperationTask(void (*func)(const std::string&, std::string &, int &),
-                                             const std::string& sName, const std::string& sCMD, ModelRequest *pRequest) {
+                                             const std::string& sName, const std::string& sCMD, WsjcppJsonRpc20Request *pRequest) {
     TAG = "LXDAsyncOperationTask";
     m_func = func;
     m_pRequestClient = pRequest->client();

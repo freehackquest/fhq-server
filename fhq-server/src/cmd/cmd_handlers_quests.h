@@ -10,7 +10,7 @@
 class CmdHandlerQuests : public CmdHandlerBase {
     public:
         CmdHandlerQuests();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerQuests)
@@ -22,7 +22,7 @@ REGISTRY_CMD(CmdHandlerQuests)
 class CmdHandlerQuest : public CmdHandlerBase {
     public:
         CmdHandlerQuest();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 
 };
 
@@ -36,7 +36,7 @@ REGISTRY_CMD(CmdHandlerQuest)
 class CmdHandlerQuestPass : public CmdHandlerBase {
     public:
         CmdHandlerQuestPass();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerQuestPass)
@@ -48,7 +48,7 @@ REGISTRY_CMD(CmdHandlerQuestPass)
 class CmdHandlerCreateQuest : public CmdHandlerBase {
     public:
         CmdHandlerCreateQuest();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerCreateQuest)
@@ -60,7 +60,7 @@ REGISTRY_CMD(CmdHandlerCreateQuest)
 class CmdHandlerQuestDelete : public CmdHandlerBase {
     public:
         CmdHandlerQuestDelete();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerQuestDelete)
@@ -72,7 +72,7 @@ REGISTRY_CMD(CmdHandlerQuestDelete)
 class CmdHandlerQuestProposal : public CmdHandlerBase {
     public:
         CmdHandlerQuestProposal();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerQuestProposal)
@@ -85,7 +85,7 @@ REGISTRY_CMD(CmdHandlerQuestProposal)
 class CmdHandlerQuestStatistics : public CmdHandlerBase {
     public:
         CmdHandlerQuestStatistics();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerQuestStatistics)
@@ -97,7 +97,7 @@ REGISTRY_CMD(CmdHandlerQuestStatistics)
 class CmdHandlerQuestUpdate : public CmdHandlerBase {
     public:
         CmdHandlerQuestUpdate();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerQuestUpdate)
@@ -110,7 +110,7 @@ REGISTRY_CMD(CmdHandlerQuestUpdate)
 class CmdHandlerQuestsSubjects : public CmdHandlerBase {
     public:
         CmdHandlerQuestsSubjects();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerQuestsSubjects)
@@ -122,7 +122,7 @@ REGISTRY_CMD(CmdHandlerQuestsSubjects)
 class CmdHandlerAddHint : public CmdHandlerBase {
     public:
         CmdHandlerAddHint();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerAddHint)
@@ -134,7 +134,7 @@ REGISTRY_CMD(CmdHandlerAddHint)
 class CmdHandlerAnswerList : public CmdHandlerBase {
     public:
         CmdHandlerAnswerList();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerAnswerList)
@@ -146,7 +146,7 @@ REGISTRY_CMD(CmdHandlerAnswerList)
 class CmdHandlerDeleteHint : public CmdHandlerBase {
     public:
         CmdHandlerDeleteHint();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerDeleteHint)
@@ -158,7 +158,7 @@ REGISTRY_CMD(CmdHandlerDeleteHint)
 class CmdHandlerHints : public CmdHandlerBase {
     public:
         CmdHandlerHints();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerHints)
@@ -170,7 +170,7 @@ REGISTRY_CMD(CmdHandlerHints)
 class CmdHandlerQuestsProposalList : public CmdHandlerBase {
     public:
         CmdHandlerQuestsProposalList();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerQuestsProposalList)
@@ -182,7 +182,7 @@ REGISTRY_CMD(CmdHandlerQuestsProposalList)
 class CmdHandlerQuestsFilesUpload : public CmdHandlerBase {
     public:
         CmdHandlerQuestsFilesUpload();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerQuestsFilesUpload)

@@ -11,7 +11,7 @@ class CmdHandlerPublicInfo : public CmdHandlerBase {
 
     public:
         CmdHandlerPublicInfo();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerPublicInfo)
@@ -25,7 +25,7 @@ class CmdHandlerServerInfo : public CmdHandlerBase {
 
     public:
         CmdHandlerServerInfo();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerServerInfo)
@@ -38,7 +38,7 @@ class CmdHandlerServerSettings : public CmdHandlerBase {
 
     public:
         CmdHandlerServerSettings();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerServerSettings)
@@ -51,7 +51,7 @@ class CmdHandlerServerSettingsUpdate : public CmdHandlerBase {
 
     public:
         CmdHandlerServerSettingsUpdate();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerServerSettingsUpdate)

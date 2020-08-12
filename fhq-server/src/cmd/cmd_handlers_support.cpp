@@ -26,7 +26,7 @@ CmdHandlerFeedbackAdd::CmdHandlerFeedbackAdd()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
+void CmdHandlerFeedbackAdd::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     nlohmann::json jsonResponse;
 

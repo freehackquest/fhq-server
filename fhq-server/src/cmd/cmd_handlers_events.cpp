@@ -26,7 +26,7 @@ CmdHandlerEventAdd::CmdHandlerEventAdd()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerEventAdd::handle(ModelRequest *pRequest) {
+void CmdHandlerEventAdd::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
@@ -64,7 +64,7 @@ CmdHandlerEventDelete::CmdHandlerEventDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerEventDelete::handle(ModelRequest *pRequest) {
+void CmdHandlerEventDelete::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
@@ -110,7 +110,7 @@ CmdHandlerEventInfo::CmdHandlerEventInfo()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerEventInfo::handle(ModelRequest *pRequest) {
+void CmdHandlerEventInfo::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
@@ -161,7 +161,7 @@ CmdHandlerEventsList::CmdHandlerEventsList()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
+void CmdHandlerEventsList::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;

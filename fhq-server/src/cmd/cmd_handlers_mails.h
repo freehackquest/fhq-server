@@ -11,7 +11,7 @@ class CmdHandlerMailInfo : public CmdHandlerBase {
 
     public:
         CmdHandlerMailInfo();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerMailInfo)
@@ -24,7 +24,7 @@ class CmdHandlerMailSend : public CmdHandlerBase {
 
     public:
         CmdHandlerMailSend();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerMailSend)
@@ -37,7 +37,7 @@ class CmdHandlerMailsList : public CmdHandlerBase {
 
     public:
         CmdHandlerMailsList();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerMailsList)

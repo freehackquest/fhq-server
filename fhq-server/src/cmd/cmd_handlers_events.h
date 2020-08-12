@@ -9,7 +9,7 @@
 class CmdHandlerEventAdd : public CmdHandlerBase {
     public:
         CmdHandlerEventAdd();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerEventAdd)
@@ -20,7 +20,7 @@ REGISTRY_CMD(CmdHandlerEventAdd)
 class CmdHandlerEventDelete : public CmdHandlerBase {
     public:
         CmdHandlerEventDelete();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerEventDelete)
@@ -31,7 +31,7 @@ REGISTRY_CMD(CmdHandlerEventDelete)
 class CmdHandlerEventInfo : public CmdHandlerBase {
     public:
         CmdHandlerEventInfo();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerEventInfo)
@@ -42,7 +42,7 @@ REGISTRY_CMD(CmdHandlerEventInfo)
 class CmdHandlerEventsList : public CmdHandlerBase {
     public:
         CmdHandlerEventsList();
-        virtual void handle(ModelRequest *pRequest);
+        virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
 REGISTRY_CMD(CmdHandlerEventsList)
