@@ -247,13 +247,14 @@ Access: unauthorized - **no**,  user - **no**,  admin - **yes**
             << "<summary>" << sCmd << "</summary>\n\n"
             << "## " << sCmd << "\n\n";
 
-        if (pCmdHandlerBase->description() != "") {
-            apimd << pCmdHandlerBase->description() << "\n\n";
+        if (pCmdHandlerBase->getDescription() != "") {
+            apimd << pCmdHandlerBase->getDescription() << "\n\n";
         }
         apimd 
-            << "Access: unauthorized - **" << (pCmdHandlerBase->accessUnauthorized() ? "yes" : "no") << "**, "
-            << " user - **" << (pCmdHandlerBase->accessUser() ? "yes" : "no") << "**, "
-            << " admin - **" << (pCmdHandlerBase->accessAdmin() ? "yes" : "no") << "**\n"
+            << "Access: unauthorized - **" << (pCmdHandlerBase->haveUnauthorizedAccess() ? "yes" : "no") << "**, "
+            << " user - **"   << (pCmdHandlerBase->haveUserAccess() ? "yes" : "no") << "**, "
+            << " tester - **" << (pCmdHandlerBase->haveTesterAccess() ? "yes" : "no") << "**, "
+            << " admin - **"  << (pCmdHandlerBase->haveAdminAccess() ? "yes" : "no") << "**\n"
             << "\n";
 
         apimd << " #### Input params \n\n";
@@ -468,22 +469,23 @@ void ExportLibWsjCppCliPy::export__init__py() {
 
         builder
         .sub("def " + sCmd + "(self, req):")
-            .sub("\"\"\"" + pCmdHandlerBase->description())
+            .sub("\"\"\"" + pCmdHandlerBase->getDescription())
                 .add("");
         
-        if (pCmdHandlerBase->activatedFromVersion() != "") {
-            builder.add("Activated From Version: " + pCmdHandlerBase->activatedFromVersion());
+        if (pCmdHandlerBase->getActivatedFromVersion() != "") {
+            builder.add("Activated From Version: " + pCmdHandlerBase->getActivatedFromVersion());
         }
         
-        if (pCmdHandlerBase->deprecatedFromVersion() != "") {
-            builder.add("Deprecated From Version: " + pCmdHandlerBase->deprecatedFromVersion());
+        if (pCmdHandlerBase->getDeprecatedFromVersion() != "") {
+            builder.add("Deprecated From Version: " + pCmdHandlerBase->getDeprecatedFromVersion());
         }
 
 
         builder
-            .add(pCmdHandlerBase->accessUnauthorized() ? "Allowed access for unauthorized users" : "Denied access for unauthorized users")
-            .add(pCmdHandlerBase->accessUser() ? "Allowed access for users" : "Denied access for users")
-            .add(pCmdHandlerBase->accessUser() ? "Allowed access for admins" : "Denied access for admins")
+            .add(pCmdHandlerBase->haveUnauthorizedAccess() ? "Allowed access for unauthorized users" : "Denied access for unauthorized users")
+            .add(pCmdHandlerBase->haveUserAccess() ? "Allowed access for users" : "Denied access for users")
+            .add(pCmdHandlerBase->haveTesterAccess() ? "Allowed access for tester" : "Denied access for tester")
+            .add(pCmdHandlerBase->haveAdminAccess() ? "Allowed access for admins" : "Denied access for admins")
             .add("");
 
         builder

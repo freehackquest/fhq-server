@@ -122,8 +122,9 @@ class IWebSocketServer {
         virtual void sendToAll(const nlohmann::json& jsonMessage) = 0;
         virtual void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) = 0;
         virtual int getConnectedUsers() = 0;
-        virtual void setWsjcppJsonRpc20UserSession(QWebSocket *pClient, WsjcppJsonRpc20UserSession *pUserSession) = 0; 
-        virtual WsjcppJsonRpc20UserSession *getWsjcppJsonRpc20UserSession(QWebSocket *pClient) = 0;
+        virtual void setUserSession(void *pClient, WsjcppJsonRpc20UserSession *pUserSession) = 0;
+        virtual void unsetUserSession(void *pClient) = 0; 
+        virtual WsjcppJsonRpc20UserSession *findUserSession(void *pClient) = 0;
 };
 
 /*! 
@@ -191,7 +192,7 @@ class WsjcppJsonRpc20ParamDef {
 
 class WsjcppJsonRpc20Request {
     public:
-        WsjcppJsonRpc20Request(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_);
+        WsjcppJsonRpc20Request(void *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_);
         QWebSocket *client();
         std::string getIpAddress();
         IWebSocketServer *server();
@@ -217,7 +218,7 @@ class WsjcppJsonRpc20Request {
         // bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler);
     private:
         std::string TAG;
-        QWebSocket *m_pClient;
+        void *m_pClient;
         IWebSocketServer *m_pServer;
         WsjcppJsonRpc20UserSession *m_pWsjcppJsonRpc20UserSession;
         nlohmann::json m_jsonRequest;
@@ -231,18 +232,22 @@ class WsjcppJsonRpc20Request {
  * Api handler Base
  * */
 
-class CmdHandlerBase { // TODO rename to WJSCppHandler
+class CmdHandlerBase {
 
     public:
         CmdHandlerBase(const std::string &sCmd, const std::string &sDescription);
         virtual std::string cmd();
-        virtual std::string description();
-        std::string activatedFromVersion();
-        std::string deprecatedFromVersion();
-        bool accessUnauthorized();
-        bool accessUser();
-        bool accessAdmin();
-        bool checkAccess(WsjcppJsonRpc20Request *pRequest);
+        virtual std::string getDescription() const;
+        std::string getActivatedFromVersion() const;
+        std::string getDeprecatedFromVersion() const;
+        bool haveUnauthorizedAccess() const;
+        bool haveUserAccess() const;
+        bool haveTesterAccess() const;
+        bool haveAdminAccess() const;
+        bool checkAccess(
+            WsjcppJsonRpc20Request *pRequest,
+            WsjcppJsonRpc20Error& error
+        ) const;
 
         virtual const std::vector<WsjcppJsonRpc20ParamDef> &inputs();
         virtual void handle(WsjcppJsonRpc20Request *pRequest) = 0;
@@ -253,6 +258,7 @@ class CmdHandlerBase { // TODO rename to WJSCppHandler
     protected:
         void setAccessUnauthorized(bool bAccess);
         void setAccessUser(bool bAccess);
+        void setAccessTester(bool bAccess);
         void setAccessAdmin(bool bAccess);
         void setActivatedFromVersion(const std::string &sActivatedFromVersion);
         void setDeprecatedFromVersion(const std::string &sDeprecatedFromVersion);
@@ -275,6 +281,7 @@ class CmdHandlerBase { // TODO rename to WJSCppHandler
         std::string m_sDeprecatedFromVersion;
         bool m_bAccessUnauthorized;
         bool m_bAccessUser;
+        bool m_bAccessTester;
         bool m_bAccessAdmin;
 };
 

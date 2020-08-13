@@ -191,13 +191,14 @@ void ExportLibCliWebJS::exportAPImd(const std::string &sBasicDir) {
             "<summary>" << sCmd << "</summary>\n\n"
             "## " << sCmd << "\n\n";
 
-        if (pCmdHandlerBase->description() != "") {
-            apimd << pCmdHandlerBase->description() << "\n\n";
+        if (pCmdHandlerBase->getDescription() != "") {
+            apimd << pCmdHandlerBase->getDescription() << "\n\n";
         }
         apimd <<
-            "Access: unauthorized - **" << (pCmdHandlerBase->accessUnauthorized() ? "yes" : "no") << "**, "
-            " user - **" << (pCmdHandlerBase->accessUser() ? "yes" : "no") << "**, "
-            " admin - **" << (pCmdHandlerBase->accessAdmin() ? "yes" : "no") << "**\n"
+            "Access: unauthorized - **" << (pCmdHandlerBase->haveUnauthorizedAccess() ? "yes" : "no") << "**, "
+            " user - **" << (pCmdHandlerBase->haveUserAccess() ? "yes" : "no") << "**, "
+            " tester - **" << (pCmdHandlerBase->haveTesterAccess() ? "yes" : "no") << "**, "
+            " admin - **" << (pCmdHandlerBase->haveAdminAccess() ? "yes" : "no") << "**\n"
             "\n";
 
         apimd << " #### Input params \n\n";
@@ -550,18 +551,19 @@ void ExportLibCliWebJS::exportLibCliWebJSFile(const std::string &sBasicDir) {
             "    self." << sCmd << " = function(params) {\r\n";
 
         libwjscppcli_web_js_file <<
-            "       // Access unauthorized: " << (pCmdHandlerBase->accessUnauthorized() ? "yes" : "no") << "\r\n"
-            "       // Access user: " << (pCmdHandlerBase->accessUser() ? "yes" : "no") << "\r\n"
-            "       // Access admin: " << (pCmdHandlerBase->accessAdmin() ? "yes" : "no") << "\r\n";
+            "       // Access unauthorized: " << (pCmdHandlerBase->haveUnauthorizedAccess() ? "yes" : "no") << "\r\n"
+            "       // Access user: " << (pCmdHandlerBase->haveUserAccess() ? "yes" : "no") << "\r\n"
+            "       // Access tester: " << (pCmdHandlerBase->haveTesterAccess() ? "yes" : "no") << "\r\n"
+            "       // Access admin: " << (pCmdHandlerBase->haveAdminAccess() ? "yes" : "no") << "\r\n";
         
-        if (pCmdHandlerBase->activatedFromVersion() != "") {
+        if (pCmdHandlerBase->getActivatedFromVersion() != "") {
             libwjscppcli_web_js_file <<
-                "       // Activated From Version: " << pCmdHandlerBase->activatedFromVersion() << "\r\n";
+                "       // Activated From Version: " << pCmdHandlerBase->getActivatedFromVersion() << "\r\n";
         }
         
-        if (pCmdHandlerBase->deprecatedFromVersion() != "") {
+        if (pCmdHandlerBase->getDeprecatedFromVersion() != "") {
             libwjscppcli_web_js_file <<
-                "       // Deprecated From Version: " + pCmdHandlerBase->deprecatedFromVersion() << "\r\n";
+                "       // Deprecated From Version: " + pCmdHandlerBase->getDeprecatedFromVersion() << "\r\n";
         }
         
         std::vector<WsjcppJsonRpc20ParamDef> vVin = pCmdHandlerBase->inputs();
@@ -978,18 +980,19 @@ void ExportLibCliWebJS::exportLibCliWebServiceTSFile(const std::string &sBasicDi
             "    self." << sCmd << " = function(params) {\r\n";
 
         libwjscppcli_web_service_ts_file <<
-            "       // Access unauthorized: " << (pCmdHandlerBase->accessUnauthorized() ? "yes" : "no") << "\r\n"
-            "       // Access user: " << (pCmdHandlerBase->accessUser() ? "yes" : "no") << "\r\n"
-            "       // Access admin: " << (pCmdHandlerBase->accessAdmin() ? "yes" : "no") << "\r\n";
+            "       // Access unauthorized: " << (pCmdHandlerBase->haveUnauthorizedAccess() ? "yes" : "no") << "\r\n"
+            "       // Access user: " << (pCmdHandlerBase->haveUserAccess() ? "yes" : "no") << "\r\n"
+            "       // Access tester: " << (pCmdHandlerBase->haveTesterAccess() ? "yes" : "no") << "\r\n"
+            "       // Access admin: " << (pCmdHandlerBase->haveAdminAccess() ? "yes" : "no") << "\r\n";
         
-        if (pCmdHandlerBase->activatedFromVersion() != "") {
+        if (pCmdHandlerBase->getActivatedFromVersion() != "") {
             libwjscppcli_web_service_ts_file <<
-                "       // Activated From Version: " << pCmdHandlerBase->activatedFromVersion() << "\r\n";
+                "       // Activated From Version: " << pCmdHandlerBase->getActivatedFromVersion() << "\r\n";
         }
         
-        if (pCmdHandlerBase->deprecatedFromVersion() != "") {
+        if (pCmdHandlerBase->getDeprecatedFromVersion() != "") {
             libwjscppcli_web_service_ts_file <<
-                "       // Deprecated From Version: " + pCmdHandlerBase->deprecatedFromVersion() << "\r\n";
+                "       // Deprecated From Version: " + pCmdHandlerBase->getDeprecatedFromVersion() << "\r\n";
         }
         
         std::vector<WsjcppJsonRpc20ParamDef> vVin = pCmdHandlerBase->inputs();

@@ -214,16 +214,18 @@ void WebSocketServer::processTextMessage(const QString &message) {
         }
 
         pServerInfo->incrementRequests(sCmd);
+        WsjcppJsonRpc20Error error(404, "none");
 
         // check access
         // TODO move check inside in CmdHandler
-        if (!pCmdHandler->checkAccess(pWsjcppJsonRpc20Request)) {
+        if (!pCmdHandler->checkAccess(pWsjcppJsonRpc20Request, error)) {
+            pWsjcppJsonRpc20Request->sendMessageError(pCmdHandler->cmd(), error);
             return;
         }
 
         // allow access
         // TODO move to WsjcppJsonRpc20Request
-        WsjcppJsonRpc20Error error(404, "none");
+        
         if (!pServer->validateInputParameters(error, pCmdHandler, jsonRequest_)) {
             pWsjcppJsonRpc20Request->sendMessageError(pCmdHandler->cmd(), error);
             return;
@@ -254,7 +256,7 @@ void WebSocketServer::socketDisconnected() {
     // TODO hex print
     WsjcppLog::info(TAG, "socketDisconnected:" + std::to_string(nClient));
     if (pClient) {
-        this->removeWsjcppJsonRpc20UserSession(pClient);
+        this->unsetUserSession(pClient);
         m_clients.removeAll(pClient);
         pClient->deleteLater();
     }
@@ -363,38 +365,38 @@ void WebSocketServer::slot_sendToOne(QWebSocket *pClient, QString message) {
 
 // TODO move to EmployServer
 
-void WebSocketServer::setWsjcppJsonRpc20UserSession(QWebSocket *pClient, WsjcppJsonRpc20UserSession *pWsjcppJsonRpc20UserSession) {
+void WebSocketServer::setUserSession(void *pClient, WsjcppJsonRpc20UserSession *pWsjcppJsonRpc20UserSession) {
     std::lock_guard<std::mutex> lock(m_mtxUserSession);
     if (m_mapUserSession.find(pClient) == m_mapUserSession.end()) {
         WsjcppLog::err(TAG, "pWsjcppJsonRpc20UserSession pointer: " + WsjcppCore::getPointerAsHex(pWsjcppJsonRpc20UserSession));
-        m_mapUserSession.insert(std::pair<QWebSocket *, WsjcppJsonRpc20UserSession *>(pClient, pWsjcppJsonRpc20UserSession));
+        m_mapUserSession.insert(std::pair<void *, WsjcppJsonRpc20UserSession *>(pClient, pWsjcppJsonRpc20UserSession));
     } else {
         WsjcppLog::err(TAG, "User Session already exists");
     }
 }
 
 // ---------------------------------------------------------------------
-// TODO EmployServer
 
-WsjcppJsonRpc20UserSession *WebSocketServer::getWsjcppJsonRpc20UserSession(QWebSocket *pClient) {
+void WebSocketServer::unsetUserSession(void *pClient) {
     std::lock_guard<std::mutex> lock(m_mtxUserSession);
-    if (m_mapUserSession.find(pClient) != m_mapUserSession.end()) {
-        return m_mapUserSession[pClient];
-    }
-    return nullptr;
-};
-
-// ---------------------------------------------------------------------
-
-void WebSocketServer::removeWsjcppJsonRpc20UserSession(QWebSocket *pClient) {
-    std::lock_guard<std::mutex> lock(m_mtxUserSession);
-    std::map<QWebSocket *, WsjcppJsonRpc20UserSession *>::iterator it = m_mapUserSession.find(pClient);
+    std::map<void *, WsjcppJsonRpc20UserSession *>::iterator it = m_mapUserSession.find(pClient);
     if (it != m_mapUserSession.end()) {
         WsjcppJsonRpc20UserSession* pUserSession = it->second;
         m_mapUserSession.erase(it);
         delete pUserSession;
     }
 }
+
+// ---------------------------------------------------------------------
+// TODO EmployServer
+
+WsjcppJsonRpc20UserSession *WebSocketServer::findUserSession(void *pClient) {
+    std::lock_guard<std::mutex> lock(m_mtxUserSession);
+    if (m_mapUserSession.find(pClient) != m_mapUserSession.end()) {
+        return m_mapUserSession[pClient];
+    }
+    return nullptr;
+};
 
 // ---------------------------------------------------------------------
 

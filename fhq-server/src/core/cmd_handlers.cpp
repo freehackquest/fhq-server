@@ -530,7 +530,7 @@ WsjcppJsonRpc20ParamDef &WsjcppJsonRpc20ParamDef::addValidator(WsjcppValidatorSt
 // ****************************
 
 
-WsjcppJsonRpc20Request::WsjcppJsonRpc20Request(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_) {
+WsjcppJsonRpc20Request::WsjcppJsonRpc20Request(void *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_) {
     TAG = "WsjcppJsonRpc20Request";
     m_pClient = pClient;
     m_pServer = pWebSocketServer;
@@ -540,25 +540,33 @@ WsjcppJsonRpc20Request::WsjcppJsonRpc20Request(QWebSocket *pClient, IWebSocketSe
         m_sCommand = m_jsonRequest["cmd"];
     }
 
+    if (m_jsonRequest["method"].is_string()) {
+        m_sCommand = m_jsonRequest["method"];
+    }
+
     if (m_jsonRequest["m"].is_string()) {
         m_sMessageId = m_jsonRequest["m"];
     }
 
-    m_pWsjcppJsonRpc20UserSession = m_pServer->getWsjcppJsonRpc20UserSession(m_pClient);
+    if (m_jsonRequest["id"].is_string()) {
+        m_sMessageId = m_jsonRequest["id"];
+    }
+
+    m_pWsjcppJsonRpc20UserSession = m_pServer->findUserSession(m_pClient);
 }
 
 // ---------------------------------------------------------------------
 
 QWebSocket *WsjcppJsonRpc20Request::client() {
-    return m_pClient;
+    return (QWebSocket *)m_pClient;
 }
 
 // ---------------------------------------------------------------------
 
 std::string WsjcppJsonRpc20Request::getIpAddress() {
-    std::string sAddress = m_pClient->peerAddress().toString().toStdString();
+    std::string sAddress = ((QWebSocket*)m_pClient)->peerAddress().toString().toStdString();
     #if QT_VERSION >= 0x050600
-        QNetworkRequest r = m_pClient->request();
+        QNetworkRequest r = ((QWebSocket*)m_pClient)->request();
         QByteArray qbaHeaderName = QString("x-forwarded-for").toLatin1();
         if (r.hasRawHeader(qbaHeaderName)) {
             sAddress = r.rawHeader(qbaHeaderName).toStdString();
@@ -650,7 +658,7 @@ bool WsjcppJsonRpc20Request::isUnauthorized() {
 // ---------------------------------------------------------------------
 
 void WsjcppJsonRpc20Request::sendMessageError(const std::string &cmd, WsjcppJsonRpc20Error error) {
-    m_pServer->sendMessageError(m_pClient,cmd,m_sMessageId,error);
+    m_pServer->sendMessageError((QWebSocket*)m_pClient,cmd,m_sMessageId,error);
 }
 
 // ---------------------------------------------------------------------
@@ -661,7 +669,7 @@ void WsjcppJsonRpc20Request::sendMessageSuccess(const std::string &sMethod, nloh
     jsonResponse["method"] = sMethod;
     jsonResponse["m"] = m_sMessageId;
     jsonResponse["result"] = "DONE";
-    m_pServer->sendMessage(m_pClient, jsonResponse);
+    m_pServer->sendMessage((QWebSocket*)m_pClient, jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -673,7 +681,7 @@ void WsjcppJsonRpc20Request::sendResponse(nlohmann::json& jsonResult) {
     jsonResponse["method"] = m_sCommand;
     jsonResponse["id"] = m_sMessageId;
     jsonResponse["result"] = jsonResult;
-    m_pServer->sendMessage(m_pClient, jsonResponse);
+    m_pServer->sendMessage((QWebSocket*)m_pClient, jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -713,6 +721,7 @@ CmdHandlerBase::CmdHandlerBase(const std::string &sCmd, const std::string &sDesc
 
     m_bAccessUnauthorized = false;
     m_bAccessUser = false;
+    m_bAccessTester = false;
     m_bAccessAdmin = false;
 
     // can register in global variable
@@ -721,54 +730,66 @@ CmdHandlerBase::CmdHandlerBase(const std::string &sCmd, const std::string &sDesc
 
 // ---------------------------------------------------------------------
 
-std::string CmdHandlerBase::activatedFromVersion() {
+std::string CmdHandlerBase::getActivatedFromVersion() const {
     return m_sActivatedFromVersion;
 }
 
 // ---------------------------------------------------------------------
 
-std::string CmdHandlerBase::deprecatedFromVersion() {
+std::string CmdHandlerBase::getDeprecatedFromVersion() const {
     return m_sDeprecatedFromVersion;
 }
 
 // ---------------------------------------------------------------------
 
-bool CmdHandlerBase::accessUnauthorized() {
+bool CmdHandlerBase::haveUnauthorizedAccess() const {
     return m_bAccessUnauthorized;
 }
 
 // ---------------------------------------------------------------------
 
-bool CmdHandlerBase::accessUser() {
+bool CmdHandlerBase::haveUserAccess() const {
     return m_bAccessUser;
 }
 
 // ---------------------------------------------------------------------
 
-bool CmdHandlerBase::accessAdmin() {
+bool CmdHandlerBase::haveTesterAccess() const {
+    return m_bAccessTester;
+}
+
+// ---------------------------------------------------------------------
+
+bool CmdHandlerBase::haveAdminAccess() const {
     return m_bAccessAdmin;
 }
 
 // ---------------------------------------------------------------------
 // TODO write unit-test for this
 
-bool CmdHandlerBase::checkAccess(WsjcppJsonRpc20Request *pRequest) {
+bool CmdHandlerBase::checkAccess(WsjcppJsonRpc20Request *pRequest, WsjcppJsonRpc20Error& error) const {
     WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
-    if (!accessUnauthorized()) {
+    if (!haveUnauthorizedAccess()) {
         if (pUserSession == nullptr) {
-            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(401, "Not Authorized Request"));
+            error = WsjcppJsonRpc20Error(401, "NOT_AUTHORIZED_REQUEST");
             return false;
         }
 
         // access user
-        if (pUserSession->isUser() && !accessUser()) {
-            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Access deny for user"));
+        if (pUserSession->isUser() && !haveUserAccess()) {
+            error = WsjcppJsonRpc20Error(403, "ACCESS_DENY_FOR_USER");
+            return false;
+        }
+
+        // access tester
+        if (pUserSession->isTester() && !haveTesterAccess()) {
+            error = WsjcppJsonRpc20Error(403, "ACCESS_DENY_FOR_TESTER");
             return false;
         }
 
         // access admin
-        if (pUserSession->isAdmin() && !accessAdmin()) {
-            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Access deny for admin"));
+        if (pUserSession->isAdmin() && !haveAdminAccess()) {
+            error = WsjcppJsonRpc20Error(403, "ACCESS_DENY_FOR_ADMIN");
             return false;
         }
     }
@@ -784,7 +805,7 @@ std::string CmdHandlerBase::cmd() {
 
 // ---------------------------------------------------------------------
 
-std::string CmdHandlerBase::description() {
+std::string CmdHandlerBase::getDescription() const {
     return m_sDescription;
 }
 
@@ -798,6 +819,12 @@ void CmdHandlerBase::setAccessUnauthorized(bool bAccess) {
 
 void CmdHandlerBase::setAccessUser(bool bAccess) {
     m_bAccessUser = bAccess;
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerBase::setAccessTester(bool bAccess) {
+    m_bAccessTester = bAccess;
 }
 
 // ---------------------------------------------------------------------
@@ -984,10 +1011,11 @@ void WJSCppCmdHandlerServerApi::handle(WsjcppJsonRpc20Request *pRequest) {
         nlohmann::json jsonHandler;
 
         jsonHandler["cmd"] = pHandler->cmd().c_str();
-        jsonHandler["description"] = pHandler->description();
-        jsonHandler["access_unauthorized"] = pHandler->accessUnauthorized();
-        jsonHandler["access_user"] = pHandler->accessUser();
-        jsonHandler["access_admin"] = pHandler->accessAdmin();
+        jsonHandler["description"] = pHandler->getDescription();
+        jsonHandler["access_unauthorized"] = pHandler->haveUnauthorizedAccess();
+        jsonHandler["access_user"] = pHandler->haveUserAccess();
+        jsonHandler["access_tester"] = pHandler->haveTesterAccess();
+        jsonHandler["access_admin"] = pHandler->haveAdminAccess();
 
         nlohmann::json jsonInputs = nlohmann::json::array();
         std::vector<WsjcppJsonRpc20ParamDef> ins = pHandler->inputs();

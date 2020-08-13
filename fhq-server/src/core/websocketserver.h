@@ -39,9 +39,10 @@ class WebSocketServer : public QObject, public IWebSocketServer {
         virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, WsjcppJsonRpc20Error error) override;
         virtual void sendToAll(const nlohmann::json& jsonMessage) override;
         void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) override;
-        virtual void setWsjcppJsonRpc20UserSession(QWebSocket *pClient, WsjcppJsonRpc20UserSession *pWsjcppJsonRpc20UserSession) override; 
-        virtual WsjcppJsonRpc20UserSession *getWsjcppJsonRpc20UserSession(QWebSocket *pClient) override;
-        void removeWsjcppJsonRpc20UserSession(QWebSocket *pClient);
+        virtual void setUserSession(void *pClient, WsjcppJsonRpc20UserSession *pWsjcppJsonRpc20UserSession) override; 
+        virtual void unsetUserSession(void *pClient) override;
+        virtual WsjcppJsonRpc20UserSession *findUserSession(void *pClient) override;
+        
 
     Q_SIGNALS:
         void closed();
@@ -71,7 +72,7 @@ class WebSocketServer : public QObject, public IWebSocketServer {
         // TODO rename m_tokens to m_mapUserSessions;
         // TODO usersession must be single std::map<std::string sUserUuid, WsjcppJsonRpc20UserSession *>
         std::mutex m_mtxUserSession;
-        std::map<QWebSocket *, WsjcppJsonRpc20UserSession *> m_mapUserSession; 
+        std::map<void *, WsjcppJsonRpc20UserSession *> m_mapUserSession; 
 
         bool m_bFailed;
         std::string TAG;

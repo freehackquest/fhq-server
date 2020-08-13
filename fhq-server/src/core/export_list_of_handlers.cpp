@@ -12,6 +12,7 @@ void ExportListOfHandlers::print() {
         std::string sCommandName;
         bool bAccessUnauth;
         bool bAccessUser;
+        bool bAccessTester;
         bool bAccessAdmin;
     };
     std::vector<CmdRow> vRows;
@@ -22,9 +23,10 @@ void ExportListOfHandlers::print() {
         std::string sCmd = it->first;
         CmdHandlerBase* pCmdHandlerBase = it->second;
         CmdRow row;
-        row.bAccessUnauth = pCmdHandlerBase->accessUnauthorized();
-        row.bAccessUser = pCmdHandlerBase->accessUser();
-        row.bAccessAdmin = pCmdHandlerBase->accessAdmin();
+        row.bAccessUnauth = pCmdHandlerBase->haveUnauthorizedAccess();
+        row.bAccessUser = pCmdHandlerBase->haveUserAccess();
+        row.bAccessTester = pCmdHandlerBase->haveTesterAccess();
+        row.bAccessAdmin = pCmdHandlerBase->haveAdminAccess();
         row.sCommandName = sCmd;
         nMaxLenCommandName = std::max(nMaxLenCommandName, (int)sCmd.length());
         vRows.push_back(row);
@@ -41,6 +43,7 @@ void ExportListOfHandlers::print() {
         std::cout << " | " << std::setfill(' ') << std::setw(nMaxLenCommandName) << vRows[i].sCommandName << " |";
         std::cout << " " << (vRows[i].bAccessUnauth ? "unauth" : "      ") << " |";
         std::cout << "  " << (vRows[i].bAccessUser ? "user" : "    ") << "  |";
+        std::cout << "  " << (vRows[i].bAccessTester ? "tester" : "    ") << "  |";
         std::cout << " " << (vRows[i].bAccessAdmin ? "admin" : "     ") << "  |";
         std::cout << "\n";
     }

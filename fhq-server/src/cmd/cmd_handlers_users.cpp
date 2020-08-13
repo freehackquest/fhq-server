@@ -206,7 +206,7 @@ void CmdHandlerLogin::handle(WsjcppJsonRpc20Request *pRequest) {
         jsonResponse["token"] = sUuid;
         jsonResponse["user"] = user;
 
-        pRequest->server()->setWsjcppJsonRpc20UserSession(pRequest->client(), new WsjcppJsonRpc20UserSession(user_token));
+        pRequest->server()->setUserSession(pRequest->client(), new WsjcppJsonRpc20UserSession(user_token));
 
         // update user location
         std::string sLastIP = pRequest->getIpAddress();
@@ -425,7 +425,7 @@ void CmdHandlerToken::handle(WsjcppJsonRpc20Request *pRequest) {
         QString end_date = record.value("end_date").toString();
         std::string sLastIP = pRequest->getIpAddress();
         nlohmann::json jsonUserSession = nlohmann::json::parse(data);
-        pRequest->server()->setWsjcppJsonRpc20UserSession(pRequest->client(), new WsjcppJsonRpc20UserSession(jsonUserSession));
+        pRequest->server()->setUserSession(pRequest->client(), new WsjcppJsonRpc20UserSession(jsonUserSession));
         WsjcppLog::info(TAG, "userid: " + QString::number(userid).toStdString());
         // TODO redesign this
         RunTasks::UpdateUserLocation(userid, sLastIP);
