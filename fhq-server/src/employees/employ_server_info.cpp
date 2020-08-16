@@ -13,7 +13,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployServerInfo)
 // ---------------------------------------------------------------------
 
 EmployServerInfo::EmployServerInfo()
-    : WsjcppEmployBase(EmployServerInfo::name(), { EmployDatabase::name(), EmployNotify::name() }) {
+    : WsjcppEmployBase(EmployServerInfo::name(), { EmployDatabase::name()/*, EmployNotify::name()*/ }) {
     m_nCountQuests = 0;
     m_nCountQuestsAttempt = 0;
     m_nCountQuestsCompleted = 0;
