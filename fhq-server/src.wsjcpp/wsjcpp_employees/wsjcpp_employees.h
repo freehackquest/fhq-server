@@ -25,6 +25,8 @@ private:
     std::string TAG;
     std::string m_sName;
     std::vector<std::string> m_vLoadAfter;
+    
+    
 };
 
 // ---------------------------------------------------------------------
@@ -37,15 +39,16 @@ class WsjcppEmployees {
     public:
         static void initGlobalVariables();
         static void deinitGlobalVariables();
-        static void addEmploy(const std::string &sName, WsjcppEmployBase* pEmploy);
+        static void addService(const std::string &sName, WsjcppEmployBase* pEmploy);
         static bool init(const std::vector<std::string> &vLoadAfter);
         static bool deinit();
+        static void recoursiveTestDependencies(std::vector<std::string> v);
 };
 
 // ---------------------------------------------------------------------
-// RegistryEmploy
-#define REGISTRY_WJSCPP_EMPLOY( classname ) \
-    static classname * pWJSCppRegistryEmploy ## classname = new classname(); \
+// RegistryServiceLocator
+#define REGISTRY_WJSCPP_SERVICE_LOCATOR( classname ) \
+    static classname * pWJSCppRegistryServiceLocator ## classname = new classname();
 
 // ---------------------------------------------------------------------
 // findWsjcppEmploy
@@ -69,12 +72,12 @@ template <class T> T* findWsjcppEmploy() {
 }
 
 // ---------------------------------------------------------------------
-// WJSCppEmployRuntimeGlobalCache
+// WsjcppEmployRuntimeGlobalCache
 
-class WJSCppEmployRuntimeGlobalCache : public WsjcppEmployBase {
+class WsjcppEmployRuntimeGlobalCache : public WsjcppEmployBase {
     public:
-        WJSCppEmployRuntimeGlobalCache();
-        static std::string name() { return "WJSCppEmployRuntimeGlobalCache"; }
+        WsjcppEmployRuntimeGlobalCache();
+        static std::string name() { return "WsjcppEmployRuntimeGlobalCache"; }
         virtual bool init() override;
         virtual bool deinit() override;
         void set(const std::string &sName, const std::string &sValue);

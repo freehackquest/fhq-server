@@ -1,0 +1,42 @@
+name: "wsjcpp-jsonrpc2"
+version: "v0.0.2"
+cmake_minimum_required: "3.0"
+cmake_cxx_standard: "11"
+description: "Implementation of JsonRPC 2.0"
+authors:
+  - name: "Evgenii Sopov"
+    email: "mrseakg@gmail.com"
+origins:
+  - address: "https://sea-kg.com/wsjcpp-package-registry/"
+    type: "package-registry"
+keywords:
+  - "c++"
+dependencies:
+  - name: "wsjcpp-core"
+    version: "v0.1.7"
+    url: "https://github.com/wsjcpp/wsjcpp-core:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_core"
+  - name: "nlohmann/json"
+    version: "v3.9.1"
+    url: "https://github.com/nlohmann/json:develop"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/nlohmann_json"
+  - name: "wsjcpp-validators"
+    version: "v0.1.2"
+    url: "https://github.com/wsjcpp/wsjcpp-validators:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_validators"
+distribution:
+  - source-file: "src/wsjcpp_jsonrpc20.h"
+    target-file: "wsjcpp_jsonrpc20.h"
+    type: "source-code"
+  - source-file: "src/wsjcpp_jsonrpc20.cpp"
+    target-file: "wsjcpp_jsonrpc20.cpp"
+    type: "source-code"
+unit-tests:
+  cases:
+    - name: "JsonRpc20UserSession"
+      description: "Test the user session object"
+    - name: "JsonRpc20ParamDef"
+      description: "Test"

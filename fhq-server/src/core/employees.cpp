@@ -1,6 +1,7 @@
 #include <wsjcpp_parse_conf.h>
 #include <employees.h>
 #include <employ_server_info.h>
+#include <employ_games.h>
 #include <algorithm>
 #include <wsjcpp_storages.h>
 #include <wsjcpp_core.h>
@@ -598,7 +599,7 @@ std::string WsjcppSettingItem::convertTypeToString() const {
 // ---------------------------------------------------------------------
 // EmployGlobalSettings
 
-REGISTRY_WJSCPP_EMPLOY(EmployGlobalSettings)
+REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployGlobalSettings)
 
 // ---------------------------------------------------------------------
 
@@ -971,10 +972,14 @@ void EmployGlobalSettings::eventSettingsChanged(const WsjcppSettingItem *pSettin
 
 // ---------------------------------------------------------------------
 
-REGISTRY_WJSCPP_EMPLOY(EmployServer)
+REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployServer)
 
 EmployServer::EmployServer()
-    : WsjcppEmployBase(EmployServer::name(), {"start_server", EmployGlobalSettings::name(), EmployServerInfo::name()}) {
+    : WsjcppEmployBase(EmployServer::name(), {
+        "start_server", 
+        EmployGlobalSettings::name(), 
+        EmployServerInfo::name()
+    }) {
     TAG = EmployServer::name();
     m_pWebSocketServer = NULL;
 
@@ -1087,24 +1092,26 @@ bool EmployServer::validateInputParameters(WsjcppJsonRpc20Error &error, CmdHandl
                         error = WsjcppJsonRpc20Error(400, "Parameter '" + inDef.getName() + "' must be integer");
                         return false;
                     }
-
-                    int val = *itJsonParamName;
-                    if (inDef.isMinVal() && val < inDef.getMinVal()) {
-                        error = WsjcppJsonRpc20Error(400, "Parameter '" + inDef.getName() + "' must be more then " + std::to_string(inDef.getMinVal()));
-                        return false;
-                    }
-                    if (inDef.isMaxVal() && val > inDef.getMaxVal()) {
-                        error = WsjcppJsonRpc20Error(400, "Parameter '" + inDef.getName() + "' must be less then " + std::to_string(inDef.getMaxVal()));
-                        return false;
-                    }
                 }
 
                 if (inDef.isString()) {
                     std::string sVal = itJsonParamName->get_ref<std::string const&>();
                     std::string sError;
-                    const std::vector<WsjcppValidatorStringBase *> vValidators = inDef.listOfValidators();
+                    const std::vector<WsjcppValidatorStringBase *> vValidators = inDef.listOfStringValidators();
                     for (int i = 0; i < vValidators.size(); i++) {
                         if (!vValidators[i]->isValid(sVal, sError)) {
+                            error = WsjcppJsonRpc20Error(400, "Wrong param '" + inDef.getName() + "': " + sError);
+                            return false;
+                        }
+                    }
+                }
+
+                if (inDef.isInteger()) {
+                    int nVal = *itJsonParamName;
+                    std::string sError;
+                    const std::vector<WsjcppValidatorIntegerBase *> vValidators = inDef.listOfIntegerValidators();
+                    for (int i = 0; i < vValidators.size(); i++) {
+                        if (!vValidators[i]->isValid(nVal, sError)) {
                             error = WsjcppJsonRpc20Error(400, "Wrong param '" + inDef.getName() + "': " + sError);
                             return false;
                         }

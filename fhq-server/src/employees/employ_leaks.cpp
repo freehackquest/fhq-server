@@ -9,7 +9,7 @@
 #include <QString>
 #include <QVariant>
 
-REGISTRY_WJSCPP_EMPLOY(EmployLeaks)
+REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployLeaks)
 
 // ---------------------------------------------------------------------
 

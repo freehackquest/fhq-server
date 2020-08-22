@@ -4,89 +4,13 @@
 #include <map>
 #include <fallen.h>
 #include <wsjcpp_validators.h>
+#include <wsjcpp_jsonrpc20.h>
 #include <json.hpp>
 #include <QWebSocket>
 #include <QSqlQuery> // TODO deprecated
 #include <QSqlRecord> // TODO deprecated
 #include <QString> // TODO deprecated
 #include <QVariant> // TODO deprecated
-
-/*! 
- * WsjcppJsonRpc20Error - helper class for errors
- * */
-
-class WsjcppJsonRpc20Error {
-    public:
-        WsjcppJsonRpc20Error(int nErrorCode, const std::string &sErrorMessage);
-        int getErrorCode();
-        std::string getErrorMessage();
-        nlohmann::json toJson();
-
-    private:
-        std::string m_sErrorMessage;
-        int m_nErrorCode;
-};
-
-/*! 
- * WsjcppJsonRpc20UserSession - 
- * WsjcppJsonRpc20UserSession - user data session
- * */
-
-class WsjcppJsonRpc20UserSession {
-    public:
-        WsjcppJsonRpc20UserSession();
-        WsjcppJsonRpc20UserSession(nlohmann::json const& obj);
-        void fillFrom(nlohmann::json const& obj);
-
-        std::string getSessionUuid();
-        void setSessionUuid(const std::string &sSessionUuid);
-
-        long getSessionCreated();
-        void setSessionCreated(long nSessionCreated);
-
-        long getSessionUpdated();
-        void setSessionUpdated(long nSessionUpdated);
-
-        long getSessionExpire();
-        void setSessionExpire(long nSessionExpire);
-
-        int getUserId();
-        void setUserId(int nId);
-
-        std::string getUserUuid();
-        void setUserUuid(const std::string &sUserUuid);
-
-        std::string getUserName();
-        void setUserName(const std::string &sUserName);
-
-        std::string getUserEmail();
-        void setUserEmail(const std::string &sUserEmail);
-
-        std::string getUserRole();
-        void setUserRole(const std::string &sUserRole);
-
-        // IUserToken
-        bool isAdmin();
-        bool isUser();
-        bool isTester();
-        bool hasRole();
-        
-        nlohmann::json getUserCustom();
-        void setUserCustom(const nlohmann::json &jsonCustom);
-
-    private:
-        std::string TAG;
-        std::string m_sSessionUuid;
-        long m_nSessionCreated;
-        long m_nSessionUpdated;
-        long m_nSessionExpire;
-        int m_nUserID;
-        std::string m_sUserUuid;
-        std::string m_sUserName;
-        std::string m_sUserEmail;
-        std::string m_sUserRole;
-        nlohmann::json m_jsonUserCustom;
-};
 
 /*! 
  * WsjcppSocketClient - 
@@ -125,67 +49,6 @@ class IWebSocketServer {
         virtual void setUserSession(void *pClient, WsjcppJsonRpc20UserSession *pUserSession) = 0;
         virtual void unsetUserSession(void *pClient) = 0; 
         virtual WsjcppJsonRpc20UserSession *findUserSession(void *pClient) = 0;
-};
-
-/*! 
- * WsjcppJsonRpc20ParamDef - helper api for define input params and descrip it for docs.
- * */
-    
-class WsjcppJsonRpc20ParamDef {
-    public:
-        WsjcppJsonRpc20ParamDef(const std::string &sName, const std::string &sDescription);
-        WsjcppJsonRpc20ParamDef();
-        WsjcppJsonRpc20ParamDef & optional();
-        WsjcppJsonRpc20ParamDef & required();
-        WsjcppJsonRpc20ParamDef & string_();
-        WsjcppJsonRpc20ParamDef & integer_();
-        WsjcppJsonRpc20ParamDef & any_();
-        WsjcppJsonRpc20ParamDef & bool_();
-        WsjcppJsonRpc20ParamDef & description(const std::string &sDescription);
-        WsjcppJsonRpc20ParamDef & minval(int minval);
-        WsjcppJsonRpc20ParamDef & maxval(int maxval);
-        nlohmann::json toJson();
-        
-        const std::string &getType();
-        const std::string &getType() const;
-        const std::string &getName();
-        const std::string &getName() const;
-        const std::string &getRestrict();
-        const std::string &getRestrict() const;
-        const std::string &getDescription();
-        const std::string &getDescription() const;
-
-        bool isRequired();
-        bool isInteger();
-        bool isString();
-        bool isBool();
-        bool isAny();
-
-        bool isMinVal(); // TODO: redesign to validators
-        int getMinVal(); // TODO: redesign to validators
-        bool isMaxVal(); // TODO: redesign to validators
-        int getMaxVal(); // TODO: redesign to validators
-
-        WsjcppJsonRpc20ParamDef &addValidator(WsjcppValidatorStringBase *pValidatorStringBase);
-        
-        const std::vector<WsjcppValidatorStringBase *> &listOfValidators();
-
-    private:
-        std::string m_sType;
-        std::string m_sName;
-        std::string m_sRestrict;
-        std::string m_sDescription;
-        int m_nMinVal;
-        bool m_bSettedMinVal;
-        int m_nMaxVal;
-        bool m_bSettedMaxVal;
-
-        std::string CMD_INPUT_DEF_TYPE_INTEGER = "integer";
-        std::string CMD_INPUT_DEF_TYPE_STRING = "string";
-        std::string CMD_INPUT_DEF_TYPE_BOOL = "boolean";
-        std::string CMD_INPUT_DEF_TYPE_ANY = "any";
-
-        std::vector<WsjcppValidatorStringBase *> m_vValidatorsString;
 };
 
 // ---------------------------------------------------------------------

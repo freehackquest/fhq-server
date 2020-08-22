@@ -58,7 +58,7 @@ concat content_source  "
 // ---------------------------------------------------------------------
 // " class_name "
 
-REGISTRY_WJSCPP_EMPLOY(" class_name ")
+REGISTRY_WJSCPP_SERVICE_LOCATOR(" class_name ")
 
 " class_name "::" class_name "() 
 : WsjcppEmployBase(" class_name "::name(), {}) {

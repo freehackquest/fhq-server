@@ -715,3 +715,85 @@ bool WsjcppValidatorHex::isValid(const std::string &sValue, std::string &sError)
     }
     return true;
 }
+
+
+// ----------------------------------------------------------------------
+// WsjcppValidatorIntegerBase
+
+WsjcppValidatorIntegerBase::WsjcppValidatorIntegerBase(const std::string &sTypeName) {
+    TAG = "WsjcppValidatorIntegerBase";
+    m_sTypeName = sTypeName;
+}
+
+// ----------------------------------------------------------------------
+
+WsjcppValidatorType WsjcppValidatorIntegerBase::getBaseType() {
+    return WsjcppValidatorType::WSJCPP_VALIDATOR_INTEGER;
+}
+
+// ----------------------------------------------------------------------
+
+std::string WsjcppValidatorIntegerBase::getTypeName() {
+    return m_sTypeName;
+}
+
+// ----------------------------------------------------------------------
+// WsjcppValidatorIntegerMinValue
+
+WsjcppValidatorIntegerMinValue::WsjcppValidatorIntegerMinValue(int nMinValue) 
+: WsjcppValidatorIntegerBase("integer_min_value") {
+    TAG = "WsjcppValidatorIntegerMinValue";
+    m_nMinValue = nMinValue;
+}
+
+// ----------------------------------------------------------------------
+
+bool WsjcppValidatorIntegerMinValue::isValid(int nValue, std::string &sError) {
+    if (nValue < m_nMinValue) {
+        sError = "Value must be more or equal then " + std::to_string(m_nMinValue);
+        return false;
+    }
+    return true;
+}
+
+// ----------------------------------------------------------------------
+// WsjcppValidatorIntegerMaxValue
+
+WsjcppValidatorIntegerMaxValue::WsjcppValidatorIntegerMaxValue(int nMaxValue) 
+: WsjcppValidatorIntegerBase("integer_max_value") {
+    TAG = "WsjcppValidatorIntegerMaxValue";
+    m_nMaxValue = nMaxValue;
+}
+
+// ----------------------------------------------------------------------
+
+bool WsjcppValidatorIntegerMaxValue::isValid(int nValue, std::string &sError) {
+    if (nValue > m_nMaxValue) {
+        sError = "Value must be less or equal then " + std::to_string(m_nMaxValue);
+        return false;
+    }
+    return true;
+}
+
+// ----------------------------------------------------------------------
+// WsjcppValidatorJsonBase
+
+WsjcppValidatorJsonBase::WsjcppValidatorJsonBase(const std::string &sTypeName) {
+    TAG = "WsjcppValidatorJsonBase";
+    m_sTypeName = sTypeName;
+}
+
+// ----------------------------------------------------------------------
+
+WsjcppValidatorType WsjcppValidatorJsonBase::getBaseType() {
+    return WsjcppValidatorType::WSJCPP_VALIDATOR_JSON;
+}
+
+// ----------------------------------------------------------------------
+
+std::string WsjcppValidatorJsonBase::getTypeName() {
+    return m_sTypeName;
+}
+
+
+// ----------------------------------------------------------------------

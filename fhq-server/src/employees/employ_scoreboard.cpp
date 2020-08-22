@@ -6,7 +6,7 @@
 #include <QString>
 #include <QVariant>
 
-REGISTRY_WJSCPP_EMPLOY(EmployScoreboard)
+REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployScoreboard)
 
 // ---------------------------------------------------------------------
 

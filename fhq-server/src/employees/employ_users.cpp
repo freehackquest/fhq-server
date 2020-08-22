@@ -4,7 +4,7 @@
 #include <employees.h>
 #include <employ_notify.h>
 
-REGISTRY_WJSCPP_EMPLOY(EmployUsers)
+REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployUsers)
 
 // ---------------------------------------------------------------------
 

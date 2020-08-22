@@ -58,10 +58,10 @@ void WsjcppEmployees::deinitGlobalVariables() {
 
 // ---------------------------------------------------------------------
 
-void WsjcppEmployees::addEmploy(const std::string &sName, WsjcppEmployBase* pEmploy) {
+void WsjcppEmployees::addService(const std::string &sName, WsjcppEmployBase* pEmploy) {
     WsjcppEmployees::initGlobalVariables();
     if (g_pWsjcppEmployees->find(sName) != g_pWsjcppEmployees->end()) {
-        WsjcppLog::err(sName, "Already registered");
+        WsjcppLog::throw_err("WsjcppEmployees::addService", "Already registered '" + sName + "'");
     } else {
         g_pWsjcppEmployees->insert(std::pair<std::string, WsjcppEmployBase*>(sName,pEmploy));
         // WsjcppLog::info(sName, "Registered");
@@ -158,10 +158,39 @@ bool WsjcppEmployees::deinit() {
     return true;
 }
 
-
 // ---------------------------------------------------------------------
 
+void WsjcppEmployees::recoursiveTestDependencies(std::vector<std::string> v) {
+    std::string sEmployName = v[v.size()-1];
+    WsjcppEmployBase *pEmploy = nullptr;
+    
+    std::map<std::string, WsjcppEmployBase*>::iterator it;
+    it = g_pWsjcppEmployees->find(sEmployName);
+    if (it == g_pWsjcppEmployees->end()) {
+        // WsjcppLog::throw_err("WsjcppEmployees::recoursiveTestDependencies", "Not found employ '" + sEmployName + "'");
+        return;
+    }
+    pEmploy = g_pWsjcppEmployees->at(sEmployName);
+    std::vector<std::string> vLoadAfter = pEmploy->loadAfter();
+    for (int la = 0; la < vLoadAfter.size(); la++) {
+        for (int i = 0; i < v.size(); i++) {
+            if (v[i] == vLoadAfter[la]) {
+                WsjcppLog::throw_err(
+                    "WsjcppEmployees::recoursiveTestDependencies", 
+                    "Cicle dependency: " + WsjcppCore::join(v, " -> ") + " -> " + vLoadAfter[la]
+                );
+                return;
+            }
+        }
+        v.push_back(vLoadAfter[la]);
+        recoursiveTestDependencies(v);
+        v.pop_back();
+    }
+}
+
+// ---------------------------------------------------------------------
 // WsjcppEmployBase
+
 WsjcppEmployBase::WsjcppEmployBase(const std::string &sName, const std::vector<std::string> &vAfter) {
     TAG = sName;
     m_sName = sName;
@@ -169,7 +198,10 @@ WsjcppEmployBase::WsjcppEmployBase(const std::string &sName, const std::vector<s
     for (unsigned int i = 0; i < vAfter.size(); i++) {
         m_vLoadAfter.push_back(vAfter[i]);
     }
-    WsjcppEmployees::addEmploy(m_sName, this);
+    WsjcppEmployees::addService(m_sName, this);
+    std::vector<std::string> vInitialVector;
+    vInitialVector.push_back(m_sName);
+    WsjcppEmployees::recoursiveTestDependencies(vInitialVector);
 }
 
 // ---------------------------------------------------------------------
@@ -184,23 +216,22 @@ const std::vector<std::string> &WsjcppEmployBase::loadAfter() {
     return m_vLoadAfter;
 }
 
+// ---------------------------------------------------------------------
+// WsjcppEmployRuntimeGlobalCache
+
+REGISTRY_WJSCPP_SERVICE_LOCATOR(WsjcppEmployRuntimeGlobalCache)
 
 // ---------------------------------------------------------------------
-// WJSCppEmployRuntimeGlobalCache
 
-REGISTRY_WJSCPP_EMPLOY(WJSCppEmployRuntimeGlobalCache)
+WsjcppEmployRuntimeGlobalCache::WsjcppEmployRuntimeGlobalCache()
+    : WsjcppEmployBase(WsjcppEmployRuntimeGlobalCache::name(), {}) {
 
-// ---------------------------------------------------------------------
-
-WJSCppEmployRuntimeGlobalCache::WJSCppEmployRuntimeGlobalCache()
-    : WsjcppEmployBase(WJSCppEmployRuntimeGlobalCache::name(), {}) {
-
-    TAG = WJSCppEmployRuntimeGlobalCache::name();
+    TAG = WsjcppEmployRuntimeGlobalCache::name();
 }
 
 // ---------------------------------------------------------------------
 
-bool WJSCppEmployRuntimeGlobalCache::init() {
+bool WsjcppEmployRuntimeGlobalCache::init() {
     // checking settings
     WsjcppLog::info(TAG, "init");
     return true;
@@ -208,7 +239,7 @@ bool WJSCppEmployRuntimeGlobalCache::init() {
 
 // ---------------------------------------------------------------------
 
-bool WJSCppEmployRuntimeGlobalCache::deinit() {
+bool WsjcppEmployRuntimeGlobalCache::deinit() {
     // checking settings
     WsjcppLog::info(TAG, "deinit");
     m_sStringMap.clear();
@@ -217,19 +248,19 @@ bool WJSCppEmployRuntimeGlobalCache::deinit() {
 
 // ---------------------------------------------------------------------
 
-void WJSCppEmployRuntimeGlobalCache::set(const std::string &sName, const std::string &sValue) {
+void WsjcppEmployRuntimeGlobalCache::set(const std::string &sName, const std::string &sValue) {
     m_sStringMap[sName] = sValue;
 }
 
 // ---------------------------------------------------------------------
 
-bool WJSCppEmployRuntimeGlobalCache::has(const std::string &sName) {
+bool WsjcppEmployRuntimeGlobalCache::has(const std::string &sName) {
     return m_sStringMap.find(sName) != m_sStringMap.end();
 }
 
 // ---------------------------------------------------------------------
 
-std::string WJSCppEmployRuntimeGlobalCache::get(const std::string &sName) {
+std::string WsjcppEmployRuntimeGlobalCache::get(const std::string &sName) {
     if (m_sStringMap.find(sName) != m_sStringMap.end()) {
         return m_sStringMap[sName];
     }

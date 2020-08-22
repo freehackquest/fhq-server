@@ -8,7 +8,7 @@
 #include <QString>
 #include <QVariant>
 
-REGISTRY_WJSCPP_EMPLOY(EmployServerInfo)
+REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployServerInfo)
 
 // ---------------------------------------------------------------------
 

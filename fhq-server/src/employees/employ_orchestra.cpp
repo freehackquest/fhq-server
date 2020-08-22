@@ -1,7 +1,7 @@
 #include <employ_orchestra.h>
 #include <utils_lxd.h>
 
-REGISTRY_WJSCPP_EMPLOY(EmployOrchestra)
+REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployOrchestra)
 
 // ---------------------------------------------------------------------
 

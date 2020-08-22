@@ -8,7 +8,7 @@
 #include <sys/stat.h>
 #include <runtasks.h>
 
-REGISTRY_WJSCPP_EMPLOY(EmployNotify)
+REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployNotify)
 
 // ---------------------------------------------------------------------
 

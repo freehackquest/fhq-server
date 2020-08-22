@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 
 
-REGISTRY_WJSCPP_EMPLOY(EmployGames)
+REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployGames)
 
 // ---------------------------------------------------------------------
 
@@ -19,6 +19,8 @@ EmployGames::EmployGames()
 // ---------------------------------------------------------------------
 
 bool EmployGames::init() {
+    WsjcppLog::warn(TAG, "initialize");
+
     // TODO mutex
     // check the access to games folder
     EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
@@ -60,7 +62,7 @@ bool EmployGames::init() {
         pModelGame->setForm(record.value("form").toString().toStdString());
         pModelGame->setType(record.value("type_game").toString().toStdString());
         // TODO must be cached all fields
-
+        WsjcppLog::warn(TAG, "laod game " + sUuid);
         if (m_mapCacheGames.count(sUuid)) {
             WsjcppLog::err(TAG, "Inconsistent list games in database uuid: " + sUuid);
             return false;

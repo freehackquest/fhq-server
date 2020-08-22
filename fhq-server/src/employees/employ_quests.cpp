@@ -6,7 +6,7 @@
 #include <QString>
 #include <QVariant>
 
-REGISTRY_WJSCPP_EMPLOY(EmployQuests)
+REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployQuests)
 
 // ---------------------------------------------------------------------
 

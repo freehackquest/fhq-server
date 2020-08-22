@@ -2,7 +2,7 @@
 #include <employ_database.h>
 #include <employ_notify.h>
 
-REGISTRY_WJSCPP_EMPLOY(EmployMails)
+REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployMails)
 
 // ---------------------------------------------------------------------
 

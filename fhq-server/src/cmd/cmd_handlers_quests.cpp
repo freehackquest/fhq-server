@@ -505,8 +505,11 @@ CmdHandlerCreateQuest::CmdHandlerCreateQuest()
     requireIntegerParam("gameid", "Which game included this quest");
     requireStringParam("name", "Name of the quest");
     requireStringParam("text", "Description of the quest");
-    requireIntegerParam("score", "How much append to user score after solve quest by them").minval(1).maxval(1000);
-    // TODO validator score
+    requireIntegerParam("score", "How much append to user score after solve quest by them")
+        .addValidator(new WsjcppValidatorIntegerMinValue(1))
+        .addValidator(new WsjcppValidatorIntegerMaxValue(1000))
+    ;
+        
 
     requireStringParam("author", "Author of the quest");
     requireStringParam("subject", "Subject must be one from types")
@@ -763,7 +766,10 @@ CmdHandlerQuestProposal::CmdHandlerQuestProposal()
     requireIntegerParam("gameid", "Which game included this quest");
     requireStringParam("name", "Name of the quest");
     requireStringParam("text", "Description of the quest");
-    requireIntegerParam("score", "How much append to user score after solve quest by them").minval(1).maxval(1000);
+    requireIntegerParam("score", "How much append to user score after solve quest by them")
+        .addValidator(new WsjcppValidatorIntegerMinValue(1))
+        .addValidator(new WsjcppValidatorIntegerMaxValue(1000))
+    ;
 
     requireStringParam("author", "Author of the quest");
     requireStringParam("subject", "Subject must be one from types (look types)")
@@ -1053,7 +1059,10 @@ CmdHandlerQuestUpdate::CmdHandlerQuestUpdate()
     optionalIntegerParam("gameid", "Which game included this quest");
     optionalStringParam("text", "Description of the quest"); // addModificator (for example ModificatorStringTrim)
         
-    optionalIntegerParam("score", "How much append to user score after solve quest by them").minval(1).maxval(1000); // TODO validator
+    optionalIntegerParam("score", "How much append to user score after solve quest by them")
+        .addValidator(new WsjcppValidatorIntegerMinValue(1))
+        .addValidator(new WsjcppValidatorIntegerMaxValue(1000))
+    ;
 
     optionalStringParam("subject", "Subject must be one from types")
         .addValidator(new ValidatorQuestSubject());

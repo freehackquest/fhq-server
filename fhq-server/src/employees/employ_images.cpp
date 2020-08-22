@@ -8,7 +8,7 @@
 // http://www.libpng.org/pub/png/libpng.html
 // https://stackoverflow.com/questions/22907625/how-to-resize-an-image-using-libpng
 
-REGISTRY_WJSCPP_EMPLOY(EmployImages)
+REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployImages)
 
 // ---------------------------------------------------------------------
 
