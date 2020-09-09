@@ -633,6 +633,7 @@ bool EmployGlobalSettings::EmployGlobalSettings::init() {
 
 bool EmployGlobalSettings::deinit() {
     // TODO
+    return true;
 }
 
 // ---------------------------------------------------------------------
@@ -796,6 +797,7 @@ bool EmployGlobalSettings::initFromDatabase(WsjcppSettingsStore *pDatabaseSettin
             m_pDatabaseSettingsStore->initSettingItem(pItem);
         }
     }
+    return true;
 }
 
 // ---------------------------------------------------------------------
@@ -1046,11 +1048,12 @@ bool EmployServer::init() {
 
 bool EmployServer::deinit() {
     // TODO
+    return true;
 }
 
 // ---------------------------------------------------------------------
 
-void EmployServer::setServer(IWebSocketServer *pWebSocketServer) {
+void EmployServer::setServer(WsjcppJsonRpc20WebSocketServer *pWebSocketServer) {
     m_pWebSocketServer = pWebSocketServer;
 }
 
@@ -1062,8 +1065,14 @@ void EmployServer::sendToAll(const nlohmann::json& jsonMessage) {
 
 // ---------------------------------------------------------------------
 
-void EmployServer::sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) {
+void EmployServer::sendToOne(WsjcppJsonRpc20WebSocketClient *pClient, const nlohmann::json &jsonMessage) {
     m_pWebSocketServer->sendToOne(pClient, jsonMessage);
+}
+
+// ---------------------------------------------------------------------
+
+int EmployServer::getConnectedUsers() {
+    return m_pWebSocketServer->getConnectedUsers();
 }
 
 // ---------------------------------------------------------------------

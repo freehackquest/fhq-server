@@ -12,7 +12,6 @@ class UpdateMaxScoreGameTask : public QRunnable {
     private:
         int m_nGameID;
         std::string TAG;
-        IWebSocketServer *m_pWebSocketServer;
 };
 
 #endif // UPDATE_MAX_SCORE_GAME_TASK_H

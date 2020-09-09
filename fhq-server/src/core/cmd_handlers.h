@@ -3,48 +3,22 @@
 
 #include <map>
 #include <fallen.h>
-#include <wsjcpp_validators.h>
 #include <wsjcpp_jsonrpc20.h>
-#include <json.hpp>
 #include <QWebSocket>
 #include <QSqlQuery> // TODO deprecated
 #include <QSqlRecord> // TODO deprecated
 #include <QString> // TODO deprecated
 #include <QVariant> // TODO deprecated
 
-/*! 
- * WsjcppSocketClient - 
- * */
-
-class WsjcppSocketClient : public QObject {
-    private:
-        Q_OBJECT
-        
-    public:
-        WsjcppSocketClient(QWebSocket *pSocket);
-        ~WsjcppSocketClient();
-        
-    private:
-        std::string TAG;
-        WsjcppJsonRpc20UserSession *m_pUserSession;
-        QWebSocket *m_pSocket;
-
-    private Q_SLOTS:
-        void processTextMessage(const QString &message);
-        void processBinaryMessage(QByteArray message);
-        void socketDisconnected();
-};
-
-/*! 
- * IWebSocketServer - 
- * */
-
-class IWebSocketServer {
+// ---------------------------------------------------------------------
+// WsjcppJsonRpc20WebSocketServer
+ 
+class WsjcppJsonRpc20WebSocketServer {
     public:
         virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse) = 0;
-        virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, WsjcppJsonRpc20Error error) = 0;
+        virtual void sendMessageError(WsjcppJsonRpc20WebSocketClient *pClient, const std::string &sCmd, const std::string & sM, WsjcppJsonRpc20Error error) = 0;
         virtual void sendToAll(const nlohmann::json& jsonMessage) = 0;
-        virtual void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) = 0;
+        virtual void sendToOne(WsjcppJsonRpc20WebSocketClient *pClient, const nlohmann::json &jsonMessage) = 0;
         virtual int getConnectedUsers() = 0;
         virtual void setUserSession(void *pClient, WsjcppJsonRpc20UserSession *pUserSession) = 0;
         virtual void unsetUserSession(void *pClient) = 0; 
@@ -55,10 +29,15 @@ class IWebSocketServer {
 
 class WsjcppJsonRpc20Request {
     public:
-        WsjcppJsonRpc20Request(void *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_);
-        QWebSocket *client();
-        std::string getIpAddress();
-        IWebSocketServer *server();
+        WsjcppJsonRpc20Request(
+            WsjcppJsonRpc20WebSocketClient *pClient,
+            WsjcppJsonRpc20WebSocketServer *pWebSocketServer
+        );
+
+        bool parseIncomeData(const std::string &sIncomeData);
+
+        WsjcppJsonRpc20WebSocketClient *getWebSocketClient();
+        WsjcppJsonRpc20WebSocketServer *getServer(); // TODO remove from here
         WsjcppJsonRpc20UserSession *getUserSession();
         bool isAdmin();
         bool isUser();
@@ -70,23 +49,24 @@ class WsjcppJsonRpc20Request {
         std::string getInputString(const std::string &sParamName, const std::string &sDefaultValue);
         int getInputInteger(const std::string &sParamName, int defaultValue);
         
-        std::string m();
-        bool hasM();
-        std::string command();
-        bool hasCommand();
+        std::string getId();
+        std::string getMethod();
         void sendMessageError(const std::string &cmd, WsjcppJsonRpc20Error error);
         void sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse);
         void sendResponse(nlohmann::json& jsonResult);
 
+        // TODO done()
+        // TODO fail()
         // bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler);
     private:
         std::string TAG;
-        void *m_pClient;
-        IWebSocketServer *m_pServer;
+        WsjcppJsonRpc20WebSocketClient *m_pClient;
+        WsjcppJsonRpc20WebSocketServer *m_pServer;
         WsjcppJsonRpc20UserSession *m_pWsjcppJsonRpc20UserSession;
         nlohmann::json m_jsonRequest;
-        std::string m_sMessageId;
-        std::string m_sCommand;
+        std::string m_sId;
+        std::string m_sMethod;
+        bool m_bResponseSend;
 };
 
 // ---------------------------------------------------------------------

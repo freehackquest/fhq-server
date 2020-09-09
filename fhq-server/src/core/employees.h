@@ -223,13 +223,14 @@ class EmployServer : public WsjcppEmployBase {
         virtual bool init();
         virtual bool deinit();
         bool validateInputParameters(WsjcppJsonRpc20Error &error, CmdHandlerBase *pCmdHandler, const nlohmann::json& jsonMessage);
-        void setServer(IWebSocketServer *pWebSocketServer);
+        int getConnectedUsers();
+        void setServer(WsjcppJsonRpc20WebSocketServer *pWebSocketServer);
         void sendToAll(const nlohmann::json& jsonMessage);
-        void sendToOne(QWebSocket *pClient, const nlohmann::json& jsonMessage);
+        void sendToOne(WsjcppJsonRpc20WebSocketClient *pClient, const nlohmann::json& jsonMessage);
 
     private:
         std::string TAG;
-        IWebSocketServer *m_pWebSocketServer;
+        WsjcppJsonRpc20WebSocketServer *m_pWebSocketServer;
 };
 
 #endif // EMPLOYEES_H

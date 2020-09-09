@@ -6,10 +6,9 @@
 #include <employ_scoreboard.h>
 #include <QtCore>
 #include <wsjcpp_hashes.h>
-#include <fallen.h>
 #include <wsjcpp_core.h>
 #include <QDateTime>
-#include <json.hpp>
+#include <websocketserver.h>
 
 /*********************************************
  * This handler will be return scoreboard of user
@@ -206,10 +205,12 @@ void CmdHandlerLogin::handle(WsjcppJsonRpc20Request *pRequest) {
         jsonResponse["token"] = sUuid;
         jsonResponse["user"] = user;
 
-        pRequest->server()->setUserSession(pRequest->client(), new WsjcppJsonRpc20UserSession(user_token));
+        WsjcppJsonRpc20UserSession *pUserSession = new WsjcppJsonRpc20UserSession(user_token);
+        pRequest->getWebSocketClient()->setUserSession(pUserSession);
+        pRequest->getServer()->setUserSession(pRequest->getWebSocketClient(), pUserSession);
 
         // update user location
-        std::string sLastIP = pRequest->getIpAddress();
+        std::string sLastIP = pRequest->getWebSocketClient()->getIpAddress();
         RunTasks::UpdateUserLocation(nUserId, sLastIP);
 
     } else {
@@ -334,7 +335,7 @@ void CmdHandlerRegistration::handle(WsjcppJsonRpc20Request *pRequest) {
                          "   :about);"
     );
 
-    std::string sLastIP = pRequest->getIpAddress();
+    std::string sLastIP = pRequest->getWebSocketClient()->getIpAddress();
 
     // TODO move to helpers
     std::string sUuid = WsjcppCore::createUuid();
@@ -423,9 +424,12 @@ void CmdHandlerToken::handle(WsjcppJsonRpc20Request *pRequest) {
         std::string data = record.value("data").toString().toStdString();
         QString start_date = record.value("start_date").toString();
         QString end_date = record.value("end_date").toString();
-        std::string sLastIP = pRequest->getIpAddress();
+        std::string sLastIP = pRequest->getWebSocketClient()->getIpAddress();
         nlohmann::json jsonUserSession = nlohmann::json::parse(data);
-        pRequest->server()->setUserSession(pRequest->client(), new WsjcppJsonRpc20UserSession(jsonUserSession));
+        WsjcppJsonRpc20UserSession *pUserSession = new WsjcppJsonRpc20UserSession(jsonUserSession);
+        pRequest->getWebSocketClient()->setUserSession(pUserSession);
+        // TODO not need this
+        pRequest->getServer()->setUserSession(pRequest->getWebSocketClient(), pUserSession);
         WsjcppLog::info(TAG, "userid: " + QString::number(userid).toStdString());
         // TODO redesign this
         RunTasks::UpdateUserLocation(userid, sLastIP);
@@ -1814,7 +1818,8 @@ void CmdHandlerUsersRegistrationVerification::handle(WsjcppJsonRpc20Request *pRe
                          "   :about);"
     );
 
-    QString sLastIP = pRequest->client()->peerAddress().toString();
+    WebSocketClient *pWebSocketClient = (WebSocketClient *)pRequest->getWebSocketClient();
+    QString sLastIP = pWebSocketClient->getClient()->peerAddress().toString();
 
     std::string sUuid = WsjcppCore::createUuid();
 

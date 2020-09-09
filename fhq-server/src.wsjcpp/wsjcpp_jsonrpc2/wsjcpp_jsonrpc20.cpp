@@ -363,6 +363,32 @@ void WsjcppJsonRpc20UserSession::setSessionCustom(const nlohmann::json &jsonSess
 }
 
 // ---------------------------------------------------------------------
+// WsjcppJsonRpc20WebSocketClient
+
+WsjcppJsonRpc20WebSocketClient::WsjcppJsonRpc20WebSocketClient() {
+    TAG = "WsjcppJsonRpc20WebSocketClient";
+    m_pUserSession = nullptr;
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20WebSocketClient::setUserSession(WsjcppJsonRpc20UserSession *pUserSession) {
+    m_pUserSession = pUserSession;
+}
+
+// ---------------------------------------------------------------------
+
+WsjcppJsonRpc20UserSession *WsjcppJsonRpc20WebSocketClient::getUserSession() {
+    return m_pUserSession;
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20WebSocketClient::unsetUserSession() {
+    m_pUserSession = nullptr;
+}
+
+// ---------------------------------------------------------------------
 // WsjcppJsonRpc20ParamDef
 
 WsjcppJsonRpc20ParamDef::WsjcppJsonRpc20ParamDef(const std::string &sName, const std::string &sDescription) 

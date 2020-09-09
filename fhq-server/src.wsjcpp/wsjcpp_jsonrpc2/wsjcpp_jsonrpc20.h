@@ -7,9 +7,18 @@
 #include <iostream>
 #include <algorithm>
 
-/*! 
- * WsjcppJsonRpc20Error - helper class for errors
- * */
+class WsjcppJsonRpc20Error;
+class WsjcppJsonRpc20UserSession;
+class WsjcppJsonRpc20ParamDef;
+class WsjcppJsonRpc20WebSocketClient;
+class WsjcppJsonRpc20WebSocketServer;
+class WsjcppJsonRpc20ParamDef;
+class WsjcppJsonRpc20Request;
+class WsjcppJsonRpc20BaseHandler;
+class WsjcppJsonRpc20;
+
+// ---------------------------------------------------------------------
+// WsjcppJsonRpc20Error
 
 // must be this json:
 // {"jsonrpc": "2.0", "error": {"code": -32600, "message": "Invalid Request."}, "id": null}
@@ -24,9 +33,8 @@ class WsjcppJsonRpc20Error {
         int m_nErrorCode;
 };
 
-/*! 
- * WsjcppJsonRpc20Session - user data session
- * */
+// ---------------------------------------------------------------------
+// WsjcppJsonRpc20Session
 
 class WsjcppJsonRpc20UserSession {
     public:
@@ -85,20 +93,46 @@ class WsjcppJsonRpc20UserSession {
         nlohmann::json m_jsonSessionCustom;
 };
 
-/*! 
- * IWebSocketServer - 
- * */
+// ---------------------------------------------------------------------
+// WsjcppJsonRpc20WebSocket
 
-/*class IWebSocketServer {
+class WsjcppJsonRpc20WebSocketClient {
     public:
-        // virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse) = 0;
-        // virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, WsjcppError error) = 0;
+        WsjcppJsonRpc20WebSocketClient();
+        void setUserSession(WsjcppJsonRpc20UserSession *pUserSession);
+        WsjcppJsonRpc20UserSession *getUserSession();
+        void unsetUserSession();
+        virtual std::string getIpAddress() = 0;
+        
+    protected:
+        std::string TAG;
+
+    private:
+        WsjcppJsonRpc20UserSession *m_pUserSession;
+};
+
+// ---------------------------------------------------------------------
+// WsjcppJsonRpc20WebSocketServer
+/*
+class WsjcppJsonRpc20WebSocketServer {
+    public:
+        virtual void sendMessage(
+            WsjcppJsonRpc20WebSocket *pClient,
+            const nlohmann::json& jsonResponse
+        ) = 0;
+        virtual void sendMessageError(
+            WsjcppJsonRpc20WebSocket *pClient,
+            const std::string &sCmd,
+            const std::string & sM,
+            WsjcppJsonRpc20Error error
+        ) = 0;
         virtual void sendToAll(const nlohmann::json& jsonMessage) = 0;
-        // virtual void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) = 0;
+        virtual void sendToOne(WsjcppJsonRpc20WebSocket *pClient, const nlohmann::json &jsonMessage) = 0;
         virtual int getConnectedUsers() = 0;
-        // virtual void setWsjcppJsonRpc20UserSession(QWebSocket *pClient, WsjcppJsonRpc20UserSession *pUserSession) = 0; 
-        // virtual WsjcppJsonRpc20UserSession *getWsjcppJsonRpc20UserSession(QWebSocket *pClient) = 0;
-};*/
+        virtual void setWsjcppJsonRpc20UserSession(WsjcppJsonRpc20WebSocket *pClient, WsjcppJsonRpc20UserSession *pUserSession) = 0; 
+        virtual WsjcppJsonRpc20UserSession *getWsjcppJsonRpc20UserSession(WsjcppJsonRpc20WebSocket *pClient) = 0;
+};
+*/
 
 /*! 
  * WsjcppJsonRpc20ParamDef - helper api for define input params and descrip it for docs.
@@ -160,14 +194,18 @@ class WsjcppJsonRpc20ParamDef {
 };
 
 // ---------------------------------------------------------------------
-
+// WsjcppJsonRpc20Request
 /*
 class WsjcppJsonRpc20Request {
     public:
-        WsjcppJsonRpc20Request(void *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_);
-        void *client();
+        WsjcppJsonRpc20Request(
+            WsjcppJsonRpc20WebSocket *pClient,
+            WsjcppJsonRpc20WebSocketServer *pWebSocketServer,
+            nlohmann::json &jsonRequest_
+        );
+        WsjcppJsonRpc20WebSocket *client();
         std::string getIpAddress();
-        IWebSocketServer *server();
+        WsjcppJsonRpc20WebSocketServer *server();
         WsjcppJsonRpc20UserSession *getUserSession();
         bool isAdmin();
         bool isUser();
@@ -191,7 +229,7 @@ class WsjcppJsonRpc20Request {
     private:
         std::string TAG;
         void *m_pClient;
-        IWebSocketServer *m_pServer;
+        WsjcppJsonRpc20WebSocketServer *m_pServer;
         WsjcppJsonRpc20UserSession *m_pWsjcppJsonRpc20UserSession;
         nlohmann::json m_jsonRequest;
         std::string m_sMessageId;
@@ -203,9 +241,8 @@ class WsjcppJsonRpc20Request {
 /*!
  * Api handler Base
  * */
-
 /*
-class WsjcppJsonRpc20Base {
+class WsjcppJsonRpc20BaseHandler {
 
     public:
         WsjcppJsonRpc20Base(const std::string &sMethod, const std::string &sDescription);
@@ -253,7 +290,9 @@ class WsjcppJsonRpc20Base {
         bool m_bAccessUser;
         bool m_bAccessAdmin;
 };
+
 */
+
 //extern std::map<std::string, WsjcppJsonRpc20Base*> *g_pWsjcppJsonRpc20BaseList;
 
 /*!
@@ -264,7 +303,7 @@ class WsjcppJsonRpc20 {
     public:
         static void initGlobalVariables();
         static void addHandler(const std::string &sName, WsjcppJsonRpc20Base* pCmdHandler);
-        static WsjcppJsonRpc20Base *findJsonRpc20(const std::string &sCmd);
+        static WsjcppJsonRpc20Base *findJsonRpc20(const std::string &sMethod);
 };
 
 // RegistryWsjcppJsonRpc20

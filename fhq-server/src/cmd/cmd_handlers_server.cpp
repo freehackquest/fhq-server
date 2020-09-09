@@ -96,7 +96,8 @@ void CmdHandlerPublicInfo::handle(WsjcppJsonRpc20Request *pRequest) {
     jsonResponse["winners"] = jsonWinners;
     jsonResponse["cities"] = jsonCities;
     jsonResponse["developers"] = pServerInfo->developers();
-    jsonResponse["connectedusers"] = pRequest->server()->getConnectedUsers();
+    EmployServer *pServer = findWsjcppEmploy<EmployServer>();
+    jsonResponse["connectedusers"] = pServer->getConnectedUsers();
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 

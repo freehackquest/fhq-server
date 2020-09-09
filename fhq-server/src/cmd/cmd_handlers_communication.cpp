@@ -64,7 +64,8 @@ void CmdHandlerChatSendMessage::handle(WsjcppJsonRpc20Request *pRequest) {
     jsonData2["message"] = QString::fromStdString(sMessage).toHtmlEscaped().toStdString();
     jsonData2["dt"] = QDateTime::currentDateTime().toString("yyyy-MM-ddTHH:mm:ss").toStdString();
 
-    pRequest->server()->sendToAll(jsonData2);
+    EmployServer *pServer = findWsjcppEmploy<EmployServer>();
+    pServer->sendToAll(jsonData2);
 
     EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
     ModelNotification notification("info", "chat", "Income chat message " + sMessage);

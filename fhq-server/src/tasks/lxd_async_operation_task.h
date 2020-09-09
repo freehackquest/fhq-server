@@ -24,8 +24,8 @@ private:
     std::string m_sCMD;
     std::string TAG;
     std::string m_sName;
-    std::string m_sM;
-    QWebSocket *m_pRequestClient;
+    std::string m_sId;
+    WsjcppJsonRpc20WebSocketClient *m_pRequestClient;
 };
 
 

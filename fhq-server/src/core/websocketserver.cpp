@@ -16,6 +16,35 @@
 #include <cmd_handlers.h>
 
 // ---------------------------------------------------------------------
+// WebSocketClient
+
+WebSocketClient::WebSocketClient(QWebSocket *pClient) {
+    TAG = "WebSocketClient";
+    m_pClient = pClient;
+}
+
+// ---------------------------------------------------------------------
+
+QWebSocket *WebSocketClient::getClient() {
+    return m_pClient;
+}
+
+// ---------------------------------------------------------------------
+
+std::string WebSocketClient::getIpAddress() {
+    std::string sAddress = ((QWebSocket*)m_pClient)->peerAddress().toString().toStdString();
+    #if QT_VERSION >= 0x050600
+        QNetworkRequest r = ((QWebSocket*)m_pClient)->request();
+        QByteArray qbaHeaderName = QString("x-forwarded-for").toLatin1();
+        if (r.hasRawHeader(qbaHeaderName)) {
+            sAddress = r.rawHeader(qbaHeaderName).toStdString();
+        }
+    #endif
+    return sAddress;
+}
+
+// ---------------------------------------------------------------------
+// WebSocketServer
 
 WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
     TAG = "WebSocketServer";
@@ -154,7 +183,6 @@ void WebSocketServer::onNewConnection()
 {
     QWebSocket *pSocket = m_pWebSocketServer->nextPendingConnection();
     initNewConnection("", pSocket);
-    // WsjcppSocketClient *pClient = new WsjcppSocketClient(pSocket);
 }
 
 // ---------------------------------------------------------------------
@@ -166,7 +194,6 @@ void WebSocketServer::onNewConnection()
 void WebSocketServer::onNewConnectionSSL() {
     QWebSocket *pSocket = m_pWebSocketServerSSL->nextPendingConnection();
     initNewConnection("SSL", pSocket);
-    // WsjcppSocketClient *pClient = new WsjcppSocketClient(pSocket);
 }
 
 // ---------------------------------------------------------------------
@@ -179,60 +206,47 @@ void WebSocketServer::processTextMessage(const QString &message) {
     WsjcppLog::warn(TAG, "QWebSocket *pClient = " + WsjcppCore::getPointerAsHex(pClient));
     WsjcppLog::warn(TAG, "pClient->localPort() = " + std::to_string(pClient->localPort()));
 
-    std::string sCmd = "";
-    std::string sM = "";
+    // TODO find socket client in server with user session
+    WebSocketClient *pWebSocketClient = new WebSocketClient(pClient);
+    WsjcppJsonRpc20Request *pWsjcppJsonRpc20Request = new WsjcppJsonRpc20Request(pWebSocketClient, this);
+
+    if (!pWsjcppJsonRpc20Request->parseIncomeData(message.toStdString())) {
+        delete pWsjcppJsonRpc20Request;
+        delete pWebSocketClient;
+        return;
+    }
+
+    std::string sMethod = pWsjcppJsonRpc20Request->getMethod();
+    std::string sId = pWsjcppJsonRpc20Request->getId();
     try {
-        if (!nlohmann::json::accept(message.toStdString())) {
-            this->sendMessageError(pClient, sCmd, sM, WsjcppJsonRpc20Error(400, "Not JSON data"));
-            return;
-        }
 
-        nlohmann::json jsonRequest_ = nlohmann::json::parse(message.toStdString());
-        WsjcppJsonRpc20Request *pWsjcppJsonRpc20Request = new WsjcppJsonRpc20Request(pClient, this, jsonRequest_);
-        
-        if (!pWsjcppJsonRpc20Request->hasCommand()) {
-            this->sendMessageError(pClient, sCmd, sM, WsjcppJsonRpc20Error(404, "Not found requare parameter 'cmd'"));
-            // pWsjcppJsonRpc20RequestData->sendError(Error(404, "Not found command '" + QString(cmd.c_str()) + "'"));
-            return;
-        }
-
-        sCmd = pWsjcppJsonRpc20Request->command();
-        if (!pWsjcppJsonRpc20Request->hasM()) {
-            WsjcppLog::info(TAG, "[WS] >>> " + sCmd);
-            this->sendMessageError(pClient, sCmd, sM, WsjcppJsonRpc20Error(404, "Not found requare parameter 'm' - messageid"));
-            return;
-        }
-        sM = pWsjcppJsonRpc20Request->m();
-
-        WsjcppLog::info(TAG, "[WS] >>> " + sCmd + ":" + sM);
-
-        CmdHandlerBase *pCmdHandler = CmdHandlers::findCmdHandler(sCmd);
+        CmdHandlerBase *pCmdHandler = CmdHandlers::findCmdHandler(sMethod);
         if (pCmdHandler == NULL) {
-            WsjcppLog::warn(TAG, "Unknown command: " + sCmd);
-            pWsjcppJsonRpc20Request->sendMessageError(sCmd, WsjcppJsonRpc20Error(404, "Not found command '" + sCmd + "'"));
+            WsjcppLog::warn(TAG, "Unknown command: " + sMethod);
+            pWsjcppJsonRpc20Request->sendMessageError(sMethod, WsjcppJsonRpc20Error(404, "UNKNOWN_COMMAND"));
             return;
         }
 
-        pServerInfo->incrementRequests(sCmd);
-        WsjcppJsonRpc20Error error(404, "none");
+        pServerInfo->incrementRequests(sMethod);
+        WsjcppJsonRpc20Error error(404, "NONE");
 
         // check access
-        // TODO move check inside in CmdHandler
+        // TODO move check WsjcppJsonRpc20WebSocketServer
         if (!pCmdHandler->checkAccess(pWsjcppJsonRpc20Request, error)) {
             pWsjcppJsonRpc20Request->sendMessageError(pCmdHandler->cmd(), error);
             return;
         }
 
         // allow access
-        // TODO move to WsjcppJsonRpc20Request
+        // TODO move to WsjcppJsonRpc20WebSocketServer
         
-        if (!pServer->validateInputParameters(error, pCmdHandler, jsonRequest_)) {
+        if (!pServer->validateInputParameters(error, pCmdHandler, pWsjcppJsonRpc20Request->jsonRequest())) {
             pWsjcppJsonRpc20Request->sendMessageError(pCmdHandler->cmd(), error);
             return;
         }
         pCmdHandler->handle(pWsjcppJsonRpc20Request);
     } catch (const std::exception &e) {
-        this->sendMessageError(pClient, sCmd, sM, WsjcppJsonRpc20Error(500, "InternalServerError"));
+        this->sendMessageError(pWebSocketClient, sMethod, sId, WsjcppJsonRpc20Error(500, "InternalServerError"));
         WsjcppLog::err(TAG, e.what());
     }
 }
@@ -306,7 +320,7 @@ void WebSocketServer::sendMessage(QWebSocket *pClient, const nlohmann::json& jso
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string &sId, WsjcppJsonRpc20Error error) {
+void WebSocketServer::sendMessageError(WsjcppJsonRpc20WebSocketClient *pWebSocketClient, const std::string &sCmd, const std::string &sId, WsjcppJsonRpc20Error error) {
     nlohmann::json jsonResponse;
     jsonResponse["method"] = sCmd;
     jsonResponse["jsonrpc"] = "2.0";
@@ -316,6 +330,8 @@ void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &s
     jsonResponse["result"] = "FAIL"; // deprecated
     jsonResponse["error"] = error.getErrorMessage(); // deprecated
     jsonResponse["code"] = error.getErrorCode(); // deprecated
+    QWebSocket *pClient = ((WebSocketClient *)pWebSocketClient)->getClient();
+
     WsjcppLog::err(TAG, "WS-ERROR >>> " + sCmd + ":" + sId + ", messsage: " + error.getErrorMessage());
     this->sendMessage(pClient, jsonResponse);
     // TODO jsonrpc20
@@ -333,8 +349,10 @@ void WebSocketServer::sendToAll(const nlohmann::json& jsonMessage) {
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) {
+void WebSocketServer::sendToOne(WsjcppJsonRpc20WebSocketClient *pWebSocketClient, const nlohmann::json &jsonMessage) {
     std::string message = jsonMessage.dump();
+    QWebSocket *pClient = ((WebSocketClient *)pWebSocketClient)->getClient();
+   
     emit signal_sendToOne(pClient, QString(message.c_str()));
 }
 

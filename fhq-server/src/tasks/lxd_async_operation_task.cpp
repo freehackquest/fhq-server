@@ -11,10 +11,10 @@ LXDAsyncOperationTask::LXDAsyncOperationTask(void (*func)(const std::string&, st
                                              const std::string& sName, const std::string& sCMD, WsjcppJsonRpc20Request *pRequest) {
     TAG = "LXDAsyncOperationTask";
     m_func = func;
-    m_pRequestClient = pRequest->client();
+    m_pRequestClient = pRequest->getWebSocketClient();
     m_sName = sName;
     m_sCMD = sCMD;
-    m_sM = pRequest->m();
+    m_sId = pRequest->getId();
 }
 
 LXDAsyncOperationTask::~LXDAsyncOperationTask() = default;
@@ -22,7 +22,7 @@ LXDAsyncOperationTask::~LXDAsyncOperationTask() = default;
 void LXDAsyncOperationTask::run() {
     nlohmann::json jsonResponse;
     jsonResponse["cmd"] = m_sCMD;
-    jsonResponse["m"] = m_sM;
+    jsonResponse["m"] = m_sId;
     std::string sError;
     int nErrorCode = 500;
 

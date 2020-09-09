@@ -14,7 +14,6 @@ class UpdateUserRatingTask : public QRunnable {
     private:
         int m_nUserID;
         std::string TAG;
-        IWebSocketServer *m_pWebSocketServer;
 };
 
 #endif // UPDATE_USER_RATING_TASK_H
