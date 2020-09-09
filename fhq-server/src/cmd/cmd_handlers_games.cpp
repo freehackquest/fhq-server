@@ -81,7 +81,7 @@ void CmdHandlerGameCreate::handle(WsjcppJsonRpc20Request *pRequest) {
             nlohmann::json jsonResponse;
             pEmployGames->findGame(pModelGame.uuid(), pModelGame);
             jsonResponse["data"] = pModelGame.toJson();
-            pRequest->sendMessageSuccess(cmd(), jsonResponse);
+            pRequest->done(jsonResponse);
             break;
         }
 
@@ -249,7 +249,7 @@ void CmdHandlerGameDelete::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
     ModelNotification notification("warning", "games", "Removed [game#" + sUuid + "] " + sName);
     pNotify->sendNotification(notification);
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 
@@ -343,7 +343,7 @@ void CmdHandlerGameExport::handle(WsjcppJsonRpc20Request *pRequest) {
         fileZip.remove();
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -372,7 +372,7 @@ void CmdHandlerGameImport::handle(WsjcppJsonRpc20Request *pRequest) {
     return;
 
     // TODO
-    // pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    // pRequest->done(jsonResponse);
 }
 
 
@@ -408,7 +408,7 @@ void CmdHandlerGameInfo::handle(WsjcppJsonRpc20Request *pRequest) {
 
     nlohmann::json jsonResponse;
     jsonResponse["data"] = modelGame.toJson();
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -476,7 +476,7 @@ void CmdHandlerGameUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
             nlohmann::json jsonResponse;
             pEmployGames->findGame(modelGame.uuid(), modelGame);
             jsonResponse["data"] = modelGame.toJson();
-            pRequest->sendMessageSuccess(cmd(), jsonResponse);
+            pRequest->done(jsonResponse);
             break;
         }
 
@@ -570,7 +570,7 @@ void CmdHandlerGameUpdateLogo::handle(WsjcppJsonRpc20Request *pRequest) {
 
     if (FILE *file = fopen(targetImageFile.c_str(), "r")) {
         fclose(file);
-        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+        pRequest->done(jsonResponse);
     } else {
         pRequest->fail(WsjcppJsonRpc20Error(500, "Problem with creation file"));
     }
@@ -639,7 +639,7 @@ void CmdHandlerGames::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     jsonResponse["data"] = jsonGames;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 

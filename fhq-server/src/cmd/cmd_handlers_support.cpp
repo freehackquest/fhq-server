@@ -71,5 +71,5 @@ void CmdHandlerFeedbackAdd::handle(WsjcppJsonRpc20Request *pRequest) {
 
     RunTasks::MailSend(sMailToAdmin, sSubject, sContext);
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }

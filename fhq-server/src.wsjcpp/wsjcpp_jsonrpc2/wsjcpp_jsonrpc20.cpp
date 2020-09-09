@@ -33,10 +33,7 @@ nlohmann::json WsjcppJsonRpc20Error::toJson() {
 }
 
 // ---------------------------------------------------------------------
-
-/*! 
- * WsjcppJsonRpc20UserSession - all data by current user session
- * */
+// WsjcppJsonRpc20UserSession - all data by current user session
 
 WsjcppJsonRpc20UserSession::WsjcppJsonRpc20UserSession() {
     TAG = "WsjcppJsonRpc20UserSession";
@@ -386,6 +383,77 @@ WsjcppJsonRpc20UserSession *WsjcppJsonRpc20WebSocketClient::getUserSession() {
 
 void WsjcppJsonRpc20WebSocketClient::unsetUserSession() {
     m_pUserSession = nullptr;
+}
+
+// ---------------------------------------------------------------------
+// WsjcppJsonRpc20WebSocketServer
+
+WsjcppJsonRpc20WebSocketServer::WsjcppJsonRpc20WebSocketServer() {
+    TAG = "WsjcppJsonRpc20WebSocketServer";
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20WebSocketServer::onWebSocketConnected(void *pClient, WsjcppJsonRpc20WebSocketClient *pWebSocketClient) {
+    m_mapClients[pClient] = pWebSocketClient;
+    WsjcppLog::info(TAG, "NewConnection url=" + pWebSocketClient->getRequestUrl()  + " "
+        + pWebSocketClient->getPeerIpAddress()
+        + ":" + std::to_string(pWebSocketClient->getPeerPort()));
+    
+    nlohmann::json jsonResult;
+    jsonResult["method"] = "notify";
+    jsonResult["id"] = "n0";
+    nlohmann::json jsonServer;
+    jsonServer["app_name"] = WSJCPP_APP_NAME;
+    jsonServer["app_version"] = WSJCPP_APP_VERSION;
+    jsonResult["result"] = jsonServer;
+    pWebSocketClient->sendTextMessage(jsonResult.dump());
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20WebSocketServer::onWebSocketDisconnected(void *pClient) {
+    // TODO fix memoryleak clean usersession if need - smart pointer
+    
+    std::map<void *, WsjcppJsonRpc20WebSocketClient *>::iterator it;
+    it = m_mapClients.find(pClient);
+    m_mapClients.erase(it);
+    delete m_mapClients[pClient];
+}
+
+// ---------------------------------------------------------------------
+
+int WsjcppJsonRpc20WebSocketServer::getConnectedClients() {
+    return m_mapClients.size();
+}
+
+// ---------------------------------------------------------------------
+
+WsjcppJsonRpc20WebSocketClient *WsjcppJsonRpc20WebSocketServer::findWebSocketClient(void *pClient) {
+    WsjcppJsonRpc20WebSocketClient *pRet = nullptr;
+    std::map<void *, WsjcppJsonRpc20WebSocketClient *>::iterator it;
+    it = m_mapClients.find(pClient);
+    if (it != m_mapClients.end()) {
+        pRet = it->second;
+    }
+    return pRet;
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20WebSocketServer::sendMessageToAll(const nlohmann::json& jsonMessage) {
+    std::string sTextMessage = jsonMessage.dump();
+    std::map<void *, WsjcppJsonRpc20WebSocketClient *>::iterator it;
+    for (it = m_mapClients.begin(); it != m_mapClients.end(); ++it) {
+        it->second->sendTextMessage(sTextMessage);
+    }
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20WebSocketServer::sendMessageToOne(WsjcppJsonRpc20WebSocketClient *pClient, const nlohmann::json &jsonMessage) {
+    std::string sTextMessage = jsonMessage.dump();
+    pClient->sendTextMessage(sTextMessage);
 }
 
 // ---------------------------------------------------------------------

@@ -57,7 +57,7 @@ void CmdHandlerMailSend::handle(WsjcppJsonRpc20Request *pRequest) {
 
     RunTasks::MailSend(sEmail, sSubject, sBody);
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*****************************************
@@ -172,5 +172,5 @@ void CmdHandlerMailsList::handle(WsjcppJsonRpc20Request *pRequest) {
     jsonResponse["onpage"] = nOnPage;
     jsonResponse["page"] = nPage;
     jsonResponse["count"] = nCount;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }

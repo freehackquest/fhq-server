@@ -44,7 +44,7 @@ void CmdHandlerEventAdd::handle(WsjcppJsonRpc20Request *pRequest) {
         return;
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *****************************************
@@ -90,7 +90,7 @@ void CmdHandlerEventDelete::handle(WsjcppJsonRpc20Request *pRequest) {
     query2.exec();
     
     jsonResponse["data"] = jsonEvent;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *****************************************
@@ -137,7 +137,7 @@ void CmdHandlerEventInfo::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     jsonResponse["data"] = jsonEvent;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *****************************************
@@ -258,5 +258,5 @@ void CmdHandlerEventsList::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     jsonResponse["data"] = jsonPublicEventsList;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }

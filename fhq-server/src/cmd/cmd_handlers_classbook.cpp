@@ -166,7 +166,7 @@ void CmdClassbookAddRecordHandler::handle(WsjcppJsonRpc20Request *pRequest) {
     // TODO sUuid
 
     jsonResponse["data"] = jsonData;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -227,7 +227,7 @@ void CmdClassbookDeleteRecordHandler::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     nlohmann::json jsonResponse;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -327,7 +327,7 @@ void CmdClassbookExportHandler::handle(WsjcppJsonRpc20Request *pRequest) {
         jsonResponse["data"] = QString::fromUtf8(file.readAll()).toStdString();
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
     file.close();
     file.remove();
 }
@@ -600,7 +600,7 @@ void CmdClassbookInfoHandler::handle(WsjcppJsonRpc20Request *pRequest) {
 
     nlohmann::json jsonResponse;
     jsonResponse["data"] = jsonInfo;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -766,7 +766,7 @@ void CmdClassbookListHandler::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     jsonResponse["data"] = jsonData;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -925,7 +925,7 @@ void CmdClassbookUpdateRecordHandler::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     jsonResponse["data"] = jsonInfo;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -1036,7 +1036,7 @@ void CmdClassbookLocalizationAddRecordHandler::handle(WsjcppJsonRpc20Request *pR
     jsonData["md5_content"] = sContentMd5_;
 
     jsonResponse["data"] = jsonData;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -1087,7 +1087,7 @@ void CmdClassbookLocalizationDeleteRecordHandler::handle(WsjcppJsonRpc20Request 
         return;
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -1150,7 +1150,7 @@ void CmdClassbookLocalizationInfoHandler::handle(WsjcppJsonRpc20Request *pReques
     jsonData["content"] = record.value("content").toString().toStdString();
 
     jsonResponse["data"] = jsonData;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -1236,7 +1236,7 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(WsjcppJsonRpc20Request 
     jsonData["md5_content"] = md5_content.toStdString();
 
     jsonResponse["data"] = jsonData;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*!
@@ -1366,7 +1366,7 @@ void CmdClassbookProposalAddRecordHandler::handle(WsjcppJsonRpc20Request *pReque
 
     jsonResponse["data"] = jsonData;
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*!
@@ -1419,7 +1419,7 @@ void CmdClassbookProposalDeleteRecordHandler::handle(WsjcppJsonRpc20Request *pRe
         return;
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*!
@@ -1485,7 +1485,7 @@ void CmdClassbookProposalInfoHandler::handle(WsjcppJsonRpc20Request *pRequest) {
     jsonData["content"] = record.value("content").toString().toStdString();
 
     jsonResponse["data"] = jsonData;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*!
@@ -1591,7 +1591,7 @@ void CmdClassbookProposalListHandler::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     jsonResponse["data"] = jsonData;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*!
@@ -1661,7 +1661,7 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(WsjcppJsonRpc20Reques
     // TODO final merge, lang checkout, update output (with data)
 
     jsonResponse["data"] = jsonData;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*!
@@ -1725,7 +1725,7 @@ void CmdClassbookProposalApproveHandler::handle(WsjcppJsonRpc20Request *pRequest
     }
 
     nlohmann::json jsonResponse;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*!
@@ -1778,7 +1778,7 @@ void CmdClassbookProposalUpdateHandler::handle(WsjcppJsonRpc20Request *pRequest)
     }
 
     nlohmann::json jsonResponse;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*!
@@ -1824,5 +1824,5 @@ void CmdClassbookHandler::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     jsonResponse["items"] = jsonContents;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }

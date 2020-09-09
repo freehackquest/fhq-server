@@ -11,21 +11,6 @@
 #include <QVariant> // TODO deprecated
 
 // ---------------------------------------------------------------------
-// WsjcppJsonRpc20WebSocketServer
- 
-class WsjcppJsonRpc20WebSocketServer {
-    public:
-        virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse) = 0;
-        virtual void sendMessageError(WsjcppJsonRpc20WebSocketClient *pClient, const std::string &sCmd, const std::string & sM, WsjcppJsonRpc20Error error) = 0;
-        virtual void sendToAll(const nlohmann::json& jsonMessage) = 0;
-        virtual void sendToOne(WsjcppJsonRpc20WebSocketClient *pClient, const nlohmann::json &jsonMessage) = 0;
-        virtual int getConnectedUsers() = 0;
-        virtual void setUserSession(void *pClient, WsjcppJsonRpc20UserSession *pUserSession) = 0;
-        virtual void unsetUserSession(void *pClient) = 0; 
-        virtual WsjcppJsonRpc20UserSession *findUserSession(void *pClient) = 0;
-};
-
-// ---------------------------------------------------------------------
 
 class WsjcppJsonRpc20Request {
     public:
@@ -52,17 +37,14 @@ class WsjcppJsonRpc20Request {
         std::string getId();
         std::string getMethod();
 
-        void sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponseResult); // TODO deprecated
-        void sendResponse(nlohmann::json& jsonResult); // TODO deprecated
-
-        // TODO done()
+        void done(nlohmann::json& jsonResponseResult);
         void fail(WsjcppJsonRpc20Error error);
-        // bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler);
+
     private:
         std::string TAG;
-        WsjcppJsonRpc20WebSocketClient *m_pClient;
+        WsjcppJsonRpc20WebSocketClient *m_pWebSocketClient;
         WsjcppJsonRpc20WebSocketServer *m_pServer;
-        WsjcppJsonRpc20UserSession *m_pWsjcppJsonRpc20UserSession;
+
         nlohmann::json m_jsonRequest;
         std::string m_sId;
         std::string m_sMethod;

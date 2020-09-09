@@ -12,13 +12,26 @@
 #include <QtNetwork/QSslError>
 #include <cmd_handlers.h>
 
-class WebSocketClient : public WsjcppJsonRpc20WebSocketClient {
+class WebSocketClient : public QObject, public WsjcppJsonRpc20WebSocketClient {
+    private:
+        Q_OBJECT
     public:
         WebSocketClient(QWebSocket *pClient);
         QWebSocket *getClient();
-        virtual std::string getIpAddress() override;
+
+        // WsjcppJsonRpc20WebSocketClient
+        virtual std::string getPeerIpAddress() override;
+        virtual int getPeerPort() override;
+        virtual std::string getRequestUrl() override;
         virtual void onDisconnected() override;
         virtual void sendTextMessage(const std::string &sTextMessage) override;
+        
+    Q_SIGNALS:
+        void signal_sendTextMessage(QString sTextMessage);
+
+    private Q_SLOTS:
+        void slot_sendTextMessage(QString sTextMessage);
+
     private:
         std::string TAG;
         QWebSocket *m_pClient;
@@ -45,20 +58,13 @@ class WebSocketServer : public QObject, public WsjcppJsonRpc20WebSocketServer {
         bool isFailed();
 
         // WsjcppJsonRpc20WebSocketServer
-        virtual int getConnectedUsers() override;
-        virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse) override;
-        virtual void sendMessageError(WsjcppJsonRpc20WebSocketClient *pClient, const std::string &sCmd, const std::string & sM, WsjcppJsonRpc20Error error) override;
-        virtual void sendToAll(const nlohmann::json& jsonMessage) override;
-        void sendToOne(WsjcppJsonRpc20WebSocketClient *pClient, const nlohmann::json &jsonMessage) override;
-        virtual void setUserSession(void *pClient, WsjcppJsonRpc20UserSession *pWsjcppJsonRpc20UserSession) override; 
-        virtual void unsetUserSession(void *pClient) override;
-        virtual WsjcppJsonRpc20UserSession *findUserSession(void *pClient) override;
         
+        // virtual void setUserSession(void *pClient, WsjcppJsonRpc20UserSession *pWsjcppJsonRpc20UserSession) override; 
+        // virtual void unsetUserSession(void *pClient) override;
+        // virtual WsjcppJsonRpc20UserSession *findUserSession(void *pClient) override;
 
     Q_SIGNALS:
         void closed();
-        void sig_sendToAll(QString jsonMessage);
-        void signal_sendToOne(QWebSocket *pClient, QString jsonMessage);
 
     private Q_SLOTS:
         void onNewConnection();
@@ -67,26 +73,21 @@ class WebSocketServer : public QObject, public WsjcppJsonRpc20WebSocketServer {
         void processBinaryMessage(QByteArray message);
         void socketDisconnected();
         void onSslErrors(const QList<QSslError> &errors);
-        void slot_sendToAll(QString jsonMessage);
-        void slot_sendToOne(QWebSocket *pClient, QString message);
 
     private:
         void initNewConnection(const std::string &sPrefix, QWebSocket *pSocket);
-        void sendServerMessage(QWebSocket *pSocket);
         void logSocketError(QAbstractSocket::SocketError socketError);
 
         QWebSocketServer *m_pWebSocketServer;
         QWebSocketServer *m_pWebSocketServerSSL;
-        QList<QWebSocket *> m_clients;
 
         // TODO redesign to std::map and move to EmployWSServer
         // TODO rename m_tokens to m_mapUserSessions;
         // TODO usersession must be single std::map<std::string sUserUuid, WsjcppJsonRpc20UserSession *>
         std::mutex m_mtxUserSession;
         std::map<void *, WsjcppJsonRpc20UserSession *> m_mapUserSession; 
-
+        
         bool m_bFailed;
-        std::string TAG;
 };
 
 #endif //WEBSOCKETSERVER_H

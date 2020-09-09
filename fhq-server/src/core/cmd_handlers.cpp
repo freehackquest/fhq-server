@@ -15,7 +15,7 @@ WsjcppJsonRpc20Request::WsjcppJsonRpc20Request(
 ) {
     TAG = "WsjcppJsonRpc20Request";
     m_bResponseSend = false;
-    m_pClient = pClient;
+    m_pWebSocketClient = pClient;
     m_pServer = pWebSocketServer;
     m_sMethod = "unknown_method";
     m_sId = "unknown_id";
@@ -25,7 +25,7 @@ WsjcppJsonRpc20Request::WsjcppJsonRpc20Request(
 
 bool WsjcppJsonRpc20Request::parseIncomeData(const std::string &sIncomeData) {
     if (!nlohmann::json::accept(sIncomeData)) {
-        m_pServer->sendMessageError(m_pClient, "unknown_method", "unknown_id", WsjcppJsonRpc20Error(400, "WRONG_JSON"));
+        this->fail(WsjcppJsonRpc20Error(400, "WRONG_JSON"));
         return false;
     }
     m_jsonRequest = nlohmann::json::parse(sIncomeData);
@@ -47,16 +47,16 @@ bool WsjcppJsonRpc20Request::parseIncomeData(const std::string &sIncomeData) {
     }
 
     if (m_sMethod == "unknown_method") {
-        m_pServer->sendMessageError(m_pClient, m_sMethod, m_sId, WsjcppJsonRpc20Error(404, "NOT_FOUND_METHOD_IN_REQUEST"));
+        this->fail(WsjcppJsonRpc20Error(404, "NOT_FOUND_METHOD_IN_REQUEST"));
         return false;
     }
 
     if (m_sId == "unknown_id") {
-        m_pServer->sendMessageError(m_pClient, m_sMethod, m_sId, WsjcppJsonRpc20Error(404, "NOT_FOUND_ID_IN_REQUEST"));
+        this->fail(WsjcppJsonRpc20Error(404, "NOT_FOUND_ID_IN_REQUEST"));
         return false;
     }
 
-    m_pWsjcppJsonRpc20UserSession = m_pServer->findUserSession(m_pClient);
+    // m_pWsjcppJsonRpc20UserSession = m_pServer->findUserSession(m_pClient);
 
     WsjcppLog::info(TAG, "[WS] >>> " + m_sMethod + ":" + m_sId);
 
@@ -66,7 +66,7 @@ bool WsjcppJsonRpc20Request::parseIncomeData(const std::string &sIncomeData) {
 // ---------------------------------------------------------------------
 
 WsjcppJsonRpc20WebSocketClient *WsjcppJsonRpc20Request::getWebSocketClient() {
-    return m_pClient;
+    return m_pWebSocketClient;
 }
 
 // ---------------------------------------------------------------------
@@ -116,14 +116,14 @@ int WsjcppJsonRpc20Request::getInputInteger(const std::string &sParamName, int n
 // ---------------------------------------------------------------------
 
 WsjcppJsonRpc20UserSession *WsjcppJsonRpc20Request::getUserSession() {
-    return m_pWsjcppJsonRpc20UserSession;
+    return m_pWebSocketClient->getUserSession();
 }
 
 // ---------------------------------------------------------------------
 
 bool WsjcppJsonRpc20Request::isAdmin() {
-    if (m_pWsjcppJsonRpc20UserSession != nullptr) {
-        return m_pWsjcppJsonRpc20UserSession->isAdmin();
+    if (m_pWebSocketClient->getUserSession() != nullptr) {
+        return m_pWebSocketClient->getUserSession()->isAdmin();
     }
     return false;
 }
@@ -131,8 +131,8 @@ bool WsjcppJsonRpc20Request::isAdmin() {
 // ---------------------------------------------------------------------
 
 bool WsjcppJsonRpc20Request::isUser() {
-    if (m_pWsjcppJsonRpc20UserSession != nullptr) {
-        return m_pWsjcppJsonRpc20UserSession->isUser();
+    if (m_pWebSocketClient->getUserSession() != nullptr) {
+        return m_pWebSocketClient->getUserSession()->isUser();
     }
     return false;
 }
@@ -140,30 +140,24 @@ bool WsjcppJsonRpc20Request::isUser() {
 // ---------------------------------------------------------------------
 
 bool WsjcppJsonRpc20Request::isUnauthorized() {
-    return m_pWsjcppJsonRpc20UserSession == nullptr;
+    return m_pWebSocketClient->getUserSession() == nullptr;
 }
 
 // ---------------------------------------------------------------------
 
-void WsjcppJsonRpc20Request::sendMessageSuccess(const std::string &sMethod, nlohmann::json& jsonResponse) {
-    jsonResponse["cmd"] = sMethod; // deprecated
-    jsonResponse["jsonrpc"] = "2.0";
-    jsonResponse["method"] = sMethod;
-    jsonResponse["m"] = m_sId;
-    jsonResponse["result"] = "DONE";
-    m_pServer->sendMessage((QWebSocket*)m_pClient, jsonResponse);
-}
-
-// ---------------------------------------------------------------------
-// TODO new for jsonrpc
-
-void WsjcppJsonRpc20Request::sendResponse(nlohmann::json& jsonResult) {
+void WsjcppJsonRpc20Request::done(nlohmann::json& jsonResponseResult) {
+    if (m_bResponseSend) {
+        WsjcppLog::err(TAG, "Already sended response");
+        return;
+    }
+    m_bResponseSend = true;
+    // {"jsonrpc": "2.0", "method": "some" "result": {"hello": 5}, "id": "9"}
     nlohmann::json jsonResponse;
     jsonResponse["jsonrpc"] = "2.0";
     jsonResponse["method"] = m_sMethod;
     jsonResponse["id"] = m_sId;
-    jsonResponse["result"] = jsonResult;
-    m_pServer->sendMessage((QWebSocket*)m_pClient, jsonResponse);
+    jsonResponse["result"] = jsonResponseResult;
+    m_pWebSocketClient->sendTextMessage(jsonResponse.dump());
 }
 
 // ---------------------------------------------------------------------
@@ -180,7 +174,7 @@ void WsjcppJsonRpc20Request::fail(WsjcppJsonRpc20Error error) {
     jsonResponse["method"] = m_sMethod;
     jsonResponse["id"] = m_sId;
     jsonResponse["error"] = error.toJson();
-    m_pClient->sendTextMessage(jsonResponse.dump());
+    m_pWebSocketClient->sendTextMessage(jsonResponse.dump());
 
     // m_pServer->sendMessage((QWebSocket*)m_pClient, jsonResponse);
 }
@@ -411,7 +405,6 @@ const std::vector<WsjcppJsonRpc20ParamDef> &CmdHandlerBase::inputs() {
 /*
 void CmdHandlerBase::success(nlohmann::json jsonResponse) {
     EmployWsServer *pEmployWsServer = findWsjcppEmploy<EmployWsServer>();
-    // TODO sendMessageSuccess
     // and remove from WsjcppJsonRpc20Requests
 }
 
@@ -523,5 +516,5 @@ void WJSCppCmdHandlerServerApi::handle(WsjcppJsonRpc20Request *pRequest) {
         it++;
     }
     jsonResponse["data"] = jsonHandlers;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }

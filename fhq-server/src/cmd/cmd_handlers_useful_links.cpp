@@ -186,7 +186,7 @@ void CmdHandlerUsefulLinksList::handle(WsjcppJsonRpc20Request *pRequest) {
     
     nlohmann::json jsonResponse;
     jsonResponse["data"] = jsonData;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done( jsonResponse);
 }
 
 /*********************************************
@@ -271,7 +271,7 @@ void CmdHandlerUsefulLinksRetrieve::handle(WsjcppJsonRpc20Request *pRequest) {
 
     nlohmann::json jsonResponse;
     jsonResponse["data"] = jsonLink;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done( jsonResponse);
 }
 
 
@@ -340,7 +340,7 @@ void CmdHandlerUsefulLinksAdd::handle(WsjcppJsonRpc20Request *pRequest) {
         jsonMeta
     );
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done( jsonResponse);
 }
 
 /*********************************************
@@ -417,7 +417,7 @@ void CmdHandlerUsefulLinksDelete::handle(WsjcppJsonRpc20Request *pRequest) {
     );
 
     nlohmann::json jsonResponse;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done( jsonResponse);
 }
 
 /*********************************************
@@ -479,7 +479,7 @@ void CmdHandlerUsefulLinksUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
     );
 
     nlohmann::json jsonResponse;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done( jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -551,7 +551,7 @@ void CmdHandlerUsefulLinksUserFavoriteList::handle(WsjcppJsonRpc20Request *pRequ
     
     nlohmann::json jsonResponse;
     jsonResponse["data"] = jsonData;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done( jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -628,7 +628,7 @@ void CmdHandlerUsefulLinksUserFavorite::handle(WsjcppJsonRpc20Request *pRequest)
         return;
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done( jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -688,7 +688,7 @@ void CmdHandlerUsefulLinksUserUnfavorite::handle(WsjcppJsonRpc20Request *pReques
         return;
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done( jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -731,7 +731,7 @@ void CmdHandlerUsefulLinksClicked::handle(WsjcppJsonRpc20Request *pRequest) {
 
     nlohmann::json jsonResponse;
     jsonResponse["data"] = jsonData;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done( jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -796,7 +796,7 @@ void CmdHandlerUsefulLinksCommentList::handle(WsjcppJsonRpc20Request *pRequest) 
     }
     nlohmann::json jsonResponse;
     jsonResponse["data"] = jsonData;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done( jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -883,7 +883,7 @@ void CmdHandlerUsefulLinksCommentAdd::handle(WsjcppJsonRpc20Request *pRequest) {
     RunTasks::MailSend(sMailToAdmin, sMessage, sBody);
 
     nlohmann::json jsonResponse;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done( jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -951,7 +951,7 @@ void CmdHandlerUsefulLinksCommentDelete::handle(WsjcppJsonRpc20Request *pRequest
     // TODO add notification about removed comments
 
     nlohmann::json jsonResponse;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 
@@ -998,7 +998,7 @@ void CmdHandlerUsefulLinksTagList::handle(WsjcppJsonRpc20Request *pRequest) {
     }
     nlohmann::json jsonResponse;
     jsonResponse["data"] = jsonData;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done( jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -1082,7 +1082,7 @@ void CmdHandlerUsefulLinksTagAdd::handle(WsjcppJsonRpc20Request *pRequest) {
         }
     }
     nlohmann::json jsonResponse;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done( jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -1163,7 +1163,7 @@ void CmdHandlerUsefulLinksTagDelete::handle(WsjcppJsonRpc20Request *pRequest) {
         }
     }
     nlohmann::json jsonResponse;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done( jsonResponse);
 }
 
 // ---------------------------------------------------------------------

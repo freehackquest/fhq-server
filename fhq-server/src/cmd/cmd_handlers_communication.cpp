@@ -47,7 +47,7 @@ void CmdHandlerChatSendMessage::handle(WsjcppJsonRpc20Request *pRequest) {
         sType = jsonRequest["type"];
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     QSqlDatabase db = *(pDatabase->database());
@@ -115,7 +115,7 @@ void CmdHandlerChatLastestMessages::handle(WsjcppJsonRpc20Request *pRequest) {
     
     nlohmann::json jsonResponse;
     jsonResponse["data"] = jsonMessages;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -198,7 +198,7 @@ void CmdHandlerChatSendMessage_new::handle(WsjcppJsonRpc20Request *pRequest) {
     jsonResponse["message_id"] = record.value("id").toInt();
     jsonResponse["status"] = record.value("status").toString().toStdString();
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -252,7 +252,7 @@ void CmdHandlerChatReadMessage::handle(WsjcppJsonRpc20Request *pRequest) {
     nlohmann::json jsonResponse;
     jsonResponse["messages"] = jsonMessages;
     jsonResponse["chat"] = sChat;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -360,7 +360,7 @@ void CmdHandlerChatEditMessage::handle(WsjcppJsonRpc20Request *pRequest) {
     jsonResponse["message_id"] = nIdMessage;
     jsonResponse["message"] = sNewMessage;
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -431,7 +431,7 @@ void CmdHandlerChatDeleteMessage::handle(WsjcppJsonRpc20Request *pRequest) {
 
     jsonResponse["status"] = "ok";
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // ---------------------------------------------------------------------

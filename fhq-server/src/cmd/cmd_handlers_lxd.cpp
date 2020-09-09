@@ -196,7 +196,7 @@ void CmdHandlerLXDInfo::handle(WsjcppJsonRpc20Request *pRequest) {
 
     if (get_state(sName, sError, nErrorCode, jsonState)) {
         jsonResponse["state"] = jsonState.dump();
-        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+        pRequest->done(jsonResponse);
     } else
         pRequest->fail(WsjcppJsonRpc20Error(nErrorCode, sError));
 }
@@ -255,7 +255,7 @@ void CmdHandlerLXDList::handle(WsjcppJsonRpc20Request *pRequest) {
 
     nlohmann::json jsonResponse;
     jsonResponse["data"] = vList;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -289,7 +289,7 @@ void CmdHandlerLXDExec::handle(WsjcppJsonRpc20Request *pRequest) {
 
     if (exec_command(name, command, sError, nErrorCode, sOutput)) {
         jsonResponse["container"] = name;
-        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+        pRequest->done(jsonResponse);
         return;
     }
     pRequest->fail(WsjcppJsonRpc20Error(nErrorCode, sError));
@@ -400,7 +400,7 @@ void CmdHandlerLXDFile::handle(WsjcppJsonRpc20Request *pRequest) {
         } else if (action == "push") {
             jsonResponse["status"] = "Success";
         }
-        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+        pRequest->done(jsonResponse);
     } else {
         pRequest->fail(WsjcppJsonRpc20Error(nErrorCode, sError));
     }
@@ -480,7 +480,7 @@ void CmdHandlerLXDOpenPort::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     if (sError.empty()) {
-        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+        pRequest->done(jsonResponse);
     } else {
         pRequest->fail(WsjcppJsonRpc20Error(nErrorCode, sError));
     }
@@ -560,7 +560,7 @@ void CmdHandlerLXDImportService::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     if (sError.empty()) {
-        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+        pRequest->done(jsonResponse);
     } else {
         pRequest->fail(WsjcppJsonRpc20Error(nErrorCode, sError));
     }
@@ -675,7 +675,7 @@ void CmdHandlerLXDImportServiceFromZip::handle(WsjcppJsonRpc20Request *pRequest)
     }
 
     if (sError.empty()) {
-        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+        pRequest->done(jsonResponse);
     } else {
         pRequest->fail(WsjcppJsonRpc20Error(nErrorCode, sError));
     }
@@ -715,7 +715,7 @@ void CmdHandlerLXDStartService::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     if (sError.empty()) {
-        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+        pRequest->done(jsonResponse);
     } else {
         pRequest->fail(WsjcppJsonRpc20Error(nErrorCode, sError));
     }

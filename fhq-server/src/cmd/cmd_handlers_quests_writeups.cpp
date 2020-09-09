@@ -82,7 +82,7 @@ void CmdHandlerQuestsWriteUpsList::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     jsonResponse["data"] = jsonWriteups;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -180,7 +180,7 @@ void CmdHandlerQuestsWriteUpsProposal::handle(WsjcppJsonRpc20Request *pRequest) 
     nlohmann::json jsonData;
     jsonData["writeupid"] = nWriteUpID;
     jsonResponse["data"] = jsonData;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 
     // TODO send mail to admin if it was not admin
 }
@@ -264,7 +264,7 @@ void CmdHandlerQuestsWriteUpsUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
    
     nlohmann::json jsonResponse;
     jsonResponse["data"] = jsonWriteUp;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 
@@ -334,5 +334,5 @@ void CmdHandlerQuestsWriteUpsDelete::handle(WsjcppJsonRpc20Request *pRequest) {
        
     nlohmann::json jsonResponse;
     jsonResponse["data"] = jsonWriteUp;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }

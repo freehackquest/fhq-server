@@ -98,7 +98,7 @@ void CmdHandlerPublicInfo::handle(WsjcppJsonRpc20Request *pRequest) {
     jsonResponse["developers"] = pServerInfo->developers();
     EmployServer *pServer = findWsjcppEmploy<EmployServer>();
     jsonResponse["connectedusers"] = pServer->getConnectedUsers();
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*****************************************
@@ -132,7 +132,7 @@ void CmdHandlerServerInfo::handle(WsjcppJsonRpc20Request *pRequest) {
     data["last_log_messages"] = WsjcppLog::getLastLogMessages();
     jsonResponse["data"] = data;
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*****************************************
@@ -157,7 +157,7 @@ void CmdHandlerServerSettings::handle(WsjcppJsonRpc20Request *pRequest) {
     EmployGlobalSettings *pGloablSettings = findWsjcppEmploy<EmployGlobalSettings>();
 
     jsonResponse["data"] = pGloablSettings->toJson(true); // TODO how much db connections and time
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*****************************************
@@ -211,5 +211,5 @@ void CmdHandlerServerSettingsUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
     }
     std::string sNewValue = pGlobalSettings->get(sName).convertValueToString(true);
     WsjcppLog::info(TAG, "Settings '" + sName + "' updated from '" + sPrevValue + "' -> '" + sNewValue + "'");
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }

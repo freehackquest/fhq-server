@@ -1060,19 +1060,19 @@ void EmployServer::setServer(WsjcppJsonRpc20WebSocketServer *pWebSocketServer) {
 // ---------------------------------------------------------------------
 
 void EmployServer::sendToAll(const nlohmann::json& jsonMessage) {
-    m_pWebSocketServer->sendToAll(jsonMessage);
+    m_pWebSocketServer->sendMessageToAll(jsonMessage);
 }
 
 // ---------------------------------------------------------------------
 
 void EmployServer::sendToOne(WsjcppJsonRpc20WebSocketClient *pClient, const nlohmann::json &jsonMessage) {
-    m_pWebSocketServer->sendToOne(pClient, jsonMessage);
+    m_pWebSocketServer->sendMessageToOne(pClient, jsonMessage);
 }
 
 // ---------------------------------------------------------------------
 
 int EmployServer::getConnectedUsers() {
-    return m_pWebSocketServer->getConnectedUsers();
+    return m_pWebSocketServer->getConnectedClients();
 }
 
 // ---------------------------------------------------------------------

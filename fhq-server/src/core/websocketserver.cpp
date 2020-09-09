@@ -21,6 +21,8 @@
 WebSocketClient::WebSocketClient(QWebSocket *pClient) {
     TAG = "WebSocketClient";
     m_pClient = pClient;
+
+    connect(this, &WebSocketClient::signal_sendTextMessage, this, &WebSocketClient::slot_sendTextMessage);
 }
 
 // ---------------------------------------------------------------------
@@ -38,29 +40,48 @@ void WebSocketClient::onDisconnected() {
 // ---------------------------------------------------------------------
 
 void WebSocketClient::sendTextMessage(const std::string &sTextMessage) {
-    if (m_pClient) {
-        try {
-            m_pClient->sendTextMessage(QString::fromStdString(sTextMessage));
-        } catch(...) {
-            WsjcppLog::err(TAG, "Could not send message <<< " + sTextMessage);
-        }
-   } else {
-        WsjcppLog::warn(TAG, "Client is wrong");
-   }
+    emit signal_sendTextMessage(QString(sTextMessage.c_str()));
 }
 
 // ---------------------------------------------------------------------
 
-std::string WebSocketClient::getIpAddress() {
-    std::string sAddress = ((QWebSocket*)m_pClient)->peerAddress().toString().toStdString();
+std::string WebSocketClient::getPeerIpAddress() {
+    std::string sAddress = m_pClient->peerAddress().toString().toStdString();
     #if QT_VERSION >= 0x050600
-        QNetworkRequest r = ((QWebSocket*)m_pClient)->request();
+        QNetworkRequest r = m_pClient->request();
         QByteArray qbaHeaderName = QString("x-forwarded-for").toLatin1();
         if (r.hasRawHeader(qbaHeaderName)) {
             sAddress = r.rawHeader(qbaHeaderName).toStdString();
         }
     #endif
     return sAddress;
+}
+
+// ---------------------------------------------------------------------
+
+int WebSocketClient::getPeerPort() {
+    return m_pClient->peerPort();
+};
+
+// ---------------------------------------------------------------------
+
+std::string WebSocketClient::getRequestUrl() {
+    return m_pClient->requestUrl().toString().toStdString();
+};
+
+// ---------------------------------------------------------------------
+// slot
+
+void WebSocketClient::slot_sendTextMessage(QString sTextMessage) {
+    if (m_pClient) {
+        try {
+            m_pClient->sendTextMessage(sTextMessage);
+        } catch(...) {
+            WsjcppLog::err(TAG, "Could not send message <<< " + sTextMessage.toStdString());
+        }
+    } else {
+        WsjcppLog::warn(TAG, "Client is wrong");
+    }
 }
 
 // ---------------------------------------------------------------------
@@ -125,8 +146,6 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
             return;
         }
     }
-    connect(this, &WebSocketServer::sig_sendToAll, this, &WebSocketServer::slot_sendToAll);
-    connect(this, &WebSocketServer::signal_sendToOne, this, &WebSocketServer::slot_sendToOne);
 
     // connect(this, SIGNAL(sig_sendToAll(nlohmann::json)), this, SLOT(slot_sendToAll(nlohmann::json)));
 
@@ -141,7 +160,6 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
 WebSocketServer::~WebSocketServer() {
     m_pWebSocketServer->close();
     m_pWebSocketServerSSL->close();
-    qDeleteAll(m_clients.begin(), m_clients.end());
 }
 
 // ---------------------------------------------------------------------
@@ -152,67 +170,32 @@ bool WebSocketServer::isFailed() {
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendServerMessage(QWebSocket *pSocket) {
-    nlohmann::json jsonServer;
-    jsonServer["cmd"] = "server";
-    jsonServer["m"] = "s0";
-    jsonServer["app"] = "fhq-server";
-    jsonServer["version"] = WSJCPP_APP_VERSION;
-
-    EmployServerInfo *pServerInfo = findWsjcppEmploy<EmployServerInfo>();
-    jsonServer["developers"] = pServerInfo->developers();
-
-    sendMessage(pSocket, jsonServer);
-}
-
-// ---------------------------------------------------------------------
-
 void WebSocketServer::initNewConnection(const std::string &sPrefix, QWebSocket *pSocket) {
-    std::string sAddress = pSocket->peerAddress().toString().toStdString();
-    std::string sInitMessage = "NewConnection" + sPrefix + ", url=" + pSocket->requestUrl().toString().toStdString();
-    
-    sInitMessage += sAddress + " " + std::to_string(pSocket->peerPort());
-
-    #if QT_VERSION >= 0x050600
-        QNetworkRequest r = pSocket->request();
-        QByteArray qbaHeaderName = QString("x-forwarded-for").toLatin1();
-        if (r.hasRawHeader(qbaHeaderName)) {
-            sAddress = r.rawHeader(qbaHeaderName).toStdString();
-            sInitMessage += " Apache Proxy (" + qbaHeaderName.toStdString() + "="
-            + sAddress + ")";
-        }        
-    #endif
-
-    WsjcppLog::info(TAG, sInitMessage);
 
     connect(pSocket, &QWebSocket::textMessageReceived, this, &WebSocketServer::processTextMessage);
     connect(pSocket, &QWebSocket::binaryMessageReceived, this, &WebSocketServer::processBinaryMessage);
     connect(pSocket, &QWebSocket::disconnected, this, &WebSocketServer::socketDisconnected);
-
-    m_clients << pSocket;
-    sendServerMessage(pSocket);
 }
 
 // ---------------------------------------------------------------------
 
-/*!
- *  Handling new connection by ws://
- */
-
-void WebSocketServer::onNewConnection()
-{
+void WebSocketServer::onNewConnection() {
+    // Handling new connection by ws://
     QWebSocket *pSocket = m_pWebSocketServer->nextPendingConnection();
+    WebSocketClient *pWebSocketClient = new WebSocketClient(pSocket);
+    this->onWebSocketConnected(pSocket, pWebSocketClient);
     initNewConnection("", pSocket);
 }
 
 // ---------------------------------------------------------------------
 
-/*!
- *  Handling new connection by wss://
- */
 
 void WebSocketServer::onNewConnectionSSL() {
+    // Handling new connection by wss://
     QWebSocket *pSocket = m_pWebSocketServerSSL->nextPendingConnection();
+    WebSocketClient *pWebSocketClient = new WebSocketClient(pSocket);
+    this->onWebSocketConnected(pSocket, pWebSocketClient);
+
     initNewConnection("SSL", pSocket);
 }
 
@@ -266,7 +249,8 @@ void WebSocketServer::processTextMessage(const QString &message) {
         }
         pCmdHandler->handle(pRequest);
     } catch (const std::exception &e) {
-        this->sendMessageError(pWebSocketClient, sMethod, sId, WsjcppJsonRpc20Error(500, "InternalServerError"));
+        pRequest->fail(WsjcppJsonRpc20Error(500, "InternalServerError"));
+        // TODO remove pRequest
         WsjcppLog::err(TAG, e.what());
     }
 }
@@ -289,11 +273,8 @@ void WebSocketServer::socketDisconnected() {
     long long nClient = (long long) pClient;
     // TODO hex print
     WsjcppLog::info(TAG, "socketDisconnected:" + std::to_string(nClient));
-    if (pClient) {
-        this->unsetUserSession(pClient);
-        m_clients.removeAll(pClient);
-        pClient->deleteLater();
-    }
+    this->onWebSocketDisconnected(pClient);
+    pClient->deleteLater();
 }
 
 // ---------------------------------------------------------------------
@@ -304,105 +285,8 @@ void WebSocketServer::onSslErrors(const QList<QSslError> &) {
 
 // ---------------------------------------------------------------------
 
-int WebSocketServer::getConnectedUsers() {
-    return m_clients.length();
-}
-
-// ---------------------------------------------------------------------
-
-void WebSocketServer::sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse) {
-    if (pClient) {
-        std::string sCmd = "";
-        if (jsonResponse.find("cmd") != jsonResponse.end() && jsonResponse["cmd"].is_string()) {
-            sCmd = jsonResponse["cmd"];
-        }
-        std::string sM = "";
-        
-        if (jsonResponse.find("m") != jsonResponse.end() && jsonResponse["m"].is_string()) {
-            sM = jsonResponse["m"];
-        }
-        std::string sMessage = jsonResponse.dump();
-
-        WsjcppLog::info(TAG, "[WS] <<< " + sCmd + ":" + sM);
-        if (m_clients.contains(pClient)) {
-            try {
-                pClient->sendTextMessage(QString::fromStdString(sMessage));
-            } catch(...) {
-                WsjcppLog::err(TAG, "Could not send message <<< " + sMessage);
-            }
-        } else {
-            WsjcppLog::warn(TAG, "Could not send message, client disappeared");
-        }
-   } else {
-        WsjcppLog::warn(TAG, "Client is wrong");
-   }
-}
-
-// ---------------------------------------------------------------------
-
-void WebSocketServer::sendMessageError(WsjcppJsonRpc20WebSocketClient *pWebSocketClient, const std::string &sCmd, const std::string &sId, WsjcppJsonRpc20Error error) {
-    nlohmann::json jsonResponse;
-    jsonResponse["method"] = sCmd;
-    jsonResponse["jsonrpc"] = "2.0";
-    jsonResponse["id"] = sId;
-    jsonResponse["cmd"] = sCmd; // deprecated
-    jsonResponse["m"] = sId; // deprecated
-    jsonResponse["result"] = "FAIL"; // deprecated
-    jsonResponse["error"] = error.getErrorMessage(); // deprecated
-    jsonResponse["code"] = error.getErrorCode(); // deprecated
-    QWebSocket *pClient = ((WebSocketClient *)pWebSocketClient)->getClient();
-
-    WsjcppLog::err(TAG, "WS-ERROR >>> " + sCmd + ":" + sId + ", messsage: " + error.getErrorMessage());
-    this->sendMessage(pClient, jsonResponse);
-    // TODO jsonrpc20
-    // {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method not found."}, "id": "1"}
-    // I think that will be better add yet method name like '"method": sCmd,'
-    return;
-}
-
-// ---------------------------------------------------------------------
-
-void WebSocketServer::sendToAll(const nlohmann::json& jsonMessage) {
-    std::string message = jsonMessage.dump();
-    emit sig_sendToAll(QString(message.c_str()));
-}
-
-// ---------------------------------------------------------------------
-
-void WebSocketServer::sendToOne(WsjcppJsonRpc20WebSocketClient *pWebSocketClient, const nlohmann::json &jsonMessage) {
-    std::string message = jsonMessage.dump();
-    QWebSocket *pClient = ((WebSocketClient *)pWebSocketClient)->getClient();
-   
-    emit signal_sendToOne(pClient, QString(message.c_str()));
-}
-
-// ---------------------------------------------------------------------
-// slot
-void WebSocketServer::slot_sendToAll(QString message) {
-    std::string sMsg = message.toStdString();
-    if (!nlohmann::json::accept(sMsg)) {
-        return;
-    }
-    nlohmann::json jsonMessage = nlohmann::json::parse(sMsg);
-    for (int i = 0; i < m_clients.size(); i++) {
-        this->sendMessage(m_clients.at(i), jsonMessage);
-    }
-}
-
-// ---------------------------------------------------------------------
-// slot
-void WebSocketServer::slot_sendToOne(QWebSocket *pClient, QString message) {
-    if (!nlohmann::json::accept(message.toStdString())) {
-        return;
-    }
-    nlohmann::json jsonMessage = nlohmann::json::parse(message.toStdString());
-    this->sendMessage(pClient, jsonMessage);
-}
-
-// ---------------------------------------------------------------------
-
 // TODO move to EmployServer
-
+/*
 void WebSocketServer::setUserSession(void *pClient, WsjcppJsonRpc20UserSession *pWsjcppJsonRpc20UserSession) {
     std::lock_guard<std::mutex> lock(m_mtxUserSession);
     if (m_mapUserSession.find(pClient) == m_mapUserSession.end()) {
@@ -412,9 +296,9 @@ void WebSocketServer::setUserSession(void *pClient, WsjcppJsonRpc20UserSession *
         WsjcppLog::err(TAG, "User Session already exists");
     }
 }
-
+*/
 // ---------------------------------------------------------------------
-
+/*
 void WebSocketServer::unsetUserSession(void *pClient) {
     std::lock_guard<std::mutex> lock(m_mtxUserSession);
     std::map<void *, WsjcppJsonRpc20UserSession *>::iterator it = m_mapUserSession.find(pClient);
@@ -424,10 +308,10 @@ void WebSocketServer::unsetUserSession(void *pClient) {
         delete pUserSession;
     }
 }
-
+*/
 // ---------------------------------------------------------------------
 // TODO EmployServer
-
+/*
 WsjcppJsonRpc20UserSession *WebSocketServer::findUserSession(void *pClient) {
     std::lock_guard<std::mutex> lock(m_mtxUserSession);
     if (m_mapUserSession.find(pClient) != m_mapUserSession.end()) {
@@ -435,7 +319,7 @@ WsjcppJsonRpc20UserSession *WebSocketServer::findUserSession(void *pClient) {
     }
     return nullptr;
 };
-
+*/
 // ---------------------------------------------------------------------
 
 void WebSocketServer::logSocketError(QAbstractSocket::SocketError socketError) {

@@ -102,5 +102,5 @@ void Jsonrpc2UserRetrive::handle(ModelRequest *pRequest) {
     jsonResponse["data"] = data;
     jsonResponse["profile"] = profile;
     jsonResponse["access"] = bCurrentUserOrAdmin;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }

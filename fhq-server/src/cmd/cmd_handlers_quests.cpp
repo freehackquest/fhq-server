@@ -132,7 +132,7 @@ void CmdHandlerQuests::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     jsonResponse["data"] = jsonQuests;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -312,7 +312,7 @@ void CmdHandlerQuest::handle(WsjcppJsonRpc20Request *pRequest) {
         }
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -484,7 +484,7 @@ void CmdHandlerQuestPass::handle(WsjcppJsonRpc20Request *pRequest) {
     RunTasks::UpdateUserRating(nUserID);
     RunTasks::UpdateQuestSolved(nQuestID);
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -654,7 +654,7 @@ void CmdHandlerCreateQuest::handle(WsjcppJsonRpc20Request *pRequest) {
     RunTasks::AddPublicEvents("quests", "New [quest#" + std::to_string(nRowId) + "] " + sName + " (subject: " + sSubject + ")", jsonMeta);
     RunTasks::UpdateMaxScoreGame(nGameID);
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -746,7 +746,7 @@ void CmdHandlerQuestDelete::handle(WsjcppJsonRpc20Request *pRequest) {
     // TODO recalculate rating/score for users how solved this quest
 
     jsonResponse["subject"] = sSubject;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -916,7 +916,7 @@ void CmdHandlerQuestProposal::handle(WsjcppJsonRpc20Request *pRequest) {
 
     RunTasks::MailSend(sMailToAdmin, sMessageSubject, sContext);
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -1038,7 +1038,7 @@ void CmdHandlerQuestStatistics::handle(WsjcppJsonRpc20Request *pRequest) {
 
     // TODO check this
     // jsonResponse["data"] = jsonData;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -1330,7 +1330,7 @@ void CmdHandlerQuestUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
         }
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -1375,7 +1375,7 @@ void CmdHandlerQuestsSubjects::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     jsonResponse["data"] = jsonSubjects;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 
 }
 
@@ -1435,7 +1435,7 @@ void CmdHandlerAddHint::handle(WsjcppJsonRpc20Request *pRequest) {
     nlohmann::json jsonMeta;
     jsonMeta["questid"] = nQuestId;
     RunTasks::AddPublicEvents("quests", "Added hint for [quest#" + std::to_string(nQuestId) + "]", jsonMeta);
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -1611,7 +1611,7 @@ void CmdHandlerAnswerList::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     jsonResponse["data"] = jsonAnswerList;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -1650,7 +1650,7 @@ void CmdHandlerDeleteHint::handle(WsjcppJsonRpc20Request *pRequest) {
     query.bindValue(":hintid", hintid);
     query.exec();
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -1703,7 +1703,7 @@ void CmdHandlerHints::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     jsonResponse["data"] = jsonHints;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // *******************************************
@@ -1809,7 +1809,7 @@ void CmdHandlerQuestsProposalList::handle(WsjcppJsonRpc20Request *pRequest) {
     jsonResponse["onpage"] = nOnPage;
     jsonResponse["page"] = nPage;
     jsonResponse["count"] = nCount;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 
 }
 
@@ -1904,5 +1904,5 @@ void CmdHandlerQuestsFilesUpload::handle(WsjcppJsonRpc20Request *pRequest) {
         
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }

@@ -124,7 +124,7 @@ void CmdHandlerLeaksList::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     jsonResponse["data"] = jsonLeaksList;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -188,7 +188,7 @@ void CmdHandlerLeaksAdd::handle(WsjcppJsonRpc20Request *pRequest) {
     if (nResult == EmployResult::OK) {
         nlohmann::json jsonResponse;
         jsonResponse["data"] = pModelLeak->toJson();
-        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+        pRequest->done(jsonResponse);
         return;
     } else {
         pRequest->fail(WsjcppJsonRpc20Error(500, "Server error"));
@@ -276,7 +276,7 @@ void CmdHandlerLeaksUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
         }
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -351,7 +351,7 @@ void CmdHandlerLeaksDelete::handle(WsjcppJsonRpc20Request *pRequest) {
         }
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -459,5 +459,5 @@ void CmdHandlerLeaksBuy::handle(WsjcppJsonRpc20Request *pRequest) {
         }
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }

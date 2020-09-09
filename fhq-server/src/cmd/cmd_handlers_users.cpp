@@ -63,7 +63,7 @@ void CmdHandlerUsersScoreboard::handle(WsjcppJsonRpc20Request *pRequest) {
     jsonResponse["count"] = pScoreboard->count();
     jsonResponse["data"] = pScoreboard->toJson();
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -109,7 +109,7 @@ void CmdHandlerGetMap::handle(WsjcppJsonRpc20Request *pRequest) {
 
     jsonResponse["data"] = coords;
     jsonResponse["google_map_api_key"] = "";
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -207,10 +207,9 @@ void CmdHandlerLogin::handle(WsjcppJsonRpc20Request *pRequest) {
 
         WsjcppJsonRpc20UserSession *pUserSession = new WsjcppJsonRpc20UserSession(user_token);
         pRequest->getWebSocketClient()->setUserSession(pUserSession);
-        pRequest->getServer()->setUserSession(pRequest->getWebSocketClient(), pUserSession);
 
         // update user location
-        std::string sLastIP = pRequest->getWebSocketClient()->getIpAddress();
+        std::string sLastIP = pRequest->getWebSocketClient()->getPeerIpAddress();
         RunTasks::UpdateUserLocation(nUserId, sLastIP);
 
     } else {
@@ -219,7 +218,7 @@ void CmdHandlerLogin::handle(WsjcppJsonRpc20Request *pRequest) {
         return;
     }
     WsjcppLog::info(TAG, jsonResponse.dump());
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -335,7 +334,7 @@ void CmdHandlerRegistration::handle(WsjcppJsonRpc20Request *pRequest) {
                          "   :about);"
     );
 
-    std::string sLastIP = pRequest->getWebSocketClient()->getIpAddress();
+    std::string sLastIP = pRequest->getWebSocketClient()->getPeerIpAddress();
 
     // TODO move to helpers
     std::string sUuid = WsjcppCore::createUuid();
@@ -376,7 +375,7 @@ void CmdHandlerRegistration::handle(WsjcppJsonRpc20Request *pRequest) {
 
     RunTasks::MailSend(sEmail.toStdString(), sSubject, sContext);
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
     RunTasks::UpdateUserLocation(nUserID, sLastIP);
 }
 
@@ -424,12 +423,10 @@ void CmdHandlerToken::handle(WsjcppJsonRpc20Request *pRequest) {
         std::string data = record.value("data").toString().toStdString();
         QString start_date = record.value("start_date").toString();
         QString end_date = record.value("end_date").toString();
-        std::string sLastIP = pRequest->getWebSocketClient()->getIpAddress();
+        std::string sLastIP = pRequest->getWebSocketClient()->getPeerIpAddress();
         nlohmann::json jsonUserSession = nlohmann::json::parse(data);
         WsjcppJsonRpc20UserSession *pUserSession = new WsjcppJsonRpc20UserSession(jsonUserSession);
         pRequest->getWebSocketClient()->setUserSession(pUserSession);
-        // TODO not need this
-        pRequest->getServer()->setUserSession(pRequest->getWebSocketClient(), pUserSession);
         WsjcppLog::info(TAG, "userid: " + QString::number(userid).toStdString());
         // TODO redesign this
         RunTasks::UpdateUserLocation(userid, sLastIP);
@@ -439,7 +436,7 @@ void CmdHandlerToken::handle(WsjcppJsonRpc20Request *pRequest) {
         return;
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -501,7 +498,7 @@ void CmdHandlerUpdateUserLocation::handle(WsjcppJsonRpc20Request *pRequest) {
 
     RunTasks::UpdateUserLocation(userid, sLastIP);
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -586,7 +583,7 @@ void CmdHandlerUserChangePassword::handle(WsjcppJsonRpc20Request *pRequest) {
     }
     // TODO send email
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -743,7 +740,7 @@ void CmdHandlerUsersAdd::handle(WsjcppJsonRpc20Request *pRequest) {
     jsonMeta["userid"] = nUserID;
     jsonMeta["usernick"] = sNick.toStdString();
     RunTasks::AddPublicEvents("users", "New [user#" + std::to_string(nUserID) + "] " + sNick.toStdString(), jsonMeta);
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -849,7 +846,7 @@ void CmdHandlerUser::handle(WsjcppJsonRpc20Request *pRequest) {
     jsonResponse["data"] = data;
     jsonResponse["profile"] = profile;
     jsonResponse["access"] = bCurrentUserOrAdmin;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -957,7 +954,7 @@ void CmdHandlerUsersInfo::handle(WsjcppJsonRpc20Request *pRequest) {
     jsonResponse["data"] = jsonData;
     jsonResponse["profile"] = jsonProfile;
     jsonResponse["access"] = bCurrentUserOrAdmin;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -1044,7 +1041,7 @@ void CmdHandlerUserResetPassword::handle(WsjcppJsonRpc20Request *pRequest) {
 
     RunTasks::MailSend(sEmail.toStdString(), sSubject, sContext);
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -1112,7 +1109,7 @@ void CmdHandlerUserSkills::handle(WsjcppJsonRpc20Request *pRequest) {
     jsonResponse["skills_max"] = jsonSkillsMax;
     jsonResponse["skills_user"] = jsonSkillsUser;
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -1249,7 +1246,7 @@ void CmdHandlerUserUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
 
     jsonResponse["data"] = data;
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -1456,7 +1453,7 @@ void CmdHandlerUserDelete::handle(WsjcppJsonRpc20Request *pRequest) {
         }
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -1588,7 +1585,7 @@ void CmdHandlerUsers::handle(WsjcppJsonRpc20Request *pRequest) {
     jsonResponse["onpage"] = nOnPage;
     jsonResponse["page"] = nPage;
     jsonResponse["count"] = nCount;
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -1687,7 +1684,7 @@ void CmdHandlerUsersRegistration::handle(WsjcppJsonRpc20Request *pRequest) {
 
     RunTasks::MailSend(sEmail.toStdString(), sSubject, sContext);
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -1865,7 +1862,7 @@ void CmdHandlerUsersRegistrationVerification::handle(WsjcppJsonRpc20Request *pRe
 
     RunTasks::MailSend(sEmail.toStdString(), sSubject, sContext);
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
     RunTasks::UpdateUserLocation(nUserID, sLastIP.toStdString());
 }
 
@@ -1981,7 +1978,7 @@ void CmdHandlerUsersChangeEmail::handle(WsjcppJsonRpc20Request *pRequest) {
 
     RunTasks::MailSend(sEmail.toStdString(), sSubject, sContext);
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 /*********************************************
@@ -2064,7 +2061,7 @@ void CmdHandlerUsersChangeEmailVerification::handle(WsjcppJsonRpc20Request *pReq
         return;
     }
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 
@@ -2129,7 +2126,7 @@ void CmdHandlerUsersTokens::handle(WsjcppJsonRpc20Request *pRequest) {
     }
     jsonResponse["data"] = jsonResponseData;
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+    pRequest->done(jsonResponse);
 }
 
 // ---------------------------------------------------------------------
@@ -2187,7 +2184,7 @@ void CmdHandlerUsersTokensDelete::handle(WsjcppJsonRpc20Request *pRequest) {
             pRequest->fail(WsjcppJsonRpc20Error(500, queryDelete.lastError().text().toStdString()));
             return;
         }
-        pRequest->sendMessageSuccess(cmd(), jsonResponse);
+        pRequest->done(jsonResponse);
     } else {
         pRequest->fail(WsjcppJsonRpc20Error(404, "Not found token"));
     }
