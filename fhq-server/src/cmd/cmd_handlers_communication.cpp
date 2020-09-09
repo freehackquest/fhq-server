@@ -38,7 +38,7 @@ void CmdHandlerChatSendMessage::handle(WsjcppJsonRpc20Request *pRequest) {
     }
     WsjcppCore::trim(sMessage);
     if (sMessage.length() == 0) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Message could not be empty"));
+        pRequest->fail(WsjcppJsonRpc20Error(400, "Message could not be empty"));
         return;
     }
 
@@ -99,7 +99,7 @@ void CmdHandlerChatLastestMessages::handle(WsjcppJsonRpc20Request *pRequest) {
     query.prepare("SELECT user, message, dt FROM chatmessages ORDER BY dt DESC LIMIT 0,25");
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        pRequest->fail(WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -151,7 +151,7 @@ void CmdHandlerChatSendMessage_new::handle(WsjcppJsonRpc20Request *pRequest) {
 
     sMessage = WsjcppCore::trim(sMessage);
     if (sMessage.length() == 0) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Message could not be empty"));
+        pRequest->fail(WsjcppJsonRpc20Error(400, "Message could not be empty"));
         return;
     }
 
@@ -161,7 +161,7 @@ void CmdHandlerChatSendMessage_new::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     if (sChat != "0") {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Only '0' (global) chat allowed"));
+        pRequest->fail(WsjcppJsonRpc20Error(400, "Only '0' (global) chat allowed"));
         return;
     }
 
@@ -174,7 +174,7 @@ void CmdHandlerChatSendMessage_new::handle(WsjcppJsonRpc20Request *pRequest) {
     query.bindValue(":user", nUserId);
     query.bindValue(":message", QString::fromStdString(sMessage));
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        pRequest->fail(WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -186,7 +186,7 @@ void CmdHandlerChatSendMessage_new::handle(WsjcppJsonRpc20Request *pRequest) {
     query2.bindValue(":msg_id", query.lastInsertId().toInt());
     
     if (!query2.exec() || !query2.next()) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        pRequest->fail(WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -234,7 +234,7 @@ void CmdHandlerChatReadMessage::handle(WsjcppJsonRpc20Request *pRequest) {
     query.bindValue(":chat", QString::fromStdString(sChat));
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        pRequest->fail(WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -274,7 +274,7 @@ CmdHandlerChatShowDialogs::CmdHandlerChatShowDialogs()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatShowDialogs::handle(WsjcppJsonRpc20Request *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
+    pRequest->fail(WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------
@@ -309,7 +309,7 @@ void CmdHandlerChatEditMessage::handle(WsjcppJsonRpc20Request *pRequest) {
 
     sNewMessage = WsjcppCore::trim(sNewMessage);
     if (sNewMessage.length() == 0) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Message could not be empty"));
+        pRequest->fail(WsjcppJsonRpc20Error(400, "Message could not be empty"));
         return;
     }
 
@@ -327,12 +327,12 @@ void CmdHandlerChatEditMessage::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        pRequest->fail(WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
     if (!query.next() || query.size() < 1) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Message not found"));
+        pRequest->fail(WsjcppJsonRpc20Error(400, "Message not found"));
         return;
     }
 
@@ -340,7 +340,7 @@ void CmdHandlerChatEditMessage::handle(WsjcppJsonRpc20Request *pRequest) {
     int nMsgUserId = record.value("userid").toInt();
 
     if (nUserId != nMsgUserId) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Editing message allowed only for owner"));
+        pRequest->fail(WsjcppJsonRpc20Error(403, "Editing message allowed only for owner"));
         return;
     }
 
@@ -350,7 +350,7 @@ void CmdHandlerChatEditMessage::handle(WsjcppJsonRpc20Request *pRequest) {
     query2.bindValue(":message_new", QString::fromStdString(sNewMessage));
 
     if (!query2.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        pRequest->fail(WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -401,12 +401,12 @@ void CmdHandlerChatDeleteMessage::handle(WsjcppJsonRpc20Request *pRequest) {
     query.bindValue(":msg_id", nIdMessage);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        pRequest->fail(WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
     if (!query.next() || query.size() < 1) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Message not found"));
+        pRequest->fail(WsjcppJsonRpc20Error(400, "Message not found"));
         return;
     }
 
@@ -414,7 +414,7 @@ void CmdHandlerChatDeleteMessage::handle(WsjcppJsonRpc20Request *pRequest) {
     int nMsgUserId = record.value("userid").toInt();
 
     if (nUserId != nMsgUserId) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Editing message allowed only for owner"));
+        pRequest->fail(WsjcppJsonRpc20Error(403, "Editing message allowed only for owner"));
         return;
     }
 
@@ -423,7 +423,7 @@ void CmdHandlerChatDeleteMessage::handle(WsjcppJsonRpc20Request *pRequest) {
     query2.bindValue(":msg_id", nIdMessage);
 
     if (!query2.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        pRequest->fail(WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -453,7 +453,7 @@ CmdHandlerChatAddToChat::CmdHandlerChatAddToChat()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatAddToChat::handle(WsjcppJsonRpc20Request *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
+    pRequest->fail(WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------
@@ -475,7 +475,7 @@ CmdHandlerChatDeleteFromChat::CmdHandlerChatDeleteFromChat()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatDeleteFromChat::handle(WsjcppJsonRpc20Request *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
+    pRequest->fail(WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------
@@ -497,7 +497,7 @@ CmdHandlerChatChangeOwner::CmdHandlerChatChangeOwner()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatChangeOwner::handle(WsjcppJsonRpc20Request *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
+    pRequest->fail(WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------
@@ -519,7 +519,7 @@ CmdHandlerChatAddToBlackList::CmdHandlerChatAddToBlackList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatAddToBlackList::handle(WsjcppJsonRpc20Request *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
+    pRequest->fail(WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------
@@ -541,7 +541,7 @@ CmdHandlerChatDeleteFromBlackList::CmdHandlerChatDeleteFromBlackList()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatDeleteFromBlackList::handle(WsjcppJsonRpc20Request *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
+    pRequest->fail(WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------
@@ -563,7 +563,7 @@ CmdHandlerChatCreateGroupChat::CmdHandlerChatCreateGroupChat()
 // ---------------------------------------------------------------------
 
 void CmdHandlerChatCreateGroupChat::handle(WsjcppJsonRpc20Request *pRequest) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
+    pRequest->fail(WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
 // ---------------------------------------------------------------------

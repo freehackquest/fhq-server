@@ -31,6 +31,26 @@ QWebSocket *WebSocketClient::getClient() {
 
 // ---------------------------------------------------------------------
 
+void WebSocketClient::onDisconnected() {
+    m_pClient = nullptr;
+}
+
+// ---------------------------------------------------------------------
+
+void WebSocketClient::sendTextMessage(const std::string &sTextMessage) {
+    if (m_pClient) {
+        try {
+            m_pClient->sendTextMessage(QString::fromStdString(sTextMessage));
+        } catch(...) {
+            WsjcppLog::err(TAG, "Could not send message <<< " + sTextMessage);
+        }
+   } else {
+        WsjcppLog::warn(TAG, "Client is wrong");
+   }
+}
+
+// ---------------------------------------------------------------------
+
 std::string WebSocketClient::getIpAddress() {
     std::string sAddress = ((QWebSocket*)m_pClient)->peerAddress().toString().toStdString();
     #if QT_VERSION >= 0x050600
@@ -208,22 +228,22 @@ void WebSocketServer::processTextMessage(const QString &message) {
 
     // TODO find socket client in server with user session
     WebSocketClient *pWebSocketClient = new WebSocketClient(pClient);
-    WsjcppJsonRpc20Request *pWsjcppJsonRpc20Request = new WsjcppJsonRpc20Request(pWebSocketClient, this);
+    WsjcppJsonRpc20Request *pRequest = new WsjcppJsonRpc20Request(pWebSocketClient, this);
 
-    if (!pWsjcppJsonRpc20Request->parseIncomeData(message.toStdString())) {
-        delete pWsjcppJsonRpc20Request;
+    if (!pRequest->parseIncomeData(message.toStdString())) {
+        delete pRequest;
         delete pWebSocketClient;
         return;
     }
 
-    std::string sMethod = pWsjcppJsonRpc20Request->getMethod();
-    std::string sId = pWsjcppJsonRpc20Request->getId();
+    std::string sMethod = pRequest->getMethod();
+    std::string sId = pRequest->getId();
     try {
 
         CmdHandlerBase *pCmdHandler = CmdHandlers::findCmdHandler(sMethod);
         if (pCmdHandler == NULL) {
             WsjcppLog::warn(TAG, "Unknown command: " + sMethod);
-            pWsjcppJsonRpc20Request->sendMessageError(sMethod, WsjcppJsonRpc20Error(404, "UNKNOWN_COMMAND"));
+            pRequest->fail(WsjcppJsonRpc20Error(404, "UNKNOWN_COMMAND"));
             return;
         }
 
@@ -232,19 +252,19 @@ void WebSocketServer::processTextMessage(const QString &message) {
 
         // check access
         // TODO move check WsjcppJsonRpc20WebSocketServer
-        if (!pCmdHandler->checkAccess(pWsjcppJsonRpc20Request, error)) {
-            pWsjcppJsonRpc20Request->sendMessageError(pCmdHandler->cmd(), error);
+        if (!pCmdHandler->checkAccess(pRequest, error)) {
+            pRequest->fail(error);
             return;
         }
 
         // allow access
         // TODO move to WsjcppJsonRpc20WebSocketServer
         
-        if (!pServer->validateInputParameters(error, pCmdHandler, pWsjcppJsonRpc20Request->jsonRequest())) {
-            pWsjcppJsonRpc20Request->sendMessageError(pCmdHandler->cmd(), error);
+        if (!pServer->validateInputParameters(error, pCmdHandler, pRequest->jsonRequest())) {
+            pRequest->fail(error);
             return;
         }
-        pCmdHandler->handle(pWsjcppJsonRpc20Request);
+        pCmdHandler->handle(pRequest);
     } catch (const std::exception &e) {
         this->sendMessageError(pWebSocketClient, sMethod, sId, WsjcppJsonRpc20Error(500, "InternalServerError"));
         WsjcppLog::err(TAG, e.what());

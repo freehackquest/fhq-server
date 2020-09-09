@@ -102,8 +102,10 @@ class WsjcppJsonRpc20WebSocketClient {
         void setUserSession(WsjcppJsonRpc20UserSession *pUserSession);
         WsjcppJsonRpc20UserSession *getUserSession();
         void unsetUserSession();
+        virtual void onDisconnected() = 0;
         virtual std::string getIpAddress() = 0;
-        
+        virtual void sendTextMessage(const std::string &sTextMessage) = 0;
+
     protected:
         std::string TAG;
 

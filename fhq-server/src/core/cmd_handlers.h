@@ -37,7 +37,7 @@ class WsjcppJsonRpc20Request {
         bool parseIncomeData(const std::string &sIncomeData);
 
         WsjcppJsonRpc20WebSocketClient *getWebSocketClient();
-        WsjcppJsonRpc20WebSocketServer *getServer(); // TODO remove from here
+        WsjcppJsonRpc20WebSocketServer *getServer();
         WsjcppJsonRpc20UserSession *getUserSession();
         bool isAdmin();
         bool isUser();
@@ -51,12 +51,12 @@ class WsjcppJsonRpc20Request {
         
         std::string getId();
         std::string getMethod();
-        void sendMessageError(const std::string &cmd, WsjcppJsonRpc20Error error);
-        void sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse);
-        void sendResponse(nlohmann::json& jsonResult);
+
+        void sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponseResult); // TODO deprecated
+        void sendResponse(nlohmann::json& jsonResult); // TODO deprecated
 
         // TODO done()
-        // TODO fail()
+        void fail(WsjcppJsonRpc20Error error);
         // bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler);
     private:
         std::string TAG;

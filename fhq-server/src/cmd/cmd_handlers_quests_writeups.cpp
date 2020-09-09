@@ -33,7 +33,7 @@ void CmdHandlerQuestsWriteUpsList::handle(WsjcppJsonRpc20Request *pRequest) {
     }
 
     if (nQuestID == 0) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "'questid' must be none zero"));
+        pRequest->fail(WsjcppJsonRpc20Error(400, "'questid' must be none zero"));
         return;
     }
 
@@ -119,7 +119,7 @@ void CmdHandlerQuestsWriteUpsProposal::handle(WsjcppJsonRpc20Request *pRequest) 
     }
 
     if (nQuestID == 0) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "'questid' must be none zero"));
+        pRequest->fail(WsjcppJsonRpc20Error(400, "'questid' must be none zero"));
         return;
     }
 
@@ -130,7 +130,7 @@ void CmdHandlerQuestsWriteUpsProposal::handle(WsjcppJsonRpc20Request *pRequest) 
     }
 
     if (sWriteUpLink.rfind(m_sLinkPrefix, 0) != 0) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Expected link starts from '" + m_sLinkPrefix + "'"));
+        pRequest->fail(WsjcppJsonRpc20Error(400, "Expected link starts from '" + m_sLinkPrefix + "'"));
         return;
     }
 
@@ -155,7 +155,7 @@ void CmdHandlerQuestsWriteUpsProposal::handle(WsjcppJsonRpc20Request *pRequest) 
     query.bindValue(":userid", nUserID);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        pRequest->fail(WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     int nWriteUpID = query.lastInsertId().toInt();
@@ -231,7 +231,7 @@ void CmdHandlerQuestsWriteUpsUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
     query.prepare("SELECT * FROM quests_writeups WHERE id = :writeupid");
     query.bindValue(":writeupid", nWriteUpID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        pRequest->fail(WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     
@@ -242,7 +242,7 @@ void CmdHandlerQuestsWriteUpsUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
         jsonWriteUp["questid"] = nQuestIDValue;
         nCurrentApproveValue = record.value("approve").toInt();
     } else {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Not found writeup"));
+        pRequest->fail(WsjcppJsonRpc20Error(404, "Not found writeup"));
         return;
     }
 
@@ -252,7 +252,7 @@ void CmdHandlerQuestsWriteUpsUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
         query2.bindValue(":approve", nApprove);
         query2.bindValue(":writeupid", nWriteUpID);
         if (!query2.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query2.lastError().text().toStdString()));
+            pRequest->fail(WsjcppJsonRpc20Error(500, query2.lastError().text().toStdString()));
             return;
         }
         if (nApprove == 1) {
@@ -306,7 +306,7 @@ void CmdHandlerQuestsWriteUpsDelete::handle(WsjcppJsonRpc20Request *pRequest) {
     query.prepare("SELECT * FROM quests_writeups WHERE id = :writeupid");
     query.bindValue(":writeupid", nWriteUpID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        pRequest->fail(WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     
@@ -315,7 +315,7 @@ void CmdHandlerQuestsWriteUpsDelete::handle(WsjcppJsonRpc20Request *pRequest) {
         nlohmann::json jsonWriteup;
         nQuestIDValue = record.value("questid").toInt();
     } else {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Not found writeup"));
+        pRequest->fail(WsjcppJsonRpc20Error(404, "Not found writeup"));
         return;
     }
 
@@ -324,7 +324,7 @@ void CmdHandlerQuestsWriteUpsDelete::handle(WsjcppJsonRpc20Request *pRequest) {
     query2.prepare("DELETE FROM quests_writeups WHERE id = :writeupid");
     query2.bindValue(":writeupid", nWriteUpID);
     if (!query2.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query2.lastError().text().toStdString()));
+        pRequest->fail(WsjcppJsonRpc20Error(500, query2.lastError().text().toStdString()));
         return;
     }
     

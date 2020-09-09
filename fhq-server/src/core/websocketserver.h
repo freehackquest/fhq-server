@@ -17,6 +17,8 @@ class WebSocketClient : public WsjcppJsonRpc20WebSocketClient {
         WebSocketClient(QWebSocket *pClient);
         QWebSocket *getClient();
         virtual std::string getIpAddress() override;
+        virtual void onDisconnected() override;
+        virtual void sendTextMessage(const std::string &sTextMessage) override;
     private:
         std::string TAG;
         QWebSocket *m_pClient;

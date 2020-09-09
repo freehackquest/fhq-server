@@ -145,12 +145,6 @@ bool WsjcppJsonRpc20Request::isUnauthorized() {
 
 // ---------------------------------------------------------------------
 
-void WsjcppJsonRpc20Request::sendMessageError(const std::string &sMethod, WsjcppJsonRpc20Error error) {
-    m_pServer->sendMessageError(m_pClient,sMethod,m_sId,error);
-}
-
-// ---------------------------------------------------------------------
-
 void WsjcppJsonRpc20Request::sendMessageSuccess(const std::string &sMethod, nlohmann::json& jsonResponse) {
     jsonResponse["cmd"] = sMethod; // deprecated
     jsonResponse["jsonrpc"] = "2.0";
@@ -170,6 +164,25 @@ void WsjcppJsonRpc20Request::sendResponse(nlohmann::json& jsonResult) {
     jsonResponse["id"] = m_sId;
     jsonResponse["result"] = jsonResult;
     m_pServer->sendMessage((QWebSocket*)m_pClient, jsonResponse);
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20Request::fail(WsjcppJsonRpc20Error error) {
+    if (m_bResponseSend) {
+        WsjcppLog::err(TAG, "Already sended response");
+        return;
+    }
+    m_bResponseSend = true;
+    // {"jsonrpc": "2.0", "error": {"code": -32600, "message": "Invalid Request."}, "id": null}
+    nlohmann::json jsonResponse;
+    jsonResponse["jsonrpc"] = "2.0";
+    jsonResponse["method"] = m_sMethod;
+    jsonResponse["id"] = m_sId;
+    jsonResponse["error"] = error.toJson();
+    m_pClient->sendTextMessage(jsonResponse.dump());
+
+    // m_pServer->sendMessage((QWebSocket*)m_pClient, jsonResponse);
 }
 
 // ---------------------------------------------------------------------

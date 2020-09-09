@@ -54,7 +54,7 @@ void CmdHandlerFeedbackAdd::handle(WsjcppJsonRpc20Request *pRequest) {
     query.bindValue(":text", QString::fromStdString(sText));
     query.bindValue(":userid", nUserID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        pRequest->fail(WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 

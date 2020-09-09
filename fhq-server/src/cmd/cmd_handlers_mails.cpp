@@ -24,7 +24,7 @@ CmdHandlerMailInfo::CmdHandlerMailInfo()
 
 void CmdHandlerMailInfo::handle(WsjcppJsonRpc20Request *pRequest) {
 
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
+    pRequest->fail(WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
 /*****************************************
@@ -134,7 +134,7 @@ void CmdHandlerMailsList::handle(WsjcppJsonRpc20Request *pRequest) {
             query.bindValue(key, filter_values.value(key));
         }
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            pRequest->fail(WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {
