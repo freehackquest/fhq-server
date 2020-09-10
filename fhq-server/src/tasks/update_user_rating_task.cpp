@@ -1,5 +1,4 @@
-#include <update_user_rating_task.h>
-#include <fallen.h>
+#include "update_user_rating_task.h"
 #include <QThread>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>

@@ -1,19 +1,22 @@
 #include "cmd_handlers_communication.h"
 #include <runtasks.h>
-#include <fallen.h>
 #include <md5.h>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <employ_notify.h>
+#include <QSqlQuery> // TODO deprecated
+#include <QSqlRecord> // TODO deprecated
+#include <QString> // TODO deprecated
+#include <QVariant> // TODO deprecated
 
 /*********************************************
  * Users chat
 **********************************************/
 
-REGISTRY_CMD(CmdHandlerChatSendMessage)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerChatSendMessage)
 
 CmdHandlerChatSendMessage::CmdHandlerChatSendMessage()
-    : CmdHandlerBase("chat_send_message", "Method will be send chat message and it sent to another users") {
+    : WsjcppJsonRpc20HandlerBase("chat_send_message", "Method will be send chat message and it sent to another users") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -78,10 +81,10 @@ void CmdHandlerChatSendMessage::handle(WsjcppJsonRpc20Request *pRequest) {
  * chat_latest_messages
 **********************************************/
 
-REGISTRY_CMD(CmdHandlerChatLastestMessages)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerChatLastestMessages)
 
 CmdHandlerChatLastestMessages::CmdHandlerChatLastestMessages()
-    : CmdHandlerBase("chat_latest_messages", "Method will be send chat message and it sent to another users") {
+    : WsjcppJsonRpc20HandlerBase("chat_latest_messages", "Method will be send chat message and it sent to another users") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -120,10 +123,10 @@ void CmdHandlerChatLastestMessages::handle(WsjcppJsonRpc20Request *pRequest) {
 
 // ---------------------------------------------------------------------
 
-REGISTRY_CMD(CmdHandlerChatSendMessage_new)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerChatSendMessage_new)
 
 CmdHandlerChatSendMessage_new::CmdHandlerChatSendMessage_new()
-    : CmdHandlerBase("chats_message_send", "Method will be send chat message and it sent to another users") {
+    : WsjcppJsonRpc20HandlerBase("chats_message_send", "Method will be send chat message and it sent to another users") {
     
     setActivatedFromVersion("0.2.24");
 
@@ -203,10 +206,10 @@ void CmdHandlerChatSendMessage_new::handle(WsjcppJsonRpc20Request *pRequest) {
 
 // ---------------------------------------------------------------------
 
-REGISTRY_CMD(CmdHandlerChatReadMessage)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerChatReadMessage)
 
 CmdHandlerChatReadMessage::CmdHandlerChatReadMessage()
-    : CmdHandlerBase("chats_message_read", "Get all messages in chat") {
+    : WsjcppJsonRpc20HandlerBase("chats_message_read", "Get all messages in chat") {
     
     setActivatedFromVersion("0.2.24");
 
@@ -257,10 +260,10 @@ void CmdHandlerChatReadMessage::handle(WsjcppJsonRpc20Request *pRequest) {
 
 // ---------------------------------------------------------------------
 
-REGISTRY_CMD(CmdHandlerChatShowDialogs)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerChatShowDialogs)
 
 CmdHandlerChatShowDialogs::CmdHandlerChatShowDialogs()
-    : CmdHandlerBase("chats_dialogs_list", "Show list of dialogs") {
+    : WsjcppJsonRpc20HandlerBase("chats_dialogs_list", "Show list of dialogs") {
     
     setActivatedFromVersion("0.2.24");
 
@@ -279,10 +282,10 @@ void CmdHandlerChatShowDialogs::handle(WsjcppJsonRpc20Request *pRequest) {
 
 // ---------------------------------------------------------------------
 
-REGISTRY_CMD(CmdHandlerChatEditMessage)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerChatEditMessage)
 
 CmdHandlerChatEditMessage::CmdHandlerChatEditMessage()
-    : CmdHandlerBase("chats_message_edit", "Edit message") {
+    : WsjcppJsonRpc20HandlerBase("chats_message_edit", "Edit message") {
     
     setActivatedFromVersion("0.2.24");
 
@@ -365,10 +368,10 @@ void CmdHandlerChatEditMessage::handle(WsjcppJsonRpc20Request *pRequest) {
 
 // ---------------------------------------------------------------------
 
-REGISTRY_CMD(CmdHandlerChatDeleteMessage)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerChatDeleteMessage)
 
 CmdHandlerChatDeleteMessage::CmdHandlerChatDeleteMessage()
-    : CmdHandlerBase("chats_message_delete", "Delete message from chat") {
+    : WsjcppJsonRpc20HandlerBase("chats_message_delete", "Delete message from chat") {
     
     setActivatedFromVersion("0.2.24");
 
@@ -436,10 +439,10 @@ void CmdHandlerChatDeleteMessage::handle(WsjcppJsonRpc20Request *pRequest) {
 
 // ---------------------------------------------------------------------
 
-REGISTRY_CMD(CmdHandlerChatAddToChat)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerChatAddToChat)
 
 CmdHandlerChatAddToChat::CmdHandlerChatAddToChat()
-    : CmdHandlerBase("chats_add_to_chat", "Add user to some chat") {
+    : WsjcppJsonRpc20HandlerBase("chats_add_to_chat", "Add user to some chat") {
     
     setActivatedFromVersion("0.2.24");
 
@@ -458,10 +461,10 @@ void CmdHandlerChatAddToChat::handle(WsjcppJsonRpc20Request *pRequest) {
 
 // ---------------------------------------------------------------------
 
-REGISTRY_CMD(CmdHandlerChatDeleteFromChat)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerChatDeleteFromChat)
 
 CmdHandlerChatDeleteFromChat::CmdHandlerChatDeleteFromChat()
-    : CmdHandlerBase("chats_delete_from_chat", "Delete user from chat") {
+    : WsjcppJsonRpc20HandlerBase("chats_delete_from_chat", "Delete user from chat") {
     
     setActivatedFromVersion("0.2.24");
 
@@ -480,10 +483,10 @@ void CmdHandlerChatDeleteFromChat::handle(WsjcppJsonRpc20Request *pRequest) {
 
 // ---------------------------------------------------------------------
 
-REGISTRY_CMD(CmdHandlerChatChangeOwner)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerChatChangeOwner)
 
 CmdHandlerChatChangeOwner::CmdHandlerChatChangeOwner()
-    : CmdHandlerBase("chats_change_owner", "Change owner of the chat") {
+    : WsjcppJsonRpc20HandlerBase("chats_change_owner", "Change owner of the chat") {
     
     setActivatedFromVersion("0.2.24");
 
@@ -502,10 +505,10 @@ void CmdHandlerChatChangeOwner::handle(WsjcppJsonRpc20Request *pRequest) {
 
 // ---------------------------------------------------------------------
 
-REGISTRY_CMD(CmdHandlerChatAddToBlackList)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerChatAddToBlackList)
 
 CmdHandlerChatAddToBlackList::CmdHandlerChatAddToBlackList()
-    : CmdHandlerBase("chats_add_to_black_list", "Add user to black list") {
+    : WsjcppJsonRpc20HandlerBase("chats_add_to_black_list", "Add user to black list") {
     
     setActivatedFromVersion("0.2.24");
 
@@ -524,10 +527,10 @@ void CmdHandlerChatAddToBlackList::handle(WsjcppJsonRpc20Request *pRequest) {
 
 // ---------------------------------------------------------------------
 
-REGISTRY_CMD(CmdHandlerChatDeleteFromBlackList)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerChatDeleteFromBlackList)
 
 CmdHandlerChatDeleteFromBlackList::CmdHandlerChatDeleteFromBlackList()
-    : CmdHandlerBase("chats_delete_from_black_list", "Delete user from black list") {
+    : WsjcppJsonRpc20HandlerBase("chats_delete_from_black_list", "Delete user from black list") {
     
     setActivatedFromVersion("0.2.24");
 
@@ -546,10 +549,10 @@ void CmdHandlerChatDeleteFromBlackList::handle(WsjcppJsonRpc20Request *pRequest)
 
 // ---------------------------------------------------------------------
 
-REGISTRY_CMD(CmdHandlerChatCreateGroupChat)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerChatCreateGroupChat)
 
 CmdHandlerChatCreateGroupChat::CmdHandlerChatCreateGroupChat()
-    : CmdHandlerBase("chats_create_group_chat", "Create group chat") {
+    : WsjcppJsonRpc20HandlerBase("chats_create_group_chat", "Create group chat") {
     
     setActivatedFromVersion("0.2.24");
 

@@ -6,7 +6,7 @@
 #define FHQ_SERVER_LXDASYNCOPERATIONTASK_H
 
 #include <QRunnable>
-#include <cmd_handlers.h>
+#include <wsjcpp_jsonrpc20.h>
 
 class LXDAsyncOperationTask : public QRunnable {
 

@@ -9,13 +9,17 @@
 #include <wsjcpp_core.h>
 #include <QDateTime>
 #include <websocketserver.h>
+#include <QSqlQuery> // TODO deprecated
+#include <QSqlRecord> // TODO deprecated
+#include <QString> // TODO deprecated
+#include <QVariant> // TODO deprecated
 
 /*********************************************
  * This handler will be return scoreboard of user
 **********************************************/
 
 CmdHandlerUsersScoreboard::CmdHandlerUsersScoreboard()
-    : CmdHandlerBase("scoreboard", "Method return scoreboard") {
+    : WsjcppJsonRpc20HandlerBase("scoreboard", "Method return scoreboard") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -71,7 +75,7 @@ void CmdHandlerUsersScoreboard::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerGetMap::CmdHandlerGetMap()
-    : CmdHandlerBase("getmap", "Returned coordinate list") {
+    : WsjcppJsonRpc20HandlerBase("getmap", "Returned coordinate list") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -117,7 +121,7 @@ void CmdHandlerGetMap::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerLogin::CmdHandlerLogin()
-    : CmdHandlerBase("login", "Method for login") {
+    : WsjcppJsonRpc20HandlerBase("login", "Method for login") {
 
     setAccessUnauthorized(true);
     setAccessUser(false);
@@ -226,7 +230,7 @@ void CmdHandlerLogin::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerRegistration::CmdHandlerRegistration()
-    : CmdHandlerBase("registration", "Method for registration") {
+    : WsjcppJsonRpc20HandlerBase("registration", "Method for registration") {
 
     setAccessUnauthorized(true);
     setAccessUser(false);
@@ -384,7 +388,7 @@ void CmdHandlerRegistration::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerToken::CmdHandlerToken()
-    : CmdHandlerBase("token", "Method for login by token") {
+    : WsjcppJsonRpc20HandlerBase("token", "Method for login by token") {
 
     setAccessUnauthorized(true);
     setAccessUser(false);
@@ -403,7 +407,7 @@ void CmdHandlerToken::handle(WsjcppJsonRpc20Request *pRequest) {
     nlohmann::json jsonResponse;
 
     nlohmann::json jsonData;
-    jsonData["cmd"] = nlohmann::json(cmd());
+    jsonData["cmd"] = nlohmann::json(getMethodName());
 
     QString token = QString::fromStdString(jsonRequest.at("token"));
     QSqlDatabase db = *(pDatabase->database());
@@ -444,7 +448,7 @@ void CmdHandlerToken::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerUpdateUserLocation::CmdHandlerUpdateUserLocation()
-    : CmdHandlerBase("updateuserlocation", "This method will be try update user location by lastip") {
+    : WsjcppJsonRpc20HandlerBase("updateuserlocation", "This method will be try update user location by lastip") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -506,7 +510,7 @@ void CmdHandlerUpdateUserLocation::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerUserChangePassword::CmdHandlerUserChangePassword()
-    : CmdHandlerBase("user_change_password", "This method for change user password") {
+    : WsjcppJsonRpc20HandlerBase("user_change_password", "This method for change user password") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -591,7 +595,7 @@ void CmdHandlerUserChangePassword::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerUsersAdd::CmdHandlerUsersAdd()
-    : CmdHandlerBase("users_add", "Method for add new user") {
+    : WsjcppJsonRpc20HandlerBase("users_add", "Method for add new user") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -748,7 +752,7 @@ void CmdHandlerUsersAdd::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerUser::CmdHandlerUser()
-    : CmdHandlerBase("user", "Return user info") {
+    : WsjcppJsonRpc20HandlerBase("user", "Return user info") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -854,7 +858,7 @@ void CmdHandlerUser::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerUsersInfo::CmdHandlerUsersInfo()
-    : CmdHandlerBase("users_info", "Return user info") {
+    : WsjcppJsonRpc20HandlerBase("users_info", "Return user info") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -962,7 +966,7 @@ void CmdHandlerUsersInfo::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerUserResetPassword::CmdHandlerUserResetPassword()
-    : CmdHandlerBase("user_reset_password", "Method for reset password") {
+    : WsjcppJsonRpc20HandlerBase("user_reset_password", "Method for reset password") {
 
     setAccessUnauthorized(true);
     setAccessUser(false);
@@ -1049,7 +1053,7 @@ void CmdHandlerUserResetPassword::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerUserSkills::CmdHandlerUserSkills()
-    : CmdHandlerBase("user_skills", "Return user skills info") {
+    : WsjcppJsonRpc20HandlerBase("user_skills", "Return user skills info") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -1117,7 +1121,7 @@ void CmdHandlerUserSkills::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerUserUpdate::CmdHandlerUserUpdate()
-    : CmdHandlerBase("user_update", "Update user info") {
+    : WsjcppJsonRpc20HandlerBase("user_update", "Update user info") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -1254,7 +1258,7 @@ void CmdHandlerUserUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerUserDelete::CmdHandlerUserDelete()
-    : CmdHandlerBase("user_delete", "Method for deleting a user") {
+    : WsjcppJsonRpc20HandlerBase("user_delete", "Method for deleting a user") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1461,7 +1465,7 @@ void CmdHandlerUserDelete::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerUsers::CmdHandlerUsers()
-    : CmdHandlerBase("users", "Method return list of users") {
+    : WsjcppJsonRpc20HandlerBase("users", "Method return list of users") {
 
     TAG = "CmdUsersHandler";
 
@@ -1593,7 +1597,7 @@ void CmdHandlerUsers::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerUsersRegistration::CmdHandlerUsersRegistration()
-    : CmdHandlerBase("users_registration", "Method for registration") {
+    : WsjcppJsonRpc20HandlerBase("users_registration", "Method for registration") {
 
     TAG = "CmdUsersRegistrationHandler";
 
@@ -1692,7 +1696,7 @@ void CmdHandlerUsersRegistration::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerUsersRegistrationVerification::CmdHandlerUsersRegistrationVerification()
-    : CmdHandlerBase("users_registration_verification", "Method for registration verification") {
+    : WsjcppJsonRpc20HandlerBase("users_registration_verification", "Method for registration verification") {
 
     TAG = "CmdUsersRegistrationVerificationHandler";
 
@@ -1871,7 +1875,7 @@ void CmdHandlerUsersRegistrationVerification::handle(WsjcppJsonRpc20Request *pRe
 **********************************************/
 
 CmdHandlerUsersChangeEmail::CmdHandlerUsersChangeEmail()
-    : CmdHandlerBase("users_change_email", "Method for email changing") {
+    : WsjcppJsonRpc20HandlerBase("users_change_email", "Method for email changing") {
 
     TAG = "CmdUsersChangeEmailHandler";
 
@@ -1984,10 +1988,10 @@ void CmdHandlerUsersChangeEmail::handle(WsjcppJsonRpc20Request *pRequest) {
 /*********************************************
  * Change user's email verification
 **********************************************/
-REGISTRY_CMD(CmdHandlerUsersChangeEmailVerification)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsersChangeEmailVerification)
 
 CmdHandlerUsersChangeEmailVerification::CmdHandlerUsersChangeEmailVerification()
-    : CmdHandlerBase("users_change_email_verification", "Method for email changing verification") {
+    : WsjcppJsonRpc20HandlerBase("users_change_email_verification", "Method for email changing verification") {
 
     TAG = "CmdUsersChangeEmailVerificationHandler";
 
@@ -2068,10 +2072,10 @@ void CmdHandlerUsersChangeEmailVerification::handle(WsjcppJsonRpc20Request *pReq
 /*********************************************
  * List of active user tokens
 **********************************************/
-REGISTRY_CMD(CmdHandlerUsersTokens)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsersTokens)
 
 CmdHandlerUsersTokens::CmdHandlerUsersTokens()
-    : CmdHandlerBase("users_tokens", "List of active user tokens") {
+    : WsjcppJsonRpc20HandlerBase("users_tokens", "List of active user tokens") {
 
     TAG = "CmdHandlerUsersTokens";
 
@@ -2134,10 +2138,10 @@ void CmdHandlerUsersTokens::handle(WsjcppJsonRpc20Request *pRequest) {
 /*********************************************
  * Deletee user tokens
 **********************************************/
-REGISTRY_CMD(CmdHandlerUsersTokensDelete)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsersTokensDelete)
 
 CmdHandlerUsersTokensDelete::CmdHandlerUsersTokensDelete()
-    : CmdHandlerBase("users_tokens_delete", "Delete user tokens") {
+    : WsjcppJsonRpc20HandlerBase("users_tokens_delete", "Delete user tokens") {
 
     TAG = "CmdHandlerUsersTokens";
 

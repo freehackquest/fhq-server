@@ -1,51 +1,43 @@
 #ifndef CMD_HADNLERS_EVENTS_H
 #define CMD_HADNLERS_EVENTS_H
 
-#include <cmd_handlers.h>
+#include <wsjcpp_jsonrpc20.h>
 
 /*!
  * This handler will be create public event
  * */
-class CmdHandlerEventAdd : public CmdHandlerBase {
+class CmdHandlerEventAdd : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerEventAdd();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerEventAdd)
-
 /*!
  * This handler will be delete public event
  * */
-class CmdHandlerEventDelete : public CmdHandlerBase {
+class CmdHandlerEventDelete : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerEventDelete();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerEventDelete)
-
 /*!
  * This handler will be retrun info about public event
  * */
-class CmdHandlerEventInfo : public CmdHandlerBase {
+class CmdHandlerEventInfo : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerEventInfo();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerEventInfo)
-
 /*!
  * This handler will be retrun list of public events
  * */
-class CmdHandlerEventsList : public CmdHandlerBase {
+class CmdHandlerEventsList : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerEventsList();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
-
-REGISTRY_CMD(CmdHandlerEventsList)
 
 
 #endif // CMD_HADNLERS_EVENTS_H

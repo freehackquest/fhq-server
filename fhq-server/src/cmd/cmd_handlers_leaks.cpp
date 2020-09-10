@@ -2,14 +2,17 @@
 #include <iostream>
 #include <employ_database.h>
 #include <employ_leaks.h>
-#include <QJsonArray>
+#include <QSqlQuery> // TODO deprecated
+#include <QSqlRecord> // TODO deprecated
+#include <QString> // TODO deprecated
+#include <QVariant> // TODO deprecated
 
 /*********************************************
  * This handler will return the list of leaks
 **********************************************/
 
 CmdHandlerLeaksList::CmdHandlerLeaksList()
-    : CmdHandlerBase("leaks_list", "Method returns list of leaks") {
+    : WsjcppJsonRpc20HandlerBase("leaks_list", "Method returns list of leaks") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -132,7 +135,7 @@ void CmdHandlerLeaksList::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerLeaksAdd::CmdHandlerLeaksAdd()
-    : CmdHandlerBase("leaks_add", "Method adds a leak") {
+    : WsjcppJsonRpc20HandlerBase("leaks_add", "Method adds a leak") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -201,7 +204,7 @@ void CmdHandlerLeaksAdd::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerLeaksUpdate::CmdHandlerLeaksUpdate()
-    : CmdHandlerBase("leaks_update", "Method updates a leak") {
+    : WsjcppJsonRpc20HandlerBase("leaks_update", "Method updates a leak") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -284,7 +287,7 @@ void CmdHandlerLeaksUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerLeaksDelete::CmdHandlerLeaksDelete()
-    : CmdHandlerBase("leaks_delete", "Method deletes a leak") {
+    : WsjcppJsonRpc20HandlerBase("leaks_delete", "Method deletes a leak") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -359,7 +362,7 @@ void CmdHandlerLeaksDelete::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerLeaksBuy::CmdHandlerLeaksBuy()
-    : CmdHandlerBase("leaks_buy", "Method buys a leak") {
+    : WsjcppJsonRpc20HandlerBase("leaks_buy", "Method buys a leak") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);

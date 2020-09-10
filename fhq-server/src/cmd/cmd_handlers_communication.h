@@ -1,85 +1,85 @@
 #ifndef CMD_HANDLERS_COMMUNICATION_H
 #define CMD_HANDLERS_COMMUNICATION_H
 
-#include <cmd_handlers.h>
+#include <wsjcpp_jsonrpc20.h>
 
 /*********************************************
  * Users chat
 **********************************************/
 
-class CmdHandlerChatSendMessage : public CmdHandlerBase {
+class CmdHandlerChatSendMessage : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerChatSendMessage();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-class CmdHandlerChatSendMessage_new : public CmdHandlerBase {
+class CmdHandlerChatSendMessage_new : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerChatSendMessage_new();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-class CmdHandlerChatLastestMessages : public CmdHandlerBase {
+class CmdHandlerChatLastestMessages : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerChatLastestMessages();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-class CmdHandlerChatReadMessage : public CmdHandlerBase {
+class CmdHandlerChatReadMessage : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerChatReadMessage();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-class CmdHandlerChatShowDialogs : public CmdHandlerBase {
+class CmdHandlerChatShowDialogs : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerChatShowDialogs();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-class CmdHandlerChatEditMessage : public CmdHandlerBase {
+class CmdHandlerChatEditMessage : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerChatEditMessage();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-class CmdHandlerChatDeleteMessage : public CmdHandlerBase {
+class CmdHandlerChatDeleteMessage : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerChatDeleteMessage();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-class CmdHandlerChatAddToChat : public CmdHandlerBase {
+class CmdHandlerChatAddToChat : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerChatAddToChat();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-class CmdHandlerChatDeleteFromChat : public CmdHandlerBase {
+class CmdHandlerChatDeleteFromChat : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerChatDeleteFromChat();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-class CmdHandlerChatChangeOwner : public CmdHandlerBase {
+class CmdHandlerChatChangeOwner : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerChatChangeOwner();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-class CmdHandlerChatAddToBlackList : public CmdHandlerBase {
+class CmdHandlerChatAddToBlackList : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerChatAddToBlackList();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-class CmdHandlerChatDeleteFromBlackList : public CmdHandlerBase {
+class CmdHandlerChatDeleteFromBlackList : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerChatDeleteFromBlackList();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-class CmdHandlerChatCreateGroupChat : public CmdHandlerBase {
+class CmdHandlerChatCreateGroupChat : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerChatCreateGroupChat();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);

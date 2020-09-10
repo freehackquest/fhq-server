@@ -1,15 +1,18 @@
 #include <cmd_handlers_quests_writeups.h>
 #include <runtasks.h>
-#include <fallen.h>
 #include <md5.h>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <employ_notify.h>
+#include <QSqlQuery> // TODO deprecated
+#include <QSqlRecord> // TODO deprecated
+#include <QString> // TODO deprecated
+#include <QVariant> // TODO deprecated
 
-REGISTRY_CMD(CmdHandlerQuestsWriteUpsList)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerQuestsWriteUpsList)
 
 CmdHandlerQuestsWriteUpsList::CmdHandlerQuestsWriteUpsList()
-    : CmdHandlerBase("quests_writeups_list", "This method will be returned list of writeups by questid") {
+    : WsjcppJsonRpc20HandlerBase("quests_writeups_list", "This method will be returned list of writeups by questid") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -88,10 +91,10 @@ void CmdHandlerQuestsWriteUpsList::handle(WsjcppJsonRpc20Request *pRequest) {
 // ---------------------------------------------------------------------
 // Quests WriteUps Proposal
 
-REGISTRY_CMD(CmdHandlerQuestsWriteUpsProposal)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerQuestsWriteUpsProposal)
 
 CmdHandlerQuestsWriteUpsProposal::CmdHandlerQuestsWriteUpsProposal()
-    : CmdHandlerBase("quests_writeups_proposal", "This method will be add writeup from authorized user") {
+    : WsjcppJsonRpc20HandlerBase("quests_writeups_proposal", "This method will be add writeup from authorized user") {
 
     m_sLinkPrefix = "https://www.youtube.com/watch?v=";
 
@@ -188,10 +191,10 @@ void CmdHandlerQuestsWriteUpsProposal::handle(WsjcppJsonRpc20Request *pRequest) 
 // ---------------------------------------------------------------------
 // Quests WriteUps Update
 
-REGISTRY_CMD(CmdHandlerQuestsWriteUpsUpdate)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerQuestsWriteUpsUpdate)
 
 CmdHandlerQuestsWriteUpsUpdate::CmdHandlerQuestsWriteUpsUpdate()
-    : CmdHandlerBase("quests_writeups_update", "This method will be update writeup approve now") {
+    : WsjcppJsonRpc20HandlerBase("quests_writeups_update", "This method will be update writeup approve now") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -271,10 +274,10 @@ void CmdHandlerQuestsWriteUpsUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
 // ---------------------------------------------------------------------
 // Quests WriteUps Delete
 
-REGISTRY_CMD(CmdHandlerQuestsWriteUpsDelete)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerQuestsWriteUpsDelete)
 
 CmdHandlerQuestsWriteUpsDelete::CmdHandlerQuestsWriteUpsDelete()
-    : CmdHandlerBase("quests_writeups_delete", "This method will be remove writeup") {
+    : WsjcppJsonRpc20HandlerBase("quests_writeups_delete", "This method will be remove writeup") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);

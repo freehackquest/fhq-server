@@ -1,17 +1,20 @@
 #include <cmd_handlers_server.h>
-#include <fallen.h>
 #include <runtasks.h>
 #include <iostream>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <QtCore>
+#include <QSqlQuery> // TODO deprecated
+#include <QSqlRecord> // TODO deprecated
+#include <QString> // TODO deprecated
+#include <QVariant> // TODO deprecated
 
 /*****************************************
  * This handler will be return public info
  *****************************************/
 
 CmdHandlerPublicInfo::CmdHandlerPublicInfo()
-    : CmdHandlerBase("public_info", "Method return public information about server") {
+    : WsjcppJsonRpc20HandlerBase("public_info", "Method return public information about server") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -106,7 +109,7 @@ void CmdHandlerPublicInfo::handle(WsjcppJsonRpc20Request *pRequest) {
  *****************************************/
 
 CmdHandlerServerInfo::CmdHandlerServerInfo()
-    : CmdHandlerBase("server_info", "Return server private information") {
+    : WsjcppJsonRpc20HandlerBase("server_info", "Return server private information") {
     TAG = "CmdServerInfoHandler";
 
     setAccessUnauthorized(false);
@@ -140,7 +143,7 @@ void CmdHandlerServerInfo::handle(WsjcppJsonRpc20Request *pRequest) {
  *****************************************/
 
 CmdHandlerServerSettings::CmdHandlerServerSettings()
-    : CmdHandlerBase("server_settings", "Return server settings") {
+    : WsjcppJsonRpc20HandlerBase("server_settings", "Return server settings") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -165,7 +168,7 @@ void CmdHandlerServerSettings::handle(WsjcppJsonRpc20Request *pRequest) {
  *****************************************/
 
 CmdHandlerServerSettingsUpdate::CmdHandlerServerSettingsUpdate()
-    : CmdHandlerBase("server_settings_update", "Update server settings") {
+    : WsjcppJsonRpc20HandlerBase("server_settings_update", "Update server settings") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);

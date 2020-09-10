@@ -1,5 +1,4 @@
 #include <runtasks.h>
-#include <fallen.h>
 #include <add_public_events_task.h>
 #include <mail_send_task.h>
 #include <notify_to_all_task.h>
@@ -11,6 +10,7 @@
 #include <QRunnable>
 #include <QThreadPool>
 #include <lxd_async_operation_task.h>
+#include <wsjcpp_core.h>
 
 void RunTasks::AddPublicEvents(
     const std::string &sType,

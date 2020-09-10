@@ -1,5 +1,4 @@
 #include <cmd_handlers_games.h>
-#include <fallen.h>
 #include <runtasks.h>
 #include <QJsonArray>
 #include <QTemporaryDir>
@@ -16,13 +15,17 @@
 #include <fstream>
 #include <validators.h>
 #include <wsjcpp_hashes.h>
+#include <QSqlQuery> // TODO deprecated
+#include <QSqlRecord> // TODO deprecated
+#include <QString> // TODO deprecated
+#include <QVariant> // TODO deprecated
 
 /*********************************************
  * Create Game
 **********************************************/
 
 CmdHandlerGameCreate::CmdHandlerGameCreate()
-   : CmdHandlerBase("game_create", "Create the game") {
+   : WsjcppJsonRpc20HandlerBase("game_create", "Create the game") {
     
     setActivatedFromVersion("0.2.0");
     
@@ -96,7 +99,7 @@ void CmdHandlerGameCreate::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerGameDelete::CmdHandlerGameDelete()
-    : CmdHandlerBase("game_delete", "Remove game and all quests") {
+    : WsjcppJsonRpc20HandlerBase("game_delete", "Remove game and all quests") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -259,7 +262,7 @@ void CmdHandlerGameDelete::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
 CmdHandlerGameExport::CmdHandlerGameExport()
-    : CmdHandlerBase("game_export", "Export the game") {
+    : WsjcppJsonRpc20HandlerBase("game_export", "Export the game") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -352,7 +355,7 @@ void CmdHandlerGameExport::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
 CmdHandlerGameImport::CmdHandlerGameImport()
-    : CmdHandlerBase("game_import", "Import game") {
+    : WsjcppJsonRpc20HandlerBase("game_import", "Import game") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -382,7 +385,7 @@ void CmdHandlerGameImport::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
 CmdHandlerGameInfo::CmdHandlerGameInfo()
-    : CmdHandlerBase("game_info", "Return game info") {
+    : WsjcppJsonRpc20HandlerBase("game_info", "Return game info") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -416,7 +419,7 @@ void CmdHandlerGameInfo::handle(WsjcppJsonRpc20Request *pRequest) {
 **********************************************/
 
 CmdHandlerGameUpdate::CmdHandlerGameUpdate()
-    : CmdHandlerBase("game_update", "Update game info") {
+    : WsjcppJsonRpc20HandlerBase("game_update", "Update game info") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -493,7 +496,7 @@ void CmdHandlerGameUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
 CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
-    : CmdHandlerBase("game_update_logo", "Update game logo") {
+    : WsjcppJsonRpc20HandlerBase("game_update_logo", "Update game logo") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -583,7 +586,7 @@ void CmdHandlerGameUpdateLogo::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
 CmdHandlerGames::CmdHandlerGames()
-    : CmdHandlerBase("games", "Method returned list of games") {
+    : WsjcppJsonRpc20HandlerBase("games", "Method returned list of games") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);

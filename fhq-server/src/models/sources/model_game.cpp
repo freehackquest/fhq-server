@@ -1,7 +1,7 @@
 #include <model_game.h>
-#include <fallen.h>
 #include <iostream>
 #include <algorithm>
+#include <wsjcpp_core.h>
 
 // ---------------------------------------------------------------------
 

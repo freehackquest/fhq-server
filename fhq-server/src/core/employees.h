@@ -4,9 +4,8 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <fallen.h>
 #include <wsjcpp_employees.h>
-#include <cmd_handlers.h>
+#include <websocketserver.h>
 
 // ---------------------------------------------------------------------
 // employ enum code results
@@ -222,7 +221,7 @@ class EmployServer : public WsjcppEmployBase {
         static std::string name() { return "EmployServer"; }
         virtual bool init();
         virtual bool deinit();
-        bool validateInputParameters(WsjcppJsonRpc20Error &error, CmdHandlerBase *pCmdHandler, const nlohmann::json& jsonMessage);
+        bool validateInputParameters(WsjcppJsonRpc20Error &error, WsjcppJsonRpc20HandlerBase *pCmdHandler, const nlohmann::json& jsonMessage);
         int getConnectedUsers();
         void setServer(WsjcppJsonRpc20WebSocketServer *pWebSocketServer);
         void sendToAll(const nlohmann::json& jsonMessage);

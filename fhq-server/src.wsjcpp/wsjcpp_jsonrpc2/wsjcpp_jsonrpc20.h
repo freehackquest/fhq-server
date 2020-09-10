@@ -201,71 +201,67 @@ class WsjcppJsonRpc20ParamDef {
 
 // ---------------------------------------------------------------------
 // WsjcppJsonRpc20Request
-/*
+
 class WsjcppJsonRpc20Request {
     public:
         WsjcppJsonRpc20Request(
-            WsjcppJsonRpc20WebSocket *pClient,
-            WsjcppJsonRpc20WebSocketServer *pWebSocketServer,
-            nlohmann::json &jsonRequest_
+            WsjcppJsonRpc20WebSocketClient *pClient,
+            WsjcppJsonRpc20WebSocketServer *pWebSocketServer
         );
-        WsjcppJsonRpc20WebSocket *client();
-        std::string getIpAddress();
-        WsjcppJsonRpc20WebSocketServer *server();
+
+        bool parseIncomeData(const std::string &sIncomeData);
+
+        WsjcppJsonRpc20WebSocketClient *getWebSocketClient();
+        WsjcppJsonRpc20WebSocketServer *getServer();
         WsjcppJsonRpc20UserSession *getUserSession();
         bool isAdmin();
         bool isUser();
         bool isUnauthorized();
-        // TODO set input defs
         
         const nlohmann::json& jsonRequest(); // TODO deprecated
         bool hasInputParam(const std::string &sParamName);
         std::string getInputString(const std::string &sParamName, const std::string &sDefaultValue);
         int getInputInteger(const std::string &sParamName, int defaultValue);
         
-        std::string m();
-        bool hasM();
-        std::string command();
-        bool hasCommand();
-        void sendMessageError(const std::string &cmd, WsjcppJsonRpc20Error error);
-        void sendResponse(nlohmann::json& jsonResult);
+        std::string getId();
+        std::string getMethod();
 
-        // bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler);
+        void done(nlohmann::json& jsonResponseResult);
+        void fail(WsjcppJsonRpc20Error error);
+
     private:
         std::string TAG;
-        void *m_pClient;
+        WsjcppJsonRpc20WebSocketClient *m_pWebSocketClient;
         WsjcppJsonRpc20WebSocketServer *m_pServer;
-        WsjcppJsonRpc20UserSession *m_pWsjcppJsonRpc20UserSession;
-        nlohmann::json m_jsonRequest;
-        std::string m_sMessageId;
-        std::string m_sCommand;
-};
-*/
-// ---------------------------------------------------------------------
 
-/*!
- * Api handler Base
- * */
-/*
-class WsjcppJsonRpc20BaseHandler {
+        nlohmann::json m_jsonRequest;
+        std::string m_sId;
+        std::string m_sMethod;
+        bool m_bResponseSend;
+};
+
+// ---------------------------------------------------------------------
+// WsjcppJsonRpc20HandlerBase - api handler basic class
+
+class WsjcppJsonRpc20HandlerBase {
 
     public:
-        WsjcppJsonRpc20Base(const std::string &sMethod, const std::string &sDescription);
-        virtual std::string getMethodName() const;
-        virtual std::string getDescription() const;
+        WsjcppJsonRpc20HandlerBase(const std::string &sMethodName, const std::string &sDescription);
+        std::string getMethodName() const;
+        std::string getDescription() const;
         std::string getActivatedFromVersion() const;
         std::string getDeprecatedFromVersion() const;
-        bool getAccessUnauthorized() const;
-        bool getAccessUser() const;
-        bool getAccessTester() const;
-        bool getAccessAdmin() const;
-        bool checkAccess(const WsjcppJsonRpc20Request *pRequest) const;
+        bool haveUnauthorizedAccess() const;
+        bool haveUserAccess() const;
+        bool haveTesterAccess() const;
+        bool haveAdminAccess() const;
+        bool checkAccess(
+            WsjcppJsonRpc20Request *pRequest,
+            WsjcppJsonRpc20Error& error
+        ) const;
+        const std::vector<WsjcppJsonRpc20ParamDef> &inputs();
 
-        virtual const std::vector<WsjcppJsonRpc20ParamDef> &inputs();
         virtual void handle(WsjcppJsonRpc20Request *pRequest) = 0;
-
-        // virtual void done(nlohmann::json jsonResponse);
-        // virtual void fail(int nCode, const std::string &sErrorMessage);
         
     protected:
         void setAccessUnauthorized(bool bAccess);
@@ -283,7 +279,7 @@ class WsjcppJsonRpc20BaseHandler {
         WsjcppJsonRpc20ParamDef &optionalBooleanParam(const std::string &sName, const std::string &sDescription);
 
         std::string TAG;
-        std::string m_sCmd;
+        std::string m_sMethodName;
         std::string m_sDescription;
 
     private:
@@ -293,39 +289,35 @@ class WsjcppJsonRpc20BaseHandler {
         std::string m_sDeprecatedFromVersion;
         bool m_bAccessUnauthorized;
         bool m_bAccessUser;
+        bool m_bAccessTester;
         bool m_bAccessAdmin;
 };
 
-*/
 
-//extern std::map<std::string, WsjcppJsonRpc20Base*> *g_pWsjcppJsonRpc20BaseList;
+extern std::map<std::string, WsjcppJsonRpc20HandlerBase*> *g_pWsjcppJsonRpc20HandlerList;
 
-/*!
- * Global collection with handlers
- * */
-/*
+// ---------------------------------------------------------------------
+// Global collection with handlers
+
 class WsjcppJsonRpc20 {
     public:
         static void initGlobalVariables();
-        static void addHandler(const std::string &sName, WsjcppJsonRpc20Base* pCmdHandler);
-        static WsjcppJsonRpc20Base *findJsonRpc20(const std::string &sMethod);
+        static void addHandler(const std::string &sName, WsjcppJsonRpc20HandlerBase* pCmdHandler);
+        static WsjcppJsonRpc20HandlerBase *findJsonRpc20Handler(const std::string &sCmd);
 };
 
-// RegistryWsjcppJsonRpc20
-#define REGISTRY_WSJCPP_JSONRPC20( classname ) \
+// Registry Wsjcpp JsonRpc20 Handler
+#define REGISTRY_WSJCPP_JSONRPC20_HANDLER( classname ) \
     static classname * pRegistryWsjcppJsonRpc20 ## classname = new classname(); \
-*/
-// ---------------------------------------------------------------------
 
-/*!
- * This handler will be return list of handlers - publish api interfaces
- * */
-/*
-class WsjcppJsonRpc20ServerApi : public WsjcppJsonRpc20Base {
+// ---------------------------------------------------------------------
+// This handler will be return list of handlers - publish api interfaces
+
+class WsjcppJsonRpc20HandlerServerApi : public WsjcppJsonRpc20HandlerBase {
 
     public:
-        WsjcppJsonRpc20ServerApi();
+        WsjcppJsonRpc20HandlerServerApi();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
-*/
+
 #endif // WSJCPP_JSONRPC20

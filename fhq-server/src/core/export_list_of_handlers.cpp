@@ -6,7 +6,7 @@
 #include <employees.h>
 
 void ExportListOfHandlers::print() {
-    std::cout << "\n\n * CmdHandlers (" << g_pCmdHandlers->size() << "):\n";
+    std::cout << "\n\n * CmdHandlers (" << g_pWsjcppJsonRpc20HandlerList->size() << "):\n";
 
     struct CmdRow{
         std::string sCommandName;
@@ -18,15 +18,15 @@ void ExportListOfHandlers::print() {
     std::vector<CmdRow> vRows;
     int nMaxLenCommandName = 0;
 
-    std::map<std::string, CmdHandlerBase*>::iterator it = g_pCmdHandlers->begin();
-    for (; it!=g_pCmdHandlers->end(); ++it) {
+    std::map<std::string, WsjcppJsonRpc20HandlerBase*>::iterator it = g_pWsjcppJsonRpc20HandlerList->begin();
+    for (; it!=g_pWsjcppJsonRpc20HandlerList->end(); ++it) {
         std::string sCmd = it->first;
-        CmdHandlerBase* pCmdHandlerBase = it->second;
+        WsjcppJsonRpc20HandlerBase* pWsjcppJsonRpc20HandlerBase = it->second;
         CmdRow row;
-        row.bAccessUnauth = pCmdHandlerBase->haveUnauthorizedAccess();
-        row.bAccessUser = pCmdHandlerBase->haveUserAccess();
-        row.bAccessTester = pCmdHandlerBase->haveTesterAccess();
-        row.bAccessAdmin = pCmdHandlerBase->haveAdminAccess();
+        row.bAccessUnauth = pWsjcppJsonRpc20HandlerBase->haveUnauthorizedAccess();
+        row.bAccessUser = pWsjcppJsonRpc20HandlerBase->haveUserAccess();
+        row.bAccessTester = pWsjcppJsonRpc20HandlerBase->haveTesterAccess();
+        row.bAccessAdmin = pWsjcppJsonRpc20HandlerBase->haveAdminAccess();
         row.sCommandName = sCmd;
         nMaxLenCommandName = std::max(nMaxLenCommandName, (int)sCmd.length());
         vRows.push_back(row);

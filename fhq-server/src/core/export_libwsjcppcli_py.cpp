@@ -237,31 +237,31 @@ Access: unauthorized - **no**,  user - **no**,  admin - **yes**
 
 */
 
-    std::map<std::string, CmdHandlerBase*>::iterator it = g_pCmdHandlers->begin();
-    for (; it!=g_pCmdHandlers->end(); ++it) {
+    std::map<std::string, WsjcppJsonRpc20HandlerBase*>::iterator it = g_pWsjcppJsonRpc20HandlerList->begin();
+    for (; it!=g_pWsjcppJsonRpc20HandlerList->end(); ++it) {
         std::string sCmd = it->first;
-        CmdHandlerBase* pCmdHandlerBase = it->second;
+        WsjcppJsonRpc20HandlerBase* pWsjcppJsonRpc20HandlerBase = it->second;
 
         apimd
             << "<details>\n"
             << "<summary>" << sCmd << "</summary>\n\n"
             << "## " << sCmd << "\n\n";
 
-        if (pCmdHandlerBase->getDescription() != "") {
-            apimd << pCmdHandlerBase->getDescription() << "\n\n";
+        if (pWsjcppJsonRpc20HandlerBase->getDescription() != "") {
+            apimd << pWsjcppJsonRpc20HandlerBase->getDescription() << "\n\n";
         }
         apimd 
-            << "Access: unauthorized - **" << (pCmdHandlerBase->haveUnauthorizedAccess() ? "yes" : "no") << "**, "
-            << " user - **"   << (pCmdHandlerBase->haveUserAccess() ? "yes" : "no") << "**, "
-            << " tester - **" << (pCmdHandlerBase->haveTesterAccess() ? "yes" : "no") << "**, "
-            << " admin - **"  << (pCmdHandlerBase->haveAdminAccess() ? "yes" : "no") << "**\n"
+            << "Access: unauthorized - **" << (pWsjcppJsonRpc20HandlerBase->haveUnauthorizedAccess() ? "yes" : "no") << "**, "
+            << " user - **"   << (pWsjcppJsonRpc20HandlerBase->haveUserAccess() ? "yes" : "no") << "**, "
+            << " tester - **" << (pWsjcppJsonRpc20HandlerBase->haveTesterAccess() ? "yes" : "no") << "**, "
+            << " admin - **"  << (pWsjcppJsonRpc20HandlerBase->haveAdminAccess() ? "yes" : "no") << "**\n"
             << "\n";
 
         apimd << " #### Input params \n\n";
 
         std::string pythonTemplate = "";
 
-        std::vector<WsjcppJsonRpc20ParamDef> vVin = pCmdHandlerBase->inputs();
+        std::vector<WsjcppJsonRpc20ParamDef> vVin = pWsjcppJsonRpc20HandlerBase->inputs();
         for (int i = 0; i < vVin.size(); i++) {
             WsjcppJsonRpc20ParamDef inDef = vVin[i];
             std::string nameIn = std::string(inDef.getName());
@@ -462,36 +462,36 @@ void ExportLibWsjCppCliPy::export__init__py() {
             .end()
         .add("");
 
-    std::map<std::string, CmdHandlerBase*>::iterator it = g_pCmdHandlers->begin();
-    for (; it!=g_pCmdHandlers->end(); ++it) {
+    std::map<std::string, WsjcppJsonRpc20HandlerBase*>::iterator it = g_pWsjcppJsonRpc20HandlerList->begin();
+    for (; it!=g_pWsjcppJsonRpc20HandlerList->end(); ++it) {
         std::string sCmd = it->first;
-        CmdHandlerBase* pCmdHandlerBase = it->second;
+        WsjcppJsonRpc20HandlerBase* pWsjcppJsonRpc20HandlerBase = it->second;
 
         builder
         .sub("def " + sCmd + "(self, req):")
-            .sub("\"\"\"" + pCmdHandlerBase->getDescription())
+            .sub("\"\"\"" + pWsjcppJsonRpc20HandlerBase->getDescription())
                 .add("");
         
-        if (pCmdHandlerBase->getActivatedFromVersion() != "") {
-            builder.add("Activated From Version: " + pCmdHandlerBase->getActivatedFromVersion());
+        if (pWsjcppJsonRpc20HandlerBase->getActivatedFromVersion() != "") {
+            builder.add("Activated From Version: " + pWsjcppJsonRpc20HandlerBase->getActivatedFromVersion());
         }
         
-        if (pCmdHandlerBase->getDeprecatedFromVersion() != "") {
-            builder.add("Deprecated From Version: " + pCmdHandlerBase->getDeprecatedFromVersion());
+        if (pWsjcppJsonRpc20HandlerBase->getDeprecatedFromVersion() != "") {
+            builder.add("Deprecated From Version: " + pWsjcppJsonRpc20HandlerBase->getDeprecatedFromVersion());
         }
 
 
         builder
-            .add(pCmdHandlerBase->haveUnauthorizedAccess() ? "Allowed access for unauthorized users" : "Denied access for unauthorized users")
-            .add(pCmdHandlerBase->haveUserAccess() ? "Allowed access for users" : "Denied access for users")
-            .add(pCmdHandlerBase->haveTesterAccess() ? "Allowed access for tester" : "Denied access for tester")
-            .add(pCmdHandlerBase->haveAdminAccess() ? "Allowed access for admins" : "Denied access for admins")
+            .add(pWsjcppJsonRpc20HandlerBase->haveUnauthorizedAccess() ? "Allowed access for unauthorized users" : "Denied access for unauthorized users")
+            .add(pWsjcppJsonRpc20HandlerBase->haveUserAccess() ? "Allowed access for users" : "Denied access for users")
+            .add(pWsjcppJsonRpc20HandlerBase->haveTesterAccess() ? "Allowed access for tester" : "Denied access for tester")
+            .add(pWsjcppJsonRpc20HandlerBase->haveAdminAccess() ? "Allowed access for admins" : "Denied access for admins")
             .add("");
 
         builder
             .sub("Args:");
         
-        std::vector<WsjcppJsonRpc20ParamDef> vVin = pCmdHandlerBase->inputs();
+        std::vector<WsjcppJsonRpc20ParamDef> vVin = pWsjcppJsonRpc20HandlerBase->inputs();
         for (int i = 0; i < vVin.size(); i++) {
             WsjcppJsonRpc20ParamDef inDef = vVin[i];
             std::string nameIn = std::string(inDef.getName());

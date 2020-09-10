@@ -692,3 +692,488 @@ const std::vector<WsjcppValidatorJsonBase *> &WsjcppJsonRpc20ParamDef::listOfJso
 }
 
 // ---------------------------------------------------------------------
+// WsjcppJsonRpc20Request
+
+WsjcppJsonRpc20Request::WsjcppJsonRpc20Request(
+    WsjcppJsonRpc20WebSocketClient *pClient,
+    WsjcppJsonRpc20WebSocketServer *pWebSocketServer
+) {
+    TAG = "WsjcppJsonRpc20Request";
+    m_bResponseSend = false;
+    m_pWebSocketClient = pClient;
+    m_pServer = pWebSocketServer;
+    m_sMethod = "unknown_method";
+    m_sId = "unknown_id";
+}
+
+// ---------------------------------------------------------------------
+
+bool WsjcppJsonRpc20Request::parseIncomeData(const std::string &sIncomeData) {
+    if (!nlohmann::json::accept(sIncomeData)) {
+        this->fail(WsjcppJsonRpc20Error(400, "WRONG_JSON"));
+        return false;
+    }
+    m_jsonRequest = nlohmann::json::parse(sIncomeData);
+    
+    if (m_jsonRequest["cmd"].is_string()) { // deprecated
+        m_sMethod = m_jsonRequest["cmd"];
+    }
+
+    if (m_jsonRequest["method"].is_string()) {
+        m_sMethod = m_jsonRequest["method"];
+    }
+
+    if (m_jsonRequest["m"].is_string()) { // deprecated
+        m_sId = m_jsonRequest["m"];
+    }
+
+    if (m_jsonRequest["id"].is_string()) {
+        m_sId = m_jsonRequest["id"];
+    }
+
+    if (m_sMethod == "unknown_method") {
+        this->fail(WsjcppJsonRpc20Error(404, "NOT_FOUND_METHOD_IN_REQUEST"));
+        return false;
+    }
+
+    if (m_sId == "unknown_id") {
+        this->fail(WsjcppJsonRpc20Error(404, "NOT_FOUND_ID_IN_REQUEST"));
+        return false;
+    }
+
+    // m_pWsjcppJsonRpc20UserSession = m_pServer->findUserSession(m_pClient);
+
+    WsjcppLog::info(TAG, "[WS] >>> " + m_sMethod + ":" + m_sId);
+
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+WsjcppJsonRpc20WebSocketClient *WsjcppJsonRpc20Request::getWebSocketClient() {
+    return m_pWebSocketClient;
+}
+
+// ---------------------------------------------------------------------
+
+WsjcppJsonRpc20WebSocketServer *WsjcppJsonRpc20Request::getServer() {
+    return m_pServer;
+}
+
+// ---------------------------------------------------------------------
+
+// TODO deprecated
+const nlohmann::json& WsjcppJsonRpc20Request::jsonRequest() {
+    return m_jsonRequest;
+}
+
+// ---------------------------------------------------------------------
+
+bool WsjcppJsonRpc20Request::hasInputParam(const std::string &sParamName) {
+    if (m_jsonRequest.find(sParamName) != m_jsonRequest.end()) {
+        return true;
+    } 
+    return false;
+}
+
+// ---------------------------------------------------------------------
+
+std::string WsjcppJsonRpc20Request::getInputString(const std::string &sParamName, const std::string &sDefaultValue) {
+    // TODO check by input defs
+    std::string sRet = sDefaultValue;
+    if (m_jsonRequest[sParamName].is_string()) {
+        sRet = m_jsonRequest[sParamName];
+    }
+    return sRet;
+}
+
+// ---------------------------------------------------------------------
+
+int WsjcppJsonRpc20Request::getInputInteger(const std::string &sParamName, int nDefaultValue) {
+    // TODO check by input defs
+    int nRet = nDefaultValue;
+    if (m_jsonRequest[sParamName].is_number()) {
+        nRet = m_jsonRequest[sParamName];
+    }
+    return nRet;
+}
+
+// ---------------------------------------------------------------------
+
+WsjcppJsonRpc20UserSession *WsjcppJsonRpc20Request::getUserSession() {
+    return m_pWebSocketClient->getUserSession();
+}
+
+// ---------------------------------------------------------------------
+
+bool WsjcppJsonRpc20Request::isAdmin() {
+    if (m_pWebSocketClient->getUserSession() != nullptr) {
+        return m_pWebSocketClient->getUserSession()->isAdmin();
+    }
+    return false;
+}
+
+// ---------------------------------------------------------------------
+
+bool WsjcppJsonRpc20Request::isUser() {
+    if (m_pWebSocketClient->getUserSession() != nullptr) {
+        return m_pWebSocketClient->getUserSession()->isUser();
+    }
+    return false;
+}
+
+// ---------------------------------------------------------------------
+
+bool WsjcppJsonRpc20Request::isUnauthorized() {
+    return m_pWebSocketClient->getUserSession() == nullptr;
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20Request::done(nlohmann::json& jsonResponseResult) {
+    if (m_bResponseSend) {
+        WsjcppLog::err(TAG, "Already sended response");
+        return;
+    }
+    m_bResponseSend = true;
+    // {"jsonrpc": "2.0", "method": "some" "result": {"hello": 5}, "id": "9"}
+    nlohmann::json jsonResponse;
+    jsonResponse["jsonrpc"] = "2.0";
+    jsonResponse["method"] = m_sMethod;
+    jsonResponse["id"] = m_sId;
+    jsonResponse["result"] = jsonResponseResult;
+    m_pWebSocketClient->sendTextMessage(jsonResponse.dump());
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20Request::fail(WsjcppJsonRpc20Error error) {
+    if (m_bResponseSend) {
+        WsjcppLog::err(TAG, "Already sended response");
+        return;
+    }
+    m_bResponseSend = true;
+    // {"jsonrpc": "2.0", "error": {"code": -32600, "message": "Invalid Request."}, "id": null}
+    nlohmann::json jsonResponse;
+    jsonResponse["jsonrpc"] = "2.0";
+    jsonResponse["method"] = m_sMethod;
+    jsonResponse["id"] = m_sId;
+    jsonResponse["error"] = error.toJson();
+    m_pWebSocketClient->sendTextMessage(jsonResponse.dump());
+
+    // m_pServer->sendMessage((QWebSocket*)m_pClient, jsonResponse);
+}
+
+// ---------------------------------------------------------------------
+
+std::string WsjcppJsonRpc20Request::getId() {
+    return m_sId;
+}
+
+// ---------------------------------------------------------------------
+
+std::string WsjcppJsonRpc20Request::getMethod() {
+    return m_sMethod;
+}
+
+
+// ---------------------------------------------------------------------
+// WsjcppJsonRpc20HandlerBase
+
+WsjcppJsonRpc20HandlerBase::WsjcppJsonRpc20HandlerBase(const std::string &sMethodName, const std::string &sDescription) {
+    m_sMethodName = sMethodName;
+    m_sDescription = sDescription;
+    TAG = "WsjcppJsonRpc20HandlerBase(" + sMethodName + ")";
+
+    m_bAccessUnauthorized = false;
+    m_bAccessUser = false;
+    m_bAccessTester = false;
+    m_bAccessAdmin = false;
+
+    // can register in a global list
+    WsjcppJsonRpc20::addHandler(sMethodName, this);
+}
+
+// ---------------------------------------------------------------------
+
+std::string WsjcppJsonRpc20HandlerBase::getActivatedFromVersion() const {
+    return m_sActivatedFromVersion;
+}
+
+// ---------------------------------------------------------------------
+
+std::string WsjcppJsonRpc20HandlerBase::getDeprecatedFromVersion() const {
+    return m_sDeprecatedFromVersion;
+}
+
+// ---------------------------------------------------------------------
+
+bool WsjcppJsonRpc20HandlerBase::haveUnauthorizedAccess() const {
+    return m_bAccessUnauthorized;
+}
+
+// ---------------------------------------------------------------------
+
+bool WsjcppJsonRpc20HandlerBase::haveUserAccess() const {
+    return m_bAccessUser;
+}
+
+// ---------------------------------------------------------------------
+
+bool WsjcppJsonRpc20HandlerBase::haveTesterAccess() const {
+    return m_bAccessTester;
+}
+
+// ---------------------------------------------------------------------
+
+bool WsjcppJsonRpc20HandlerBase::haveAdminAccess() const {
+    return m_bAccessAdmin;
+}
+
+// ---------------------------------------------------------------------
+// TODO write unit-test for this
+
+bool WsjcppJsonRpc20HandlerBase::checkAccess(WsjcppJsonRpc20Request *pRequest, WsjcppJsonRpc20Error& error) const {
+    WsjcppJsonRpc20UserSession *pUserSession = pRequest->getUserSession();
+    if (!haveUnauthorizedAccess()) {
+        if (pUserSession == nullptr) {
+            error = WsjcppJsonRpc20Error(401, "NOT_AUTHORIZED_REQUEST");
+            return false;
+        }
+
+        // access user
+        if (pUserSession->isUser() && !haveUserAccess()) {
+            error = WsjcppJsonRpc20Error(403, "ACCESS_DENY_FOR_USER");
+            return false;
+        }
+
+        // access tester
+        if (pUserSession->isTester() && !haveTesterAccess()) {
+            error = WsjcppJsonRpc20Error(403, "ACCESS_DENY_FOR_TESTER");
+            return false;
+        }
+
+        // access admin
+        if (pUserSession->isAdmin() && !haveAdminAccess()) {
+            error = WsjcppJsonRpc20Error(403, "ACCESS_DENY_FOR_ADMIN");
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+std::string WsjcppJsonRpc20HandlerBase::getMethodName() const {
+    return m_sMethodName;
+}
+
+// ---------------------------------------------------------------------
+
+std::string WsjcppJsonRpc20HandlerBase::getDescription() const {
+    return m_sDescription;
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20HandlerBase::setAccessUnauthorized(bool bAccess) {
+    m_bAccessUnauthorized = bAccess;
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20HandlerBase::setAccessUser(bool bAccess) {
+    m_bAccessUser = bAccess;
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20HandlerBase::setAccessTester(bool bAccess) {
+    m_bAccessTester = bAccess;
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20HandlerBase::setAccessAdmin(bool bAccess) {
+    m_bAccessAdmin = bAccess;
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20HandlerBase::setActivatedFromVersion(const std::string &sActivatedFromVersion) {
+    m_sActivatedFromVersion = sActivatedFromVersion;
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20HandlerBase::setDeprecatedFromVersion(const std::string &sDeprecatedFromVersion) {
+    m_sDeprecatedFromVersion = sDeprecatedFromVersion;
+}
+
+// ---------------------------------------------------------------------
+
+WsjcppJsonRpc20ParamDef &WsjcppJsonRpc20HandlerBase::requireStringParam(const std::string &sName, const std::string &sDescription) {
+    // TODO check duplicates
+    WsjcppJsonRpc20ParamDef pStringDef(sName, sDescription);
+    pStringDef.string_().required();
+    m_vInputs.push_back(pStringDef);
+    return m_vInputs[m_vInputs.size()-1];
+}
+
+// ---------------------------------------------------------------------
+
+WsjcppJsonRpc20ParamDef &WsjcppJsonRpc20HandlerBase::optionalStringParam(const std::string &sName, const std::string &sDescription) {
+    // TODO check duplicates
+    WsjcppJsonRpc20ParamDef pStringDef(sName, sDescription);
+    pStringDef.string_().optional();
+    m_vInputs.push_back(pStringDef);
+    return m_vInputs[m_vInputs.size()-1];
+}
+
+// ---------------------------------------------------------------------
+
+WsjcppJsonRpc20ParamDef &WsjcppJsonRpc20HandlerBase::requireIntegerParam(const std::string &sName, const std::string &sDescription) {
+    // TODO check duplicates
+    WsjcppJsonRpc20ParamDef pIntegerDef(sName, sDescription);
+    pIntegerDef.integer_().required();
+    m_vInputs.push_back(pIntegerDef);
+    return m_vInputs[m_vInputs.size()-1];
+}
+
+// ---------------------------------------------------------------------
+
+WsjcppJsonRpc20ParamDef &WsjcppJsonRpc20HandlerBase::optionalIntegerParam(const std::string &sName, const std::string &sDescription) {
+    // TODO check duplicates
+    WsjcppJsonRpc20ParamDef pIntegerDef(sName, sDescription);
+    pIntegerDef.integer_().optional();
+    m_vInputs.push_back(pIntegerDef);
+    return m_vInputs[m_vInputs.size()-1];
+}
+
+// ---------------------------------------------------------------------
+
+WsjcppJsonRpc20ParamDef &WsjcppJsonRpc20HandlerBase::requireBooleanParam(const std::string &sName, const std::string &sDescription) {
+    // TODO check duplicates
+    WsjcppJsonRpc20ParamDef pBooleanDef(sName, sDescription);
+    pBooleanDef.bool_().required();
+    m_vInputs.push_back(pBooleanDef);
+    return m_vInputs[m_vInputs.size()-1];
+}
+
+// ---------------------------------------------------------------------
+
+WsjcppJsonRpc20ParamDef &WsjcppJsonRpc20HandlerBase::optionalBooleanParam(const std::string &sName, const std::string &sDescription) {
+    // TODO check duplicates
+    WsjcppJsonRpc20ParamDef pBooleanDef(sName, sDescription);
+    pBooleanDef.bool_().optional();
+    m_vInputs.push_back(pBooleanDef);
+    return m_vInputs[m_vInputs.size()-1];
+}
+
+// ---------------------------------------------------------------------
+
+const std::vector<WsjcppJsonRpc20ParamDef> &WsjcppJsonRpc20HandlerBase::inputs() {
+    return m_vInputs;
+}
+
+// ---------------------------------------------------------------------
+// WsjcppJsonRpc20
+
+std::map<std::string, WsjcppJsonRpc20HandlerBase*> *g_pWsjcppJsonRpc20HandlerList = nullptr;
+
+void WsjcppJsonRpc20::initGlobalVariables() {
+    if (g_pWsjcppJsonRpc20HandlerList == nullptr) {
+        // WsjcppLog::info(std::string(), "Create handlers map");
+        g_pWsjcppJsonRpc20HandlerList = new std::map<std::string, WsjcppJsonRpc20HandlerBase*>();
+    }
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20::addHandler(const std::string &sCmd, WsjcppJsonRpc20HandlerBase* pCmdHandler) {
+    WsjcppJsonRpc20::initGlobalVariables();
+    if (g_pWsjcppJsonRpc20HandlerList->count(sCmd)) {
+        WsjcppLog::err(sCmd, "Already registered");
+    } else {
+        g_pWsjcppJsonRpc20HandlerList->insert(std::pair<std::string, WsjcppJsonRpc20HandlerBase*>(sCmd,pCmdHandler));
+        // WsjcppLog::info(sCmd, "Registered");
+    }
+}
+
+// ---------------------------------------------------------------------
+
+WsjcppJsonRpc20HandlerBase * WsjcppJsonRpc20::findJsonRpc20Handler(const std::string &sMethodName) {
+    WsjcppJsonRpc20::initGlobalVariables();
+    WsjcppJsonRpc20HandlerBase *pHandler = nullptr;
+
+    std::map<std::string, WsjcppJsonRpc20HandlerBase*>::iterator it;
+    it = g_pWsjcppJsonRpc20HandlerList->find(sMethodName);
+
+    if (it != g_pWsjcppJsonRpc20HandlerList->end()) {
+        pHandler = it->second;
+    }
+
+    if (pHandler == nullptr) {
+        WsjcppLog::err(sMethodName, "Not found");
+    }
+
+    return pHandler;
+}
+
+// ---------------------------------------------------------------------
+// WsjcppJsonRpc20HandlerServerApi
+
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(WsjcppJsonRpc20HandlerServerApi)
+
+WsjcppJsonRpc20HandlerServerApi::WsjcppJsonRpc20HandlerServerApi()
+    : WsjcppJsonRpc20HandlerBase("server_api", "This method Will be return list of all handlers") {
+
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppJsonRpc20HandlerServerApi::handle(WsjcppJsonRpc20Request *pRequest) {
+    nlohmann::json jsonResponse;
+    jsonResponse["version"] = WSJCPP_APP_VERSION;
+
+    // EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+    // int nWsPort = pGlobalSettings->get("port").getNumberValue();
+    // bool bSslOn = pGlobalSettings->get("ssl_on").getBooleanValue();
+    // int nWssPort = pGlobalSettings->get("ssl_port").getNumberValue();
+
+    // jsonResponse["server_ws_port"] = pGlobalSettings->get("port").getNumberValue();
+    // if (bSslOn) {
+    //        jsonResponse["server_wss_port"] = nWssPort;
+    //    }
+
+    nlohmann::json jsonHandlers = nlohmann::json::array();
+    std::map<std::string, WsjcppJsonRpc20HandlerBase *>::iterator it = g_pWsjcppJsonRpc20HandlerList->begin();
+    while (it != g_pWsjcppJsonRpc20HandlerList->end()) {
+        std::string sCmd = it->first;
+        WsjcppJsonRpc20HandlerBase *pHandler = g_pWsjcppJsonRpc20HandlerList->at(sCmd);
+
+        nlohmann::json jsonHandler;
+
+        jsonHandler["method"] = pHandler->getMethodName();
+        jsonHandler["description"] = pHandler->getDescription();
+        jsonHandler["access_unauthorized"] = pHandler->haveUnauthorizedAccess();
+        jsonHandler["access_user"] = pHandler->haveUserAccess();
+        jsonHandler["access_tester"] = pHandler->haveTesterAccess();
+        jsonHandler["access_admin"] = pHandler->haveAdminAccess();
+
+        nlohmann::json jsonInputs = nlohmann::json::array();
+        std::vector<WsjcppJsonRpc20ParamDef> ins = pHandler->inputs();
+        for (unsigned int i = 0; i < ins.size(); i++) {
+            jsonInputs.push_back(ins[i].toJson());
+        }
+        jsonHandler["params"] = jsonInputs;
+        jsonHandlers.push_back(jsonHandler);
+        it++;
+    }
+    jsonResponse["data"] = jsonHandlers;
+    pRequest->done(jsonResponse);
+}

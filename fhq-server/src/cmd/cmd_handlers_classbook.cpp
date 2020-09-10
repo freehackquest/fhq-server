@@ -9,7 +9,6 @@
 #include <quazipfileinfo.h>
 #include <wsjcpp_diff_text.h>
 #include <validators.h>
-#include <fallen.h>
 #include <wsjcpp_core.h>
 #include <wsjcpp_hashes.h>
 
@@ -17,8 +16,10 @@
 // * This handler will be add classbook record
 // *******************************************
 
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdClassbookAddRecordHandler)
+
 CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler()
-    : CmdHandlerBase("classbook_add_record", "Adds a new article with the specified name, content, and id.") {
+    : WsjcppJsonRpc20HandlerBase("classbook_add_record", "Adds a new article with the specified name, content, and id.") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -174,7 +175,7 @@ void CmdClassbookAddRecordHandler::handle(WsjcppJsonRpc20Request *pRequest) {
 // *******************************************
 
 CmdClassbookDeleteRecordHandler::CmdClassbookDeleteRecordHandler()
-    : CmdHandlerBase("classbook_delete_record", "Delete a article with a given classbookid") {
+    : WsjcppJsonRpc20HandlerBase("classbook_delete_record", "Delete a article with a given classbookid") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -235,7 +236,7 @@ void CmdClassbookDeleteRecordHandler::handle(WsjcppJsonRpc20Request *pRequest) {
 // *******************************************
 
 CmdClassbookExportHandler::CmdClassbookExportHandler()
-    : CmdHandlerBase("classbook_export", "Export classbook's articles to html or markdown, optionally in zip archive.") {
+    : WsjcppJsonRpc20HandlerBase("classbook_export", "Export classbook's articles to html or markdown, optionally in zip archive.") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -443,7 +444,7 @@ void CmdClassbookExportHandler::createMD(QFile *file, const std::string &sLang, 
 // *******************************************
 
 CmdClassbookInfoHandler::CmdClassbookInfoHandler()
-    : CmdHandlerBase("classbook_info", "Return name and content, langs, path classbook article with a given id") {
+    : WsjcppJsonRpc20HandlerBase("classbook_info", "Return name and content, langs, path classbook article with a given id") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -609,7 +610,7 @@ void CmdClassbookInfoHandler::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
 CmdClassbookListHandler::CmdClassbookListHandler()
-    : CmdHandlerBase("classbook_list", "Return list of classbook articles") {
+    : WsjcppJsonRpc20HandlerBase("classbook_list", "Return list of classbook articles") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -774,7 +775,7 @@ void CmdClassbookListHandler::handle(WsjcppJsonRpc20Request *pRequest) {
 // *******************************************
 
 CmdClassbookUpdateRecordHandler::CmdClassbookUpdateRecordHandler()
-    : CmdHandlerBase("classbook_update_record", "Update a article with a given classbookid") {
+    : WsjcppJsonRpc20HandlerBase("classbook_update_record", "Update a article with a given classbookid") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -934,7 +935,7 @@ void CmdClassbookUpdateRecordHandler::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
 CmdClassbookLocalizationAddRecordHandler::CmdClassbookLocalizationAddRecordHandler()
-    : CmdHandlerBase("classbook_localization_add_record", "Add a new article localization for the English version") {
+    : WsjcppJsonRpc20HandlerBase("classbook_localization_add_record", "Add a new article localization for the English version") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1044,7 +1045,7 @@ void CmdClassbookLocalizationAddRecordHandler::handle(WsjcppJsonRpc20Request *pR
 // *******************************************
 
 CmdClassbookLocalizationDeleteRecordHandler::CmdClassbookLocalizationDeleteRecordHandler()
-    : CmdHandlerBase("classbook_localization_delete_record", "Delete an article localization") {
+    : WsjcppJsonRpc20HandlerBase("classbook_localization_delete_record", "Delete an article localization") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1096,7 +1097,7 @@ void CmdClassbookLocalizationDeleteRecordHandler::handle(WsjcppJsonRpc20Request 
 
 
 CmdClassbookLocalizationInfoHandler::CmdClassbookLocalizationInfoHandler()
-    : CmdHandlerBase("classbook_localization_info", "Find and display localization for an article by classbookid") {
+    : WsjcppJsonRpc20HandlerBase("classbook_localization_info", "Find and display localization for an article by classbookid") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1158,7 +1159,7 @@ void CmdClassbookLocalizationInfoHandler::handle(WsjcppJsonRpc20Request *pReques
 // *******************************************
 
 CmdClassbookLocalizationUpdateRecordHandler::CmdClassbookLocalizationUpdateRecordHandler()
-    : CmdHandlerBase("classbook_localization_update_record", "Update table with localization by classbookid") {
+    : WsjcppJsonRpc20HandlerBase("classbook_localization_update_record", "Update table with localization by classbookid") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1244,7 +1245,7 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(WsjcppJsonRpc20Request 
  * */
 
 CmdClassbookProposalAddRecordHandler::CmdClassbookProposalAddRecordHandler()
-    : CmdHandlerBase("classbook_proposal_add_record", "Propose an update of article") {
+    : WsjcppJsonRpc20HandlerBase("classbook_proposal_add_record", "Propose an update of article") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -1374,7 +1375,7 @@ void CmdClassbookProposalAddRecordHandler::handle(WsjcppJsonRpc20Request *pReque
  * */
 
 CmdClassbookProposalDeleteRecordHandler::CmdClassbookProposalDeleteRecordHandler()
-    : CmdHandlerBase("classbook_proposal_delete_record", "Delete a proposal of updating an article") {
+    : WsjcppJsonRpc20HandlerBase("classbook_proposal_delete_record", "Delete a proposal of updating an article") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -1427,7 +1428,7 @@ void CmdClassbookProposalDeleteRecordHandler::handle(WsjcppJsonRpc20Request *pRe
  * */
 
 CmdClassbookProposalInfoHandler::CmdClassbookProposalInfoHandler()
-    : CmdHandlerBase("classbook_proposal_info", "Find and display all proposal data by id") {
+    : WsjcppJsonRpc20HandlerBase("classbook_proposal_info", "Find and display all proposal data by id") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -1493,7 +1494,7 @@ void CmdClassbookProposalInfoHandler::handle(WsjcppJsonRpc20Request *pRequest) {
  * */
 
 CmdClassbookProposalListHandler::CmdClassbookProposalListHandler()
-    : CmdHandlerBase("classbook_proposal_list", "Display list of proposals by classbookid") {
+    : WsjcppJsonRpc20HandlerBase("classbook_proposal_list", "Display list of proposals by classbookid") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -1598,7 +1599,7 @@ void CmdClassbookProposalListHandler::handle(WsjcppJsonRpc20Request *pRequest) {
  * This handler will be prepare classbook proposal record
  * */
 CmdClassbookProposalPrepareMergeRecordHandler::CmdClassbookProposalPrepareMergeRecordHandler()
-    : CmdHandlerBase("classbook_propasal_prepare_merge_record", "Prepare to merge updating requests") {
+    : WsjcppJsonRpc20HandlerBase("classbook_propasal_prepare_merge_record", "Prepare to merge updating requests") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1668,7 +1669,7 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(WsjcppJsonRpc20Reques
  * This handler will be prepare classbook proposal record
  * */
 CmdClassbookProposalApproveHandler::CmdClassbookProposalApproveHandler()
-    : CmdHandlerBase("classbook_propasal_approve", "Approve updating requests") {
+    : WsjcppJsonRpc20HandlerBase("classbook_propasal_approve", "Approve updating requests") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1732,7 +1733,7 @@ void CmdClassbookProposalApproveHandler::handle(WsjcppJsonRpc20Request *pRequest
  * This handler will be prepare classbook proposal record
  * */
 CmdClassbookProposalUpdateHandler::CmdClassbookProposalUpdateHandler()
-    : CmdHandlerBase("classbook_propasal_update", "Approve updating requests") {
+    : WsjcppJsonRpc20HandlerBase("classbook_propasal_update", "Approve updating requests") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1786,7 +1787,7 @@ void CmdClassbookProposalUpdateHandler::handle(WsjcppJsonRpc20Request *pRequest)
  * */
 
 CmdClassbookHandler::CmdClassbookHandler()
-    : CmdHandlerBase("classbook", "Return classbook contents") {
+    : WsjcppJsonRpc20HandlerBase("classbook", "Return classbook contents") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);

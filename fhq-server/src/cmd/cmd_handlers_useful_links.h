@@ -1,31 +1,31 @@
 #ifndef CMD_HANDLERS_USEFUL_LINKS_H
 #define CMD_HANDLERS_USEFUL_LINKS_H
 
-#include <cmd_handlers.h>
+#include <wsjcpp_jsonrpc20.h>
 
 /*********************************************
  * Useful Links List
 **********************************************/
 
-class CmdHandlerUsefulLinksList : public CmdHandlerBase {
+class CmdHandlerUsefulLinksList : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsefulLinksList();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-class CmdHandlerUsefulLinksRetrieve : public CmdHandlerBase {
+class CmdHandlerUsefulLinksRetrieve : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsefulLinksRetrieve();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-class CmdHandlerUsefulLinksAdd : public CmdHandlerBase {
+class CmdHandlerUsefulLinksAdd : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsefulLinksAdd();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-class CmdHandlerUsefulLinksDelete : public CmdHandlerBase {
+class CmdHandlerUsefulLinksDelete : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsefulLinksDelete();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -34,7 +34,7 @@ class CmdHandlerUsefulLinksDelete : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 // Update useful link
 
-class CmdHandlerUsefulLinksUpdate : public CmdHandlerBase {
+class CmdHandlerUsefulLinksUpdate : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsefulLinksUpdate();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -43,7 +43,7 @@ class CmdHandlerUsefulLinksUpdate : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 // Useful Links list of favorite
 
-class CmdHandlerUsefulLinksUserFavoriteList : public CmdHandlerBase {
+class CmdHandlerUsefulLinksUserFavoriteList : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsefulLinksUserFavoriteList();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -52,7 +52,7 @@ class CmdHandlerUsefulLinksUserFavoriteList : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 // Useful Links add to favorite
 
-class CmdHandlerUsefulLinksUserFavorite : public CmdHandlerBase {
+class CmdHandlerUsefulLinksUserFavorite : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsefulLinksUserFavorite();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -61,7 +61,7 @@ class CmdHandlerUsefulLinksUserFavorite : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 // Useful Links removed from favorite
 
-class CmdHandlerUsefulLinksUserUnfavorite : public CmdHandlerBase {
+class CmdHandlerUsefulLinksUserUnfavorite : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsefulLinksUserUnfavorite();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -70,7 +70,7 @@ class CmdHandlerUsefulLinksUserUnfavorite : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 // Useful Links counter clicker
 
-class CmdHandlerUsefulLinksClicked : public CmdHandlerBase {
+class CmdHandlerUsefulLinksClicked : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsefulLinksClicked();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -80,7 +80,7 @@ class CmdHandlerUsefulLinksClicked : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 // Useful Links list of comments
 
-class CmdHandlerUsefulLinksCommentList : public CmdHandlerBase {
+class CmdHandlerUsefulLinksCommentList : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsefulLinksCommentList();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -89,7 +89,7 @@ class CmdHandlerUsefulLinksCommentList : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 // Useful Links add comment
 
-class CmdHandlerUsefulLinksCommentAdd : public CmdHandlerBase {
+class CmdHandlerUsefulLinksCommentAdd : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsefulLinksCommentAdd();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -98,7 +98,7 @@ class CmdHandlerUsefulLinksCommentAdd : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 // Useful Links remove comment
 
-class CmdHandlerUsefulLinksCommentDelete : public CmdHandlerBase {
+class CmdHandlerUsefulLinksCommentDelete : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsefulLinksCommentDelete();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -107,7 +107,7 @@ class CmdHandlerUsefulLinksCommentDelete : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 // Useful Links List of tags
 
-class CmdHandlerUsefulLinksTagList : public CmdHandlerBase {
+class CmdHandlerUsefulLinksTagList : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsefulLinksTagList();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -116,7 +116,7 @@ class CmdHandlerUsefulLinksTagList : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 // Useful Links add tag
 
-class CmdHandlerUsefulLinksTagAdd : public CmdHandlerBase {
+class CmdHandlerUsefulLinksTagAdd : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsefulLinksTagAdd();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -125,7 +125,7 @@ class CmdHandlerUsefulLinksTagAdd : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 // Useful Links remove tag
 
-class CmdHandlerUsefulLinksTagDelete : public CmdHandlerBase {
+class CmdHandlerUsefulLinksTagDelete : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsefulLinksTagDelete();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -134,7 +134,7 @@ class CmdHandlerUsefulLinksTagDelete : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 // Useful Links propose link by user
 
-class CmdHandlerUsefulLinksUserPropose : public CmdHandlerBase {
+class CmdHandlerUsefulLinksUserPropose : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsefulLinksUserPropose();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -143,7 +143,7 @@ class CmdHandlerUsefulLinksUserPropose : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 // Useful Links Approve propose link by admin
 
-class CmdHandlerUsefulLinksUserProposeApprove : public CmdHandlerBase {
+class CmdHandlerUsefulLinksUserProposeApprove : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsefulLinksUserProposeApprove();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);

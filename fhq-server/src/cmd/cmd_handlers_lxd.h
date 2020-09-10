@@ -1,14 +1,14 @@
 #ifndef CMD_HADNLERS_LXD_H
 #define CMD_HADNLERS_LXD_H
 
-#include <cmd_handlers.h>
+#include <wsjcpp_jsonrpc20.h>
 #include <model_lxd_orchestra.h>
 
 /*********************************************
  * Any actions with the container. Actions: create, start, stop and delete container
 **********************************************/
 
-class CmdHandlerLXDContainers : public CmdHandlerBase {
+class CmdHandlerLXDContainers : public WsjcppJsonRpc20HandlerBase {
 
 public:
     CmdHandlerLXDContainers();
@@ -23,13 +23,13 @@ private:
     static void delete_container(const std::string &name, std::string &sError, int &nErrorCode);
 };
 
-REGISTRY_CMD(CmdHandlerLXDContainers)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerLXDContainers)
 
 /*********************************************
  * Get information about the orhestra, containers.
 **********************************************/
 
-class CmdHandlerLXDInfo : public CmdHandlerBase {
+class CmdHandlerLXDInfo : public WsjcppJsonRpc20HandlerBase {
 
 public:
     CmdHandlerLXDInfo();
@@ -37,26 +37,26 @@ public:
     bool get_state(const std::string& sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState);
 };
 
-REGISTRY_CMD(CmdHandlerLXDInfo)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerLXDInfo)
 
 /*********************************************
  * Get information about all containers.
 **********************************************/
 
-class CmdHandlerLXDList : public CmdHandlerBase {
+class CmdHandlerLXDList : public WsjcppJsonRpc20HandlerBase {
 
 public:
     CmdHandlerLXDList();
     virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerLXDList)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerLXDList)
 
 /*********************************************
  * Execute the command in container.
 **********************************************/
 
-class CmdHandlerLXDExec : public CmdHandlerBase {
+class CmdHandlerLXDExec : public WsjcppJsonRpc20HandlerBase {
 
 public:
     CmdHandlerLXDExec();
@@ -66,13 +66,13 @@ public:
                              int &nErrorCode, std::string &sOutput);
 };
 
-REGISTRY_CMD(CmdHandlerLXDExec)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerLXDExec)
 
 /*********************************************
  * Action with files in container.
 **********************************************/
 
-class CmdHandlerLXDFile : public CmdHandlerBase {
+class CmdHandlerLXDFile : public WsjcppJsonRpc20HandlerBase {
 
 public:
     CmdHandlerLXDFile();
@@ -86,13 +86,13 @@ public:
 
 };
 
-REGISTRY_CMD(CmdHandlerLXDFile)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerLXDFile)
 
 /*********************************************
  * Open container port.
 **********************************************/
 
-class CmdHandlerLXDOpenPort : public CmdHandlerBase {
+class CmdHandlerLXDOpenPort : public WsjcppJsonRpc20HandlerBase {
 
 public:
     CmdHandlerLXDOpenPort();
@@ -102,47 +102,47 @@ public:
 
 };
 
-REGISTRY_CMD(CmdHandlerLXDOpenPort)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerLXDOpenPort)
 
 /*********************************************
  * Import container configuration from json.
 **********************************************/
 
-class CmdHandlerLXDImportService : public CmdHandlerBase {
+class CmdHandlerLXDImportService : public WsjcppJsonRpc20HandlerBase {
 
 public:
     CmdHandlerLXDImportService();
     void handle(WsjcppJsonRpc20Request *pRequest) override;
 };
 
-REGISTRY_CMD(CmdHandlerLXDImportService)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerLXDImportService)
 
 
 /*********************************************
  * Import container configuration from zip archive.
 **********************************************/
 
-class CmdHandlerLXDImportServiceFromZip : public CmdHandlerBase {
+class CmdHandlerLXDImportServiceFromZip : public WsjcppJsonRpc20HandlerBase {
 
 public:
     CmdHandlerLXDImportServiceFromZip();
     void handle(WsjcppJsonRpc20Request *pRequest) override;
 };
 
-REGISTRY_CMD(CmdHandlerLXDImportServiceFromZip)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerLXDImportServiceFromZip)
 
 
 /*********************************************
  * Start service.
 **********************************************/
 
-class CmdHandlerLXDStartService : public CmdHandlerBase {
+class CmdHandlerLXDStartService : public WsjcppJsonRpc20HandlerBase {
 
 public:
     CmdHandlerLXDStartService();
     void handle(WsjcppJsonRpc20Request *pRequest) override;
 };
 
-REGISTRY_CMD(CmdHandlerLXDStartService)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerLXDStartService)
 
 #endif // CMD_HADNLERS_LXD_H

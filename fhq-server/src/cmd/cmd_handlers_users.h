@@ -1,230 +1,230 @@
 #ifndef CMD_HADNLERS_USERS_H
 #define CMD_HADNLERS_USERS_H
 
-#include <cmd_handlers.h>
+#include <wsjcpp_jsonrpc20.h>
 
 /*********************************************
  * This handler will be return scoreboard of user
 **********************************************/
 
-class CmdHandlerUsersScoreboard : public CmdHandlerBase {
+class CmdHandlerUsersScoreboard : public WsjcppJsonRpc20HandlerBase {
     
     public:
         CmdHandlerUsersScoreboard();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUsersScoreboard)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsersScoreboard)
 
 /*********************************************
  * This handler will be return json map users
 **********************************************/
 
-class CmdHandlerGetMap : public CmdHandlerBase {
+class CmdHandlerGetMap : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerGetMap();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerGetMap)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerGetMap)
 
 /*********************************************
  * User login
 **********************************************/
 
-class CmdHandlerLogin : public CmdHandlerBase {
+class CmdHandlerLogin : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerLogin();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerLogin)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerLogin)
 
 /*********************************************
  * User registration
 **********************************************/
 
-class CmdHandlerRegistration : public CmdHandlerBase {
+class CmdHandlerRegistration : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerRegistration();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerRegistration)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerRegistration)
 
 /*********************************************
  * User login by token
 **********************************************/
 
-class CmdHandlerToken : public CmdHandlerBase {
+class CmdHandlerToken : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerToken();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerToken)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerToken)
 
 /*********************************************
  * User location update
 **********************************************/
 
-class CmdHandlerUpdateUserLocation : public CmdHandlerBase {
+class CmdHandlerUpdateUserLocation : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUpdateUserLocation();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUpdateUserLocation)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUpdateUserLocation)
 
 /*********************************************
  * User change password
 **********************************************/
 
-class CmdHandlerUserChangePassword : public CmdHandlerBase {
+class CmdHandlerUserChangePassword : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUserChangePassword();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUserChangePassword)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUserChangePassword)
 
 /*********************************************
  * Add new user
 **********************************************/
 
-class CmdHandlerUsersAdd : public CmdHandlerBase {
+class CmdHandlerUsersAdd : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsersAdd();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUsersAdd)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsersAdd)
 
 /*********************************************
  * User info (deprecated)
 **********************************************/
 
-class CmdHandlerUser : public CmdHandlerBase {
+class CmdHandlerUser : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUser();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUser)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUser)
 
 /*********************************************
  * User info
 **********************************************/
 
-class CmdHandlerUsersInfo : public CmdHandlerBase {
+class CmdHandlerUsersInfo : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsersInfo();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUsersInfo)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsersInfo)
 
 /*********************************************
  * User reset password
 **********************************************/
 
-class CmdHandlerUserResetPassword : public CmdHandlerBase {
+class CmdHandlerUserResetPassword : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUserResetPassword();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUserResetPassword)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUserResetPassword)
 
 /*********************************************
  * User skill
 **********************************************/
 
-class CmdHandlerUserSkills : public CmdHandlerBase {
+class CmdHandlerUserSkills : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUserSkills();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUserSkills)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUserSkills)
 
 /*********************************************
  * User update
 **********************************************/
 
-class CmdHandlerUserUpdate : public CmdHandlerBase {
+class CmdHandlerUserUpdate : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUserUpdate();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUserUpdate)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUserUpdate)
 
 /*********************************************
  * User delete
 **********************************************/
 
-class CmdHandlerUserDelete : public CmdHandlerBase {
+class CmdHandlerUserDelete : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUserDelete();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUserDelete)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUserDelete)
 
 /*********************************************
  * Users
 **********************************************/
  
-class CmdHandlerUsers : public CmdHandlerBase {
+class CmdHandlerUsers : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsers();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUsers)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsers)
 
 /*********************************************
  * User registration
 **********************************************/
 
-class CmdHandlerUsersRegistration : public CmdHandlerBase {
+class CmdHandlerUsersRegistration : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsersRegistration();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUsersRegistration)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsersRegistration)
 
 /*********************************************
  * User registration verification 
 **********************************************/
 
-class CmdHandlerUsersRegistrationVerification : public CmdHandlerBase {
+class CmdHandlerUsersRegistrationVerification : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsersRegistrationVerification();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUsersRegistrationVerification)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsersRegistrationVerification)
 
 /*********************************************
  * Change user's email
 **********************************************/
  
-class CmdHandlerUsersChangeEmail : public CmdHandlerBase {
+class CmdHandlerUsersChangeEmail : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsersChangeEmail();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUsersChangeEmail)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsersChangeEmail)
 
 /*********************************************
  * Change user's email verification
 **********************************************/
  
-class CmdHandlerUsersChangeEmailVerification : public CmdHandlerBase {
+class CmdHandlerUsersChangeEmailVerification : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsersChangeEmailVerification();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -235,7 +235,7 @@ class CmdHandlerUsersChangeEmailVerification : public CmdHandlerBase {
  * List of user tokens
 **********************************************/
  
-class CmdHandlerUsersTokens : public CmdHandlerBase {
+class CmdHandlerUsersTokens : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsersTokens();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -246,7 +246,7 @@ class CmdHandlerUsersTokens : public CmdHandlerBase {
  * Delete user tokens
 **********************************************/
  
-class CmdHandlerUsersTokensDelete : public CmdHandlerBase {
+class CmdHandlerUsersTokensDelete : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerUsersTokensDelete();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);

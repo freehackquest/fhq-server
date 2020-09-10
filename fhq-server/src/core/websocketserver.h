@@ -10,7 +10,8 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QtNetwork/QSslError>
-#include <cmd_handlers.h>
+#include <mutex>
+#include <wsjcpp_jsonrpc20.h>
 
 class WebSocketClient : public QObject, public WsjcppJsonRpc20WebSocketClient {
     private:

@@ -1,19 +1,22 @@
 #include "cmd_handlers_useful_links.h"
-#include <fallen.h>
 #include <md5.h>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <employ_notify.h>
 #include <runtasks.h>
+#include <QSqlQuery> // TODO deprecated
+#include <QSqlRecord> // TODO deprecated
+#include <QString> // TODO deprecated
+#include <QVariant> // TODO deprecated
 
 /*********************************************
  * Useful Links List
 **********************************************/
 
-REGISTRY_CMD(CmdHandlerUsefulLinksList)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsefulLinksList)
 
 CmdHandlerUsefulLinksList::CmdHandlerUsefulLinksList()
-    : CmdHandlerBase("useful_links_list", "Method will be return list of useful links") {
+    : WsjcppJsonRpc20HandlerBase("useful_links_list", "Method will be return list of useful links") {
     
     setActivatedFromVersion("0.2.21");
 
@@ -193,10 +196,10 @@ void CmdHandlerUsefulLinksList::handle(WsjcppJsonRpc20Request *pRequest) {
  * Useful Links Retrieve
 **********************************************/
 
-REGISTRY_CMD(CmdHandlerUsefulLinksRetrieve)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsefulLinksRetrieve)
 
 CmdHandlerUsefulLinksRetrieve::CmdHandlerUsefulLinksRetrieve()
-    : CmdHandlerBase("useful_links_retrieve", "Method for retrieve useful link") {
+    : WsjcppJsonRpc20HandlerBase("useful_links_retrieve", "Method for retrieve useful link") {
 
     setActivatedFromVersion("0.2.28");
 
@@ -279,10 +282,10 @@ void CmdHandlerUsefulLinksRetrieve::handle(WsjcppJsonRpc20Request *pRequest) {
  * Useful Links Add
 **********************************************/
 
-REGISTRY_CMD(CmdHandlerUsefulLinksAdd)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsefulLinksAdd)
 
 CmdHandlerUsefulLinksAdd::CmdHandlerUsefulLinksAdd()
-    : CmdHandlerBase("useful_links_add", "Method for add new useful link") {
+    : WsjcppJsonRpc20HandlerBase("useful_links_add", "Method for add new useful link") {
 
     setActivatedFromVersion("0.2.21");
 
@@ -347,10 +350,10 @@ void CmdHandlerUsefulLinksAdd::handle(WsjcppJsonRpc20Request *pRequest) {
  * Useful Links Delete
 **********************************************/
 
-REGISTRY_CMD(CmdHandlerUsefulLinksDelete)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsefulLinksDelete)
 
 CmdHandlerUsefulLinksDelete::CmdHandlerUsefulLinksDelete()
-    : CmdHandlerBase("useful_links_delete", "Method for delete link by admin") {
+    : WsjcppJsonRpc20HandlerBase("useful_links_delete", "Method for delete link by admin") {
     
     setActivatedFromVersion("0.2.21");
 
@@ -424,10 +427,10 @@ void CmdHandlerUsefulLinksDelete::handle(WsjcppJsonRpc20Request *pRequest) {
  * Useful Links Update
 **********************************************/
 
-REGISTRY_CMD(CmdHandlerUsefulLinksUpdate)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsefulLinksUpdate)
 
 CmdHandlerUsefulLinksUpdate::CmdHandlerUsefulLinksUpdate()
-    : CmdHandlerBase("useful_links_update", "Method for update useful link") {
+    : WsjcppJsonRpc20HandlerBase("useful_links_update", "Method for update useful link") {
     
     setActivatedFromVersion("0.2.21");
 
@@ -485,10 +488,10 @@ void CmdHandlerUsefulLinksUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
 // ---------------------------------------------------------------------
 // Useful Links list of favorite
 
-REGISTRY_CMD(CmdHandlerUsefulLinksUserFavoriteList)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsefulLinksUserFavoriteList)
 
 CmdHandlerUsefulLinksUserFavoriteList::CmdHandlerUsefulLinksUserFavoriteList()
-    : CmdHandlerBase("useful_links_user_favorite_list", "Useful Links list of favorite") {
+    : WsjcppJsonRpc20HandlerBase("useful_links_user_favorite_list", "Useful Links list of favorite") {
     
     setActivatedFromVersion("0.2.29");
 
@@ -557,10 +560,10 @@ void CmdHandlerUsefulLinksUserFavoriteList::handle(WsjcppJsonRpc20Request *pRequ
 // ---------------------------------------------------------------------
 // Useful Links add to favorite
 
-REGISTRY_CMD(CmdHandlerUsefulLinksUserFavorite)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsefulLinksUserFavorite)
 
 CmdHandlerUsefulLinksUserFavorite::CmdHandlerUsefulLinksUserFavorite()
-    : CmdHandlerBase("useful_links_user_favorite", "Useful Links add to favorite") {
+    : WsjcppJsonRpc20HandlerBase("useful_links_user_favorite", "Useful Links add to favorite") {
     
     setActivatedFromVersion("0.2.29");
 
@@ -634,10 +637,10 @@ void CmdHandlerUsefulLinksUserFavorite::handle(WsjcppJsonRpc20Request *pRequest)
 // ---------------------------------------------------------------------
 // Useful Links removed from favorite
 
-REGISTRY_CMD(CmdHandlerUsefulLinksUserUnfavorite)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsefulLinksUserUnfavorite)
 
 CmdHandlerUsefulLinksUserUnfavorite::CmdHandlerUsefulLinksUserUnfavorite()
-    : CmdHandlerBase("useful_links_user_unfavorite", "Useful Links removed from favorite") {
+    : WsjcppJsonRpc20HandlerBase("useful_links_user_unfavorite", "Useful Links removed from favorite") {
     
     setActivatedFromVersion("0.2.29");
 
@@ -694,10 +697,10 @@ void CmdHandlerUsefulLinksUserUnfavorite::handle(WsjcppJsonRpc20Request *pReques
 // ---------------------------------------------------------------------
 // Useful Links counter clicker
 
-REGISTRY_CMD(CmdHandlerUsefulLinksClicked)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsefulLinksClicked)
 
 CmdHandlerUsefulLinksClicked::CmdHandlerUsefulLinksClicked()
-    : CmdHandlerBase("useful_links_clicked", "Useful Links removed from favorite") {
+    : WsjcppJsonRpc20HandlerBase("useful_links_clicked", "Useful Links removed from favorite") {
     
     setActivatedFromVersion("0.2.29");
 
@@ -737,10 +740,10 @@ void CmdHandlerUsefulLinksClicked::handle(WsjcppJsonRpc20Request *pRequest) {
 // ---------------------------------------------------------------------
 // Useful Links list of comments
 
-REGISTRY_CMD(CmdHandlerUsefulLinksCommentList)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsefulLinksCommentList)
 
 CmdHandlerUsefulLinksCommentList::CmdHandlerUsefulLinksCommentList()
-    : CmdHandlerBase("useful_links_comment_list", "Useful Links list of comments") {
+    : WsjcppJsonRpc20HandlerBase("useful_links_comment_list", "Useful Links list of comments") {
     
     setActivatedFromVersion("0.2.29");
 
@@ -802,10 +805,10 @@ void CmdHandlerUsefulLinksCommentList::handle(WsjcppJsonRpc20Request *pRequest) 
 // ---------------------------------------------------------------------
 // Useful Links add comment
 
-REGISTRY_CMD(CmdHandlerUsefulLinksCommentAdd)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsefulLinksCommentAdd)
 
 CmdHandlerUsefulLinksCommentAdd::CmdHandlerUsefulLinksCommentAdd()
-    : CmdHandlerBase("useful_links_comment_add", "Useful Links add comment") {
+    : WsjcppJsonRpc20HandlerBase("useful_links_comment_add", "Useful Links add comment") {
     
     setActivatedFromVersion("0.2.29");
 
@@ -889,10 +892,10 @@ void CmdHandlerUsefulLinksCommentAdd::handle(WsjcppJsonRpc20Request *pRequest) {
 // ---------------------------------------------------------------------
 // Useful Links remove comment
 
-REGISTRY_CMD(CmdHandlerUsefulLinksCommentDelete)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsefulLinksCommentDelete)
 
 CmdHandlerUsefulLinksCommentDelete::CmdHandlerUsefulLinksCommentDelete()
-    : CmdHandlerBase("useful_links_comment_delete", "Useful Links remove comment") {
+    : WsjcppJsonRpc20HandlerBase("useful_links_comment_delete", "Useful Links remove comment") {
     
     setActivatedFromVersion("0.2.29");
 
@@ -958,10 +961,10 @@ void CmdHandlerUsefulLinksCommentDelete::handle(WsjcppJsonRpc20Request *pRequest
 // ---------------------------------------------------------------------
 // Useful Links List of tags
 
-REGISTRY_CMD(CmdHandlerUsefulLinksTagList)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsefulLinksTagList)
 
 CmdHandlerUsefulLinksTagList::CmdHandlerUsefulLinksTagList()
-    : CmdHandlerBase("useful_links_tag_list", "Useful Links - List of tags") {
+    : WsjcppJsonRpc20HandlerBase("useful_links_tag_list", "Useful Links - List of tags") {
     
     setActivatedFromVersion("0.2.29");
 
@@ -1004,10 +1007,10 @@ void CmdHandlerUsefulLinksTagList::handle(WsjcppJsonRpc20Request *pRequest) {
 // ---------------------------------------------------------------------
 // Useful Links add tag
 
-REGISTRY_CMD(CmdHandlerUsefulLinksTagAdd)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsefulLinksTagAdd)
 
 CmdHandlerUsefulLinksTagAdd::CmdHandlerUsefulLinksTagAdd()
-    : CmdHandlerBase("useful_links_tag_add", "Useful Links add tag") {
+    : WsjcppJsonRpc20HandlerBase("useful_links_tag_add", "Useful Links add tag") {
     
     setActivatedFromVersion("0.2.29");
 
@@ -1088,10 +1091,10 @@ void CmdHandlerUsefulLinksTagAdd::handle(WsjcppJsonRpc20Request *pRequest) {
 // ---------------------------------------------------------------------
 // Useful Links remove tag
 
-REGISTRY_CMD(CmdHandlerUsefulLinksTagDelete)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsefulLinksTagDelete)
 
 CmdHandlerUsefulLinksTagDelete::CmdHandlerUsefulLinksTagDelete()
-    : CmdHandlerBase("useful_links_tag_delete", "Useful Links remove tag") {
+    : WsjcppJsonRpc20HandlerBase("useful_links_tag_delete", "Useful Links remove tag") {
     
     setActivatedFromVersion("0.2.29");
 
@@ -1169,10 +1172,10 @@ void CmdHandlerUsefulLinksTagDelete::handle(WsjcppJsonRpc20Request *pRequest) {
 // ---------------------------------------------------------------------
 // Useful Links propose link by user
 
-REGISTRY_CMD(CmdHandlerUsefulLinksUserPropose)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsefulLinksUserPropose)
 
 CmdHandlerUsefulLinksUserPropose::CmdHandlerUsefulLinksUserPropose()
-    : CmdHandlerBase("useful_links_user_propose", "Useful Links propose link by user") {
+    : WsjcppJsonRpc20HandlerBase("useful_links_user_propose", "Useful Links propose link by user") {
     
     setActivatedFromVersion("0.2.29");
 
@@ -1194,10 +1197,10 @@ void CmdHandlerUsefulLinksUserPropose::handle(WsjcppJsonRpc20Request *pRequest) 
 // ---------------------------------------------------------------------
 // Useful Links propose link by user
 
-REGISTRY_CMD(CmdHandlerUsefulLinksUserProposeApprove)
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerUsefulLinksUserProposeApprove)
 
 CmdHandlerUsefulLinksUserProposeApprove::CmdHandlerUsefulLinksUserProposeApprove()
-    : CmdHandlerBase("useful_links_user_propose_approve", "Useful Links Approve propose link by admin") {
+    : WsjcppJsonRpc20HandlerBase("useful_links_user_propose_approve", "Useful Links Approve propose link by admin") {
     
     setActivatedFromVersion("0.2.29");
 

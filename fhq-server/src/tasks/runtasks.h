@@ -1,7 +1,7 @@
 #ifndef RUNTASKS_H
 #define RUNTASKS_H
 
-#include <cmd_handlers.h>
+#include <wsjcpp_jsonrpc20.h>
 
 class RunTasks {
     public:

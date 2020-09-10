@@ -1,8 +1,8 @@
 #ifndef UPDATE_USER_RATING_TASK_H
 #define UPDATE_USER_RATING_TASK_H
 
+#include <string>
 #include <QRunnable>
-#include <cmd_handlers.h>
 
 class UpdateUserRatingTask : public QRunnable {
     

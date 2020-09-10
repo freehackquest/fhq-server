@@ -1,12 +1,12 @@
 #ifndef CMD_HANDLERS_QUESTS_WRITEUPS_H
 #define CMD_HANDLERS_QUESTS_WRITEUPS_H
 
-#include <cmd_handlers.h>
+#include <wsjcpp_jsonrpc20.h>
 
 // ---------------------------------------------------------------------
 // Quests WriteUps
 
-class CmdHandlerQuestsWriteUpsList : public CmdHandlerBase {
+class CmdHandlerQuestsWriteUpsList : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerQuestsWriteUpsList();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -15,7 +15,7 @@ class CmdHandlerQuestsWriteUpsList : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 // Quests WriteUps Proposal
 
-class CmdHandlerQuestsWriteUpsProposal : public CmdHandlerBase {
+class CmdHandlerQuestsWriteUpsProposal : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerQuestsWriteUpsProposal();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -26,7 +26,7 @@ class CmdHandlerQuestsWriteUpsProposal : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 // Quests WriteUps Update
 
-class CmdHandlerQuestsWriteUpsUpdate : public CmdHandlerBase {
+class CmdHandlerQuestsWriteUpsUpdate : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerQuestsWriteUpsUpdate();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);
@@ -35,7 +35,7 @@ class CmdHandlerQuestsWriteUpsUpdate : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 // Quests WriteUps Delete
 
-class CmdHandlerQuestsWriteUpsDelete : public CmdHandlerBase {
+class CmdHandlerQuestsWriteUpsDelete : public WsjcppJsonRpc20HandlerBase {
     public:
         CmdHandlerQuestsWriteUpsDelete();
         virtual void handle(WsjcppJsonRpc20Request *pRequest);

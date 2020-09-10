@@ -9,11 +9,8 @@
 #include <QtNetwork/QSslCertificate>
 #include <QtNetwork/QSslKey>
 
-#include <fallen.h>
-
 #include <employees.h>
 #include <employ_server_info.h>
-#include <cmd_handlers.h>
 
 // ---------------------------------------------------------------------
 // WebSocketClient
@@ -223,7 +220,7 @@ void WebSocketServer::processTextMessage(const QString &message) {
     std::string sId = pRequest->getId();
     try {
 
-        CmdHandlerBase *pCmdHandler = CmdHandlers::findCmdHandler(sMethod);
+        WsjcppJsonRpc20HandlerBase *pCmdHandler = WsjcppJsonRpc20::findJsonRpc20Handler(sMethod);
         if (pCmdHandler == NULL) {
             WsjcppLog::warn(TAG, "Unknown command: " + sMethod);
             pRequest->fail(WsjcppJsonRpc20Error(404, "UNKNOWN_COMMAND"));

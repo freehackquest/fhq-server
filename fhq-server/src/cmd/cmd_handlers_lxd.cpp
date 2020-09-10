@@ -1,5 +1,4 @@
 #include <cmd_handlers_lxd.h>
-#include <fallen.h>
 #include <runtasks.h>
 #include <iostream>
 #include <employ_database.h>
@@ -12,14 +11,17 @@
 #include <quazipfile.h>
 #include <QtCore/QBuffer>
 #include <validators.h>
-
+#include <QSqlQuery> // TODO deprecated
+#include <QSqlRecord> // TODO deprecated
+#include <QString> // TODO deprecated
+#include <QVariant> // TODO deprecated
 
 /*********************************************
  * Any actions with the container. Actions: create, start, stop and delete container
 **********************************************/
 
 CmdHandlerLXDContainers::CmdHandlerLXDContainers()
-        : CmdHandlerBase("lxd_containers",
+        : WsjcppJsonRpc20HandlerBase("lxd_containers",
                          "Any actions with the container. Actions: create, start, stop and delete container") {
 
     TAG = "LXD_HANDLER";
@@ -57,16 +59,16 @@ void CmdHandlerLXDContainers::handle(WsjcppJsonRpc20Request *pRequest) {
         pRequest->fail(WsjcppJsonRpc20Error(nErrorCode, sError));
     }
     if (action == "create") {
-        RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::create_container, name, cmd(), pRequest);
+        RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::create_container, name, getMethodName(), pRequest);
     }
     if (action == "start") {
-        RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::start_container, name, cmd(), pRequest);
+        RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::start_container, name, getMethodName(), pRequest);
     }
     if (action == "stop") {
-        RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::stop_container, name, cmd(), pRequest);
+        RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::stop_container, name, getMethodName(), pRequest);
     }
     if (action == "delete") {
-        RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::delete_container, name, cmd(), pRequest);
+        RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::delete_container, name, getMethodName(), pRequest);
     }
 }
 
@@ -172,7 +174,7 @@ void CmdHandlerLXDContainers::delete_container(const std::string &name, std::str
 **********************************************/
 
 CmdHandlerLXDInfo::CmdHandlerLXDInfo()
-        : CmdHandlerBase("lxd_info", "Get information about the orhestra, containers.") {
+        : WsjcppJsonRpc20HandlerBase("lxd_info", "Get information about the orhestra, containers.") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -230,7 +232,7 @@ bool CmdHandlerLXDInfo::get_state(const std::string& sName, std::string &sError,
 **********************************************/
 
 CmdHandlerLXDList::CmdHandlerLXDList()
-        : CmdHandlerBase("lxd_list", "Get information about all containers.") {
+        : WsjcppJsonRpc20HandlerBase("lxd_list", "Get information about all containers.") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -261,7 +263,7 @@ void CmdHandlerLXDList::handle(WsjcppJsonRpc20Request *pRequest) {
 // ---------------------------------------------------------------------
 
 CmdHandlerLXDExec::CmdHandlerLXDExec()
-        : CmdHandlerBase("lxd_exec", "Exec command in the container with name.") {
+        : WsjcppJsonRpc20HandlerBase("lxd_exec", "Exec command in the container with name.") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -327,7 +329,7 @@ bool CmdHandlerLXDExec::exec_command(const std::string &sName, const std::string
 // ---------------------------------------------------------------------
 
 CmdHandlerLXDFile::CmdHandlerLXDFile()
-        : CmdHandlerBase("lxd_file", "Pull, push, delete file inside the container.") {
+        : WsjcppJsonRpc20HandlerBase("lxd_file", "Pull, push, delete file inside the container.") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -434,7 +436,7 @@ bool CmdHandlerLXDFile::push_file(LXDContainer *pContainer, const std::string &s
 }
 
 CmdHandlerLXDOpenPort::CmdHandlerLXDOpenPort()
-        : CmdHandlerBase("lxd_open_port", "Opens the container port.") {
+        : WsjcppJsonRpc20HandlerBase("lxd_open_port", "Opens the container port.") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -510,7 +512,7 @@ bool CmdHandlerLXDOpenPort::is_port_valide(const std::string &sProto, const int 
 
 
 CmdHandlerLXDImportService::CmdHandlerLXDImportService()
-        : CmdHandlerBase("lxd_import_container", "Import container from json configuration.") {
+        : WsjcppJsonRpc20HandlerBase("lxd_import_container", "Import container from json configuration.") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -568,7 +570,7 @@ void CmdHandlerLXDImportService::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
 CmdHandlerLXDImportServiceFromZip::CmdHandlerLXDImportServiceFromZip()
-        : CmdHandlerBase("lxd_import_service_from_zip", "Import Service from zip.") {
+        : WsjcppJsonRpc20HandlerBase("lxd_import_service_from_zip", "Import Service from zip.") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -683,7 +685,7 @@ void CmdHandlerLXDImportServiceFromZip::handle(WsjcppJsonRpc20Request *pRequest)
 
 
 CmdHandlerLXDStartService::CmdHandlerLXDStartService()
-        : CmdHandlerBase("lxd_start_service", "Start service.") {
+        : WsjcppJsonRpc20HandlerBase("lxd_start_service", "Start service.") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);

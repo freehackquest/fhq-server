@@ -33,8 +33,6 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src/cmd")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/web-server")
 
 # core
-list (APPEND WSJCPP_SOURCES "src/core/cmd_handlers.h")
-list (APPEND WSJCPP_SOURCES "src/core/cmd_handlers.cpp")
 list (APPEND WSJCPP_SOURCES "src/core/export_libwsjcppcli_java_android.h")
 list (APPEND WSJCPP_SOURCES "src/core/export_libwsjcppcli_java_android.cpp")
 list (APPEND WSJCPP_SOURCES "src/core/export_libwsjcppcli_py.h")

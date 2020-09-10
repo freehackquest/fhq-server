@@ -1,17 +1,20 @@
 #include <cmd_handlers_support.h>
-#include <fallen.h>
 #include <runtasks.h>
 #include <iostream>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <QtCore>
+#include <QSqlQuery> // TODO deprecated
+#include <QSqlRecord> // TODO deprecated
+#include <QString> // TODO deprecated
+#include <QVariant> // TODO deprecated
 
 // ******************************
 // * This handler for add support
 // ******************************
 
 CmdHandlerFeedbackAdd::CmdHandlerFeedbackAdd()
-    : CmdHandlerBase("feedback_add", "Create the feedback") {
+    : WsjcppJsonRpc20HandlerBase("feedback_add", "Create the feedback") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);

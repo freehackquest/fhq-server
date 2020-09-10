@@ -1,17 +1,20 @@
 #include <cmd_handlers_mails.h>
-#include <fallen.h>
 #include <runtasks.h>
 #include <iostream>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <QtCore>
+#include <QSqlQuery> // TODO deprecated
+#include <QSqlRecord> // TODO deprecated
+#include <QString> // TODO deprecated
+#include <QVariant> // TODO deprecated
 
 /*****************************************
  * Mail Info
  *****************************************/
 
 CmdHandlerMailInfo::CmdHandlerMailInfo()
-    : CmdHandlerBase("mail_info", "This method Will be return info of mail") {
+    : WsjcppJsonRpc20HandlerBase("mail_info", "This method Will be return info of mail") {
     TAG = "CmdHandlerMailInfo";
 
     setAccessUnauthorized(false);
@@ -32,7 +35,7 @@ void CmdHandlerMailInfo::handle(WsjcppJsonRpc20Request *pRequest) {
  *****************************************/
 
 CmdHandlerMailSend::CmdHandlerMailSend()
-    : CmdHandlerBase("mail_send", "Mail Send") {
+    : WsjcppJsonRpc20HandlerBase("mail_send", "Mail Send") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -43,7 +46,6 @@ CmdHandlerMailSend::CmdHandlerMailSend()
         .addValidator(new WsjcppValidatorEmail());
     requireStringParam("subject", "Subject of the message");
     requireStringParam("body", "Body of the message");
-
 }
 
 // ---------------------------------------------------------------------
@@ -65,7 +67,7 @@ void CmdHandlerMailSend::handle(WsjcppJsonRpc20Request *pRequest) {
  *****************************************/
 
 CmdHandlerMailsList::CmdHandlerMailsList()
-    : CmdHandlerBase("mails_list", "Mails list") {
+    : WsjcppJsonRpc20HandlerBase("mails_list", "Mails list") {
     TAG = "CmdHandlerMailsList";
 
     setAccessUnauthorized(false);

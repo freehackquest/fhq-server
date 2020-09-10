@@ -12,7 +12,6 @@
 #include <fstream>
 #include <iomanip> // put_time
 #include <ctime>
-#include <fallen.h>
 #include <sstream>
 
 // ---------------------------------------------------------------------
@@ -195,30 +194,30 @@ void ExportLibWsjCppCliJavaAndroid::exportAPImd() {
         << "```\n";
     apimd << "\n";
 
-    std::map<std::string, CmdHandlerBase*>::iterator it = g_pCmdHandlers->begin();
-    for (; it!=g_pCmdHandlers->end(); ++it) {
+    std::map<std::string, WsjcppJsonRpc20HandlerBase*>::iterator it = g_pWsjcppJsonRpc20HandlerList->begin();
+    for (; it!=g_pWsjcppJsonRpc20HandlerList->end(); ++it) {
         std::string sCmd = it->first;
-        CmdHandlerBase* pCmdHandlerBase = it->second;
+        WsjcppJsonRpc20HandlerBase* pWsjcppJsonRpc20HandlerBase = it->second;
 
         apimd
             << "<details>\n"
             << "<summary>" << sCmd << "</summary>\n\n"
             << "## " << sCmd << "\n\n";
 
-        if (pCmdHandlerBase->description() != "") {
-            apimd << pCmdHandlerBase->description() << "\n\n";
+        if (pWsjcppJsonRpc20HandlerBase->description() != "") {
+            apimd << pWsjcppJsonRpc20HandlerBase->description() << "\n\n";
         }
         apimd 
-            << "Access: unauthorized - **" << (pCmdHandlerBase->accessUnauthorized() ? "yes" : "no") << "**, "
-            << " user - **" << (pCmdHandlerBase->accessUser() ? "yes" : "no") << "**, "
-            << " admin - **" << (pCmdHandlerBase->accessAdmin() ? "yes" : "no") << "**\n"
+            << "Access: unauthorized - **" << (pWsjcppJsonRpc20HandlerBase->accessUnauthorized() ? "yes" : "no") << "**, "
+            << " user - **" << (pWsjcppJsonRpc20HandlerBase->accessUser() ? "yes" : "no") << "**, "
+            << " admin - **" << (pWsjcppJsonRpc20HandlerBase->accessAdmin() ? "yes" : "no") << "**\n"
             << "\n";
 
         apimd << " #### Input params \n\n";
 
         std::string pythonTemplate = "";
 
-        std::vector<CmdInputDef> vVin = pCmdHandlerBase->inputs();
+        std::vector<CmdInputDef> vVin = pWsjcppJsonRpc20HandlerBase->inputs();
         for (int i = 0; i < vVin.size(); i++) {
             CmdInputDef inDef = vVin[i];
             std::string nameIn = std::string(inDef.getName());

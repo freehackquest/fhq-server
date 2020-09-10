@@ -1,19 +1,22 @@
 #include <cmd_handlers_quests.h>
 #include <runtasks.h>
 #include <wsjcpp_levenshtein.h>
-#include <fallen.h>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <employ_notify.h>
 #include <validators.h>
 #include <wsjcpp_hashes.h>
+#include <QSqlQuery> // TODO deprecated
+#include <QSqlRecord> // TODO deprecated
+#include <QString> // TODO deprecated
+#include <QVariant> // TODO deprecated
 
 // *******************************************
 // *************** Quest List ****************
 // *******************************************
 
 CmdHandlerQuests::CmdHandlerQuests()
-    : CmdHandlerBase("quests", "Method will be returned quest list") {
+    : WsjcppJsonRpc20HandlerBase("quests", "Method will be returned quest list") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -141,7 +144,7 @@ void CmdHandlerQuests::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
 CmdHandlerQuest::CmdHandlerQuest()
-    : CmdHandlerBase("quest", "Update the quest info") {
+    : WsjcppJsonRpc20HandlerBase("quest", "Update the quest info") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -320,7 +323,7 @@ void CmdHandlerQuest::handle(WsjcppJsonRpc20Request *pRequest) {
 // *******************************************
 
 CmdHandlerQuestPass::CmdHandlerQuestPass()
-: CmdHandlerBase("quest_pass", "Quest pass") {
+: WsjcppJsonRpc20HandlerBase("quest_pass", "Quest pass") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
@@ -492,7 +495,7 @@ void CmdHandlerQuestPass::handle(WsjcppJsonRpc20Request *pRequest) {
 // *******************************************
 
 CmdHandlerCreateQuest::CmdHandlerCreateQuest()
-    : CmdHandlerBase("createquest", "Method will be create new quest") {
+    : WsjcppJsonRpc20HandlerBase("createquest", "Method will be create new quest") {
     // TODO add symlinks
 
     setAccessUnauthorized(false);
@@ -663,7 +666,7 @@ void CmdHandlerCreateQuest::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
 CmdHandlerQuestDelete::CmdHandlerQuestDelete()
-    : CmdHandlerBase("quest_delete", "Method for delete quest") {
+    : WsjcppJsonRpc20HandlerBase("quest_delete", "Method for delete quest") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -755,7 +758,7 @@ void CmdHandlerQuestDelete::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
 CmdHandlerQuestProposal::CmdHandlerQuestProposal()
-    : CmdHandlerBase("quest_proposal", "Add quest proposal") {
+    : WsjcppJsonRpc20HandlerBase("quest_proposal", "Add quest proposal") {
     TAG = "CmdQuestProposalHandler";
 
     setAccessUnauthorized(false);
@@ -924,7 +927,7 @@ void CmdHandlerQuestProposal::handle(WsjcppJsonRpc20Request *pRequest) {
 // *******************************************
 
 CmdHandlerQuestStatistics::CmdHandlerQuestStatistics()
-    : CmdHandlerBase("quest_statistics", "Mehtod will be return quest public statistics") {
+    : WsjcppJsonRpc20HandlerBase("quest_statistics", "Mehtod will be return quest public statistics") {
 
     TAG = "CmdHandlerQuestStatistics";
 
@@ -1047,7 +1050,7 @@ void CmdHandlerQuestStatistics::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
 CmdHandlerQuestUpdate::CmdHandlerQuestUpdate()
-    : CmdHandlerBase("quest_update", "Update the quest info") {
+    : WsjcppJsonRpc20HandlerBase("quest_update", "Update the quest info") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1339,7 +1342,7 @@ void CmdHandlerQuestUpdate::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
 CmdHandlerQuestsSubjects::CmdHandlerQuestsSubjects()
-    : CmdHandlerBase("quests_subjects", "Method returned list of quests by subjects") {
+    : WsjcppJsonRpc20HandlerBase("quests_subjects", "Method returned list of quests by subjects") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -1385,7 +1388,7 @@ void CmdHandlerQuestsSubjects::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
 CmdHandlerAddHint::CmdHandlerAddHint()
-    : CmdHandlerBase("addhint", "Method add hint to quest") {
+    : WsjcppJsonRpc20HandlerBase("addhint", "Method add hint to quest") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1443,7 +1446,7 @@ void CmdHandlerAddHint::handle(WsjcppJsonRpc20Request *pRequest) {
 // *******************************************
 
 CmdHandlerAnswerList::CmdHandlerAnswerList()
-    : CmdHandlerBase("answerlist", "Return user answers list") {
+    : WsjcppJsonRpc20HandlerBase("answerlist", "Return user answers list") {
 
     TAG = "CmdHandlerAnswerList";
 
@@ -1620,7 +1623,7 @@ void CmdHandlerAnswerList::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
 CmdHandlerDeleteHint::CmdHandlerDeleteHint()
-    : CmdHandlerBase("deletehint", "Method for delete hint from quest") {
+    : WsjcppJsonRpc20HandlerBase("deletehint", "Method for delete hint from quest") {
     TAG = "CmdHandlerDeleteHint";
 
     setAccessUnauthorized(false);
@@ -1658,7 +1661,7 @@ void CmdHandlerDeleteHint::handle(WsjcppJsonRpc20Request *pRequest) {
 // *******************************************
 
 CmdHandlerHints::CmdHandlerHints()
-    : CmdHandlerBase("hints", "Return list of hints") {
+    : WsjcppJsonRpc20HandlerBase("hints", "Return list of hints") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -1712,7 +1715,7 @@ void CmdHandlerHints::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
 CmdHandlerQuestsProposalList::CmdHandlerQuestsProposalList()
-    : CmdHandlerBase("quests_proposal_list", "Quests proposal list") {
+    : WsjcppJsonRpc20HandlerBase("quests_proposal_list", "Quests proposal list") {
     TAG = "CmdHandlerQuestsProposalList";
 
     setAccessUnauthorized(false);
@@ -1815,7 +1818,7 @@ void CmdHandlerQuestsProposalList::handle(WsjcppJsonRpc20Request *pRequest) {
 
 
 CmdHandlerQuestsFilesUpload::CmdHandlerQuestsFilesUpload()
-    : CmdHandlerBase("quests_files_upload", "Update the quest ") {
+    : WsjcppJsonRpc20HandlerBase("quests_files_upload", "Update the quest ") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);

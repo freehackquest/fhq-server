@@ -1077,7 +1077,7 @@ int EmployServer::getConnectedUsers() {
 
 // ---------------------------------------------------------------------
 
-bool EmployServer::validateInputParameters(WsjcppJsonRpc20Error &error, CmdHandlerBase *pCmdHandler, const nlohmann::json &jsonMessage) {
+bool EmployServer::validateInputParameters(WsjcppJsonRpc20Error &error, WsjcppJsonRpc20HandlerBase *pCmdHandler, const nlohmann::json &jsonMessage) {
     try {
         // TODO check extra params
 

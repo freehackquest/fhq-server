@@ -1,18 +1,22 @@
 #include <cmd_handlers_events.h>
 #include <runtasks.h>
-#include <fallen.h>
 #include <iostream>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <QtCore>
 #include <validators.h>
+#include <QSqlQuery> // TODO deprecated
+#include <QSqlRecord> // TODO deprecated
+#include <QString> // TODO deprecated
+#include <QVariant> // TODO deprecated
 
 // *****************************************
 // * Create public events
 // *****************************************
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerEventAdd)
 
 CmdHandlerEventAdd::CmdHandlerEventAdd()
-    : CmdHandlerBase("createpublicevent", "Create the public event") {
+    : WsjcppJsonRpc20HandlerBase("createpublicevent", "Create the public event") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -50,10 +54,10 @@ void CmdHandlerEventAdd::handle(WsjcppJsonRpc20Request *pRequest) {
 // *****************************************
 // * Delete public event
 // *****************************************
-
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerEventDelete)
 
 CmdHandlerEventDelete::CmdHandlerEventDelete()
-    : CmdHandlerBase("deletepublicevent", "Delete public event") {
+    : WsjcppJsonRpc20HandlerBase("deletepublicevent", "Delete public event") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -97,8 +101,10 @@ void CmdHandlerEventDelete::handle(WsjcppJsonRpc20Request *pRequest) {
 // * get public event
 // *****************************************
 
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerEventInfo)
+
 CmdHandlerEventInfo::CmdHandlerEventInfo()
-    : CmdHandlerBase("getpublicevent", "Return public event info by id") {
+    : WsjcppJsonRpc20HandlerBase("getpublicevent", "Return public event info by id") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -143,10 +149,10 @@ void CmdHandlerEventInfo::handle(WsjcppJsonRpc20Request *pRequest) {
 // *****************************************
 // * public events list
 // *****************************************
-
+REGISTRY_WSJCPP_JSONRPC20_HANDLER(CmdHandlerEventsList)
 
 CmdHandlerEventsList::CmdHandlerEventsList()
-    : CmdHandlerBase("publiceventslist", "Return list of public events") {
+    : WsjcppJsonRpc20HandlerBase("publiceventslist", "Return list of public events") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
