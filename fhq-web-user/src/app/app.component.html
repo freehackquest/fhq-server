@@ -115,13 +115,16 @@
         <button mat-button class="main-left-menu-item" routerLink="/games" l10nTranslate> gamesListPage </button>
       </mat-list-item>
       <mat-list-item>
-        <button mat-button class="main-left-menu-item" routerLink="/fhq-jury-ad" l10nTranslate> pageJuryAttackDefence </button>
+        <button mat-button class="main-left-menu-item" routerLink="/ctf-attack-defence" l10nTranslate> pageJuryAttackDefence </button>
       </mat-list-item>
       <mat-list-item>
         <button mat-button class="main-left-menu-item" routerLink="/knowledge-base" l10nTranslate> knowledgeBase </button>
       </mat-list-item>
       <mat-list-item>
         <button mat-button class="main-left-menu-item" routerLink="/server-api"> FreeHackQuest API </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button class="main-left-menu-item" routerLink="/ctf-wall"> CTF Wall </button>
       </mat-list-item>
       <!-- mat-list-item>
         <button mat-button class="main-left-menu-item" onclick="fhq.ui.playStopMusic()" routerLink="/server-api"> Play Sound </button>
@@ -187,8 +190,11 @@
             <!-- Content -->
             <h5 class="text-uppercase">Free Hack Quest</h5>
             <p>This is an open source platform for competitions of computer security.</p>
-            <p>Feel free to contact us by email <a href="mailto:freehackquest@gmail.com">freehackquest@gmail.com</a></p>
-          
+
+            <div style="display: inline-block;">
+              <div style="display: inline-block;" l10nTranslate>feelFreeToContactUsByEmail</div>
+              <a href="mailto:freehackquest@gmail.com">freehackquest@gmail.com</a>
+            </div>
             <p>{{ serverAppName }}: {{ serverAppVersion }} ( lib {{ libVersion }} )
             <p>Connection State: {{ _fhq.connectionState }}</p>
         </div>

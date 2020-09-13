@@ -5,11 +5,11 @@ import { Router } from '@angular/router';
 import { FhqService } from '../../services/fhq.service';
 
 @Component({
-  selector: 'app-fhq-jury-ad',
-  templateUrl: './fhq-jury-ad.component.html',
-  styleUrls: ['./fhq-jury-ad.component.css']
+  selector: 'ctf-attack-defence',
+  templateUrl: './ctf-attack-defence.component.html',
+  styleUrls: ['./ctf-attack-defence.component.css']
 })
-export class FhqJuryAdComponent implements OnInit {
+export class CtfAttackDefenceComponent implements OnInit {
 
   constructor(
     private _spinnerService: SpinnerService,

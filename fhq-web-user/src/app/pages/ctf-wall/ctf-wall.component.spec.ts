@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FhqJuryAdComponent } from './fhq-jury-ad.component';
+import { CtfWallComponent } from './ctf-wall.component';
 
-describe('FhqJuryAdComponent', () => {
-  let component: FhqJuryAdComponent;
-  let fixture: ComponentFixture<FhqJuryAdComponent>;
+describe('CtfWallComponent', () => {
+  let component: CtfWallComponent;
+  let fixture: ComponentFixture<CtfWallComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FhqJuryAdComponent ]
+      declarations: [ CtfWallComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FhqJuryAdComponent);
+    fixture = TestBed.createComponent(CtfWallComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

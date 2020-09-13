@@ -70,12 +70,13 @@ import { BlockContactUsComponent } from './block-contact-us/block-contact-us.com
 import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { NgxMdModule } from 'ngx-md';
-import { FhqJuryAdComponent } from './pages/fhq-jury-ad/fhq-jury-ad.component';
+import { CtfAttackDefenceComponent } from './pages/ctf-attack-defence/ctf-attack-defence.component';
 import { SimplemdeModule } from 'ng2-simplemde';
 import { UserTokensComponent } from './pages/user-tokens/user-tokens.component';
 import { UserFavoritesUsefulLinksComponent } from './pages/user-favorites-useful-links/user-favorites-useful-links.component'
 import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { UsefulLinkViewComponent } from './pages/useful-link-view/useful-link-view.component';
+import { CtfWallComponent } from './pages/ctf-wall/ctf-wall.component';
 
 export function getHighlightLanguages() {
   return {
@@ -121,10 +122,11 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     BlockContactUsComponent,
     UserSkillsComponent,
     WelcomeComponent,
-    FhqJuryAdComponent,
+    CtfAttackDefenceComponent,
     UserTokensComponent,
     UserFavoritesUsefulLinksComponent,
-    UsefulLinkViewComponent
+    UsefulLinkViewComponent,
+    CtfWallComponent
   ],
   imports: [
     BrowserModule,
