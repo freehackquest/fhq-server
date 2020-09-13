@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(unit-tests C CXX)
-add_definitions(-DWSJCPP_APP_VERSION="ut-v0.2.32")
+add_definitions(-DWSJCPP_APP_VERSION="ut-v0.2.33")
 add_definitions(-DWSJCPP_APP_NAME="unit-tests-fhq-server")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -100,7 +100,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_jsonrpc2/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_jsonrpc2/wsjcpp_jsonrpc20.h")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_jsonrpc2/wsjcpp_jsonrpc20.cpp")
 
-# fhq-server:v0.2.32
+# fhq-server:v0.2.33
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 list (APPEND WSJCPP_SOURCES "../src/core/fallen.cpp")
 list (APPEND WSJCPP_SOURCES "../src/core/fallen.h")
