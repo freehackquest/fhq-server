@@ -2,13 +2,13 @@
 <h1 l10nTranslate>pageJuryAttackDefence</h1>
 <hr>
 <div class="media">
-    <img src="../assets/img/fhq-jury-ad-logo.png" width="100px" height="100px" class="mr-3" alt="...">
+    <img src="../assets/img/ctf01d/ctf01d-logo.png" width="100px" height="100px" class="mr-3" alt="...">
     <div class="media-body">
-        <h5 class="mt-0">fhq-jury-ad</h5>
+        <h5 class="mt-0">ctf01d</h5>
         <p>Это журейная система для проведения Attack-Defence игр</p>
-        <p>Исходники и инструкции: <a href="https://github.com/freehackquest/fhq-jury-ad" target="_blank">https://github.com/freehackquest/fhq-jury-ad</a></p>
+        <p>Исходники и инструкции: <a href="https://github.com/sea-kg/ctf01d" target="_blank">https://github.com/sea-kg/ctf01d</a></p>
         <p>Система написана на c++</p>
-        <p>Так же есть докер образ: <a href="https://hub.docker.com/r/freehackquest/fhq-jury-ad">https://hub.docker.com/r/freehackquest/fhq-jury-ad</a></p>
+        <p>Так же есть докер образ: <a href="https://hub.docker.com/r/sea5kg/ctf01d">https://hub.docker.com/r/sea5kg/ctf01d</a></p>
 
     </div>
 </div>
@@ -17,21 +17,21 @@
 
 <div class="alert alert-danger">(!!!) Please don't use this services for production only for training your skills</div>
 
-<h2>So... утилита fhqjad-store (python)</h2>
+<h2>So... утилита ctf01d-store (python)</h2>
 
 Рапортовать о проблеме:
 
-<a href="https://github.com/freehackquest/fhq-server/issues">https://github.com/freehackquest/fhq-server/issues</a>
+<a href="https://github.com/sea-kg/ctf01d/issues">https://github.com/sea-kg/ctf01d/issues</a>
 
 <!-- It's just collection of services with vulnerabilities for training games like ctf (attack/defence);
-For add your service to vulnbox.store please fork and the pull request to https://github.com/freehackquest/vulnbox-store -->
+For add your service to sea-kg.com/ctf01d-store please fork and the pull request to https://github.com/freehackquest/vulnbox-store -->
 
 <p>Установка в линуксе:</p>
 
 <ngx-md>
 ```bash
-$ sudo curl -L "https://freehackquest.com/assets/fhq-jury-ad/fhqjad-store.py" -o /usr/local/bin/fhqjad-store
-$ sudo chmod +x /usr/local/bin/fhqjad-store
+$ sudo curl -L "https://raw.githubusercontent.com/sea-kg/ctf01d/version-0.4.4/ctf01d-store/ctf01d-store.py" -o /usr/local/bin/ctf01d-store
+$ sudo chmod +x /usr/local/bin/ctf01d-store
 ```
 </ngx-md>
 
@@ -40,33 +40,33 @@ $ sudo chmod +x /usr/local/bin/fhqjad-store
 <hr>
 
 <pre>
-$ fhqjad-store
+$ ctf01d-store
 
-Helper's tool for fhq-jury-ad
+Helper's tool for ctf01d
 
     Usage:
-    /usr/local/bin/fhqjad-store [command] [name]
+    /usr/local/bin/ctf01d-store [command] [name]
 
 Issues: https://github.com/freehackquest/fhq-server/issues
 
 Commands:
-    version - version of current script and for fhq-jury-ad
+    version - version of current script and for ctf01d
     info - installed services and teams list
     init - will be init game in current directory
     urls - list of urls
-    urls-add [url] - will be added url with vulnbox.store
-    urls-rm [url] - will be added url with vulnbox.store
+    urls-add [url] - will be added url with sea-kg.com/ctf01d-store
+    urls-rm [url] - will be added url with sea-kg.com/ctf01d-store
     update - update list information about services
     search [search] - search services by keywords and names
-    download [name] - download service and checker to folder ./.fhqjad-store/[name]
+    download [name] - download service and checker to folder ./.ctf01d-store/[name]
     install [name] - will be installed ./cond.d/[name] and to vulnbox
     remove [name] - will be removed from conf.d and from vulnbox
-    teams-search [search] - list of teams (from vulnbox.store)
+    teams-search [search] - list of teams (from sea-kg.com/ctf01d-store)
     team-add [name] - add the team
     team-rm [name] - remove the team
 
 Directories:
-    jury.d - folder with configs for fhq-jury-ad
+    jury.d - folder with configs for ctf01d
     docker_jury - folder with Dockerfile for build jury docker
     vulnbox - folder with services and script for vulnbox
 
@@ -78,13 +78,13 @@ Directories:
 Должно быть установлено:
 
 <ul>
-    <li>fhqjad-store</li>
+    <li>ctf01d-store</li>
     <li>docker</li>
     <li>docker-compose</li>
     <li>nano</li>
 </ul>
 
-<!-- fhqjad-store urls-add https://freehackquest.com/fhqjad-store/ -->
+<!-- ctf01d-store urls-add https://freehackquest.com/ctf01d-store/ -->
 1. Prepare work dir:
 <ngx-md>
 ```bash
@@ -97,7 +97,7 @@ $ cd ~/ctfgame0
 
 <ngx-md>
 ```bash
-~/ctfgame0$ fhqjad-store init
+~/ctfgame0$ ctf01d-store init
 Create directory ./jury.d
 Create directory ./jury.d/checkers
 Create directory ./jury.d/teams
@@ -105,9 +105,9 @@ Create directory ./jury.d/html
 Create directory ./jury.d/html/images
 Create directory ./jury.d/html/images/teams
 Create directory ./jury.d/logs
-Create directory ./.fhqjad-store
-Create directory ./.fhqjad-store/cache
-Create directory ./.fhqjad-store/downloads
+Create directory ./.ctf01d-store
+Create directory ./.ctf01d-store/cache
+Create directory ./.ctf01d-store/downloads
 Create directory ./vulnbox
 Create directory ./docker_jury
 Game - ID [test]: training 
@@ -125,8 +125,8 @@ Prepare ./docker_jury/clean_docker.sh
 Prepare ./docker_jury/Dockerfile
 Prepare ./docker-compose.yml
 Updating ./docker_jury/Dockerfile
-Download services.json from https://vulnbox.store/
-Download teams.json from https://vulnbox.store/
+Download services.json from https://sea-kg.com/ctf01d-store/
+Download teams.json from https://sea-kg.com/ctf01d-store/
 ```
 </ngx-md>
 
@@ -134,9 +134,9 @@ Download teams.json from https://vulnbox.store/
 3. Update inforamtion about available services and teams
 <ngx-md>
 ```bash
-~/ctfgame0$ fhqjad-store update
-Download services.json from https://vulnbox.store/
-Download teams.json from https://vulnbox.store/
+~/ctfgame0$ ctf01d-store update
+Download services.json from https://sea-kg.com/ctf01d-store/
+Download teams.json from https://sea-kg.com/ctf01d-store/
 ```
 </ngx-md>
 
@@ -144,20 +144,20 @@ Download teams.json from https://vulnbox.store/
 
 <ngx-md>
 ```bash
-~/ctfgame0$ fhqjad-store search example
+~/ctfgame0$ ctf01d-store search example
 Searching.... 'example'
 example_service1 - Example / Service1 (python,example service)
-	on https://vulnbox.store/
+	on https://sea-kg.com/ctf01d-store/
 example_service2 - Example / Service2 (python,example service)
-	on https://vulnbox.store/
+	on https://sea-kg.com/ctf01d-store/
 example_service3 - Example / Service3 (python,example service)
-	on https://vulnbox.store/
+	on https://sea-kg.com/ctf01d-store/
 example_service4 - Example / Service4 (python,example service)
-	on https://vulnbox.store/
+	on https://sea-kg.com/ctf01d-store/
 jury_lazy_conf - jury / lazy-conf (python,example service)
-	on https://vulnbox.store/
+	on https://sea-kg.com/ctf01d-store/
 sibirctf2017_freelife - SibirCTF 2017 / FreeLife (python,example)
-	on https://vulnbox.store/
+	on https://sea-kg.com/ctf01d-store/
 
 *** Found: 6
 ```
@@ -167,10 +167,10 @@ sibirctf2017_freelife - SibirCTF 2017 / FreeLife (python,example)
 
 <ngx-md>
 ```bash
-~/ctfgame0$ fhqjad-store install example_service1
+~/ctfgame0$ ctf01d-store install example_service1
 Download: 
-	URL: https://vulnbox.store/example_service1.zip
-	Directory:./.fhqjad-store/downloads/service_example_service1
+	URL: https://sea-kg.com/ctf01d-store/example_service1.zip
+	Directory:./.ctf01d-store/downloads/service_example_service1
 
 Updating ./docker_jury/Dockerfile
 Updating ./vulnbox/run.sh
@@ -179,10 +179,10 @@ Updating ./vulnbox/run.sh
 
 <ngx-md>
 ```bash
-~/ctfgame0$ fhqjad-store install example_service2
+~/ctfgame0$ ctf01d-store install example_service2
 Download: 
-URL: https://vulnbox.store/example_service2.zip
-Directory:./.fhqjad-store/downloads/service_example_service2
+URL: https://sea-kg.com/ctf01d-store/example_service2.zip
+Directory:./.ctf01d-store/downloads/service_example_service2
 Updating ./docker_jury/Dockerfile
 Updating ./vulnbox/run.sh
 ```
@@ -192,9 +192,9 @@ Updating ./vulnbox/run.sh
 
 <ngx-md>
 ```bash
-~/ctfgame0$ fhqjad-store teams-search keva
+~/ctfgame0$ ctf01d-store teams-search keva
 Searching teams... 'keva'
-keva - kev@  (from https://vulnbox.store/)
+keva - kev@  (from https://sea-kg.com/ctf01d-store/)
 *** Found: 1
 ```
 </ngx-md>
@@ -203,8 +203,8 @@ keva - kev@  (from https://vulnbox.store/)
 
 <ngx-md>
 ```bash
-~/ctfgame0$ fhqjad-store team-add keva
-Download logo https://vulnbox.store/teams/keva.png
+~/ctfgame0$ ctf01d-store team-add keva
+Download logo https://sea-kg.com/ctf01d-store/teams/keva.png
 Team - IP Address [127.0.0.1]: 192.168.0.5
 Write to ./jury.d/teams/keva.conf
 ```
@@ -212,7 +212,7 @@ Write to ./jury.d/teams/keva.conf
 
 <ngx-md>
 ```bash
-~/ctfgame0$ fhqjad-store team-add someone
+~/ctfgame0$ ctf01d-store team-add someone
 Team - Name [someone]: 
 Team - IP Address [127.0.0.1]: 192.168.0.10
 Write to ./jury.d/teams/someone.conf
@@ -229,7 +229,7 @@ $ cd ..
 ```
 </ngx-md>
 
-7. Start fhq-jury-ad in a docker container
+7. Start ctf01d in a docker container
 
 <ngx-md>
 ```bash

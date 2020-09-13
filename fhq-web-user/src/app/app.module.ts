@@ -70,7 +70,7 @@ import { BlockContactUsComponent } from './block-contact-us/block-contact-us.com
 import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { NgxMdModule } from 'ngx-md';
-import { FhqJuryAdComponent } from './pages/fhq-jury-ad/fhq-jury-ad.component';
+import { CtfAttackDefenceComponent } from './pages/ctf-attack-defence/ctf-attack-defence.component';
 import { SimplemdeModule } from 'ng2-simplemde';
 import { UserTokensComponent } from './pages/user-tokens/user-tokens.component';
 import { UserFavoritesUsefulLinksComponent } from './pages/user-favorites-useful-links/user-favorites-useful-links.component'
@@ -121,7 +121,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     BlockContactUsComponent,
     UserSkillsComponent,
     WelcomeComponent,
-    FhqJuryAdComponent,
+    CtfAttackDefenceComponent,
     UserTokensComponent,
     UserFavoritesUsefulLinksComponent,
     UsefulLinkViewComponent
