@@ -76,6 +76,7 @@ import { UserTokensComponent } from './pages/user-tokens/user-tokens.component';
 import { UserFavoritesUsefulLinksComponent } from './pages/user-favorites-useful-links/user-favorites-useful-links.component'
 import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { UsefulLinkViewComponent } from './pages/useful-link-view/useful-link-view.component';
+import { CtfWallComponent } from './pages/ctf-wall/ctf-wall.component';
 
 export function getHighlightLanguages() {
   return {
@@ -124,7 +125,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     CtfAttackDefenceComponent,
     UserTokensComponent,
     UserFavoritesUsefulLinksComponent,
-    UsefulLinkViewComponent
+    UsefulLinkViewComponent,
+    CtfWallComponent
   ],
   imports: [
     BrowserModule,
