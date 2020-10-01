@@ -128,7 +128,7 @@ void CmdHandlerServerInfo::handle(WsjcppJsonRpc20Request *pRequest) {
 
     data["request_statistics"] = jsonRequestStatistics;
     data["server_started"] = pServerInfo->getServerStart(); // in millseconds
-    long updatime = WsjcppCore::currentTime_milliseconds();
+    long updatime = WsjcppCore::getCurrentTimeInMilliseconds();
     updatime = updatime - pServerInfo->getServerStart(); // in seconds
     data["server_uptime_sec"] = updatime/1000;
     // nlohmann::json lastLogMessages = nlohmann::json::array();

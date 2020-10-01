@@ -83,7 +83,6 @@ class WebSocketServer : public QObject, public WsjcppJsonRpc20WebSocketServer {
         QWebSocketServer *m_pWebSocketServerSSL;
 
         // TODO redesign to std::map and move to EmployWSServer
-        // TODO rename m_tokens to m_mapUserSessions;
         // TODO usersession must be single std::map<std::string sUserUuid, WsjcppJsonRpc20UserSession *>
         std::mutex m_mtxUserSession;
         std::map<void *, WsjcppJsonRpc20UserSession *> m_mapUserSession; 

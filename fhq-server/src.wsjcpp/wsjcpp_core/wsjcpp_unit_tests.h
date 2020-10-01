@@ -1,25 +1,35 @@
 #ifndef WSJCPP_UNIT_TESTS_H
 #define WSJCPP_UNIT_TESTS_H
 
-#include <map>
-#include <vector>
 #include <wsjcpp_core.h>
+#include <sstream>
 
 class WsjcppUnitTestBase {
     public:
         WsjcppUnitTestBase(const std::string &sTestName);
-        std::string name();
-        virtual void init() = 0;
-        virtual bool run() = 0;
+        std::string getName();
+        void ok(const std::string &sSuccessMessage);
+        void fail(const std::string &sFailedMessage);
+        bool runTest();
+
+        virtual bool doBeforeTest() = 0;
+        virtual void executeTest() = 0;
+        virtual bool doAfterTest() = 0;
     protected:
         std::string TAG;
-
-        void compareS(bool &bTestSuccess, const std::string &sPoint, const std::string &sValue, const std::string &sExpected);
-        bool compareN(bool &bTestSuccess, const std::string &sPoint, int nValue, int nExpected);
-        bool compareD(bool &bTestSuccess, const std::string &sPoint, double nValue, double nExpected);
-        void compareB(bool &bTestSuccess, const std::string &sPoint, bool bValue, bool bExpected);
-
+        
+        bool compareD(const std::string &sMark, double nValue, double nExpected);
+        template<typename T1, typename T2> bool compare(const std::string &sMark, T1 tGotValue, T2 tExpectedValue) {
+            if (tGotValue != tExpectedValue) {
+                std::stringstream ss;
+                ss << " {mark: " << sMark << "} Expected '" << tExpectedValue << "', but got '" << tGotValue << "'";
+                fail(ss.str());
+                return false;
+            }
+            return true;
+        }
     private:
+        bool m_bTestResult;
         std::string m_sTestName;
 };
 

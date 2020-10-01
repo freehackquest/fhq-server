@@ -1,5 +1,4 @@
 #include <utils/utils_static_analizing_text.h>
-// #include <core/fallen.h>
 #include <wsjcpp_core.h>
 
 double UtilsStaticAnalizingText::calcWeightOfOneChar(int strLen) {
