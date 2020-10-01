@@ -32,3 +32,17 @@ Backend && Frontend for FreeHackQuest on Qt and WebSockets
 * Used libopenssl for a working with https requests: [https://www.openssl.org/](https://www.openssl.org/)
 * Used libzip for a working with zip-archives: [https://libzip.org/](https://libzip.org/)
 * Used libpng for a processing png-images: [http://libpng.org/](http://libpng.org/)
+
+
+# LXD
+
+Test
+```
+curl -X POST \
+  --insecure \
+  -H "Content-Type: application/json" \
+  -d '{"type": "client", "password": "fhq"}' \
+  --cert /etc/fhq-server/lxd/client.crt \
+  --key /etc/fhq-server/lxd/client.key \
+  --url "https://127.0.0.1:8443/1.0/certificates" \
+```
