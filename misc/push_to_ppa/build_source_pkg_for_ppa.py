@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import fileinput
@@ -32,7 +32,7 @@ dists.append({
 
 dists.append({
 	"dist_name": "bionic",
-	"ppa_name_suffix": "ppa-ubuntu-18-04-bionic-1",
+	"ppa_name_suffix": "ppa-ubuntu-18-04-bionic-5",
 	"end": "April 2023",
 	"version": "18.04 LTS"
 })
@@ -44,6 +44,13 @@ dists.append({
 	"version": "18.10"
 })
 
+dists.append({
+	"dist_name": "focal",
+	"ppa_name_suffix": "ppa-ubuntu-20-04-focal-1",
+	"end": "April 2025",
+	"version": "20.04 LTS"
+})
+
 print("Please choose dist name:")
 
 i = 0
@@ -51,7 +58,7 @@ for d in dists:
 	print('    ' + str(i) + '. ' + d['dist_name'] + ' (' + d['version'] + '), date end: ' + d['end'])
 	i = i + 1
 
-dist_num_ = raw_input("Enter number of dist: ")
+dist_num_ = input("Enter number of dist: ")
 dist_num_ = int(dist_num_)
 if dist_num_ >= len(dists):
 	print("Wrong dist number")
@@ -89,6 +96,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
             shutil.copy2(s, d)
 
 shutil.copytree('../../fhq-server/src', './fhq-server/src', symlinks=False, ignore=None)
+shutil.copytree('../../fhq-server/src.wsjcpp', './fhq-server/src.wsjcpp', symlinks=False, ignore=None)
 shutil.copytree('../../fhq-server/cmake', './fhq-server/cmake', symlinks=False, ignore=None)
 shutil.copytree('./install_files', './fhq-server/install_files', symlinks=False, ignore=None)
 shutil.copytree('../../web-admin', './fhq-server/install_files/web-admin', symlinks=False, ignore=None)
@@ -116,7 +124,7 @@ f = open(cmakelist,'r')
 filedata = f.read()
 f.close()
 
-m = re.search('DWSJCPP_APP_VERSION=\"(.+)\"', filedata)
+m = re.search('DWSJCPP_APP_VERSION=\"v(.+)\"', filedata)
 if m:
     current_version = m.group(1)
 
@@ -169,7 +177,7 @@ for li in changelog_list:
 	f.write("\n")
 	#if li['dt'] == '?':
 	#	li['dt'] = subprocess.Popen(['date', '-R'], stdout=subprocess.PIPE).communicate()[0]
-	f.write(" -- Free Hack Quest <freehackquest@gmail.com>  " + li['dt']) # 2 space!!!
+	f.write(" -- Evgenii Sopov <mrseakg@gmail.com>  " + li['dt']) # 2 space!!!
 f.write("\n")
 f.close()
 print( " -> DONE ")
@@ -187,7 +195,7 @@ os.system("cd ./fhq-server && debuild -S -sa")
 print( " -> DONE ")
 
 sys.stdout.write("Are you want try upload source package to ppa.launchpad? [y/n]: ")
-ask_upload_ = raw_input().lower()
+ask_upload_ = input().lower()
 
 if ask_upload_ == "y":
 	os.system("dput ppa:freehackquest/fhq-server fhq-server_" + current_version + "-" + ppa_name_ + "_source.changes")
