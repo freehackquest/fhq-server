@@ -17,8 +17,3 @@ CPP_LINES=$(expr $CPP_LINES_ALL - $CPP_LINES_SMTP - $CPP_LINES_TMP)
 echo "Ours lines in cpp files: $CPP_LINES"
 
 # TODO another statistics
-
-
-
-
-

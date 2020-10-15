@@ -7,6 +7,10 @@ This file is used to list changes made in each version of the fhq-server.
 1. For date of version please use `date -R`
 2. Please use current format, because it will be used for ppa/debian changelog
 
+## [0.2.33] (Thu, 01 Oct 2020 18:49:44 +0700)
+
+- New ppa
+
 ## [0.2.21] (?)
 
 - Code refactoring
