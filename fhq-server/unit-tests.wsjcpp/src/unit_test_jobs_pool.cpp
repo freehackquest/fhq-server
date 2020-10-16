@@ -1,8 +1,15 @@
-#include "unit_test_jobs_pool.h"
+#include <wsjcpp_unit_tests.h>
 #include <vector>
 #include <core/fallen.h>
 #include <core/jobs_pool.h>
 
+class UnitTestJobsPool : public WsjcppUnitTestBase {
+    public:
+        UnitTestJobsPool();
+        virtual bool doBeforeTest();
+        virtual void executeTest();
+        virtual bool doAfterTest();
+};
 
 REGISTRY_WSJCPP_UNIT_TEST(UnitTestJobsPool)
 
@@ -13,8 +20,9 @@ UnitTestJobsPool::UnitTestJobsPool()
 
 // ----------------------------------------------------------------------
 
-void UnitTestJobsPool::init() {
+bool UnitTestJobsPool::doBeforeTest() {
     // nothing
+    return true;
 }
 
 // ----------------------------------------------------------------------
@@ -54,6 +62,7 @@ class JobAsyncWaiter : public JobAsync {
             std::this_thread::sleep_for(std::chrono::milliseconds(m_nMilliseconds));
             WsjcppLog::info(sWorkerId, "end job  " + std::to_string(m_nNumber));
             m_pJobWaiterResult->onDone();
+            return true;
         }
 
     private:
@@ -64,7 +73,7 @@ class JobAsyncWaiter : public JobAsync {
 
 // ----------------------------------------------------------------------
 
-bool UnitTestJobsPool::run() {
+void UnitTestJobsPool::executeTest() {
     JobsPool::start();
 
     // TEST waitForDone
@@ -76,11 +85,12 @@ bool UnitTestJobsPool::run() {
     }
 
     JobsPool::waitForDone();
-    if (pJobWaiterResult->finishedJobs() != nCountJobs) {
-        WsjcppLog::err(TAG, "Test waitForDone FAILED expected " + std::to_string(nCountJobs) + ", but got " + std::to_string(pJobWaiterResult->finishedJobs()));
-        return false;
-    }
-
-    return true;
+    compare("Test waitForDone", pJobWaiterResult->finishedJobs(), nCountJobs);
 }
 
+// ----------------------------------------------------------------------
+
+bool UnitTestJobsPool::doAfterTest() {
+    // nothing
+    return true;
+}

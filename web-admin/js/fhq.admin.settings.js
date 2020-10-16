@@ -19,12 +19,10 @@ fhq.pages['settings'] = function(idelem) {
 			var groupid = 'settings_group_' + sett.group;
 			if($('#' + groupid).length == 0){
 				el.append(''
-					+ '<div class="card">'
-					+ '  <div class="card-header">' + fhq.t(groupid) + '</div>'
-					+ '  <div class="card-body">'
+					+ '<div class="swa-card">'
+					+ '  <h3>' + fhq.t(groupid) + '</h3>'
 					+ '   <div id="' + groupid + '">'
 					+ '   </div>'
-					+ '  </div>'
 					+ '</div><br>'
 				);
 			}
@@ -33,7 +31,7 @@ fhq.pages['settings'] = function(idelem) {
 			
 			var input_type = 'text';
 			var edit_button = ''
-				+ '  <div class="btn btn-secondary edit-settings" '
+				+ '  <div class="swa-button edit-settings" '
 				+ '     groupid="' + groupid + '" '
 				+ '     setttype="' + sett.type + '" '
 				+ '     settname="' + sett.name + '" '

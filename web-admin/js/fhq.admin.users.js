@@ -50,8 +50,8 @@ fhq.pages['user_create'] = function(){
 	var el = $('#page_content');
 	fhq.hideLoader();
 	el.html(''
-		+ '<div class="card">'
-		+ '		<div class="card-header">New user</div>'
+		+ '<div class="swa-card">'
+		+ '		<h3>New user</h3>'
 		+ '		<div class="card-body">'
 		+ '			<div class="form-group row">'
 		+ '				<label for="newuser_role" class="col-sm-2 col-form-label">Role</label>'
@@ -165,13 +165,13 @@ fhq.pages['users'] = function(){
 		});
 		$('#users_search').focus();
 
-        el.append('<button id="user_create" class="btn btn-secondary">Create User</button><hr>');
+        el.append('<button id="user_create" class="swa-button">Create User</button><hr>');
 		$('#user_create').unbind().bind('click', fhq.pages['user_create']);
 		
 		
 
 		el.append(fhq.paginator(0, r.count, r.onpage, r.page));
-		el.append('<table class="table table-striped">'
+		el.append('<table class="swa-table">'
 			+ '		<thead>'
 			+ '			<tr>'
 			+ '				<th>#</th>'
@@ -192,7 +192,7 @@ fhq.pages['users'] = function(){
 				+ '	<td><p>' + u.email + '</p><p>'  + u.nick + '</p></td>'
 				+ '	<td><p>' + u.last_ip + '</p><p>' + u.country + ' / ' + u.city + ' / ' + u.university + '</p></td>'
 				+ '	<td><p>' + u.dt_last_login + '</p><p>' + '' + u.role + '</p></td>'
-				+ '	<td><p><button class="btn btn-secondary user_delete" userid=' + u.id + ' uuid=' + u.uuid + '>Delete User</button><hr></p></td>'
+				+ '	<td><p><button class="swa-button user_delete" userid=' + u.id + ' uuid=' + u.uuid + '>Delete User</button><hr></p></td>'
 				+ '</tr>'
 			)
 		}

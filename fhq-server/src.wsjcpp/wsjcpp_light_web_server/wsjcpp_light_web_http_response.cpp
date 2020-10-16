@@ -30,7 +30,7 @@ WsjcppLightWebHttpResponse::WsjcppLightWebHttpResponse(int nSockFd) {
     m_nSockFd = nSockFd;
     m_bClosed = false;
     noCache();
-    long nSec = WsjcppCore::currentTime_seconds();
+    long nSec = WsjcppCore::getCurrentTimeInSeconds();
     m_sLastModified = WsjcppCore::formatTimeForWeb(nSec);
     m_nResponseCode = 500;
     m_sDataType = "text/html";

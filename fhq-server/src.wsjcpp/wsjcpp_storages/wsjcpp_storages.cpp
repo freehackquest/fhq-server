@@ -773,7 +773,7 @@ void WsjcppStorageTable::mergeWith(WsjcppStorageModifyTable &modifyTable) {
 // ***********************
 
 WsjcppStorageConnection::WsjcppStorageConnection() {
-    m_nCreated = WsjcppCore::currentTime_milliseconds();
+    m_nCreated = WsjcppCore::getCurrentTimeInMilliseconds();
     TAG = "WsjcppStorageConnection";
 }
 
@@ -790,7 +790,7 @@ long WsjcppStorageConnection::created() { // TODO
 // ---------------------------------------------------------------------
 
 long WsjcppStorageConnection::getConnectionDurationInSeconds() {
-    long nRet = WsjcppCore::currentTime_milliseconds() - m_nCreated;
+    long nRet = WsjcppCore::getCurrentTimeInMilliseconds() - m_nCreated;
     nRet = nRet / 1000;
     return nRet;
 }

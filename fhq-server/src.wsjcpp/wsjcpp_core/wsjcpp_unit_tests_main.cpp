@@ -32,20 +32,21 @@ int main(int argc, char** argv) {
 
     if (argc == 1) {
         int nAll = g_pWsjcppUnitTests->size();
-        WsjcppLog::info("runUnitTests",  "All tests count " + std::to_string(nAll));
+        WsjcppLog::info(TAG,  "All tests count " + std::to_string(nAll));
         int nSuccess = 0;
         for (int i = 0; i < g_pWsjcppUnitTests->size(); i++) {
             WsjcppUnitTestBase* pUnitTest = g_pWsjcppUnitTests->at(i);
-            std::string sTestName = pUnitTest->name();
-            WsjcppLog::info("runUnitTests",  "Run test " + sTestName);
-            if (pUnitTest->run()) {
-                WsjcppLog::ok(sTestName,  "Test passed");
+            if (pUnitTest->runTest()) {
                 nSuccess++;
-            } else {
-                WsjcppLog::err(sTestName,  "Test failed");
             }
         }
-        WsjcppLog::info(TAG,  "Passed tests " + std::to_string(nSuccess) + " / " + std::to_string(nAll));
+        if (nSuccess == nAll) {
+            WsjcppLog::ok(TAG, "All unit-tests passed " + std::to_string(nSuccess) + " / " + std::to_string(nAll));
+        } else {
+            WsjcppLog::warn(TAG, "Passed unit-tests " + std::to_string(nSuccess) + " / " + std::to_string(nAll));
+            WsjcppLog::err(TAG, std::to_string(nAll - nSuccess) + " unit-test(s) failed.");
+        }
+
         bool bResult = nSuccess == nAll;
         return bResult ? 0 : -1;
     } else if (argc == 2) {
@@ -54,7 +55,7 @@ int main(int argc, char** argv) {
             std::string sOutput = "\nList of unit-tests:\n";
             for (int i = 0; i < g_pWsjcppUnitTests->size(); i++) {
                 WsjcppUnitTestBase* pUnitTest = g_pWsjcppUnitTests->at(i);
-                sOutput += "  - " + pUnitTest->name() + "\n";
+                sOutput += "  - " + pUnitTest->getName() + "\n";
             }
             WsjcppLog::info(TAG,  sOutput);
             return -1;
@@ -70,13 +71,11 @@ int main(int argc, char** argv) {
             bool bTestFound = false;
             for (int i = 0; i < g_pWsjcppUnitTests->size(); i++) {
                 WsjcppUnitTestBase* pUnitTest = g_pWsjcppUnitTests->at(i);
-                if (pUnitTest->name() == sArg3) {
+                if (pUnitTest->getName() == sArg3) {
                     bTestFound = true;
-                    if (pUnitTest->run()) {
-                        WsjcppLog::ok(TAG, pUnitTest->name() + " Test passed");
+                    bool bResult = pUnitTest->runTest();
+                    if (bResult) {
                         nSuccess++;
-                    } else {
-                        WsjcppLog::err(TAG,  pUnitTest->name() + " Test failed");
                     }
                 }
             }

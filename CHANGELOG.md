@@ -1,18 +1,35 @@
 # fhq-server Cookbook Changelog
 
-This file is used to list changes made in each version of the fhq-server.
+All notable changes to fhq-server project will be documented in this file.
 
-# Notice
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
+and this project adheres to [Semantic Versioning](http://semver.org/).
 
-1. For date of version please use `date -R`
-2. Please use current format, because it will be used for ppa/debian changelog
+## [v0.2.33] - 2020-09-12 (2020 Sep 12)
 
-## [0.2.21] (?)
+### Added
 
-- Code refactoring
+- Added checks from lgtm.com and deepcode.ai
+
+### Changed
+
+- Updated version of wsjcpp-core module
+
+### Fixed
+
+- Minor style in admin page
+
+## [v0.2.21] - 2020-09-12 (2020 Sep 12)
+
+### Added
+
+- Added web-admin sources
 - Prepare jobs_pool mechanizm
 - Integrated light web-server
-- Added web-admin sources
+
+### Changed
+
+- Code refactoring
 
 ## [0.2.20] (Fri, 08 Mar 2019 00:04:42 +0700)
 

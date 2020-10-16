@@ -114,7 +114,7 @@ nlohmann::json EmployServerInfo::toJson() {
 
 void EmployServerInfo::serverStarted() {
     // TODO redesign this to helpers lib
-    m_dtServerStarted = WsjcppCore::currentTime_milliseconds();
+    m_dtServerStarted = WsjcppCore::getCurrentTimeInMilliseconds();
     EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
     pNotify->notifySuccess("server", "Server started");
 }
