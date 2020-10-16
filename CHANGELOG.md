@@ -5,7 +5,7 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.33] - 2020-09-12 (2020 Sep 12)
+## [v0.2.33] - 2020-10-16 (2020 Oct 16)
 
 ### Added
 
