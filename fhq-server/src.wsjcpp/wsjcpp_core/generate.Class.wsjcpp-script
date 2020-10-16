@@ -1,0 +1,81 @@
+#!/usr/bin/wsjcpp-safe-scripting
+
+# log_info rootdir
+# log_info script_filename
+
+make_dir "src"
+
+var user_class_name
+set_value user_class_name arg1
+normalize_class_name user_class_name
+convert_CamelCase_to_snake_case user_class_name user_class_name
+
+var class_name
+set_value class_name arg1
+normalize_class_name class_name
+
+var base_filename
+convert_CamelCase_to_snake_case class_name base_filename
+# log_info base_filename
+
+var filename_cpp
+concat filename_cpp "./src/" base_filename ".cpp"
+
+var filename_h
+concat filename_h "./src/" base_filename ".h"
+
+var ifndef_header
+set_value ifndef_header base_filename
+concat ifndef_header "_H"
+
+to_upper_case ifndef_header
+
+var content_header
+concat content_header "#ifndef " ifndef_header "
+#define " ifndef_header "
+
+#include <string>
+
+class " class_name " {
+    public:
+        " class_name "();
+
+    private:
+        std::string TAG;
+};
+
+#endif // " ifndef_header
+
+ 
+var content_source
+concat content_source  "
+#include \"" base_filename ".h\"
+#include <wsjcpp_core.h>
+
+// ---------------------------------------------------------------------
+// " class_name "
+
+" class_name "::" class_name "() {
+    TAG = \"" class_name "\";
+}
+
+"
+
+var file_source
+concat file_source "src/" filename_cpp
+
+write_file filename_h content_header
+write_file filename_cpp content_source
+
+log_info "
+======
+Generated class:
+    - " class_name "
+Generated files:
+    - " filename_h "
+    - " filename_cpp "
+======
+"
+
+cmakelists_txt_append_wsjcpp filename_h
+cmakelists_txt_append_wsjcpp filename_cpp

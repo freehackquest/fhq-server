@@ -192,7 +192,7 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
         query_token.bindValue(":token", token);
         query_token.bindValue(":status", "active");
         query_token.bindValue(":data", data);
-        long nStartDate = WsjcppCore::currentTime_milliseconds();
+        long nStartDate = WsjcppCore::getCurrentTimeInMilliseconds();
         std::cout << nStartDate << std::endl;
         query_token.bindValue(":start_dt", (long long)nStartDate);
         query_token.bindValue(":end_dt", (long long)(nStartDate + 86400000)); // + 24 hours // TODO must be configurable

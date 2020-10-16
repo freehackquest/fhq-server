@@ -1,0 +1,70 @@
+#!/usr/bin/wsjcpp-safe-scripting
+
+# log_info rootdir
+# log_info script_filename
+
+make_dir "./unit-tests.wsjcpp"
+make_dir "./unit-tests.wsjcpp/src"
+
+var class_name
+set_value class_name arg1
+normalize_class_name class_name
+
+var filename_cpp
+set_value filename_cpp arg2
+
+var content_source
+concat content_source "
+#include <wsjcpp_core.h>
+#include <wsjcpp_unit_tests.h>
+
+// ---------------------------------------------------------------------
+// " class_name "
+
+class " class_name " : public WsjcppUnitTestBase {
+    public:
+        " class_name "();
+        virtual bool doBeforeTest() override;
+        virtual void executeTest() override;
+        virtual bool doAfterTest() override;
+};
+
+REGISTRY_WSJCPP_UNIT_TEST(" class_name ")
+
+" class_name "::" class_name "()
+    : WsjcppUnitTestBase(\"" class_name "\") {
+}
+
+// ---------------------------------------------------------------------
+
+bool " class_name "::doBeforeTest() {
+    // do something before test
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+void " class_name "::executeTest() {
+    compare(\"Not implemented\", true, false);
+    // TODO unit test source code here
+}
+
+// ---------------------------------------------------------------------
+
+bool " class_name "::doAfterTest() {
+    // do somethig after test
+    return true;
+}
+
+"
+
+write_file filename_cpp content_source
+
+log_info "
+======
+Generated class:
+    - " class_name "
+Generated files:
+    - " filename_cpp "
+======
+"

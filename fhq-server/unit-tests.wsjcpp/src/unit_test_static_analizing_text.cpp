@@ -1,6 +1,14 @@
-#include <unit_test_static_analizing_text.h>
+#include "wsjcpp_unit_tests.h"
 #include <utils/utils_static_analizing_text.h>
 #include <vector>
+
+class UnitTestStaticAnalizingText : public WsjcppUnitTestBase {
+    public:
+        UnitTestStaticAnalizingText();
+        virtual bool doBeforeTest();
+        virtual void executeTest();
+        virtual bool doAfterTest();
+};
 
 REGISTRY_WSJCPP_UNIT_TEST(UnitTestStaticAnalizingText)
 
@@ -9,10 +17,12 @@ UnitTestStaticAnalizingText::UnitTestStaticAnalizingText()
     // 
 }
 
-void UnitTestStaticAnalizingText::init() {
+bool UnitTestStaticAnalizingText::doBeforeTest() {
+    // nothing
+    return true;
 }
 
-bool UnitTestStaticAnalizingText::run() {
+void UnitTestStaticAnalizingText::executeTest() {
 
     struct LTest {
         LTest(std::string s1, std::map<char, double> n) : s1(s1), n(n) {}
@@ -42,11 +52,11 @@ bool UnitTestStaticAnalizingText::run() {
         std::string s1 = tests[i]->s1;
         std::map<char, double> n = tests[i]->n;
         std::map<char, double> n1 = UtilsStaticAnalizingText::calc(s1);
-        if (n1 != n) {
-            WsjcppLog::err(TAG, "Failed test #" + std::to_string(i));
-        } else {
-            nSuccess++;
-        }
+        compare("test #" + std::to_string(i), n1 == n, true);
     }
-    return nSuccess == tests.size();
+}
+
+bool UnitTestStaticAnalizingText::doAfterTest() {
+    // nothing
+    return true;
 }

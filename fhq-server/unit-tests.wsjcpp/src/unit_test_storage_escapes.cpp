@@ -1,6 +1,13 @@
-
-#include "unit_test_storage_escapes.h"
+#include <wsjcpp_unit_tests.h>
 #include <wsjcpp_storages.h>
+
+class UnitTestStorageEscapes : public WsjcppUnitTestBase {
+    public:
+        UnitTestStorageEscapes();
+        virtual bool doBeforeTest();
+        virtual void executeTest();
+        virtual bool doAfterTest();
+};
 
 REGISTRY_WSJCPP_UNIT_TEST(UnitTestStorageEscapes)
 
@@ -11,15 +18,16 @@ UnitTestStorageEscapes::UnitTestStorageEscapes()
 
 // ---------------------------------------------------------------------
 
-void UnitTestStorageEscapes::init() {
+bool UnitTestStorageEscapes::doBeforeTest() {
+    // nothing
+    return true;
 }
 
 // ---------------------------------------------------------------------
 
-bool UnitTestStorageEscapes::run() {
-    if (!WsjcppStorages::support("mysql")) {
-        WsjcppLog::err(TAG, "Not supported mysql");
-        return false;
+void UnitTestStorageEscapes::executeTest() {
+    if (!compare("Not supported mysql", WsjcppStorages::support("mysql"), true)) {
+        return;
     }
     WsjcppStorage *pStorage = WsjcppStorages::create("mysql");
     
@@ -41,11 +49,13 @@ bool UnitTestStorageEscapes::run() {
         std::string s1 = tests[i]->s1;
         std::string s2 = "\"" + tests[i]->s2 + "\"";
         std::string s3 = pStorage->prepareStringValue(s1);
-        if (s3 == s2) {
-            nSuccess++;
-        } else {
-            WsjcppLog::err(TAG, "Expected [" + s2 + "], but got [" + s3 + "] for [" + s1 + "]");
-        }
+        compare("sql", s3, s2);
     }
-    return nSuccess == tests.size();
+}
+
+// ---------------------------------------------------------------------
+
+bool UnitTestStorageEscapes::doAfterTest() {
+    // nothing
+    return true;
 }

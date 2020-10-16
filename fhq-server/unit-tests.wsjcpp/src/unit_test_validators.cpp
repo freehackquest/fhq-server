@@ -1,7 +1,15 @@
-#include "unit_test_validators.h"
+#include <wsjcpp_unit_tests.h>
 #include <vector>
 #include <iostream>
 #include <validators/validators.h>
+
+class UnitTestValidators : public WsjcppUnitTestBase {
+    public:
+        UnitTestValidators();
+        virtual bool doBeforeTest();
+        virtual void executeTest();
+        virtual bool doAfterTest();
+};
 
 REGISTRY_WSJCPP_UNIT_TEST(UnitTestValidators)
 
@@ -11,11 +19,12 @@ UnitTestValidators::UnitTestValidators()
     //
 }
 
-void UnitTestValidators::init() {
+bool UnitTestValidators::doBeforeTest() {
     // nothing
+    return true;
 }
 
-bool UnitTestValidators::run() {
+void UnitTestValidators::executeTest() {
 
     struct LTestVld {
         LTestVld(WsjcppValidatorStringBase *pValidator, std::string sValue, bool bExpectedResult) {
@@ -38,15 +47,17 @@ bool UnitTestValidators::run() {
     tests.push_back(new LTestVld(pValidatorGameState, "unlicensed_copy", true));
     tests.push_back(new LTestVld(pValidatorGameState, "some", false));
 
-    bool bTestSuccess = true;
     for (unsigned int i = 0; i < tests.size(); i++) {
         std::string sValue = tests[i]->m_sValue;
         WsjcppValidatorStringBase *pValidator = tests[i]->m_pValidator;
         bool bExpectedResult = tests[i]->m_bExpectedResult;
         std::string sError = "";
         bool bGotResult = pValidator->isValid(sValue, sError);
-        compareB(bTestSuccess, "Test '" + sValue + "' error: " + sError, bGotResult, bExpectedResult);
+        compare("Test '" + sValue + "' error: " + sError, bGotResult, bExpectedResult);
     }
-    return bTestSuccess;
 }
 
+bool UnitTestValidators::doAfterTest() {
+    // nothing
+    return true;
+}

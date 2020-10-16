@@ -33,7 +33,7 @@ WsjcppLightWebHttpRequest::WsjcppLightWebHttpRequest(int nSockFd, const std::str
     m_bClosed = false;
     m_sRequest = "";
     m_nParserState = EnumParserState::START;
-    long nSec = WsjcppCore::currentTime_seconds();
+    long nSec = WsjcppCore::getCurrentTimeInSeconds();
     m_sLastModified = WsjcppCore::formatTimeForWeb(nSec);
     m_nContentLength = 0;
 }
