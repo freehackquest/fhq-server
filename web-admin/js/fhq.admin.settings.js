@@ -30,6 +30,10 @@ function on_click_sett_switcher(el)  {
 	}
 }
 
+function onclick_sett_string(el) {
+	alert("TODO");
+}
+
 fhq.pages['settings'] = function(idelem) {
 	$('.nav-link.main-menu').removeClass("active");
 	$('#menu_settings').addClass("active");
@@ -97,14 +101,17 @@ fhq.pages['settings'] = function(idelem) {
 				$('#' + settid).val(sett.value);
 			} else if(sett.type == 'string' || sett.type == 'dir_path' || sett.type == 'file_path') {
 				$('#' + groupid).append(''
-					+ '<div class="form-group row">'
-					+ '	<label for="' + settid + '" class="col-sm-2 col-form-label">' + fhq.t(settid) + '</label>'
-					+ '	<div class="col-sm-7">'
-					+ '		<input type="text" readonly class="form-control" id="' + settid + '">'
-					+ '	</div>'
-					+ '	<div class="col-sm-2">'
-					+ edit_button
-					+ '	</div>'
+					+ '	<div class="swa-sett">'
+					+ '	  <div class="swa-sett-title">' + fhq.t(settid) + '</div>'
+					+ '	  <div class="swa-sett-value string'
+					+ '  ' + (sett['readonly'] ? 'readonly': '') + '"'
+					+ '       id="' + settid + '"'
+					+ ' >' + sett.value + '</div>'
+					+ '	  <div class="swa-sett-edit'
+					+ '  ' + (sett['readonly'] ? 'readonly': '') + '"'
+					+ '       settname="' + sett.name + '" '
+					+ '       onclick="onclick_sett_string(this);"'
+					+ '   ></div>'
 					+ '</div>'
 				);
 				$('#' + settid).val(sett.value);

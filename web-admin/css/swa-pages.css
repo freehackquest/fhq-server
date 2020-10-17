@@ -186,7 +186,9 @@ h1, h2, h3 {
 }
 
 .swa-sett {
-    display: block;
+    display: inline-block;
+    margin-top: 10px;
+    margin-right: 50px;
 }
 
 .swa-sett-title {
@@ -200,6 +202,21 @@ h1, h2, h3 {
     display: inline-block;
     vertical-align: top;
     height: 25px;
+    line-height: 25px;
+}
+
+.swa-sett-edit {
+    display: inline-block;
+    vertical-align: top;
+    width: 25px;
+    height: 25px;
+    background-size: 25px 25px;
+    background-image: url(../img/sett_edit.svg);
+    cursor: pointer;
+}
+
+.swa-sett-edit.readonly {
+    display: none;
 }
 
 .swa-sett-value.switcher {
@@ -224,4 +241,15 @@ h1, h2, h3 {
 .swa-sett-value.switcher.off.readonly {
     cursor: default;
     background-image: url(../img/switcher_off_readonly.svg);
+}
+
+.swa-sett-value.string {
+    background-color: #000;
+    color: #0f0;
+    border-bottom: 2px solid #080;
+    border-left: 2px solid #080;
+    border-right: 2px solid #0f0;
+    border-top: none;
+    padding-left: 5px;
+    padding-right: 5px;
 }
