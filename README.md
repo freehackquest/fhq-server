@@ -69,7 +69,7 @@ $ ./build_simple.sh
 $ ./unit-tests
 ```
 
-### Run server api tests
+### Run server api tests (after build binaries)
 
 Based on python and pytest. Also please check code by pylint.
 
@@ -79,6 +79,9 @@ Requirements:
 $ sudo apt install python3-pip pylint python3-pytest
 $ pip3 install --user websocket-client
 $ pip3 install --user requests
+$ pip3 install -U pytest
+$ pip3 install --user pytest-env
+$ pip3 install --user docker
 ```
 
 Current run tests:
@@ -89,12 +92,41 @@ $ ./update_libfreehackquestclient.sh # update auto-generate-client-library
 $ python3 run_tests.py # run tests
 ```
 
-New runnign tests (based on pytests-3):
+New running tests (based on pytest):
 
 ```
 $ cd ~/fhq-server.git/tests/server-api-tests/
 $ pylint *.py
-$ pytest-3 *.py
+$ pytest -rAs -c env-local.ini tests_leaks.py *.py
+```
+
+### Run server api tests (docker mode)
+
+Requirements:
+
+```
+$ sudo apt install python3-pip pylint python3-pytest
+$ pip3 install --user websocket-client
+$ pip3 install --user requests
+$ pip3 install -U pytest
+$ pip3 install --user pytest-env
+$ pip3 install --user docker
+$ pip3 install --user libfreehackquestclient
+```
+
+expected also docker.
+
+Pull images
+```
+$ docker pull freehackquest/fhq-server
+$ docker pull mysql:5.7
+```
+
+And now you can try run server-api-tests
+
+```
+$ cd ~/fhq-server.git/tests/server-api-tests
+$ pytest -rAs -c env-docker.ini tests_leaks.py
 ```
 
 ### Web User Interface

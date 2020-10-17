@@ -41,7 +41,7 @@ $ pylint **/*.py
 Run pytests:
 
 ```
-$ pytest-3 -rAs -c for-travis.ini some.py
+$ pytest-3 -rAs -c env-travis.ini some.py
 ```
 
 
