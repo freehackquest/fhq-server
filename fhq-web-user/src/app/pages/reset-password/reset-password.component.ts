@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { L10nTranslationService } from 'angular-l10n';
 import { SpinnerService } from '../../services/spinner.service';
-import { EmailValidatorService } from '../../email-validator.service';
+import { EmailValidatorService } from '../../services/email-validator.service';
 
 declare var fhq: any;
 
