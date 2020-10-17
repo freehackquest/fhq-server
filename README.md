@@ -29,6 +29,54 @@ Backend && Frontend for FreeHackQuest on Qt and WebSockets
 
 * [Doxygen Documentation](https://freehackquest.com/doxygen/)
 
+### Build c++ server
+
+#### Ubuntu/Debian
+
+Requirements:
+
+```
+$ sudo apt install git-core g++ make cmake qtchooser qt5-default libqt5websockets5 libqt5websockets5-dev libqt5sql5-mysql
+```
+New Requirements
+
+```
+$ sudo apt install libwebsockets-dev libcurl4-openssl-dev
+$ sudo apt install zlibc zlib1g zlib1g-dev
+$ sudo apt install libpng-dev
+$ sudo apt install libmysqlclient-dev
+```
+
+Clone repository:
+
+```
+$ git clone https://github.com/freehackquest/fhq-server ~/fhq-server.git
+```
+
+Build:
+
+```
+$ cd ~/fhq-server.git/fhq-server
+$ ./build_simple.sh
+./fhq-server -wd ../ci/travis/data start
+```
+
+Build and run unit-tests:
+
+```
+$ cd ~/fhq-server.git/fhq-server/unit-tests.wsjcpp
+$ ./build_simple.sh
+$ ./unit-tests
+```
+
+### Run integration tests
+
+```
+$ cd ~/fhq-server.git/fhq-server-tests
+$ ./update_libfreehackquestclient.sh # update auto-generate-client-library
+$ python3 run_tests.py # run tests
+```
+
 ### Web User Interface
 
 Fast to fix and develop for current server version
@@ -42,11 +90,11 @@ $ npm run start
 
 In a file `~/fhq-server.git/fhq-web-user/src/app/services/fhq.service.ts`
 And then you can just uncomment line:
-``` cpp
+```
 // baseUrl = 'ws://freehackquest.com/api-ws/';
 ```
 to 
-``` cpp
+```
 baseUrl = 'ws://freehackquest.com/api-ws/';
 ```
 
