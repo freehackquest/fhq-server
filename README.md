@@ -69,12 +69,32 @@ $ ./build_simple.sh
 $ ./unit-tests
 ```
 
-### Run integration tests
+### Run server api tests
+
+Based on python and pytest. Also please check code by pylint.
+
+Requirements:
+
+```
+$ sudo apt install python3-pip pylint python3-pytest
+$ pip3 install --user websocket-client
+$ pip3 install --user requests
+```
+
+Current run tests:
 
 ```
 $ cd ~/fhq-server.git/fhq-server-tests
 $ ./update_libfreehackquestclient.sh # update auto-generate-client-library
 $ python3 run_tests.py # run tests
+```
+
+New runnign tests (based on pytests-3):
+
+```
+$ cd ~/fhq-server.git/tests/server-api-tests/
+$ pylint *.py
+$ pytest-3 *.py
 ```
 
 ### Web User Interface

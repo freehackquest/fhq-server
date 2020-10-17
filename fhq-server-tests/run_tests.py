@@ -15,7 +15,6 @@ import libtestscoreboard
 import libtestpublicevents
 import libteststats
 import libtestquests
-import tests_collection
 import libtestgames
 import libtestknowledgebase
 import libtestserversettings
@@ -28,7 +27,6 @@ TESTS = [
     libtestquests,
     libtestscoreboard,
     libtestpublicevents,
-    tests_collection.leaks,
     libtestknowledgebase,
     libtestserversettings,
     libteststats
