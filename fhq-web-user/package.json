@@ -33,6 +33,7 @@
     "angular-l10n": "^9.3.0",
     "bootstrap": "~4.5.0",
     "core-js": "^3.6.5",
+    "flag-icon-css": "^3.5.0",
     "font-awesome": "^4.7.0",
     "freehackquest-libclient-web-js": "^0.2.30",
     "jquery": "^3.5.1",
