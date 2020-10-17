@@ -632,6 +632,7 @@ bool EmployGlobalSettings::EmployGlobalSettings::init() {
 
 bool EmployGlobalSettings::deinit() {
     // TODO
+    return true;
 }
 
 // ---------------------------------------------------------------------
@@ -795,6 +796,7 @@ bool EmployGlobalSettings::initFromDatabase(WsjcppSettingsStore *pDatabaseSettin
             m_pDatabaseSettingsStore->initSettingItem(pItem);
         }
     }
+    return true;
 }
 
 // ---------------------------------------------------------------------
@@ -1041,6 +1043,7 @@ bool EmployServer::init() {
 
 bool EmployServer::deinit() {
     // TODO
+    return true;
 }
 
 // ---------------------------------------------------------------------
