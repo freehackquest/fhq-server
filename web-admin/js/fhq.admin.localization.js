@@ -712,15 +712,11 @@ fhq.localization = {
 	},
 	'setting_name_web_public_folder': {
 		'en': 'Public Folder Path',
-		'ru': 'Public Folder Path'
+		'ru': 'Public Folder Path',
 	},
 	'setting_name_web_public_folder_url': {
 		'en': 'Public Folder URL:',
 		'ru': 'Public Folder URL:'
-	},
-	'setting_name_server_folder_quests': {
-		'en': 'Quests Folder URL:',
-		'ru': 'Quests Folder URL:'
 	},
 	'setting_name_server_folder_quests': {
 		'en': 'Quests Folder:',
@@ -761,10 +757,6 @@ fhq.localization = {
 	'setting_name_web_max_threads': {
 		'en': 'Web Max Threads:',
 		'ru': 'Web Max Threads:'
-	},
-	'setting_name_web_public_folder': {
-		'en': 'Web Public Folder:',
-		'ru': 'Web Public Folder:'
 	},
 	'setting_name_web_user_folder': {
 		'en': 'Web User Folder:',
