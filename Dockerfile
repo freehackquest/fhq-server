@@ -14,7 +14,7 @@ RUN npm install && npm run build-prod
 
 FROM freehackquest/fhq-docker-common:latest
 
-LABEL "maintainer"="FreeHackQuest Team <freehackquest@gmail.com>"
+LABEL "maintainer"="Evgenii Sopov <mrseakg@gmail.com>"
 LABEL "repository"="https://github.com/freehackquest/fhq-server"
 
 COPY --from=0 /root/fhq-server/fhq-server /usr/bin/fhq-server
