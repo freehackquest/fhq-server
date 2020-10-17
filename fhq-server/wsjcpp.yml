@@ -3,7 +3,7 @@ cmake_minimum_required: 3.0
 cmake_cxx_standard: 11
 
 name: "fhq-server"
-version: v0.2.33
+version: v0.2.34
 description: "This is an open source platform for competitions of computer security."
 issues: "https://github.com/freehackquest/fhq-server/issues"
 
@@ -20,7 +20,6 @@ required-pkg-config:
 repositories:
   - type: main
     url: "https://github.com/freehackquest/fhq-server"
-
 authors:
   - name: Evgenii Sopov
     email: mrseakg@gmail.com
@@ -30,7 +29,6 @@ authors:
     email: "sergo.moreno@gmail.com"
   - name: "Danil Dudkin"
     email: "shikamaru740@gmail.com"
-
 dependencies:
   - name: "wsjcpp-levenshtein"
     version: "v0.0.1"
@@ -93,7 +91,6 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-parse-conf:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_parse_conf"
-
 distribution:
   - source-file: "src/core/fallen.cpp"
     target-file: "fallen.cpp"
@@ -125,7 +122,6 @@ distribution:
   - source-file: "src/storages/mysql/mysql_storage.cpp"
     target-file: "mysql_storage.cpp"
     type: "source-code"
-
 unit-tests:
   cases:
     - name: "Validators"
