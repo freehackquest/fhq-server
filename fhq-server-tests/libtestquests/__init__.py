@@ -159,12 +159,12 @@ def run_tests():
     fhqtest.alert(resp['result'] == 'FAIL', 'Wrong response')
     fhqtest.alert(resp['data'][0]['questid'] != questid, 'Wrong work filter by gameid in request quests')
 
-    resp = fhqtest.user_session.quest_pass({
+    fhqtest.user_session.quest_pass({
         "questid": quest1_updated['id'],
         "answer": "some answer 1"
     })
     time.sleep(1.0)
-    resp = fhqtest.user_session.quest_pass({
+    fhqtest.user_session.quest_pass({
         "questid": quest1_updated['id'],
         "answer": "some answer 2"
     })

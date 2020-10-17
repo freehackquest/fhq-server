@@ -109,10 +109,6 @@ fhq.localization = {
 		'en': 'team',
 		'ru': 'команда'
 	},
-	'Contacts':{
-		'en': 'Contacts',
-		'ru': 'Контакты'
-	},
 	'Thanks for':{
 		'en': 'Thanks for',
 		'ru': 'Благодарности'
@@ -188,10 +184,6 @@ fhq.localization = {
 	'Hints':{
 		'en': 'Hints',
 		'ru': 'Подсказки'
-	},
-	'Statistics':{
-		'en': 'Statistics',
-		'ru': 'Статистика'
 	},
 	'Export':{
 		'en': 'Export',

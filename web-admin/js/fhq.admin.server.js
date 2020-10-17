@@ -89,7 +89,7 @@ fhq.pages['server_info'] = function(){
 			+ '</div><br>'
 		);
 		
-		msgs = r.data.last_log_messages;
+		var msgs = r.data.last_log_messages;
 		for(var i in msgs){
 			$('#last_log_messages').append(''
 				+ '	<tr>'

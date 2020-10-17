@@ -72,7 +72,7 @@ def run_tests():
     fhqtest.check_values("description of game", game2['description'], game_description)
     fhqtest.check_values("maxscore of game", game2['maxscore'], 0)
 
-    gameid = game2['local_id']
+    # gameid = game2['local_id']
     # print("gameid: " + str(gameid))
 
     # list of games

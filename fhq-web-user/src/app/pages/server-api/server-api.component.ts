@@ -15,7 +15,7 @@ export class ServerApiComponent implements OnInit {
   errorMessage: String = null;
   serverWsPort: number = -1;
   serverWssPort: number = -1;
-  serverHost: string = 'some';
+  serverHost: string = null;
   currentProtocol: string = 'http:';
   constructor(
     private _spinnerService: SpinnerService,
