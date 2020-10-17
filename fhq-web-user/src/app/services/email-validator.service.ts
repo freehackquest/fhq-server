@@ -12,6 +12,7 @@ export class EmailValidatorService {
 
   checkEmail(email: string) {
     let emailWrongDomains = {};
+    // TODO move to server on registration and on login
     emailWrongDomains['yndex.ru'] = {prop: ["yandex.ru"]};
     emailWrongDomains['yadnex.ru'] = {prop: ["yandex.ru"]};
     emailWrongDomains['mil.ru'] = {prop: ["mail.ru"]};
@@ -21,6 +22,7 @@ export class EmailValidatorService {
     emailWrongDomains['gmial.com'] = {prop: ["gmail.com"]};
     emailWrongDomains['gmal.com'] = {prop: ["gmail.com"]};
     emailWrongDomains['inbox.ry'] = {prop: ["inbox.ru"]};
+    emailWrongDomains['gamil.com'] = {prop: ["gmail.com"]};
 
     const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     let ret = {result: false, error: ""}
