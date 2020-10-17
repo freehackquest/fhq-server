@@ -184,3 +184,44 @@ h1, h2, h3 {
     margin-bottom: 10px;
     padding: 10px;
 }
+
+.swa-sett {
+    display: block;
+}
+
+.swa-sett-title {
+    display: inline-block;
+    vertical-align: top;
+    height: 25px;
+    line-height: 25px;
+}
+
+.swa-sett-value {
+    display: inline-block;
+    vertical-align: top;
+    height: 25px;
+}
+
+.swa-sett-value.switcher {
+    width: 50px;
+    background-size: 50px 25px;
+    cursor: pointer;
+}
+
+.swa-sett-value.switcher.on {
+    background-image: url(../img/switcher_on.svg);
+}
+
+.swa-sett-value.switcher.off {
+    background-image: url(../img/switcher_off.svg);
+}
+
+.swa-sett-value.switcher.on.readonly {
+    cursor: none;
+    background-image: url(../img/switcher_on_readonly.svg);
+}
+
+.swa-sett-value.switcher.off.readonly {
+    cursor: default;
+    background-image: url(../img/switcher_off_readonly.svg);
+}

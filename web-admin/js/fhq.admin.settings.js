@@ -1,6 +1,35 @@
 if(!window.fhq) window.fhq = {};
 if(!fhq.pages) fhq.pages = [];
 
+function on_click_sett_switcher(el)  {
+	if (el.classList.contains('readonly')) {
+		return;
+	}
+	var data = {}
+	for (var i = 0; i < el.attributes.length; i++) {
+		if (el.attributes[i].name == 'settname') {
+			data.name = el.attributes[i].value;
+		}
+	}
+	if (el.classList.contains('on')) {
+		data.value = 'no';
+		fhq.ws.server_settings_update(data).done(function(r){
+			el.classList.remove('on');
+			el.classList.add('off');
+		}).fail(function(err){
+			console.error(err);
+		})
+	} else if (el.classList.contains('off')) {
+		data.value = 'yes';
+		fhq.ws.server_settings_update(data).done(function(r){
+			el.classList.remove('off');
+			el.classList.add('on');
+		}).fail(function(err){
+			console.error(err);
+		})
+	}
+}
+
 fhq.pages['settings'] = function(idelem) {
 	$('.nav-link.main-menu').removeClass("active");
 	$('#menu_settings').addClass("active");
@@ -94,17 +123,13 @@ fhq.pages['settings'] = function(idelem) {
 				$('#' + settid).html(sett.value);
 			} else if(sett.type == 'boolean') {
 				$('#' + groupid).append(''
-					+ '<div class="form-group row">'
-					+ '	<label for="' + settid + '" class="col-sm-2 col-form-label">' + fhq.t(settid) + '</label>'
-					+ '	<div class="col-sm-7">'
-					+ '		<select disabled class="form-control" id="' + settid + '">'
-					+ '			<option name="no">no</option>'
-					+ '			<option name="yes">yes</option>'
-					+ '		<select class="form-control">'
-					+ '	</div>'
-					+ '	<div class="col-sm-2">'
-					+ edit_button
-					+ '	</div>'
+					+ '	<div class="swa-sett">'
+					+ '	  <div class="swa-sett-title">' + fhq.t(settid) + '</div>'
+					+ '	  <div class="swa-sett-value switcher ' + (sett.value == true ? 'on' : 'off')
+					+ '  ' + (sett['readonly'] ? 'readonly': '') + '"'
+					+ '      onclick="on_click_sett_switcher(this);" id="' + settid + '"'
+					+ '     settname="' + sett.name + '" '
+					+ ' ></div>'
 					+ '</div>'
 				);
 				$('#' + settid).val(sett.value == true ? 'yes' : 'no');
@@ -112,7 +137,6 @@ fhq.pages['settings'] = function(idelem) {
 				console.error("Unknown type of settings: ", sett)
 			}
 		}
-		
 		
 		$('.edit-settings').unbind().bind('click', function(){
 			$('#modalSettings').modal('show');
@@ -139,15 +163,6 @@ fhq.pages['settings'] = function(idelem) {
 					+ '<p id="modalSettings_error"></p>'
 				);
 				$('#modalSettings_newval').html(val);
-			} else if(setttype == 'boolean') {
-				$('#modalSettings .modal-body').append(''
-					+ '		<select class="form-control" id="modalSettings_newval">'
-					+ '			<option name="no">no</option>'
-					+ '			<option name="yes">yes</option>'
-					+ '		<select class="form-control">'
-					+ '<p id="modalSettings_error"></p>'
-				);
-				$('#modalSettings_newval').val(val);
 			} else if(setttype == 'password') {
 				$('#modalSettings .modal-body').append(
 					'<input type="password" class="form-control" id="modalSettings_newval">'

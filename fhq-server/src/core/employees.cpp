@@ -1018,6 +1018,7 @@ EmployServer::EmployServer()
 
     // TODO move to userprofiles
     pGlobalSettings->registrySetting("user_profile", "profile_change_nick").boolean(true).inDatabase();
+    pGlobalSettings->registrySetting("functional", "allow_quests_proposals").boolean(true).inDatabase();
 }
 
 // ---------------------------------------------------------------------

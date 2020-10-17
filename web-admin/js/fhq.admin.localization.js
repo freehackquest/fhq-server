@@ -774,6 +774,14 @@ fhq.localization = {
 		'en': 'Log Dir:',
 		'ru': 'Log Dir:'
 	},
+	"settings_group_functional": {
+		'en': 'Functional:',
+		'ru': 'Функционал:',
+	},
+	"setting_name_allow_quests_proposals": {
+		'en': 'Allow Quests Proposals:',
+		'ru': 'Разрешить предлагать квесты:',
+	},
 	'Open':{
 		'en': 'Open',
 		'ru': 'Открыть'

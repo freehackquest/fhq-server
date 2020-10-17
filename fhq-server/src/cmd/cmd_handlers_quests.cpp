@@ -775,11 +775,16 @@ CmdHandlerQuestProposal::CmdHandlerQuestProposal()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+    bool bAllow = pGlobalSettings->get("allow_quests_proposals").getBooleanValue();
+    if (!bAllow) {
+        pRequest->sendMessageError(cmd(), WsjcppError(403, "Prohibited by settings"));
+        return;
+    }
+
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
-
-    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
 
     QSqlDatabase db = *(pDatabase->database());
 
