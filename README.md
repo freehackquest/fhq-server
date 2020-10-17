@@ -17,11 +17,12 @@ Backend && Frontend for FreeHackQuest on Qt and WebSockets
 
 ## Distribution
 
-| What           | Where         |
-| -------------- | ------------- |
-| fhq-server     | [![Docker Pulls](https://img.shields.io/docker/pulls/freehackquest/fhq-server.svg)](https://hub.docker.com/r/freehackquest/fhq-server/)  |
+| What                    | Where         |
+| ----------------------- | ------------- |
+| fhq-server (docker)     | [![Docker Pulls](https://img.shields.io/docker/pulls/freehackquest/fhq-server.svg)](https://hub.docker.com/r/freehackquest/fhq-server/)  |
+| fhq-server (vm)         | [https://freehackquest.com/dist/](https://freehackquest.com/dist/)  |
 | client library (python) | [![npm version](https://badge.fury.io/js/freehackquest-libclient-web-js.svg)](https://badge.fury.io/js/freehackquest-libclient-web-js) |
-| client library (js) | [![PyPI version](https://badge.fury.io/py/libfreehackquestclient.svg)](https://badge.fury.io/py/libfreehackquestclient) |
+| client library (js)     | [![PyPI version](https://badge.fury.io/py/libfreehackquestclient.svg)](https://badge.fury.io/py/libfreehackquestclient) |
 
 
 ## For developers
