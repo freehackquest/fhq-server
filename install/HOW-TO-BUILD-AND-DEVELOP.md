@@ -82,7 +82,7 @@ $ npm run build-prod
 Run server:
 ```
 $ cd ~/freehackquest/fhq-server.git/fhq-server
-$ ./fhq-server -wd ../data_travis start
+$ ./fhq-server -wd ../ci/travis/data start
 ```
 
 * Web you can see here: `http://localhost:7080/`

@@ -46,9 +46,9 @@ check_ret $? "change directory to fhq-server"
 qmake --version # TODO when will be removed all then qt need remove this line
 ./build_simple.sh
 check_ret $? "build fhq-server"
-./fhq-server -wd ../data_travis version
+./fhq-server -wd ../ci/travis/data version
 check_ret $? "print version of fhq-server"
-./fhq-server -wd ../data_travis -cdc
+./fhq-server -wd ../ci/travis/data -cdc
 check_ret $? "test connection to database"
 cd ..
 

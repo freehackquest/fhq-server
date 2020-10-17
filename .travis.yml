@@ -31,7 +31,7 @@ install:
 
 # Build your code e.g. by calling make
 script:
-  - ./run_travis.sh
+  - ./ci/travis/run.sh
 
 notifications:
   email:
