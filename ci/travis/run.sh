@@ -15,13 +15,13 @@ check_ret() {
     fi
 } 
 
-cd code-check
+cd tests/code-check
 check_ret $? "change directory to code-check"
 ./build_simple.sh
 check_ret $? "build code-check"
-./code-check --show-only-errors ..
+./code-check --show-only-errors ../..
 check_ret $? "code-check"
-cd ..
+cd ../..
 
 cd fhq-server/unit-tests.wsjcpp
 check_ret $? "change directory to unit-tests.wsjcpp"
