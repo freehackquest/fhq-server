@@ -28,6 +28,7 @@ def test_leak_creation(admin_session, game1_uuid):
         "content": "some_secret_content",
         "score": 100
     })
+    print(leak1)
     # Could not get response
     assert leak1 is not None
     assert leak1['result'] == 'DONE'

@@ -66,7 +66,7 @@ check_ret $? "Change directory to tests/server-api-tests"
 check_ret $? "Update libfreehackquestclient python library"
 pylint tests_leaks.py
 check_ret $? "Check by pylint tests_leaks.py"
-pytest-3 -rAs tests_leaks.py
+pytest-3 -rAs -c env-travis.ini tests_leaks.py
 check_ret $? "Run tests_leaks.py"
 cd ../..
 
