@@ -11,7 +11,7 @@ import shutil
 import json
 from pprint import pprint
 
-test_name = 'Games'
+TEST_NAME = 'Games'
 
 def run_tests():
     # Cleanup

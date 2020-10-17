@@ -54,10 +54,10 @@ cd ..
 
 cd fhq-server-tests
 check_ret $? "Change directory to tests"
-pylint test_leaks.py
-check_ret $? "Pylint test_leaks.py"
+pylint tests_collection/*.py
+check_ret $? "Check tests_collection/*.py by pylint"
 ./update_libfreehackquestclient.sh
-check_ret $? "update libfreehackquestclient python library"
+check_ret $? "Update libfreehackquestclient python library"
 python3 run_tests.py # run tests
 check_ret $? "tests"
 

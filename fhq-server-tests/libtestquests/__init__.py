@@ -8,7 +8,7 @@ import base64
 from pprint import pprint
 import time
 
-test_name = 'Testing Quests'
+TEST_NAME = 'Testing Quests'
 
 def run_tests():
     # Cleanup

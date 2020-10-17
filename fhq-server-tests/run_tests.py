@@ -15,20 +15,20 @@ import libtestscoreboard
 import libtestpublicevents
 import libteststats
 import libtestquests
-import libtestleaks
+import tests_collection
 import libtestgames
 import libtestknowledgebase
 import libtestserversettings
 
-tests_passed = False
-tests = [
+TESTS_PASSED = False
+TESTS = [
     libtestwebserver,
     libtestusers,
     libtestgames,
     libtestquests,
     libtestscoreboard,
     libtestpublicevents,
-    libtestleaks,
+    tests_collection.leaks,
     libtestknowledgebase,
     libtestserversettings,
     libteststats
@@ -38,19 +38,19 @@ try:
     fhqtest.print_header(" > > > TESTS: begin ")
     libtestfhq.start_server()
     fhqtest.init_enviroment()
-    for t in tests:
-        fhqtest.print_header(" > > > " + t.test_name + ": begin ")
+    for t in TESTS:
+        fhqtest.print_header(" > > > " + t.TEST_NAME + ": begin ")
         try:
             t.run_tests()
         except Exception as e:
             fhqtest.deinit_enviroment()
             fhqtest.throw_err("Some tests wrong")
-            exit(-1)
-        fhqtest.print_header(" > > > " + t.test_name + ": end ")
-    tests_passed = True
+            sys.exit(-1)
+        fhqtest.print_header(" > > > " + t.TEST_NAME + ": end ")
+    TESTS_PASSED = True
 finally:
     fhqtest.print_header(" > > > TESTS: end ")
-    if tests_passed:
+    if TESTS_PASSED:
         fhqtest.print_success("All tests passed")
     else:
         fhqtest.log_err("Some tests failed")

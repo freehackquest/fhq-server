@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Test leaks api
+run leaks tests api
 """
 
 import fhqtest
-import libtestleaks
+import tests_collection
 try:
     fhqtest.init_enviroment()
-    libtestleaks.run_tests()
+    tests_collection.leaks.run_tests()
 finally:
     fhqtest.deinit_enviroment()
