@@ -1783,6 +1783,7 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
             int nScore = record.value("score").toInt();
             QString sCreated = record.value("created").toString();
             QString sSubject = record.value("subject").toString().toHtmlEscaped();
+            QString sText = record.value("text").toString().toHtmlEscaped();
 
             nlohmann::json jsonQuestProposal;
             jsonQuestProposal["id"] = nID;
@@ -1796,6 +1797,7 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
             jsonQuestProposal["created"] = sCreated.toStdString();
             jsonQuestProposal["subject"] = sSubject.toStdString();
             jsonQuestProposal["confirmed"] = nConfirmed;
+            jsonQuestProposal["text"] = sText.toStdString();
 
             jsonQuestsProposal.push_back(jsonQuestProposal);
         }
