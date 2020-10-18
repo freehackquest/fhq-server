@@ -505,7 +505,7 @@ void ExportLibWsjCppCliPy::export__init__py() {
             .add("request_json = self.generate_base_command('" + sCmd + "')");
            
         // check required
-        nRequired = 0
+        int nRequired = 0;
         if (vVin.size() > 0) {
             builder.sub("allowed_params = [");
             for (int i = 0; i < vVin.size(); i++) {
