@@ -68,7 +68,7 @@ python3 -m pylint --version
 # in next time replace to 'pylint **/*.py'
 python3 -m pylint --rcfile=.pylintrc  test_leaks.py
 check_ret $? "Check by pylint tests_leaks.py"
-pytest-3 -rAs -c env-travis.ini
+python3 -m pytest -rAs -c env-travis.ini
 check_ret $? "Run tests_leaks.py"
 cd ../..
 
