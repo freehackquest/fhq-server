@@ -31,6 +31,7 @@ install:
   - pip3 install --user requests
   - pip3 install --user pylint
   - pip3 install --user pytest
+  - pip3 install --user docker
   - pip3 install --user pytest-env
   
 
