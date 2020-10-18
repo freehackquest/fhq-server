@@ -1811,7 +1811,7 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
 
 
 CmdHandlerQuestsFilesUpload::CmdHandlerQuestsFilesUpload()
-    : CmdHandlerBase("quests_files_upload", "Update the quest ") {
+    : CmdHandlerBase("quests_files_upload", "Update the quest") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1820,8 +1820,8 @@ CmdHandlerQuestsFilesUpload::CmdHandlerQuestsFilesUpload()
     // validation and description input fields
     requireStringParam("quest_uuid", "Quest UUID")
         .addValidator(new WsjcppValidatorUUID());
-    requireStringParam("file_base64", "");
-    requireStringParam("file_name", "");
+    requireStringParam("file_base64", "Byte-array encoded in base64");
+    requireStringParam("file_name", "File name");
 }
 
 // ---------------------------------------------------------------------
