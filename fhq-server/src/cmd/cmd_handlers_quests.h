@@ -163,9 +163,8 @@ class CmdHandlerHints : public CmdHandlerBase {
 
 REGISTRY_CMD(CmdHandlerHints)
 
-// *******************************************
-// ********* Quests Proposal List ************
-// *******************************************
+// ---------------------------------------------------------------------
+// CmdHandlerQuestsProposalList
 
 class CmdHandlerQuestsProposalList : public CmdHandlerBase {
     public:
@@ -175,9 +174,8 @@ class CmdHandlerQuestsProposalList : public CmdHandlerBase {
 
 REGISTRY_CMD(CmdHandlerQuestsProposalList)
 
-// *******************************************
-// ********* Quests Proposal List ************
-// *******************************************
+// ---------------------------------------------------------------------
+// CmdHandlerQuestsFilesUpload
 
 class CmdHandlerQuestsFilesUpload : public CmdHandlerBase {
     public:

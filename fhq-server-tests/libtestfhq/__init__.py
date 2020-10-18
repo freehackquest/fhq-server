@@ -17,7 +17,7 @@ def start_server():
     wd = os.getcwd()
     print(wd)
     os.chdir(wd + "/../fhq-server")
-    p_fhq_server = subprocess.Popen([wd + '/../fhq-server/fhq-server', '-wd', '../data_travis', 'start'])
+    p_fhq_server = subprocess.Popen([wd + '/../fhq-server/fhq-server', '-wd', '../ci/travis/data', 'start'])
     os.chdir(wd)
 
     wait_max = 20

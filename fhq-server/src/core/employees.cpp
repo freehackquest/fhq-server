@@ -632,6 +632,7 @@ bool EmployGlobalSettings::EmployGlobalSettings::init() {
 
 bool EmployGlobalSettings::deinit() {
     // TODO
+    return true;
 }
 
 // ---------------------------------------------------------------------
@@ -795,6 +796,7 @@ bool EmployGlobalSettings::initFromDatabase(WsjcppSettingsStore *pDatabaseSettin
             m_pDatabaseSettingsStore->initSettingItem(pItem);
         }
     }
+    return true;
 }
 
 // ---------------------------------------------------------------------
@@ -1016,6 +1018,7 @@ EmployServer::EmployServer()
 
     // TODO move to userprofiles
     pGlobalSettings->registrySetting("user_profile", "profile_change_nick").boolean(true).inDatabase();
+    pGlobalSettings->registrySetting("functional", "allow_quests_proposals").boolean(true).inDatabase();
 }
 
 // ---------------------------------------------------------------------
@@ -1041,6 +1044,7 @@ bool EmployServer::init() {
 
 bool EmployServer::deinit() {
     // TODO
+    return true;
 }
 
 // ---------------------------------------------------------------------

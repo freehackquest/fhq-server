@@ -11,7 +11,7 @@ import shutil
 import json
 from pprint import pprint
 
-test_name = 'Games'
+TEST_NAME = 'Games'
 
 def run_tests():
     # Cleanup
@@ -72,7 +72,7 @@ def run_tests():
     fhqtest.check_values("description of game", game2['description'], game_description)
     fhqtest.check_values("maxscore of game", game2['maxscore'], 0)
 
-    gameid = game2['local_id']
+    # gameid = game2['local_id']
     # print("gameid: " + str(gameid))
 
     # list of games

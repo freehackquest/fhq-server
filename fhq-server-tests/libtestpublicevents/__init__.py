@@ -8,7 +8,7 @@ import base64
 import time
 from pprint import pprint
 
-test_name = 'Testing Public Events'
+TEST_NAME = 'Testing Public Events'
 
 def run_tests():
    

@@ -11,7 +11,7 @@ import shutil
 import json
 from pprint import pprint
 
-test_name = 'ServerSettings'
+TEST_NAME = 'ServerSettings'
 
 def run_tests():
     fhqtest.print_bold("Try update readonly sett...")

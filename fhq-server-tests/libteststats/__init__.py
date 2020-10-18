@@ -11,7 +11,7 @@ import shutil
 import json
 from pprint import pprint
 
-test_name = 'Statistics'
+TEST_NAME = 'Statistics'
 
 def run_tests():
     server_api = fhqtest.admin_session.server_api({})

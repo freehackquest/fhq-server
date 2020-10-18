@@ -1,0 +1,6 @@
+websocket-client>=0.48.0
+libfreehackquestclient>=0.2.24
+requests>=2.21.0
+pytest
+pytest-env
+docker

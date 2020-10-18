@@ -10,7 +10,7 @@ Backend && Frontend for FreeHackQuest on Qt and WebSockets
 * [HOW-TO-BUILD-AND-DEVELOP](https://github.com/freehackquest/fhq-server/tree/master/install/HOW-TO-BUILD-AND-DEVELOP.md)
 * [PRE-BUILDS](https://github.com/freehackquest/fhq-server/tree/master/install/PRE-BUILDS.md)
 * [INSTALL_FROM_PPA](https://github.com/freehackquest/fhq-server/tree/master/install/INSTALL_FROM_PPA.md)
-* [DOXYGEN](https://freehackquest.com/doxygen/)
+
 * Configure autostart
 	* [SYSTEMD](install/SYSTEMD.md)
 	* [INITD](install/INITD.md)
@@ -27,6 +27,108 @@ Backend && Frontend for FreeHackQuest on Qt and WebSockets
 
 ## For developers
 
+* [Doxygen Documentation](https://freehackquest.com/doxygen/)
+
+### Build c++ server
+
+#### Ubuntu/Debian
+
+Requirements:
+
+```
+$ sudo apt install git-core g++ make cmake qtchooser qt5-default libqt5websockets5 libqt5websockets5-dev libqt5sql5-mysql
+```
+New Requirements
+
+```
+$ sudo apt install libwebsockets-dev libcurl4-openssl-dev
+$ sudo apt install zlibc zlib1g zlib1g-dev
+$ sudo apt install libpng-dev
+$ sudo apt install libmysqlclient-dev
+```
+
+Clone repository:
+
+```
+$ git clone https://github.com/freehackquest/fhq-server ~/fhq-server.git
+```
+
+Build:
+
+```
+$ cd ~/fhq-server.git/fhq-server
+$ ./build_simple.sh
+./fhq-server -wd ../ci/travis/data start
+```
+
+Build and run unit-tests:
+
+```
+$ cd ~/fhq-server.git/fhq-server/unit-tests.wsjcpp
+$ ./build_simple.sh
+$ ./unit-tests
+```
+
+### Run server api tests (after build binaries)
+
+Based on python and pytest. Also please check code by pylint.
+
+Requirements:
+
+```
+$ sudo apt install python3-pip pylint python3-pytest
+$ pip3 install --user websocket-client
+$ pip3 install --user requests
+$ pip3 install -U pytest
+$ pip3 install --user pytest-env
+$ pip3 install --user docker
+```
+
+Current run tests:
+
+```
+$ cd ~/fhq-server.git/fhq-server-tests
+$ ./update_libfreehackquestclient.sh # update auto-generate-client-library
+$ python3 run_tests.py # run tests
+```
+
+New running tests (based on pytest):
+
+```
+$ cd ~/fhq-server.git/tests/server-api-tests/
+$ pylint *.py
+$ pytest -rAs -c env-local.ini tests_leaks.py *.py
+```
+
+### Run server api tests (docker mode)
+
+Requirements:
+
+```
+$ sudo apt install python3-pip pylint python3-pytest
+$ pip3 install --user websocket-client
+$ pip3 install --user requests
+$ pip3 install -U pytest
+$ pip3 install --user pytest-env
+$ pip3 install --user docker
+$ pip3 install --user libfreehackquestclient
+```
+
+expected also docker.
+
+Pull images
+```
+$ docker pull freehackquest/fhq-server
+$ docker pull mysql:5.7
+```
+
+And now you can try run server-api-tests
+
+```
+$ cd ~/fhq-server.git/tests/server-api-tests
+$ pytest -rAs -c env-docker.ini tests_leaks.py
+```
+
 ### Web User Interface
 
 Fast to fix and develop for current server version
@@ -40,11 +142,11 @@ $ npm run start
 
 In a file `~/fhq-server.git/fhq-web-user/src/app/services/fhq.service.ts`
 And then you can just uncomment line:
-``` cpp
+```
 // baseUrl = 'ws://freehackquest.com/api-ws/';
 ```
 to 
-``` cpp
+```
 baseUrl = 'ws://freehackquest.com/api-ws/';
 ```
 

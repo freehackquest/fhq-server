@@ -11,7 +11,7 @@ import shutil
 import json
 from pprint import pprint
 
-test_name = 'Testing Scoreboard'
+TEST_NAME = 'Testing Scoreboard'
 
 def run_tests():
     # Cleanup

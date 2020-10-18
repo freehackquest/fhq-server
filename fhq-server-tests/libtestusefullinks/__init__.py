@@ -12,7 +12,7 @@ import json
 from pprint import pprint
 import libtestusefullinks
 
-test_name = 'Testing Useful Links'
+TEST_NAME = 'Testing Useful Links'
 
 def run_tests():
    
