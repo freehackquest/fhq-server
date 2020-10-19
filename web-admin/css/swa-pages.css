@@ -184,3 +184,72 @@ h1, h2, h3 {
     margin-bottom: 10px;
     padding: 10px;
 }
+
+.swa-sett {
+    display: inline-block;
+    margin-top: 10px;
+    margin-right: 50px;
+}
+
+.swa-sett-title {
+    display: inline-block;
+    vertical-align: top;
+    height: 25px;
+    line-height: 25px;
+}
+
+.swa-sett-value {
+    display: inline-block;
+    vertical-align: top;
+    height: 25px;
+    line-height: 25px;
+}
+
+.swa-sett-edit {
+    display: inline-block;
+    vertical-align: top;
+    width: 25px;
+    height: 25px;
+    background-size: 25px 25px;
+    background-image: url(../img/sett_edit.svg);
+    cursor: pointer;
+}
+
+.swa-sett-edit.readonly {
+    display: none;
+}
+
+.swa-sett-value.switcher {
+    width: 50px;
+    background-size: 50px 25px;
+    cursor: pointer;
+}
+
+.swa-sett-value.switcher.on {
+    background-image: url(../img/switcher_on.svg);
+}
+
+.swa-sett-value.switcher.off {
+    background-image: url(../img/switcher_off.svg);
+}
+
+.swa-sett-value.switcher.on.readonly {
+    cursor: none;
+    background-image: url(../img/switcher_on_readonly.svg);
+}
+
+.swa-sett-value.switcher.off.readonly {
+    cursor: default;
+    background-image: url(../img/switcher_off_readonly.svg);
+}
+
+.swa-sett-value.string {
+    background-color: #000;
+    color: #0f0;
+    border-bottom: 2px solid #080;
+    border-left: 2px solid #080;
+    border-right: 2px solid #0f0;
+    border-top: none;
+    padding-left: 5px;
+    padding-right: 5px;
+}

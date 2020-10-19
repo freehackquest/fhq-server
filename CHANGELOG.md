@@ -5,7 +5,47 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.33] - 2020-09-12 (2020 Sep 12)
+## [v0.2.34] - 2020-10-18 (2020 Oct 18)
+
+### Added
+
+- Fixed #317 print text of quest proposal in a list
+- Fixed #315 Add new settings to admin: functional allow_quests_proposals
+- searver-api-tests: Splited modes for run tests docker/travis
+- Moved information about how to build to README
+- Added pylint to travis test (now only for test_leaks.py)
+- Added script for angular build production version
+- Added .dockerignore file
+
+### Changed
+
+- Fixed generation python library (tested by pylint)
+- Some replacemant tabs to spaces in js
+- Redesign on admin site showing string settings
+- Moved tests_leaks to tests/server-api-tests and redesign to pytest-3
+- Moved code-check to tests/code-check
+- user-web-site: moved email-validator.service.ts to services/
+- Moved doxygen to contrib/
+- moved data_travis and script to folder ci/travis
+
+### Fixed
+
+- Fixed errors & warnings by lgtm
+- Fixed lgrm error: This property is overwritten by another property in the same object literal.
+- Fixed #302: Fix suggestion on registration 'gamil.com' -> fix to 'gmail.com'
+- Fixed warnings
+
+### Removed
+
+- web-admin: remmoved unused assets/libs/js/
+- web-admin: removed unsed modules && fixed deppcode-critical
+
+### Security
+
+Nope
+
+
+## [v0.2.33] - 2020-10-16 (2020 Oct 16)
 
 ### Added
 

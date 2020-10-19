@@ -109,10 +109,6 @@ fhq.localization = {
 		'en': 'team',
 		'ru': 'команда'
 	},
-	'Contacts':{
-		'en': 'Contacts',
-		'ru': 'Контакты'
-	},
 	'Thanks for':{
 		'en': 'Thanks for',
 		'ru': 'Благодарности'
@@ -188,10 +184,6 @@ fhq.localization = {
 	'Hints':{
 		'en': 'Hints',
 		'ru': 'Подсказки'
-	},
-	'Statistics':{
-		'en': 'Statistics',
-		'ru': 'Статистика'
 	},
 	'Export':{
 		'en': 'Export',
@@ -712,15 +704,11 @@ fhq.localization = {
 	},
 	'setting_name_web_public_folder': {
 		'en': 'Public Folder Path',
-		'ru': 'Public Folder Path'
+		'ru': 'Public Folder Path',
 	},
 	'setting_name_web_public_folder_url': {
 		'en': 'Public Folder URL:',
 		'ru': 'Public Folder URL:'
-	},
-	'setting_name_server_folder_quests': {
-		'en': 'Quests Folder URL:',
-		'ru': 'Quests Folder URL:'
 	},
 	'setting_name_server_folder_quests': {
 		'en': 'Quests Folder:',
@@ -762,10 +750,6 @@ fhq.localization = {
 		'en': 'Web Max Threads:',
 		'ru': 'Web Max Threads:'
 	},
-	'setting_name_web_public_folder': {
-		'en': 'Web Public Folder:',
-		'ru': 'Web Public Folder:'
-	},
 	'setting_name_web_user_folder': {
 		'en': 'Web User Folder:',
 		'ru': 'Web User Folder:'
@@ -789,6 +773,14 @@ fhq.localization = {
 	'setting_name_log_dir': {
 		'en': 'Log Dir:',
 		'ru': 'Log Dir:'
+	},
+	"settings_group_functional": {
+		'en': 'Functional:',
+		'ru': 'Функционал:',
+	},
+	"setting_name_allow_quests_proposals": {
+		'en': 'Allow Quests Proposals:',
+		'ru': 'Разрешить предлагать квесты:',
 	},
 	'Open':{
 		'en': 'Open',

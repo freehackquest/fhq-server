@@ -775,11 +775,16 @@ CmdHandlerQuestProposal::CmdHandlerQuestProposal()
 // ---------------------------------------------------------------------
 
 void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+    bool bAllow = pGlobalSettings->get("allow_quests_proposals").getBooleanValue();
+    if (!bAllow) {
+        pRequest->sendMessageError(cmd(), WsjcppError(403, "Prohibited by settings"));
+        return;
+    }
+
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;
-
-    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -1778,6 +1783,7 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
             int nScore = record.value("score").toInt();
             QString sCreated = record.value("created").toString();
             QString sSubject = record.value("subject").toString().toHtmlEscaped();
+            QString sText = record.value("text").toString().toHtmlEscaped();
 
             nlohmann::json jsonQuestProposal;
             jsonQuestProposal["id"] = nID;
@@ -1791,6 +1797,7 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
             jsonQuestProposal["created"] = sCreated.toStdString();
             jsonQuestProposal["subject"] = sSubject.toStdString();
             jsonQuestProposal["confirmed"] = nConfirmed;
+            jsonQuestProposal["text"] = sText.toStdString();
 
             jsonQuestsProposal.push_back(jsonQuestProposal);
         }
@@ -1806,7 +1813,7 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
 
 
 CmdHandlerQuestsFilesUpload::CmdHandlerQuestsFilesUpload()
-    : CmdHandlerBase("quests_files_upload", "Update the quest ") {
+    : CmdHandlerBase("quests_files_upload", "Update the quest") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1815,8 +1822,8 @@ CmdHandlerQuestsFilesUpload::CmdHandlerQuestsFilesUpload()
     // validation and description input fields
     requireStringParam("quest_uuid", "Quest UUID")
         .addValidator(new WsjcppValidatorUUID());
-    requireStringParam("file_base64", "");
-    requireStringParam("file_name", "");
+    requireStringParam("file_base64", "Byte-array encoded in base64");
+    requireStringParam("file_name", "File name");
 }
 
 // ---------------------------------------------------------------------

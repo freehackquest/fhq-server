@@ -9,7 +9,7 @@ import json
 from pprint import pprint
 import random
 
-test_name = 'Testing Knowledge Base'
+TEST_NAME = 'Testing Knowledge Base'
 
 def run_tests():
 

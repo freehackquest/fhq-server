@@ -1,5 +1,4 @@
 dckr_mysql/*
-data_travis/logs/*.log
 # Compiled Object files
 *.slo
 *.lo
