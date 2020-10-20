@@ -137,8 +137,6 @@ list (APPEND WSJCPP_SOURCES "src/storages/mysql/mysql_storage.h")
 # utils
 list (APPEND WSJCPP_SOURCES "src/utils/utils_prepare_deb_package.h")
 list (APPEND WSJCPP_SOURCES "src/utils/utils_prepare_deb_package.cpp")
-list (APPEND WSJCPP_SOURCES "src/utils/utils_static_analizing_text.h")
-list (APPEND WSJCPP_SOURCES "src/utils/utils_static_analizing_text.cpp")
 list (APPEND WSJCPP_SOURCES "src/utils/utils_lxd.h")
 list (APPEND WSJCPP_SOURCES "src/utils/utils_lxd.cpp")
 
