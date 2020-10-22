@@ -89,8 +89,36 @@ class SwaMenu {
     }
 }
 
+window.swamodalwindows = []
+
+
+class SwaModalWindow {
+    constructor() {
+        this.modalId = swaMakeId(15);
+    }
+
+    show(cnf) {
+        swamodalwindows.push(this.modalId)
+        console.log(cnf)
+        document.body.innerHTML += ''
+            + '<div class="swa-modal-window" id="' + this.modalId + '">'
+            + '  <div class="swa-modal-window-background"></div>'
+            + '  <div class="swa-modal-window-box"></div>'
+            + '</div>';
+    }
+}
 
 document.addEventListener("DOMContentLoaded", function(event) {
     window.swaMenu = new SwaMenu();
     swaMenu.init();
+});
+
+document.addEventListener("keyup", function(event) {
+    if (event.key == "Escape" && window.swamodalwindows.length > 0) {
+        console.log("Todo remove modal dialog");
+        var elid = window.swamodalwindows.pop();
+        console.log("Todo remove modal dialog: " + elid);
+        document.getElementById(elid).remove()
+        return true;
+    }
 });

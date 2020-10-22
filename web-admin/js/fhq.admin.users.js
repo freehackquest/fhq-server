@@ -1,6 +1,16 @@
 if(!window.fhq) window.fhq = {};
 if(!fhq.pages) fhq.pages = [];
 
+class PageUsers extends SwaPage {
+    name() {
+        return "users";
+    }
+
+    load() {
+
+    }
+}
+
 fhq.createUser = function()  {
 	fhq.showLoader();
 	$('#error_info').hide();
@@ -119,17 +129,17 @@ fhq.pages['users'] = function(){
 	fhq.showLoader();
 	
 	var onpage = 5;
-	if(fhq.containsPageParam("onpage")){
+	if (fhq.containsPageParam("onpage")) {
 		onpage = parseInt(fhq.pageParams['onpage'], 10);
 	}
 
 	var page = 0;
-	if(fhq.containsPageParam("page")){
+	if (fhq.containsPageParam("page")) {
 		page = parseInt(fhq.pageParams['page'], 10);
 	}
 
 	var filter_text = '';
-	if(fhq.containsPageParam("filter_text")){
+	if (fhq.containsPageParam("filter_text")) {
 		filter_text = fhq.pageParams['filter_text'];
 	}
 	
@@ -202,6 +212,11 @@ fhq.pages['users'] = function(){
 			var uuid = $(this).attr('uuid');
 			var userid = $(this).attr('userid');
 			
+			var modal = new SwaModalWindow();
+			modal.show({
+				title: 'User {' + uuid + '} confirm deletion'
+			});
+
 			$('#modalInfoTitle').html('User {' + uuid + '} confirm deletion');
 			$('#modalInfoBody').html('');
 			$('#modalInfoBody').append(''
