@@ -212,7 +212,7 @@ fhq.pages['users'] = function(){
 			var uuid = $(this).attr('uuid');
 			var userid = $(this).attr('userid');
 			
-			var modal = new SwaModalWindow();
+			var modal = new SwaModalDialog();
 			modal.show({
 				title: 'User {' + uuid + '} confirm deletion'
 			});

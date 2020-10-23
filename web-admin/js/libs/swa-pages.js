@@ -89,22 +89,46 @@ class SwaMenu {
     }
 }
 
-window.swamodalwindows = []
+window.swaModalDialogs = []
 
 
-class SwaModalWindow {
+class SwaModalDialog {
     constructor() {
         this.modalId = swaMakeId(15);
     }
 
     show(cnf) {
-        swamodalwindows.push(this.modalId)
+        swaModalDialogs.push(this.modalId)
         console.log(cnf)
         document.body.innerHTML += ''
-            + '<div class="swa-modal-window" id="' + this.modalId + '">'
-            + '  <div class="swa-modal-window-background"></div>'
-            + '  <div class="swa-modal-window-box"></div>'
+            + '<div class="swa-modal-dialog" id="' + this.modalId + '">'
+            + '  <div class="swa-modal-dialog-background"></div>'
+            + '  <div class="swa-modal-dialog-box">'
+            + '    <div class="swa-modal-dialog-box-head">'
+            + '      <div class="swa-modal-dialog-box-title">' + cnf.title + '</div>'
+            + '      <div class="swa-modal-dialog-box-close" onclick="closeModalDialog(\'' + this.modalId + '\')">X</div>'
+            + '    </div>'
+            + '    <div class="swa-modal-dialog-box-content">' + cnf.title + '</div>'
+            + '  </div>'
             + '</div>';
+    }
+}
+
+function closeModalDialog(modalId) {
+    var newArray = []
+    for (var i = 0; i < window.swaModalDialogs.length; i++) {
+        var elid = window.swaModalDialogs[i];
+        if (elid != modalId) {
+            newArray.push(elid);
+        }
+    }
+    window.swaModalDialogs = newArray
+    console.log("Todo remove modal dialog: " + elid);
+    var el = document.getElementById(modalId);
+    if (!el) {
+        console.warn("Modal dialog now found: " + modalId);
+    } else {
+        el.remove();
     }
 }
 
@@ -114,11 +138,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 });
 
 document.addEventListener("keyup", function(event) {
-    if (event.key == "Escape" && window.swamodalwindows.length > 0) {
-        console.log("Todo remove modal dialog");
-        var elid = window.swamodalwindows.pop();
-        console.log("Todo remove modal dialog: " + elid);
-        document.getElementById(elid).remove()
+    if (event.key == "Escape" && window.swaModalDialogs.length > 0) {
+        var elid = window.swaModalDialogs.pop();
+        closeModalDialog(elid)
         return true;
     }
 });

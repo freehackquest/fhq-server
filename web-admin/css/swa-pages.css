@@ -254,7 +254,7 @@ h1, h2, h3 {
     padding-right: 5px;
 }
 
-.swa-modal-window {
+.swa-modal-dialog {
     position: fixed;
     display: block;
     width: 100%;
@@ -264,7 +264,7 @@ h1, h2, h3 {
     z-index: 1000;
 }
 
-.swa-modal-window-background {
+.swa-modal-dialog-background {
     position: fixed;
     display: block;
     width: 100%;
@@ -274,7 +274,7 @@ h1, h2, h3 {
     background-color: rgba(0,0,0,0.8);
 }
 
-.swa-modal-window-box {
+.swa-modal-dialog-box {
     display: block;
     min-height: 100px;
     min-width: 100px;
@@ -290,4 +290,30 @@ h1, h2, h3 {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+}
+
+.swa-modal-dialog-box-head {
+    padding: 10px;
+}
+
+.swa-modal-dialog-box-title {
+    padding-right: 40px;
+}
+
+.swa-modal-dialog-box-close {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px;
+    font-weight: bold;
+    border-bottom: 2px solid #080;
+    border-left: 2px solid #080;
+    border-top: 2px solid #0f0;
+    border-right: 2px solid #0f0;
+    background-color: #0c0;
+    color: #000;
+    height: 20px;
+    line-height: 5px;
+    cursor: pointer;
 }
