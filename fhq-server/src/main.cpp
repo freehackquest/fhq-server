@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
     helpArgs.addHelp("show-handlers", "-sh", FallenHelpParseArgType::SINGLE_OPTION, "Show handlers");
     helpArgs.addHelp("show-storage-struct", "-sh-ss", FallenHelpParseArgType::SINGLE_OPTION, "Show Storage Struct");
     helpArgs.addHelp("export-libfreehackquest-client-py", "-exlp", FallenHelpParseArgType::SINGLE_OPTION, "Export libfreehackquest (python)");
-    helpArgs.addHelp("export-libfhqcli-web-javascript", "-exlwjs", FallenHelpParseArgType::SINGLE_OPTION, "Export libfhqcli-web-js (javascript)");
+    helpArgs.addHelp("export-libfhqcli-web-javascript", "-exlwjs", FallenHelpParseArgType::SINGLE_OPTION, "Export freehackquest-libclient-web-js (javascript)");
     helpArgs.addHelp("export-libfhqcli-java-android", "-exljadr", FallenHelpParseArgType::SINGLE_OPTION, "Export libfhqcli-java-android");
     helpArgs.addHelp("show-employees", "-se", FallenHelpParseArgType::SINGLE_OPTION, "Show employees");
     helpArgs.addHelp("show-settings", "-ss", FallenHelpParseArgType::SINGLE_OPTION, "Show settings");
@@ -134,7 +134,7 @@ int main(int argc, char** argv) {
     } else if (helpArgs.has("export-libfhqcli-web-javascript")) {
         WsjCpp::ExportLibCliWebJS *pExportWebJS = new WsjCpp::ExportLibCliWebJS();
         pExportWebJS->setLibraryName("fhq");
-        pExportWebJS->setPackageName("libfhqcli-web-js");
+        pExportWebJS->setPackageName("freehackquest-libclient-web-js");
         pExportWebJS->setAuthor("FreeHackQuest Team");
         pExportWebJS->setAppName(appName);
         pExportWebJS->setAppVersion(appVersion);
