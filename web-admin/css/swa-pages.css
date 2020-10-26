@@ -294,10 +294,13 @@ h1, h2, h3 {
 
 .swa-modal-dialog-box-head {
     padding: 10px;
+    border-bottom: 2px solid #080;
 }
 
 .swa-modal-dialog-box-title {
     padding-right: 40px;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .swa-modal-dialog-box-close {
@@ -316,4 +319,16 @@ h1, h2, h3 {
     height: 20px;
     line-height: 5px;
     cursor: pointer;
+}
+
+.swa-modal-dialog-box-content {
+    padding: 10px;
+}
+
+.swa-modal-dialog-box-content-line {
+    padding-top: 10px;
+}
+
+.swa-modal-dialog-box-buttons {
+    padding: 10px;
 }

@@ -1248,12 +1248,13 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * User delete
-**********************************************/
+// ---------------------------------------------------------------------
+// User delete handler
 
-CmdHandlerUserDelete::CmdHandlerUserDelete()
-    : CmdHandlerBase("user_delete", "Method for deleting a user") {
+REGISTRY_CMD(CmdHandlerUsersDelete)
+
+CmdHandlerUsersDelete::CmdHandlerUsersDelete()
+    : CmdHandlerBase("users_delete", "Method for deleting a user") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -1266,7 +1267,7 @@ CmdHandlerUserDelete::CmdHandlerUserDelete()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
+void CmdHandlerUsersDelete::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     const nlohmann::json& jsonRequest = pRequest->jsonRequest();
@@ -1276,6 +1277,12 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
 
     WsjcppUserSession *pUserSession = pRequest->getUserSession();
     int nAdminUserID = pUserSession->userid();
+    int nUserID = pRequest->getInputInteger("userid", 0);
+
+    if (pUserSession->userid() == nUserID) {
+        pRequest->sendMessageError(cmd(), WsjcppError(403, "Could not remove youself"));
+        return;
+    }
 
     QSqlDatabase db = *(pDatabase->database());
 
@@ -1311,8 +1318,9 @@ void CmdHandlerUserDelete::handle(ModelRequest *pRequest) {
         }
     }
 
-    int nUserID = jsonRequest.at("userid");
+    
 
+    
     // check if the user exists
     {
         QSqlQuery query(db);

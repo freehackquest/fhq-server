@@ -164,13 +164,11 @@ REGISTRY_CMD(CmdHandlerUserUpdate)
  * User delete
 **********************************************/
 
-class CmdHandlerUserDelete : public CmdHandlerBase {
+class CmdHandlerUsersDelete : public CmdHandlerBase {
     public:
-        CmdHandlerUserDelete();
+        CmdHandlerUsersDelete();
         virtual void handle(ModelRequest *pRequest);
 };
-
-REGISTRY_CMD(CmdHandlerUserDelete)
 
 /*********************************************
  * Users

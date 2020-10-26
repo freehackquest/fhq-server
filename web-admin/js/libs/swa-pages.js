@@ -1,17 +1,5 @@
-// Framework for single web app
-
-class SwaPage {
-    constructor() {
-    }
-    name() {
-        // nothing
-        return "page";
-    }
-
-    load() {
-        // nothing        
-    }
-};
+// Framework for single web application
+// Copyright sea5kg (c) 2020
 
 function swaMakeId(length) {
     var result           = '';
@@ -22,6 +10,20 @@ function swaMakeId(length) {
     }
     return result;
 }
+
+class SwaPage {
+    constructor() {
+       this.randomPageId = swaMakeId(15);
+    }
+    name() {
+        // nothing
+        return "page";
+    }
+
+    load() {
+        // nothing        
+    }
+};
 
 class SwaPaginator {
     constructor(min, total, page_size, page_index) {
@@ -91,7 +93,7 @@ class SwaMenu {
 
 window.swaModalDialogs = []
 
-function closeModalDialog(modalId) {
+function swaCloseModalDialog(modalId) {
     var newArray = []
     for (var i = 0; i < window.swaModalDialogs.length; i++) {
         var elid = window.swaModalDialogs[i];
@@ -100,7 +102,7 @@ function closeModalDialog(modalId) {
         }
     }
     window.swaModalDialogs = newArray
-    console.log("Todo remove modal dialog: " + elid);
+    // console.log("remove modal dialog: " + elid);
     var el = document.getElementById(modalId);
     if (!el) {
         console.warn("Modal dialog now found: " + modalId);
@@ -116,27 +118,33 @@ class SwaModalDialog {
 
     show(cnf) {
         swaModalDialogs.push(this.modalId)
-        console.log(cnf)
+        // console.log(cnf)
+        var body = '';
+        for (var i in cnf.body) {
+            body += '<div class="swa-modal-dialog-box-content-line">' + cnf.body[i] + '</div>';
+        }
         document.body.innerHTML += ''
             + '<div class="swa-modal-dialog" id="' + this.modalId + '">'
             + '  <div class="swa-modal-dialog-background"></div>'
             + '  <div class="swa-modal-dialog-box">'
             + '    <div class="swa-modal-dialog-box-head">'
             + '      <div class="swa-modal-dialog-box-title">' + cnf.title + '</div>'
-            + '      <div class="swa-modal-dialog-box-close" onclick="closeModalDialog(\'' + this.modalId + '\')">X</div>'
+            + '      <div class="swa-modal-dialog-box-close" onclick="swaCloseModalDialog(\'' + this.modalId + '\')">X</div>'
             + '    </div>'
-            + '    <div class="swa-modal-dialog-box-content">' + cnf.body + ' </div>'
+            + '    <div class="swa-modal-dialog-box-content">' + body + '</div>'
             + '    <div class="swa-modal-dialog-box-buttons">' + cnf.buttons + ' </div>'
             + '  </div>'
             + '</div>';
     }
 
     close() {
-        closeModalDialog(this.modalId);
+        swaCloseModalDialog(this.modalId);
     }
 }
 
-
+function swaShowModalError(error) {
+    
+}
 
 document.addEventListener("DOMContentLoaded", function(event) {
     window.swaMenu = new SwaMenu();
@@ -146,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 document.addEventListener("keyup", function(event) {
     if (event.key == "Escape" && window.swaModalDialogs.length > 0) {
         var elid = window.swaModalDialogs.pop();
-        closeModalDialog(elid)
+        swaCloseModalDialog(elid)
         return true;
     }
 });

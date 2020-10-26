@@ -34,27 +34,40 @@ fhq.createUser = function()  {
     })
 };
 
-fhq.deleteUser = function(el) {
+fhqUserDelete = function(dialogid, userid, uuid) {
     fhq.showLoader();
     $('#error_info').hide();
     var data = {};
-    data["uuid"] = $(el).attr('uuid');
-    data["userid"] = parseInt($(el).attr('userid'));
+    data["uuid"] = uuid;
+    data["userid"] = parseInt(userid);
     data["password"] = $("#user_delete_admin_password").val();
-    var dialogid = $(el).attr('dialogid');
-    fhq.ws.user_delete(data).done(function(r){
+    fhq.ws.users_delete(data).done(function(r){
         fhq.hideLoader();
         fhq.pages['users']();
-        // $('#modalInfo').modal('hide');
-        closeModalDialog(dialogid);
+        swaCloseModalDialog(dialogid);
     }).fail(function(err){
         fhq.hideLoader();
         console.error(err);
-        $('#error_info').show();
-        $('#error_info .alert').html('ERROR: ' + err.error);
-        closeModalDialog(dialogid);
-        // $('#modalInfo').modal('hide');
+        user_delete_error.style.display = 'block';
+        user_delete_error.innerHTML = err.error;
     })
+}
+
+
+function fhqUserConfirmDeletion(el, userid, uuid) {
+    var modal = new SwaModalDialog();
+    modal.show({
+        title: 'User confirm deletion',
+        body: [
+            'User {' + uuid + '} will be deleted.',
+            'Admin password: <input id="user_delete_admin_password" type="password"/>',
+            '<div class="swa-error-alert" style="display: none" id="user_delete_error"></div>',
+        ],
+        buttons: ''
+            + '<button type="button" class="swa-button" '
+            + '   onclick="fhqUserDelete(\'' + modal.modalId + '\', \'' + userid + '\', \'' + uuid + '\');">Delete</button> '
+            + '<button type="button" class="swa-button" onclick="swaCloseModalDialog(\'' + modal.modalId + '\');">Close</button>',
+    });
 }
 
 fhq.pages['user_create'] = function(){
@@ -205,43 +218,11 @@ fhq.pages['users'] = function(){
                 + '    <td><p>' + u.email + '</p><p>'  + u.nick + '</p></td>'
                 + '    <td><p>' + u.last_ip + '</p><p>' + u.country + ' / ' + u.city + ' / ' + u.university + '</p></td>'
                 + '    <td><p>' + u.dt_last_login + '</p><p>' + '' + u.role + '</p></td>'
-                + '    <td><p><button class="swa-button user_delete" userid=' + u.id + ' uuid="' + u.uuid + '">Delete User</button><hr></p></td>'
+                + '    <td><button class="swa-button" onclick="fhqUserConfirmDeletion(this, \'' + u.id + '\', \''+ u.uuid + '\')">Delete</button></td>'
                 + '</tr>'
             )
         }
-        
-        $('.user_delete').unbind().bind('click', function(){
-            console.warn('user_delete');
-            var uuid = $(this).attr('uuid');
-            var userid = $(this).attr('userid');
-            
-            var modal = new SwaModalDialog();
-            modal.show({
-                title: 'User {' + uuid + '} confirm deletion',
-                body: ''
-                    + 'Admin password:'
-                    + '<input class="form-control" id="user_delete_admin_password" type="password"><br>'
-					+ '<div class=" alert alert-danger" style="display: none" id="user_delete_error"></div>',
-                buttons: ''
-                    + '<button type="button" class="btn btn-secondary" '
-                    + '   id="user_delet_btn" userid="' + userid + '" dialogid="'+ modal.modalId +'" uuid="' + uuid + '" '
-                    + '   onclick="fhq.deleteUser(this);">Delete</button> '
-                    + '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>',
-            });
-
-            /*$('#modalInfoTitle').html('User {' + uuid + '} confirm deletion');
-            $('#modalInfoBody').html('');
-            $('#modalInfoBody').append(''
-                + 'Admin password:'
-                + '<input class="form-control" id="user_delete_admin_password" type="password"><br>'
-                + '<div class=" alert alert-danger" style="display: none" id="user_delete_error"></div>'
-            );
-            $('#modalInfoButtons').html(''
-                
-            );
-            $('#modalInfo').modal('show');*/
-        });
-
+ 
         el.append('<div class="form-group row" id="error_info" style="display: none">'
         + '             <div class="col-sm-10">'
         + '                    <div class="alert alert-danger"></div>'
