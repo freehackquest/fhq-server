@@ -91,29 +91,6 @@ class SwaMenu {
 
 window.swaModalDialogs = []
 
-
-class SwaModalDialog {
-    constructor() {
-        this.modalId = swaMakeId(15);
-    }
-
-    show(cnf) {
-        swaModalDialogs.push(this.modalId)
-        console.log(cnf)
-        document.body.innerHTML += ''
-            + '<div class="swa-modal-dialog" id="' + this.modalId + '">'
-            + '  <div class="swa-modal-dialog-background"></div>'
-            + '  <div class="swa-modal-dialog-box">'
-            + '    <div class="swa-modal-dialog-box-head">'
-            + '      <div class="swa-modal-dialog-box-title">' + cnf.title + '</div>'
-            + '      <div class="swa-modal-dialog-box-close" onclick="closeModalDialog(\'' + this.modalId + '\')">X</div>'
-            + '    </div>'
-            + '    <div class="swa-modal-dialog-box-content">' + cnf.title + '</div>'
-            + '  </div>'
-            + '</div>';
-    }
-}
-
 function closeModalDialog(modalId) {
     var newArray = []
     for (var i = 0; i < window.swaModalDialogs.length; i++) {
@@ -131,6 +108,35 @@ function closeModalDialog(modalId) {
         el.remove();
     }
 }
+
+class SwaModalDialog {
+    constructor() {
+        this.modalId = swaMakeId(15);
+    }
+
+    show(cnf) {
+        swaModalDialogs.push(this.modalId)
+        console.log(cnf)
+        document.body.innerHTML += ''
+            + '<div class="swa-modal-dialog" id="' + this.modalId + '">'
+            + '  <div class="swa-modal-dialog-background"></div>'
+            + '  <div class="swa-modal-dialog-box">'
+            + '    <div class="swa-modal-dialog-box-head">'
+            + '      <div class="swa-modal-dialog-box-title">' + cnf.title + '</div>'
+            + '      <div class="swa-modal-dialog-box-close" onclick="closeModalDialog(\'' + this.modalId + '\')">X</div>'
+            + '    </div>'
+            + '    <div class="swa-modal-dialog-box-content">' + cnf.body + ' </div>'
+            + '    <div class="swa-modal-dialog-box-buttons">' + cnf.buttons + ' </div>'
+            + '  </div>'
+            + '</div>';
+    }
+
+    close() {
+        closeModalDialog(this.modalId);
+    }
+}
+
+
 
 document.addEventListener("DOMContentLoaded", function(event) {
     window.swaMenu = new SwaMenu();
