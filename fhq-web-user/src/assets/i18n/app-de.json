@@ -72,6 +72,7 @@
     "feedbackTargetProposal": "Vorschlag",
     "feedbackFrom": "Aus",
     "feedbackMessage": "Meldung",
+    "feedbackWarning": "Bitte seien Sie nicht unhöflich gegenüber dem Administrator, sonst müssen Sie Ihr Konto löschen!",
     "userLocation": "Location",
     "questProposal": {
         "uploadFileHint" : "Files please upload to your cloud disk (google/yandex/dropbox...) or to any web resource which admin has access for download it. And put link to quest text. ",
