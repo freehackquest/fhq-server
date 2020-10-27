@@ -11,19 +11,29 @@
 #include <QString> // TODO deprecated
 #include <QVariant> // TODO deprecated
 
-/*! 
- * WsjcppError - helper class for errors
- * */
+// ---------------------------------------------------------------------
+// WsjcppJsonRpc20Error
 
-class WsjcppError {
+class WsjcppJsonRpc20Error {
     public:
-        WsjcppError(int nCodeError, const std::string &sMessage);
-        int codeError();
-        std::string message();
+        // WsjcppJsonRpc20Error(int nErrorCode, const std::string &sErrorMessage);
+        WsjcppJsonRpc20Error(
+            int nErrorCode,
+            const std::string &sErrorMessage,
+            const std::vector<std::pair<std::string,std::string>> &vErrorContext = {}
+        );
+        int getErrorCode() const;
+        std::string getErrorMessage() const;
+        const std::vector<std::pair<std::string,std::string>> &getErrorContext() const;
+        nlohmann::json toJson();
     private:
-        std::string m_sMessage;
-        int m_nCodeError;
+        std::string m_sErrorMessage;
+        int m_nErrorCode;
+        std::vector<std::pair<std::string,std::string>> m_vErrorContext;
 };
+
+#define WsjcppError WsjcppJsonRpc20Error
+
 
 /*! 
  * WsjcppUserSession - 

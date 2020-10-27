@@ -309,9 +309,9 @@ void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &s
     jsonResponse["cmd"] = sCmd;
     jsonResponse["m"] = sM;
     jsonResponse["result"] = "FAIL";
-    jsonResponse["error"] = error.message();
-    jsonResponse["code"] = error.codeError();
-    WsjcppLog::err(TAG, "WS-ERROR >>> " + sCmd + ":" + sM + ", messsage: " + error.message());
+    jsonResponse["error"] = error.getErrorMessage();
+    jsonResponse["code"] = error.getErrorCode();
+    WsjcppLog::err(TAG, "WS-ERROR >>> " + sCmd + ":" + sM + ", messsage: " + error.getErrorMessage());
     this->sendMessage(pClient, jsonResponse);
     return;
 }
