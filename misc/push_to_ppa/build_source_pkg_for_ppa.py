@@ -91,7 +91,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
 shutil.copytree('../../fhq-server/src', './fhq-server/src', symlinks=False, ignore=None)
 shutil.copytree('../../fhq-server/cmake', './fhq-server/cmake', symlinks=False, ignore=None)
 shutil.copytree('./install_files', './fhq-server/install_files', symlinks=False, ignore=None)
-shutil.copytree('../../web-admin', './fhq-server/install_files/web-admin', symlinks=False, ignore=None)
+shutil.copytree('../../admin-web-site', './fhq-server/install_files/admin-web-site', symlinks=False, ignore=None)
 shutil.copytree('./debian', './fhq-server/debian', symlinks=False, ignore=None)
 shutil.copy2('../../fhq-server/CMakeLists.txt', './fhq-server/CMakeLists.txt')
 
