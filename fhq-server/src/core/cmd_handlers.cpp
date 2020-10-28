@@ -571,7 +571,7 @@ bool ModelRequest::isUnauthorized() {
 
 // ---------------------------------------------------------------------
 
-void ModelRequest::sendMessageError(const std::string &cmd, WsjcppError error) {
+void ModelRequest::sendMessageError(const std::string &cmd, WsjcppJsonRpc20Error error) {
     m_pServer->sendMessageError(m_pClient,cmd,m_sMessageId,error);
 }
 
@@ -678,19 +678,19 @@ bool CmdHandlerBase::checkAccess(ModelRequest *pRequest) {
     WsjcppUserSession *pUserSession = pRequest->getUserSession();
     if (!accessUnauthorized()) {
         if (pUserSession == nullptr) {
-            pRequest->sendMessageError(cmd(), WsjcppError(401, "Not Authorized Request"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(401, "Not Authorized Request"));
             return false;
         }
 
         // access user
         if (pUserSession->isUser() && !accessUser()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(403, "Access deny for user"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Access deny for user"));
             return false;
         }
 
         // access admin
         if (pUserSession->isAdmin() && !accessAdmin()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(403, "Access deny for admin"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Access deny for admin"));
             return false;
         }
     }

@@ -1067,7 +1067,7 @@ void EmployServer::sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMess
 
 // ---------------------------------------------------------------------
 
-bool EmployServer::validateInputParameters(WsjcppError &error, CmdHandlerBase *pCmdHandler, const nlohmann::json &jsonMessage) {
+bool EmployServer::validateInputParameters(WsjcppJsonRpc20Error &error, CmdHandlerBase *pCmdHandler, const nlohmann::json &jsonMessage) {
     try {
         // TODO check extra params
 
@@ -1076,29 +1076,29 @@ bool EmployServer::validateInputParameters(WsjcppError &error, CmdHandlerBase *p
             auto itJsonParamName = jsonMessage.find(inDef.getName());
             const auto endJson = jsonMessage.end();
             if (inDef.isRequired() && itJsonParamName == endJson) {
-                error = WsjcppError(400, "Parameter '" + inDef.getName() + "' expected");
+                error = WsjcppJsonRpc20Error(400, "Parameter '" + inDef.getName() + "' expected");
                 return false;
             }
 
             if (itJsonParamName != endJson) {
                 if (itJsonParamName->is_null()) {
-                    error = WsjcppError(400, "Parameter '" + inDef.getName() + "' could not be null");
+                    error = WsjcppJsonRpc20Error(400, "Parameter '" + inDef.getName() + "' could not be null");
                     return false;
                 }
 
                 if (inDef.isInteger()) {
                     if (!itJsonParamName->is_number()) {
-                        error = WsjcppError(400, "Parameter '" + inDef.getName() + "' must be integer");
+                        error = WsjcppJsonRpc20Error(400, "Parameter '" + inDef.getName() + "' must be integer");
                         return false;
                     }
 
                     int val = *itJsonParamName;
                     if (inDef.isMinVal() && val < inDef.getMinVal()) {
-                        error = WsjcppError(400, "Parameter '" + inDef.getName() + "' must be more then " + std::to_string(inDef.getMinVal()));
+                        error = WsjcppJsonRpc20Error(400, "Parameter '" + inDef.getName() + "' must be more then " + std::to_string(inDef.getMinVal()));
                         return false;
                     }
                     if (inDef.isMaxVal() && val > inDef.getMaxVal()) {
-                        error = WsjcppError(400, "Parameter '" + inDef.getName() + "' must be less then " + std::to_string(inDef.getMaxVal()));
+                        error = WsjcppJsonRpc20Error(400, "Parameter '" + inDef.getName() + "' must be less then " + std::to_string(inDef.getMaxVal()));
                         return false;
                     }
                 }
@@ -1109,7 +1109,7 @@ bool EmployServer::validateInputParameters(WsjcppError &error, CmdHandlerBase *p
                     const std::vector<WsjcppValidatorStringBase *> vValidators = inDef.listOfValidators();
                     for (int i = 0; i < vValidators.size(); i++) {
                         if (!vValidators[i]->isValid(sVal, sError)) {
-                            error = WsjcppError(400, "Wrong param '" + inDef.getName() + "': " + sError);
+                            error = WsjcppJsonRpc20Error(400, "Wrong param '" + inDef.getName() + "': " + sError);
                             return false;
                         }
                     }
@@ -1118,7 +1118,7 @@ bool EmployServer::validateInputParameters(WsjcppError &error, CmdHandlerBase *p
         }
         return true;
     } catch(std::exception const &e) {
-        error = WsjcppError(500, "InternalServerError");
+        error = WsjcppJsonRpc20Error(500, "InternalServerError");
         WsjcppLog::err(TAG, std::string("validateInputParameters, ") + e.what());
         return false;
     }

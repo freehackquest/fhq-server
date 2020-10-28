@@ -32,9 +32,6 @@ class WsjcppJsonRpc20Error {
         std::vector<std::pair<std::string,std::string>> m_vErrorContext;
 };
 
-#define WsjcppError WsjcppJsonRpc20Error
-
-
 /*! 
  * WsjcppUserSession - 
  * */
@@ -96,7 +93,7 @@ class WsjcppSocketClient : public QObject {
 class IWebSocketServer {
     public:
         virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse) = 0;
-        virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, WsjcppError error) = 0;
+        virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, WsjcppJsonRpc20Error error) = 0;
         virtual void sendToAll(const nlohmann::json& jsonMessage) = 0;
         virtual void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) = 0;
         virtual int getConnectedUsers() = 0;
@@ -188,7 +185,7 @@ class ModelRequest {
         bool hasM();
         std::string command();
         bool hasCommand();
-        void sendMessageError(const std::string &cmd, WsjcppError error);
+        void sendMessageError(const std::string &cmd, WsjcppJsonRpc20Error error);
         void sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse);
         void sendResponse(nlohmann::json& jsonResult);
 

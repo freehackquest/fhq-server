@@ -183,7 +183,7 @@ void WebSocketServer::processTextMessage(const QString &message) {
     std::string sM = "";
     try {
         if (!nlohmann::json::accept(message.toStdString())) {
-            this->sendMessageError(pClient, sCmd, sM, WsjcppError(400, "Not JSON data"));
+            this->sendMessageError(pClient, sCmd, sM, WsjcppJsonRpc20Error(400, "Not JSON data"));
             return;
         }
 
@@ -191,7 +191,7 @@ void WebSocketServer::processTextMessage(const QString &message) {
         ModelRequest *pModelRequest = new ModelRequest(pClient, this, jsonRequest_);
         
         if (!pModelRequest->hasCommand()) {
-            this->sendMessageError(pClient, sCmd, sM, WsjcppError(404, "Not found requare parameter 'cmd'"));
+            this->sendMessageError(pClient, sCmd, sM, WsjcppJsonRpc20Error(404, "Not found requare parameter 'cmd'"));
             // pModelRequestData->sendError(Error(404, "Not found command '" + QString(cmd.c_str()) + "'"));
             return;
         }
@@ -199,7 +199,7 @@ void WebSocketServer::processTextMessage(const QString &message) {
         sCmd = pModelRequest->command();
         if (!pModelRequest->hasM()) {
             WsjcppLog::info(TAG, "[WS] >>> " + sCmd);
-            this->sendMessageError(pClient, sCmd, sM, WsjcppError(404, "Not found requare parameter 'm' - messageid"));
+            this->sendMessageError(pClient, sCmd, sM, WsjcppJsonRpc20Error(404, "Not found requare parameter 'm' - messageid"));
             return;
         }
         sM = pModelRequest->m();
@@ -209,7 +209,7 @@ void WebSocketServer::processTextMessage(const QString &message) {
         CmdHandlerBase *pCmdHandler = CmdHandlers::findCmdHandler(sCmd);
         if (pCmdHandler == NULL) {
             WsjcppLog::warn(TAG, "Unknown command: " + sCmd);
-            pModelRequest->sendMessageError(sCmd, WsjcppError(404, "Not found command '" + sCmd + "'"));
+            pModelRequest->sendMessageError(sCmd, WsjcppJsonRpc20Error(404, "Not found command '" + sCmd + "'"));
             return;
         }
 
@@ -223,14 +223,14 @@ void WebSocketServer::processTextMessage(const QString &message) {
 
         // allow access
         // TODO move to ModelRequest
-        WsjcppError error(404, "none");
+        WsjcppJsonRpc20Error error(404, "none");
         if (!pServer->validateInputParameters(error, pCmdHandler, jsonRequest_)) {
             pModelRequest->sendMessageError(pCmdHandler->cmd(), error);
             return;
         }
         pCmdHandler->handle(pModelRequest);
     } catch (const std::exception &e) {
-        this->sendMessageError(pClient, sCmd, sM, WsjcppError(500, "InternalServerError"));
+        this->sendMessageError(pClient, sCmd, sM, WsjcppJsonRpc20Error(500, "InternalServerError"));
         WsjcppLog::err(TAG, e.what());
     }
 }
@@ -304,13 +304,15 @@ void WebSocketServer::sendMessage(QWebSocket *pClient, const nlohmann::json& jso
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string &sM, WsjcppError error) {
+void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string &sM, WsjcppJsonRpc20Error error) {
     nlohmann::json jsonResponse;
     jsonResponse["cmd"] = sCmd;
     jsonResponse["m"] = sM;
-    jsonResponse["result"] = "FAIL";
-    jsonResponse["error"] = error.getErrorMessage();
-    jsonResponse["code"] = error.getErrorCode();
+    jsonResponse["result"] = "FAIL"; // deprecated
+    jsonResponse["error"] = error.getErrorMessage(); // deprecated
+    jsonResponse["code"] = error.getErrorCode(); // deprecated
+    jsonResponse["error_jsonrpc20"] = error.toJson();
+
     WsjcppLog::err(TAG, "WS-ERROR >>> " + sCmd + ":" + sM + ", messsage: " + error.getErrorMessage());
     this->sendMessage(pClient, jsonResponse);
     return;
