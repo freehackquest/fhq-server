@@ -66,7 +66,7 @@ check_ret $? "Change directory to tests/server-api-tests"
 check_ret $? "Update libfreehackquestclient python library"
 python3 -m pylint --version
 # in next time replace to 'pylint **/*.py'
-python3 -m pylint --rcfile=.pylintrc  test_leaks.py
+python3 -m pylint --rcfile=.pylintrc *.py
 check_ret $? "Check by pylint tests_leaks.py"
 python3 -m pytest -rAs -c env-travis.ini
 check_ret $? "Run tests_leaks.py"
