@@ -12,8 +12,8 @@ Backend && Frontend for FreeHackQuest on Qt and WebSockets
 * [INSTALL_FROM_PPA](https://github.com/freehackquest/fhq-server/tree/master/install/INSTALL_FROM_PPA.md)
 
 * Configure autostart
-	* [SYSTEMD](install/SYSTEMD.md)
-	* [INITD](install/INITD.md)
+    * [SYSTEMD](install/SYSTEMD.md)
+    * [INITD](install/INITD.md)
 
 ## Distribution
 
@@ -153,6 +153,50 @@ baseUrl = 'ws://freehackquest.com/api-ws/';
 And now your local web site will be connected to offical server.
 
 *Notice: but please never do commit for this line*
+
+
+## Development
+
+### Method which will return lists 
+
+fhq-server input api:
+```cpp
+optionalIntegerParam("page_size", "Pgae size")
+    .addValidator(new WsjcppValidatorIntegerMinValue(0))
+    .addValidator(new WsjcppValidatorIntegerMinValue(10));
+optionalIntegerParam("page_index", "Page index")
+    .addValidator(new WsjcppValidatorIntegerMinValue(0));
+```
+
+fhq-server output api:
+```
+nlohmann::json jsonResult;
+jsonResult["items"] = jsonItems;
+jsonResult["page_size"] = nPageSize;
+jsonResult["page_index"] = nPageIndex;
+jsonResult["total"] = nTotal;
+
+nlohmann::json jsonResponse;
+jsonResponse["data"] = jsonResult;
+pRequest->sendMessageSuccess(cmd(), jsonResponse);
+```
+
+admin-web-site paginator:
+```
+var page_name = 'quests_proposal';
+var pg = new SwaPaginator(0, r.data.total, r.data.page_size, r.data.page_index);
+el.append(pg.getHtml());
+pg.bindPrev(function() {
+    window.fhq.changeLocationState({page_name: '', 'page_size': page_size, 'page_index': page_index - 1});
+    fhq.pages[page_name]();
+});
+
+pg.bindNext(function() {
+    window.fhq.changeLocationState({page_name: '', 'page_size': page_size, 'page_index': page_index + 1});
+    fhq.pages[page_name]();
+});
+```
+
 
 ## 3rdParty
 
