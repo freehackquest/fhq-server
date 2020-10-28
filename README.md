@@ -69,22 +69,26 @@ $ ./build_simple.sh
 $ ./unit-tests
 ```
 
-### Run server api tests (after build binaries)
+### Server api tests
 
-Based on python and pytest. Also please check code by pylint.
+Based on python3 and pytest. Also please check code by pylint.
 
-Requirements:
+Install Requirements:
 
 ```
-$ sudo apt install python3-pip pylint python3-pytest
-$ pip3 install --user websocket-client
-$ pip3 install --user requests
-$ pip3 install -U pytest
-$ pip3 install --user pytest-env
-$ pip3 install --user docker
+$ sudo apt install python3-pip 
+$ pip3 install websocket-client requests pytest pytest-env docker pylint
 ```
 
-Current run tests:
+Exists two ways:
+1. When using a fresh compiled fhq-server on local machine
+2. Use a docker image latest version from hub.docker.com (here: https://hub.docker.com/r/freehackquest/fhq-server)
+
+#### Server api tests - first way (local binary mode)
+
+Expected that repository already got and fhq-server compiled. Also database configured for ci/travis/data.
+
+Run tests (will be deprecated):
 
 ```
 $ cd ~/fhq-server.git/fhq-server-tests
@@ -96,27 +100,20 @@ New running tests (based on pytest):
 
 ```
 $ cd ~/fhq-server.git/tests/server-api-tests/
-$ pylint *.py
-$ pytest -rAs -c env-local.ini tests_leaks.py *.py
+$ ./update_libfreehackquestclient.sh # update auto-generate-client-library
+$ python3 -m pylint --rcfile=.pylintrc *.py
+$ python3 -m pytest -rAs -c env-travis.ini .
 ```
 
-### Run server api tests (docker mode)
+### Server api tests - second way (docker mode)
 
-Requirements:
+Since you do not have a local server, you need to install the client library:
 
 ```
-$ sudo apt install python3-pip pylint python3-pytest
-$ pip3 install --user websocket-client
-$ pip3 install --user requests
-$ pip3 install -U pytest
-$ pip3 install --user pytest-env
-$ pip3 install --user docker
-$ pip3 install --user libfreehackquestclient
+$ pip3 install libfreehackquestclient
 ```
 
-expected also docker.
-
-Pull images
+Donwload docker images:
 ```
 $ docker pull freehackquest/fhq-server
 $ docker pull mysql:5.7
@@ -126,7 +123,8 @@ And now you can try run server-api-tests
 
 ```
 $ cd ~/fhq-server.git/tests/server-api-tests
-$ pytest -rAs -c env-docker.ini tests_leaks.py
+$ python3 -m pylint --rcfile=.pylintrc *.py
+$ python3 -m pytest -rAs -c env-docker.ini .
 ```
 
 ### Web User Interface
