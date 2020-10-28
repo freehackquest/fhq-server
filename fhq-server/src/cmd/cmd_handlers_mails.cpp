@@ -152,7 +152,10 @@ void CmdHandlerMailsList::handle(ModelRequest *pRequest) {
         foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
-        query.exec();
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
         while (query.next()) {
             QSqlRecord record = query.record();
             nlohmann::json jsonEmail;

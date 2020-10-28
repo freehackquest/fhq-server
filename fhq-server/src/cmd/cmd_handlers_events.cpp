@@ -78,7 +78,10 @@ void CmdHandlerEventDelete::handle(ModelRequest *pRequest) {
     QSqlQuery query(db);
     query.prepare("SELECT * FROM public_events WHERE id = :eventid");
     query.bindValue(":eventid", nEventId);
-    query.exec();
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        return;
+    }
     if (!query.next()) {
         pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Event not found"));
         return;
@@ -124,7 +127,10 @@ void CmdHandlerEventInfo::handle(ModelRequest *pRequest) {
     QSqlQuery query(db);
     query.prepare("SELECT * FROM public_events e WHERE id = :eventid");
     query.bindValue(":eventid", nEventId);
-    query.exec();
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        return;
+    }
     if (query.next()) {
         QSqlRecord record = query.record();
         jsonEvent["dt"] = record.value("dt").toString().toStdString();
@@ -218,7 +224,10 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
         foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
-        query.exec();
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
         if (query.next()) {
             QSqlRecord record = query.record();
             jsonResponse["count"] = record.value("cnt").toInt();
@@ -238,7 +247,10 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
         foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
-        query.exec();
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
         while (query.next()) {
             QSqlRecord record = query.record();
             nlohmann::json jsonEvent;

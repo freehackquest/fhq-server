@@ -65,7 +65,10 @@ void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest) {
         query.bindValue(":approve", 1);
         query.bindValue(":userid", nUserID);
     }
-    query.exec();
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        return;
+    }
     while (query.next()) {
         QSqlRecord record = query.record();
         nlohmann::json jsonWriteup;

@@ -92,7 +92,10 @@ void CmdHandlerGetMap::handle(ModelRequest *pRequest) {
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
     query.prepare("SELECT COUNT(*) as cnt, latitude, longitude FROM `users` GROUP BY latitude, longitude");
-    query.exec();
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        return;
+    }
     while (query.next()) {
         QSqlRecord record = query.record();
         double lat = record.value("latitude").toDouble();
@@ -477,7 +480,10 @@ void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest) {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM users WHERE id = :userid");
         query.bindValue(":userid", userid);
-        query.exec();
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
         if (query.next()) {
             QSqlRecord record = query.record();
             sLastIP = record.value("last_ip").toString().toStdString();
@@ -488,7 +494,10 @@ void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest) {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM users_ips WHERE userid = :userid ORDER BY id DESC");
         query.bindValue(":userid", userid);
-        query.exec();
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
         if (query.next()) {
             QSqlRecord record = query.record();
             sLastIP = record.value("ip").toString().toStdString();
@@ -797,7 +806,10 @@ void CmdHandlerUser::handle(ModelRequest *pRequest) {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM users WHERE id = :userid");
         query.bindValue(":userid", nUserID);
-        query.exec();
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
 
         if (query.next()) {
             QSqlRecord record = query.record();
@@ -830,7 +842,10 @@ void CmdHandlerUser::handle(ModelRequest *pRequest) {
         QSqlQuery query(db);
         query.prepare("SELECT name, value, date_change FROM users_profile WHERE userid = :userid");
         query.bindValue(":userid", nUserID);
-        query.exec();
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
 
         while (query.next()) {
             QSqlRecord record = query.record();
@@ -905,7 +920,10 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest) {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM users WHERE id = :userid");
         query.bindValue(":userid", nUserID);
-        query.exec();
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
 
         if (query.next()) {
             QSqlRecord record = query.record();
@@ -938,7 +956,10 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest) {
         QSqlQuery query(db);
         query.prepare("SELECT name, value, date_change FROM users_profile WHERE userid = :userid");
         query.bindValue(":userid", nUserID);
-        query.exec();
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
 
         while (query.next()) {
             QSqlRecord record = query.record();
@@ -1554,7 +1575,10 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest) {
         foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
-        query.exec();
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
         while (query.next()) {
             QSqlRecord record = query.record();
             int userid = record.value("id").toInt();

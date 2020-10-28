@@ -55,7 +55,10 @@ void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest) {
     query.prepare("INSERT INTO chatmessages(user, message, dt) VALUES(:user,:message, NOW())");
     query.bindValue(":user", QString::fromStdString(sUsername));
     query.bindValue(":message", QString::fromStdString(sMessage));
-    query.exec();
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        return;
+    }
 
     nlohmann::json jsonData2;
     jsonData2["cmd"] = "chat";

@@ -19,13 +19,14 @@ class EmployScoreboard : public WsjcppEmployBase {
         void asyncUpdatedLeaksScore(int nUserID);
 
    private:
-       struct User{
-           int userid = 0;
-           std::string logo = "";
-           std::string nick = "";
-           std::string university = "";
-       };
-
+        std::string TAG;
+        struct User{
+            int userid = 0;
+            std::string logo = "";
+            std::string nick = "";
+            std::string university = "";
+        };
+ 
        struct ScoreboardRow {
            int place = 0;
            int rating = 0;
