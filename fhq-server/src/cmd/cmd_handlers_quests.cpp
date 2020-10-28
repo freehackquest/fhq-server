@@ -1702,10 +1702,10 @@ void CmdHandlerHints::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// ********* Quests Proposal List ************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quests Proposal List
 
+REGISTRY_CMD(CmdHandlerQuestsProposalList)
 
 CmdHandlerQuestsProposalList::CmdHandlerQuestsProposalList()
     : CmdHandlerBase("quests_proposal_list", "Quests proposal list") {
@@ -1716,8 +1716,8 @@ CmdHandlerQuestsProposalList::CmdHandlerQuestsProposalList()
     setAccessAdmin(true);
 
     // validation and description input fields
-    optionalIntegerParam("onpage", "On page"); // TODO validator
-    optionalIntegerParam("page", "page");  // TODO validator
+    optionalIntegerParam("page_size", "Pgae size"); // TODO validator
+    optionalIntegerParam("page_index", "Page index");  // TODO validator
 }
 
 // ---------------------------------------------------------------------
@@ -1725,14 +1725,14 @@ CmdHandlerQuestsProposalList::CmdHandlerQuestsProposalList()
 void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
-    nlohmann::json jsonResponse;
+    
 
     QStringList filters;
     QMap<QString,QString> filter_values;
 
-    int nPage = pRequest->getInputInteger("page", 0);
-    int nOnPage = pRequest->getInputInteger("onpage", 5);
-    int nCount = 0;
+    int nPageIndex = pRequest->getInputInteger("page_index", 0);
+    int nPageSize = pRequest->getInputInteger("page_size", 5);
+    int nTotal = 0;
 
     QSqlDatabase db = *(pDatabase->database());
     QString where = filters.join(" AND ");
@@ -1753,22 +1753,25 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
         }
         if (query.next()) {
             QSqlRecord record = query.record();
-            nCount = record.value("cnt").toInt();
+            nTotal = record.value("cnt").toInt();
         }
     }
 
     // quests_proposal
-    nlohmann::json jsonQuestsProposal = nlohmann::json::array();
+    nlohmann::json jsonQuestProposalItems = nlohmann::json::array();
     {
         QSqlQuery query(db);
         query.prepare("SELECT qp.*, u.nick, u.email, g.title as game_title  FROM quests_proposal qp "
             " LEFT JOIN users u ON u.id = qp.userid "
             " LEFT JOIN games g ON g.id = qp.gameid "
-            + where + " ORDER BY created DESC LIMIT " + QString::number(nPage*nOnPage) + "," + QString::number(nOnPage));
+            + where + " ORDER BY created DESC LIMIT " + QString::number(nPageIndex*nPageSize) + "," + QString::number(nPageSize));
         foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
-        query.exec(); // TODO check error
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
         while (query.next()) {
             QSqlRecord record = query.record();
 
@@ -1799,16 +1802,18 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
             jsonQuestProposal["confirmed"] = nConfirmed;
             jsonQuestProposal["text"] = sText.toStdString();
 
-            jsonQuestsProposal.push_back(jsonQuestProposal);
+            jsonQuestProposalItems.push_back(jsonQuestProposal);
         }
     }
+    nlohmann::json jsonResult;
+    jsonResult["items"] = jsonQuestProposalItems;
+    jsonResult["page_size"] = nPageSize;
+    jsonResult["page_index"] = nPageIndex;
+    jsonResult["total"] = nTotal;
 
-    jsonResponse["data"] = jsonQuestsProposal;
-    jsonResponse["onpage"] = nOnPage;
-    jsonResponse["page"] = nPage;
-    jsonResponse["count"] = nCount;
+    nlohmann::json jsonResponse;
+    jsonResponse["data"] = jsonResult;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
-
 }
 
 

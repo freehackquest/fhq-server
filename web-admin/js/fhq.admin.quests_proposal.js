@@ -9,38 +9,43 @@ fhq.pages['quests_proposal'] = function(){
     $('#page_content').html('');
     fhq.showLoader();
     
-    var onpage = 5;
-    if(fhq.containsPageParam("onpage")){
-        onpage = parseInt(fhq.pageParams['onpage'], 10);
+    var page_size = 5;
+    if (fhq.containsPageParam("page_size")) {
+        page_size = parseInt(fhq.pageParams['page_size'], 10);
     }
 
-    var page = 0;
-    if(fhq.containsPageParam("page")){
-        page = parseInt(fhq.pageParams['page'], 10);
+    var page_index = 0;
+    if (fhq.containsPageParam("page_index")) {
+        page_index = parseInt(fhq.pageParams['page_index'], 10);
     }
     
     var el = $("#page_content");
     el.html('Loading...')
     
-    window.fhq.changeLocationState({'quests_proposal': '', 'onpage': onpage, 'page': page});
+    window.fhq.changeLocationState({'quests_proposal': '', 'page_size': page_size, 'page_index': page_index});
 
-    fhq.ws.quests_proposal_list({'onpage': onpage, 'page': page}).done(function(r){
+    fhq.ws.quests_proposal_list({'page_size': page_size, 'page_index': page_index})
+    .fail(function(r){
+        fhq.hideLoader();
+        console.error(r);
+        el.append(r.error);
+    })
+    .done(function(r){
         fhq.hideLoader();
         console.log(r);
         el.html('');
         
         el.append('<hr>');
-        
-        // var pg = new SwaPaginator(0, r.data.total, r.data.page_size, r.data.page_index);
-        var pg = new SwaPaginator(0, r.count, r.onpage, r.page);
+
+        var pg = new SwaPaginator(0, r.data.total, r.data.page_size, r.data.page_index);
         el.append(pg.getHtml());
         pg.bindPrev(function() {
-            window.fhq.changeLocationState({'quests_proposal': '', 'page_size': onpage, 'page_index': page_index - 1});
+            window.fhq.changeLocationState({'quests_proposal': '', 'page_size': page_size, 'page_index': page_index - 1});
             fhq.pages['quests_proposal']();
         });
 
         pg.bindNext(function() {
-            window.fhq.changeLocationState({'quests_proposal': '', 'page_size': onpage, 'page_index': page_index + 1});
+            window.fhq.changeLocationState({'quests_proposal': '', 'page_size': page_size, 'page_index': page_index + 1});
             fhq.pages['quests_proposal']();
         });
 
@@ -58,8 +63,8 @@ fhq.pages['quests_proposal'] = function(){
             + '        </tbody>'
             + '</table>'
         )
-        for(var i in r.data){
-            var qp = r.data[i];
+        for(var i in r.data.items){
+            var qp = r.data.items[i];
             console.log(qp);
             $('#list').append('<tr>'
                 + '    <td> ' + qp.id + '</td>'
@@ -87,9 +92,5 @@ fhq.pages['quests_proposal'] = function(){
             );
         }
 
-    }).fail(function(r){
-        fhq.hideLoader();
-        console.error(r);
-        el.append(r.error);
     })
 }
