@@ -169,6 +169,36 @@ $ python3 -m pylint --rcfile=.pylintrc *.py
 $ python3 -m pytest -rAs -c env-docker.ini .
 ```
 
+### Check the leaks mememory via valgrind
+
+Requirements:
+
+```
+$ sudo apt install valgrind # ubuntu and debian
+```
+
+Terminal1:
+```
+$ cd ~/fhq-server.git/fhq-server
+$ valgrind --leak-check=full \
+    --show-leak-kinds=all \
+    --track-origins=yes \
+    --verbose \
+    --log-file=valgrind-out.txt \
+    ./fhq-server -wd ../ci/travis/data
+```
+
+Terminal2:
+``` 
+$ cd ~/fhq-server.git/fhq-server-tests
+$ python3 run_tests.py
+```
+or run new pytests
+``` 
+$ cd ~/fhq-server.git/tests/server-api-tests
+$ python3 -m pytest -rAs -c env-local.ini .
+```
+
 ### Web User Interface
 
 Fast to fix and develop for current server version
