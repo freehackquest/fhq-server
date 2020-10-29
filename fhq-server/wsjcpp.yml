@@ -52,10 +52,11 @@ dependencies:
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/nlohmann_json"
   - name: "wsjcpp-validators"
-    version: "v0.1.0"
+    version: "v0.1.2"
     url: "https://github.com/wsjcpp/wsjcpp-validators:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_validators"
+    installation-datetime: "Thu, 29 Oct 2020 02:32:54 GMT"
   - name: "wsjcpp-print-tree"
     version: "v0.1.0"
     url: "https://github.com/wsjcpp/wsjcpp-print-tree:master"
@@ -91,6 +92,7 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-parse-conf:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_parse_conf"
+
 distribution:
   - source-file: "src/core/fallen.cpp"
     target-file: "fallen.cpp"
