@@ -158,3 +158,25 @@ document.addEventListener("keyup", function(event) {
         return true;
     }
 });
+
+class SwaTabs {
+    constructor(tabs, activeTabId) {
+        this.tabs = tabs;
+        this.activeTabId = activeTabId;
+        this.randId = "swa_tabs_" + swaMakeId(10);
+    }
+
+    getHtml() {
+        var html = '<div class="swa-tabs" id="' + this.randId + '">';
+        for (var i in this.tabs) {
+            var m = this.tabs[i];
+            var cl_active = this.activeTabId == m.tabid ? 'active' : '';
+            html += ''
+                + '  <div class="swa-tab ' + cl_active + '" onclick="' + m.onclick + '" tabid="' + m.tabId + '">'
+                + '      ' + m.caption
+                + '  </div>'
+        }
+        html += '</div>';
+        return html;
+    }
+}

@@ -332,3 +332,38 @@ h1, h2, h3 {
 .swa-modal-dialog-box-buttons {
     padding: 10px;
 }
+
+.swa-tabs {
+    display: block;
+    border-bottom: 2px solid #080;
+}
+
+.swa-tab {
+    display: inline-block;
+    cursor: pointer;
+    border-left: 1px solid #080;
+    border-top: 1px solid #0f0;
+    border-right: 1px solid #0f0;
+    border-bottom: 2px solid black;
+    margin-bottom: 0px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    vertical-align: bottom;
+}
+
+.swa-tab.active {
+    border-left: 1px solid #080;
+    border-top: 1px solid #0f0;
+    border-right: 1px solid #0f0;
+    border-bottom: 2px solid black;
+    margin-bottom: -2px;
+    font-weight: bold;
+}
+
+.swa-tab-content {
+    display: block;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
