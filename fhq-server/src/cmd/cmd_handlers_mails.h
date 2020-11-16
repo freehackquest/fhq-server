@@ -6,7 +6,6 @@
 // ---------------------------------------------------------------------
 
 class CmdHandlerMailInfo : public CmdHandlerBase {
-
     public:
         CmdHandlerMailInfo();
         virtual void handle(ModelRequest *pRequest);
@@ -15,7 +14,6 @@ class CmdHandlerMailInfo : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 
 class CmdHandlerMailSend : public CmdHandlerBase {
-
     public:
         CmdHandlerMailSend();
         virtual void handle(ModelRequest *pRequest);
@@ -24,7 +22,6 @@ class CmdHandlerMailSend : public CmdHandlerBase {
 // ---------------------------------------------------------------------
 
 class CmdHandlerMailsList : public CmdHandlerBase {
-
     public:
         CmdHandlerMailsList();
         virtual void handle(ModelRequest *pRequest);

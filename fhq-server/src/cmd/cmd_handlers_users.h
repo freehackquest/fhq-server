@@ -1,24 +1,18 @@
-#ifndef CMD_HADNLERS_USERS_H
-#define CMD_HADNLERS_USERS_H
+// Copyright (c) 2015-2020 FreeHackQuest <freehackquest@gmail.com>
+
+#pragma once
 
 #include <cmd_handlers.h>
 
-/*********************************************
- * This handler will be return scoreboard of user
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerUsersScoreboard : public CmdHandlerBase {
-    
-    public:
-        CmdHandlerUsersScoreboard();
-        virtual void handle(ModelRequest *pRequest);
+  public:
+    CmdHandlerUsersScoreboard();
+    virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUsersScoreboard)
-
-/*********************************************
- * This handler will be return json map users
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerGetMap : public CmdHandlerBase {
     public:
@@ -26,11 +20,7 @@ class CmdHandlerGetMap : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerGetMap)
-
-/*********************************************
- * User login
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerLogin : public CmdHandlerBase {
     public:
@@ -38,11 +28,7 @@ class CmdHandlerLogin : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerLogin)
-
-/*********************************************
- * User registration
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerRegistration : public CmdHandlerBase {
     public:
@@ -50,47 +36,32 @@ class CmdHandlerRegistration : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerRegistration)
-
-/*********************************************
- * User login by token
-**********************************************/
+// ---------------------------------------------------------------------
+// User login by token
 
 class CmdHandlerToken : public CmdHandlerBase {
-    public:
+ public:
         CmdHandlerToken();
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerToken)
-
-/*********************************************
- * User location update
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerUpdateUserLocation : public CmdHandlerBase {
-    public:
+ public:
         CmdHandlerUpdateUserLocation();
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUpdateUserLocation)
-
-/*********************************************
- * User change password
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerUserChangePassword : public CmdHandlerBase {
-    public:
+ public:
         CmdHandlerUserChangePassword();
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUserChangePassword)
-
-/*********************************************
- * Add new user
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerUsersAdd : public CmdHandlerBase {
     public:
@@ -98,11 +69,7 @@ class CmdHandlerUsersAdd : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUsersAdd)
-
-/*********************************************
- * User info (deprecated)
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerUser : public CmdHandlerBase {
     public:
@@ -110,11 +77,7 @@ class CmdHandlerUser : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUser)
-
-/*********************************************
- * User info
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerUsersInfo : public CmdHandlerBase {
     public:
@@ -122,11 +85,7 @@ class CmdHandlerUsersInfo : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUsersInfo)
-
-/*********************************************
- * User reset password
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerUserResetPassword : public CmdHandlerBase {
     public:
@@ -134,11 +93,7 @@ class CmdHandlerUserResetPassword : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUserResetPassword)
-
-/*********************************************
- * User skill
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerUserSkills : public CmdHandlerBase {
     public:
@@ -146,11 +101,7 @@ class CmdHandlerUserSkills : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUserSkills)
-
-/*********************************************
- * User update
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerUserUpdate : public CmdHandlerBase {
     public:
@@ -158,11 +109,7 @@ class CmdHandlerUserUpdate : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUserUpdate)
-
-/*********************************************
- * User delete
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerUsersDelete : public CmdHandlerBase {
     public:
@@ -170,21 +117,15 @@ class CmdHandlerUsersDelete : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-/*********************************************
- * Users
-**********************************************/
- 
+// ---------------------------------------------------------------------
+
 class CmdHandlerUsers : public CmdHandlerBase {
     public:
         CmdHandlerUsers();
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUsers)
-
-/*********************************************
- * User registration
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerUsersRegistration : public CmdHandlerBase {
     public:
@@ -192,11 +133,7 @@ class CmdHandlerUsersRegistration : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUsersRegistration)
-
-/*********************************************
- * User registration verification 
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerUsersRegistrationVerification : public CmdHandlerBase {
     public:
@@ -204,50 +141,34 @@ class CmdHandlerUsersRegistrationVerification : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUsersRegistrationVerification)
+// ---------------------------------------------------------------------
 
-/*********************************************
- * Change user's email
-**********************************************/
- 
 class CmdHandlerUsersChangeEmail : public CmdHandlerBase {
     public:
         CmdHandlerUsersChangeEmail();
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerUsersChangeEmail)
+// ---------------------------------------------------------------------
 
-/*********************************************
- * Change user's email verification
-**********************************************/
- 
 class CmdHandlerUsersChangeEmailVerification : public CmdHandlerBase {
     public:
         CmdHandlerUsersChangeEmailVerification();
         virtual void handle(ModelRequest *pRequest);
 };
 
+// ---------------------------------------------------------------------
 
-/*********************************************
- * List of user tokens
-**********************************************/
- 
 class CmdHandlerUsersTokens : public CmdHandlerBase {
     public:
         CmdHandlerUsersTokens();
         virtual void handle(ModelRequest *pRequest);
 };
 
+// ---------------------------------------------------------------------
 
-/*********************************************
- * Delete user tokens
-**********************************************/
- 
 class CmdHandlerUsersTokensDelete : public CmdHandlerBase {
     public:
         CmdHandlerUsersTokensDelete();
         virtual void handle(ModelRequest *pRequest);
 };
-
-#endif // CMD_HADNLERS_USERS_H

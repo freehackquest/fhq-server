@@ -1,6 +1,10 @@
+// Copyright (c) 2015-2020 FreeHackQuest <freehackquest@gmail.com>
+
+#include <unistd.h>  // getpass
+
 #include <iostream>
 #include <string>
-#include <unistd.h> // getpass
+
 
 // #include <stdio.h>
 // #include <stdlib.h>
@@ -47,7 +51,13 @@ int main(int argc, char** argv) {
     std::string appVersion(WSJCPP_APP_VERSION);
     std::string appAuthor("FreeHackQuest Team");
     std::string sLibraryNameForExports("fhq");
-    WsjcppCore::init(argc, argv, appName, appVersion, appAuthor, sLibraryNameForExports);
+    WsjcppCore::init(
+        argc,
+        argv,
+        appName,
+        appVersion,
+        appAuthor,
+        sLibraryNameForExports);
 
     QCoreApplication a(argc, argv);
     std::string TAG = "MAIN";
@@ -59,7 +69,7 @@ int main(int argc, char** argv) {
     }
     WsjcppLog::setLogDirectory(sLogDir);
 
-    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+    auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
     pGlobalSettings->update("app_name", appName);
     pGlobalSettings->update("app_version", appVersion);
     pGlobalSettings->update("app_author", appAuthor);
@@ -253,7 +263,7 @@ int main(int argc, char** argv) {
         EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
         // enter mysql root password
-        char *pPassword=getpass("Enter MySQL root password: ");
+        char *pPassword = getpass("Enter MySQL root password: ");
         std::string sRootPassword(pPassword);
         std::string sError;
         if (!pDatabase->manualCreateDatabase(sRootPassword, sError)) {
@@ -278,7 +288,7 @@ int main(int argc, char** argv) {
             WsjcppLog::err(TAG, "\nBAD HTTPS connection with LXD\n\n: " + sError);
             return -1;
         } else {
-            char *pPassword=getpass("\nPlease enter your password for LXD:");
+            char *pPassword = getpass("\nPlease enter your password for LXD:");
             std::string sPass(pPassword);
             if (UtilsLXDAuth::connect_with_lxd(sPass, sError))
                 std::cout << "\nWell, you added your certificates to LXD.\n\n";
@@ -303,8 +313,6 @@ int main(int argc, char** argv) {
         std::cout << "\nCurrent LXD mode: " << pGlobalSettings->get("lxd_mode").convertValueToString(false) << "\n";
         return 0;
     } else if (helpArgs.has("start") || helpArgs.has("-s")) {
-        
-
         pGlobalSettings->registrySetting("web_server", "web_admin_folder").dirPath("/usr/share/fhq-server/admin-web-site").inFile();
         pGlobalSettings->registrySetting("web_server", "web_user_folder").dirPath("/usr/share/fhq-server/fhq-web-user").inFile();
         pGlobalSettings->registrySetting("web_server", "web_public_folder").dirPath("/usr/share/fhq-server/fhq-web-public").inFile();
@@ -339,14 +347,14 @@ int main(int argc, char** argv) {
 
         WsjcppLog::info(TAG, "Starting web-server on " + std::to_string(nWebPort)
              + " with " + std::to_string(nWebMaxThreads) + " worker threads");
-        
-        g_httpServer.addHandler((WsjcppLightWebHttpHandlerBase *) new HttpHandlerWebAdminFolder(sWebAdminFolder));
-        g_httpServer.addHandler((WsjcppLightWebHttpHandlerBase *) new HttpHandlerWebPublicFolder(sWebPublicFolder));
-        g_httpServer.addHandler((WsjcppLightWebHttpHandlerBase *) new HttpHandlerWebUserFolder(sWebUserFolder));
-        
+
+        g_httpServer.addHandler(new HttpHandlerWebAdminFolder(sWebAdminFolder));
+        g_httpServer.addHandler(new HttpHandlerWebPublicFolder(sWebPublicFolder));
+        g_httpServer.addHandler(new HttpHandlerWebUserFolder(sWebUserFolder));
+
         g_httpServer.setPort(nWebPort);
         g_httpServer.setMaxWorkers(nWebMaxThreads);
-        g_httpServer.start(); // will be block thread*/
+        g_httpServer.start();  // will be block thread
 
         return a.exec();
     }

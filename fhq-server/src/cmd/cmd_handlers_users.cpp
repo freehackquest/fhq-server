@@ -11,9 +11,10 @@
 #include <QDateTime>
 #include <json.hpp>
 
-/*********************************************
- * This handler will be return scoreboard of user
-**********************************************/
+// ---------------------------------------------------------------------
+// This handler will be return scoreboard of user
+
+REGISTRY_CMD(CmdHandlerUsersScoreboard)
 
 CmdHandlerUsersScoreboard::CmdHandlerUsersScoreboard()
     : CmdHandlerBase("scoreboard", "Method return scoreboard") {
@@ -67,9 +68,10 @@ void CmdHandlerUsersScoreboard::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * This handler will be return json map users
-**********************************************/
+// ---------------------------------------------------------------------
+// This handler will be return json map users
+
+REGISTRY_CMD(CmdHandlerGetMap)
 
 CmdHandlerGetMap::CmdHandlerGetMap()
     : CmdHandlerBase("getmap", "Returned coordinate list") {
@@ -116,9 +118,10 @@ void CmdHandlerGetMap::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * User login
-**********************************************/
+// ---------------------------------------------------------------------
+// User login
+
+REGISTRY_CMD(CmdHandlerLogin)
 
 CmdHandlerLogin::CmdHandlerLogin()
     : CmdHandlerBase("login", "Method for login") {
@@ -224,9 +227,10 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * User registration
-**********************************************/
+// ---------------------------------------------------------------------
+// User registration
+
+REGISTRY_CMD(CmdHandlerRegistration)
 
 CmdHandlerRegistration::CmdHandlerRegistration()
     : CmdHandlerBase("registration", "Method for registration") {
@@ -382,9 +386,10 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest) {
     RunTasks::UpdateUserLocation(nUserID, sLastIP);
 }
 
-/*********************************************
- * User login by token
-**********************************************/
+// ---------------------------------------------------------------------
+// User login by token
+
+REGISTRY_CMD(CmdHandlerToken)
 
 CmdHandlerToken::CmdHandlerToken()
     : CmdHandlerBase("token", "Method for login by token") {
@@ -441,9 +446,10 @@ void CmdHandlerToken::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * User location update
-**********************************************/
+// ---------------------------------------------------------------------
+// User location update
+
+REGISTRY_CMD(CmdHandlerUpdateUserLocation)
 
 CmdHandlerUpdateUserLocation::CmdHandlerUpdateUserLocation()
     : CmdHandlerBase("updateuserlocation", "This method will be try update user location by lastip") {
@@ -509,9 +515,10 @@ void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * User change password
-**********************************************/
+// ---------------------------------------------------------------------
+// User change password
+
+REGISTRY_CMD(CmdHandlerUserChangePassword)
 
 CmdHandlerUserChangePassword::CmdHandlerUserChangePassword()
     : CmdHandlerBase("user_change_password", "This method for change user password") {
@@ -594,9 +601,10 @@ void CmdHandlerUserChangePassword::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * User create
-**********************************************/
+// ---------------------------------------------------------------------
+// User create
+
+REGISTRY_CMD(CmdHandlerUsersAdd)
 
 CmdHandlerUsersAdd::CmdHandlerUsersAdd()
     : CmdHandlerBase("users_add", "Method for add new user") {
@@ -751,9 +759,10 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * User info (deprecated)
-**********************************************/
+// ---------------------------------------------------------------------
+// User info (deprecated)
+
+REGISTRY_CMD(CmdHandlerUser)
 
 CmdHandlerUser::CmdHandlerUser()
     : CmdHandlerBase("user", "Return user info") {
@@ -863,9 +872,10 @@ void CmdHandlerUser::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * User info
-**********************************************/
+// ---------------------------------------------------------------------
+// User info
+
+REGISTRY_CMD(CmdHandlerUsersInfo)
 
 CmdHandlerUsersInfo::CmdHandlerUsersInfo()
     : CmdHandlerBase("users_info", "Return user info") {
@@ -977,9 +987,10 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * User reset password
-**********************************************/
+// ---------------------------------------------------------------------
+// User reset password
+
+REGISTRY_CMD(CmdHandlerUserResetPassword)
 
 CmdHandlerUserResetPassword::CmdHandlerUserResetPassword()
     : CmdHandlerBase("user_reset_password", "Method for reset password") {
@@ -1064,9 +1075,10 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * User skill
-**********************************************/
+// ---------------------------------------------------------------------
+// User skill
+
+REGISTRY_CMD(CmdHandlerUserSkills)
 
 CmdHandlerUserSkills::CmdHandlerUserSkills()
     : CmdHandlerBase("user_skills", "Return user skills info") {
@@ -1132,9 +1144,10 @@ void CmdHandlerUserSkills::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * User update
-**********************************************/
+// ---------------------------------------------------------------------
+// User update
+
+REGISTRY_CMD(CmdHandlerUserUpdate)
 
 CmdHandlerUserUpdate::CmdHandlerUserUpdate()
     : CmdHandlerBase("user_update", "Update user info") {
@@ -1338,9 +1351,6 @@ void CmdHandlerUsersDelete::handle(ModelRequest *pRequest) {
             return;
         }
     }
-
-    
-
     
     // check if the user exists
     {
@@ -1484,9 +1494,10 @@ void CmdHandlerUsersDelete::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * Users
-**********************************************/
+// ---------------------------------------------------------------------
+// Users
+
+REGISTRY_CMD(CmdHandlerUsers)
 
 CmdHandlerUsers::CmdHandlerUsers()
     : CmdHandlerBase("users", "Method return list of users") {
@@ -1619,9 +1630,10 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * User registration
-**********************************************/
+// ---------------------------------------------------------------------
+// User registration
+
+REGISTRY_CMD(CmdHandlerUsersRegistration)
 
 CmdHandlerUsersRegistration::CmdHandlerUsersRegistration()
     : CmdHandlerBase("users_registration", "Method for registration") {
@@ -1718,9 +1730,10 @@ void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * User registration verification 
-**********************************************/
+// ---------------------------------------------------------------------
+// User registration verification 
+
+REGISTRY_CMD(CmdHandlerUsersRegistrationVerification)
 
 CmdHandlerUsersRegistrationVerification::CmdHandlerUsersRegistrationVerification()
     : CmdHandlerBase("users_registration_verification", "Method for registration verification") {
@@ -1896,9 +1909,10 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest) {
     RunTasks::UpdateUserLocation(nUserID, sLastIP.toStdString());
 }
 
-/*********************************************
- * Change user's email
-**********************************************/
+// ---------------------------------------------------------------------
+// Change user's email
+
+REGISTRY_CMD(CmdHandlerUsersChangeEmail)
 
 CmdHandlerUsersChangeEmail::CmdHandlerUsersChangeEmail()
     : CmdHandlerBase("users_change_email", "Method for email changing") {
@@ -2011,9 +2025,9 @@ void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * Change user's email verification
-**********************************************/
+// ---------------------------------------------------------------------
+// Change user's email verification
+
 REGISTRY_CMD(CmdHandlerUsersChangeEmailVerification)
 
 CmdHandlerUsersChangeEmailVerification::CmdHandlerUsersChangeEmailVerification()
@@ -2095,9 +2109,9 @@ void CmdHandlerUsersChangeEmailVerification::handle(ModelRequest *pRequest) {
 }
 
 
-/*********************************************
- * List of active user tokens
-**********************************************/
+// ---------------------------------------------------------------------
+// List of active user tokens
+
 REGISTRY_CMD(CmdHandlerUsersTokens)
 
 CmdHandlerUsersTokens::CmdHandlerUsersTokens()
@@ -2160,10 +2174,8 @@ void CmdHandlerUsersTokens::handle(ModelRequest *pRequest) {
 }
 
 // ---------------------------------------------------------------------
+// Deletee user tokens
 
-/*********************************************
- * Deletee user tokens
-**********************************************/
 REGISTRY_CMD(CmdHandlerUsersTokensDelete)
 
 CmdHandlerUsersTokensDelete::CmdHandlerUsersTokensDelete()
