@@ -127,9 +127,7 @@ class CmdHandlerAddHint : public CmdHandlerBase {
 
 REGISTRY_CMD(CmdHandlerAddHint)
 
-// *******************************************
-// ************ Quest AnswerList **************
-// *******************************************
+// ---------------------------------------------------------------------
 
 class CmdHandlerAnswerList : public CmdHandlerBase {
     public:
@@ -139,9 +137,17 @@ class CmdHandlerAnswerList : public CmdHandlerBase {
 
 REGISTRY_CMD(CmdHandlerAnswerList)
 
-// *******************************************
-// *********** Quest Hints Delete ************
-// *******************************************
+// ---------------------------------------------------------------------
+// User Answer List
+
+class CmdHandlerQuestsUserAnswerList : public CmdHandlerBase {
+    public:
+        CmdHandlerQuestsUserAnswerList();
+        virtual void handle(ModelRequest *pRequest);
+};
+
+// ---------------------------------------------------------------------
+// Quest Hints Delete
 
 class CmdHandlerDeleteHint : public CmdHandlerBase {
     public:

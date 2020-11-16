@@ -1628,6 +1628,88 @@ void CmdHandlerAnswerList::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
+// ---------------------------------------------------------------------
+// User Answer List
+
+REGISTRY_CMD(CmdHandlerQuestsUserAnswerList)
+
+CmdHandlerQuestsUserAnswerList::CmdHandlerQuestsUserAnswerList()
+    : CmdHandlerBase("quests_user_answer_list", "Return user answers list") {
+
+    TAG = "CmdHandlerQuestsUserAnswerList";
+
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(false);
+
+    // validation and description input fields
+    requireIntegerParam("questid", "Filter for questid");   
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerQuestsUserAnswerList::handle(ModelRequest *pRequest) {
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+
+    nlohmann::json jsonResponse;
+
+    int nQuestID = pRequest->getInputInteger("questid", 0);
+
+    // count quests
+    QSqlDatabase db = *(pDatabase->database());
+
+    {
+        QSqlQuery query(db);
+        query.prepare("SELECT count(*) as cnt FROM users_quests_answers "
+            " WHERE questid = :questid"
+        );
+        query.bindValue(":questid", nQuestID);
+
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
+        if (query.next()) {
+            QSqlRecord record = query.record();
+            jsonResponse["count"] = record.value("cnt").toInt();
+        }
+    }
+
+    // data
+    nlohmann::json jsonAnswerList = nlohmann::json::array();
+    {
+        QSqlQuery query(db);
+        query.prepare("SELECT "
+            "    dt,"
+            "    passed,"
+            "    questid,"
+            "    user_answer,"
+            "    levenshtein"
+            " FROM users_quests_answers "
+            " WHERE questid = :questid"
+            " ORDER BY dt DESC "
+        );
+        query.bindValue(":questid", nQuestID);
+
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
+        while (query.next()) {
+            QSqlRecord record = query.record();
+            nlohmann::json jsonAnswer;
+            jsonAnswer["dt"] = record.value("dt").toString().toStdString();
+            jsonAnswer["user_answer"] = record.value("user_answer").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
+            jsonAnswer["levenshtein"] = record.value("levenshtein").toInt();
+            jsonAnswer["passed"] = record.value("passed").toString().toStdString();
+            jsonAnswerList.push_back(jsonAnswer);
+        }
+    }
+
+    jsonResponse["data"] = jsonAnswerList;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
 // *******************************************
 // *********** Quest Hint Delete ************
 // *******************************************
