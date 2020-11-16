@@ -43,6 +43,8 @@ mkdir fhq-web-user/dist
 
 cd fhq-server
 check_ret $? "change directory to fhq-server"
+python3 -m sea5kg_cpplint
+check_ret $? "sea5kg_cpplint"
 qmake --version # TODO when will be removed all then qt need remove this line
 ./build_simple.sh
 check_ret $? "build fhq-server"

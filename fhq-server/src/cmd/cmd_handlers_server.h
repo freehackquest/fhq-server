@@ -3,9 +3,7 @@
 
 #include <cmd_handlers.h>
 
-/*!
- * This handler will be return public info
- * */
+// ---------------------------------------------------------------------
 
 class CmdHandlerPublicInfo : public CmdHandlerBase {
 
@@ -14,12 +12,7 @@ class CmdHandlerPublicInfo : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerPublicInfo)
-
-
-/*!
- * This handler will be return private server info
- * */
+// ---------------------------------------------------------------------
 
 class CmdHandlerServerInfo : public CmdHandlerBase {
 
@@ -28,11 +21,7 @@ class CmdHandlerServerInfo : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerServerInfo)
-
-/*!
- * This handler will be return private server settings
- * */
+// ---------------------------------------------------------------------
 
 class CmdHandlerServerSettings : public CmdHandlerBase {
 
@@ -41,11 +30,7 @@ class CmdHandlerServerSettings : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerServerSettings)
-
-/*!
- * This handler for update private server settings
- * */
+// ---------------------------------------------------------------------
 
 class CmdHandlerServerSettingsUpdate : public CmdHandlerBase {
 
@@ -53,7 +38,5 @@ class CmdHandlerServerSettingsUpdate : public CmdHandlerBase {
         CmdHandlerServerSettingsUpdate();
         virtual void handle(ModelRequest *pRequest);
 };
-
-REGISTRY_CMD(CmdHandlerServerSettingsUpdate)
 
 #endif // CMD_HADNLERS_SERVER_H

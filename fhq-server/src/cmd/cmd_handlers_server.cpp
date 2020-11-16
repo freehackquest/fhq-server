@@ -6,9 +6,10 @@
 #include <employ_server_info.h>
 #include <QtCore>
 
-/*****************************************
- * This handler will be return public info
- *****************************************/
+// ---------------------------------------------------------------------
+// This handler will be return public info
+
+REGISTRY_CMD(CmdHandlerPublicInfo)
 
 CmdHandlerPublicInfo::CmdHandlerPublicInfo()
     : CmdHandlerBase("public_info", "Method return public information about server") {
@@ -100,9 +101,10 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*****************************************
- * This handler will be return private server info
- *****************************************/
+// ---------------------------------------------------------------------
+// This handler will be return private server info
+
+REGISTRY_CMD(CmdHandlerServerInfo)
 
 CmdHandlerServerInfo::CmdHandlerServerInfo()
     : CmdHandlerBase("server_info", "Return server private information") {
@@ -134,9 +136,10 @@ void CmdHandlerServerInfo::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*****************************************
- * This handler will be return private server settings
- *****************************************/
+// ---------------------------------------------------------------------
+// This handler will be return private server settings
+
+REGISTRY_CMD(CmdHandlerServerSettings)
 
 CmdHandlerServerSettings::CmdHandlerServerSettings()
     : CmdHandlerBase("server_settings", "Return server settings") {
@@ -159,9 +162,10 @@ void CmdHandlerServerSettings::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*****************************************
- * This handler for update private server settings
- *****************************************/
+// ---------------------------------------------------------------------
+// This handler for update private server settings
+
+REGISTRY_CMD(CmdHandlerServerSettingsUpdate)
 
 CmdHandlerServerSettingsUpdate::CmdHandlerServerSettingsUpdate()
     : CmdHandlerBase("server_settings_update", "Update server settings") {

@@ -3,9 +3,7 @@
 
 #include <cmd_handlers.h>
 
-/*!
- * This handler will be return info about mail
- * */
+// ---------------------------------------------------------------------
 
 class CmdHandlerMailInfo : public CmdHandlerBase {
 
@@ -14,11 +12,7 @@ class CmdHandlerMailInfo : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerMailInfo)
-
-/*!
- * This handler will be send mail by admin
- * */
+// ---------------------------------------------------------------------
 
 class CmdHandlerMailSend : public CmdHandlerBase {
 
@@ -27,11 +21,7 @@ class CmdHandlerMailSend : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerMailSend)
-
-/*!
- * This handler will be list of mails
- * */
+// ---------------------------------------------------------------------
 
 class CmdHandlerMailsList : public CmdHandlerBase {
 
@@ -39,7 +29,5 @@ class CmdHandlerMailsList : public CmdHandlerBase {
         CmdHandlerMailsList();
         virtual void handle(ModelRequest *pRequest);
 };
-
-REGISTRY_CMD(CmdHandlerMailsList)
 
 #endif // CMD_HADNLERS_MAILS_H

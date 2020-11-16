@@ -3,9 +3,7 @@
 
 #include <cmd_handlers.h>
 
-// *********************************************
-// *************** List of Quests **************
-// *********************************************
+// ---------------------------------------------------------------------
 
 class CmdHandlerQuests : public CmdHandlerBase {
     public:
@@ -13,11 +11,7 @@ class CmdHandlerQuests : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerQuests)
-
-// *********************************************
-// *************** Quest Info ******************
-// *********************************************
+// ---------------------------------------------------------------------
 
 class CmdHandlerQuest : public CmdHandlerBase {
     public:
@@ -26,12 +20,7 @@ class CmdHandlerQuest : public CmdHandlerBase {
 
 };
 
-REGISTRY_CMD(CmdHandlerQuest)
-
-
-// *******************************************
-// *************** Quest Pass ****************
-// *******************************************
+// ---------------------------------------------------------------------
 
 class CmdHandlerQuestPass : public CmdHandlerBase {
     public:
@@ -39,11 +28,7 @@ class CmdHandlerQuestPass : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerQuestPass)
-
-// *******************************************
-// ************** Quest Create ***************
-// *******************************************
+// ---------------------------------------------------------------------
 
 class CmdHandlerCreateQuest : public CmdHandlerBase {
     public:
@@ -51,11 +36,7 @@ class CmdHandlerCreateQuest : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerCreateQuest)
-
-// *******************************************
-// ************** Quest Delete ***************
-// *******************************************
+// ---------------------------------------------------------------------
 
 class CmdHandlerQuestDelete : public CmdHandlerBase {
     public:
@@ -63,11 +44,7 @@ class CmdHandlerQuestDelete : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerQuestDelete)
-
-// *******************************************
-// ************** Quest Proposal ***************
-// *******************************************
+// ---------------------------------------------------------------------
 
 class CmdHandlerQuestProposal : public CmdHandlerBase {
     public:
@@ -75,12 +52,7 @@ class CmdHandlerQuestProposal : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerQuestProposal)
-
-
-// *******************************************
-// ************** Quest Statistics ***********
-// *******************************************
+// ---------------------------------------------------------------------
 
 class CmdHandlerQuestStatistics : public CmdHandlerBase {
     public:
@@ -88,11 +60,7 @@ class CmdHandlerQuestStatistics : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerQuestStatistics)
-
-// *******************************************
-// ************** Quest Update ***********
-// *******************************************
+// ---------------------------------------------------------------------
 
 class CmdHandlerQuestUpdate : public CmdHandlerBase {
     public:
@@ -100,12 +68,7 @@ class CmdHandlerQuestUpdate : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerQuestUpdate)
-
-
-// *******************************************
-// ************** Quests Subjects ************
-// *******************************************
+// ---------------------------------------------------------------------
 
 class CmdHandlerQuestsSubjects : public CmdHandlerBase {
     public:
@@ -113,19 +76,13 @@ class CmdHandlerQuestsSubjects : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerQuestsSubjects)
-
-// *******************************************
-// ************ Quest Hints Add **************
-// *******************************************
+// ---------------------------------------------------------------------
 
 class CmdHandlerAddHint : public CmdHandlerBase {
     public:
         CmdHandlerAddHint();
         virtual void handle(ModelRequest *pRequest);
 };
-
-REGISTRY_CMD(CmdHandlerAddHint)
 
 // ---------------------------------------------------------------------
 
@@ -135,10 +92,7 @@ class CmdHandlerAnswerList : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerAnswerList)
-
 // ---------------------------------------------------------------------
-// User Answer List
 
 class CmdHandlerQuestsUserAnswerList : public CmdHandlerBase {
     public:
@@ -147,7 +101,6 @@ class CmdHandlerQuestsUserAnswerList : public CmdHandlerBase {
 };
 
 // ---------------------------------------------------------------------
-// Quest Hints Delete
 
 class CmdHandlerDeleteHint : public CmdHandlerBase {
     public:
@@ -155,11 +108,7 @@ class CmdHandlerDeleteHint : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerDeleteHint)
-
-// *******************************************
-// **************** Quest Hints **************
-// *******************************************
+// ---------------------------------------------------------------------
 
 class CmdHandlerHints : public CmdHandlerBase {
     public:
@@ -167,10 +116,7 @@ class CmdHandlerHints : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerHints)
-
 // ---------------------------------------------------------------------
-// CmdHandlerQuestsProposalList
 
 class CmdHandlerQuestsProposalList : public CmdHandlerBase {
     public:
@@ -179,14 +125,11 @@ class CmdHandlerQuestsProposalList : public CmdHandlerBase {
 };
 
 // ---------------------------------------------------------------------
-// CmdHandlerQuestsFilesUpload
 
 class CmdHandlerQuestsFilesUpload : public CmdHandlerBase {
     public:
         CmdHandlerQuestsFilesUpload();
         virtual void handle(ModelRequest *pRequest);
 };
-
-REGISTRY_CMD(CmdHandlerQuestsFilesUpload)
 
 #endif // CMD_HANDLERS_QUESTS_H

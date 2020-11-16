@@ -6,9 +6,10 @@
 #include <employ_server_info.h>
 #include <QtCore>
 
-// ******************************
-// * This handler for add support
-// ******************************
+// ---------------------------------------------------------------------
+// This handler for add support
+
+REGISTRY_CMD(CmdHandlerFeedbackAdd)
 
 CmdHandlerFeedbackAdd::CmdHandlerFeedbackAdd()
     : CmdHandlerBase("feedback_add", "Create the feedback") {

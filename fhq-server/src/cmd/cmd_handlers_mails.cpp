@@ -6,9 +6,10 @@
 #include <employ_server_info.h>
 #include <QtCore>
 
-/*****************************************
- * Mail Info
- *****************************************/
+// ---------------------------------------------------------------------
+// This handler will be return info about mail
+
+REGISTRY_CMD(CmdHandlerMailInfo)
 
 CmdHandlerMailInfo::CmdHandlerMailInfo()
     : CmdHandlerBase("mail_info", "This method Will be return info of mail") {
@@ -27,9 +28,10 @@ void CmdHandlerMailInfo::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
-/*****************************************
- * Send Mail
- *****************************************/
+// ---------------------------------------------------------------------
+// This handler will be send mail by admin
+
+REGISTRY_CMD(CmdHandlerMailSend)
 
 CmdHandlerMailSend::CmdHandlerMailSend()
     : CmdHandlerBase("mail_send", "Mail Send") {
@@ -60,9 +62,10 @@ void CmdHandlerMailSend::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*****************************************
- * MailsList
- *****************************************/
+// ---------------------------------------------------------------------
+// This handler will be list of mails
+
+REGISTRY_CMD(CmdHandlerMailsList)
 
 CmdHandlerMailsList::CmdHandlerMailsList()
     : CmdHandlerBase("mails_list", "Mails list") {

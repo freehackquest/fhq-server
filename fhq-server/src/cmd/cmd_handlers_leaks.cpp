@@ -4,9 +4,10 @@
 #include <employ_leaks.h>
 #include <QJsonArray>
 
-/*********************************************
- * This handler will return the list of leaks
-**********************************************/
+// ---------------------------------------------------------------------
+// This handler will return the list of leaks
+
+REGISTRY_CMD(CmdHandlerLeaksList)
 
 CmdHandlerLeaksList::CmdHandlerLeaksList()
     : CmdHandlerBase("leaks_list", "Method returns list of leaks") {
@@ -127,9 +128,10 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * This handler will add one new leak
-**********************************************/
+// ---------------------------------------------------------------------
+// This handler will add one new leak
+
+REGISTRY_CMD(CmdHandlerLeaksAdd)
 
 CmdHandlerLeaksAdd::CmdHandlerLeaksAdd()
     : CmdHandlerBase("leaks_add", "Method adds a leak") {
@@ -196,9 +198,10 @@ void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest) {
     }
 }
 
-/*********************************************
- * This handler will update a leak
-**********************************************/
+// ---------------------------------------------------------------------
+// This handler will update a leak
+
+REGISTRY_CMD(CmdHandlerLeaksUpdate)
 
 CmdHandlerLeaksUpdate::CmdHandlerLeaksUpdate()
     : CmdHandlerBase("leaks_update", "Method updates a leak") {
@@ -279,9 +282,10 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * This handler will delete a leak
-**********************************************/
+// ---------------------------------------------------------------------
+// This handler will delete a leak
+
+REGISTRY_CMD(CmdHandlerLeaksDelete)
 
 CmdHandlerLeaksDelete::CmdHandlerLeaksDelete()
     : CmdHandlerBase("leaks_delete", "Method deletes a leak") {
@@ -354,9 +358,10 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * This handler allows you to buy a leak
-**********************************************/
+// ---------------------------------------------------------------------
+// This handler allows you to buy a leak
+
+REGISTRY_CMD(CmdHandlerLeaksBuy)
 
 CmdHandlerLeaksBuy::CmdHandlerLeaksBuy()
     : CmdHandlerBase("leaks_buy", "Method buys a leak") {

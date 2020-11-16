@@ -8,9 +8,10 @@
 #include <validators.h>
 #include <wsjcpp_hashes.h>
 
-// *******************************************
-// *************** Quest List ****************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest List
+
+REGISTRY_CMD(CmdHandlerQuests)
 
 CmdHandlerQuests::CmdHandlerQuests()
     : CmdHandlerBase("quests", "Method will be returned quest list") {
@@ -135,10 +136,10 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// *************** Quest Info ****************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Info
 
+REGISTRY_CMD(CmdHandlerQuest)
 
 CmdHandlerQuest::CmdHandlerQuest()
     : CmdHandlerBase("quest", "Update the quest info") {
@@ -315,9 +316,10 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// *************** Quest Pass ****************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Pass
+
+REGISTRY_CMD(CmdHandlerQuestPass)
 
 CmdHandlerQuestPass::CmdHandlerQuestPass()
 : CmdHandlerBase("quest_pass", "Quest pass") {
@@ -487,9 +489,10 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// ************** Quest Create ***************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Create
+
+REGISTRY_CMD(CmdHandlerCreateQuest)
 
 CmdHandlerCreateQuest::CmdHandlerCreateQuest()
     : CmdHandlerBase("createquest", "Method will be create new quest") {
@@ -660,10 +663,10 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// ************** Quest Delete ***************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Delete
 
+REGISTRY_CMD(CmdHandlerQuestDelete)
 
 CmdHandlerQuestDelete::CmdHandlerQuestDelete()
     : CmdHandlerBase("quest_delete", "Method for delete quest") {
@@ -752,10 +755,10 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// ************** Quest Proposal ***************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Proposal
 
+REGISTRY_CMD(CmdHandlerQuestProposal)
 
 CmdHandlerQuestProposal::CmdHandlerQuestProposal()
     : CmdHandlerBase("quest_proposal", "Add quest proposal") {
@@ -927,9 +930,10 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// ************** Quest Statistics ***********
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Statistics
+
+REGISTRY_CMD(CmdHandlerQuestStatistics)
 
 CmdHandlerQuestStatistics::CmdHandlerQuestStatistics()
     : CmdHandlerBase("quest_statistics", "Mehtod will be return quest public statistics") {
@@ -1049,10 +1053,10 @@ void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// ************** Quest Update ***********
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Update
 
+REGISTRY_CMD(CmdHandlerQuestUpdate)
 
 CmdHandlerQuestUpdate::CmdHandlerQuestUpdate()
     : CmdHandlerBase("quest_update", "Update the quest info") {
@@ -1341,10 +1345,10 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// ************** Quests Subjects ************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quests Subjects
 
+REGISTRY_CMD(CmdHandlerQuestsSubjects)
 
 CmdHandlerQuestsSubjects::CmdHandlerQuestsSubjects()
     : CmdHandlerBase("quests_subjects", "Method returned list of quests by subjects") {
@@ -1387,10 +1391,10 @@ void CmdHandlerQuestsSubjects::handle(ModelRequest *pRequest) {
 
 }
 
-// *******************************************
-// ************ Quest Hints Add **************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Hints Add
 
+REGISTRY_CMD(CmdHandlerAddHint)
 
 CmdHandlerAddHint::CmdHandlerAddHint()
     : CmdHandlerBase("addhint", "Method add hint to quest") {
@@ -1446,9 +1450,10 @@ void CmdHandlerAddHint::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// ************ Quest AnswerList **************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest AnswerList
+
+REGISTRY_CMD(CmdHandlerAnswerList)
 
 CmdHandlerAnswerList::CmdHandlerAnswerList()
     : CmdHandlerBase("answerlist", "Return user answers list") {
@@ -1706,14 +1711,14 @@ void CmdHandlerQuestsUserAnswerList::handle(ModelRequest *pRequest) {
         }
     }
 
-    jsonResponse["data"] = jsonAnswerList;
+    jsonResponse["jsonrpc_result"] = jsonAnswerList;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// *********** Quest Hint Delete ************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Hint Delete
 
+REGISTRY_CMD(CmdHandlerDeleteHint)
 
 CmdHandlerDeleteHint::CmdHandlerDeleteHint()
     : CmdHandlerBase("deletehint", "Method for delete hint from quest") {
@@ -1752,9 +1757,10 @@ void CmdHandlerDeleteHint::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// **************** Quest Hints **************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Hints
+
+REGISTRY_CMD(CmdHandlerHints)
 
 CmdHandlerHints::CmdHandlerHints()
     : CmdHandlerBase("hints", "Return list of hints") {
@@ -1923,7 +1929,9 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
 }
 
 // ---------------------------------------------------------------------
-// CmdHandlerQuestsFilesUpload
+// Quests Files Upload
+
+REGISTRY_CMD(CmdHandlerQuestsFilesUpload)
 
 CmdHandlerQuestsFilesUpload::CmdHandlerQuestsFilesUpload()
     : CmdHandlerBase("quests_files_upload", "Update the quest") {
