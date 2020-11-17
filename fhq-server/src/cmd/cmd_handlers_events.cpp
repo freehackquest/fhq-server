@@ -7,9 +7,10 @@
 #include <QtCore>
 #include <validators.h>
 
-// *****************************************
-// * Create public events
-// *****************************************
+// ---------------------------------------------------------------------
+// This handler will be create public event
+
+REGISTRY_CMD(CmdHandlerEventAdd)
 
 CmdHandlerEventAdd::CmdHandlerEventAdd()
     : CmdHandlerBase("createpublicevent", "Create the public event") {
@@ -47,10 +48,10 @@ void CmdHandlerEventAdd::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *****************************************
-// * Delete public event
-// *****************************************
+// ---------------------------------------------------------------------
+// This handler will be delete public event
 
+REGISTRY_CMD(CmdHandlerEventDelete)
 
 CmdHandlerEventDelete::CmdHandlerEventDelete()
     : CmdHandlerBase("deletepublicevent", "Delete public event") {
@@ -96,9 +97,10 @@ void CmdHandlerEventDelete::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *****************************************
-// * get public event
-// *****************************************
+// ---------------------------------------------------------------------
+// This handler will be retrun info about public event
+
+REGISTRY_CMD(CmdHandlerEventInfo)
 
 CmdHandlerEventInfo::CmdHandlerEventInfo()
     : CmdHandlerBase("getpublicevent", "Return public event info by id") {
@@ -146,10 +148,10 @@ void CmdHandlerEventInfo::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *****************************************
-// * public events list
-// *****************************************
+// ---------------------------------------------------------------------
+// This handler will be return list of public events
 
+REGISTRY_CMD(CmdHandlerEventsList)
 
 CmdHandlerEventsList::CmdHandlerEventsList()
     : CmdHandlerBase("publiceventslist", "Return list of public events") {

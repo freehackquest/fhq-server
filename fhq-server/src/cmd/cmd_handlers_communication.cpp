@@ -6,9 +6,8 @@
 #include <employ_server_info.h>
 #include <employ_notify.h>
 
-/*********************************************
- * Users chat
-**********************************************/
+// ---------------------------------------------------------------------
+// Users chat
 
 REGISTRY_CMD(CmdHandlerChatSendMessage)
 

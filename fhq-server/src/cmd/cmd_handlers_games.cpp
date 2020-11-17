@@ -17,9 +17,10 @@
 #include <validators.h>
 #include <wsjcpp_hashes.h>
 
-/*********************************************
- * Create Game
-**********************************************/
+// ---------------------------------------------------------------------
+// Create Game
+
+REGISTRY_CMD(CmdHandlerGameCreate)
 
 CmdHandlerGameCreate::CmdHandlerGameCreate()
    : CmdHandlerBase("game_create", "Create the game") {
@@ -46,7 +47,6 @@ CmdHandlerGameCreate::CmdHandlerGameCreate()
     requireStringParam("date_restart", "Date restart"); // TODO validator datetime
     requireStringParam("organizators", "Organizators");
 }
-
 
 // ---------------------------------------------------------------------
 
@@ -91,9 +91,10 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest) {
     }
 }
 
-/*********************************************
- * Delete Game
-**********************************************/
+// ---------------------------------------------------------------------
+// Delete Game
+
+REGISTRY_CMD(CmdHandlerGameDelete)
 
 CmdHandlerGameDelete::CmdHandlerGameDelete()
     : CmdHandlerBase("game_delete", "Remove game and all quests") {
@@ -252,11 +253,10 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
+// ---------------------------------------------------------------------
+// Export Game
 
-/*********************************************
- * Export Game
-**********************************************/
-
+REGISTRY_CMD(CmdHandlerGameExport)
 
 CmdHandlerGameExport::CmdHandlerGameExport()
     : CmdHandlerBase("game_export", "Export the game") {
@@ -346,10 +346,10 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * Import Game
-**********************************************/
+// ---------------------------------------------------------------------
+// Import Game
 
+REGISTRY_CMD(CmdHandlerGameImport)
 
 CmdHandlerGameImport::CmdHandlerGameImport()
     : CmdHandlerBase("game_import", "Import game") {
@@ -376,10 +376,10 @@ void CmdHandlerGameImport::handle(ModelRequest *pRequest) {
 }
 
 
-/*********************************************
- * Info Game
-**********************************************/
+// ---------------------------------------------------------------------
+// Info Game
 
+REGISTRY_CMD(CmdHandlerGameInfo)
 
 CmdHandlerGameInfo::CmdHandlerGameInfo()
     : CmdHandlerBase("game_info", "Return game info") {
@@ -411,9 +411,10 @@ void CmdHandlerGameInfo::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*********************************************
- * Update Game
-**********************************************/
+// ---------------------------------------------------------------------
+// Update Game
+
+REGISTRY_CMD(CmdHandlerGameUpdate)
 
 CmdHandlerGameUpdate::CmdHandlerGameUpdate()
     : CmdHandlerBase("game_update", "Update game info") {
@@ -486,11 +487,10 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest) {
     }
 }
 
+// ---------------------------------------------------------------------
+// Update Logo Game
 
-/*********************************************
- * Update Logo Game
-**********************************************/
-
+REGISTRY_CMD(CmdHandlerGameUpdateLogo)
 
 CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo()
     : CmdHandlerBase("game_update_logo", "Update game logo") {
@@ -576,11 +576,10 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
     }
 }
 
+// ---------------------------------------------------------------------
+// List of Games
 
-/*********************************************
- * List of Games
-**********************************************/
-
+REGISTRY_CMD(CmdHandlerGames)
 
 CmdHandlerGames::CmdHandlerGames()
     : CmdHandlerBase("games", "Method returned list of games") {
@@ -641,5 +640,3 @@ void CmdHandlerGames::handle(ModelRequest *pRequest) {
     jsonResponse["data"] = jsonGames;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
-
-

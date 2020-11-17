@@ -14,13 +14,16 @@
 #include <validators.h>
 
 
-/*********************************************
- * Any actions with the container. Actions: create, start, stop and delete container
-**********************************************/
+// ---------------------------------------------------------------------
+// Any actions with the container. Actions: create, start, stop and delete container
+
+REGISTRY_CMD(CmdHandlerLXDContainers)
 
 CmdHandlerLXDContainers::CmdHandlerLXDContainers()
-        : CmdHandlerBase("lxd_containers",
-                         "Any actions with the container. Actions: create, start, stop and delete container") {
+: CmdHandlerBase(
+    "lxd_containers",
+    "Any actions with the container. Actions: create, start, stop and delete container"
+) {
 
     TAG = "LXD_HANDLER";
 
@@ -167,9 +170,10 @@ void CmdHandlerLXDContainers::delete_container(const std::string &name, std::str
     }
 }
 
-/*********************************************
- * Get information about the orhestra, containers.
-**********************************************/
+// ---------------------------------------------------------------------
+// Get information about the orhestra, containers.
+
+REGISTRY_CMD(CmdHandlerLXDInfo)
 
 CmdHandlerLXDInfo::CmdHandlerLXDInfo()
         : CmdHandlerBase("lxd_info", "Get information about the orhestra, containers.") {
@@ -225,9 +229,10 @@ bool CmdHandlerLXDInfo::get_state(const std::string& sName, std::string &sError,
     return true;
 }
 
-/*********************************************
- * Get information about all containers.
-**********************************************/
+// ---------------------------------------------------------------------
+// Get information about all containers.
+
+REGISTRY_CMD(CmdHandlerLXDList)
 
 CmdHandlerLXDList::CmdHandlerLXDList()
         : CmdHandlerBase("lxd_list", "Get information about all containers.") {
@@ -259,6 +264,9 @@ void CmdHandlerLXDList::handle(ModelRequest *pRequest) {
 }
 
 // ---------------------------------------------------------------------
+// Execute the command in container.
+
+REGISTRY_CMD(CmdHandlerLXDExec)
 
 CmdHandlerLXDExec::CmdHandlerLXDExec()
         : CmdHandlerBase("lxd_exec", "Exec command in the container with name.") {
@@ -325,6 +333,9 @@ bool CmdHandlerLXDExec::exec_command(const std::string &sName, const std::string
 }
 
 // ---------------------------------------------------------------------
+// Action with files in container.
+
+REGISTRY_CMD(CmdHandlerLXDFile)
 
 CmdHandlerLXDFile::CmdHandlerLXDFile()
         : CmdHandlerBase("lxd_file", "Pull, push, delete file inside the container.") {
@@ -338,6 +349,8 @@ CmdHandlerLXDFile::CmdHandlerLXDFile()
         .addValidator(new ValidatorLXDFileActionType());
     requireStringParam("path", "Path to file inside the container");
 }
+
+// ---------------------------------------------------------------------
 
 void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
@@ -406,6 +419,8 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
     }
 }
 
+// ---------------------------------------------------------------------
+
 void CmdHandlerLXDFile::pull_file(LXDContainer *pContainer, const std::string &sPath, std::string &sb64File,
                                   std::string &sError, int &nErrorCode, bool &isDirectory) {
     std::string sRawData;
@@ -427,11 +442,18 @@ void CmdHandlerLXDFile::pull_file(LXDContainer *pContainer, const std::string &s
     sb64File = QByteArray::fromStdString(sRawData).toBase64().toStdString();
 }
 
+// ---------------------------------------------------------------------
+
 bool CmdHandlerLXDFile::push_file(LXDContainer *pContainer, const std::string &sPath, const std::string &sb64File,
                                   std::string &sError, int &nErrorCode) {
     QByteArray RawData = QByteArray::fromBase64(QByteArray::fromStdString(sb64File));
     return pContainer->push_file(sPath, RawData.toStdString());
 }
+
+// ---------------------------------------------------------------------
+// Open container port.
+
+REGISTRY_CMD(CmdHandlerLXDOpenPort)
 
 CmdHandlerLXDOpenPort::CmdHandlerLXDOpenPort()
         : CmdHandlerBase("lxd_open_port", "Opens the container port.") {
@@ -444,6 +466,8 @@ CmdHandlerLXDOpenPort::CmdHandlerLXDOpenPort()
     requireIntegerParam("port", "Number container port");
     requireStringParam("protocol", "Protocol");
 }
+
+// ---------------------------------------------------------------------
 
 void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
@@ -486,6 +510,8 @@ void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
     }
 }
 
+// ---------------------------------------------------------------------
+
 bool CmdHandlerLXDOpenPort::is_port_valide(const std::string &sProto, const int &nPort, std::string &sError,
                                            int &nErrorCode) {
 
@@ -508,6 +534,10 @@ bool CmdHandlerLXDOpenPort::is_port_valide(const std::string &sProto, const int 
     return true;
 }
 
+// ---------------------------------------------------------------------
+// Import container configuration from json.
+
+REGISTRY_CMD(CmdHandlerLXDImportService)
 
 CmdHandlerLXDImportService::CmdHandlerLXDImportService()
         : CmdHandlerBase("lxd_import_container", "Import container from json configuration.") {
@@ -518,6 +548,8 @@ CmdHandlerLXDImportService::CmdHandlerLXDImportService()
 
     requireStringParam("config", "Container's configuration in json dumped string.");
 }
+
+// ---------------------------------------------------------------------
 
 void CmdHandlerLXDImportService::handle(ModelRequest *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
@@ -566,9 +598,13 @@ void CmdHandlerLXDImportService::handle(ModelRequest *pRequest) {
     }
 }
 
+// ---------------------------------------------------------------------
+// import service from zip
+
+REGISTRY_CMD(CmdHandlerLXDImportServiceFromZip)
 
 CmdHandlerLXDImportServiceFromZip::CmdHandlerLXDImportServiceFromZip()
-        : CmdHandlerBase("lxd_import_service_from_zip", "Import Service from zip.") {
+: CmdHandlerBase("lxd_import_service_from_zip", "Import Service from zip.") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -576,6 +612,8 @@ CmdHandlerLXDImportServiceFromZip::CmdHandlerLXDImportServiceFromZip()
 
     requireStringParam("zip_file", "Service's configuration in Base64 zip archive.");
 }
+
+// ---------------------------------------------------------------------
 
 void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
@@ -682,9 +720,13 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
     }
 }
 
+// ---------------------------------------------------------------------
+// LXD Start Service
+
+REGISTRY_CMD(CmdHandlerLXDStartService)
 
 CmdHandlerLXDStartService::CmdHandlerLXDStartService()
-        : CmdHandlerBase("lxd_start_service", "Start service.") {
+: CmdHandlerBase("lxd_start_service", "Start service.") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -692,6 +734,8 @@ CmdHandlerLXDStartService::CmdHandlerLXDStartService()
 
     requireStringParam("name", "Service's name.");
 }
+
+// ---------------------------------------------------------------------
 
 void CmdHandlerLXDStartService::handle(ModelRequest *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
@@ -721,3 +765,5 @@ void CmdHandlerLXDStartService::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
     }
 }
+
+// ---------------------------------------------------------------------
