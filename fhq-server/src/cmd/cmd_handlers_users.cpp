@@ -185,7 +185,6 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
         nlohmann::json user_token;
         user_token["user"] = user;
 
-        // QJsonDocument doc(user_token);
         QString data = QString::fromStdString(user_token.dump());
         
         std::string sUuid = WsjcppCore::createUuid();

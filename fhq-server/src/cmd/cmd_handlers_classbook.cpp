@@ -1601,7 +1601,7 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest) {
     nlohmann::json jsonData = nlohmann::json::array();
 
     QString sQuery;
-    QMap<QString, QJsonValue> mapFilter;
+    std::map<std::string, std::string> mapFilter;
 
     //checkout and validation of classbookid
     int nClassbookID = 0;
@@ -1617,7 +1617,7 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest) {
             pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "This article doesn't exist"));
             return;
         }
-        mapFilter.insert("classbookid", nClassbookID);
+        mapFilter["classbookid"] = std::to_string(nClassbookID);
     }
 
     //checkout of lang and generation of query's bone
@@ -1626,34 +1626,41 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest) {
     if (jsonRequest.find("lang") != jsonRequest.end()) {
         bLangConatins = true;
         sLang = jsonRequest["lang"];
-        mapFilter.insert("lang", QString::fromStdString(sLang).trimmed());
+        mapFilter["lang"] = WsjcppCore::trim(sLang);
         sQuery = "SELECT id, name FROM classbook_proposal";
+    } else {
+        sQuery = "SELECT id, name, lang FROM classbook_proposal";
     }
-    else sQuery = "SELECT id, name, lang FROM classbook_proposal";
 
     //generation of the rest of the query
     if (mapFilter.size() > 0) {
         sQuery += " WHERE ";
     }
     bool bFirst = true;
-    foreach (QString key, mapFilter.keys()) {
+    std::map<std::string, std::string>::iterator it = mapFilter.begin();
+    while (it != mapFilter.end()) {
+        std::string sKey = it->first;
         if (!bFirst) {
             sQuery += " AND ";
         }
         bFirst = false;
-        sQuery +=  key + " = :" + key;
+        sQuery += QString::fromStdString(sKey) + " = :" + QString::fromStdString(sKey);
     }
+
     query.prepare(sQuery);
 
     //binding of values
-    foreach (QString key, mapFilter.keys()) {
-        QMap<QString, QJsonValue>::const_iterator v = mapFilter.lowerBound(key);
-        if (key=="classbookid") {
-            query.bindValue(":" + key, v.value().toInt());
+    it = mapFilter.begin();
+    while (it != mapFilter.end()) {
+        std::string sKey = it->first;
+        std::string sValue = it->second;
+        if (sKey == "classbookid") {
+            query.bindValue(QString::fromStdString(":" + sKey), QString::fromStdString(sValue).toInt());
         } else {
-            query.bindValue(":" + key, v.value());
+            query.bindValue(QString::fromStdString(":" + sKey), QString::fromStdString(sValue));
         }
     }
+
     if (!query.exec()) {
         pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;

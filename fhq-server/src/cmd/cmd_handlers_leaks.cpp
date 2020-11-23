@@ -2,7 +2,6 @@
 #include <iostream>
 #include <employ_database.h>
 #include <employ_leaks.h>
-#include <QJsonArray>
 
 // ---------------------------------------------------------------------
 // This handler will return the list of leaks

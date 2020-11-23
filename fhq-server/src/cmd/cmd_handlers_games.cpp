@@ -1,7 +1,6 @@
 #include <cmd_handlers_games.h>
 #include <fallen.h>
 #include <runtasks.h>
-#include <QJsonArray>
 #include <QTemporaryDir>
 #include <QDataStream>
 #include <quazip.h>
