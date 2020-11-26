@@ -222,7 +222,14 @@ void CmdHandlerLogin::handle(ModelRequest *pRequest) {
         pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(401, "Invalid login or password"));
         return;
     }
-    WsjcppLog::info(TAG, jsonResponse.dump());
+
+    // TODO create a some secure function
+    {
+        nlohmann::json cloneRespone = jsonResponse;
+        std::string sToken = cloneRespone["token"];
+        cloneRespone["token"] = sToken.substr(0,4) + "****" + sToken.substr(sToken.length() - 4,sToken.length() - 1);
+        WsjcppLog::info(TAG, cloneRespone.dump());
+    }
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
