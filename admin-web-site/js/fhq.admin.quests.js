@@ -344,8 +344,6 @@ fhq.createQuest = function() {
 };
 
 function quest_edit_menu(el, active_tab, questid) {
-    
-    
     var swa_tabs = new SwaTabs([{
             'tabid': 'quest_edit',
             'caption': 'Quest',
@@ -392,10 +390,12 @@ fhq.pages['quest_hints_edit'] = function(questid) {
         + '        <thead><tr><th>#</th><th>Text</th><th>Actions</th></tr></thead>'
         + '        <tbody id="quest_hints"></tbody>'
         + '    </table>'
-        + '    <br/><div class="swa-button" id="add_hint" questid="' + questid + '">Add Hint</div>'
+        + '    <hr/>'
+        + '    <input id="quest_new_hint_text"/>'
+        + '    <div class="swa-button" onclick="fhq.addHint(' + questid + ');">Add Hint</div>'
+        + '    <br><div class="swa-error-alert" style="display: none;" id="quest_add_hint_error"></div>'
         + '</div>'
     );
-    $('#add_hint').unbind().bind('click', fhq.addQuestHintForm);
 
     fhq.ws.quest({"questid": questid}).done(function(data){
         var q = data.quest;
@@ -406,8 +406,8 @@ fhq.pages['quest_hints_edit'] = function(questid) {
             $('#quest_hints').append('<tr>'
                 + '<td>[hint#' + h.id + ']</td>'
                 + '<td>' + h.text + '</td>'
-                + '<td><div class="btn btn-danger delete-hint" '
-                + '         questid="' + questid + '" hintid="' + h.id + '" >Delete Hint</div></td>'
+                + '<td><div class="swa-button delete-hint" onclick="fhq.deleteHint(' + questid + ', ' + h.id + ')"'
+                + '     >Delete Hint</div></td>'
                 + '</tr>');
         }
         $('.delete-hint').unbind().bind('click', fhq.deleteHint);
@@ -416,12 +416,9 @@ fhq.pages['quest_hints_edit'] = function(questid) {
     })
 }
 
-fhq.deleteHint = function() {
-    var hintid = $(this).attr('hintid');
+fhq.deleteHint = function(questid, hintid) {
     hintid = parseInt(hintid,10);
-    var questid = $(this).attr('questid');
     questid = parseInt(questid,10);
-
     fhq.showLoader();
     fhq.ws.deletehint({"hintid": hintid}).done(function(r){
         fhq.hideLoader();
@@ -432,36 +429,13 @@ fhq.deleteHint = function() {
     });
 };
 
-fhq.addQuestHintForm = function() {
-    var questid = $(this).attr('questid');
-    questid = parseInt(questid,10);
-    
-    $('#modalInfoTitle').html('Quest {' + questid + '} add hint');
-    $('#modalInfoBody').html('');
-    $('#modalInfoBody').append(''
-        + 'Hint test:'
-        + '<input class="form-control" id="quest_new_hint_text" type="text"><br>'
-        + '<div class=" alert alert-danger" style="display: none" id="quest_add_hint_error"></div>'
-    );
-    $('#modalInfoButtons').html(''
-        + '<button type="button" class="btn btn-secondary" '
-        + ' id="quest_add_hint" questid="' + questid + '" '
-        + ' onclick="fhq.addHint(this);">Add</button> '
-        + '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'
-    );
-    $('#modalInfo').modal('show');
-};
-
-fhq.addHint = function(el){
-    var hint_text = $('#quest_new_hint_text').val();
-    var questid = $(el).attr('questid');
-    questid = parseInt(questid,10);
+fhq.addHint = function(questid){
+    var hint_text = document.getElementById('quest_new_hint_text').value;
+    var questid = parseInt(questid,10);
     var data = {};
     data.questid = questid;
     data.hint = hint_text;
-
     fhq.ws.addhint(data).done(function(r){
-        $('#modalInfo').modal('hide');
         fhq.pages['quest_hints_edit'](questid);
     }).fail(function(r){
         $('#quest_add_hint_error').show();
