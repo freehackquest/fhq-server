@@ -51,6 +51,7 @@ dependencies:
     url: "https://github.com/wsjcpp/json:develop"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/nlohmann_json"
+    installation-datetime: "Sat, 28 Nov 2020 03:38:38 GMT"
   - name: "wsjcpp-validators"
     version: "v0.1.2"
     url: "https://github.com/wsjcpp/wsjcpp-validators:master"
@@ -92,7 +93,6 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-parse-conf:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_parse_conf"
-
 distribution:
   - source-file: "src/core/fallen.cpp"
     target-file: "fallen.cpp"

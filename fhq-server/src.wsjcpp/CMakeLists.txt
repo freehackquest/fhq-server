@@ -92,9 +92,6 @@ list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_parse_conf/wsjcpp_parse_conf.h"
 
 # required-libraries
 list (APPEND WSJCPP_LIBRARIES "-lpthread")
-list (APPEND WSJCPP_LIBRARIES "-lpthread")
-list (APPEND WSJCPP_LIBRARIES "-lpthread")
-list (APPEND WSJCPP_LIBRARIES "-lpthread")
 
 # required-pkg-config
 ## CURL
