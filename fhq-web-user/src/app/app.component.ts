@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import {
   L10N_CONFIG,
   L10nConfig,
@@ -12,6 +12,7 @@ import { FhqService } from './services/fhq.service';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { SpinnerService } from './services/spinner.service';
 import { Location } from '@angular/common';
+import { MediaMatcher } from '@angular/cdk/layout';
 
 declare var $: any;
 
@@ -20,7 +21,7 @@ declare var $: any;
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   menuLangIcon: string = '';
   subscription: any;
   serverAppName: string = '';
@@ -31,6 +32,9 @@ export class AppComponent implements OnInit {
   urlPath: String = "";
   userRole: String = "";
   schema = this.l10nConfig.schema;
+  mobileQuery: MediaQueryList;
+
+  private _mobileQueryListener: () => void;
 
   constructor(
     @Inject(L10N_LOCALE) public _locale: L10nLocale,
@@ -43,6 +47,7 @@ export class AppComponent implements OnInit {
     private _location: Location,
     private _spinner: SpinnerService,
     private _activatedRoute: ActivatedRoute,
+    private _media: MediaMatcher,
   ) {
     //
     this._router.routeReuseStrategy.shouldReuseRoute = function(){
@@ -56,6 +61,10 @@ export class AppComponent implements OnInit {
           this.updateUrlPath(this._location.path());
       }
     });
+
+    this.mobileQuery = _media.matchMedia('(max-width: 600px)');
+    this._mobileQueryListener = () => _cdr.detectChanges();
+    this.mobileQuery.addListener(this._mobileQueryListener);
   }
 
   ngOnInit(): void {
@@ -74,6 +83,11 @@ export class AppComponent implements OnInit {
         this.menuLangIcon = "assets/img/lang_" + this._translationService.getLocale().language + ".png";
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+    this.mobileQuery.removeListener(this._mobileQueryListener);
   }
 
   toggleUserProfileMenu() {
@@ -103,10 +117,6 @@ export class AppComponent implements OnInit {
     ) {
       this.profileMenuExpanded = true;
     }
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 
   wsChangedState() {

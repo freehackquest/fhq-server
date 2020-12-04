@@ -18,3 +18,20 @@
 .main-content {
     padding: 20px;
 }
+
+.main-navbar {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+}
+
+.main-navbar .mat-toolbar{
+    height: 70px;
+}
+
+.main-navbar-spacer {
+    flex: 1 1 auto;
+}
