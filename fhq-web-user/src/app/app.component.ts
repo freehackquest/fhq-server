@@ -22,7 +22,7 @@ declare var $: any;
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  menuLangIcon: string = '';
+  selectedLocale: L10nLocale;
   subscription: any;
   serverAppName: string = '';
   serverAppVersion: string = '';
@@ -33,7 +33,11 @@ export class AppComponent implements OnInit, OnDestroy {
   userRole: String = "";
   schema = this.l10nConfig.schema;
   mobileQuery: MediaQueryList;
-
+  localeCountyFlag = {
+    'ru': 'ru',
+    'en': 'gb',
+    'de': 'de',
+  };
   private _mobileQueryListener: () => void;
 
   constructor(
@@ -80,7 +84,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this._translationService.onChange().subscribe({
       next: () => {
-        this.menuLangIcon = "assets/img/lang_" + this._translationService.getLocale().language + ".png";
+        this.selectedLocale = this._translationService.getLocale();
+        this._cdr.detectChanges();
       }
     });
   }
@@ -139,9 +144,16 @@ export class AppComponent implements OnInit, OnDestroy {
     this._cdr.detectChanges()
   }
 
-  setLocale(locale: L10nLocale): void {
+  selectedLanguage(locale: L10nLocale): void {
     this._translationService.setLocale(locale);
-    // this.menuLangIcon = "assets/img/lang_" + locale.language + ".png";
+  }
+
+  languageCompareWith(l: any, r: any) {
+    if (l.language == r.language) {
+      return l.language;
+    } else {
+      return "";
+    }
   }
 
   openDialogSignIn() {
