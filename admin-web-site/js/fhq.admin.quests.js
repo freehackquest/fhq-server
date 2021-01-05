@@ -398,7 +398,7 @@ fhq.pages['quest_hints_edit'] = function(questid) {
     );
 
     fhq.ws.quest({"questid": questid}).done(function(data){
-        var q = data.quest;
+        // var q = data.quest;
         var hints = data.hints;
         for (var i in hints) {
             var h = hints[i];
@@ -715,8 +715,8 @@ fhq.pages['quest_edit'] = function(questid) {
         }
         fhq.ws.quest({"questid": questid}).done(function(data){
             var q = data.quest;
-            var hints = data.hints;
-            var files = data.files;
+            // var hints = data.hints;
+            // var files = data.files;
             // console.log(data);
             for (var p in q) {
                 var edit_id = 'edit_quest_' + p;
