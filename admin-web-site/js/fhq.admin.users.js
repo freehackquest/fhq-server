@@ -173,7 +173,7 @@ fhq.pages['users'] = function(){
             + '</div><br>'
         );
         $('#users_search').val(filter_text);
-        $('#users_search').unbind().bind('keyup', function(e){
+        $('#users_search').off().on('keyup', function(e){
             var new_filter = $('#users_search').val();
             if (new_filter != filter_text) {
                 window.fhq.changeLocationState({
@@ -192,9 +192,7 @@ fhq.pages['users'] = function(){
         $('#users_search').focus();
 
         el.append('<button id="user_create" class="swa-button">Create User</button><hr>');
-        $('#user_create').unbind().bind('click', fhq.pages['user_create']);
-        
-        
+        $('#user_create').off().bind('click', fhq.pages['user_create']);
 
         el.append(fhq.paginator(0, r.count, r.onpage, r.page));
         el.append('<table class="swa-table">'

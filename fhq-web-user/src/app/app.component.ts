@@ -101,11 +101,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
   updateUrlPath(newPath: string) {
     const _prefixLangugePath = "/" + this._translationService.getLocale().language;
-    if (newPath.indexOf(_prefixLangugePath) == 0) {
+    if (newPath.indexOf(_prefixLangugePath) === 0) {
       newPath = newPath.slice(_prefixLangugePath.length);
     }
 
-    if (newPath.indexOf("/") == 0) {
+    if (newPath.indexOf("/") === 0) {
       newPath = newPath.slice(1);
     }
     if (newPath.indexOf("?") > 0) {
@@ -114,23 +114,23 @@ export class AppComponent implements OnInit, OnDestroy {
     this.urlPath = newPath;
 
     if (
-        this.urlPath == "user-profile"
-        || this.urlPath == "user-security"
-        || this.urlPath == "user-tokens"
-        || this.urlPath == "user-skills"
-        || this.urlPath == "user-favorites-useful-links"
+        this.urlPath === "user-profile"
+        || this.urlPath === "user-security"
+        || this.urlPath === "user-tokens"
+        || this.urlPath === "user-skills"
+        || this.urlPath === "user-favorites-useful-links"
     ) {
       this.profileMenuExpanded = true;
     }
   }
 
   wsChangedState() {
-    if (this._fhq.connectionState == 'BROKEN') {
+    if (this._fhq.connectionState === 'BROKEN') {
       this.brokenConnection = true;
       this._spinner.show();
     }
 
-    if (this._fhq.connectionState == 'OK' && this.brokenConnection === true) {
+    if (this._fhq.connectionState === 'OK' && this.brokenConnection === true) {
       this.brokenConnection = false;
       console.log(this._router.url);
       this._router.navigateByUrl(this._router.url);
@@ -149,7 +149,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   languageCompareWith(l: any, r: any) {
-    if (l.language == r.language) {
+    if (l.language === r.language) {
       return l.language;
     } else {
       return "";
