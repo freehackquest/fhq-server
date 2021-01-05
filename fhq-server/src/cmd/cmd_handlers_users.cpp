@@ -1183,7 +1183,7 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest) {
     int nUserIDFromToken = pUserSession->userid();
     int nUserID = pRequest->getInputInteger("userid", 0);
     if (nUserIDFromToken != nUserID && !pRequest->isAdmin()) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Deny change inmormation about user"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Deny change information about user"));
         return;
     }
 
