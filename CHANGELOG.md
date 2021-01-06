@@ -5,9 +5,53 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.35] - ??
+## [v0.2.36] - ???
 
+## [v0.2.35] - 2021-01-06 (2021 Jan 06)
 
+### Added
+
+- fhq-server: #81 Implemented new method 'quests_user_answer_list'
+- Added sea5kg_cpplint.config
+- Added to README.md information about valgrind from #101
+- Fixed #184 added warning to feedback forms
+- Added development information for api-lists
+
+### Changed
+
+- Fixed #337 Rename folder web-admin to admin-web-site
+- admin-web-site: redesign quest's pages
+- admin-web-site: improved modal dialog
+- Fixed #328 Redesing quests_proposal_list params and response
+- Renamed WsjcppError to WsjcppJsonRpc20Error
+- Redesign README.md and folders  install, misc
+
+### Fixed
+
+- Fixed wordings
+- Fixed #276 reimplemented select language to angular mat-select
+- Fixed #276: reimplemented navbar for mobiles
+- Fixed #332: broken quest / add hint
+- Fixed #205: removed user token from logs on login
+- Fixed #18: drop column games.rules
+- Fixed #72: away from QJson...
+- admin-web-site: Fixed dialog delete user
+- Fixed Impove export web-js library #330
+- Fixed wall
+- Fixed #323 Improve documentation for pytest
+- Fixed pylint warnings & criticals
+
+### Removed
+
+- Fixed #325 static analizing text moved to another repository wsjcpp-static-analizing-text
+
+### Security
+
+- Bump highlight.js from 10.1.1 to 10.4.0 in /fhq-web-user
+- Updated wsjcpp-validators
+- Fixed TODO check error database query
+- user-web-site: Fixed security alert "webpack-subresource-integrity": ">=1.5.1"
+- Fixed #334: admin-web-site user can not remove self
 
 ## [v0.2.34] - 2020-10-18 (2020 Oct 18)
 
