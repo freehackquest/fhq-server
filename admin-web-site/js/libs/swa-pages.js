@@ -79,9 +79,9 @@ class SwaMenu {
 
     init() {
         var elems = document.getElementsByClassName("swa-menu");
-        console.log(elems);
+        // console.log(elems);
         for(var i = 0; i < elems.length; i++) {
-            console.log(elems[i]);
+            // console.log(elems[i]);
             elems[i].onclick = this.onclick
             var page = elems[i].getAttribute('page');
             if (fhq.containsPageParam(page)) {

@@ -24,7 +24,7 @@ fhq.parsePageParams = function() {
     for(var i = 0; i < arr.length; i++){
         if(arr[i].trim() != ""){
             var p = regex.exec(arr[i].trim());
-            console.log("results: " + JSON.stringify(p));
+            // console.log("results: " + JSON.stringify(p));
             if(p == null)
                 result[decodeURIComponent(arr[i].trim().replace(/\+/g, " "))] = '';
             else
@@ -97,11 +97,11 @@ fhq.processParams = function() {
         fhq.ws.cleanuptoken();
         fhq.showSignInForm();
     } else {
-        console.log(fhq.userinfo);
-        console.log(fhq.pages);
+        // console.log(fhq.userinfo);
+        // console.log(fhq.pages);
         var bFound = false;
         for (var name in fhq.pages) {
-            console.log(name);
+            // console.log(name);
             if (fhq.containsPageParam(name)) {
                 fhq.pages[name]();
                 bFound = true;
@@ -124,7 +124,7 @@ fhq.changeLocationState = function(newPageParams){
     var url = '';
     var params = [];
     // console.log("changeLocationState");
-    console.log("changeLocationState, newPageParams = ", newPageParams);
+    // console.log("changeLocationState, newPageParams = ", newPageParams);
     for(var p in newPageParams){
         params.push(encodeURIComponent(p) + "=" + encodeURIComponent(newPageParams[p]));
     }
