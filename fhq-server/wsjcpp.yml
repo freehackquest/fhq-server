@@ -3,7 +3,7 @@ cmake_minimum_required: 3.0
 cmake_cxx_standard: 11
 
 name: "fhq-server"
-version: v0.2.34
+version: v0.2.35
 description: "This is an open source platform for competitions of computer security."
 issues: "https://github.com/freehackquest/fhq-server/issues"
 
@@ -51,11 +51,13 @@ dependencies:
     url: "https://github.com/wsjcpp/json:develop"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/nlohmann_json"
+    installation-datetime: "Sat, 28 Nov 2020 03:38:38 GMT"
   - name: "wsjcpp-validators"
-    version: "v0.1.0"
+    version: "v0.1.2"
     url: "https://github.com/wsjcpp/wsjcpp-validators:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_validators"
+    installation-datetime: "Thu, 29 Oct 2020 02:32:54 GMT"
   - name: "wsjcpp-print-tree"
     version: "v0.1.0"
     url: "https://github.com/wsjcpp/wsjcpp-print-tree:master"
@@ -104,12 +106,6 @@ distribution:
   - source-file: "src/validators/validators.cpp"
     target-file: "validators.cpp"
     type: "source-code"
-  - source-file: "src/utils/utils_static_analizing_text.cpp"
-    target-file: "utils_static_analizing_text.cpp"
-    type: "source-code"
-  - source-file: "src/utils/utils_static_analizing_text.h"
-    target-file: "utils_static_analizing_text.h"
-    type: "source-code"
   - source-file: "src/core/jobs_pool.h"
     target-file: "jobs_pool.h"
     type: "source-code"
@@ -128,8 +124,6 @@ unit-tests:
       description: "Test Validators"
     - name: "JobsPool"
       description: "Test async jobs pool"
-    - name: "StaticAnalizingText"
-      description: "Test for static analizing text"
     - name: "StorageEscapes"
       description: "Test for Storage Escapes"
     - name: "StorageStruct"

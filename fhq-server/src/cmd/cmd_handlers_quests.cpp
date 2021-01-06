@@ -8,9 +8,10 @@
 #include <validators.h>
 #include <wsjcpp_hashes.h>
 
-// *******************************************
-// *************** Quest List ****************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest List
+
+REGISTRY_CMD(CmdHandlerQuests)
 
 CmdHandlerQuests::CmdHandlerQuests()
     : CmdHandlerBase("quests", "Method will be returned quest list") {
@@ -110,7 +111,7 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest) {
     }
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     while (query.next()) {
@@ -135,10 +136,10 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// *************** Quest Info ****************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Info
 
+REGISTRY_CMD(CmdHandlerQuest)
 
 CmdHandlerQuest::CmdHandlerQuest()
     : CmdHandlerBase("quest", "Update the quest info") {
@@ -201,7 +202,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
         query.bindValue(":userid", nUserID);
         query.bindValue(":questid", nQuestID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -244,7 +245,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
                 query_game.prepare("SELECT * FROM games WHERE id = :id");
                 query_game.bindValue(":id", nGameID);
                 if (!query_game.exec()) {
-                    pRequest->sendMessageError(cmd(), WsjcppError(500, query_game.lastError().text().toStdString()));
+                    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query_game.lastError().text().toStdString()));
                     return;
                 }
                 if (query_game.next()) {
@@ -254,7 +255,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
                     jsonGame["title"] = record_game.value("title").toString().toStdString();
                     jsonGame["logo"] = QString(sBaseGamesURL + QString::number(nGameID) + ".png").toStdString();
                 } else {
-                    pRequest->sendMessageError(cmd(), WsjcppError(404, "Game not found"));
+                    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Game not found"));
                     return;
                 }
                 jsonResponse["game"] = jsonGame;
@@ -268,7 +269,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
                 query_files.prepare("SELECT * FROM quests_files WHERE questid = :questid");
                 query_files.bindValue(":questid", nQuestID);
                 if (!query_files.exec()) {
-                    pRequest->sendMessageError(cmd(), WsjcppError(500, query_files.lastError().text().toStdString()));
+                    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query_files.lastError().text().toStdString()));
                     return;
                 }
                 while (query_files.next()) {
@@ -294,7 +295,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
                 query_hints.prepare("SELECT * FROM quests_hints WHERE questid = :questid");
                 query_hints.bindValue(":questid", nQuestID);
                 if (!query_hints.exec()) {
-                    pRequest->sendMessageError(cmd(), WsjcppError(500, query_hints.lastError().text().toStdString()));
+                    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query_hints.lastError().text().toStdString()));
                     return;
                 }
                 while (query_hints.next()) {
@@ -307,7 +308,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
                 jsonResponse["hints"] = jsonHints;
             }
         } else {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Quest not found"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Quest not found"));
             return;
         }
     }
@@ -315,9 +316,10 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// *************** Quest Pass ****************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Pass
+
+REGISTRY_CMD(CmdHandlerQuestPass)
 
 CmdHandlerQuestPass::CmdHandlerQuestPass()
 : CmdHandlerBase("quest_pass", "Quest pass") {
@@ -363,7 +365,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
         query.prepare("SELECT * FROM quest WHERE idquest = :questid");
         query.bindValue(":questid", nQuestID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -374,7 +376,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
             sQuestName = record.value("name").toString().trimmed();
             nGameID = record.value("gameid").toInt();
         } else {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Quest not found"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Quest not found"));
             return;
         }
     }
@@ -384,12 +386,12 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
         query.prepare("SELECT * FROM games WHERE id = :gameid AND (NOW() < date_stop OR NOW() > date_restart)");
         query.bindValue(":gameid", nGameID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
 
         if (!query.next()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(403, "Game ended. Please wait date of restart."));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Game ended. Please wait date of restart."));
             return;
         }
     }
@@ -401,13 +403,13 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
         query.bindValue(":questid", nQuestID);
         query.bindValue(":userid", nUserID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {
             QSqlRecord record = query.record();
             if (record.value("cnt").toInt() > 0) {
-                pRequest->sendMessageError(cmd(), WsjcppError(404, "Quest already passed"));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Quest already passed"));
                 return;
             }
         }
@@ -421,13 +423,13 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
         query.bindValue(":questid", nQuestID);
         query.bindValue(":userid", nUserID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {
             QSqlRecord record = query.record();
             if (record.value("cnt").toInt() > 0) {
-                pRequest->sendMessageError(cmd(), WsjcppError(404, "Your already try this answer."));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Your already try this answer."));
                 return;
             }
         }
@@ -451,14 +453,14 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
         query.bindValue(":levenshtein", nLevenshtein);
 
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
         pServerInfo->incrementQuestsAttempt();
     }
 
     if (!bPassed) {
-        pRequest->sendMessageError(cmd(), WsjcppError(403, "Answer incorrect. Levenshtein distance: " + QString::number(nLevenshtein).toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Answer incorrect. Levenshtein distance: " + QString::number(nLevenshtein).toStdString()));
         return;
     }
 
@@ -470,7 +472,7 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
         query.bindValue(":userid", nUserID);
         query.bindValue(":questid", nQuestID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -487,9 +489,10 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// ************** Quest Create ***************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Create
+
+REGISTRY_CMD(CmdHandlerCreateQuest)
 
 CmdHandlerCreateQuest::CmdHandlerCreateQuest()
     : CmdHandlerBase("createquest", "Method will be create new quest") {
@@ -534,9 +537,12 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM quest WHERE uuid = :uuid");
         query.bindValue(":uuid", QString::fromStdString(sUUID));
-        query.exec();
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
         if (query.next()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(403, "Quest with uuid [quest#" + sUUID + "] already exists"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Quest with uuid [quest#" + sUUID + "] already exists"));
             return;
         }
     }
@@ -546,9 +552,12 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM games WHERE id = :id");
         query.bindValue(":id", nGameID);
-        query.exec();
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
         if (!query.next()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Game not found"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Game not found"));
             return;
         }
     }
@@ -636,7 +645,7 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
     query.bindValue(":count_user_solved", 0);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     pServerInfo->incrementQuests();
@@ -654,10 +663,10 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// ************** Quest Delete ***************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Delete
 
+REGISTRY_CMD(CmdHandlerQuestDelete)
 
 CmdHandlerQuestDelete::CmdHandlerQuestDelete()
     : CmdHandlerBase("quest_delete", "Method for delete quest") {
@@ -689,7 +698,7 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest) {
         query.prepare("SELECT * FROM quest WHERE idquest = :questid");
         query.bindValue(":questid", questid);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {
@@ -697,7 +706,7 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest) {
             sName = record.value("name").toString().toStdString();
             sSubject = record.value("subject").toString().toStdString();
         } else {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Quest not found"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Quest not found"));
             return;
         }
     }
@@ -707,7 +716,7 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest) {
         query.prepare("DELETE FROM quest WHERE idquest = :questid");
         query.bindValue(":questid", questid);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -718,7 +727,7 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest) {
         query.prepare("DELETE FROM users_quests_answers WHERE questid = :questid");
         query.bindValue(":questid", questid);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -729,7 +738,7 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest) {
         query.prepare("DELETE FROM users_quests WHERE questid = :questid");
         query.bindValue(":questid", questid);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
     }
@@ -746,10 +755,10 @@ void CmdHandlerQuestDelete::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// ************** Quest Proposal ***************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Proposal
 
+REGISTRY_CMD(CmdHandlerQuestProposal)
 
 CmdHandlerQuestProposal::CmdHandlerQuestProposal()
     : CmdHandlerBase("quest_proposal", "Add quest proposal") {
@@ -778,7 +787,7 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
     bool bAllow = pGlobalSettings->get("allow_quests_proposals").getBooleanValue();
     if (!bAllow) {
-        pRequest->sendMessageError(cmd(), WsjcppError(403, "Prohibited by settings"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Prohibited by settings"));
         return;
     }
 
@@ -802,9 +811,12 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM games WHERE id = :id");
         query.bindValue(":id", nGameID);
-        query.exec();
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
         if (!query.next()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Game not found"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Game not found"));
             return;
         }
     }
@@ -813,7 +825,7 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     WsjcppCore::trim(sName);
 
     if (sName.length() == 0) { // TODO to validators
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "Name could not be empty"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Name could not be empty"));
         return;
     }
 
@@ -828,7 +840,7 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     WsjcppCore::trim(sAnswer);
 
     if (sAnswer.length() == 0) { // TODO to validators
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "Answer could not be empty"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Answer could not be empty"));
         return;
     }
 
@@ -836,7 +848,7 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     WsjcppCore::trim(sAuthor);
 
     if (sAuthor.length() == 0) { // TODO to validators
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "Author could not be empty"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Author could not be empty"));
         return;
     }
 
@@ -844,7 +856,7 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     WsjcppCore::trim(sAuthor);
 
     if (sAnswerFormat.length() == 0) {
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "Answer Format could not be empty"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Answer Format could not be empty"));
         return;
     }
 
@@ -896,7 +908,7 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     query.bindValue(":confirmed", 0);
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
     // pMemoryCacheServerInfo->incrementQuests();
@@ -918,9 +930,10 @@ void CmdHandlerQuestProposal::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// ************** Quest Statistics ***********
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Statistics
+
+REGISTRY_CMD(CmdHandlerQuestStatistics)
 
 CmdHandlerQuestStatistics::CmdHandlerQuestStatistics()
     : CmdHandlerBase("quest_statistics", "Mehtod will be return quest public statistics") {
@@ -952,12 +965,12 @@ void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest) {
         query.prepare("SELECT * FROM quest WHERE idquest = :questid");
         query.bindValue(":questid", nQuestID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
 
         if (!query.next()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Quest not found"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Quest not found"));
             return;
         }
     }
@@ -975,7 +988,7 @@ void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest) {
         query.bindValue(":passed", "No");
         query.bindValue(":role", "user");
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -983,7 +996,7 @@ void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest) {
             QSqlRecord record = query.record();
             jsonResponse["tries"] = record.value("cnt").toInt();
         } else {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Quest not found"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Quest not found"));
             return;
         }
     }
@@ -996,7 +1009,7 @@ void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest) {
         query.bindValue(":passed", "Yes");
         query.bindValue(":role", "user");
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
 
@@ -1004,7 +1017,7 @@ void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest) {
             QSqlRecord record = query.record();
             jsonResponse["solved"] = record.value("cnt").toInt();
         } else {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Quest not found"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Quest not found"));
             return;
         }
     }
@@ -1019,7 +1032,7 @@ void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest) {
         query.bindValue(":questid", nQuestID);
 
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
         nlohmann::json jsonUsers = nlohmann::json::array();
@@ -1040,10 +1053,10 @@ void CmdHandlerQuestStatistics::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// ************** Quest Update ***********
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Update
 
+REGISTRY_CMD(CmdHandlerQuestUpdate)
 
 CmdHandlerQuestUpdate::CmdHandlerQuestUpdate()
     : CmdHandlerBase("quest_update", "Update the quest info") {
@@ -1102,7 +1115,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
         query.prepare("SELECT * FROM quest WHERE idquest = :questid");
         query.bindValue(":questid", nQuestID);
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {
@@ -1119,7 +1132,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
             sCopyrightPrev = record.value("copyright").toString().toStdString();
             sDescriptionStatePrev = record.value("description_state").toString().toStdString();
         } else {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Quest not found"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Quest not found"));
             return;
         }
     }
@@ -1134,7 +1147,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
             query.bindValue(":name", QString::fromStdString(sName));
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
-                pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
                 return;
             }
             sNamePrev = sName;
@@ -1149,9 +1162,12 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
             QSqlQuery query(db);
             query.prepare("SELECT * FROM games WHERE id = :id");
             query.bindValue(":id", nGameID);
-            query.exec();
+            if (!query.exec()) {
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+                return;
+            }
             if (!query.next()) {
-                pRequest->sendMessageError(cmd(), WsjcppError(404, "Game not found"));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Game not found"));
                 return;
             }
         }
@@ -1162,7 +1178,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
             query.bindValue(":gameid", nGameID);
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
-                pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::UpdateMaxScoreGame(nGameID);
@@ -1182,7 +1198,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
             query.bindValue(":subject", QString::fromStdString(sSubject));
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
-                pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::AddPublicEvents("quests", "Updated subject of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev, jsonMeta);
@@ -1200,7 +1216,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
             query.bindValue(":text", QString::fromStdString(sText));
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
-                pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::AddPublicEvents("quests", "Updated text of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev, jsonMeta);
@@ -1216,7 +1232,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
             query.bindValue(":score", nScore);
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
-                pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::AddPublicEvents("quests", "Updated score of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev + " from " + std::to_string(nScorePrev) + " to " + std::to_string(nScore), jsonMeta);
@@ -1235,7 +1251,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
             // TODO update md5 upper
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
-                pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::AddPublicEvents("quests", "Updated answer of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev, jsonMeta);
@@ -1251,7 +1267,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
             query.bindValue(":author", QString::fromStdString(sAuthor));
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
-                pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::AddPublicEvents("quests", "Updated author of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev, jsonMeta);
@@ -1267,7 +1283,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
             query.bindValue(":answer_format", QString::fromStdString(sAnswerFormat));
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
-                pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::AddPublicEvents("quests", "Updated answer format of [quest#" + std::to_string(nQuestID) + "](" + sNamePrev + ") from {" + sAnswerFormatPrev + "} to {" + sAnswerFormat + "}", jsonMeta);
@@ -1283,7 +1299,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
             query.bindValue(":state", QString::fromStdString(sState));
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
-                pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::AddPublicEvents(
@@ -1303,7 +1319,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
             query.bindValue(":copyright", QString::fromStdString(sCopyright));
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
-                pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
                 return;
             }
             RunTasks::AddPublicEvents("quests", "Updated copyright of [quest#" + std::to_string(nQuestID) + "] " + sNamePrev + " from {" + sCopyrightPrev + "} to {" + sCopyright + "}", jsonMeta);
@@ -1319,7 +1335,7 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
             query.bindValue(":description_state", QString::fromStdString(sDescriptionState));
             query.bindValue(":questid", nQuestID);
             if (!query.exec()) {
-                pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
                 return;
             }
             // nothing to inform
@@ -1329,10 +1345,10 @@ void CmdHandlerQuestUpdate::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// ************** Quests Subjects ************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quests Subjects
 
+REGISTRY_CMD(CmdHandlerQuestsSubjects)
 
 CmdHandlerQuestsSubjects::CmdHandlerQuestsSubjects()
     : CmdHandlerBase("quests_subjects", "Method returned list of quests by subjects") {
@@ -1358,7 +1374,7 @@ void CmdHandlerQuestsSubjects::handle(ModelRequest *pRequest) {
     query.bindValue(":state", "open");
 
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
@@ -1375,10 +1391,10 @@ void CmdHandlerQuestsSubjects::handle(ModelRequest *pRequest) {
 
 }
 
-// *******************************************
-// ************ Quest Hints Add **************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Hints Add
 
+REGISTRY_CMD(CmdHandlerAddHint)
 
 CmdHandlerAddHint::CmdHandlerAddHint()
     : CmdHandlerBase("addhint", "Method add hint to quest") {
@@ -1409,7 +1425,7 @@ void CmdHandlerAddHint::handle(ModelRequest *pRequest) {
     if (nQuestId == 0) {
         // todo this check move to cmd input def
         // TODO must be check on inputDef validators
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "Parameter 'questid' must be not zero"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Parameter 'questid' must be not zero"));
         return;
     }
 
@@ -1434,9 +1450,10 @@ void CmdHandlerAddHint::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// ************ Quest AnswerList **************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest AnswerList
+
+REGISTRY_CMD(CmdHandlerAnswerList)
 
 CmdHandlerAnswerList::CmdHandlerAnswerList()
     : CmdHandlerBase("answerlist", "Return user answers list") {
@@ -1469,7 +1486,7 @@ void CmdHandlerAnswerList::handle(ModelRequest *pRequest) {
     jsonResponse["onpage"] = nOnPage;
 
     if (nOnPage > 50) {
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "Parameter 'onpage' could not be more then 50"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Parameter 'onpage' could not be more then 50"));
         return;
     }
 
@@ -1541,7 +1558,10 @@ void CmdHandlerAnswerList::handle(ModelRequest *pRequest) {
         foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
-        query.exec();
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
         if (query.next()) {
             QSqlRecord record = query.record();
             jsonResponse["count"] = record.value("cnt").toInt();
@@ -1577,7 +1597,10 @@ void CmdHandlerAnswerList::handle(ModelRequest *pRequest) {
         foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
-        query.exec(); // TODO check error database
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
         while (query.next()) {
             QSqlRecord record = query.record();
             nlohmann::json jsonAnswer;
@@ -1610,10 +1633,92 @@ void CmdHandlerAnswerList::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// *********** Quest Hint Delete ************
-// *******************************************
+// ---------------------------------------------------------------------
+// User Answer List
 
+REGISTRY_CMD(CmdHandlerQuestsUserAnswerList)
+
+CmdHandlerQuestsUserAnswerList::CmdHandlerQuestsUserAnswerList()
+    : CmdHandlerBase("quests_user_answer_list", "Return user answers list") {
+
+    TAG = "CmdHandlerQuestsUserAnswerList";
+
+    setAccessUnauthorized(false);
+    setAccessUser(true);
+    setAccessAdmin(false);
+
+    // validation and description input fields
+    requireIntegerParam("questid", "Filter for questid");   
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerQuestsUserAnswerList::handle(ModelRequest *pRequest) {
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+
+    nlohmann::json jsonResponse;
+
+    int nQuestID = pRequest->getInputInteger("questid", 0);
+
+    // count quests
+    QSqlDatabase db = *(pDatabase->database());
+
+    {
+        QSqlQuery query(db);
+        query.prepare("SELECT count(*) as cnt FROM users_quests_answers "
+            " WHERE questid = :questid"
+        );
+        query.bindValue(":questid", nQuestID);
+
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
+        if (query.next()) {
+            QSqlRecord record = query.record();
+            jsonResponse["count"] = record.value("cnt").toInt();
+        }
+    }
+
+    // data
+    nlohmann::json jsonAnswerList = nlohmann::json::array();
+    {
+        QSqlQuery query(db);
+        query.prepare("SELECT "
+            "    dt,"
+            "    passed,"
+            "    questid,"
+            "    user_answer,"
+            "    levenshtein"
+            " FROM users_quests_answers "
+            " WHERE questid = :questid"
+            " ORDER BY dt DESC "
+        );
+        query.bindValue(":questid", nQuestID);
+
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
+        while (query.next()) {
+            QSqlRecord record = query.record();
+            nlohmann::json jsonAnswer;
+            jsonAnswer["dt"] = record.value("dt").toString().toStdString();
+            jsonAnswer["user_answer"] = record.value("user_answer").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
+            jsonAnswer["levenshtein"] = record.value("levenshtein").toInt();
+            jsonAnswer["passed"] = record.value("passed").toString().toStdString();
+            jsonAnswerList.push_back(jsonAnswer);
+        }
+    }
+
+    jsonResponse["jsonrpc_result"] = jsonAnswerList;
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+// ---------------------------------------------------------------------
+// Quest Hint Delete
+
+REGISTRY_CMD(CmdHandlerDeleteHint)
 
 CmdHandlerDeleteHint::CmdHandlerDeleteHint()
     : CmdHandlerBase("deletehint", "Method for delete hint from quest") {
@@ -1636,7 +1741,7 @@ void CmdHandlerDeleteHint::handle(ModelRequest *pRequest) {
 
     int hintid = pRequest->getInputInteger("hintid", 0);
     if (hintid == 0) {
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "Parameter 'hintid' must be not zero"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Parameter 'hintid' must be not zero"));
         return;
     }
 
@@ -1644,14 +1749,18 @@ void CmdHandlerDeleteHint::handle(ModelRequest *pRequest) {
     QSqlQuery query(db);
     query.prepare("DELETE FROM quests_hints WHERE id = :hintid");
     query.bindValue(":hintid", hintid);
-    query.exec();
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        return;
+    }
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// **************** Quest Hints **************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quest Hints
+
+REGISTRY_CMD(CmdHandlerHints)
 
 CmdHandlerHints::CmdHandlerHints()
     : CmdHandlerBase("hints", "Return list of hints") {
@@ -1673,7 +1782,7 @@ void CmdHandlerHints::handle(ModelRequest *pRequest) {
 
     int questid = pRequest->getInputInteger("questid", 0);
     if (questid == 0) {
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "Parameter 'questid' must be not zero"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Parameter 'questid' must be not zero"));
         return;
     }
 
@@ -1683,7 +1792,10 @@ void CmdHandlerHints::handle(ModelRequest *pRequest) {
     QSqlQuery query(db);
     query.prepare("SELECT * FROM quests_hints WHERE questid = :questid");
     query.bindValue(":questid", questid);
-    query.exec();
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        return;
+    }
     while (query.next()) {
         QSqlRecord record = query.record();
         int hintid = record.value("id").toInt();
@@ -1702,10 +1814,10 @@ void CmdHandlerHints::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *******************************************
-// ********* Quests Proposal List ************
-// *******************************************
+// ---------------------------------------------------------------------
+// Quests Proposal List
 
+REGISTRY_CMD(CmdHandlerQuestsProposalList)
 
 CmdHandlerQuestsProposalList::CmdHandlerQuestsProposalList()
     : CmdHandlerBase("quests_proposal_list", "Quests proposal list") {
@@ -1716,8 +1828,8 @@ CmdHandlerQuestsProposalList::CmdHandlerQuestsProposalList()
     setAccessAdmin(true);
 
     // validation and description input fields
-    optionalIntegerParam("onpage", "On page"); // TODO validator
-    optionalIntegerParam("page", "page");  // TODO validator
+    optionalIntegerParam("page_size", "Pgae size"); // TODO validator
+    optionalIntegerParam("page_index", "Page index");  // TODO validator
 }
 
 // ---------------------------------------------------------------------
@@ -1725,14 +1837,14 @@ CmdHandlerQuestsProposalList::CmdHandlerQuestsProposalList()
 void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
-    nlohmann::json jsonResponse;
+    
 
     QStringList filters;
     QMap<QString,QString> filter_values;
 
-    int nPage = pRequest->getInputInteger("page", 0);
-    int nOnPage = pRequest->getInputInteger("onpage", 5);
-    int nCount = 0;
+    int nPageIndex = pRequest->getInputInteger("page_index", 0);
+    int nPageSize = pRequest->getInputInteger("page_size", 5);
+    int nTotal = 0;
 
     QSqlDatabase db = *(pDatabase->database());
     QString where = filters.join(" AND ");
@@ -1748,27 +1860,30 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
             query.bindValue(key, filter_values.value(key));
         }
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {
             QSqlRecord record = query.record();
-            nCount = record.value("cnt").toInt();
+            nTotal = record.value("cnt").toInt();
         }
     }
 
     // quests_proposal
-    nlohmann::json jsonQuestsProposal = nlohmann::json::array();
+    nlohmann::json jsonQuestProposalItems = nlohmann::json::array();
     {
         QSqlQuery query(db);
         query.prepare("SELECT qp.*, u.nick, u.email, g.title as game_title  FROM quests_proposal qp "
             " LEFT JOIN users u ON u.id = qp.userid "
             " LEFT JOIN games g ON g.id = qp.gameid "
-            + where + " ORDER BY created DESC LIMIT " + QString::number(nPage*nOnPage) + "," + QString::number(nOnPage));
+            + where + " ORDER BY created DESC LIMIT " + QString::number(nPageIndex*nPageSize) + "," + QString::number(nPageSize));
         foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
-        query.exec(); // TODO check error
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
         while (query.next()) {
             QSqlRecord record = query.record();
 
@@ -1799,18 +1914,24 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
             jsonQuestProposal["confirmed"] = nConfirmed;
             jsonQuestProposal["text"] = sText.toStdString();
 
-            jsonQuestsProposal.push_back(jsonQuestProposal);
+            jsonQuestProposalItems.push_back(jsonQuestProposal);
         }
     }
+    nlohmann::json jsonResult;
+    jsonResult["items"] = jsonQuestProposalItems;
+    jsonResult["page_size"] = nPageSize;
+    jsonResult["page_index"] = nPageIndex;
+    jsonResult["total"] = nTotal;
 
-    jsonResponse["data"] = jsonQuestsProposal;
-    jsonResponse["onpage"] = nOnPage;
-    jsonResponse["page"] = nPage;
-    jsonResponse["count"] = nCount;
+    nlohmann::json jsonResponse;
+    jsonResponse["data"] = jsonResult;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
-
 }
 
+// ---------------------------------------------------------------------
+// Quests Files Upload
+
+REGISTRY_CMD(CmdHandlerQuestsFilesUpload)
 
 CmdHandlerQuestsFilesUpload::CmdHandlerQuestsFilesUpload()
     : CmdHandlerBase("quests_files_upload", "Update the quest") {
@@ -1847,14 +1968,14 @@ void CmdHandlerQuestsFilesUpload::handle(ModelRequest *pRequest) {
         query.prepare("SELECT idquest FROM quest WHERE uuid = :questuuid");
         query.bindValue(":questuuid", QString::fromStdString(sQuestUUID));
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {
             QSqlRecord quest = query.record();
             nQuestID = quest.value("idquest").toInt();
         } else {
-            pRequest->sendMessageError(cmd(), WsjcppError(404, "Game not found"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Game not found"));
             return;
         }
     }
@@ -1866,7 +1987,7 @@ void CmdHandlerQuestsFilesUpload::handle(ModelRequest *pRequest) {
     QByteArray baFile = QByteArray::fromBase64(baFileBase64); // .fromBase64(baImagePNGBase64);
 
     if (baFile.size() == 0) {
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "Could not decode base64"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Could not decode base64"));
         return;
     }
     
@@ -1896,7 +2017,7 @@ void CmdHandlerQuestsFilesUpload::handle(ModelRequest *pRequest) {
         query.bindValue(":filepath", QString::fromStdString("public/quests/" + WsjcppCore::toUpper(sQuestUUID) + "_" + sFileUuid));
 
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
         

@@ -3,9 +3,7 @@
 
 #include <cmd_handlers.h>
 
-/*********************************************
- * This handler will return the list of leaks
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerLeaksList : public CmdHandlerBase {
 
@@ -14,11 +12,7 @@ class CmdHandlerLeaksList : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerLeaksList)
-
-/*********************************************
- * This handler will add one new leak
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerLeaksAdd : public CmdHandlerBase {
 
@@ -27,11 +21,7 @@ class CmdHandlerLeaksAdd : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerLeaksAdd)
-
-/*********************************************
- * This handler will update a leak
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerLeaksUpdate : public CmdHandlerBase {
 
@@ -40,11 +30,7 @@ class CmdHandlerLeaksUpdate : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerLeaksUpdate)
-
-/*********************************************
- * This handler will delete a leak
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerLeaksDelete : public CmdHandlerBase {
 
@@ -53,11 +39,7 @@ class CmdHandlerLeaksDelete : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerLeaksDelete)
-
-/*********************************************
- * This handler allows you to buy a leak
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerLeaksBuy : public CmdHandlerBase {
 
@@ -65,7 +47,5 @@ class CmdHandlerLeaksBuy : public CmdHandlerBase {
         CmdHandlerLeaksBuy();
         virtual void handle(ModelRequest *pRequest);
 };
-
-REGISTRY_CMD(CmdHandlerLeaksBuy)
 
 #endif // CMD_HADNLERS_USERS_H

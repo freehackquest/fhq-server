@@ -8,6 +8,9 @@
 </div>
 
 <mat-card *ngIf="!sendedFeedback">
+  <div>
+    <strong><i l10nTranslate>feedbackWarning</i></strong>
+  </div>
   <form class="feedback-card">
     <mat-form-field appearance="fill" class="feedback-field">
       <mat-label l10nTranslate>feedbackTarget</mat-label>

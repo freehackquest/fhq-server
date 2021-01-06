@@ -6,9 +6,10 @@
 #include <employ_server_info.h>
 #include <QtCore>
 
-/*****************************************
- * Mail Info
- *****************************************/
+// ---------------------------------------------------------------------
+// This handler will be return info about mail
+
+REGISTRY_CMD(CmdHandlerMailInfo)
 
 CmdHandlerMailInfo::CmdHandlerMailInfo()
     : CmdHandlerBase("mail_info", "This method Will be return info of mail") {
@@ -24,12 +25,13 @@ CmdHandlerMailInfo::CmdHandlerMailInfo()
 
 void CmdHandlerMailInfo::handle(ModelRequest *pRequest) {
 
-    pRequest->sendMessageError(cmd(), WsjcppError(501, "Not Implemented Yet"));
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(501, "Not Implemented Yet"));
 }
 
-/*****************************************
- * Send Mail
- *****************************************/
+// ---------------------------------------------------------------------
+// This handler will be send mail by admin
+
+REGISTRY_CMD(CmdHandlerMailSend)
 
 CmdHandlerMailSend::CmdHandlerMailSend()
     : CmdHandlerBase("mail_send", "Mail Send") {
@@ -60,9 +62,10 @@ void CmdHandlerMailSend::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-/*****************************************
- * MailsList
- *****************************************/
+// ---------------------------------------------------------------------
+// This handler will be list of mails
+
+REGISTRY_CMD(CmdHandlerMailsList)
 
 CmdHandlerMailsList::CmdHandlerMailsList()
     : CmdHandlerBase("mails_list", "Mails list") {
@@ -134,7 +137,7 @@ void CmdHandlerMailsList::handle(ModelRequest *pRequest) {
             query.bindValue(key, filter_values.value(key));
         }
         if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
             return;
         }
         if (query.next()) {
@@ -152,7 +155,10 @@ void CmdHandlerMailsList::handle(ModelRequest *pRequest) {
         foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
-        query.exec();
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
         while (query.next()) {
             QSqlRecord record = query.record();
             nlohmann::json jsonEmail;

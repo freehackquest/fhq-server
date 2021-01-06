@@ -128,7 +128,7 @@ EmployResult EmployGames::addGame(const ModelGame &modelGame, std::string &sErro
             "       date_start, date_stop, date_restart,"
             "       description,"
             "       organizators,"
-            "       state, form, rules,"
+            "       state, form, "
             "       maxscore,"
             "       owner,"
             "       date_create, " // TODO change created
@@ -139,7 +139,7 @@ EmployResult EmployGames::addGame(const ModelGame &modelGame, std::string &sErro
             "       :date_start, :date_stop, :date_restart,"
             "       :description,"
             "       :organizators,"
-            "       :state, :form, :rules,"
+            "       :state, :form, "
             "       :maxscore,"
             "       :owner,"
             "       NOW(),"
@@ -155,7 +155,6 @@ EmployResult EmployGames::addGame(const ModelGame &modelGame, std::string &sErro
         query.bindValue(":organizators", QString(pModelGame->organizators().c_str()));
         query.bindValue(":state", QString(pModelGame->state().c_str()));
         query.bindValue(":form", QString(pModelGame->form().c_str()));
-        query.bindValue(":rules", "");
         query.bindValue(":maxscore", 0);
         query.bindValue(":owner", 0);
 

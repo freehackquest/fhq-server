@@ -1,11 +1,11 @@
+// Copyright (c) 2015-2020 FreeHackQuest <freehackquest@gmail.com>
+
 #ifndef CMD_HANDLERS_USEFUL_LINKS_H
 #define CMD_HANDLERS_USEFUL_LINKS_H
 
 #include <cmd_handlers.h>
 
-/*********************************************
- * Useful Links List
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerUsefulLinksList : public CmdHandlerBase {
     public:
@@ -13,17 +13,23 @@ class CmdHandlerUsefulLinksList : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
+// ---------------------------------------------------------------------
+
 class CmdHandlerUsefulLinksRetrieve : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksRetrieve();
         virtual void handle(ModelRequest *pRequest);
 };
 
+// ---------------------------------------------------------------------
+
 class CmdHandlerUsefulLinksAdd : public CmdHandlerBase {
     public:
         CmdHandlerUsefulLinksAdd();
         virtual void handle(ModelRequest *pRequest);
 };
+
+// ---------------------------------------------------------------------
 
 class CmdHandlerUsefulLinksDelete : public CmdHandlerBase {
     public:
@@ -32,7 +38,6 @@ class CmdHandlerUsefulLinksDelete : public CmdHandlerBase {
 };
 
 // ---------------------------------------------------------------------
-// Update useful link
 
 class CmdHandlerUsefulLinksUpdate : public CmdHandlerBase {
     public:
@@ -41,7 +46,6 @@ class CmdHandlerUsefulLinksUpdate : public CmdHandlerBase {
 };
 
 // ---------------------------------------------------------------------
-// Useful Links list of favorite
 
 class CmdHandlerUsefulLinksUserFavoriteList : public CmdHandlerBase {
     public:
@@ -50,7 +54,6 @@ class CmdHandlerUsefulLinksUserFavoriteList : public CmdHandlerBase {
 };
 
 // ---------------------------------------------------------------------
-// Useful Links add to favorite
 
 class CmdHandlerUsefulLinksUserFavorite : public CmdHandlerBase {
     public:
@@ -59,7 +62,6 @@ class CmdHandlerUsefulLinksUserFavorite : public CmdHandlerBase {
 };
 
 // ---------------------------------------------------------------------
-// Useful Links removed from favorite
 
 class CmdHandlerUsefulLinksUserUnfavorite : public CmdHandlerBase {
     public:
@@ -68,7 +70,6 @@ class CmdHandlerUsefulLinksUserUnfavorite : public CmdHandlerBase {
 };
 
 // ---------------------------------------------------------------------
-// Useful Links counter clicker
 
 class CmdHandlerUsefulLinksClicked : public CmdHandlerBase {
     public:
@@ -78,7 +79,6 @@ class CmdHandlerUsefulLinksClicked : public CmdHandlerBase {
 
 
 // ---------------------------------------------------------------------
-// Useful Links list of comments
 
 class CmdHandlerUsefulLinksCommentList : public CmdHandlerBase {
     public:
@@ -87,7 +87,6 @@ class CmdHandlerUsefulLinksCommentList : public CmdHandlerBase {
 };
 
 // ---------------------------------------------------------------------
-// Useful Links add comment
 
 class CmdHandlerUsefulLinksCommentAdd : public CmdHandlerBase {
     public:
@@ -96,7 +95,6 @@ class CmdHandlerUsefulLinksCommentAdd : public CmdHandlerBase {
 };
 
 // ---------------------------------------------------------------------
-// Useful Links remove comment
 
 class CmdHandlerUsefulLinksCommentDelete : public CmdHandlerBase {
     public:
@@ -105,7 +103,6 @@ class CmdHandlerUsefulLinksCommentDelete : public CmdHandlerBase {
 };
 
 // ---------------------------------------------------------------------
-// Useful Links List of tags
 
 class CmdHandlerUsefulLinksTagList : public CmdHandlerBase {
     public:
@@ -114,7 +111,6 @@ class CmdHandlerUsefulLinksTagList : public CmdHandlerBase {
 };
 
 // ---------------------------------------------------------------------
-// Useful Links add tag
 
 class CmdHandlerUsefulLinksTagAdd : public CmdHandlerBase {
     public:
@@ -123,7 +119,6 @@ class CmdHandlerUsefulLinksTagAdd : public CmdHandlerBase {
 };
 
 // ---------------------------------------------------------------------
-// Useful Links remove tag
 
 class CmdHandlerUsefulLinksTagDelete : public CmdHandlerBase {
     public:
@@ -132,7 +127,6 @@ class CmdHandlerUsefulLinksTagDelete : public CmdHandlerBase {
 };
 
 // ---------------------------------------------------------------------
-// Useful Links propose link by user
 
 class CmdHandlerUsefulLinksUserPropose : public CmdHandlerBase {
     public:
@@ -141,7 +135,6 @@ class CmdHandlerUsefulLinksUserPropose : public CmdHandlerBase {
 };
 
 // ---------------------------------------------------------------------
-// Useful Links Approve propose link by admin
 
 class CmdHandlerUsefulLinksUserProposeApprove : public CmdHandlerBase {
     public:

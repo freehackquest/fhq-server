@@ -7,9 +7,10 @@
 #include <QtCore>
 #include <validators.h>
 
-// *****************************************
-// * Create public events
-// *****************************************
+// ---------------------------------------------------------------------
+// This handler will be create public event
+
+REGISTRY_CMD(CmdHandlerEventAdd)
 
 CmdHandlerEventAdd::CmdHandlerEventAdd()
     : CmdHandlerBase("createpublicevent", "Create the public event") {
@@ -40,17 +41,17 @@ void CmdHandlerEventAdd::handle(ModelRequest *pRequest) {
     query.bindValue(":message", QString::fromStdString(sMessage));
     query.bindValue(":meta", "{}");
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *****************************************
-// * Delete public event
-// *****************************************
+// ---------------------------------------------------------------------
+// This handler will be delete public event
 
+REGISTRY_CMD(CmdHandlerEventDelete)
 
 CmdHandlerEventDelete::CmdHandlerEventDelete()
     : CmdHandlerBase("deletepublicevent", "Delete public event") {
@@ -78,9 +79,12 @@ void CmdHandlerEventDelete::handle(ModelRequest *pRequest) {
     QSqlQuery query(db);
     query.prepare("SELECT * FROM public_events WHERE id = :eventid");
     query.bindValue(":eventid", nEventId);
-    query.exec();
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        return;
+    }
     if (!query.next()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "Event not found"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Event not found"));
         return;
     }
 
@@ -93,9 +97,10 @@ void CmdHandlerEventDelete::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *****************************************
-// * get public event
-// *****************************************
+// ---------------------------------------------------------------------
+// This handler will be retrun info about public event
+
+REGISTRY_CMD(CmdHandlerEventInfo)
 
 CmdHandlerEventInfo::CmdHandlerEventInfo()
     : CmdHandlerBase("getpublicevent", "Return public event info by id") {
@@ -124,7 +129,10 @@ void CmdHandlerEventInfo::handle(ModelRequest *pRequest) {
     QSqlQuery query(db);
     query.prepare("SELECT * FROM public_events e WHERE id = :eventid");
     query.bindValue(":eventid", nEventId);
-    query.exec();
+    if (!query.exec()) {
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+        return;
+    }
     if (query.next()) {
         QSqlRecord record = query.record();
         jsonEvent["dt"] = record.value("dt").toString().toStdString();
@@ -132,7 +140,7 @@ void CmdHandlerEventInfo::handle(ModelRequest *pRequest) {
         jsonEvent["type"] = record.value("type").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
         jsonEvent["message"] = record.value("message").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
     } else {
-        pRequest->sendMessageError(cmd(), WsjcppError(404, "Event not found"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Event not found"));
         return;
     }
 
@@ -140,10 +148,10 @@ void CmdHandlerEventInfo::handle(ModelRequest *pRequest) {
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
-// *****************************************
-// * public events list
-// *****************************************
+// ---------------------------------------------------------------------
+// This handler will be return list of public events
 
+REGISTRY_CMD(CmdHandlerEventsList)
 
 CmdHandlerEventsList::CmdHandlerEventsList()
     : CmdHandlerBase("publiceventslist", "Return list of public events") {
@@ -171,7 +179,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
 
     int nOnPage = pRequest->getInputInteger("onpage", 10);
     if (nOnPage > 50) {
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "Parameter 'onpage' could not be more then 50"));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Parameter 'onpage' could not be more then 50"));
         return;
     }
     jsonResponse["onpage"] = nOnPage;
@@ -218,7 +226,10 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
         foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
-        query.exec();
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
         if (query.next()) {
             QSqlRecord record = query.record();
             jsonResponse["count"] = record.value("cnt").toInt();
@@ -238,7 +249,10 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
         foreach (QString key, filter_values.keys()) {
             query.bindValue(key, filter_values.value(key));
         }
-        query.exec();
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
         while (query.next()) {
             QSqlRecord record = query.record();
             nlohmann::json jsonEvent;

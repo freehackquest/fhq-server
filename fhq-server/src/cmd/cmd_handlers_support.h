@@ -3,16 +3,13 @@
 
 #include <cmd_handlers.h>
 
-/*!
- * This handler for add support
- * */
+// ---------------------------------------------------------------------
+
 class CmdHandlerFeedbackAdd : public CmdHandlerBase {
 
     public:
         CmdHandlerFeedbackAdd();
         virtual void handle(ModelRequest *pRequest);
 };
-
-REGISTRY_CMD(CmdHandlerFeedbackAdd)
 
 #endif // CMD_HADNLERS_SUPPORT_H

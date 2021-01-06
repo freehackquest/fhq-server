@@ -14,13 +14,16 @@
 #include <validators.h>
 
 
-/*********************************************
- * Any actions with the container. Actions: create, start, stop and delete container
-**********************************************/
+// ---------------------------------------------------------------------
+// Any actions with the container. Actions: create, start, stop and delete container
+
+REGISTRY_CMD(CmdHandlerLXDContainers)
 
 CmdHandlerLXDContainers::CmdHandlerLXDContainers()
-        : CmdHandlerBase("lxd_containers",
-                         "Any actions with the container. Actions: create, start, stop and delete container") {
+: CmdHandlerBase(
+    "lxd_containers",
+    "Any actions with the container. Actions: create, start, stop and delete container"
+) {
 
     TAG = "LXD_HANDLER";
 
@@ -54,7 +57,7 @@ void CmdHandlerLXDContainers::handle(ModelRequest *pRequest) {
     }
 
     if (!sError.empty()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(nErrorCode, sError));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
     }
     if (action == "create") {
         RunTasks::LXDAsyncOperation(CmdHandlerLXDContainers::create_container, name, cmd(), pRequest);
@@ -167,9 +170,10 @@ void CmdHandlerLXDContainers::delete_container(const std::string &name, std::str
     }
 }
 
-/*********************************************
- * Get information about the orhestra, containers.
-**********************************************/
+// ---------------------------------------------------------------------
+// Get information about the orhestra, containers.
+
+REGISTRY_CMD(CmdHandlerLXDInfo)
 
 CmdHandlerLXDInfo::CmdHandlerLXDInfo()
         : CmdHandlerBase("lxd_info", "Get information about the orhestra, containers.") {
@@ -198,7 +202,7 @@ void CmdHandlerLXDInfo::handle(ModelRequest *pRequest) {
         jsonResponse["state"] = jsonState.dump();
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     } else
-        pRequest->sendMessageError(cmd(), WsjcppError(nErrorCode, sError));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
 }
 
 // ---------------------------------------------------------------------
@@ -225,9 +229,10 @@ bool CmdHandlerLXDInfo::get_state(const std::string& sName, std::string &sError,
     return true;
 }
 
-/*********************************************
- * Get information about all containers.
-**********************************************/
+// ---------------------------------------------------------------------
+// Get information about all containers.
+
+REGISTRY_CMD(CmdHandlerLXDList)
 
 CmdHandlerLXDList::CmdHandlerLXDList()
         : CmdHandlerBase("lxd_list", "Get information about all containers.") {
@@ -242,7 +247,7 @@ CmdHandlerLXDList::CmdHandlerLXDList()
 void CmdHandlerLXDList::handle(ModelRequest *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, pOrchestra->lastError()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, pOrchestra->lastError()));
         return;
     }
 
@@ -259,6 +264,9 @@ void CmdHandlerLXDList::handle(ModelRequest *pRequest) {
 }
 
 // ---------------------------------------------------------------------
+// Execute the command in container.
+
+REGISTRY_CMD(CmdHandlerLXDExec)
 
 CmdHandlerLXDExec::CmdHandlerLXDExec()
         : CmdHandlerBase("lxd_exec", "Exec command in the container with name.") {
@@ -276,7 +284,7 @@ CmdHandlerLXDExec::CmdHandlerLXDExec()
 void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, pOrchestra->lastError()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, pOrchestra->lastError()));
         return;
     }
     nlohmann::json jsonResponse;
@@ -292,7 +300,7 @@ void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
         return;
     }
-    pRequest->sendMessageError(cmd(), WsjcppError(nErrorCode, sError));
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
 }
 
 // ---------------------------------------------------------------------
@@ -325,6 +333,9 @@ bool CmdHandlerLXDExec::exec_command(const std::string &sName, const std::string
 }
 
 // ---------------------------------------------------------------------
+// Action with files in container.
+
+REGISTRY_CMD(CmdHandlerLXDFile)
 
 CmdHandlerLXDFile::CmdHandlerLXDFile()
         : CmdHandlerBase("lxd_file", "Pull, push, delete file inside the container.") {
@@ -339,10 +350,12 @@ CmdHandlerLXDFile::CmdHandlerLXDFile()
     requireStringParam("path", "Path to file inside the container");
 }
 
+// ---------------------------------------------------------------------
+
 void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, pOrchestra->lastError()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, pOrchestra->lastError()));
         return;
     }
     nlohmann::json jsonResponse;
@@ -361,7 +374,7 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
     }
 
     if (!sError.empty()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(nErrorCode, sError));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
         return;
     }
 
@@ -380,7 +393,7 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
     }
 
     if (!sError.empty()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(nErrorCode, sError));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
         return;
     }
 
@@ -402,9 +415,11 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
         }
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     } else {
-        pRequest->sendMessageError(cmd(), WsjcppError(nErrorCode, sError));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
     }
 }
+
+// ---------------------------------------------------------------------
 
 void CmdHandlerLXDFile::pull_file(LXDContainer *pContainer, const std::string &sPath, std::string &sb64File,
                                   std::string &sError, int &nErrorCode, bool &isDirectory) {
@@ -427,11 +442,18 @@ void CmdHandlerLXDFile::pull_file(LXDContainer *pContainer, const std::string &s
     sb64File = QByteArray::fromStdString(sRawData).toBase64().toStdString();
 }
 
+// ---------------------------------------------------------------------
+
 bool CmdHandlerLXDFile::push_file(LXDContainer *pContainer, const std::string &sPath, const std::string &sb64File,
                                   std::string &sError, int &nErrorCode) {
     QByteArray RawData = QByteArray::fromBase64(QByteArray::fromStdString(sb64File));
     return pContainer->push_file(sPath, RawData.toStdString());
 }
+
+// ---------------------------------------------------------------------
+// Open container port.
+
+REGISTRY_CMD(CmdHandlerLXDOpenPort)
 
 CmdHandlerLXDOpenPort::CmdHandlerLXDOpenPort()
         : CmdHandlerBase("lxd_open_port", "Opens the container port.") {
@@ -445,10 +467,12 @@ CmdHandlerLXDOpenPort::CmdHandlerLXDOpenPort()
     requireStringParam("protocol", "Protocol");
 }
 
+// ---------------------------------------------------------------------
+
 void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, pOrchestra->lastError()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, pOrchestra->lastError()));
         return;
     }
     nlohmann::json jsonResponse;
@@ -459,7 +483,7 @@ void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
     const std::string sProto = pRequest->getInputString("protocol", "");
 
     if (!is_port_valide(sProto, nPort, sError, nErrorCode)) {
-        pRequest->sendMessageError(cmd(), WsjcppError(nErrorCode, sError));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
         return;
     }
 
@@ -471,7 +495,7 @@ void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
     }
 
     if (!sError.empty()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(nErrorCode, sError));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
         return;
     }
 
@@ -482,9 +506,11 @@ void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
     if (sError.empty()) {
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     } else {
-        pRequest->sendMessageError(cmd(), WsjcppError(nErrorCode, sError));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
     }
 }
+
+// ---------------------------------------------------------------------
 
 bool CmdHandlerLXDOpenPort::is_port_valide(const std::string &sProto, const int &nPort, std::string &sError,
                                            int &nErrorCode) {
@@ -508,6 +534,10 @@ bool CmdHandlerLXDOpenPort::is_port_valide(const std::string &sProto, const int 
     return true;
 }
 
+// ---------------------------------------------------------------------
+// Import container configuration from json.
+
+REGISTRY_CMD(CmdHandlerLXDImportService)
 
 CmdHandlerLXDImportService::CmdHandlerLXDImportService()
         : CmdHandlerBase("lxd_import_container", "Import container from json configuration.") {
@@ -519,10 +549,12 @@ CmdHandlerLXDImportService::CmdHandlerLXDImportService()
     requireStringParam("config", "Container's configuration in json dumped string.");
 }
 
+// ---------------------------------------------------------------------
+
 void CmdHandlerLXDImportService::handle(ModelRequest *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, pOrchestra->lastError()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, pOrchestra->lastError()));
         return;
     }
     nlohmann::json jsonResponse;
@@ -532,7 +564,7 @@ void CmdHandlerLXDImportService::handle(ModelRequest *pRequest) {
     const std::string sConfig = pRequest->getInputString("config", "");
 
     if (!nlohmann::json::accept(sConfig)) {
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "Json string isn't valid."));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Json string isn't valid."));
     }
     nlohmann::json jsonConfig = nlohmann::json::parse(sConfig);
 
@@ -540,7 +572,7 @@ void CmdHandlerLXDImportService::handle(ModelRequest *pRequest) {
         if (jsonConfig.find("name") != jsonConfig.end()) {
             sName = jsonConfig["name"];
         } else {
-            pRequest->sendMessageError(cmd(), WsjcppError(400, "Container name not found."));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Container name not found."));
         }
 
     }
@@ -550,25 +582,29 @@ void CmdHandlerLXDImportService::handle(ModelRequest *pRequest) {
         sError = "Container " + sName + " is already created.";
         std::cout << sError << std::endl;
         nErrorCode = 400;
-        pRequest->sendMessageError(cmd(), WsjcppError(nErrorCode, sError));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
     }
 
     ServiceConfig serviceReq = ServiceConfig(jsonConfig);
 
     if (!pOrchestra->create_service(serviceReq, sError)) {
-        pRequest->sendMessageError(cmd(), WsjcppError(nErrorCode, sError));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
     }
 
     if (sError.empty()) {
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     } else {
-        pRequest->sendMessageError(cmd(), WsjcppError(nErrorCode, sError));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
     }
 }
 
+// ---------------------------------------------------------------------
+// import service from zip
+
+REGISTRY_CMD(CmdHandlerLXDImportServiceFromZip)
 
 CmdHandlerLXDImportServiceFromZip::CmdHandlerLXDImportServiceFromZip()
-        : CmdHandlerBase("lxd_import_service_from_zip", "Import Service from zip.") {
+: CmdHandlerBase("lxd_import_service_from_zip", "Import Service from zip.") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -577,10 +613,12 @@ CmdHandlerLXDImportServiceFromZip::CmdHandlerLXDImportServiceFromZip()
     requireStringParam("zip_file", "Service's configuration in Base64 zip archive.");
 }
 
+// ---------------------------------------------------------------------
+
 void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, pOrchestra->lastError()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, pOrchestra->lastError()));
         return;
     }
     nlohmann::json jsonResponse;
@@ -598,7 +636,7 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
     if (zip.open(QuaZip::mdUnzip)) {
 
         if (zip.getZipError() != UNZ_OK) {
-            pRequest->sendMessageError(cmd(), WsjcppError(400, "Cant unzip " + std::to_string(zip.getZipError())));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Cant unzip " + std::to_string(zip.getZipError())));
             return;
         } else {
             for (bool more = zip.goToFirstFile(); more; more = zip.goToNextFile()) {
@@ -613,27 +651,27 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
     }
 
     if (sConfig.empty()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(nErrorCode, "Not found service.json in zip archive."));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, "Not found service.json in zip archive."));
         zip.close();
         return;
     }
 
     if (!nlohmann::json::accept(sConfig)) {
-        pRequest->sendMessageError(cmd(), WsjcppError(400, "Service json file isn't valid."));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Service json file isn't valid."));
         zip.close();
         return;
     }
     nlohmann::json jsonConfig = nlohmann::json::parse(sConfig);
 
     if (!pOrchestra->create_service(jsonConfig, sError)) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, "Cant create service. Error: " + sError));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Cant create service. Error: " + sError));
         zip.close();
         return;
     }
 
     ServiceLXD *service;
     if (!pOrchestra->find_service(jsonConfig["name"].get<std::string>(), service)) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, "Cant find service. Error: " + pOrchestra->lastError()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Cant find service. Error: " + pOrchestra->lastError()));
         zip.close();
         return;
     }
@@ -642,14 +680,14 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
     LXDContainer *container = service->get_container();
 
     if (container->get_status() != "Running" && !container->start()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, "Cant start container. Error: " + container->get_error()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Cant start container. Error: " + container->get_error()));
         zip.close();
         return;
     }
 
     if (!container->exec("mkdir -p /root/service")) {
         pRequest->sendMessageError(cmd(),
-                                   WsjcppError(500, "Cant create service directory. Error: " + container->get_error()));
+                                   WsjcppJsonRpc20Error(500, "Cant create service directory. Error: " + container->get_error()));
         zip.close();
         return;
     }
@@ -659,7 +697,7 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
         if (!file_name.empty() && file_name != "service.json") {
             file.open(QIODevice::ReadOnly);
             if (!container->push_file("/root/service/" + file_name, file.readAll().toStdString())) {
-                pRequest->sendMessageError(cmd(), WsjcppError(nErrorCode, container->get_error()));
+                pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, container->get_error()));
                 file.close();
                 zip.close();
                 return;
@@ -671,20 +709,24 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
     zip.close();
 
     if (!service->build()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, "Cant build service. Error: " + service->get_error()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Cant build service. Error: " + service->get_error()));
         return;
     }
 
     if (sError.empty()) {
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     } else {
-        pRequest->sendMessageError(cmd(), WsjcppError(nErrorCode, sError));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
     }
 }
 
+// ---------------------------------------------------------------------
+// LXD Start Service
+
+REGISTRY_CMD(CmdHandlerLXDStartService)
 
 CmdHandlerLXDStartService::CmdHandlerLXDStartService()
-        : CmdHandlerBase("lxd_start_service", "Start service.") {
+: CmdHandlerBase("lxd_start_service", "Start service.") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -693,10 +735,12 @@ CmdHandlerLXDStartService::CmdHandlerLXDStartService()
     requireStringParam("name", "Service's name.");
 }
 
+// ---------------------------------------------------------------------
+
 void CmdHandlerLXDStartService::handle(ModelRequest *pRequest) {
     EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
     if (!pOrchestra->initConnection()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, pOrchestra->lastError()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, pOrchestra->lastError()));
         return;
     }
     nlohmann::json jsonResponse;
@@ -706,18 +750,20 @@ void CmdHandlerLXDStartService::handle(ModelRequest *pRequest) {
 
     ServiceLXD *service;
     if (!pOrchestra->find_service(sNameService, service)) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, "Cant find service. Error: " + pOrchestra->lastError()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Cant find service. Error: " + pOrchestra->lastError()));
         return;
     }
 
     if (!service->start()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, "Cant start service. Error: " + service->get_error()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Cant start service. Error: " + service->get_error()));
         return;
     }
 
     if (sError.empty()) {
         pRequest->sendMessageSuccess(cmd(), jsonResponse);
     } else {
-        pRequest->sendMessageError(cmd(), WsjcppError(nErrorCode, sError));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
     }
 }
+
+// ---------------------------------------------------------------------

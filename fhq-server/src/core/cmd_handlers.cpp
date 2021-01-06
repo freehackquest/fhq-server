@@ -3,25 +3,51 @@
 #include <fallen.h>
 #include <employees.h>
 
-/*! 
- * WsjcppError - 
- * */
 
-WsjcppError::WsjcppError(int nCodeError, const std::string &sMessage) {
-    m_nCodeError = nCodeError;
-    m_sMessage = sMessage;
+// ---------------------------------------------------------------------
+// WsjcppJsonRpc20Error - 
+
+WsjcppJsonRpc20Error::WsjcppJsonRpc20Error(
+    int nErrorCode,
+    const std::string &sErrorMessage,
+    const std::vector<std::pair<std::string,std::string>> &vErrorContext
+) {
+    m_nErrorCode = nErrorCode;
+    m_sErrorMessage = sErrorMessage;
+    m_vErrorContext = vErrorContext;
 }
 
 // ---------------------------------------------------------------------
 
-int WsjcppError::codeError() {
-    return m_nCodeError;
+int WsjcppJsonRpc20Error::getErrorCode() const {
+    return m_nErrorCode;
 }
 
 // ---------------------------------------------------------------------
 
-std::string WsjcppError::message() {
-    return m_sMessage;
+std::string WsjcppJsonRpc20Error::getErrorMessage() const {
+    return m_sErrorMessage;
+}
+
+// ---------------------------------------------------------------------
+
+const std::vector<std::pair<std::string,std::string>> &WsjcppJsonRpc20Error::getErrorContext() const {
+    return m_vErrorContext;
+}
+
+// ---------------------------------------------------------------------
+
+nlohmann::json WsjcppJsonRpc20Error::toJson() {
+    nlohmann::json jsonRet;
+    jsonRet["code"] = m_nErrorCode;
+    jsonRet["message"] = m_sErrorMessage;
+    if (m_vErrorContext.size() > 0) {
+        jsonRet["context"] = nlohmann::json();
+        for (int i = 0; i < m_vErrorContext.size(); i++) {
+            jsonRet["context"][m_vErrorContext[i].first] = m_vErrorContext[i].second;
+        }
+    }
+    return jsonRet;
 }
 
 // ---------------------------------------------------------------------
@@ -545,7 +571,7 @@ bool ModelRequest::isUnauthorized() {
 
 // ---------------------------------------------------------------------
 
-void ModelRequest::sendMessageError(const std::string &cmd, WsjcppError error) {
+void ModelRequest::sendMessageError(const std::string &cmd, WsjcppJsonRpc20Error error) {
     m_pServer->sendMessageError(m_pClient,cmd,m_sMessageId,error);
 }
 
@@ -652,19 +678,19 @@ bool CmdHandlerBase::checkAccess(ModelRequest *pRequest) {
     WsjcppUserSession *pUserSession = pRequest->getUserSession();
     if (!accessUnauthorized()) {
         if (pUserSession == nullptr) {
-            pRequest->sendMessageError(cmd(), WsjcppError(401, "Not Authorized Request"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(401, "Not Authorized Request"));
             return false;
         }
 
         // access user
         if (pUserSession->isUser() && !accessUser()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(403, "Access deny for user"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Access deny for user"));
             return false;
         }
 
         // access admin
         if (pUserSession->isAdmin() && !accessAdmin()) {
-            pRequest->sendMessageError(cmd(), WsjcppError(403, "Access deny for admin"));
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Access deny for admin"));
             return false;
         }
     }

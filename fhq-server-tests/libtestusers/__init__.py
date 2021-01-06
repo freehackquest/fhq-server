@@ -52,7 +52,7 @@ def cleanup_user_by_email(email):
 
     if user != None:
         print("Removing '" + email + "' ...")
-        user_delete = fhqtest.admin_session.user_delete({
+        user_delete = fhqtest.admin_session.users_delete({
             "userid": user['id'], 
             "password": fhqtest.ADMIN_PASSWORD
         })
@@ -230,11 +230,11 @@ def run_tests():
     fhqtest.check_response(user2_skills, "User2 succesfull got skills")
     pprint(user2_skills)
 
-    user3_remove = fhqtest.admin_session.user_delete({"userid": user3['data']['userid'], "password": fhqtest.ADMIN_PASSWORD})
+    user3_remove = fhqtest.admin_session.users_delete({"userid": user3['data']['userid'], "password": fhqtest.ADMIN_PASSWORD})
     fhqtest.alert(user3_remove == None, 'Could not remove user')
     fhqtest.check_response(user3_remove, "User3 succesfull removed")
 
-    user2_remove = fhqtest.admin_session.user_delete({"userid": user_found["id"], "password": fhqtest.ADMIN_PASSWORD})
+    user2_remove = fhqtest.admin_session.users_delete({"userid": user_found["id"], "password": fhqtest.ADMIN_PASSWORD})
     fhqtest.alert(user2_remove == None, 'Could not remove user')
     fhqtest.check_response(user2_remove, "User2 succesfull removed")
 

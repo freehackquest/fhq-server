@@ -4,10 +4,12 @@
 #include <string>
 #include <vector>
 #include <regex>
+#include <json.hpp>
 
 enum WsjcppValidatorType {
     WSJCPP_VALIDATOR_STRING,
-    WSJCPP_VALIDATOR_NUMBER
+    WSJCPP_VALIDATOR_INTEGER,
+    WSJCPP_VALIDATOR_JSON
 };
 
 // ----------------------------------------------------------------------
@@ -187,5 +189,56 @@ class WsjcppValidatorHex : public WsjcppValidatorStringBase {
 };
 
 // ----------------------------------------------------------------------
+
+class WsjcppValidatorIntegerBase {
+    public:
+        WsjcppValidatorIntegerBase(const std::string &typeName);
+        virtual WsjcppValidatorType getBaseType();
+        virtual std::string getTypeName();
+        virtual bool isValid(int nValue, std::string &sError) = 0;
+    protected:
+        std::string TAG;
+    private:
+        std::string m_sTypeName;
+};
+
+// ----------------------------------------------------------------------
+
+class WsjcppValidatorIntegerMinValue : public WsjcppValidatorIntegerBase {
+    public:
+        WsjcppValidatorIntegerMinValue(int nMinValue);
+        virtual bool isValid(int nValue, std::string &sError) override;
+
+    private:
+        std::string TAG;
+        int m_nMinValue;
+};
+
+// ----------------------------------------------------------------------
+
+class WsjcppValidatorIntegerMaxValue : public WsjcppValidatorIntegerBase {
+    public:
+        WsjcppValidatorIntegerMaxValue(int nMaxValue);
+        virtual bool isValid(int nValue, std::string &sError) override;
+
+    private:
+        std::string TAG;
+        int m_nMaxValue;
+};
+
+// ----------------------------------------------------------------------
+
+class WsjcppValidatorJsonBase {
+    public:
+        WsjcppValidatorJsonBase(const std::string &typeName);
+        virtual WsjcppValidatorType getBaseType();
+        virtual std::string getTypeName();
+        virtual bool isValid(const nlohmann::json &nValue, std::string &sError) = 0;
+
+    protected:
+        std::string TAG;
+    private:
+        std::string m_sTypeName;
+};
 
 #endif // WSJCPP_VALIDATOR_H

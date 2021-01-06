@@ -8,12 +8,11 @@ Backend && Frontend for FreeHackQuest on Qt and WebSockets
 **!!! FAST START YOUR GAME** [here (based on docker-compose)](https://github.com/freehackquest/freehackquest-start-game)!!!
 
 * [HOW-TO-BUILD-AND-DEVELOP](https://github.com/freehackquest/fhq-server/tree/master/install/HOW-TO-BUILD-AND-DEVELOP.md)
-* [PRE-BUILDS](https://github.com/freehackquest/fhq-server/tree/master/install/PRE-BUILDS.md)
 * [INSTALL_FROM_PPA](https://github.com/freehackquest/fhq-server/tree/master/install/INSTALL_FROM_PPA.md)
 
 * Configure autostart
-	* [SYSTEMD](install/SYSTEMD.md)
-	* [INITD](install/INITD.md)
+    * [SYSTEMD](install/SYSTEMD.md)
+    * [INITD](install/INITD.md)
 
 ## Distribution
 
@@ -29,37 +28,80 @@ Backend && Frontend for FreeHackQuest on Qt and WebSockets
 
 * [Doxygen Documentation](https://freehackquest.com/doxygen/)
 
-### Build c++ server
+### Build all components (c++ && angular)
 
-#### Ubuntu/Debian
+#### Ubuntu / Debian 10.0
 
 Requirements:
 
 ```
-$ sudo apt install git-core g++ make cmake qtchooser qt5-default libqt5websockets5 libqt5websockets5-dev libqt5sql5-mysql
+$ sudo apt install git-core g++ make cmake qtchooser qt5-default \
+   libqt5websockets5 libqt5websockets5-dev libqt5sql5-mysql \
+   libwebsockets-dev libcurl4-openssl-dev \
+   zlibc zlib1g zlib1g-dev \
+   libpng-dev \
+   libmysqlclient-dev \
+   mysql-server mysql-client \
+   build-essential curl
 ```
-New Requirements
+
+Install latest nodejs (for user-web-site)
 
 ```
-$ sudo apt install libwebsockets-dev libcurl4-openssl-dev
-$ sudo apt install zlibc zlib1g zlib1g-dev
-$ sudo apt install libpng-dev
-$ sudo apt install libmysqlclient-dev
+$ curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash -
+$ sudo apt-get install nodejs
+```
+
+Configure database:
+
+Run mysql console:
+```
+$ mysql -h localhost -u root -p
+```
+
+Execute next queries for create empty database:
+```
+> CREATE DATABASE `fhqtravis` CHARACTER SET utf8 COLLATE utf8_general_ci;
+> CREATE USER 'travis'@'localhost' IDENTIFIED BY '';
+> GRANT ALL PRIVILEGES ON fhqtravis.* TO 'travis'@'localhost' WITH GRANT OPTION;
+> FLUSH PRIVILEGES;
 ```
 
 Clone repository:
-
 ```
 $ git clone https://github.com/freehackquest/fhq-server ~/fhq-server.git
 ```
 
-Build:
+Build angular:
+```
+$ cd ~/fhq-server.git/fhq-web-user
+$ npm install
+$ npm run build --prod
+```
+
+Build c++ server:
 
 ```
 $ cd ~/fhq-server.git/fhq-server
 $ ./build_simple.sh
-./fhq-server -wd ../ci/travis/data start
+$ ./fhq-server -wd ../ci/travis/data start
 ```
+
+* user-web-site you can see here: `http://localhost:7080/`
+* admin-web-site: `http://localhost:7080/admin/`
+
+*Note: default login/password: admin/admin*
+
+
+Also you can start web angular for develop:
+*Will need backend runned (!)*
+```
+$ cd ~/fhq-server.git/fhq-web-user
+$ npm run start
+```
+So you can see web user here: `http://localhost:4200/`
+
+### Unit-tests 
 
 Build and run unit-tests:
 
@@ -69,22 +111,26 @@ $ ./build_simple.sh
 $ ./unit-tests
 ```
 
-### Run server api tests (after build binaries)
+### Server api tests
 
-Based on python and pytest. Also please check code by pylint.
+Based on python3 and pytest. Also please check code by pylint.
 
-Requirements:
+Install Requirements:
 
 ```
-$ sudo apt install python3-pip pylint python3-pytest
-$ pip3 install --user websocket-client
-$ pip3 install --user requests
-$ pip3 install -U pytest
-$ pip3 install --user pytest-env
-$ pip3 install --user docker
+$ sudo apt install python3-pip 
+$ pip3 install websocket-client requests pytest pytest-env docker pylint
 ```
 
-Current run tests:
+Exists two ways:
+1. When using a fresh compiled fhq-server on local machine
+2. Use a docker image latest version from hub.docker.com (here: https://hub.docker.com/r/freehackquest/fhq-server)
+
+#### Server api tests - first way (local binary mode)
+
+Expected that repository already got and fhq-server compiled. Also database configured for ci/travis/data.
+
+Run tests (will be deprecated):
 
 ```
 $ cd ~/fhq-server.git/fhq-server-tests
@@ -96,27 +142,20 @@ New running tests (based on pytest):
 
 ```
 $ cd ~/fhq-server.git/tests/server-api-tests/
-$ pylint *.py
-$ pytest -rAs -c env-local.ini tests_leaks.py *.py
+$ ./update_libfreehackquestclient.sh # update auto-generate-client-library
+$ python3 -m pylint --rcfile=.pylintrc *.py
+$ python3 -m pytest -rAs -c env-travis.ini .
 ```
 
-### Run server api tests (docker mode)
+### Server api tests - second way (docker mode)
 
-Requirements:
+Since you do not have a local server, you need to install the client library:
 
 ```
-$ sudo apt install python3-pip pylint python3-pytest
-$ pip3 install --user websocket-client
-$ pip3 install --user requests
-$ pip3 install -U pytest
-$ pip3 install --user pytest-env
-$ pip3 install --user docker
-$ pip3 install --user libfreehackquestclient
+$ pip3 install libfreehackquestclient
 ```
 
-expected also docker.
-
-Pull images
+Donwload docker images:
 ```
 $ docker pull freehackquest/fhq-server
 $ docker pull mysql:5.7
@@ -126,7 +165,38 @@ And now you can try run server-api-tests
 
 ```
 $ cd ~/fhq-server.git/tests/server-api-tests
-$ pytest -rAs -c env-docker.ini tests_leaks.py
+$ python3 -m pylint --rcfile=.pylintrc *.py
+$ python3 -m pytest -rAs -c env-docker.ini .
+```
+
+### Check the leaks mememory via valgrind
+
+Requirements:
+
+```
+$ sudo apt install valgrind # ubuntu and debian
+```
+
+Terminal1:
+```
+$ cd ~/fhq-server.git/fhq-server
+$ valgrind --leak-check=full \
+    --show-leak-kinds=all \
+    --track-origins=yes \
+    --verbose \
+    --log-file=valgrind-out.txt \
+    ./fhq-server -wd ../ci/travis/data
+```
+
+Terminal2:
+``` 
+$ cd ~/fhq-server.git/fhq-server-tests
+$ python3 run_tests.py
+```
+or run new pytests
+``` 
+$ cd ~/fhq-server.git/tests/server-api-tests
+$ python3 -m pytest -rAs -c env-local.ini .
 ```
 
 ### Web User Interface
@@ -153,6 +223,267 @@ baseUrl = 'ws://freehackquest.com/api-ws/';
 And now your local web site will be connected to offical server.
 
 *Notice: but please never do commit for this line*
+
+
+## Ubuntu - install from ppa (outdated)
+
+*Note: Not working now*
+
+[https://launchpad.net/~freehackquest/+archive/ubuntu/fhq-server](https://launchpad.net/~freehackquest/+archive/ubuntu/fhq-server)
+
+```
+$ sudo add-apt-repository ppa:freehackquest/fhq-server
+$ sudo apt update
+$ sudo apt install fhq-server
+```
+
+## Configure systemd on host system (Ubuntu/Debian)
+
+*Note: Before your need build of fhq-server and install to /usr/bin/fhq-server*
+*Note: Prepare mysql empty database for fhq-server*
+*Note: last updated for fhq-server-v0.2.35*
+
+Create the file `/etc/systemd/system/fhq-server.service` with content
+
+```
+[Unit]
+Description=FreeHackQuest Server
+After=syslog.target
+After=network.target
+After=mysql.service
+Requires=mysql.service
+
+[Service]
+WorkingDirectory=/usr/share/fhq-server
+User=root
+Group=root
+ExecStart=/bin/sh -c '/usr/bin/fhq-server start > /var/log/fhq-server/access.log 2> /var/log/fhq-server/error.log'
+
+TimeoutSec=30
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+Alias=fhq-server.service
+```
+
+Create directories
+
+```
+$ sudo mkdir /etc/fhq-server/
+$ sudo mkdir /var/log/fhq-server/
+$ sudo mkdir /usr/share/fhq-server/
+$ sudo mkdir /usr/share/fhq-server/admin-web-site
+$ sudo mkdir /usr/share/fhq-server/user-web-site
+$ sudo mkdir /usr/share/fhq-server/fhqjad-store
+```
+
+Create config file `/etc/fhq-server/fhq-server.conf` with content
+```
+## Database Configuration
+usemysql = yes
+storage_type = mysql
+dbhost = 127.0.0.1
+dbname = fhq
+dbport = 3306
+dbuser = fhq
+dbpass = fhq
+
+## Server configurations
+port = 1234
+ssl_on = no
+ssl_port = 4613
+ssl_key_file = /etc/ssl/private/test-selfsigned.key
+ssl_cert_file = /etc/ssl/certs/test-selfsigned.crt
+
+# Web Configuration
+web_port = 7080
+web_max_threads = 1
+web_admin_folder = /usr/share/fhq-server/admin-web-site
+web_user_folder = /usr/share/fhq-server/user-web-site
+
+web_public_folder = /usr/share/fhq-server/public/
+web_public_folrer_url = http://localhost:7080/public/
+
+# Jobs Pool Config
+jobs_fast_threads = 2
+jobs_slow_threads = 1
+
+# fhqjad-store
+web_fhqjad_store = /usr/share/fhq-server/fhqjad-store
+```
+
+Reload and restart
+```
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable fhq-server
+$ sudo systemctl restart fhq-server.service
+```
+
+Uninstall
+
+```
+$ sudo systemctl stop fhq-server.service
+$ sudo systemctl disable fhq-server.service
+$ sudo rm /etc/systemd/system/fhq-server.service
+$ sudo systemctl daemon-reload
+$ sudo systemctl reset-failed
+```
+
+## Sample for init.d script and watchdog cron script
+
+Create a file `/etc/init.d/fhq-server` with content:
+```
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          fhq-server
+# Short-Description: Start daemon at boot time
+# Description:       Enable service provided by daemon.
+# Required-Start:    $remote_fs $syslog $network mysql
+# Required-Stop:     $remote_fs $syslog
+# Should-Start:
+# Should-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+### END INIT INFO
+
+DAEMON_PATH="/usr/bin/fhq-server"
+NAME=freehackquestd
+DESC="FreeHackQuest Server"
+
+PIDFILE=/var/run/$NAME.pid
+case "$1" in
+start)
+    printf "%-50s" "Starting $NAME..."
+    DATE=`date +%Y%m%d-%H%M%S`
+    PID=`/usr/bin/fhq-server -s > /var/log/fhq-server/access-$DATE.log 2> /var/log/fhq-server/error-$DATE.log & echo $!`
+    # echo "Saving PID" $PID " to " $PIDFILE
+    if [ -z $PID ]; then
+        printf "%s\n" "Fail"
+    else
+        echo $PID > $PIDFILE
+        printf "%s\n" "Ok"
+    fi ;;
+status)
+    printf "%-50s" "Checking $NAME..."
+    if [ -f $PIDFILE ]; then
+        PID=`cat $PIDFILE`
+        if [ -z "`ps axf | grep ${PID} | grep -v grep`" ]; then
+            printf "%s\n" "Process dead but pidfile exists"
+        else
+            echo "Running"
+        fi
+    else
+        printf "%s\n" "Service not running"
+    fi
+;;
+stop)
+    printf "%-50s" "Stopping $NAME"
+    PID=`cat $PIDFILE`
+    if [ -f $PIDFILE ]; then
+        kill -HUP $PID
+        printf "%s\n" "Ok"
+        rm -f $PIDFILE
+    else
+        printf "%s\n" "pidfile not found"
+    fi
+;;
+restart)
+    $0 stop
+    $0 start
+;;
+force-reload)
+    $0 stop
+    $0 start
+;;
+*)
+    echo "Usage: $0 {status|start|stop|restart|force-reload}"
+    exit 1
+esac
+```
+
+Register and add to autostart
+
+```
+$ sudo update-rc.d -f fhq-server remove
+$ sudo update-rc.d fhq-server defaults
+$ sudo /etc/init.d/fhq-server start
+```
+
+or for start
+
+```
+$ service fhq-server start
+```
+
+**Watchdog Cron config**
+
+Create a file `/opt/watchdog-fhq-server.sh` with content:
+
+```
+#!/bin/bash
+
+COUNT=$(ps -aux | grep fhq-server | wc -l)
+
+if [ $COUNT -ne 2 ]; then
+	echo "Need restart backend"
+	service fhq-server stop
+	service fhq-server restart
+fi
+```
+
+Run edit cron config:
+
+```
+$ sudo crontab -e
+```
+
+And add to cron line: `* * * * * /opt/watchdog-fhq-server.sh`
+
+
+## Development
+
+### Method which will return lists 
+
+fhq-server input api:
+```cpp
+optionalIntegerParam("page_size", "Pgae size")
+    .addValidator(new WsjcppValidatorIntegerMinValue(0))
+    .addValidator(new WsjcppValidatorIntegerMinValue(10));
+optionalIntegerParam("page_index", "Page index")
+    .addValidator(new WsjcppValidatorIntegerMinValue(0));
+```
+
+fhq-server output api:
+```
+nlohmann::json jsonResult;
+jsonResult["items"] = jsonItems;
+jsonResult["page_size"] = nPageSize;
+jsonResult["page_index"] = nPageIndex;
+jsonResult["total"] = nTotal;
+
+nlohmann::json jsonResponse;
+jsonResponse["data"] = jsonResult;
+pRequest->sendMessageSuccess(cmd(), jsonResponse);
+```
+
+admin-web-site paginator:
+```
+var page_name = 'quests_proposal';
+var pg = new SwaPaginator(0, r.data.total, r.data.page_size, r.data.page_index);
+el.append(pg.getHtml());
+pg.bindPrev(function() {
+    window.fhq.changeLocationState({page_name: '', 'page_size': page_size, 'page_index': page_index - 1});
+    fhq.pages[page_name]();
+});
+
+pg.bindNext(function() {
+    window.fhq.changeLocationState({page_name: '', 'page_size': page_size, 'page_index': page_index + 1});
+    fhq.pages[page_name]();
+});
+```
+
 
 ## 3rdParty
 
