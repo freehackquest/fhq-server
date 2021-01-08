@@ -35,7 +35,7 @@
     "core-js": "^3.6.5",
     "flag-icon-css": "^3.5.0",
     "font-awesome": "^4.7.0",
-    "freehackquest-libclient-web-js": "^0.2.30",
+    "freehackquest-libclient-web-js": "^0.2.35",
     "jquery": "^3.5.1",
     "lodash-es": "^4.17.15",
     "marked": "^0.7.0",
