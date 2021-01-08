@@ -35,10 +35,9 @@ cd ../..
 cd user-web-site
 check_ret $? "change directory to user-web-site"
 npm install
-check_ret $? "install requirements for user-web-site"
-# mkdir user-web-site/dist
-# npm run build
-# check_ret $? "build user-web-site"
+check_ret $? "npm install requirements for user-web-site"
+npm run build-prod
+check_ret $? "angular build-prod user-web-site"
 cd ..
 
 cd fhq-server
