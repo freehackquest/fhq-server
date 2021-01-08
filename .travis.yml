@@ -33,6 +33,8 @@ install:
   - pip3 install --user pytest
   - pip3 install --user docker
   - pip3 install --user pytest-env
+  - pip3 install --user sea5kg_cpplint
+  
   
 
 # Build your code e.g. by calling make

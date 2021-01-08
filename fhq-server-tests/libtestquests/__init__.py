@@ -180,6 +180,9 @@ def run_tests():
     fhqtest.check_values("quest solved", resp['solved'], 1)
     fhqtest.check_values("quest tries", resp['tries'], 2)
 
+    resp = fhqtest.user_session.quests_user_answer_list({"questid": quest1_updated['id']})
+    pprint(resp)
+
 
     fhqtest.print_bold("Try answerlist...")
     resp = fhqtest.admin_session.answerlist({"page": 0, "onpage": 10})

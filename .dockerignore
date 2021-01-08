@@ -6,5 +6,5 @@ dckr_fhqserver
 docker_dev
 fhqjad-store
 install
-misc
+tests
 _config.yml

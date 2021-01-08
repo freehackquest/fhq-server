@@ -12,7 +12,7 @@ REGISTRY_WJSCPP_EMPLOY(EmployScoreboard)
 
 EmployScoreboard::EmployScoreboard()
     : WsjcppEmployBase(EmployScoreboard::name(), {EmployDatabase::name()}) {
-
+    TAG = "EmployScoreboard";
 }
 
 // ---------------------------------------------------------------------
@@ -38,7 +38,10 @@ void EmployScoreboard::loadSync() {
 
     QSqlQuery query(db);
     query.prepare("SELECT id,nick,logo,university,rating FROM users WHERE role = 'user' ORDER BY rating DESC");
-    query.exec();
+    if (!query.exec()) {
+        WsjcppLog::throw_err(TAG, "EmployDatabase::loadAllSettings => " + query.lastError().text().toStdString());
+        return;
+    };
     while (query.next()) {
         QSqlRecord record = query.record();
         User *pUser = new User();

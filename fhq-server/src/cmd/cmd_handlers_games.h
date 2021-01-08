@@ -1,11 +1,11 @@
+// Copyright (c) 2015-2020 FreeHackQuest <freehackquest@gmail.com>
+
 #ifndef CMD_HADNLERS_GAMES_H
 #define CMD_HADNLERS_GAMES_H
 
 #include <cmd_handlers.h>
 
-/*********************************************
- * Create Game
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerGameCreate : public CmdHandlerBase {
 
@@ -14,11 +14,7 @@ class CmdHandlerGameCreate : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerGameCreate)
-
-/*********************************************
- * Delete Game
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerGameDelete : public CmdHandlerBase {
 
@@ -27,11 +23,7 @@ class CmdHandlerGameDelete : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerGameDelete)
-
-/*********************************************
- * Export Game
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerGameExport : public CmdHandlerBase {
     public:
@@ -39,11 +31,7 @@ class CmdHandlerGameExport : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerGameExport)
-
-/*********************************************
- * Import Game
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerGameImport : public CmdHandlerBase {
 
@@ -52,11 +40,7 @@ class CmdHandlerGameImport : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerGameImport)
-
-/*********************************************
- * Info Game
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerGameInfo : public CmdHandlerBase {
 
@@ -65,11 +49,7 @@ class CmdHandlerGameInfo : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerGameInfo)
-
-/*********************************************
- * Update Game
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerGameUpdate : public CmdHandlerBase {
 
@@ -78,11 +58,7 @@ class CmdHandlerGameUpdate : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerGameUpdate)
-
-/*********************************************
- * Update Logo Game
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerGameUpdateLogo : public CmdHandlerBase {
 
@@ -91,11 +67,7 @@ class CmdHandlerGameUpdateLogo : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerGameUpdateLogo)
-
-/*********************************************
- * List of Games
-**********************************************/
+// ---------------------------------------------------------------------
 
 class CmdHandlerGames : public CmdHandlerBase {
 
@@ -104,6 +76,6 @@ class CmdHandlerGames : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
-REGISTRY_CMD(CmdHandlerGames)
+// ---------------------------------------------------------------------
 
 #endif // CMD_HADNLERS_GAMES_H

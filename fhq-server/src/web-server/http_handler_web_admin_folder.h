@@ -3,7 +3,7 @@
 
 #include <wsjcpp_light_web_server.h>
 
-class HttpHandlerWebAdminFolder : WsjcppLightWebHttpHandlerBase {
+class HttpHandlerWebAdminFolder : public WsjcppLightWebHttpHandlerBase {
     public:
         HttpHandlerWebAdminFolder(const std::string &sWebFolder);
         virtual bool canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest);

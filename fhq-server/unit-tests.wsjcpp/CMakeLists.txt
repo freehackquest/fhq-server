@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(unit-tests C CXX)
-add_definitions(-DWSJCPP_APP_VERSION="ut-v0.2.34")
+add_definitions(-DWSJCPP_APP_VERSION="ut-v0.2.35")
 add_definitions(-DWSJCPP_APP_NAME="unit-tests-fhq-server")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -45,7 +45,7 @@ list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_unit_tests_main.cp
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/nlohmann_json/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/nlohmann_json/json.hpp")
 
-# wsjcpp-validators:v0.1.0
+# wsjcpp-validators:v0.1.2
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_validators/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_validators/wsjcpp_validators.h")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_validators/wsjcpp_validators.cpp")
@@ -95,14 +95,12 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_parse_conf/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_parse_conf/wsjcpp_parse_conf.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_parse_conf/wsjcpp_parse_conf.h")
 
-# fhq-server:v0.2.34
+# fhq-server:v0.2.35
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 list (APPEND WSJCPP_SOURCES "../src/core/fallen.cpp")
 list (APPEND WSJCPP_SOURCES "../src/core/fallen.h")
 list (APPEND WSJCPP_SOURCES "../src/validators/validators.h")
 list (APPEND WSJCPP_SOURCES "../src/validators/validators.cpp")
-list (APPEND WSJCPP_SOURCES "../src/utils/utils_static_analizing_text.cpp")
-list (APPEND WSJCPP_SOURCES "../src/utils/utils_static_analizing_text.h")
 list (APPEND WSJCPP_SOURCES "../src/core/jobs_pool.h")
 list (APPEND WSJCPP_SOURCES "../src/core/jobs_pool.cpp")
 list (APPEND WSJCPP_SOURCES "../src/storages/mysql/mysql_storage.h")
@@ -112,7 +110,6 @@ list (APPEND WSJCPP_SOURCES "../src/storages/mysql/mysql_storage.cpp")
 list (APPEND WSJCPP_INCLUDE_DIRS "src")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_validators.cpp")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_jobs_pool.cpp")
-list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_static_analizing_text.cpp")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_storage_escapes.cpp")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_storage_struct.cpp")
 

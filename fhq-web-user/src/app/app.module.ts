@@ -17,6 +17,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatTableModule } from '@angular/material/table';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 // import {MatSidenavModule} from '@angular/material/sidenav';
 
@@ -170,6 +171,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     MatBadgeModule,
     MatChipsModule,
     MatTreeModule,
+    MatToolbarModule,
     MatRippleModule
   ],
   exports: [
@@ -186,6 +188,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     MatProgressBarModule,
     MatSnackBarModule,
     MatTreeModule,
+    MatToolbarModule,
     MatRippleModule
   ],
   providers: [

@@ -81,6 +81,7 @@
     "feedbackTargetProposal": "Proposal",
     "feedbackFrom": "From",
     "feedbackMessage": "Message",
+    "feedbackWarning": "Please do not be rude to the administrator, otherwise you will have to delete your account!",
     "userLocation": "Location",
     "questProposal": {
         "uploadFileHint" : "Files please upload to your cloud disk (google/yandex/dropbox...) or to any web resource which admin has access for download it. And put link to quest text. ",

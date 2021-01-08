@@ -78,7 +78,10 @@ bool EmployDatabase::init() {
     //    QSqlDatabase db = *(m_pDBConnection->db());
     //    QSqlQuery query(db);
     //    query.prepare("DELETE FROM users_tokens WHERE end_date < NOW()");
-    //    query.exec();
+    //    if (!query.exec()) {
+    //        
+    //        
+    //    }
     // }
     
     pGlobalSettings->initFromDatabase(this);
@@ -294,7 +297,10 @@ std::map<std::string, std::string> EmployDatabase::loadAllSettings() {
     {
         QSqlQuery query(db);
         query.prepare("SELECT * FROM settings");
-        query.exec();
+        if (!query.exec()) {
+            WsjcppLog::throw_err(TAG, "EmployDatabase::loadAllSettings => " + query.lastError().text().toStdString());
+            return vRet;
+        };
         while (query.next()) {
             QSqlRecord record = query.record();
             std::string sName = record.value("name").toString().toStdString();

@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import {
   L10N_CONFIG,
   L10nConfig,
@@ -12,6 +12,7 @@ import { FhqService } from './services/fhq.service';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { SpinnerService } from './services/spinner.service';
 import { Location } from '@angular/common';
+import { MediaMatcher } from '@angular/cdk/layout';
 
 declare var $: any;
 
@@ -20,8 +21,8 @@ declare var $: any;
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
-  menuLangIcon: string = '';
+export class AppComponent implements OnInit, OnDestroy {
+  selectedLocale: L10nLocale;
   subscription: any;
   serverAppName: string = '';
   serverAppVersion: string = '';
@@ -31,6 +32,13 @@ export class AppComponent implements OnInit {
   urlPath: String = "";
   userRole: String = "";
   schema = this.l10nConfig.schema;
+  mobileQuery: MediaQueryList;
+  localeCountyFlag = {
+    'ru': 'ru',
+    'en': 'gb',
+    'de': 'de',
+  };
+  private _mobileQueryListener: () => void;
 
   constructor(
     @Inject(L10N_LOCALE) public _locale: L10nLocale,
@@ -43,6 +51,7 @@ export class AppComponent implements OnInit {
     private _location: Location,
     private _spinner: SpinnerService,
     private _activatedRoute: ActivatedRoute,
+    private _media: MediaMatcher,
   ) {
     //
     this._router.routeReuseStrategy.shouldReuseRoute = function(){
@@ -56,6 +65,10 @@ export class AppComponent implements OnInit {
           this.updateUrlPath(this._location.path());
       }
     });
+
+    this.mobileQuery = _media.matchMedia('(max-width: 600px)');
+    this._mobileQueryListener = () => _cdr.detectChanges();
+    this.mobileQuery.addListener(this._mobileQueryListener);
   }
 
   ngOnInit(): void {
@@ -71,9 +84,15 @@ export class AppComponent implements OnInit {
 
     this._translationService.onChange().subscribe({
       next: () => {
-        this.menuLangIcon = "assets/img/lang_" + this._translationService.getLocale().language + ".png";
+        this.selectedLocale = this._translationService.getLocale();
+        this._cdr.detectChanges();
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+    this.mobileQuery.removeListener(this._mobileQueryListener);
   }
 
   toggleUserProfileMenu() {
@@ -82,11 +101,11 @@ export class AppComponent implements OnInit {
 
   updateUrlPath(newPath: string) {
     const _prefixLangugePath = "/" + this._translationService.getLocale().language;
-    if (newPath.indexOf(_prefixLangugePath) == 0) {
+    if (newPath.indexOf(_prefixLangugePath) === 0) {
       newPath = newPath.slice(_prefixLangugePath.length);
     }
 
-    if (newPath.indexOf("/") == 0) {
+    if (newPath.indexOf("/") === 0) {
       newPath = newPath.slice(1);
     }
     if (newPath.indexOf("?") > 0) {
@@ -95,27 +114,23 @@ export class AppComponent implements OnInit {
     this.urlPath = newPath;
 
     if (
-        this.urlPath == "user-profile"
-        || this.urlPath == "user-security"
-        || this.urlPath == "user-tokens"
-        || this.urlPath == "user-skills"
-        || this.urlPath == "user-favorites-useful-links"
+        this.urlPath === "user-profile"
+        || this.urlPath === "user-security"
+        || this.urlPath === "user-tokens"
+        || this.urlPath === "user-skills"
+        || this.urlPath === "user-favorites-useful-links"
     ) {
       this.profileMenuExpanded = true;
     }
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-
   wsChangedState() {
-    if (this._fhq.connectionState == 'BROKEN') {
+    if (this._fhq.connectionState === 'BROKEN') {
       this.brokenConnection = true;
       this._spinner.show();
     }
 
-    if (this._fhq.connectionState == 'OK' && this.brokenConnection === true) {
+    if (this._fhq.connectionState === 'OK' && this.brokenConnection === true) {
       this.brokenConnection = false;
       console.log(this._router.url);
       this._router.navigateByUrl(this._router.url);
@@ -129,9 +144,16 @@ export class AppComponent implements OnInit {
     this._cdr.detectChanges()
   }
 
-  setLocale(locale: L10nLocale): void {
+  selectedLanguage(locale: L10nLocale): void {
     this._translationService.setLocale(locale);
-    // this.menuLangIcon = "assets/img/lang_" + locale.language + ".png";
+  }
+
+  languageCompareWith(l: any, r: any) {
+    if (l.language === r.language) {
+      return l.language;
+    } else {
+      return "";
+    }
   }
 
   openDialogSignIn() {

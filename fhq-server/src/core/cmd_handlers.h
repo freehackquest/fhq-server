@@ -11,18 +11,25 @@
 #include <QString> // TODO deprecated
 #include <QVariant> // TODO deprecated
 
-/*! 
- * WsjcppError - helper class for errors
- * */
+// ---------------------------------------------------------------------
+// WsjcppJsonRpc20Error
 
-class WsjcppError {
+class WsjcppJsonRpc20Error {
     public:
-        WsjcppError(int nCodeError, const std::string &sMessage);
-        int codeError();
-        std::string message();
+        // WsjcppJsonRpc20Error(int nErrorCode, const std::string &sErrorMessage);
+        WsjcppJsonRpc20Error(
+            int nErrorCode,
+            const std::string &sErrorMessage,
+            const std::vector<std::pair<std::string,std::string>> &vErrorContext = {}
+        );
+        int getErrorCode() const;
+        std::string getErrorMessage() const;
+        const std::vector<std::pair<std::string,std::string>> &getErrorContext() const;
+        nlohmann::json toJson();
     private:
-        std::string m_sMessage;
-        int m_nCodeError;
+        std::string m_sErrorMessage;
+        int m_nErrorCode;
+        std::vector<std::pair<std::string,std::string>> m_vErrorContext;
 };
 
 /*! 
@@ -86,7 +93,7 @@ class WsjcppSocketClient : public QObject {
 class IWebSocketServer {
     public:
         virtual void sendMessage(QWebSocket *pClient, const nlohmann::json& jsonResponse) = 0;
-        virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, WsjcppError error) = 0;
+        virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string & sM, WsjcppJsonRpc20Error error) = 0;
         virtual void sendToAll(const nlohmann::json& jsonMessage) = 0;
         virtual void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) = 0;
         virtual int getConnectedUsers() = 0;
@@ -178,7 +185,7 @@ class ModelRequest {
         bool hasM();
         std::string command();
         bool hasCommand();
-        void sendMessageError(const std::string &cmd, WsjcppError error);
+        void sendMessageError(const std::string &cmd, WsjcppJsonRpc20Error error);
         void sendMessageSuccess(const std::string &cmd, nlohmann::json& jsonResponse);
         void sendResponse(nlohmann::json& jsonResult);
 

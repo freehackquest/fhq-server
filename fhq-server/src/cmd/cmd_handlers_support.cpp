@@ -6,9 +6,10 @@
 #include <employ_server_info.h>
 #include <QtCore>
 
-// ******************************
-// * This handler for add support
-// ******************************
+// ---------------------------------------------------------------------
+// This handler for add support
+
+REGISTRY_CMD(CmdHandlerFeedbackAdd)
 
 CmdHandlerFeedbackAdd::CmdHandlerFeedbackAdd()
     : CmdHandlerBase("feedback_add", "Create the feedback") {
@@ -54,7 +55,7 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
     query.bindValue(":text", QString::fromStdString(sText));
     query.bindValue(":userid", nUserID);
     if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppError(500, query.lastError().text().toStdString()));
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
         return;
     }
 

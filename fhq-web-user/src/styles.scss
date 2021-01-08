@@ -45,22 +45,6 @@
     background-repeat: no-repeat;
 }
 
-.navbar-brand-fullname {
-    display: inline-block;
-    padding-left: 10px;
-    @media (max-width: 576px) {
-        display: none;
-    }
-}
-
-.navbar-brand-shortname {
-    display: inline-block;
-    padding-left: 10px;
-    @media (min-width: 576px) {
-        display: none;
-    }
-}
-
 .nav-link {
     cursor: pointer;
 }
@@ -177,4 +161,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .user-profile-item-card-list {
     margin-top: 20px;
+}
+
+.flag-icon {
+    background-size: cover;
+    border: 1px solid #aaa;
+}
+
+.menu-lang-item {
+    width: 50px !important;
+    margin-left: 10px;
 }
