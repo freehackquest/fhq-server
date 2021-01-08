@@ -20,8 +20,9 @@ Backend && Frontend for FreeHackQuest on Qt and WebSockets
 | ----------------------- | ------------- |
 | fhq-server (docker)     | [![Docker Pulls](https://img.shields.io/docker/pulls/freehackquest/fhq-server.svg)](https://hub.docker.com/r/freehackquest/fhq-server/)  |
 | fhq-server (vm)         | [https://freehackquest.com/dist/](https://freehackquest.com/dist/)  |
-| client library (python) | [![npm version](https://badge.fury.io/js/freehackquest-libclient-web-js.svg)](https://badge.fury.io/js/freehackquest-libclient-web-js) |
-| client library (js)     | [![PyPI version](https://badge.fury.io/py/libfreehackquestclient.svg)](https://badge.fury.io/py/libfreehackquestclient) |
+| client library (js) | [![npm version](https://badge.fury.io/js/freehackquest-libclient-web-js.svg)](https://badge.fury.io/js/freehackquest-libclient-web-js) |
+| client library (python)     | [![PyPI](https://img.shields.io/pypi/v/libfreehackquestclient)](https://pypi.org/project/libfreehackquestclient/) |
+
 
 
 ## For developers
@@ -482,6 +483,52 @@ pg.bindNext(function() {
     window.fhq.changeLocationState({page_name: '', 'page_size': page_size, 'page_index': page_index + 1});
     fhq.pages[page_name]();
 });
+```
+
+## Publishing client libraries
+
+
+### js library
+
+generate new library
+```
+$ ./fhq-server export-libfhqcli-web-javascript
+```
+After this merge generated files from `freehackquest-libclient-web-js` to repository https://github.com/freehackquest/freehackquest-libclient-web-js
+
+
+Publishing will be some like this:
+
+```
+$ git clone https://github.com/freehackquest/freehackquest-libclient-web-js
+$ cd freehackquest-libclient-web-js
+$ npm login 
+Username: your_login
+Password: (password hidden)
+Email: (this IS public) your@mail
+$ npm publish .
+....
++ freehackquest-libclient-web-js@x.x.x
+```
+
+### python (pypi)
+
+generate new library
+```
+$ ./fhq-server export-libfreehackquest-client-py
+```
+After this merge generated files from `libfreehackquest-client-py` to repository https://github.com/freehackquest/libfreehackquest-client-py
+
+
+```
+$ git clone https://github.com/freehackquest/libfreehackquest-client-py
+$ cd libfreehackquest-client-py
+$ rm -rf build
+$ rm -rf dist
+$ rm -rf libfreehackquestclient.egg-info
+
+$ python3 setup.py sdist bdist_wheel
+$ python3 -m twine upload dist/*
 ```
 
 
