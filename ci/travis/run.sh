@@ -32,14 +32,14 @@ check_ret $? "unit-tests"
 cd ../..
 
 # hardcode for build travis
-mkdir user-web-site/dist
-# cd user-web-site
-# check_ret $? "change directory to user-web-site"
-# npm install
-# check_ret $? "install requirements for user-web-site"
+cd user-web-site
+check_ret $? "change directory to user-web-site"
+npm install
+check_ret $? "install requirements for user-web-site"
+# mkdir user-web-site/dist
 # npm run build
 # check_ret $? "build user-web-site"
-# cd ..
+cd ..
 
 cd fhq-server
 check_ret $? "change directory to fhq-server"
