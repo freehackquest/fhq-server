@@ -179,7 +179,7 @@ web_max_threads = 1
 web_admin_folder = /usr/share/fhq-server/web-admin/
 web_public_folder = /usr/share/fhq-server/fhq-web-public/
 web_public_folder_url = http://localhost:7080/public/
-web_user_folder = /usr/share/fhq-server/fhq-web-user/
+web_user_folder = /usr/share/fhq-server/user-web-site/
 
 web_fhqjad_store = /usr/share/fhq-server/fhqjad-store/
 
