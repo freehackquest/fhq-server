@@ -8,6 +8,7 @@ class ExportLibWsjCppCliPy {
         void exportSetupPy();
         void exportAPImd();
         void export__init__py();
+        void exportClientPy();
         void exportPrepareDirs();
 };
 
