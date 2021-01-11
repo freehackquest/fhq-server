@@ -546,8 +546,10 @@ void ExportLibCliWebJS::exportLibCliWebJSFile(const std::string &sBasicDir) {
     for (; it!=g_pCmdHandlers->end(); ++it) {
         std::string sCmd = it->first;
         CmdHandlerBase* pCmdHandlerBase = it->second;
+        std::string sMethodName = sCmd;
+        WsjcppCore::replaceAll(sMethodName, ".", "_");
         libwjscppcli_web_js_file <<
-            "    self." << sCmd << " = function(params) {\r\n";
+            "    self." << sMethodName << " = function(params) {\r\n";
 
         libwjscppcli_web_js_file <<
             "       // Access unauthorized: " << (pCmdHandlerBase->accessUnauthorized() ? "yes" : "no") << "\r\n"
@@ -974,8 +976,10 @@ void ExportLibCliWebJS::exportLibCliWebServiceTSFile(const std::string &sBasicDi
     for (; it!=g_pCmdHandlers->end(); ++it) {
         std::string sCmd = it->first;
         CmdHandlerBase* pCmdHandlerBase = it->second;
+        WsjcppCore::replaceAll(sCmd, ".", "_");
+
         libwjscppcli_web_service_ts_file <<
-            "    self." << sCmd << " = function(params) {\r\n";
+            "    self." << sCmd << " = function(params) { /// ssss \r\n";
 
         libwjscppcli_web_service_ts_file <<
             "       // Access unauthorized: " << (pCmdHandlerBase->accessUnauthorized() ? "yes" : "no") << "\r\n"
