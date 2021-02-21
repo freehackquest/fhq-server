@@ -27,6 +27,14 @@ def pytest_configure():
     pytest.game2_uuid = "00000000-0000-0000-1000-000000000002"
 
 @pytest.fixture(scope="session")
+def local_tmp_dir():
+    """tmp directory for tests"""
+    tmp_dir_path = "./tmp"
+    if not os.path.isdir(tmp_dir_path):
+        os.mkdir(tmp_dir_path)
+    return tmp_dir_path
+
+@pytest.fixture(scope="session")
 def admin_session():
     """Return admin_session"""
     if pytest.admin_session is None:
@@ -62,6 +70,11 @@ def admin_session():
 def admin_password():
     """Return admin_password"""
     return pytest.admin_password
+
+@pytest.fixture(scope="session")
+def web_server_host():
+    """Return web server host"""
+    return pytest.test_web_server
 
 @pytest.fixture(scope="session")
 def game1_uuid():
