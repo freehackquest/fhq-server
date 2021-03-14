@@ -71,8 +71,7 @@
     "files.autoSave": "off",
     "search.exclude": {
         "**/.git": true,
-        "**/node_modules": true,
-        "user-web-site/node_modules": true,
-        "**/tmp": true
+        "**/node_modules/**": true,
+        "**/tmp/**": true
     }
 }        

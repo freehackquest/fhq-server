@@ -96,7 +96,7 @@ export class FreeHackQuestClient {
   private socketOnOpen() {
     console.log('FreeHackQuestClient WS Opened');
     this._call('connected', {});
-    if (this._tokenValue != '') this.token();
+    if (this._tokenValue != '') this.token({});
   }
 
   private socketOnClose(event: any) {
@@ -174,7 +174,7 @@ export class FreeHackQuestClient {
       console.error('Not found id in incoming message')
     }
   }
-  wsSendMessage(request: String): void {
+  wsSendMessage(request: string): void {
     if (this.connectionState == "OK") {
       this._wsSocket.send(request)
     } else { // if (this.connectionState == "WAIT")
@@ -1154,19 +1154,19 @@ export class FreeHackQuestClient {
     if (value['password'] == undefined) {
       console.error('Parameter "password" expected (lib)');
     }
-        var ret = self.promise()
-        self.send(params).done(function(r) {
-          _tokenValue = r.token;
-          console.log(_tokenValue);
-          self.userinfo = r.user;
-          self.setToken(_tokenValue);
-          self.updateUserProfileAsync();
-          ret.resolve(r);
-        }).fail(function(err) {
-          self.removeToken();
-          ret.reject(err);
-        })
-        return ret;
+        // var ret = self.promise()
+        // self.send(params).done(function(r) {
+        //   _tokenValue = r.token;
+        //   console.log(_tokenValue);
+        //   self.userinfo = r.user;
+        //   self.setToken(_tokenValue);
+        //   self.updateUserProfileAsync();
+        //   ret.resolve(r);
+        // }).fail(function(err) {
+        //   self.removeToken();
+        //   ret.reject(err);
+        // })
+      return this.wsRequest('login', value);
   }
 
   lxd_containers(value: Object): Observable<any> {
@@ -1698,7 +1698,6 @@ export class FreeHackQuestClient {
       console.error('Parameter "value" expected (lib)');
     }
     return this.wsRequest('server_settings_update', value);
-
   }
 
   token(value: Object): Observable<any> {
@@ -1710,21 +1709,22 @@ export class FreeHackQuestClient {
     if (value['token'] == undefined) {
       console.error('Parameter "token" expected (lib)');
     }
-         if (_tokenValue != '') {
-           var ret = self.promise()
-           params.token = _tokenValue;
-           self.send(params).done(function(r) {
-             self.updateUserProfileAsync();
-             ret.resolve(r);
-           }).fail(function(err) {
-             self.removeToken();
-             _call('userdata', {});
-             ret.reject(err);
-           })
-           return ret;
-         } else {
-           return self.send(params);
-         }
+        // if (_tokenValue != '') {
+        //   var ret = self.promise()
+        //   params.token = _tokenValue;
+        //   self.send(params).done(function(r) {
+        //     self.updateUserProfileAsync();
+        //     ret.resolve(r);
+        //   }).fail(function(err) {
+        //     self.removeToken();
+        //     _call('userdata', {});
+        //     ret.reject(err);
+        //   })
+        //   return ret;
+        // } else {
+        //   return self.send(params);
+        // }
+    return this.wsRequest('token', value);
   }
 
   updateuserlocation(value: Object): Observable<any> {
