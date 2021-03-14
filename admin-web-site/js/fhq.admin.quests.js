@@ -73,7 +73,7 @@ fhq.pages['quests'] = function() {
     el.html('');
     el.append(''
         + '<div>'
-        + '   <input id="quests_search" class="form-control" type="text" placeholder="Search...">'
+        + '   <input id="quests_search" type="text" placeholder="Search...">'
         + '</div><br>'
     );
     $('#quests_search').val(quests_filter);
@@ -164,7 +164,7 @@ fhq.pages['quests'] = function() {
         $('.quest-export').unbind().bind('click', function(){
             var questid = $(this).attr('questid');
             fhq.exportQuest(questid);
-        })
+        });
 
         $('.quest-remove').unbind().bind('click', function(){
             console.warn('quest_remove');
@@ -205,37 +205,37 @@ fhq.pages['quest_create'] = function() {
         + '     <div class="form-group row">'
         + '         <label for="newquest_quest_uuid" class="col-sm-2 col-form-label">' + fhq.t('UUID') + '</label>'
         + '      <div class="col-sm-10">'
-        + '             <input type="text" class="form-control" value="' + fhq.guid() + '" id="newquest_quest_uuid">'
+        + '             <input type="text" style="width: 100%;" value="' + fhq.guid() + '" id="newquest_quest_uuid">'
         + '         </div>'
         + '     </div>'
         + '     <div class="form-group row">'
         + '         <label for="newquest_gameid" class="col-sm-2 col-form-label">' + fhq.t('Game') + '</label>'
         + '      <div class="col-sm-10">'
-        + '             <select class="form-control" id="newquest_gameid"></select>'
+        + '             <select style="width: 100%;" id="newquest_gameid"></select>'
         + '         </div>'
         + '     </div>'
         + '     <div class="form-group row">'
         + '         <label for="newquest_name" class="col-sm-2 col-form-label">' + fhq.t('Name') + '</label>'
         + '      <div class="col-sm-10">'
-        + '             <input type="text" class="form-control" value="" id="newquest_name">'
+        + '             <input type="text" style="width: 100%;" value="" id="newquest_name">'
         + '         </div>'
         + '     </div>'
         + '     <div class="form-group row">'
         + '         <label for="newquest_text" class="col-sm-2 col-form-label">' + fhq.t('Text') + ' (Use markdown format)</label>'
         + '      <div class="col-sm-10">'
-        + '             <textarea type="text" class="form-control" style="height: 150px" value="" id="newquest_text"></textarea>'
+        + '             <textarea type="text" style="height: 150px; width: 100%;" value="" id="newquest_text"></textarea>'
         + '         </div>'
         + '     </div>'
         + '     <div class="form-group row">'
         + '         <label for="newquest_score" class="col-sm-2 col-form-label">' + fhq.t('Score') + ' (+)</label>'
         + '      <div class="col-sm-10">'
-        + '             <input type="number" class="form-control" id="newquest_score">'
+        + '             <input type="number" style="width: 100%;" id="newquest_score">'
         + '         </div>'
         + '     </div>'
         + '     <div class="form-group row">'
         + '         <label for="newquest_subject" class="col-sm-2 col-form-label">' + fhq.t('Subject') + '</label>'
         + '      <div class="col-sm-10">'
-        + '             <select class="form-control" value="" id="newquest_subject">'
+        + '             <select style="width: 100%;" value="" id="newquest_subject">'
         + '                 <option value="trivia">Trivia</option>'
         + '                 <option value="hashes">Hashes</option>'
         + '                 <option value="stego">Stego</option>'
@@ -255,31 +255,31 @@ fhq.pages['quest_create'] = function() {
         + '     <div class="form-group row">'
         + '         <label for="newquest_answer" class="col-sm-2 col-form-label">' + fhq.t('Answer') + '</label>'
         + '      <div class="col-sm-10">'
-        + '             <input type="text" class="form-control" id="newquest_answer" value="">'
+        + '             <input type="text" style="width: 100%;" id="newquest_answer" value="">'
         + '         </div>'
         + '     </div>'
         + '     <div class="form-group row">'
         + '         <label for="newquest_answerformat" class="col-sm-2 col-form-label">' + fhq.t('Answer format') + '</label>'
         + '      <div class="col-sm-10">'
-        + '             <input type="text" class="form-control" id="newquest_answerformat" value="">'
+        + '             <input type="text" style="width: 100%;" id="newquest_answerformat" value="">'
         + '         </div>'
         + '     </div>'
         + '     <div class="form-group row">'
         + '         <label for="newquest_author" class="col-sm-2 col-form-label">' + fhq.t('Author') + '</label>'
         + '      <div class="col-sm-10">'
-        + '             <input type="text" class="form-control" value="" id="newquest_author">'
+        + '             <input type="text" style="width: 100%;" value="" id="newquest_author">'
         + '         </div>'
         + '     </div>'
         + '     <div class="form-group row">'
         + '         <label for="newquest_copyright" class="col-sm-2 col-form-label">' + fhq.t('Copyright') + '</label>'
         + '      <div class="col-sm-10">'
-        + '             <input type="text" class="form-control" value="" id="newquest_copyright">'
+        + '             <input type="text" style="width: 100%;" value="" id="newquest_copyright">'
         + '         </div>'
         + '     </div>'
         + '     <div class="form-group row">'
         + '         <label for="newquest_state" class="col-sm-2 col-form-label">' + fhq.t('State') + '</label>'
         + '      <div class="col-sm-10">'
-        + '             <select class="form-control" value="" id="newquest_state">'
+        + '             <select style="width: 100%;" value="" id="newquest_state">'
         + '                 <option value="open">Open</option>'
         + '                 <option value="closed">Closed</option>'
         + '                 <option value="broken">Broken</option>'
@@ -289,7 +289,7 @@ fhq.pages['quest_create'] = function() {
         + '     <div class="form-group row">'
         + '         <label for="newquest_description_state" class="col-sm-2 col-form-label">' + fhq.t('Description State') + '</label>'
         + '      <div class="col-sm-10">'
-        + '             <textarea type="text" class="form-control" style="height: 150px" value="" id="newquest_description_state"></textarea>'
+        + '             <textarea type="text" style="width: 100%;" style="height: 150px" value="" id="newquest_description_state"></textarea>'
         + '         </div>'
         + '     </div>'
         + '     <div class="form-group row">'
@@ -413,7 +413,7 @@ fhq.pages['quest_hints_edit'] = function(questid) {
         $('.delete-hint').unbind().bind('click', fhq.deleteHint);
     }).fail(function(err){
         console.error(err);
-    })
+    });
 }
 
 fhq.deleteHint = function(questid, hintid) {
@@ -501,9 +501,7 @@ fhq.pages['quest_writeups_edit'] = function(questid) {
         $('.delete-writeup').unbind().bind('click', fhq.deleteWriteup);
     }).fail(function(err){
         console.error(err);
-    })
-    // 
-    // 
+    });
 }
 
 fhq.addQuestWriteupForm = function() {
@@ -733,8 +731,8 @@ fhq.pages['quest_edit'] = function(questid) {
             }
         }).fail(function(err){
             console.error(err);
-        })
-    })
+        });
+    });
 }
 
 fhq.updateQuest = function() {

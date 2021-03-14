@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FhqService } from '../../services/fhq.service';
 // import { FreeHackQuestClient } from '../../services/libfhqcli-web-js.service';
 import { SpinnerService } from '../../services/spinner.service';

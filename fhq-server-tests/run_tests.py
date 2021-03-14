@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+""" Run tests """
+
 import sys
-import os
-import subprocess
 import fhqtest
-import signal
-import time
-import traceback
 import libtestfhq
 import libtestwebserver
 import libtestusers

@@ -47,9 +47,9 @@ fhq.lang = function(){
 }
 
 fhq.locale = function(){
-    var langs = ['en', 'ru']
+    var langs = ['en', 'ru'];
     self.sLang = 'en';
-    if(fhq.containsPageParam('lang') && langs.indexOf(this.pageParams['lang']) >= -1){
+    if (fhq.containsPageParam('lang') && langs.indexOf(this.pageParams['lang']) >= -1) {
         self.sLang = fhq.pageParams['lang'];
     } else if (navigator) {
         var navLang = 'en';
@@ -121,7 +121,6 @@ fhq.logout = function(){
 }
 
 fhq.changeLocationState = function(newPageParams){
-    var url = '';
     var params = [];
     // console.log("changeLocationState");
     // console.log("changeLocationState, newPageParams = ", newPageParams);
@@ -187,7 +186,7 @@ fhq.paginator = function(min,max,onpage,page) {
 
     var content = '';
     content += '<nav><ul class="pagination">';
-    content += '<li class="page-item disabled"> <div class="page-link" tabindex="-1">Found: ' + (max-min) + '</div></li>'
+    content += '<li class="page-item disabled"> <div class="page-link" tabindex="-1">Found: ' + (max-min) + '</div></li>';
     for (var i = 0; i < pagesInt.length; i++) {
         if (pagesInt[i] == -1) {
             content += " ... ";

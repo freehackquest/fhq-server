@@ -1,7 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone  } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SpinnerService } from '../../services/spinner.service';
 import { ActivatedRoute } from '@angular/router';
-import { FhqService } from '../../services/fhq.service';
 
 @Component({
   selector: 'app-ctf-wall',
@@ -13,7 +12,6 @@ export class CtfWallComponent implements OnInit {
   constructor(
     private _spinnerService: SpinnerService,
     private _route: ActivatedRoute,
-    public _fhq: FhqService,
   ) { }
 
   ngOnInit(): void {

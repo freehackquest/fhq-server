@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, ElementRef  } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SpinnerService } from '../../services/spinner.service';
 import { FhqService } from '../../services/fhq.service';
 import { FreeHackQuestClient } from '../../services/libfreehackquest-client-angular.service';
@@ -7,7 +7,6 @@ import { ActivatedRoute } from '@angular/router';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/throttleTime';
 import 'rxjs/add/observable/fromEvent';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-games',
@@ -28,7 +27,6 @@ export class GamesComponent implements OnInit {
     private _cdr: ChangeDetectorRef,
     private _route: ActivatedRoute,
     private _router: Router,
-    private _el: ElementRef,
     private _fhq: FhqService,
     private _client: FreeHackQuestClient,
   ) { }

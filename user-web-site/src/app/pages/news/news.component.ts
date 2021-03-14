@@ -1,11 +1,7 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, ChangeDetectorRef, ElementRef, SecurityContext } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { SpinnerService } from '../../services/spinner.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-
-// import 'rxjs/add/operator/throttleTime';
-// import 'rxjs/add/observable/fromEvent';
-
 import { DomSanitizer } from '@angular/platform-browser';
 import { escape } from 'lodash';
 import { FhqService } from '../../services/fhq.service';
@@ -43,9 +39,7 @@ export class NewsComponent implements OnInit {
   constructor(
     private _spinnerService: SpinnerService,
     private _cdr: ChangeDetectorRef,
-    private _route: ActivatedRoute,
     private _router: Router,
-    private _sanitized: DomSanitizer,
     private _fhq: FhqService,
     private _location: Location,
     private _activatedRoute: ActivatedRoute,
