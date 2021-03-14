@@ -129,6 +129,9 @@ void ExportLibCliWebJS::exportPackageJson(const std::string &sBasicDir) {
         "  },\n"
         "  \"keywords\": [\n"
         "    \"browser\",\n"
+        "    \"freehackquest\",\n"
+        "    \"javascript\",\n"
+        "    \"fhq-server\",\n"
         "    \"library\",\n"
         "    \"client\",\n"
         "    \"websocket\"\n"
@@ -224,6 +227,7 @@ void ExportLibCliWebJS::exportAPImd(const std::string &sBasicDir) {
                 jsTemplate += "    \"" + inDef.getName() + "\": \"\"";
             }
         }
+        WsjcppCore::replaceAll(sCmd, ".", "_");
         apimd <<
             "\n\n"
             " #### example call method \n\n"
