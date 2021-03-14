@@ -24,7 +24,6 @@
             {{ _fhq.userdata.nick }}
         </button>
       </mat-list-item>
-
       <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
         <button routerLink="/user-profile"
           *ngIf="userRole == 'user' || userRole == 'admin'"
@@ -33,6 +32,16 @@
           class="main-left-menu-item"
           l10nTranslate>profile
         </button>
+      </mat-list-item>
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <a href="/admin/"
+          *ngIf="userRole == 'admin'"
+          mat-raised-button
+          [disabled]="urlPath === 'user-tokens' ? '' : null"
+          class="main-left-menu-item"
+          l10nTranslate>
+          administration-panel
+        </a>
       </mat-list-item>
       <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
         <button routerLink="/user-security"

@@ -37,7 +37,7 @@ export class AboutComponent implements OnInit {
   themeSwitcher() {
     if (this.darkTheme) {
       this.darkTheme = false;
-      (document.getElementById(this.cssId) as any).disabled = true
+      (document.getElementById(this.cssId) as any).disabled = true;
     } else {
       this.darkTheme = true;
       if (!document.getElementById(this.cssId)) {

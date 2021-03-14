@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-import fhqtest
-from libfreehackquestclient import FreeHackQuestClient
-from pprint import pprint
+
 import sys
 import time
+from pprint import pprint
+import fhqtest
+from libfreehackquestclient import FreeHackQuestClient
 
 CHAT_USER1_UUID = "00000000-0000-5000-4001-000000000001"
 CHAT_USER2_UUID = "00000000-0000-5000-4001-000000000002"
@@ -42,11 +43,10 @@ def cleanup_user_by_email(email):
             user = usr
         if usr['created'] == '':
             fhqtest.log_err("Field created could not be empty for user #" + str(usr['id']))
-            exit(-1)
-
+            sys.exit(-1)
     if user != None:
         print("Removing '" + email + "' ...")
-        user_delete = fhqtest.admin_session.user_delete({
+        user_delete = fhqtest.admin_session.users_delete({
             "userid": user['id'], 
             "password": fhqtest.ADMIN_PASSWORD
         })
@@ -56,60 +56,43 @@ def test_login(user):
     fhqtest.print_bold("Login by '" + user + "'... ")
     user_session = FreeHackQuestClient(fhqtest.TEST_SERVER)
     user_login = user_session.login({"email": user, "password": user})
-    fhqtest.alert(user_login == None, 'Could not login as ' + user)
+    fhqtest.alert(user_login is None, 'Could not login as ' + user)
     fhqtest.alert(user_login['result'] == 'FAIL', 'Could not login as ' + user + ' (fail)')
     if user_login['result'] == 'DONE':
         fhqtest.print_success("'" + user + "' login success - OK")
         user_session.close()
-        user_session = None
-
 
 def send_msg(session, req):
     res = session.chats_message_send(req)
-
     pprint(res)
-
     fhqtest.check_response(res, "succesfull sended")
-
     fhqtest.alert(res['message'] != req['message'], '"message" not equal')
     fhqtest.alert('user_id' not in res, 'Not member "user_id"')
     fhqtest.alert('dt' not in res, 'Not member "dt"')
     fhqtest.alert(res['dt'] == '', '"dt" empty')
     fhqtest.alert('message_id' not in res, 'Not member "message_id"')
     fhqtest.alert('status' not in res, 'Not member "status"')
-
     return res
-
 
 def read_msg(session, req):
     res = session.chats_message_read(req)
-
     pprint(res)
-
     fhqtest.check_response(res, "succesfull readed")
-
     fhqtest.alert('messages' not in res, 'Not member "messages"')
     fhqtest.alert(res['chat'] != req['chat'], '"chat" not equal')
     fhqtest.alert(len(res['messages']) < 1, '"messages" empty')
     fhqtest.alert('message' not in res['messages'][0], 'Not member "messages" in list "messages"')
     fhqtest.alert('user' not in res['messages'][0], 'Not member "user" in list "messages"')
     fhqtest.alert('dt' not in res['messages'][0], 'Not member "dt" in list "messages"')
-
     return res
-
 
 def edit_msg(session, req):
     res = session.chats_message_edit(req)
-
     pprint(res)
-
     fhqtest.check_response(res, "succesfull edited")
-
     fhqtest.alert('user_id' not in res, 'Not member "user_id"')
     fhqtest.alert('message_id' not in res, 'Not member "message_id"')
-
     return res
-
 
 def delete_msg(session, req):
     res = session.chats_message_delete(req)

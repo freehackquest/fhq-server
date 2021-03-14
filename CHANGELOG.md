@@ -5,7 +5,21 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.36] - ???
+## [v0.2.37] - ?
+
+## [v0.2.36] - 2021-03-15 (2021 Mar 15)
+
+### Changed
+
+- Migrated game tests from custom to pytest
+- Fixed export js library
+- user-web: 'admin panel' to main menu
+- Redesing generator python cli library (spliting by api-groups, use a dot)
+
+### Security
+
+- npm audit fix
+- Fixed several alerts by lgtm
 
 ## [v0.2.35] - 2021-01-06 (2021 Jan 06)
 

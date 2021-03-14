@@ -1,6 +1,10 @@
 {
   "name": "user-web-site",
   "version": "0.2.36",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/freehackquest/fhq-server.git"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -35,7 +39,7 @@
     "core-js": "^3.6.5",
     "flag-icon-css": "^3.5.0",
     "font-awesome": "^4.7.0",
-    "freehackquest-libclient-web-js": "^0.2.35",
+    "freehackquest-libclient-web-js": "^0.2.36",
     "jquery": "^3.5.1",
     "lodash-es": "^4.17.15",
     "marked": "^0.7.0",
@@ -46,7 +50,7 @@
     "ngx-md": "^8.1.6",
     "ol": "^5.3.3",
     "popper.js": "^1.16.1",
-    "prismjs": "^1.21.0",
+    "prismjs": "^1.23.0",
     "rxjs": "^6.5.5",
     "rxjs-compat": "^6.5.5",
     "tslib": "^2.0.0",

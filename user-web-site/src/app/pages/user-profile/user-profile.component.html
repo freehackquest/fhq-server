@@ -21,12 +21,6 @@
   </mat-card-content>
 </mat-card>
 
-<mat-card *ngIf="userRole == 'admin'" class="user-profile-item-card-list">
-  <mat-card-content>
-    <a href="/admin/" target="_blank" *ngIf="userRole == 'admin'" l10nTranslate>adminPanel</a>
-  </mat-card-content>
-</mat-card>
-
 <mat-card *ngIf="userId != 0" class="user-profile-item-card-list">
   <mat-card-header>
     <mat-card-title l10nTranslate>changeUserInfo</mat-card-title>

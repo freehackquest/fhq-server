@@ -1,7 +1,9 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+from pprint import pprint
 import fhqtest
 from libfreehackquestclient import FreeHackQuestClient
-from pprint import pprint
 
 USER1_UUID = "00000000-0000-0000-4001-000000000001"
 USER2_UUID = "00000000-0000-0000-4001-000000000002"
@@ -50,7 +52,7 @@ def cleanup_user_by_email(email):
             fhqtest.log_err("Field created could not be empty for user #" + str(usr['id']))
             exit(-1)
 
-    if user != None:
+    if user is not None:
         print("Removing '" + email + "' ...")
         user_delete = fhqtest.admin_session.users_delete({
             "userid": user['id'], 
@@ -62,7 +64,7 @@ def test_login(user):
     fhqtest.print_bold("Login by '" + user + "'... ")
     __user_session = FreeHackQuestClient(fhqtest.TEST_SERVER)
     user_login = __user_session.login({"email": user, "password": user})
-    fhqtest.alert(user_login == None, 'Could not login as ' + user)
+    fhqtest.alert(user_login is None, 'Could not login as ' + user)
     fhqtest.alert(user_login['result'] == 'FAIL', 'Could not login as ' + user + ' (fail)')
     if user_login['result'] == 'DONE':
         fhqtest.print_success("'" + user + "' login success - OK")
@@ -83,8 +85,6 @@ def run_tests():
     user1 = None
     user2 = None
     user3 = None
-    user3_test = None
-
     fhqtest.print_bold("Clean up test data... ")
     cleanup_user_by_email("user1")
     cleanup_user_by_email("user2")
@@ -178,14 +178,13 @@ def run_tests():
     fhqtest.print_bold("Login by user2... ")
     user2_session = FreeHackQuestClient(fhqtest.TEST_SERVER)
     user2_login = user2_session.login({"email": "user2", "password": "user2"})
-    fhqtest.alert(user2_login == None, 'Could not login as user2 (1)')
+    fhqtest.alert(user2_login is None, 'Could not login as user2 (1)')
     fhqtest.alert(user2_login['result'] == 'FAIL', 'Could not login as user2 (2) (fail)')
     if user2_login['result'] == 'DONE':
         fhqtest.print_success("User2 login success - OK")
         fhqtest.print_bold("User tokens... ")
         user2_tokens = user2_session.users_tokens({})
         user2_session.close()
-        user2_session = None
         if user2_tokens['result'] != 'DONE':
             fhqtest.log_err("User2 tokens failed")
             exit(-1)
@@ -194,7 +193,7 @@ def run_tests():
 
     # deprecated method
     user2_found1 = fhqtest.admin_session.user({"userid": user_found["id"]})
-    fhqtest.alert(user2_found1 == None, 'Could not get user2')
+    fhqtest.alert(user2_found1 is None, 'Could not get user2')
     fhqtest.check_response(user2_found1, "User2 succesfull got (1)")
     user2_found1 = user2_found1['data']
     if "email" not in user2_found1:
@@ -212,7 +211,7 @@ def run_tests():
         fhqtest.throw_err("Not found field 'email' in response user2_found1")
     elif user2_found1['email'] != 'user2':
         fhqtest.throw_err("Expected field 'email' value 'user2', but got '" + user2_found1['email'] + "'")
-        exit(-1)
+        sys.exit(-1)
 
     '''curr_user = fhqtest.admin_session.users_info({})
     fhqtest.alert(curr_user == None, 'Could not get user2')
@@ -223,27 +222,23 @@ def run_tests():
     elif curr_user['email'] != 'user2':
         fhqtest.log_err("Expected field 'email' value 'user2', but got '" + curr_user['email'] + "'")
         exit(-1)'''
-
-
     user2_skills = fhqtest.admin_session.user_skills({"userid": user_found["id"]})
-    fhqtest.alert(user2_skills == None, 'Could not get user skills')
+    fhqtest.alert(user2_skills is None, 'Could not get user skills')
     fhqtest.check_response(user2_skills, "User2 succesfull got skills")
     pprint(user2_skills)
 
-    user3_remove = fhqtest.admin_session.users_delete({"userid": user3['data']['userid'], "password": fhqtest.ADMIN_PASSWORD})
-    fhqtest.alert(user3_remove == None, 'Could not remove user')
+    user3_remove = fhqtest.admin_session.users_delete({
+        "userid": user3['data']['userid'], "password": fhqtest.ADMIN_PASSWORD
+    })
+    fhqtest.alert(user3_remove is None, 'Could not remove user')
     fhqtest.check_response(user3_remove, "User3 succesfull removed")
-
-    user2_remove = fhqtest.admin_session.users_delete({"userid": user_found["id"], "password": fhqtest.ADMIN_PASSWORD})
-    fhqtest.alert(user2_remove == None, 'Could not remove user')
+    user2_remove = fhqtest.admin_session.users_delete({
+        "userid": user_found["id"], "password": fhqtest.ADMIN_PASSWORD
+    })
+    fhqtest.alert(user2_remove is None, 'Could not remove user')
     fhqtest.check_response(user2_remove, "User2 succesfull removed")
-
-
-
     # test user_change_password
-
     # test user login by different password
-
     # will not test user_reset_password
     # test login
     # test logout

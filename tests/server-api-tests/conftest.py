@@ -23,6 +23,16 @@ def pytest_configure():
     pytest.test_host = "127.0.0.1"
     pytest.test_server = "ws://" + pytest.test_host + ":1234/"
     pytest.test_web_server = "http://" + pytest.test_host + ":7080/"
+    pytest.game1_uuid = "00000000-0000-0000-1000-000000000001"
+    pytest.game2_uuid = "00000000-0000-0000-1000-000000000002"
+
+@pytest.fixture(scope="session")
+def local_tmp_dir():
+    """tmp directory for tests"""
+    tmp_dir_path = "./tmp"
+    if not os.path.isdir(tmp_dir_path):
+        os.mkdir(tmp_dir_path)
+    return tmp_dir_path
 
 @pytest.fixture(scope="session")
 def admin_session():
@@ -37,12 +47,11 @@ def admin_session():
     assert resp['result'] != 'FAIL'
 
      # loggined = True
-    _game1_uuid = "00000000-0000-0000-1000-000000000001"
-    game1 = pytest.admin_session.game_info({"uuid": _game1_uuid})
+    game1 = pytest.admin_session.game_info({"uuid": pytest.game1_uuid})
     assert game1 is not None
     if game1['result'] == 'FAIL':
         game1 = pytest.admin_session.game_create({
-            "uuid": _game1_uuid,
+            "uuid": pytest.game1_uuid,
             "name": "test",
             "description": "test",
             "state": "original",
@@ -58,9 +67,49 @@ def admin_session():
     return pytest.admin_session
 
 @pytest.fixture(scope="session")
+def admin_password():
+    """Return admin_password"""
+    return pytest.admin_password
+
+@pytest.fixture(scope="session")
+def web_server_host():
+    """Return web server host"""
+    return pytest.test_web_server
+
+@pytest.fixture(scope="session")
 def game1_uuid():
-    """Return admin_session"""
-    return "00000000-0000-0000-1000-000000000001"
+    """Return game1 uuid"""
+    return pytest.game1_uuid
+
+@pytest.fixture(scope="session")
+def game2_uuid():
+    """Return game2 uuid"""
+    return pytest.game2_uuid
+
+@pytest.fixture(scope="session")
+def classbook_record1_uuid():
+    """Return classbook record1 uuid"""
+    return "C1A55800-0000-0000-0000-000000000001"
+
+@pytest.fixture(scope="session")
+def classbook_record2_uuid():
+    """Return classbook record2 uuid"""
+    return "C1A55800-0000-0000-0000-000000000002"
+
+@pytest.fixture(scope="session")
+def classbook_record3_uuid():
+    """Return classbook record3 uuid"""
+    return "C1A55800-0000-0000-0000-000000000003"
+
+@pytest.fixture(scope="session")
+def classbook_record4_uuid():
+    """Return classbook record4 uuid"""
+    return "C1A55800-0000-0000-0000-000000000004"
+
+# QUEST_UUID1 = "03E51000-0000-0000-0000-000000000001"
+# QUEST_UUID2 = "03E51000-0000-0000-0000-000000000002"
+# QUEST_UUID3 = "03E51000-0000-0000-0000-000000000003"
+# QUEST_UUID4 = "03E51000-0000-0000-0000-000000000004"
 
 @pytest.fixture(scope="session", autouse=True)
 def callattr_ahead_of_alltests(): # request

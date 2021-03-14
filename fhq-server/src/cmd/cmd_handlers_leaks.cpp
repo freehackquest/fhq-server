@@ -9,7 +9,7 @@
 REGISTRY_CMD(CmdHandlerLeaksList)
 
 CmdHandlerLeaksList::CmdHandlerLeaksList()
-    : CmdHandlerBase("leaks_list", "Method returns list of leaks") {
+    : CmdHandlerBase("leaks.list", "Method returns list of leaks") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -133,7 +133,7 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerLeaksAdd)
 
 CmdHandlerLeaksAdd::CmdHandlerLeaksAdd()
-    : CmdHandlerBase("leaks_add", "Method adds a leak") {
+    : CmdHandlerBase("leaks.add", "Method adds a leak") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -203,7 +203,7 @@ void CmdHandlerLeaksAdd::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerLeaksUpdate)
 
 CmdHandlerLeaksUpdate::CmdHandlerLeaksUpdate()
-    : CmdHandlerBase("leaks_update", "Method updates a leak") {
+    : CmdHandlerBase("leaks.update", "Method updates a leak") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -287,7 +287,7 @@ void CmdHandlerLeaksUpdate::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerLeaksDelete)
 
 CmdHandlerLeaksDelete::CmdHandlerLeaksDelete()
-    : CmdHandlerBase("leaks_delete", "Method deletes a leak") {
+    : CmdHandlerBase("leaks.delete", "Method deletes a leak") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -363,7 +363,7 @@ void CmdHandlerLeaksDelete::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerLeaksBuy)
 
 CmdHandlerLeaksBuy::CmdHandlerLeaksBuy()
-    : CmdHandlerBase("leaks_buy", "Method buys a leak") {
+    : CmdHandlerBase("leaks.buy", "Method buys a leak") {
 
     setAccessUnauthorized(false);
     setAccessUser(true);
