@@ -111,11 +111,11 @@ def test_games_game_list(admin_session, game2_uuid):
     print(test_games_game_list.__doc__)
     games_list = admin_session.games({})
     assert games_list is not None
-    bFound = False
+    _found = False
     for game_ in games_list['data']:
         if game_['uuid'] == game2_uuid:
-            bFound = True
-    assert bFound is True
+            _found = True
+    assert _found is True
 
 def test_games_update_game_name(admin_session, game2_uuid):
     """game update name"""
@@ -169,19 +169,51 @@ def test_games_update_game_organizators(admin_session, game2_uuid):
     assert game2_prev['data']['name'] == game2_new['data']['name']
     assert game2_prev['data']['maxscore'] == game2_new['data']['maxscore']
 
+def load_image_for_game_logo():
+    """ Load image for game logo """
+    _game1_logo = open("files/game1.png", 'rb')
+    image_png_base64 = _game1_logo.read()
+    _game1_logo.close()
+    img_len = len(image_png_base64)
+    assert img_len == 17045
+    # if img_len != 17045:
+    #     sys.exit("Wrong size of files/game1.png")
+    image_png_base64 = base64.b64encode(image_png_base64)
+    image_png_base64 = image_png_base64.decode("utf-8")
+    return image_png_base64
+
+def extract_zip_game_data(data_base64, game2_zip_path, tmp_dir_unpack_zip):
+    """ extract zip game data """
+    game2_data_zip = base64.b64decode(data_base64)
+    if os.path.exists(game2_zip_path):
+        os.remove(game2_zip_path)
+    game2_file_zip = open(game2_zip_path, 'wb')
+    game2_file_zip.write(game2_data_zip)
+    game2_file_zip.close()
+    zip_ref = zipfile.ZipFile(game2_zip_path, 'r')
+    zip_ref.extractall(tmp_dir_unpack_zip)
+    zip_ref.close()
+
+def check_game2_logo(img_exported_path, game2_localid, web_server_host):
+    """ check game2 logo """
+    assert os.path.exists(img_exported_path) is True
+    _game2_logo = open(img_exported_path, 'rb')
+    image2_png_base64 = _game2_logo.read()
+    _game2_logo.close()
+    img2_len = len(image2_png_base64)
+    assert img2_len < 17045 # server must create thumbnail from this image
+    url = web_server_host + "public/games/" + str(game2_localid) + ".png"
+    resp = requests.get(url, allow_redirects=True)
+    open(img_exported_path + "2", 'wb').write(resp.content)
+    assert img2_len == len(resp.content)
+
 def test_games_update_logo(admin_session, game2_uuid, local_tmp_dir, web_server_host):
     """game update logo"""
     print(test_games_update_logo.__doc__)
     game2_prev = admin_session.game_info({ "uuid": game2_uuid })
     assert game2_prev is not None
     assert game2_prev["result"] == "DONE"
-    _game1_logo = open("files/game1.png", 'rb')
-    image_png_base64 = _game1_logo.read()
-    _game1_logo.close()
-    img_len = len(image_png_base64)
-    assert img_len == 17045
-    image_png_base64 = base64.b64encode(image_png_base64)
-    image_png_base64 = image_png_base64.decode("utf-8")
+    image_png_base64 = load_image_for_game_logo()
     game_img = admin_session.game_update_logo({
         "uuid": game2_uuid,
         "image_png_base64": image_png_base64
@@ -194,38 +226,28 @@ def test_games_update_logo(admin_session, game2_uuid, local_tmp_dir, web_server_
     assert game2_export is not None
     assert game2_export["result"] == "DONE"
     assert game2_export['data']['zipfile_name'] == 'game_' + game2_uuid + '.zip'
-    game2_data_zip = base64.b64decode(game2_export['data']['zipfile_base64'])
     game2_zip_path = local_tmp_dir + '/game_' + game2_uuid + '.zip'
-    if os.path.exists(game2_zip_path):
-        os.remove(game2_zip_path)
-    game2_file_zip = open(game2_zip_path, 'wb')
-    game2_file_zip.write(game2_data_zip)
-    game2_file_zip.close()
-    zip_ref = zipfile.ZipFile(game2_zip_path, 'r')
-    zip_ref.extractall(tmp_dir_unpack_zip)
-    zip_ref.close()
-    img_exported_path = tmp_dir_unpack_zip + '/' + game2_uuid + '.png'
+    extract_zip_game_data(
+        game2_export['data']['zipfile_base64'],
+        game2_zip_path,
+        tmp_dir_unpack_zip
+    )
     json_exported_path = tmp_dir_unpack_zip + '/' + game2_uuid + '.json'
-    assert os.path.exists(img_exported_path) is True
     assert os.path.exists(json_exported_path) is True
-    with open(json_exported_path) as f:
-        game2_exported = json.load(f)
+    with open(json_exported_path) as _file:
+        game2_exported = json.load(_file)
     assert game2_exported["uuid"] == game2_uuid
-    print(game2_exported)
     assert game2_prev["data"]["name"] == game2_exported["name"]
     assert game2_prev["data"]["description"] == game2_exported["description"]
     assert game2_prev["data"]["maxscore"] == game2_exported["maxscore"]
     assert game2_prev["data"]["organizators"] == game2_exported["organizators"]
-    _game2_logo = open(img_exported_path, 'rb')
-    image2_png_base64 = _game2_logo.read()
-    _game2_logo.close()
-    img2_len = len(image2_png_base64)
-    assert img2_len < 17045 # server must create thumbnail from this image
     assert game2_prev["data"]["local_id"] ==  game2_exported["local_id"]
-    url = web_server_host + "public/games/" + str(game2_prev["data"]["local_id"]) + ".png"
-    resp = requests.get(url, allow_redirects=True)
-    open(img_exported_path + "2", 'wb').write(resp.content)
-    assert img2_len == len(resp.content)
+    img_exported_path = tmp_dir_unpack_zip + '/' + game2_uuid + '.png'
+    check_game2_logo(
+        img_exported_path,
+        game2_exported["local_id"],
+        web_server_host
+    )
 
 def test_games_remove(admin_session, admin_password, game2_uuid):
     """game remove"""
@@ -235,15 +257,15 @@ def test_games_remove(admin_session, admin_password, game2_uuid):
     assert resp is not None
     assert resp["result"] == "DONE"
 
-def test_games_import(admin_session, admin_password, game2_uuid):
-    """game import """
-    print(test_games_import.__doc__)
+# def test_games_import():
+#     """game import """
+#     print(test_games_import.__doc__)
     # '''
-    # TODO import
+    # implement import
     # fhqtest.print_bold("Test game import... ")
     # # game1 = admin_session.game_import({ "uuid": game2_uuid });
     # fhqtest.log_warn("Not implemneted yet")
-    # TODO remove again
+    # implement remove again
     # resp = admin_session.game_delete({ "uuid": game2_uuid, "admin_password": admin_password })
     # fhqtest.check_response(resp, "Game removed")
     # '''
