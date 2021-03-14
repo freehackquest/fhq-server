@@ -234,7 +234,7 @@ def test_games_remove(admin_session, admin_password, game2_uuid):
     resp = admin_session.game_delete({ "uuid": game2_uuid, "admin_password": admin_password })
     assert resp is not None
     assert resp["result"] == "DONE"
-    
+
 def test_games_import(admin_session, admin_password, game2_uuid):
     """game import """
     print(test_games_import.__doc__)
