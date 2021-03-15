@@ -141,8 +141,8 @@ bool EmployDatabase::manualCreateDatabase(const std::string& sRootPassword, std:
         }
         while (query.next()) {
             QSqlRecord record = query.record();
-            std::string sDatabaseName = record.value("Database").toString().toStdString();
-            if (sDatabaseName == sDatabaseName) {
+            std::string sDatabaseName1 = record.value("Database").toString().toStdString();
+            if (sDatabaseName == sDatabaseName1) {
                 bDatabaseAlreadyExists = true;
             }
         }
