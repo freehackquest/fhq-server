@@ -165,7 +165,7 @@ def start_local_server():
     current_wor_dir = os.getcwd()
     # print(current_wor_dir)
     # os.chdir(current_wor_dir + "/../../fhq-server")
-    cmd = [current_wor_dir + '/../../fhq-server/fhq-server', '-wd', '../../ci/travis/data', 'start']
+    cmd = [current_wor_dir + '/../../fhq-server', '-wd', '../../ci/travis/data', 'start']
     pytest.popen_fhq_server = subprocess.Popen(cmd)
     # os.chdir(current_wor_dir)
 

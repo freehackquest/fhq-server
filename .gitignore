@@ -75,3 +75,6 @@ fhq-server-build/
 tests/get-pip.py
 fhq-server/fhq-server.debian95
 .idea
+
+.wsjcpp
+fhq-server

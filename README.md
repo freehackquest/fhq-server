@@ -83,9 +83,9 @@ $ npm run build --prod
 Build c++ server:
 
 ```
-$ cd ~/fhq-server.git/fhq-server
+$ cd ~/fhq-server.git/
 $ ./build_simple.sh
-$ ./fhq-server -wd ../ci/travis/data start
+$ ./fhq-server -wd ./ci/travis/data start
 ```
 
 * web-user you can see here: `http://localhost:7080/`
@@ -107,7 +107,7 @@ So you can see web user here: `http://localhost:4200/`
 Build and run unit-tests:
 
 ```
-$ cd ~/fhq-server.git/fhq-server/unit-tests.wsjcpp
+$ cd ~/fhq-server.git/unit-tests.wsjcpp
 $ ./build_simple.sh
 $ ./unit-tests
 ```
@@ -180,13 +180,13 @@ $ sudo apt install valgrind # ubuntu and debian
 
 Terminal1:
 ```
-$ cd ~/fhq-server.git/fhq-server
+$ cd ~/fhq-server.git/
 $ valgrind --leak-check=full \
     --show-leak-kinds=all \
     --track-origins=yes \
     --verbose \
     --log-file=valgrind-out.txt \
-    ./fhq-server -wd ../ci/travis/data
+    ./fhq-server -wd ./ci/travis/data
 ```
 
 Terminal2:

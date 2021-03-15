@@ -4,7 +4,7 @@ WORKDIR /root/
 # Fix for building on debian 9.5 system (mysqlclient library)
 # RUN ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/mariadb.pc /usr/lib/x86_64-linux-gnu/pkgconfig/mysqlclient.pc
 
-COPY ./fhq-server /root/fhq-server
+COPY . /root/fhq-server
 WORKDIR /root/fhq-server
 RUN ./clean.sh && ./build_simple.sh
 
