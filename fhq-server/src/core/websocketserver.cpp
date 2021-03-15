@@ -189,7 +189,8 @@ void WebSocketServer::processTextMessage(const QString &message) {
 
         nlohmann::json jsonRequest_ = nlohmann::json::parse(message.toStdString());
         ModelRequest *pModelRequest = new ModelRequest(pClient, this, jsonRequest_);
-        
+        // TODO condition WsjcppJsonRpc20Request or ModelRequest
+
         if (!pModelRequest->hasCommand()) {
             this->sendMessageError(pClient, sCmd, sM, WsjcppJsonRpc20Error(404, "Not found requare parameter 'cmd'"));
             // pModelRequestData->sendError(Error(404, "Not found command '" + QString(cmd.c_str()) + "'"));

@@ -272,6 +272,11 @@ class CmdHandlers {
 #define REGISTRY_CMD( classname ) \
     static classname * pRegistry ## classname = new classname(); \
 
+
+// Registry Wsjcpp JsonRpc20 Handler
+#define REGISTRY_WSJCPP_JSONRPC20_HANDLER( classname ) \
+    static classname * pRegistryWsjcppJsonRpc20 ## classname = new classname(); \
+
 // ---------------------------------------------------------------------
 
 /*!
