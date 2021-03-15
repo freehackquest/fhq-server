@@ -1,0 +1,67 @@
+<div class="alert alert-danger" *ngIf="userId == 0">
+  Please authorize
+  <div class="btn btn-primary" (click)="openDialogSignIn()" l10nTranslate>signin</div>
+</div>
+
+<mat-card *ngIf="userId != 0">
+  <mat-card-header>
+    <div mat-card-avatar 
+      [style.background]="'url(' + userLogo + ')'"
+      class="example-header-image"></div>
+    <mat-card-title>{{ userNick }} (Rating: {{ userRating }})</mat-card-title>
+    <mat-card-subtitle>User {{ userStatus }}. User has '{{ userRole }}' privileges.</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <small> [user#{{ userId }}] </small> or <small> [user#{{ userUuid }}] </small><br/>
+    <small>Last Login:</small><small> {{ userDtLastLogin }} (UTC) </small><br/>
+    <small l10nTranslate>university</small><small>: {{ userUniversity }} </small><br/>
+    
+    <p *ngIf="userAbout == ''">Информация отсутсвует</p>
+    {{ userAbout }}
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="userId != 0" class="user-profile-item-card-list">
+  <mat-card-header>
+    <mat-card-title l10nTranslate>changeUserInfo</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form class="example-form">
+      <mat-form-field class="user-profile-input-half-width" l10nTranslate>
+        <input matInput
+          autocomplete="off" 
+          l10n-placeholder
+          value="{{ userNick }}"
+          placeholder="nick"
+          [formControl]="userNewNickFormControl"
+          type="text"
+        >
+        <mat-error *ngIf="userNewNickFormControl.hasError('required')">
+          Nick <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="user-profile-input-half-width" l10nTranslate>
+        <input matInput 
+          autocomplete="off" 
+          l10n-placeholder 
+          value="{{ userUniversity }}"
+          placeholder="university" 
+          [formControl]="userNewUniversityFormControl"
+          type="text"
+        >
+      </mat-form-field>
+      <br/><br/>
+      <mat-form-field class="user-profile-input-full-width" l10nTranslate>
+        <textarea matInput 
+          l10n-placeholder
+          [formControl]="userNewAboutFormControl"
+          value="{{ userAbout }}"
+          placeholder="aboutUser"></textarea>
+      </mat-form-field>
+      <br/><br/>
+      <button mat-raised-button color="warn" (click)="doChangeUserInfo()" l10nTranslate>changeUserInfo</button>
+      <br/><br/>
+      <div class="alert alert-danger" *ngIf="resultOfChangeUserInfo != null">{{ resultOfChangeUserInfo }}</div>
+    </form>
+  </mat-card-content>
+</mat-card>

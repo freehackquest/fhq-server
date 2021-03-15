@@ -80,7 +80,7 @@ def throw_err(msg):
     raise Exception(msg)
 
 def alert(check, msg):
-    if (check == True):
+    if (check is True):
         throw_err(msg)
 
 def check_port(host, port):
@@ -132,7 +132,7 @@ def init_enviroment():
 
     admin_session = FreeHackQuestClient(TEST_SERVER)
     resp = admin_session.login({"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD})
-    alert(resp == None, 'Could not login as admin (1)')
+    alert(resp is None, 'Could not login as admin (1)')
     # pprint(resp)
     alert(resp['result'] == 'FAIL', 'Could not login as admin (2)')
 
@@ -143,17 +143,17 @@ def init_enviroment():
         if usr['email'] == TEST_USER_DATA['email']:
             pprint(usr["id"])
             TEST_USER_ID = usr["id"]
-    if TEST_USER_ID == None:
+    if TEST_USER_ID is None:
         resp = admin_session.users_add(TEST_USER_DATA)
         alert(resp['result'] == 'FAIL', 'Could not create test_user')
         TEST_USER_ID = resp['data']['userid']
     user_session = FreeHackQuestClient(TEST_SERVER)
     resp = user_session.login({"email": TEST_USER_DATA['email'], "password": TEST_USER_DATA['password']})
-    alert(resp == None, 'Could not login as test_user (1)')
+    alert(resp is None, 'Could not login as test_user (1)')
 
     # loggined = True
     GAME1 = admin_session.game_info({"uuid": GAME_UUID1})
-    alert(resp == None, 'Could not get test game (2)')
+    alert(resp is None, 'Could not get test game (2)')
     if GAME1['result'] == 'FAIL':
         GAME1 = admin_session.game_create({
             "uuid": GAME_UUID1,
@@ -167,7 +167,7 @@ def init_enviroment():
             "date_restart": "2002-01-01 00:00:00",
             "organizators": "test"
         })
-        alert(GAME1 == None, 'Could not send message (2)')
+        alert(GAME1 is None, 'Could not send message (2)')
         alert(GAME1['result'] == 'FAIL', 'Could not create test game ' + str(GAME1))
         GAME1 = admin_session.game_info({"uuid": GAME_UUID1})
 
@@ -177,9 +177,9 @@ def deinit_enviroment():
     global admin_session
 
     # try remove all test objects
-    if loggined == True:
+    if loggined is True:
         admin_session.game_delete({"uuid": GAME_UUID1, "admin_password": "admin"})
-    if admin_session != None:
+    if admin_session is not None:
         admin_session.close()
 
 def remove_item(classbookid, padding):
@@ -193,7 +193,6 @@ def remove_item(classbookid, padding):
         childs = childs + 1
         child_classbookid = clb['classbookid']
         remove_item(child_classbookid, padding + "-(" + str(child_classbookid) + " has " + str(clb['childs']) + " childs)-")
-    
     if classbookid != 0:
         # print("Try remove classbook record #" + str(child_classbookid))
         r = admin_session.classbook_delete_record({"classbookid": classbookid})
@@ -211,7 +210,7 @@ def clean_all_classbooks():
 def clean_all_quests():
     print_bold("Cleanup quests test data... ")
     quests = admin_session.quests({})
-    alert(quests == None, 'Could not get response')
+    alert(quests is None, 'Could not get response')
     quests = quests['data']
     for q in quests:
         questid = q['questid']
@@ -223,7 +222,6 @@ def find_first_gameid():
     games1 = admin_session.games({})
     check_response(games1, "Games succesfull got")
     games1 = games1['data']
-    gameid = 0
     if len(games1) == 0:
         log_err("Not found any game")
     return games1[0]['local_id']

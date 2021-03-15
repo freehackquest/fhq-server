@@ -64,7 +64,6 @@ fhq-server/tmp/*
 tmpdeb
 install/DOXYGEN/html/*
 CMakeLists.txt.user
-.vscode
 fhq-server/libfreehackquest-client-py
 fhq-server/freehackquest-libclient-web-js
 fhq-server/libfhqcli-web-js

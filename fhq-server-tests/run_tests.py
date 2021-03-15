@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+""" Run tests """
+
 import sys
-import os
-import subprocess
 import fhqtest
-import signal
-import time
-import traceback
 import libtestfhq
 import libtestwebserver
 import libtestusers
@@ -15,7 +12,6 @@ import libtestscoreboard
 import libtestpublicevents
 import libteststats
 import libtestquests
-import libtestgames
 import libtestknowledgebase
 import libtestserversettings
 
@@ -23,7 +19,6 @@ TESTS_PASSED = False
 TESTS = [
     libtestwebserver,
     libtestusers,
-    libtestgames,
     libtestquests,
     libtestscoreboard,
     libtestpublicevents,

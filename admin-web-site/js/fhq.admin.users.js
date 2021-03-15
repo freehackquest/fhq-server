@@ -30,8 +30,7 @@ fhq.createUser = function()  {
         console.error(err);
         $('#error_info').show();
         $('#error_info .alert').html('ERROR: ' + err.error);
-        
-    })
+    });
 };
 
 fhqUserDelete = function(dialogid, userid, uuid) {
@@ -50,9 +49,8 @@ fhqUserDelete = function(dialogid, userid, uuid) {
         console.error(err);
         user_delete_error.style.display = 'block';
         user_delete_error.innerHTML = err.error;
-    })
+    });
 }
-
 
 function fhqUserConfirmDeletion(el, userid, uuid) {
     var modal = new SwaModalDialog();
@@ -169,7 +167,7 @@ fhq.pages['users'] = function(){
         el.html('');
         el.append(''
             + '<div>'
-            + '   <input id="users_search" class="form-control" type="text" placeholder="Search...">'
+            + '   <input id="users_search" type="text" placeholder="Search...">'
             + '</div><br>'
         );
         $('#users_search').val(filter_text);

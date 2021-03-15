@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from libfreehackquestclient import FreeHackQuestClient
-import fhqtest
-import sys, traceback
+""" test quests """
+
+import sys
+import traceback
 import base64
 from pprint import pprint
 import time
+import fhqtest
+from libfreehackquestclient import FreeHackQuestClient
 
 TEST_NAME = 'Testing Quests'
 
@@ -43,7 +46,7 @@ def run_tests():
         "description_state": quest_description_state,
         "copyright": quest_copyright,
     })
-    fhqtest.alert(quest1 == None, 'Could not get response (2)')
+    fhqtest.alert(quest1 is None, 'Could not get response (2)')
     fhqtest.check_response(quest1, "Quest succesfull created")
     questid1 = quest1['questid']
 
@@ -71,17 +74,17 @@ def run_tests():
 
     fhqtest.print_bold("Add hint to quest...")
     h1 = fhqtest.admin_session.addhint({"questid": questid1, "hint": quest1_hint1})
-    fhqtest.alert(h1 == None, 'Could not get response (hint1)')
+    fhqtest.alert(h1 is None, 'Could not get response (hint1)')
     fhqtest.check_response(h1, "Quest hint succesfull created")
     pprint(h1)
 
     h2 = fhqtest.admin_session.addhint({"questid": questid1, "hint": quest1_hint2})
-    fhqtest.alert(h2 == None, 'Could not get response (hint2)')
+    fhqtest.alert(h2 is None, 'Could not get response (hint2)')
     fhqtest.check_response(h2, "Quest hint succesfull created")
     pprint(h2)
 
     h3 = fhqtest.admin_session.addhint({"questid": questid1, "hint": quest1_hint3})
-    fhqtest.alert(h3 == None, 'Could not get response (hint3)')
+    fhqtest.alert(h3 is None, 'Could not get response (hint3)')
     fhqtest.check_response(h3, "Quest hint succesfull created")
     pprint(h3) # TODO return id and text
 
@@ -111,7 +114,7 @@ def run_tests():
         "description_state": quest_description_state2,
         "copyright": quest_copyright2,
     })
-    fhqtest.alert(quest1_update == None, 'Could not get response (4)')
+    fhqtest.alert(quest1_update is None, 'Could not get response (4)')
     fhqtest.check_response(quest1_update, "Quest succesfull update")
     
     quest1_updated = fhqtest.admin_session.quest({"questid": questid1})
@@ -138,7 +141,7 @@ def run_tests():
 
     # try remove hint
     h2_remove = fhqtest.admin_session.deletehint({"hintid": quest1_updated_hints[1]['id']})
-    fhqtest.alert(h2_remove == None, 'Could not get response (hint2_remove)')
+    fhqtest.alert(h2_remove is None, 'Could not get response (hint2_remove)')
     fhqtest.check_response(h2_remove, "Quest hint2 succesfull removed")
 
     fhqtest.print_bold("Try upload file to quest...")
@@ -154,7 +157,7 @@ def run_tests():
 
     questid = quest1_updated['id']
     resp = fhqtest.admin_session.quests({"gameid": gameid})
-    fhqtest.alert(resp == None, 'Could not get response (quests)')
+    fhqtest.alert(resp is None, 'Could not get response (quests)')
     fhqtest.check_response(resp, "quest get filtered")
     fhqtest.alert(resp['result'] == 'FAIL', 'Wrong response')
     fhqtest.alert(resp['data'][0]['questid'] != questid, 'Wrong work filter by gameid in request quests')
@@ -179,25 +182,21 @@ def run_tests():
     fhqtest.alert(resp['result'] == 'FAIL', 'Wrong response')
     fhqtest.check_values("quest solved", resp['solved'], 1)
     fhqtest.check_values("quest tries", resp['tries'], 2)
-
     resp = fhqtest.user_session.quests_user_answer_list({"questid": quest1_updated['id']})
     pprint(resp)
-
-
     fhqtest.print_bold("Try answerlist...")
     resp = fhqtest.admin_session.answerlist({"page": 0, "onpage": 10})
     fhqtest.alert(resp['result'] == 'FAIL', 'Could not get response (r_answerlist)')
     fhqtest.check_response(resp, "Answer list succesfull got")
     fhqtest.check_values("last quest passed 0", resp['data'][0]['passed'], 'Yes')
     fhqtest.check_values("last quest passed 1", resp['data'][1]['passed'], 'No')
-    fhqtest.check_values("last quest passed 1 answer", resp['data'][1]['user_answer'], 'some answer 2')
+    fhqtest.check_values(
+        "last quest passed 1 answer", resp['data'][1]['user_answer'], 'some answer 2'
+    )
     fhqtest.check_values("last quest passed 2", resp['data'][2]['passed'], 'No')
-    fhqtest.check_values("last quest passed 1 answer", resp['data'][2]['user_answer'], 'some answer 1')
-
+    fhqtest.check_values(
+        "last quest passed 1 answer", resp['data'][2]['user_answer'], 'some answer 1'
+    )
     # Warning: Command quest_proposal 0 times
-
     # Cleanup
     fhqtest.clean_all_quests()
-
-
-

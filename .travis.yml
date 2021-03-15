@@ -19,6 +19,9 @@ services:
 python:
   - "3.7"
 
+node_js:
+  - "14"
+
 # Install dependencies
 before_install:
   - sudo apt-get update -qq
@@ -34,10 +37,8 @@ install:
   - pip3 install --user docker
   - pip3 install --user pytest-env
   - pip3 install --user sea5kg_cpplint
-  
-  
 
-# Build your code e.g. by calling make
+
 script:
   - ./ci/travis/run.sh
 
