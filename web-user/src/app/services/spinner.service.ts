@@ -13,7 +13,7 @@ export class SpinnerService {
 
   constructor(private overlay: Overlay) {}
 
-  public show(message = '') {
+  show(message = '') {
     if (this.showed) {
       console.warn("Already showed");
       return;
@@ -30,11 +30,11 @@ export class SpinnerService {
     const component = this.overlayRef.attach(spinnerOverlayPortal); // Attach ComponentPortal to PortalHost
   }
 
-  public isShowed() {
+  isShowed() {
     return this.showed;
   }
 
-  public hide() {
+  hide() {
     if (!!this.overlayRef) {
       this.overlayRef.detach();
       this.showed = false;

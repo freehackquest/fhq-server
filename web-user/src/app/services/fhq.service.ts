@@ -48,8 +48,7 @@ export class FhqService {
     } else if (data.type === 'warning') {
       message = "Warning: " + data.message
     } else {
-      // unknown type of message
-      message = "Warning: " + data.message
+      message = "Unknown: " + data.message
     }
     this._snackBar.open(message, action, {
       duration: 3000,

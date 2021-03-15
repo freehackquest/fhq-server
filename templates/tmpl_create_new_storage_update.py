@@ -3,6 +3,7 @@
 
 import re
 import os
+import sys
 import random
 import string
 
@@ -60,7 +61,7 @@ def recoursive_search_endpoints(spoint, weight):
             recoursive_search_endpoints(v["to"], weight + 1)
     if not found:
         if weight > max_weight:
-            max_weight = weight;
+            max_weight = weight
         end_points.append({
             "point": spoint,
             "weight": weight
@@ -72,7 +73,7 @@ print(end_points)
 
 if len(end_points) == 0:
     print("Not found updates")
-    exit(-1)
+    sys.exit(-1)
 
 endpoint = ""
 
@@ -85,8 +86,8 @@ for i in end_points:
 print("Found point: " + endpoint + " weight: " + str(max_weight))
 newpoint = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(10))
 
-newpoint_upper = newpoint.upper();
-endpoint_upper = endpoint.upper();
+newpoint_upper = newpoint.upper()
+endpoint_upper = endpoint.upper()
 
 filename_h = "update_" + endpoint + "_" + newpoint + ".h"
 filename_cpp = "update_" + endpoint + "_" + newpoint + ".cpp"

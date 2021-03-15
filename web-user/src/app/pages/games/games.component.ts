@@ -19,8 +19,8 @@ export class GamesComponent implements OnInit {
   onPage = 7;
   errorMessage: string = null;
   dataList: Array<any> = [];
-  searchValue: String = '';
-  summaryScore: Number = 0;
+  searchValue: string = '';
+  summaryScore = 0;
 
   constructor(
     private _spinnerService: SpinnerService,

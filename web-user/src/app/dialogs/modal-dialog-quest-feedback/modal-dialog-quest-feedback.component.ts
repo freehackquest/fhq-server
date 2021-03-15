@@ -15,9 +15,9 @@ import { FhqService } from '../../services/fhq.service';
 export class ModalDialogQuestFeedbackComponent implements OnInit {
   errorMessage: string = null;
   successSended: boolean = false;
-  public questName: string = "";
-  public questId: string = "";
-  public questUrl: string = "";
+  questName: string = "";
+  questId: string = "";
+  questUrl: string = "";
   @ViewChild('feedbackEmail', { static: true }) feedbackEmail : ElementRef;
   @ViewChild('feedbackText', { static: true }) feedbackText : ElementRef;
 

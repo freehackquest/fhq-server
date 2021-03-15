@@ -13,8 +13,8 @@ class ExportLibWsjCppCliJavaAndroid {
         std::string TAG;
         std::string m_sVersion;
         void exportPrepareDirs();
-        void exportManifest();
-        void exportBuildGradle();
+        bool exportManifest();
+        bool exportBuildGradle();
         void exportAPImd();
 };
 

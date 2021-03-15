@@ -18,16 +18,16 @@ import { L10nTranslationService } from 'angular-l10n';
 
 export class KnowledgeBaseComponent implements OnInit {
 
-  public errorMessage: String = null;
-  public classbookId: Number = -1;
-  public articleName: String = '';
-  public articleContentNaked: String = '';
-  public articleContentNakedOriginal: String = '';
-  public articleParents: Array<any> = [];
-  public articleChilds: Array<any> = [];
-  public editMode: boolean = false;
-  public editLang: String = null;
-  public infoMessage: String = null;
+  errorMessage: string = null;
+  classbookId: Number = -1;
+  articleName: string = '';
+  articleContentNaked: string = '';
+  articleContentNakedOriginal: string = '';
+  articleParents: Array<any> = [];
+  articleChilds: Array<any> = [];
+  editMode: boolean = false;
+  editLang: string = null;
+  infoMessage: string = null;
 
   constructor(
     public _translation: L10nTranslationService,

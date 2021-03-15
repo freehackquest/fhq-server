@@ -19,7 +19,7 @@ export class ScoreboardComponent implements OnInit {
   errorMessage: string = null;
   dataList: Array<any> = [];
   filteredDataList: Array<any> = [];
-  searchValue: String = '';
+  searchValue: string = '';
   searchControl = new FormControl('');
   formCtrlSub: Subscription;
 

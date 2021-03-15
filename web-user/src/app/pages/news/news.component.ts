@@ -18,7 +18,7 @@ declare var _: any;
 })
 export class NewsComponent implements OnInit {
   @Output() loading = new EventEmitter<boolean>();
-  searchValue: String = '';
+  searchValue: string = '';
   searchControl = new FormControl('');
   // formCtrlSub = new Subject<string>();
 
@@ -114,13 +114,13 @@ export class NewsComponent implements OnInit {
   successResponse(r: any) {
     console.log(r);
     let newQueryParams = {}
-    if (this.searchValue != "") {
+    if (this.searchValue !== "") {
       newQueryParams["search"] = this.searchValue;
     }
-    if (this.pageIndex != 0) {
+    if (this.pageIndex !== 0) {
       newQueryParams["page_index"] = this.pageIndex;
     }
-    if (this.pageSize != this.pageSizeOptions[0]) {
+    if (this.pageSize !== this.pageSizeOptions[0]) {
       newQueryParams["page_size"] = this.pageSize;
     }
     
@@ -142,7 +142,7 @@ export class NewsComponent implements OnInit {
       if (el.meta) {
         if (el.meta["useful_link"]) {
           const ul = el.meta["useful_link"];
-          if (ul["action"] == "added" || ul["action"] == "updated") {
+          if (ul["action"] === "added" || ul["action"] === "updated") {
             el["links"].push({
               "routeLink": "/useful-links/" + ul["id"],
               "text": ul["url"]
@@ -152,7 +152,7 @@ export class NewsComponent implements OnInit {
 
         if (el.meta["quest"]) {
           const quest = el.meta["quest"];
-          if (quest["action"] == "added" || quest["action"] == "updated" || quest["action"] == "passed") {
+          if (quest["action"] === "added" || quest["action"] === "updated" || quest["action"] === "passed") {
             el["links"].push({
               "routeLink": "/quest/" + quest["id"],
               "text": quest["name"]
@@ -162,7 +162,7 @@ export class NewsComponent implements OnInit {
 
         if (el.meta["user"]) {
           const u = el.meta["user"];
-          if (u["action"] == "added" || u["action"] == "updated") {
+          if (u["action"] === "added" || u["action"] === "updated") {
             el["links"].push({
               "routeLink": "/user/" + u["id"],
               "text": u["nick"]

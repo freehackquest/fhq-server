@@ -183,7 +183,7 @@ export class FreeHackQuestClient {
       }, 1000)
     }
   }
-  wsRequest(method: String, params: any): Observable<any> {
+  wsRequest(method: string, params: any): Observable<any> {
     this.messageId++
     const msgid = "m" + this.messageId;
     let request = params;

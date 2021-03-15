@@ -10,9 +10,9 @@ declare var fhq: any;
   styleUrls: ['./server-api.component.css']
 })
 export class ServerApiComponent implements OnInit {
-  apiVersion: String = '';
+  apiVersion: string = '';
   apisList: Array<any> = [];
-  errorMessage: String = null;
+  errorMessage: string = null;
   serverWsPort: number = -1;
   serverWssPort: number = -1;
   serverHost: string = null;

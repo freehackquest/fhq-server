@@ -16,11 +16,11 @@ import { Circle as CircleStyle, Fill, Stroke, Style, Text } from 'ol/style.js';
   styleUrls: ['./map-activity.component.css']
 })
 export class MapActivityComponent implements OnInit {
-  latitude: number = 18.5204;
-  longitude: number = 73.8567;
+  latitude = 18.5204;
+  longitude = 73.8567;
   errorMessage: string = null;
   map: any;
-  distance: number = 20;
+  distance = 20;
 
   constructor(
     private _spinner: SpinnerService,
@@ -56,17 +56,17 @@ export class MapActivityComponent implements OnInit {
       population: 1,
     }));
 
-    var source = new VectorSource({
+    let source = new VectorSource({
       features: features
     });
 
-    var clusterSource = new Cluster({
+    let clusterSource = new Cluster({
       distance: this.distance,
       source: source
     });
 
-    var styleCache = {};
-    var clusters = new VectorLayer({
+    let styleCache = {};
+    let clusters = new VectorLayer({
       source: clusterSource,
       style: function(feature: any) {
         var size = feature.get('features').length;
@@ -95,7 +95,7 @@ export class MapActivityComponent implements OnInit {
       }
     });
 
-    var raster = new TileLayer({
+    let raster = new TileLayer({
       source: new OSM()
     });
 

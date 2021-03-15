@@ -32,12 +32,12 @@ export interface UsefulLinkTag {
   styleUrls: ['./useful-links.component.css']
 })
 export class UsefulLinksComponent implements OnInit {
-  public usefullLinksData: UsefulLinkElement[] = [];
+  usefullLinksData: UsefulLinkElement[] = [];
   subscription: any;
   pageEvent: PageEvent;
-  pageIndex: number = 0;
-  pageSize: number = 5;
-  length: number = 0;
+  pageIndex = 0;
+  pageSize = 5;
+  length = 0;
   pageSizeOptions = [5, 10, 25, 50];
 
   tagList: UsefulLinkTag[] = [];
@@ -45,8 +45,8 @@ export class UsefulLinksComponent implements OnInit {
 
   errorMessage: string = null;
 
-  searchValue: String = '';
-  private prevSearchValue: String = '';
+  searchValue: string = '';
+  private prevSearchValue: string = '';
   searchControl = new FormControl('');
 
   dataSource = new MatTableDataSource<UsefulLinkElement>();

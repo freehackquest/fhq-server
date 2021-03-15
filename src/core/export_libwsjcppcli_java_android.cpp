@@ -119,11 +119,12 @@ void ExportLibWsjCppCliJavaAndroid::exportPrepareDirs() {
 
 // ---------------------------------------------------------------------
 
-void ExportLibWsjCppCliJavaAndroid::exportManifest() {
-    std::ofstream fManifest;
+bool ExportLibWsjCppCliJavaAndroid::exportManifest() {
     WsjcppLog::info(TAG, "write code to libfhqcli-java-android/libfhqcli/src/main/AndroidManifest.xml");
-    fManifest.open ("libfhqcli-java-android/libfhqcli/src/main/AndroidManifest.xml");
-
+    std::ofstream fManifest("libfhqcli-java-android/libfhqcli/src/main/AndroidManifest.xml");
+    if (!fManifest.is_open()) {
+        return false;
+    }
     fManifest << ""
         "<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\" \n"
         "package=\"com.freehackquest.libfhqcli\"> \n"
@@ -131,15 +132,17 @@ void ExportLibWsjCppCliJavaAndroid::exportManifest() {
         "<service android:name=\".FHQClient\" /> \n"
         "</application> \n"
         "</manifest> \n";
+    return true;
 }
 
 // ---------------------------------------------------------------------
 
-void ExportLibWsjCppCliJavaAndroid::exportBuildGradle() {
-    std::ofstream fBuildGradle;
+bool ExportLibWsjCppCliJavaAndroid::exportBuildGradle() {
     WsjcppLog::info(TAG, "write code to libfhqcli-java-android/libfhqcli/build.gradle ");
-    fBuildGradle.open ("libfhqcli-java-android/libfhqcli/build.gradle");
-
+    std::ofstream fBuildGradle("libfhqcli-java-android/libfhqcli/build.gradle");
+    if (!fBuildGradle.is_open()) {
+        return false;
+    }
     // TODO version code must be date + time
     fBuildGradle << ""
         "apply plugin: 'com.android.library' \n"
@@ -168,6 +171,7 @@ void ExportLibWsjCppCliJavaAndroid::exportBuildGradle() {
         "    implementation 'com.neovisionaries:nv-websocket-client:2.8'\n"
         "}\n"
     ;
+    return true;
 }
 
 // ---------------------------------------------------------------------
