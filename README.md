@@ -89,7 +89,7 @@ $ ./fhq-server -wd ../ci/travis/data start
 ```
 
 * web-user you can see here: `http://localhost:7080/`
-* admin-web-site: `http://localhost:7080/admin/`
+* web-admin: `http://localhost:7080/admin/`
 
 *Note: default login/password: admin/admin*
 
@@ -274,7 +274,7 @@ Create directories
 $ sudo mkdir /etc/fhq-server/
 $ sudo mkdir /var/log/fhq-server/
 $ sudo mkdir /usr/share/fhq-server/
-$ sudo mkdir /usr/share/fhq-server/admin-web-site
+$ sudo mkdir /usr/share/fhq-server/web-admin
 $ sudo mkdir /usr/share/fhq-server/web-user
 $ sudo mkdir /usr/share/fhq-server/fhqjad-store
 ```
@@ -300,7 +300,7 @@ ssl_cert_file = /etc/ssl/certs/test-selfsigned.crt
 # Web Configuration
 web_port = 7080
 web_max_threads = 1
-web_admin_folder = /usr/share/fhq-server/admin-web-site
+web_admin_folder = /usr/share/fhq-server/web-admin
 web_user_folder = /usr/share/fhq-server/web-user
 
 web_public_folder = /usr/share/fhq-server/public/
@@ -469,7 +469,7 @@ jsonResponse["data"] = jsonResult;
 pRequest->sendMessageSuccess(cmd(), jsonResponse);
 ```
 
-admin-web-site paginator:
+web-admin paginator:
 ```
 var page_name = 'quests_proposal';
 var pg = new SwaPaginator(0, r.data.total, r.data.page_size, r.data.page_index);

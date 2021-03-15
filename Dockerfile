@@ -23,7 +23,7 @@ RUN mkdir -p /usr/share/fhq-server \
     && mkdir -p /usr/share/fhq-server/public/games \
     && mkdir -p /usr/share/fhq-server/web/public/games \
     && mkdir -p /var/log/fhq-server
-COPY ./admin-web-site /usr/share/fhq-server/admin-web-site
+COPY ./web-admin /usr/share/fhq-server/web-admin
 COPY --from=0 /root/web-user/dist /usr/share/fhq-server/web-user
 
 # 1234 - ws
