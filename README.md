@@ -46,7 +46,7 @@ $ sudo apt install git-core g++ make cmake qtchooser qt5-default \
    build-essential curl
 ```
 
-Install latest nodejs (for user-web-site)
+Install latest nodejs (for web-user)
 
 ```
 $ curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash -
@@ -75,7 +75,7 @@ $ git clone https://github.com/freehackquest/fhq-server ~/fhq-server.git
 
 Build angular:
 ```
-$ cd ~/fhq-server.git/user-web-site
+$ cd ~/fhq-server.git/web-user
 $ npm install
 $ npm run build --prod
 ```
@@ -88,7 +88,7 @@ $ ./build_simple.sh
 $ ./fhq-server -wd ../ci/travis/data start
 ```
 
-* user-web-site you can see here: `http://localhost:7080/`
+* web-user you can see here: `http://localhost:7080/`
 * admin-web-site: `http://localhost:7080/admin/`
 
 *Note: default login/password: admin/admin*
@@ -97,7 +97,7 @@ $ ./fhq-server -wd ../ci/travis/data start
 Also you can start web angular for develop:
 *Will need backend runned (!)*
 ```
-$ cd ~/fhq-server.git/user-web-site
+$ cd ~/fhq-server.git/web-user
 $ npm run start
 ```
 So you can see web user here: `http://localhost:4200/`
@@ -206,12 +206,12 @@ Fast to fix and develop for current server version
 
 ```
 $ git clone git@github.com:freehackquest/fhq-server.git ~/fhq-server.git
-$ cd ~/fhq-server.git/user-web-site
+$ cd ~/fhq-server.git/web-user
 $ npm install 
 $ npm run start
 ```
 
-In a file `~/fhq-server.git/user-web-site/src/app/services/fhq.service.ts`
+In a file `~/fhq-server.git/web-user/src/app/services/fhq.service.ts`
 And then you can just uncomment line:
 ```
 // baseUrl = 'ws://freehackquest.com/api-ws/';
@@ -275,7 +275,7 @@ $ sudo mkdir /etc/fhq-server/
 $ sudo mkdir /var/log/fhq-server/
 $ sudo mkdir /usr/share/fhq-server/
 $ sudo mkdir /usr/share/fhq-server/admin-web-site
-$ sudo mkdir /usr/share/fhq-server/user-web-site
+$ sudo mkdir /usr/share/fhq-server/web-user
 $ sudo mkdir /usr/share/fhq-server/fhqjad-store
 ```
 
@@ -301,7 +301,7 @@ ssl_cert_file = /etc/ssl/certs/test-selfsigned.crt
 web_port = 7080
 web_max_threads = 1
 web_admin_folder = /usr/share/fhq-server/admin-web-site
-web_user_folder = /usr/share/fhq-server/user-web-site
+web_user_folder = /usr/share/fhq-server/web-user
 
 web_public_folder = /usr/share/fhq-server/public/
 web_public_folrer_url = http://localhost:7080/public/

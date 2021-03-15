@@ -8,8 +8,8 @@ COPY ./fhq-server /root/fhq-server
 WORKDIR /root/fhq-server
 RUN ./clean.sh && ./build_simple.sh
 
-COPY ./user-web-site /root/user-web-site
-WORKDIR /root/user-web-site
+COPY ./web-user /root/web-user
+WORKDIR /root/web-user
 RUN npm install && npm run build-prod
 
 FROM freehackquest/fhq-docker-common:latest
@@ -24,7 +24,7 @@ RUN mkdir -p /usr/share/fhq-server \
     && mkdir -p /usr/share/fhq-server/web/public/games \
     && mkdir -p /var/log/fhq-server
 COPY ./admin-web-site /usr/share/fhq-server/admin-web-site
-COPY --from=0 /root/user-web-site/dist /usr/share/fhq-server/user-web-site
+COPY --from=0 /root/web-user/dist /usr/share/fhq-server/web-user
 
 # 1234 - ws
 # 4613 - wss

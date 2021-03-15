@@ -32,12 +32,12 @@ check_ret $? "unit-tests"
 cd ../..
 
 # hardcode for build travis
-cd user-web-site
-check_ret $? "change directory to user-web-site"
+cd web-user
+check_ret $? "change directory to web-user"
 npm install
-check_ret $? "npm install requirements for user-web-site"
+check_ret $? "npm install requirements for web-user"
 npm run build-prod
-check_ret $? "angular build-prod user-web-site"
+check_ret $? "angular build-prod web-user"
 cd ..
 
 cd fhq-server
