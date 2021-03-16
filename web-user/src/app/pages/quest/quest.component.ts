@@ -24,7 +24,7 @@ export class QuestComponent implements OnInit {
   questHints: any = [];
   showHints: boolean = false;
   quest: any = [];
-  questDescription: String = '';
+  questDescription: string = '';
   @ViewChild('questAnswer') questAnswer : ElementRef;
   errorCheckAnswerMessage: string = null;
 
@@ -35,7 +35,7 @@ export class QuestComponent implements OnInit {
   questMyAnswers: any = [];
   showMyAnswers: boolean = false;
   errorAnswersMessage: string = null;
-  
+
   @ViewChild('questWriteUpProposalLink') questWriteUpProposalLink : ElementRef;
   errorProposalWriteUpMessage: string = null;
 

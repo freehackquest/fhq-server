@@ -27,7 +27,7 @@ export class SpinnerService {
 
     // Create ComponentPortal that can be attached to a PortalHost
     const spinnerOverlayPortal = new ComponentPortal(SpinnerComponent);
-    const component = this.overlayRef.attach(spinnerOverlayPortal); // Attach ComponentPortal to PortalHost
+    this.overlayRef.attach(spinnerOverlayPortal); // Attach ComponentPortal to PortalHost
   }
 
   isShowed() {

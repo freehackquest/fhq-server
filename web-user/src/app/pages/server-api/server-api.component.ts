@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, Inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SpinnerService } from '../../services/spinner.service';
 import { PlatformLocation } from '@angular/common';
 

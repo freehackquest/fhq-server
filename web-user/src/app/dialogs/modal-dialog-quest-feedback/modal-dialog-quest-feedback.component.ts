@@ -1,7 +1,5 @@
 import { Component, OnInit, Input, ChangeDetectorRef, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ActivatedRoute } from '@angular/router';
-import { Router } from '@angular/router';
 import { SpinnerService } from '../../services/spinner.service';
 import { EmailValidatorService } from '../../services/email-validator.service';
 import { FhqService } from '../../services/fhq.service';

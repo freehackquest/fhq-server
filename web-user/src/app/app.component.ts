@@ -29,8 +29,8 @@ export class AppComponent implements OnInit, OnDestroy {
   libVersion: string = '';
   brokenConnection: boolean = false;
   profileMenuExpanded: boolean = false;
-  urlPath: String = "";
-  userRole: String = "";
+  urlPath: string = "";
+  userRole: string = "";
   schema = this.l10nConfig.schema;
   mobileQuery: MediaQueryList;
   localeCountyFlag = {

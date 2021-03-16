@@ -51,9 +51,9 @@ def run_tests():
     questid1 = quest1['questid']
 
     quest1_new = fhqtest.admin_session.quest({"questid": questid1})
-    quest1_new_hints = quest1_new['hints']
-    quest1_new_files = quest1_new['files']
-    quest1_new_game = quest1_new['game']
+    # quest1_new_hints = quest1_new['hints']
+    # quest1_new_files = quest1_new['files']
+    # quest1_new_game = quest1_new['game']
     quest1_new = quest1_new['quest']
     pprint(quest1_new)
 
@@ -116,19 +116,23 @@ def run_tests():
     })
     fhqtest.alert(quest1_update is None, 'Could not get response (4)')
     fhqtest.check_response(quest1_update, "Quest succesfull update")
-    
+
     quest1_updated = fhqtest.admin_session.quest({"questid": questid1})
     quest1_updated_hints = quest1_updated['hints']
-    quest1_updated_files = quest1_updated['files']
-    quest1_updated_game = quest1_updated['game']
+    # quest1_updated_files = quest1_updated['files']
+    # quest1_updated_game = quest1_updated['game']
     quest1_updated = quest1_updated['quest']
     print("quest1_updated = " + str(quest1_updated))
 
     fhqtest.check_values("name of quest", quest1_updated['name'], quest_name2)
     fhqtest.check_values("author of quest", quest1_updated['author'], quest_author2)
     fhqtest.check_values("answer of quest", quest1_updated['answer'], quest_answer2)
-    fhqtest.check_values("answer format of quest", quest1_updated['answer_format'], quest_answer_format2)
-    fhqtest.check_values("description_state of quest", quest1_updated['description_state'], quest_description_state2)
+    fhqtest.check_values(
+        "answer format of quest", quest1_updated['answer_format'], quest_answer_format2
+    )
+    fhqtest.check_values(
+        "description_state of quest", quest1_updated['description_state'], quest_description_state2
+    )
     fhqtest.check_values("score of quest", quest1_updated['score'], quest_score2)
     fhqtest.check_values("state of quest", quest1_updated['state'], quest_state2)
     fhqtest.check_values("subject of quest", quest1_updated['subject'], quest_subject2)
@@ -160,7 +164,9 @@ def run_tests():
     fhqtest.alert(resp is None, 'Could not get response (quests)')
     fhqtest.check_response(resp, "quest get filtered")
     fhqtest.alert(resp['result'] == 'FAIL', 'Wrong response')
-    fhqtest.alert(resp['data'][0]['questid'] != questid, 'Wrong work filter by gameid in request quests')
+    fhqtest.alert(
+        resp['data'][0]['questid'] != questid, 'Wrong work filter by gameid in request quests'
+    )
 
     fhqtest.user_session.quest_pass({
         "questid": quest1_updated['id'],
