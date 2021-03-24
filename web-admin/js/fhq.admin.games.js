@@ -25,7 +25,7 @@ fhq.createGame = function()  {
 		$('#game_create_error').show();
 		$('#game_create_error').html(err.error);
 		
-	})
+	});
 };
 
 fhq.pages['game_create'] = function() {
@@ -148,7 +148,7 @@ fhq.pages['game_create'] = function() {
 
 	$('.game-create-cancel').unbind().bind('click', function(){
 		fhq.pages['games']();
-	})
+	});
 }
 
 fhq.updateGame = function()  {

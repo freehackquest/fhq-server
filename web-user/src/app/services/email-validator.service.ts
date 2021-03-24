@@ -25,7 +25,7 @@ export class EmailValidatorService {
     emailWrongDomains['gamil.com'] = {prop: ["gmail.com"]};
 
     const re = /^\w+([\.-]?\w+){1,20}@\w+([\.-]?\w+){1,20}(\.\w{2,3})+$/;
-    let ret = {result: false, error: ""}
+    let ret = {result: false, error: ""};
     ret.result = re.test(email);
     if (!ret.result) {
       ret.result = false;

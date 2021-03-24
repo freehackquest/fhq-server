@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, NgZone, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SpinnerService } from '../../services/spinner.service';
 import { EmailValidatorService } from '../../services/email-validator.service';

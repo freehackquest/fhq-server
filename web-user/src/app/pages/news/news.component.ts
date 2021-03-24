@@ -2,7 +2,6 @@ import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@ang
 import { SpinnerService } from '../../services/spinner.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { DomSanitizer } from '@angular/platform-browser';
 import { escape } from 'lodash';
 import { FhqService } from '../../services/fhq.service';
 import { FormControl, Validators } from '@angular/forms';
