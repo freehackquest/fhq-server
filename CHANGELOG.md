@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v0.2.38] - ??
 
+### Fixed
 
+- Fixed #304 translation 'questHints'
 
 ## [v0.2.37] - 2021-03-27 (2021 Mar 27)
 
