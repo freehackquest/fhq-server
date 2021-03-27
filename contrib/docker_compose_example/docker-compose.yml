@@ -1,41 +1,55 @@
 version: '2'
 
 services:
-  fhq_db:
+  fhqserver_db:
     image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
     volumes:
-      - "fhq_mysql_db:/var/lib/mysql"
+      - "./mysql_data:/var/lib/mysql"
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: HBgvNyuACY # look in fhq-config/fhq.server.conf
-      MYSQL_DATABASE: fhqserver # look in fhq-config/fhq.server.conf
-      MYSQL_USER: fhqserver # look in fhq-config/fhq.server.conf
-      MYSQL_PASSWORD: VveGJemxFb # look in fhq-config/fhq.server.conf
+      MYSQL_ROOT_PASSWORD: KzhyntJxwt
+      MYSQL_DATABASE: fhqserver
+      MYSQL_USER: fhqserver
+      MYSQL_PASSWORD: VveGJemxFb
     networks:
-      - fhq_net
+      - fhqserver_net
 
-  fhq_server:
+  fhqserver:
+    build: .
     depends_on:
-      - fhq_db
+      - fhqserver_db
     image: freehackquest/fhq-server:latest
     volumes:
-      - "./fhq_data:/usr/share/fhq-server/public"
-      - "./fhq_conf:/etc/fhq-server"
-      - "./fhq_logs:/var/log/fhq-server"
-      
+      - "./data/public:/usr/share/fhq-server/public"
+      - "./conf.d:/etc/fhq-server"
+      - "./logs:/var/log/fhq-server"
+      - "./ssl:/usr/share/fhq-server/ssl"
+      # - "./fhq-server_data/web_admin_conf/fhq.ws.config.js:/usr/share/fhq-server/web-admin/fhq.ws.config.js"
+      # - "./fhq-server_data/public:/usr/share/fhq-server/fhq-web-public"
+      # - "./fhq-server_data/fhqjad-store:/usr/share/fhq-server/fhqjad-store"
     ports:
       - "1234:1234"
       - "4613:4613"
       - "7080:7080"
     restart: always
-    links:
-      - "fhq_db"
     networks:
-      - fhq_net
+      - fhqserver_net
 
-volumes:
-  fhq_mysql_db:
+  ext_nginx_node:
+    image: nginx:1.16
+    volumes:
+      - "./nginx/html/:/usr/share/nginx/html"
+      - "./nginx/conf.d:/etc/nginx/conf.d"
+      - "./nginx/logs:/var/log/nginx/"
+      - "./ssl:/etc/nginx/ssl"
+    restart: always
+    ports:
+      - "801:80"
+      - "4431:443"
+    networks:
+      - fhqserver_net
 
 networks:
-  fhq_net:
+  fhqserver_net:
     driver: bridge

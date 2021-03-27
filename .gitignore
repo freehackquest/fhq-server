@@ -78,3 +78,7 @@ fhq-server/fhq-server.debian95
 
 .wsjcpp
 fhq-server
+
+contrib/docker_compose_example/logs/*.log
+contrib/docker_compose_example/mysql_data
+contrib/docker_compose_example/nginx/logs/*.log

@@ -5,7 +5,7 @@
 
 Backend && Frontend for FreeHackQuest on Qt and WebSockets
 
-**!!! FAST START YOUR GAME** [here (based on docker-compose)](https://github.com/freehackquest/freehackquest-start-game)!!!
+**!!! simple start here** [docker-compose example](https://github.com/freehackquest/fhq-server/tree/master/contrib/docker_compose_example)!!!
 
 * [HOW-TO-BUILD-AND-DEVELOP](https://github.com/freehackquest/fhq-server/tree/master/install/HOW-TO-BUILD-AND-DEVELOP.md)
 * [INSTALL_FROM_PPA](https://github.com/freehackquest/fhq-server/tree/master/install/INSTALL_FROM_PPA.md)
@@ -225,6 +225,11 @@ And now your local web site will be connected to offical server.
 
 *Notice: but please never do commit for this line*
 
+## Build docker image
+
+```
+$ docker build -t freehackquest/fhq-server:latest .
+```
 
 ## Ubuntu - install from ppa (outdated)
 
