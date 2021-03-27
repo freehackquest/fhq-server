@@ -24,7 +24,6 @@
   <div class="d-inline-block" l10nTranslate>summaryMaximumPointsByAllGames</div>: <div class="d-inline-block">{{ summaryScore }}</div>
 </div>
 
-
 <table class="table">
   <tbody>
     <tr *ngFor="let g of dataList">
@@ -35,7 +34,8 @@
         <h3>{{ g.name }} (<div class="d-inline-block" l10nTranslate>maximumPoints</div>: {{ g.maxscore }}) </h3>
         <small>{{ g.date_start_formated | date:'d MMM y, HH:mm' }} - {{ g.date_stop_formated | date:'d MMM y, HH:mm' }} </small><br>
         <small><div class="d-inline-block" l10nTranslate>organizators</div>: {{ g.organizators }} </small><br>
-        <strong>{{ g.description }}</strong>
+        <strong>{{ g.description }}</strong><br>
+        <button mat-raised-button routerLink="/game/{{ g.uuid }}">More</button>
       </td>
     </tr>
   </tbody>

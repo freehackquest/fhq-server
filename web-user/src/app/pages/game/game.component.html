@@ -1,1 +1,5 @@
-<p>game works!</p>
+<small> {{ gameuuid }} </small>
+
+<mat-error *ngIf="errorMessage != null">
+    ERROR: {{ errorMessage }}
+</mat-error>
