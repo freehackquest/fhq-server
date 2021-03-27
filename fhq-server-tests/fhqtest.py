@@ -1,18 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
 import os
-from libfreehackquestclient import FreeHackQuestClient
 import string
 import random
 import socket
 from pprint import pprint
+from libfreehackquestclient import FreeHackQuestClient
 
 admin_session = None
 user_session = None
 anon_session = None
-loggined = False
+LOGGINED = False
 TEST_USER_DATA = {
     "uuid": "03E51000-2222-0000-0000-000000000001",
     "email": "user@freehackquest.com",
@@ -151,7 +150,7 @@ def init_enviroment():
     resp = user_session.login({"email": TEST_USER_DATA['email'], "password": TEST_USER_DATA['password']})
     alert(resp is None, 'Could not login as test_user (1)')
 
-    # loggined = True
+    # LOGGINED = True
     GAME1 = admin_session.game_info({"uuid": GAME_UUID1})
     alert(resp is None, 'Could not get test game (2)')
     if GAME1['result'] == 'FAIL':
@@ -170,19 +169,19 @@ def init_enviroment():
         alert(GAME1 is None, 'Could not send message (2)')
         alert(GAME1['result'] == 'FAIL', 'Could not create test game ' + str(GAME1))
         GAME1 = admin_session.game_info({"uuid": GAME_UUID1})
-
+    global GAME1
     GAME1 = GAME1['data']
 
 def deinit_enviroment():
     global admin_session
-
     # try remove all test objects
-    if loggined is True:
+    if LOGGINED is True:
         admin_session.game_delete({"uuid": GAME_UUID1, "admin_password": "admin"})
     if admin_session is not None:
         admin_session.close()
 
 def remove_item(classbookid, padding):
+    """ remove item """
     records_list = admin_session.classbook_list({
         "parentid": classbookid,
     })
@@ -192,7 +191,9 @@ def remove_item(classbookid, padding):
     for clb in records_list['data']:
         childs = childs + 1
         child_classbookid = clb['classbookid']
-        remove_item(child_classbookid, padding + "-(" + str(child_classbookid) + " has " + str(clb['childs']) + " childs)-")
+        remove_item(
+            child_classbookid, padding + "-(" + str(child_classbookid) + " has " + str(clb['childs']) + " childs)-"
+        )
     if classbookid != 0:
         # print("Try remove classbook record #" + str(child_classbookid))
         r = admin_session.classbook_delete_record({"classbookid": classbookid})
