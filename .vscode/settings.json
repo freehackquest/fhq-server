@@ -70,8 +70,11 @@
     },
     "files.autoSave": "off",
     "search.exclude": {
-        "**/.git": true,
-        "**/node_modules/**": true,
-        "**/tmp/**": true
+        ".git": true,
+        "node_modules": true,
+        "tmp": true,
+        "**/packs": true,
+        "**/log": true,
+        "log": true
     }
 }        

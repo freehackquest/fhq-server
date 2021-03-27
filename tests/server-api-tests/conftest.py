@@ -165,7 +165,7 @@ def start_local_server():
     current_wor_dir = os.getcwd()
     # print(current_wor_dir)
     # os.chdir(current_wor_dir + "/../../fhq-server")
-    cmd = [current_wor_dir + '/../../fhq-server/fhq-server', '-wd', '../../ci/travis/data', 'start']
+    cmd = [current_wor_dir + '/../../fhq-server', '-wd', '../../ci/travis/data', 'start']
     pytest.popen_fhq_server = subprocess.Popen(cmd)
     # os.chdir(current_wor_dir)
 
@@ -228,7 +228,7 @@ web_max_threads = 1
 web_admin_folder = /usr/share/fhq-server/web-admin/
 web_public_folder = /usr/share/fhq-server/fhq-web-public/
 web_public_folder_url = http://localhost:7080/public/
-web_user_folder = /usr/share/fhq-server/user-web-site/
+web_user_folder = /usr/share/fhq-server/web-user/
 
 web_fhqjad_store = /usr/share/fhq-server/fhqjad-store/
 

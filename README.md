@@ -5,14 +5,17 @@
 
 Backend && Frontend for FreeHackQuest on Qt and WebSockets
 
-**!!! FAST START YOUR GAME** [here (based on docker-compose)](https://github.com/freehackquest/freehackquest-start-game)!!!
+## docker-compose example
 
-* [HOW-TO-BUILD-AND-DEVELOP](https://github.com/freehackquest/fhq-server/tree/master/install/HOW-TO-BUILD-AND-DEVELOP.md)
-* [INSTALL_FROM_PPA](https://github.com/freehackquest/fhq-server/tree/master/install/INSTALL_FROM_PPA.md)
+[docker-compose example](https://github.com/freehackquest/fhq-server/tree/master/contrib/docker_compose_example)
+
+
+<!-- * [INSTALL_FROM_PPA](https://github.com/freehackquest/fhq-server/tree/master/install/INSTALL_FROM_PPA.md) 
 
 * Configure autostart
     * [SYSTEMD](install/SYSTEMD.md)
     * [INITD](install/INITD.md)
+-->
 
 ## Distribution
 
@@ -46,7 +49,7 @@ $ sudo apt install git-core g++ make cmake qtchooser qt5-default \
    build-essential curl
 ```
 
-Install latest nodejs (for user-web-site)
+Install latest nodejs (for web-user)
 
 ```
 $ curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash -
@@ -75,7 +78,7 @@ $ git clone https://github.com/freehackquest/fhq-server ~/fhq-server.git
 
 Build angular:
 ```
-$ cd ~/fhq-server.git/user-web-site
+$ cd ~/fhq-server.git/web-user
 $ npm install
 $ npm run build --prod
 ```
@@ -83,13 +86,13 @@ $ npm run build --prod
 Build c++ server:
 
 ```
-$ cd ~/fhq-server.git/fhq-server
+$ cd ~/fhq-server.git/
 $ ./build_simple.sh
-$ ./fhq-server -wd ../ci/travis/data start
+$ ./fhq-server -wd ./ci/travis/data start
 ```
 
-* user-web-site you can see here: `http://localhost:7080/`
-* admin-web-site: `http://localhost:7080/admin/`
+* web-user you can see here: `http://localhost:7080/`
+* web-admin: `http://localhost:7080/admin/`
 
 *Note: default login/password: admin/admin*
 
@@ -97,7 +100,7 @@ $ ./fhq-server -wd ../ci/travis/data start
 Also you can start web angular for develop:
 *Will need backend runned (!)*
 ```
-$ cd ~/fhq-server.git/user-web-site
+$ cd ~/fhq-server.git/web-user
 $ npm run start
 ```
 So you can see web user here: `http://localhost:4200/`
@@ -107,7 +110,7 @@ So you can see web user here: `http://localhost:4200/`
 Build and run unit-tests:
 
 ```
-$ cd ~/fhq-server.git/fhq-server/unit-tests.wsjcpp
+$ cd ~/fhq-server.git/unit-tests.wsjcpp
 $ ./build_simple.sh
 $ ./unit-tests
 ```
@@ -180,13 +183,13 @@ $ sudo apt install valgrind # ubuntu and debian
 
 Terminal1:
 ```
-$ cd ~/fhq-server.git/fhq-server
+$ cd ~/fhq-server.git/
 $ valgrind --leak-check=full \
     --show-leak-kinds=all \
     --track-origins=yes \
     --verbose \
     --log-file=valgrind-out.txt \
-    ./fhq-server -wd ../ci/travis/data
+    ./fhq-server -wd ./ci/travis/data
 ```
 
 Terminal2:
@@ -206,12 +209,12 @@ Fast to fix and develop for current server version
 
 ```
 $ git clone git@github.com:freehackquest/fhq-server.git ~/fhq-server.git
-$ cd ~/fhq-server.git/user-web-site
+$ cd ~/fhq-server.git/web-user
 $ npm install 
 $ npm run start
 ```
 
-In a file `~/fhq-server.git/user-web-site/src/app/services/fhq.service.ts`
+In a file `~/fhq-server.git/web-user/src/app/services/fhq.service.ts`
 And then you can just uncomment line:
 ```
 // baseUrl = 'ws://freehackquest.com/api-ws/';
@@ -225,6 +228,11 @@ And now your local web site will be connected to offical server.
 
 *Notice: but please never do commit for this line*
 
+## Build docker image
+
+```
+$ docker build -t freehackquest/fhq-server:latest .
+```
 
 ## Ubuntu - install from ppa (outdated)
 
@@ -274,8 +282,8 @@ Create directories
 $ sudo mkdir /etc/fhq-server/
 $ sudo mkdir /var/log/fhq-server/
 $ sudo mkdir /usr/share/fhq-server/
-$ sudo mkdir /usr/share/fhq-server/admin-web-site
-$ sudo mkdir /usr/share/fhq-server/user-web-site
+$ sudo mkdir /usr/share/fhq-server/web-admin
+$ sudo mkdir /usr/share/fhq-server/web-user
 $ sudo mkdir /usr/share/fhq-server/fhqjad-store
 ```
 
@@ -300,8 +308,8 @@ ssl_cert_file = /etc/ssl/certs/test-selfsigned.crt
 # Web Configuration
 web_port = 7080
 web_max_threads = 1
-web_admin_folder = /usr/share/fhq-server/admin-web-site
-web_user_folder = /usr/share/fhq-server/user-web-site
+web_admin_folder = /usr/share/fhq-server/web-admin
+web_user_folder = /usr/share/fhq-server/web-user
 
 web_public_folder = /usr/share/fhq-server/public/
 web_public_folrer_url = http://localhost:7080/public/
@@ -469,7 +477,7 @@ jsonResponse["data"] = jsonResult;
 pRequest->sendMessageSuccess(cmd(), jsonResponse);
 ```
 
-admin-web-site paginator:
+web-admin paginator:
 ```
 var page_name = 'quests_proposal';
 var pg = new SwaPaginator(0, r.data.total, r.data.page_size, r.data.page_index);

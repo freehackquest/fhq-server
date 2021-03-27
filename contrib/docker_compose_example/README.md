@@ -1,17 +1,25 @@
-# Install from DockerHub 
+# docker-compose example for fhq-server
 
-You can install fhq-server from 
+## Reguiremts
+
+* docker
+* docker-compose
+
+## Start
+
+For start just run this:
 
 ```
-$ docker pull freehackquest/fhq-server
+$ cd ~
+$ git clone https://github.com/freehackquest/fhq-server
+$ cd ./contrib/docker_compose_example
+$ docker-compose up
 ```
 
-## Using docker-compose
+## Configurations
 
-For example:
-
-* fhq_conf/[fhq-server.conf](DOCKER_COMPOSE/fhq_conf/fhq-server.conf)
-* [docker-compose.yml](DOCKER_COMPOSE/docker-compose.yml)
-* fhq_data/games - empty directory for a public
-* fhq_logs - empty directory
-
+1. Default port used 801 / 4431 (look in docker-compose)
+2. Admin Panel (Login: `admin`; Password: `admin`): http://localhost/admin/?settings=
+3. Change settings in 
+    * "Server folders"
+    * "Mail Settings"
