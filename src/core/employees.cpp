@@ -802,9 +802,9 @@ bool EmployGlobalSettings::initFromDatabase(WsjcppSettingsStore *pDatabaseSettin
 // ---------------------------------------------------------------------
 
 void EmployGlobalSettings::printSettings() const {
-    std::map<std::string, WsjcppSettingItem*>::iterator it;
+    std::map<std::string, WsjcppSettingItem *>::const_iterator it;
 
-    for (m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
+    for (it = m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
         std::string sName = it->first;
         WsjcppSettingItem *pItem = it->second;
 
