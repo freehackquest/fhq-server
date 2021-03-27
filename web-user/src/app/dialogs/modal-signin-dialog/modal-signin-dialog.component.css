@@ -1,0 +1,13 @@
+
+mat-form-field {
+    width: 100%;
+}
+
+mat-dialog-container {
+    width: 450px
+}
+
+.have-not-account {
+    display: inline-block;
+    margin-right: 20px;
+}

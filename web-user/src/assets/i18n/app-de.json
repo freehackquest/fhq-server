@@ -59,9 +59,9 @@
     "resetPasswordGo": "Passwort zurücksetzen",
     "resetPasswordEmail": "E-mail",
     "knowledgeBase": "Wissensbasis",
-    "emailAddress": "E-mail address",
-    "password": "Password",
-    "close": "Close",
+    "emailAddress": "E-Mail-Addresse",
+    "password": "Passwort",
+    "close": "Schließen",
     "newFeedback": "Rückkopplung",
     "feedbackTarget": "Ziel",
     "feedbackTargetQuestion": "Frage",
@@ -163,5 +163,6 @@
     "nothingToFoundByYourRequest": "Nichts von Ihrer Anfrage zu finden",
     "feelFreeToContactUsByEmail": "Sie können uns gerne per E-Mail kontaktieren",
     "administration-panel": "Administrationsmenü",
+    "haveNotYetAccount": "Sie haben noch keinen Account?",
     "": ""
 }

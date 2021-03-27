@@ -120,7 +120,7 @@
     <label l10nTranslate>questAnswer</label>
     <div class="alert alert-danger" *ngIf="!_fhq.isAuthorized">
       <label l10nTranslate>pleaseAuthorize</label>
-      <div class="btn btn-primary" (click)="openDialogSignIn()" l10nTranslate>signin</div>
+      <div class="btn btn-primary" (click)="_dialogs.openSignInDialog();" l10nTranslate>signin</div>
     </div>
 </div>
 
