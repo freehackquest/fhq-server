@@ -5,7 +5,19 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.37] - ?
+## [v0.2.37] - 2021-03-27 (2021 Mar 27)
+
+### Changes
+
+- Redesign docker-compose (moved to contrib/docker_compose_example)
+- Moved fhq-server to root of repository
+- Moved web-site-admin to web-admin
+- Moved user-web-site to web-user
+
+### Security
+
+- Fixed few alerts by lgtm
+- Fixed few alerts by deepcode
 
 ## [v0.2.36] - 2021-03-15 (2021 Mar 15)
 

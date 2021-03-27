@@ -18,7 +18,7 @@ On ask: "Would you like LXD to be available over the network (yes/no)?": *yes*
 
 After this:
 
- - Please open admin-web-site and change `lxd_mode` to `enabled`
+ - Please open web-admin and change `lxd_mode` to `enabled`
 
 ## Generate certificates:
 

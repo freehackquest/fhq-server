@@ -27,7 +27,7 @@ binary-arch:
 	cp install_files/fhq-server.service debian/tmp/etc/systemd/system
 	cp install_files/fhq-server.postinst debian/tmp/DEBIAN/postinst
 	cp install_files/fhq-server.config debian/tmp/DEBIAN/config
-	cp -rf install_files/admin-web-site debian/tmp/usr/share/fhq-server
+	cp -rf install_files/web-admin debian/tmp/usr/share/fhq-server
 	dpkg-gencontrol -pfhq-server
 	dpkg --build debian/tmp ..
 

@@ -1,11 +1,11 @@
 {
     "paths": [
-        "fhq-server/src/",
-        "fhq-server/unit-tests.wsjcpp/src/"
+        "src/",
+        "unit-tests.wsjcpp/src/"
     ],
     "exclude": [
-        "fhq-server/src/core/3rdParty",
-        "fhq-server/src/3rdParty/quazip-0.7.3",
+        "src/core/3rdParty",
+        "src/3rdParty/quazip-0.7.3",
         "json.hpp",
         ".DS_Store"
     ],

@@ -23,35 +23,33 @@ check_ret $? "build code-check"
 check_ret $? "code-check"
 cd ../..
 
-cd fhq-server/unit-tests.wsjcpp
+cd unit-tests.wsjcpp
 check_ret $? "change directory to unit-tests.wsjcpp"
 ./build_simple.sh
 check_ret $? "build unit-tests"
 ./unit-tests
 check_ret $? "unit-tests"
-cd ../..
-
-# hardcode for build travis
-cd user-web-site
-check_ret $? "change directory to user-web-site"
-npm install
-check_ret $? "npm install requirements for user-web-site"
-npm run build-prod
-check_ret $? "angular build-prod user-web-site"
 cd ..
 
-cd fhq-server
+# hardcode for build travis
+cd web-user
+check_ret $? "change directory to web-user"
+npm install
+check_ret $? "npm install requirements for web-user"
+npm run build-prod
+check_ret $? "angular build-prod web-user"
+cd ..
+
 check_ret $? "change directory to fhq-server"
 python3 -m sea5kg_cpplint
 check_ret $? "sea5kg_cpplint"
 qmake --version # TODO when will be removed all then qt need remove this line
 ./build_simple.sh
 check_ret $? "build fhq-server"
-./fhq-server -wd ../ci/travis/data version
+./fhq-server -wd ./ci/travis/data version
 check_ret $? "print version of fhq-server"
-./fhq-server -wd ../ci/travis/data -cdc
+./fhq-server -wd ./ci/travis/data -cdc
 check_ret $? "test connection to database"
-cd ..
 
 cd fhq-server-tests
 check_ret $? "Change directory to tests"
