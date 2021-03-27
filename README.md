@@ -5,14 +5,17 @@
 
 Backend && Frontend for FreeHackQuest on Qt and WebSockets
 
-**!!! simple start here** [docker-compose example](https://github.com/freehackquest/fhq-server/tree/master/contrib/docker_compose_example)!!!
+## docker-compose example
 
-* [HOW-TO-BUILD-AND-DEVELOP](https://github.com/freehackquest/fhq-server/tree/master/install/HOW-TO-BUILD-AND-DEVELOP.md)
-* [INSTALL_FROM_PPA](https://github.com/freehackquest/fhq-server/tree/master/install/INSTALL_FROM_PPA.md)
+[docker-compose example](https://github.com/freehackquest/fhq-server/tree/master/contrib/docker_compose_example)
+
+
+<!-- * [INSTALL_FROM_PPA](https://github.com/freehackquest/fhq-server/tree/master/install/INSTALL_FROM_PPA.md) 
 
 * Configure autostart
     * [SYSTEMD](install/SYSTEMD.md)
     * [INITD](install/INITD.md)
+-->
 
 ## Distribution
 
