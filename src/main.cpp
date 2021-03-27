@@ -140,6 +140,7 @@ int main(int argc, char** argv) {
     } else if (helpArgs.has("export-libfreehackquest-client-py")) {
         ExportLibWsjCppCliPy *pExportPython = new ExportLibWsjCppCliPy();
         pExportPython->exportLib();
+        delete pExportPython;
         return 0;
     } else if (helpArgs.has("export-libfhqcli-web-javascript")) {
         WsjCpp::ExportLibCliWebJS *pExportWebJS = new WsjCpp::ExportLibCliWebJS();
@@ -150,6 +151,7 @@ int main(int argc, char** argv) {
         pExportWebJS->setAppVersion(appVersion);
         pExportWebJS->setPrefixRepositoryURL("https://github.com/freehackquest/");
         pExportWebJS->exportLib();
+        delete pExportWebJS;
         return 0;
     } else if (helpArgs.has("export-libfhqcli-java-android")) {
         ExportLibWsjCppCliJavaAndroid *pExportJavaAndroid = new ExportLibWsjCppCliJavaAndroid();
@@ -158,6 +160,7 @@ int main(int argc, char** argv) {
         pExportJavaAndroid->setVersion(std::string(WSJCPP_APP_VERSION));
         // pExportJavaAndroid->setPrefixRepositoryURL("https://github.com/freehackquest/");
         pExportJavaAndroid->exportLib();
+        delete pExportJavaAndroid;
         return 0;
     } else if (helpArgs.has("show-employees")) {
         WsjcppPrintTree tree("WsjcppEmployees (" + std::to_string(g_pWsjcppEmployees->size()) + ")");
