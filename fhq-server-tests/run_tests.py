@@ -8,7 +8,6 @@ import fhqtest
 import libtestfhq
 import libtestwebserver
 import libtestusers
-import libtestpublicevents
 import libteststats
 import libtestquests
 import libtestknowledgebase
@@ -18,7 +17,6 @@ TESTS = [
     libtestwebserver,
     libtestusers,
     libtestquests,
-    libtestpublicevents,
     libtestknowledgebase,
     libteststats
 ]
