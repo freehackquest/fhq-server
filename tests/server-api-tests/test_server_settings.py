@@ -21,8 +21,6 @@ def test_server_settings_readonly(admin_session):
     assert server_api["result"] == "FAIL"
     print(server_api)
 
-    # generate_random
-
 def test_server_settings_update(admin_session):
     """ Server settings """
     print(test_server_settings_update.__doc__)
