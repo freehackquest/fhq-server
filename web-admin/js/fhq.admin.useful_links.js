@@ -67,7 +67,7 @@ fhq.pages['useful_links'] = function(){
                 <tbody id="list">
                 </tbody>
             </table>`
-        )
+        );
         for(var i in r.data.items){
             var ul = r.data.items[i];
             console.log(ul);

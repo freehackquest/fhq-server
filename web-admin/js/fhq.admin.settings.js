@@ -61,8 +61,6 @@ fhq.pages['settings'] = function(idelem) {
             }
             
             var settid = 'setting_name_' + sett.name;
-            
-            var input_type = 'text';
             var edit_button = ''
                 + '  <div class="swa-button edit-settings" '
                 + '     groupid="' + groupid + '" '
@@ -141,7 +139,7 @@ fhq.pages['settings'] = function(idelem) {
                 );
                 $('#' + settid).val(sett.value == true ? 'yes' : 'no');
             } else {
-                console.error("Unknown type of settings: ", sett)
+                console.error("Unknown type of settings: ", sett);
             }
         }
         
@@ -156,7 +154,7 @@ fhq.pages['settings'] = function(idelem) {
             var val = $('#' + settid).val();
             
             $('#modalSettings .modal-body').html('');
-            $('#modalSettings .modal-body').append('<h3>' + fhq.t(groupid) + '/' + fhq.t(settid) + '</h3>')
+            $('#modalSettings .modal-body').append('<h3>' + fhq.t(groupid) + '/' + fhq.t(settid) + '</h3>');
             
             if(setttype == 'string'){
                 $('#modalSettings .modal-body').append(
