@@ -104,7 +104,7 @@ def generate_random_uuid():
     return ret
 
 def check_response(resp, msg_success):
-    alert(resp == None, 'Wrong response')
+    alert(resp is None, 'Wrong response')
     if resp['result'] == 'FAIL':
         log_err(resp['error'])
     else:
