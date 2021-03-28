@@ -117,7 +117,7 @@ def callattr_ahead_of_alltests(): # request
     print("Before tests")
     assert start_server() is True
     yield
-    print("After tests")
+    print("\nAfter tests")
     stop_server()
 
 def check_port(host, port):
