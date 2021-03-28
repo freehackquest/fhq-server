@@ -13,7 +13,6 @@ import libtestpublicevents
 import libteststats
 import libtestquests
 import libtestknowledgebase
-import libtestserversettings
 
 TESTS_PASSED = False
 TESTS = [
@@ -23,7 +22,6 @@ TESTS = [
     libtestscoreboard,
     libtestpublicevents,
     libtestknowledgebase,
-    libtestserversettings,
     libteststats
 ]
 
