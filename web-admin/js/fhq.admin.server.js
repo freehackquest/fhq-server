@@ -43,7 +43,7 @@ fhq.pages['server_info'] = function(){
 		el.append(''
 			+ '<div class="swa-card">'
 			+ '	 <h3>Server uptime</h3>'
-			+ '  <p>Server started: ' + new Date(r.data.server_started) + '</p>'
+			+ '  <p>Server started: ' + new Date(st) + '</p>'
 			+ '  <p id="server_uptime">Server uptime: ' + fhq.formatUptime(r.data.server_uptime_sec) + ' sec</p>'
 			+ '</div><br>'
 		);

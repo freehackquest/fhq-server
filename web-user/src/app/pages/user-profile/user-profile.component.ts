@@ -2,8 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FhqService } from '../../services/fhq.service';
 import { SpinnerService } from '../../services/spinner.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
+import { DialogsService } from '../../services/dialogs.service';
 import { FormControl, Validators } from '@angular/forms';
 
 @Component({
@@ -43,8 +42,8 @@ export class UserProfileComponent implements OnInit {
     private _route: ActivatedRoute,
     private _router: Router,
     private _cdr: ChangeDetectorRef,
-    private _modalService: NgbModal,
-    private _fhq: FhqService
+    public _dialogs: DialogsService,
+    private _fhq: FhqService,
   ) {
 
   }
@@ -81,11 +80,6 @@ export class UserProfileComponent implements OnInit {
       this.userId = 0;
     }
     this._spinnerService.hide();
-  }
-
-  openDialogSignIn() {
-    const modalRef = this._modalService.open(ModalDialogSignInComponent);
-    modalRef.componentInstance.name = 'SignIn';
   }
 
   doChangeUserInfo() {

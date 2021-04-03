@@ -52,7 +52,7 @@ import { GamesComponent } from './pages/games/games.component';
 import { FeedbackComponent } from './pages/feedback/feedback.component';
 import { ConfidencialComponent } from './pages/confidencial/confidencial.component';
 import { KnowledgeBaseComponent } from './pages/knowledge-base/knowledge-base.component';
-import { ModalDialogSignInComponent } from './dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
+import { ModalSignInDialog } from './dialogs/modal-signin-dialog/modal-signin-dialog.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 import { AboutComponent } from './pages/about/about.component';
@@ -78,6 +78,8 @@ import { UserFavoritesUsefulLinksComponent } from './pages/user-favorites-useful
 import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { UsefulLinkViewComponent } from './pages/useful-link-view/useful-link-view.component';
 import { CtfWallComponent } from './pages/ctf-wall/ctf-wall.component';
+import { GameComponent } from './pages/game/game.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 export function getHighlightLanguages() {
   return {
@@ -110,7 +112,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     FeedbackComponent,
     ConfidencialComponent,
     KnowledgeBaseComponent,
-    ModalDialogSignInComponent,
+    ModalSignInDialog,
     UserProfileComponent,
     AboutComponent,
     QuestProposalComponent,
@@ -127,7 +129,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     UserTokensComponent,
     UserFavoritesUsefulLinksComponent,
     UsefulLinkViewComponent,
-    CtfWallComponent
+    CtfWallComponent,
+    GameComponent
   ],
   imports: [
     BrowserModule,
@@ -172,6 +175,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     MatChipsModule,
     MatTreeModule,
     MatToolbarModule,
+    MatDialogModule,
     MatRippleModule
   ],
   exports: [
@@ -214,7 +218,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
   bootstrap: [AppComponent],
   entryComponents: [
     SpinnerComponent,
-    ModalDialogSignInComponent,
+    ModalSignInDialog,
     ModalDialogQuestFeedbackComponent,
   ],
 })

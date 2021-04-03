@@ -62,8 +62,8 @@ fhq.pages['quests_proposal'] = function(){
             + '        <tbody id="list">'
             + '        </tbody>'
             + '</table>'
-        )
-        for(var i in r.data.items){
+        );
+        for (var i in r.data.items) {
             var qp = r.data.items[i];
             console.log(qp);
             $('#list').append('<tr>'

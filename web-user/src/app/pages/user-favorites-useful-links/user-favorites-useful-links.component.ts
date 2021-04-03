@@ -1,9 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FhqService } from '../../services/fhq.service';
 import { SpinnerService } from '../../services/spinner.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
 import { MatTableDataSource } from '@angular/material/table';
+import { DialogsService } from '../../services/dialogs.service';
 
 export interface UserFavoriteLinkElement {
   id: number;
@@ -32,7 +31,7 @@ export class UserFavoritesUsefulLinksComponent implements OnInit {
     private _cdr: ChangeDetectorRef,
     private _fhq: FhqService,
     private _spinnerService: SpinnerService,
-    private _modalService: NgbModal,
+    public _dialogs: DialogsService,
   ) {
 
   }
@@ -102,10 +101,5 @@ export class UserFavoritesUsefulLinksComponent implements OnInit {
     })
       .done((r: any) => this.successUsefulLinksUserUnfavorite(r))
       .fail((err: any) => this.errorUsefulLinksUserUnfavorite(err));
-  }
-
-  openDialogSignIn() {
-    const modalRef = this._modalService.open(ModalDialogSignInComponent);
-    modalRef.componentInstance.name = 'SignIn';
   }
 }

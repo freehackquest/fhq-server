@@ -53,6 +53,9 @@ class FakeStorage : public WsjcppStorage {
         FakeStorage() {
             m_pVersion = new FakeVersion();
         };
+        ~FakeStorage() {
+            delete m_pVersion;
+        };
         virtual bool applyConfigFromFile(const std::string &sFilePath) {
             return true;
         };

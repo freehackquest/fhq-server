@@ -3,10 +3,8 @@ import { SpinnerService } from '../../services/spinner.service';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { FhqService } from '../../services/fhq.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
 import { L10nTranslationService } from 'angular-l10n';
-
+import { DialogsService } from '../../services/dialogs.service';
 
 @Component({
   selector: 'app-knowledge-base',
@@ -34,10 +32,10 @@ export class KnowledgeBaseComponent implements OnInit {
     private _spinnerService: SpinnerService,
     private _route: ActivatedRoute,
     private _router: Router,
-    private _modalService: NgbModal,
     private _cdr: ChangeDetectorRef,
     private _zone: NgZone,
     public _fhq: FhqService,
+    public _dialogs: DialogsService,
   ) {
       // nothing
   }
@@ -142,7 +140,7 @@ export class KnowledgeBaseComponent implements OnInit {
     if(this._fhq.isAuthorized) {
       this.editMode = true;
     } else {
-      this.openDialogSignIn()
+      this._dialogs.openSignInDialog()
     }
   }
 
@@ -163,7 +161,7 @@ export class KnowledgeBaseComponent implements OnInit {
       .done((r: any) => this.successSendEdition(r))
       .fail((err: any) => this.errorSendEdition(err));
     } else {
-      this.openDialogSignIn()
+      this._dialogs.openSignInDialog()
     }
   }
 
@@ -177,11 +175,6 @@ export class KnowledgeBaseComponent implements OnInit {
   errorSendEdition(err: any) {
     this.errorMessage = "Error sending propolsol: " + err.error;
     console.error(err);
-  }
-
-  openDialogSignIn() {
-    const modalRef = this._modalService.open(ModalDialogSignInComponent);
-    modalRef.componentInstance.name = 'SignIn';
   }
 
   update_page(id) {

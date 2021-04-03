@@ -8,22 +8,16 @@ import fhqtest
 import libtestfhq
 import libtestwebserver
 import libtestusers
-import libtestscoreboard
-import libtestpublicevents
 import libteststats
 import libtestquests
 import libtestknowledgebase
-import libtestserversettings
 
 TESTS_PASSED = False
 TESTS = [
     libtestwebserver,
     libtestusers,
     libtestquests,
-    libtestscoreboard,
-    libtestpublicevents,
     libtestknowledgebase,
-    libtestserversettings,
     libteststats
 ]
 

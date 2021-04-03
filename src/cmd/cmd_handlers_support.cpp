@@ -64,7 +64,7 @@ void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
 
     // TODO move to EmployMails
     std::string sMailToAdmin = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();
-    std::string sSubject = "Feedback (FreeHackQuest 2017)";
+    std::string sSubject = "Feedback (freehackquest.com)";
     std::string sContext = "Feedback \n"
                        "Type: " + sType + "\n"
                        "From: " + sEmail + "\n"

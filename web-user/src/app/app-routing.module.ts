@@ -31,6 +31,7 @@ import { CtfAttackDefenceComponent } from './pages/ctf-attack-defence/ctf-attack
 import { CtfWallComponent } from './pages/ctf-wall/ctf-wall.component';
 import { UserFavoritesUsefulLinksComponent } from './pages/user-favorites-useful-links/user-favorites-useful-links.component'
 import { UsefulLinkViewComponent } from './pages/useful-link-view/useful-link-view.component';
+import { GameComponent } from './pages/game/game.component';
 
 const routes: Routes = [{
     path: 'knowledge-base',
@@ -60,7 +61,7 @@ const routes: Routes = [{
     path: 'user-favorites-useful-links',
     component: UserFavoritesUsefulLinksComponent
   }, {
-  path: 'user-tokens',
+    path: 'user-tokens',
     component: UserTokensComponent
   }, {
     path: 'about',
@@ -98,6 +99,9 @@ const routes: Routes = [{
   }, {
     path: 'games/:id',
     component: GamesComponent
+  }, {
+    path: 'game/:id',
+    component: GameComponent
   }, {
     path: 'confidencial',
     component: ConfidencialComponent

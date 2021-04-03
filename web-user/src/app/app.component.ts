@@ -6,10 +6,9 @@ import {
   L10nLocale,
   L10nTranslationService
 } from "angular-l10n";
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalDialogSignInComponent } from './dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
+import { DialogsService } from './services/dialogs.service';
 import { FhqService } from './services/fhq.service';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { SpinnerService } from './services/spinner.service';
 import { Location } from '@angular/common';
 import { MediaMatcher } from '@angular/cdk/layout';
@@ -45,13 +44,12 @@ export class AppComponent implements OnInit, OnDestroy {
     @Inject(L10N_CONFIG) private l10nConfig: L10nConfig,
     public _translationService: L10nTranslationService,
     private _cdr: ChangeDetectorRef,
-    private _modalService: NgbModal,
     public _fhq: FhqService,
     private _router: Router,
     private _location: Location,
     private _spinner: SpinnerService,
-    private _activatedRoute: ActivatedRoute,
     private _media: MediaMatcher,
+    public _dialogs: DialogsService,
   ) {
     //
     this._router.routeReuseStrategy.shouldReuseRoute = function(){
@@ -66,7 +64,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.mobileQuery = _media.matchMedia('(max-width: 600px)');
+    this.mobileQuery = this._media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => _cdr.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
   }
@@ -154,11 +152,6 @@ export class AppComponent implements OnInit, OnDestroy {
     } else {
       return "";
     }
-  }
-
-  openDialogSignIn() {
-    const modalRef = this._modalService.open(ModalDialogSignInComponent);
-    modalRef.componentInstance.name = 'SignIn';
   }
 
   serverInfo(data: any) {

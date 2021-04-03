@@ -3,9 +3,8 @@ import { FhqService } from '../../services/fhq.service';
 // import { FreeHackQuestClient } from '../../services/libfhqcli-web-js.service';
 import { SpinnerService } from '../../services/spinner.service';
 import { Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
 import { MatTableDataSource } from '@angular/material/table';
+import { DialogsService } from '../../services/dialogs.service';
 
 export interface UserTokensElement {
   id: number;
@@ -31,11 +30,11 @@ export class UserTokensComponent implements OnInit {
   constructor(
     private _spinner: SpinnerService,
     private _router: Router,
-    private _modalService: NgbModal,
     private _fhq: FhqService,
     // private _fhq2: FreeHackQuestClient,
     private _cdr: ChangeDetectorRef,
     private _spinnerService: SpinnerService,
+    public _dialogs: DialogsService,
   ) { }
 
   ngOnInit() {
@@ -113,10 +112,5 @@ export class UserTokensComponent implements OnInit {
     })
       .done((r: any) => this.successUserTokensDelete(r))
       .fail((err: any) => this.errorUserTokensDelete(err));
-  }
-
-  openDialogSignIn() {
-    const modalRef = this._modalService.open(ModalDialogSignInComponent);
-    modalRef.componentInstance.name = 'SignIn';
   }
 }
