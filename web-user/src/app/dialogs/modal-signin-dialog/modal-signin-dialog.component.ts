@@ -20,13 +20,13 @@ export interface DialogData {
 })
 export class ModalSignInDialog implements OnInit {
   errorMessage: string = null;
-  name: string = '';
+  name = '';
   @ViewChild('signinEmail', { static: true }) signinEmail : ElementRef;
   @ViewChild('signinPassword', { static: true }) signinPassword : ElementRef;
 
   email: string;
   password: string;
-  width: string = "450px";
+  width = "450px";
   constructor(
     public _activeModal: NgbActiveModal,
     private _route: ActivatedRoute,
