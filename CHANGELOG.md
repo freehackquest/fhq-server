@@ -5,11 +5,29 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.38] - ??
+## [v0.2.38] - 2021-04-03 (2021 Apr 3)
+
+### Added
+
+- Addded shield 'Server API Coverage'
 
 ### Fixed
 
 - Fixed #304 translation 'questHints'
+
+### Changed
+
+- Redesign sign dialog to material
+- Updated behaviour for signin dialog
+- Replaced subject 'FreeHackQuest 2017' to freehackquest.com
+- Redesign test public events to pytest
+- Redesign test scoreboard to pytest
+- Redesign test_serversettings to pytest
+
+### Security
+
+- Fixed lgtm alerts
+- Added lgtm c++ to README.md
 
 ## [v0.2.37] - 2021-03-27 (2021 Mar 27)
 
