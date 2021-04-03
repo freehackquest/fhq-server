@@ -1,8 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { FhqService } from '../../services/fhq.service';
 import { SpinnerService } from '../../services/spinner.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
+import { DialogsService } from '../../services/dialogs.service';
 
 @Component({
   selector: 'app-quest-proposal',
@@ -29,7 +28,7 @@ export class QuestProposalComponent implements OnInit {
     private _spinner: SpinnerService,
     private _cdr: ChangeDetectorRef,
     public _fhq: FhqService,
-    private _modalService: NgbModal,
+    public _dialogs: DialogsService,
   ) { }
 
   ngOnInit() {
@@ -65,11 +64,6 @@ export class QuestProposalComponent implements OnInit {
     this._spinner.hide();
     // this.resultOfChangeUserInfo = err.error;
     this._cdr.detectChanges();
-  }
-
-  openDialogSignIn() {
-    const modalRef = this._modalService.open(ModalDialogSignInComponent);
-    modalRef.componentInstance.name = 'SignIn';
   }
 
   tryNewQuest() {

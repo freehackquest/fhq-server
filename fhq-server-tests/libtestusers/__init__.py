@@ -107,7 +107,7 @@ def run_tests():
 
     fhqtest.print_bold("Check unique user3 by email...")
     user3_again = fhqtest.admin_session.users_add(user3_data_again)
-    fhqtest.alert(user3_again == None, 'Could not get response (users_add/user3 again)')
+    fhqtest.alert(user3_again is None, 'Could not get response (users_add/user3 again)')
     if user3_again['result'] == "DONE":
         fhqtest.log_err("Wrong creating user email must be unique")
     else:
@@ -115,7 +115,7 @@ def run_tests():
 
     fhqtest.print_bold("Check unique user by uuid...")
     user3_again2 = fhqtest.admin_session.users_add({"uuid": USER3_UUID, "email": "user3_test", "nick": "nick_user3_again", "password": "user3", "role": "user"})
-    fhqtest.alert(user3_again2 == None, 'Could not get response (users_add/user3 again2)')
+    fhqtest.alert(user3_again2 is None, 'Could not get response (users_add/user3 again2)')
     if user3_again2['result'] == "DONE":
         fhqtest.log_err("Wrong creating user uuid must be unique")
     else:
@@ -128,8 +128,8 @@ def run_tests():
     for usr in users["data"]:
         if usr['email'] == "user2":
             user_found = usr
-    fhqtest.alert(user_found == None, 'Could not find user2')
-    if user_found != None:
+    fhqtest.alert(user_found is None, 'Could not find user2')
+    if user_found is not None:
         fhqtest.print_success("User2 found success - OK")
 
     fhqtest.print_bold("Update user country... ")
@@ -140,7 +140,7 @@ def run_tests():
         "country": "Some country",
         "university": "Some university",
     })
-    fhqtest.alert(user2_update == None, 'Could not find user2')
+    fhqtest.alert(user2_update is None, 'Could not find user2')
     fhqtest.check_response(user2_update, "User2 succesfull updated")
     user2_update = user2_update["data"]
     if "country" not in user2_update:
@@ -205,7 +205,7 @@ def run_tests():
 
     # TODO
     user2_found2 = fhqtest.admin_session.users_info({"uuid": user_found["id"]})
-    fhqtest.alert(user2_found2 == None, 'Could not get user2')
+    fhqtest.alert(user2_found2 is None, 'Could not get user2')
     fhqtest.check_response(user2_found2, "User2 succesfull got (2)")
     if "email" not in user2_found1:
         fhqtest.throw_err("Not found field 'email' in response user2_found1")

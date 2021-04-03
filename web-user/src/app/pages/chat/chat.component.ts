@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { SpinnerService } from '../../services/spinner.service';
 import { FhqService } from '../../services/fhq.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
+import { DialogsService } from '../../services/dialogs.service';
 
 declare var fhq: any;
 
@@ -22,7 +21,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     private _spinnerService: SpinnerService,
     private _cdr: ChangeDetectorRef,
     public _fhq: FhqService,
-    private _modalService: NgbModal,
+    public _dialogs: DialogsService,
   ) { }
 
   ngOnInit() {
@@ -93,10 +92,5 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.dataList.push(m);
     this._cdr.detectChanges();
     this.chatScrollToBottom();
-  }
-
-  openDialogSignIn() {
-    const modalRef = this._modalService.open(ModalDialogSignInComponent);
-    modalRef.componentInstance.name = 'SignIn';
   }
 }

@@ -1,6 +1,6 @@
 <div class="alert alert-danger" *ngIf="userId == 0">
   Please authorize
-  <div class="btn btn-primary" (click)="openDialogSignIn()" l10nTranslate>signin</div>
+  <div class="btn btn-primary" (click)="_dialogs.openSignInDialog();" l10nTranslate>signin</div>
 </div>
 
 <mat-card *ngIf="userId != 0">

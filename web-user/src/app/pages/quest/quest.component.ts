@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer} from '@angular/platform-browser';
 
 import { ModalDialogQuestFeedbackComponent } from '../../dialogs/modal-dialog-quest-feedback/modal-dialog-quest-feedback.component';
-import { ModalDialogSignInComponent } from '../../dialogs/modal-dialog-sign-in/modal-dialog-sign-in.component';
+import { DialogsService } from '../../services/dialogs.service';
 import * as marked from 'marked';
 
 @Component({
@@ -51,6 +51,7 @@ export class QuestComponent implements OnInit {
     private _router: Router,
     private _modalService: NgbModal,
     private _sanitizer: DomSanitizer,
+    public _dialogs: DialogsService,
   ) { }
 
   ngOnInit() {
@@ -106,11 +107,6 @@ export class QuestComponent implements OnInit {
     this.errorMessage = err.error;
     this._cdr.detectChanges();
     console.error(err);
-  }
-
-  openDialogSignIn() {
-    const modalRef = this._modalService.open(ModalDialogSignInComponent);
-    modalRef.componentInstance.name = 'SignIn';
   }
 
   checkAnswer() {

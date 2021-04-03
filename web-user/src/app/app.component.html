@@ -12,7 +12,8 @@
     <mat-list>
       <!-- user menu -->
       <mat-list-item *ngIf="!_fhq.isAuthorized">
-        <button mat-raised-button color="primary" class="main-left-menu-item" (click)="openDialogSignIn();" l10nTranslate>signin</button>
+        <button mat-raised-button color="primary" class="main-left-menu-item" 
+          (click)="_dialogs.openSignInDialog();" l10nTranslate>signin</button>
       </mat-list-item>
       
       <mat-list-item *ngIf="_fhq.isAuthorized">

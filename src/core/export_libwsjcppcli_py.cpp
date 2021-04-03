@@ -86,6 +86,7 @@ public:
     }
 
     ~PyCodeBuilder() {
+        delete m_pCurr;
         // std::cout << "destruct something else [" << m_pCurr->getLine() << "]\n";
     }
 

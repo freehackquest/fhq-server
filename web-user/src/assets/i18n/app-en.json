@@ -122,7 +122,7 @@
     "copyright": "Copyright",
     "solved": "Solved",
     "attached_files": "Attached Files",
-    "quest_hints": "Hints",
+    "questHints": "Hints",
     "filename": "Filename",
     "filesize": "Filesize",
     "share": "Share",
@@ -176,5 +176,6 @@
     "nothingToFoundByYourRequest": "Nothing to found by your request",
     "feelFreeToContactUsByEmail": "Feel free to contact us by email",
     "administration-panel": "Admin panel",
+    "haveNotYetAccount": "Don't have an account?",
     "": ""
 }
