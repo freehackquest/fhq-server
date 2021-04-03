@@ -41,20 +41,10 @@ export class ModalSignInDialog implements OnInit {
   ) { }
 
   ngOnInit() {
-
+    setTimeout(()=>{ // this will make the execution after the above boolean has changed
+      this.signinEmail.nativeElement.focus();
+    },1000);
   }
-
-  // openDialog(): void {
-  //   const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
-  //     width: '250px',
-  //     data: {name: this.name, animal: this.animal}
-  //   });
-  // 
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     console.log('The dialog was closed');
-  //     this.animal = result;
-  //   });
-  // }
 
   onCloseClick(): void {
     this.dialogRef.close();
@@ -84,19 +74,6 @@ export class ModalSignInDialog implements OnInit {
     this.dialogRef.close();
   }
 
-  signInGo() {
-    const email = this.signinEmail.nativeElement.value.toLowerCase().trim();
-    const password = this.signinPassword.nativeElement.value;
-    this._spinnerService.show();
-    this.errorMessage = null;
-    fhq.login({
-      "email": email,
-      "password": password,
-    })
-      .done((r: any) => this.successResponse(r))
-      .fail((err: any) => this.errorResponse(err));
-  }
-
   successResponse(r: any) {
     console.log("successResponse: ", r);
     this._cdr.detectChanges();
@@ -112,5 +89,17 @@ export class ModalSignInDialog implements OnInit {
     this._spinnerService.hide();
     this.errorMessage = err.error;
     this._cdr.detectChanges();
+  }
+
+  onKeydownEmail(event: any) {
+    if (event.key === "Enter") {
+      this.signinPassword.nativeElement.focus();
+    }
+  }
+
+  onKeydownPassword(event: any) {
+    if (event.key === "Enter") {
+      this.onSignInClick()
+    }
   }
 }

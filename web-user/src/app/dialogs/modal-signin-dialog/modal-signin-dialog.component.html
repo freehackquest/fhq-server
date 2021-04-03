@@ -7,11 +7,11 @@
   </mat-error>
   <mat-form-field>
     <mat-label l10nTranslate>emailAddress</mat-label>
-    <input placeholder="Enter email" matInput [(ngModel)]="data.email">
+    <input #signinEmail placeholder="Enter email" (keydown)="onKeydownEmail($event)" matInput [(ngModel)]="data.email">
   </mat-form-field>
   <mat-form-field>
     <mat-label l10nTranslate>password</mat-label>
-    <input type="password" placeholder="Enter password" matInput [(ngModel)]="data.password">
+    <input #signinPassword type="password" (keydown)="onKeydownPassword($event)" placeholder="Enter password" matInput [(ngModel)]="data.password">
   </mat-form-field>
   <small style="text-align: right; color: blue; cursor: pointer" (click)="openResetPasswordPage()" 
     l10nTranslate>resetPassword</small>
