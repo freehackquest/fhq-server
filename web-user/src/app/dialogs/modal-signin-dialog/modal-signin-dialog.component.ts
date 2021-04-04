@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, Input, ChangeDetectorRef, NgZone, ViewChild, ElementRef } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectorRef, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
