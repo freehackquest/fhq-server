@@ -383,8 +383,8 @@ REGISTRY_CMD(CmdHandlerGameInfo)
 CmdHandlerGameInfo::CmdHandlerGameInfo()
     : CmdHandlerBase("game_info", "Return game info") {
 
-    setAccessUnauthorized(false);
-    setAccessUser(false);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
     setAccessAdmin(true);
 
     // validation and description input fields
@@ -409,6 +409,42 @@ void CmdHandlerGameInfo::handle(ModelRequest *pRequest) {
     jsonResponse["data"] = modelGame.toJson();
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
+
+// ---------------------------------------------------------------------
+// Info Game
+
+REGISTRY_CMD(CmdHandlerGamesInfo)
+
+CmdHandlerGamesInfo::CmdHandlerGamesInfo()
+    : CmdHandlerBase("games.info", "Return info about game by uuid") {
+
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
+
+    // validation and description input fields
+    requireStringParam("uuid", "Global Identificator of the Game")
+        .addValidator(new WsjcppValidatorUUID());
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerGamesInfo::handle(ModelRequest *pRequest) {
+    EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
+
+    std::string sUuid = pRequest->getInputString("uuid", "");
+
+    ModelGame modelGame;
+    if (!pEmployGames->findGame(sUuid, modelGame)) {
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Game not found"));
+        return;
+    }
+    // TODO split for user and for admin
+    nlohmann::json jsonResponse;
+    jsonResponse["data"] = modelGame.toJson();
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
 
 // ---------------------------------------------------------------------
 // Update Game

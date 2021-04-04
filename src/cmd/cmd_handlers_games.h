@@ -41,11 +41,21 @@ class CmdHandlerGameImport : public CmdHandlerBase {
 };
 
 // ---------------------------------------------------------------------
+// depreacted 
 
 class CmdHandlerGameInfo : public CmdHandlerBase {
 
     public:
         CmdHandlerGameInfo();
+        virtual void handle(ModelRequest *pRequest);
+};
+
+// ---------------------------------------------------------------------
+
+class CmdHandlerGamesInfo : public CmdHandlerBase {
+
+    public:
+        CmdHandlerGamesInfo();
         virtual void handle(ModelRequest *pRequest);
 };
 

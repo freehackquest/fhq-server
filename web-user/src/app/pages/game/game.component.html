@@ -3,3 +3,28 @@
 <mat-error *ngIf="errorMessage != null">
     ERROR: {{ errorMessage }}
 </mat-error>
+
+<div *ngIf="gameInfo != null">
+    
+    <h3>{{ gameInfo['name'] }} (<div class="d-inline-block" l10nTranslate>maximumPoints</div>: {{ gameInfo['maxscore'] }}) </h3>
+    <img width=250px height=250px src="/public/games/{{ gameInfo['local_id'] }}"><br>
+    <div>
+        <div class="d-inline-block" l10nTranslate>organizators</div>: {{ gameInfo['organizators'] }} 
+    </div>
+
+    <!-- small>{{ g.date_start_formated | date:'d MMM y, HH:mm' }} - {{ g.date_stop_formated | date:'d MMM y, HH:mm' }} </small><br -->
+    <strong>Description: {{ gameInfo['description'] }}</strong><br>
+    <p>{{ gameInfo['date_restart'] }}</p>
+    <p>{{ gameInfo['date_start'] }}</p>
+    <p>{{ gameInfo['date_stop'] }}</p>
+    ​​<p>{{ gameInfo['form'] }}</p>
+    ​​​​​​<p>{{ gameInfo['state'] }}</p>
+    ​​​​​​​​<p>{{ gameInfo['type'] }}</p>
+</div>
+
+
+
+
+
+
+
