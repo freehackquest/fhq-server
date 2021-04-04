@@ -24,6 +24,12 @@ ModelGame::ModelGame() {
     m_pValidatorGameForm = new ValidatorGameForm();
 }
 
+ModelGame::~ModelGame() {
+    delete m_pValidatorGameType;
+    delete m_pValidatorGameState;
+    delete m_pValidatorGameForm;
+}
+
 // ---------------------------------------------------------------------
 
 int ModelGame::localId() const {
