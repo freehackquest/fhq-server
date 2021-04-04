@@ -125,6 +125,7 @@ def init_enviroment():
     global TEST_SERVER
     global TEST_USER_ID
     global TEST_USER_DATA
+    global GAME1
     
     if not os.path.exists(TMP_DIR):
         os.makedirs(TMP_DIR)
