@@ -387,6 +387,8 @@ CmdHandlerGameInfo::CmdHandlerGameInfo()
     setAccessUser(true);
     setAccessAdmin(true);
 
+    setDeprecatedFromVersion("0.2.39");
+
     // validation and description input fields
     requireStringParam("uuid", "Global Identificator of the Game")
         .addValidator(new WsjcppValidatorUUID());
@@ -421,6 +423,8 @@ CmdHandlerGamesInfo::CmdHandlerGamesInfo()
     setAccessUnauthorized(true);
     setAccessUser(true);
     setAccessAdmin(true);
+
+    setActivatedFromVersion("0.2.39");
 
     // validation and description input fields
     requireStringParam("uuid", "Global Identificator of the Game")
