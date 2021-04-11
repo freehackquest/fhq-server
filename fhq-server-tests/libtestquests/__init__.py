@@ -9,7 +9,7 @@ import base64
 from pprint import pprint
 import time
 import fhqtest
-from libfreehackquestclient import FreeHackQuestClient
+from freehackquest_libclient_py import FreeHackQuestClient
 
 TEST_NAME = 'Testing Quests'
 

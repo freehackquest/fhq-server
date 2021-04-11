@@ -10,7 +10,7 @@ import socket
 import pytest
 import docker
 
-from libfreehackquestclient import FreeHackQuestClient
+from freehackquest_libclient_py import FreeHackQuestClient
 
 def pytest_configure():
     """Global variables for pytests"""

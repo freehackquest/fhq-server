@@ -29,7 +29,7 @@ $ pytest-3 -rAs -c env-docker.ini tests_leaks.py
 Update python client library:
 
 ```
-$ ./update_libfreehackquestclient.sh
+$ ./update_freehackquest_libclient_py.sh
 ```
 
 Run pylint:

@@ -618,10 +618,10 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
 // ---------------------------------------------------------------------
 // List of Games
 
-REGISTRY_CMD(CmdHandlerGames)
+REGISTRY_CMD(CmdHandlerGamesList)
 
-CmdHandlerGames::CmdHandlerGames()
-    : CmdHandlerBase("games", "Method returned list of games") {
+CmdHandlerGamesList::CmdHandlerGamesList()
+    : CmdHandlerBase("games_list", "Method returned list of games") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -634,7 +634,7 @@ CmdHandlerGames::CmdHandlerGames()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGames::handle(ModelRequest *pRequest) {
+void CmdHandlerGamesList::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;

@@ -17,12 +17,12 @@ check_ret() {
 
 cd ../
 check_ret $? "Change to .."
-rm -rf ./libfreehackquest-client-py
-./fhq-server export-libfreehackquest-client-py
-check_ret $? "./fhq-server export-libfreehackquest-client-py"
+rm -rf ./freehackquest-libclient-py
+./fhq-server export-freehackquest-libclient-py
+check_ret $? "./fhq-server export-freehackquest-libclient-py"
 cd ./fhq-server-tests
 check_ret $? "cd ./fhq-server-tests"
-rm -rf libfreehackquestclient
-cp -r ../libfreehackquest-client-py/libfreehackquestclient libfreehackquestclient
+rm -rf freehackquest_libclient_py
+cp -r ../freehackquest-libclient-py/freehackquest_libclient_py freehackquest_libclient_py
 check_ret $? "Copy"
-rm -rf ../libfreehackquest-client-py
+rm -rf ../freehackquest-libclient-py

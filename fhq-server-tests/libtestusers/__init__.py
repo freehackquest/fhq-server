@@ -3,7 +3,7 @@
 
 from pprint import pprint
 import fhqtest
-from libfreehackquestclient import FreeHackQuestClient
+from freehackquest_libclient_py import FreeHackQuestClient
 
 USER1_UUID = "00000000-0000-0000-4001-000000000001"
 USER2_UUID = "00000000-0000-0000-4001-000000000002"

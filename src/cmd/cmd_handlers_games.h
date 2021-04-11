@@ -79,10 +79,10 @@ class CmdHandlerGameUpdateLogo : public CmdHandlerBase {
 
 // ---------------------------------------------------------------------
 
-class CmdHandlerGames : public CmdHandlerBase {
+class CmdHandlerGamesList : public CmdHandlerBase {
 
     public:
-        CmdHandlerGames();
+        CmdHandlerGamesList();
         virtual void handle(ModelRequest *pRequest);
 };
 
