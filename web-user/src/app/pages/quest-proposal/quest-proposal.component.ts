@@ -45,7 +45,7 @@ export class QuestProposalComponent implements OnInit {
   loadListGames() {
     this._spinner.show();
     this.listGames = [];
-    this._fhq.api().games()
+    this._fhq.api().games_list()
       .done((r: any) => this.successListGames(r))
       .fail((err: any) => this.errorListGames(err));
   }

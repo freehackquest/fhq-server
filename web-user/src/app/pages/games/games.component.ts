@@ -50,7 +50,7 @@ export class GamesComponent implements OnInit {
       "search": this.searchValue,
     }
     this._spinnerService.show();
-    this._fhq.api().games(_data)
+    this._fhq.api().games_list(_data)
       .done((r: any) => this.successResponse(r))
       .fail((err: any) => this.errorResponse(err));
   }
