@@ -4,4 +4,4 @@
 *.pyc
 tmp/*
 libfhqcli/*
-libfreehackquestclient/*
+freehackquest_libclient_py/*

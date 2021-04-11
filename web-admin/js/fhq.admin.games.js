@@ -406,7 +406,7 @@ fhq.pages['games'] = function(){
 	
 	window.fhq.changeLocationState({'games': '', 'onpage': onpage, 'page': page});
 
-	fhq.ws.games({'onpage': onpage, 'page': page}).done(function(r){
+	fhq.ws.games_list({'onpage': onpage, 'page': page}).done(function(r){
 		fhq.hideLoader();
 		console.log(r);
 		el.html('');

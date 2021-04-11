@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, Input, ChangeDetectorRef, NgZone, ViewChild, ElementRef } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectorRef, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
@@ -20,13 +20,13 @@ export interface DialogData {
 })
 export class ModalSignInDialog implements OnInit {
   errorMessage: string = null;
-  name: string = '';
+  name = '';
   @ViewChild('signinEmail', { static: true }) signinEmail : ElementRef;
   @ViewChild('signinPassword', { static: true }) signinPassword : ElementRef;
 
   email: string;
   password: string;
-  width: string = "450px";
+  width = "450px";
   constructor(
     public _activeModal: NgbActiveModal,
     private _route: ActivatedRoute,

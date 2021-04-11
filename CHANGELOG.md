@@ -5,6 +5,24 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.2.40] - 2021-04-11 (2021 Apr 11)
+
+### Added
+
+- New handler `games.info`
+
+### Changed
+
+- Renamed: api.games to api.games_list
+- Renamed libfreehackquestclient to freehackquest_lbclient_py
+- Method `games_info` allowed to all users.
+
+### Security
+
+- Fixed alerts by lgtm
+- npm audit fix
+- Fixed alerts by deepcode
+
 ## [v0.2.38] - 2021-04-03 (2021 Apr 3)
 
 ### Added

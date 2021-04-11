@@ -306,7 +306,7 @@ fhq.pages['quest_create'] = function() {
     $('#quest_create').unbind().bind('click', fhq.createQuest);
     $('#quest_create_close').unbind().bind('click', fhq.pages['quests']);
 
-    fhq.ws.games().done(function(r){
+    fhq.ws.games_list().done(function(r){
         console.log(r);
         for(var i in r.data) {
             $('#newquest_gameid').append('<option value="' + r.data[i]["local_id"] + '">' + r.data[i]["name"] + '</option>');
@@ -706,7 +706,7 @@ fhq.pages['quest_edit'] = function(questid) {
     $('#quest_update').unbind().bind('click', fhq.updateQuest);
     $('#quest_update_close').unbind().bind('click', fhq.pages['quests']);
 
-    fhq.ws.games().done(function(r){
+    fhq.ws.games_list().done(function(r){
         console.log(r);
         for(var i in r.data) {
             $('#edit_quest_gameid').append('<option value="' + r.data[i]["local_id"] + '">' + r.data[i]["name"] + '</option>');

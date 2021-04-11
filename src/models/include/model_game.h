@@ -9,6 +9,7 @@ class ModelGame {
     public:
 
         ModelGame();
+        ~ModelGame();
         
         int localId() const;
         void setLocalId(int nLocalId);

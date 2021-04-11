@@ -252,6 +252,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
                     QSqlRecord record_game = query_game.record();
                     int nGameID = record_game.value("id").toInt();
                     jsonGame["id"] = nGameID;
+                    jsonGame["uuid"] = record_game.value("uuid").toString().toStdString();
                     jsonGame["title"] = record_game.value("title").toString().toStdString();
                     jsonGame["logo"] = QString(sBaseGamesURL + QString::number(nGameID) + ".png").toStdString();
                 } else {

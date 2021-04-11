@@ -13,6 +13,7 @@ export class GameComponent implements OnInit {
   gameuuid: string;
   errorMessage: string = null;
   subscription: any = null;
+  gameInfo: any = null;
 
   constructor(
     private _spinner: SpinnerService,
@@ -28,7 +29,7 @@ export class GameComponent implements OnInit {
         this._router.navigate(['/games']);
         return;
       }
-      this.gameuuid = params['uuid'];
+      this.gameuuid = params['id'];
       // TODO check possible subjects
       this.loadData();
 
@@ -49,6 +50,7 @@ export class GameComponent implements OnInit {
 
   successResponse(r: any) {
     console.log(r);
+    this.gameInfo = r.data
     this._spinner.hide();
     this._cdr.detectChanges();
   }
