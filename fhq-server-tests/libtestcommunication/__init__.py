@@ -4,7 +4,7 @@ import sys
 import time
 from pprint import pprint
 import fhqtest
-from libfreehackquestclient import FreeHackQuestClient
+from freehackquest_libclient_py import FreeHackQuestClient
 
 CHAT_USER1_UUID = "00000000-0000-5000-4001-000000000001"
 CHAT_USER2_UUID = "00000000-0000-5000-4001-000000000002"

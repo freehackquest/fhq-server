@@ -17,6 +17,8 @@ class ExportLibCliWebJS {
         void exportLib();
 
     private:
+        long m_nCurrentTimeInSec;
+        std::string m_sCurrentDate;
         std::string m_sPackageName;
         std::string m_sLibraryName;
         std::string m_sAppName;

@@ -1,5 +1,5 @@
 websocket-client>=0.48.0
-libfreehackquestclient>=0.2.24
+freehackquest_libclient_py>=0.2.39
 requests>=2.21.0
 pytest
 pytest-env

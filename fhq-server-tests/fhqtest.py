@@ -6,7 +6,7 @@ import string
 import random
 import socket
 from pprint import pprint
-from libfreehackquestclient import FreeHackQuestClient
+from freehackquest_libclient_py import FreeHackQuestClient
 
 admin_session = None
 user_session = None
@@ -125,6 +125,7 @@ def init_enviroment():
     global TEST_SERVER
     global TEST_USER_ID
     global TEST_USER_DATA
+    global GAME1
     
     if not os.path.exists(TMP_DIR):
         os.makedirs(TMP_DIR)
@@ -219,7 +220,7 @@ def clean_all_quests():
 
 def find_first_gameid():
     print_bold("Search first game id...")
-    games1 = admin_session.games({})
+    games1 = admin_session.games_list({})
     check_response(games1, "Games succesfull got")
     games1 = games1['data']
     if len(games1) == 0:

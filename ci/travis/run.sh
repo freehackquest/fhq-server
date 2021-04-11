@@ -53,16 +53,16 @@ check_ret $? "test connection to database"
 
 cd fhq-server-tests
 check_ret $? "Change directory to tests"
-./update_libfreehackquestclient.sh
-check_ret $? "Update libfreehackquestclient python library"
+./update_freehackquest_libclient_py.sh
+check_ret $? "Update freehackquest_libclient_py python library"
 python3 run_tests.py # run tests
 check_ret $? "tests"
 cd  ..
 
 cd tests/server-api-tests
 check_ret $? "Change directory to tests/server-api-tests"
-./update_libfreehackquestclient.sh
-check_ret $? "Update libfreehackquestclient python library"
+./update_freehackquest_libclient_py.sh
+check_ret $? "Update freehackquest_libclient_py python library"
 python3 -m pylint --version
 # in next time replace to 'pylint **/*.py'
 python3 -m pylint --rcfile=.pylintrc *.py

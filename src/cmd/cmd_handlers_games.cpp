@@ -383,9 +383,11 @@ REGISTRY_CMD(CmdHandlerGameInfo)
 CmdHandlerGameInfo::CmdHandlerGameInfo()
     : CmdHandlerBase("game_info", "Return game info") {
 
-    setAccessUnauthorized(false);
-    setAccessUser(false);
+    setAccessUnauthorized(true);
+    setAccessUser(true);
     setAccessAdmin(true);
+
+    setDeprecatedFromVersion("0.2.39");
 
     // validation and description input fields
     requireStringParam("uuid", "Global Identificator of the Game")
@@ -409,6 +411,44 @@ void CmdHandlerGameInfo::handle(ModelRequest *pRequest) {
     jsonResponse["data"] = modelGame.toJson();
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
+
+// ---------------------------------------------------------------------
+// Info Game
+
+REGISTRY_CMD(CmdHandlerGamesInfo)
+
+CmdHandlerGamesInfo::CmdHandlerGamesInfo()
+    : CmdHandlerBase("games.info", "Return info about game by uuid") {
+
+    setAccessUnauthorized(true);
+    setAccessUser(true);
+    setAccessAdmin(true);
+
+    setActivatedFromVersion("0.2.39");
+
+    // validation and description input fields
+    requireStringParam("uuid", "Global Identificator of the Game")
+        .addValidator(new WsjcppValidatorUUID());
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerGamesInfo::handle(ModelRequest *pRequest) {
+    EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
+
+    std::string sUuid = pRequest->getInputString("uuid", "");
+
+    ModelGame modelGame;
+    if (!pEmployGames->findGame(sUuid, modelGame)) {
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Game not found"));
+        return;
+    }
+    // TODO split for user and for admin
+    nlohmann::json jsonResponse;
+    jsonResponse["data"] = modelGame.toJson();
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
 
 // ---------------------------------------------------------------------
 // Update Game
@@ -578,10 +618,10 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
 // ---------------------------------------------------------------------
 // List of Games
 
-REGISTRY_CMD(CmdHandlerGames)
+REGISTRY_CMD(CmdHandlerGamesList)
 
-CmdHandlerGames::CmdHandlerGames()
-    : CmdHandlerBase("games", "Method returned list of games") {
+CmdHandlerGamesList::CmdHandlerGamesList()
+    : CmdHandlerBase("games_list", "Method returned list of games") {
 
     setAccessUnauthorized(true);
     setAccessUser(true);
@@ -594,7 +634,7 @@ CmdHandlerGames::CmdHandlerGames()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerGames::handle(ModelRequest *pRequest) {
+void CmdHandlerGamesList::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
     nlohmann::json jsonResponse;

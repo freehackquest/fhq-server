@@ -109,7 +109,7 @@ def test_games_create_game2(admin_session, game2_uuid):
 def test_games_game_list(admin_session, game2_uuid):
     """games list"""
     print(test_games_game_list.__doc__)
-    games_list = admin_session.games({})
+    games_list = admin_session.games_list({})
     assert games_list is not None
     _found = False
     for game_ in games_list['data']:

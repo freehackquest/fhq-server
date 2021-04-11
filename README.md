@@ -24,7 +24,7 @@ Backend && Frontend for FreeHackQuest on Qt and WebSockets
 | fhq-server (docker)     | [![Docker Pulls](https://img.shields.io/docker/pulls/freehackquest/fhq-server.svg)](https://hub.docker.com/r/freehackquest/fhq-server/)  |
 | fhq-server (vm)         | [https://freehackquest.com/dist/](https://freehackquest.com/dist/)  |
 | client library (js) | [![npm](https://img.shields.io/npm/v/freehackquest-libclient-web-js)](https://www.npmjs.com/package/freehackquest-libclient-web-js) |
-| client library (python)     | [![PyPI](https://img.shields.io/pypi/v/libfreehackquestclient)](https://pypi.org/project/libfreehackquestclient/) |
+| client library (python)     | [![PyPI](https://img.shields.io/pypi/v/freehackquest-libclient-py)](https://pypi.org/project/freehackquest-libclient-py/) |
 
 
 
@@ -138,7 +138,7 @@ Run tests (will be deprecated):
 
 ```
 $ cd ~/fhq-server.git/fhq-server-tests
-$ ./update_libfreehackquestclient.sh # update auto-generate-client-library
+$ ./update_freehackquest_libclient_py.sh # update auto-generate-client-library
 $ python3 run_tests.py # run tests
 ```
 
@@ -146,7 +146,7 @@ New running tests (based on pytest):
 
 ```
 $ cd ~/fhq-server.git/tests/server-api-tests/
-$ ./update_libfreehackquestclient.sh # update auto-generate-client-library
+$ ./update_freehackquest_libclient_py.sh # update auto-generate-client-library
 $ python3 -m pylint --rcfile=.pylintrc *.py
 $ python3 -m pytest -rAs -c env-travis.ini .
 ```
@@ -156,7 +156,7 @@ $ python3 -m pytest -rAs -c env-travis.ini .
 Since you do not have a local server, you need to install the client library:
 
 ```
-$ pip3 install libfreehackquestclient
+$ pip3 install freehackquest-libclient-py
 ```
 
 Donwload docker images:
@@ -523,17 +523,17 @@ $ npm publish .
 
 generate new library
 ```
-$ ./fhq-server export-libfreehackquest-client-py
+$ ./fhq-server export-freehackquest-libclient-py
 ```
-After this merge generated files from `libfreehackquest-client-py` to repository https://github.com/freehackquest/libfreehackquest-client-py
+After this merge generated files from `freehackquest-libclient-py` to repository https://github.com/freehackquest/freehackquest-libclient-py
 
 
 ```
-$ git clone https://github.com/freehackquest/libfreehackquest-client-py
-$ cd libfreehackquest-client-py
+$ git clone https://github.com/freehackquest/freehackquest-libclient-py
+$ cd freehackquest-libclient-py
 $ rm -rf build
 $ rm -rf dist
-$ rm -rf libfreehackquestclient.egg-info
+$ rm -rf freehackquest_libclient_py.egg-info
 
 $ python3 setup.py sdist bdist_wheel
 $ python3 -m twine upload dist/*

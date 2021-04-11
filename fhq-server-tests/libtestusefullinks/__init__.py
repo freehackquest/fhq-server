@@ -9,7 +9,7 @@ import shutil
 import json
 import traceback
 from pprint import pprint
-from libfreehackquestclient import FreeHackQuestClient
+from freehackquest_libclient_py import FreeHackQuestClient
 import fhqtest
 
 TEST_NAME = 'Testing Useful Links'

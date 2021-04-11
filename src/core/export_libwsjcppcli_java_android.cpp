@@ -192,7 +192,7 @@ void ExportLibWsjCppCliJavaAndroid::exportAPImd() {
     apimd << " * Date: " << buffer.str() << "\n\n";
     apimd << " Example connect/disconnect:\n"
         << "```\n"
-        << "from libfreehackquestclient import FreeHackQuestClient \n\n"
+        << "from freehackquest_libclient_py import FreeHackQuestClient \n\n"
         << "fhq = FreeHackQuestClient('ws://localhost:1234')\n"
         << " ... \n"
         << "fhq.close()\n"

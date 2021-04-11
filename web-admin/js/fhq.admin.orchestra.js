@@ -162,7 +162,7 @@ fhq.pages['orchestra_create'] = function(){
 		+ '</div>'
 	);
 	
-	fhq.ws.games().done(function(r){
+	fhq.ws.games_list().done(function(r){
 		for(var i in r.data){
 			$('#newquest_gameid').append('<option value="' + r.data[i]["id"] + '">' + r.data[i]["title"] + '</option>');
 		}

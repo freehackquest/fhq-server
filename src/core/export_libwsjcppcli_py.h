@@ -31,6 +31,8 @@ class ExportLibWsjCppCliPy {
         void exportPrepareDirs();
 
         std::string TAG;
+        long m_nCurrentTimeInSec;
+        std::string m_sCurrentDate;
         std::vector<ApiGroup> m_vGroups;
 };
 
