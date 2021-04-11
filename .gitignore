@@ -66,7 +66,7 @@ install/DOXYGEN/html/*
 CMakeLists.txt.user
 freehackquest-libclient-py
 freehackquest_libclient_py
-fhq-server/freehackquest-libclient-web-js
+freehackquest-libclient-web-js
 fhq-server/libfhqcli-web-js
 fhq-server/libfhqcli-java-android
 tests/libfhqcli.py

@@ -28,7 +28,7 @@ ExportLibCliWebJS::ExportLibCliWebJS() {
     m_sAuthor = "wjscpp";
     m_sPrefixRepositoryURL = "https://github.com/wjscpp/";
     m_nCurrentTimeInSec = WsjcppCore::getCurrentTimeInSeconds();
-    m_sCurrentDate = WsjcppCore::formatTimeForWeb(m_nCurrentTimeInSec);
+    m_sCurrentDate = WsjcppCore::formatTimeUTC(m_nCurrentTimeInSec);
 
     m_vEvents.push_back("server");
     m_vEvents.push_back("notify");

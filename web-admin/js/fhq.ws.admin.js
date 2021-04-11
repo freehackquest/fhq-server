@@ -384,9 +384,9 @@ fhq.ws.api = function(params){
     return fhq.ws.send(params);
 }
 
-fhq.ws.games = function(params){
+fhq.ws.games_list = function(params){
     params = params || {};
-    params.cmd = 'games';
+    params.cmd = 'games_list';
     return fhq.ws.send(params);
 }
 
