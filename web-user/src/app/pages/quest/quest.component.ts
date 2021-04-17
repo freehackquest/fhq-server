@@ -32,7 +32,7 @@ export class QuestComponent implements OnInit {
   showWriteUps: boolean = false;
   errorWriteUpsMessage: string = null;
 
-  questMyAnswers: any = [];
+  questMyAnswers: Array<any> = [];
   showMyAnswers: boolean = false;
   errorAnswersMessage: string = null;
 
@@ -128,6 +128,7 @@ export class QuestComponent implements OnInit {
   successCheckAnswerResponse(r: any) {
     console.log(r);
     this.loadData();
+    this.updateShowedMyAnswers();
   }
 
   errorCheckAnswerResponse(err: any) {
@@ -135,6 +136,7 @@ export class QuestComponent implements OnInit {
     this.errorCheckAnswerMessage = err.error;
     this._cdr.detectChanges();
     console.error(err);
+    this.updateShowedMyAnswers();
   }
 
   switchShowHints() {
@@ -189,28 +191,37 @@ export class QuestComponent implements OnInit {
   }
 
   switchShowMyAnswers() {
-    const _data = {
-      questid: this.questid,
-      page: 0,
-      onpage: 10,
-    }
+    this.showMyAnswers = !this.showMyAnswers;
+    this.updateShowedMyAnswers();
+  }
+
+  updateShowedMyAnswers() {
     this.questMyAnswers = [];
     this.errorAnswersMessage = null;
-
-    if (this.showMyAnswers === false) {
-      this._spinner.show();
-      this._fhq.api().answerlist(_data)
-        .done((r: any) => this.successMyAswersResponse(r))
+    if (this.showMyAnswers) {
+      const _data = {
+        questid: this.questid,
+        page: 0,
+        onpage: 10,
+      }
+      this._fhq.api().quests_user_answer_list(_data)
+        .done((result: any) => this.successMyAswersResponse(result))
         .fail((err: any) => this.errorMyAswersResponse(err));
-    } else {
-      this.showMyAnswers = false;
     }
   }
 
-  successMyAswersResponse(r: any) {
-    console.log(r);
+  successMyAswersResponse(result: any) {
+    console.log(result);
     this._spinner.hide();
-    this.questMyAnswers = r.data;
+    result.jsonrpc_result.forEach(element => {
+      this.questMyAnswers.push({
+        "dt": element['dt'],
+        "dt_formated": new Date(element['dt'] + "Z"),
+        "levenshtein": element['levenshtein'],
+        "user_answer": element['user_answer'],
+        "passed": element['passed'] == "Yes",
+      });
+    });
     this.showMyAnswers = true;
     this._cdr.detectChanges();
   }

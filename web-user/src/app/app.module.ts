@@ -80,6 +80,7 @@ import { UsefulLinkViewComponent } from './pages/useful-link-view/useful-link-vi
 import { CtfWallComponent } from './pages/ctf-wall/ctf-wall.component';
 import { GameComponent } from './pages/game/game.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 export function getHighlightLanguages() {
   return {
@@ -176,6 +177,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     MatTreeModule,
     MatToolbarModule,
     MatDialogModule,
+    MatExpansionModule,
     MatRippleModule
   ],
   exports: [
@@ -193,6 +195,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     MatSnackBarModule,
     MatTreeModule,
     MatToolbarModule,
+    MatExpansionModule,
     MatRippleModule
   ],
   providers: [
