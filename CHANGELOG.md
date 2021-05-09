@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Fixed #81 my answers and fixed problem: all answers for any user
 - Fixed #360 Add new icon "event_success.png" for server started
+- web-admin: Restore dialog signin
+- server-api-tests: fixed warnigns by pylint
 
 ## [v0.2.40] - 2021-04-11 (2021 Apr 11)
 
