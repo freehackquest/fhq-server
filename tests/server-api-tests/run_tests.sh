@@ -19,6 +19,6 @@ python3 -m pylint --rcfile=.pylintrc *.py
 check_ret $? "pylint"
 
 python3 -m pytest -rAs -c env-travis.ini
-check_ret $? "pylint"
+check_ret $? "pytest"
 
 # pytest-3 -rAs -c env-docker.ini tests_leaks.py

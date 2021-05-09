@@ -128,30 +128,35 @@
 <br/>
 
 <div *ngIf="errorMessage == null && _fhq.isAuthorized">
-  <br/>
-  <ul class="list-group">
-    <li class="list-group-item d-flex justify-content-between align-items-center" (click)="switchShowMyAnswers()">
-      <div class="d-inline-block btn btn-link" l10nTranslate>questMyAnswers</div>
-    </li>
-    <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-danger" 
-      *ngIf="showMyAnswers == false && errorAnswersMessage != null">
+  <mat-expansion-panel (opened)="switchShowMyAnswers()"
+                       (closed)="switchShowMyAnswers()">
+    <mat-expansion-panel-header>
+      <mat-panel-title l10nTranslate>questMyAnswers</mat-panel-title>
+      <mat-panel-description>
+        
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <div
+      *ngIf="showMyAnswers && questMyAnswers.length == 0"
+      l10nTranslate
+    >
+      questMyAnswersNotFound
+    </div>
+    <div
+      *ngIf="showMyAnswers == false && errorAnswersMessage != null"
+      class="line-alert"
+    >
       {{ errorAnswersMessage }}
-    </li>
-    <li class="list-group-item list-group-item-light" *ngIf="showMyAnswers == true && questMyAnswers.length == 0" l10nTranslate>questMyAnswersNotFound</li>
-    <li class="list-group-item" *ngFor="let qw of questMyAnswers">
-        <div class="media">
-            <iframe class="mr-3" type="text/html" width="640" height="360"
-              [src]="qw.iframe_link"
-              frameborder="0" allowfullscreen></iframe>
-            <div class="media-body">
-              <h5 class="mt-0">[writeup#{{ qw.writeupid }}]</h5>
-              <p> Original link: <a href="{{ qw.link }}">{{ qw.link }}</a> </p>
-              <p> Datetime: {{ qw.dt }} (UTC) </p>
-              <p> By user: [user#{{ qw.userid }}] {{ qw.user_nick }} </p>
-            </div>
-          </div>
-    </li>
-  </ul>
+    </div>
+ 
+    <div *ngIf="showMyAnswers && errorAnswersMessage == null">
+      <div *ngFor="let qw of questMyAnswers">
+        <div class="my-asnwer-line" [style]="{'background-color': (qw.passed ? 'green' : '#f8d7da' ) }">
+          <small>{{ qw.dt_formated }}</small>:<br><strong>{{ qw.user_answer }}</strong> (levenshtein: {{ qw.levenshtein }})
+        </div>
+      </div>
+    </div>
+  </mat-expansion-panel>
 </div>
 
 <div *ngIf="errorMessage == null">

@@ -103,10 +103,20 @@
         </button>
       </mat-list-item>
       <mat-list-item>
-        <button mat-button class="main-left-menu-item" routerLink="/scoreboard" l10nTranslate>pageScoreboard</button>
+        <button mat-button 
+          class="main-left-menu-item"
+          [disabled]="urlPath === 'scoreboard' ? '' : null"
+          routerLink="/scoreboard" l10nTranslate>
+          pageScoreboard
+        </button>
       </mat-list-item>
       <mat-list-item>
-        <button mat-button class="main-left-menu-item" routerLink="/news" l10nTranslate> pageNews </button>
+        <button mat-button
+          class="main-left-menu-item"
+          [disabled]="urlPath === 'news' ? '' : null"
+          routerLink="/news" l10nTranslate>
+          pageNews
+        </button>
       </mat-list-item>
       <mat-divider></mat-divider>
       <mat-list-item>
@@ -303,6 +313,9 @@
               <li>
                 <a href="https://hub.docker.com/r/freehackquest/fhq-server">Docker</a>
               </li>
+              <li>
+                <a href="https://vk.com/freehackquest">VKontakte</a>
+              </li>
             </ul>
 
           </div>
@@ -316,7 +329,7 @@
 
     <!-- Copyright -->
     <div class="footer-copyright text-center py-3">
-        © 2011-2020 Copyright:
+        © 2011-2021 Copyright:
         <a href="https://sea-kg.com/">sea-kg</a>
     </div>
     <!-- Copyright -->
