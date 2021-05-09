@@ -3,7 +3,7 @@ cmake_minimum_required: 3.0
 cmake_cxx_standard: 11
 
 name: "fhq-server"
-version: v0.2.41
+version: v0.2.42
 description: "This is an open source platform for competitions of computer security."
 issues: "https://github.com/freehackquest/fhq-server/issues"
 
