@@ -5,6 +5,20 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.2.41] - 2021-04-11 (2021 May 9)
+
+### Added
+
+- Link to https://vk.com/freehackquest
+
+### Changed
+
+- Redesign block-contact-us to material angular
+
+### Fixed 
+
+- Fixed #81 my answers and fixed problem: all answers for any user
+
 ## [v0.2.40] - 2021-04-11 (2021 Apr 11)
 
 ### Added
