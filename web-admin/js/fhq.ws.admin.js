@@ -6,11 +6,11 @@ fhq.ws.lastm = 0;
 
 window.fhq.ws.setTokenToCookie = function(token) {
     var date = new Date( new Date().getTime() + (7 * 24 * 60 * 60 * 1000) ); // cookie on week
-    document.cookie = "fhqtoken=" + encodeURIComponent(token) + "; path=/; expires="+date.toUTCString();
+    document.cookie = "fhqadmintoken=" + encodeURIComponent(token) + "; path=/; expires="+date.toUTCString();
 }
 
 window.fhq.ws.removeTokenFromCookie = function() {
-    document.cookie = "fhqtoken=; path=/;";
+    document.cookie = "fhqadmintoken=; path=/;";
 }
 
 window.fhq.ws.cleanuptoken = function(){
@@ -22,7 +22,7 @@ window.fhq.ws.cleanuptoken = function(){
 
 window.fhq.ws.getTokenFromCookie = function() {
     var matches = document.cookie.match(new RegExp(
-        "(?:^|; )" + "fhqtoken".replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        "(?:^|; )" + "fhqadmintoken".replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
     ));
     return matches ? decodeURIComponent(matches[1]) : '';
 }
