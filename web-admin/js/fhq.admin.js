@@ -201,47 +201,38 @@ fhq.paginator = function(min,max,onpage,page) {
     return content;
 }
 
-fhq.showSignInForm = function(){
-    $('#signinErrorMessage').hide();
-    $('#signinEmailInput').unbind().bind('keyup', function(event){
-        if (event.keyCode == 13){
-            fhq.signin();
-        } else {
-            fhq.cleanupSignInMessages();
-        }
-    });
-    
-    $('#signinPasswordInput').unbind().bind('keyup', function(event){
-        if (event.keyCode == 13){
-            fhq.signin();
-        } else {
-            fhq.cleanupSignInMessages();
-        }
-    });
-    
-    $('#modalSignIn').modal('show');
-}
-
-fhq.cleanupSignInMessages = function() {
-    $('#signinErrorMessage').html('');
-    $('#signinErrorMessage').hide();
-}
-
-fhq.signin = function() {
-    var email = $("#signinEmailInput").val();
-    var password = $("#signinPasswordInput").val();
+function fhqDoLogin(modalId) {
+    var email = login_admin_email.value;
+    var password = login_admin_password.value;
     
     fhq.ws.login({email: email,password: password}).done(function(r){
         console.log(r);
-        if(r.user.role != 'admin'){
-            $('#signinErrorMessage').show();
-            $("#signinErrorMessage").html("This page allow only for admin");
-        }else{
-            $('#modalSignIn').modal('hide');
-            $('.modal-backdrop').hide();
+        if (r.user.role != 'admin') {
+            login_admin_error.style.display = 'block';
+            login_admin_error.innerHTML = "This page allow only for admin"
+        } else {
+            login_admin_error.style.display = 'none';
         }
+        swaCloseModalDialog(modalId);
     }).fail(function(r){
-        $('#signinErrorMessage').show();
-        $("#signinErrorMessage").html(r.error);
+        login_admin_error.style.display = 'block';
+        login_admin_error.innerHTML = r.error;
     })
 }
+
+fhq.showSignInForm = function(){
+    var modal = new SwaModalDialog();
+    modal.show({
+        title: 'Sign In (for admin)',
+        body: [
+            'Admin e-mail: <input id="login_admin_email" type="text"/>',
+            'Admin password: <input id="login_admin_password" type="password"/>',
+            '<div class="swa-error-alert" style="display: none" id="login_admin_error"></div>',
+        ],
+        buttons: ''
+            + '<button type="button" class="swa-button" '
+            + '   onclick="fhqDoLogin(\'' + modal.modalId + '\');">Sign-in</button> '
+            + '<button type="button" class="swa-button" onclick="swaCloseModalDialog(\'' + modal.modalId + '\');">Close</button>',
+    });
+}
+

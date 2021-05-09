@@ -171,41 +171,39 @@ def test_games_update_game_organizators(admin_session, game2_uuid):
 
 def load_image_for_game_logo():
     """ Load image for game logo """
-    _game1_logo = open("files/game1.png", 'rb')
-    image_png_base64 = _game1_logo.read()
-    _game1_logo.close()
-    img_len = len(image_png_base64)
-    assert img_len == 17045
-    # if img_len != 17045:
-    #     sys.exit("Wrong size of files/game1.png")
-    image_png_base64 = base64.b64encode(image_png_base64)
-    image_png_base64 = image_png_base64.decode("utf-8")
-    return image_png_base64
+    with open("files/game1.png", 'rb') as _game1_logo:
+        image_png_base64 = _game1_logo.read()
+        img_len = len(image_png_base64)
+        assert img_len == 17045
+        # if img_len != 17045:
+        #     sys.exit("Wrong size of files/game1.png")
+        image_png_base64 = base64.b64encode(image_png_base64)
+        image_png_base64 = image_png_base64.decode("utf-8")
+        return image_png_base64
+    return None
 
 def extract_zip_game_data(data_base64, game2_zip_path, tmp_dir_unpack_zip):
     """ extract zip game data """
     game2_data_zip = base64.b64decode(data_base64)
     if os.path.exists(game2_zip_path):
         os.remove(game2_zip_path)
-    game2_file_zip = open(game2_zip_path, 'wb')
-    game2_file_zip.write(game2_data_zip)
-    game2_file_zip.close()
-    zip_ref = zipfile.ZipFile(game2_zip_path, 'r')
-    zip_ref.extractall(tmp_dir_unpack_zip)
-    zip_ref.close()
+    with open(game2_zip_path, 'wb') as game2_file_zip:
+        game2_file_zip.write(game2_data_zip)
+        with zipfile.ZipFile(game2_zip_path, 'r') as zip_ref:
+            zip_ref.extractall(tmp_dir_unpack_zip)
 
 def check_game2_logo(img_exported_path, game2_localid, web_server_host):
     """ check game2 logo """
     assert os.path.exists(img_exported_path) is True
-    _game2_logo = open(img_exported_path, 'rb')
-    image2_png_base64 = _game2_logo.read()
-    _game2_logo.close()
-    img2_len = len(image2_png_base64)
-    assert img2_len < 17045 # server must create thumbnail from this image
-    url = web_server_host + "public/games/" + str(game2_localid) + ".png"
-    resp = requests.get(url, allow_redirects=True)
-    open(img_exported_path + "2", 'wb').write(resp.content)
-    assert img2_len == len(resp.content)
+    with open(img_exported_path, 'rb') as _game2_logo:
+        image2_png_base64 = _game2_logo.read()
+        img2_len = len(image2_png_base64)
+        assert img2_len < 17045 # server must create thumbnail from this image
+        url = web_server_host + "public/games/" + str(game2_localid) + ".png"
+        resp = requests.get(url, allow_redirects=True)
+        with open(img_exported_path + "2", 'wb') as _img_exported:
+            _img_exported.write(resp.content)
+        assert img2_len == len(resp.content)
 
 def test_games_update_logo(admin_session, game2_uuid, local_tmp_dir, web_server_host):
     """game update logo"""

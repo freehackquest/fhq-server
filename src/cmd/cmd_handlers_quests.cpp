@@ -1646,7 +1646,7 @@ CmdHandlerQuestsUserAnswerList::CmdHandlerQuestsUserAnswerList()
 
     setAccessUnauthorized(false);
     setAccessUser(true);
-    setAccessAdmin(false);
+    setAccessAdmin(true);
 
     // validation and description input fields
     requireIntegerParam("questid", "Filter for questid");   
@@ -1661,15 +1661,23 @@ void CmdHandlerQuestsUserAnswerList::handle(ModelRequest *pRequest) {
 
     int nQuestID = pRequest->getInputInteger("questid", 0);
 
+    WsjcppUserSession *pUserSession = pRequest->getUserSession();
+    int nUserID = 0;
+    if (pUserSession != NULL) {
+        nUserID = pUserSession->userid();
+    }
+
     // count quests
     QSqlDatabase db = *(pDatabase->database());
 
     {
         QSqlQuery query(db);
         query.prepare("SELECT count(*) as cnt FROM users_quests_answers "
-            " WHERE questid = :questid"
+            " WHERE questid = :questid AND userid = :userid"
         );
         query.bindValue(":questid", nQuestID);
+        query.bindValue(":userid", nUserID);
+        
 
         if (!query.exec()) {
             pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
@@ -1692,10 +1700,11 @@ void CmdHandlerQuestsUserAnswerList::handle(ModelRequest *pRequest) {
             "    user_answer,"
             "    levenshtein"
             " FROM users_quests_answers "
-            " WHERE questid = :questid"
+            " WHERE questid = :questid AND userid = :userid"
             " ORDER BY dt DESC "
         );
         query.bindValue(":questid", nQuestID);
+        query.bindValue(":userid", nUserID);
 
         if (!query.exec()) {
             pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));

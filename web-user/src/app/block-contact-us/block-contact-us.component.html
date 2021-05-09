@@ -1,14 +1,31 @@
 <br>
-<div class="card">
-    <div class="card-body">
-        <label l10nTranslate>contactUs</label>: 
-        <a href="https://twitter.com/freehackquest/">Twitter</a> |
-        <label><a href="https://telegram.me/freehackquest">Telegram chat</a></label> | 
-        <a href="https://www.youtube.com/channel/UCS0nOltkP5YXxWggoNVE3Gw/videos?view_as=subscriber">Youtube Channel</a> |
-        <a href="mailto:freehackquest@gmail.com">freehackquest@gmail.com</a>
-        <br>
-        <label l10nTranslate>helpToThisProject</label>: <div class="btn btn-link" (click)="openDonatePage()" l10nTranslate>pageDonate</div>
-
-    </div>
-</div>
+<mat-card>
+    <label l10nTranslate>contactUs</label>:<br>
+    
+    <a target="_blank" mat-raised-button class="block-contact-us"
+        href="https://twitter.com/freehackquest/">
+        Twitter
+    </a>
+    <a target="_blank" mat-raised-button class="block-contact-us"
+        href="https://telegram.me/freehackquest">
+        Telegram chat
+    </a>
+    <a target="_blank" mat-raised-button class="block-contact-us"
+        href="https://vk.com/freehackquest">
+        VKontakte
+    </a>
+    <a target="_blank" mat-raised-button class="block-contact-us"
+        href="https://www.youtube.com/channel/UCS0nOltkP5YXxWggoNVE3Gw/videos?view_as=subscriber">
+        Youtube Channel
+    </a>
+    <a mat-raised-button class="block-contact-us"
+        href="mailto:freehackquest@gmail.com">
+        freehackquest@gmail.com
+    </a>
+    <hr>
+    <label l10nTranslate>helpToThisProject</label>: <br>
+    <button mat-raised-button  class="block-contact-us" (click)="openDonatePage()" l10nTranslate>
+        pageDonate
+    </button>
+</mat-card>
 <br>
