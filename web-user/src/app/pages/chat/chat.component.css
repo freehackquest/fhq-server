@@ -1,7 +1,44 @@
+.chat-messages-table {
+    display: table;
+    width: 100%;
+}
+
+.chat-messages-table-row {
+    display: table-row;
+    width: 100%;
+}
+
+.chat-messages-table-column-user-list {
+    display: table-cell;
+    width: 100px;
+}
+
+.chat-messages-table-column-user-messages {
+    display: table-cell;
+    width: calc(100% - 100px);
+}
+
 .chat-messages {
-    height: 350px;
+    height: 450px;
     overflow-y: scroll;
+}
+
+.send-message-chat-form {
+    width: 100%;
+}
+
+.send-message-chat-full-width {
+    width: 100%;
+}
+
+.chat-message {
+    border: 1px solid #999;
+    margin-bottom: 5px;
     border: 1px solid rgba(0,0,0,.125);
     border-radius: 4px;
-    padding: 10px;
+    padding: 5px;
+}
+
+.chat-message-dt {
+    font-size: 10px;
 }

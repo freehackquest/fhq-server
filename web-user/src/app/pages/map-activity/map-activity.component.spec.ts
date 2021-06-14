@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MapActivityComponent } from './map-activity.component';
 
@@ -6,7 +6,7 @@ describe('MapActivityComponent', () => {
   let component: MapActivityComponent;
   let fixture: ComponentFixture<MapActivityComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ MapActivityComponent ]
     })

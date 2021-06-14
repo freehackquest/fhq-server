@@ -1,37 +1,35 @@
-<h1 l10nTranslate>chatPage</h1>
-<!-- 
-<div class="card">
-  <div class="card-header">Bugs</div>
-  <div class="card-body">
-    If you found some problem or bug please send mail to: <b>freehackquest@gmail.com</b><br>
-    Or create issues: <a href="https://github.com/freehackquest/fhq-server/issues">GitHub fhq-server</a>
-    <br> 	Or create issues: <a href="https://github.com/freehackquest/frontend/issues">GitHub fhq-frontend</a><br>
+<div class="chat-messages-table">
+  <div class="chat-messages-table-row">
+    <div class="chat-messages-table-column-user-list">
+      Users:
+      TODO
+    </div>
+    <div class="chat-messages-table-column-user-messages">
+      <div #chatMessages class="chat-messages">
+        <div *ngFor="let d of dataList">
+          <div class="chat-message">
+            <div class="chat-message-dt">{{ d.dt }} (UTC)</div>
+            <strong>{{ d.user }}</strong>: {{ d.message }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="chat-messages-table-row">
+    <div class="chat-messages-table-column-user-list">
+    </div>
+    <div class="chat-messages-table-column-user-messages">
+      <form class="send-message-chat-form" *ngIf="_fhq.isAuthorized">
+        <mat-form-field class="send-message-chat-full-width">
+          <mat-label l10nTranslate>yourMessage</mat-label>
+          <input matInput #yourMessage (keyup.enter)="sendMessage()" value="">
+        </mat-form-field>
+      </form>
+    </div>
   </div>
 </div>
--->
 
-<div #chatMessages class="chat-messages">
-  <div *ngFor="let d of dataList">
-    <table width="100%">
-      <tr>
-        <td>
-            <strong>{{ d.user }}</strong>
-        </td>
-        <td class="text-right">
-          <small>{{ d.dt }} (UTC)</small>
-        </td>
-      </tr>
-      <tr>
-        <td class="text-left" colspan="2">
-            {{ d.message }}
-            <hr/>
-        </td>
-      </tr>
-    </table>
-  </div>
-</div>
-<br/>
-
+ 
 <div class="alert alert-danger" *ngIf="!_fhq.isAuthorized">
   <label l10nTranslate>pleaseAuthorize</label>
   <div class="btn btn-primary" (click)="_dialogs.openSignInDialog();" l10nTranslate>signin</div>
@@ -39,13 +37,5 @@
 
 <div class="alert alert-danger" *ngIf="errorMessage != null">{{ errorMessage }}</div>
 
-<div class="input-group mb-3" *ngIf="_fhq.isAuthorized">
-  <div class="input-group-prepend">
-    <span class="input-group-text" id="basic-addon1" l10nTranslate>yourMessage</span>
-  </div>
-  <input type="text" class="form-control" (keyup.enter)="sendMessage()" #yourMessage value="">
-  <div class="input-group-append">
-    <button class="btn btn-primary" (click)="sendMessage()" type="button" l10nTranslate>send</button>
-  </div>
-  
-</div>
+
+

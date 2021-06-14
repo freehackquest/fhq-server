@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ConfidencialComponent } from './confidencial.component';
 
@@ -6,7 +6,7 @@ describe('ConfidencialComponent', () => {
   let component: ConfidencialComponent;
   let fixture: ComponentFixture<ConfidencialComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ConfidencialComponent ]
     })

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ModalSignInDialog } from './modal-signin-dialog.component';
 
@@ -6,7 +6,7 @@ describe('ModalSignInDialog', () => {
   let component: ModalSignInDialog;
   let fixture: ComponentFixture<ModalSignInDialog>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ModalSignInDialog ]
     })
