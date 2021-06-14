@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CtfWallComponent } from './ctf-wall.component';
 
@@ -6,7 +6,7 @@ describe('CtfWallComponent', () => {
   let component: CtfWallComponent;
   let fixture: ComponentFixture<CtfWallComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CtfWallComponent ]
     })

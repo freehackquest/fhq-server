@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CtfAttackDefenceComponent } from './ctf-attack-defence.component';
 
@@ -6,7 +6,7 @@ describe('CtfAttackDefenceComponent', () => {
   let component: CtfAttackDefenceComponent;
   let fixture: ComponentFixture<CtfAttackDefenceComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ CtfAttackDefenceComponent ]
     })
