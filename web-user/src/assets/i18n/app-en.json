@@ -87,6 +87,7 @@
         "uploadFileHint" : "Files please upload to your cloud disk (google/yandex/dropbox...) or to any web resource which admin has access for download it. And put link to quest text. ",
         "writeUpLink": "Suggest a link"
     },
+    "proposalTranslate": "Propose Translate",
     "notDetected": "Not detected",
     "userCountry": "Country: ",
     "userRegion": "Region: ",
