@@ -5,7 +5,22 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.41] - 2021-04-11 (2021 May 9)
+## [v0.2.42] - 2021-06-11 (2021 June 14)
+
+### Changed
+
+- Small redesign chat page
+
+### Fixed 
+
+- Fixed #358 fix translates in kb
+
+### Security
+
+- Upgrade angular to 12.0.4
+- Fixed alert by lgtm
+
+## [v0.2.41] - 2021-05-09 (2021 May 9)
 
 ### Added
 
