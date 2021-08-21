@@ -230,8 +230,13 @@ And now your local web site will be connected to offical server.
 
 ## Build docker image
 
+If you wanna fresh enviroment
 ```
-$ docker build -t freehackquest/fhq-server:latest .
+$ ./rebuild_environment_images.sh
+```
+
+```
+$ docker build -t sea5kg/fhq-server:latest .
 ```
 
 ## Ubuntu - install from ppa (outdated)

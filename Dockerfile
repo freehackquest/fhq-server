@@ -1,18 +1,21 @@
-FROM freehackquest/fhq-docker-build:latest
+FROM sea5kg/fhq-server-build-environment:latest
 WORKDIR /root/
 
 # Fix for building on debian 9.5 system (mysqlclient library)
 # RUN ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/mariadb.pc /usr/lib/x86_64-linux-gnu/pkgconfig/mysqlclient.pc
 
+# Build server application
 COPY . /root/fhq-server
 WORKDIR /root/fhq-server
 RUN ./clean.sh && ./build_simple.sh
 
+# Build web
 COPY ./web-user /root/web-user
+RUN cp -rf /root/node_modules_cache/node_modules /root/web-user
 WORKDIR /root/web-user
 RUN npm install && npm run build-prod
 
-FROM freehackquest/fhq-docker-common:latest
+FROM sea5kg/fhq-server-release-environment:latest
 
 LABEL "maintainer"="Evgenii Sopov <mrseakg@gmail.com>"
 LABEL "repository"="https://github.com/freehackquest/fhq-server"
