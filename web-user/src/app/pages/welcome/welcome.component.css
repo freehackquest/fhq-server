@@ -2,3 +2,47 @@
 .welcome-description {
     margin-left: 10px;
 }
+
+.welcome-card-header-main {
+    justify-content: center;
+}
+
+.welcome-header-image-main {
+    background-image: url("../../../assets/img/welcome/about.png");
+    background-size: 100% 100%;
+    width: 250px;
+    height: 120px;
+    border-radius: 0px;
+}
+
+.welcome-card-content-main-titles {
+    text-align: center;
+}
+
+.welcome-header-image {
+    background-image: url("../../../assets/img/welcome/about.png");
+    background-size: 100% 100%;
+    width: 80px;
+    height: 40px;
+    border-radius: 0px;
+}
+
+.welcome-list-item {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.welcome-description {
+    display: inline-block;
+}
+
+.welcome-item-devider {
+    display: block;
+    margin: 0;
+    border-top-width: 1px;
+    border-top-style: solid;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    border-top-color: rgba(0,0,0,.12);
+}

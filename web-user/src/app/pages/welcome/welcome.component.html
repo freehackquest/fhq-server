@@ -1,64 +1,83 @@
 <mat-card class="welcome-card">
-  <mat-card-header>
-    <div mat-card-avatar class="welcome-header-image"></div>
-    <mat-card-title l10nTranslate>pageWelcome</mat-card-title>
-    <mat-card-subtitle l10nTranslate>pageWelcomeAbout</mat-card-subtitle>
+  <mat-card-header class="welcome-card-header-main">
+    <div mat-card-avatar class="welcome-header-image-main"></div>
   </mat-card-header>
-  <img mat-card-image src="../../../assets/img/welcome/about.png" alt="Photo of a project">
   <mat-card-content>
-    <mat-list>
-      <mat-list-item>
-        <button mat-stroked-button color="primary" routerLink="/quests" l10nTranslate>quests</button>
-        <div class="welcome-description" l10nTranslate>pageWelcomeQuestsDescription</div>
-      </mat-list-item>
-      <mat-divider></mat-divider>
-      <mat-list-item>
-        <button mat-stroked-button color="primary" routerLink="/quest-proposal" l10nTranslate>proposalQuest</button>
-        <div class="welcome-description" l10nTranslate>pageWelcomeProposalQuestDescription</div>
-      </mat-list-item>
-      <mat-divider></mat-divider>
-      <mat-list-item>
-        <button mat-stroked-button color="primary" routerLink="/chat" l10nTranslate>chatPage</button>
-        <div class="welcome-description" l10nTranslate>welcomeWeHaveAPublicChat</div>
-      </mat-list-item>
-      <mat-divider></mat-divider>
-      <mat-list-item>
-        <button mat-stroked-button color="primary" routerLink="/news" l10nTranslate>news</button>
-        <div class="welcome-description" l10nTranslate>welcomeAllEventsOutputHere</div>
-      </mat-list-item>
-      <mat-divider></mat-divider>
-      <mat-list-item>
-        <button mat-stroked-button color="primary" routerLink="/feedback" l10nTranslate>newFeedback</button>
-        <div class="welcome-description" l10nTranslate>welcomeFeedbackDescription</div>
-      </mat-list-item>
-      <mat-divider></mat-divider>
-      <mat-list-item>
-        <button mat-stroked-button color="primary" routerLink="/donate" l10nTranslate>pageDonate</button>
-        <div class="welcome-description" l10nTranslate>welcomeHelpToProject</div>
-      </mat-list-item>
-      <mat-divider></mat-divider>
-      <mat-list-item>
-        <button mat-stroked-button color="primary" routerLink="/automation-ussr" l10nTranslate>automationUssr</button>
-        <div class="welcome-description" l10nTranslate>welcomeAutomationUssrDescription</div>
-      </mat-list-item>
-      <mat-divider></mat-divider>
-      <mat-list-item>
-        <button mat-stroked-button color="primary" routerLink="/knowledge-base" l10nTranslate>knowledgeBase</button>
-        <div class="welcome-description" l10nTranslate>welcomeKnowledgeBaseDescription</div>
-      </mat-list-item>
-      <mat-divider></mat-divider>
-      <mat-list-item>
-        <button mat-stroked-button color="primary" routerLink="/useful-links" l10nTranslate>usefulLinks</button>
-        <div class="welcome-description" l10nTranslate>welcomeUsefulLinksDescription</div>
-      </mat-list-item>
-    </mat-list>
+    <div class="welcome-card-content-main-titles">
+      <h3 l10nTranslate>pageWelcome</h3>
+      <div l10nTranslate>pageWelcomeAbout</div>
+    </div>
+    <div class="welcome-item-devider"></div>
+    <div class="welcome-list-item">
+      <button mat-stroked-button color="primary" routerLink="/quests" l10nTranslate>quests</button>
+      <div class="welcome-description" l10nTranslate>pageWelcomeQuestsDescription</div>
+    </div>
+    <div class="welcome-item-devider"></div>
+    <div class="welcome-list-item">
+      <button mat-stroked-button color="primary" routerLink="/quest-proposal" l10nTranslate>proposalQuest</button>
+      <div class="welcome-description" l10nTranslate>pageWelcomeProposalQuestDescription</div>
+    </div>
+    <div class="welcome-item-devider"></div>
+    <div class="welcome-list-item">
+      <button mat-stroked-button color="primary" routerLink="/chat" l10nTranslate>chatPage</button>
+      <div class="welcome-description" l10nTranslate>welcomeWeHaveAPublicChat</div>
+    </div>
+    <div class="welcome-item-devider"></div>
+    <div class="welcome-list-item">
+      <button mat-stroked-button color="primary" routerLink="/news" l10nTranslate>news</button>
+      <div class="welcome-description" l10nTranslate>welcomeAllEventsOutputHere</div>
+    </div>
+    <div class="welcome-item-devider"></div>
+    <div class="welcome-list-item">
+      <button mat-stroked-button color="primary" routerLink="/feedback" l10nTranslate>newFeedback</button>
+      <div class="welcome-description" l10nTranslate>welcomeFeedbackDescription</div>
+    </div>
+    <div class="welcome-item-devider"></div>
+    <div class="welcome-list-item">
+      <button mat-stroked-button color="primary" routerLink="/donate" l10nTranslate>pageDonate</button>
+      <div class="welcome-description" l10nTranslate>welcomeHelpToProject</div>
+    </div>
+    <div class="welcome-item-devider"></div>
+    <div class="welcome-list-item">
+      <button mat-stroked-button color="primary" routerLink="/automation-ussr" l10nTranslate>automationUssr</button>
+      <div class="welcome-description" l10nTranslate>welcomeAutomationUssrDescription</div>
+    </div>
+    <div class="welcome-item-devider"></div>
+    <div class="welcome-list-item">
+      <button mat-stroked-button color="primary" routerLink="/knowledge-base" l10nTranslate>knowledgeBase</button>
+      <div class="welcome-description" l10nTranslate>welcomeKnowledgeBaseDescription</div>
+    </div>
+    <div class="welcome-item-devider"></div>
+    <div class="welcome-list-item">
+      <a mat-stroked-button color="primary" routerLink="/useful-links" l10nTranslate>usefulLinks</a>
+      <div class="welcome-description" l10nTranslate>welcomeUsefulLinksDescription</div>
+    </div>
+    <div class="welcome-item-devider"></div>
+    <div class="welcome-list-item">
+      <a mat-stroked-button color="primary" routerLink="/about" l10nTranslate>pageAbout</a>
+      <div class="welcome-description" l10nTranslate></div>
+    </div>
+    <div class="welcome-item-devider"></div>
+    <div class="welcome-list-item">
+      <a mat-stroked-button color="primary" target="_blank" href="https://github.com/freehackquest/fhq-server">GitHub</a>
+      <div class="welcome-description" l10nTranslate></div>
+    </div>
+    <div class="welcome-item-devider"></div>
+    <div class="welcome-list-item">
+      <a mat-stroked-button color="primary" target="_blank" href="https://hub.docker.com/r/sea5kg/fhq-server">Docker Hub</a>
+      <div class="welcome-description" l10nTranslate></div>
+    </div>
+    <div class="welcome-item-devider"></div>
+    <div class="welcome-list-item">
+      <a mat-stroked-button color="primary" target="_blank" href="https://vk.com/freehackquest">VKontakte</a>
+      <div class="welcome-description" l10nTranslate></div>
+    </div>
+    <div class="welcome-item-devider"></div>
+    <div class="welcome-list-item">
+      <a mat-stroked-button color="primary" target="_blank" href="https://telegram.me/freehackquest">Telegram</a>
+      <div class="welcome-description" l10nTranslate></div>
+    </div>
   </mat-card-content>
-  <mat-card-actions>
-    <button mat-button routerLink="/about" l10nTranslate>pageAbout</button>
-    <a target="_blank" href="https://github.com/freehackquest/fhq-server" mat-button>GitHub</a>
-    <a target="_blank" href="https://hub.docker.com/r/freehackquest/fhq-server" mat-button>Docker</a>
-    <a target="_blank" href="https://vk.com/freehackquest" mat-button>VKontakte</a>
-  </mat-card-actions>
 </mat-card>
 
 <br/><br/>
