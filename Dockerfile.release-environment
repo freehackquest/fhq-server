@@ -6,7 +6,6 @@ LABEL "repository"="https://github.com/freehackquest/fhq-server"
 RUN apt-get update && \
     apt-get install -y \
     libcurl4 \
-    zlibc \
     zlib1g \
     libpng16-16 \
     libmariadb3 \

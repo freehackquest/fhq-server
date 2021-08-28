@@ -34,7 +34,7 @@ Backend && Frontend for FreeHackQuest on Qt and WebSockets
 
 ### Build all components (c++ && angular)
 
-#### Ubuntu / Debian 10.0
+#### Ubuntu / Debian 11.0
 
 Requirements:
 
@@ -42,7 +42,7 @@ Requirements:
 $ sudo apt install git-core g++ make cmake qtchooser qt5-default \
    libqt5websockets5 libqt5websockets5-dev libqt5sql5-mysql \
    libwebsockets-dev libcurl4-openssl-dev \
-   zlibc zlib1g zlib1g-dev \
+   zlib1g zlib1g-dev \
    libpng-dev \
    libmysqlclient-dev \
    mysql-server mysql-client \
@@ -52,7 +52,7 @@ $ sudo apt install git-core g++ make cmake qtchooser qt5-default \
 Install latest nodejs (for web-user)
 
 ```
-$ curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash -
+$ curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 $ sudo apt-get install nodejs
 ```
 
