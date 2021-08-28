@@ -19,7 +19,7 @@ services:
     build: .
     depends_on:
       - fhqserver_db
-    image: freehackquest/fhq-server:latest
+    image: sea5kg/fhq-server:latest
     volumes:
       - "./data/public:/usr/share/fhq-server/public"
       - "./conf.d:/etc/fhq-server"

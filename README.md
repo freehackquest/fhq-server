@@ -1,6 +1,6 @@
 # FHQ Server (backend + frontend)
 
-[![Build Status](https://travis-ci.org/freehackquest/fhq-server.svg?branch=master)](https://travis-ci.org/freehackquest/fhq-server) [![Docker Pulls](https://img.shields.io/docker/pulls/freehackquest/fhq-server.svg)](https://hub.docker.com/r/freehackquest/fhq-server/) [![Docker layers](https://images.microbadger.com/badges/image/freehackquest/fhq-server.svg)](https://microbadger.com/images/freehackquest/fhq-server) [![Github Stars](https://img.shields.io/github/stars/freehackquest/fhq-server.svg?label=github%20%E2%98%85)](https://github.com/freehackquest/fhq-server/) [![Github Stars](https://img.shields.io/github/contributors/freehackquest/fhq-server.svg)](https://github.com/freehackquest/fhq-server/) [![Github Forks](https://img.shields.io/github/forks/freehackquest/fhq-server.svg?label=github%20forks)](https://github.com/freehackquest/fhq-server/) [![Total alerts](https://img.shields.io/lgtm/alerts/g/freehackquest/fhq-server.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/freehackquest/fhq-server/alerts/) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/freehackquest/fhq-server.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/freehackquest/fhq-server/context:python) [![Language grade: Python](https://img.shields.io/lgtm/grade/cpp/g/freehackquest/fhq-server.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/freehackquest/fhq-server/context:cpp) [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/freehackquest/fhq-server.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/freehackquest/fhq-server/context:javascript) [![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6ImZyZWVoYWNrcXVlc3QiLCJyZXBvMSI6ImZocS1zZXJ2ZXIiLCJpbmNsdWRlTGludCI6ZmFsc2UsImF1dGhvcklkIjoxNTY0MSwiaWF0IjoxNjAxNTQ5MzE2fQ.UBFXoYtnCuMZfzi2pD51K4m46MSVwD8yvqgI0EMoEjY)](https://www.deepcode.ai/app/gh/freehackquest/fhq-server/_/dashboard?utm_content=gh%2Ffreehackquest%2Ffhq-server) [![Server API Coverage](https://img.shields.io/badge/Server%20API%20Coverage-39%25-blue.svg)](https://travis-ci.org/freehackquest/fhq-server)
+[![Build Status](https://app.travis-ci.com/freehackquest/fhq-server.svg?branch=dev)](https://app.travis-ci.com/freehackquest/fhq-server) [![Docker Pulls](https://img.shields.io/docker/pulls/sea5kg/fhq-server.svg)](https://hub.docker.com/r/sea5kg/fhq-server/) [![Github Stars](https://img.shields.io/github/stars/freehackquest/fhq-server.svg?label=github%20%E2%98%85)](https://github.com/freehackquest/fhq-server/) [![Github Stars](https://img.shields.io/github/contributors/freehackquest/fhq-server.svg)](https://github.com/freehackquest/fhq-server/) [![Github Forks](https://img.shields.io/github/forks/freehackquest/fhq-server.svg?label=github%20forks)](https://github.com/freehackquest/fhq-server/) [![Total alerts](https://img.shields.io/lgtm/alerts/g/freehackquest/fhq-server.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/freehackquest/fhq-server/alerts/) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/freehackquest/fhq-server.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/freehackquest/fhq-server/context:python) [![Language grade: Python](https://img.shields.io/lgtm/grade/cpp/g/freehackquest/fhq-server.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/freehackquest/fhq-server/context:cpp) [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/freehackquest/fhq-server.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/freehackquest/fhq-server/context:javascript) [![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6ImZyZWVoYWNrcXVlc3QiLCJyZXBvMSI6ImZocS1zZXJ2ZXIiLCJpbmNsdWRlTGludCI6ZmFsc2UsImF1dGhvcklkIjoxNTY0MSwiaWF0IjoxNjAxNTQ5MzE2fQ.UBFXoYtnCuMZfzi2pD51K4m46MSVwD8yvqgI0EMoEjY)](https://www.deepcode.ai/app/gh/freehackquest/fhq-server/_/dashboard?utm_content=gh%2Ffreehackquest%2Ffhq-server) [![Server API Coverage](https://img.shields.io/badge/Server%20API%20Coverage-39%25-blue.svg)](https://travis-ci.com/freehackquest/fhq-server)
 
 
 Backend && Frontend for FreeHackQuest on Qt and WebSockets
@@ -21,7 +21,7 @@ Backend && Frontend for FreeHackQuest on Qt and WebSockets
 
 | What                    | Where         |
 | ----------------------- | ------------- |
-| fhq-server (docker)     | [![Docker Pulls](https://img.shields.io/docker/pulls/freehackquest/fhq-server.svg)](https://hub.docker.com/r/freehackquest/fhq-server/)  |
+| fhq-server (docker)     | [![Docker Pulls](https://img.shields.io/docker/pulls/sea5kg/fhq-server.svg)](https://hub.docker.com/r/sea5kg/fhq-server/)  |
 | fhq-server (vm)         | [https://freehackquest.com/dist/](https://freehackquest.com/dist/)  |
 | client library (js) | [![npm](https://img.shields.io/npm/v/freehackquest-libclient-web-js)](https://www.npmjs.com/package/freehackquest-libclient-web-js) |
 | client library (python)     | [![PyPI](https://img.shields.io/pypi/v/freehackquest-libclient-py)](https://pypi.org/project/freehackquest-libclient-py/) |
@@ -34,7 +34,7 @@ Backend && Frontend for FreeHackQuest on Qt and WebSockets
 
 ### Build all components (c++ && angular)
 
-#### Ubuntu / Debian 10.0
+#### Ubuntu / Debian 11.0
 
 Requirements:
 
@@ -42,7 +42,7 @@ Requirements:
 $ sudo apt install git-core g++ make cmake qtchooser qt5-default \
    libqt5websockets5 libqt5websockets5-dev libqt5sql5-mysql \
    libwebsockets-dev libcurl4-openssl-dev \
-   zlibc zlib1g zlib1g-dev \
+   zlib1g zlib1g-dev \
    libpng-dev \
    libmysqlclient-dev \
    mysql-server mysql-client \
@@ -52,7 +52,7 @@ $ sudo apt install git-core g++ make cmake qtchooser qt5-default \
 Install latest nodejs (for web-user)
 
 ```
-$ curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash -
+$ curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 $ sudo apt-get install nodejs
 ```
 
@@ -230,8 +230,13 @@ And now your local web site will be connected to offical server.
 
 ## Build docker image
 
+If you wanna fresh enviroment
 ```
-$ docker build -t freehackquest/fhq-server:latest .
+$ ./rebuild_environment_images.sh
+```
+
+```
+$ docker build -t sea5kg/fhq-server:latest .
 ```
 
 ## Ubuntu - install from ppa (outdated)

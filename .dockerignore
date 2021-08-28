@@ -6,4 +6,6 @@ docker_dev
 fhqjad-store
 install
 tests
+/web-user/node_modules
+/web-user/dist
 _config.yml

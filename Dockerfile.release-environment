@@ -1,0 +1,30 @@
+FROM debian:11
+
+LABEL "maintainer"="Evgenii Sopov <mrseakg@gmail.com>"
+LABEL "repository"="https://github.com/freehackquest/fhq-server"
+
+RUN apt-get update && \
+    apt-get install -y \
+    libcurl4 \
+    zlib1g \
+    libpng16-16 \
+    libmariadb3 \
+    libpthread-stubs0-dev \
+    locales
+
+# RUN locale-gen en_US.UTF-8
+RUN sed -i -e "s/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" /etc/locale.gen && \
+    echo 'LANG="en_US.UTF-8"'>/etc/default/locale && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale LANG=en_US.UTF-8
+# RUN update-locale LANG=en_US.UTF-8
+
+RUN apt-get install -y \
+    libqt5sql5-mysql \
+    libqt5websockets5 \
+    libqt5core5a \
+    libqt5concurrent5
+
+# RUN apt-get install -y qt5-default qtchooser \
+
+RUN apt-get clean
