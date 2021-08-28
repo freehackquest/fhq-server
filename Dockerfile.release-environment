@@ -1,4 +1,4 @@
-FROM debian:10
+FROM debian:11
 
 LABEL "maintainer"="Evgenii Sopov <mrseakg@gmail.com>"
 LABEL "repository"="https://github.com/freehackquest/fhq-server"
