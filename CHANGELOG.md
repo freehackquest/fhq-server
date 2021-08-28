@@ -5,11 +5,20 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.43] - 2021-?? (2021 ??)
+## [v0.2.43] - 2021-08-28 (2021 August 28)
 
 ### Fixed 
 
 - Fixed page welcome for mobile devices
+
+### Added 
+
+- Added auto replacment on registration @hotnail.com -> @hotmail.com
+
+### Security
+
+- Updated angular to 12.+
+- Updated docker enviroment to debian:11
 
 ## [v0.2.42] - 2021-06-11 (2021 June 14)
 
