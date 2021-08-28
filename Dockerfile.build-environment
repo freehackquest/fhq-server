@@ -1,4 +1,4 @@
-FROM debian:10
+FROM debian:11
 WORKDIR /root/
 
 LABEL "maintainer"="Evgenii Sopov <mrseakg@gmail.com>"
