@@ -45,7 +45,7 @@
     "marked": "^0.7.0",
     "ng2-simplemde": "^2.1.0",
     "ngx-ace-wrapper": "^8.0.0",
-    "ngx-highlightjs": "^4.1.0-beta",
+    "ngx-highlightjs": "^4.1.4",
     "ngx-markdown-editor": "^3.2.1",
     "ngx-md": "^8.1.6",
     "ol": "^5.3.3",
