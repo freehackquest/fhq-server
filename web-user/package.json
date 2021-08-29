@@ -46,7 +46,7 @@
     "ng2-simplemde": "^2.1.0",
     "ngx-ace-wrapper": "^8.0.0",
     "ngx-highlightjs": "^4.1.0-beta",
-    "ngx-markdown-editor": "^3.2.1",
+    "ngx-markdown-editor": "^3.3.3",
     "ngx-md": "^8.1.6",
     "ol": "^5.3.3",
     "popper.js": "^1.16.1",
