@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Redesign console command 'fhq-server check-database-connection' to 'fhq-server db test'
 - Redesign console command 'fhq-server show-handlers' to 'fhq-server api ls'
 - Redesign console command 'fhq-server manual-create-database' to 'fhq-server db create'
+- Redesign console command 'fhq-server check-server-config' to 'fhq-server cfg test'
 
 ### Security
 

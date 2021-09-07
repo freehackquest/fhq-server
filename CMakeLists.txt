@@ -37,6 +37,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src/web-server")
 # argument_processor
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_main.cpp")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_api.cpp")
+list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_config.cpp")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_database.cpp")
 
 # core

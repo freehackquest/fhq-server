@@ -6,6 +6,7 @@
 
 #include "argument_processor_api.h"
 #include "argument_processor_database.h"
+#include "argument_processor_config.h"
 
 // ---------------------------------------------------------------------
 // ArgumentProcessorMain
@@ -20,12 +21,14 @@ ArgumentProcessorMain::ArgumentProcessorMain()
     // registryExample("here example of command");
     registryProcessor(new ArgumentProcessorVersion());
     registryProcessor(new ArgumentProcessorDatabase());
+    registryProcessor(new ArgumentProcessorConfig());
     registryProcessor(new ArgumentProcessorApi());
 
     m_sWorkDir = "";
     std::vector<std::string> vDefaultsWorkdirs = {
+        WsjcppCore::getCurrentDirectory() + "./data/",
         WsjcppCore::getCurrentDirectory() + "./ci/travis/data/",
-        "/usr/share/fhq-server/"
+        "/usr/share/fhq-server/data"
     };
     for (int i = 0; i < vDefaultsWorkdirs.size(); i++) {
         if (WsjcppCore::dirExists(vDefaultsWorkdirs[i])) {

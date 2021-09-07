@@ -87,7 +87,6 @@ int main(int argc, char** argv) {
     helpArgs.addHelp("set-setting", "-set", FallenHelpParseArgType::PARAMETER, "Set setting value like 'mail_username=some@where.org'");
     helpArgs.addHelp("send-test-mail", "-stm", FallenHelpParseArgType::SINGLE_OPTION, "Send test mail");
     helpArgs.addHelp("prepare-deb", "-pd", FallenHelpParseArgType::SINGLE_OPTION, "Prepare Deb Package");
-    helpArgs.addHelp("check-server-config", "-csc", FallenHelpParseArgType::SINGLE_OPTION, "Check server config");
     helpArgs.addHelp("make-config-linux", "-mcl", FallenHelpParseArgType::SINGLE_OPTION, "Create config file for Linux: /etc/fhq-server/fhq-server.conf");
     helpArgs.addHelp("manual-configure-lxd", "-mclxd", FallenHelpParseArgType::SINGLE_OPTION, "Manual configure HTTPS connection with LXD. \n You need generated SSL cert and key in /etc/fhq-server/lxd");
     helpArgs.addHelp("lxd-enable", "-uplxd", FallenHelpParseArgType::SINGLE_OPTION, "Enable lxd mode");
@@ -150,14 +149,6 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("prepare-deb")) {
         UtilsPrepareDebPackage::prepare("","tmpdeb");
-        return 0;
-    } else if (helpArgs.has("check-server-config")) {
-        std::cout << "\n * Check Server Config\n\n";
-        if (!pGlobalSettings->init()) {
-            std::cout << "\n * FAIL\n\n";
-        } else {
-            std::cout << "\n * Success\n\n";
-        }
         return 0;
     } else if (helpArgs.has("show-settings")) {
         WsjcppEmployees::init({});
