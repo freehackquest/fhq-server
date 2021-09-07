@@ -5,6 +5,24 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.2.43] - 2021-?-? (2021 ? ?)
+
+### Added 
+
+- Library wsjcpp-arguments
+
+### Fixed
+
+- Removed `build: .` from `contrib/docker_compose_example/docker-compose.yml`
+
+### Security
+
+- [synk] Upgrade bootstrap from 4.5.0 to 4.6.0
+- [synk] Upgrade tslib from 2.0.0 to 2.3.0
+- [synk] Upgrade rxjs-compat from 6.5.5 to 6.6.7
+- [synk] Upgrade ngx-markdown-editor from 3.2.1 to 3.3.3
+- [Snyk] Upgrade ngx-highlightjs from 4.1.0-beta to 4.1.4
+
 ## [v0.2.43] - 2021-08-28 (2021 August 28)
 
 ### Fixed 
