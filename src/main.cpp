@@ -13,7 +13,6 @@
 
 
 #include <jobs_pool.h>
-#include <fallen.h>
 #include <wsjcpp_core.h>
 #include <wsjcpp_arguments.h>
 #include "argument_processor_main.h"
@@ -48,12 +47,7 @@ int main(int argc, char** argv) {
     pGlobalSettings->update("app_version", appVersion);
     pGlobalSettings->update("app_author", appAuthor);
 
-    FallenHelpParseArgs helpArgs(argc, argv);
-
     ArgumentProcessorMain *pMain = new ArgumentProcessorMain(&qtApp);
     WsjcppArguments prog(argc, (const char**)argv, pMain);
-
-    int progExec = prog.exec();
-    // std::cout << "\n Workdir (2): " << pMain->getWorkDir() << " \n\n";
-    return progExec;
+    return prog.exec();
 }

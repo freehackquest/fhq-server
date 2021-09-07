@@ -1,5 +1,5 @@
 #include <runtasks.h>
-#include <fallen.h>
+
 #include <add_public_events_task.h>
 #include <mail_send_task.h>
 #include <notify_to_all_task.h>
@@ -7,6 +7,7 @@
 #include <update_quest_solved_task.h>
 #include <update_user_location_task.h>
 #include <update_user_rating_task.h>
+#include <wsjcpp_core.h>
 
 #include <QRunnable>
 #include <QThreadPool>
