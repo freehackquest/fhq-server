@@ -17,11 +17,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Security
 
-- [synk] Upgrade bootstrap from 4.5.0 to 4.6.0
-- [synk] Upgrade tslib from 2.0.0 to 2.3.0
-- [synk] Upgrade rxjs-compat from 6.5.5 to 6.6.7
-- [synk] Upgrade ngx-markdown-editor from 3.2.1 to 3.3.3
-- [Snyk] Upgrade ngx-highlightjs from 4.1.0-beta to 4.1.4
+- server: Upgraded nlohmann/json from v3.7.3 to v3.10.2
+- web-user: [synk] Upgrade bootstrap from 4.5.0 to 4.6.0
+- web-user: [synk] Upgrade tslib from 2.0.0 to 2.3.0
+- web-user: [synk] Upgrade rxjs-compat from 6.5.5 to 6.6.7
+- web-user: [synk] Upgrade ngx-markdown-editor from 3.2.1 to 3.3.3
+- web-user: [Snyk] Upgrade ngx-highlightjs from 4.1.0-beta to 4.1.4
 
 ## [v0.2.43] - 2021-08-28 (2021 August 28)
 
