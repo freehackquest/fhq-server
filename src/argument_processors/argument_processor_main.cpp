@@ -1,6 +1,10 @@
 
 #include "argument_processor_main.h"
 
+#include <QtCore>
+#include <QFile>
+#include <QString>
+
 #include <wsjcpp_core.h>
 #include <employees.h>
 
@@ -9,11 +13,23 @@
 #include "argument_processor_config.h"
 #include <utils_prepare_deb_package.h>
 #include <wsjcpp_print_tree.h>
+#include <wsjcpp_light_web_server.h>
+#include <http_handler_web_user_folder.h>
+#include <http_handler_web_public_folder.h>
+#include <http_handler_web_admin_folder.h>
+#include <websocketserver.h>
+#include <employees.h>
+#include <employ_server_info.h>
+#include <employ_database.h>
+#include <employ_images.h>
+
+
+WsjcppLightWebServer g_httpServer;
 
 // ---------------------------------------------------------------------
 // ArgumentProcessorMain
 
-ArgumentProcessorMain::ArgumentProcessorMain() 
+ArgumentProcessorMain::ArgumentProcessorMain(QCoreApplication *pQtApp) 
 : WsjcppArgumentProcessor({"main"}, "FreeHackQuest Server", "FreeHackQuest Server") {
     TAG = "ArgumentProcessorMain";
     // registrySingleArgument("--single", "What exactly do this single param?");
@@ -22,6 +38,7 @@ ArgumentProcessorMain::ArgumentProcessorMain()
 
     // registryExample("here example of command");
     registryProcessor(new ArgumentProcessorVersion());
+    registryProcessor(new ArgumentProcessorStart(pQtApp));
     registryProcessor(new ArgumentProcessorDatabase());
     registryProcessor(new ArgumentProcessorConfig());
     registryProcessor(new ArgumentProcessorApi());
@@ -132,8 +149,6 @@ ArgumentProcessorShowEmployees::ArgumentProcessorShowEmployees()
     TAG = "ArgumentProcessorShowEmployees";
 }
 
-// ---------------------------------------------------------------------
-
 int ArgumentProcessorShowEmployees::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
     // dev
     WsjcppPrintTree tree("WsjcppEmployees (" + std::to_string(g_pWsjcppEmployees->size()) + ")");
@@ -153,4 +168,63 @@ int ArgumentProcessorShowEmployees::exec(const std::vector<std::string> &vRoutes
     }
     std::cout << tree.printTree() << std::endl;        
     return 0;
+}
+
+// ---------------------------------------------------------------------
+// ArgumentProcessorStart
+
+ArgumentProcessorStart::ArgumentProcessorStart(QCoreApplication *pQtApp) 
+: WsjcppArgumentProcessor({"start", "-s"}, "Show employees", "Show employees") {
+    TAG = "ArgumentProcessorStart";
+    m_pQtApp = pQtApp;
+}
+
+int ArgumentProcessorStart::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
+    auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+    // auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+
+    pGlobalSettings->registrySetting("web_server", "web_admin_folder").dirPath("/usr/share/fhq-server/web-admin").inFile();
+    pGlobalSettings->registrySetting("web_server", "web_user_folder").dirPath("/usr/share/fhq-server/web-user").inFile();
+    pGlobalSettings->registrySetting("web_server", "web_public_folder").dirPath("/usr/share/fhq-server/fhq-web-public").inFile();
+    pGlobalSettings->registrySetting("web_server", "web_public_folder_url").string("http://localhost:7080/public/").inFile();
+    pGlobalSettings->registrySetting("web_server", "web_fhqjad_store").dirPath("/usr/share/fhq-server/web/fhqjad-store").inFile();
+    
+    WsjcppEmployees::init({"start_server"});
+
+    QThreadPool::globalInstance()->setMaxThreadCount(5);
+    WebSocketServer *pServer = new WebSocketServer(); // here will be init settings
+    if (pServer->isFailed()) {
+        WsjcppLog::err(TAG, "Could not start server");
+        return -1;
+    }
+
+    QObject::connect(pServer, &WebSocketServer::closed, m_pQtApp, &QCoreApplication::quit);
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+    // TODO redesign to check config
+    QSqlDatabase *db = pDatabase->database();
+    if (!db->open()) {
+        return -1;
+    }
+
+    // TODO move inside server start
+    // start web server
+    int nWebPort = pGlobalSettings->get("web_port").getNumberValue();
+    int nWebMaxThreads = pGlobalSettings->get("web_max_threads").getNumberValue();
+    std::string sWebAdminFolder = pGlobalSettings->get("web_admin_folder").getDirPathValue();
+    std::string sWebUserFolder = pGlobalSettings->get("web_user_folder").getDirPathValue();
+    std::string sWebPublicFolder = pGlobalSettings->get("web_public_folder").getDirPathValue(); // TODO must be declared in server
+    std::string sWebPublicFolderUrl = pGlobalSettings->get("web_public_folder_url").getStringValue(); // TODO must be declared in server
+
+    WsjcppLog::info(TAG, "Starting web-server on " + std::to_string(nWebPort)
+            + " with " + std::to_string(nWebMaxThreads) + " worker threads");
+
+    g_httpServer.addHandler(new HttpHandlerWebAdminFolder(sWebAdminFolder));
+    g_httpServer.addHandler(new HttpHandlerWebPublicFolder(sWebPublicFolder));
+    g_httpServer.addHandler(new HttpHandlerWebUserFolder(sWebUserFolder));
+
+    g_httpServer.setPort(nWebPort);
+    g_httpServer.setMaxWorkers(nWebMaxThreads);
+    g_httpServer.start();  // will be block thread
+
+    return m_pQtApp->exec();
 }
