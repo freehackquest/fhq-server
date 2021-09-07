@@ -29,7 +29,6 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
-#include <wsjcpp_export_libcli_web_js.h>
 #include <export_libwsjcppcli_java_android.h>
 #include <runtasks.h>
 #include <wsjcpp_light_web_server.h>
@@ -78,7 +77,6 @@ int main(int argc, char** argv) {
     helpArgs.setAppVersion(appVersion);
 
     helpArgs.addHelp("--help", "-h", FallenHelpParseArgType::SINGLE_OPTION, "This help");
-    helpArgs.addHelp("export-libfhqcli-web-javascript", "-exlwjs", FallenHelpParseArgType::SINGLE_OPTION, "Export freehackquest-libclient-web-js (javascript)");
     helpArgs.addHelp("export-libfhqcli-java-android", "-exljadr", FallenHelpParseArgType::SINGLE_OPTION, "Export libfhqcli-java-android");
     helpArgs.addHelp("show-employees", "-se", FallenHelpParseArgType::SINGLE_OPTION, "Show employees");
     helpArgs.addHelp("set-setting", "-set", FallenHelpParseArgType::PARAMETER, "Set setting value like 'mail_username=some@where.org'");
@@ -100,18 +98,6 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("--help")) {
         helpArgs.printHelp();
-        return 0;
-    } else if (helpArgs.has("export-libfhqcli-web-javascript")) {
-        // api
-        WsjCpp::ExportLibCliWebJS *pExportWebJS = new WsjCpp::ExportLibCliWebJS();
-        pExportWebJS->setLibraryName("fhq");
-        pExportWebJS->setPackageName("freehackquest-libclient-web-js");
-        pExportWebJS->setAuthor("FreeHackQuest Team");
-        pExportWebJS->setAppName(appName);
-        pExportWebJS->setAppVersion(appVersion);
-        pExportWebJS->setPrefixRepositoryURL("https://github.com/freehackquest/");
-        pExportWebJS->exportLib();
-        delete pExportWebJS;
         return 0;
     } else if (helpArgs.has("export-libfhqcli-java-android")) {
         // api

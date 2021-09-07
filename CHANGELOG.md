@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Redesign console command 'fhq-server check-server-config' to 'fhq-server cfg test'
 - Redesign console command 'fhq-server show-settings' to 'fhq-server cfg print'
 - Redesign console command 'fhq-server export-freehackquest-libclient-py' to 'fhq-server api export-freehackquest-libclient-py'
+- Redesign console command 'fhq-server export-libfhqcli-web-javascript' to 'fhq-server api export-freehackquest-libclient-web-js'
+
 
 ### Security
 

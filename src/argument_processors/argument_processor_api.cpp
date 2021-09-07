@@ -6,6 +6,7 @@
 #include <websocketserver.h>
 #include <employees.h>
 #include <export_libwsjcppcli_py.h>
+#include <wsjcpp_export_libcli_web_js.h>
 
 // ---------------------------------------------------------------------
 // ArgumentProcessorApi
@@ -15,6 +16,7 @@ ArgumentProcessorApi::ArgumentProcessorApi()
     TAG = "ArgumentProcessorApi";
     registryProcessor(new ArgumentProcessorApiList());
     registryProcessor(new ArgumentProcessorApiExportPythonLibrary());
+    registryProcessor(new ArgumentProcessorApiExportJavascriptLibrary());
 }
 
 int ArgumentProcessorApi::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
@@ -81,7 +83,7 @@ int ArgumentProcessorApiList::exec(const std::vector<std::string> &vRoutes, cons
 // ArgumentProcessorApiExportPythonLibrary
 
 ArgumentProcessorApiExportPythonLibrary::ArgumentProcessorApiExportPythonLibrary() 
-: WsjcppArgumentProcessor({"export-freehackquest-libclient-py", "exlp"}, "Export freehackquest-libclient-py (python)", "Export freehackquest-libclient-py (python)") {
+: WsjcppArgumentProcessor({"export-freehackquest-libclient-py", "exlpy"}, "Export freehackquest-libclient-py (python)", "Export freehackquest-libclient-py (python)") {
     TAG = "ArgumentProcessorApiExportPythonLibrary";
 }
 
@@ -89,5 +91,29 @@ int ArgumentProcessorApiExportPythonLibrary::exec(const std::vector<std::string>
     ExportLibWsjCppCliPy *pExportPython = new ExportLibWsjCppCliPy();
     pExportPython->exportLib();
     delete pExportPython;
+    return 0;
+}
+
+// ---------------------------------------------------------------------
+// ArgumentProcessorApiExportJavascriptLibrary
+
+ArgumentProcessorApiExportJavascriptLibrary::ArgumentProcessorApiExportJavascriptLibrary() 
+: WsjcppArgumentProcessor({"export-freehackquest-libclient-web-js", "exlwjs"}, "Export freehackquest-libclient-web-js (javascript)", "Export freehackquest-libclient-web-js (javascript)") {
+    TAG = "ArgumentProcessorApiExportJavascriptLibrary";
+}
+
+int ArgumentProcessorApiExportJavascriptLibrary::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
+    std::string appName(WSJCPP_APP_NAME);
+    std::string appVersion(WSJCPP_APP_VERSION);
+
+    WsjCpp::ExportLibCliWebJS *pExportWebJS = new WsjCpp::ExportLibCliWebJS();
+    pExportWebJS->setLibraryName("fhq");
+    pExportWebJS->setPackageName("freehackquest-libclient-web-js");
+    pExportWebJS->setAuthor("FreeHackQuest Team");
+    pExportWebJS->setAppName(appName);
+    pExportWebJS->setAppVersion(appVersion);
+    pExportWebJS->setPrefixRepositoryURL("https://github.com/freehackquest/");
+    pExportWebJS->exportLib();
+    delete pExportWebJS;
     return 0;
 }
