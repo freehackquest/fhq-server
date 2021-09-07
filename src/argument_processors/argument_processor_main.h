@@ -21,7 +21,6 @@ class ArgumentProcessorMain : public WsjcppArgumentProcessor {
 class ArgumentProcessorVersion : public WsjcppArgumentProcessor {
     public:
         ArgumentProcessorVersion();
-
         virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 };
 

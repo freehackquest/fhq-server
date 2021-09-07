@@ -29,7 +29,6 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
-#include <export_struct_of_storage.h>
 #include <wsjcpp_export_libcli_web_js.h>
 #include <export_libwsjcppcli_py.h>
 #include <export_libwsjcppcli_java_android.h>
@@ -80,7 +79,6 @@ int main(int argc, char** argv) {
     helpArgs.setAppVersion(appVersion);
 
     helpArgs.addHelp("--help", "-h", FallenHelpParseArgType::SINGLE_OPTION, "This help");
-    helpArgs.addHelp("show-storage-struct", "-sh-ss", FallenHelpParseArgType::SINGLE_OPTION, "Show Storage Struct");
     helpArgs.addHelp("export-freehackquest-libclient-py", "-exlp", FallenHelpParseArgType::SINGLE_OPTION, "Export freehackquest-libclient-py (python)");
     helpArgs.addHelp("export-libfhqcli-web-javascript", "-exlwjs", FallenHelpParseArgType::SINGLE_OPTION, "Export freehackquest-libclient-web-js (javascript)");
     helpArgs.addHelp("export-libfhqcli-java-android", "-exljadr", FallenHelpParseArgType::SINGLE_OPTION, "Export libfhqcli-java-android");
@@ -107,9 +105,6 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("--help")) {
         helpArgs.printHelp();
-        return 0;
-    } else if (helpArgs.has("show-storage-struct")) {
-        ExportStructOfStorage::print();
         return 0;
     } else if (helpArgs.has("export-freehackquest-libclient-py")) {
         ExportLibWsjCppCliPy *pExportPython = new ExportLibWsjCppCliPy();
