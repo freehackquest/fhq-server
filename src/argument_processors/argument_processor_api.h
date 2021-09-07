@@ -27,4 +27,10 @@ class ArgumentProcessorApiExportJavascriptLibrary : public WsjcppArgumentProcess
         virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 };
 
+class ArgumentProcessorApiExportJavaAndroidLibrary : public WsjcppArgumentProcessor {
+    public:
+        ArgumentProcessorApiExportJavaAndroidLibrary();
+        virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
+};
+
 #endif // ARGUMENT_PROCESSOR_API_H

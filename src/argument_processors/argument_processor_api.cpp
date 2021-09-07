@@ -7,6 +7,7 @@
 #include <employees.h>
 #include <export_libwsjcppcli_py.h>
 #include <wsjcpp_export_libcli_web_js.h>
+#include <export_libwsjcppcli_java_android.h>
 
 // ---------------------------------------------------------------------
 // ArgumentProcessorApi
@@ -17,6 +18,7 @@ ArgumentProcessorApi::ArgumentProcessorApi()
     registryProcessor(new ArgumentProcessorApiList());
     registryProcessor(new ArgumentProcessorApiExportPythonLibrary());
     registryProcessor(new ArgumentProcessorApiExportJavascriptLibrary());
+    registryProcessor(new ArgumentProcessorApiExportJavaAndroidLibrary());
 }
 
 int ArgumentProcessorApi::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
@@ -115,5 +117,25 @@ int ArgumentProcessorApiExportJavascriptLibrary::exec(const std::vector<std::str
     pExportWebJS->setPrefixRepositoryURL("https://github.com/freehackquest/");
     pExportWebJS->exportLib();
     delete pExportWebJS;
+    return 0;
+}
+
+// ---------------------------------------------------------------------
+// ArgumentProcessorApiExportJavaAndroidLibrary
+
+ArgumentProcessorApiExportJavaAndroidLibrary::ArgumentProcessorApiExportJavaAndroidLibrary() 
+: WsjcppArgumentProcessor({"export-freehackquest-libclient-java-android", "exljadr"}, "Export libfhqcli-java-android", "Export libfhqcli-java-android") {
+    TAG = "ArgumentProcessorApiExportJavaAndroidLibrary";
+}
+
+int ArgumentProcessorApiExportJavaAndroidLibrary::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
+
+    ExportLibWsjCppCliJavaAndroid *pExportJavaAndroid = new ExportLibWsjCppCliJavaAndroid();
+    // pExportJavaAndroid->setLibraryName("libfhqcli-java-android");
+    // pExportJavaAndroid->setAuthor("FreeHackQuest Team");
+    pExportJavaAndroid->setVersion(std::string(WSJCPP_APP_VERSION));
+    // pExportJavaAndroid->setPrefixRepositoryURL("https://github.com/freehackquest/");
+    pExportJavaAndroid->exportLib();
+    delete pExportJavaAndroid;
     return 0;
 }

@@ -29,7 +29,7 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
-#include <export_libwsjcppcli_java_android.h>
+
 #include <runtasks.h>
 #include <wsjcpp_light_web_server.h>
 #include <http_handler_web_user_folder.h>
@@ -77,7 +77,6 @@ int main(int argc, char** argv) {
     helpArgs.setAppVersion(appVersion);
 
     helpArgs.addHelp("--help", "-h", FallenHelpParseArgType::SINGLE_OPTION, "This help");
-    helpArgs.addHelp("export-libfhqcli-java-android", "-exljadr", FallenHelpParseArgType::SINGLE_OPTION, "Export libfhqcli-java-android");
     helpArgs.addHelp("show-employees", "-se", FallenHelpParseArgType::SINGLE_OPTION, "Show employees");
     helpArgs.addHelp("set-setting", "-set", FallenHelpParseArgType::PARAMETER, "Set setting value like 'mail_username=some@where.org'");
     helpArgs.addHelp("send-test-mail", "-stm", FallenHelpParseArgType::SINGLE_OPTION, "Send test mail");
@@ -99,17 +98,6 @@ int main(int argc, char** argv) {
     } else if (helpArgs.has("--help")) {
         helpArgs.printHelp();
         return 0;
-    } else if (helpArgs.has("export-libfhqcli-java-android")) {
-        // api
-        ExportLibWsjCppCliJavaAndroid *pExportJavaAndroid = new ExportLibWsjCppCliJavaAndroid();
-        // pExportJavaAndroid->setLibraryName("libfhqcli-java-android");
-        // pExportJavaAndroid->setAuthor("FreeHackQuest Team");
-        pExportJavaAndroid->setVersion(std::string(WSJCPP_APP_VERSION));
-        // pExportJavaAndroid->setPrefixRepositoryURL("https://github.com/freehackquest/");
-        pExportJavaAndroid->exportLib();
-        delete pExportJavaAndroid;
-        return 0;
-
     } else if (helpArgs.has("show-employees")) {
         // dev
         WsjcppPrintTree tree("WsjcppEmployees (" + std::to_string(g_pWsjcppEmployees->size()) + ")");
