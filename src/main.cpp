@@ -80,7 +80,6 @@ int main(int argc, char** argv) {
     helpArgs.setAppVersion(appVersion);
 
     helpArgs.addHelp("--help", "-h", FallenHelpParseArgType::SINGLE_OPTION, "This help");
-    helpArgs.addHelp("version", "-v", FallenHelpParseArgType::SINGLE_OPTION, "Print version");
     helpArgs.addHelp("show-storage-struct", "-sh-ss", FallenHelpParseArgType::SINGLE_OPTION, "Show Storage Struct");
     helpArgs.addHelp("export-freehackquest-libclient-py", "-exlp", FallenHelpParseArgType::SINGLE_OPTION, "Export freehackquest-libclient-py (python)");
     helpArgs.addHelp("export-libfhqcli-web-javascript", "-exlwjs", FallenHelpParseArgType::SINGLE_OPTION, "Export freehackquest-libclient-web-js (javascript)");
@@ -92,46 +91,19 @@ int main(int argc, char** argv) {
     helpArgs.addHelp("prepare-deb", "-pd", FallenHelpParseArgType::SINGLE_OPTION, "Prepare Deb Package");
     helpArgs.addHelp("check-server-config", "-csc", FallenHelpParseArgType::SINGLE_OPTION, "Check server config");
     helpArgs.addHelp("make-config-linux", "-mcl", FallenHelpParseArgType::SINGLE_OPTION, "Create config file for Linux: /etc/fhq-server/fhq-server.conf");
-    helpArgs.addHelp("check-database-connection", "-cdc", FallenHelpParseArgType::SINGLE_OPTION, "Check database conenction");
     helpArgs.addHelp("manual-create-database", "-mcd", FallenHelpParseArgType::SINGLE_OPTION, "Manual create database");
     helpArgs.addHelp("manual-configure-lxd", "-mclxd", FallenHelpParseArgType::SINGLE_OPTION, "Manual configure HTTPS connection with LXD. \n You need generated SSL cert and key in /etc/fhq-server/lxd");
     helpArgs.addHelp("lxd-enable", "-uplxd", FallenHelpParseArgType::SINGLE_OPTION, "Enable lxd mode");
     helpArgs.addHelp("lxd-disable", "-downlxd", FallenHelpParseArgType::SINGLE_OPTION, "Disable lxd mode");
     helpArgs.addHelp("start", "-s", FallenHelpParseArgType::SINGLE_OPTION, "Start server");
-    helpArgs.addHelp("--workdir", "-wd", FallenHelpParseArgType::PARAMETER, "Set work dir (logs, configs aand etc...)");
-
-    
-
-    std::string sWorkDir = "";
-    if (helpArgs.has("--workdir")) {
-        sWorkDir = helpArgs.option("--workdir");
-        sWorkDir = WsjcppCore::getCurrentDirectory() + sWorkDir;
-        sWorkDir = WsjcppCore::doNormalizePath(sWorkDir);
-
-        std::cout << "\n Workdir: " << sWorkDir << " \n\n";
-        if (!WsjcppCore::dirExists(sWorkDir)) {
-            WsjcppLog::err(TAG, "Directory '" + sWorkDir + "' did'not exists");
-            return -1;
-        }
-
-        // configure employ
-        if (sWorkDir != "") {
-            pGlobalSettings->setWorkDir(sWorkDir);
-            pGlobalSettings->update("work_dir", sWorkDir);
-        }
-
-        std::string sDirLogs = WsjcppCore::doNormalizePath(sWorkDir + "/logs");
-        if (!WsjcppCore::dirExists(sDirLogs)) {
-            WsjcppCore::makeDir(sDirLogs);
-        }
-        pGlobalSettings->update("log_dir", sDirLogs);
-        WsjcppLog::setLogDirectory(sDirLogs);
-    }
 
     ArgumentProcessorMain *pMain = new ArgumentProcessorMain();
     WsjcppArguments prog(argc, (const char**)argv, pMain);
+
+    int progExec = prog.exec();
+    // std::cout << "\n Workdir (2): " << pMain->getWorkDir() << " \n\n";
     // return prog.exec();
-    if (prog.exec() == 0) {
+    if (progExec == 0) {
         return 0;
     } else if (helpArgs.has("--help")) {
         helpArgs.printHelp();
@@ -182,9 +154,6 @@ int main(int argc, char** argv) {
         }
         std::cout << tree.printTree() << std::endl;        
         return 0;
-    } else if (helpArgs.has("version")) {
-        std::cout << WSJCPP_APP_NAME << "-" << WSJCPP_APP_VERSION << "\n";
-        return 0;
     } else if (helpArgs.has("prepare-deb")) {
         UtilsPrepareDebPackage::prepare("","tmpdeb");
         return 0;
@@ -195,20 +164,6 @@ int main(int argc, char** argv) {
         } else {
             std::cout << "\n * Success\n\n";
         }
-        return 0;
-    } else if (helpArgs.has("check-database-connection")) {
-        std::cout << "\n * Check Database Connection\n\n";
-        if (!WsjcppEmployees::init({})) {
-            WsjcppLog::err(TAG, "Could not init database module");
-            return -1;
-        }
-        EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
-        QSqlDatabase *db = pDatabase->database();
-        if (!db->open()) {
-            WsjcppLog::err(TAG, "Could not connect to database, please check config");
-            return -1;
-        }
-        std::cout << "\n * Success\n\n";
         return 0;
     } else if (helpArgs.has("show-settings")) {
         WsjcppEmployees::init({});
