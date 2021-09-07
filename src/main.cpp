@@ -83,7 +83,6 @@ int main(int argc, char** argv) {
     helpArgs.addHelp("export-libfhqcli-web-javascript", "-exlwjs", FallenHelpParseArgType::SINGLE_OPTION, "Export freehackquest-libclient-web-js (javascript)");
     helpArgs.addHelp("export-libfhqcli-java-android", "-exljadr", FallenHelpParseArgType::SINGLE_OPTION, "Export libfhqcli-java-android");
     helpArgs.addHelp("show-employees", "-se", FallenHelpParseArgType::SINGLE_OPTION, "Show employees");
-    helpArgs.addHelp("show-settings", "-ss", FallenHelpParseArgType::SINGLE_OPTION, "Show settings");
     helpArgs.addHelp("set-setting", "-set", FallenHelpParseArgType::PARAMETER, "Set setting value like 'mail_username=some@where.org'");
     helpArgs.addHelp("send-test-mail", "-stm", FallenHelpParseArgType::SINGLE_OPTION, "Send test mail");
     helpArgs.addHelp("prepare-deb", "-pd", FallenHelpParseArgType::SINGLE_OPTION, "Prepare Deb Package");
@@ -149,12 +148,6 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("prepare-deb")) {
         UtilsPrepareDebPackage::prepare("","tmpdeb");
-        return 0;
-    } else if (helpArgs.has("show-settings")) {
-        WsjcppEmployees::init({});
-        std::cout << "\n * Show settings\n\n";
-        pGlobalSettings->printSettings();
-        std::cout << "\n * Done\n\n";
         return 0;
     } else if (helpArgs.has("set-setting")) {
         WsjcppEmployees::init({});

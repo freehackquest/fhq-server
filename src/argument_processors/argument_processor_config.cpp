@@ -16,6 +16,7 @@ ArgumentProcessorConfig::ArgumentProcessorConfig()
     // registryParameterArgument("-param", "N", "What need this param?");
     // registryExample("here example of command");
     registryProcessor(new ArgumentProcessorConfigTest());
+    registryProcessor(new ArgumentProcessorConfigPrint());
 }
 
 int ArgumentProcessorConfig::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
@@ -39,5 +40,22 @@ int ArgumentProcessorConfigTest::exec(const std::vector<std::string> &vRoutes, c
         return -1;
     }
     std::cout << "\n * Success\n\n";
+    return 0;
+}
+
+// ---------------------------------------------------------------------
+// ArgumentProcessorConfigPrint
+
+ArgumentProcessorConfigPrint::ArgumentProcessorConfigPrint() 
+: WsjcppArgumentProcessor({"print"}, "Print config", "Print config") {
+    TAG = "ArgumentProcessorConfigPrint";
+}
+
+int ArgumentProcessorConfigPrint::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
+    auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+    WsjcppEmployees::init({});
+    std::cout << "\n * Show settings\n\n";
+    pGlobalSettings->printSettings();
+    std::cout << "\n * Done\n\n";
     return 0;
 }

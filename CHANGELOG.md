@@ -5,7 +5,7 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.43] - 2021-?-? (2021 ? ?)
+## [v0.2.44] - 2021-?-? (2021 ? ?)
 
 ### Added 
 
@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Redesign console command 'fhq-server show-handlers' to 'fhq-server api ls'
 - Redesign console command 'fhq-server manual-create-database' to 'fhq-server db create'
 - Redesign console command 'fhq-server check-server-config' to 'fhq-server cfg test'
+- Redesign console command 'fhq-server show-settings' to 'fhq-server cfg print'
 
 ### Security
 

@@ -15,4 +15,10 @@ class ArgumentProcessorConfigTest : public WsjcppArgumentProcessor {
         virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 };
 
+class ArgumentProcessorConfigPrint : public WsjcppArgumentProcessor {
+    public:
+        ArgumentProcessorConfigPrint();
+        virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
+};
+
 #endif // ARGUMENT_PROCESSOR_CONFIG_H
