@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Redesign console command 'fhq-server export-freehackquest-libclient-py' to 'fhq-server api export-freehackquest-libclient-py'
 - Redesign console command 'fhq-server export-libfhqcli-web-javascript' to 'fhq-server api export-freehackquest-libclient-web-js'
 - Redesign console command 'fhq-server export-libfhqcli-java-android' to 'fhq-server api export-freehackquest-libclient-java-android'
+- Redesign console command 'fhq-server send-test-mail' to 'fhq-server cfg test-email'
 
 ### Security
 

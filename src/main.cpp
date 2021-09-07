@@ -30,7 +30,6 @@
 #include <iomanip>
 #include <algorithm>
 
-#include <runtasks.h>
 #include <wsjcpp_light_web_server.h>
 #include <http_handler_web_user_folder.h>
 #include <http_handler_web_public_folder.h>
@@ -77,7 +76,6 @@ int main(int argc, char** argv) {
 
     helpArgs.addHelp("--help", "-h", FallenHelpParseArgType::SINGLE_OPTION, "This help");
     helpArgs.addHelp("set-setting", "-set", FallenHelpParseArgType::PARAMETER, "Set setting value like 'mail_username=some@where.org'");
-    helpArgs.addHelp("send-test-mail", "-stm", FallenHelpParseArgType::SINGLE_OPTION, "Send test mail");
     helpArgs.addHelp("manual-configure-lxd", "-mclxd", FallenHelpParseArgType::SINGLE_OPTION, "Manual configure HTTPS connection with LXD. \n You need generated SSL cert and key in /etc/fhq-server/lxd");
     helpArgs.addHelp("lxd-enable", "-uplxd", FallenHelpParseArgType::SINGLE_OPTION, "Enable lxd mode");
     helpArgs.addHelp("lxd-disable", "-downlxd", FallenHelpParseArgType::SINGLE_OPTION, "Disable lxd mode");
@@ -128,16 +126,6 @@ int main(int argc, char** argv) {
             WsjcppLog::err(TAG, "Not support settings datatype with name '" + sSettName + "'");
             return -1;
         }
-        return 0;
-    } else if (helpArgs.has("send-test-mail")) {
-        // config
-        WsjcppEmployees::init({});
-        std::cout << "\n * Send test mail\n\n";
-        std::string sTo = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();
-        std::string sSubject = "Test Mail";
-        std::string sContent = "Welcome to Free Hack Quest!\r\n\r\nHow are you?";
-        RunTasks::MailSend(sTo, sSubject, sContent);
-        RunTasks::waitForDone();
         return 0;
     } else if (helpArgs.has("manual-configure-lxd")) {
         // config lxd
