@@ -21,6 +21,7 @@ ArgumentProcessorConfig::ArgumentProcessorConfig()
     registryProcessor(new ArgumentProcessorConfigTest());
     registryProcessor(new ArgumentProcessorConfigPrint());
     registryProcessor(new ArgumentProcessorConfigTestEmail());
+    registryProcessor(new ArgumentProcessorConfigSet());
     registryProcessor(new ArgumentProcessorConfigLxdEnable());
     registryProcessor(new ArgumentProcessorConfigLxdDisable());
     registryProcessor(new ArgumentProcessorConfigLxdConfigure());
@@ -54,7 +55,7 @@ int ArgumentProcessorConfigTest::exec(const std::vector<std::string> &vRoutes, c
 // ArgumentProcessorConfigPrint
 
 ArgumentProcessorConfigPrint::ArgumentProcessorConfigPrint() 
-: WsjcppArgumentProcessor({"print"}, "Print config", "Print config") {
+: WsjcppArgumentProcessor({"print", "ls"}, "Print config", "Print config") {
     TAG = "ArgumentProcessorConfigPrint";
 }
 
@@ -84,6 +85,57 @@ int ArgumentProcessorConfigTestEmail::exec(const std::vector<std::string> &vRout
     std::string sContent = "Welcome to Free Hack Quest!\r\n\r\nHow are you?";
     RunTasks::MailSend(sTo, sSubject, sContent);
     RunTasks::waitForDone();
+    return 0;
+}
+
+// ---------------------------------------------------------------------
+// ArgumentProcessorConfigSet
+
+ArgumentProcessorConfigSet::ArgumentProcessorConfigSet() 
+: WsjcppArgumentProcessor({"set"}, "Set setting value", "Set setting value") {
+    TAG = "ArgumentProcessorConfigSet";
+    registryExample("./fhq-server cfg set 'mail_username=some@where.org'");
+}
+
+int ArgumentProcessorConfigSet::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
+    auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+    WsjcppEmployees::init({});
+    if (vSubParams.size() != 1) {
+        return -10; // show help
+    }
+
+    std::string sSetting = vSubParams[0];
+    std::cout << "\n Try set setting " << sSetting << " \n\n";
+    std::string sSettName = "";
+    std::istringstream f(sSetting);
+    getline(f, sSettName, '=');
+    if (sSettName.length() == sSetting.length()) {
+        WsjcppLog::err(TAG, "Could not split by '=' for a '" + sSetting + "'");
+        return -1;
+    }
+    std::string sSettValue = sSetting.substr(sSettName.length()+1);
+    if (!pGlobalSettings->exists(sSettName)) {
+        WsjcppLog::err(TAG, "Not support settings with name '" + sSettName + "'");
+        return -1;
+    }
+
+    WsjcppSettingItem item = pGlobalSettings->get(sSettName);
+    if (item.isLikeString()) {
+        pGlobalSettings->update(sSettName, sSettValue);
+    } else if (item.isBoolean()) {
+        if (sSettValue != "true" && sSettValue != "yes" && sSettValue != "false" && sSettValue != "no") {
+            WsjcppLog::err(TAG, "Expected value boolean (true|yes|false|no), but got '" + sSettValue + "' for '" + sSettName + "'");
+            return -1;
+        }
+        pGlobalSettings->update(sSettName, sSettValue == "true" || sSettValue == "yes");
+    } else if (item.isNumber()) {
+        int nSettValue = std::stoi(sSettValue);
+        pGlobalSettings->update(sSettName, nSettValue);
+    } else {
+        WsjcppLog::err(TAG, "Not support settings datatype with name '" + sSettName + "'");
+        return -1;
+    }
+    return 0;
     return 0;
 }
 

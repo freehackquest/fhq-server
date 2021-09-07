@@ -73,7 +73,6 @@ int main(int argc, char** argv) {
     helpArgs.setAppVersion(appVersion);
 
     helpArgs.addHelp("--help", "-h", FallenHelpParseArgType::SINGLE_OPTION, "This help");
-    helpArgs.addHelp("set-setting", "-set", FallenHelpParseArgType::PARAMETER, "Set setting value like 'mail_username=some@where.org'");
     helpArgs.addHelp("start", "-s", FallenHelpParseArgType::SINGLE_OPTION, "Start server");
 
     ArgumentProcessorMain *pMain = new ArgumentProcessorMain();
@@ -86,41 +85,6 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("--help")) {
         helpArgs.printHelp();
-        return 0;
-    } else if (helpArgs.has("set-setting")) {
-        // config
-        WsjcppEmployees::init({});
-        std::string sSetting = helpArgs.option("set-setting");
-        std::cout << "\n Try set setting " << sSetting << " \n\n";
-        std::string sSettName = "";
-        std::istringstream f(sSetting);
-        getline(f, sSettName, '=');
-        if (sSettName.length() == sSetting.length()) {
-            WsjcppLog::err(TAG, "Could not split by '=' for a '" + sSetting + "'");
-            return -1;
-        }
-        std::string sSettValue = sSetting.substr(sSettName.length()+1);
-        if (!pGlobalSettings->exists(sSettName)) {
-            WsjcppLog::err(TAG, "Not support settings with name '" + sSettName + "'");
-            return -1;
-        }
-
-        WsjcppSettingItem item = pGlobalSettings->get(sSettName);
-        if (item.isLikeString()) {
-            pGlobalSettings->update(sSettName, sSettValue);
-        } else if (item.isBoolean()) {
-            if (sSettValue != "true" && sSettValue != "yes" && sSettValue != "false" && sSettValue != "no") {
-                WsjcppLog::err(TAG, "Expected value boolean (true|yes|false|no), but got '" + sSettValue + "' for '" + sSettName + "'");
-                return -1;
-            }
-            pGlobalSettings->update(sSettName, sSettValue == "true" || sSettValue == "yes");
-        } else if (item.isNumber()) {
-            int nSettValue = std::stoi(sSettValue);
-            pGlobalSettings->update(sSettName, nSettValue);
-        } else {
-            WsjcppLog::err(TAG, "Not support settings datatype with name '" + sSettName + "'");
-            return -1;
-        }
         return 0;
     } else if (helpArgs.has("start") || helpArgs.has("-s")) {
         pGlobalSettings->registrySetting("web_server", "web_admin_folder").dirPath("/usr/share/fhq-server/web-admin").inFile();

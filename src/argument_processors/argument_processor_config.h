@@ -27,6 +27,12 @@ class ArgumentProcessorConfigTestEmail : public WsjcppArgumentProcessor {
         virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 };
 
+class ArgumentProcessorConfigSet : public WsjcppArgumentProcessor {
+    public:
+        ArgumentProcessorConfigSet();
+        virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
+};
+
 class ArgumentProcessorConfigLxdEnable : public WsjcppArgumentProcessor {
     public:
         ArgumentProcessorConfigLxdEnable();

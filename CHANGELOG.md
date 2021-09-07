@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Redesign console command 'fhq-server show-handlers' to 'fhq-server api ls'
 - Redesign console command 'fhq-server manual-create-database' to 'fhq-server db create'
 - Redesign console command 'fhq-server check-server-config' to 'fhq-server cfg test'
-- Redesign console command 'fhq-server show-settings' to 'fhq-server cfg print'
+- Redesign console command 'fhq-server show-settings' to 'fhq-server cfg print' or 'fhq-server cfg ls'
 - Redesign console command 'fhq-server export-freehackquest-libclient-py' to 'fhq-server api export-freehackquest-libclient-py'
 - Redesign console command 'fhq-server export-libfhqcli-web-javascript' to 'fhq-server api export-freehackquest-libclient-web-js'
 - Redesign console command 'fhq-server export-libfhqcli-java-android' to 'fhq-server api export-freehackquest-libclient-java-android'
@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Redesign console command 'fhq-server lxd-enable' to 'fhq-server cfg lxd-enable'
 - Redesign console command 'fhq-server lxd-disable' to 'fhq-server cfg lxd-disable'
 - Redesign console command 'fhq-server manual-configure-lxd' to 'fhq-server cfg lxd-configure'
+- Redesign console command 'fhq-server set-setting' to 'fhq-server cfg set'
 
 ### Security
 
