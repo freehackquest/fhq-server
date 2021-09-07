@@ -89,7 +89,6 @@ int main(int argc, char** argv) {
     helpArgs.addHelp("prepare-deb", "-pd", FallenHelpParseArgType::SINGLE_OPTION, "Prepare Deb Package");
     helpArgs.addHelp("check-server-config", "-csc", FallenHelpParseArgType::SINGLE_OPTION, "Check server config");
     helpArgs.addHelp("make-config-linux", "-mcl", FallenHelpParseArgType::SINGLE_OPTION, "Create config file for Linux: /etc/fhq-server/fhq-server.conf");
-    helpArgs.addHelp("manual-create-database", "-mcd", FallenHelpParseArgType::SINGLE_OPTION, "Manual create database");
     helpArgs.addHelp("manual-configure-lxd", "-mclxd", FallenHelpParseArgType::SINGLE_OPTION, "Manual configure HTTPS connection with LXD. \n You need generated SSL cert and key in /etc/fhq-server/lxd");
     helpArgs.addHelp("lxd-enable", "-uplxd", FallenHelpParseArgType::SINGLE_OPTION, "Enable lxd mode");
     helpArgs.addHelp("lxd-disable", "-downlxd", FallenHelpParseArgType::SINGLE_OPTION, "Disable lxd mode");
@@ -208,31 +207,6 @@ int main(int argc, char** argv) {
         std::string sContent = "Welcome to Free Hack Quest!\r\n\r\nHow are you?";
         RunTasks::MailSend(sTo, sSubject, sContent);
         RunTasks::waitForDone();
-        return 0;
-    } else if (helpArgs.has("manual-create-database")) {
-        std::cout << "\n * Manual create database\n\n";
-        if (!pGlobalSettings->init()) {
-            std::cout << "\n * Failed on init server config\n\n";
-            return -1;
-        }
-        EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
-
-        // enter mysql root password
-        char *pPassword = getpass("Enter MySQL root password: ");
-        std::string sRootPassword(pPassword);
-        std::string sError;
-        if (!pDatabase->manualCreateDatabase(sRootPassword, sError)) {
-            std::cout << "\n * Failed: " << sError << "\n\n";
-            return -1;
-        }
-
-        // init database
-        if (!pDatabase->init()) {
-            std::cout << "\n * Failed on init database structure\n\n";
-            return -1;
-        }
-
-        std::cout << "\n * Done\n\n";
         return 0;
     } else if (helpArgs.has("manual-configure-lxd")) {
         std::string sError;

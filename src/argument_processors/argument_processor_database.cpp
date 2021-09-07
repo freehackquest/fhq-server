@@ -4,6 +4,7 @@
 #include <employees.h>
 #include <wsjcpp_storages.h>
 #include <employ_database.h>
+#include <unistd.h>
 
 // ---------------------------------------------------------------------
 // ArgumentProcessorDatabase
@@ -13,6 +14,7 @@ ArgumentProcessorDatabase::ArgumentProcessorDatabase()
     TAG = "ArgumentProcessorDatabase";
     registryProcessor(new ArgumentProcessorDatabaseTestConnection());
     registryProcessor(new ArgumentProcessorDatabaseStruct());
+    registryProcessor(new ArgumentProcessorDatabaseCreate());
 }
 
 int ArgumentProcessorDatabase::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
@@ -154,5 +156,41 @@ int ArgumentProcessorDatabaseStruct::exec(const std::vector<std::string> &vRoute
         std::cout << " | " << std::endl;
         it++;
     }
+    return 0;
+}
+
+// ---------------------------------------------------------------------
+// ArgumentProcessorDatabaseCreate
+
+ArgumentProcessorDatabaseCreate::ArgumentProcessorDatabaseCreate() 
+: WsjcppArgumentProcessor({"create"}, "Manual create empty database (mysql)", "Manual create empty database (mysql)") {
+    TAG = "ArgumentProcessorDatabaseCreate";
+}
+
+int ArgumentProcessorDatabaseCreate::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
+    auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+    std::cout << "\n * Manual create database\n\n";
+    if (!pGlobalSettings->init()) {
+        std::cout << "\n * Failed on init server config\n\n";
+        return -1;
+    }
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+
+    // enter mysql root password
+    char *pPassword = getpass("Enter MySQL root password: ");
+    std::string sRootPassword(pPassword);
+    std::string sError;
+    if (!pDatabase->manualCreateDatabase(sRootPassword, sError)) {
+        std::cout << "\n * Failed: " << sError << "\n\n";
+        return -1;
+    }
+
+    // init database
+    if (!pDatabase->init()) {
+        std::cout << "\n * Failed on init database structure\n\n";
+        return -1;
+    }
+
+    std::cout << "\n * Done\n\n";
     return 0;
 }

@@ -15,6 +15,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Removed `build: .` from `contrib/docker_compose_example/docker-compose.yml`
 
+## Changed
+
+- Redesign console command 'fhq-server show-storage-struct' to 'fhq-server db struct'
+- Redesign console command 'fhq-server check-database-connection' to 'fhq-server db test'
+- Redesign console command 'fhq-server show-handlers' to 'fhq-server api ls'
+- Redesign console command 'fhq-server manual-create-database' to 'fhq-server db create'
+
 ### Security
 
 - server: Upgraded nlohmann/json from v3.7.3 to v3.10.2
