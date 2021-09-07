@@ -7,6 +7,8 @@
 #include "argument_processor_api.h"
 #include "argument_processor_database.h"
 #include "argument_processor_config.h"
+#include <utils_prepare_deb_package.h>
+#include <wsjcpp_print_tree.h>
 
 // ---------------------------------------------------------------------
 // ArgumentProcessorMain
@@ -23,6 +25,8 @@ ArgumentProcessorMain::ArgumentProcessorMain()
     registryProcessor(new ArgumentProcessorDatabase());
     registryProcessor(new ArgumentProcessorConfig());
     registryProcessor(new ArgumentProcessorApi());
+    registryProcessor(new ArgumentProcessorShowEmployees());
+    registryProcessor(new ArgumentProcessorPrepareDeb());
 
     m_sWorkDir = "";
     std::vector<std::string> vDefaultsWorkdirs = {
@@ -102,5 +106,51 @@ ArgumentProcessorVersion::ArgumentProcessorVersion()
 
 int ArgumentProcessorVersion::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
     std::cout << WSJCPP_APP_NAME << "-" << WSJCPP_APP_VERSION << "\n";
+    return 0;
+}
+
+// ---------------------------------------------------------------------
+// ArgumentProcessorPrepareDeb
+
+ArgumentProcessorPrepareDeb::ArgumentProcessorPrepareDeb() 
+: WsjcppArgumentProcessor({"prepare-deb"}, "TODO Prepare Deb Package", "Prepare Deb Package") {
+    TAG = "ArgumentProcessorPrepareDeb";
+}
+
+// ---------------------------------------------------------------------
+
+int ArgumentProcessorPrepareDeb::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
+    UtilsPrepareDebPackage::prepare("","tmpdeb");
+    return 0;
+}
+
+// ---------------------------------------------------------------------
+// ArgumentProcessorShowEmployees
+
+ArgumentProcessorShowEmployees::ArgumentProcessorShowEmployees() 
+: WsjcppArgumentProcessor({"show-employees", "se"}, "Show employees", "Show employees") {
+    TAG = "ArgumentProcessorShowEmployees";
+}
+
+// ---------------------------------------------------------------------
+
+int ArgumentProcessorShowEmployees::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
+    // dev
+    WsjcppPrintTree tree("WsjcppEmployees (" + std::to_string(g_pWsjcppEmployees->size()) + ")");
+
+    std::map<std::string, WsjcppEmployBase*>::iterator it = g_pWsjcppEmployees->begin();
+    for (; it != g_pWsjcppEmployees->end(); ++it) {
+        std::string sEmployName = it->first;
+        WsjcppEmployBase* pEmployBase = it->second;
+        tree.addChild(sEmployName);
+        tree.switchToLatestChild();
+        if (pEmployBase->loadAfter().size() > 0) {
+            for (int i = 0; i < pEmployBase->loadAfter().size(); i++) {
+                tree.addChild("after: " + pEmployBase->loadAfter().at(i));
+            }
+        }
+        tree.switchToParent();
+    }
+    std::cout << tree.printTree() << std::endl;        
     return 0;
 }

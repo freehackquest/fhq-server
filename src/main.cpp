@@ -20,7 +20,7 @@
 #include <QFile>
 #include <QString>
 #include <websocketserver.h>
-#include <utils_prepare_deb_package.h>
+
 #include <utils_lxd.h>
 #include <employees.h>
 #include <employ_server_info.h>
@@ -38,7 +38,6 @@
 #include <jobs_pool.h>
 #include <fallen.h>
 #include <wsjcpp_core.h>
-#include <wsjcpp_print_tree.h>
 #include <wsjcpp_arguments.h>
 #include "argument_processor_main.h"
 
@@ -77,11 +76,8 @@ int main(int argc, char** argv) {
     helpArgs.setAppVersion(appVersion);
 
     helpArgs.addHelp("--help", "-h", FallenHelpParseArgType::SINGLE_OPTION, "This help");
-    helpArgs.addHelp("show-employees", "-se", FallenHelpParseArgType::SINGLE_OPTION, "Show employees");
     helpArgs.addHelp("set-setting", "-set", FallenHelpParseArgType::PARAMETER, "Set setting value like 'mail_username=some@where.org'");
     helpArgs.addHelp("send-test-mail", "-stm", FallenHelpParseArgType::SINGLE_OPTION, "Send test mail");
-    helpArgs.addHelp("prepare-deb", "-pd", FallenHelpParseArgType::SINGLE_OPTION, "Prepare Deb Package");
-    helpArgs.addHelp("make-config-linux", "-mcl", FallenHelpParseArgType::SINGLE_OPTION, "Create config file for Linux: /etc/fhq-server/fhq-server.conf");
     helpArgs.addHelp("manual-configure-lxd", "-mclxd", FallenHelpParseArgType::SINGLE_OPTION, "Manual configure HTTPS connection with LXD. \n You need generated SSL cert and key in /etc/fhq-server/lxd");
     helpArgs.addHelp("lxd-enable", "-uplxd", FallenHelpParseArgType::SINGLE_OPTION, "Enable lxd mode");
     helpArgs.addHelp("lxd-disable", "-downlxd", FallenHelpParseArgType::SINGLE_OPTION, "Disable lxd mode");
@@ -97,29 +93,6 @@ int main(int argc, char** argv) {
         return 0;
     } else if (helpArgs.has("--help")) {
         helpArgs.printHelp();
-        return 0;
-    } else if (helpArgs.has("show-employees")) {
-        // dev
-        WsjcppPrintTree tree("WsjcppEmployees (" + std::to_string(g_pWsjcppEmployees->size()) + ")");
-
-        std::map<std::string, WsjcppEmployBase*>::iterator it = g_pWsjcppEmployees->begin();
-        for (; it != g_pWsjcppEmployees->end(); ++it) {
-            std::string sEmployName = it->first;
-            WsjcppEmployBase* pEmployBase = it->second;
-            tree.addChild(sEmployName);
-            tree.switchToLatestChild();
-            if (pEmployBase->loadAfter().size() > 0) {
-                for (int i = 0; i < pEmployBase->loadAfter().size(); i++) {
-                    tree.addChild("after: " + pEmployBase->loadAfter().at(i));
-                }
-            }
-            tree.switchToParent();
-        }
-        std::cout << tree.printTree() << std::endl;        
-        return 0;
-    } else if (helpArgs.has("prepare-deb")) {
-        // contrib
-        UtilsPrepareDebPackage::prepare("","tmpdeb");
         return 0;
     } else if (helpArgs.has("set-setting")) {
         // config

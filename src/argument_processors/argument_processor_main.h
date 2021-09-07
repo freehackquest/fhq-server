@@ -24,4 +24,16 @@ class ArgumentProcessorVersion : public WsjcppArgumentProcessor {
         virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 };
 
+class ArgumentProcessorPrepareDeb : public WsjcppArgumentProcessor {
+    public:
+        ArgumentProcessorPrepareDeb();
+        virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
+};
+
+class ArgumentProcessorShowEmployees : public WsjcppArgumentProcessor {
+    public:
+        ArgumentProcessorShowEmployees();
+        virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
+};
+
 #endif // ARGUMENT_PROCESSOR_MAIN_H
