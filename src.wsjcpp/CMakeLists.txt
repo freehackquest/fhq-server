@@ -90,7 +90,13 @@ list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_parse_conf/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_parse_conf/wsjcpp_parse_conf.cpp")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_parse_conf/wsjcpp_parse_conf.h")
 
+# wsjcpp-arguments:v0.2.1
+list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_arguments/")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.cpp")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.h")
+
 # required-libraries
+list (APPEND WSJCPP_LIBRARIES "-lpthread")
 list (APPEND WSJCPP_LIBRARIES "-lpthread")
 list (APPEND WSJCPP_LIBRARIES "-lpthread")
 list (APPEND WSJCPP_LIBRARIES "-lpthread")

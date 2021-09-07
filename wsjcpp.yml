@@ -29,6 +29,7 @@ authors:
     email: "sergo.moreno@gmail.com"
   - name: "Danil Dudkin"
     email: "shikamaru740@gmail.com"
+
 dependencies:
   - name: "wsjcpp-levenshtein"
     version: "v0.0.1"
@@ -93,6 +94,13 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-parse-conf:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_parse_conf"
+  - name: "wsjcpp-arguments"
+    version: "v0.2.1"
+    url: "https://github.com/wsjcpp/wsjcpp-arguments:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_arguments"
+    installation-datetime: "Tue, 07 Sep 2021 05:23:11 GMT"
+
 distribution:
   - source-file: "src/core/fallen.cpp"
     target-file: "fallen.cpp"
@@ -118,6 +126,7 @@ distribution:
   - source-file: "src/storages/mysql/mysql_storage.cpp"
     target-file: "mysql_storage.cpp"
     type: "source-code"
+
 unit-tests:
   cases:
     - name: "Validators"
