@@ -29,7 +29,6 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
-#include <export_list_of_handlers.h>
 #include <export_struct_of_storage.h>
 #include <wsjcpp_export_libcli_web_js.h>
 #include <export_libwsjcppcli_py.h>
@@ -43,6 +42,8 @@
 #include <fallen.h>
 #include <wsjcpp_core.h>
 #include <wsjcpp_print_tree.h>
+#include <wsjcpp_arguments.h>
+#include "argument_processor_main.h"
 
 WsjcppLightWebServer g_httpServer;
 
@@ -78,9 +79,8 @@ int main(int argc, char** argv) {
     helpArgs.setAppName(appName);
     helpArgs.setAppVersion(appVersion);
 
-    helpArgs.addHelp("help", "-h", FallenHelpParseArgType::SINGLE_OPTION, "This help");
+    helpArgs.addHelp("--help", "-h", FallenHelpParseArgType::SINGLE_OPTION, "This help");
     helpArgs.addHelp("version", "-v", FallenHelpParseArgType::SINGLE_OPTION, "Print version");
-    helpArgs.addHelp("show-handlers", "-sh", FallenHelpParseArgType::SINGLE_OPTION, "Show handlers");
     helpArgs.addHelp("show-storage-struct", "-sh-ss", FallenHelpParseArgType::SINGLE_OPTION, "Show Storage Struct");
     helpArgs.addHelp("export-freehackquest-libclient-py", "-exlp", FallenHelpParseArgType::SINGLE_OPTION, "Export freehackquest-libclient-py (python)");
     helpArgs.addHelp("export-libfhqcli-web-javascript", "-exlwjs", FallenHelpParseArgType::SINGLE_OPTION, "Export freehackquest-libclient-web-js (javascript)");
@@ -128,11 +128,13 @@ int main(int argc, char** argv) {
         WsjcppLog::setLogDirectory(sDirLogs);
     }
 
-    if (helpArgs.has("help")) {
-        helpArgs.printHelp();
+    ArgumentProcessorMain *pMain = new ArgumentProcessorMain();
+    WsjcppArguments prog(argc, (const char**)argv, pMain);
+    // return prog.exec();
+    if (prog.exec() == 0) {
         return 0;
-    } else if (helpArgs.has("show-handlers")) {
-        ExportListOfHandlers::print();
+    } else if (helpArgs.has("--help")) {
+        helpArgs.printHelp();
         return 0;
     } else if (helpArgs.has("show-storage-struct")) {
         ExportStructOfStorage::print();

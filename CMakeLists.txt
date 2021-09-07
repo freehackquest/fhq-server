@@ -5,6 +5,7 @@ project(fhq-server)
 include(${CMAKE_CURRENT_SOURCE_DIR}/src.wsjcpp/CMakeLists.txt)
 
 #### BEGIN_WSJCPP_APPEND
+
 #### END_WSJCPP_APPEND
 
 set (CMAKE_AUTOMOC ON)
@@ -17,6 +18,7 @@ include_directories(${Qt5Core_INCLUDE_DIRS})
 
 # include header dirs
 list (APPEND WSJCPP_INCLUDE_DIRS "src")
+list (APPEND WSJCPP_INCLUDE_DIRS "src/argument_processors")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/core")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/core/3rdParty")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/3rdParty/quazip-0.7.3/quazip")
@@ -32,6 +34,10 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src/storages/updates")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/cmd")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/web-server")
 
+# argument_processor
+list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_main.cpp")
+list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_api.cpp")
+
 # core
 list (APPEND WSJCPP_SOURCES "src/core/cmd_handlers.h")
 list (APPEND WSJCPP_SOURCES "src/core/cmd_handlers.cpp")
@@ -39,8 +45,6 @@ list (APPEND WSJCPP_SOURCES "src/core/export_libwsjcppcli_java_android.h")
 list (APPEND WSJCPP_SOURCES "src/core/export_libwsjcppcli_java_android.cpp")
 list (APPEND WSJCPP_SOURCES "src/core/export_libwsjcppcli_py.h")
 list (APPEND WSJCPP_SOURCES "src/core/export_libwsjcppcli_py.cpp")
-list (APPEND WSJCPP_SOURCES "src/core/export_list_of_handlers.h")
-list (APPEND WSJCPP_SOURCES "src/core/export_list_of_handlers.cpp")
 list (APPEND WSJCPP_SOURCES "src/core/export_struct_of_storage.h")
 list (APPEND WSJCPP_SOURCES "src/core/export_struct_of_storage.cpp")
 list (APPEND WSJCPP_SOURCES "src/core/fallen.h")
@@ -287,3 +291,5 @@ install(
 # install(FILES install_files/fhq-server.postinst DESTINATION ${CMAKE_INSTALL_PREFIX}/../var/lib/dpkg/info COMPONENT config)
 # install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/share/fhq-server)
 # install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/log/fhq-server)
+
+
