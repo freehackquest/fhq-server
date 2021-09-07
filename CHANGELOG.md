@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Redesign console command 'fhq-server manual-create-database' to 'fhq-server db create'
 - Redesign console command 'fhq-server check-server-config' to 'fhq-server cfg test'
 - Redesign console command 'fhq-server show-settings' to 'fhq-server cfg print'
+- Redesign console command 'fhq-server export-freehackquest-libclient-py' to 'fhq-server api export-freehackquest-libclient-py'
 
 ### Security
 

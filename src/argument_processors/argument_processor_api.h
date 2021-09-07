@@ -6,18 +6,18 @@
 class ArgumentProcessorApi : public WsjcppArgumentProcessor {
     public:
         ArgumentProcessorApi();
-
-        virtual bool applyParameterArgument(const std::string &sProgramName, const std::string &sArgumentName, const std::string &sValue) override;
-        virtual bool applySingleArgument(const std::string &sProgramName, const std::string &sArgumentName) override;
         virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 };
 
 class ArgumentProcessorApiList : public WsjcppArgumentProcessor {
     public:
         ArgumentProcessorApiList();
+        virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
+};
 
-        virtual bool applyParameterArgument(const std::string &sProgramName, const std::string &sArgumentName, const std::string &sValue) override;
-        virtual bool applySingleArgument(const std::string &sProgramName, const std::string &sArgumentName) override;
+class ArgumentProcessorApiExportPythonLibrary : public WsjcppArgumentProcessor {
+    public:
+        ArgumentProcessorApiExportPythonLibrary();
         virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 };
 

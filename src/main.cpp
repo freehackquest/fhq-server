@@ -30,7 +30,6 @@
 #include <iomanip>
 #include <algorithm>
 #include <wsjcpp_export_libcli_web_js.h>
-#include <export_libwsjcppcli_py.h>
 #include <export_libwsjcppcli_java_android.h>
 #include <runtasks.h>
 #include <wsjcpp_light_web_server.h>
@@ -79,7 +78,6 @@ int main(int argc, char** argv) {
     helpArgs.setAppVersion(appVersion);
 
     helpArgs.addHelp("--help", "-h", FallenHelpParseArgType::SINGLE_OPTION, "This help");
-    helpArgs.addHelp("export-freehackquest-libclient-py", "-exlp", FallenHelpParseArgType::SINGLE_OPTION, "Export freehackquest-libclient-py (python)");
     helpArgs.addHelp("export-libfhqcli-web-javascript", "-exlwjs", FallenHelpParseArgType::SINGLE_OPTION, "Export freehackquest-libclient-web-js (javascript)");
     helpArgs.addHelp("export-libfhqcli-java-android", "-exljadr", FallenHelpParseArgType::SINGLE_OPTION, "Export libfhqcli-java-android");
     helpArgs.addHelp("show-employees", "-se", FallenHelpParseArgType::SINGLE_OPTION, "Show employees");
@@ -103,12 +101,8 @@ int main(int argc, char** argv) {
     } else if (helpArgs.has("--help")) {
         helpArgs.printHelp();
         return 0;
-    } else if (helpArgs.has("export-freehackquest-libclient-py")) {
-        ExportLibWsjCppCliPy *pExportPython = new ExportLibWsjCppCliPy();
-        pExportPython->exportLib();
-        delete pExportPython;
-        return 0;
     } else if (helpArgs.has("export-libfhqcli-web-javascript")) {
+        // api
         WsjCpp::ExportLibCliWebJS *pExportWebJS = new WsjCpp::ExportLibCliWebJS();
         pExportWebJS->setLibraryName("fhq");
         pExportWebJS->setPackageName("freehackquest-libclient-web-js");
@@ -120,6 +114,7 @@ int main(int argc, char** argv) {
         delete pExportWebJS;
         return 0;
     } else if (helpArgs.has("export-libfhqcli-java-android")) {
+        // api
         ExportLibWsjCppCliJavaAndroid *pExportJavaAndroid = new ExportLibWsjCppCliJavaAndroid();
         // pExportJavaAndroid->setLibraryName("libfhqcli-java-android");
         // pExportJavaAndroid->setAuthor("FreeHackQuest Team");
@@ -128,7 +123,9 @@ int main(int argc, char** argv) {
         pExportJavaAndroid->exportLib();
         delete pExportJavaAndroid;
         return 0;
+
     } else if (helpArgs.has("show-employees")) {
+        // dev
         WsjcppPrintTree tree("WsjcppEmployees (" + std::to_string(g_pWsjcppEmployees->size()) + ")");
 
         std::map<std::string, WsjcppEmployBase*>::iterator it = g_pWsjcppEmployees->begin();
@@ -147,9 +144,11 @@ int main(int argc, char** argv) {
         std::cout << tree.printTree() << std::endl;        
         return 0;
     } else if (helpArgs.has("prepare-deb")) {
+        // contrib
         UtilsPrepareDebPackage::prepare("","tmpdeb");
         return 0;
     } else if (helpArgs.has("set-setting")) {
+        // config
         WsjcppEmployees::init({});
         std::string sSetting = helpArgs.option("set-setting");
         std::cout << "\n Try set setting " << sSetting << " \n\n";
@@ -184,6 +183,7 @@ int main(int argc, char** argv) {
         }
         return 0;
     } else if (helpArgs.has("send-test-mail")) {
+        // config
         WsjcppEmployees::init({});
         std::cout << "\n * Send test mail\n\n";
         std::string sTo = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();
@@ -193,6 +193,7 @@ int main(int argc, char** argv) {
         RunTasks::waitForDone();
         return 0;
     } else if (helpArgs.has("manual-configure-lxd")) {
+        // config lxd
         std::string sError;
         WsjcppEmployees::init({});
         if (UtilsLXDAuth::check_trust_certs(sError)) {
@@ -212,6 +213,7 @@ int main(int argc, char** argv) {
         }
         return 0;
     } else if (helpArgs.has("lxd-enable") || helpArgs.has("lxd-disable")) {
+        // config lxd
         WsjcppEmployees::init({});
         bool bLXDMode;
         if (helpArgs.has("lxd-enable")) {

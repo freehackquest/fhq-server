@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <websocketserver.h>
 #include <employees.h>
+#include <export_libwsjcppcli_py.h>
 
 // ---------------------------------------------------------------------
 // ArgumentProcessorApi
@@ -12,31 +13,9 @@
 ArgumentProcessorApi::ArgumentProcessorApi() 
 : WsjcppArgumentProcessor({"api"}, "api", "All what depened to api processing") {
     TAG = "ArgumentProcessorApi";
-    // registrySingleArgument("--single", "What exactly do this single param?");
-    // registryParameterArgument("-param", "N", "What need this param?");
-    // registryExample("here example of command");
     registryProcessor(new ArgumentProcessorApiList());
+    registryProcessor(new ArgumentProcessorApiExportPythonLibrary());
 }
-
-// ---------------------------------------------------------------------
-
-bool ArgumentProcessorApi::applySingleArgument(const std::string &sProgramName, const std::string &sArgumentName) {
-    WsjcppLog::err(TAG, "Not implemented");
-    return false;
-}
-
-// ---------------------------------------------------------------------
-
-bool ArgumentProcessorApi::applyParameterArgument(
-    const std::string &sProgramName, 
-    const std::string &sArgumentName, 
-    const std::string &sValue
-) {
-    WsjcppLog::err(TAG, "Not implemented");
-    return false;
-}
-
-// ---------------------------------------------------------------------
 
 int ArgumentProcessorApi::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
     WsjcppLog::err(TAG, "Not implemented");
@@ -49,31 +28,7 @@ int ArgumentProcessorApi::exec(const std::vector<std::string> &vRoutes, const st
 ArgumentProcessorApiList::ArgumentProcessorApiList() 
 : WsjcppArgumentProcessor({"list", "ls"}, "Print list of api handlers", "Print list of api handlers") {
     TAG = "ArgumentProcessorApiList";
-    // registrySingleArgument("--single", "What exactly do this single param?");
-    // registryParameterArgument("-param", "N", "What need this param?");
-    // registryExample("here example of command");
-    // registryProcessor(new ArgumentProcessorOtherProcessor());
 }
-
-// ---------------------------------------------------------------------
-
-bool ArgumentProcessorApiList::applySingleArgument(const std::string &sProgramName, const std::string &sArgumentName) {
-    WsjcppLog::err(TAG, "Not implemented");
-    return false;
-}
-
-// ---------------------------------------------------------------------
-
-bool ArgumentProcessorApiList::applyParameterArgument(
-    const std::string &sProgramName, 
-    const std::string &sArgumentName, 
-    const std::string &sValue
-) {
-    WsjcppLog::err(TAG, "Not implemented");
-    return false;
-}
-
-// ---------------------------------------------------------------------
 
 int ArgumentProcessorApiList::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
     std::cout << "\n\n * CmdHandlers (" << g_pCmdHandlers->size() << "):\n";
@@ -118,5 +73,21 @@ int ArgumentProcessorApiList::exec(const std::vector<std::string> &vRoutes, cons
         << "--------+--------+--------+\n";
 
     std::cout << "\n\n";
+    return 0;
+}
+
+
+// ---------------------------------------------------------------------
+// ArgumentProcessorApiExportPythonLibrary
+
+ArgumentProcessorApiExportPythonLibrary::ArgumentProcessorApiExportPythonLibrary() 
+: WsjcppArgumentProcessor({"export-freehackquest-libclient-py", "exlp"}, "Export freehackquest-libclient-py (python)", "Export freehackquest-libclient-py (python)") {
+    TAG = "ArgumentProcessorApiExportPythonLibrary";
+}
+
+int ArgumentProcessorApiExportPythonLibrary::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
+    ExportLibWsjCppCliPy *pExportPython = new ExportLibWsjCppCliPy();
+    pExportPython->exportLib();
+    delete pExportPython;
     return 0;
 }
