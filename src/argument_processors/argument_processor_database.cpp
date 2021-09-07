@@ -4,7 +4,7 @@
 #include <employees.h>
 #include <wsjcpp_storages.h>
 #include <employ_database.h>
-#include <unistd.h>
+#include <unistd.h> // getpass
 
 // ---------------------------------------------------------------------
 // ArgumentProcessorDatabase

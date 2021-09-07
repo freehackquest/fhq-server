@@ -1,7 +1,5 @@
 // Copyright (c) 2015-2020 FreeHackQuest <freehackquest@gmail.com>
 
-#include <unistd.h>  // getpass
-
 #include <iostream>
 #include <string>
 
@@ -21,7 +19,7 @@
 #include <QString>
 #include <websocketserver.h>
 
-#include <utils_lxd.h>
+
 #include <employees.h>
 #include <employ_server_info.h>
 #include <employ_database.h>
@@ -76,9 +74,6 @@ int main(int argc, char** argv) {
 
     helpArgs.addHelp("--help", "-h", FallenHelpParseArgType::SINGLE_OPTION, "This help");
     helpArgs.addHelp("set-setting", "-set", FallenHelpParseArgType::PARAMETER, "Set setting value like 'mail_username=some@where.org'");
-    helpArgs.addHelp("manual-configure-lxd", "-mclxd", FallenHelpParseArgType::SINGLE_OPTION, "Manual configure HTTPS connection with LXD. \n You need generated SSL cert and key in /etc/fhq-server/lxd");
-    helpArgs.addHelp("lxd-enable", "-uplxd", FallenHelpParseArgType::SINGLE_OPTION, "Enable lxd mode");
-    helpArgs.addHelp("lxd-disable", "-downlxd", FallenHelpParseArgType::SINGLE_OPTION, "Disable lxd mode");
     helpArgs.addHelp("start", "-s", FallenHelpParseArgType::SINGLE_OPTION, "Start server");
 
     ArgumentProcessorMain *pMain = new ArgumentProcessorMain();
@@ -126,41 +121,6 @@ int main(int argc, char** argv) {
             WsjcppLog::err(TAG, "Not support settings datatype with name '" + sSettName + "'");
             return -1;
         }
-        return 0;
-    } else if (helpArgs.has("manual-configure-lxd")) {
-        // config lxd
-        std::string sError;
-        WsjcppEmployees::init({});
-        if (UtilsLXDAuth::check_trust_certs(sError)) {
-            std::cout << "\nGOOD HTTPS connection with LXD\n\n";
-        } else if (!sError.empty()) {
-            WsjcppLog::err(TAG, "\nBAD HTTPS connection with LXD\n\n: " + sError);
-            return -1;
-        } else {
-            char *pPassword = getpass("\nPlease enter your password for LXD:");
-            std::string sPass(pPassword);
-            if (UtilsLXDAuth::connect_with_lxd(sPass, sError))
-                std::cout << "\nWell, you added your certificates to LXD.\n\n";
-            else {
-                std::cout << "\nBad, I can not make certificates trusted. Maybe the password was wrong? \nError:" + sError + "\n\n";
-                return -1;
-            }
-        }
-        return 0;
-    } else if (helpArgs.has("lxd-enable") || helpArgs.has("lxd-disable")) {
-        // config lxd
-        WsjcppEmployees::init({});
-        bool bLXDMode;
-        if (helpArgs.has("lxd-enable")) {
-            bLXDMode = true;
-        } else if (helpArgs.has("lxd-disable")) {
-            bLXDMode = false;
-        } else {
-            std::cout << "\nError with command lxd-enable or lxd-disable\n";
-            return -1;
-        }
-        pGlobalSettings->update("lxd_mode", bLXDMode);
-        std::cout << "\nCurrent LXD mode: " << pGlobalSettings->get("lxd_mode").convertValueToString(false) << "\n";
         return 0;
     } else if (helpArgs.has("start") || helpArgs.has("-s")) {
         pGlobalSettings->registrySetting("web_server", "web_admin_folder").dirPath("/usr/share/fhq-server/web-admin").inFile();

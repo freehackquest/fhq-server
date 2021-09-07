@@ -27,6 +27,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Redesign console command 'fhq-server export-libfhqcli-web-javascript' to 'fhq-server api export-freehackquest-libclient-web-js'
 - Redesign console command 'fhq-server export-libfhqcli-java-android' to 'fhq-server api export-freehackquest-libclient-java-android'
 - Redesign console command 'fhq-server send-test-mail' to 'fhq-server cfg test-email'
+- Redesign console command 'fhq-server lxd-enable' to 'fhq-server cfg lxd-enable'
+- Redesign console command 'fhq-server lxd-disable' to 'fhq-server cfg lxd-disable'
+- Redesign console command 'fhq-server manual-configure-lxd' to 'fhq-server cfg lxd-configure'
 
 ### Security
 
