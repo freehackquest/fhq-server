@@ -18,8 +18,8 @@ check_ret() {
 cd ../..
 check_ret $? "Change to ../.."
 rm -rf ./freehackquest-libclient-py
-./fhq-server export-freehackquest-libclient-py
-check_ret $? "./fhq-server export-freehackquest-libclient-py"
+./fhq-server api export-freehackquest-libclient-py
+check_ret $? "./fhq-server api export-freehackquest-libclient-py"
 cd ./tests/server-api-tests
 check_ret $? "cd ./tests/server-api-tests"
 rm -rf freehackquest_libclient_py

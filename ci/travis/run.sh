@@ -48,7 +48,7 @@ qmake --version # TODO when will be removed all then qt need remove this line
 check_ret $? "build fhq-server"
 ./fhq-server -wd ./ci/travis/data version
 check_ret $? "print version of fhq-server"
-./fhq-server -wd ./ci/travis/data -cdc
+./fhq-server -wd ./ci/travis/data db test
 check_ret $? "test connection to database"
 
 cd fhq-server-tests

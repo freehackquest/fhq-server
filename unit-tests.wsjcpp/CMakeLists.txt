@@ -102,8 +102,6 @@ list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.h")
 
 # fhq-server:v0.2.44
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
-list (APPEND WSJCPP_SOURCES "../src/core/fallen.cpp")
-list (APPEND WSJCPP_SOURCES "../src/core/fallen.h")
 list (APPEND WSJCPP_SOURCES "../src/validators/validators.h")
 list (APPEND WSJCPP_SOURCES "../src/validators/validators.cpp")
 list (APPEND WSJCPP_SOURCES "../src/core/jobs_pool.h")

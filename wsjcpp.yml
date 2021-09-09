@@ -100,12 +100,6 @@ dependencies:
     installation-dir: "./src.wsjcpp/wsjcpp_arguments"
     installation-datetime: "Tue, 07 Sep 2021 05:23:11 GMT"
 distribution:
-  - source-file: "src/core/fallen.cpp"
-    target-file: "fallen.cpp"
-    type: "source-code"
-  - source-file: "src/core/fallen.h"
-    target-file: "fallen.h"
-    type: "source-code"
   - source-file: "src/validators/validators.h"
     target-file: "validators.h"
     type: "source-code"
