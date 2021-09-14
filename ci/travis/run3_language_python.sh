@@ -19,6 +19,16 @@ check_ret $? "change directory to fhq-server"
 python3 -m sea5kg_cpplint
 check_ret $? "sea5kg_cpplint"
 
+./build_simple.sh
+check_ret $? "build fhq-server"
+./fhq-server -wd ./ci/travis/data version
+check_ret $? "print version of fhq-server"
+./fhq-server -wd ./ci/travis/data db test
+check_ret $? "test connection to database"
+
+mkdir -p "./web-user/dist/"
+
+
 cd fhq-server-tests
 check_ret $? "Change directory to tests"
 ./update_freehackquest_libclient_py.sh
