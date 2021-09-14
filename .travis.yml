@@ -11,7 +11,26 @@ branches:
 
 matrix:
   include:
-    - dist: bionic
+    - dist: focal
+      addons:
+        apt:
+          # sources:
+          #   - sourceline: 'ppa:chris-lea/redis-server'
+          packages:
+            - g++
+            - libcurl4-openssl-dev
+            - libpng-dev libqt5sql5-mysql
+            - libqt5websockets5
+            - libqt5websockets5-dev
+            - libwebsockets-dev
+            - make
+            - qt5-default
+            - qtchooser
+            - zlib1g
+            - zlib1g-dev
+            - zlibc
+            - python3-pip
+            - python3-setuptools
 
 services:
   - mysql
@@ -25,8 +44,8 @@ node_js:
 # Install dependencies
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -y g++ libcurl4-openssl-dev libpng-dev libqt5sql5-mysql libqt5websockets5 libqt5websockets5-dev libwebsockets-dev make qt5-default qtchooser zlib1g zlib1g-dev zlibc
-  - sudo apt-get install -y python3-pip python3-setuptools
+  # - sudo apt-get install -y g++ libcurl4-openssl-dev libpng-dev libqt5sql5-mysql libqt5websockets5 libqt5websockets5-dev libwebsockets-dev make qt5-default qtchooser zlib1g zlib1g-dev zlibc
+  # - sudo apt-get install -y python3-pip python3-setuptools
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `fhqtravis` CHARACTER SET utf8 COLLATE utf8_general_ci;'
 
 install:
@@ -37,7 +56,6 @@ install:
   - pip3 install --user docker
   - pip3 install --user pytest-env
   - pip3 install --user sea5kg_cpplint
-
 
 script:
   - ./ci/travis/run.sh
