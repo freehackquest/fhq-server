@@ -5,7 +5,7 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.44] - 2021-?-? (2021 ? ?)
+## [v0.2.44] - 2021-09-14 (2021 Sept 14)
 
 ### Added 
 
@@ -35,6 +35,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Security
 
 - server: Upgraded nlohmann/json from v3.7.3 to v3.10.2
+- web-user: [sync] Upgrade prismjs from 1.23.0 to 1.24.1
+- web-user: [sync] Upgrade core-js from 3.16.0 to 3.16.2
+- web-user: [sync] Upgrade lodash-es from 4.17.15 to 4.17.21
+- web-user: [sync] Upgrade marked from 0.7.0 to 0.8.2
+- web-user: [sync] Upgrade multiple dependencies with Snyk
 - web-user: [synk] Upgrade bootstrap from 4.5.0 to 4.6.0
 - web-user: [synk] Upgrade tslib from 2.0.0 to 2.3.0
 - web-user: [synk] Upgrade rxjs-compat from 6.5.5 to 6.6.7
