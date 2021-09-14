@@ -13,19 +13,18 @@ check_ret() {
         echo "********************************************************************************"
         echo ""
     fi
-}
+} 
 
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-
-cd $SCRIPT_DIR/../.. # go to root of repository
-
-./ci/travis/run1_language_cpp.sh
-check_ret $? "run1_language_cpp"
-
-./ci/travis/run2_language_node_js.sh
-check_ret $? "run2_language_node_js"
-
-./ci/travis/run3_language_python.sh
-check_ret $? "run3_language_python"
-
+# hardcode for build travis
+cd web-user
+check_ret $? "change directory to web-user"
+npm -v
+check_ret $? "npm -v"
+node -v
+check_ret $? "node -v"
+npm install
+check_ret $? "npm install requirements for web-user"
+npm run build-prod
+check_ret $? "angular build-prod web-user"
+cd ..

@@ -1,6 +1,4 @@
 # This will run on Travis' 'new' container-based infrastructure
-language: cpp
-
 os:
   - linux
 
@@ -9,18 +7,29 @@ branches:
     - master
     - dev
 
-matrix:
-  include:
-    - dist: bionic
+dist: focal
+addons:
+  apt:
+    # sources:
+    #   - sourceline: 'ppa:chris-lea/redis-server'
+    packages:
+      - g++
+      - libcurl4-openssl-dev
+      - libpng-dev libqt5sql5-mysql
+      - libqt5websockets5
+      - libqt5websockets5-dev
+      - libwebsockets-dev
+      - make
+      - qt5-default
+      - qtchooser
+      - zlib1g
+      - zlib1g-dev
+      - zlibc
+      - python3-pip
+      - python3-setuptools
 
 services:
   - mysql
-
-python:
-  - "3.7"
-
-node_js:
-  - "14"
 
 # Install dependencies
 before_install:
@@ -29,18 +38,29 @@ before_install:
   - sudo apt-get install -y python3-pip python3-setuptools
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `fhqtravis` CHARACTER SET utf8 COLLATE utf8_general_ci;'
 
-install:
-  - pip3 install --user websocket-client
-  - pip3 install --user requests
-  - pip3 install --user pylint
-  - pip3 install --user pytest
-  - pip3 install --user docker
-  - pip3 install --user pytest-env
-  - pip3 install --user sea5kg_cpplint
-
-
-script:
-  - ./ci/travis/run.sh
+jobs:
+  include:
+    - language: cpp
+      script:
+        - ./ci/travis/run1_language_cpp.sh
+    - language: node_js
+      node_js:
+        - 14
+      script:
+        - ./ci/travis/run2_language_node_js.sh
+    - language: python
+      python:
+        - "3.7"
+      install:
+        - pip3 install websocket-client
+        - pip3 install requests
+        - pip3 install pylint
+        - pip3 install pytest
+        - pip3 install docker
+        - pip3 install pytest-env
+        - pip3 install sea5kg_cpplint
+      script:
+        - ./ci/travis/run3_language_python.sh
 
 notifications:
   email:

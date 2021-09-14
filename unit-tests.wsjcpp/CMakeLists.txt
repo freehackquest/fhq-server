@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(unit-tests C CXX)
-add_definitions(-DWSJCPP_APP_VERSION="ut-v0.2.43")
+add_definitions(-DWSJCPP_APP_VERSION="ut-v0.2.44")
 add_definitions(-DWSJCPP_APP_NAME="unit-tests-fhq-server")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -41,7 +41,7 @@ list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_unit_tests.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_unit_tests.h")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_unit_tests_main.cpp")
 
-# nlohmann/json:v3.7.3
+# nlohmann/json:v3.10.2
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/nlohmann_json/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/nlohmann_json/json.hpp")
 
@@ -95,10 +95,13 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_parse_conf/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_parse_conf/wsjcpp_parse_conf.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_parse_conf/wsjcpp_parse_conf.h")
 
-# fhq-server:v0.2.43
+# wsjcpp-arguments:v0.2.1
+list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_arguments/")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.h")
+
+# fhq-server:v0.2.44
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
-list (APPEND WSJCPP_SOURCES "../src/core/fallen.cpp")
-list (APPEND WSJCPP_SOURCES "../src/core/fallen.h")
 list (APPEND WSJCPP_SOURCES "../src/validators/validators.h")
 list (APPEND WSJCPP_SOURCES "../src/validators/validators.cpp")
 list (APPEND WSJCPP_SOURCES "../src/core/jobs_pool.h")

@@ -16,7 +16,6 @@ services:
       - fhqserver_net
 
   fhqserver:
-    build: .
     depends_on:
       - fhqserver_db
     image: sea5kg/fhq-server:latest

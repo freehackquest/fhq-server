@@ -232,7 +232,7 @@ def test_games_update_logo(admin_session, game2_uuid, local_tmp_dir, web_server_
     )
     json_exported_path = tmp_dir_unpack_zip + '/' + game2_uuid + '.json'
     assert os.path.exists(json_exported_path) is True
-    with open(json_exported_path) as _file:
+    with open(json_exported_path, encoding="utf-8") as _file:
         game2_exported = json.load(_file)
     assert game2_exported["uuid"] == game2_uuid
     assert game2_prev["data"]["name"] == game2_exported["name"]
