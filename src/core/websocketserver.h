@@ -10,6 +10,7 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QtNetwork/QSslError>
+#include <mutex>
 
 #include <cmd_handlers.h>
 

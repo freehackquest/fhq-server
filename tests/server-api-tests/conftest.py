@@ -206,7 +206,8 @@ def prepare_files_for_start_in_docker():
     if not os.path.exists("tmp_docker/mysql"):
         os.makedirs("tmp_docker/mysql", exist_ok=True)
     os.makedirs("tmp_docker/data/public/quests", exist_ok=True)
-    with open("tmp_docker/data/conf.d/fhq-server.conf", "w") as fhq_server_conf:
+    fhq_server_conf_path = "tmp_docker/data/conf.d/fhq-server.conf"
+    with open(fhq_server_conf_path, "w", encoding="utf-8") as fhq_server_conf:
         fhq_server_conf.write("""
 storage_type = mysql
 dbhost = 127.0.0.1
@@ -234,9 +235,11 @@ web_user_folder = /usr/share/fhq-server/web-user/
 web_fhqjad_store = /usr/share/fhq-server/fhqjad-store/
 
 """)
-    with open("tmp_docker/data/conf.d/test-selfsigned.key", "w") as test_selfsigned_key:
+    test_selfsigned_key_path = "tmp_docker/data/conf.d/test-selfsigned.key"
+    with open(test_selfsigned_key_path, "w", encoding="utf-8") as test_selfsigned_key:
         test_selfsigned_key.write("")
-    with open("tmp_docker/data/conf.d/test-selfsigned.crt", "w") as test_selfsigned_crt:
+    test_selfsigned_crt_path = "tmp_docker/data/conf.d/test-selfsigned.crt"
+    with open(test_selfsigned_crt_path, "w", encoding="utf-8") as test_selfsigned_crt:
         test_selfsigned_crt.write("")
 
 # prepare folders with config

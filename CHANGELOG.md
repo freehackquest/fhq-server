@@ -5,6 +5,47 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.2.44] - 2021-09-14 (2021 Sept 14)
+
+### Added 
+
+- Library wsjcpp-arguments
+
+### Fixed
+
+- Removed `build: .` from `contrib/docker_compose_example/docker-compose.yml`
+
+## Changed
+
+- Redesign console command 'fhq-server show-storage-struct' to 'fhq-server db struct'
+- Redesign console command 'fhq-server check-database-connection' to 'fhq-server db test'
+- Redesign console command 'fhq-server show-handlers' to 'fhq-server api ls'
+- Redesign console command 'fhq-server manual-create-database' to 'fhq-server db create'
+- Redesign console command 'fhq-server check-server-config' to 'fhq-server cfg test'
+- Redesign console command 'fhq-server show-settings' to 'fhq-server cfg print' or 'fhq-server cfg ls'
+- Redesign console command 'fhq-server export-freehackquest-libclient-py' to 'fhq-server api export-freehackquest-libclient-py'
+- Redesign console command 'fhq-server export-libfhqcli-web-javascript' to 'fhq-server api export-freehackquest-libclient-web-js'
+- Redesign console command 'fhq-server export-libfhqcli-java-android' to 'fhq-server api export-freehackquest-libclient-java-android'
+- Redesign console command 'fhq-server send-test-mail' to 'fhq-server cfg test-email'
+- Redesign console command 'fhq-server lxd-enable' to 'fhq-server cfg lxd-enable'
+- Redesign console command 'fhq-server lxd-disable' to 'fhq-server cfg lxd-disable'
+- Redesign console command 'fhq-server manual-configure-lxd' to 'fhq-server cfg lxd-configure'
+- Redesign console command 'fhq-server set-setting' to 'fhq-server cfg set'
+
+### Security
+
+- server: Upgraded nlohmann/json from v3.7.3 to v3.10.2
+- web-user: [sync] Upgrade prismjs from 1.23.0 to 1.24.1
+- web-user: [sync] Upgrade core-js from 3.16.0 to 3.16.2
+- web-user: [sync] Upgrade lodash-es from 4.17.15 to 4.17.21
+- web-user: [sync] Upgrade marked from 0.7.0 to 0.8.2
+- web-user: [sync] Upgrade multiple dependencies with Snyk
+- web-user: [synk] Upgrade bootstrap from 4.5.0 to 4.6.0
+- web-user: [synk] Upgrade tslib from 2.0.0 to 2.3.0
+- web-user: [synk] Upgrade rxjs-compat from 6.5.5 to 6.6.7
+- web-user: [synk] Upgrade ngx-markdown-editor from 3.2.1 to 3.3.3
+- web-user: [Snyk] Upgrade ngx-highlightjs from 4.1.0-beta to 4.1.4
+
 ## [v0.2.43] - 2021-08-28 (2021 August 28)
 
 ### Fixed 

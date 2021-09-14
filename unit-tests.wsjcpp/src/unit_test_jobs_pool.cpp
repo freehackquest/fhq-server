@@ -1,6 +1,5 @@
 #include <wsjcpp_unit_tests.h>
 #include <vector>
-#include <core/fallen.h>
 #include <core/jobs_pool.h>
 
 class UnitTestJobsPool : public WsjcppUnitTestBase {

@@ -527,7 +527,7 @@ $ npm publish .
 
 generate new library
 ```
-$ ./fhq-server export-freehackquest-libclient-py
+$ ./fhq-server api export-freehackquest-libclient-py
 ```
 After this merge generated files from `freehackquest-libclient-py` to repository https://github.com/freehackquest/freehackquest-libclient-py
 
