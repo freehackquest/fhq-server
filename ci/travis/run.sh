@@ -34,6 +34,10 @@ cd ..
 # hardcode for build travis
 cd web-user
 check_ret $? "change directory to web-user"
+npm -v
+check_ret $? "npm -v"
+node -v
+check_ret $? "node -v"
 npm install
 check_ret $? "npm install requirements for web-user"
 npm run build-prod
