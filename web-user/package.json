@@ -40,7 +40,7 @@
     "flag-icon-css": "^3.5.0",
     "font-awesome": "^4.7.0",
     "freehackquest-libclient-web-js": "^0.2.40",
-    "jquery": "^3.5.1",
+    "jquery": "^3.6.0",
     "lodash-es": "^4.17.21",
     "marked": "^0.8.2",
     "ng2-simplemde": "^2.1.0",
