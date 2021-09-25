@@ -1,0 +1,37 @@
+version: '2'
+
+services:
+  es-container:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+    volumes:
+      - "./mysql_data:/var/lib/mysql"
+    restart: always
+    environment:
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    volumes:
+      - ./configs/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./data/elasticsearch:/usr/share/elasticsearch/data
+    networks:
+      - es_net
+
+  kb-container:
+    depends_on:
+      - es-container
+    image: docker.elastic.co/kibana/kibana:7.11.0
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: http://es-container:9200
+    restart: always
+    networks:
+      - es_net
+
+networks:
+  es_net:
+    driver: bridge
