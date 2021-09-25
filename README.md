@@ -26,10 +26,11 @@ Backend && Frontend for FreeHackQuest on Qt and WebSockets
 | client library (python)     | [![PyPI](https://img.shields.io/pypi/v/freehackquest-libclient-py)](https://pypi.org/project/freehackquest-libclient-py/) |
 
 
-
 ## For developers
 
 * [Doxygen Documentation](https://freehackquest.com/doxygen/)
+* [trello](https://trello.com/b/Z7blDGj3/fhq-server)
+* [Документация к системе](https://docs.google.com/document/d/16toRLzVUy8tkilW-jFVjG-1g-8ILDICfucO3EwK8oTg/edit?usp=sharing)
 
 ### Build all components (c++ && angular)
 
