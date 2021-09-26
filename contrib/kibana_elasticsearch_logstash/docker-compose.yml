@@ -1,6 +1,7 @@
 version: '2'
 
 services:
+  # elasticsearch
   es-container:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
     volumes:
@@ -8,27 +9,50 @@ services:
     restart: always
     environment:
       ES_JAVA_OPTS: -Xms512m -Xmx512m
+      ELASTIC_PASSWORD: changeme
     ulimits:
       memlock:
         soft: -1
         hard: -1
     ports:
       - "9200:9200"
+      - "9300:9300"
     volumes:
       - ./configs/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
       - ./data/elasticsearch:/usr/share/elasticsearch/data
     networks:
       - es_net
-
+  
+  # kibana
   kb-container:
     depends_on:
       - es-container
     image: docker.elastic.co/kibana/kibana:7.11.0
     ports:
       - "5601:5601"
+    volumes:
+      - ./configs/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     environment:
       ELASTICSEARCH_HOSTS: http://es-container:9200
     restart: always
+    networks:
+      - es_net
+    
+  # logstash
+  ls-container:
+    depends_on:
+      - es-container
+    image: docker.elastic.co/logstash/logstash:7.11.0
+    volumes:
+      - ./configs/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./configs/logstash_pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
       - es_net
 
