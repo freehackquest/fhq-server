@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(unit-tests C CXX)
-add_definitions(-DWSJCPP_APP_VERSION="ut-v0.2.44")
+add_definitions(-DWSJCPP_APP_VERSION="ut-v0.2.45")
 add_definitions(-DWSJCPP_APP_NAME="unit-tests-fhq-server")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -100,7 +100,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_arguments/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.h")
 
-# fhq-server:v0.2.44
+# fhq-server:v0.2.45
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 list (APPEND WSJCPP_SOURCES "../src/validators/validators.h")
 list (APPEND WSJCPP_SOURCES "../src/validators/validators.cpp")

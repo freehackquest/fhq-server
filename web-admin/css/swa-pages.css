@@ -12,7 +12,7 @@ body {
     color: #0f0;
 }
 
-.swa-button {
+.swa-button, input[type="file"]::file-selector-button {
     display: inline-block;
     cursor: pointer;
     color: #000;
@@ -114,6 +114,17 @@ input, textarea {
     border-right: 2px solid #0f0;
     border-top: none;
     padding: 5px;
+}
+
+input[type="file"] {
+    background-color: #000;
+    color: #0f0;
+    border-bottom: 2px solid #080;
+    border-left: 2px solid #080;
+    border-right: 2px solid #0f0;
+    border-top: none;
+    padding: 5px;
+    box-shadow: none;
 }
 
 hr {
@@ -253,6 +264,65 @@ h1, h2, h3 {
     padding-left: 5px;
     padding-right: 5px;
 }
+
+.swa-sett-value.select {
+    background-color: #000;
+    color: #0f0;
+    border-bottom: 2px solid #080;
+    border-left: 2px solid #080;
+    border-right: 2px solid #0f0;
+    border-top: none;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.swa-sett-value.markdown {
+    background-color: #000;
+    color: #0f0;
+    border-bottom: 2px solid #080;
+    border-left: 2px solid #080;
+    border-right: 2px solid #0f0;
+    border-top: none;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.CodeMirror-scroll, .CodeMirror-wrap {
+    background-color: #000;
+    color: #0f0;
+    caret-color: #0f0;
+}
+
+
+
+.CodeMirror-wrap {
+    border-bottom: 2px solid #080;
+    border-left: 2px solid #080;
+    border-right: 2px solid #0f0;
+    border-top: none;
+}
+
+.swa-sett .editor-toolbar {
+    opacity: 1;
+    border-bottom: 2px solid #080;
+    border-left: 2px solid #080;
+    border-right: 2px solid #0f0;
+    border-top: 2px solid #080;
+}
+
+.swa-sett .editor-toolbar a {
+    color: #0f0 !important;
+}
+
+.editor-toolbar i.separator {
+    border-left: 1px solid #080;
+    border-right: 1px solid #0f0;
+}
+
+.editor-statusbar {
+    color: #0f0 !important;
+}
+
 
 .swa-modal-dialog {
     position: fixed;

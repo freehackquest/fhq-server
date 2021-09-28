@@ -18,18 +18,18 @@ Backend && Frontend for FreeHackQuest on Qt and WebSockets
 
 ## Distribution
 
-| What                    | Where         |
-| ----------------------- | ------------- |
-| fhq-server (docker)     | [![Docker Pulls](https://img.shields.io/docker/pulls/sea5kg/fhq-server.svg)](https://hub.docker.com/r/sea5kg/fhq-server/)  |
-| fhq-server (vm)         | [https://freehackquest.com/dist/](https://freehackquest.com/dist/)  |
-| client library (js) | [![npm](https://img.shields.io/npm/v/freehackquest-libclient-web-js)](https://www.npmjs.com/package/freehackquest-libclient-web-js) |
-| client library (python)     | [![PyPI](https://img.shields.io/pypi/v/freehackquest-libclient-py)](https://pypi.org/project/freehackquest-libclient-py/) |
-
-
+| What                    | Where         |  Source code |
+| ----------------------- | ------------- | ------------ |
+| fhq-server (docker)     | [![Docker Pulls](https://img.shields.io/docker/pulls/sea5kg/fhq-server.svg)](https://hub.docker.com/r/sea5kg/fhq-server/)  |  |
+| fhq-server (vm)         | [https://freehackquest.com/dist/](https://freehackquest.com/dist/)  | |
+| client library (js)     | [![npm](https://img.shields.io/npm/v/freehackquest-libclient-web-js)](https://www.npmjs.com/package/freehackquest-libclient-web-js) | [GitHub](https://github.com/freehackquest/freehackquest-libclient-web-js) |
+| client library (python) | [![PyPI](https://img.shields.io/pypi/v/freehackquest-libclient-py)](https://pypi.org/project/freehackquest-libclient-py/) | [GitHub](https://github.com/freehackquest/freehackquest-libclient-py) |
 
 ## For developers
 
 * [Doxygen Documentation](https://freehackquest.com/doxygen/)
+* [trello](https://trello.com/b/Z7blDGj3/fhq-server)
+* [Документация к системе](https://docs.google.com/document/d/16toRLzVUy8tkilW-jFVjG-1g-8ILDICfucO3EwK8oTg/edit?usp=sharing)
 
 ### Build all components (c++ && angular)
 
