@@ -443,6 +443,67 @@ fhq.addHint = function(questid){
     });
 }
 
+// TODO to utils
+function getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        let encoded = reader.result.toString().replace(/^data:(.*,)?/, '');
+        if ((encoded.length % 4) > 0) {
+          encoded += '='.repeat(4 - (encoded.length % 4));
+        }
+        resolve(encoded);
+      };
+      reader.onerror = error => reject(error);
+    });
+}
+
+fhq.uploadQuestFile = function(el, questid){
+    $('#quest_add_file_error').hide();
+    var file = document.getElementById("quest_new_file").files[0];
+    const quest_uuid = el.getAttribute('quest_uuid');
+
+    if (!file) {
+        $('#quest_add_file_error').show();
+        document.getElementById('quest_add_file_error').innerHTML = "Please select file";
+        return;
+    }
+    getBase64(file).then((fileInBase64) => {
+        // console.log("data = ", data);
+        // console.log(file.name);
+        // console.log(file.size);
+        fhq.ws.quests_files_upload({
+            "quest_uuid": quest_uuid,
+            "file_base64": fileInBase64,
+            "file_name": file.name
+        }).done(function(r) {
+            console.log('Success: ', r);
+            fhq.pages['quest_files_edit'](questid);
+        }).fail(function(err) {
+            console.error('Error:', err);
+            $('#quest_add_file_error').show();
+            document.getElementById('quest_add_file_error').innerHTML = err;
+        });
+    })
+}
+
+fhq.deleteQuestFile = function(el, quest_uuid, file_id){
+    $('#quest_add_file_error').hide();
+
+    fhq.ws.quests_files_delete({
+        "quest_uuid": quest_uuid,
+        "file_id": file_id,
+    }).done(function(r) {
+        console.log('Success: ', r);
+        fhq.pages['quest_files_edit'](questid);
+    }).fail(function(err) {
+        console.error('Error:', err);
+        $('#quest_add_file_error').show();
+        document.getElementById('quest_add_file_error').innerHTML = err;
+    });
+}
+
 fhq.pages['quest_files_edit'] = function(questid) {
     questid = questid || fhq.pageParams['quest_files_edit'];
     if (questid) {
@@ -457,7 +518,44 @@ fhq.pages['quest_files_edit'] = function(questid) {
     
     el.html('');
     quest_edit_menu(el, 'quest_files_edit', questid);
-    el.append('TODO');
+
+    el.append(''
+        + '<div class="swa-tab-content">'
+        + '    <div>Files: <span id="count_files">0</span></div>'
+        + '    <br/><table class="swa-table">'
+        + '        <thead><tr><th>#</th><th>Name</th><th>Size</th><th>Actions</th></tr></thead>'
+        + '        <tbody id="quest_files"></tbody>'
+        + '    </table>'
+        + '    <hr/>'
+        + '    <input type="file" id="quest_new_file"/>'
+        + '    <div class="swa-button" id="upload_quest_file_btn" onclick="fhq.uploadQuestFile(this, ' + questid + ');">Upload File</div>'
+        + '    <br><div class="swa-error-alert" style="display: none;" id="quest_add_file_error"></div>'
+        + '</div>'
+    );
+
+    fhq.ws.quest({"questid": questid}).done(function(data){
+        console.log(data);
+        const quest_uuid = data.quest.uuid;
+        document.getElementById('upload_quest_file_btn').setAttribute('quest_uuid', data.quest.uuid);
+        var files = data.files;
+        document.getElementById('count_files').innerHTML = files.length;
+        for (var file in files) {
+            file = files[file];
+            console.log(file)
+            $('#quest_files').append('<tr>'
+                + '<td>[file#' + file.id + ']</td>'
+                + '<td>' + file.filename + '</td>'
+                + '<td>' + file.size + '</td>'
+                + '<td><div class="btn btn-danger delete-file" '
+                + '         questid="' + questid + '" fileid="' + file.id + '" '
+                + ' onclick="fhq.deleteQuestFile(this, \'' + quest_uuid + '\', ' + file.id + ');" >Delete File</div></td>'
+                + '</tr>');
+        }
+    }).fail(function(err){
+        console.error(err);
+        $('#quest_add_file_error').show();
+        document.getElementById('quest_add_file_error').innerHTML = err;
+    });
 }
 
 fhq.pages['quest_writeups_edit'] = function(questid) {
