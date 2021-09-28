@@ -5,7 +5,7 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.45] - 2021-??-?? (2021 ?? ??)
+## [v0.2.45] - 2021-09-29 (2021 Sept 29)
 
 
 ### Security
@@ -16,6 +16,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - web-user: [sync] Upgrade core-js from 3.16.2 to 3.16.3
 - web-user: [sync] Upgrade jquery from 3.5.1 to 3.6.0
 - web-user: [sync] Upgrade prismjs from 1.24.1 to 1.25.0
+
+## Added 
+
+- Added libhv todo replace wsjcpp-light-http-server and qt web sockets
+- Added base config for elasticsearch-logstash-kibana
+- Added links to googledocument + trello
+- wed-user: Added 'mailn.ru' -> 'mail.ru'
+
+## Fixed
+
+- web-admin: Implemented upload files to quest
+- web-admin: redesign ui for edit quest
 
 ## [v0.2.44] - 2021-09-14 (2021 Sept 14)
 
