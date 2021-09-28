@@ -263,6 +263,11 @@ list (APPEND WSJCPP_LIBRARIES ${LIBMYSQLCLIENT_LIBRARIES})
 #####
 ############################
 
+# libhv
+add_subdirectory(src-libhv)
+list (APPEND WSJCPP_LIBRARIES hv_static)
+list (APPEND WSJCPP_INCLUDE_DIRS "${PROJECT_BINARY_DIR}/src-libhv/include/hv")
+
 include_directories(${WSJCPP_INCLUDE_DIRS})
 
 find_package (Qt5Core)
