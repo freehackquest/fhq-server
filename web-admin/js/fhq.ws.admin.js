@@ -570,6 +570,18 @@ fhq.ws.quest_statistics = function(data){
     return fhq.ws.send(data);
 }
 
+fhq.ws.quests_files_upload = function(data){
+    data = data || {};
+    data.cmd = 'quests_files_upload';
+    return fhq.ws.send(data);
+}
+
+fhq.ws.quests_files_delete = function(data){
+    data = data || {};
+    data.cmd = 'quests_files_delete';
+    return fhq.ws.send(data);
+}
+
 fhq.ws.quest_export = function(data){
     data = data || {};
     data.cmd = 'quest_export';

@@ -12,7 +12,7 @@ body {
     color: #0f0;
 }
 
-.swa-button {
+.swa-button, input[type="file"]::file-selector-button {
     display: inline-block;
     cursor: pointer;
     color: #000;
@@ -114,6 +114,17 @@ input, textarea {
     border-right: 2px solid #0f0;
     border-top: none;
     padding: 5px;
+}
+
+input[type="file"] {
+    background-color: #000;
+    color: #0f0;
+    border-bottom: 2px solid #080;
+    border-left: 2px solid #080;
+    border-right: 2px solid #0f0;
+    border-top: none;
+    padding: 5px;
+    box-shadow: none;
 }
 
 hr {
