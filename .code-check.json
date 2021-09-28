@@ -5,6 +5,7 @@
     ],
     "exclude": [
         "src/core/3rdParty",
+        "src-libhv",
         "src/3rdParty/quazip-0.7.3",
         "json.hpp",
         ".DS_Store"
