@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v0.2.46] - 2021-??-?? (2021 ?? ??)
 
+### Fixed
 
+- web-admin: Fixed cursor for codemirror
 
 ## [v0.2.45] - 2021-09-29 (2021 Sept 29)
 

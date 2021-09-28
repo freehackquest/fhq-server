@@ -127,6 +127,10 @@ input[type="file"] {
     box-shadow: none;
 }
 
+.CodeMirror div.CodeMirror-cursor {
+    border-left: 1px solid #0f0;
+}
+
 hr {
     background-color: #0f0;
 }
