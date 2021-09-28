@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v0.2.45] - 2021-09-29 (2021 Sept 29)
 
-
 ### Security
 
 - web-user: [sync] Upgrade @angular/cdk from 12.2.1 to 12.2.2.
