@@ -18,12 +18,17 @@ export class EmailValidatorService {
     emailWrongDomains['mil.ru'] = {prop: ["mail.ru"]};
     emailWrongDomains['nail.ru'] = {prop: ["mail.ru"]};
     emailWrongDomains['mial.ru'] = {prop: ["mail.ru"]};
+    emailWrongDomains['mai.ru'] = {prop: ["mail.ru"]};
     emailWrongDomains['mailn.ru'] = {prop: ["mail.ru"]};
+    emailWrongDomains['amil.ru'] = {prop: ["mail.ru"]};
     emailWrongDomains['gmail.ru'] = {prop: ["gmail.com"]};
     emailWrongDomains['gmial.com'] = {prop: ["gmail.com"]};
     emailWrongDomains['gmal.com'] = {prop: ["gmail.com"]};
     emailWrongDomains['inbox.ry'] = {prop: ["inbox.ru"]};
     emailWrongDomains['gamil.com'] = {prop: ["gmail.com"]};
+    emailWrongDomains['gmail.cpm'] = {prop: ["gmail.com"]}; // TODO redesign use like a levenshtein
+    emailWrongDomains['protonmaill.com'] = {prop: ["protonmail.com"]};
+
     emailWrongDomains['hotnail.com'] = {prop: ["hotmail.com"]};
 
     let emailForbiddenDomains = {};
