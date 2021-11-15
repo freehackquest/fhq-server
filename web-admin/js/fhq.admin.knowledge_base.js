@@ -80,7 +80,7 @@ fhqadmin.knowledge_base_load_current_item = function(kbid, proposal_id) {
 		}
 		list.append(`<div class="${classes}" kbid="${kbid}" propid="-1">Original</div> `);
 
-		fhq.classbook_proposal_list({
+		fhq.ws.classbook_proposal_list({
 			"classbookid": kbid
 		}).done(function(r){
 			for (let idx = 0; idx < r.data.length; idx++) {
