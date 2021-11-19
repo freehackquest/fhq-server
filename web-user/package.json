@@ -35,7 +35,7 @@
     "@ng-bootstrap/ng-bootstrap": "^8.0.0",
     "angular-highlight-js": "^2.0.1",
     "angular-l10n": "^9.3.0",
-    "bootstrap": "~4.6.0",
+    "bootstrap": "~4.6.1",
     "core-js": "^3.17.3",
     "flag-icon-css": "^3.5.0",
     "font-awesome": "^4.7.0",
