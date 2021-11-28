@@ -5,16 +5,42 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.2.46] - 2021-11-28 (2021 Nov 28)
+
+### Changed
+
+- Forbidden registration for domain fmshool72.ru
+- web-user: Renamed news to events
+- web-user: Redesign menu
+- web-user: Updated web-user/src/app/services/email-validator.service.ts
+- Updated license (year up)
+
+### Fixed
+
+- web-admin: Fixed cursor for codemirror
+- web-admin: Fixed kb edit
+
+### Security
+
+- web-user: Fix alerts in map-activity.component.ts by lgtm
+- web-user: [synk] upgrade core-js from 3.16.3 to 3.17.3
+- web-user: [snyk] Upgrade bootstrap from 4.6.0 to 4.6.1
+- web-user: [snyk] Upgrade multiple dependencies with Snyk
+- web-user: [snyk] Upgrade @angular/localize from 12.2.4 to 12.2.5
+- web-user: build(deps): bump path-parse from 1.0.6 to 1.0.7 in /web-user
+- web-user: build(deps): bump nth-check from 2.0.0 to 2.0.1 in /web-user
+- web-user: build(deps): bump jszip from 3.5.0 to 3.7.1 in /web-user
+
 ## [v0.2.45] - 2021-09-29 (2021 Sept 29)
 
 ### Security
 
-- web-user: [sync] Upgrade @angular/cdk from 12.2.1 to 12.2.2.
-- web-user: [sync] Upgrade @angular/material from 12.2.1 to 12.2.2.
-- web-user: [sync] Upgrade tslib from 2.3.0 to 2.3.1
-- web-user: [sync] Upgrade core-js from 3.16.2 to 3.16.3
-- web-user: [sync] Upgrade jquery from 3.5.1 to 3.6.0
-- web-user: [sync] Upgrade prismjs from 1.24.1 to 1.25.0
+- web-user: [synk] Upgrade @angular/cdk from 12.2.1 to 12.2.2.
+- web-user: [synk] Upgrade @angular/material from 12.2.1 to 12.2.2.
+- web-user: [synk] Upgrade tslib from 2.3.0 to 2.3.1
+- web-user: [synk] Upgrade core-js from 3.16.2 to 3.16.3
+- web-user: [synk] Upgrade jquery from 3.5.1 to 3.6.0
+- web-user: [synk] Upgrade prismjs from 1.24.1 to 1.25.0
 
 ## Added 
 

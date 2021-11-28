@@ -306,6 +306,12 @@ fhq.ws.classbook_localization_update_record = function(params){
     return fhq.ws.send(params);
 }
 
+fhq.ws.classbook_proposal_list = function(params){
+    params = params || {};
+    params.cmd = 'classbook_proposal_list';
+    return fhq.ws.send(params);
+}
+
 fhq.ws.addhint = function(params){
     params = params || {};
     params.cmd = 'addhint';

@@ -44,7 +44,7 @@ export class MapActivityComponent implements OnInit {
     let features = [];
     r.data.forEach((p: any) => {
       const coordinates = [p.lng, p.lat];
-      const point = new Point(transform(coordinates, 'EPSG:4326', 'EPSG:900913'));
+      // const point = new Point(transform(coordinates, 'EPSG:4326', 'EPSG:900913'));
       features.push(new Feature({
         geometry: new Point(transform(coordinates, 'EPSG:4326', 'EPSG:900913')),
         population: p.count
@@ -99,7 +99,7 @@ export class MapActivityComponent implements OnInit {
       source: new OSM()
     });
 
-    var map = new Map({
+    const _ = new Map({
       layers: [raster, clusters],
       target: 'map',
       projection: new Projection("EPSG:900913"),

@@ -18,13 +18,21 @@ export class EmailValidatorService {
     emailWrongDomains['mil.ru'] = {prop: ["mail.ru"]};
     emailWrongDomains['nail.ru'] = {prop: ["mail.ru"]};
     emailWrongDomains['mial.ru'] = {prop: ["mail.ru"]};
+    emailWrongDomains['mai.ru'] = {prop: ["mail.ru"]};
     emailWrongDomains['mailn.ru'] = {prop: ["mail.ru"]};
+    emailWrongDomains['amil.ru'] = {prop: ["mail.ru"]};
     emailWrongDomains['gmail.ru'] = {prop: ["gmail.com"]};
     emailWrongDomains['gmial.com'] = {prop: ["gmail.com"]};
     emailWrongDomains['gmal.com'] = {prop: ["gmail.com"]};
     emailWrongDomains['inbox.ry'] = {prop: ["inbox.ru"]};
     emailWrongDomains['gamil.com'] = {prop: ["gmail.com"]};
+    emailWrongDomains['gmail.cpm'] = {prop: ["gmail.com"]}; // TODO redesign use like a levenshtein
+    emailWrongDomains['protonmaill.com'] = {prop: ["protonmail.com"]};
+
     emailWrongDomains['hotnail.com'] = {prop: ["hotmail.com"]};
+
+    let emailForbiddenDomains = {};
+    emailForbiddenDomains['fmshool72.ru'] = {reason: "DNS Error: 6986617 DNS type 'mx' lookup of fmshool72.ru responded with code NXDOMAIN Domain name not found: fmshool72.ru"};
 
     const re = /^\w+([\.-]?\w+){1,20}@\w+([\.-]?\w+){1,20}(\.\w{2,3})+$/;
     let ret = {result: false, error: ""};
@@ -34,13 +42,22 @@ export class EmailValidatorService {
       ret.error = "Format email wrong";
       return ret;
     }
+
     let domain = email.split("@")[1];
     domain = domain.toLowerCase();
+
+    if (emailForbiddenDomains[domain]) {
+      var t = emailWrongDomains[domain];
+      ret.result = false;
+      ret.error = emailForbiddenDomains[domain].reason;
+      return ret;
+    }
 
     if (emailWrongDomains[domain]) {
       var t = emailWrongDomains[domain];
       ret.result = false;
       ret.error = this._translation.translate('wrongDomainMaybeMeen') + t.prop.join(",");
+      return ret;
     }
     return ret;
   }
