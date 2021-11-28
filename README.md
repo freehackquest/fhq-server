@@ -239,6 +239,7 @@ If you wanna fresh enviroment
 $ ./rebuild_environment_images.sh
 ```
 
+Rebuild fresh docker 
 ```
 $ docker build -t sea5kg/fhq-server:latest .
 ```
