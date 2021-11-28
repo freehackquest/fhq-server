@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { ServerApiComponent } from './pages/server-api/server-api.component';
 import { MapActivityComponent } from './pages/map-activity/map-activity.component';
-import { NewsComponent } from './pages/news/news.component';
+import { EventsComponent } from './pages/events/events.component';
 import { ChatComponent } from './pages/chat/chat.component';
 import { AutomationUssrComponent } from './pages/automation-ussr/automation-ussr.component';
 import { AutomationUssrPresentationComponent } from './pages/automation-ussr-presentation/automation-ussr-presentation.component';
@@ -46,8 +46,8 @@ const routes: Routes = [{
     path: 'map-activity',
     component: MapActivityComponent
   }, {
-    path: 'news',
-    component: NewsComponent
+    path: 'events',
+    component: EventsComponent
   }, {
     path: 'user-profile',
     component: UserProfileComponent
