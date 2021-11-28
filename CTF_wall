@@ -1,0 +1,15 @@
+        <small>by dreal at October 2021</small><br />
+    </mat-card-content>
+</mat-card>
+
+<mat-card class="ctf-wall-record">
+    <mat-card-content>
+        <strong> <br />
+            All right, but apart from the sanitation, the medicine,<br />
+            education, wine, public order, irrigation, roads,<br />
+            the fresh-water system, and public health,<br />
+            what have the Romans ever done for us?<br />
+        </strong><br>
+        <small>by Gordee4 at November 2021</small>
+    </mat-card-content>
+</mat-card>
