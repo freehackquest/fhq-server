@@ -11,11 +11,11 @@ import { Location } from '@angular/common';
 declare var _: any;
 
 @Component({
-  selector: 'app-news',
-  templateUrl: './news.component.html',
-  styleUrls: ['./news.component.css']
+  selector: 'app-events',
+  templateUrl: './events.component.html',
+  styleUrls: ['./events.component.css']
 })
-export class NewsComponent implements OnInit {
+export class EventsComponent implements OnInit {
   @Output() loading = new EventEmitter<boolean>();
   searchValue: string = '';
   searchControl = new FormControl('');

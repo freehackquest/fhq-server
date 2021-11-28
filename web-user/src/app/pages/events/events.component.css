@@ -1,9 +1,10 @@
-.news-search-form-field {
+.events-search-form-field {
     width: 300px;
 }
 
-.news-paginator-field {
+.events-paginator-field {
     display: inline-block;
     width: calc(100% - 300px);
     min-width: 450px;
+    background-color: rgba(0,0,0,0);
 }

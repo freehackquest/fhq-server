@@ -38,7 +38,7 @@ import { SpinnerComponent } from './spinner/spinner.component';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { ServerApiComponent } from './pages/server-api/server-api.component';
 import { MapActivityComponent } from './pages/map-activity/map-activity.component';
-import { NewsComponent } from './pages/news/news.component';
+import { EventsComponent } from './pages/events/events.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChatComponent } from './pages/chat/chat.component';
 import { AutomationUssrComponent } from './pages/automation-ussr/automation-ussr.component';
@@ -100,7 +100,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     SpinnerComponent,
     ServerApiComponent,
     MapActivityComponent,
-    NewsComponent,
+    EventsComponent,
     ChatComponent,
     AutomationUssrComponent,
     AutomationUssrPresentationComponent,
