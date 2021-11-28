@@ -170,7 +170,7 @@ fhqadmin.knowledge_base_load_current_item = function(kbid, proposal_id) {
 			
 			if (propid === -1) {
 				// classbook_update_record
-				fhq.classbook_update_record({
+				fhq.ws.classbook_update_record({
 					"classbookid": kbid,
 					"name": $('#edit_kb_name').val(),
 					"content": window['edit_kb_content'].value(),
