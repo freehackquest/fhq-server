@@ -12,27 +12,75 @@
     <mat-list>
       <!-- user menu -->
       <mat-list-item *ngIf="!_fhq.isAuthorized">
-        <button mat-raised-button color="primary" class="main-left-menu-item" 
-          (click)="_dialogs.openSignInDialog();" l10nTranslate>signin</button>
+        <a mat-raised-button color="primary" class="main-left-menu-item" 
+          (click)="_dialogs.openSignInDialog();" l10nTranslate>signin</a>
       </mat-list-item>
       
       <mat-list-item *ngIf="_fhq.isAuthorized">
-        <button mat-button (click)="toggleUserProfileMenu()" class="main-left-menu-item">
+         <a mat-button (click)="toggleUserProfileMenu()" class="main-left-menu-item">
           <mat-icon>
             {{ !profileMenuExpanded ? 'keyboard_arrow_right' : 'keyboard_arrow_down' }}
           </mat-icon>
             <img class="user-logo" src="../{{ _fhq.userdata.logo }}">
             {{ _fhq.userdata.nick }}
-        </button>
+        </a>
       </mat-list-item>
       <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
-        <button routerLink="/user-profile"
+        <a routerLink="/user-profile"
           *ngIf="userRole == 'user' || userRole == 'admin'"
           [disabled]="urlPath === 'user-profile' ? '' : null"
           mat-raised-button
           class="main-left-menu-item"
           l10nTranslate>profile
-        </button>
+        </a>
+      </mat-list-item>
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <a routerLink="/user-security"
+          *ngIf="userRole == 'user' || userRole == 'admin'"
+          mat-raised-button
+          class="main-left-menu-item"
+          [disabled]="urlPath === 'user-security' ? '' : null"
+          l10nTranslate>security</a>
+      </mat-list-item>
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <a routerLink="/user-tokens"
+          *ngIf="userRole == 'user' || userRole == 'admin'"
+          mat-raised-button
+          [disabled]="urlPath === 'user-tokens' ? '' : null"
+          class="main-left-menu-item"
+          l10nTranslate>
+          user-tokens
+        </a>
+      </mat-list-item>
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <a routerLink="/user-skills"
+          *ngIf="userRole == 'user' || userRole == 'admin'"
+          mat-raised-button
+          [disabled]="urlPath === 'user-skills' ? '' : null"
+          class="main-left-menu-item"
+          l10nTranslate>
+          skills
+        </a>
+      </mat-list-item>
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <a routerLink="/user-favorites-useful-links"
+          *ngIf="userRole == 'user' || userRole == 'admin'"
+          [disabled]="urlPath === 'user-favorites-useful-links' ? '' : null"
+          mat-raised-button
+          class="main-left-menu-item"
+          l10nTranslate>
+          myFavoritesUsefulLinks
+        </a>
+      </mat-list-item>
+      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
+        <a (click)="userSignout()"
+          *ngIf="userRole == 'user' || userRole == 'admin'"
+          mat-raised-button
+          class="main-left-menu-item"
+          color="warn"
+          l10nTranslate>
+            signout
+        </a>
       </mat-list-item>
       <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
         <a href="/admin/"
@@ -44,127 +92,65 @@
           administration-panel
         </a>
       </mat-list-item>
-      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
-        <button routerLink="/user-security"
-          *ngIf="userRole == 'user' || userRole == 'admin'"
-          mat-raised-button
-          class="main-left-menu-item"
-          [disabled]="urlPath === 'user-security' ? '' : null"
-          l10nTranslate>security</button>
-      </mat-list-item>
-      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
-        <button routerLink="/user-tokens"
-          *ngIf="userRole == 'user' || userRole == 'admin'"
-          mat-raised-button
-          [disabled]="urlPath === 'user-tokens' ? '' : null"
-          class="main-left-menu-item"
-          l10nTranslate>
-          user-tokens
-        </button>
-      </mat-list-item>
-      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
-        <button routerLink="/user-skills"
-          *ngIf="userRole == 'user' || userRole == 'admin'"
-          mat-raised-button
-          [disabled]="urlPath === 'user-skills' ? '' : null"
-          class="main-left-menu-item"
-          l10nTranslate>
-          skills
-        </button>
-      </mat-list-item>
-      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
-        <button routerLink="/user-favorites-useful-links"
-          *ngIf="userRole == 'user' || userRole == 'admin'"
-          [disabled]="urlPath === 'user-favorites-useful-links' ? '' : null"
-          mat-raised-button
-          class="main-left-menu-item"
-          l10nTranslate>
-          myFavoritesUsefulLinks
-        </button>
-      </mat-list-item>
-      <mat-list-item *ngIf="_fhq.isAuthorized && profileMenuExpanded">
-        <button (click)="userSignout()"
-          *ngIf="userRole == 'user' || userRole == 'admin'"
-          mat-raised-button
-          class="main-left-menu-item"
-          color="warn"
-          l10nTranslate>
-            signout
-        </button>
-      </mat-list-item>
 
       <mat-divider></mat-divider>
       <mat-list-item>
-        <button mat-button 
+        <a mat-button 
           class="main-left-menu-item" 
           [disabled]="urlPath === 'quests' ? '' : null"
           routerLink="/quests" l10nTranslate>
           pageQuests
-        </button>
+        </a>
       </mat-list-item>
       <mat-list-item>
-        <button mat-button 
+        <a mat-button 
           class="main-left-menu-item"
           [disabled]="urlPath === 'scoreboard' ? '' : null"
           routerLink="/scoreboard" l10nTranslate>
           pageScoreboard
-        </button>
+        </a>
       </mat-list-item>
       <mat-list-item>
-        <button mat-button
+        <a mat-button
           class="main-left-menu-item"
-          [disabled]="urlPath === 'news' ? '' : null"
+          [disabled]="urlPath === 'events' ? '' : null"
           routerLink="/events" l10nTranslate>
           pageEvents
-        </button>
+      </a>
       </mat-list-item>
       <mat-divider></mat-divider>
       <mat-list-item>
         <a mat-button class="main-left-menu-item" routerLink="/" l10nTranslate> pageWelcome </a>
       </mat-list-item>
       <mat-list-item>
-        <button mat-button class="main-left-menu-item" routerLink="/about" l10nTranslate> pageAbout </button>
+        <a mat-button class="main-left-menu-item" routerLink="/about" l10nTranslate> pageAbout </a>
       </mat-list-item>
       <mat-list-item>
-        <button mat-button class="main-left-menu-item" routerLink="/donate" l10nTranslate> pageDonate </button>
+        <a mat-button class="main-left-menu-item" routerLink="/chat" l10nTranslate> chatPage </a>
       </mat-list-item>
       <mat-list-item>
-        <button mat-button class="main-left-menu-item" routerLink="/map-activity" l10nTranslate> mapActivity </button>
+        <a mat-button class="main-left-menu-item" routerLink="/useful-links" l10nTranslate> usefulLinks </a>
       </mat-list-item>
       <mat-list-item>
-        <button mat-button class="main-left-menu-item" routerLink="/chat" l10nTranslate> chatPage </button>
+        <a mat-button class="main-left-menu-item" routerLink="/games" l10nTranslate> gamesListPage </a>
       </mat-list-item>
       <mat-list-item>
-        <button mat-button class="main-left-menu-item" routerLink="/automation-ussr" l10nTranslate> automationUssr </button>
+        <a mat-button class="main-left-menu-item" routerLink="/ctf-attack-defence" l10nTranslate> pageJuryAttackDefence </a>
       </mat-list-item>
       <mat-list-item>
-        <button mat-button class="main-left-menu-item" routerLink="/useful-links" l10nTranslate> usefulLinks </button>
+        <a mat-button class="main-left-menu-item" routerLink="/knowledge-base" l10nTranslate> knowledgeBase </a>
       </mat-list-item>
       <mat-list-item>
-        <button mat-button class="main-left-menu-item" routerLink="/games" l10nTranslate> gamesListPage </button>
-      </mat-list-item>
-      <mat-list-item>
-        <button mat-button class="main-left-menu-item" routerLink="/ctf-attack-defence" l10nTranslate> pageJuryAttackDefence </button>
-      </mat-list-item>
-      <mat-list-item>
-        <button mat-button class="main-left-menu-item" routerLink="/knowledge-base" l10nTranslate> knowledgeBase </button>
-      </mat-list-item>
-      <mat-list-item>
-        <button mat-button class="main-left-menu-item" routerLink="/server-api"> FreeHackQuest API </button>
-      </mat-list-item>
-      <mat-list-item>
-        <button mat-button class="main-left-menu-item" routerLink="/ctf-wall"> CTF Wall </button>
+        <a mat-button class="main-left-menu-item" routerLink="/ctf-wall"> CTF Wall </a>
       </mat-list-item>
       <!-- mat-list-item>
         <button mat-button class="main-left-menu-item" onclick="fhq.ui.playStopMusic()" routerLink="/server-api"> Play Sound </button>
       </mat-list-item -->
       <mat-divider></mat-divider>
       <mat-list-item>
-        <button mat-button class="main-left-menu-item" routerLink="/feedback" l10nTranslate>feedbackAdd</button>
+        <a mat-button class="main-left-menu-item" routerLink="/feedback" l10nTranslate>feedbackAdd</a>
       </mat-list-item>
-      <mat-list-item>
-        <button mat-button class="main-left-menu-item" routerLink="/quest-proposal" l10nTranslate>proposalQuest</button>
-      </mat-list-item>
+
      </mat-list>
   </mat-drawer>
   <mat-drawer-content class="main-content">
@@ -285,6 +271,9 @@
               </li>
               <li>
                 <a routerLink="/donate" l10nTranslate>pageDonate</a>
+              </li>
+              <li>
+                <a routerLink="/server-api">FreeHackQuest API</a>
               </li>
             </ul>
 
