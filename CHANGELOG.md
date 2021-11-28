@@ -5,6 +5,13 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.2.47] - 2021-??-?? (2021 ?? ??)
+
+### Removed
+
+- web-user: Removed page ctf-attack-defence
+
+
 ## [v0.2.46] - 2021-11-28 (2021 Nov 28)
 
 ### Changed

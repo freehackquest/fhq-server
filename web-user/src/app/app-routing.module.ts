@@ -27,7 +27,6 @@ import { UserSecurityComponent } from './pages/user-security/user-security.compo
 import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
 import { QuestComponent } from './pages/quest/quest.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
-import { CtfAttackDefenceComponent } from './pages/ctf-attack-defence/ctf-attack-defence.component';
 import { CtfWallComponent } from './pages/ctf-wall/ctf-wall.component';
 import { UserFavoritesUsefulLinksComponent } from './pages/user-favorites-useful-links/user-favorites-useful-links.component'
 import { UsefulLinkViewComponent } from './pages/useful-link-view/useful-link-view.component';
@@ -123,9 +122,6 @@ const routes: Routes = [{
   }, {
       path: 'quest/:id',
       component: QuestComponent
-  }, {
-    path: 'ctf-attack-defence',
-    component: CtfAttackDefenceComponent
   }, {
     path: 'ctf-wall',
     component: CtfWallComponent
