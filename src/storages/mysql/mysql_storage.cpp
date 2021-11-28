@@ -135,6 +135,7 @@ bool MySqlStorageConnection::insertUpdateInfo(const std::string &sVersion, const
 }
 
 // ----------------------------------------------------------------------
+// MySqlStorage
 
 MySqlStorage::MySqlStorage() {
     TAG = "MySqlStorage";
