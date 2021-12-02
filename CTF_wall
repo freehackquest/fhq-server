@@ -1,7 +1,3 @@
-        <small>by dreal at October 2021</small><br />
-    </mat-card-content>
-</mat-card>
-
 <mat-card class="ctf-wall-record">
     <mat-card-content>
         <strong> <br />
