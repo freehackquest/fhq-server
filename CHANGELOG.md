@@ -10,7 +10,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 - web-user: Removed page ctf-attack-defence
+- web-user: Moved information from web-user to README.md
+- web-user: ctf_wall (pull request #418), Moved code from CTF_Wall to web-user/src/app/pages/ctf-wall/ctf-wall.component.html
 
+### Security
+
+- fix: upgrade multiple dependencies with Snyk
+- fix: upgrade core-js from 3.17.3 to 3.19.1
+- fix: upgrade @angular/localize from 12.2.5 to 12.2.13
 
 ## [v0.2.46] - 2021-11-28 (2021 Nov 28)
 
