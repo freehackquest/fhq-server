@@ -4,6 +4,11 @@
 
 Backend && Frontend for FreeHackQuest on Qt and WebSockets
 
+## Contacts
+
+* [Group in VK](https://vk.com/freehackquest)
+* [Group in Telegram](https://telegram.me/freehackquest)
+
 ## docker-compose example
 
 [docker-compose example](https://github.com/freehackquest/fhq-server/tree/master/contrib/docker_compose_example)
@@ -554,3 +559,17 @@ $ python3 -m twine upload dist/*
 * Used libpng for a processing png-images: [http://libpng.org/](http://libpng.org/)
 
 
+## Thanks For
+
+* [Charts.js](http://www.chartjs.org/docs/)
+* Sergey Belov (found xss!)
+* Igor Polyakov
+* Maxim Samoilov (Nitive)
+* Dmitrii Mukovkin
+* Team Keva
+* Alexey Gulyaev
+* Alexander Menschikov
+* Ilya Bokov
+* Extrim Code
+* Sergey Ushev
+* Danil Dudkin
