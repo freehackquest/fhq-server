@@ -1,3 +1,5 @@
+<div *ngIf="errorMessage != null" class="alert alert-danger" color="#ff0000"> {{ errorMessage }} </div>
+
 <mat-card class="welcome-card">
   <mat-card-header class="welcome-card-header-main">
     <div mat-card-avatar class="welcome-header-image-main"></div>
@@ -7,56 +9,57 @@
       <h3 l10nTranslate>pageWelcome</h3>
       <div l10nTranslate>pageWelcomeAbout</div>
     </div>
-    <div class="welcome-item-devider"></div>
-    <div class="welcome-list-item">
-      <button mat-stroked-button color="primary" routerLink="/quests" l10nTranslate>quests</button>
-      <div class="welcome-description" l10nTranslate>pageWelcomeQuestsDescription</div>
+  </mat-card-content>
+</mat-card>
+<br/>
+
+<mat-card class="welcome-card">
+  <mat-card-header>
+    <div mat-card-avatar class="welcome-header-image"></div>
+    Statistics
+  </mat-card-header>
+  <mat-card-content>
+    <br><br>
+    <p><label>Quests:</label> {{ statisticsCountQuests }}</p>
+		<p><label>All attempts:</label> {{ statisticsAllAttempts }} </p>
+		<p><label>Already solved:</label> {{ statisticsAlreadySolved }} </p>
+    <p><label>Users online:</label> {{ statisticsUsersOnline }} </p>
+  </mat-card-content>
+</mat-card>
+<br/>
+
+<mat-card class="welcome-card">
+  <mat-card-header>
+    <div mat-card-avatar class="welcome-header-image"></div>
+    Playing with us
+  </mat-card-header>
+  <mat-card-content>
+    <br><br>
+    <div class="d-inline-block" *ngFor="let c of cities">
+      | {{ c.city }} ( {{ c.cnt }}) |
     </div>
-    <div class="welcome-item-devider"></div>
-    <div class="welcome-list-item">
-      <button mat-stroked-button color="primary" routerLink="/quest-proposal" l10nTranslate>proposalQuest</button>
-      <div class="welcome-description" l10nTranslate>pageWelcomeProposalQuestDescription</div>
-    </div>
-    <div class="welcome-item-devider"></div>
-    <div class="welcome-list-item">
-      <button mat-stroked-button color="primary" routerLink="/chat" l10nTranslate>chatPage</button>
-      <div class="welcome-description" l10nTranslate>welcomeWeHaveAPublicChat</div>
-    </div>
-    <div class="welcome-item-devider"></div>
-    <div class="welcome-list-item">
-      <button mat-stroked-button color="primary" routerLink="/events" l10nTranslate>events</button>
-      <div class="welcome-description" l10nTranslate>welcomeAllEventsOutputHere</div>
-    </div>
-    <div class="welcome-item-devider"></div>
-    <div class="welcome-list-item">
-      <button mat-stroked-button color="primary" routerLink="/feedback" l10nTranslate>newFeedback</button>
-      <div class="welcome-description" l10nTranslate>welcomeFeedbackDescription</div>
-    </div>
-    <div class="welcome-item-devider"></div>
-    <div class="welcome-list-item">
-      <button mat-stroked-button color="primary" routerLink="/donate" l10nTranslate>pageDonate</button>
-      <div class="welcome-description" l10nTranslate>welcomeHelpToProject</div>
-    </div>
-    <div class="welcome-item-devider"></div>
-    <div class="welcome-list-item">
-      <button mat-stroked-button color="primary" routerLink="/automation-ussr" l10nTranslate>automationUssr</button>
-      <div class="welcome-description" l10nTranslate>welcomeAutomationUssrDescription</div>
-    </div>
-    <div class="welcome-item-devider"></div>
-    <div class="welcome-list-item">
-      <button mat-stroked-button color="primary" routerLink="/knowledge-base" l10nTranslate>knowledgeBase</button>
-      <div class="welcome-description" l10nTranslate>welcomeKnowledgeBaseDescription</div>
-    </div>
-    <div class="welcome-item-devider"></div>
-    <div class="welcome-list-item">
-      <a mat-stroked-button color="primary" routerLink="/useful-links" l10nTranslate>usefulLinks</a>
-      <div class="welcome-description" l10nTranslate>welcomeUsefulLinksDescription</div>
-    </div>
-    <div class="welcome-item-devider"></div>
-    <div class="welcome-list-item">
-      <a mat-stroked-button color="primary" routerLink="/about" l10nTranslate>pageAbout</a>
-      <div class="welcome-description" l10nTranslate></div>
+    <a class="btn btn-info" routerLink="/map-activity">On Map</a>
+  </mat-card-content>
+</mat-card>
+<br/>
+
+<mat-card class="welcome-card">
+  <mat-card-header>
+    <div mat-card-avatar class="welcome-header-image"></div>
+    Top 10
+  </mat-card-header>
+  <mat-card-content>
+    <br><br>
+    <div *ngFor="let w of winners">
+      <div class="welcome-item-devider"></div>
+      <div class="welcome-list-item">
+        <strong>{{ w.place }}</strong>
+        [{{ w.rating }} points]
+        <strong>{{ w.university != '' ? '[' + w.university + ']' : '' }} {{ w.nick }}</strong>
+      </div>
     </div>
   </mat-card-content>
 </mat-card>
-<br/><br/>
+<br/>
+
+<app-block-contact-us></app-block-contact-us>
