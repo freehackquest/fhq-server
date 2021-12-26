@@ -161,13 +161,13 @@
     >
       <mat-icon>menu</mat-icon>
     </button>
-    <span *ngIf="!mobileQuery.matches" routerLink="/about">
+    <span class="main-logo" *ngIf="!mobileQuery.matches" routerLink="/">
       <img src="assets/img/fhq_2017_white.png" width="30" height="30">
       Free Hack Quest
     </span>
     <span class="main-navbar-spacer"></span>
 
-    <span *ngIf="mobileQuery.matches" routerLink="/about">
+    <span class="main-logo" *ngIf="mobileQuery.matches" routerLink="/">
       <img src="assets/img/fhq_2017_white.png" width="30" height="30">
       FHQ
     </span>

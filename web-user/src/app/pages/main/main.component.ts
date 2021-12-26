@@ -3,11 +3,11 @@ import { FhqService } from '../../services/fhq.service';
 import { SpinnerService } from '../../services/spinner.service';
 
 @Component({
-  selector: 'app-welcome',
-  templateUrl: './welcome.component.html',
-  styleUrls: ['./welcome.component.css']
+  selector: 'app-main',
+  templateUrl: './main.component.html',
+  styleUrls: ['./main.component.css']
 })
-export class WelcomeComponent implements OnInit {
+export class MainComponent implements OnInit {
   subscription: any;
   constructor(
     private _cdr: ChangeDetectorRef,
