@@ -17,7 +17,6 @@ import { FeedbackComponent } from './pages/feedback/feedback.component';
 import { ConfidencialComponent } from './pages/confidencial/confidencial.component';
 import { KnowledgeBaseComponent } from './pages/knowledge-base/knowledge-base.component';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
-import { AboutComponent } from './pages/about/about.component';
 import { QuestProposalComponent } from './pages/quest-proposal/quest-proposal.component';
 import { ScoreboardComponent } from './pages/scoreboard/scoreboard.component';
 import { QuestsComponent } from './pages/quests/quests.component';
@@ -62,9 +61,6 @@ const routes: Routes = [{
   }, {
     path: 'user-tokens',
     component: UserTokensComponent
-  }, {
-    path: 'about',
-    component: AboutComponent
   }, {
     path: 'chat',
     component: ChatComponent

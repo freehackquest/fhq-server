@@ -55,7 +55,6 @@ import { KnowledgeBaseComponent } from './pages/knowledge-base/knowledge-base.co
 import { ModalSignInDialog } from './dialogs/modal-signin-dialog/modal-signin-dialog.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
-import { AboutComponent } from './pages/about/about.component';
 import { QuestProposalComponent } from './pages/quest-proposal/quest-proposal.component';
 import { LMarkdownEditorModule } from 'ngx-markdown-editor';
 import { AceModule } from 'ngx-ace-wrapper';
@@ -114,7 +113,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     KnowledgeBaseComponent,
     ModalSignInDialog,
     UserProfileComponent,
-    AboutComponent,
     QuestProposalComponent,
     ScoreboardComponent,
     QuestsComponent,
