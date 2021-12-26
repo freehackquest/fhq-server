@@ -35,3 +35,7 @@
 .main-navbar-spacer {
     flex: 1 1 auto;
 }
+
+.main-logo {
+    cursor: pointer;
+}

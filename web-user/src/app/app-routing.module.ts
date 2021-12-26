@@ -26,7 +26,7 @@ import { UserTokensComponent } from './pages/user-tokens/user-tokens.component';
 import { UserSecurityComponent } from './pages/user-security/user-security.component';
 import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
 import { QuestComponent } from './pages/quest/quest.component';
-import { WelcomeComponent } from './pages/welcome/welcome.component';
+import { MainComponent } from './pages/main/main.component';
 import { CtfWallComponent } from './pages/ctf-wall/ctf-wall.component';
 import { UserFavoritesUsefulLinksComponent } from './pages/user-favorites-useful-links/user-favorites-useful-links.component'
 import { UsefulLinkViewComponent } from './pages/useful-link-view/useful-link-view.component';
@@ -127,7 +127,7 @@ const routes: Routes = [{
     component: CtfWallComponent
   }, {
     path: '',
-    component: WelcomeComponent
+    component: MainComponent
   }, {
     path: '**',
     component: PageNotFoundComponent

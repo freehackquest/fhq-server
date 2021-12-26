@@ -69,7 +69,7 @@ import { QuestComponent } from './pages/quest/quest.component';
 import { ModalDialogQuestFeedbackComponent } from './dialogs/modal-dialog-quest-feedback/modal-dialog-quest-feedback.component';
 import { BlockContactUsComponent } from './block-contact-us/block-contact-us.component';
 import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
-import { WelcomeComponent } from './pages/welcome/welcome.component';
+import { MainComponent } from './pages/main/main.component';
 import { NgxMdModule } from 'ngx-md';
 import { SimplemdeModule } from 'ng2-simplemde';
 import { UserTokensComponent } from './pages/user-tokens/user-tokens.component';
@@ -124,7 +124,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     ModalDialogQuestFeedbackComponent,
     BlockContactUsComponent,
     UserSkillsComponent,
-    WelcomeComponent,
+    MainComponent,
     UserTokensComponent,
     UserFavoritesUsefulLinksComponent,
     UsefulLinkViewComponent,
