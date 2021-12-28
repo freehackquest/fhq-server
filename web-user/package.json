@@ -36,7 +36,7 @@
     "angular-highlight-js": "^2.0.1",
     "angular-l10n": "^9.3.0",
     "bootstrap": "~4.6.1",
-    "core-js": "^3.19.2",
+    "core-js": "^3.19.3",
     "flag-icon-css": "^3.5.0",
     "font-awesome": "^4.7.0",
     "freehackquest-libclient-web-js": "^0.2.40",
