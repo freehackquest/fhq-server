@@ -831,7 +831,7 @@ void CmdHandlerUser::handle(ModelRequest *pRequest) {
             data["uuid"] = record.value("uuid").toString().toStdString();
             data["nick"] = record.value("nick").toString().toHtmlEscaped().toStdString();
             data["role"] = record.value("role").toString().toStdString();
-            data["logo"] = record.value("logo").toString().toHtmlEscaped().toStdString();
+            data["logo"] = "public/" + record.value("logo").toString().toHtmlEscaped().toStdString();
             data["about"] = record.value("about").toString().toHtmlEscaped().toStdString();
             data["status"] = record.value("status").toString().toStdString();
             data["rating"] = record.value("rating").toString().toStdString();
