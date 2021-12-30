@@ -132,4 +132,12 @@ class CmdHandlerQuestsFilesUpload : public CmdHandlerBase {
         virtual void handle(ModelRequest *pRequest);
 };
 
+// ---------------------------------------------------------------------
+
+class CmdHandlerQuestsFilesDelete : public CmdHandlerBase {
+    public:
+        CmdHandlerQuestsFilesDelete();
+        virtual void handle(ModelRequest *pRequest);
+};
+
 #endif // CMD_HANDLERS_QUESTS_H

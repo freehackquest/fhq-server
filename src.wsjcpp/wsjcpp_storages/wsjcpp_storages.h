@@ -86,7 +86,8 @@ enum WsjcppStorageChangesType {
     WSJCPP_STORAGE_CHANGES_TYPE_INSERT_ROW,
     WSJCPP_STORAGE_CHANGES_TYPE_DELETE_ROW,
     WSJCPP_STORAGE_CHANGES_TYPE_UPDATE_ROW,
-    WSJCPP_STORAGE_CHANGES_TYPE_SELECT_ROWS
+    WSJCPP_STORAGE_CHANGES_TYPE_SELECT_ROWS,
+    WSJCPP_STORAGE_CHANGES_TYPE_CUSTOM_CHANGES,
 };
 
 // ---------------------------------------------------------------------
@@ -99,6 +100,7 @@ class WsjcppStorageChanges {
         virtual std::string getStartApply() const;
         virtual std::string getAppliedSuccess() const;
         virtual std::string getAppliedFailed() const;
+        virtual bool applyCustomChanges() const;
 
     protected:
         std::string TAG;
@@ -356,10 +358,10 @@ class WsjcppStorageUpdateBase {
         WsjcppStorageModifyTable *modifyTable(std::string sTableName);
         WsjcppStorageDropTable *dropTable(std::string sTableName);
         WsjcppStorageInsert *insertIntoTable(std::string sTableName);
-        
+        std::vector<WsjcppStorageChanges *> m_vStorageChanges;
+
     private:
         void checkTableName(std::string sTableName);
-        std::vector<WsjcppStorageChanges *> m_vStorageChanges;
         std::string m_sFromVersion;
         std::string m_sVersion;
         std::string m_sDescription;
