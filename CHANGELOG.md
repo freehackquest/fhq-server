@@ -5,13 +5,27 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.47] - 2021-??-?? (2021 ?? ??)
+## [v0.2.47] - 2021-12-31 (2021 Dec 31)
+
+## Added 
+ 
+- Implemeted delete files from quest
+- Moved stickers from https://github.com/freehackquest/freehackquest-stickers
+
+## Changed
+
+- Updated year for copyright
+- Redesign processing with public files
+- web-user: Main page
+- web-user: Hide menu to chat
+- web-user:  Redesign footer 'powered by' and removed 'connection state
 
 ### Removed
 
 - web-user: Removed page ctf-attack-defence
 - web-user: Moved information from web-user to README.md
 - web-user: ctf_wall (pull request #418), Moved code from CTF_Wall to web-user/src/app/pages/ctf-wall/ctf-wall.component.html
+- web-user: Removed about
 
 ### Security
 
