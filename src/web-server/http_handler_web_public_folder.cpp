@@ -40,15 +40,14 @@ bool HttpHandlerWebPublicFolder::handle(const std::string &sWorkerId, WsjcppLigh
 
     // TODO redsign this hardcode
     std::string sFilename = "";
-    if (sRequestPath.rfind("/public/", 0) == 0) {
-        auto pEmployFiles = findWsjcppEmploy<EmployFiles>();
-        ModelQuestFile model;
-        if (!pEmployFiles->findQuestFileByFilePath(sRequestPath, model)) {
-            std::string sMessageError = "This file not registered in the system '" + sRequestPath + "'";
-            WsjcppLog::err(TAG, sMessageError);
-            resp.cacheSec(0).notFound().sendText("<h1>" + sMessageError + "</h1>");
-            return true;
-        }
+    // if (sRequestPath.rfind("/quests/", 0) == 0) {
+    auto pEmployFiles = findWsjcppEmploy<EmployFiles>();
+    ModelQuestFile model;
+    if (pEmployFiles->findQuestFileByFilePath(sRequestPath, model)) {
+        // std::string sMessageError = "This file not registered in the system '" + sRequestPath + "'";
+        // WsjcppLog::err(TAG, sMessageError);
+        // resp.cacheSec(0).notFound().sendText("<h1>" + sMessageError + "</h1>");
+        // return true;
         sFilename = model.getFileName();
     }
 
