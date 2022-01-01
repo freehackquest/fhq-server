@@ -48,7 +48,7 @@ void EmployScoreboard::loadSync() {
         pUser->userid = record.value("id").toInt();
         pUser->nick = record.value("nick").toString().toHtmlEscaped().toStdString();
         pUser->university = record.value("university").toString().toHtmlEscaped().toStdString();
-        pUser->logo = record.value("logo").toString().toHtmlEscaped().toStdString();
+        pUser->logo = "public/" + record.value("logo").toString().toHtmlEscaped().toStdString();
         int rating = record.value("rating").toInt();
         int nRow = findScoreboardRowByRating(rating);
         if (nRow < 0) {

@@ -280,7 +280,9 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
                     jsonFileInfo["filename"] = record_game.value("filename").toString().toStdString();
                     jsonFileInfo["size"] = record_game.value("size").toString().toStdString();
                     jsonFileInfo["dt"] = record_game.value("dt").toString().toStdString();
-                    jsonFileInfo["filepath"] = record_game.value("filepath").toString().toStdString();
+                    // hardcoded subpath 'public/' for public files getting by web server
+                    std::string sFilepath = "public/" + record_game.value("filepath").toString().toStdString();
+                    jsonFileInfo["filepath"] = WsjcppCore::doNormalizePath(sFilepath);
                     jsonFiles.push_back(jsonFileInfo);
                 }
                 jsonResponse["files"] = jsonFiles;
@@ -1943,7 +1945,7 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerQuestsFilesUpload)
 
 CmdHandlerQuestsFilesUpload::CmdHandlerQuestsFilesUpload()
-    : CmdHandlerBase("quests_files_upload", "Update the quest") {
+    : CmdHandlerBase("quests_files.upload", "Update the quest") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -2000,16 +2002,27 @@ void CmdHandlerQuestsFilesUpload::handle(ModelRequest *pRequest) {
         return;
     }
     
-    if (!WsjcppCore::dirExists(sPublicFolder + "/quests/")) {
-        WsjcppCore::makeDir(sPublicFolder + "/quests/");
+    std::string sFullFilePath = sPublicFolder + "/quests";
+    std::string sRelativeFilePathByPublic = "/quests";
+
+    if (!WsjcppCore::dirExists(sFullFilePath)) {
+        WsjcppCore::makeDir(sFullFilePath);
     }
-    // TODO replace in filename all dots
+    
+    sFullFilePath += "/" + WsjcppCore::toUpper(sQuestUUID);
+    sRelativeFilePathByPublic += "/" + WsjcppCore::toUpper(sQuestUUID);
+
+    if (!WsjcppCore::dirExists(sFullFilePath)) {
+        WsjcppCore::makeDir(sFullFilePath);
+    }
+
     std::string sFileUuid = WsjcppCore::createUuid();
     sFileUuid = WsjcppCore::toUpper(sFileUuid);
-    std::string sPath = sPublicFolder + "/quests/" + WsjcppCore::toUpper(sQuestUUID) + "_" + sFileUuid;
+    sFullFilePath += "/" + WsjcppCore::toUpper(sFileUuid);
+    sRelativeFilePathByPublic += "/" + WsjcppCore::toUpper(sFileUuid);
     
     int nFileSize = baFile.size();
-    FILE * pFile = fopen(sPath.c_str(), "wb");
+    FILE * pFile = fopen(sFullFilePath.c_str(), "wb");
     fwrite (baFile.constData(), sizeof(char), nFileSize, pFile);
     fclose (pFile);
     
@@ -2023,7 +2036,7 @@ void CmdHandlerQuestsFilesUpload::handle(ModelRequest *pRequest) {
         query.bindValue(":questid", nQuestID);
         query.bindValue(":filename", QString::fromStdString(sFileName));
         query.bindValue(":size", nFileSize);
-        query.bindValue(":filepath", QString::fromStdString("public/quests/" + WsjcppCore::toUpper(sQuestUUID) + "_" + sFileUuid));
+        query.bindValue(":filepath", QString::fromStdString(sRelativeFilePathByPublic));
 
         if (!query.exec()) {
             pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
@@ -2032,5 +2045,117 @@ void CmdHandlerQuestsFilesUpload::handle(ModelRequest *pRequest) {
         
     }
 
+    EmployNotify *pEmployNotify = findWsjcppEmploy<EmployNotify>();
+    pEmployNotify->notifyInfo("quests", "Added new file for [quest#" + sQuestUUID + "]");
+    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+
+// ---------------------------------------------------------------------
+// Quests Files Delete
+
+REGISTRY_CMD(CmdHandlerQuestsFilesDelete)
+
+CmdHandlerQuestsFilesDelete::CmdHandlerQuestsFilesDelete()
+    : CmdHandlerBase("quests_files.delete", "Delete file from quest") {
+
+    setAccessUnauthorized(false);
+    setAccessUser(false);
+    setAccessAdmin(true);
+
+    // validation and description input fields
+    requireStringParam("quest_uuid", "Quest UUID")
+        .addValidator(new WsjcppValidatorUUID());
+    requireIntegerParam("file_id", "File ID");
+}
+
+// ---------------------------------------------------------------------
+
+void CmdHandlerQuestsFilesDelete::handle(ModelRequest *pRequest) {
+    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+    nlohmann::json jsonResponse;
+    QSqlDatabase db = *(pDatabase->database());
+
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+    std::string sPublicFolder = pGlobalSettings->get("web_public_folder").getDirPathValue();
+    // std::string sPublicFolderURL = pGlobalSettings->get("web_public_folder_url").getDirPathValue();
+
+    std::string sQuestUUID = pRequest->getInputString("quest_uuid", "");
+    int nFileId = pRequest->getInputInteger("file_id", 0);
+    int nQuestID = 0;
+
+    // check the quest
+    {
+        QSqlQuery query(db);
+        query.prepare("SELECT idquest FROM quest WHERE uuid = :questuuid");
+        query.bindValue(":questuuid", QString::fromStdString(sQuestUUID));
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
+        if (query.next()) {
+            QSqlRecord quest = query.record();
+            nQuestID = quest.value("idquest").toInt();
+        } else {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Quest not found with uuid " + sQuestUUID));
+            return;
+        }
+    }
+
+    std::string sFilepath = "";
+    {
+        QSqlQuery query(db);
+        query.prepare("SELECT filepath FROM quests_files WHERE id = :fileid AND questid = :questid");
+        query.bindValue(":fileid", nFileId);
+        query.bindValue(":questid", nQuestID);
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
+        if (query.next()) {
+            QSqlRecord quest = query.record();
+            sFilepath = quest.value("filepath").toString().toStdString();
+        } else {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Game not found"));
+            return;
+        }
+    }
+    
+    if (sFilepath == "") {
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Not found file"));
+        return;
+    }
+
+    std::string sFileFullPath = sPublicFolder + sFilepath;
+
+    if (WsjcppCore::fileExists(sFileFullPath)) {
+        if (!WsjcppCore::removeFile(sFileFullPath)) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Could not remove file: " + sFileFullPath));
+            return;
+        }
+    } else {
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Could not find file by path: " + sFileFullPath));
+        return;
+    }
+
+    {
+        QSqlQuery query(db);
+        query.prepare("DELETE FROM quests_files WHERE id = :fileid AND questid = :questid");
+        query.bindValue(":fileid", nFileId);
+        query.bindValue(":questid", nQuestID);
+        if (!query.exec()) {
+            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+            return;
+        }
+    }
+    
+    EmployNotify *pEmployNotify = findWsjcppEmploy<EmployNotify>();
+    pEmployNotify->notifyInfo("quests", "Delete file for [quest#" + sQuestUUID + "]");
+
+    nlohmann::json jsonResponseData;
+    jsonResponseData["questid"] = nQuestID;
+    jsonResponseData["questuuid"] = sQuestUUID;
+    jsonResponseData["fileid"] = nFileId;
+    jsonResponse["data"] = jsonResponseData;
     pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

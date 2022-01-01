@@ -17,7 +17,6 @@ import { FeedbackComponent } from './pages/feedback/feedback.component';
 import { ConfidencialComponent } from './pages/confidencial/confidencial.component';
 import { KnowledgeBaseComponent } from './pages/knowledge-base/knowledge-base.component';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
-import { AboutComponent } from './pages/about/about.component';
 import { QuestProposalComponent } from './pages/quest-proposal/quest-proposal.component';
 import { ScoreboardComponent } from './pages/scoreboard/scoreboard.component';
 import { QuestsComponent } from './pages/quests/quests.component';
@@ -26,8 +25,7 @@ import { UserTokensComponent } from './pages/user-tokens/user-tokens.component';
 import { UserSecurityComponent } from './pages/user-security/user-security.component';
 import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
 import { QuestComponent } from './pages/quest/quest.component';
-import { WelcomeComponent } from './pages/welcome/welcome.component';
-import { CtfAttackDefenceComponent } from './pages/ctf-attack-defence/ctf-attack-defence.component';
+import { MainComponent } from './pages/main/main.component';
 import { CtfWallComponent } from './pages/ctf-wall/ctf-wall.component';
 import { UserFavoritesUsefulLinksComponent } from './pages/user-favorites-useful-links/user-favorites-useful-links.component'
 import { UsefulLinkViewComponent } from './pages/useful-link-view/useful-link-view.component';
@@ -63,9 +61,6 @@ const routes: Routes = [{
   }, {
     path: 'user-tokens',
     component: UserTokensComponent
-  }, {
-    path: 'about',
-    component: AboutComponent
   }, {
     path: 'chat',
     component: ChatComponent
@@ -124,14 +119,11 @@ const routes: Routes = [{
       path: 'quest/:id',
       component: QuestComponent
   }, {
-    path: 'ctf-attack-defence',
-    component: CtfAttackDefenceComponent
-  }, {
     path: 'ctf-wall',
     component: CtfWallComponent
   }, {
     path: '',
-    component: WelcomeComponent
+    component: MainComponent
   }, {
     path: '**',
     component: PageNotFoundComponent

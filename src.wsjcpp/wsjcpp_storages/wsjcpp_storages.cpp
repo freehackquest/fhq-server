@@ -244,6 +244,10 @@ std::string WsjcppStorageChanges::getAppliedFailed() const {
     return "Could not apply changes for table " + m_sTableName;
 }
 
+bool WsjcppStorageChanges::applyCustomChanges() const {
+    return true;
+}
+
 // ---------------------------------------------------------------------
 
 // ***********************
@@ -829,6 +833,8 @@ bool WsjcppStorage::addStorageChanges(WsjcppStorageChanges &storageChanges) {
             WsjcppLog::throw_err(TAG, "Not found table '" + sTableName + "'");
         }
         it->second.mergeWith((WsjcppStorageModifyTable &)storageChanges);
+    } else if (storageChanges.getType() == WSJCPP_STORAGE_CHANGES_TYPE_CUSTOM_CHANGES) {
+        // skip
     } else if (storageChanges.getType() == WSJCPP_STORAGE_CHANGES_TYPE_INSERT_ROW) {
         // skip
     } else {
@@ -842,7 +848,7 @@ bool WsjcppStorage::addStorageChanges(WsjcppStorageChanges &storageChanges) {
 bool WsjcppStorage::executeStorageChanges(WsjcppStorageConnection *pConn, WsjcppStorageChanges &storageChanges) {
     std::string sTableName = storageChanges.getTableName();
     std::vector<std::string> vQueries;
-
+    bool bCustomChnages = false;
     if (storageChanges.getType() == WSJCPP_STORAGE_CHANGES_TYPE_CREATE_TABLE) {
         WsjcppStorageCreateTable createTable = (WsjcppStorageCreateTable &)storageChanges;
         vQueries = this->prepareSqlQueries(createTable);
@@ -859,6 +865,8 @@ bool WsjcppStorage::executeStorageChanges(WsjcppStorageConnection *pConn, Wsjcpp
             WsjcppLog::throw_err(TAG, "Insert into table '" + insRow.getTableName() + "' is invalid");
         }
         vQueries = this->prepareSqlQueries(insRow);
+    } else if (storageChanges.getType() == WSJCPP_STORAGE_CHANGES_TYPE_CUSTOM_CHANGES) {
+        bCustomChnages = true;
     } else {
         throw std::runtime_error("Could not support type of StorageChanges");
     }
@@ -870,6 +878,10 @@ bool WsjcppStorage::executeStorageChanges(WsjcppStorageConnection *pConn, Wsjcpp
             WsjcppLog::throw_err(TAG, storageChanges.getAppliedFailed() + "\n    query -> " + sQuery);
             return false;
         }
+    }
+
+    if (bCustomChnages) {
+        storageChanges.applyCustomChanges();
     }
 
     if (!this->addStorageChanges(storageChanges)) {

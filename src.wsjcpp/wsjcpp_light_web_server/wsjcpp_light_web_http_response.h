@@ -29,8 +29,8 @@ class WsjcppLightWebHttpResponse {
         void sendJson(const nlohmann::json &json);
         void sendEmpty();
         void sendOptions(const std::string &sOptions);
-        void sendFile(const std::string &sFilePath);
-        void sendBuffer(const std::string &sFilePath, const char *pBuffer, const int nBufferSize);
+        void sendFile(const std::string &sFilePath, const std::string &sFileName = "");
+        void sendBuffer(const std::string &sFileNameDisposition, const char *pBuffer, const int nBufferSize, bool bDisposionFile = false);
 
     private:
         std::string prepareHeaders(int nLength);

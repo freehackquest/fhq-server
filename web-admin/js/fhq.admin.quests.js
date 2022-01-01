@@ -496,7 +496,7 @@ fhq.deleteQuestFile = function(el, quest_uuid, file_id){
         "file_id": file_id,
     }).done(function(r) {
         console.log('Success: ', r);
-        fhq.pages['quest_files_edit'](questid);
+        fhq.pages['quest_files_edit'](r["data"]["questid"]);
     }).fail(function(err) {
         console.error('Error:', err);
         $('#quest_add_file_error').show();

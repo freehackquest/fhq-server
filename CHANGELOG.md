@@ -5,6 +5,36 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.2.47] - 2021-12-31 (2021 Dec 31)
+
+## Added 
+ 
+- Implemeted delete files from quest
+- api: added method `quests_files.delete`
+- Moved stickers from https://github.com/freehackquest/freehackquest-stickers
+
+## Changed
+
+- Updated year for copyright
+- Redesign processing with public files
+- web-user: Main page
+- web-user: Hide menu to chat
+- web-user:  Redesign footer 'powered by' and removed 'connection state
+- api: renamed `quests_files_upload` to `quests_files.upload`
+
+### Removed
+
+- web-user: Removed page ctf-attack-defence
+- web-user: Moved information from web-user to README.md
+- web-user: ctf_wall (pull request #418), Moved code from CTF_Wall to web-user/src/app/pages/ctf-wall/ctf-wall.component.html
+- web-user: Removed about
+
+### Security
+
+- fix: upgrade multiple dependencies with Snyk
+- fix: upgrade core-js from 3.17.3 to 3.19.1
+- fix: upgrade @angular/localize from 12.2.5 to 12.2.13
+
 ## [v0.2.46] - 2021-11-28 (2021 Nov 28)
 
 ### Changed

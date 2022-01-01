@@ -25,14 +25,11 @@ bool EmployGames::init() {
     std::string sBasePath = pGlobalSettings->get("web_public_folder").getDirPathValue();
     std::string targetTestFile = sBasePath + "games/test"; // normalize path
 
-    FILE * pFile = fopen(targetTestFile.c_str(), "wb");
-    if (pFile == NULL) {
+    if (!WsjcppCore::createEmptyFile(targetTestFile)) {
         WsjcppLog::err(TAG, "Cannot access to write " + targetTestFile);
         return false;
     }
-    fclose(pFile);
-
-    if (remove(targetTestFile.c_str()) != 0) {
+    if (!WsjcppCore::removeFile(targetTestFile)) {
         WsjcppLog::err(TAG, "Could not delete file " + targetTestFile);
         return false;
     }

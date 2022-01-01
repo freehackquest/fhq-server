@@ -155,7 +155,7 @@ def run_tests():
     fhqtest.print_bold("Try upload file to quest...")
     # pprint(quest1_updated)
     quest_uuid = quest1_updated['uuid']
-    resp = fhqtest.admin_session.quests_files_upload({
+    resp = fhqtest.admin_session.quests_files.upload({
         "quest_uuid": quest_uuid,
         "file_base64": "SGVsbG8gd29ybGQh",
         "file_name": "test1.txt",

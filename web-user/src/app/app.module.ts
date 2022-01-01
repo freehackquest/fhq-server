@@ -55,7 +55,6 @@ import { KnowledgeBaseComponent } from './pages/knowledge-base/knowledge-base.co
 import { ModalSignInDialog } from './dialogs/modal-signin-dialog/modal-signin-dialog.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
-import { AboutComponent } from './pages/about/about.component';
 import { QuestProposalComponent } from './pages/quest-proposal/quest-proposal.component';
 import { LMarkdownEditorModule } from 'ngx-markdown-editor';
 import { AceModule } from 'ngx-ace-wrapper';
@@ -69,9 +68,8 @@ import { QuestComponent } from './pages/quest/quest.component';
 import { ModalDialogQuestFeedbackComponent } from './dialogs/modal-dialog-quest-feedback/modal-dialog-quest-feedback.component';
 import { BlockContactUsComponent } from './block-contact-us/block-contact-us.component';
 import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
-import { WelcomeComponent } from './pages/welcome/welcome.component';
+import { MainComponent } from './pages/main/main.component';
 import { NgxMdModule } from 'ngx-md';
-import { CtfAttackDefenceComponent } from './pages/ctf-attack-defence/ctf-attack-defence.component';
 import { SimplemdeModule } from 'ng2-simplemde';
 import { UserTokensComponent } from './pages/user-tokens/user-tokens.component';
 import { UserFavoritesUsefulLinksComponent } from './pages/user-favorites-useful-links/user-favorites-useful-links.component'
@@ -115,7 +113,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     KnowledgeBaseComponent,
     ModalSignInDialog,
     UserProfileComponent,
-    AboutComponent,
     QuestProposalComponent,
     ScoreboardComponent,
     QuestsComponent,
@@ -125,8 +122,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     ModalDialogQuestFeedbackComponent,
     BlockContactUsComponent,
     UserSkillsComponent,
-    WelcomeComponent,
-    CtfAttackDefenceComponent,
+    MainComponent,
     UserTokensComponent,
     UserFavoritesUsefulLinksComponent,
     UsefulLinkViewComponent,

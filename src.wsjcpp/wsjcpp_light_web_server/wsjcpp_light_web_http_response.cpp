@@ -220,7 +220,7 @@ void WsjcppLightWebHttpResponse::sendOptions(const std::string &sOptions) {
 
 // ----------------------------------------------------------------------
 
-void WsjcppLightWebHttpResponse::sendFile(const std::string &sFilePath) {
+void WsjcppLightWebHttpResponse::sendFile(const std::string &sFilePath, const std::string &sFileName) {
 
     // read data from file
     std::ifstream f(sFilePath, std::ios::binary | std::ios::ate);
@@ -228,13 +228,13 @@ void WsjcppLightWebHttpResponse::sendFile(const std::string &sFilePath) {
     f.seekg(0, std::ios::beg);
     char *pData = new char[nSize];
     // std::vector<char> buffer(size);
-    if (nSize > 10*1024*1024) {
+    if (nSize > 100*1024*1024) {
         this->payloadTooLarge();
         this->sendEmpty();
         delete[] pData;
         return;
     }
-
+    
     if (!f.read(pData, nSize)) {
         this->forbidden();
         this->sendEmpty();
@@ -242,20 +242,31 @@ void WsjcppLightWebHttpResponse::sendFile(const std::string &sFilePath) {
         return;
         // std::cout << sFilePath << "\n filesize: " << nSize << " bytes\n";
     }
-
-    this->sendBuffer(sFilePath, pData, nSize);
+    std::string sFileNameDisposition;
+    bool bDisposionFile = false;
+    if (sFileName != "") {
+        sFileNameDisposition = sFileName;
+        bDisposionFile = true;
+    } else {
+        sFileNameDisposition = WsjcppCore::extractFilename(sFilePath);
+    }
+    this->sendBuffer(sFileNameDisposition, pData, nSize, bDisposionFile);
+    
     delete[] pData;
 }
 
 // ----------------------------------------------------------------------
 
-void WsjcppLightWebHttpResponse::sendBuffer(const std::string &sFilePath, const char *pBuffer, const int nBufferSize) {
+void WsjcppLightWebHttpResponse::sendBuffer(const std::string &sFileNameDisposition, const char *pBuffer, const int nBufferSize, bool bDisposionFile) {
         
     // TODO cache: check file in cache 
-    m_sDataType = detectTypeOfFile(sFilePath);
+    m_sDataType = detectTypeOfFile(sFileNameDisposition);
     
-    std::string sResponse = prepareHeaders(nBufferSize)
-        + "\r\n";
+    std::string sResponse = prepareHeaders(nBufferSize);
+    if (bDisposionFile) {
+        sResponse += "Content-Disposition: attachment; filename=\"" + sFileNameDisposition + "\"\r\n";
+    }
+    sResponse += "\r\n";
 
     if (m_bClosed) {
         WsjcppLog::warn(TAG, "Already sended response");

@@ -119,23 +119,14 @@
       </a>
       </mat-list-item>
       <mat-divider></mat-divider>
-      <mat-list-item>
-        <a mat-button class="main-left-menu-item" routerLink="/" l10nTranslate> pageWelcome </a>
-      </mat-list-item>
-      <mat-list-item>
-        <a mat-button class="main-left-menu-item" routerLink="/about" l10nTranslate> pageAbout </a>
-      </mat-list-item>
-      <mat-list-item>
+      <!-- mat-list-item>
         <a mat-button class="main-left-menu-item" routerLink="/chat" l10nTranslate> chatPage </a>
-      </mat-list-item>
+      </mat-list-item -->
       <mat-list-item>
         <a mat-button class="main-left-menu-item" routerLink="/useful-links" l10nTranslate> usefulLinks </a>
       </mat-list-item>
       <mat-list-item>
         <a mat-button class="main-left-menu-item" routerLink="/games" l10nTranslate> gamesListPage </a>
-      </mat-list-item>
-      <mat-list-item>
-        <a mat-button class="main-left-menu-item" routerLink="/ctf-attack-defence" l10nTranslate> pageJuryAttackDefence </a>
       </mat-list-item>
       <mat-list-item>
         <a mat-button class="main-left-menu-item" routerLink="/knowledge-base" l10nTranslate> knowledgeBase </a>
@@ -146,11 +137,6 @@
       <!-- mat-list-item>
         <button mat-button class="main-left-menu-item" onclick="fhq.ui.playStopMusic()" routerLink="/server-api"> Play Sound </button>
       </mat-list-item -->
-      <mat-divider></mat-divider>
-      <mat-list-item>
-        <a mat-button class="main-left-menu-item" routerLink="/feedback" l10nTranslate>feedbackAdd</a>
-      </mat-list-item>
-
      </mat-list>
   </mat-drawer>
   <mat-drawer-content class="main-content">
@@ -169,13 +155,13 @@
     >
       <mat-icon>menu</mat-icon>
     </button>
-    <span *ngIf="!mobileQuery.matches" routerLink="/about">
+    <span class="main-logo" *ngIf="!mobileQuery.matches" routerLink="/">
       <img src="assets/img/fhq_2017_white.png" width="30" height="30">
       Free Hack Quest
     </span>
     <span class="main-navbar-spacer"></span>
 
-    <span *ngIf="mobileQuery.matches" routerLink="/about">
+    <span class="main-logo" *ngIf="mobileQuery.matches" routerLink="/">
       <img src="assets/img/fhq_2017_white.png" width="30" height="30">
       FHQ
     </span>
@@ -243,8 +229,7 @@
               <div style="display: inline-block;" l10nTranslate>feelFreeToContactUsByEmail</div>
               <a href="mailto:freehackquest@gmail.com">freehackquest@gmail.com</a>
             </div>
-            <p>{{ serverAppName }}: {{ serverAppVersion }} ( lib {{ libVersion }} )
-            <p>Connection State: {{ _fhq.connectionState }}</p>
+           
         </div>
         <!-- Grid column -->
 
@@ -318,7 +303,8 @@
 
     <!-- Copyright -->
     <div class="footer-copyright text-center py-3">
-        © 2011-2021 Copyright:
+      Powered by <a href="https://github.com/freehackquest/fhq-server">{{ serverAppName }}</a> ({{ serverAppVersion }})
+        © 2011-2022 Copyrights 
         <a href="https://sea-kg.com/">sea-kg</a>
     </div>
     <!-- Copyright -->
