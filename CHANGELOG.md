@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Added 
  
 - Implemeted delete files from quest
+- api: added method `quests_files.delete`
 - Moved stickers from https://github.com/freehackquest/freehackquest-stickers
 
 ## Changed
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - web-user: Main page
 - web-user: Hide menu to chat
 - web-user:  Redesign footer 'powered by' and removed 'connection state
+- api: renamed `quests_files_upload` to `quests_files.upload`
 
 ### Removed
 

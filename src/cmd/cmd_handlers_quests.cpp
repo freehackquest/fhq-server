@@ -1945,7 +1945,7 @@ void CmdHandlerQuestsProposalList::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerQuestsFilesUpload)
 
 CmdHandlerQuestsFilesUpload::CmdHandlerQuestsFilesUpload()
-    : CmdHandlerBase("quests_files_upload", "Update the quest") {
+    : CmdHandlerBase("quests_files.upload", "Update the quest") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);
@@ -2057,7 +2057,7 @@ void CmdHandlerQuestsFilesUpload::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerQuestsFilesDelete)
 
 CmdHandlerQuestsFilesDelete::CmdHandlerQuestsFilesDelete()
-    : CmdHandlerBase("quests_files_delete", "Delete file from quest") {
+    : CmdHandlerBase("quests_files.delete", "Delete file from quest") {
 
     setAccessUnauthorized(false);
     setAccessUser(false);

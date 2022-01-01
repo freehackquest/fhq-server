@@ -578,13 +578,13 @@ fhq.ws.quest_statistics = function(data){
 
 fhq.ws.quests_files_upload = function(data){
     data = data || {};
-    data.cmd = 'quests_files_upload';
+    data.cmd = 'quests_files.upload';
     return fhq.ws.send(data);
 }
 
 fhq.ws.quests_files_delete = function(data){
     data = data || {};
-    data.cmd = 'quests_files_delete';
+    data.cmd = 'quests_files.delete';
     return fhq.ws.send(data);
 }
 
