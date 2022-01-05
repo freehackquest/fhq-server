@@ -49,6 +49,7 @@ bool HttpHandlerWebPublicFolder::handle(const std::string &sWorkerId, WsjcppLigh
         // resp.cacheSec(0).notFound().sendText("<h1>" + sMessageError + "</h1>");
         // return true;
         sFilename = model.getFileName();
+        pEmployFiles->updateDownloadsCounter(model);
     }
 
     std::string sFilePath = m_sWebPublicFolder + sRequestPath; // TODO check /../ in path

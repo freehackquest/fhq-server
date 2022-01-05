@@ -4,6 +4,7 @@
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <employ_notify.h>
+#include <employ_files.h>
 #include <validators.h>
 #include <wsjcpp_hashes.h>
 
@@ -160,6 +161,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
     QSqlDatabase db = *(pDatabase->database());
 
     EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+    EmployFiles *pFiles = findWsjcppEmploy<EmployFiles>();
 
     QString sBaseGamesURL = QString::fromStdString(pGlobalSettings->get("server_folder_games_url").getStringValue());
 
@@ -265,23 +267,11 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
             // files
             {
                 nlohmann::json jsonFiles = nlohmann::json::array();
-                QSqlQuery query_files(db);
-                query_files.prepare("SELECT * FROM quests_files WHERE questid = :questid");
-                query_files.bindValue(":questid", nQuestID);
-                if (!query_files.exec()) {
-                    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query_files.lastError().text().toStdString()));
-                    return;
-                }
-                while (query_files.next()) {
-                    QSqlRecord record_game = query_files.record();
-                    nlohmann::json jsonFileInfo;
-                    jsonFileInfo["id"] = record_game.value("id").toInt();
-                    jsonFileInfo["uuid"] = record_game.value("uuid").toInt();
-                    jsonFileInfo["filename"] = record_game.value("filename").toString().toStdString();
-                    jsonFileInfo["size"] = record_game.value("size").toString().toStdString();
-                    jsonFileInfo["dt"] = record_game.value("dt").toString().toStdString();
-                    // hardcoded subpath 'public/' for public files getting by web server
-                    std::string sFilepath = "public/" + record_game.value("filepath").toString().toStdString();
+                std::vector<ModelQuestFile *> vFiles = pFiles->findFilesByQuestId(nQuestID);
+                for (int i = 0; i < vFiles.size(); i++) {
+                    nlohmann::json jsonFileInfo = vFiles[i]->toJson();
+                    std::string sFilepath = jsonFileInfo["filepath"];
+                    sFilepath = "public/" + sFilepath;
                     jsonFileInfo["filepath"] = WsjcppCore::doNormalizePath(sFilepath);
                     jsonFiles.push_back(jsonFileInfo);
                 }
