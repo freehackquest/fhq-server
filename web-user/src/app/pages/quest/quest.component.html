@@ -4,9 +4,6 @@
       <a routerLink="/quests" l10nTranslate>quests</a>
     </li>
     <li class="breadcrumb-item">
-      <a routerLink="/game/{{ game.uuid }}">{{ game.title }}</a>
-    </li>
-    <li class="breadcrumb-item">
       <a routerLink="/quests/{{ quest.subject }}">{{ quest.subject }}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
@@ -29,7 +26,7 @@
       <strong l10nTranslate>questName</strong>: <label> {{ quest.name }}</label>
     </div>
     <div class="col">
-      <strong l10nTranslate>questSubject</strong>: <label> {{ quest.subject }}</label>
+      <strong l10nTranslate>questSubject</strong>: <a routerLink="/game/{{ game.uuid }}">{{ game.title }}</a> / <label> {{ quest.subject }}</label>
     </div>
     <div class="col">
       <strong l10nTranslate>questScore</strong>: <label> +{{ quest.score }}</label>
