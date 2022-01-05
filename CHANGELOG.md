@@ -5,15 +5,31 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.2.47] - 2022-??-?? (2022 ??? ??)
+
+### Added 
+
+### Changed
+
+### Removed
+
+### Fixed 
+
+- [server] Fixed Content-Disposition (on download files)
+
+### Security
+
+- [Snyk] fix: upgrade core-js from 3.19.2 to 3.19.3
+
 ## [v0.2.47] - 2021-12-31 (2021 Dec 31)
 
-## Added 
+### Added 
  
 - Implemeted delete files from quest
 - api: added method `quests_files.delete`
 - Moved stickers from https://github.com/freehackquest/freehackquest-stickers
 
-## Changed
+### Changed
 
 - Updated year for copyright
 - Redesign processing with public files
