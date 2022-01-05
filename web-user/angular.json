@@ -29,14 +29,26 @@
               "node_modules/flag-icon-css/css/flag-icon.min.css",
               "src/styles.scss",
               "node_modules/font-awesome/css/font-awesome.css",
-              "node_modules/highlight.js/styles/dark.css"
+              "node_modules/highlight.js/styles/dark.css",
+              "node_modules/prismjs/themes/prism-okaidia.css",
+              "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css"
+
             ],
             "scripts": [
               "node_modules/freehackquest-libclient-web-js/dist/freehackquest-libclient-web-js.js",
               "node_modules/jquery/dist/jquery.slim.min.js",
               "node_modules/popper.js/dist/umd/popper.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.js",
-              "node_modules/marked/lib/marked.js"
+              "node_modules/marked/lib/marked.js",
+              "node_modules/marked/lib/marked.js",
+              "node_modules/prismjs/prism.js",
+              "node_modules/prismjs/components/prism-csharp.min.js",
+              "node_modules/prismjs/components/prism-css.min.js",
+              "node_modules/prismjs/components/prism-json.min.js",
+              "node_modules/prismjs/components/prism-bash.min.js",
+              "node_modules/prismjs/components/prism-batch.min.js",
+              "node_modules/prismjs/components/prism-python.min.js",
+              "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.js"
             ],
             "vendorChunk": true,
             "extractLicenses": false,
