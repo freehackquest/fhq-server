@@ -165,5 +165,7 @@
     "feelFreeToContactUsByEmail": "Sie können uns gerne per E-Mail kontaktieren",
     "administration-panel": "Administrationsmenü",
     "haveNotYetAccount": "Sie haben noch keinen Account?",
+    "downloads_counter": "Download-Zähler",
+    "file_hash_md5": "Datei-Hash (md5)",
     "": ""
 }
