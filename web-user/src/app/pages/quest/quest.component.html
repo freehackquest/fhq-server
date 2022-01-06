@@ -66,15 +66,16 @@
       <tr>
         <th l10nTranslate>filename</th>
         <th l10nTranslate>filesize</th>
-        <th l10nTranslate>file_hash_md5</th>
         <th l10nTranslate>downloads_counter</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let qf of questFiles">
-        <td><a target="_blank" href="{{ qf.filepath }}" class="btn btn-link">{{ qf.filename }}</a></td>
+        <td>
+          <a target="_blank" href="{{ qf.filepath }}" class="btn btn-link">{{ qf.filename }}</a><br>
+          <small>(md5: {{ qf.md5 }})</small>
+        </td>
         <td>{{ qf.human_size }}</td>
-        <td>{{ qf.md5 }}</td>
         <td>{{ qf.downloads_counter }}</td>
       </tr>
     </tbody>
