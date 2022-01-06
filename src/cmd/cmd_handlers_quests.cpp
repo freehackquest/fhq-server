@@ -625,7 +625,7 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
     query.bindValue(":text", QString::fromStdString(sText));
     query.bindValue(":answer", QString::fromStdString(sAnswer));
     sAnswer = QString::fromStdString(sAnswer).toUpper().toStdString();
-    std::string sAnswerUpperMd5 = WsjcppHashes::md5_calc_hex(sAnswer);
+    std::string sAnswerUpperMd5 = WsjcppHashes::getMd5ByString(sAnswer);
     query.bindValue(":answer_upper_md5", QString::fromStdString(sAnswerUpperMd5));
     query.bindValue(":answer_format", QString::fromStdString(sAnswerFormat));
     query.bindValue(":score", nScore);

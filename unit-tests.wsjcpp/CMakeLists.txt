@@ -24,7 +24,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_levenshtein/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_levenshtein/wsjcpp_levenshtein.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_levenshtein/wsjcpp_levenshtein.h")
 
-# wsjcpp-hashes:v0.0.1
+# wsjcpp-hashes:v0.1.4
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_hashes/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_hashes/md5.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_hashes/md5.h")

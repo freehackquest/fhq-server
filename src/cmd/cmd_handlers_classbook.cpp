@@ -80,7 +80,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest) {
     }
 
     //Set md5_content hash
-    std::string sContentMd5 = WsjcppHashes::md5_calc_hex(sContent);
+    std::string sContentMd5 = WsjcppHashes::getMd5ByString(sContent);
 
     //Find parentuuid from database
     QString parentuuid = "00000000-0000-0000-0000-000000000000";
@@ -945,7 +945,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest) {
     //UPDATE content for article
     if (jsonRequest.find("content") != jsonRequest.end()) {
         std::string sContent = jsonRequest["content"];
-        std::string sContentMd5_ = WsjcppHashes::md5_calc_hex(sContent);
+        std::string sContentMd5_ = WsjcppHashes::getMd5ByString(sContent);
         query.prepare("UPDATE classbook SET content = :content, md5_content = :md5_content WHERE id = :classbookid");
         query.bindValue(":classbookid", nClassbookID);
         query.bindValue(":content", QString::fromStdString(sContent));
@@ -1065,7 +1065,7 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest) {
     }
 
     //Set md5_content hash
-    std::string sContentMd5_ = WsjcppHashes::md5_calc_hex(sContent);
+    std::string sContentMd5_ = WsjcppHashes::getMd5ByString(sContent);
 
     //generate uuid
     std::string sUuid = WsjcppCore::createUuid();
@@ -1285,7 +1285,7 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest)
     }
 
     //Set md5_content hash
-    std::string sContentMd5_ = WsjcppHashes::md5_calc_hex(sContent);
+    std::string sContentMd5_ = WsjcppHashes::getMd5ByString(sContent);
     QString md5_content = QString::fromStdString(sContentMd5_);
 
     query.prepare("UPDATE classbook_localization SET name = :name, content = :content, md5_content = :md5_content, updated = NOW() "
@@ -1392,7 +1392,7 @@ void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest) {
     QString content_before = record.value("content").toString();
 
     //Set md5_content hash
-    std::string sContentMd5_ = WsjcppHashes::md5_calc_hex(sContent);
+    std::string sContentMd5_ = WsjcppHashes::getMd5ByString(sContent);
     QString md5_content = QString::fromStdString(sContentMd5_);
 
     //generate uuid
@@ -1804,7 +1804,7 @@ void CmdClassbookProposalApproveHandler::handle(ModelRequest *pRequest) {
     QSqlRecord propRecord = query.record();
     int nClassbookID = propRecord.value("classbookid").toInt();
     std::string sContent = propRecord.value("content").toString().toStdString();
-    std::string sContentMd5_ = WsjcppHashes::md5_calc_hex(sContent);
+    std::string sContentMd5_ = WsjcppHashes::getMd5ByString(sContent);
 
     // TODO: add lang support
 
@@ -1858,7 +1858,7 @@ void CmdClassbookProposalUpdateHandler::handle(ModelRequest *pRequest) {
     if (jsonRequest.find("content") != jsonRequest.end()) {
         sContent = jsonRequest.at("content").get<std::string>();
     }
-    std::string sContentMd5_ = WsjcppHashes::md5_calc_hex(sContent);
+    std::string sContentMd5_ = WsjcppHashes::getMd5ByString(sContent);
 
     QSqlDatabase db = *(pDatabase->database());
     QSqlQuery query(db);
