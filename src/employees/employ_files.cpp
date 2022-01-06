@@ -1,6 +1,7 @@
 #include <employ_files.h>
 #include <employ_database.h>
 #include <employ_notify.h>
+#include <wsjcpp_hashes.h>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -72,8 +73,6 @@ bool EmployFiles::init() {
         sFilePath = WsjcppCore::doNormalizePath("/" + sFilePath);
         pModelQuestFile->setFilePath(sFilePath);
         pModelQuestFile->setMd5(record.value("md5").toString().toStdString());
-        // TODO calculate md5 if is empty and update in database
-
         // TODO must be cached all fields
 
         if (m_mapCacheQuestFilesByUuid.count(sUuid)) {
@@ -90,9 +89,29 @@ bool EmployFiles::init() {
         m_mapCacheQuestFilesByFilePath.insert(std::pair<std::string, ModelQuestFile*>(sFilePath, pModelQuestFile));
 
         // check filepath
-        if (!WsjcppCore::fileExists(sPublicFolder + "/" + sFilePath)) {
-            WsjcppLog::err(TAG, "Not found file by path: " + sFilePath + "\r\n Please try fix it and try again start server");
+        std::string sFullPath = sPublicFolder + "/" + sFilePath;
+        if (!WsjcppCore::fileExists(sFullPath)) {
+            WsjcppLog::err(TAG, "Not found file by path: " + sFullPath + "\r\n Please try fix it and try again start server");
             return false;
+        }
+
+        // fix md5 for file
+        if (pModelQuestFile->getMd5() == "") {
+            std::string sHash = WsjcppHashes::getMd5ByFile(sFullPath);
+            WsjcppLog::info(TAG, "Hash: " + sHash);
+            pModelQuestFile->setMd5(sHash);
+
+            EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+            QSqlDatabase db = *(pDatabase->database());
+            {
+                QSqlQuery query(db);
+                query.prepare("UPDATE quests_files SET md5 = :md5 WHERE uuid = :uuid");
+                query.bindValue(":md5", QString::fromStdString(sHash));
+                query.bindValue(":uuid", QString::fromStdString(pModelQuestFile->getUuid()));
+                if (!query.exec()) {
+                    WsjcppLog::err(TAG, query.lastError().text().toStdString());
+                }
+            }
         }
 
         m_vCacheQuestFiles.push_back(pModelQuestFile);
