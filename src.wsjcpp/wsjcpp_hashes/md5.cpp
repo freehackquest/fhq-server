@@ -334,20 +334,22 @@ MD5& MD5::finalize()
 // return hex representation of digest as string
 std::string MD5::hexdigest() const
 {
-  if (!finalized)
+  if (!finalized) {
     return "";
- 
+  }
+  const std::string sHex = "0123456789abcdef";
   char buf[33];
-  for (int i=0; i<16; i++)
-    sprintf(buf+i*2, "%02x", digest[i]);
+  for (int i = 0; i < 16; i++) {
+    buf[i*2] = sHex[digest[i] >> 4 & 0x0F];
+    buf[i*2+1] = sHex[digest[i] & 0x0F];
+  }
   buf[32]=0;
- 
   return std::string(buf);
 }
  
 //////////////////////////////
  
-std::ostream& operator<<(std::ostream& out, MD5 md5)
+std::ostream& operator<<(std::ostream& out, const MD5 &md5)
 {
   return out << md5.hexdigest();
 }

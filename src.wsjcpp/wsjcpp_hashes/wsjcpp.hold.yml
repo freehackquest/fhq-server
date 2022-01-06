@@ -3,14 +3,13 @@ cmake_cxx_standard: 11
 cmake_minimum_required: 3.0
 
 name: wsjcpp-hashes
-version: v0.0.1
+version: v0.1.4
 description: Small Collection of hashes
 issues: https://github.com/wsjcpp/wsjcpp-hashes/issues
 
 repositories:
   - type: main
     url: "https://github.com/wsjcpp/wsjcpp-hashes"
-
 keywords:
   - c++
   - wsjcpp
@@ -28,43 +27,48 @@ authors:
   # wrapper
   - name: Evgenii Sopov
     email: mrseakg@gmail.com
-
 dependencies:
   - name: "wsjcpp-core"
-    version: "v0.0.4"
+    version: "v0.2.1"
     url: "https://github.com/wsjcpp/wsjcpp-core:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_core"
-
 distribution:
   - source-file: src/md5.cpp
     target-file: md5.cpp
-    sha1: "b9a2f18170280e20d001f3c8a41cb52f4c2428e8"
     type: "source-code"
+    sha1: "7464f9b0845cd15ef7fbc7b906c93823dd731571"
   - source-file: src/md5.h
     target-file: md5.h
-    sha1: "6792979b9334d1853d3562fa17ca1db7de7d4ee3"
     type: "source-code"
+    sha1: "6792979b9334d1853d3562fa17ca1db7de7d4ee3"
   - source-file: src/smallsha1.h
     target-file: smallsha1.h
-    sha1: "44d204561dc64fdc0a603b02872f10cb6387e7c6"
     type: "source-code"
+    sha1: "44d204561dc64fdc0a603b02872f10cb6387e7c6"
   - source-file: src/smallsha1.cpp
     target-file: smallsha1.cpp
-    sha1: "4ce3e44851139bdd2acd6c6e9a440a9c75022322"
     type: "source-code"
+    sha1: "86e0e4e57eec68be433458d2bc208b1cce4858c3"
   - source-file: src/wsjcpp_hashes.cpp
     target-file: wsjcpp_hashes.cpp
-    sha1: "fbbd17bf3a73110c502676ee09e657711ce32bc1"
     type: "source-code"
+    sha1: "1ea15831ca3f838ea19d6680e2d5cdb3c86926f4"
   - source-file: src/wsjcpp_hashes.h
     target-file: wsjcpp_hashes.h
-    sha1: "35197d7d82ffb756b3af11021ee94c4dc68ddd0a"
     type: "source-code"
-
+    sha1: "a0bd2bc1cd352ad3283943e62362bcd510ffd8a2"
 unit-tests:
   cases:
     - name: "Md5"
       description: "check md5"
     - name: "Sha1"
       description: "check sha1"
+    - name: "GetMd5File"
+      description: ""
+    - name: "GetSha1File"
+      description: ""
+    - name: "GetSha1String"
+      description: ""
+    - name: "GetMd5String"
+      description: ""
