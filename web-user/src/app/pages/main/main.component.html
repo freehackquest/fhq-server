@@ -13,19 +13,50 @@
 </mat-card>
 <br/>
 
-<mat-card class="welcome-card">
-  <mat-card-header>
-    <div mat-card-avatar class="welcome-header-image"></div>
-    Statistics
-  </mat-card-header>
+<mat-card class="main-card-number">
   <mat-card-content>
-    <br><br>
-    <p><label>Quests:</label> {{ statisticsCountQuests }}</p>
-		<p><label>All attempts:</label> {{ statisticsAllAttempts }} </p>
-		<p><label>Already solved:</label> {{ statisticsAlreadySolved }} </p>
-    <p><label>Users online:</label> {{ statisticsUsersOnline }} </p>
+    <div class="main-card-number-table">
+      <div class="main-card-number-table-cell">
+        <small>Quests</small>
+        {{ statisticsCountQuests }}
+      </div>
+    </div>
   </mat-card-content>
 </mat-card>
+
+<mat-card class="main-card-number">
+  <mat-card-content>
+    <div class="main-card-number-table">
+      <div class="main-card-number-table-cell">
+        <small>Attempts</small>
+        {{ statisticsAllAttempts }}
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="main-card-number">
+  <mat-card-content>
+    <div class="main-card-number-table">
+      <div class="main-card-number-table-cell">
+        <small>Solved</small>
+        {{ statisticsAlreadySolved }}
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="main-card-number">
+  <mat-card-content>
+    <div class="main-card-number-table">
+      <div class="main-card-number-table-cell">
+        <small>Online</small><br>
+        {{ statisticsUsersOnline }}
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
 <br/>
 
 <mat-card class="welcome-card">
