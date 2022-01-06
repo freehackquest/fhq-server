@@ -56,6 +56,7 @@
     display: inline-block;
     vertical-align: top;
     line-height: 20px;
+    padding: 0px;
 }
 
 .main-card-number .mat-card-content {
