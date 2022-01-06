@@ -3,6 +3,7 @@
 #include <iostream>
 #include <employ_database.h>
 #include <employ_server_info.h>
+#include <employ_files.h>
 #include <QtCore>
 
 // ---------------------------------------------------------------------
@@ -24,6 +25,7 @@ CmdHandlerPublicInfo::CmdHandlerPublicInfo()
 void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     EmployServerInfo *pServerInfo = findWsjcppEmploy<EmployServerInfo>();
+    EmployFiles *pFiles = findWsjcppEmploy<EmployFiles>();
 
     nlohmann::json jsonResponse;
 
@@ -95,6 +97,11 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
     jsonResponse["quests"] = jsonQuests;
     jsonResponse["winners"] = jsonWinners;
     jsonResponse["cities"] = jsonCities;
+    jsonResponse["files_count"] = pFiles->getCountOfFiles();
+    jsonResponse["files_size"] = pFiles->getSizeOfFiles();
+    jsonResponse["files_human_size"] = WsjcppCore::getHumanSizeBytes(pFiles->getSizeOfFiles());
+    jsonResponse["files_downloads"] = pFiles->getAllDownloadsCounter();
+
     jsonResponse["developers"] = pServerInfo->developers();
     jsonResponse["connectedusers"] = pRequest->server()->getConnectedUsers();
     pRequest->sendMessageSuccess(cmd(), jsonResponse);

@@ -14,6 +14,7 @@ class EmployFiles : public WsjcppEmployBase {
 
         int getCountOfFiles();
         int getSizeOfFiles();
+        int getAllDownloadsCounter();
 
         bool findQuestFile(int nLocalId, ModelQuestFile &m);
         bool findQuestFileByFilePath(const std::string &sFilePath, ModelQuestFile &m);
@@ -21,8 +22,14 @@ class EmployFiles : public WsjcppEmployBase {
         
         std::vector<ModelQuestFile*> findFilesByQuestId(int nQuestId);
         void updateDownloadsCounter(const ModelQuestFile &m);
+        
+        bool addFile(ModelQuestFile &m, std::string &sError);
+        bool removeFileById(int nFileLocalId, std::string &sError);
 
     private:
+        bool registerFile(const ModelQuestFile &m, std::string &sError);
+        bool unregisterFile(const ModelQuestFile &m, std::string &sError);
+
         std::string TAG;
         std::mutex m_mtxFiles;
         std::vector<ModelQuestFile*> m_vCacheQuestFiles;
