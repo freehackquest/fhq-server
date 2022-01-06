@@ -17,6 +17,10 @@ export class MainComponent implements OnInit {
   statisticsCountQuests: number = 0;
   statisticsAllAttempts: number = 0;
   statisticsAlreadySolved: number = 0;
+  statisticsFilesCount: number = 0;
+  statisticsFilesSize: number = 0;
+  statisticsFilesHumanSize: number = 0;
+  statisticsFilesDownloads: number = 0;
   winners: Array<any> = [];
   cities: Array<any> = [];
 
@@ -64,6 +68,11 @@ export class MainComponent implements OnInit {
 		this.statisticsCountQuests = r.quests.count;
 		this.statisticsAllAttempts = r.quests.attempts;
     this.statisticsAlreadySolved = r.quests.solved;
+    this.statisticsFilesCount = r.files_count;
+    this.statisticsFilesSize = r.files_size;
+    this.statisticsFilesHumanSize = r.files_human_size;
+    this.statisticsFilesDownloads = r.files_downloads;
+
     this.winners = []
     r.winners.forEach((w: any) => {
       this.winners.push(w);

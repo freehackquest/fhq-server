@@ -1952,6 +1952,7 @@ CmdHandlerQuestsFilesUpload::CmdHandlerQuestsFilesUpload()
 
 void CmdHandlerQuestsFilesUpload::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+    EmployFiles *pFiles = findWsjcppEmploy<EmployFiles>();
     nlohmann::json jsonResponse;
     QSqlDatabase db = *(pDatabase->database());
 
@@ -2015,24 +2016,20 @@ void CmdHandlerQuestsFilesUpload::handle(ModelRequest *pRequest) {
     FILE * pFile = fopen(sFullFilePath.c_str(), "wb");
     fwrite (baFile.constData(), sizeof(char), nFileSize, pFile);
     fclose (pFile);
-    
-    // insert to user tries
-    {
-        QSqlQuery query(db);
-        query.prepare("INSERT INTO quests_files(uuid, questid, filename, size, dt, filepath) "
-                      "VALUES(:uuid, :questid, :filename, :size, NOW(), :filepath)");
-        
-        query.bindValue(":uuid", QString::fromStdString(sFileUuid));
-        query.bindValue(":questid", nQuestID);
-        query.bindValue(":filename", QString::fromStdString(sFileName));
-        query.bindValue(":size", nFileSize);
-        query.bindValue(":filepath", QString::fromStdString(sRelativeFilePathByPublic));
 
-        if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
-            return;
-        }
-        
+    ModelQuestFile file;
+    file.setUuid(sFileUuid);
+    file.setQuestLocalId(nQuestID);
+    file.setFileName(sFileName);
+    file.setFileSize(nFileSize);
+    file.setFilePath(sRelativeFilePathByPublic);
+    std::string sHash = WsjcppHashes::getMd5ByFile(sFullFilePath);
+    file.setMd5(sHash);
+
+    std::string sError;
+    if (!pFiles->addFile(file, sError)) {
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, sError));
+        return;
     }
 
     EmployNotify *pEmployNotify = findWsjcppEmploy<EmployNotify>();
@@ -2063,6 +2060,7 @@ CmdHandlerQuestsFilesDelete::CmdHandlerQuestsFilesDelete()
 
 void CmdHandlerQuestsFilesDelete::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+    EmployFiles *pFiles = findWsjcppEmploy<EmployFiles>();
     nlohmann::json jsonResponse;
     QSqlDatabase db = *(pDatabase->database());
 
@@ -2128,15 +2126,10 @@ void CmdHandlerQuestsFilesDelete::handle(ModelRequest *pRequest) {
         return;
     }
 
-    {
-        QSqlQuery query(db);
-        query.prepare("DELETE FROM quests_files WHERE id = :fileid AND questid = :questid");
-        query.bindValue(":fileid", nFileId);
-        query.bindValue(":questid", nQuestID);
-        if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
-            return;
-        }
+    std::string sError;
+    if (!pFiles->removeFileById(nFileId, sError)) {
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, sError));
+        return;
     }
     
     EmployNotify *pEmployNotify = findWsjcppEmploy<EmployNotify>();
