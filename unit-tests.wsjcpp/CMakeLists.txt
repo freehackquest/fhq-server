@@ -100,6 +100,11 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_arguments/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.h")
 
+# wsjcpp-yaml:v0.1.6
+list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_yaml/")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.h")
+
 # fhq-server:v0.2.48
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 list (APPEND WSJCPP_SOURCES "../src/validators/validators.h")

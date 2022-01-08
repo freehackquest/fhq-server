@@ -95,6 +95,11 @@ list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_arguments/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.cpp")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.h")
 
+# wsjcpp-yaml:v0.1.6
+list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_yaml/")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.cpp")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.h")
+
 # required-libraries
 list (APPEND WSJCPP_LIBRARIES "-lpthread")
 list (APPEND WSJCPP_LIBRARIES "-lpthread")
