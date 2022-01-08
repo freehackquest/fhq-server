@@ -85,11 +85,6 @@ list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_storages/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_storages/wsjcpp_storages.cpp")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_storages/wsjcpp_storages.h")
 
-# wsjcpp-parse-conf:v0.1.0
-list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_parse_conf/")
-list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_parse_conf/wsjcpp_parse_conf.cpp")
-list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_parse_conf/wsjcpp_parse_conf.h")
-
 # wsjcpp-arguments:v0.2.1
 list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_arguments/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.cpp")
