@@ -69,8 +69,7 @@ bool ArgumentProcessorMain::applyParameterArgument(
     const std::string &sValue
 ) {
     if (sArgumentName == "--workdir" || sArgumentName == "-wd") {
-        setWorkDir(sValue);
-        return true;
+        return setWorkDir(sValue);
     }
     return false;
 }
@@ -87,8 +86,8 @@ bool ArgumentProcessorMain::setWorkDir(const std::string &sWorkDir_) {
 
     std::cout << "\n Workdir: " << sWorkDir << " \n\n";
     if (!WsjcppCore::dirExists(sWorkDir)) {
-        WsjcppLog::err(TAG, "Directory '" + sWorkDir + "' did'not exists");
-        return -1;
+        WsjcppLog::err(TAG, "Directory '" + sWorkDir + "' did not exists");
+        return false;
     }
 
     // configure employ
@@ -100,6 +99,10 @@ bool ArgumentProcessorMain::setWorkDir(const std::string &sWorkDir_) {
     std::string sDirLogs = WsjcppCore::doNormalizePath(sWorkDir + "/logs");
     if (!WsjcppCore::dirExists(sDirLogs)) {
         WsjcppCore::makeDir(sDirLogs);
+        if (!WsjcppCore::dirExists(sDirLogs)) {
+            WsjcppLog::err(TAG, "Could not create directory " + sDirLogs);
+            return false;
+        }
     }
     pGlobalSettings->update("log_dir", sDirLogs);
     WsjcppLog::setLogDirectory(sDirLogs);

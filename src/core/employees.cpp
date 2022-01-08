@@ -823,6 +823,10 @@ bool EmployGlobalSettings::findFileConfig() {
     if (m_sWorkDir != "") {
         // TODO convert to fullpath
         vSearchConfigFile.push_back(m_sWorkDir);
+        if (!WsjcppCore::dirExists(m_sWorkDir)) {
+            WsjcppLog::err(TAG, "Not found directory " + m_sWorkDir);
+            return false;
+        }
     } else {
         // TODO convert to fullpath
         vSearchConfigFile.push_back("/etc/fhq-server/");
