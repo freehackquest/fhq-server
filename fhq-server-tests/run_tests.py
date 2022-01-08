@@ -15,7 +15,6 @@ import libtestknowledgebase
 TESTS_PASSED = False
 TESTS = [
     libtestwebserver,
-    libtestusers,
     libtestquests,
     libtestknowledgebase,
     libteststats

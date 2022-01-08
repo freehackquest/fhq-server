@@ -26,6 +26,37 @@ def pytest_configure():
     pytest.test_web_server = "http://" + pytest.test_host + ":7080/"
     pytest.game1_uuid = "00000000-0000-0000-1000-000000000001"
     pytest.game2_uuid = "00000000-0000-0000-1000-000000000002"
+    pytest.user1_uuid = "00000000-0000-0000-4001-000000000001"
+    pytest.user2_uuid = "00000000-0000-0000-4001-000000000002"
+    pytest.user3_uuid = "00000000-0000-0000-4001-000000000003"
+    pytest.user1_data = {
+        "uuid": pytest.user1_uuid,
+        "email": "user1",
+        "nick": "nick_user1",
+        "password": "user1",
+        "role": "user"
+    }
+    pytest.user2_data = {
+        "uuid": pytest.user2_uuid,
+        "email": "user2",
+        "nick": "nick_user2",
+        "password": "user2",
+        "role": "user"
+    }
+    pytest.user3_data = {
+        "uuid": pytest.user3_uuid,
+        "email": "user3",
+        "nick": "nick_user3",
+        "password": "user3",
+        "role": "user"
+    }
+    pytest.user3_data_again = {
+        "uuid": pytest.user3_uuid,
+        "email": "user3",
+        "nick": "nick_user3_again",
+        "password": "user3",
+        "role": "user"
+    }
 
 @pytest.fixture(scope="session")
 def local_tmp_dir():
@@ -73,9 +104,34 @@ def admin_password():
     return pytest.admin_password
 
 @pytest.fixture(scope="session")
+def user1_data():
+    """Return user1_data"""
+    return pytest.user1_data
+
+@pytest.fixture(scope="session")
+def user2_data():
+    """Return user2_data"""
+    return pytest.user2_data
+
+@pytest.fixture(scope="session")
+def user3_data():
+    """Return user3_data"""
+    return pytest.user3_data
+
+@pytest.fixture(scope="session")
+def user3_data_again():
+    """Return user3_data"""
+    return pytest.user3_data_again
+
+@pytest.fixture(scope="session")
 def web_server_host():
     """Return web server host"""
     return pytest.test_web_server
+
+@pytest.fixture(scope="session")
+def test_server():
+    """Return web server host"""
+    return pytest.test_server
 
 @pytest.fixture(scope="session")
 def game1_uuid():
