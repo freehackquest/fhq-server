@@ -9,17 +9,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added 
 
+- [server] Installed wsjcpp-yaml:v0.1.6
+- [server] Implemented downloads counter for files
+- [web-user] Installed ngx-mardown
+- [server] Added new columns (md5, downloads_counter) to quests_files
+
 ### Changed
 
+- [server] Redesign parsing config file from 'conf.d/fhq-server.conf' to 'config.yml'
+- [server] Redesign addFile and removeFile to employ
+- [web-user] Redesing statistitics on main page
+- [web-user] Redesign bamp on quest page
+
 ### Removed
+
+- [server] Removed wsjcpp-parse-conf:v0.1.0
+- Removed Travis CI
 
 ### Fixed 
 
 - [server] Fixed Content-Disposition (on download files)
+- [server] Fixed wd - if work directory not found then stop server
+- [server] Fixed calculate md5 files on start
 
 ### Security
 
 - [Snyk] fix: upgrade core-js from 3.19.2 to 3.19.3
+- Fixed alerts lgtm
+- Upgraded wsjcpp_hashes to v0.2.1
 
 ## [v0.2.47] - 2021-12-31 (2021 Dec 31)
 
