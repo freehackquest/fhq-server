@@ -836,12 +836,12 @@ fhq.updateQuest = function(event, close_after) {
     params["state"] = $("#edit_quest_state").val();
     params["description_state"] = $("#edit_quest_description_state").val();
 
-    console.log(params["questid"])
+    console.log(params["questid"]);
 
     fhq.ws.quest_update(params).done(function(r){
         fhq.hideLoader();
         // fhq.loadQuest(r.questid);
-        console.log(params["questid"])
+        console.log(params["questid"]);
         console.log("close_after", close_after);
         if (close_after) {
             fhq.pages['quests']();

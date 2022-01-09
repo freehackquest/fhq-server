@@ -4,9 +4,6 @@
       <a routerLink="/quests" l10nTranslate>quests</a>
     </li>
     <li class="breadcrumb-item">
-      <a routerLink="/game/{{ game.uuid }}">{{ game.title }}</a>
-    </li>
-    <li class="breadcrumb-item">
       <a routerLink="/quests/{{ quest.subject }}">{{ quest.subject }}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
@@ -29,7 +26,7 @@
       <strong l10nTranslate>questName</strong>: <label> {{ quest.name }}</label>
     </div>
     <div class="col">
-      <strong l10nTranslate>questSubject</strong>: <label> {{ quest.subject }}</label>
+      <strong l10nTranslate>questSubject</strong>: <a routerLink="/game/{{ game.uuid }}">{{ game.title }}</a> / <label> {{ quest.subject }}</label>
     </div>
     <div class="col">
       <strong l10nTranslate>questScore</strong>: <label> +{{ quest.score }}</label>
@@ -69,12 +66,17 @@
       <tr>
         <th l10nTranslate>filename</th>
         <th l10nTranslate>filesize</th>
+        <th l10nTranslate>downloads_counter</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let qf of questFiles">
-        <td><a target="_blank" href="{{ qf.filepath }}" class="btn btn-link">{{ qf.filename }}</a></td>
-        <td>{{ qf.size }} bytes</td>
+        <td>
+          <a target="_blank" href="{{ qf.filepath }}" class="btn btn-link">{{ qf.filename }}</a><br>
+          <small>(md5: {{ qf.md5 }})</small>
+        </td>
+        <td>{{ qf.human_size }}</td>
+        <td>{{ qf.downloads_counter }}</td>
       </tr>
     </tbody>
   </table>

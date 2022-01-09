@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(unit-tests C CXX)
-add_definitions(-DWSJCPP_APP_VERSION="ut-v0.2.47")
+add_definitions(-DWSJCPP_APP_VERSION="ut-v0.2.48")
 add_definitions(-DWSJCPP_APP_NAME="unit-tests-fhq-server")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -24,7 +24,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_levenshtein/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_levenshtein/wsjcpp_levenshtein.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_levenshtein/wsjcpp_levenshtein.h")
 
-# wsjcpp-hashes:v0.0.1
+# wsjcpp-hashes:v0.1.4
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_hashes/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_hashes/md5.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_hashes/md5.h")
@@ -41,7 +41,7 @@ list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_unit_tests.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_unit_tests.h")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_unit_tests_main.cpp")
 
-# nlohmann/json:v3.10.2
+# nlohmann/json:v3.10.5
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/nlohmann_json/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/nlohmann_json/json.hpp")
 
@@ -90,17 +90,17 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_storages/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_storages/wsjcpp_storages.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_storages/wsjcpp_storages.h")
 
-# wsjcpp-parse-conf:v0.1.0
-list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_parse_conf/")
-list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_parse_conf/wsjcpp_parse_conf.cpp")
-list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_parse_conf/wsjcpp_parse_conf.h")
-
 # wsjcpp-arguments:v0.2.1
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_arguments/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.h")
 
-# fhq-server:v0.2.47
+# wsjcpp-yaml:v0.1.6
+list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_yaml/")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.h")
+
+# fhq-server:v0.2.48
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 list (APPEND WSJCPP_SOURCES "../src/validators/validators.h")
 list (APPEND WSJCPP_SOURCES "../src/validators/validators.cpp")

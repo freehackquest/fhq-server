@@ -182,5 +182,7 @@
     "feelFreeToContactUsByEmail": "Не стесняйтесь обращаться к нам по электронной почте",
     "administration-panel": "Администрирование",
     "haveNotYetAccount": "Нет аккаунта?",
+    "downloads_counter": "Счетчик загрузок",
+    "file_hash_md5": "Хеш файла (md5)",
     "": ""
 }

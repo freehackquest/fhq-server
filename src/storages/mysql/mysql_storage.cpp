@@ -1,6 +1,6 @@
 #include <storages/mysql/mysql_storage.h>
-#include <wsjcpp_parse_conf.h>
 #include <mysql/mysql.h>
+#include <wsjcpp_yaml.h>
 
 REGISTRY_WSJCPP_STORAGE(MySqlStorage)
 
@@ -149,39 +149,44 @@ MySqlStorage::MySqlStorage() {
 // ----------------------------------------------------------------------
 
 bool MySqlStorage::applyConfigFromFile(const std::string &sFilePath) {
-    WsjcppParseConf parseConfig(sFilePath);
-    parseConfig.load();
+    WsjcppYaml yaml;
+    std::string sError;
+    if (!yaml.loadFromFile(sFilePath, sError)) {
+        WsjcppLog::err(TAG, "Could not parse file: " + sFilePath);
+        return false;
+    }
+    WsjcppYamlCursor cur = yaml.getCursor();
 
-    if (!parseConfig.has("dbhost")) {
+    if (!cur.hasKey("dbhost")) {
         WsjcppLog::err(TAG, "Not found 'dbhost' in " + sFilePath);
         return false;
     }
 
-    if (!parseConfig.has("dbport")) {
+    if (!cur.hasKey("dbport")) {
         WsjcppLog::err(TAG, "Not found 'dbport' in " + sFilePath);
         return false;
     }
 
-    if (!parseConfig.has("dbname")) {
+    if (!cur.hasKey("dbname")) {
         WsjcppLog::err(TAG, "Not found 'dbname' in " + sFilePath);
         return false;
     }
 
-    if (!parseConfig.has("dbuser")) {
+    if (!cur.hasKey("dbuser")) {
         WsjcppLog::err(TAG, "Not found 'dbuser' in " + sFilePath);
         return false;
     }
 
-    if (!parseConfig.has("dbpass")) {
+    if (!cur.hasKey("dbpass")) {
         WsjcppLog::err(TAG, "Not found 'dbpass' in " + sFilePath);
         return false;
     }
 
-    m_sDatabaseHost = parseConfig.getStringValue("dbhost", m_sDatabaseHost);
-    m_nDatabasePort = parseConfig.getIntValue("dbport", m_nDatabasePort);
-    m_sDatabaseName = parseConfig.getStringValue("dbname", m_sDatabaseName);
-    m_sDatabaseUser = parseConfig.getStringValue("dbuser", m_sDatabaseUser);
-    m_sDatabasePass = parseConfig.getStringValue("dbpass", m_sDatabasePass);
+    m_sDatabaseHost = cur["dbhost"].valStr();
+    m_nDatabasePort = cur["dbport"].valInt();
+    m_sDatabaseName = cur["dbname"].valStr();
+    m_sDatabaseUser = cur["dbuser"].valStr();
+    m_sDatabasePass = cur["dbpass"].valStr();
 
     WsjcppLog::info(TAG, "Database host: " + m_sDatabaseHost);
     WsjcppLog::info(TAG, "Database port: " + std::to_string(m_nDatabasePort));

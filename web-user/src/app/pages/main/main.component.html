@@ -13,19 +13,83 @@
 </mat-card>
 <br/>
 
-<mat-card class="welcome-card">
-  <mat-card-header>
-    <div mat-card-avatar class="welcome-header-image"></div>
-    Statistics
-  </mat-card-header>
+<mat-card class="main-card-number">
   <mat-card-content>
-    <br><br>
-    <p><label>Quests:</label> {{ statisticsCountQuests }}</p>
-		<p><label>All attempts:</label> {{ statisticsAllAttempts }} </p>
-		<p><label>Already solved:</label> {{ statisticsAlreadySolved }} </p>
-    <p><label>Users online:</label> {{ statisticsUsersOnline }} </p>
+    <div class="main-card-number-table">
+      <div class="main-card-number-table-cell">
+        <small>Quests Count</small><br>
+        {{ statisticsCountQuests }}
+      </div>
+    </div>
   </mat-card-content>
 </mat-card>
+
+<mat-card class="main-card-number">
+  <mat-card-content>
+    <div class="main-card-number-table">
+      <div class="main-card-number-table-cell">
+        <small>Quests Attempts</small><br>
+        {{ statisticsAllAttempts }}
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="main-card-number">
+  <mat-card-content>
+    <div class="main-card-number-table">
+      <div class="main-card-number-table-cell">
+        <small>Quests Solved</small><br>
+        {{ statisticsAlreadySolved }}
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="main-card-number">
+  <mat-card-content>
+    <div class="main-card-number-table">
+      <div class="main-card-number-table-cell">
+        <small>Users Online</small><br>
+        {{ statisticsUsersOnline }}
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="main-card-number">
+  <mat-card-content>
+    <div class="main-card-number-table">
+      <div class="main-card-number-table-cell">
+        <small>Files Count</small><br>
+        {{ statisticsFilesCount }}
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="main-card-number">
+  <mat-card-content>
+    <div class="main-card-number-table">
+      <div class="main-card-number-table-cell">
+        <small>Files Size</small><br>
+        {{ statisticsFilesHumanSize }}
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="main-card-number">
+  <mat-card-content>
+    <div class="main-card-number-table">
+      <div class="main-card-number-table-cell">
+        <small>Files Downloads</small><br>
+        {{ statisticsFilesDownloads }}
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
 <br/>
 
 <mat-card class="welcome-card">

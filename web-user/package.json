@@ -1,6 +1,6 @@
 {
   "name": "web-user",
-  "version": "0.2.47",
+  "version": "0.2.48",
   "repository": {
     "type": "git",
     "url": "git://github.com/freehackquest/fhq-server.git"
@@ -36,7 +36,7 @@
     "angular-highlight-js": "^2.0.1",
     "angular-l10n": "^9.3.0",
     "bootstrap": "~4.6.1",
-    "core-js": "^3.19.2",
+    "core-js": "^3.19.3",
     "flag-icon-css": "^3.5.0",
     "font-awesome": "^4.7.0",
     "freehackquest-libclient-web-js": "^0.2.47",
@@ -46,6 +46,7 @@
     "ng2-simplemde": "^2.1.0",
     "ngx-ace-wrapper": "^8.0.0",
     "ngx-highlightjs": "^4.1.4",
+    "ngx-markdown": "^13.0.0",
     "ngx-markdown-editor": "^3.3.3",
     "ngx-md": "^8.1.6",
     "ol": "^5.3.3",

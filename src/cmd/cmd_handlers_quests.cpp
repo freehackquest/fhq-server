@@ -4,6 +4,7 @@
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <employ_notify.h>
+#include <employ_files.h>
 #include <validators.h>
 #include <wsjcpp_hashes.h>
 
@@ -160,6 +161,7 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
     QSqlDatabase db = *(pDatabase->database());
 
     EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+    EmployFiles *pFiles = findWsjcppEmploy<EmployFiles>();
 
     QString sBaseGamesURL = QString::fromStdString(pGlobalSettings->get("server_folder_games_url").getStringValue());
 
@@ -265,23 +267,11 @@ void CmdHandlerQuest::handle(ModelRequest *pRequest) {
             // files
             {
                 nlohmann::json jsonFiles = nlohmann::json::array();
-                QSqlQuery query_files(db);
-                query_files.prepare("SELECT * FROM quests_files WHERE questid = :questid");
-                query_files.bindValue(":questid", nQuestID);
-                if (!query_files.exec()) {
-                    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query_files.lastError().text().toStdString()));
-                    return;
-                }
-                while (query_files.next()) {
-                    QSqlRecord record_game = query_files.record();
-                    nlohmann::json jsonFileInfo;
-                    jsonFileInfo["id"] = record_game.value("id").toInt();
-                    jsonFileInfo["uuid"] = record_game.value("uuid").toInt();
-                    jsonFileInfo["filename"] = record_game.value("filename").toString().toStdString();
-                    jsonFileInfo["size"] = record_game.value("size").toString().toStdString();
-                    jsonFileInfo["dt"] = record_game.value("dt").toString().toStdString();
-                    // hardcoded subpath 'public/' for public files getting by web server
-                    std::string sFilepath = "public/" + record_game.value("filepath").toString().toStdString();
+                std::vector<ModelQuestFile *> vFiles = pFiles->findFilesByQuestId(nQuestID);
+                for (int i = 0; i < vFiles.size(); i++) {
+                    nlohmann::json jsonFileInfo = vFiles[i]->toJson();
+                    std::string sFilepath = jsonFileInfo["filepath"];
+                    sFilepath = "public/" + sFilepath;
                     jsonFileInfo["filepath"] = WsjcppCore::doNormalizePath(sFilepath);
                     jsonFiles.push_back(jsonFileInfo);
                 }
@@ -635,7 +625,7 @@ void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
     query.bindValue(":text", QString::fromStdString(sText));
     query.bindValue(":answer", QString::fromStdString(sAnswer));
     sAnswer = QString::fromStdString(sAnswer).toUpper().toStdString();
-    std::string sAnswerUpperMd5 = WsjcppHashes::md5_calc_hex(sAnswer);
+    std::string sAnswerUpperMd5 = WsjcppHashes::getMd5ByString(sAnswer);
     query.bindValue(":answer_upper_md5", QString::fromStdString(sAnswerUpperMd5));
     query.bindValue(":answer_format", QString::fromStdString(sAnswerFormat));
     query.bindValue(":score", nScore);
@@ -1962,6 +1952,7 @@ CmdHandlerQuestsFilesUpload::CmdHandlerQuestsFilesUpload()
 
 void CmdHandlerQuestsFilesUpload::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+    EmployFiles *pFiles = findWsjcppEmploy<EmployFiles>();
     nlohmann::json jsonResponse;
     QSqlDatabase db = *(pDatabase->database());
 
@@ -2025,24 +2016,20 @@ void CmdHandlerQuestsFilesUpload::handle(ModelRequest *pRequest) {
     FILE * pFile = fopen(sFullFilePath.c_str(), "wb");
     fwrite (baFile.constData(), sizeof(char), nFileSize, pFile);
     fclose (pFile);
-    
-    // insert to user tries
-    {
-        QSqlQuery query(db);
-        query.prepare("INSERT INTO quests_files(uuid, questid, filename, size, dt, filepath) "
-                      "VALUES(:uuid, :questid, :filename, :size, NOW(), :filepath)");
-        
-        query.bindValue(":uuid", QString::fromStdString(sFileUuid));
-        query.bindValue(":questid", nQuestID);
-        query.bindValue(":filename", QString::fromStdString(sFileName));
-        query.bindValue(":size", nFileSize);
-        query.bindValue(":filepath", QString::fromStdString(sRelativeFilePathByPublic));
 
-        if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
-            return;
-        }
-        
+    ModelQuestFile file;
+    file.setUuid(sFileUuid);
+    file.setQuestLocalId(nQuestID);
+    file.setFileName(sFileName);
+    file.setFileSize(nFileSize);
+    file.setFilePath(sRelativeFilePathByPublic);
+    std::string sHash = WsjcppHashes::getMd5ByFile(sFullFilePath);
+    file.setMd5(sHash);
+
+    std::string sError;
+    if (!pFiles->addFile(file, sError)) {
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, sError));
+        return;
     }
 
     EmployNotify *pEmployNotify = findWsjcppEmploy<EmployNotify>();
@@ -2073,6 +2060,7 @@ CmdHandlerQuestsFilesDelete::CmdHandlerQuestsFilesDelete()
 
 void CmdHandlerQuestsFilesDelete::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+    EmployFiles *pFiles = findWsjcppEmploy<EmployFiles>();
     nlohmann::json jsonResponse;
     QSqlDatabase db = *(pDatabase->database());
 
@@ -2138,15 +2126,10 @@ void CmdHandlerQuestsFilesDelete::handle(ModelRequest *pRequest) {
         return;
     }
 
-    {
-        QSqlQuery query(db);
-        query.prepare("DELETE FROM quests_files WHERE id = :fileid AND questid = :questid");
-        query.bindValue(":fileid", nFileId);
-        query.bindValue(":questid", nQuestID);
-        if (!query.exec()) {
-            pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
-            return;
-        }
+    std::string sError;
+    if (!pFiles->removeFileById(nFileId, sError)) {
+        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, sError));
+        return;
     }
     
     EmployNotify *pEmployNotify = findWsjcppEmploy<EmployNotify>();

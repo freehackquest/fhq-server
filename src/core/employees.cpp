@@ -1,9 +1,9 @@
-#include <wsjcpp_parse_conf.h>
 #include <employees.h>
 #include <employ_server_info.h>
 #include <algorithm>
 #include <wsjcpp_storages.h>
 #include <wsjcpp_core.h>
+#include <wsjcpp_yaml.h>
 #include <iostream>
 
 // ----------------------------------------------------------------------
@@ -818,37 +818,34 @@ void EmployGlobalSettings::printSettings() const {
 
 bool EmployGlobalSettings::findFileConfig() {
 
-    struct PossibleFileConfigs {
-        PossibleFileConfigs(const std::string &sDirPath, const std::string &sFilePathConf) {
-            m_sDirPath = WsjcppCore::doNormalizePath(sDirPath);
-            m_sFilePathConf = WsjcppCore::doNormalizePath(sFilePathConf);
-        };
-        std::string m_sDirPath;
-        std::string m_sFilePathConf;
-    };
-
     std::vector<std::string> vSearchConfigFile;
 
     if (m_sWorkDir != "") {
         // TODO convert to fullpath
-        vSearchConfigFile.push_back(m_sWorkDir + "/conf.d/");
+        vSearchConfigFile.push_back(m_sWorkDir);
+        if (!WsjcppCore::dirExists(m_sWorkDir)) {
+            WsjcppLog::err(TAG, "Not found directory " + m_sWorkDir);
+            return false;
+        }
     } else {
         // TODO convert to fullpath
         vSearchConfigFile.push_back("/etc/fhq-server/");
     }
 
+    vSearchConfigFile.push_back("./data/");
+
     for (int i = 0; i < vSearchConfigFile.size(); i++) {
         std::string sDirPath = vSearchConfigFile[i];
         sDirPath = WsjcppCore::doNormalizePath(sDirPath);
-        std::string sFilePathConf = sDirPath + "/fhq-server.conf";
+        std::string sFilePathConf = sDirPath + "/config.yml";
         sFilePathConf = WsjcppCore::doNormalizePath(sFilePathConf);
         if (WsjcppCore::fileExists(sFilePathConf)) {
             m_sFilepathConf = sFilePathConf;
             m_sWorkDir = sDirPath;
-            WsjcppLog::info(TAG, "Found config file " + sFilePathConf);
+            WsjcppLog::info(TAG, "Found config file '" + sFilePathConf + "'");
             break;
         } else {
-            WsjcppLog::warn(TAG, "Not found possible config file " + sFilePathConf);
+            WsjcppLog::warn(TAG, "Not found possible config file '" + sFilePathConf + "'");
         }
     }
     
@@ -865,25 +862,32 @@ bool EmployGlobalSettings::initFromFile() {
     if (!this->findFileConfig()) {
         return false;
     }
+    WsjcppYaml yaml;
+    std::string sError;
+    if (!yaml.loadFromFile(m_sFilepathConf, sError)) {
+        WsjcppLog::err(TAG, "Problem with loading file " + m_sFilepathConf);
+        WsjcppLog::err(TAG, sError);
+        return false;
+    }
+    
+    WsjcppYamlCursor cur = yaml.getCursor();
 
-    WsjcppParseConf parseConfig(m_sFilepathConf);
-    parseConfig.load();
-
+   
     std::map<std::string, WsjcppSettingItem*>::iterator it;
     for (it = m_mapSettingItems.begin(); it != m_mapSettingItems.end(); ++it) {
         WsjcppSettingItem *pItem = it->second;
         if (pItem->isFromFile()) {
             if (pItem->isString()) {
-                std::string s = parseConfig.getStringValue(pItem->getName(), pItem->getDefaultStringValue());
+                std::string s = yaml[pItem->getName()].valStr();
                 pItem->setStringValue(s);
                 WsjcppLog::info(TAG, pItem->getName() + " = " + s);
                 // TODO run validators
             } else if (pItem->isPassword()) {
-                std::string sPassword = parseConfig.getStringValue(pItem->getName(), pItem->getDefaultPasswordValue());
+                std::string sPassword = yaml[pItem->getName()].valStr();
                 pItem->setPasswordValue(sPassword);
                 WsjcppLog::info(TAG, pItem->getName() + " = (hidden)");
             } else if (pItem->isDirPath()) {
-                std::string sDirPath = parseConfig.getStringValue(pItem->getName(), pItem->getDefaultDirPathValue());
+                std::string sDirPath = yaml[pItem->getName()].valStr();
                 if (sDirPath.length() > 0 && sDirPath[0] != '/') {
                     sDirPath = m_sWorkDir + "/" + sDirPath;
                     sDirPath = WsjcppCore::doNormalizePath(sDirPath);
@@ -895,7 +899,7 @@ bool EmployGlobalSettings::initFromFile() {
                 WsjcppLog::info(TAG, pItem->getName() + " = " + sDirPath);
                 // TODO run validators
              } else if (pItem->isFilePath()) {
-                std::string sFilePath = parseConfig.getStringValue(pItem->getName(), pItem->getDefaultFilePathValue());
+                std::string sFilePath = yaml[pItem->getName()].valStr();
                 if (sFilePath.length() > 0 && sFilePath[0] != '/') {
                     sFilePath = m_sWorkDir + "/" + sFilePath;
                     sFilePath = WsjcppCore::doNormalizePath(sFilePath);
@@ -907,12 +911,12 @@ bool EmployGlobalSettings::initFromFile() {
                 WsjcppLog::info(TAG, pItem->getName() + " = " + sFilePath);
                 // TODO run validators
             } else if (pItem->isNumber()) {
-                int nValue = parseConfig.getIntValue(pItem->getName(), pItem->getDefaultNumberValue());
+                int nValue = yaml[pItem->getName()].valInt();
                 pItem->setNumberValue(nValue);
                 WsjcppLog::info(TAG, pItem->getName() + " = " + std::to_string(nValue));
                 // TODO run validators
             } else if (pItem->isBoolean()) {
-                bool bValue = parseConfig.getBoolValue(pItem->getName(), pItem->getDefaultBooleanValue());
+                bool bValue = yaml[pItem->getName()].valBool();
                 pItem->setBooleanValue(bValue);
                 WsjcppLog::info(TAG, pItem->getName() + " = " + (bValue ? "yes" : "no"));
                 // TODO run validators
@@ -930,14 +934,12 @@ bool EmployGlobalSettings::initFromFile() {
         }
     }
 
-    // excess settings in file
-    std::map<std::string, std::string> mapValues = parseConfig.getValues();
-    std::map<std::string, std::string>::iterator itV;
-    for (itV = mapValues.begin(); itV != mapValues.end(); ++itV) {
-        std::string sSettingName = itV->first;
-        it = m_mapSettingItems.find(sSettingName);
+    std::vector<std::string> vKeys = cur.keys();
+    for (int i = 0; i < vKeys.size(); i++) {
+        std::string sKey = vKeys[i];
+        it = m_mapSettingItems.find(sKey);
         if (it == m_mapSettingItems.end()) {
-            WsjcppLog::warn(TAG, "Excess setting: '" + sSettingName + "' in file '" + m_sFilepathConf + "'");
+            WsjcppLog::warn(TAG, "Excess setting: '" + sKey + "' in file '" + m_sFilepathConf + "'");
         }
     }
     return true;
