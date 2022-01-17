@@ -42,7 +42,7 @@
     "freehackquest-libclient-web-js": "^0.2.47",
     "jquery": "^3.6.0",
     "lodash-es": "^4.17.21",
-    "marked": "^0.8.2",
+    "marked": "^4.0.10",
     "ng2-simplemde": "^2.1.0",
     "ngx-ace-wrapper": "^8.0.0",
     "ngx-highlightjs": "^4.1.4",
