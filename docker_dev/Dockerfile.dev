@@ -1,4 +1,4 @@
-FROM debian:buster-20210816
+FROM debian:buster-20220328
 LABEL "maintainer"="FreeHackQuest Team <freehackquest@gmail.com>"
 LABEL "repository"="https://github.com/freehackquest/fhq-server"
 
