@@ -48,7 +48,7 @@
     "ngx-highlightjs": "^4.1.4",
     "ngx-markdown": "^13.1.0",
     "ngx-markdown-editor": "^3.3.3",
-    "ngx-md": "^8.1.6",
+    "ngx-md": "^14.0.0",
     "ol": "^5.3.3",
     "popper.js": "^1.16.1",
     "prismjs": "^1.27.0",
