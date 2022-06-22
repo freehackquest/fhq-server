@@ -69,8 +69,6 @@ import { ModalDialogQuestFeedbackComponent } from './dialogs/modal-dialog-quest-
 import { BlockContactUsComponent } from './block-contact-us/block-contact-us.component';
 import { UserSkillsComponent } from './pages/user-skills/user-skills.component';
 import { MainComponent } from './pages/main/main.component';
-import { NgxMdModule } from 'ngx-md';
-import { SimplemdeModule } from 'ng2-simplemde';
 import { UserTokensComponent } from './pages/user-tokens/user-tokens.component';
 import { UserFavoritesUsefulLinksComponent } from './pages/user-favorites-useful-links/user-favorites-useful-links.component'
 import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
@@ -152,8 +150,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     LMarkdownEditorModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    NgxMdModule.forRoot(),
-    SimplemdeModule.forRoot(),
+//    NgxMdModule.forRoot(),
     HighlightModule,
     MatButtonModule,
     MatFormFieldModule,
