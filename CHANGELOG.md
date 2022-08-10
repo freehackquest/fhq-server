@@ -5,6 +5,20 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.2.49] - 2022-08-11 (2022 Aug 11)
+
+### Added 
+
+- web-user: Few records to CTF WALL
+
+### Removed
+
+- web-user: Removed links to twitter
+
+### Security
+
+- web-user: few upgrades of dependency packages
+
 ## [v0.2.48] - 2022-01-09 (2022 Jan 9)
 
 ### Added 
