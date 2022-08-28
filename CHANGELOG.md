@@ -5,11 +5,15 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.49] - 2022-08-11 (2022 Aug 11)
+## [v0.2.49] - 2022-08-28 (2022 Aug 28)
 
 ### Added 
 
 - web-user: Few records to CTF WALL
+
+### Fixed 
+
+- Fixed contrib/docker_compose_example
 
 ### Removed
 
