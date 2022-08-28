@@ -14,6 +14,7 @@ export class EmailValidatorService {
     let emailWrongDomains = {};
     // TODO move to server on registration and on login
     emailWrongDomains['yndex.ru'] = {prop: ["yandex.ru"]};
+    emailWrongDomains['yande.ru'] = {prop: ["yandex.ru"]};
     emailWrongDomains['yadnex.ru'] = {prop: ["yandex.ru"]};
     emailWrongDomains['mil.ru'] = {prop: ["mail.ru"]};
     emailWrongDomains['nail.ru'] = {prop: ["mail.ru"]};
