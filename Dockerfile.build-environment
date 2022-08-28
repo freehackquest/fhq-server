@@ -7,7 +7,7 @@ LABEL "repository"="https://github.com/freehackquest/fhq-server"
 RUN apt-get update && \
     apt-get install -y curl
 
-RUN curl -sL https://deb.nodesource.com/setup_16.x -o setup_node_16x.sh && bash setup_node_16x.sh
+RUN curl -sL https://deb.nodesource.com/setup_17.x -o setup_node_16x.sh && bash setup_node_16x.sh
 
 # basic libs
 RUN apt-get update && apt-get install -y --no-install-recommends \
