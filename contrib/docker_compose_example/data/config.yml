@@ -1,0 +1,33 @@
+# fhq-server travis config
+
+## Database Configuration
+usemysql: yes
+storage_type: mysql
+dbhost: fhqserver_db
+dbname: fhqserver
+dbport: 3306
+dbuser: fhqserver
+dbpass: "VveGJemxFb"
+
+## Server configurations
+port: 1234
+ssl_on: no
+ssl_port: 4613
+ssl_key_file: /usr/share/fhq-server/ssl/test_fhqserver.key
+ssl_cert_file: /usr/share/fhq-server/ssl/test_fhqserver.crt
+
+# Web Configuration
+web_port: 7080
+web_max_threads: 4
+web_admin_folder: /usr/share/fhq-server/web-admin
+web_user_folder: /usr/share/fhq-server/web-user
+
+web_public_folder: /usr/share/fhq-server/public/
+web_public_folder_url: http://localhost:7080/public/
+
+# Jobs Pool Config
+jobs_fast_threads: 2
+jobs_slow_threads: 1
+
+# fhqjad-store
+web_fhqjad_store: ./fhqjad-store

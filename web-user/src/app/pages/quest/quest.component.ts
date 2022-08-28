@@ -7,7 +7,7 @@ import { DomSanitizer} from '@angular/platform-browser';
 
 import { ModalDialogQuestFeedbackComponent } from '../../dialogs/modal-dialog-quest-feedback/modal-dialog-quest-feedback.component';
 import { DialogsService } from '../../services/dialogs.service';
-import * as marked from 'marked';
+import { marked } from 'marked';
 
 @Component({
   selector: 'app-quest',

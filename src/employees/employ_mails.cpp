@@ -28,8 +28,6 @@ EmployMails::EmployMails()
         "\r\n"
         "Write message via e-mail to freehackquest@gmail.com\r\n"
         "Contact by Telegram: https://t.me/freehackquest\r\n"
-        "Follow in Twitter: https://twitter.com/freehackquest\r\n"
-        "Google+ Community: https://plus.google.com/communities/107112500285357136727\r\n"
     ).inDatabase();
 }
 
