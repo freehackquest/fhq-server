@@ -19,16 +19,11 @@ services:
     depends_on:
       - fhqserver_db
     image: sea5kg/fhq-server:latest
+    command: fhq-server -wd /opt/data start
     volumes:
-      - "./data/public:/usr/share/fhq-server/public"
-      - "./conf.d:/etc/fhq-server"
+      - "./data:/opt/data"
       - "./logs:/var/log/fhq-server"
-      - "./ssl:/usr/share/fhq-server/ssl"
-      # - "./fhq-server_data/web_admin_conf/fhq.ws.config.js:/usr/share/fhq-server/web-admin/fhq.ws.config.js"
-      # - "./fhq-server_data/public:/usr/share/fhq-server/fhq-web-public"
-      # - "./fhq-server_data/fhqjad-store:/usr/share/fhq-server/fhqjad-store"
     ports:
-      - "1234:1234"
       - "4613:4613"
       - "7080:7080"
     restart: always
