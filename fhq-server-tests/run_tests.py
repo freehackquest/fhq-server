@@ -6,16 +6,11 @@
 import sys
 import fhqtest
 import libtestfhq
-import libtestusers
-import libteststats
 import libtestquests
-import libtestknowledgebase
 
 TESTS_PASSED = False
 TESTS = [
-    libtestquests,
-    libtestknowledgebase,
-    libteststats
+    libtestquests
 ]
 
 try:

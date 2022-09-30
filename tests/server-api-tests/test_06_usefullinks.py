@@ -6,15 +6,6 @@
 Test server api leaks
 """
 
-import string
-import random
-
-def generate_random(size):
-    """ Generate random printable string """
-    _range = range(size)
-    _alphabet = string.ascii_uppercase + string.digits + ' _+=\'"~@!#?/<>'
-    return ''.join(random.choice(_alphabet) for _ in _range)
-
 def test_0000_cleanup_useful_links(admin_session):
     """Cleanup useful_links list"""
     print(test_0000_cleanup_useful_links.__doc__)
@@ -28,7 +19,7 @@ def test_0000_cleanup_useful_links(admin_session):
         print("remove " + str(ul_id))
         admin_session.useful_links_delete({"useful_link_id": ul_id})
 
-def test_0001_add_useful_links(admin_session):
+def test_0001_add_useful_links(admin_session, generate_random):
     """Add """
     print(test_0001_add_useful_links.__doc__)
     print(admin_session)

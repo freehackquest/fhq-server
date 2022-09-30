@@ -11,6 +11,8 @@ import subprocess
 import time
 import signal
 import socket
+import random
+import string
 import pytest
 import docker
 
@@ -73,6 +75,36 @@ def local_tmp_dir():
 def url_http_web_server():
     """ web_server_http """
     return pytest.test_url_http_web_server
+
+def _generate_random(size):
+    """ Generate random printable string """
+    _range = range(size)
+    _alphabet = string.ascii_uppercase + string.digits + ' _+=\'"~@!#?/<>'
+    return ''.join(random.choice(_alphabet) for _ in _range)
+
+@pytest.fixture(scope="session")
+def generate_random():
+    """ generate_random """
+    return _generate_random
+
+def _generate_random_uuid():
+    """ _generate_random_uuid """
+    ret = ''
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(8))
+    ret = ret + '-'
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(4))
+    ret = ret + '-'
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(4))
+    ret = ret + '-'
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(4))
+    ret = ret + '-'
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(12))
+    return ret
+
+@pytest.fixture(scope="session")
+def generate_random_uuid():
+    """ generate_random_uuid """
+    return _generate_random_uuid
 
 @pytest.fixture(scope="session")
 def admin_session():

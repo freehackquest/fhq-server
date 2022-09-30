@@ -4,3 +4,4 @@ requests>=2.21.0
 pytest
 pytest-env
 docker
+glob2

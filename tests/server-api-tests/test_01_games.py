@@ -7,33 +7,11 @@ Test server api leaks
 """
 
 import os
-import random
-import string
 import base64
 import shutil
 import zipfile
 import json
 import requests
-
-def generate_random(size):
-    """Generate random printable string"""
-    _range = range(size)
-    _alphabet = string.ascii_uppercase + string.digits + ' _+=\'"~@!#?/<>'
-    return ''.join(random.choice(_alphabet) for _ in _range)
-
-def generate_random_uuid():
-    """Generate random uuid"""
-    ret = ''
-    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(8))
-    ret = ret + '-'
-    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(4))
-    ret = ret + '-'
-    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(4))
-    ret = ret + '-'
-    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(4))
-    ret = ret + '-'
-    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(12))
-    return ret
 
 def test_games_cleanup_game2(admin_session, game2_uuid, admin_password):
     """Cleanup test game"""
@@ -49,7 +27,7 @@ def test_games_cleanup_game2(admin_session, game2_uuid, admin_password):
         assert game2_delete_r['result'] == 'DONE'
         print("Cleaned")
 
-def test_games_create_game2(admin_session, game2_uuid):
+def test_games_create_game2(admin_session, game2_uuid, generate_random):
     """Create game2"""
     print(test_games_create_game2.__doc__)
     game_name = generate_random(255)
@@ -119,7 +97,7 @@ def test_games_game_list(admin_session, game2_uuid):
             _found = True
     assert _found is True
 
-def test_games_update_game_name(admin_session, game2_uuid):
+def test_games_update_game_name(admin_session, game2_uuid, generate_random):
     """game update name"""
     print(test_games_update_game_name.__doc__)
 
@@ -137,7 +115,7 @@ def test_games_update_game_name(admin_session, game2_uuid):
     assert game2_prev['data']['description'] == game2_new['data']['description']
     assert game2_prev['data']['maxscore'] == game2_new['data']['maxscore']
 
-def test_games_update_game_description(admin_session, game2_uuid):
+def test_games_update_game_description(admin_session, game2_uuid, generate_random):
     """game update description"""
     print(test_games_update_game_description.__doc__)
     game2_prev = admin_session.game_info({ "uuid": game2_uuid })
@@ -154,7 +132,7 @@ def test_games_update_game_description(admin_session, game2_uuid):
     assert game2_prev['data']['name'] == game2_new['data']['name']
     assert game2_prev['data']['maxscore'] == game2_new['data']['maxscore']
 
-def test_games_update_game_organizators(admin_session, game2_uuid):
+def test_games_update_game_organizators(admin_session, game2_uuid, generate_random):
     """game update organizators"""
     print(test_games_update_game_organizators.__doc__)
     game2_prev = admin_session.game_info({ "uuid": game2_uuid })
