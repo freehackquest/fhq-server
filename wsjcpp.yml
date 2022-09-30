@@ -46,7 +46,7 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-core:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_core"
-    installation-datetime: "Fri, 16 Oct 2020 01:37:40 GMT"
+    installation-datetime: "Fri, 30 Sep 2022 18:20:33 GMT"
   - name: "nlohmann/json"
     version: "v3.10.5"
     url: "https://github.com/nlohmann/json:develop"
