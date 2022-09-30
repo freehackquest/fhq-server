@@ -3,7 +3,7 @@
 # Copyright (C) 2011-2022, Evgenii Sopov <mrseakg@gmail.com>
 
 
-""" run tests """
+""" classbook """
 
 from pprint import pprint
 
