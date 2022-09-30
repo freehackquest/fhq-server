@@ -15,6 +15,8 @@ class ArgumentProcessorMain : public WsjcppArgumentProcessor {
         bool setWorkDir(const std::string &sWorkDir);
         const std::string &getWorkDir();
 
+        bool initDefaultDataForContainers(const std::string &sInitDir);
+
     private:
         std::string m_sWorkDir;
 };

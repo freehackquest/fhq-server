@@ -35,6 +35,7 @@ ArgumentProcessorMain::ArgumentProcessorMain(QCoreApplication *pQtApp)
     // registrySingleArgument("--single", "What exactly do this single param?");
     registryParameterArgument("--workdir", "<path>", "workdir");
     registryParameterArgument("-wd", "<path>", "workdir (short)");
+    registryParameterArgument("--init-default-data-for-containers", "<path>", "Init all basic data for containers (nginx, fhq data, ssl)");
 
     // registryExample("here example of command");
     registryProcessor(new ArgumentProcessorVersion());
@@ -70,6 +71,9 @@ bool ArgumentProcessorMain::applyParameterArgument(
 ) {
     if (sArgumentName == "--workdir" || sArgumentName == "-wd") {
         return setWorkDir(sValue);
+    }
+    if (sArgumentName == "--init-default-data-for-containers") {
+        return initDefaultDataForContainers(sValue);
     }
     return false;
 }
@@ -107,6 +111,29 @@ bool ArgumentProcessorMain::setWorkDir(const std::string &sWorkDir_) {
     pGlobalSettings->update("log_dir", sDirLogs);
     WsjcppLog::setLogDirectory(sDirLogs);
     m_sWorkDir = sWorkDir;
+    return true;
+}
+
+bool ArgumentProcessorMain::initDefaultDataForContainers(const std::string &sInitDir) {
+    std::string _TAG = "initDefaultDataForContainers";
+    WsjcppLog::info(_TAG, "Init directory " + sInitDir);
+    // make dirs
+    std::vector<std::string> vDirs;
+    vDirs.push_back(sInitDir + "/ssl");
+    vDirs.push_back(sInitDir + "/nginx/conf.d");
+    vDirs.push_back(sInitDir + "/nginx/html/files/users");
+    vDirs.push_back(sInitDir + "/nginx/logs");
+    vDirs.push_back(sInitDir + "/data/public/games");
+    vDirs.push_back(sInitDir + "/data/fhqjad-store");
+    vDirs.push_back(sInitDir + "/data/logs");
+
+    for (int i = 0; i < vDirs.size(); i++) {
+        if (!WsjcppCore::dirExists(vDirs[i])) {
+            WsjcppLog::info(_TAG, "Creating directory " + vDirs[i]);
+            WsjcppCore::makeDirsPath(vDirs[i]);
+        }
+    }
+    // exportDockerComposeFile();
     return true;
 }
 

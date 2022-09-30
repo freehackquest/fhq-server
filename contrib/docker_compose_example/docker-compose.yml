@@ -32,6 +32,8 @@ services:
       - fhqserver_net
 
   ext_nginx_node:
+    depends_on:
+      - fhqserver_db
     image: nginx:1.16
     volumes:
       - "./nginx/html/:/usr/share/nginx/html"

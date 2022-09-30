@@ -77,7 +77,7 @@ tests/get-pip.py
 fhq-server/fhq-server.debian95
 .idea
 /data
-
+/docker_test
 .wsjcpp
 fhq-server
 
