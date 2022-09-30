@@ -26,7 +26,7 @@ def pytest_configure():
     pytest.admin_password = "admin"
     pytest.test_host = "127.0.0.1"
     pytest.test_server = "ws://" + pytest.test_host + ":1234/"
-    pytest.test_web_server = "http://" + pytest.test_host + ":7080/"
+    pytest.test_url_http_web_server = "http://" + pytest.test_host + ":7080/"
     pytest.game1_uuid = "00000000-0000-0000-1000-000000000001"
     pytest.game2_uuid = "00000000-0000-0000-1000-000000000002"
     pytest.user1_uuid = "00000000-0000-0000-4001-000000000001"
@@ -68,6 +68,11 @@ def local_tmp_dir():
     if not os.path.isdir(tmp_dir_path):
         os.mkdir(tmp_dir_path)
     return tmp_dir_path
+
+@pytest.fixture(scope="session")
+def url_http_web_server():
+    """ web_server_http """
+    return pytest.test_url_http_web_server
 
 @pytest.fixture(scope="session")
 def admin_session():
@@ -125,11 +130,6 @@ def user3_data():
 def user3_data_again():
     """Return user3_data"""
     return pytest.user3_data_again
-
-@pytest.fixture(scope="session")
-def web_server_host():
-    """Return web server host"""
-    return pytest.test_web_server
 
 @pytest.fixture(scope="session")
 def test_server():

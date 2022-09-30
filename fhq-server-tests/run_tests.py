@@ -6,7 +6,6 @@
 import sys
 import fhqtest
 import libtestfhq
-import libtestwebserver
 import libtestusers
 import libteststats
 import libtestquests
@@ -14,7 +13,6 @@ import libtestknowledgebase
 
 TESTS_PASSED = False
 TESTS = [
-    libtestwebserver,
     libtestquests,
     libtestknowledgebase,
     libteststats

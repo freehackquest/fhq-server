@@ -194,20 +194,20 @@ def extract_zip_game_data(data_base64, game2_zip_path, tmp_dir_unpack_zip):
         with zipfile.ZipFile(game2_zip_path, 'r') as zip_ref:
             zip_ref.extractall(tmp_dir_unpack_zip)
 
-def check_game2_logo(img_exported_path, game2_localid, web_server_host):
+def check_game2_logo(img_exported_path, game2_localid, url_http_web_server):
     """ check game2 logo """
     assert os.path.exists(img_exported_path) is True
     with open(img_exported_path, 'rb') as _game2_logo:
         image2_png_base64 = _game2_logo.read()
         img2_len = len(image2_png_base64)
         assert img2_len < 17045 # server must create thumbnail from this image
-        url = web_server_host + "public/games/" + str(game2_localid) + ".png"
+        url = url_http_web_server + "public/games/" + str(game2_localid) + ".png"
         resp = requests.get(url, allow_redirects=True)
         with open(img_exported_path + "2", 'wb') as _img_exported:
             _img_exported.write(resp.content)
         assert img2_len == len(resp.content)
 
-def test_games_update_logo(admin_session, game2_uuid, local_tmp_dir, web_server_host):
+def test_games_update_logo(admin_session, game2_uuid, local_tmp_dir, url_http_web_server):
     """game update logo"""
     print(test_games_update_logo.__doc__)
     game2_prev = admin_session.game_info({ "uuid": game2_uuid })
@@ -246,7 +246,7 @@ def test_games_update_logo(admin_session, game2_uuid, local_tmp_dir, web_server_
     check_game2_logo(
         img_exported_path,
         game2_exported["local_id"],
-        web_server_host
+        url_http_web_server
     )
 
 def test_games_remove(admin_session, admin_password, game2_uuid):
