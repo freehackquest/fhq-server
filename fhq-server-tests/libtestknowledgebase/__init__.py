@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Copyright (C) 2011-2022, Evgenii Sopov <mrseakg@gmail.com>
+
+
+""" run tests """
 
 from freehackquest_libclient_py import FreeHackQuestClient
 import fhqtest
-import sys, traceback
+import sys
+import traceback
 import base64
 import json
 from pprint import pprint
@@ -12,6 +17,7 @@ import random
 TEST_NAME = 'Testing Knowledge Base'
 
 def run_tests():
+    """ run_tests """
 
     fhqtest.clean_all_classbooks()
 

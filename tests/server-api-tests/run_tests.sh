@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (C) 2011-2022, Evgenii Sopov <mrseakg@gmail.com>
 
 check_ret() {
     if [ $1 -ne 0 ]; then

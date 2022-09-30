@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Copyright (C) 2011-2022, Evgenii Sopov <mrseakg@gmail.com>
+
 """
 Test server api leaks
 """
@@ -43,15 +45,18 @@ def test_0001_add_useful_links(admin_session):
     assert ul_item1 is not None
     assert ul_item1["result"] == "DONE"
 
-        # useful_links_add
-        # useful_links_clicked
-        # useful_links_comment_add
-        # useful_links_comment_delete
-        # useful_links_comment_list
-        # useful_links_delete
-        # useful_links_list
-        # useful_links_retrieve
-        # useful_links_tag_add
-        # useful_links_tag_delete
-        # useful_links_tag_list
-        # useful_links_user_unfavorite
+# useful_links_clicked
+# useful_links_comment_add
+# useful_links_comment_delete
+# useful_links_comment_list
+# useful_links_delete
+# useful_links_retrieve
+# useful_links_tag_add
+# useful_links_tag_delete
+# useful_links_tag_list
+# useful_links_update
+# useful_links_user_favorite
+# useful_links_user_favorite_list
+# useful_links_user_propose
+# useful_links_user_propose_approve
+# useful_links_user_unfavorite
