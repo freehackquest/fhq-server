@@ -34,4 +34,4 @@ COPY --from=0 /root/web-user/dist /usr/share/fhq-server/web-user
 # 7080 - http port (without ssl)
 
 EXPOSE 1234 4613 7080
-CMD fhq-server --init-default-data-for-containers /opt/fhq-server && fhq-server start
+CMD fhq-server --init-default-data-for-containers /opt/fhq-server start
