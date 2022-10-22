@@ -109,6 +109,11 @@ list (APPEND WSJCPP_SOURCES "../src/core/jobs_pool.cpp")
 list (APPEND WSJCPP_SOURCES "../src/storages/mysql/mysql_storage.h")
 list (APPEND WSJCPP_SOURCES "../src/storages/mysql/mysql_storage.cpp")
 
+# resources.wsjcpp
+list (APPEND WSJCPP_INCLUDE_DIRS "../src-resources.wsjcpp/")
+list (APPEND WSJCPP_SOURCES "../src-resources.wsjcpp/__src_resources_user_0_png_pathfba0ac.h")
+list (APPEND WSJCPP_SOURCES "../src-resources.wsjcpp/__src_resources_user_0_png_pathfba0ac.cpp")
+
 # unit-tests
 list (APPEND WSJCPP_INCLUDE_DIRS "src")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_validators.cpp")

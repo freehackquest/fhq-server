@@ -13,12 +13,14 @@ class ArgumentProcessorMain : public WsjcppArgumentProcessor {
         virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 
         bool setWorkDir(const std::string &sWorkDir);
-        const std::string &getWorkDir();
-
         bool initDefaultDataForContainers(const std::string &sInitDir);
 
     private:
         std::string m_sWorkDir;
+
+        void initDefaultDataConfigYml(const std::string &sNormalizedInitDir);
+        void initDefaultSsl(const std::string &sNormalizedInitDir);
+        void initDefaultNginx(const std::string &sNormalizedInitDir);
 };
 
 class ArgumentProcessorVersion : public WsjcppArgumentProcessor {
