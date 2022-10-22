@@ -9,10 +9,84 @@ Backend && Frontend for FreeHackQuest on Qt and WebSockets
 * [Group in VK](https://vk.com/freehackquest)
 * [Group in Telegram](https://telegram.me/freehackquest)
 
-## docker-compose example
+## docker-compose example (easy start)
 
-[docker-compose example](https://github.com/freehackquest/fhq-server/tree/master/contrib/docker_compose_example)
+**>= v0.2.50**
 
+Step 1. Create a file `docker-compose.yml` with content:
+```
+version: '3'
+
+services:
+  fhqserver_db:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - "./freehackquest_docker/mysql_data:/var/lib/mysql"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: KzhyntJxwt
+      MYSQL_DATABASE: fhqserver
+      MYSQL_USER: fhqserver
+      MYSQL_PASSWORD: VveGJemxFb
+    networks:
+      - fhqserver_net
+
+  fhqserver:
+    depends_on:
+      - fhqserver_db
+    image: sea5kg/fhq-server:latest
+    volumes:
+      - "./freehackquest_docker:/opt/fhq-server"
+    environment:
+      FREEHACKQUEST_DATABASE_HOST: fhqserver_db # host of database, so it's name of service
+      FREEHACKQUEST_DATABASE_PORT: 3306 # mysql default port
+      FREEHACKQUEST_DATABASE_NAME: fhqserver # -> MYSQL_DATABASE
+      FREEHACKQUEST_DATABASE_USER: fhqserver # -> MYSQL_USER
+      FREEHACKQUEST_DATABASE_PASS: VveGJemxFb # -> MYSQL_PASSWORD
+    ports:
+      - "1234:1234"
+      - "4613:4613"
+      - "7080:7080"
+    restart: always
+    networks:
+      - fhqserver_net
+
+  ext_nginx_node:
+    depends_on:
+      - fhqserver_db
+      - fhqserver
+    image: nginx:1.16
+    volumes:
+      - "./freehackquest_docker/nginx/html/:/usr/share/nginx/html"
+      - "./freehackquest_docker/nginx/conf.d:/etc/nginx/conf.d"
+      - "./freehackquest_docker/nginx/logs:/var/log/nginx/"
+      - "./freehackquest_docker/ssl:/etc/nginx/ssl"
+    restart: always
+    ports:
+      - "801:80"
+      - "4431:443"
+    networks:
+      - fhqserver_net
+
+networks:
+  fhqserver_net:
+    driver: bridge
+```
+
+Step 2. Start services
+
+```
+$ docker-compose up
+```
+
+Step 3. Open a urls 
+
+User interface: http://localhost:801/
+
+Admin interface: http://localhost:801/admin/
+
+*Note: default login/password: admin/admin*
 
 <!-- * [INSTALL_FROM_PPA](https://github.com/freehackquest/fhq-server/tree/master/install/INSTALL_FROM_PPA.md) 
 
