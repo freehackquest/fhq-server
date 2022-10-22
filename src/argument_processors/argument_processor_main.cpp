@@ -134,9 +134,11 @@ bool ArgumentProcessorMain::initDefaultDataForContainers(const std::string &sIni
     std::vector<std::string> vDirs;
     vDirs.push_back(sNormalizedInitDir + "/ssl");
     vDirs.push_back(sNormalizedInitDir + "/nginx/conf.d");
-    vDirs.push_back(sNormalizedInitDir + "/nginx/html/files/users");
+    // vDirs.push_back(sNormalizedInitDir + "/nginx/html/files/users");
     vDirs.push_back(sNormalizedInitDir + "/nginx/logs");
     vDirs.push_back(sNormalizedInitDir + "/data/public/games");
+    vDirs.push_back(sNormalizedInitDir + "/data/public/quests");
+    vDirs.push_back(sNormalizedInitDir + "/data/public/users");
     vDirs.push_back(sNormalizedInitDir + "/data/fhqjad-store");
     vDirs.push_back(sNormalizedInitDir + "/data/logs");
 
