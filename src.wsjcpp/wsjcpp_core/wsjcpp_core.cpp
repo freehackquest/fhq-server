@@ -549,6 +549,9 @@ bool WsjcppCore::makeDirsPath(const std::string &sDirname) {
     std::string sDirpath = WsjcppCore::doNormalizePath(sDirname);
     std::vector<std::string> vDirs = WsjcppCore::split(sDirpath, "/");
     std::string sDirpath2 = "";
+    if (sDirpath.length() > 0 && sDirpath[0] == '/') {
+        sDirpath2 = "/";
+    }
     for (int i = 0; i < vDirs.size(); i++) {
         if (vDirs[i] == "") {
             continue;

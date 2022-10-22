@@ -3,7 +3,7 @@ cmake_cxx_standard: 17
 cmake_minimum_required: 3.0
 
 name: wsjcpp-core
-version: v0.2.1
+version: v0.2.2
 description: Basic Utils for wsjcpp
 issues: https://github.com/wsjcpp/wsjcpp-core/issues
 repositories:
@@ -21,7 +21,7 @@ distribution:
   - source-file: src/wsjcpp_core.cpp
     target-file: wsjcpp_core.cpp
     type: "source-code"
-    sha1: "00d1395210ee8bad10b2882be331c5ab4a0d1ffb"
+    sha1: "15a0d9e4fcd6e34f9c4ccdc9dd6c855814abc020"
   - source-file: src/wsjcpp_core.h
     target-file: wsjcpp_core.h
     type: "source-code" # todo must be header-file
