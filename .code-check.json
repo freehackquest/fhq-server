@@ -7,6 +7,7 @@
         "src/core/3rdParty",
         "src-libhv",
         "src/3rdParty/quazip-0.7.3",
+        "src/resources",
         "json.hpp",
         ".DS_Store"
     ],
