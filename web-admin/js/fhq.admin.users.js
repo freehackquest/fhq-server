@@ -22,7 +22,7 @@ fhq.createUser = function()  {
     data["nick"] = $("#newuser_nick").val();
     data["university"] = $("#newuser_university").val();
     
-    fhq.users_add(data).done(function(r){
+    fhq.ws.users_add(data).done(function(r){
         fhq.hideLoader();
         fhq.pages['users']();
     }).fail(function(err){
