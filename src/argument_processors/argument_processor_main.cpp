@@ -193,7 +193,7 @@ void ArgumentProcessorMain::initDefaultDataConfigYml(const std::string &sNormali
             "\n"
             "# Server configurations\n"
             "port: 1234\n"
-            "ssl_on: no\n"
+            "ssl_on: yes\n"
             "ssl_port: 4613\n"
             "ssl_key_file: " + sNormalizedInitDir + "/ssl/test_fhqserver.key\n"
             "ssl_cert_file: " + sNormalizedInitDir + "/ssl/test_fhqserver.crt\n"
@@ -398,9 +398,9 @@ void ArgumentProcessorMain::initDefaultNginx(const std::string &sNormalizedInitD
         );
     }
 
-    std::string sUsers0Png = sNormalizedInitDir + "/nginx/html/files/users/0.png";
+    std::string sUsers0Png = sNormalizedInitDir + "/data/public/users/default.png";
     if (!WsjcppCore::fileExists(sUsers0Png)) {
-        WsjcppResourceFile *pFile = WsjcppResourcesManager::get("./src/resources/user_0.png");
+        WsjcppResourceFile *pFile = WsjcppResourcesManager::get("./src/resources/user_default_icon.png");
         WsjcppCore::writeFile(
             sUsers0Png,
             pFile->getBuffer(),

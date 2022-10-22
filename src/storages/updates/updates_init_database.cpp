@@ -164,7 +164,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
         pAddDefailtAdmin->bindValue("pass", "06976539736714f7eaaa9409a643855029717a9d"); // admin
         pAddDefailtAdmin->bindValue("role", "admin");
         pAddDefailtAdmin->bindValue("nick", "Admin");
-        pAddDefailtAdmin->bindValue("logo", "files/users/0.png");
+        pAddDefailtAdmin->bindValue("logo", "users/default.png");
         pAddDefailtAdmin->bindValue("dt_create", "1970-01-01 00:00:00");
         pAddDefailtAdmin->bindValue("dt_last_login", "2015-04-12 23:49:58");
         pAddDefailtAdmin->bindValue("last_ip", "127.0.0.1");
@@ -185,7 +185,7 @@ UpdatesInitDatabase::UpdatesInitDatabase()
         addDefailtAdmin.bindValue("pass", "06976539736714f7eaaa9409a643855029717a9d"); // admin
         addDefailtAdmin.bindValue("role", "admin");
         addDefailtAdmin.bindValue("nick", "Admin");
-        addDefailtAdmin.bindValue("logo", "files/users/0.png");
+        addDefailtAdmin.bindValue("logo", "users/default.png");
         addDefailtAdmin.bindValue("dt_create", "1970-01-01 00:00:00");
         addDefailtAdmin.bindValue("dt_last_login", "2015-04-12 23:49:58");
         addDefailtAdmin.bindValue("last_ip", "127.0.0.1");
