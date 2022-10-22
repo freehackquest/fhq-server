@@ -111,8 +111,8 @@ list (APPEND WSJCPP_SOURCES "../src/storages/mysql/mysql_storage.cpp")
 
 # resources.wsjcpp
 list (APPEND WSJCPP_INCLUDE_DIRS "../src-resources.wsjcpp/")
-list (APPEND WSJCPP_SOURCES "../src-resources.wsjcpp/__src_resources_user_0_png_pathfba0ac.h")
-list (APPEND WSJCPP_SOURCES "../src-resources.wsjcpp/__src_resources_user_0_png_pathfba0ac.cpp")
+list (APPEND WSJCPP_SOURCES "../src-resources.wsjcpp/__src_resources_user_default_icon_png_path340587.h")
+list (APPEND WSJCPP_SOURCES "../src-resources.wsjcpp/__src_resources_user_default_icon_png_path340587.cpp")
 
 # unit-tests
 list (APPEND WSJCPP_INCLUDE_DIRS "src")

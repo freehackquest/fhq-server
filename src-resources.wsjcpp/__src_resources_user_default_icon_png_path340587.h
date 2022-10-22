@@ -2,7 +2,7 @@
 
 #include <wsjcpp_core.h>
 
-class RES___src_resources_user_0_png_pathfba0ac : public WsjcppResourceFile { 
+class RES___src_resources_user_default_icon_png_path340587 : public WsjcppResourceFile { 
     public:
         virtual const std::string &getFilename() const override;
         virtual const std::string &getPackAs() const override;

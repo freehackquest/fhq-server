@@ -132,9 +132,9 @@ unit-tests:
       description: ""
 
 resources:
-  - filepath: "./src/resources/user_0.png"
+  - filepath: "./src/resources/user_default_icon.png"
     filesize: 4232
     pack-as: "binary"
-    modified: 1666468583
+    modified: 1666471293
     sha1: ""
 
