@@ -72,6 +72,7 @@ class WsjcppCore {
 
         static std::string doNormalizePath(const std::string &sPath);
         static std::string extractFilename(const std::string &sPath);
+        static std::string extractDirpath(const std::string &sFullPath);
         static std::string getCurrentDirectory();
 
         static long getCurrentTimeInMilliseconds();
@@ -90,6 +91,7 @@ class WsjcppCore {
         static std::vector<std::string> listOfFiles(const std::string &sDirname);
         static std::vector<std::string> getListOfFiles(const std::string &sDirname);
         static bool makeDir(const std::string &sDirname);
+        static bool makeDirsPath(const std::string &sDirname);
         static bool writeFile(const std::string &sFilename, const std::string &sContent);
         static bool readTextFile(const std::string &sFilename, std::string &sOutputContent);
         static bool readFileToBuffer(const std::string &sFilename, char *pBuffer[], int &nBufferSize);
@@ -127,8 +129,8 @@ class WsjcppCore {
         static bool setFilePermissions(const std::string& sFilePath, const WsjcppFilePermissions &filePermissions, std::string& sError);
         static bool getFilePermissions(const std::string& sFilePath, WsjcppFilePermissions &filePermissions, std::string& sError);
 
-        static std::string doPadLeft(const std::string& sIn, char cWhat, int nLength);
-        static std::string doPadRight(const std::string& sIn, char cWhat, int nLength);
+        static std::string doPadLeft(const std::string& sIn, char cWhat, size_t nLength);
+        static std::string doPadRight(const std::string& sIn, char cWhat, size_t nLength);
 
 };
 

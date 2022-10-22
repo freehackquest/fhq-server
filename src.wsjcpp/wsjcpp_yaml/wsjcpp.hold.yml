@@ -2,7 +2,7 @@ wsjcpp_version: v0.0.1
 cmake_minimum_required: 3.0
 cmake_cxx_standard: 11
 name: wsjcpp-yaml
-version: v0.1.6
+version: v0.1.7
 description: Read/Write yaml files
 issues: https://github.com/wsjcpp/wsjcpp-yaml/issues
 
@@ -19,22 +19,25 @@ keywords:
 authors:
   - name: Evgenii Sopov
     email: mrseakg@gmail.com
+
 dependencies:
   - name: "wsjcpp-core"
     version: "v0.2.1"
     url: "https://github.com/wsjcpp/wsjcpp-core:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_core"
+    installation-datetime: "Wed, 12 Jan 2022 14:25:07 GMT"
+
 distribution:
   - source-file: src/wsjcpp_yaml.cpp
     target-file: wsjcpp_yaml.cpp
     type: "source-code"
-    sha1: "3136ac590f886dce70a0cbbd1d7ae9cdbdf8162e"
+    sha1: "698fe214ee0e953e348b6e1f6a7e3e233d5b5ad3"
   - source-file: src/wsjcpp_yaml.h
     target-file: wsjcpp_yaml.h
     type: "source-code"
 
-    sha1: "046373f40d426f7153173a3a5c77716cf87eb1b4"
+    sha1: "893e63e20c01f32607e8862f308ecce4a98b25be"
 unit-tests:
   cases:
     - name: LineParser
@@ -75,3 +78,4 @@ unit-tests:
       description: ""
     - name: "KeepFormat"
       description: ""
+

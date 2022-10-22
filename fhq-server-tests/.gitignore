@@ -1,7 +1,0 @@
-.pytest_cache
-.cache
-**__pycache__**
-*.pyc
-tmp/*
-libfhqcli/*
-freehackquest_libclient_py/*

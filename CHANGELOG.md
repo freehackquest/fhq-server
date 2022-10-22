@@ -5,6 +5,28 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.2.50] - 2022-10-23 (2022 Oct 23)
+
+### Fixed
+ 
+- Fix admin create user
+- Fix #318 - simplify start server via docker-compose
+
+### Changed
+
+- Fix default user icon
+- Updated wsjcpp-yaml to v0.1.7
+- Moved `fhq-server-tests` to `tests/server-api-tests`
+
+### Removed
+
+- contrib/docker_compose_example
+
+### Added 
+
+- #318 New param for start `--init-default-data-for-containers ./data`
+
+
 ## [v0.2.49] - 2022-08-28 (2022 Aug 28)
 
 ### Added 

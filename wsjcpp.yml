@@ -3,7 +3,7 @@ cmake_minimum_required: 3.0
 cmake_cxx_standard: 11
 
 name: "fhq-server"
-version: v0.2.49
+version: v0.2.50
 description: "This is an open source platform for competitions of computer security."
 issues: "https://github.com/freehackquest/fhq-server/issues"
 
@@ -42,11 +42,11 @@ dependencies:
     installation-dir: "./src.wsjcpp/wsjcpp_hashes"
     installation-datetime: "Thu, 06 Jan 2022 07:00:27 GMT"
   - name: "wsjcpp-core"
-    version: "v0.2.1"
+    version: "v0.2.2"
     url: "https://github.com/wsjcpp/wsjcpp-core:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_core"
-    installation-datetime: "Fri, 16 Oct 2020 01:37:40 GMT"
+    installation-datetime: "Sat, 22 Oct 2022 19:20:47 GMT"
   - name: "nlohmann/json"
     version: "v3.10.5"
     url: "https://github.com/nlohmann/json:develop"
@@ -96,11 +96,11 @@ dependencies:
     installation-dir: "./src.wsjcpp/wsjcpp_arguments"
     installation-datetime: "Tue, 07 Sep 2021 05:23:11 GMT"
   - name: "wsjcpp-yaml"
-    version: "v0.1.6"
+    version: "v0.1.7"
     url: "https://github.com/wsjcpp/wsjcpp-yaml:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_yaml"
-    installation-datetime: "Sat, 08 Jan 2022 15:33:46 GMT"
+    installation-datetime: "Sat, 22 Oct 2022 19:39:40 GMT"
 distribution:
   - source-file: "src/validators/validators.h"
     target-file: "validators.h"
@@ -130,4 +130,11 @@ unit-tests:
       description: "Test for Storage Escapes"
     - name: "StorageStruct"
       description: ""
+
+resources:
+  - filepath: "./src/resources/user_default_icon.png"
+    filesize: 4232
+    pack-as: "binary"
+    modified: 1666471293
+    sha1: ""
 

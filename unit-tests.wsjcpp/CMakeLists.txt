@@ -2,14 +2,14 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(unit-tests C CXX)
-add_definitions(-DWSJCPP_APP_VERSION="ut-v0.2.49")
+add_definitions(-DWSJCPP_APP_VERSION="ut-v0.2.50")
 add_definitions(-DWSJCPP_APP_NAME="unit-tests-fhq-server")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
 endif()
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(EXECUTABLE_OUTPUT_PATH ${unit-tests_SOURCE_DIR})
 
 set (WSJCPP_LIBRARIES "")
@@ -33,7 +33,7 @@ list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_hashes/smallsha1.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_hashes/wsjcpp_hashes.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_hashes/wsjcpp_hashes.h")
 
-# wsjcpp-core:v0.2.1
+# wsjcpp-core:v0.2.2
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_core/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_core.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_core.h")
@@ -95,12 +95,12 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_arguments/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.h")
 
-# wsjcpp-yaml:v0.1.6
+# wsjcpp-yaml:v0.1.7
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_yaml/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.h")
 
-# fhq-server:v0.2.49
+# fhq-server:v0.2.50
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 list (APPEND WSJCPP_SOURCES "../src/validators/validators.h")
 list (APPEND WSJCPP_SOURCES "../src/validators/validators.cpp")
@@ -108,6 +108,11 @@ list (APPEND WSJCPP_SOURCES "../src/core/jobs_pool.h")
 list (APPEND WSJCPP_SOURCES "../src/core/jobs_pool.cpp")
 list (APPEND WSJCPP_SOURCES "../src/storages/mysql/mysql_storage.h")
 list (APPEND WSJCPP_SOURCES "../src/storages/mysql/mysql_storage.cpp")
+
+# resources.wsjcpp
+list (APPEND WSJCPP_INCLUDE_DIRS "../src-resources.wsjcpp/")
+list (APPEND WSJCPP_SOURCES "../src-resources.wsjcpp/__src_resources_user_default_icon_png_path340587.h")
+list (APPEND WSJCPP_SOURCES "../src-resources.wsjcpp/__src_resources_user_default_icon_png_path340587.cpp")
 
 # unit-tests
 list (APPEND WSJCPP_INCLUDE_DIRS "src")

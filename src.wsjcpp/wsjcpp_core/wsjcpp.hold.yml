@@ -1,9 +1,9 @@
 wsjcpp_version: v0.0.1
-cmake_cxx_standard: 11
+cmake_cxx_standard: 17
 cmake_minimum_required: 3.0
 
 name: wsjcpp-core
-version: v0.2.1
+version: v0.2.2
 description: Basic Utils for wsjcpp
 issues: https://github.com/wsjcpp/wsjcpp-core/issues
 repositories:
@@ -16,15 +16,16 @@ keywords:
 authors:
   - name: Evgenii Sopov
     email: mrseakg@gmail.com
+
 distribution:
   - source-file: src/wsjcpp_core.cpp
     target-file: wsjcpp_core.cpp
     type: "source-code"
-    sha1: "09ef821bbc090fc1cd8a15bc4a57a9a2ce8ae00d"
+    sha1: "15a0d9e4fcd6e34f9c4ccdc9dd6c855814abc020"
   - source-file: src/wsjcpp_core.h
     target-file: wsjcpp_core.h
     type: "source-code" # todo must be header-file
-    sha1: "e6e4ab2067d3c942db08e3b79862486eaf851e4b"
+    sha1: "a885e73c96bc564158cb97525525c1b7e5b455a6"
   - source-file: "src/wsjcpp_unit_tests.cpp"
     target-file: "wsjcpp_unit_tests.cpp"
     type: "unit-tests"
@@ -88,3 +89,10 @@ unit-tests:
       description: ""
     - name: "DateTimeFormat"
       description: ""
+    - name: "MakeDirsPath"
+      description: ""
+    - name: "ExtractDirpath"
+      description: ""
+    - name: "ExtractFilepath"
+      description: ""
+

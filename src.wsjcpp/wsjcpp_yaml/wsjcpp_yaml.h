@@ -3,11 +3,11 @@
 
 #include <iostream>
 #include <vector>
+#include <cstddef>
 #include <map>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 // ---------------------------------------------------------------------
 
@@ -51,6 +51,14 @@ enum WsjcppYamlQuotes {
     WSJCPP_YAML_QUOTES_SINGLE
 };
 
+class IWsjcppYamlLog {
+    public:
+        virtual void err(const std::string &TAG, const std::string &sMessage) = 0;
+        virtual void throw_err(const std::string &TAG, const std::string &sMessage) = 0;
+        virtual void warn(const std::string &TAG, const std::string &sMessage) = 0;
+        virtual void info(const std::string &TAG, const std::string &sMessage) = 0;
+};
+
 // ---------------------------------------------------------------------
 /*!
 	\brief Class for keep data of yaml node
@@ -62,6 +70,7 @@ class WsjcppYamlNode {
     public:
         WsjcppYamlNode(
             WsjcppYamlNode *pParent,
+            IWsjcppYamlLog *pLog,
             const WsjcppYamlPlaceInFile &placeInFile,
             WsjcppYamlNodeType nItemType
         );
@@ -141,6 +150,7 @@ class WsjcppYamlNode {
         bool hasContent(const std::string &sVal);
         bool hasObjects();
         std::string TAG;
+        IWsjcppYamlLog *m_pLog;
         WsjcppYamlNode *m_pParent;
         WsjcppYamlPlaceInFile m_placeInFile;
         WsjcppYamlNodeType m_nItemType;
@@ -237,33 +247,43 @@ class WsjcppYamlCursor {
         WsjcppYamlCursor &comment(const std::string& sComment);
         
         // val
-        std::string valStr();
+        std::string valStr() const;
         WsjcppYamlCursor &val(const std::string &sValue);
         WsjcppYamlCursor &val(const char *sValue);
-        int valInt();
+        int valInt() const;
         WsjcppYamlCursor &val(int nValue);
-        bool valBool();
+        bool valBool() const;
         WsjcppYamlCursor &val(bool bValue);
        
         // node
         WsjcppYamlNode *node();
 
+        std::string getCurrentNodePath();
+
+        operator int() const { return int(valInt()); };
+        // explicit operator bool() const { return valBool(); }
+        operator std::string() const { return valStr(); };
+
         WsjcppYamlCursor operator[](int idx) const;
         WsjcppYamlCursor operator[](const std::string &sName) const;
+        WsjcppYamlCursor operator[](const char *sName) const;
+
+        WsjcppYamlCursor& operator=(const char *sVal);
+        WsjcppYamlCursor& operator=(const std::string &sVal);
+        WsjcppYamlCursor& operator=(const int &nVal);
+        WsjcppYamlCursor& operator=(const bool &bVal);
 
     private:
         std::string TAG;
         WsjcppYamlNode *m_pCurrentNode;
 };
 
-
-// ---------------------------------------------------------------------
-
-class WsjcppYaml {
+class WsjcppYaml : public IWsjcppYamlLog {
     public:
         WsjcppYaml();
         ~WsjcppYaml();
         void clear();
+        void setLogger(IWsjcppYamlLog *pLog);
         bool loadFromFile(const std::string &sFileName, std::string &sError);
         bool saveToFile(const std::string &sFileName, std::string &sError);
         bool loadFromString(const std::string &sBufferName, const std::string &sBuffer, std::string &sError);
@@ -274,9 +294,24 @@ class WsjcppYaml {
         WsjcppYamlCursor operator[](int idx) const;
         WsjcppYamlCursor operator[](const std::string &sName) const;
 
+        // copy functions from WsjcppCore
+        static bool readTextFile(const std::string &sFilename, std::string &sOutputContent, std::string &sError);
+        static bool writeFile(const std::string &sFilename, const std::string &sContent);
+        static std::string& ltrim(std::string& str, const std::string& chars = "\t\n\v\f\r ");
+        static std::string& rtrim(std::string& str, const std::string& chars = "\t\n\v\f\r ");
+        static std::string& trim(std::string& str, const std::string& chars = "\t\n\v\f\r ");
+        static std::string toLower(const std::string &str);
+
+        // IWsjcppYamlLog
+        virtual void err(const std::string &TAG, const std::string &sMessage) override;
+        virtual void throw_err(const std::string &TAG, const std::string &sMessage) override;
+        virtual void warn(const std::string &TAG, const std::string &sMessage) override;
+        virtual void info(const std::string &TAG, const std::string &sMessage) override;
+
     private:
         std::string TAG;
-        
+        IWsjcppYamlLog *m_pLog;
+
         // TODO replace to WsjcppCore::split()
         std::vector<std::string> splitToLines(const std::string &sBuffer);
         bool parse(const std::string &sFileName, const std::string &sBuffer, std::string &sError);

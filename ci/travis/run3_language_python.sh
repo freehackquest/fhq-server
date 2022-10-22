@@ -28,15 +28,6 @@ check_ret $? "test connection to database"
 
 mkdir -p "./web-user/dist/"
 
-
-cd fhq-server-tests
-check_ret $? "Change directory to tests"
-./update_freehackquest_libclient_py.sh
-check_ret $? "Update freehackquest_libclient_py python library"
-python3 run_tests.py # run tests
-check_ret $? "tests"
-cd  ..
-
 cd tests/server-api-tests
 check_ret $? "Change directory to tests/server-api-tests"
 ./update_freehackquest_libclient_py.sh

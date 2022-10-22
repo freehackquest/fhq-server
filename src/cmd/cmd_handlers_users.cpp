@@ -355,7 +355,7 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest) {
     query_insert.bindValue(":pass", sPassword_sha1);
     query_insert.bindValue(":role", "user");
     query_insert.bindValue(":nick", sNick);
-    query_insert.bindValue(":logo", "files/users/0.png");
+    query_insert.bindValue(":logo", "users/default.png");
     query_insert.bindValue(":last_ip", "");
     query_insert.bindValue(":status", "activated");
     query_insert.bindValue(":country", "");
@@ -733,7 +733,7 @@ void CmdHandlerUsersAdd::handle(ModelRequest *pRequest) {
     query_insert.bindValue(":pass", sPassword_sha1);
     query_insert.bindValue(":role", sRole);
     query_insert.bindValue(":nick", sNick);
-    query_insert.bindValue(":logo", "files/users/0.png");
+    query_insert.bindValue(":logo", "users/default.png");
     query_insert.bindValue(":last_ip", "");
     query_insert.bindValue(":status", "activated");
     query_insert.bindValue(":country", "");
@@ -1873,7 +1873,7 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest) {
     query_insert.bindValue(":pass", sPassword_sha1);
     query_insert.bindValue(":role", "user");
     query_insert.bindValue(":nick", sNick);
-    query_insert.bindValue(":logo", "files/users/0.png");
+    query_insert.bindValue(":logo", "users/default.png");
     query_insert.bindValue(":last_ip", "");
     query_insert.bindValue(":status", "activated");
     query_insert.bindValue(":country", "");

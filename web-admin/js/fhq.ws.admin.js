@@ -552,6 +552,12 @@ fhq.ws.users_delete = function(data){
     return fhq.ws.send(data);
 }
 
+fhq.ws.users_add = function(data){
+    data = data || {};
+    data.cmd = 'users_add';
+    return fhq.ws.send(data);
+}
+
 fhq.ws.user_update = function(data){
     data = data || {};
     data.cmd = 'user_update';

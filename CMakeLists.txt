@@ -41,7 +41,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/src.wsjcpp/CMakeLists.txt)
 #### END_WSJCPP_APPEND
 
 set (CMAKE_AUTOMOC ON)
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
 set (EXECUTABLE_OUTPUT_PATH ${fhq-server_SOURCE_DIR})
 set (QTCORE_LIBRARIES ${Qt5Core_LIBRARIES})
 include_directories(${Qt5Core_INCLUDE_DIRS})

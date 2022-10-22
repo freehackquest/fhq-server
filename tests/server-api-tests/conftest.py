@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Copyright (C) 2011-2022, Evgenii Sopov <mrseakg@gmail.com>
+
 # pylint: disable=consider-using-with
+
 """ Configuration for pytest """
 
 import os
@@ -8,6 +11,8 @@ import subprocess
 import time
 import signal
 import socket
+import random
+import string
 import pytest
 import docker
 
@@ -23,7 +28,7 @@ def pytest_configure():
     pytest.admin_password = "admin"
     pytest.test_host = "127.0.0.1"
     pytest.test_server = "ws://" + pytest.test_host + ":1234/"
-    pytest.test_web_server = "http://" + pytest.test_host + ":7080/"
+    pytest.test_url_http_web_server = "http://" + pytest.test_host + ":7080/"
     pytest.game1_uuid = "00000000-0000-0000-1000-000000000001"
     pytest.game2_uuid = "00000000-0000-0000-1000-000000000002"
     pytest.user1_uuid = "00000000-0000-0000-4001-000000000001"
@@ -65,6 +70,41 @@ def local_tmp_dir():
     if not os.path.isdir(tmp_dir_path):
         os.mkdir(tmp_dir_path)
     return tmp_dir_path
+
+@pytest.fixture(scope="session")
+def url_http_web_server():
+    """ web_server_http """
+    return pytest.test_url_http_web_server
+
+def _generate_random(size):
+    """ Generate random printable string """
+    _range = range(size)
+    _alphabet = string.ascii_uppercase + string.digits + ' _+=\'"~@!#?/<>'
+    return ''.join(random.choice(_alphabet) for _ in _range)
+
+@pytest.fixture(scope="session")
+def generate_random():
+    """ generate_random """
+    return _generate_random
+
+def _generate_random_uuid():
+    """ _generate_random_uuid """
+    ret = ''
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(8))
+    ret = ret + '-'
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(4))
+    ret = ret + '-'
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(4))
+    ret = ret + '-'
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(4))
+    ret = ret + '-'
+    ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(12))
+    return ret
+
+@pytest.fixture(scope="session")
+def generate_random_uuid():
+    """ generate_random_uuid """
+    return _generate_random_uuid
 
 @pytest.fixture(scope="session")
 def admin_session():
@@ -122,11 +162,6 @@ def user3_data():
 def user3_data_again():
     """Return user3_data"""
     return pytest.user3_data_again
-
-@pytest.fixture(scope="session")
-def web_server_host():
-    """Return web server host"""
-    return pytest.test_web_server
 
 @pytest.fixture(scope="session")
 def test_server():
