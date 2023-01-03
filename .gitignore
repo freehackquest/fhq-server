@@ -88,3 +88,4 @@ contrib/docker_compose_example/nginx/logs/*.log
 
 TODO
 12.webp
+__pycache__

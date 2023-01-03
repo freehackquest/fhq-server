@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v0.2.51] - ??
 
+### Chnages
+
+- [api] Renamed 'createquest' to 'quests.add'
+
+### Removed
+
+- Removed sea5kg_cpplint
 
 ### Security
 - [snyk] fix: upgrade core-js from 3.23.1 to 3.23.2
