@@ -44,3 +44,8 @@ if arguments.subparser == CLANG_FORMAT:
             continue
         command = ["clang-format", '-style=file', '-i', _file]
         cmd.run_command(command)
+
+# TODO
+# https://clang.llvm.org/extra/clang-tidy/
+# clang-tidy src/main.cpp -checks=-*,clang-analyzer-*,-clang-analyzer-cplusplus*
+
