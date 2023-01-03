@@ -44,6 +44,7 @@ void CmdHandlerQuests::handle(ModelRequest *pRequest) {
     std::vector<std::pair<std::string, std::string> > vWhereValues;
 
     std::string sFilter = pRequest->getInputString("filter", "");
+    WsjcppCore::trim(sFilter);
     if (sFilter != "") {
         sFilter = "%" + sFilter + "%";
         vWhereQuery.push_back("(q.name LIKE :filter OR q.copyright LIKE :copyright OR q.text LIKE :text)");
