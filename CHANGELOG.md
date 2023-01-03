@@ -5,19 +5,35 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.51] - ??
+## [v0.2.51] - 2023-01-03 (2023 Jan 3)
 
-### Chnages
+### Added
 
-- [api] Renamed 'createquest' to 'quests.add'
+- Fixed #469 created 'pm.py'
+- Added copyrights to files  src/storages/updates/
 
 ### Removed
 
 - Removed sea5kg_cpplint
 
+### Fixed
+
+- [web-admin] Removed focus from input and textarea
+- Fixed #408 Data too long for column 'user_answer' at row 1 QMYSQL3: Unable to execute statement (max 255 simbols)
+- Fixed #373 Trim filter for search requets by quests
+
+### Changed
+
+- [api] Renamed 'createquest' to 'quests.add'
+- [web-admin] Changed colors
+- Apply clang-format for src/
+- Updated year to 2023
+- Setting: allow_quests_proposals moved to config.yml
+
 ### Security
 - [snyk] fix: upgrade core-js from 3.23.1 to 3.23.2
 - [snyk] fix: upgrade marked from 4.0.17 to 4.0.18
+
 
 ## [v0.2.50] - 2022-10-23 (2022 Oct 23)
 

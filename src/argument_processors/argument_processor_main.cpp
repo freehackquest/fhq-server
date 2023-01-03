@@ -135,6 +135,9 @@ bool ArgumentProcessorMain::initDefaultDataForContainers(const std::string &sIni
   vDirs.push_back(sNormalizedInitDir + "/data/public/quests");
   vDirs.push_back(sNormalizedInitDir + "/data/public/users");
   vDirs.push_back(sNormalizedInitDir + "/data/fhqjad-store");
+  vDirs.push_back(sNormalizedInitDir + "/data/file_storage");
+  vDirs.push_back(sNormalizedInitDir + "/data/file_storage/games");
+  vDirs.push_back(sNormalizedInitDir + "/data/file_storage/quests");
   vDirs.push_back(sNormalizedInitDir + "/data/logs");
 
   for (int i = 0; i < vDirs.size(); i++) {
@@ -208,8 +211,10 @@ void ArgumentProcessorMain::initDefaultDataConfigYml(const std::string &sNormali
     sDefaultConfigYml += "\n";
     sDefaultConfigYml += "# fhqjad-store\n";
     sDefaultConfigYml += "web_fhqjad_store: " + m_sWorkDir + "/fhqjad-store\n";
-    sDefaultConfigYml += "# UI configs";
-    sDefaultConfigYml += "allow_quests_proposals: no";
+    sDefaultConfigYml += "\n";
+    sDefaultConfigYml += "# UI configs\n";
+    sDefaultConfigYml += "allow_quests_proposals: no\n";
+    sDefaultConfigYml += "\n";
 
     if (!yaml.loadFromString("default-config.yml", sDefaultConfigYml, sError)) {
       WsjcppLog::throw_err(TAG, "Error parsing: " + sError);

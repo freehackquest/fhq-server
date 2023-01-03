@@ -39,7 +39,7 @@ public:
 
 UpdateRecords1::UpdateRecords1()
     : WsjcppStorageChanges("quests_files"){
-
+          // nothing
       };
 
 WsjcppStorageChangesType UpdateRecords1::getType() const {

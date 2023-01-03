@@ -15,7 +15,7 @@
         "if-format": "err",
         "while-format": "err",
         "for-format": "err",
-        "end-brackets": "err",
+        "end-brackets": "warn",
         "start-bracket-else": "err",
         "end-bracket-else": "err",
         "tabs": "err",
