@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v0.2.51] - ??
 
+
+### Security
+- [snyk] fix: upgrade core-js from 3.23.1 to 3.23.2
+- [snyk] fix: upgrade marked from 4.0.17 to 4.0.18
+
 ## [v0.2.50] - 2022-10-23 (2022 Oct 23)
 
 ### Fixed

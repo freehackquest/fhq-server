@@ -34,10 +34,10 @@ body {
     border-right: 2px solid #080;
     height: 100%;
     color: #00ff00;
-    background-color: #000000;
+    background-color: #2b3d4e;
     z-index: 1000;
     position: fixed;
-    padding: 20px;
+    /*padding: 20px;*/
 }
 
 .swa-page-right-content-box {
@@ -68,14 +68,15 @@ body {
 }
 
 .swa-page-sidebar-title {
-    color: #00ff00;
-    background-color: #000000;
-    width: 100%;
+    color: #aaf0c6;
+    background-color: #14753d;
+    width: calc(100% - 20px);
     padding: 10px;
     font-weight: bold;
     font-size: 14px;
-    border: 2px solid #0f0;
+    border: 2px solid #aaf0c6;
     text-align: center;
+    margin: 10px;
 }
 
 .swa-page-sidebar-space {
@@ -87,11 +88,12 @@ body {
 }
 
 .swa-page-sidebar-button {
-    color: #00ff00;
-    background-color: #000000;
+    color: #afbfcc;
+    /*background-color: #000000;*/
     padding: 5px;
     cursor: pointer;
     text-align: right;
+    padding-right: 20px;
 }
 
 .swa-page-sidebar-button:hover {
@@ -99,8 +101,8 @@ body {
 }
 
 .swa-page-sidebar-button.active {
-    color: #000000;
-    background-color: #00ff00;
+    color: #cecece;
+    background-color: #233342;
     padding: 5px;
     cursor: pointer;
     text-align: right;
