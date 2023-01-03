@@ -728,6 +728,10 @@ bool EmployGlobalSettings::initFromDatabase(WsjcppSettingsStore *pDatabaseSettin
         pItem->setPasswordValue(sValue);
         WsjcppLog::info(TAG, "Applyed settings from database: " + sName + " = (hidden)");
       } else if (pItem->isBoolean()) {
+        // TODO temporary
+        if (sName == "allow_quests_proposals") {
+          continue;
+        }
         pItem->setBooleanValue(sValue == "yes");
         WsjcppLog::info(TAG, "Applyed settings from database: " + sName + " = " + sValue);
       } else if (pItem->isDirPath()) {
@@ -950,6 +954,10 @@ EmployServer::EmployServer()
   pGlobalSettings->registrySetting("ws_server", "ssl_cert_file").filePath("/etc/ssl/certs/localhost.crt").inFile();
   pGlobalSettings->registrySetting("web_server", "web_port").number(7080).inFile();
   pGlobalSettings->registrySetting("web_server", "web_max_threads").number(4).inFile();
+  pGlobalSettings->registrySetting("functional", "allow_quests_proposals").boolean(true).inFile();
+
+  pGlobalSettings->registrySetting("server", "file_storage").dirPath("/usr/share/fhq-server/file_storage").inFile();
+
   // TODO validators
 
   pGlobalSettings->registrySetting("google_map", "google_map_api_key").string("some").inDatabase();
@@ -985,7 +993,6 @@ EmployServer::EmployServer()
 
   // TODO move to userprofiles
   pGlobalSettings->registrySetting("user_profile", "profile_change_nick").boolean(true).inDatabase();
-  pGlobalSettings->registrySetting("functional", "allow_quests_proposals").boolean(true).inDatabase();
 }
 
 // ---------------------------------------------------------------------

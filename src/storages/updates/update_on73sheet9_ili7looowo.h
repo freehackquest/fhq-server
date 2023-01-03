@@ -28,8 +28,8 @@ SOFTWARE.
 #include <wsjcpp_storages.h>
 
 class Update_on73sheet9_ili7looowo : public WsjcppStorageUpdateBase {
-    public:
-        Update_on73sheet9_ili7looowo();
+public:
+  Update_on73sheet9_ili7looowo();
 };
 
 #endif // UPDATE_ON73SHEET9_ILI7LOOOWO_H

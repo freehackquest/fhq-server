@@ -173,56 +173,45 @@ void ArgumentProcessorMain::initDefaultDataConfigYml(const std::string &sNormali
     if (!WsjcppCore::dirExists(sWebUserFolder)) {
       sWebUserFolder = "/usr/share/fhq-server/web-user";
     }
-    if (!yaml.loadFromString(
-            // buffer name
-            "default-config.yml",
-            // content
-            "# init default config for containers \n"
-            "\n"
-            "# Database Configuration\n"
-            "usemysql: yes\n"
-            "storage_type: mysql\n"
-            "dbhost: 127.0.0.1\n"
-            "dbname: fhqserver\n"
-            "dbport: 3306\n"
-            "dbuser: fhqserver\n"
-            "dbpass: \"VveGJemxFb\"\n"
-            "\n"
-            "# Server configurations\n"
-            "port: 1234\n"
-            "ssl_on: yes\n"
-            "ssl_port: 4613\n"
-            "ssl_key_file: " +
-                sNormalizedInitDir +
-                "/ssl/test_fhqserver.key\n"
-                "ssl_cert_file: " +
-                sNormalizedInitDir +
-                "/ssl/test_fhqserver.crt\n"
-                "\n"
-                "# Web Configuration\n"
-                "web_port: 7080\n"
-                "web_max_threads: 4\n"
-                "web_admin_folder: " +
-                sWebAdminFolder +
-                "\n"
-                "web_user_folder: " +
-                sWebUserFolder +
-                "\n"
-                "\n"
-                "web_public_folder: " +
-                m_sWorkDir +
-                "/public/\n"
-                "web_public_folder_url: http://localhost:7080/public/\n"
-                "\n"
-                "# Jobs Pool Config\n"
-                "jobs_fast_threads: 2\n"
-                "jobs_slow_threads: 1\n"
-                "\n"
-                "# fhqjad-store\n"
-                "web_fhqjad_store: " +
-                m_sWorkDir + "/fhqjad-store\n",
-            // error output
-            sError)) {
+    std::string sDefaultConfigYml = "";
+    sDefaultConfigYml += "# init default config for containers \n";
+    sDefaultConfigYml += "\n";
+    sDefaultConfigYml += "# Database Configuration\n";
+    sDefaultConfigYml += "file_storage: " + sNormalizedInitDir + "/file_storage\n";
+    sDefaultConfigYml += "usemysql: yes\n";
+    sDefaultConfigYml += "storage_type: mysql\n";
+    sDefaultConfigYml += "dbhost: 127.0.0.1\n";
+    sDefaultConfigYml += "dbname: fhqserver\n";
+    sDefaultConfigYml += "dbport: 3306\n";
+    sDefaultConfigYml += "dbuser: fhqserver\n";
+    sDefaultConfigYml += "dbpass: \"VveGJemxFb\"\n";
+    sDefaultConfigYml += "\n";
+    sDefaultConfigYml += "# Server configurations\n";
+    sDefaultConfigYml += "port: 1234\n";
+    sDefaultConfigYml += "ssl_on: yes\n";
+    sDefaultConfigYml += "ssl_port: 4613\n";
+    sDefaultConfigYml += "ssl_key_file: " + sNormalizedInitDir + "/ssl/test_fhqserver.key\n";
+    sDefaultConfigYml += "ssl_cert_file: " + sNormalizedInitDir + "/ssl/test_fhqserver.crt\n";
+    sDefaultConfigYml += "\n";
+    sDefaultConfigYml += "# Web Configuration\n";
+    sDefaultConfigYml += "web_port: 7080\n";
+    sDefaultConfigYml += "web_max_threads: 4\n";
+    sDefaultConfigYml += "web_admin_folder: " + sWebAdminFolder + "\n";
+    sDefaultConfigYml += "web_user_folder: " + sWebUserFolder + "\n";
+    sDefaultConfigYml += "\n";
+    sDefaultConfigYml += "web_public_folder: " + m_sWorkDir + "/public/\n";
+    sDefaultConfigYml += "web_public_folder_url: http://localhost:7080/public/\n";
+    sDefaultConfigYml += "\n";
+    sDefaultConfigYml += "# Jobs Pool Config\n";
+    sDefaultConfigYml += "jobs_fast_threads: 2\n";
+    sDefaultConfigYml += "jobs_slow_threads: 1\n";
+    sDefaultConfigYml += "\n";
+    sDefaultConfigYml += "# fhqjad-store\n";
+    sDefaultConfigYml += "web_fhqjad_store: " + m_sWorkDir + "/fhqjad-store\n";
+    sDefaultConfigYml += "# UI configs";
+    sDefaultConfigYml += "allow_quests_proposals: no";
+
+    if (!yaml.loadFromString("default-config.yml", sDefaultConfigYml, sError)) {
       WsjcppLog::throw_err(TAG, "Error parsing: " + sError);
     }
     bSaveYaml = true;

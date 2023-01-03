@@ -28,7 +28,6 @@ REGISTRY_WSJCPP_STORAGE_UPDATE(Update_on73sheet9_ili7looowo)
 
 Update_on73sheet9_ili7looowo::Update_on73sheet9_ili7looowo()
     : WsjcppStorageUpdateBase("on73sheet9", "ili7looowo", "Removing users_games") {
-    
-    dropTable("users_games");
-}
 
+  dropTable("users_games");
+}
