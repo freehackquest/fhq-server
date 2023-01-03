@@ -5,22 +5,22 @@
 #include <model_leak.h>
 
 class EmployLeaks : public WsjcppEmployBase {
-    public:
-        EmployLeaks();
-        static std::string name() { return "EmployLeaks"; }
-        virtual bool init();
-        virtual bool deinit();
+public:
+  EmployLeaks();
+  static std::string name() { return "EmployLeaks"; }
+  virtual bool init();
+  virtual bool deinit();
 
-        int addLeak(ModelLeak* pModelLeak, std::string &sError);
-        const ModelLeak* findLeakByUuid(std::string sUuid);
-        int removeLeak(std::string sUuid);
-        int updateLeak(ModelLeak* pModelLeak);
-        nlohmann::json toJson();
+  int addLeak(ModelLeak *pModelLeak, std::string &sError);
+  const ModelLeak *findLeakByUuid(std::string sUuid);
+  int removeLeak(std::string sUuid);
+  int updateLeak(ModelLeak *pModelLeak);
+  nlohmann::json toJson();
 
-    private:
-        std::string TAG;
-        std::vector<ModelLeak*> m_vectCacheLeaks;
-        std::map<std::string, ModelLeak*> m_mapCacheLeaks;
+private:
+  std::string TAG;
+  std::vector<ModelLeak *> m_vectCacheLeaks;
+  std::map<std::string, ModelLeak *> m_mapCacheLeaks;
 };
 
 #endif // EMPLOY_LEAKS_H

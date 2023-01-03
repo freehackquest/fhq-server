@@ -5,9 +5,8 @@
 
 class Update0100 : public WsjcppStorageUpdateBase {
 
-    public:
-        Update0100();
+public:
+  Update0100();
 };
 
 #endif // UPDATE0100_H
-

@@ -22,8 +22,7 @@ int main(int argc, char **argv) {
   std::string appVersion(WSJCPP_APP_VERSION);
   std::string appAuthor("FreeHackQuest Team");
   std::string sLibraryNameForExports("fhq");
-  WsjcppCore::init(argc, argv, appName, appVersion, appAuthor,
-                   sLibraryNameForExports);
+  WsjcppCore::init(argc, argv, appName, appVersion, appAuthor, sLibraryNameForExports);
 
   QCoreApplication qtApp(argc, argv);
 

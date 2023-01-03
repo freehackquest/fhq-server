@@ -4,14 +4,14 @@
 #include <wsjcpp_light_web_server.h>
 
 class HttpHandlerWebUserFolder : public WsjcppLightWebHttpHandlerBase {
-    public:
-        HttpHandlerWebUserFolder(const std::string &sWebFolder);
-        virtual bool canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest);
-        virtual bool handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest);
+public:
+  HttpHandlerWebUserFolder(const std::string &sWebFolder);
+  virtual bool canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest);
+  virtual bool handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest);
 
-    private:
-        std::string TAG;
-        std::string m_sWebFolder;
+private:
+  std::string TAG;
+  std::string m_sWebFolder;
 };
 
 #endif // HTTP_HANDLER_WEB_USER_FOLDER_H

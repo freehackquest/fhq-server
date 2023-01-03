@@ -4,8 +4,8 @@
 #include <wsjcpp_storages.h>
 
 class UpdatesInitDatabase : public WsjcppStorageUpdateBase {
-    public:
-        UpdatesInitDatabase();
+public:
+  UpdatesInitDatabase();
 };
 
 #endif // UPDATES_INIT_DATABASE_H

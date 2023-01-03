@@ -28,8 +28,8 @@ SOFTWARE.
 #include <wsjcpp_storages.h>
 
 class Update_9gwc2tm5ah_on73sheet9 : public WsjcppStorageUpdateBase {
-    public:
-        Update_9gwc2tm5ah_on73sheet9();
+public:
+  Update_9gwc2tm5ah_on73sheet9();
 };
 
-#endif  // SRC_STORAGES_UPDATES_UPDATE_9GWC2TM5AH_ON73SHEET9_H_
+#endif // SRC_STORAGES_UPDATES_UPDATE_9GWC2TM5AH_ON73SHEET9_H_

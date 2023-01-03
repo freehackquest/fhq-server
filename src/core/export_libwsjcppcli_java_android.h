@@ -4,18 +4,18 @@
 #include <string>
 
 class ExportLibWsjCppCliJavaAndroid {
-    public:
-        ExportLibWsjCppCliJavaAndroid();
-        void setVersion(const std::string &sVersion);
-        void exportLib();
-        
-    private:
-        std::string TAG;
-        std::string m_sVersion;
-        void exportPrepareDirs();
-        bool exportManifest();
-        bool exportBuildGradle();
-        void exportAPImd();
+public:
+  ExportLibWsjCppCliJavaAndroid();
+  void setVersion(const std::string &sVersion);
+  void exportLib();
+
+private:
+  std::string TAG;
+  std::string m_sVersion;
+  void exportPrepareDirs();
+  bool exportManifest();
+  bool exportBuildGradle();
+  void exportAPImd();
 };
 
 #endif // EXPORT_LIBWSJCPPCLI_JAVA_ANDROID_H

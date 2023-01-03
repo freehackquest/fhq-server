@@ -5,15 +5,15 @@
 #include <string>
 
 class UpdateQuestSolvedTask : public QRunnable {
-    void run();
-    
-    public:
-        UpdateQuestSolvedTask(int m_nQuestID);
-        ~UpdateQuestSolvedTask();
+  void run();
 
-    private:
-        int m_nQuestID;
-        std::string TAG;
+public:
+  UpdateQuestSolvedTask(int m_nQuestID);
+  ~UpdateQuestSolvedTask();
+
+private:
+  int m_nQuestID;
+  std::string TAG;
 };
 
 #endif // UPDATE_QUEST_SOLVED_TASK_H

@@ -6,25 +6,25 @@
 // ---------------------------------------------------------------------
 
 class CmdHandlerMailInfo : public CmdHandlerBase {
-    public:
-        CmdHandlerMailInfo();
-        virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerMailInfo();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 // ---------------------------------------------------------------------
 
 class CmdHandlerMailSend : public CmdHandlerBase {
-    public:
-        CmdHandlerMailSend();
-        virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerMailSend();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 // ---------------------------------------------------------------------
 
 class CmdHandlerMailsList : public CmdHandlerBase {
-    public:
-        CmdHandlerMailsList();
-        virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerMailsList();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 #endif // CMD_HADNLERS_MAILS_H

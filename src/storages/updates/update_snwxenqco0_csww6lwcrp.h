@@ -4,8 +4,8 @@
 #include <wsjcpp_storages.h>
 
 class Update_snwxenqco0_csww6lwcrp : public WsjcppStorageUpdateBase {
-    public:
-        Update_snwxenqco0_csww6lwcrp();
+public:
+  Update_snwxenqco0_csww6lwcrp();
 };
 
 #endif // UPDATE_SNWXENQCO0_CSWW6LWCRP_H

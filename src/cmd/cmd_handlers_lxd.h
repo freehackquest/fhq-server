@@ -9,16 +9,16 @@
 class CmdHandlerLXDContainers : public CmdHandlerBase {
 
 public:
-    CmdHandlerLXDContainers();
-    virtual void handle(ModelRequest *pRequest);
+  CmdHandlerLXDContainers();
+  virtual void handle(ModelRequest *pRequest);
 
 private:
-    std::string TAG;
+  std::string TAG;
 
-    static void create_container(const std::string &name, std::string &sError, int &nErrorCode);
-    static void start_container(const std::string &name, std::string &sError, int &nErrorCode);
-    static void stop_container(const std::string &name, std::string &sError, int &nErrorCode);
-    static void delete_container(const std::string &name, std::string &sError, int &nErrorCode);
+  static void create_container(const std::string &name, std::string &sError, int &nErrorCode);
+  static void start_container(const std::string &name, std::string &sError, int &nErrorCode);
+  static void stop_container(const std::string &name, std::string &sError, int &nErrorCode);
+  static void delete_container(const std::string &name, std::string &sError, int &nErrorCode);
 };
 
 // ---------------------------------------------------------------------
@@ -26,9 +26,9 @@ private:
 class CmdHandlerLXDInfo : public CmdHandlerBase {
 
 public:
-    CmdHandlerLXDInfo();
-    virtual void handle(ModelRequest *pRequest);
-    bool get_state(const std::string& sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState);
+  CmdHandlerLXDInfo();
+  virtual void handle(ModelRequest *pRequest);
+  bool get_state(const std::string &sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState);
 };
 
 // ---------------------------------------------------------------------
@@ -36,8 +36,8 @@ public:
 class CmdHandlerLXDList : public CmdHandlerBase {
 
 public:
-    CmdHandlerLXDList();
-    virtual void handle(ModelRequest *pRequest);
+  CmdHandlerLXDList();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 // ---------------------------------------------------------------------
@@ -45,11 +45,11 @@ public:
 class CmdHandlerLXDExec : public CmdHandlerBase {
 
 public:
-    CmdHandlerLXDExec();
-    void handle(ModelRequest *pRequest) override;
+  CmdHandlerLXDExec();
+  void handle(ModelRequest *pRequest) override;
 
-    static bool exec_command(const std::string &sName, const std::string &sCommand, std::string &sError,
-                             int &nErrorCode, std::string &sOutput);
+  static bool exec_command(const std::string &sName, const std::string &sCommand, std::string &sError, int &nErrorCode,
+                           std::string &sOutput);
 };
 
 // ---------------------------------------------------------------------
@@ -57,15 +57,14 @@ public:
 class CmdHandlerLXDFile : public CmdHandlerBase {
 
 public:
-    CmdHandlerLXDFile();
-    void handle(ModelRequest *pRequest) override;
+  CmdHandlerLXDFile();
+  void handle(ModelRequest *pRequest) override;
 
-    void pull_file(LXDContainer *pContainer, const std::string &sPath, std::string &sb64File,
-                   std::string &sError, int &nErrorCode, bool &isDirectory);
-    bool push_file(LXDContainer *pContainer, const std::string &sPath, const std::string &sb64File,
-                   std::string &sError, int &nErrorCode);
-    bool delete_file(const std::string &sName, const std::string &sPath, std::string &s_b64Zip);
-
+  void pull_file(LXDContainer *pContainer, const std::string &sPath, std::string &sb64File, std::string &sError,
+                 int &nErrorCode, bool &isDirectory);
+  bool push_file(LXDContainer *pContainer, const std::string &sPath, const std::string &sb64File, std::string &sError,
+                 int &nErrorCode);
+  bool delete_file(const std::string &sName, const std::string &sPath, std::string &s_b64Zip);
 };
 
 // ---------------------------------------------------------------------
@@ -73,10 +72,9 @@ public:
 class CmdHandlerLXDOpenPort : public CmdHandlerBase {
 
 public:
-    CmdHandlerLXDOpenPort();
-    void handle(ModelRequest *pRequest) override;
-    bool is_port_valide(const std::string &sProto, const int &nPort, std::string &sError,
-                        int &nErrorCode);
+  CmdHandlerLXDOpenPort();
+  void handle(ModelRequest *pRequest) override;
+  bool is_port_valide(const std::string &sProto, const int &nPort, std::string &sError, int &nErrorCode);
 };
 
 // ---------------------------------------------------------------------
@@ -84,18 +82,16 @@ public:
 class CmdHandlerLXDImportService : public CmdHandlerBase {
 
 public:
-    CmdHandlerLXDImportService();
-    void handle(ModelRequest *pRequest) override;
+  CmdHandlerLXDImportService();
+  void handle(ModelRequest *pRequest) override;
 };
-
-
 
 // ---------------------------------------------------------------------
 
 class CmdHandlerLXDImportServiceFromZip : public CmdHandlerBase {
-    public:
-        CmdHandlerLXDImportServiceFromZip();
-        void handle(ModelRequest *pRequest) override;
+public:
+  CmdHandlerLXDImportServiceFromZip();
+  void handle(ModelRequest *pRequest) override;
 };
 
 // ---------------------------------------------------------------------
@@ -103,8 +99,8 @@ class CmdHandlerLXDImportServiceFromZip : public CmdHandlerBase {
 class CmdHandlerLXDStartService : public CmdHandlerBase {
 
 public:
-    CmdHandlerLXDStartService();
-    void handle(ModelRequest *pRequest) override;
+  CmdHandlerLXDStartService();
+  void handle(ModelRequest *pRequest) override;
 };
 
 #endif // CMD_HADNLERS_LXD_H
