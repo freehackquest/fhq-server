@@ -3,13 +3,13 @@ body {
     font-style: normal;
     font-weight: normal;
     font-size: 12px;
-    color: #0f0;
+    color: #303946;
 }
 
 .swa-pg-container {
     padding: 10px;
     background-color: #000;
-    color: #0f0;
+    color: #303946;
 }
 
 .swa-button, input[type="file"]::file-selector-button {
@@ -50,18 +50,18 @@ body {
 
 .swa-page-right-content {
     padding: 20px;
-    background-color: #000;
+    background-color: #bfd5db;
 }
 
 .swa-page-right-title-box {
     padding: 20px;
-    background-color: #000;
-    color: #0f0;
+    background-color: #EEE;
+    color: #303946;
 }
 
 .swa-page-right-title {
     padding: 5px;
-    border-bottom: 2px solid #0f0;
+    border-bottom: 2px solid #303946;
     text-align: center;
     font-size: 17px;
     font-weight: bold;
@@ -138,15 +138,15 @@ textarea:focus, input:focus{
 }
 
 .CodeMirror div.CodeMirror-cursor {
-    border-left: 1px solid #0f0;
+    border-left: 1px solid #303946;
 }
 
 hr {
-    background-color: #0f0;
+    background-color: #303946;
 }
 
 h1, h2, h3 {
-    color: #0f0;
+    color: #303946;
 }
 
 .swa-table {
