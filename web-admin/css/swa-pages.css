@@ -3,13 +3,13 @@ body {
     font-style: normal;
     font-weight: normal;
     font-size: 12px;
-    color: #0f0;
+    color: #303946;
 }
 
 .swa-pg-container {
     padding: 10px;
     background-color: #000;
-    color: #0f0;
+    color: #303946;
 }
 
 .swa-button, input[type="file"]::file-selector-button {
@@ -34,10 +34,10 @@ body {
     border-right: 2px solid #080;
     height: 100%;
     color: #00ff00;
-    background-color: #000000;
+    background-color: #2b3d4e;
     z-index: 1000;
     position: fixed;
-    padding: 20px;
+    /*padding: 20px;*/
 }
 
 .swa-page-right-content-box {
@@ -50,32 +50,33 @@ body {
 
 .swa-page-right-content {
     padding: 20px;
-    background-color: #000;
+    background-color: #bfd5db;
 }
 
 .swa-page-right-title-box {
     padding: 20px;
-    background-color: #000;
-    color: #0f0;
+    background-color: #EEE;
+    color: #303946;
 }
 
 .swa-page-right-title {
     padding: 5px;
-    border-bottom: 2px solid #0f0;
+    border-bottom: 2px solid #303946;
     text-align: center;
     font-size: 17px;
     font-weight: bold;
 }
 
 .swa-page-sidebar-title {
-    color: #00ff00;
-    background-color: #000000;
-    width: 100%;
+    color: #aaf0c6;
+    background-color: #14753d;
+    width: calc(100% - 20px);
     padding: 10px;
     font-weight: bold;
     font-size: 14px;
-    border: 2px solid #0f0;
+    border: 2px solid #aaf0c6;
     text-align: center;
+    margin: 10px;
 }
 
 .swa-page-sidebar-space {
@@ -87,11 +88,12 @@ body {
 }
 
 .swa-page-sidebar-button {
-    color: #00ff00;
-    background-color: #000000;
+    color: #afbfcc;
+    /*background-color: #000000;*/
     padding: 5px;
     cursor: pointer;
     text-align: right;
+    padding-right: 20px;
 }
 
 .swa-page-sidebar-button:hover {
@@ -99,8 +101,8 @@ body {
 }
 
 .swa-page-sidebar-button.active {
-    color: #000000;
-    background-color: #00ff00;
+    color: #cecece;
+    background-color: #233342;
     padding: 5px;
     cursor: pointer;
     text-align: right;
@@ -127,16 +129,24 @@ input[type="file"] {
     box-shadow: none;
 }
 
+textarea:focus, input:focus{
+    outline: none;
+}
+
+*:focus {
+    outline: none;
+}
+
 .CodeMirror div.CodeMirror-cursor {
-    border-left: 1px solid #0f0;
+    border-left: 1px solid #303946;
 }
 
 hr {
-    background-color: #0f0;
+    background-color: #303946;
 }
 
 h1, h2, h3 {
-    color: #0f0;
+    color: #303946;
 }
 
 .swa-table {

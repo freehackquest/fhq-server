@@ -1,75 +1,79 @@
+#include <QtCore>
 #include <cmd_handlers_support.h>
-#include <runtasks.h>
-#include <iostream>
 #include <employ_database.h>
 #include <employ_server_info.h>
-#include <QtCore>
+#include <iostream>
+#include <runtasks.h>
 
 // ---------------------------------------------------------------------
 // This handler for add support
 
 REGISTRY_CMD(CmdHandlerFeedbackAdd)
 
-CmdHandlerFeedbackAdd::CmdHandlerFeedbackAdd()
-    : CmdHandlerBase("feedback_add", "Create the feedback") {
+CmdHandlerFeedbackAdd::CmdHandlerFeedbackAdd() : CmdHandlerBase("feedback_add", "Create the feedback") {
 
-    setAccessUnauthorized(true);
-    setAccessUser(true);
-    setAccessAdmin(true);
+  setAccessUnauthorized(true);
+  setAccessUser(true);
+  setAccessAdmin(true);
 
-    // validation and description input fields
-    requireStringParam("from", "From user")
-        .addValidator(new WsjcppValidatorEmail());
-    requireStringParam("text", "Text of feedback");
-    requireStringParam("type", "Type of feedback"); // TODO validator
+  // validation and description input fields
+  requireStringParam("from", "From user").addValidator(new WsjcppValidatorEmail());
+  requireStringParam("text", "Text of feedback");
+  requireStringParam("type", "Type of feedback"); // TODO validator
 }
 
 // ---------------------------------------------------------------------
 
 void CmdHandlerFeedbackAdd::handle(ModelRequest *pRequest) {
-    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
-    nlohmann::json jsonResponse;
+  EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+  nlohmann::json jsonResponse;
 
-    QSqlDatabase db = *(pDatabase->database());
+  QSqlDatabase db = *(pDatabase->database());
 
-    int nUserID = 0;
-    std::string sEmail = pRequest->getInputString("from", "");
-    sEmail = WsjcppCore::trim(sEmail);
-    std::string sText = pRequest->getInputString("text", "");
-    sText = WsjcppCore::trim(sText);
-    std::string sType = pRequest->getInputString("type", "");
-    sType = WsjcppCore::trim(sType);
+  int nUserID = 0;
+  std::string sEmail = pRequest->getInputString("from", "");
+  sEmail = WsjcppCore::trim(sEmail);
+  std::string sText = pRequest->getInputString("text", "");
+  sText = WsjcppCore::trim(sText);
+  std::string sType = pRequest->getInputString("type", "");
+  sType = WsjcppCore::trim(sType);
 
-    WsjcppUserSession *pUserSession = pRequest->getUserSession();
-    if (pUserSession != NULL) {
-        sEmail = pUserSession->email().toStdString();
-        nUserID = pUserSession->userid();
-    }
-    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+  WsjcppUserSession *pUserSession = pRequest->getUserSession();
+  if (pUserSession != NULL) {
+    sEmail = pUserSession->email().toStdString();
+    nUserID = pUserSession->userid();
+  }
+  EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
 
-    QSqlQuery query(db);
-    query.prepare("INSERT INTO feedback(`type`, `from`, `text`, `userid`, `dt`) VALUES(:type,:from,:text,:userid,NOW());");
-    query.bindValue(":type", QString::fromStdString(sType));
-    query.bindValue(":from", QString::fromStdString(sEmail));
-    query.bindValue(":text", QString::fromStdString(sText));
-    query.bindValue(":userid", nUserID);
-    if (!query.exec()) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
-        return;
-    }
+  QSqlQuery query(db);
+  query.prepare("INSERT INTO feedback(`type`, `from`, `text`, `userid`, `dt`) "
+                "VALUES(:type,:from,:text,:userid,NOW());");
+  query.bindValue(":type", QString::fromStdString(sType));
+  query.bindValue(":from", QString::fromStdString(sEmail));
+  query.bindValue(":text", QString::fromStdString(sText));
+  query.bindValue(":userid", nUserID);
+  if (!query.exec()) {
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+    return;
+  }
 
-    nlohmann::json jsonMeta;
-    RunTasks::AddPublicEvents("users", "Added feedback", jsonMeta);
+  nlohmann::json jsonMeta;
+  RunTasks::AddPublicEvents("users", "Added feedback", jsonMeta);
 
-    // TODO move to EmployMails
-    std::string sMailToAdmin = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();
-    std::string sSubject = "Feedback (freehackquest.com)";
-    std::string sContext = "Feedback \n"
-                       "Type: " + sType + "\n"
-                       "From: " + sEmail + "\n"
-                       "Text: \n" + sText + "\n";
+  // TODO move to EmployMails
+  std::string sMailToAdmin = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();
+  std::string sSubject = "Feedback (freehackquest.com)";
+  std::string sContext = "Feedback \n"
+                         "Type: " +
+                         sType +
+                         "\n"
+                         "From: " +
+                         sEmail +
+                         "\n"
+                         "Text: \n" +
+                         sText + "\n";
 
-    RunTasks::MailSend(sMailToAdmin, sSubject, sContext);
+  RunTasks::MailSend(sMailToAdmin, sSubject, sContext);
 
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
+  pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }

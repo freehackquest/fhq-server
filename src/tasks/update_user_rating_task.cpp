@@ -1,28 +1,26 @@
-#include <update_user_rating_task.h>
-#include <QThread>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
 #include <QEventLoop>
-#include <employ_database.h>
-#include <QSqlQuery> // TODO redesign
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QSqlQuery>  // TODO redesign
 #include <QSqlRecord> // TODO redesign
+#include <QThread>
+#include <employ_database.h>
+#include <update_user_rating_task.h>
 
 UpdateUserRatingTask::UpdateUserRatingTask(int nUserID) {
-    m_nUserID = nUserID;
-    TAG = "UpdateUserRatingTask";
+  m_nUserID = nUserID;
+  TAG = "UpdateUserRatingTask";
 }
 
-UpdateUserRatingTask::~UpdateUserRatingTask() {
-
-}
+UpdateUserRatingTask::~UpdateUserRatingTask() {}
 
 void UpdateUserRatingTask::run() {
-    WsjcppLog::info(TAG, "userid " + std::to_string(m_nUserID));
-    EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
-    QSqlDatabase db = *(pDatabase->database());
-    QSqlQuery query(db);
-    query.prepare(""
+  WsjcppLog::info(TAG, "userid " + std::to_string(m_nUserID));
+  EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+  QSqlDatabase db = *(pDatabase->database());
+  QSqlQuery query(db);
+  query.prepare(""
                 "SELECT "
                 "    ifnull(SUM(quest.score),0) as sum_score  "
                 "FROM "
@@ -30,27 +28,26 @@ void UpdateUserRatingTask::run() {
                 "INNER JOIN "
                 "    quest ON quest.idquest = users_quests.questid "
                 "WHERE"
-                "    (users_quests.userid = :userid) "
-    );
-    query.bindValue(":userid", m_nUserID);
-    if (!query.exec()) {
-        WsjcppLog::err(TAG, query.lastError().text().toStdString());
-        return;
-    }
+                "    (users_quests.userid = :userid) ");
+  query.bindValue(":userid", m_nUserID);
+  if (!query.exec()) {
+    WsjcppLog::err(TAG, query.lastError().text().toStdString());
+    return;
+  }
 
-    int nNewRating = 0;
-    if (query.next()) {
-        QSqlRecord record = query.record();
-        nNewRating = record.value("sum_score").toInt();
-    }
+  int nNewRating = 0;
+  if (query.next()) {
+    QSqlRecord record = query.record();
+    nNewRating = record.value("sum_score").toInt();
+  }
 
-    QSqlQuery query_update(db);
-    query_update.prepare("UPDATE users SET rating = :rating WHERE id = :userid");
-    query_update.bindValue(":rating", nNewRating);
-    query_update.bindValue(":userid", m_nUserID);
+  QSqlQuery query_update(db);
+  query_update.prepare("UPDATE users SET rating = :rating WHERE id = :userid");
+  query_update.bindValue(":rating", nNewRating);
+  query_update.bindValue(":userid", m_nUserID);
 
-    if (!query_update.exec()) {
-        WsjcppLog::err(TAG, query_update.lastError().text().toStdString());
-        return;
-    }
+  if (!query_update.exec()) {
+    WsjcppLog::err(TAG, query_update.lastError().text().toStdString());
+    return;
+  }
 }

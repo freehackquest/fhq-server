@@ -7,7 +7,7 @@
 #  |_| |_| |_|\__, |     |___/\___|_|    \_/ \___|_|   
 #                |_|                                   
 #
-# Copyright (c) 2011-2022 FreeHackQuest
+# Copyright (c) 2011-2023 FreeHackQuest
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -221,6 +221,7 @@ list (APPEND WSJCPP_SOURCES "src/storages/updates/update_6c8d4zm6u2_pmlyt8k7nm.c
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update_pmlyt8k7nm_215438peu8.cpp")
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update_215438peu8_9gwc2tm5ah.cpp")
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update_9gwc2tm5ah_on73sheet9.cpp")
+list (APPEND WSJCPP_SOURCES "src/storages/updates/update_on73sheet9_ili7looowo.cpp")
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update0101.cpp")
 
 # web-server

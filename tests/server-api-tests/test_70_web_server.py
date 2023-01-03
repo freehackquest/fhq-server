@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2022, Evgenii Sopov <mrseakg@gmail.com>
+# Copyright (C) 2011-2023, Evgenii Sopov <mrseakg@gmail.com>
 
 """
 Test web server

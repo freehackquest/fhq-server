@@ -7,24 +7,24 @@
 
 class MailSendTask : public QRunnable {
 
-    void run();
+  void run();
 
-    public:
-        MailSendTask(const std::string &sTo, const std::string &sSubject, const std::string &sContent);
-        ~MailSendTask();
-        bool hasPayloadLine();
-        std::string nextPayloadLine();
-    private:
-        std::string generateDateTime();
-        std::string generateMessageID();
+public:
+  MailSendTask(const std::string &sTo, const std::string &sSubject, const std::string &sContent);
+  ~MailSendTask();
+  bool hasPayloadLine();
+  std::string nextPayloadLine();
 
-        std::string TAG;
-        std::string m_sTo;
-        std::string m_sSubject;
-        std::string m_sContent;
-        std::vector<std::string> m_vPayloadText;
-        int m_nLineRead;
+private:
+  std::string generateDateTime();
+  std::string generateMessageID();
+
+  std::string TAG;
+  std::string m_sTo;
+  std::string m_sSubject;
+  std::string m_sContent;
+  std::vector<std::string> m_vPayloadText;
+  int m_nLineRead;
 };
 
 #endif // MAIL_SEND_TASK_H
-

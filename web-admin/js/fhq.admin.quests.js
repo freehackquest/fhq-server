@@ -330,7 +330,7 @@ fhq.createQuest = function() {
     params["state"] = $("#newquest_state").val();
     params["description_state"] = $("#newquest_description_state").val();
 
-    fhq.ws.createquest(params).done(function(r){
+    fhq.ws.quests_add(params).done(function(r){
         fhq.hideLoader();
         console.log(r);
         fhq.pages['quest_edit'](r.questid);

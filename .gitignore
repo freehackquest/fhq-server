@@ -85,3 +85,8 @@ contrib/docker_compose_example/logs/*.log
 contrib/docker_compose_example/data/logs/*.log
 contrib/docker_compose_example/mysql_data
 contrib/docker_compose_example/nginx/logs/*.log
+
+TODO
+12.webp
+__pycache__
+/tmp

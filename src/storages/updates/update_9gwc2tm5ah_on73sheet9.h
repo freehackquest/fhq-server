@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2017-2022 Free-Hack-Quest
+Copyright (c) 2011-2023 FreeHackQuest <freehackquest@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,8 @@ SOFTWARE.
 #include <wsjcpp_storages.h>
 
 class Update_9gwc2tm5ah_on73sheet9 : public WsjcppStorageUpdateBase {
-    public:
-        Update_9gwc2tm5ah_on73sheet9();
+public:
+  Update_9gwc2tm5ah_on73sheet9();
 };
 
-#endif  // SRC_STORAGES_UPDATES_UPDATE_9GWC2TM5AH_ON73SHEET9_H_
+#endif // SRC_STORAGES_UPDATES_UPDATE_9GWC2TM5AH_ON73SHEET9_H_

@@ -4,28 +4,27 @@
 #include <wsjcpp_arguments.h>
 
 class ArgumentProcessorDatabase : public WsjcppArgumentProcessor {
-    public:
-        ArgumentProcessorDatabase();
-        virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
+public:
+  ArgumentProcessorDatabase();
+  virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 };
 
 class ArgumentProcessorDatabaseTestConnection : public WsjcppArgumentProcessor {
-    public:
-        ArgumentProcessorDatabaseTestConnection();
-        virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
+public:
+  ArgumentProcessorDatabaseTestConnection();
+  virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 };
 
-
 class ArgumentProcessorDatabaseStruct : public WsjcppArgumentProcessor {
-    public:
-        ArgumentProcessorDatabaseStruct();
-        virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
+public:
+  ArgumentProcessorDatabaseStruct();
+  virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 };
 
 class ArgumentProcessorDatabaseCreate : public WsjcppArgumentProcessor {
-    public:
-        ArgumentProcessorDatabaseCreate();
-        virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
+public:
+  ArgumentProcessorDatabaseCreate();
+  virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 };
 
 #endif // ARGUMENT_PROCESSOR_DATABASE_H

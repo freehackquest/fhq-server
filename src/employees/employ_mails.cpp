@@ -7,42 +7,43 @@ REGISTRY_WJSCPP_EMPLOY(EmployMails)
 // ---------------------------------------------------------------------
 
 EmployMails::EmployMails()
-    : WsjcppEmployBase(EmployMails::name(), { EmployGlobalSettings::name(), EmployDatabase::name(), EmployNotify::name() }) {
-    TAG = EmployMails::name();
+    : WsjcppEmployBase(EmployMails::name(),
+                       {EmployGlobalSettings::name(), EmployDatabase::name(), EmployNotify::name()}) {
+  TAG = EmployMails::name();
 
-    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
-    
-    std::string  sGroupMail = "mail";
-    pGlobalSettings->registrySetting(sGroupMail, "mail_from").string("freehackquest@gmail.com").inDatabase();
-    pGlobalSettings->registrySetting(sGroupMail, "mail_host").string("smtp.gmail.com").inDatabase();
-    pGlobalSettings->registrySetting(sGroupMail, "mail_username").string("freehackquest@gmail.com").inDatabase();
-    pGlobalSettings->registrySetting(sGroupMail, "mail_port").number(465).inDatabase();
-    pGlobalSettings->registrySetting(sGroupMail, "mail_password").password("some").inDatabase();
-    pGlobalSettings->registrySetting(sGroupMail, "mail_auth").boolean(true).inDatabase();
-    pGlobalSettings->registrySetting(sGroupMail, "mail_allow").boolean(true).inDatabase();
-    pGlobalSettings->registrySetting(sGroupMail, "mail_system_message_admin_email").string("").inDatabase();
-    pGlobalSettings->registrySetting(sGroupMail, "mail_signature_text").text(
-        "---\r\n"
-        "With thanks,\r\n"
-        "FreeHackQuest Team\r\n"
-        "\r\n"
-        "Write message via e-mail to freehackquest@gmail.com\r\n"
-        "Contact by Telegram: https://t.me/freehackquest\r\n"
-    ).inDatabase();
+  EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+
+  std::string sGroupMail = "mail";
+  pGlobalSettings->registrySetting(sGroupMail, "mail_from").string("freehackquest@gmail.com").inDatabase();
+  pGlobalSettings->registrySetting(sGroupMail, "mail_host").string("smtp.gmail.com").inDatabase();
+  pGlobalSettings->registrySetting(sGroupMail, "mail_username").string("freehackquest@gmail.com").inDatabase();
+  pGlobalSettings->registrySetting(sGroupMail, "mail_port").number(465).inDatabase();
+  pGlobalSettings->registrySetting(sGroupMail, "mail_password").password("some").inDatabase();
+  pGlobalSettings->registrySetting(sGroupMail, "mail_auth").boolean(true).inDatabase();
+  pGlobalSettings->registrySetting(sGroupMail, "mail_allow").boolean(true).inDatabase();
+  pGlobalSettings->registrySetting(sGroupMail, "mail_system_message_admin_email").string("").inDatabase();
+  pGlobalSettings->registrySetting(sGroupMail, "mail_signature_text")
+      .text("---\r\n"
+            "With thanks,\r\n"
+            "FreeHackQuest Team\r\n"
+            "\r\n"
+            "Write message via e-mail to freehackquest@gmail.com\r\n"
+            "Contact by Telegram: https://t.me/freehackquest\r\n")
+      .inDatabase();
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployMails::init() {
-    // TODO
-    return true;
+  // TODO
+  return true;
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployMails::deinit() {
-    // TODO
-    return true;
+  // TODO
+  return true;
 }
 
 // ---------------------------------------------------------------------

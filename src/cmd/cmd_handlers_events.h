@@ -6,36 +6,33 @@
 // ---------------------------------------------------------------------
 
 class CmdHandlerEventAdd : public CmdHandlerBase {
-    public:
-        CmdHandlerEventAdd();
-        virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerEventAdd();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 // ---------------------------------------------------------------------
 
 class CmdHandlerEventDelete : public CmdHandlerBase {
-    public:
-        CmdHandlerEventDelete();
-        virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerEventDelete();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 // ---------------------------------------------------------------------
 
 class CmdHandlerEventInfo : public CmdHandlerBase {
-    public:
-        CmdHandlerEventInfo();
-        virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerEventInfo();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 // ---------------------------------------------------------------------
 
 class CmdHandlerEventsList : public CmdHandlerBase {
-    public:
-        CmdHandlerEventsList();
-        virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerEventsList();
+  virtual void handle(ModelRequest *pRequest);
 };
-
-
-
 
 #endif // CMD_HADNLERS_EVENTS_H

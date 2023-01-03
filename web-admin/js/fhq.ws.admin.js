@@ -396,9 +396,9 @@ fhq.ws.games_list = function(params){
     return fhq.ws.send(params);
 }
 
-fhq.ws.createquest = function(params){
+fhq.ws.quests_add = function(params){
     params = params || {};
-    params.cmd = 'createquest';
+    params.cmd = 'quests.add';
     return fhq.ws.send(params);
 }
 

@@ -9,81 +9,81 @@
 
 class CmdHandlerGameCreate : public CmdHandlerBase {
 
-    public:
-        CmdHandlerGameCreate();
-        virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerGameCreate();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 // ---------------------------------------------------------------------
 
 class CmdHandlerGameDelete : public CmdHandlerBase {
 
-    public:
-        CmdHandlerGameDelete();
-        virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerGameDelete();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 // ---------------------------------------------------------------------
 
 class CmdHandlerGameExport : public CmdHandlerBase {
-    public:
-        CmdHandlerGameExport();
-        virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerGameExport();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 // ---------------------------------------------------------------------
 
 class CmdHandlerGameImport : public CmdHandlerBase {
 
-    public:
-        CmdHandlerGameImport();
-        virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerGameImport();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 // ---------------------------------------------------------------------
-// depreacted 
+// depreacted
 
 class CmdHandlerGameInfo : public CmdHandlerBase {
 
-    public:
-        CmdHandlerGameInfo();
-        virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerGameInfo();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 // ---------------------------------------------------------------------
 
 class CmdHandlerGamesInfo : public CmdHandlerBase {
 
-    public:
-        CmdHandlerGamesInfo();
-        virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerGamesInfo();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 // ---------------------------------------------------------------------
 
 class CmdHandlerGameUpdate : public CmdHandlerBase {
 
-    public:
-        CmdHandlerGameUpdate();
-        virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerGameUpdate();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 // ---------------------------------------------------------------------
 
 class CmdHandlerGameUpdateLogo : public CmdHandlerBase {
 
-    public:
-        CmdHandlerGameUpdateLogo();
-        virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerGameUpdateLogo();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 // ---------------------------------------------------------------------
 
 class CmdHandlerGamesList : public CmdHandlerBase {
 
-    public:
-        CmdHandlerGamesList();
-        virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerGamesList();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 // ---------------------------------------------------------------------

@@ -7,9 +7,9 @@
 
 class CmdHandlerFeedbackAdd : public CmdHandlerBase {
 
-    public:
-        CmdHandlerFeedbackAdd();
-        virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerFeedbackAdd();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 #endif // CMD_HADNLERS_SUPPORT_H

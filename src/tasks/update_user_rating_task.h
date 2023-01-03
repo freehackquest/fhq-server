@@ -5,16 +5,17 @@
 #include <cmd_handlers.h>
 
 class UpdateUserRatingTask : public QRunnable {
-    
-    void run();
 
-    public:
-        UpdateUserRatingTask(int nUserID);
-        ~UpdateUserRatingTask();
-    private:
-        int m_nUserID;
-        std::string TAG;
-        IWebSocketServer *m_pWebSocketServer;
+  void run();
+
+public:
+  UpdateUserRatingTask(int nUserID);
+  ~UpdateUserRatingTask();
+
+private:
+  int m_nUserID;
+  std::string TAG;
+  IWebSocketServer *m_pWebSocketServer;
 };
 
 #endif // UPDATE_USER_RATING_TASK_H

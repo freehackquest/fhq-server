@@ -1,6 +1,7 @@
 # fhq-server travis config
 
 ## Database Configuration
+file_storage: ./file_storage
 usemysql: yes
 storage_type: mysql
 dbhost: 127.0.0.1
@@ -31,3 +32,7 @@ jobs_slow_threads: 1
 
 # fhqjad-store
 web_fhqjad_store: ./fhqjad-store
+
+
+# UI configs:
+allow_quests_proposals: yes
