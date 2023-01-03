@@ -1402,16 +1402,6 @@ void CmdHandlerUsersDelete::handle(ModelRequest *pRequest) {
     }
   }
 
-  // delete from users_games
-  {
-    query_del.prepare("DELETE FROM users_games WHERE userid = :userid");
-    query_del.bindValue(":userid", nUserID);
-    if (!query_del.exec()) {
-      pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query_del.lastError().text().toStdString()));
-      return;
-    }
-  }
-
   // delete from users_profile
   {
     query_del.prepare("DELETE FROM users_profile WHERE userid = :userid");

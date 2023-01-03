@@ -22,14 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef UPDATE_MHD92M15NB_SNWXENQCO0_H
-#define UPDATE_MHD92M15NB_SNWXENQCO0_H
+#ifndef UPDATE_ON73SHEET9_ILI7LOOOWO_H
+#define UPDATE_ON73SHEET9_ILI7LOOOWO_H
 
 #include <wsjcpp_storages.h>
 
-class Update_mhd92m15nb_snwxenqco0 : public WsjcppStorageUpdateBase {
-public:
-  Update_mhd92m15nb_snwxenqco0();
+class Update_on73sheet9_ili7looowo : public WsjcppStorageUpdateBase {
+    public:
+        Update_on73sheet9_ili7looowo();
 };
 
-#endif // UPDATE_MHD92M15NB_SNWXENQCO0_H
+#endif // UPDATE_ON73SHEET9_ILI7LOOOWO_H

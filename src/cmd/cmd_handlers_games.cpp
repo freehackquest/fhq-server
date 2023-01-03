@@ -171,17 +171,6 @@ void CmdHandlerGameDelete::handle(ModelRequest *pRequest) {
   EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
   pEmployGames->removeGame(sUuid); // TODO just removed from cache
 
-  // delete from users_games
-  {
-    QSqlQuery query_del(db);
-    query_del.prepare("DELETE FROM users_games WHERE gameid = :gameid");
-    query_del.bindValue(":gameid", nGameID);
-    if (!query_del.exec()) {
-      pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query_del.lastError().text().toStdString()));
-      return;
-    }
-  }
-
   // delete from users_quests_answers
   {
     QSqlQuery query_del(db);

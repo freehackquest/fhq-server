@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2017-2022 Free-Hack-Quest
+Copyright (c) 2011-2023 FreeHackQuest <freehackquest@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

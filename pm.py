@@ -26,6 +26,14 @@ clang_format_parser = subparsers.add_parser(
 )
 clang_format_parser.set_defaults(subparser=CLANG_FORMAT)
 
+# new storage upgrade
+CREATE_STORAGE_UPDATE = 'create-storage-update'
+clang_format_parser = subparsers.add_parser(
+    name=CREATE_STORAGE_UPDATE,
+    description='Create storage update (for change struct of database)'
+)
+clang_format_parser.set_defaults(subparser=CREATE_STORAGE_UPDATE)
+
 # main
 
 arguments = main_parser.parse_args()
@@ -44,6 +52,13 @@ if arguments.subparser == CLANG_FORMAT:
             continue
         command = ["clang-format", '-style=file', '-i', _file]
         cmd.run_command(command)
+elif arguments.subparser == CREATE_STORAGE_UPDATE:
+    upgarde = libfhqpm.CreateStorageUpdate() 
+    upgarde.create()
+else:
+    main_parser.print_help(sys.stderr)
+    sys.exit(1)
+
 
 # TODO
 # https://clang.llvm.org/extra/clang-tidy/

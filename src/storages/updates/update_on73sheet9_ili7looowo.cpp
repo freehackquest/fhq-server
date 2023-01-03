@@ -22,14 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef UPDATE_MHD92M15NB_SNWXENQCO0_H
-#define UPDATE_MHD92M15NB_SNWXENQCO0_H
+#include "update_on73sheet9_ili7looowo.h"
 
-#include <wsjcpp_storages.h>
+REGISTRY_WSJCPP_STORAGE_UPDATE(Update_on73sheet9_ili7looowo)
 
-class Update_mhd92m15nb_snwxenqco0 : public WsjcppStorageUpdateBase {
-public:
-  Update_mhd92m15nb_snwxenqco0();
-};
+Update_on73sheet9_ili7looowo::Update_on73sheet9_ili7looowo()
+    : WsjcppStorageUpdateBase("on73sheet9", "ili7looowo", "Removing users_games") {
+    
+    dropTable("users_games");
+}
 
-#endif // UPDATE_MHD92M15NB_SNWXENQCO0_H

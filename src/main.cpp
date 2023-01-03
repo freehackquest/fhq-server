@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2023 FreeHackQuest <freehackquest@gmail.com>
+// Copyright (c) 2011-2023 FreeHackQuest <freehackquest@gmail.com>
 
 #include <iostream>
 #include <string>
