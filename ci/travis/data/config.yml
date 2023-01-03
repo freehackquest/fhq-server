@@ -1,6 +1,7 @@
 # fhq-server travis config
 
 ## Database Configuration
+file_storage: ./file_storage
 usemysql: yes
 storage_type: mysql
 dbhost: 127.0.0.1

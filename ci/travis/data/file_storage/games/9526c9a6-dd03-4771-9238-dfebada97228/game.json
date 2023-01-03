@@ -1,0 +1,14 @@
+{
+    "format": 1,
+    "uuid": "9526c9a6-dd03-4771-9238-dfebada97228",
+    "date_start": "2015-04-18 03:49:10",
+    "date_stop": "2015-04-19 03:49:10",
+    "date_restart": "2015-04-20 03:49:10",
+    "description": "",
+    "form": "online",
+    "maxscore": 100,
+    "name": "Test Game",
+    "organizators": "",
+    "state": "original",
+    "type": "jeopardy"
+}
