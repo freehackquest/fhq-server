@@ -180,7 +180,7 @@ void ArgumentProcessorMain::initDefaultDataConfigYml(const std::string &sNormali
     sDefaultConfigYml += "# init default config for containers \n";
     sDefaultConfigYml += "\n";
     sDefaultConfigYml += "# Database Configuration\n";
-    sDefaultConfigYml += "file_storage: " + sNormalizedInitDir + "/file_storage\n";
+    sDefaultConfigYml += "file_storage: " + sNormalizedInitDir + "/data/file_storage\n";
     sDefaultConfigYml += "usemysql: yes\n";
     sDefaultConfigYml += "storage_type: mysql\n";
     sDefaultConfigYml += "dbhost: 127.0.0.1\n";
