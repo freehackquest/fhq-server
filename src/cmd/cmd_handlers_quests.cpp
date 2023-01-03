@@ -323,7 +323,8 @@ CmdHandlerQuestPass::CmdHandlerQuestPass()
 
     // validation and description input fields
     requireIntegerParam("questid", "Quest ID");
-    requireStringParam("answer", "Answer");
+    requireStringParam("answer", "Answer")
+        .addValidator(new WsjcppValidatorStringLength(1, 255));
 
 }
 
