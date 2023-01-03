@@ -765,7 +765,7 @@ export class FreeHackQuestClient {
 
   }
 
-  createquest(value: Object): Observable<any> {
+  quests_add(value: Object): Observable<any> {
     // Access unauthorized: no
     // Access user: no
     // Access admin: yes
@@ -815,7 +815,7 @@ export class FreeHackQuestClient {
     if (value['description_state'] == undefined) {
       console.error('Parameter "description_state" expected (lib)');
     }
-    return this.wsRequest('createquest', value);
+    return this.wsRequest('quests.add', value);
 
   }
 

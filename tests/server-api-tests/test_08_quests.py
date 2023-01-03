@@ -34,7 +34,7 @@ def test_0001_quests(admin_session, generate_random, generate_random_uuid):
         "copyright": generate_random(255).strip(),
     }
 
-    quest1 = admin_session.createquest(quest_data)
+    quest1 = admin_session.quests.add(quest_data)
     assert quest1['result'] == 'DONE'
     questid1 = quest1['questid']
 

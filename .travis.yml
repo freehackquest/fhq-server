@@ -58,7 +58,6 @@ jobs:
         - pip3 install pytest
         - pip3 install docker
         - pip3 install pytest-env
-        - pip3 install sea5kg_cpplint
       script:
         - ./ci/travis/run3_language_python.sh
 

@@ -205,7 +205,7 @@ def classbook_record4_uuid():
 
 @pytest.fixture(scope="session", autouse=True)
 def callattr_ahead_of_alltests(): # request
-    """Start server before tests and after tests"""
+    """ Start server before tests and after tests """
     print("Before tests")
     assert start_server() is True
     yield

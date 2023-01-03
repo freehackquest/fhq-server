@@ -486,10 +486,10 @@ void CmdHandlerQuestPass::handle(ModelRequest *pRequest) {
 // ---------------------------------------------------------------------
 // Quest Create
 
-REGISTRY_CMD(CmdHandlerCreateQuest)
+REGISTRY_CMD(CmdHandlerQuestsAdd)
 
-CmdHandlerCreateQuest::CmdHandlerCreateQuest()
-    : CmdHandlerBase("createquest", "Method will be create new quest") {
+CmdHandlerQuestsAdd::CmdHandlerQuestsAdd()
+    : CmdHandlerBase("quests.add", "Method will be create new quest") {
     // TODO add symlinks
 
     setAccessUnauthorized(false);
@@ -518,7 +518,7 @@ CmdHandlerCreateQuest::CmdHandlerCreateQuest()
 
 // ---------------------------------------------------------------------
 
-void CmdHandlerCreateQuest::handle(ModelRequest *pRequest) {
+void CmdHandlerQuestsAdd::handle(ModelRequest *pRequest) {
     EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
     EmployServerInfo *pServerInfo = findWsjcppEmploy<EmployServerInfo>();
 

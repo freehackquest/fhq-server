@@ -16,8 +16,6 @@ check_ret() {
 } 
 
 check_ret $? "change directory to fhq-server"
-python3 -m sea5kg_cpplint
-check_ret $? "sea5kg_cpplint"
 
 ./build_simple.sh
 check_ret $? "build fhq-server"

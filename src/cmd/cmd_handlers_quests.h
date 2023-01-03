@@ -30,9 +30,9 @@ class CmdHandlerQuestPass : public CmdHandlerBase {
 
 // ---------------------------------------------------------------------
 
-class CmdHandlerCreateQuest : public CmdHandlerBase {
+class CmdHandlerQuestsAdd : public CmdHandlerBase {
     public:
-        CmdHandlerCreateQuest();
+        CmdHandlerQuestsAdd();
         virtual void handle(ModelRequest *pRequest);
 };
 

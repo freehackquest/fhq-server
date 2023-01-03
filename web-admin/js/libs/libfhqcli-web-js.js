@@ -677,7 +677,7 @@ window.fhq = window.fhq || (function() {
          return self.send(params);
     }
 
-    self.createquest = function(params) {
+    self.quests_add = function(params) {
        // Access unauthorized: no
        // Access user: no
        // Access admin: yes
@@ -695,7 +695,7 @@ window.fhq = window.fhq || (function() {
        // * description_state - string, required (You can add some descriptions for quest state) 
        // * copyright - string, optional (You can add some copyright information) 
         params = params || {};
-        params.cmd = 'createquest';
+        params.cmd = 'quests.add';
         if (params['uuid'] == undefined) {
              console.error('Parameter "uuid" expected (lib)');
         }
