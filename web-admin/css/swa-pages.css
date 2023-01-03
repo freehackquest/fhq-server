@@ -129,6 +129,14 @@ input[type="file"] {
     box-shadow: none;
 }
 
+textarea:focus, input:focus{
+    outline: none;
+}
+
+*:focus {
+    outline: none;
+}
+
 .CodeMirror div.CodeMirror-cursor {
     border-left: 1px solid #0f0;
 }
