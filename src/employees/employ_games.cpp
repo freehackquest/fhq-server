@@ -4,6 +4,8 @@
 #include <employ_database.h>
 #include <employ_games.h>
 #include <employ_notify.h>
+#include <fstream>
+#include <json.hpp>
 #include <sys/stat.h>
 
 REGISTRY_WJSCPP_EMPLOY(EmployGames)
@@ -23,14 +25,13 @@ bool EmployGames::init() {
   // check the access to games folder
   EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
   std::string sBasePath = pGlobalSettings->get("web_public_folder").getDirPathValue();
-  std::string targetTestFile = sBasePath + "games/test"; // normalize path
+  std::string sFileStoragePath = pGlobalSettings->get("file_storage").getDirPathValue();
 
-  if (!WsjcppCore::createEmptyFile(targetTestFile)) {
-    WsjcppLog::err(TAG, "Cannot access to write " + targetTestFile);
+  if (!testCreateFile(sBasePath)) {
     return false;
   }
-  if (!WsjcppCore::removeFile(targetTestFile)) {
-    WsjcppLog::err(TAG, "Could not delete file " + targetTestFile);
+
+  if (!testCreateFile(sFileStoragePath)) {
     return false;
   }
 
@@ -52,10 +53,17 @@ bool EmployGames::init() {
     pModelGame->setLocalId(record.value("id").toInt());
     std::string sUuid = record.value("uuid").toString().toStdString();
     pModelGame->setUuid(sUuid);
-    pModelGame->setName(record.value("name").toString().toStdString());
+
+    pModelGame->setName(record.value("title").toString().toStdString());
+    pModelGame->setDescription(record.value("description").toString().toStdString());
+    pModelGame->setOrganizators(record.value("organizators").toString().toStdString());
+    pModelGame->setDateStart(record.value("date_start").toString().toStdString());
+    pModelGame->setDateStop(record.value("date_stop").toString().toStdString());
+    pModelGame->setDateRestart(record.value("date_restart").toString().toStdString());
     pModelGame->setState(record.value("state").toString().toStdString());
     pModelGame->setForm(record.value("form").toString().toStdString());
     pModelGame->setType(record.value("type_game").toString().toStdString());
+
     // TODO must be cached all fields
 
     if (m_mapCacheGames.count(sUuid)) {
@@ -65,6 +73,43 @@ bool EmployGames::init() {
       m_mapCacheGames.insert(std::pair<std::string, ModelGame *>(sUuid, pModelGame));
       m_vectCacheGame.push_back(pModelGame);
     }
+  }
+
+  // load from file_storage
+  std::string sFileStorageGamesPath = WsjcppCore::doNormalizePath(sFileStoragePath + "/games");
+  std::vector<std::string> vGames = WsjcppCore::getListOfDirs(sFileStorageGamesPath);
+  for (int i = 0; i < vGames.size(); i++) {
+    std::string sGameDataPath = sFileStorageGamesPath + "/" + vGames[i];
+    sGameDataPath = WsjcppCore::doNormalizePath(sGameDataPath);
+    WsjcppLog::info(TAG, "Found folder with game info: " + sGameDataPath);
+
+    std::string sGameJsonDataPath = sGameDataPath + "/game.json";
+    sGameJsonDataPath = WsjcppCore::doNormalizePath(sGameJsonDataPath);
+    nlohmann::json jsonGame;
+    try {
+      std::ifstream ifs(sGameJsonDataPath);
+      jsonGame = nlohmann::json::parse(ifs);
+    } catch (nlohmann::json::parse_error &ex) {
+      WsjcppLog::err(TAG, "Could not load ort parse file: " + sGameJsonDataPath);
+      continue;
+    }
+
+    ModelGame *pModelGame = new ModelGame();
+    std::string sError;
+    if (!pModelGame->fillFrom(jsonGame, sError)) {
+      WsjcppLog::err(TAG, "Game has wrong format: " + sError);
+      continue;
+    }
+    WsjcppLog::ok(TAG, "Readed new game info from " + sGameJsonDataPath);
+    std::string sUuid = pModelGame->uuid();
+    if (m_mapCacheGames.count(sUuid)) {
+      WsjcppLog::err(TAG, "Already defined in a list: " + sUuid);
+      continue;
+    }
+
+    m_mapCacheGames.insert(std::pair<std::string, ModelGame *>(sUuid, pModelGame));
+    m_vectCacheGame.push_back(pModelGame);
+    // TODO
   }
 
   return true;
@@ -77,8 +122,6 @@ bool EmployGames::deinit() {
   return true;
 }
 
-// ---------------------------------------------------------------------
-
 bool EmployGames::findGame(int nLocalId, ModelGame &modelGame) {
   // TODO mutex
   for (int i = 0; i < m_vectCacheGame.size(); i++) { // TODO create map with index
@@ -90,8 +133,6 @@ bool EmployGames::findGame(int nLocalId, ModelGame &modelGame) {
   return false;
 }
 
-// ---------------------------------------------------------------------
-
 bool EmployGames::findGame(const std::string &sUuid, ModelGame &modelGame) {
   if (!m_mapCacheGames.count(sUuid)) {
     return false;
@@ -99,8 +140,6 @@ bool EmployGames::findGame(const std::string &sUuid, ModelGame &modelGame) {
   modelGame.copy(*m_mapCacheGames.at(sUuid));
   return true;
 }
-
-// ---------------------------------------------------------------------
 
 EmployResult EmployGames::addGame(const ModelGame &modelGame, std::string &sError) {
   // TODO mutex
@@ -171,8 +210,6 @@ EmployResult EmployGames::addGame(const ModelGame &modelGame, std::string &sErro
   pEmployNotify->notifyInfo("games", "New [game#" + pModelGame->uuid() + "] " + pModelGame->name());
   return EmployResult::OK;
 }
-
-// ---------------------------------------------------------------------
 
 EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sError) {
   // TODO mutex
@@ -343,8 +380,6 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
   return EmployResult::OK;
 }
 
-// ---------------------------------------------------------------------
-
 EmployResult EmployGames::removeGame(const std::string &sUuid) {
   // TODO mutex
   if (!m_mapCacheGames.count(sUuid)) {
@@ -358,4 +393,17 @@ EmployResult EmployGames::removeGame(const std::string &sUuid) {
   return EmployResult::OK;
 }
 
-// ---------------------------------------------------------------------
+bool EmployGames::testCreateFile(const std::string &sPath) {
+
+  std::string sTargetTestFile = sPath + "/games/test"; // normalize path
+  sTargetTestFile = WsjcppCore::doNormalizePath(sTargetTestFile);
+  if (!WsjcppCore::createEmptyFile(sTargetTestFile)) {
+    WsjcppLog::err(TAG, "Cannot access to write " + sTargetTestFile);
+    return false;
+  }
+  if (!WsjcppCore::removeFile(sTargetTestFile)) {
+    WsjcppLog::err(TAG, "Could not delete file " + sTargetTestFile);
+    return false;
+  }
+  return true;
+}
