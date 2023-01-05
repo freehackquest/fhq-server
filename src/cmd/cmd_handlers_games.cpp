@@ -29,6 +29,7 @@ CmdHandlerGameCreate::CmdHandlerGameCreate() : CmdHandlerBase("game_create", "Cr
   setAccessAdmin(true);
 
   // validation and description input fields
+  requireIntegerParam("freehackquest_game_format_version", "Format Version");
   requireStringParam("uuid", "Global Identificator of the Game").addValidator(new WsjcppValidatorUUID());
   requireStringParam("name", "Name of the Game");
   requireStringParam("description", "Description of the Game");
@@ -49,9 +50,12 @@ void CmdHandlerGameCreate::handle(ModelRequest *pRequest) {
   nlohmann::json jsonRequest = pRequest->jsonRequest();
 
   ModelGame pModelGame;
-  pModelGame.fillFrom(jsonRequest);
+  std::string sError;
+  if (!pModelGame.fillFrom(jsonRequest, sError)) {
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Game have wrong format: " + sError));
+    return;
+  }
 
-  std::string sError = "";
   EmployResult nResult = pEmployGames->addGame(pModelGame, sError);
   switch (nResult) {
 
@@ -453,7 +457,11 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest) {
   EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
 
   ModelGame updatedModelGame;
-  updatedModelGame.fillFrom(pRequest->jsonRequest());
+  std::string sError;
+  if (!updatedModelGame.fillFrom(pRequest->jsonRequest(), sError)) {
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Game have wrong format: " + sError));
+    return;
+  }
 
   ModelGame modelGame;
   if (!pEmployGames->findGame(updatedModelGame.uuid(), modelGame)) {
@@ -462,9 +470,11 @@ void CmdHandlerGameUpdate::handle(ModelRequest *pRequest) {
   }
 
   updatedModelGame.copy(modelGame);
-  updatedModelGame.fillFrom(pRequest->jsonRequest()); // will be replaced values for existing fields
+  if (!updatedModelGame.fillFrom(pRequest->jsonRequest(), sError)) { // will be replaced values for existing fields
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Game have wrong format: " + sError));
+    return;
+  }
 
-  std::string sError = "";
   EmployResult nResult = pEmployGames->updateGame(updatedModelGame, sError);
 
   switch (nResult) {
@@ -516,7 +526,11 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
   EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
 
   ModelGame modelGame;
-  modelGame.fillFrom(pRequest->jsonRequest());
+  std::string sError;
+  if (!modelGame.fillFrom(pRequest->jsonRequest(), sError)) {
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Game have wrong format: " + sError));
+    return;
+  }
   if (!pEmployGames->findGame(modelGame.uuid(), modelGame)) {
     pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Game not found"));
     return;

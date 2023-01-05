@@ -148,15 +148,11 @@ list (APPEND WSJCPP_SOURCES "src/cmd/cmd_handlers_users.h")
 list (APPEND WSJCPP_SOURCES "src/cmd/cmd_handlers_users.cpp")
 
 # models
+list (APPEND WSJCPP_SOURCES "src/models/model_game.cpp")
 list (APPEND WSJCPP_SOURCES "src/models/model_notification.cpp")
 list (APPEND WSJCPP_SOURCES "src/models/model_quest_file.cpp")
-list (APPEND WSJCPP_SOURCES "src/models/include/model_database_connection.h")
 list (APPEND WSJCPP_SOURCES "src/models/sources/model_database_connection.cpp")
-list (APPEND WSJCPP_SOURCES "src/models/include/model_leak.h")
 list (APPEND WSJCPP_SOURCES "src/models/sources/model_leak.cpp")
-list (APPEND WSJCPP_SOURCES "src/models/include/model_game.h")
-list (APPEND WSJCPP_SOURCES "src/models/sources/model_game.cpp")
-list (APPEND WSJCPP_SOURCES "src/models/include/model_lxd_orchestra.h")
 list (APPEND WSJCPP_SOURCES "src/models/sources/model_lxd_orchestra.cpp")
 
 # validators

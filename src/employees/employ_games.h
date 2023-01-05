@@ -18,6 +18,8 @@ public:
   EmployResult removeGame(const std::string &sUuid);
 
 private:
+  bool testCreateFile(const std::string &sPath);
+
   std::string TAG;
   std::vector<ModelGame *> m_vectCacheGame;
   std::map<std::string, ModelGame *> m_mapCacheGames;

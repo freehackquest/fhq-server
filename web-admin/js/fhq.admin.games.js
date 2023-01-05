@@ -5,6 +5,8 @@ fhq.createGame = function()  {
 	$('#game_create_error').hide();
 
 	var data = {};
+	
+	data["freehackquest_game_format_version"] = 1;
 	data["uuid"] = $("#newgame_uuid").val();
 	data["name"] = $("#newgame_name").val();
 	data["state"] = $("#newgame_state").val();
@@ -155,6 +157,7 @@ fhq.updateGame = function()  {
 	fhq.showLoader();
 
 	var data = {};
+	data["freehackquest_game_format_version"] = 1;
 	data["uuid"] = $("#editgame_uuid").val();
 	data["name"] = $("#editgame_name").val();
 	data["state"] = $("#editgame_state").val();
@@ -170,7 +173,7 @@ fhq.updateGame = function()  {
 		fhq.hideLoader();
 		fhq.pages['games']();
 	}).fail(function(err){
-		fhq.hideLoading();
+		fhq.hideLoader();
 		console.error(err);
 	});
 };
@@ -273,10 +276,10 @@ fhq.pages['game_edit'] = function(gameuuid) {
 		);
 		
 		$('#editgame_uuid').val(r.data.uuid);
-		$('#editgame_name').val(r.data.title);
+		$('#editgame_name').val(r.data.name);
 		$('#editgame_state').val(r.data.state);
 		$('#editgame_form').val(r.data.form);
-		$('#editgame_type').val(r.data.type_game);
+		$('#editgame_type').val(r.data.type);
 		$('#editgame_date_start').val(r.data.date_start);
 		$('#editgame_date_stop').val(r.data.date_stop);
 		$('#editgame_date_restart').val(r.data.date_restart);
