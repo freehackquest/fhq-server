@@ -24,7 +24,7 @@ web_admin_folder: ../../../web-admin
 web_user_folder: ../../../web-user/dist
 
 web_public_folder: ./public/
-web_public_folrer_url: http://localhost:7080/public/
+web_public_folder_url: http://localhost:7080/public/
 
 # Jobs Pool Config
 jobs_fast_threads: 2

@@ -512,6 +512,7 @@ int ArgumentProcessorStart::exec(const std::vector<std::string> &vRoutes, const 
   std::string sWebUserFolder = pGlobalSettings->get("web_user_folder").getDirPathValue();
   std::string sWebPublicFolder =
       pGlobalSettings->get("web_public_folder").getDirPathValue(); // TODO must be declared in server
+  std::string sFileStorage = pGlobalSettings->get("file_storage").getDirPathValue();
   std::string sWebPublicFolderUrl =
       pGlobalSettings->get("web_public_folder_url").getStringValue(); // TODO must be declared in server
 
@@ -519,7 +520,7 @@ int ArgumentProcessorStart::exec(const std::vector<std::string> &vRoutes, const 
                            std::to_string(nWebMaxThreads) + " worker threads");
 
   g_httpServer.addHandler(new HttpHandlerWebAdminFolder(sWebAdminFolder));
-  g_httpServer.addHandler(new HttpHandlerWebPublicFolder(sWebPublicFolder));
+  g_httpServer.addHandler(new HttpHandlerWebPublicFolder(sWebPublicFolder, sFileStorage));
   g_httpServer.addHandler(new HttpHandlerWebUserFolder(sWebUserFolder));
 
   g_httpServer.setPort(nWebPort);
