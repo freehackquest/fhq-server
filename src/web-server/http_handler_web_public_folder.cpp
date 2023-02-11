@@ -5,11 +5,15 @@
 
 // ----------------------------------------------------------------------
 
-HttpHandlerWebPublicFolder::HttpHandlerWebPublicFolder(const std::string &sWebPublicFolder)
+HttpHandlerWebPublicFolder::HttpHandlerWebPublicFolder(
+  const std::string &sWebPublicFolder,
+  const std::string &sFileStorage
+)
     : WsjcppLightWebHttpHandlerBase("web-public-folder") {
 
   TAG = "HttpHandlerWebPublicFolder";
   m_sWebPublicFolder = sWebPublicFolder;
+  m_sFileStorage = sFileStorage;
 }
 
 // ----------------------------------------------------------------------
@@ -51,14 +55,40 @@ bool HttpHandlerWebPublicFolder::handle(const std::string &sWorkerId, WsjcppLigh
     sFilename = model.getFileName();
     pEmployFiles->updateDownloadsCounter(model);
   }
+  
+  std::string sFilePath = "";
 
-  std::string sFilePath = m_sWebPublicFolder + sRequestPath; // TODO check /../ in path
-  if (!WsjcppCore::fileExists(sFilePath)) {
+  if (sRequestPath.rfind("/games/", 0) == 0) { // hardcode
+    // look to new folder file_storage
+
+    // look in /public/games/18.png example
+    sFilePath = m_sWebPublicFolder + sRequestPath;
+    if (WsjcppCore::fileExists(sFilePath)) {
+      resp.cacheSec(0).ok().sendFile(sFilePath, sFilename);
+      return true;
+    }
+
+    // look in filestorage /file_storage/games/%uuid%/game.png example
+    sFilePath = m_sFileStorage + sRequestPath;
+    if (WsjcppCore::fileExists(sFilePath)) {
+      resp.cacheSec(0).ok().sendFile(sFilePath, sFilename);
+      return true;
+    }
+    
     std::string sMessageError = "File not found '" + sRequestPath + "'";
     WsjcppLog::err(TAG, sMessageError);
     resp.cacheSec(0).notFound().sendText("<h1>" + sMessageError + "</h1>");
     return true;
+  } else {
+    sFilePath = m_sWebPublicFolder + sRequestPath;
+    if (!WsjcppCore::fileExists(sFilePath)) {
+      std::string sMessageError = "File not found '" + sRequestPath + "'";
+      WsjcppLog::err(TAG, sMessageError);
+      resp.cacheSec(0).notFound().sendText("<h1>" + sMessageError + "</h1>");
+      return true;
+    }
   }
+  
   resp.cacheSec(0).ok().sendFile(sFilePath, sFilename);
   return true;
 }

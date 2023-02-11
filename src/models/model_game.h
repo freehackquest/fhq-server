@@ -13,8 +13,10 @@ public:
   ~ModelGame();
 
   int localId() const;
+  int getLocalId() const;
   void setLocalId(int nLocalId);
   const std::string &uuid() const;
+  const std::string &getUuid() const;
   void setUuid(const std::string &sUuid);
   const std::string &name() const;
   void setName(std::string sName);
