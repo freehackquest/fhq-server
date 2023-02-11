@@ -16,6 +16,7 @@ public:
   EmployResult addGame(const ModelGame &modelGame, std::string &sError);
   EmployResult updateGame(const ModelGame &modelGame, std::string &sError);
   EmployResult removeGame(const std::string &sUuid);
+  const std::vector<ModelGame *> &getListOfGames();
 
 private:
   bool testCreateFile(const std::string &sPath);

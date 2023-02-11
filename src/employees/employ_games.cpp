@@ -393,6 +393,10 @@ EmployResult EmployGames::removeGame(const std::string &sUuid) {
   return EmployResult::OK;
 }
 
+const std::vector<ModelGame *> &EmployGames::getListOfGames() {
+  return m_vectCacheGame;
+}
+
 bool EmployGames::testCreateFile(const std::string &sPath) {
 
   std::string sTargetTestFile = sPath + "/games/test"; // normalize path

@@ -520,8 +520,6 @@ CmdHandlerGameUpdateLogo::CmdHandlerGameUpdateLogo() : CmdHandlerBase("game_upda
   requireStringParam("image_png_base64", "Image PNG in Base64");
 }
 
-// ---------------------------------------------------------------------
-
 void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
   EmployGames *pEmployGames = findWsjcppEmploy<EmployGames>();
 
@@ -618,39 +616,27 @@ void CmdHandlerGamesList::handle(ModelRequest *pRequest) {
   nlohmann::json jsonResponse;
 
   EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+  EmployGames *pGames = findWsjcppEmploy<EmployGames>();
 
   std::string sBaseUrl = pGlobalSettings->get("web_public_folder_url").getStringValue() + "games/";
-  QString base_url = QString::fromStdString(sBaseUrl);
 
   nlohmann::json jsonGames = nlohmann::json::array();
 
-  QSqlDatabase db = *(pDatabase->database());
+  // copy of list for sorting
+  std::vector<ModelGame *> vGames = pGames->getListOfGames();
 
-  QSqlQuery query(db);
-  query.prepare("SELECT * FROM games ORDER BY games.date_start");
-
-  if (!query.exec()) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
-    return;
-  }
-
-  while (query.next()) {
-    QSqlRecord record = query.record();
-    nlohmann::json jsonGame;
-    int nGameID = record.value("id").toInt();
-    jsonGame["local_id"] = nGameID; // deprecated
-    jsonGame["uuid"] = record.value("uuid").toString().toStdString();
-    jsonGame["name"] = record.value("title").toString().toStdString();
-    jsonGame["type_game"] = record.value("type_game").toString().toStdString();
-    jsonGame["date_start"] = record.value("date_start").toString().toStdString();
-    jsonGame["date_stop"] = record.value("date_stop").toString().toStdString();
-    jsonGame["date_restart"] = record.value("date_restart").toString().toStdString();
-    jsonGame["description"] = record.value("description").toString().toStdString();
-    jsonGame["state"] = record.value("state").toString().toStdString();
-    jsonGame["form"] = record.value("form").toString().toStdString();
-    jsonGame["logo"] = QString(base_url + QString::number(nGameID) + ".png").toStdString();
-    jsonGame["organizators"] = record.value("organizators").toString().toStdString();
-    jsonGame["maxscore"] = record.value("maxscore").toInt();
+  for (auto it = vGames.begin(); it != vGames.end(); ++it) {
+    ModelGame *pGame = *it;
+    nlohmann::json jsonGame = pGame->toJson();
+    int nLocalId = pGame->getLocalId();
+    std::string sLogoUrl = sBaseUrl + std::to_string(nLocalId) + ".png";
+    if (nLocalId != 0) {
+      sLogoUrl = sBaseUrl + std::to_string(nLocalId) + ".png";
+    } else {
+      sLogoUrl = sBaseUrl + pGame->getUuid() + "/game.png";
+    }
+    
+    jsonGame["logo"] = sLogoUrl;
     jsonGames.push_back(jsonGame);
   }
 
