@@ -52,6 +52,7 @@ lintian.log
 freehackquest-backend.pro.user
 /html/*
 /latex/*
+/ci/travis/data/file_storage/db/*
 
 .qmake.stash
 .DS_Store
