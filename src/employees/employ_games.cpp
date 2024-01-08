@@ -142,6 +142,7 @@ bool EmployGames::findGame(const std::string &sUuid, ModelGame &modelGame) {
 }
 
 EmployResult EmployGames::addGame(const ModelGame &modelGame, std::string &sError) {
+  // TODO save to file_storage/games/
   // TODO mutex
   if (m_mapCacheGames.count(modelGame.uuid())) {
     return EmployResult::ALREADY_EXISTS;
@@ -390,6 +391,8 @@ EmployResult EmployGames::removeGame(const std::string &sUuid) {
   // TODO also remove from vect
 
   // TODO remove from database
+
+  // TODO remove from filesystem
   return EmployResult::OK;
 }
 
