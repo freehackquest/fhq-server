@@ -34,7 +34,7 @@
 #include <wsjcpp_core.h>
 
 HttpHandlerWebAdminFolder::HttpHandlerWebAdminFolder(const std::string &sWebFolder)
-    : WsjcppLightWebHttpHandlerBase("web-admin-folder") {
+  : WsjcppLightWebHttpHandlerBase("web-admin-folder") {
 
   TAG = "HttpHandlerWebAdminFolder";
   m_sWebFolder = sWebFolder;

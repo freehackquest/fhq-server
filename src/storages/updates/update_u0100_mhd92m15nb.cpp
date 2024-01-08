@@ -34,7 +34,7 @@
 REGISTRY_WSJCPP_STORAGE_UPDATE(Update_u0100_mhd92m15nb)
 
 Update_u0100_mhd92m15nb::Update_u0100_mhd92m15nb()
-    : WsjcppStorageUpdateBase("u0100", "mhd92m15nb", "Creating table useful_links") {
+  : WsjcppStorageUpdateBase("u0100", "mhd92m15nb", "Creating table useful_links") {
 
   WsjcppStorageCreateTable *useful_links = createTable("useful_links");
   useful_links->addColumn("id").number().autoIncrement().primaryKey().notNull();

@@ -141,8 +141,11 @@ void ExportLibWsjCppCliJavaAndroid::exportPrepareDirs() {
 // ---------------------------------------------------------------------
 
 bool ExportLibWsjCppCliJavaAndroid::exportManifest() {
-  WsjcppLog::info(TAG, "write code to "
-                       "libfhqcli-java-android/libfhqcli/src/main/AndroidManifest.xml");
+  WsjcppLog::info(
+    TAG,
+    "write code to "
+    "libfhqcli-java-android/libfhqcli/src/main/AndroidManifest.xml"
+  );
   std::ofstream fManifest("libfhqcli-java-android/libfhqcli/src/main/AndroidManifest.xml");
   if (!fManifest.is_open()) {
     return false;
@@ -178,25 +181,25 @@ bool ExportLibWsjCppCliJavaAndroid::exportBuildGradle() {
                   "        targetSdkVersion 28\n"
                   "        versionCode 1\n"
                   "        versionName \"" +
-                      m_sVersion +
-                      "\"\n"
-                      "    }\n"
-                      "\n"
-                      "    buildTypes {\n"
-                      "        release {\n"
-                      "            minifyEnabled false\n"
-                      "            proguardFiles "
-                      "getDefaultProguardFile('proguard-android-optimize.txt'), "
-                      "'proguard-rules.pro'\n"
-                      "        }\n"
-                      "    }\n"
-                      "}\n"
-                      "\n"
-                      "dependencies {\n"
-                      "    implementation fileTree(dir: 'libs', include: ['*.jar'])\n"
-                      "    implementation 'com.android.support:appcompat-v7:28.0.0'\n"
-                      "    implementation 'com.neovisionaries:nv-websocket-client:2.8'\n"
-                      "}\n";
+                    m_sVersion +
+                    "\"\n"
+                    "    }\n"
+                    "\n"
+                    "    buildTypes {\n"
+                    "        release {\n"
+                    "            minifyEnabled false\n"
+                    "            proguardFiles "
+                    "getDefaultProguardFile('proguard-android-optimize.txt'), "
+                    "'proguard-rules.pro'\n"
+                    "        }\n"
+                    "    }\n"
+                    "}\n"
+                    "\n"
+                    "dependencies {\n"
+                    "    implementation fileTree(dir: 'libs', include: ['*.jar'])\n"
+                    "    implementation 'com.android.support:appcompat-v7:28.0.0'\n"
+                    "    implementation 'com.neovisionaries:nv-websocket-client:2.8'\n"
+                    "}\n";
   return true;
 }
 

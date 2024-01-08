@@ -38,8 +38,9 @@ REGISTRY_WJSCPP_EMPLOY(EmployMails)
 // ---------------------------------------------------------------------
 
 EmployMails::EmployMails()
-    : WsjcppEmployBase(EmployMails::name(),
-                       {EmployGlobalSettings::name(), EmployDatabase::name(), EmployNotify::name()}) {
+  : WsjcppEmployBase(
+      EmployMails::name(), {EmployGlobalSettings::name(), EmployDatabase::name(), EmployNotify::name()}
+    ) {
   TAG = EmployMails::name();
 
   EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
@@ -54,13 +55,13 @@ EmployMails::EmployMails()
   pGlobalSettings->registrySetting(sGroupMail, "mail_allow").boolean(true).inDatabase();
   pGlobalSettings->registrySetting(sGroupMail, "mail_system_message_admin_email").string("").inDatabase();
   pGlobalSettings->registrySetting(sGroupMail, "mail_signature_text")
-      .text("---\r\n"
-            "With thanks,\r\n"
-            "FreeHackQuest Team\r\n"
-            "\r\n"
-            "Write message via e-mail to freehackquest@gmail.com\r\n"
-            "Contact by Telegram: https://t.me/freehackquest\r\n")
-      .inDatabase();
+    .text("---\r\n"
+          "With thanks,\r\n"
+          "FreeHackQuest Team\r\n"
+          "\r\n"
+          "Write message via e-mail to freehackquest@gmail.com\r\n"
+          "Contact by Telegram: https://t.me/freehackquest\r\n")
+    .inDatabase();
 }
 
 // ---------------------------------------------------------------------

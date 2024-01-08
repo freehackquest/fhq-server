@@ -58,7 +58,8 @@ public:
 
 private:
   void sendNotification(const std::string &sType, const std::string &sSection, const std::string &sMessage);
-  void sendNotification(const std::string &sType, const std::string &sSection, const std::string &sMessage,
-                        const nlohmann::json &jsonMeta);
+  void sendNotification(
+    const std::string &sType, const std::string &sSection, const std::string &sMessage, const nlohmann::json &jsonMeta
+  );
   std::string TAG;
 };

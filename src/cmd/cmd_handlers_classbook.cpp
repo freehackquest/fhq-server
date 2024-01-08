@@ -49,7 +49,7 @@
 REGISTRY_CMD(CmdClassbookAddRecordHandler)
 
 CmdClassbookAddRecordHandler::CmdClassbookAddRecordHandler()
-    : CmdHandlerBase("classbook_add_record", "Adds a new article with the specified name, content, and id.") {
+  : CmdHandlerBase("classbook_add_record", "Adds a new article with the specified name, content, and id.") {
 
   setAccessUnauthorized(false);
   setAccessUser(false);
@@ -216,7 +216,7 @@ void CmdClassbookAddRecordHandler::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdClassbookDeleteRecordHandler)
 
 CmdClassbookDeleteRecordHandler::CmdClassbookDeleteRecordHandler()
-    : CmdHandlerBase("classbook_delete_record", "Delete a article with a given classbookid") {
+  : CmdHandlerBase("classbook_delete_record", "Delete a article with a given classbookid") {
 
   setAccessUnauthorized(false);
   setAccessUser(false);
@@ -250,8 +250,14 @@ void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest) {
       return;
     }
     if (query.next()) {
-      pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "Could not delete, because childs exists. "
-                                                                  "Please remove childs first."));
+      pRequest->sendMessageError(
+        cmd(),
+        WsjcppJsonRpc20Error(
+          403,
+          "Could not delete, because childs exists. "
+          "Please remove childs first."
+        )
+      );
       return;
     }
     // Delete record in classbook
@@ -281,8 +287,11 @@ void CmdClassbookDeleteRecordHandler::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdClassbookExportHandler)
 
 CmdClassbookExportHandler::CmdClassbookExportHandler()
-    : CmdHandlerBase("classbook_export", "Export classbook's articles to html or markdown, "
-                                         "optionally in zip archive.") {
+  : CmdHandlerBase(
+      "classbook_export",
+      "Export classbook's articles to html or markdown, "
+      "optionally in zip archive."
+    ) {
 
   setAccessUnauthorized(false);
   setAccessUser(true);
@@ -387,8 +396,9 @@ void CmdClassbookExportHandler::handle(ModelRequest *pRequest) {
 
 // ---------------------------------------------------------------------
 
-bool CmdClassbookExportHandler::createHtml(QFile *file, const std::string &sLang, QSqlQuery query,
-                                           ModelRequest *pRequest) {
+bool CmdClassbookExportHandler::createHtml(
+  QFile *file, const std::string &sLang, QSqlQuery query, ModelRequest *pRequest
+) {
   QTextStream out(file);
   out.setCodec("UTF-8");
   QMap<int, QString> name_of_articles;
@@ -460,8 +470,9 @@ bool CmdClassbookExportHandler::createHtml(QFile *file, const std::string &sLang
 
 // ---------------------------------------------------------------------
 
-bool CmdClassbookExportHandler::createMD(QFile *file, const std::string &sLang, QSqlQuery query,
-                                         ModelRequest *pRequest) {
+bool CmdClassbookExportHandler::createMD(
+  QFile *file, const std::string &sLang, QSqlQuery query, ModelRequest *pRequest
+) {
   QTextStream out(file);
   out.setCodec("UTF-8");
   QList<QString> name_of_articles;
@@ -527,8 +538,11 @@ bool CmdClassbookExportHandler::createMD(QFile *file, const std::string &sLang, 
 REGISTRY_CMD(CmdClassbookInfoHandler)
 
 CmdClassbookInfoHandler::CmdClassbookInfoHandler()
-    : CmdHandlerBase("classbook_info", "Return name and content, langs, path "
-                                       "classbook article with a given id") {
+  : CmdHandlerBase(
+      "classbook_info",
+      "Return name and content, langs, path "
+      "classbook article with a given id"
+    ) {
 
   setAccessUnauthorized(true);
   setAccessUser(true);
@@ -696,8 +710,14 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest) {
       jsonParents.push_back(jsonParent);
       set_of_parent.insert(nClassBookId_);
     } else {
-      pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Error in PATHFINDER. Not found the "
-                                                                  "article with a given classbookid"));
+      pRequest->sendMessageError(
+        cmd(),
+        WsjcppJsonRpc20Error(
+          404,
+          "Error in PATHFINDER. Not found the "
+          "article with a given classbookid"
+        )
+      );
       return;
     }
   }
@@ -715,7 +735,7 @@ void CmdClassbookInfoHandler::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdClassbookListHandler)
 
 CmdClassbookListHandler::CmdClassbookListHandler()
-    : CmdHandlerBase("classbook_list", "Return list of classbook articles") {
+  : CmdHandlerBase("classbook_list", "Return list of classbook articles") {
 
   setAccessUnauthorized(true);
   setAccessUser(true);
@@ -893,7 +913,7 @@ void CmdClassbookListHandler::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdClassbookUpdateRecordHandler)
 
 CmdClassbookUpdateRecordHandler::CmdClassbookUpdateRecordHandler()
-    : CmdHandlerBase("classbook_update_record", "Update a article with a given classbookid") {
+  : CmdHandlerBase("classbook_update_record", "Update a article with a given classbookid") {
 
   setAccessUnauthorized(false);
   setAccessUser(false);
@@ -1052,7 +1072,7 @@ void CmdClassbookUpdateRecordHandler::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdClassbookLocalizationAddRecordHandler)
 
 CmdClassbookLocalizationAddRecordHandler::CmdClassbookLocalizationAddRecordHandler()
-    : CmdHandlerBase("classbook_localization_add_record", "Add a new article localization for the English version") {
+  : CmdHandlerBase("classbook_localization_add_record", "Add a new article localization for the English version") {
 
   setAccessUnauthorized(false);
   setAccessUser(false);
@@ -1164,7 +1184,7 @@ void CmdClassbookLocalizationAddRecordHandler::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdClassbookLocalizationDeleteRecordHandler)
 
 CmdClassbookLocalizationDeleteRecordHandler::CmdClassbookLocalizationDeleteRecordHandler()
-    : CmdHandlerBase("classbook_localization_delete_record", "Delete an article localization") {
+  : CmdHandlerBase("classbook_localization_delete_record", "Delete an article localization") {
 
   setAccessUnauthorized(false);
   setAccessUser(false);
@@ -1218,7 +1238,7 @@ void CmdClassbookLocalizationDeleteRecordHandler::handle(ModelRequest *pRequest)
 REGISTRY_CMD(CmdClassbookLocalizationInfoHandler)
 
 CmdClassbookLocalizationInfoHandler::CmdClassbookLocalizationInfoHandler()
-    : CmdHandlerBase("classbook_localization_info", "Find and display localization for an article by classbookid") {
+  : CmdHandlerBase("classbook_localization_info", "Find and display localization for an article by classbookid") {
 
   setAccessUnauthorized(false);
   setAccessUser(false);
@@ -1283,7 +1303,7 @@ void CmdClassbookLocalizationInfoHandler::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdClassbookLocalizationUpdateRecordHandler)
 
 CmdClassbookLocalizationUpdateRecordHandler::CmdClassbookLocalizationUpdateRecordHandler()
-    : CmdHandlerBase("classbook_localization_update_record", "Update table with localization by classbookid") {
+  : CmdHandlerBase("classbook_localization_update_record", "Update table with localization by classbookid") {
 
   setAccessUnauthorized(false);
   setAccessUser(false);
@@ -1375,7 +1395,7 @@ void CmdClassbookLocalizationUpdateRecordHandler::handle(ModelRequest *pRequest)
 REGISTRY_CMD(CmdClassbookProposalAddRecordHandler)
 
 CmdClassbookProposalAddRecordHandler::CmdClassbookProposalAddRecordHandler()
-    : CmdHandlerBase("classbook_proposal_add_record", "Propose an update of article") {
+  : CmdHandlerBase("classbook_proposal_add_record", "Propose an update of article") {
 
   setAccessUnauthorized(false);
   setAccessUser(true);
@@ -1505,7 +1525,7 @@ void CmdClassbookProposalAddRecordHandler::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdClassbookProposalDeleteRecordHandler)
 
 CmdClassbookProposalDeleteRecordHandler::CmdClassbookProposalDeleteRecordHandler()
-    : CmdHandlerBase("classbook_proposal_delete_record", "Delete a proposal of updating an article") {
+  : CmdHandlerBase("classbook_proposal_delete_record", "Delete a proposal of updating an article") {
 
   setAccessUnauthorized(false);
   setAccessUser(true);
@@ -1559,7 +1579,7 @@ void CmdClassbookProposalDeleteRecordHandler::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdClassbookProposalInfoHandler)
 
 CmdClassbookProposalInfoHandler::CmdClassbookProposalInfoHandler()
-    : CmdHandlerBase("classbook_proposal_info", "Find and display all proposal data by id") {
+  : CmdHandlerBase("classbook_proposal_info", "Find and display all proposal data by id") {
 
   setAccessUnauthorized(false);
   setAccessUser(true);
@@ -1627,7 +1647,7 @@ void CmdClassbookProposalInfoHandler::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdClassbookProposalListHandler)
 
 CmdClassbookProposalListHandler::CmdClassbookProposalListHandler()
-    : CmdHandlerBase("classbook_proposal_list", "Display list of proposals by classbookid") {
+  : CmdHandlerBase("classbook_proposal_list", "Display list of proposals by classbookid") {
 
   setAccessUnauthorized(false);
   setAccessUser(true);
@@ -1741,7 +1761,7 @@ void CmdClassbookProposalListHandler::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdClassbookProposalPrepareMergeRecordHandler)
 
 CmdClassbookProposalPrepareMergeRecordHandler::CmdClassbookProposalPrepareMergeRecordHandler()
-    : CmdHandlerBase("classbook_propasal_prepare_merge_record", "Prepare to merge updating requests") {
+  : CmdHandlerBase("classbook_propasal_prepare_merge_record", "Prepare to merge updating requests") {
 
   setAccessUnauthorized(false);
   setAccessUser(false);
@@ -1815,7 +1835,7 @@ void CmdClassbookProposalPrepareMergeRecordHandler::handle(ModelRequest *pReques
 REGISTRY_CMD(CmdClassbookProposalApproveHandler)
 
 CmdClassbookProposalApproveHandler::CmdClassbookProposalApproveHandler()
-    : CmdHandlerBase("classbook_propasal_approve", "Approve updating requests") {
+  : CmdHandlerBase("classbook_propasal_approve", "Approve updating requests") {
 
   setAccessUnauthorized(false);
   setAccessUser(false);
@@ -1883,7 +1903,7 @@ void CmdClassbookProposalApproveHandler::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdClassbookProposalUpdateHandler)
 
 CmdClassbookProposalUpdateHandler::CmdClassbookProposalUpdateHandler()
-    : CmdHandlerBase("classbook_propasal_update", "Approve updating requests") {
+  : CmdHandlerBase("classbook_propasal_update", "Approve updating requests") {
 
   setAccessUnauthorized(false);
   setAccessUser(false);

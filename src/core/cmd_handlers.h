@@ -47,8 +47,11 @@
 class WsjcppJsonRpc20Error {
 public:
   // WsjcppJsonRpc20Error(int nErrorCode, const std::string &sErrorMessage);
-  WsjcppJsonRpc20Error(int nErrorCode, const std::string &sErrorMessage,
-                       const std::vector<std::pair<std::string, std::string>> &vErrorContext = {});
+  WsjcppJsonRpc20Error(
+    int nErrorCode,
+    const std::string &sErrorMessage,
+    const std::vector<std::pair<std::string, std::string>> &vErrorContext = {}
+  );
   int getErrorCode() const;
   std::string getErrorMessage() const;
   const std::vector<std::pair<std::string, std::string>> &getErrorContext() const;
@@ -120,8 +123,8 @@ private Q_SLOTS:
 class IWebSocketServer {
 public:
   virtual void sendMessage(QWebSocket *pClient, const nlohmann::json &jsonResponse) = 0;
-  virtual void sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string &sM,
-                                WsjcppJsonRpc20Error error) = 0;
+  virtual void
+  sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string &sM, WsjcppJsonRpc20Error error) = 0;
   virtual void sendToAll(const nlohmann::json &jsonMessage) = 0;
   virtual void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage) = 0;
   virtual int getConnectedUsers() = 0;

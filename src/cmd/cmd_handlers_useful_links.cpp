@@ -43,7 +43,7 @@
 REGISTRY_CMD(CmdHandlerUsefulLinksList)
 
 CmdHandlerUsefulLinksList::CmdHandlerUsefulLinksList()
-    : CmdHandlerBase("useful_links_list", "Method will be return list of useful links") {
+  : CmdHandlerBase("useful_links_list", "Method will be return list of useful links") {
 
   setActivatedFromVersion("0.2.21");
 
@@ -151,10 +151,12 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
   QSqlQuery query(db);
 
   // count
-  query.prepare("SELECT COUNT(*) AS cnt FROM useful_links t0 "
-                " LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid "
-                "= t0.id AND t1.userid = :userid " +
-                QString::fromStdString(sInnerJoinTags) + QString::fromStdString(queryFilters.compileWhere()));
+  query.prepare(
+    "SELECT COUNT(*) AS cnt FROM useful_links t0 "
+    " LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid "
+    "= t0.id AND t1.userid = :userid " +
+    QString::fromStdString(sInnerJoinTags) + QString::fromStdString(queryFilters.compileWhere())
+  );
   query.bindValue(":userid", nUserId);
   queryFilters.bind(query);
 
@@ -171,13 +173,15 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
   jsonData["page_index"] = nPageIndex;
   jsonData["page_size"] = nPageSize;
 
-  query.prepare("SELECT t0.*, t1.userid FROM useful_links t0 "
-                " LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid "
-                "= t0.id AND t1.userid = :userid " +
-                QString::fromStdString(sInnerJoinTags) + QString::fromStdString(queryFilters.compileWhere()) +
-                " ORDER BY user_favorites DESC, user_clicks DESC, dt DESC "
-                " LIMIT " +
-                QString::number(nPageIndex * nPageSize) + "," + QString::number(nPageSize));
+  query.prepare(
+    "SELECT t0.*, t1.userid FROM useful_links t0 "
+    " LEFT JOIN useful_links_user_favorites t1 ON t1.usefullinkid "
+    "= t0.id AND t1.userid = :userid " +
+    QString::fromStdString(sInnerJoinTags) + QString::fromStdString(queryFilters.compileWhere()) +
+    " ORDER BY user_favorites DESC, user_clicks DESC, dt DESC "
+    " LIMIT " +
+    QString::number(nPageIndex * nPageSize) + "," + QString::number(nPageSize)
+  );
   query.bindValue(":userid", nUserId);
   queryFilters.bind(query);
 
@@ -221,7 +225,7 @@ void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksRetrieve)
 
 CmdHandlerUsefulLinksRetrieve::CmdHandlerUsefulLinksRetrieve()
-    : CmdHandlerBase("useful_links_retrieve", "Method for retrieve useful link") {
+  : CmdHandlerBase("useful_links_retrieve", "Method for retrieve useful link") {
 
   setActivatedFromVersion("0.2.28");
 
@@ -306,7 +310,7 @@ void CmdHandlerUsefulLinksRetrieve::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksAdd)
 
 CmdHandlerUsefulLinksAdd::CmdHandlerUsefulLinksAdd()
-    : CmdHandlerBase("useful_links_add", "Method for add new useful link") {
+  : CmdHandlerBase("useful_links_add", "Method for add new useful link") {
 
   setActivatedFromVersion("0.2.21");
 
@@ -371,7 +375,7 @@ void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksDelete)
 
 CmdHandlerUsefulLinksDelete::CmdHandlerUsefulLinksDelete()
-    : CmdHandlerBase("useful_links_delete", "Method for delete link by admin") {
+  : CmdHandlerBase("useful_links_delete", "Method for delete link by admin") {
 
   setActivatedFromVersion("0.2.21");
 
@@ -445,7 +449,7 @@ void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksUpdate)
 
 CmdHandlerUsefulLinksUpdate::CmdHandlerUsefulLinksUpdate()
-    : CmdHandlerBase("useful_links_update", "Method for update useful link") {
+  : CmdHandlerBase("useful_links_update", "Method for update useful link") {
 
   setActivatedFromVersion("0.2.21");
 
@@ -491,8 +495,9 @@ void CmdHandlerUsefulLinksUpdate::handle(ModelRequest *pRequest) {
   jsonMeta["useful_link"]["id"] = nUsefulLinkId;
   jsonMeta["useful_link"]["url"] = sUrl;
   jsonMeta["useful_link"]["action"] = "updated";
-  pNotify->notifyInfo("useful_links", "Updated [useful_link#" + std::to_string(nUsefulLinkId) + "] " + sUrl + "",
-                      jsonMeta);
+  pNotify->notifyInfo(
+    "useful_links", "Updated [useful_link#" + std::to_string(nUsefulLinkId) + "] " + sUrl + "", jsonMeta
+  );
 
   nlohmann::json jsonResponse;
   pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -504,7 +509,7 @@ void CmdHandlerUsefulLinksUpdate::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksUserFavoriteList)
 
 CmdHandlerUsefulLinksUserFavoriteList::CmdHandlerUsefulLinksUserFavoriteList()
-    : CmdHandlerBase("useful_links_user_favorite_list", "Useful Links list of favorite") {
+  : CmdHandlerBase("useful_links_user_favorite_list", "Useful Links list of favorite") {
 
   setActivatedFromVersion("0.2.29");
 
@@ -578,7 +583,7 @@ void CmdHandlerUsefulLinksUserFavoriteList::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksUserFavorite)
 
 CmdHandlerUsefulLinksUserFavorite::CmdHandlerUsefulLinksUserFavorite()
-    : CmdHandlerBase("useful_links_user_favorite", "Useful Links add to favorite") {
+  : CmdHandlerBase("useful_links_user_favorite", "Useful Links add to favorite") {
 
   setActivatedFromVersion("0.2.29");
 
@@ -659,7 +664,7 @@ void CmdHandlerUsefulLinksUserFavorite::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksUserUnfavorite)
 
 CmdHandlerUsefulLinksUserUnfavorite::CmdHandlerUsefulLinksUserUnfavorite()
-    : CmdHandlerBase("useful_links_user_unfavorite", "Useful Links removed from favorite") {
+  : CmdHandlerBase("useful_links_user_unfavorite", "Useful Links removed from favorite") {
 
   setActivatedFromVersion("0.2.29");
 
@@ -722,7 +727,7 @@ void CmdHandlerUsefulLinksUserUnfavorite::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksClicked)
 
 CmdHandlerUsefulLinksClicked::CmdHandlerUsefulLinksClicked()
-    : CmdHandlerBase("useful_links_clicked", "Useful Links removed from favorite") {
+  : CmdHandlerBase("useful_links_clicked", "Useful Links removed from favorite") {
 
   setActivatedFromVersion("0.2.29");
 
@@ -766,7 +771,7 @@ void CmdHandlerUsefulLinksClicked::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksCommentList)
 
 CmdHandlerUsefulLinksCommentList::CmdHandlerUsefulLinksCommentList()
-    : CmdHandlerBase("useful_links_comment_list", "Useful Links list of comments") {
+  : CmdHandlerBase("useful_links_comment_list", "Useful Links list of comments") {
 
   setActivatedFromVersion("0.2.29");
 
@@ -829,7 +834,7 @@ void CmdHandlerUsefulLinksCommentList::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksCommentAdd)
 
 CmdHandlerUsefulLinksCommentAdd::CmdHandlerUsefulLinksCommentAdd()
-    : CmdHandlerBase("useful_links_comment_add", "Useful Links add comment") {
+  : CmdHandlerBase("useful_links_comment_add", "Useful Links add comment") {
 
   setActivatedFromVersion("0.2.29");
 
@@ -919,7 +924,7 @@ void CmdHandlerUsefulLinksCommentAdd::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksCommentDelete)
 
 CmdHandlerUsefulLinksCommentDelete::CmdHandlerUsefulLinksCommentDelete()
-    : CmdHandlerBase("useful_links_comment_delete", "Useful Links remove comment") {
+  : CmdHandlerBase("useful_links_comment_delete", "Useful Links remove comment") {
 
   setActivatedFromVersion("0.2.29");
 
@@ -990,7 +995,7 @@ void CmdHandlerUsefulLinksCommentDelete::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksTagList)
 
 CmdHandlerUsefulLinksTagList::CmdHandlerUsefulLinksTagList()
-    : CmdHandlerBase("useful_links_tag_list", "Useful Links - List of tags") {
+  : CmdHandlerBase("useful_links_tag_list", "Useful Links - List of tags") {
 
   setActivatedFromVersion("0.2.29");
 
@@ -1036,7 +1041,7 @@ void CmdHandlerUsefulLinksTagList::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksTagAdd)
 
 CmdHandlerUsefulLinksTagAdd::CmdHandlerUsefulLinksTagAdd()
-    : CmdHandlerBase("useful_links_tag_add", "Useful Links add tag") {
+  : CmdHandlerBase("useful_links_tag_add", "Useful Links add tag") {
 
   setActivatedFromVersion("0.2.29");
 
@@ -1122,7 +1127,7 @@ void CmdHandlerUsefulLinksTagAdd::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksTagDelete)
 
 CmdHandlerUsefulLinksTagDelete::CmdHandlerUsefulLinksTagDelete()
-    : CmdHandlerBase("useful_links_tag_delete", "Useful Links remove tag") {
+  : CmdHandlerBase("useful_links_tag_delete", "Useful Links remove tag") {
 
   setActivatedFromVersion("0.2.29");
 
@@ -1205,7 +1210,7 @@ void CmdHandlerUsefulLinksTagDelete::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksUserPropose)
 
 CmdHandlerUsefulLinksUserPropose::CmdHandlerUsefulLinksUserPropose()
-    : CmdHandlerBase("useful_links_user_propose", "Useful Links propose link by user") {
+  : CmdHandlerBase("useful_links_user_propose", "Useful Links propose link by user") {
 
   setActivatedFromVersion("0.2.29");
 
@@ -1230,7 +1235,7 @@ void CmdHandlerUsefulLinksUserPropose::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksUserProposeApprove)
 
 CmdHandlerUsefulLinksUserProposeApprove::CmdHandlerUsefulLinksUserProposeApprove()
-    : CmdHandlerBase("useful_links_user_propose_approve", "Useful Links Approve propose link by admin") {
+  : CmdHandlerBase("useful_links_user_propose_approve", "Useful Links Approve propose link by admin") {
 
   setActivatedFromVersion("0.2.29");
 

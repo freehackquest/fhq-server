@@ -237,8 +237,8 @@ public:
   static std::string name() { return "EmployServer"; }
   virtual bool init();
   virtual bool deinit();
-  bool validateInputParameters(WsjcppJsonRpc20Error &error, CmdHandlerBase *pCmdHandler,
-                               const nlohmann::json &jsonMessage);
+  bool
+  validateInputParameters(WsjcppJsonRpc20Error &error, CmdHandlerBase *pCmdHandler, const nlohmann::json &jsonMessage);
   void setServer(IWebSocketServer *pWebSocketServer);
   void sendToAll(const nlohmann::json &jsonMessage);
   void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage);

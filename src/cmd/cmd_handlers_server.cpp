@@ -43,7 +43,7 @@
 REGISTRY_CMD(CmdHandlerPublicInfo)
 
 CmdHandlerPublicInfo::CmdHandlerPublicInfo()
-    : CmdHandlerBase("public_info", "Method return public information about server") {
+  : CmdHandlerBase("public_info", "Method return public information about server") {
 
   setAccessUnauthorized(true);
   setAccessUser(true);
@@ -203,7 +203,7 @@ void CmdHandlerServerSettings::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerServerSettingsUpdate)
 
 CmdHandlerServerSettingsUpdate::CmdHandlerServerSettingsUpdate()
-    : CmdHandlerBase("server_settings_update", "Update server settings") {
+  : CmdHandlerBase("server_settings_update", "Update server settings") {
 
   setAccessUnauthorized(false);
   setAccessUser(false);

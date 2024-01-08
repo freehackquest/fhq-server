@@ -43,7 +43,7 @@
 // ArgumentProcessorConfig
 
 ArgumentProcessorConfig::ArgumentProcessorConfig()
-    : WsjcppArgumentProcessor({"config", "cfg"}, "Configs", "All what depened to config processing") {
+  : WsjcppArgumentProcessor({"config", "cfg"}, "Configs", "All what depened to config processing") {
   TAG = "ArgumentProcessorConfig";
   // registrySingleArgument("--single", "What exactly do this single param?");
   // registryParameterArgument("-param", "N", "What need this param?");
@@ -66,12 +66,13 @@ int ArgumentProcessorConfig::exec(const std::vector<std::string> &vRoutes, const
 // ArgumentProcessorConfigTest
 
 ArgumentProcessorConfigTest::ArgumentProcessorConfigTest()
-    : WsjcppArgumentProcessor({"test"}, "Test config", "Test config") {
+  : WsjcppArgumentProcessor({"test"}, "Test config", "Test config") {
   TAG = "ArgumentProcessorConfigTest";
 }
 
-int ArgumentProcessorConfigTest::exec(const std::vector<std::string> &vRoutes,
-                                      const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorConfigTest::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
   auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
   std::cout << "\n * Check Server Config\n\n";
   if (!pGlobalSettings->init()) {
@@ -86,12 +87,13 @@ int ArgumentProcessorConfigTest::exec(const std::vector<std::string> &vRoutes,
 // ArgumentProcessorConfigPrint
 
 ArgumentProcessorConfigPrint::ArgumentProcessorConfigPrint()
-    : WsjcppArgumentProcessor({"print", "ls"}, "Print config", "Print config") {
+  : WsjcppArgumentProcessor({"print", "ls"}, "Print config", "Print config") {
   TAG = "ArgumentProcessorConfigPrint";
 }
 
-int ArgumentProcessorConfigPrint::exec(const std::vector<std::string> &vRoutes,
-                                       const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorConfigPrint::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
   auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
   WsjcppEmployees::init({});
   std::cout << "\n * Show settings\n\n";
@@ -104,12 +106,13 @@ int ArgumentProcessorConfigPrint::exec(const std::vector<std::string> &vRoutes,
 // ArgumentProcessorConfigTestEmail
 
 ArgumentProcessorConfigTestEmail::ArgumentProcessorConfigTestEmail()
-    : WsjcppArgumentProcessor({"test-email"}, "Send test e-mail", "Send test e-mail") {
+  : WsjcppArgumentProcessor({"test-email"}, "Send test e-mail", "Send test e-mail") {
   TAG = "ArgumentProcessorConfigTestEmail";
 }
 
-int ArgumentProcessorConfigTestEmail::exec(const std::vector<std::string> &vRoutes,
-                                           const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorConfigTestEmail::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
   auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
   WsjcppEmployees::init({});
   std::cout << "\n * Send test mail\n\n";
@@ -125,13 +128,14 @@ int ArgumentProcessorConfigTestEmail::exec(const std::vector<std::string> &vRout
 // ArgumentProcessorConfigSet
 
 ArgumentProcessorConfigSet::ArgumentProcessorConfigSet()
-    : WsjcppArgumentProcessor({"set"}, "Set setting value", "Set setting value") {
+  : WsjcppArgumentProcessor({"set"}, "Set setting value", "Set setting value") {
   TAG = "ArgumentProcessorConfigSet";
   registryExample("./fhq-server cfg set 'mail_username=some@where.org'");
 }
 
-int ArgumentProcessorConfigSet::exec(const std::vector<std::string> &vRoutes,
-                                     const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorConfigSet::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
   auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
   WsjcppEmployees::init({});
   if (vSubParams.size() != 1) {
@@ -158,8 +162,9 @@ int ArgumentProcessorConfigSet::exec(const std::vector<std::string> &vRoutes,
     pGlobalSettings->update(sSettName, sSettValue);
   } else if (item.isBoolean()) {
     if (sSettValue != "true" && sSettValue != "yes" && sSettValue != "false" && sSettValue != "no") {
-      WsjcppLog::err(TAG, "Expected value boolean (true|yes|false|no), but got '" + sSettValue + "' for '" + sSettName +
-                              "'");
+      WsjcppLog::err(
+        TAG, "Expected value boolean (true|yes|false|no), but got '" + sSettValue + "' for '" + sSettName + "'"
+      );
       return -1;
     }
     pGlobalSettings->update(sSettName, sSettValue == "true" || sSettValue == "yes");
@@ -178,12 +183,13 @@ int ArgumentProcessorConfigSet::exec(const std::vector<std::string> &vRoutes,
 // ArgumentProcessorConfigLxdEnable
 
 ArgumentProcessorConfigLxdEnable::ArgumentProcessorConfigLxdEnable()
-    : WsjcppArgumentProcessor({"lxd-enable"}, "Enable lxd mode", "Enable lxd mode") {
+  : WsjcppArgumentProcessor({"lxd-enable"}, "Enable lxd mode", "Enable lxd mode") {
   TAG = "ArgumentProcessorConfigLxdEnable";
 }
 
-int ArgumentProcessorConfigLxdEnable::exec(const std::vector<std::string> &vRoutes,
-                                           const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorConfigLxdEnable::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
   auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
   WsjcppEmployees::init({});
   pGlobalSettings->update("lxd_mode", true);
@@ -195,12 +201,13 @@ int ArgumentProcessorConfigLxdEnable::exec(const std::vector<std::string> &vRout
 // ArgumentProcessorConfigLxdDisable
 
 ArgumentProcessorConfigLxdDisable::ArgumentProcessorConfigLxdDisable()
-    : WsjcppArgumentProcessor({"lxd-enable"}, "Disable lxd mode", "Disable lxd mode") {
+  : WsjcppArgumentProcessor({"lxd-enable"}, "Disable lxd mode", "Disable lxd mode") {
   TAG = "ArgumentProcessorConfigLxdDisable";
 }
 
-int ArgumentProcessorConfigLxdDisable::exec(const std::vector<std::string> &vRoutes,
-                                            const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorConfigLxdDisable::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
   auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
   WsjcppEmployees::init({});
   pGlobalSettings->update("lxd_mode", false);
@@ -212,14 +219,18 @@ int ArgumentProcessorConfigLxdDisable::exec(const std::vector<std::string> &vRou
 // ArgumentProcessorConfigLxdConfigure
 
 ArgumentProcessorConfigLxdConfigure::ArgumentProcessorConfigLxdConfigure()
-    : WsjcppArgumentProcessor({"lxd-configure"}, "manual configure lxd",
-                              "Manual configure HTTPS connection with LXD. \n You need generated "
-                              "SSL cert and key in /etc/fhq-server/lxd") {
+  : WsjcppArgumentProcessor(
+      {"lxd-configure"},
+      "manual configure lxd",
+      "Manual configure HTTPS connection with LXD. \n You need generated "
+      "SSL cert and key in /etc/fhq-server/lxd"
+    ) {
   TAG = "ArgumentProcessorConfigLxdConfigure";
 }
 
-int ArgumentProcessorConfigLxdConfigure::exec(const std::vector<std::string> &vRoutes,
-                                              const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorConfigLxdConfigure::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
   // auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
   // config lxd
   std::string sError;
@@ -237,7 +248,7 @@ int ArgumentProcessorConfigLxdConfigure::exec(const std::vector<std::string> &vR
     else {
       std::cout << "\nBad, I can not make certificates trusted. Maybe the "
                    "password was wrong? \nError:" +
-                       sError + "\n\n";
+                     sError + "\n\n";
       return -1;
     }
   }
