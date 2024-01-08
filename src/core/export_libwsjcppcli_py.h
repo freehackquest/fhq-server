@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef EXPORT_LIBWSJCPPCLI_PY_H
-#define EXPORT_LIBWSJCPPCLI_PY_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -67,5 +66,3 @@ private:
   std::string m_sCurrentDate;
   std::vector<ApiGroup> m_vGroups;
 };
-
-#endif // EXPORT_LIBWSJCPPCLI_PY_H

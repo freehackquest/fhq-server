@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef UPDATE_MAX_SCORE_GAME_TASK_H
-#define UPDATE_MAX_SCORE_GAME_TASK_H
+#pragma once
 
 #include <QRunnable>
 #include <cmd_handlers.h>
@@ -47,5 +46,3 @@ private:
   std::string TAG;
   IWebSocketServer *m_pWebSocketServer;
 };
-
-#endif // UPDATE_MAX_SCORE_GAME_TASK_H

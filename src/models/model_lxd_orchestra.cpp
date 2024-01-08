@@ -32,7 +32,7 @@
 #include <utility>
 
 #include <employ_orchestra.h>
-#include <include/model_lxd_orchestra.h>
+#include <model_lxd_orchestra.h>
 #include <iomanip>
 #include <iostream>
 #include <iterator>

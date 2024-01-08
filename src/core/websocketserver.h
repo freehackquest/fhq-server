@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef WEBSOCKETSERVER_H
-#define WEBSOCKETSERVER_H
+#pragma once
 
 #include <QFile>
 #include <QMap>
@@ -110,5 +109,3 @@ private:
   bool m_bFailed;
   std::string TAG;
 };
-
-#endif // WEBSOCKETSERVER_H

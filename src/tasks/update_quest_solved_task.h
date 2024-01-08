@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef UPDATE_QUEST_SOLVED_TASK_H
-#define UPDATE_QUEST_SOLVED_TASK_H
+#pragma once
 
 #include <QRunnable>
 #include <string>
@@ -46,5 +45,3 @@ private:
   int m_nQuestID;
   std::string TAG;
 };
-
-#endif // UPDATE_QUEST_SOLVED_TASK_H

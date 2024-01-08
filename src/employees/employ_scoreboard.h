@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef EMPLOY_SCOREBOARD_H
-#define EMPLOY_SCOREBOARD_H
+#pragma once
 
 #include <employees.h>
 #include <json.hpp>
@@ -66,5 +65,3 @@ private:
   std::vector<ScoreboardRow *> m_vRows;
   int findScoreboardRowByRating(int rating);
 };
-
-#endif // EMPLOY_SCOREBOARD_H

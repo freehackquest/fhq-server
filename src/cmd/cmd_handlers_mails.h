@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef CMD_HADNLERS_MAILS_H
-#define CMD_HADNLERS_MAILS_H
+#pragma once
 
 #include <cmd_handlers.h>
 
@@ -51,5 +50,3 @@ public:
   CmdHandlerMailsList();
   virtual void handle(ModelRequest *pRequest);
 };
-
-#endif // CMD_HADNLERS_MAILS_H

@@ -29,14 +29,9 @@
  *
  ***********************************************************************************/
 
-#ifndef CMD_HANDLERS_COMMUNICATION_H
-#define CMD_HANDLERS_COMMUNICATION_H
+#pragma once
 
 #include <cmd_handlers.h>
-
-/*********************************************
- * Users chat
- **********************************************/
 
 class CmdHandlerChatSendMessage : public CmdHandlerBase {
 public:
@@ -115,5 +110,3 @@ public:
   CmdHandlerChatCreateGroupChat();
   virtual void handle(ModelRequest *pRequest);
 };
-
-#endif // CMD_HANDLERS_COMMUNICATION_H

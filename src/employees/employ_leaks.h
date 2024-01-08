@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef EMPLOY_LEAKS_H
-#define EMPLOY_LEAKS_H
+#pragma once
 
 #include <employees.h>
 #include <model_leak.h>
@@ -53,5 +52,3 @@ private:
   std::vector<ModelLeak *> m_vectCacheLeaks;
   std::map<std::string, ModelLeak *> m_mapCacheLeaks;
 };
-
-#endif // EMPLOY_LEAKS_H

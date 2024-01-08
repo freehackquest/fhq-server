@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef ADD_PUBLIC_EVENTS_TASK_H
-#define ADD_PUBLIC_EVENTS_TASK_H
+#pragma once
 
 #include <QRunnable>
 #include <json.hpp>
@@ -49,5 +48,3 @@ private:
   nlohmann::json m_jsonMeta;
   std::string TAG;
 };
-
-#endif // ADD_PUBLIC_EVENTS_TASK_H

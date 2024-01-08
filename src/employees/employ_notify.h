@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef EMPLOY_NOTIFY_H
-#define EMPLOY_NOTIFY_H
+#pragma once
 
 #include <employees.h>
 #include <model_notification.h>
@@ -63,5 +62,3 @@ private:
                         const nlohmann::json &jsonMeta);
   std::string TAG;
 };
-
-#endif // EMPLOY_NOTIFY_H

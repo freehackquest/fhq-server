@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef MAIL_SEND_TASK_H
-#define MAIL_SEND_TASK_H
+#pragma once
 
 #include <QRunnable>
 #include <string>
@@ -57,5 +56,3 @@ private:
   std::vector<std::string> m_vPayloadText;
   int m_nLineRead;
 };
-
-#endif // MAIL_SEND_TASK_H

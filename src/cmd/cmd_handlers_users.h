@@ -33,15 +33,11 @@
 
 #include <cmd_handlers.h>
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerUsersScoreboard : public CmdHandlerBase {
 public:
   CmdHandlerUsersScoreboard();
   virtual void handle(ModelRequest *pRequest);
 };
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerGetMap : public CmdHandlerBase {
 public:
@@ -49,15 +45,11 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerLogin : public CmdHandlerBase {
 public:
   CmdHandlerLogin();
   virtual void handle(ModelRequest *pRequest);
 };
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerRegistration : public CmdHandlerBase {
 public:
@@ -65,16 +57,12 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
 // User login by token
-
 class CmdHandlerToken : public CmdHandlerBase {
-public:
-  CmdHandlerToken();
-  virtual void handle(ModelRequest *pRequest);
+  public:
+    CmdHandlerToken();
+    virtual void handle(ModelRequest *pRequest);
 };
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerUpdateUserLocation : public CmdHandlerBase {
 public:
@@ -82,15 +70,11 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerUserChangePassword : public CmdHandlerBase {
 public:
   CmdHandlerUserChangePassword();
   virtual void handle(ModelRequest *pRequest);
 };
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerUsersAdd : public CmdHandlerBase {
 public:
@@ -98,15 +82,11 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerUser : public CmdHandlerBase {
 public:
   CmdHandlerUser();
   virtual void handle(ModelRequest *pRequest);
 };
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerUsersInfo : public CmdHandlerBase {
 public:
@@ -114,15 +94,11 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerUserResetPassword : public CmdHandlerBase {
 public:
   CmdHandlerUserResetPassword();
   virtual void handle(ModelRequest *pRequest);
 };
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerUserSkills : public CmdHandlerBase {
 public:
@@ -130,15 +106,11 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerUserUpdate : public CmdHandlerBase {
 public:
   CmdHandlerUserUpdate();
   virtual void handle(ModelRequest *pRequest);
 };
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerUsersDelete : public CmdHandlerBase {
 public:
@@ -146,15 +118,11 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerUsers : public CmdHandlerBase {
 public:
   CmdHandlerUsers();
   virtual void handle(ModelRequest *pRequest);
 };
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerUsersRegistration : public CmdHandlerBase {
 public:
@@ -162,15 +130,11 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerUsersRegistrationVerification : public CmdHandlerBase {
 public:
   CmdHandlerUsersRegistrationVerification();
   virtual void handle(ModelRequest *pRequest);
 };
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerUsersChangeEmail : public CmdHandlerBase {
 public:
@@ -178,23 +142,17 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerUsersChangeEmailVerification : public CmdHandlerBase {
 public:
   CmdHandlerUsersChangeEmailVerification();
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerUsersTokens : public CmdHandlerBase {
 public:
   CmdHandlerUsersTokens();
   virtual void handle(ModelRequest *pRequest);
 };
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerUsersTokensDelete : public CmdHandlerBase {
 public:

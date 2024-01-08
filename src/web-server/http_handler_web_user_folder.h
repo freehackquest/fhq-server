@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef HTTP_HANDLER_WEB_USER_FOLDER_H
-#define HTTP_HANDLER_WEB_USER_FOLDER_H
+#pragma once
 
 #include <wsjcpp_light_web_server.h>
 
@@ -44,5 +43,3 @@ private:
   std::string TAG;
   std::string m_sWebFolder;
 };
-
-#endif // HTTP_HANDLER_WEB_USER_FOLDER_H

@@ -29,12 +29,9 @@
  *
  ***********************************************************************************/
 
-#ifndef CMD_HADNLERS_USERS_H
-#define CMD_HADNLERS_USERS_H
+#pragma once
 
 #include <cmd_handlers.h>
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerLeaksList : public CmdHandlerBase {
 
@@ -43,16 +40,12 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerLeaksAdd : public CmdHandlerBase {
 
 public:
   CmdHandlerLeaksAdd();
   virtual void handle(ModelRequest *pRequest);
 };
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerLeaksUpdate : public CmdHandlerBase {
 
@@ -61,8 +54,6 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerLeaksDelete : public CmdHandlerBase {
 
 public:
@@ -70,13 +61,9 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerLeaksBuy : public CmdHandlerBase {
 
 public:
   CmdHandlerLeaksBuy();
   virtual void handle(ModelRequest *pRequest);
 };
-
-#endif // CMD_HADNLERS_USERS_H

@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef NOTIFY_TO_ALL_TASK_H
-#define NOTIFY_TO_ALL_TASK_H
+#pragma once
 
 #include <QRunnable>
 #include <json.hpp>
@@ -47,5 +46,3 @@ private:
   std::string TAG;
   nlohmann::json m_jsonMessage;
 };
-
-#endif // NOTIFY_TO_ALL_TASK_H

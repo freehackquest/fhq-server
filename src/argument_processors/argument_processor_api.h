@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef ARGUMENT_PROCESSOR_API_H
-#define ARGUMENT_PROCESSOR_API_H
+#pragma once
 
 #include <wsjcpp_arguments.h>
 
@@ -63,5 +62,3 @@ public:
   ArgumentProcessorApiExportJavaAndroidLibrary();
   virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 };
-
-#endif // ARGUMENT_PROCESSOR_API_H

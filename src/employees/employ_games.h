@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef EMPLOY_GAMES_H
-#define EMPLOY_GAMES_H
+#pragma once
 
 #include <employees.h>
 #include <model_game.h>
@@ -56,5 +55,3 @@ private:
   std::vector<ModelGame *> m_vectCacheGame;
   std::map<std::string, ModelGame *> m_mapCacheGames;
 };
-
-#endif // EMPLOY_GAMES_H

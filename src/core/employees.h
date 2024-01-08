@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef EMPLOYEES_H
-#define EMPLOYEES_H
+#pragma once
 
 #include <cmd_handlers.h>
 #include <map>
@@ -38,9 +37,7 @@
 #include <vector>
 #include <wsjcpp_employees.h>
 
-// ---------------------------------------------------------------------
 // employ enum code results
-
 enum EmployResult {
   OK,
   DATABASE_ERROR,
@@ -51,16 +48,12 @@ enum EmployResult {
   ERROR_NAME_IS_EMPTY,
 };
 
-// ----------------------------------------------------------------------
-
 enum WsjcppSettingStorageType {
   WJSCPP_SETTING_IN_NONE,
   WJSCPP_SETTING_IN_FILE,
   WJSCPP_SETTING_IN_DATABASE,
   WJSCPP_SETTING_IN_RUNTIME
 };
-
-// ----------------------------------------------------------------------
 
 enum WsjcppSettingDataType {
   WJSCPP_SETTING_TYPE_NONE,
@@ -74,8 +67,6 @@ enum WsjcppSettingDataType {
   WJSCPP_SETTING_TYPE_LIST,
   WJSCPP_SETTING_TYPE_JSON
 };
-
-// ----------------------------------------------------------------------
 
 class WsjcppSettingItem {
 public:
@@ -188,14 +179,10 @@ private:
   bool m_bBooleanValue;
 };
 
-// ----------------------------------------------------------------------
-
 class WsjcppSettingListener {
 public:
   virtual void onSettingsChanged(const WsjcppSettingItem *pSettingItem) = 0;
 };
-
-// ----------------------------------------------------------------------
 
 class WsjcppSettingsStore {
 public:
@@ -204,7 +191,6 @@ public:
   virtual void initSettingItem(WsjcppSettingItem *pSettingItem) = 0;
 };
 
-// ---------------------------------------------------------------------
 // WsjcppEmployGlobalSettings
 
 class EmployGlobalSettings : public WsjcppEmployBase {
@@ -243,7 +229,6 @@ private:
   std::vector<WsjcppSettingListener *> m_vListeners;
 };
 
-// ---------------------------------------------------------------------
 // WJSCppEmployServer
 
 class EmployServer : public WsjcppEmployBase {
@@ -262,5 +247,3 @@ private:
   std::string TAG;
   IWebSocketServer *m_pWebSocketServer;
 };
-
-#endif // EMPLOYEES_H

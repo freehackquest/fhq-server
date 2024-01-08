@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef MODEL_QUEST_FILE_H
-#define MODEL_QUEST_FILE_H
+#pragma once
 
 #include <json.hpp>
 #include <string>
@@ -77,5 +76,3 @@ private:
   std::string m_sFilePath;
   std::string m_sMd5;
 };
-
-#endif // MODEL_QUEST_FILE_H

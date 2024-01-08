@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef UPDATE_USER_LOCATION_TASK_H
-#define UPDATE_USER_LOCATION_TASK_H
+#pragma once
 
 #include <QRunnable>
 #include <string>
@@ -48,5 +47,3 @@ private:
   std::string m_sLastIP;
   std::string TAG;
 };
-
-#endif // UPDATE_USER_LOCATION_TASK_H
