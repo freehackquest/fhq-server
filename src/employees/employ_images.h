@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef EMPLOY_IMAGES_H
-#define EMPLOY_IMAGES_H
+#pragma once
 
 #include <employees.h>
 
@@ -56,5 +55,3 @@ public:
   bool doThumbnailImagePng(const std::string &sourceFilepath, const std::string &targetFilepath, int width_resize,
                            int height_resize);
 };
-
-#endif // EMPLOY_IMAGES_H

@@ -28,9 +28,8 @@
  * SOFTWARE.
  *
  ***********************************************************************************/
- 
-#ifndef MYSQL_STORAGE_H
-#define MYSQL_STORAGE_H
+
+#pragma once
 
 #include <map>
 #include <mutex>
@@ -74,5 +73,3 @@ private:
   std::string m_sDatabasePass;
   int m_nDatabasePort;
 };
-
-#endif // MYSQL_STORAGE_H

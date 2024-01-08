@@ -29,12 +29,9 @@
  *
  ***********************************************************************************/
 
-#ifndef CMD_HADNLERS_GAMES_H
-#define CMD_HADNLERS_GAMES_H
+#pragma once
 
 #include <cmd_handlers.h>
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerGameCreate : public CmdHandlerBase {
 
@@ -43,8 +40,6 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerGameDelete : public CmdHandlerBase {
 
 public:
@@ -52,15 +47,11 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerGameExport : public CmdHandlerBase {
 public:
   CmdHandlerGameExport();
   virtual void handle(ModelRequest *pRequest);
 };
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerGameImport : public CmdHandlerBase {
 
@@ -69,7 +60,6 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
 // depreacted
 
 class CmdHandlerGameInfo : public CmdHandlerBase {
@@ -79,16 +69,12 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerGamesInfo : public CmdHandlerBase {
 
 public:
   CmdHandlerGamesInfo();
   virtual void handle(ModelRequest *pRequest);
 };
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerGameUpdate : public CmdHandlerBase {
 
@@ -97,8 +83,6 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerGameUpdateLogo : public CmdHandlerBase {
 
 public:
@@ -106,15 +90,9 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerGamesList : public CmdHandlerBase {
 
 public:
   CmdHandlerGamesList();
   virtual void handle(ModelRequest *pRequest);
 };
-
-// ---------------------------------------------------------------------
-
-#endif // CMD_HADNLERS_GAMES_H

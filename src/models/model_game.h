@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef MODEL_GAME_H
-#define MODEL_GAME_H
+#pragma once
 
 #include <json.hpp>
 #include <string>
@@ -108,5 +107,3 @@ private:
   bool readFieldDateRestartRequiredFromJson(const nlohmann::json &jsonGame, std::string &sError);
   bool readFieldOrganizatorsOptionalFromJson(const nlohmann::json &jsonGame, std::string &sError);
 };
-
-#endif // MODEL_GAME_H

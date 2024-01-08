@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef MODEL_LXD_CONTAINER
-#define MODEL_LXD_CONTAINER
+#pragma once
 
 #include <QFile>
 #include <curl/curl.h>
@@ -112,5 +111,3 @@ private:
   std::string m_sResult;
   const std::string TAG = "EmployOrchestraService";
 };
-
-#endif // MODEL_LXD_CONTAINER

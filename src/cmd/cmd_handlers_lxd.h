@@ -29,13 +29,10 @@
  *
  ***********************************************************************************/
 
-#ifndef CMD_HADNLERS_LXD_H
-#define CMD_HADNLERS_LXD_H
+#pragma once
 
 #include <cmd_handlers.h>
 #include <model_lxd_orchestra.h>
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerLXDContainers : public CmdHandlerBase {
 
@@ -52,8 +49,6 @@ private:
   static void delete_container(const std::string &name, std::string &sError, int &nErrorCode);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerLXDInfo : public CmdHandlerBase {
 
 public:
@@ -62,16 +57,12 @@ public:
   bool get_state(const std::string &sName, std::string &sError, int &nErrorCode, nlohmann::json &jsonState);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerLXDList : public CmdHandlerBase {
 
 public:
   CmdHandlerLXDList();
   virtual void handle(ModelRequest *pRequest);
 };
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerLXDExec : public CmdHandlerBase {
 
@@ -82,8 +73,6 @@ public:
   static bool exec_command(const std::string &sName, const std::string &sCommand, std::string &sError, int &nErrorCode,
                            std::string &sOutput);
 };
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerLXDFile : public CmdHandlerBase {
 
@@ -98,8 +87,6 @@ public:
   bool delete_file(const std::string &sName, const std::string &sPath, std::string &s_b64Zip);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerLXDOpenPort : public CmdHandlerBase {
 
 public:
@@ -108,8 +95,6 @@ public:
   bool is_port_valide(const std::string &sProto, const int &nPort, std::string &sError, int &nErrorCode);
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerLXDImportService : public CmdHandlerBase {
 
 public:
@@ -117,15 +102,11 @@ public:
   void handle(ModelRequest *pRequest) override;
 };
 
-// ---------------------------------------------------------------------
-
 class CmdHandlerLXDImportServiceFromZip : public CmdHandlerBase {
 public:
   CmdHandlerLXDImportServiceFromZip();
   void handle(ModelRequest *pRequest) override;
 };
-
-// ---------------------------------------------------------------------
 
 class CmdHandlerLXDStartService : public CmdHandlerBase {
 
@@ -133,5 +114,3 @@ public:
   CmdHandlerLXDStartService();
   void handle(ModelRequest *pRequest) override;
 };
-
-#endif // CMD_HADNLERS_LXD_H

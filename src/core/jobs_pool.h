@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef JOBS_POOL_H
-#define JOBS_POOL_H
+#pragma once
 
 #include <deque>
 #include <mutex>
@@ -48,14 +47,10 @@ private:
   std::string m_sName;
 };
 
-// ---------------------------------------------------------------------
-
 class JobSchedule {
 public:
   // TODO
 };
-
-// ---------------------------------------------------------------------
 
 class JobAsyncDeque {
 public:
@@ -70,8 +65,6 @@ private:
   std::mutex m_mtxJobsAsyncDeque;
   std::deque<JobAsync *> m_dequeJobsAsync;
 };
-
-// ---------------------------------------------------------------------
 
 class JobsThreadWorker {
 public:
@@ -90,8 +83,6 @@ private:
   bool m_bStop;
   pthread_t m_threadWorker;
 };
-
-// ---------------------------------------------------------------------
 
 extern JobAsyncDeque *g_pJobsFastPool;
 extern std::vector<JobsThreadWorker *> *g_vJobsFastWorkers;
@@ -119,7 +110,3 @@ public:
   static void waitForDone();
   static void cleanup();
 };
-
-// ---------------------------------------------------------------------
-
-#endif // JOBS_POOL_H

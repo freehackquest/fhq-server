@@ -29,32 +29,49 @@
  *
  ***********************************************************************************/
 
-#ifndef MODEL_DATABASE_CONNECTION_H
-#define MODEL_DATABASE_CONNECTION_H
+#pragma once
 
-#include <QDateTime>
-#include <QSqlDatabase>
-#include <QSqlError>
-#include <QString>
+#include <json.hpp>
+#include <string>
 
-class ModelDatabaseConnection {
+class ModelLeak {
 public:
-  ModelDatabaseConnection(QString sNameConnection);
-  void swap(ModelDatabaseConnection *pDatabaseConnection);
-  QString nameConnection();
-  void setNameConnection(QString sNameConnection);
-  bool connect();
-  QSqlDatabase *db();
-  void setDb(QSqlDatabase *pDatabase);
-  void close();
-  bool isOutdated();
+  ModelLeak();
+
+  int localId();
+  void setLocalId(int nId);
+  const std::string &uuid();
+  void setUuid(std::string sUuid);
+  int gameId();                // deprecated
+  void setGameId(int nGameId); // deprecated
+  const std::string &gameUuid();
+  void setGameUuid(std::string nGameUuid);
+  const std::string &name();
+  void setName(std::string sName);
+  const std::string &content();
+  void setContent(std::string sContent);
+  int score();
+  void setScore(int nScore);
+  const std::string &created();
+  void setCreated(std::string sCreated);
+  const std::string &updated();
+  void setUpdated(std::string sUpdated);
+  int sold();
+  void setSold(int nSold);
+
+  nlohmann::json toJson();
+  void fillFrom(nlohmann::json &jsonLeak);
 
 private:
   std::string TAG;
-  qint64 m_nOutdatedAfter; // in mseconds
-  qint64 m_nOpened;
-  QString m_sNameConnection;
-  QSqlDatabase *m_pDatabase;
+  int m_nLocalId;
+  int m_nGameId; // deprecated
+  std::string m_sUuid;
+  std::string m_sGameUuid;
+  std::string m_sName;
+  std::string m_sContent;
+  int m_nScore;
+  std::string m_sCreated;
+  std::string m_sUpdated;
+  int m_nSold;
 };
-
-#endif // MODEL_DATABASE_CONNECTION_H
