@@ -254,7 +254,7 @@ endif( ZLIB_FOUND )
 ############################
 
 ############################
-##### mysql 
+##### mysql
 # Find and make sure the system have the header file
 find_path(MYSQL_HEADER mysql/mysql.h)
 if(MYSQL_HEADER STREQUAL "MYSQL_HEADER-NOTFOUND")
@@ -278,6 +278,15 @@ add_subdirectory(src/third-party/libhv)
 list (APPEND WSJCPP_LIBRARIES hv_static)
 list (APPEND WSJCPP_INCLUDE_DIRS "${PROJECT_BINARY_DIR}/src/third-party/libhv/include/hv")
 
+
+add_subdirectory(src/third-party/sqlite3)
+# https://www.sqlite.org/threadsafe.html
+# target_compile_definitions(sqlite3-static
+#   PRIVATE
+#     SQLITE_THREADSAFE=0
+# )
+list (APPEND WSJCPP_LIBRARIES sqlite3-static)
+list (APPEND WSJCPP_INCLUDE_DIRS "${PROJECT_BINARY_DIR}/src/third-party/sqlite3/src")
 
 include_directories(${WSJCPP_INCLUDE_DIRS})
 
