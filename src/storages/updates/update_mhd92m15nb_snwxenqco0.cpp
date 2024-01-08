@@ -29,7 +29,6 @@
  *
  ***********************************************************************************/
 
-
 #include "update_mhd92m15nb_snwxenqco0.h"
 
 REGISTRY_WSJCPP_STORAGE_UPDATE(Update_mhd92m15nb_snwxenqco0)

@@ -34,15 +34,15 @@
 #include <cmd_handlers.h>
 
 class CmdHandlerMailInfo : public CmdHandlerBase {
-  public:
-    CmdHandlerMailInfo();
-    virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerMailInfo();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 class CmdHandlerMailSend : public CmdHandlerBase {
-  public:
-    CmdHandlerMailSend();
-    virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerMailSend();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 class CmdHandlerMailsList : public CmdHandlerBase {

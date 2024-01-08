@@ -29,7 +29,6 @@
  *
  ***********************************************************************************/
 
-
 #include "update_u0100_mhd92m15nb.h"
 
 REGISTRY_WSJCPP_STORAGE_UPDATE(Update_u0100_mhd92m15nb)

@@ -32,7 +32,6 @@
 #include "jobs_pool.h"
 #include <wsjcpp_core.h>
 
-
 JobAsync::JobAsync(const std::string &sName) { m_sName = sName; }
 
 const std::string &JobAsync::name() { return m_sName; }

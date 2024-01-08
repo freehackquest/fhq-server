@@ -29,7 +29,6 @@
  *
  ***********************************************************************************/
 
-
 #include "update_snwxenqco0_csww6lwcrp.h"
 
 REGISTRY_WSJCPP_STORAGE_UPDATE(Update_snwxenqco0_csww6lwcrp)

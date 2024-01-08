@@ -59,9 +59,9 @@ public:
 
 // User login by token
 class CmdHandlerToken : public CmdHandlerBase {
-  public:
-    CmdHandlerToken();
-    virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerToken();
+  virtual void handle(ModelRequest *pRequest);
 };
 
 class CmdHandlerUpdateUserLocation : public CmdHandlerBase {

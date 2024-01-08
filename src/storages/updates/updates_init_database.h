@@ -29,7 +29,6 @@
  *
  ***********************************************************************************/
 
-
 #ifndef UPDATES_INIT_DATABASE_H
 #define UPDATES_INIT_DATABASE_H
 
