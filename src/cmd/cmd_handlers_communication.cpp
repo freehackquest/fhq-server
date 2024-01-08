@@ -42,7 +42,7 @@
 REGISTRY_CMD(CmdHandlerChatSendMessage)
 
 CmdHandlerChatSendMessage::CmdHandlerChatSendMessage()
-    : CmdHandlerBase("chat_send_message", "Method will be send chat message and it sent to another users") {
+  : CmdHandlerBase("chat_send_message", "Method will be send chat message and it sent to another users") {
 
   setAccessUnauthorized(false);
   setAccessUser(true);
@@ -113,7 +113,7 @@ void CmdHandlerChatSendMessage::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerChatLastestMessages)
 
 CmdHandlerChatLastestMessages::CmdHandlerChatLastestMessages()
-    : CmdHandlerBase("chat_latest_messages", "Method will be send chat message and it sent to another users") {
+  : CmdHandlerBase("chat_latest_messages", "Method will be send chat message and it sent to another users") {
 
   setAccessUnauthorized(true);
   setAccessUser(true);
@@ -155,7 +155,7 @@ void CmdHandlerChatLastestMessages::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerChatSendMessage_new)
 
 CmdHandlerChatSendMessage_new::CmdHandlerChatSendMessage_new()
-    : CmdHandlerBase("chats_message_send", "Method will be send chat message and it sent to another users") {
+  : CmdHandlerBase("chats_message_send", "Method will be send chat message and it sent to another users") {
 
   setActivatedFromVersion("0.2.24");
 
@@ -239,7 +239,7 @@ void CmdHandlerChatSendMessage_new::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerChatReadMessage)
 
 CmdHandlerChatReadMessage::CmdHandlerChatReadMessage()
-    : CmdHandlerBase("chats_message_read", "Get all messages in chat") {
+  : CmdHandlerBase("chats_message_read", "Get all messages in chat") {
 
   setActivatedFromVersion("0.2.24");
 
@@ -399,7 +399,7 @@ void CmdHandlerChatEditMessage::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerChatDeleteMessage)
 
 CmdHandlerChatDeleteMessage::CmdHandlerChatDeleteMessage()
-    : CmdHandlerBase("chats_message_delete", "Delete message from chat") {
+  : CmdHandlerBase("chats_message_delete", "Delete message from chat") {
 
   setActivatedFromVersion("0.2.24");
 
@@ -491,7 +491,7 @@ void CmdHandlerChatAddToChat::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerChatDeleteFromChat)
 
 CmdHandlerChatDeleteFromChat::CmdHandlerChatDeleteFromChat()
-    : CmdHandlerBase("chats_delete_from_chat", "Delete user from chat") {
+  : CmdHandlerBase("chats_delete_from_chat", "Delete user from chat") {
 
   setActivatedFromVersion("0.2.24");
 
@@ -513,7 +513,7 @@ void CmdHandlerChatDeleteFromChat::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerChatChangeOwner)
 
 CmdHandlerChatChangeOwner::CmdHandlerChatChangeOwner()
-    : CmdHandlerBase("chats_change_owner", "Change owner of the chat") {
+  : CmdHandlerBase("chats_change_owner", "Change owner of the chat") {
 
   setActivatedFromVersion("0.2.24");
 
@@ -535,7 +535,7 @@ void CmdHandlerChatChangeOwner::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerChatAddToBlackList)
 
 CmdHandlerChatAddToBlackList::CmdHandlerChatAddToBlackList()
-    : CmdHandlerBase("chats_add_to_black_list", "Add user to black list") {
+  : CmdHandlerBase("chats_add_to_black_list", "Add user to black list") {
 
   setActivatedFromVersion("0.2.24");
 
@@ -557,7 +557,7 @@ void CmdHandlerChatAddToBlackList::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerChatDeleteFromBlackList)
 
 CmdHandlerChatDeleteFromBlackList::CmdHandlerChatDeleteFromBlackList()
-    : CmdHandlerBase("chats_delete_from_black_list", "Delete user from black list") {
+  : CmdHandlerBase("chats_delete_from_black_list", "Delete user from black list") {
 
   setActivatedFromVersion("0.2.24");
 
@@ -579,7 +579,7 @@ void CmdHandlerChatDeleteFromBlackList::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerChatCreateGroupChat)
 
 CmdHandlerChatCreateGroupChat::CmdHandlerChatCreateGroupChat()
-    : CmdHandlerBase("chats_create_group_chat", "Create group chat") {
+  : CmdHandlerBase("chats_create_group_chat", "Create group chat") {
 
   setActivatedFromVersion("0.2.24");
 

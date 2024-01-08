@@ -78,9 +78,12 @@ bool EmployOrchestra::init() {
   std::string sError;
   m_bTrusted = UtilsLXDAuth::check_trust_certs(sError);
   if (!m_bTrusted) {
-    WsjcppLog::err(TAG, "SSL certificates are not trusted.\nPlease configure "
-                        "the connection with the LXD. "
-                        "Type ./fhq-server -mclxd");
+    WsjcppLog::err(
+      TAG,
+      "SSL certificates are not trusted.\nPlease configure "
+      "the connection with the LXD. "
+      "Type ./fhq-server -mclxd"
+    );
     return false;
   }
   return true;
@@ -206,8 +209,9 @@ static size_t write_to_string(void *ptr, size_t size, size_t count, void *stream
 
 static char errorBuffer[CURL_ERROR_SIZE];
 
-bool EmployOrchestra::send_post_request_file(const std::string &sUrl, const std::string &sFile, std::string &sResponse,
-                                             std::string &sError) {
+bool EmployOrchestra::send_post_request_file(
+  const std::string &sUrl, const std::string &sFile, std::string &sResponse, std::string &sError
+) {
   CURLcode ret;
   CURL *hnd;
 
@@ -250,8 +254,9 @@ bool EmployOrchestra::send_post_request_file(const std::string &sUrl, const std:
   return true;
 }
 
-bool EmployOrchestra::send_post_request(const std::string &sUrl, const nlohmann::json &jsonData,
-                                        nlohmann::json &jsonResponse, std::string &sError) {
+bool EmployOrchestra::send_post_request(
+  const std::string &sUrl, const nlohmann::json &jsonData, nlohmann::json &jsonResponse, std::string &sError
+) {
   CURLcode ret;
   CURL *hnd;
 
@@ -297,8 +302,9 @@ bool EmployOrchestra::send_post_request(const std::string &sUrl, const nlohmann:
   return true;
 }
 
-bool EmployOrchestra::send_patch_request(const std::string &sUrl, const nlohmann::json &jsonData,
-                                         nlohmann::json &jsonResponse, std::string &sError) {
+bool EmployOrchestra::send_patch_request(
+  const std::string &sUrl, const nlohmann::json &jsonData, nlohmann::json &jsonResponse, std::string &sError
+) {
   CURLcode ret;
   CURL *hnd;
 
@@ -346,8 +352,9 @@ bool EmployOrchestra::send_patch_request(const std::string &sUrl, const nlohmann
 
 // ---------------------------------------------------------------------
 
-bool EmployOrchestra::send_put_request(const std::string &sUrl, const nlohmann::json &jsonData,
-                                       nlohmann::json &jsonResponse, std::string &sError) {
+bool EmployOrchestra::send_put_request(
+  const std::string &sUrl, const nlohmann::json &jsonData, nlohmann::json &jsonResponse, std::string &sError
+) {
   CURLcode ret;
   CURL *hnd;
 

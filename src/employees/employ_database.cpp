@@ -39,157 +39,158 @@
 // ---------------------------------------------------------------------
 // FhqServerDatabaseSelectRows
 
-FhqServerDatabaseSelectRows::FhqServerDatabaseSelectRows() {
-    m_pQuery = nullptr;
-}
+FhqServerDatabaseSelectRows::FhqServerDatabaseSelectRows() { m_pQuery = nullptr; }
 
 FhqServerDatabaseSelectRows::~FhqServerDatabaseSelectRows() {
-    if (m_pQuery != nullptr) {
-        sqlite3_finalize(m_pQuery);
-    }
+  if (m_pQuery != nullptr) {
+    sqlite3_finalize(m_pQuery);
+  }
 }
 
-void FhqServerDatabaseSelectRows::setQuery(sqlite3_stmt* pQuery) {
-    m_pQuery = pQuery;
-}
+void FhqServerDatabaseSelectRows::setQuery(sqlite3_stmt *pQuery) { m_pQuery = pQuery; }
 
-bool FhqServerDatabaseSelectRows::next() {
-    return  sqlite3_step(m_pQuery) == SQLITE_ROW;
-}
+bool FhqServerDatabaseSelectRows::next() { return sqlite3_step(m_pQuery) == SQLITE_ROW; }
 
 std::string FhqServerDatabaseSelectRows::getString(int nColumnNumber) {
-    return std::string((const char *)sqlite3_column_text(m_pQuery, nColumnNumber));
+  return std::string((const char *)sqlite3_column_text(m_pQuery, nColumnNumber));
 }
 
-long FhqServerDatabaseSelectRows::getLong(int nColumnNumber) {
-    return sqlite3_column_int64(m_pQuery, nColumnNumber);
-}
+long FhqServerDatabaseSelectRows::getLong(int nColumnNumber) { return sqlite3_column_int64(m_pQuery, nColumnNumber); }
 
 // ---------------------------------------------------------------------
 // FhqServerDatabaseFile
 
 FhqServerDatabaseFile::FhqServerDatabaseFile(const std::string &sFilename, const std::string &sSqlCreateTable) {
-    TAG = "FhqServerDatabaseFile-" + sFilename;
-    m_pDatabaseFile = nullptr;
-    m_sFilename = sFilename;
-    m_nLastBackupTime = 0;
-    m_sSqlCreateTable = sSqlCreateTable;
-    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
-    std::string sFileStoragePath = pGlobalSettings->get("file_storage").getDirPathValue();
-    std::string sDatabaseDir = sFileStoragePath + "/db";
-    if (!WsjcppCore::dirExists(sDatabaseDir)) {
-        !WsjcppCore::makeDir(sDatabaseDir);
-    }
-    m_sFileFullpath = sDatabaseDir + "/" + m_sFilename;
+  TAG = "FhqServerDatabaseFile-" + sFilename;
+  m_pDatabaseFile = nullptr;
+  m_sFilename = sFilename;
+  m_nLastBackupTime = 0;
+  m_sSqlCreateTable = sSqlCreateTable;
+  EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+  std::string sFileStoragePath = pGlobalSettings->get("file_storage").getDirPathValue();
+  std::string sDatabaseDir = sFileStoragePath + "/db";
+  if (!WsjcppCore::dirExists(sDatabaseDir)) {
+    !WsjcppCore::makeDir(sDatabaseDir);
+  }
+  m_sFileFullpath = sDatabaseDir + "/" + m_sFilename;
 
-    std::string sDatabaseBackupDir = sDatabaseDir + "/backups";
-    if (!WsjcppCore::dirExists(sDatabaseBackupDir)) {
-        !WsjcppCore::makeDir(sDatabaseBackupDir);
-    }
-    m_sBaseFileBackupFullpath = sDatabaseBackupDir + "/" + m_sFilename;
+  std::string sDatabaseBackupDir = sDatabaseDir + "/backups";
+  if (!WsjcppCore::dirExists(sDatabaseBackupDir)) {
+    !WsjcppCore::makeDir(sDatabaseBackupDir);
+  }
+  m_sBaseFileBackupFullpath = sDatabaseBackupDir + "/" + m_sFilename;
 };
 
 FhqServerDatabaseFile::~FhqServerDatabaseFile() {
-    if (m_pDatabaseFile != nullptr) {
-        sqlite3_close(m_pDatabaseFile);
-    }
+  if (m_pDatabaseFile != nullptr) {
+    sqlite3_close(m_pDatabaseFile);
+  }
 }
 
 bool FhqServerDatabaseFile::open() {
-    // open connection to a DB
-    int nRet = sqlite3_open_v2(
-        m_sFileFullpath.c_str(),
-        &m_pDatabaseFile,
-        SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
-        NULL
-    );
-    if (nRet != SQLITE_OK) {
-        WsjcppLog::throw_err(TAG, "Failed to open conn: " + std::to_string(nRet));
-        return false;
-    }
-    // Run the SQL (convert the string to a C-String with c_str() )
-    char *zErrMsg = 0;
-    nRet = sqlite3_exec(m_pDatabaseFile, m_sSqlCreateTable.c_str(), 0, 0, &zErrMsg);
-    if (nRet != SQLITE_OK) {
-        WsjcppLog::throw_err(TAG, "Problem with create table: " + std::string(zErrMsg));
-        return false;
-    }
-    WsjcppLog::ok(TAG, "Opened database file " + m_sFileFullpath);
-    copyDatabaseToBackup();
-    return true;
+  // open connection to a DB
+  int nRet =
+    sqlite3_open_v2(m_sFileFullpath.c_str(), &m_pDatabaseFile, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
+  if (nRet != SQLITE_OK) {
+    WsjcppLog::throw_err(TAG, "Failed to open conn: " + std::to_string(nRet));
+    return false;
+  }
+  // Run the SQL (convert the string to a C-String with c_str() )
+  char *zErrMsg = 0;
+  nRet = sqlite3_exec(m_pDatabaseFile, m_sSqlCreateTable.c_str(), 0, 0, &zErrMsg);
+  if (nRet != SQLITE_OK) {
+    WsjcppLog::throw_err(TAG, "Problem with create table: " + std::string(zErrMsg));
+    return false;
+  }
+  WsjcppLog::ok(TAG, "Opened database file " + m_sFileFullpath);
+  copyDatabaseToBackup();
+  return true;
 }
 
 bool FhqServerDatabaseFile::executeQuery(std::string sSqlInsert) {
-    copyDatabaseToBackup();
-    char *zErrMsg = 0;
-    int nRet = sqlite3_exec(m_pDatabaseFile, sSqlInsert.c_str(), 0, 0, &zErrMsg);
-    if (nRet != SQLITE_OK) {
-        WsjcppLog::throw_err(TAG, "Problem with insert: " + std::string(zErrMsg) + "\n SQL-query: " + sSqlInsert);
-        return false;
-    }
-    return true;
+  copyDatabaseToBackup();
+  char *zErrMsg = 0;
+  int nRet = sqlite3_exec(m_pDatabaseFile, sSqlInsert.c_str(), 0, 0, &zErrMsg);
+  if (nRet != SQLITE_OK) {
+    WsjcppLog::throw_err(TAG, "Problem with insert: " + std::string(zErrMsg) + "\n SQL-query: " + sSqlInsert);
+    return false;
+  }
+  return true;
 }
 
 int FhqServerDatabaseFile::selectSumOrCount(std::string sSqlSelectCount) {
-    copyDatabaseToBackup();
-    sqlite3_stmt* pQuery = nullptr;
-    int ret = sqlite3_prepare_v2(m_pDatabaseFile, sSqlSelectCount.c_str(), -1, &pQuery, NULL);
-    // prepare the statement
-    if (ret != SQLITE_OK) {
-        WsjcppLog::throw_err(TAG, "Failed to prepare select count: " + std::string(sqlite3_errmsg(m_pDatabaseFile)) + "\n SQL-query: " + sSqlSelectCount);
-    }
-    // step to 1st row of data
-    ret = sqlite3_step(pQuery);
-    if (ret != SQLITE_ROW) { // see documentation, this can return more values as success
-        WsjcppLog::throw_err(TAG, "Failed to step for select count or sum: " + std::string(sqlite3_errmsg(m_pDatabaseFile)) + "\n SQL-query: " + sSqlSelectCount);
-    }
-    int nRet = sqlite3_column_int(pQuery, 0);
-    if (pQuery != nullptr) sqlite3_finalize(pQuery);
-    return nRet;
+  copyDatabaseToBackup();
+  sqlite3_stmt *pQuery = nullptr;
+  int ret = sqlite3_prepare_v2(m_pDatabaseFile, sSqlSelectCount.c_str(), -1, &pQuery, NULL);
+  // prepare the statement
+  if (ret != SQLITE_OK) {
+    WsjcppLog::throw_err(
+      TAG,
+      "Failed to prepare select count: " + std::string(sqlite3_errmsg(m_pDatabaseFile)) +
+        "\n SQL-query: " + sSqlSelectCount
+    );
+  }
+  // step to 1st row of data
+  ret = sqlite3_step(pQuery);
+  if (ret != SQLITE_ROW) { // see documentation, this can return more values as success
+    WsjcppLog::throw_err(
+      TAG,
+      "Failed to step for select count or sum: " + std::string(sqlite3_errmsg(m_pDatabaseFile)) +
+        "\n SQL-query: " + sSqlSelectCount
+    );
+  }
+  int nRet = sqlite3_column_int(pQuery, 0);
+  if (pQuery != nullptr)
+    sqlite3_finalize(pQuery);
+  return nRet;
 }
 
 bool FhqServerDatabaseFile::selectRows(std::string sSqlSelectRows, FhqServerDatabaseSelectRows &selectRows) {
-    copyDatabaseToBackup();
-    sqlite3_stmt* pQuery = nullptr;
-    int nRet = sqlite3_prepare_v2(m_pDatabaseFile, sSqlSelectRows.c_str(), -1, &pQuery, NULL);
-    // prepare the statement
-    if (nRet != SQLITE_OK) {
-        WsjcppLog::throw_err(TAG, "Failed to prepare select rows: " + std::string(sqlite3_errmsg(m_pDatabaseFile)) + "\n SQL-query: " + sSqlSelectRows);
-        return false;
-    }
-    selectRows.setQuery(pQuery);
-    return true;
+  copyDatabaseToBackup();
+  sqlite3_stmt *pQuery = nullptr;
+  int nRet = sqlite3_prepare_v2(m_pDatabaseFile, sSqlSelectRows.c_str(), -1, &pQuery, NULL);
+  // prepare the statement
+  if (nRet != SQLITE_OK) {
+    WsjcppLog::throw_err(
+      TAG,
+      "Failed to prepare select rows: " + std::string(sqlite3_errmsg(m_pDatabaseFile)) +
+        "\n SQL-query: " + sSqlSelectRows
+    );
+    return false;
+  }
+  selectRows.setQuery(pQuery);
+  return true;
 }
 
 void FhqServerDatabaseFile::copyDatabaseToBackup() {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    // every 1 minutes make backup
-    int nCurrentTime = WsjcppCore::getCurrentTimeInSeconds();
-    if (nCurrentTime - m_nLastBackupTime < 60) {
-        return;
-    }
-    m_nLastBackupTime = nCurrentTime;
+  std::lock_guard<std::mutex> lock(m_mutex);
+  // every 1 minutes make backup
+  int nCurrentTime = WsjcppCore::getCurrentTimeInSeconds();
+  if (nCurrentTime - m_nLastBackupTime < 60) {
+    return;
+  }
+  m_nLastBackupTime = nCurrentTime;
 
-    int nMaxBackupsFiles = 9;
-    WsjcppLog::info(TAG, "Start backup for " + m_sFileFullpath);
-    std::string sFilebackup = m_sBaseFileBackupFullpath + "." + std::to_string(nMaxBackupsFiles);
-    if (WsjcppCore::fileExists(sFilebackup)) {
-        WsjcppCore::removeFile(sFilebackup);
+  int nMaxBackupsFiles = 9;
+  WsjcppLog::info(TAG, "Start backup for " + m_sFileFullpath);
+  std::string sFilebackup = m_sBaseFileBackupFullpath + "." + std::to_string(nMaxBackupsFiles);
+  if (WsjcppCore::fileExists(sFilebackup)) {
+    WsjcppCore::removeFile(sFilebackup);
+  }
+  for (int i = nMaxBackupsFiles - 1; i >= 0; i--) {
+    std::string sFilebackupFrom = m_sBaseFileBackupFullpath + "." + std::to_string(i);
+    std::string sFilebackupTo = m_sBaseFileBackupFullpath + "." + std::to_string(i + 1);
+    if (WsjcppCore::fileExists(sFilebackupFrom)) {
+      if (std::rename(sFilebackupFrom.c_str(), sFilebackupTo.c_str())) {
+        WsjcppLog::throw_err(TAG, "Could not rename from " + sFilebackupFrom + " to " + sFilebackupTo);
+      }
     }
-    for (int i = nMaxBackupsFiles - 1; i >= 0; i--) {
-        std::string sFilebackupFrom = m_sBaseFileBackupFullpath + "." + std::to_string(i);
-        std::string sFilebackupTo = m_sBaseFileBackupFullpath + "." + std::to_string(i+1);
-        if (WsjcppCore::fileExists(sFilebackupFrom)) {
-            if (std::rename(sFilebackupFrom.c_str(), sFilebackupTo.c_str())) {
-                WsjcppLog::throw_err(TAG, "Could not rename from " + sFilebackupFrom + " to " + sFilebackupTo);
-            }
-        }
-    }
-    sFilebackup = m_sBaseFileBackupFullpath + "." + std::to_string(0);
-    if (!WsjcppCore::copyFile(m_sFileFullpath, sFilebackup)) {
-        WsjcppLog::throw_err(TAG, "Failed copy file to backup for " + m_sFileFullpath);
-    }
-    WsjcppLog::info(TAG, "Backup done for " + m_sFileFullpath);
+  }
+  sFilebackup = m_sBaseFileBackupFullpath + "." + std::to_string(0);
+  if (!WsjcppCore::copyFile(m_sFileFullpath, sFilebackup)) {
+    WsjcppLog::throw_err(TAG, "Failed copy file to backup for " + m_sFileFullpath);
+  }
+  WsjcppLog::info(TAG, "Backup done for " + m_sFileFullpath);
 }
 
 // ---------------------------------------------------------------------
@@ -217,9 +218,9 @@ EmployDatabase::EmployDatabase() : WsjcppEmployBase(EmployDatabase::name(), {Emp
   pGlobalSettings->registrySetting(sGroupDatabase, "dbuser").string("freehackquest_u").inFile();
   pGlobalSettings->registrySetting(sGroupDatabase, "dbpass").password("freehackquest_p").inFile();
   pGlobalSettings->registrySetting(sGroupDatabase, "connection_outdated_after_seconds")
-      .number(m_nConnectionOutdatedAfterSeconds)
-      .inRuntime()
-      .readonly();
+    .number(m_nConnectionOutdatedAfterSeconds)
+    .inRuntime()
+    .readonly();
 
   // TODO require some storage_type settings
   // local nosql
@@ -410,7 +411,7 @@ bool EmployDatabase::manualCreateDatabase(const std::string &sRootPassword, std:
     QSqlQuery query(*pDatabase);
     // TODO escaping
     std::string sQuery =
-        "GRANT ALL PRIVILEGES ON " + sDatabaseName + ".* TO '" + sDatabaseUser + "'@'localhost' WITH GRANT OPTION;";
+      "GRANT ALL PRIVILEGES ON " + sDatabaseName + ".* TO '" + sDatabaseUser + "'@'localhost' WITH GRANT OPTION;";
     query.prepare(QString(sQuery.c_str()));
     if (!query.exec()) {
       sError = query.lastError().text().toStdString();
@@ -440,9 +441,9 @@ QSqlDatabase *EmployDatabase::database() {
   }
 
   ModelDatabaseConnection *pDBConnection =
-      new ModelDatabaseConnection("qt_sql_default_connection_1_" + QString::number(nThreadID));
+    new ModelDatabaseConnection("qt_sql_default_connection_1_" + QString::number(nThreadID));
   ModelDatabaseConnection *pDBConnection_older =
-      new ModelDatabaseConnection("qt_sql_default_connection_2_" + QString::number(nThreadID));
+    new ModelDatabaseConnection("qt_sql_default_connection_2_" + QString::number(nThreadID));
   m_mDatabaseConnections[nThreadID] = pDBConnection;
   m_mDatabaseConnections_older[nThreadID] = pDBConnection_older;
   pDBConnection->connect();
@@ -457,8 +458,9 @@ WsjcppStorageConnection *EmployDatabase::getStorageConnection() {
   std::lock_guard<std::mutex> lock(m_mtxStorageConnections);
 
   if (m_vDoRemoveStorageConnections.size() > 0) {
-    WsjcppLog::warn(TAG, "TODO cleanup m_vDoRemoveStorageConnections, size = " +
-                             std::to_string(m_vDoRemoveStorageConnections.size()));
+    WsjcppLog::warn(
+      TAG, "TODO cleanup m_vDoRemoveStorageConnections, size = " + std::to_string(m_vDoRemoveStorageConnections.size())
+    );
   }
 
   std::string sThreadId = WsjcppCore::getThreadId();
@@ -553,7 +555,8 @@ void EmployDatabase::initSettingItem(WsjcppSettingItem *pSettingItem) {
 
 bool EmployDatabase::initUsefulLinksDatabase() {
   // TODO migration
-  m_pUsefulLinks = new FhqServerDatabaseFile("useful_links.db",
+  m_pUsefulLinks = new FhqServerDatabaseFile(
+    "useful_links.db",
     "CREATE TABLE IF NOT EXISTS useful_links ( "
     "  id INTEGER PRIMARY KEY AUTOINCREMENT,"
     // "  uuid VARCHAR(36) NOT NULL,"

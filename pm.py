@@ -34,6 +34,14 @@ clang_format_parser = subparsers.add_parser(
 )
 clang_format_parser.set_defaults(subparser=CREATE_STORAGE_UPDATE)
 
+# code-check
+CODE_CHECK = 'code-check'
+code_check_parser = subparsers.add_parser(
+    name=CODE_CHECK,
+    description='Run code check'
+)
+code_check_parser.set_defaults(subparser=CODE_CHECK)
+
 # main
 
 arguments = main_parser.parse_args()
@@ -55,6 +63,10 @@ if arguments.subparser == CLANG_FORMAT:
 elif arguments.subparser == CREATE_STORAGE_UPDATE:
     upgarde = libfhqpm.CreateStorageUpdate()
     upgarde.create()
+elif arguments.subparser == CODE_CHECK:
+    code_check = libfhqpm.CodeCheck()
+    if code_check.run() > 0:
+        sys.exit(1)
 else:
     main_parser.print_help(sys.stderr)
     sys.exit(1)

@@ -174,8 +174,10 @@ void CmdHandlerMailsList::handle(ModelRequest *pRequest) {
   nlohmann::json jsonEmails = nlohmann::json::array();
   {
     QSqlQuery query(db);
-    query.prepare("SELECT * FROM email_delivery ed " + QString::fromStdString(sWhere) + " ORDER BY ed.dt DESC LIMIT " +
-                  QString::number(nPage * nOnPage) + "," + QString::number(nOnPage));
+    query.prepare(
+      "SELECT * FROM email_delivery ed " + QString::fromStdString(sWhere) + " ORDER BY ed.dt DESC LIMIT " +
+      QString::number(nPage * nOnPage) + "," + QString::number(nOnPage)
+    );
     foreach (QString key, filter_values.keys()) {
       query.bindValue(key, filter_values.value(key));
     }

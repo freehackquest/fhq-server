@@ -34,8 +34,9 @@
 
 // ---------------------------------------------------------------------
 
-ModelNotification::ModelNotification(const std::string &sType, const std::string &sSection,
-                                     const std::string &sMessage) {
+ModelNotification::ModelNotification(
+  const std::string &sType, const std::string &sSection, const std::string &sMessage
+) {
   TAG = "ModelNotification";
   m_sType = sType;
   m_sSection = sSection;

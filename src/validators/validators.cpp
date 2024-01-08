@@ -55,8 +55,20 @@ bool ValidatorEventType::isValid(const std::string &sValue, std::string &sError)
 
 ValidatorQuestSubject::ValidatorQuestSubject() : WsjcppValidatorStringBase("quest_subject") {
   TAG = "ValidatorQuestSubject";
-  m_vQuestSubjects = {"trivia",  "hashes", "stego", "reverse", "recon", "crypto", "forensics",
-                      "network", "web",    "ppc",   "admin",   "enjoy", "unknown"};
+  m_vQuestSubjects = {
+    "trivia",
+    "hashes",
+    "stego",
+    "reverse",
+    "recon",
+    "crypto",
+    "forensics",
+    "network",
+    "web",
+    "ppc",
+    "admin",
+    "enjoy",
+    "unknown"};
 };
 
 // ---------------------------------------------------------------------

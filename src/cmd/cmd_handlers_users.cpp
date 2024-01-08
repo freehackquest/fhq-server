@@ -487,7 +487,7 @@ void CmdHandlerToken::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUpdateUserLocation)
 
 CmdHandlerUpdateUserLocation::CmdHandlerUpdateUserLocation()
-    : CmdHandlerBase("updateuserlocation", "This method will be try update user location by lastip") {
+  : CmdHandlerBase("updateuserlocation", "This method will be try update user location by lastip") {
 
   setAccessUnauthorized(false);
   setAccessUser(false);
@@ -556,7 +556,7 @@ void CmdHandlerUpdateUserLocation::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUserChangePassword)
 
 CmdHandlerUserChangePassword::CmdHandlerUserChangePassword()
-    : CmdHandlerBase("user_change_password", "This method for change user password") {
+  : CmdHandlerBase("user_change_password", "This method for change user password") {
 
   setAccessUnauthorized(false);
   setAccessUser(true);
@@ -1023,7 +1023,7 @@ void CmdHandlerUsersInfo::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUserResetPassword)
 
 CmdHandlerUserResetPassword::CmdHandlerUserResetPassword()
-    : CmdHandlerBase("user_reset_password", "Method for reset password") {
+  : CmdHandlerBase("user_reset_password", "Method for reset password") {
 
   setAccessUnauthorized(true);
   setAccessUser(false);
@@ -1092,8 +1092,9 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest) {
   nlohmann::json jsonMeta;
   jsonMeta["userid"] = nUserID;
   jsonMeta["usernick"] = sNick.toStdString();
-  RunTasks::AddPublicEvents("users", "User comeback [user#" + std::to_string(nUserID) + "] " + sNick.toStdString(),
-                            jsonMeta);
+  RunTasks::AddPublicEvents(
+    "users", "User comeback [user#" + std::to_string(nUserID) + "] " + sNick.toStdString(), jsonMeta
+  );
 
   std::string sSubject = "Reset Password from FreeHackQuest";
   std::string sContext = "Welcome back to FreeHackQuest!\n"
@@ -1297,7 +1298,8 @@ void CmdHandlerUserUpdate::handle(ModelRequest *pRequest) {
   jsonMeta["userid"] = nUserID;
   jsonMeta["usernick"] = sNick.toStdString();
   RunTasks::AddPublicEvents(
-      "users", "User [user#" + std::to_string(nUserID) + "]  " + sNick.toStdString() + " updated info", jsonMeta);
+    "users", "User [user#" + std::to_string(nUserID) + "]  " + sNick.toStdString() + " updated info", jsonMeta
+  );
 
   data["id"] = nUserID;
   data["nick"] = sNick.toHtmlEscaped().toStdString();
@@ -1603,8 +1605,10 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest) {
   // users
   {
     QSqlQuery query(db);
-    query.prepare("SELECT * FROM users " + where + " ORDER BY dt_last_login DESC LIMIT " +
-                  QString::number(nPage * nOnPage) + "," + QString::number(nOnPage));
+    query.prepare(
+      "SELECT * FROM users " + where + " ORDER BY dt_last_login DESC LIMIT " + QString::number(nPage * nOnPage) + "," +
+      QString::number(nOnPage)
+    );
     foreach (QString key, filter_values.keys()) {
       query.bindValue(key, filter_values.value(key));
     }
@@ -1658,7 +1662,7 @@ void CmdHandlerUsers::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsersRegistration)
 
 CmdHandlerUsersRegistration::CmdHandlerUsersRegistration()
-    : CmdHandlerBase("users_registration", "Method for registration") {
+  : CmdHandlerBase("users_registration", "Method for registration") {
 
   TAG = "CmdUsersRegistrationHandler";
 
@@ -1757,7 +1761,7 @@ void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsersRegistrationVerification)
 
 CmdHandlerUsersRegistrationVerification::CmdHandlerUsersRegistrationVerification()
-    : CmdHandlerBase("users_registration_verification", "Method for registration verification") {
+  : CmdHandlerBase("users_registration_verification", "Method for registration verification") {
 
   TAG = "CmdUsersRegistrationVerificationHandler";
 
@@ -1938,7 +1942,7 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsersChangeEmail)
 
 CmdHandlerUsersChangeEmail::CmdHandlerUsersChangeEmail()
-    : CmdHandlerBase("users_change_email", "Method for email changing") {
+  : CmdHandlerBase("users_change_email", "Method for email changing") {
 
   TAG = "CmdUsersChangeEmailHandler";
 
@@ -2053,7 +2057,7 @@ void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsersChangeEmailVerification)
 
 CmdHandlerUsersChangeEmailVerification::CmdHandlerUsersChangeEmailVerification()
-    : CmdHandlerBase("users_change_email_verification", "Method for email changing verification") {
+  : CmdHandlerBase("users_change_email_verification", "Method for email changing verification") {
 
   TAG = "CmdUsersChangeEmailVerificationHandler";
 
@@ -2199,7 +2203,7 @@ void CmdHandlerUsersTokens::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsersTokensDelete)
 
 CmdHandlerUsersTokensDelete::CmdHandlerUsersTokensDelete()
-    : CmdHandlerBase("users_tokens_delete", "Delete user tokens") {
+  : CmdHandlerBase("users_tokens_delete", "Delete user tokens") {
 
   TAG = "CmdHandlerUsersTokens";
 

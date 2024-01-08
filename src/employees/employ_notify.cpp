@@ -98,8 +98,9 @@ void EmployNotify::notifyDanger(const std::string &sSection, const std::string &
 
 // ---------------------------------------------------------------------
 
-void EmployNotify::notifyInfo(const std::string &sSection, const std::string &sMessage,
-                              const nlohmann::json &jsonMeta) {
+void EmployNotify::notifyInfo(
+  const std::string &sSection, const std::string &sMessage, const nlohmann::json &jsonMeta
+) {
   sendNotification("info", sSection, sMessage, jsonMeta);
 }
 
@@ -118,8 +119,9 @@ void EmployNotify::notifySuccess(const std::string &sSection, const std::string 
 
 // ---------------------------------------------------------------------
 
-void EmployNotify::sendNotification(const std::string &sType, const std::string &sSection,
-                                    const std::string &sMessage) {
+void EmployNotify::sendNotification(
+  const std::string &sType, const std::string &sSection, const std::string &sMessage
+) {
   nlohmann::json jsonMeta;
   jsonMeta["type"] = sType;
   jsonMeta["section"] = sSection;
@@ -138,8 +140,9 @@ void EmployNotify::sendNotification(const std::string &sType, const std::string 
 
 // ---------------------------------------------------------------------
 
-void EmployNotify::sendNotification(const std::string &sType, const std::string &sSection, const std::string &sMessage,
-                                    const nlohmann::json &jsonMeta) {
+void EmployNotify::sendNotification(
+  const std::string &sType, const std::string &sSection, const std::string &sMessage, const nlohmann::json &jsonMeta
+) {
   RunTasks::AddPublicEvents(sType, sMessage, jsonMeta);
 
   nlohmann::json jsonMessage;

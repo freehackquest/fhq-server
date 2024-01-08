@@ -104,9 +104,11 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
   // count leaks
   {
     QSqlQuery query(db);
-    query.prepare("SELECT count(*) as cnt FROM leaks l"
-                  " " +
-                  QString::fromStdString(sWhere));
+    query.prepare(
+      "SELECT count(*) as cnt FROM leaks l"
+      " " +
+      QString::fromStdString(sWhere)
+    );
     foreach (QString key, filter_values.keys()) {
       query.bindValue(key, filter_values.value(key));
     }
@@ -124,12 +126,14 @@ void CmdHandlerLeaksList::handle(ModelRequest *pRequest) {
   nlohmann::json jsonLeaksList = nlohmann::json::array();
   {
     QSqlQuery query(db);
-    query.prepare("SELECT * FROM leaks l"
-                  " " +
-                  QString::fromStdString(sWhere) +
-                  " ORDER BY id "
-                  " LIMIT " +
-                  QString::number(nPage * nOnPage) + "," + QString::number(nOnPage));
+    query.prepare(
+      "SELECT * FROM leaks l"
+      " " +
+      QString::fromStdString(sWhere) +
+      " ORDER BY id "
+      " LIMIT " +
+      QString::number(nPage * nOnPage) + "," + QString::number(nOnPage)
+    );
     foreach (QString key, filter_values.keys()) {
       query.bindValue(key, filter_values.value(key));
     }

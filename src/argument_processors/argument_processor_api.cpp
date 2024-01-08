@@ -43,7 +43,7 @@
 // ArgumentProcessorApi
 
 ArgumentProcessorApi::ArgumentProcessorApi()
-    : WsjcppArgumentProcessor({"api"}, "api", "All what depened to api processing") {
+  : WsjcppArgumentProcessor({"api"}, "api", "All what depened to api processing") {
   TAG = "ArgumentProcessorApi";
   registryProcessor(new ArgumentProcessorApiList());
   registryProcessor(new ArgumentProcessorApiExportPythonLibrary());
@@ -60,12 +60,13 @@ int ArgumentProcessorApi::exec(const std::vector<std::string> &vRoutes, const st
 // ArgumentProcessorApiList
 
 ArgumentProcessorApiList::ArgumentProcessorApiList()
-    : WsjcppArgumentProcessor({"list", "ls"}, "Print list of api handlers", "Print list of api handlers") {
+  : WsjcppArgumentProcessor({"list", "ls"}, "Print list of api handlers", "Print list of api handlers") {
   TAG = "ArgumentProcessorApiList";
 }
 
-int ArgumentProcessorApiList::exec(const std::vector<std::string> &vRoutes,
-                                   const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorApiList::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
   std::cout << "\n\n * CmdHandlers (" << g_pCmdHandlers->size() << "):\n";
 
   struct CmdRow {
@@ -119,14 +120,17 @@ int ArgumentProcessorApiList::exec(const std::vector<std::string> &vRoutes,
 // ArgumentProcessorApiExportPythonLibrary
 
 ArgumentProcessorApiExportPythonLibrary::ArgumentProcessorApiExportPythonLibrary()
-    : WsjcppArgumentProcessor({"export-freehackquest-libclient-py", "exlpy"},
-                              "Export freehackquest-libclient-py (python)",
-                              "Export freehackquest-libclient-py (python)") {
+  : WsjcppArgumentProcessor(
+      {"export-freehackquest-libclient-py", "exlpy"},
+      "Export freehackquest-libclient-py (python)",
+      "Export freehackquest-libclient-py (python)"
+    ) {
   TAG = "ArgumentProcessorApiExportPythonLibrary";
 }
 
-int ArgumentProcessorApiExportPythonLibrary::exec(const std::vector<std::string> &vRoutes,
-                                                  const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorApiExportPythonLibrary::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
   ExportLibWsjCppCliPy *pExportPython = new ExportLibWsjCppCliPy();
   pExportPython->exportLib();
   delete pExportPython;
@@ -137,14 +141,17 @@ int ArgumentProcessorApiExportPythonLibrary::exec(const std::vector<std::string>
 // ArgumentProcessorApiExportJavascriptLibrary
 
 ArgumentProcessorApiExportJavascriptLibrary::ArgumentProcessorApiExportJavascriptLibrary()
-    : WsjcppArgumentProcessor({"export-freehackquest-libclient-web-js", "exlwjs"},
-                              "Export freehackquest-libclient-web-js (javascript)",
-                              "Export freehackquest-libclient-web-js (javascript)") {
+  : WsjcppArgumentProcessor(
+      {"export-freehackquest-libclient-web-js", "exlwjs"},
+      "Export freehackquest-libclient-web-js (javascript)",
+      "Export freehackquest-libclient-web-js (javascript)"
+    ) {
   TAG = "ArgumentProcessorApiExportJavascriptLibrary";
 }
 
-int ArgumentProcessorApiExportJavascriptLibrary::exec(const std::vector<std::string> &vRoutes,
-                                                      const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorApiExportJavascriptLibrary::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
   std::string appName(WSJCPP_APP_NAME);
   std::string appVersion(WSJCPP_APP_VERSION);
 
@@ -164,13 +171,17 @@ int ArgumentProcessorApiExportJavascriptLibrary::exec(const std::vector<std::str
 // ArgumentProcessorApiExportJavaAndroidLibrary
 
 ArgumentProcessorApiExportJavaAndroidLibrary::ArgumentProcessorApiExportJavaAndroidLibrary()
-    : WsjcppArgumentProcessor({"export-freehackquest-libclient-java-android", "exljadr"},
-                              "Export libfhqcli-java-android", "Export libfhqcli-java-android") {
+  : WsjcppArgumentProcessor(
+      {"export-freehackquest-libclient-java-android", "exljadr"},
+      "Export libfhqcli-java-android",
+      "Export libfhqcli-java-android"
+    ) {
   TAG = "ArgumentProcessorApiExportJavaAndroidLibrary";
 }
 
-int ArgumentProcessorApiExportJavaAndroidLibrary::exec(const std::vector<std::string> &vRoutes,
-                                                       const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorApiExportJavaAndroidLibrary::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
 
   ExportLibWsjCppCliJavaAndroid *pExportJavaAndroid = new ExportLibWsjCppCliJavaAndroid();
   // pExportJavaAndroid->setLibraryName("libfhqcli-java-android");

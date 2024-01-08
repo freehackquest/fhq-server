@@ -13,15 +13,10 @@ check_ret() {
         echo "********************************************************************************"
         echo ""
     fi
-} 
+}
 
-cd tests/code-check
-check_ret $? "change directory to code-check"
-./build_simple.sh
-check_ret $? "build code-check"
-./code-check --show-only-errors ../..
+./pm code-check
 check_ret $? "code-check"
-cd ../..
 
 cd unit-tests.wsjcpp
 check_ret $? "change directory to unit-tests.wsjcpp"

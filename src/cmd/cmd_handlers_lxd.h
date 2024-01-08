@@ -70,8 +70,9 @@ public:
   CmdHandlerLXDExec();
   void handle(ModelRequest *pRequest) override;
 
-  static bool exec_command(const std::string &sName, const std::string &sCommand, std::string &sError, int &nErrorCode,
-                           std::string &sOutput);
+  static bool exec_command(
+    const std::string &sName, const std::string &sCommand, std::string &sError, int &nErrorCode, std::string &sOutput
+  );
 };
 
 class CmdHandlerLXDFile : public CmdHandlerBase {
@@ -80,10 +81,21 @@ public:
   CmdHandlerLXDFile();
   void handle(ModelRequest *pRequest) override;
 
-  void pull_file(LXDContainer *pContainer, const std::string &sPath, std::string &sb64File, std::string &sError,
-                 int &nErrorCode, bool &isDirectory);
-  bool push_file(LXDContainer *pContainer, const std::string &sPath, const std::string &sb64File, std::string &sError,
-                 int &nErrorCode);
+  void pull_file(
+    LXDContainer *pContainer,
+    const std::string &sPath,
+    std::string &sb64File,
+    std::string &sError,
+    int &nErrorCode,
+    bool &isDirectory
+  );
+  bool push_file(
+    LXDContainer *pContainer,
+    const std::string &sPath,
+    const std::string &sb64File,
+    std::string &sError,
+    int &nErrorCode
+  );
   bool delete_file(const std::string &sName, const std::string &sPath, std::string &s_b64Zip);
 };
 

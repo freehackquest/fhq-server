@@ -34,9 +34,12 @@
 #include <iostream>
 #include <lxd_async_operation_task.h>
 
-LXDAsyncOperationTask::LXDAsyncOperationTask(void (*func)(const std::string &, std::string &, int &),
-                                             const std::string &sName, const std::string &sCMD,
-                                             ModelRequest *pRequest) {
+LXDAsyncOperationTask::LXDAsyncOperationTask(
+  void (*func)(const std::string &, std::string &, int &),
+  const std::string &sName,
+  const std::string &sCMD,
+  ModelRequest *pRequest
+) {
   TAG = "LXDAsyncOperationTask";
   m_func = func;
   m_pRequestClient = pRequest->client();

@@ -245,9 +245,11 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
 
   {
     QSqlQuery query(db);
-    query.prepare("SELECT count(*) as cnt FROM public_events e "
-                  " " +
-                  QString::fromStdString(sWhere));
+    query.prepare(
+      "SELECT count(*) as cnt FROM public_events e "
+      " " +
+      QString::fromStdString(sWhere)
+    );
     foreach (QString key, filter_values.keys()) {
       query.bindValue(key, filter_values.value(key));
     }
@@ -266,12 +268,14 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
 
   {
     QSqlQuery query(db);
-    query.prepare("SELECT * FROM public_events e"
-                  " " +
-                  QString::fromStdString(sWhere) +
-                  " ORDER BY dt DESC "
-                  " LIMIT " +
-                  QString::number(nPage * nOnPage) + "," + QString::number(nOnPage));
+    query.prepare(
+      "SELECT * FROM public_events e"
+      " " +
+      QString::fromStdString(sWhere) +
+      " ORDER BY dt DESC "
+      " LIMIT " +
+      QString::number(nPage * nOnPage) + "," + QString::number(nOnPage)
+    );
     foreach (QString key, filter_values.keys()) {
       query.bindValue(key, filter_values.value(key));
     }

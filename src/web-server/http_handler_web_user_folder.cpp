@@ -34,7 +34,7 @@
 #include <wsjcpp_core.h>
 
 HttpHandlerWebUserFolder::HttpHandlerWebUserFolder(const std::string &sWebFolder)
-    : WsjcppLightWebHttpHandlerBase("web-user-folder") {
+  : WsjcppLightWebHttpHandlerBase("web-user-folder") {
 
   TAG = "HttpHandlerWebUserFolder";
   m_sWebFolder = sWebFolder;

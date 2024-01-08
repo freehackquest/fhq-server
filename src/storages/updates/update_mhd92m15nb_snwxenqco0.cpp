@@ -34,7 +34,7 @@
 REGISTRY_WSJCPP_STORAGE_UPDATE(Update_mhd92m15nb_snwxenqco0)
 
 Update_mhd92m15nb_snwxenqco0::Update_mhd92m15nb_snwxenqco0()
-    : WsjcppStorageUpdateBase("mhd92m15nb", "snwxenqco0", "Added tables chats, chats_users, chats_messages") {
+  : WsjcppStorageUpdateBase("mhd92m15nb", "snwxenqco0", "Added tables chats, chats_users, chats_messages") {
 
   WsjcppStorageCreateTable *chat = createTable("chats");
   chat->addColumn("id").number().autoIncrement().primaryKey().notNull();
