@@ -29,7 +29,6 @@
  *
  ***********************************************************************************/
 
-
 #include "cmd_handlers_useful_links.h"
 #include <employ_database.h>
 #include <employ_notify.h>

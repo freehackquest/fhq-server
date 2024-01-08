@@ -29,7 +29,6 @@
  *
  ***********************************************************************************/
 
-
 #include "update_722kt134lq_6c8d4zm6u2.h"
 
 REGISTRY_WSJCPP_STORAGE_UPDATE(Update_722kt134lq_6c8d4zm6u2)

@@ -29,7 +29,6 @@
  *
  ***********************************************************************************/
 
-
 #include "update_on73sheet9_ili7looowo.h"
 
 REGISTRY_WSJCPP_STORAGE_UPDATE(Update_on73sheet9_ili7looowo)

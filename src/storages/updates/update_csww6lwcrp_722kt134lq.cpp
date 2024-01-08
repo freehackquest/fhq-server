@@ -29,7 +29,6 @@
  *
  ***********************************************************************************/
 
-
 #include "update_csww6lwcrp_722kt134lq.h"
 
 REGISTRY_WSJCPP_STORAGE_UPDATE(Update_csww6lwcrp_722kt134lq)

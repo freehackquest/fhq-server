@@ -34,7 +34,7 @@
 #include <cmd_handlers.h>
 
 class CmdHandlerFeedbackAdd : public CmdHandlerBase {
-  public:
-    CmdHandlerFeedbackAdd();
-    virtual void handle(ModelRequest *pRequest);
+public:
+  CmdHandlerFeedbackAdd();
+  virtual void handle(ModelRequest *pRequest);
 };

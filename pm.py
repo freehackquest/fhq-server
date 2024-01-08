@@ -48,12 +48,12 @@ if arguments.subparser == CLANG_FORMAT:
     files.extend(glob2.glob(os.path.join("src", "**", "*.h")))
 
     for _file in files:
-        if '3rdParty' in _file:
+        if 'third-party' in _file:
             continue
         command = ["clang-format", '-style=file', '-i', _file]
         cmd.run_command(command)
 elif arguments.subparser == CREATE_STORAGE_UPDATE:
-    upgarde = libfhqpm.CreateStorageUpdate() 
+    upgarde = libfhqpm.CreateStorageUpdate()
     upgarde.create()
 else:
     main_parser.print_help(sys.stderr)
