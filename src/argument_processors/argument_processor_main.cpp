@@ -60,13 +60,14 @@ WsjcppLightWebServer g_httpServer;
 // ArgumentProcessorMain
 
 ArgumentProcessorMain::ArgumentProcessorMain(QCoreApplication *pQtApp)
-    : WsjcppArgumentProcessor({"main"}, "FreeHackQuest Server", "FreeHackQuest Server") {
+  : WsjcppArgumentProcessor({"main"}, "FreeHackQuest Server", "FreeHackQuest Server") {
   TAG = "ArgumentProcessorMain";
   // registrySingleArgument("--single", "What exactly do this single param?");
   registryParameterArgument("--workdir", "<path>", "workdir");
   registryParameterArgument("-wd", "<path>", "workdir (short)");
-  registryParameterArgument("--init-default-data-for-containers", "<path>",
-                            "Init all basic data for containers (nginx, fhq data, ssl)");
+  registryParameterArgument(
+    "--init-default-data-for-containers", "<path>", "Init all basic data for containers (nginx, fhq data, ssl)"
+  );
 
   // registryExample("here example of command");
   registryProcessor(new ArgumentProcessorVersion());
@@ -78,9 +79,10 @@ ArgumentProcessorMain::ArgumentProcessorMain(QCoreApplication *pQtApp)
   registryProcessor(new ArgumentProcessorPrepareDeb());
 
   m_sWorkDir = "";
-  std::vector<std::string> vDefaultsWorkdirs = {WsjcppCore::getCurrentDirectory() + "./data/",
-                                                WsjcppCore::getCurrentDirectory() + "./ci/travis/data/",
-                                                "/usr/share/fhq-server/data"};
+  std::vector<std::string> vDefaultsWorkdirs = {
+    WsjcppCore::getCurrentDirectory() + "./data/",
+    WsjcppCore::getCurrentDirectory() + "./ci/travis/data/",
+    "/usr/share/fhq-server/data"};
   for (int i = 0; i < vDefaultsWorkdirs.size(); i++) {
     if (WsjcppCore::dirExists(vDefaultsWorkdirs[i])) {
       m_sWorkDir = vDefaultsWorkdirs[i];
@@ -93,8 +95,9 @@ bool ArgumentProcessorMain::applySingleArgument(const std::string &sProgramName,
   return false;
 }
 
-bool ArgumentProcessorMain::applyParameterArgument(const std::string &sProgramName, const std::string &sArgumentName,
-                                                   const std::string &sValue) {
+bool ArgumentProcessorMain::applyParameterArgument(
+  const std::string &sProgramName, const std::string &sArgumentName, const std::string &sValue
+) {
   if (sArgumentName == "--workdir" || sArgumentName == "-wd") {
     return setWorkDir(sValue);
   }
@@ -289,136 +292,148 @@ void ArgumentProcessorMain::initDefaultDataConfigYml(const std::string &sNormali
 void ArgumentProcessorMain::initDefaultSsl(const std::string &sNormalizedInitDir) {
   std::string sTestFhqServerCrt = sNormalizedInitDir + "/ssl/test_fhqserver.crt";
   if (!WsjcppCore::fileExists(sTestFhqServerCrt)) {
-    WsjcppCore::writeFile(sTestFhqServerCrt, "-----BEGIN CERTIFICATE-----\n"
-                                             "MIIDazCCAlOgAwIBAgIUW2mVSJp6DAQa6X0j3TQXeCs8hOcwDQYJKoZIhvcNAQEL\n"
-                                             "BQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoM\n"
-                                             "GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMTAzMjcwODA4MjFaFw0zMTAz\n"
-                                             "MjUwODA4MjFaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEw\n"
-                                             "HwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEB\n"
-                                             "AQUAA4IBDwAwggEKAoIBAQC8fAitk+xvn4MSRqwXO+dqdYnVwi/aCAf6TlE+jT4w\n"
-                                             "pcKle+JWKWxJ/cgbzInXSF53TDg4Nn5mvRB8px8TiTQxoJItuuWrqUgckw0s+tca\n"
-                                             "YPYctgwzwdrZAvEkCG7LVgZoFQr/3WJtJA+hqIYydu7TzGOBD326R8PblCnLScA2\n"
-                                             "mvO4RjRU7TJMg+Z662PyYh33Kt4NToTjbDsVKparGTFE5q5FwDOC8VPraQzCRYB2\n"
-                                             "mdj5wVhyXUDisO2qOG4UoNTB1ypcyqZBEWaxc7GBI3/Wv787ZvXlpr+owdif/bjw\n"
-                                             "3TLf/NySHztJmn3xJrr05givxQC4qS6AqDAmIYh2gH9BAgMBAAGjUzBRMB0GA1Ud\n"
-                                             "DgQWBBSZN819rm68JcSrcjZWDUl3w2AzaDAfBgNVHSMEGDAWgBSZN819rm68JcSr\n"
-                                             "cjZWDUl3w2AzaDAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQBv\n"
-                                             "ZCUIjGXzkQCK91Sbsucs+iWg7uBr9ITxG/uxhn7pPw5rCu6B3B2C0m0bXG3e0hvb\n"
-                                             "vl4Lo0a1YLdWQWW8FCHziNSxqAyfs+QbK2rFA3VzrdYi9C12jff5+C6FTX0oc7Gb\n"
-                                             "tMnqCLDLwUVJ6tjVMBkpjBm8TDESFh93Mw605A31VTyxKBezaSbpheqR4MI3myfI\n"
-                                             "fwkKenYpgLh9/Pn6rx5LeMlzb+oBdgq87UF0aExzg+7eat62lZndBVMcAttIpFh+\n"
-                                             "CtkSPjxqQ9fGmEtxnqaIJCCw8vHFA4TwkxQcEE7JnSSriSwZi254jJYEAXvxUqWj\n"
-                                             "PdgOc2wwEnazLguwZm02\n"
-                                             "-----END CERTIFICATE-----\n");
+    WsjcppCore::writeFile(
+      sTestFhqServerCrt,
+      "-----BEGIN CERTIFICATE-----\n"
+      "MIIDazCCAlOgAwIBAgIUW2mVSJp6DAQa6X0j3TQXeCs8hOcwDQYJKoZIhvcNAQEL\n"
+      "BQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoM\n"
+      "GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMTAzMjcwODA4MjFaFw0zMTAz\n"
+      "MjUwODA4MjFaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEw\n"
+      "HwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEB\n"
+      "AQUAA4IBDwAwggEKAoIBAQC8fAitk+xvn4MSRqwXO+dqdYnVwi/aCAf6TlE+jT4w\n"
+      "pcKle+JWKWxJ/cgbzInXSF53TDg4Nn5mvRB8px8TiTQxoJItuuWrqUgckw0s+tca\n"
+      "YPYctgwzwdrZAvEkCG7LVgZoFQr/3WJtJA+hqIYydu7TzGOBD326R8PblCnLScA2\n"
+      "mvO4RjRU7TJMg+Z662PyYh33Kt4NToTjbDsVKparGTFE5q5FwDOC8VPraQzCRYB2\n"
+      "mdj5wVhyXUDisO2qOG4UoNTB1ypcyqZBEWaxc7GBI3/Wv787ZvXlpr+owdif/bjw\n"
+      "3TLf/NySHztJmn3xJrr05givxQC4qS6AqDAmIYh2gH9BAgMBAAGjUzBRMB0GA1Ud\n"
+      "DgQWBBSZN819rm68JcSrcjZWDUl3w2AzaDAfBgNVHSMEGDAWgBSZN819rm68JcSr\n"
+      "cjZWDUl3w2AzaDAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQBv\n"
+      "ZCUIjGXzkQCK91Sbsucs+iWg7uBr9ITxG/uxhn7pPw5rCu6B3B2C0m0bXG3e0hvb\n"
+      "vl4Lo0a1YLdWQWW8FCHziNSxqAyfs+QbK2rFA3VzrdYi9C12jff5+C6FTX0oc7Gb\n"
+      "tMnqCLDLwUVJ6tjVMBkpjBm8TDESFh93Mw605A31VTyxKBezaSbpheqR4MI3myfI\n"
+      "fwkKenYpgLh9/Pn6rx5LeMlzb+oBdgq87UF0aExzg+7eat62lZndBVMcAttIpFh+\n"
+      "CtkSPjxqQ9fGmEtxnqaIJCCw8vHFA4TwkxQcEE7JnSSriSwZi254jJYEAXvxUqWj\n"
+      "PdgOc2wwEnazLguwZm02\n"
+      "-----END CERTIFICATE-----\n"
+    );
   }
 
   std::string sTestFhqServerKey = sNormalizedInitDir + "/ssl/test_fhqserver.key";
   if (!WsjcppCore::fileExists(sTestFhqServerKey)) {
-    WsjcppCore::writeFile(sTestFhqServerKey, "-----BEGIN PRIVATE KEY-----\n"
-                                             "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC8fAitk+xvn4MS\n"
-                                             "RqwXO+dqdYnVwi/aCAf6TlE+jT4wpcKle+JWKWxJ/cgbzInXSF53TDg4Nn5mvRB8\n"
-                                             "px8TiTQxoJItuuWrqUgckw0s+tcaYPYctgwzwdrZAvEkCG7LVgZoFQr/3WJtJA+h\n"
-                                             "qIYydu7TzGOBD326R8PblCnLScA2mvO4RjRU7TJMg+Z662PyYh33Kt4NToTjbDsV\n"
-                                             "KparGTFE5q5FwDOC8VPraQzCRYB2mdj5wVhyXUDisO2qOG4UoNTB1ypcyqZBEWax\n"
-                                             "c7GBI3/Wv787ZvXlpr+owdif/bjw3TLf/NySHztJmn3xJrr05givxQC4qS6AqDAm\n"
-                                             "IYh2gH9BAgMBAAECggEAcTPJfn7GVTAnZ5WcjAPFdFINq52KYdfK+tGIyBnKjSsx\n"
-                                             "IXSrNnaAfFv4kIGjE/J6EgpsBY7tEcVhnow9BN21xEydHuwOPrBYCBllo2swP76W\n"
-                                             "ch4AbCF00DuNGsgZyvPqux5QUeXj1IsA/GWb27lErV4nMP9d0sCBaGKvS1ILKH+V\n"
-                                             "TkPlIHxpGmDoiCZEfhypIHkIpcCZKj204OIs6jAkdSEkb7aGWVHPEOAIwc+qG9hx\n"
-                                             "1NdPIPOzq6iO3dwTk5TKJZHT3oCeEurWOB+GT4xGWXW4qDpvezAmWESq2LGVml0I\n"
-                                             "d/chDgQbCjm25+rDcw8JeFNqQxU3J6adODL8OPIjAQKBgQDtoJG1hzhjmt/SuheE\n"
-                                             "GPbA8r4NyttxFPmCBmRWng98kchblIKBBwAtfFNT3sn+spedkR2u+S/tOsCA/0Tm\n"
-                                             "3CtI9SFAdkNlG4UWGXpW/ak5p0shSx2DD9ha79k5qhzce8VddBf4Is42ouC8rD/9\n"
-                                             "kEMIxCdAwieeSYSSK8NeKnpTMQKBgQDLDsR0Dn6gRuYa9zbstH0/XXm0Fghk+eUg\n"
-                                             "LgF7htezHhI42nGGwMCR61+siD41ShvpXDWdwGpV+BQnS2IjHwofeZCeEcNab9YT\n"
-                                             "HM+0zodhU+95kAj72vQFg/eDnZ/H/W4ikHEwFKurTheQ/JEtusjCBTkKJlAr0nJ/\n"
-                                             "SzdrMyhJEQKBgQCYhXSg8G74N8MsDbfkWOWgyO3GCou5VH4lwBaNJhzIlwXkCjmN\n"
-                                             "ucGacG9HqPs8GMOKJkfINDdX7Fr9MVu3VmAODxDNwFrXvcc5fRbyWRRSZheqAf2q\n"
-                                             "TvROwh5Kje7CcksnBcoQwb5cgUUAtQrJpNvx930+aqBlT8jgzWgzu84SMQKBgDNZ\n"
-                                             "Z6qlo7XqV/RHwfb36ZhljgpRbAwE+cE6gRt4zQE5wIfqDb1y7v+3kvkxdvHI7OgF\n"
-                                             "bnWXHAzjcE1Djeytw8ST3FNs0IcFMxCgP5JMjAW70RpfpzXxd7YRWj1JVgef+gL5\n"
-                                             "nfX3tDXcyK7cf+YdjvkpkvQTHkEGtfek0L3mMPDRAoGARCdlVA/HlbVntq52RA3Z\n"
-                                             "XENe4QDQgzl7rlTos+33Hcsb+AuJUfRLMadJk7b91h1/hJP0buIaSTzv5EgijgHh\n"
-                                             "3OqwvxFoRcNrIuQgIA1vIVNBQUrF9BvriwVATGHPF5D/7pNzVY7b7cLFtKKtZ86d\n"
-                                             "rLmX5kleBLTrsj4QkTqI0gU=\n"
-                                             "-----END PRIVATE KEY-----\n");
+    WsjcppCore::writeFile(
+      sTestFhqServerKey,
+      "-----BEGIN PRIVATE KEY-----\n"
+      "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC8fAitk+xvn4MS\n"
+      "RqwXO+dqdYnVwi/aCAf6TlE+jT4wpcKle+JWKWxJ/cgbzInXSF53TDg4Nn5mvRB8\n"
+      "px8TiTQxoJItuuWrqUgckw0s+tcaYPYctgwzwdrZAvEkCG7LVgZoFQr/3WJtJA+h\n"
+      "qIYydu7TzGOBD326R8PblCnLScA2mvO4RjRU7TJMg+Z662PyYh33Kt4NToTjbDsV\n"
+      "KparGTFE5q5FwDOC8VPraQzCRYB2mdj5wVhyXUDisO2qOG4UoNTB1ypcyqZBEWax\n"
+      "c7GBI3/Wv787ZvXlpr+owdif/bjw3TLf/NySHztJmn3xJrr05givxQC4qS6AqDAm\n"
+      "IYh2gH9BAgMBAAECggEAcTPJfn7GVTAnZ5WcjAPFdFINq52KYdfK+tGIyBnKjSsx\n"
+      "IXSrNnaAfFv4kIGjE/J6EgpsBY7tEcVhnow9BN21xEydHuwOPrBYCBllo2swP76W\n"
+      "ch4AbCF00DuNGsgZyvPqux5QUeXj1IsA/GWb27lErV4nMP9d0sCBaGKvS1ILKH+V\n"
+      "TkPlIHxpGmDoiCZEfhypIHkIpcCZKj204OIs6jAkdSEkb7aGWVHPEOAIwc+qG9hx\n"
+      "1NdPIPOzq6iO3dwTk5TKJZHT3oCeEurWOB+GT4xGWXW4qDpvezAmWESq2LGVml0I\n"
+      "d/chDgQbCjm25+rDcw8JeFNqQxU3J6adODL8OPIjAQKBgQDtoJG1hzhjmt/SuheE\n"
+      "GPbA8r4NyttxFPmCBmRWng98kchblIKBBwAtfFNT3sn+spedkR2u+S/tOsCA/0Tm\n"
+      "3CtI9SFAdkNlG4UWGXpW/ak5p0shSx2DD9ha79k5qhzce8VddBf4Is42ouC8rD/9\n"
+      "kEMIxCdAwieeSYSSK8NeKnpTMQKBgQDLDsR0Dn6gRuYa9zbstH0/XXm0Fghk+eUg\n"
+      "LgF7htezHhI42nGGwMCR61+siD41ShvpXDWdwGpV+BQnS2IjHwofeZCeEcNab9YT\n"
+      "HM+0zodhU+95kAj72vQFg/eDnZ/H/W4ikHEwFKurTheQ/JEtusjCBTkKJlAr0nJ/\n"
+      "SzdrMyhJEQKBgQCYhXSg8G74N8MsDbfkWOWgyO3GCou5VH4lwBaNJhzIlwXkCjmN\n"
+      "ucGacG9HqPs8GMOKJkfINDdX7Fr9MVu3VmAODxDNwFrXvcc5fRbyWRRSZheqAf2q\n"
+      "TvROwh5Kje7CcksnBcoQwb5cgUUAtQrJpNvx930+aqBlT8jgzWgzu84SMQKBgDNZ\n"
+      "Z6qlo7XqV/RHwfb36ZhljgpRbAwE+cE6gRt4zQE5wIfqDb1y7v+3kvkxdvHI7OgF\n"
+      "bnWXHAzjcE1Djeytw8ST3FNs0IcFMxCgP5JMjAW70RpfpzXxd7YRWj1JVgef+gL5\n"
+      "nfX3tDXcyK7cf+YdjvkpkvQTHkEGtfek0L3mMPDRAoGARCdlVA/HlbVntq52RA3Z\n"
+      "XENe4QDQgzl7rlTos+33Hcsb+AuJUfRLMadJk7b91h1/hJP0buIaSTzv5EgijgHh\n"
+      "3OqwvxFoRcNrIuQgIA1vIVNBQUrF9BvriwVATGHPF5D/7pNzVY7b7cLFtKKtZ86d\n"
+      "rLmX5kleBLTrsj4QkTqI0gU=\n"
+      "-----END PRIVATE KEY-----\n"
+    );
   }
 
   std::string sTestFhqServerPub = sNormalizedInitDir + "/ssl/test_fhqserver.pub";
   if (!WsjcppCore::fileExists(sTestFhqServerPub)) {
-    WsjcppCore::writeFile(sTestFhqServerPub, "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDIi6P4tNXqOG2yxTvchWk/cOmE98p"
-                                             "6FknQVQkYYyTONWRhQpeotb/yhxxx6pluSGKS/PMJOtXczLXpBEBZQNi3kNjIxr27yJ"
-                                             "QmniHgyE8UPLy0oCnL3Jte1JCnuBbxzUSgVLW1fIyEwbzJTUSCHox1zsSjQ1BZRhgSf"
-                                             "dydatuZ+CcBaE7lVgIf7gFNm1upe/gh61AKgPRdVSp04O4Yv5ymTeLLOxPZvJ0hwwf/"
-                                             "/5+cLpEcWsER8D8mkaFzf8L0KS6I/pcrjBeY3Zp06v9RbFziTM8a+IE18S83mu8Vw3t"
-                                             "8hfK3C/d69dJn3y0FhZUuOuYoY4gR/E9KfdW+e68p9G/IoYnF/M129WITBHHb/dQhK6"
-                                             "3fGabYe625TE0AxxqQzTZKQMDspuU4VLYYcL4C4Jjj5ukAfOa1uyca6ZN1QZB46NEed"
-                                             "wxot2ufhFu/z7ZcdHeStXTJo04Vkm0BhKHLY+q76iVO/JCFweL8YAyN3FZNS1VA8bBQ"
-                                             "GHr4SraAv0oiiP8= test@freehackquest\n");
+    WsjcppCore::writeFile(
+      sTestFhqServerPub,
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDIi6P4tNXqOG2yxTvchWk/cOmE98p"
+      "6FknQVQkYYyTONWRhQpeotb/yhxxx6pluSGKS/PMJOtXczLXpBEBZQNi3kNjIxr27yJ"
+      "QmniHgyE8UPLy0oCnL3Jte1JCnuBbxzUSgVLW1fIyEwbzJTUSCHox1zsSjQ1BZRhgSf"
+      "dydatuZ+CcBaE7lVgIf7gFNm1upe/gh61AKgPRdVSp04O4Yv5ymTeLLOxPZvJ0hwwf/"
+      "/5+cLpEcWsER8D8mkaFzf8L0KS6I/pcrjBeY3Zp06v9RbFziTM8a+IE18S83mu8Vw3t"
+      "8hfK3C/d69dJn3y0FhZUuOuYoY4gR/E9KfdW+e68p9G/IoYnF/M129WITBHHb/dQhK6"
+      "3fGabYe625TE0AxxqQzTZKQMDspuU4VLYYcL4C4Jjj5ukAfOa1uyca6ZN1QZB46NEed"
+      "wxot2ufhFu/z7ZcdHeStXTJo04Vkm0BhKHLY+q76iVO/JCFweL8YAyN3FZNS1VA8bBQ"
+      "GHr4SraAv0oiiP8= test@freehackquest\n"
+    );
   }
 }
 
 void ArgumentProcessorMain::initDefaultNginx(const std::string &sNormalizedInitDir) {
   std::string sNginxConf = sNormalizedInitDir + "/nginx/conf.d/default.conf";
   if (!WsjcppCore::fileExists(sNginxConf)) {
-    WsjcppCore::writeFile(sNginxConf, "server {\n"
-                                      "    listen       80;\n"
-                                      "    server_name  localhost;\n"
-                                      "\n"
-                                      "    location = /files/ {\n"
-                                      "        root   /usr/share/nginx/html/files/;\n"
-                                      "    }\n"
-                                      "\n"
-                                      "    location / {\n"
-                                      "        proxy_pass http://fhqserver:7080;\n"
-                                      "        proxy_set_header Host $host;\n"
-                                      "        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n"
-                                      "        proxy_set_header X-Real-IP $remote_addr;\n"
-                                      "    }\n"
-                                      "\n"
-                                      "    location /api-ws/ {\n"
-                                      "        proxy_pass http://fhqserver:1234;\n"
-                                      "        proxy_http_version 1.1;\n"
-                                      "        proxy_set_header Upgrade $http_upgrade;\n"
-                                      "        proxy_set_header Connection \"upgrade\";\n"
-                                      "        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n"
-                                      "    }\n"
-                                      "\n"
-                                      "    #error_page  404              /404.html;\n"
-                                      "    # redirect server error pages to the static page /50x.html\n"
-                                      "    error_page   500 502 503 504  /50x.html;\n"
-                                      "    location = /50x.html {\n"
-                                      "        root   /usr/share/nginx/html;\n"
-                                      "    }\n"
-                                      "}\n"
-                                      "\n"
-                                      "server {\n"
-                                      "    listen              443 ssl;\n"
-                                      "    server_name         localhost;\n"
-                                      "    ssl_certificate     /etc/nginx/ssl/test_fhqserver.crt;\n"
-                                      "    ssl_certificate_key /etc/nginx/ssl/test_fhqserver.key;\n"
-                                      "    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;\n"
-                                      "    ssl_ciphers         HIGH:!aNULL:!MD5;\n"
-                                      "\n"
-                                      "    location ^~ /files {\n"
-                                      "        alias /usr/share/nginx/html/files/;\n"
-                                      "    }\n"
-                                      "\n"
-                                      "    location /api-wss/ {\n"
-                                      "        proxy_pass https://fhqserver:4613;\n"
-                                      "        proxy_http_version 1.1;\n"
-                                      "        proxy_set_header Upgrade $http_upgrade;\n"
-                                      "        proxy_set_header Connection \"upgrade\";\n"
-                                      "        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n"
-                                      "    }\n"
-                                      "\n"
-                                      "    location / {\n"
-                                      "        proxy_pass http://fhqserver:7080;\n"
-                                      "        proxy_set_header Host $host;\n"
-                                      "        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n"
-                                      "        proxy_set_header X-Real-IP $remote_addr;\n"
-                                      "    }\n"
-                                      "}\n");
+    WsjcppCore::writeFile(
+      sNginxConf,
+      "server {\n"
+      "    listen       80;\n"
+      "    server_name  localhost;\n"
+      "\n"
+      "    location = /files/ {\n"
+      "        root   /usr/share/nginx/html/files/;\n"
+      "    }\n"
+      "\n"
+      "    location / {\n"
+      "        proxy_pass http://fhqserver:7080;\n"
+      "        proxy_set_header Host $host;\n"
+      "        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n"
+      "        proxy_set_header X-Real-IP $remote_addr;\n"
+      "    }\n"
+      "\n"
+      "    location /api-ws/ {\n"
+      "        proxy_pass http://fhqserver:1234;\n"
+      "        proxy_http_version 1.1;\n"
+      "        proxy_set_header Upgrade $http_upgrade;\n"
+      "        proxy_set_header Connection \"upgrade\";\n"
+      "        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n"
+      "    }\n"
+      "\n"
+      "    #error_page  404              /404.html;\n"
+      "    # redirect server error pages to the static page /50x.html\n"
+      "    error_page   500 502 503 504  /50x.html;\n"
+      "    location = /50x.html {\n"
+      "        root   /usr/share/nginx/html;\n"
+      "    }\n"
+      "}\n"
+      "\n"
+      "server {\n"
+      "    listen              443 ssl;\n"
+      "    server_name         localhost;\n"
+      "    ssl_certificate     /etc/nginx/ssl/test_fhqserver.crt;\n"
+      "    ssl_certificate_key /etc/nginx/ssl/test_fhqserver.key;\n"
+      "    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;\n"
+      "    ssl_ciphers         HIGH:!aNULL:!MD5;\n"
+      "\n"
+      "    location ^~ /files {\n"
+      "        alias /usr/share/nginx/html/files/;\n"
+      "    }\n"
+      "\n"
+      "    location /api-wss/ {\n"
+      "        proxy_pass https://fhqserver:4613;\n"
+      "        proxy_http_version 1.1;\n"
+      "        proxy_set_header Upgrade $http_upgrade;\n"
+      "        proxy_set_header Connection \"upgrade\";\n"
+      "        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n"
+      "    }\n"
+      "\n"
+      "    location / {\n"
+      "        proxy_pass http://fhqserver:7080;\n"
+      "        proxy_set_header Host $host;\n"
+      "        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n"
+      "        proxy_set_header X-Real-IP $remote_addr;\n"
+      "    }\n"
+      "}\n"
+    );
   }
 
   std::string sUsers0Png = sNormalizedInitDir + "/data/public/users/default.png";
@@ -432,14 +447,15 @@ void ArgumentProcessorMain::initDefaultNginx(const std::string &sNormalizedInitD
 // ArgumentProcessorVersion
 
 ArgumentProcessorVersion::ArgumentProcessorVersion()
-    : WsjcppArgumentProcessor({"version", "ver", "--version"}, "Print version", "Print version") {
+  : WsjcppArgumentProcessor({"version", "ver", "--version"}, "Print version", "Print version") {
   TAG = "ArgumentProcessorVersion";
 }
 
 // ---------------------------------------------------------------------
 
-int ArgumentProcessorVersion::exec(const std::vector<std::string> &vRoutes,
-                                   const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorVersion::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
   std::cout << WSJCPP_APP_NAME << "-" << WSJCPP_APP_VERSION << "\n";
   return 0;
 }
@@ -448,14 +464,15 @@ int ArgumentProcessorVersion::exec(const std::vector<std::string> &vRoutes,
 // ArgumentProcessorPrepareDeb
 
 ArgumentProcessorPrepareDeb::ArgumentProcessorPrepareDeb()
-    : WsjcppArgumentProcessor({"prepare-deb"}, "TODO Prepare Deb Package", "Prepare Deb Package") {
+  : WsjcppArgumentProcessor({"prepare-deb"}, "TODO Prepare Deb Package", "Prepare Deb Package") {
   TAG = "ArgumentProcessorPrepareDeb";
 }
 
 // ---------------------------------------------------------------------
 
-int ArgumentProcessorPrepareDeb::exec(const std::vector<std::string> &vRoutes,
-                                      const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorPrepareDeb::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
   UtilsPrepareDebPackage::prepare("", "tmpdeb");
   return 0;
 }
@@ -464,12 +481,13 @@ int ArgumentProcessorPrepareDeb::exec(const std::vector<std::string> &vRoutes,
 // ArgumentProcessorShowEmployees
 
 ArgumentProcessorShowEmployees::ArgumentProcessorShowEmployees()
-    : WsjcppArgumentProcessor({"show-employees", "se"}, "Show employees", "Show employees") {
+  : WsjcppArgumentProcessor({"show-employees", "se"}, "Show employees", "Show employees") {
   TAG = "ArgumentProcessorShowEmployees";
 }
 
-int ArgumentProcessorShowEmployees::exec(const std::vector<std::string> &vRoutes,
-                                         const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorShowEmployees::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
   // dev
   WsjcppPrintTree tree("WsjcppEmployees (" + std::to_string(g_pWsjcppEmployees->size()) + ")");
 
@@ -494,7 +512,7 @@ int ArgumentProcessorShowEmployees::exec(const std::vector<std::string> &vRoutes
 // ArgumentProcessorStart
 
 ArgumentProcessorStart::ArgumentProcessorStart(QCoreApplication *pQtApp)
-    : WsjcppArgumentProcessor({"start", "-s"}, "Show employees", "Show employees") {
+  : WsjcppArgumentProcessor({"start", "-s"}, "Show employees", "Show employees") {
   TAG = "ArgumentProcessorStart";
   m_pQtApp = pQtApp;
 }
@@ -504,18 +522,18 @@ int ArgumentProcessorStart::exec(const std::vector<std::string> &vRoutes, const 
   // auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
 
   pGlobalSettings->registrySetting("web_server", "web_admin_folder")
-      .dirPath("/usr/share/fhq-server/web-admin")
-      .inFile();
+    .dirPath("/usr/share/fhq-server/web-admin")
+    .inFile();
   pGlobalSettings->registrySetting("web_server", "web_user_folder").dirPath("/usr/share/fhq-server/web-user").inFile();
   pGlobalSettings->registrySetting("web_server", "web_public_folder")
-      .dirPath("/usr/share/fhq-server/fhq-web-public")
-      .inFile();
+    .dirPath("/usr/share/fhq-server/fhq-web-public")
+    .inFile();
   pGlobalSettings->registrySetting("web_server", "web_public_folder_url")
-      .string("http://localhost:7080/public/")
-      .inFile();
+    .string("http://localhost:7080/public/")
+    .inFile();
   pGlobalSettings->registrySetting("web_server", "web_fhqjad_store")
-      .dirPath("/usr/share/fhq-server/web/fhqjad-store")
-      .inFile();
+    .dirPath("/usr/share/fhq-server/web/fhqjad-store")
+    .inFile();
 
   WsjcppEmployees::init({"start_server"});
 
@@ -541,13 +559,15 @@ int ArgumentProcessorStart::exec(const std::vector<std::string> &vRoutes, const 
   std::string sWebAdminFolder = pGlobalSettings->get("web_admin_folder").getDirPathValue();
   std::string sWebUserFolder = pGlobalSettings->get("web_user_folder").getDirPathValue();
   std::string sWebPublicFolder =
-      pGlobalSettings->get("web_public_folder").getDirPathValue(); // TODO must be declared in server
+    pGlobalSettings->get("web_public_folder").getDirPathValue(); // TODO must be declared in server
   std::string sFileStorage = pGlobalSettings->get("file_storage").getDirPathValue();
   std::string sWebPublicFolderUrl =
-      pGlobalSettings->get("web_public_folder_url").getStringValue(); // TODO must be declared in server
+    pGlobalSettings->get("web_public_folder_url").getStringValue(); // TODO must be declared in server
 
-  WsjcppLog::info(TAG, "Starting web-server on " + std::to_string(nWebPort) + " with " +
-                           std::to_string(nWebMaxThreads) + " worker threads");
+  WsjcppLog::info(
+    TAG,
+    "Starting web-server on " + std::to_string(nWebPort) + " with " + std::to_string(nWebMaxThreads) + " worker threads"
+  );
 
   g_httpServer.addHandler(new HttpHandlerWebAdminFolder(sWebAdminFolder));
   g_httpServer.addHandler(new HttpHandlerWebPublicFolder(sWebPublicFolder, sFileStorage));

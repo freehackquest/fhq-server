@@ -44,8 +44,9 @@ REGISTRY_WJSCPP_EMPLOY(EmployGames)
 // ---------------------------------------------------------------------
 
 EmployGames::EmployGames()
-    : WsjcppEmployBase(EmployGames::name(),
-                       {EmployDatabase::name(), EmployGlobalSettings::name(), EmployNotify::name()}) {
+  : WsjcppEmployBase(
+      EmployGames::name(), {EmployDatabase::name(), EmployGlobalSettings::name(), EmployNotify::name()}
+    ) {
   TAG = EmployGames::name();
 }
 
@@ -268,9 +269,11 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
       sError = query.lastError().text().toStdString();
       return EmployResult::DATABASE_ERROR;
     }
-    ModelNotification notification("info", "games",
-                                   "Updated name of game [game#" + sUuid + "] from [" + pOrigModelGame->name() +
-                                       "] to [" + modelGame.name() + "]");
+    ModelNotification notification(
+      "info",
+      "games",
+      "Updated name of game [game#" + sUuid + "] from [" + pOrigModelGame->name() + "] to [" + modelGame.name() + "]"
+    );
     pOrigModelGame->setName(modelGame.name());
     pEmployNotify->sendNotification(notification);
   }
@@ -285,9 +288,11 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
       sError = query.lastError().text().toStdString();
       return EmployResult::DATABASE_ERROR;
     }
-    ModelNotification notification("info", "games",
-                                   "Updated type of game {" + sUuid + "} from [" + pOrigModelGame->type() + "] to [" +
-                                       modelGame.type() + "]");
+    ModelNotification notification(
+      "info",
+      "games",
+      "Updated type of game {" + sUuid + "} from [" + pOrigModelGame->type() + "] to [" + modelGame.type() + "]"
+    );
     pOrigModelGame->setType(modelGame.type());
     pEmployNotify->sendNotification(notification);
   }
@@ -317,9 +322,11 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
       sError = query.lastError().text().toStdString();
       return EmployResult::DATABASE_ERROR;
     }
-    ModelNotification notification("info", "games",
-                                   "Updated state of game {" + sUuid + "} from [" + pOrigModelGame->state() + "] to [" +
-                                       modelGame.state() + "]");
+    ModelNotification notification(
+      "info",
+      "games",
+      "Updated state of game {" + sUuid + "} from [" + pOrigModelGame->state() + "] to [" + modelGame.state() + "]"
+    );
     pOrigModelGame->setState(modelGame.state());
     pEmployNotify->sendNotification(notification);
   }
@@ -334,9 +341,11 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
       sError = query.lastError().text().toStdString();
       return EmployResult::DATABASE_ERROR;
     }
-    ModelNotification notification("info", "games",
-                                   "Updated form of game {" + sUuid + "} from [" + pOrigModelGame->form() + "] to [" +
-                                       modelGame.form() + "]");
+    ModelNotification notification(
+      "info",
+      "games",
+      "Updated form of game {" + sUuid + "} from [" + pOrigModelGame->form() + "] to [" + modelGame.form() + "]"
+    );
     pOrigModelGame->setForm(modelGame.form());
     pEmployNotify->sendNotification(notification);
   }
@@ -367,9 +376,12 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
       sError = query.lastError().text().toStdString();
       return EmployResult::DATABASE_ERROR;
     }
-    ModelNotification notification("info", "games",
-                                   "Updated date start of game {" + sUuid + "} from [" + pOrigModelGame->dateStart() +
-                                       "] to [" + modelGame.dateStart() + "]");
+    ModelNotification notification(
+      "info",
+      "games",
+      "Updated date start of game {" + sUuid + "} from [" + pOrigModelGame->dateStart() + "] to [" +
+        modelGame.dateStart() + "]"
+    );
     pOrigModelGame->setDateStart(modelGame.dateStart());
     pEmployNotify->sendNotification(notification);
   }
@@ -384,9 +396,12 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
       sError = query.lastError().text().toStdString();
       return EmployResult::DATABASE_ERROR;
     }
-    ModelNotification notification("info", "games",
-                                   "Updated date stop of game {" + sUuid + "} from [" + pOrigModelGame->dateStop() +
-                                       "] to [" + modelGame.dateStop() + "]");
+    ModelNotification notification(
+      "info",
+      "games",
+      "Updated date stop of game {" + sUuid + "} from [" + pOrigModelGame->dateStop() + "] to [" +
+        modelGame.dateStop() + "]"
+    );
     pOrigModelGame->setDateStop(modelGame.dateStop());
     pEmployNotify->sendNotification(notification);
   }
@@ -402,9 +417,12 @@ EmployResult EmployGames::updateGame(const ModelGame &modelGame, std::string &sE
       sError = query.lastError().text().toStdString();
       return EmployResult::DATABASE_ERROR;
     }
-    ModelNotification notification("info", "games",
-                                   "Updated date restart of game {" + sUuid + "} from [" +
-                                       pOrigModelGame->dateRestart() + "] to [" + modelGame.dateRestart() + "]");
+    ModelNotification notification(
+      "info",
+      "games",
+      "Updated date restart of game {" + sUuid + "} from [" + pOrigModelGame->dateRestart() + "] to [" +
+        modelGame.dateRestart() + "]"
+    );
     pOrigModelGame->setDateRestart(modelGame.dateRestart());
     pEmployNotify->sendNotification(notification);
   }

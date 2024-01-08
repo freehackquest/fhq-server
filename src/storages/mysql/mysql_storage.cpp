@@ -233,8 +233,16 @@ bool MySqlStorage::applyConfigFromFile(const std::string &sFilePath) {
 WsjcppStorageConnection *MySqlStorage::connect() {
   MySqlStorageConnection *pConn = nullptr;
   MYSQL *pDatabase = mysql_init(NULL);
-  if (!mysql_real_connect(pDatabase, m_sDatabaseHost.c_str(), m_sDatabaseUser.c_str(), m_sDatabasePass.c_str(),
-                          m_sDatabaseName.c_str(), m_nDatabasePort, NULL, 0)) {
+  if (!mysql_real_connect(
+        pDatabase,
+        m_sDatabaseHost.c_str(),
+        m_sDatabaseUser.c_str(),
+        m_sDatabasePass.c_str(),
+        m_sDatabaseName.c_str(),
+        m_nDatabasePort,
+        NULL,
+        0
+      )) {
     WsjcppLog::err(TAG, "Connect error: " + std::string(mysql_error(pDatabase)));
     WsjcppLog::err(TAG, "Failed to connect.");
   } else {
@@ -452,15 +460,19 @@ std::vector<std::string> MySqlStorage::prepareSqlQueries(const WsjcppStorageModi
   // add columns
   std::vector<WsjcppStorageColumnDef> vAddColumns = storageModifyTable.getAddColumns();
   for (int i = 0; i < vAddColumns.size(); i++) {
-    vRet.push_back("ALTER TABLE `" + storageModifyTable.getTableName() + "` ADD COLUMN " +
-                   generateLineColumnForSql(vAddColumns[i]) + ";");
+    vRet.push_back(
+      "ALTER TABLE `" + storageModifyTable.getTableName() + "` ADD COLUMN " + generateLineColumnForSql(vAddColumns[i]) +
+      ";"
+    );
   }
 
   // alter columns
   std::vector<WsjcppStorageColumnDef> vAlterColumns = storageModifyTable.getAlterColumns();
   for (int i = 0; i < vAlterColumns.size(); i++) {
-    vRet.push_back("ALTER TABLE `" + storageModifyTable.getTableName() + "` MODIFY " +
-                   generateLineColumnForSql(vAlterColumns[i]) + ";");
+    vRet.push_back(
+      "ALTER TABLE `" + storageModifyTable.getTableName() + "` MODIFY " + generateLineColumnForSql(vAlterColumns[i]) +
+      ";"
+    );
   }
   return vRet;
 }

@@ -40,8 +40,9 @@ REGISTRY_WJSCPP_EMPLOY(EmployUsers)
 // ---------------------------------------------------------------------
 
 EmployUsers::EmployUsers()
-    : WsjcppEmployBase(EmployUsers::name(),
-                       {EmployDatabase::name(), EmployGlobalSettings::name(), EmployNotify::name()}) {
+  : WsjcppEmployBase(
+      EmployUsers::name(), {EmployDatabase::name(), EmployGlobalSettings::name(), EmployNotify::name()}
+    ) {
   TAG = EmployUsers::name();
 }
 

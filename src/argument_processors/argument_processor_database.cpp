@@ -40,15 +40,16 @@
 // ArgumentProcessorDatabase
 
 ArgumentProcessorDatabase::ArgumentProcessorDatabase()
-    : WsjcppArgumentProcessor({"database", "db"}, "Database", "All what depened to database processing") {
+  : WsjcppArgumentProcessor({"database", "db"}, "Database", "All what depened to database processing") {
   TAG = "ArgumentProcessorDatabase";
   registryProcessor(new ArgumentProcessorDatabaseTestConnection());
   registryProcessor(new ArgumentProcessorDatabaseStruct());
   registryProcessor(new ArgumentProcessorDatabaseCreate());
 }
 
-int ArgumentProcessorDatabase::exec(const std::vector<std::string> &vRoutes,
-                                    const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorDatabase::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
   WsjcppLog::err(TAG, "Not implemented");
   return -10;
 }
@@ -57,13 +58,13 @@ int ArgumentProcessorDatabase::exec(const std::vector<std::string> &vRoutes,
 // ArgumentProcessorApi
 
 ArgumentProcessorDatabaseTestConnection::ArgumentProcessorDatabaseTestConnection()
-    : WsjcppArgumentProcessor({"test-connection", "test"}, "Test connection to database",
-                              "Test connection to database") {
+  : WsjcppArgumentProcessor({"test-connection", "test"}, "Test connection to database", "Test connection to database") {
   TAG = "ArgumentProcessorDatabaseTestConnection";
 }
 
-int ArgumentProcessorDatabaseTestConnection::exec(const std::vector<std::string> &vRoutes,
-                                                  const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorDatabaseTestConnection::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
   std::cout << "\n * Check Database Connection\n\n";
   if (!WsjcppEmployees::init({})) {
     WsjcppLog::err(TAG, "Could not init database module");
@@ -118,8 +119,8 @@ public:
   ~FakeStorage() { delete m_pVersion; };
   virtual bool applyConfigFromFile(const std::string &sFilePath) { return true; };
   virtual WsjcppStorageConnection *connect() { return new FakeStorageConnection(m_pVersion); };
-  virtual void clean(){
-      // nothing
+  virtual void clean() {
+    // nothing
   };
   virtual std::string prepareStringValue(const std::string &sValue) { return sValue; };
   virtual std::vector<std::string> prepareSqlQueries(const WsjcppStorageInsert &storageInsert) {
@@ -140,12 +141,13 @@ private:
 };
 
 ArgumentProcessorDatabaseStruct::ArgumentProcessorDatabaseStruct()
-    : WsjcppArgumentProcessor({"struct"}, "Print database structure", "Print database structure") {
+  : WsjcppArgumentProcessor({"struct"}, "Print database structure", "Print database structure") {
   TAG = "ArgumentProcessorDatabaseStruct";
 }
 
-int ArgumentProcessorDatabaseStruct::exec(const std::vector<std::string> &vRoutes,
-                                          const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorDatabaseStruct::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
   FakeStorage *pStorage = new FakeStorage();
   WsjcppStorageUpdates::apply2(pStorage);
 
@@ -175,13 +177,15 @@ int ArgumentProcessorDatabaseStruct::exec(const std::vector<std::string> &vRoute
 // ArgumentProcessorDatabaseCreate
 
 ArgumentProcessorDatabaseCreate::ArgumentProcessorDatabaseCreate()
-    : WsjcppArgumentProcessor({"create"}, "Manual create empty database (mysql)",
-                              "Manual create empty database (mysql)") {
+  : WsjcppArgumentProcessor(
+      {"create"}, "Manual create empty database (mysql)", "Manual create empty database (mysql)"
+    ) {
   TAG = "ArgumentProcessorDatabaseCreate";
 }
 
-int ArgumentProcessorDatabaseCreate::exec(const std::vector<std::string> &vRoutes,
-                                          const std::vector<std::string> &vSubParams) {
+int ArgumentProcessorDatabaseCreate::exec(
+  const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
+) {
   auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
   std::cout << "\n * Manual create database\n\n";
   if (!pGlobalSettings->init()) {

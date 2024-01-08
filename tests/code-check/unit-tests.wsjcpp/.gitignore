@@ -1,8 +1,0 @@
-tmp/*
-logs/*
-unit-tests
-.wsjcpp/*
-
-# Vim temp files
-*.swp
-

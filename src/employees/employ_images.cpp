@@ -114,8 +114,9 @@ void avarage_color(avrgClr &a) {
   }
 }
 
-bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const std::string &targetImageFile,
-                                       int width_resize, int height_resize) {
+bool EmployImages::doThumbnailImagePng(
+  const std::string &sourceImageFile, const std::string &targetImageFile, int width_resize, int height_resize
+) {
   // TODO keep proportional (will be got from web)
 
   WsjcppLog::info(TAG, "doThumbnailImagePng");
@@ -207,8 +208,11 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
     int bAlpha = false;
 
     if (nType != PNG_COLOR_TYPE_RGB && nType != PNG_COLOR_TYPE_RGBA) {
-      WsjcppLog::err(TAG, "[process_file] input file is not PNG_COLOR_TYPE_RGB "
-                          "or PNG_COLOR_TYPE_RGBA (lacks the alpha channel)");
+      WsjcppLog::err(
+        TAG,
+        "[process_file] input file is not PNG_COLOR_TYPE_RGB "
+        "or PNG_COLOR_TYPE_RGBA (lacks the alpha channel)"
+      );
       return false;
     }
 
@@ -291,8 +295,17 @@ bool EmployImages::doThumbnailImagePng(const std::string &sourceImageFile, const
       return false;
     }
 
-    png_set_IHDR(png_ptr, info_ptr, width_resize, height_resize, 8, PNG_COLOR_TYPE_RGBA, PNG_INTERLACE_NONE,
-                 PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+    png_set_IHDR(
+      png_ptr,
+      info_ptr,
+      width_resize,
+      height_resize,
+      8,
+      PNG_COLOR_TYPE_RGBA,
+      PNG_INTERLACE_NONE,
+      PNG_COMPRESSION_TYPE_BASE,
+      PNG_FILTER_TYPE_BASE
+    );
 
     png_write_info(png_ptr, info_ptr);
 

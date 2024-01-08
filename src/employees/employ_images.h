@@ -52,6 +52,7 @@ public:
   static std::string name() { return "EmployImages"; }
   virtual bool init();
   virtual bool deinit();
-  bool doThumbnailImagePng(const std::string &sourceFilepath, const std::string &targetFilepath, int width_resize,
-                           int height_resize);
+  bool doThumbnailImagePng(
+    const std::string &sourceFilepath, const std::string &targetFilepath, int width_resize, int height_resize
+  );
 };

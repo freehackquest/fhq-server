@@ -120,8 +120,7 @@ bool LXDContainer::create() {
   if (jsonResponse.at("type").get<std::string>() == "async") {
     nlohmann::json jsonAsyncResponse;
     std::string operation_id = jsonResponse.at("operation").get<std::string>();
-    if ((!operation_id.empty()) &&
-        (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
+    if ((!operation_id.empty()) && (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
       WsjcppLog::err(TAG, "The asynchronous " + m_sError);
       return false;
     }
@@ -151,8 +150,7 @@ bool LXDContainer::start() {
   if (jsonResponse.at("type").get<std::string>() == "async") {
     std::string operation_id = jsonResponse.at("operation").get<std::string>();
     nlohmann::json jsonAsyncResponse;
-    if ((!operation_id.empty()) &&
-        (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
+    if ((!operation_id.empty()) && (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
       WsjcppLog::err(TAG, "The asynchronous " + m_sError);
       return false;
     }
@@ -179,8 +177,7 @@ bool LXDContainer::stop() {
   if (jsonResponse.at("type").get<std::string>() == "async") {
     nlohmann::json jsonAsyncResponse;
     std::string operation_id = jsonResponse.at("operation").get<std::string>();
-    if ((!operation_id.empty()) &&
-        (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
+    if ((!operation_id.empty()) && (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
       WsjcppLog::err(TAG, "The asynchronous " + m_sError);
       return false;
     }
@@ -201,8 +198,7 @@ bool LXDContainer::remove() {
   if (jsonResponse.at("type").get<std::string>() == "async") {
     nlohmann::json jsonAsyncResponse;
     std::string operation_id = jsonResponse.at("operation").get<std::string>();
-    if ((!operation_id.empty()) &&
-        (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
+    if ((!operation_id.empty()) && (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
       WsjcppLog::err(TAG, "The asynchronous " + m_sError);
       return false;
     }
@@ -240,8 +236,7 @@ bool LXDContainer::exec(const std::string &sCommand) {
   if (jsonResponse.at("type").get<std::string>() == "async") {
     nlohmann::json jsonAsyncResponse;
     std::string operation_id = jsonResponse.at("operation").get<std::string>();
-    if ((!operation_id.empty()) &&
-        (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
+    if ((!operation_id.empty()) && (!pOrchestra->send_get_request(operation_id + "/wait", jsonAsyncResponse, m_sError))) {
       WsjcppLog::err(TAG, "The asynchronous " + m_sError);
       return false;
     }

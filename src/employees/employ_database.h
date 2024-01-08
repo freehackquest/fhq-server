@@ -36,22 +36,21 @@
 
 #include <QMap>
 #include <mutex>
-#include <wsjcpp_storages.h>
 #include <sqlite3.h>
+#include <wsjcpp_storages.h>
 
 class FhqServerDatabaseSelectRows {
 public:
   FhqServerDatabaseSelectRows();
   ~FhqServerDatabaseSelectRows();
-  void setQuery(sqlite3_stmt* pQuery);
+  void setQuery(sqlite3_stmt *pQuery);
   bool next();
   std::string getString(int nColumnNumber);
   long getLong(int nColumnNumber);
 
 private:
-  sqlite3_stmt* m_pQuery;
+  sqlite3_stmt *m_pQuery;
 };
-
 
 class FhqServerDatabaseFile {
 public:
@@ -63,12 +62,11 @@ public:
   bool selectRows(std::string sSqlSelectRows, FhqServerDatabaseSelectRows &selectRows);
 
 private:
-
   void copyDatabaseToBackup();
   std::mutex m_mutex;
 
   std::string TAG;
-  sqlite3* m_pDatabaseFile;
+  sqlite3 *m_pDatabaseFile;
   std::string m_sFilename;
   std::string m_sFileFullpath;
   std::string m_sBaseFileBackupFullpath;

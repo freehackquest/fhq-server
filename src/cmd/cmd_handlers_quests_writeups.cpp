@@ -39,7 +39,7 @@
 REGISTRY_CMD(CmdHandlerQuestsWriteUpsList)
 
 CmdHandlerQuestsWriteUpsList::CmdHandlerQuestsWriteUpsList()
-    : CmdHandlerBase("quests_writeups_list", "This method will be returned list of writeups by questid") {
+  : CmdHandlerBase("quests_writeups_list", "This method will be returned list of writeups by questid") {
 
   setAccessUnauthorized(true);
   setAccessUser(true);
@@ -124,7 +124,7 @@ void CmdHandlerQuestsWriteUpsList::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerQuestsWriteUpsProposal)
 
 CmdHandlerQuestsWriteUpsProposal::CmdHandlerQuestsWriteUpsProposal()
-    : CmdHandlerBase("quests_writeups_proposal", "This method will be add writeup from authorized user") {
+  : CmdHandlerBase("quests_writeups_proposal", "This method will be add writeup from authorized user") {
 
   m_sLinkPrefix = "https://www.youtube.com/watch?v=";
 
@@ -196,9 +196,11 @@ void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
   int nWriteUpID = query.lastInsertId().toInt();
   if (bAdmin) {
     EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
-    ModelNotification notification("info", "quests",
-                                   "Added [writeup#" + std::to_string(nWriteUpID) + "] for [quest#" +
-                                       std::to_string(nQuestID) + "]");
+    ModelNotification notification(
+      "info",
+      "quests",
+      "Added [writeup#" + std::to_string(nWriteUpID) + "] for [quest#" + std::to_string(nQuestID) + "]"
+    );
     pNotify->sendNotification(notification);
   } else {
     EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
@@ -233,7 +235,7 @@ void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerQuestsWriteUpsUpdate)
 
 CmdHandlerQuestsWriteUpsUpdate::CmdHandlerQuestsWriteUpsUpdate()
-    : CmdHandlerBase("quests_writeups_update", "This method will be update writeup approve now") {
+  : CmdHandlerBase("quests_writeups_update", "This method will be update writeup approve now") {
 
   setAccessUnauthorized(false);
   setAccessUser(false);
@@ -299,9 +301,11 @@ void CmdHandlerQuestsWriteUpsUpdate::handle(ModelRequest *pRequest) {
     }
     if (nApprove == 1) {
       EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
-      ModelNotification notification("info", "quests",
-                                     "Approved [writeup#" + std::to_string(nWriteUpID) + "] for [quest#" +
-                                         std::to_string(nQuestIDValue) + "]");
+      ModelNotification notification(
+        "info",
+        "quests",
+        "Approved [writeup#" + std::to_string(nWriteUpID) + "] for [quest#" + std::to_string(nQuestIDValue) + "]"
+      );
       pNotify->sendNotification(notification);
     }
   }
@@ -317,7 +321,7 @@ void CmdHandlerQuestsWriteUpsUpdate::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerQuestsWriteUpsDelete)
 
 CmdHandlerQuestsWriteUpsDelete::CmdHandlerQuestsWriteUpsDelete()
-    : CmdHandlerBase("quests_writeups_delete", "This method will be remove writeup") {
+  : CmdHandlerBase("quests_writeups_delete", "This method will be remove writeup") {
 
   setAccessUnauthorized(false);
   setAccessUser(false);
@@ -371,9 +375,11 @@ void CmdHandlerQuestsWriteUpsDelete::handle(ModelRequest *pRequest) {
   }
 
   EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
-  ModelNotification notification("warning", "quests",
-                                 "Removed [writeup#" + std::to_string(nWriteUpID) + "] for [quest#" +
-                                     std::to_string(nQuestIDValue) + "]");
+  ModelNotification notification(
+    "warning",
+    "quests",
+    "Removed [writeup#" + std::to_string(nWriteUpID) + "] for [quest#" + std::to_string(nQuestIDValue) + "]"
+  );
   pNotify->sendNotification(notification);
 
   nlohmann::json jsonResponse;

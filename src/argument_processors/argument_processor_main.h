@@ -38,8 +38,9 @@ class ArgumentProcessorMain : public WsjcppArgumentProcessor {
 public:
   ArgumentProcessorMain(QCoreApplication *pQtApp);
 
-  virtual bool applyParameterArgument(const std::string &sProgramName, const std::string &sArgumentName,
-                                      const std::string &sValue) override;
+  virtual bool applyParameterArgument(
+    const std::string &sProgramName, const std::string &sArgumentName, const std::string &sValue
+  ) override;
   virtual bool applySingleArgument(const std::string &sProgramName, const std::string &sArgumentName) override;
   virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 

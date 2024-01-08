@@ -36,8 +36,11 @@
 // ---------------------------------------------------------------------
 // WsjcppJsonRpc20Error -
 
-WsjcppJsonRpc20Error::WsjcppJsonRpc20Error(int nErrorCode, const std::string &sErrorMessage,
-                                           const std::vector<std::pair<std::string, std::string>> &vErrorContext) {
+WsjcppJsonRpc20Error::WsjcppJsonRpc20Error(
+  int nErrorCode,
+  const std::string &sErrorMessage,
+  const std::vector<std::pair<std::string, std::string>> &vErrorContext
+) {
   m_nErrorCode = nErrorCode;
   m_sErrorMessage = sErrorMessage;
   m_vErrorContext = vErrorContext;
@@ -797,7 +800,7 @@ CmdHandlerBase *CmdHandlers::findCmdHandler(const std::string &sCmd) {
 REGISTRY_CMD(WJSCppCmdHandlerServerApi)
 
 WJSCppCmdHandlerServerApi::WJSCppCmdHandlerServerApi()
-    : CmdHandlerBase("server_api", "This method Will be return list of all handlers") {
+  : CmdHandlerBase("server_api", "This method Will be return list of all handlers") {
 
   setAccessUnauthorized(true);
   setAccessUser(true);

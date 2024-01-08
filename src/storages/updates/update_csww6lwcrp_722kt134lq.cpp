@@ -34,7 +34,7 @@
 REGISTRY_WSJCPP_STORAGE_UPDATE(Update_csww6lwcrp_722kt134lq)
 
 Update_csww6lwcrp_722kt134lq::Update_csww6lwcrp_722kt134lq()
-    : WsjcppStorageUpdateBase("csww6lwcrp", "722kt134lq", "useful_links - tags, favorites, comments") {
+  : WsjcppStorageUpdateBase("csww6lwcrp", "722kt134lq", "useful_links - tags, favorites, comments") {
 
   // useful_links_user_favorites
   WsjcppStorageCreateTable *useful_links_user_favorites = createTable("useful_links_user_favorites");

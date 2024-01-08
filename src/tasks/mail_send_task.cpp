@@ -230,8 +230,11 @@ void MailSendTask::run() {
 
     // Check for errors
     if (res != CURLE_OK) {
-      WsjcppLog::err(TAG, "Error send mail to '" + m_sTo + "', with subject: '" + m_sSubject +
-                              "'. Error: " + std::string(curl_easy_strerror(res)));
+      WsjcppLog::err(
+        TAG,
+        "Error send mail to '" + m_sTo + "', with subject: '" + m_sSubject +
+          "'. Error: " + std::string(curl_easy_strerror(res))
+      );
       sStatus = "error";
     }
 

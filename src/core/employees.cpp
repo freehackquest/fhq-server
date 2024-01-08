@@ -635,8 +635,8 @@ void EmployGlobalSettings::setWorkDir(const std::string &sWorkDir) { m_sWorkDir 
 
 // ---------------------------------------------------------------------
 
-WsjcppSettingItem &EmployGlobalSettings::registrySetting(const std::string &sSettingGroup,
-                                                         const std::string &sSettingName) {
+WsjcppSettingItem &
+EmployGlobalSettings::registrySetting(const std::string &sSettingGroup, const std::string &sSettingName) {
   std::map<std::string, WsjcppSettingItem *>::iterator it;
   it = m_mapSettingItems.find(sSettingName);
   if (it != m_mapSettingItems.end()) {
@@ -888,8 +888,9 @@ bool EmployGlobalSettings::initFromFile() {
           sDirPath = WsjcppCore::doNormalizePath(sDirPath);
         }
         if (!WsjcppCore::dirExists(sDirPath)) {
-          WsjcppLog::throw_err(TAG, "Wrong settings '" + pItem->getName() + "', because folder '" + sDirPath +
-                                        "' does not exists");
+          WsjcppLog::throw_err(
+            TAG, "Wrong settings '" + pItem->getName() + "', because folder '" + sDirPath + "' does not exists"
+          );
         }
         pItem->setDirPathValue(sDirPath);
         WsjcppLog::info(TAG, pItem->getName() + " = " + sDirPath);
@@ -901,8 +902,9 @@ bool EmployGlobalSettings::initFromFile() {
           sFilePath = WsjcppCore::doNormalizePath(sFilePath);
         }
         if (!WsjcppCore::fileExists(sFilePath)) {
-          WsjcppLog::throw_err(TAG, "Wrong settings '" + pItem->getName() + "', because file '" + sFilePath +
-                                        "' does not exists");
+          WsjcppLog::throw_err(
+            TAG, "Wrong settings '" + pItem->getName() + "', because file '" + sFilePath + "' does not exists"
+          );
         }
         pItem->setFilePathValue(sFilePath);
         WsjcppLog::info(TAG, pItem->getName() + " = " + sFilePath);
@@ -973,7 +975,7 @@ void EmployGlobalSettings::eventSettingsChanged(const WsjcppSettingItem *pSettin
 REGISTRY_WJSCPP_EMPLOY(EmployServer)
 
 EmployServer::EmployServer()
-    : WsjcppEmployBase(EmployServer::name(), {"start_server", EmployGlobalSettings::name(), EmployServerInfo::name()}) {
+  : WsjcppEmployBase(EmployServer::name(), {"start_server", EmployGlobalSettings::name(), EmployServerInfo::name()}) {
   TAG = EmployServer::name();
   m_pWebSocketServer = NULL;
 
@@ -997,30 +999,30 @@ EmployServer::EmployServer()
 
   // deprecated
   pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_quests")
-      .dirPath("/var/www/html/fhq/files/quests/")
-      .inDatabase();
+    .dirPath("/var/www/html/fhq/files/quests/")
+    .inDatabase();
   // deprecated
   pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_quests_url")
-      .string("https://freehackquest.com/files/quests/")
-      .inDatabase();
+    .string("https://freehackquest.com/files/quests/")
+    .inDatabase();
 
   // deprecated
   pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_games")
-      .dirPath("/var/www/html/fhq/public/games/")
-      .inDatabase();
+    .dirPath("/var/www/html/fhq/public/games/")
+    .inDatabase();
   // deprecated
   pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_games_url")
-      .string("https://freehackquest.com/public/games/")
-      .inDatabase();
+    .string("https://freehackquest.com/public/games/")
+    .inDatabase();
 
   // deprecated
   pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_users")
-      .dirPath("/var/www/html/fhq/files/quests/")
-      .inDatabase();
+    .dirPath("/var/www/html/fhq/files/quests/")
+    .inDatabase();
   // deprecated (moved to public)
   pGlobalSettings->registrySetting(sGroupServerFolders, "server_folder_users_url")
-      .string("https://freehackquest.com/files/quests/")
-      .inDatabase();
+    .string("https://freehackquest.com/files/quests/")
+    .inDatabase();
 
   // TODO move to userprofiles
   pGlobalSettings->registrySetting("user_profile", "profile_change_nick").boolean(true).inDatabase();
@@ -1068,15 +1070,16 @@ void EmployServer::sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMess
 
 // ---------------------------------------------------------------------
 
-bool EmployServer::validateInputParameters(WsjcppJsonRpc20Error &error, CmdHandlerBase *pCmdHandler,
-                                           const nlohmann::json &jsonMessage) {
+bool EmployServer::validateInputParameters(
+  WsjcppJsonRpc20Error &error, CmdHandlerBase *pCmdHandler, const nlohmann::json &jsonMessage
+) {
   try {
     // TODO check extra params
 
     for (CmdInputDef inDef : pCmdHandler->inputs()) {
 
-      auto itJsonParamName = jsonMessage.find(inDef.getName());
-      const auto endJson = jsonMessage.end();
+      nlohmann::json::const_iterator itJsonParamName = jsonMessage.find(inDef.getName());
+      nlohmann::json::const_iterator endJson = jsonMessage.end();
       if (inDef.isRequired() && itJsonParamName == endJson) {
         error = WsjcppJsonRpc20Error(400, "Parameter '" + inDef.getName() + "' expected");
         return false;
@@ -1096,13 +1099,15 @@ bool EmployServer::validateInputParameters(WsjcppJsonRpc20Error &error, CmdHandl
 
           int val = *itJsonParamName;
           if (inDef.isMinVal() && val < inDef.getMinVal()) {
-            error = WsjcppJsonRpc20Error(400, "Parameter '" + inDef.getName() + "' must be more then " +
-                                                  std::to_string(inDef.getMinVal()));
+            error = WsjcppJsonRpc20Error(
+              400, "Parameter '" + inDef.getName() + "' must be more then " + std::to_string(inDef.getMinVal())
+            );
             return false;
           }
           if (inDef.isMaxVal() && val > inDef.getMaxVal()) {
-            error = WsjcppJsonRpc20Error(400, "Parameter '" + inDef.getName() + "' must be less then " +
-                                                  std::to_string(inDef.getMaxVal()));
+            error = WsjcppJsonRpc20Error(
+              400, "Parameter '" + inDef.getName() + "' must be less then " + std::to_string(inDef.getMaxVal())
+            );
             return false;
           }
         }

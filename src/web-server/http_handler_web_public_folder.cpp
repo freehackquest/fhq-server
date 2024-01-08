@@ -34,9 +34,10 @@
 #include <employ_files.h>
 #include <wsjcpp_core.h>
 
-HttpHandlerWebPublicFolder::HttpHandlerWebPublicFolder(const std::string &sWebPublicFolder,
-                                                       const std::string &sFileStorage)
-    : WsjcppLightWebHttpHandlerBase("web-public-folder") {
+HttpHandlerWebPublicFolder::HttpHandlerWebPublicFolder(
+  const std::string &sWebPublicFolder, const std::string &sFileStorage
+)
+  : WsjcppLightWebHttpHandlerBase("web-public-folder") {
 
   TAG = "HttpHandlerWebPublicFolder";
   m_sWebPublicFolder = sWebPublicFolder;

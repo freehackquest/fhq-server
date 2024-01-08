@@ -45,9 +45,9 @@ public:
 };
 
 UpdateRecords1::UpdateRecords1()
-    : WsjcppStorageChanges("quests_files"){
-          // nothing
-      };
+  : WsjcppStorageChanges("quests_files") {
+      // nothing
+    };
 
 WsjcppStorageChangesType UpdateRecords1::getType() const {
   return WsjcppStorageChangesType::WSJCPP_STORAGE_CHANGES_TYPE_CUSTOM_CHANGES;
@@ -97,7 +97,7 @@ bool UpdateRecords1::applyCustomChanges() const {
 }
 
 Update_215438peu8_9gwc2tm5ah::Update_215438peu8_9gwc2tm5ah()
-    : WsjcppStorageUpdateBase("215438peu8", "9gwc2tm5ah", "Update quests_files (remove prefix public/)") {
+  : WsjcppStorageUpdateBase("215438peu8", "9gwc2tm5ah", "Update quests_files (remove prefix public/)") {
 
   m_vStorageChanges.push_back(new UpdateRecords1());
 }

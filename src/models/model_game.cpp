@@ -271,7 +271,7 @@ bool ModelGame::fillFromFreeHackQuestFormatVersion1(const nlohmann::json &jsonGa
 }
 
 bool ModelGame::readFieldFreeHackQuestGameFormatVersionFromJson(const nlohmann::json &jsonGame, std::string &sError) {
-  auto it = jsonGame.find("freehackquest_game_format_version");
+  nlohmann::json::const_iterator it = jsonGame.find("freehackquest_game_format_version");
   if (it != jsonGame.end()) {
     if (jsonGame["freehackquest_game_format_version"].is_number_integer()) {
       m_nFreeHackQuestGameFormatVersion = jsonGame.at("freehackquest_game_format_version");
@@ -285,7 +285,7 @@ bool ModelGame::readFieldFreeHackQuestGameFormatVersionFromJson(const nlohmann::
 }
 
 bool ModelGame::readFieldUuidRequiredFromJson(const nlohmann::json &jsonGame, std::string &sError) {
-  auto it = jsonGame.find("uuid");
+  nlohmann::json::const_iterator it = jsonGame.find("uuid");
   if (it == jsonGame.end()) {
     sError = "Missing field 'uuid'\n";
     return false;
@@ -307,7 +307,7 @@ bool ModelGame::readFieldUuidRequiredFromJson(const nlohmann::json &jsonGame, st
 }
 
 bool ModelGame::readFieldNameRequiredFromJson(const nlohmann::json &jsonGame, std::string &sError) {
-  auto it = jsonGame.find("name");
+  nlohmann::json::const_iterator it = jsonGame.find("name");
   if (it == jsonGame.end()) {
     sError = "Missing field 'name'\n";
     return false;
@@ -325,7 +325,7 @@ bool ModelGame::readFieldNameRequiredFromJson(const nlohmann::json &jsonGame, st
 }
 
 bool ModelGame::readFieldDescriptionOptionalFromJson(const nlohmann::json &jsonGame, std::string &sError) {
-  auto it = jsonGame.find("description");
+  nlohmann::json::const_iterator it = jsonGame.find("description");
   if (it == jsonGame.end()) {
     this->setDescription("");
     return true;
@@ -343,7 +343,7 @@ bool ModelGame::readFieldDescriptionOptionalFromJson(const nlohmann::json &jsonG
 }
 
 bool ModelGame::readFieldStateRequiredFromJson(const nlohmann::json &jsonGame, std::string &sError) {
-  auto it = jsonGame.find("state");
+  nlohmann::json::const_iterator it = jsonGame.find("state");
   if (it == jsonGame.end()) {
     sError = "Missing field 'state'\n";
     return false;
@@ -366,7 +366,7 @@ bool ModelGame::readFieldStateRequiredFromJson(const nlohmann::json &jsonGame, s
 }
 
 bool ModelGame::readFieldFormRequiredFromJson(const nlohmann::json &jsonGame, std::string &sError) {
-  auto it = jsonGame.find("form");
+  nlohmann::json::const_iterator it = jsonGame.find("form");
   if (it == jsonGame.end()) {
     sError = "Missing field 'form'\n";
     return false;
@@ -389,7 +389,7 @@ bool ModelGame::readFieldFormRequiredFromJson(const nlohmann::json &jsonGame, st
 }
 
 bool ModelGame::readFieldTypeRequiredFromJson(const nlohmann::json &jsonGame, std::string &sError) {
-  auto it = jsonGame.find("type");
+  nlohmann::json::const_iterator it = jsonGame.find("type");
   if (it == jsonGame.end()) {
     sError = "Missing field 'type'\n";
     return false;
@@ -412,7 +412,7 @@ bool ModelGame::readFieldTypeRequiredFromJson(const nlohmann::json &jsonGame, st
 }
 
 bool ModelGame::readFieldDateStartRequiredFromJson(const nlohmann::json &jsonGame, std::string &sError) {
-  auto it = jsonGame.find("date_start");
+  nlohmann::json::const_iterator it = jsonGame.find("date_start");
   if (it == jsonGame.end()) {
     sError = "Missing field 'date_start'\n";
     return false;
@@ -432,7 +432,7 @@ bool ModelGame::readFieldDateStartRequiredFromJson(const nlohmann::json &jsonGam
 }
 
 bool ModelGame::readFieldDateStopRequiredFromJson(const nlohmann::json &jsonGame, std::string &sError) {
-  auto it = jsonGame.find("date_stop");
+  nlohmann::json::const_iterator it = jsonGame.find("date_stop");
   if (it == jsonGame.end()) {
     sError = "Missing field 'date_stop'\n";
     return false;
@@ -452,7 +452,7 @@ bool ModelGame::readFieldDateStopRequiredFromJson(const nlohmann::json &jsonGame
 }
 
 bool ModelGame::readFieldDateRestartRequiredFromJson(const nlohmann::json &jsonGame, std::string &sError) {
-  auto it = jsonGame.find("date_restart");
+  nlohmann::json::const_iterator it = jsonGame.find("date_restart");
   if (it == jsonGame.end()) {
     sError = "Missing field 'date_restart'\n";
     return false;
@@ -474,7 +474,7 @@ bool ModelGame::readFieldDateRestartRequiredFromJson(const nlohmann::json &jsonG
 bool ModelGame::readFieldOrganizatorsOptionalFromJson(const nlohmann::json &jsonGame, std::string &sError) {
   // organizators - in format version 1
   // TODO organizers - from format version 2 https://github.com/freehackquest/fhq-server/issues/497
-  auto it = jsonGame.find("organizators");
+  nlohmann::json::const_iterator it = jsonGame.find("organizators");
   if (it == jsonGame.end()) {
     m_sOrganizators = ""; // optional. it's ok
     return true;

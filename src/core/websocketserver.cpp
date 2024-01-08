@@ -227,8 +227,9 @@ void WebSocketServer::processTextMessage(const QString &message) {
     sCmd = pModelRequest->command();
     if (!pModelRequest->hasM()) {
       WsjcppLog::info(TAG, "[WS] >>> " + sCmd);
-      this->sendMessageError(pClient, sCmd, sM,
-                             WsjcppJsonRpc20Error(404, "Not found requare parameter 'm' - messageid"));
+      this->sendMessageError(
+        pClient, sCmd, sM, WsjcppJsonRpc20Error(404, "Not found requare parameter 'm' - messageid")
+      );
       return;
     }
     sM = pModelRequest->m();
@@ -329,8 +330,9 @@ void WebSocketServer::sendMessage(QWebSocket *pClient, const nlohmann::json &jso
 
 // ---------------------------------------------------------------------
 
-void WebSocketServer::sendMessageError(QWebSocket *pClient, const std::string &sCmd, const std::string &sM,
-                                       WsjcppJsonRpc20Error error) {
+void WebSocketServer::sendMessageError(
+  QWebSocket *pClient, const std::string &sCmd, const std::string &sM, WsjcppJsonRpc20Error error
+) {
   nlohmann::json jsonResponse;
   jsonResponse["cmd"] = sCmd;
   jsonResponse["m"] = sM;

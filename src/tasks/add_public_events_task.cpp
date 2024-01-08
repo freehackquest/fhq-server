@@ -40,8 +40,9 @@
 #include <QThread>
 #include <employ_database.h>
 
-AddPublicEventsTask::AddPublicEventsTask(const std::string &sType, const std::string &sMessage,
-                                         const nlohmann::json &jsonMeta) {
+AddPublicEventsTask::AddPublicEventsTask(
+  const std::string &sType, const std::string &sMessage, const nlohmann::json &jsonMeta
+) {
   m_sType = sType;
   m_sMessage = sMessage;
   m_jsonMeta = jsonMeta;

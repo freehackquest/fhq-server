@@ -43,8 +43,9 @@ REGISTRY_WJSCPP_EMPLOY(EmployFiles)
 // ---------------------------------------------------------------------
 
 EmployFiles::EmployFiles()
-    : WsjcppEmployBase(EmployFiles::name(),
-                       {EmployDatabase::name(), EmployGlobalSettings::name(), EmployNotify::name()}) {
+  : WsjcppEmployBase(
+      EmployFiles::name(), {EmployDatabase::name(), EmployGlobalSettings::name(), EmployNotify::name()}
+    ) {
   TAG = EmployFiles::name();
 }
 
