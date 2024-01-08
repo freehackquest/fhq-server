@@ -23,6 +23,7 @@ export class EmailValidatorService {
     emailWrongDomains['mailn.ru'] = {prop: ["mail.ru"]};
     emailWrongDomains['amil.ru'] = {prop: ["mail.ru"]};
     emailWrongDomains['gmail.ru'] = {prop: ["gmail.com"]};
+    emailWrongDomains['gmaik.com'] = {prop: ["gmail.com"]};
     emailWrongDomains['gmial.com'] = {prop: ["gmail.com"]};
     emailWrongDomains['gmal.com'] = {prop: ["gmail.com"]};
     emailWrongDomains['inbox.ry'] = {prop: ["inbox.ru"]};
