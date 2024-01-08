@@ -45,19 +45,19 @@
  * */
 
 class WsjcppJsonRpc20Error {
-  public:
-    // WsjcppJsonRpc20Error(int nErrorCode, const std::string &sErrorMessage);
-    WsjcppJsonRpc20Error(int nErrorCode, const std::string &sErrorMessage,
-                        const std::vector<std::pair<std::string, std::string>> &vErrorContext = {});
-    int getErrorCode() const;
-    std::string getErrorMessage() const;
-    const std::vector<std::pair<std::string, std::string>> &getErrorContext() const;
-    nlohmann::json toJson();
+public:
+  // WsjcppJsonRpc20Error(int nErrorCode, const std::string &sErrorMessage);
+  WsjcppJsonRpc20Error(int nErrorCode, const std::string &sErrorMessage,
+                       const std::vector<std::pair<std::string, std::string>> &vErrorContext = {});
+  int getErrorCode() const;
+  std::string getErrorMessage() const;
+  const std::vector<std::pair<std::string, std::string>> &getErrorContext() const;
+  nlohmann::json toJson();
 
-  private:
-    std::string m_sErrorMessage;
-    int m_nErrorCode;
-    std::vector<std::pair<std::string, std::string>> m_vErrorContext;
+private:
+  std::string m_sErrorMessage;
+  int m_nErrorCode;
+  std::vector<std::pair<std::string, std::string>> m_vErrorContext;
 };
 
 /*!

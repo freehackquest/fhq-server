@@ -66,17 +66,13 @@ ModelGame::~ModelGame() {
 
 int ModelGame::localId() const { return m_nLocalId; }
 
-int ModelGame::getLocalId() const {
-  return m_nLocalId;
-}
+int ModelGame::getLocalId() const { return m_nLocalId; }
 
 void ModelGame::setLocalId(int nLocalId) { m_nLocalId = nLocalId; }
 
 const std::string &ModelGame::uuid() const { return m_sUuid; }
 
-const std::string &ModelGame::getUuid() const {
-  return m_sUuid;
-}
+const std::string &ModelGame::getUuid() const { return m_sUuid; }
 
 void ModelGame::setUuid(const std::string &sUuid) {
   std::string sError;

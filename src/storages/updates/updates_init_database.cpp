@@ -29,7 +29,6 @@
  *
  ***********************************************************************************/
 
-
 #include <updates_init_database.h>
 
 REGISTRY_WSJCPP_STORAGE_UPDATE(UpdatesInitDatabase)

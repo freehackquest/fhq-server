@@ -29,7 +29,6 @@
  *
  ***********************************************************************************/
 
-
 #include "update_6c8d4zm6u2_pmlyt8k7nm.h"
 
 REGISTRY_WSJCPP_STORAGE_UPDATE(Update_6c8d4zm6u2_pmlyt8k7nm)

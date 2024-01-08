@@ -34,6 +34,6 @@
 #include <QString>
 
 class UtilsPrepareDebPackage {
-  public:
-    static void prepare(QString repo, QString tmpdeb);
+public:
+  static void prepare(QString repo, QString tmpdeb);
 };

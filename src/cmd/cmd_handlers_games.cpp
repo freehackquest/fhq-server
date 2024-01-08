@@ -666,7 +666,7 @@ void CmdHandlerGamesList::handle(ModelRequest *pRequest) {
     } else {
       sLogoUrl = sBaseUrl + pGame->getUuid() + "/game.png";
     }
-    
+
     jsonGame["logo"] = sLogoUrl;
     jsonGames.push_back(jsonGame);
   }

@@ -29,7 +29,6 @@
  *
  ***********************************************************************************/
 
-
 #include <QtCore>
 #include <cmd_handlers_support.h>
 #include <employ_database.h>
