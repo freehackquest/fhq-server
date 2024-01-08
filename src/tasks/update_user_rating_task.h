@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef UPDATE_USER_RATING_TASK_H
-#define UPDATE_USER_RATING_TASK_H
+#pragma once
 
 #include <QRunnable>
 #include <cmd_handlers.h>
@@ -48,5 +47,3 @@ private:
   std::string TAG;
   IWebSocketServer *m_pWebSocketServer;
 };
-
-#endif // UPDATE_USER_RATING_TASK_H

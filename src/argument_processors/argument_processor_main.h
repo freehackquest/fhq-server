@@ -29,9 +29,7 @@
  *
  ***********************************************************************************/
 
-
-#ifndef ARGUMENT_PROCESSOR_MAIN_H
-#define ARGUMENT_PROCESSOR_MAIN_H
+#pragma once
 
 #include <QtCore>
 #include <wsjcpp_arguments.h>
@@ -82,5 +80,3 @@ public:
 private:
   QCoreApplication *m_pQtApp;
 };
-
-#endif // ARGUMENT_PROCESSOR_MAIN_H

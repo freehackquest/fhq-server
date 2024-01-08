@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef EMPLOY_FILES_H
-#define EMPLOY_FILES_H
+#pragma once
 
 #include <employees.h>
 #include <model_quest_file.h>
@@ -68,5 +67,3 @@ private:
   std::map<std::string, ModelQuestFile *> m_mapCacheQuestFilesByUuid;
   std::map<std::string, ModelQuestFile *> m_mapCacheQuestFilesByFilePath;
 };
-
-#endif // EMPLOY_FILES_H

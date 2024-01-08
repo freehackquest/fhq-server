@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef EMPLOY_ORCHESTRA
-#define EMPLOY_ORCHESTRA
+#pragma once
 
 #include <employees.h>
 #include <model_lxd_orchestra.h>
@@ -88,5 +87,3 @@ private:
 
   bool pull_container_names();
 };
-
-#endif // EMPLOY_ORCHESTRA

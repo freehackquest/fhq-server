@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef FHQ_SERVER_LXDASYNCOPERATIONTASK_H
-#define FHQ_SERVER_LXDASYNCOPERATIONTASK_H
+#pragma once
 
 #include <QRunnable>
 #include <cmd_handlers.h>
@@ -54,5 +53,3 @@ private:
   std::string m_sM;
   QWebSocket *m_pRequestClient;
 };
-
-#endif // FHQ_SERVER_LXDASYNCOPERATIONTASK_H

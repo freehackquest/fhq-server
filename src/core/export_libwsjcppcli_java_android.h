@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef EXPORT_LIBWSJCPPCLI_JAVA_ANDROID_H
-#define EXPORT_LIBWSJCPPCLI_JAVA_ANDROID_H
+#pragma once
 
 #include <string>
 
@@ -48,5 +47,3 @@ private:
   bool exportBuildGradle();
   void exportAPImd();
 };
-
-#endif // EXPORT_LIBWSJCPPCLI_JAVA_ANDROID_H

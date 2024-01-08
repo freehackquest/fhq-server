@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef EMPLOY_DATABASE_H
-#define EMPLOY_DATABASE_H
+#pragma once
 
 #include <employees.h>
 #include <model_database_connection.h>
@@ -74,5 +73,3 @@ private:
   ModelDatabaseConnection *m_pDBConnection;
   ModelDatabaseConnection *m_pDBConnection_older;
 };
-
-#endif // EMPLOY_DATABASE_H

@@ -39,8 +39,6 @@ ModelDatabaseConnection::ModelDatabaseConnection(QString sNameConnection) {
   TAG = "ModelDatabaseConnection";
 };
 
-// ---------------------------------------------------------------------
-
 void ModelDatabaseConnection::swap(ModelDatabaseConnection *pDatabaseConnection) {
   QSqlDatabase *pDatabase = m_pDatabase;
   m_pDatabase = pDatabaseConnection->db();
@@ -51,15 +49,9 @@ void ModelDatabaseConnection::swap(ModelDatabaseConnection *pDatabaseConnection)
   pDatabaseConnection->setNameConnection(sNameConnection);
 }
 
-// ---------------------------------------------------------------------
-
 QString ModelDatabaseConnection::nameConnection() { return m_sNameConnection; }
 
-// ---------------------------------------------------------------------
-
 void ModelDatabaseConnection::setNameConnection(QString sNameConnection) { m_sNameConnection = sNameConnection; }
-
-// ---------------------------------------------------------------------
 
 bool ModelDatabaseConnection::connect() {
   EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
@@ -85,14 +77,10 @@ bool ModelDatabaseConnection::connect() {
   return true;
 }
 
-// ---------------------------------------------------------------------
-
 bool ModelDatabaseConnection::isOutdated() {
   qint64 nCurrent = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
   return m_nOpened + m_nOutdatedAfter < nCurrent;
 }
-
-// ---------------------------------------------------------------------
 
 QSqlDatabase *ModelDatabaseConnection::db() {
   if (m_pDatabase == NULL) {
@@ -114,11 +102,7 @@ QSqlDatabase *ModelDatabaseConnection::db() {
   return m_pDatabase;
 }
 
-// ---------------------------------------------------------------------
-
 void ModelDatabaseConnection::setDb(QSqlDatabase *pDatabase) { m_pDatabase = pDatabase; }
-
-// ---------------------------------------------------------------------
 
 void ModelDatabaseConnection::close() {
   if (m_pDatabase != NULL) {

@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef RUNTASKS_H
-#define RUNTASKS_H
+#pragma once
 
 #include <cmd_handlers.h>
 
@@ -47,5 +46,3 @@ public:
                                 const std::string &sCMD, ModelRequest *pRequest);
   static void waitForDone();
 };
-
-#endif // RUNTASKS_H

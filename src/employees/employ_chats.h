@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef EMPLOY_CHATS_H
-#define EMPLOY_CHATS_H
+#pragma once
 
 #include <employees.h>
 #include <model_leak.h>
@@ -45,5 +44,3 @@ public:
 private:
   std::string TAG;
 };
-
-#endif // EMPLOY_CHATS_H

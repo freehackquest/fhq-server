@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef EMPLOY_USERS_H
-#define EMPLOY_USERS_H
+#pragma once
 
 #include <employees.h>
 
@@ -46,5 +45,3 @@ public:
 private:
   std::string TAG;
 };
-
-#endif // EMPLOY_USERS_H

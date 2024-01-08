@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef EMPLOY_SERVER_INFO_H
-#define EMPLOY_SERVER_INFO_H
+#pragma once
 
 #include <QDateTime>
 #include <QMap>
@@ -69,5 +68,3 @@ private:
   int m_nCountQuestsAttempt;
   int m_nCountQuestsCompleted;
 };
-
-#endif // EMPLOY_SERVER_INFO_H

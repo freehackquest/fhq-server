@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef ARGUMENT_PROCESSOR_CONFIG_H
-#define ARGUMENT_PROCESSOR_CONFIG_H
+#pragma once
 
 #include <wsjcpp_arguments.h>
 
@@ -81,5 +80,3 @@ public:
   ArgumentProcessorConfigLxdConfigure();
   virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 };
-
-#endif // ARGUMENT_PROCESSOR_CONFIG_H

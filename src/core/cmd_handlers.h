@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef CMD_HADNLERS_H
-#define CMD_HADNLERS_H
+#pragma once
 
 #include <QSqlQuery>  // TODO deprecated
 #include <QSqlRecord> // TODO deprecated
@@ -41,23 +40,24 @@
 #include <map>
 #include <wsjcpp_validators.h>
 
-// ---------------------------------------------------------------------
-// WsjcppJsonRpc20Error
+/*!
+ * WsjcppJsonRpc20Error -
+ * */
 
 class WsjcppJsonRpc20Error {
-public:
-  // WsjcppJsonRpc20Error(int nErrorCode, const std::string &sErrorMessage);
-  WsjcppJsonRpc20Error(int nErrorCode, const std::string &sErrorMessage,
-                       const std::vector<std::pair<std::string, std::string>> &vErrorContext = {});
-  int getErrorCode() const;
-  std::string getErrorMessage() const;
-  const std::vector<std::pair<std::string, std::string>> &getErrorContext() const;
-  nlohmann::json toJson();
+  public:
+    // WsjcppJsonRpc20Error(int nErrorCode, const std::string &sErrorMessage);
+    WsjcppJsonRpc20Error(int nErrorCode, const std::string &sErrorMessage,
+                        const std::vector<std::pair<std::string, std::string>> &vErrorContext = {});
+    int getErrorCode() const;
+    std::string getErrorMessage() const;
+    const std::vector<std::pair<std::string, std::string>> &getErrorContext() const;
+    nlohmann::json toJson();
 
-private:
-  std::string m_sErrorMessage;
-  int m_nErrorCode;
-  std::vector<std::pair<std::string, std::string>> m_vErrorContext;
+  private:
+    std::string m_sErrorMessage;
+    int m_nErrorCode;
+    std::vector<std::pair<std::string, std::string>> m_vErrorContext;
 };
 
 /*!
@@ -190,8 +190,6 @@ private:
   std::vector<WsjcppValidatorStringBase *> m_vValidatorsString;
 };
 
-// ---------------------------------------------------------------------
-
 class ModelRequest {
 public:
   ModelRequest(QWebSocket *pClient, IWebSocketServer *pWebSocketServer, nlohmann::json &jsonRequest_);
@@ -227,8 +225,6 @@ private:
   std::string m_sMessageId;
   std::string m_sCommand;
 };
-
-// ---------------------------------------------------------------------
 
 /*!
  * Api handler Base
@@ -283,8 +279,6 @@ private:
 
 extern std::map<std::string, CmdHandlerBase *> *g_pCmdHandlers;
 
-// ---------------------------------------------------------------------
-
 /*!
  * Global collection with handlers
  * */
@@ -303,8 +297,6 @@ public:
 #define REGISTRY_WSJCPP_JSONRPC20_HANDLER(classname)                                                                   \
   static classname *pRegistryWsjcppJsonRpc20##classname = new classname();
 
-// ---------------------------------------------------------------------
-
 /*!
  * This handler will be return list of handlers - publish api interfaces
  * */
@@ -315,5 +307,3 @@ public:
   WJSCppCmdHandlerServerApi();
   virtual void handle(ModelRequest *pRequest);
 };
-
-#endif // CMD_HADNLERS_H

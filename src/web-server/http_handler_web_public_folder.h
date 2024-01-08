@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef HTTP_HANDLER_WEB_PUBLIC_FOLDER_H
-#define HTTP_HANDLER_WEB_PUBLIC_FOLDER_H
+#pragma once
 
 #include <wsjcpp_light_web_server.h>
 
@@ -45,5 +44,3 @@ private:
   std::string m_sWebPublicFolder;
   std::string m_sFileStorage;
 };
-
-#endif // HTTP_HANDLER_WEB_PUBLIC_FOLDER_H

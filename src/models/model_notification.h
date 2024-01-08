@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef MODEL_NOTIFICATION_H
-#define MODEL_NOTIFICATION_H
+#pragma once
 
 #include <json.hpp>
 #include <string>
@@ -48,5 +47,3 @@ private:
   std::string m_sSection;
   std::string m_sMessage;
 };
-
-#endif // MODEL_NOTIFICATION_H

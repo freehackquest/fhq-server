@@ -29,8 +29,7 @@
  *
  ***********************************************************************************/
 
-#ifndef WSJCPP_EXPORT_LIBCLI_WEB_JS_H
-#define WSJCPP_EXPORT_LIBCLI_WEB_JS_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -67,5 +66,3 @@ private:
 };
 
 } // namespace WsjCpp
-
-#endif // WSJCPP_EXPORT_LIBCLI_WEB_JS_H
