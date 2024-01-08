@@ -36,9 +36,166 @@
 #include <employ_database.h>
 #include <employees.h>
 
-REGISTRY_WJSCPP_EMPLOY(EmployDatabase)
+// ---------------------------------------------------------------------
+// FhqServerDatabaseSelectRows
+
+FhqServerDatabaseSelectRows::FhqServerDatabaseSelectRows() {
+    m_pQuery = nullptr;
+}
+
+FhqServerDatabaseSelectRows::~FhqServerDatabaseSelectRows() {
+    if (m_pQuery != nullptr) {
+        sqlite3_finalize(m_pQuery);
+    }
+}
+
+void FhqServerDatabaseSelectRows::setQuery(sqlite3_stmt* pQuery) {
+    m_pQuery = pQuery;
+}
+
+bool FhqServerDatabaseSelectRows::next() {
+    return  sqlite3_step(m_pQuery) == SQLITE_ROW;
+}
+
+std::string FhqServerDatabaseSelectRows::getString(int nColumnNumber) {
+    return std::string((const char *)sqlite3_column_text(m_pQuery, nColumnNumber));
+}
+
+long FhqServerDatabaseSelectRows::getLong(int nColumnNumber) {
+    return sqlite3_column_int64(m_pQuery, nColumnNumber);
+}
 
 // ---------------------------------------------------------------------
+// FhqServerDatabaseFile
+
+FhqServerDatabaseFile::FhqServerDatabaseFile(const std::string &sFilename, const std::string &sSqlCreateTable) {
+    TAG = "FhqServerDatabaseFile-" + sFilename;
+    m_pDatabaseFile = nullptr;
+    m_sFilename = sFilename;
+    m_nLastBackupTime = 0;
+    m_sSqlCreateTable = sSqlCreateTable;
+    EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
+    std::string sFileStoragePath = pGlobalSettings->get("file_storage").getDirPathValue();
+    std::string sDatabaseDir = sFileStoragePath + "/db";
+    if (!WsjcppCore::dirExists(sDatabaseDir)) {
+        !WsjcppCore::makeDir(sDatabaseDir);
+    }
+    m_sFileFullpath = sDatabaseDir + "/" + m_sFilename;
+
+    std::string sDatabaseBackupDir = sDatabaseDir + "/backups";
+    if (!WsjcppCore::dirExists(sDatabaseBackupDir)) {
+        !WsjcppCore::makeDir(sDatabaseBackupDir);
+    }
+    m_sBaseFileBackupFullpath = sDatabaseBackupDir + "/" + m_sFilename;
+};
+
+FhqServerDatabaseFile::~FhqServerDatabaseFile() {
+    if (m_pDatabaseFile != nullptr) {
+        sqlite3_close(m_pDatabaseFile);
+    }
+}
+
+bool FhqServerDatabaseFile::open() {
+    // open connection to a DB
+    int nRet = sqlite3_open_v2(
+        m_sFileFullpath.c_str(),
+        &m_pDatabaseFile,
+        SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
+        NULL
+    );
+    if (nRet != SQLITE_OK) {
+        WsjcppLog::throw_err(TAG, "Failed to open conn: " + std::to_string(nRet));
+        return false;
+    }
+    // Run the SQL (convert the string to a C-String with c_str() )
+    char *zErrMsg = 0;
+    nRet = sqlite3_exec(m_pDatabaseFile, m_sSqlCreateTable.c_str(), 0, 0, &zErrMsg);
+    if (nRet != SQLITE_OK) {
+        WsjcppLog::throw_err(TAG, "Problem with create table: " + std::string(zErrMsg));
+        return false;
+    }
+    WsjcppLog::ok(TAG, "Opened database file " + m_sFileFullpath);
+    copyDatabaseToBackup();
+    return true;
+}
+
+bool FhqServerDatabaseFile::executeQuery(std::string sSqlInsert) {
+    copyDatabaseToBackup();
+    char *zErrMsg = 0;
+    int nRet = sqlite3_exec(m_pDatabaseFile, sSqlInsert.c_str(), 0, 0, &zErrMsg);
+    if (nRet != SQLITE_OK) {
+        WsjcppLog::throw_err(TAG, "Problem with insert: " + std::string(zErrMsg) + "\n SQL-query: " + sSqlInsert);
+        return false;
+    }
+    return true;
+}
+
+int FhqServerDatabaseFile::selectSumOrCount(std::string sSqlSelectCount) {
+    copyDatabaseToBackup();
+    sqlite3_stmt* pQuery = nullptr;
+    int ret = sqlite3_prepare_v2(m_pDatabaseFile, sSqlSelectCount.c_str(), -1, &pQuery, NULL);
+    // prepare the statement
+    if (ret != SQLITE_OK) {
+        WsjcppLog::throw_err(TAG, "Failed to prepare select count: " + std::string(sqlite3_errmsg(m_pDatabaseFile)) + "\n SQL-query: " + sSqlSelectCount);
+    }
+    // step to 1st row of data
+    ret = sqlite3_step(pQuery);
+    if (ret != SQLITE_ROW) { // see documentation, this can return more values as success
+        WsjcppLog::throw_err(TAG, "Failed to step for select count or sum: " + std::string(sqlite3_errmsg(m_pDatabaseFile)) + "\n SQL-query: " + sSqlSelectCount);
+    }
+    int nRet = sqlite3_column_int(pQuery, 0);
+    if (pQuery != nullptr) sqlite3_finalize(pQuery);
+    return nRet;
+}
+
+bool FhqServerDatabaseFile::selectRows(std::string sSqlSelectRows, FhqServerDatabaseSelectRows &selectRows) {
+    copyDatabaseToBackup();
+    sqlite3_stmt* pQuery = nullptr;
+    int nRet = sqlite3_prepare_v2(m_pDatabaseFile, sSqlSelectRows.c_str(), -1, &pQuery, NULL);
+    // prepare the statement
+    if (nRet != SQLITE_OK) {
+        WsjcppLog::throw_err(TAG, "Failed to prepare select rows: " + std::string(sqlite3_errmsg(m_pDatabaseFile)) + "\n SQL-query: " + sSqlSelectRows);
+        return false;
+    }
+    selectRows.setQuery(pQuery);
+    return true;
+}
+
+void FhqServerDatabaseFile::copyDatabaseToBackup() {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    // every 1 minutes make backup
+    int nCurrentTime = WsjcppCore::getCurrentTimeInSeconds();
+    if (nCurrentTime - m_nLastBackupTime < 60) {
+        return;
+    }
+    m_nLastBackupTime = nCurrentTime;
+
+    int nMaxBackupsFiles = 9;
+    WsjcppLog::info(TAG, "Start backup for " + m_sFileFullpath);
+    std::string sFilebackup = m_sBaseFileBackupFullpath + "." + std::to_string(nMaxBackupsFiles);
+    if (WsjcppCore::fileExists(sFilebackup)) {
+        WsjcppCore::removeFile(sFilebackup);
+    }
+    for (int i = nMaxBackupsFiles - 1; i >= 0; i--) {
+        std::string sFilebackupFrom = m_sBaseFileBackupFullpath + "." + std::to_string(i);
+        std::string sFilebackupTo = m_sBaseFileBackupFullpath + "." + std::to_string(i+1);
+        if (WsjcppCore::fileExists(sFilebackupFrom)) {
+            if (std::rename(sFilebackupFrom.c_str(), sFilebackupTo.c_str())) {
+                WsjcppLog::throw_err(TAG, "Could not rename from " + sFilebackupFrom + " to " + sFilebackupTo);
+            }
+        }
+    }
+    sFilebackup = m_sBaseFileBackupFullpath + "." + std::to_string(0);
+    if (!WsjcppCore::copyFile(m_sFileFullpath, sFilebackup)) {
+        WsjcppLog::throw_err(TAG, "Failed copy file to backup for " + m_sFileFullpath);
+    }
+    WsjcppLog::info(TAG, "Backup done for " + m_sFileFullpath);
+}
+
+// ---------------------------------------------------------------------
+// EmployDatabase
+
+REGISTRY_WJSCPP_EMPLOY(EmployDatabase)
 
 EmployDatabase::EmployDatabase() : WsjcppEmployBase(EmployDatabase::name(), {EmployGlobalSettings::name()}) {
   TAG = EmployDatabase::name();
@@ -68,8 +225,6 @@ EmployDatabase::EmployDatabase() : WsjcppEmployBase(EmployDatabase::name(), {Emp
   // local nosql
   // m_sDatabase_path = "/var/lib/fhq-server/data";
 }
-
-// ---------------------------------------------------------------------
 
 bool EmployDatabase::init() {
   EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
@@ -119,18 +274,25 @@ bool EmployDatabase::init() {
 
   pGlobalSettings->initFromDatabase(this);
 
+  // new database format
+  int nRet = 0;
+  if (SQLITE_OK != (nRet = sqlite3_initialize())) {
+    WsjcppLog::throw_err(TAG, "Failed to initialize build-in sqlite3 library: " + std::to_string(nRet));
+    return false;
+  }
+  WsjcppLog::ok(TAG, "Initialize build-in sqlite3 library");
+  if (!this->initUsefulLinksDatabase()) {
+    return false;
+  }
+
   // TODO
   return true;
 }
-
-// ---------------------------------------------------------------------
 
 bool EmployDatabase::deinit() {
   // TODO
   return true;
 }
-
-// ---------------------------------------------------------------------
 
 bool EmployDatabase::manualCreateDatabase(const std::string &sRootPassword, std::string &sError) {
   EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
@@ -260,8 +422,6 @@ bool EmployDatabase::manualCreateDatabase(const std::string &sRootPassword, std:
   return true;
 }
 
-// ---------------------------------------------------------------------
-
 QSqlDatabase *EmployDatabase::database() {
   // swap connection
   std::lock_guard<std::mutex> lock(m_mtxSwapConenctions);
@@ -289,7 +449,6 @@ QSqlDatabase *EmployDatabase::database() {
   return pDBConnection->db();
 }
 
-// ---------------------------------------------------------------------
 // TODO: it's will be worked only first 8 hours
 // - need close connection after hour
 // - control of count of connections (must be < 100)
@@ -328,8 +487,6 @@ WsjcppStorageConnection *EmployDatabase::getStorageConnection() {
   return pStorageConnection;
 }
 
-// ---------------------------------------------------------------------
-
 std::map<std::string, std::string> EmployDatabase::loadAllSettings() {
   std::map<std::string, std::string> vRet;
 
@@ -359,8 +516,6 @@ std::map<std::string, std::string> EmployDatabase::loadAllSettings() {
   return vRet;
 }
 
-// ---------------------------------------------------------------------
-
 void EmployDatabase::updateSettingItem(const WsjcppSettingItem *pSettingItem) {
   EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
   QSqlDatabase db = *(pDatabase->database());
@@ -377,8 +532,6 @@ void EmployDatabase::updateSettingItem(const WsjcppSettingItem *pSettingItem) {
     WsjcppLog::err(TAG, query.lastError().text().toStdString());
   }
 }
-
-// ---------------------------------------------------------------------
 
 void EmployDatabase::initSettingItem(WsjcppSettingItem *pSettingItem) {
   // StorageConnection *pConn = this->getStorageConnection();
@@ -398,4 +551,25 @@ void EmployDatabase::initSettingItem(WsjcppSettingItem *pSettingItem) {
   }
 }
 
-// ---------------------------------------------------------------------
+bool EmployDatabase::initUsefulLinksDatabase() {
+  // TODO migration
+  m_pUsefulLinks = new FhqServerDatabaseFile("useful_links.db",
+    "CREATE TABLE IF NOT EXISTS useful_links ( "
+    "  id INTEGER PRIMARY KEY AUTOINCREMENT,"
+    // "  uuid VARCHAR(36) NOT NULL,"
+    "  url VARCHAR(2048) NOT NULL,"
+    "  description VARCHAR(2048) NOT NULL,"
+    "  author VARCHAR(127) NOT NULL,"
+    "  dt INTEGER NOT NULL,"
+    "  user_favorites INTEGER NOT NULL,"
+    "  user_clicks INTEGER NOT NULL,"
+    "  user_comments INTEGER NOT NULL,"
+    "  tags VARCHAR(2048) NOT NULL"
+    ");"
+  );
+  if (!m_pUsefulLinks->open()) {
+    return false;
+  }
+  WsjcppLog::ok(TAG, "Initialized useful_links.db");
+  return true;
+}
