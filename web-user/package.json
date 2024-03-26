@@ -44,7 +44,7 @@
     "marked": "^4.0.18",
     "ngx-ace-wrapper": "^8.0.0",
     "ngx-highlightjs": "^4.1.4",
-    "ngx-markdown": "^12.1.0",
+    "ngx-markdown": "^14.0.0",
     "ngx-markdown-editor": "^3.3.3",
     "ol": "^5.3.3",
     "popper.js": "^1.16.1",
