@@ -12,7 +12,9 @@
     "build-prod": "export NODE_OPTIONS=--openssl-legacy-provider && ng build --configuration production",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "migrate": "ng generate @angular/material:mdc-migration"
+
   },
   "browserslist": [
     "last 2 versions",
@@ -21,19 +23,19 @@
   ],
   "private": true,
   "dependencies": {
-    "@angular/animations": "^12.2.14",
-    "@angular/cdk": "^12.2.13",
-    "@angular/common": "^12.2.16",
-    "@angular/compiler": "^12.2.14",
-    "@angular/core": "^12.2.16",
-    "@angular/forms": "^12.2.14",
-    "@angular/localize": "^12.2.14",
-    "@angular/material": "^12.2.13",
-    "@angular/platform-browser": "^12.2.14",
-    "@angular/platform-browser-dynamic": "^12.2.14",
-    "@angular/router": "^12.2.13",
-    "@ng-bootstrap/ng-bootstrap": "^10.0.0",
-    "angular-l10n": "^12.0.1",
+    "@angular/animations": "^14.0.0",
+    "@angular/cdk": "^14.0.0",
+    "@angular/common": "14.3.0",
+    "@angular/compiler": "^14.3.0",
+    "@angular/core": "^14.0.0",
+    "@angular/forms": "^14.0.0",
+    "@angular/localize": "^14.3.0",
+    "@angular/material": "^14.0.0",
+    "@angular/platform-browser": "^14.0.0",
+    "@angular/platform-browser-dynamic": "^14.0.0",
+    "@angular/router": "^14.0.0",
+    "@ng-bootstrap/ng-bootstrap": "^13.1.0",
+    "angular-l10n": "^14.0.0",
     "bootstrap": "~4.6.1",
     "core-js": "^3.23.2",
     "flag-icon-css": "^3.5.0",
@@ -44,8 +46,9 @@
     "marked": "^4.0.18",
     "ngx-ace-wrapper": "^8.0.0",
     "ngx-highlightjs": "^4.1.4",
-    "ngx-markdown": "^12.1.0",
-    "ngx-markdown-editor": "^3.3.3",
+    "ngx-markdown": "^14.0.1",
+    "he": "1.2.0",
+    "ngx-md": "^14.0.0",
     "ol": "^5.3.3",
     "popper.js": "^1.16.1",
     "prismjs": "^1.25.0",
@@ -55,14 +58,14 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^12.2.18",
-    "@angular/cli": "^12.2.14",
-    "@angular/compiler-cli": "^12.2.15",
-    "@angular/language-service": "^12.2.15",
+    "@angular-devkit/build-angular": "^14.2.13",
+    "@angular/cli": "^14.2.13",
+    "@angular/compiler-cli": "^14.0.0",
+    "@angular/language-service": "^14.0.0",
     "@types/jasmine": "~3.8.0",
     "@types/jasminewd2": "^2.0.8",
-    "@types/node": "^14.0.18",
     "@types/marked": "^4.0.3",
+    "@types/node": "^14.0.18",
     "codelyzer": "^6.0.0",
     "jasmine-core": "~3.8.0",
     "jasmine-spec-reporter": "~5.0.0",
@@ -74,6 +77,6 @@
     "protractor": "~7.0.0",
     "ts-node": "^8.10.2",
     "tslint": "~6.1.2",
-    "typescript": "4.2.4"
+    "typescript": "4.8.2"
   }
 }
