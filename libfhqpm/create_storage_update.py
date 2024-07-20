@@ -62,7 +62,7 @@ class CreateStorageUpdate:
         self.__updates = []
         self.__end_points = []
 
-        updatespath =  os.path.join("src", "storages", "updates")
+        updatespath = os.path.join("src", "storages", "updates")
 
         _cpp_files = glob2.glob(
             os.path.join(updatespath, "*.cpp")
@@ -90,7 +90,7 @@ class CreateStorageUpdate:
         # print(self.__updates)
         # print all updates
         for v in self.__updates:
-           print("[" + v["from"] + "] -> [" + v["to"] + "]")
+            print("[" + v["from"] + "] -> [" + v["to"] + "]")
 
         # find the ends in graph
         self.recoursive_search_endpoints("", 0)
@@ -107,7 +107,10 @@ class CreateStorageUpdate:
             if i["weight"] == self.__max_weight and endpoint == "":
                 endpoint = i["point"]
             elif i["weight"] == self.__max_weight and endpoint != "":
-                print("WARNING: Found points with same weights, will be used first. Ignored: " + i["point"])
+                print(
+                    "WARNING: Found points with same weights, will be used first. " +
+                    "Ignored: " + i["point"]
+                )
 
         print("Found point: " + endpoint + " weight: " + str(self.__max_weight))
         newpoint = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(10))
@@ -127,16 +130,20 @@ class CreateStorageUpdate:
         f_h.write("/*\n")
         f_h.write("MIT License\n")
         f_h.write("\n")
-        f_h.write("Copyright (c) 2011-2024 FreeHackQuest <freehackquest@gmail.com>\n")
-        f_h.write("\n")
-        f_h.write("Permission is hereby granted, free of charge, to any person obtaining a copy\n")
-        f_h.write("of this software and associated documentation files (the \"Software\"), to deal\n")
-        f_h.write("in the Software without restriction, including without limitation the rights\n")
-        f_h.write("to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n")
+        f_h.write(
+            "Copyright (c) 2011-2024 FreeHackQuest <freehackquest@gmail.com>\n" +
+            "\n" +
+            "Permission is hereby granted, free of charge, to any person obtaining a copy\n" +
+            "of this software and associated documentation files (the \"Software\"), to deal\n" +
+            "in the Software without restriction, including without limitation the rights\n" +
+            "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n"
+        )
         f_h.write("copies of the Software, and to permit persons to whom the Software is\n")
         f_h.write("furnished to do so, subject to the following conditions:\n")
         f_h.write("\n")
-        f_h.write("The above copyright notice and this permission notice shall be included in all\n")
+        f_h.write(
+            "The above copyright notice and this permission notice shall be included in all\n"
+        )
         f_h.write("copies or substantial portions of the Software.\n")
         f_h.write("\n")
         f_h.write("THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n")
@@ -152,10 +159,12 @@ class CreateStorageUpdate:
         f_h.write("\n")
         f_h.write("#include <wsjcpp_storages.h>\n")
         f_h.write("\n")
-        f_h.write("class Update_" + endpoint + "_" + newpoint + " : public WsjcppStorageUpdateBase {\n")
-        f_h.write("    public:\n")
-        f_h.write("        Update_" + endpoint + "_" + newpoint + "();\n")
-        f_h.write("};\n")
+        f_h.write(
+            "class Update_" + endpoint + "_" + newpoint + " : public WsjcppStorageUpdateBase {\n" +
+            "    public:\n" +
+            "        Update_" + endpoint + "_" + newpoint + "();\n" +
+            "};\n"
+        )
         f_h.write("\n")
         f_h.write("#endif // UPDATE_" + endpoint_upper + "_" + newpoint_upper + "_H\n")
         f_h.close()
@@ -166,32 +175,37 @@ class CreateStorageUpdate:
         f_cpp.write("/*\n")
         f_cpp.write("MIT License\n")
         f_cpp.write("\n")
-        f_cpp.write("Copyright (c) 2011-2023 FreeHackQuest <freehackquest@gmail.com>\n")
-        f_cpp.write("\n")
-        f_cpp.write("Permission is hereby granted, free of charge, to any person obtaining a copy\n")
-        f_cpp.write("of this software and associated documentation files (the \"Software\"), to deal\n")
-        f_cpp.write("in the Software without restriction, including without limitation the rights\n")
-        f_cpp.write("to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n")
-        f_cpp.write("copies of the Software, and to permit persons to whom the Software is\n")
-        f_cpp.write("furnished to do so, subject to the following conditions:\n")
-        f_cpp.write("\n")
-        f_cpp.write("The above copyright notice and this permission notice shall be included in all\n")
-        f_cpp.write("copies or substantial portions of the Software.\n")
-        f_cpp.write("\n")
-        f_cpp.write("THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n")
-        f_cpp.write("IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n")
-        f_cpp.write("FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n")
-        f_cpp.write("AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n")
-        f_cpp.write("LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n")
-        f_cpp.write("OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n")
-        f_cpp.write("SOFTWARE.\n")
-        f_cpp.write("*/\n\n")
-        f_cpp.write("#include \"update_" + endpoint + "_" + newpoint + ".h\"\n")
-        f_cpp.write("\n")
-        f_cpp.write("REGISTRY_WSJCPP_STORAGE_UPDATE(Update_" + endpoint + "_" + newpoint + ")\n")
-        f_cpp.write("\n")
-        f_cpp.write("Update_" + endpoint + "_" + newpoint + "::Update_" + endpoint + "_" + newpoint + "()\n")
-        f_cpp.write("    : WsjcppStorageUpdateBase(\"" + endpoint + "\", \"" + newpoint + "\", \"TODO\") {\n")
+        f_cpp.write(
+            "Copyright (c) 2011-2023 FreeHackQuest <freehackquest@gmail.com>\n" +
+            "\n" +
+            "Permission is hereby granted, free of charge, to any person obtaining a copy\n" +
+            "of this software and associated documentation files (the \"Software\"), to deal\n" +
+            "in the Software without restriction, including without limitation the rights\n" +
+            "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n" +
+            "copies of the Software, and to permit persons to whom the Software is\n" +
+            "furnished to do so, subject to the following conditions:\n" +
+            "\n" +
+            "The above copyright notice and this permission notice shall be included in all\n" +
+            "copies or substantial portions of the Software.\n" +
+            "\n" +
+            "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n" +
+            "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n" +
+            "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n" +
+            "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n" +
+            "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n" +
+            "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n" +
+            "SOFTWARE.\n" +
+            "*/\n\n" +
+            "#include \"update_" + endpoint + "_" + newpoint + ".h\"\n" +
+            "\n" +
+            "REGISTRY_WSJCPP_STORAGE_UPDATE(Update_" + endpoint + "_" + newpoint + ")\n" +
+            "\n"
+        )
+        f_cpp.write(
+            "Update_" + endpoint + "_" + newpoint + "::Update_" + endpoint + "_" + newpoint + "()\n"
+            "    : WsjcppStorageUpdateBase(\"" + endpoint + "\", \""
+            + newpoint + "\", \"TODO\") {\n"
+        )
         f_cpp.write("    \n")
         f_cpp.write("    // fill the array with struct changes\n")
         f_cpp.write("}\n")

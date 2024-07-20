@@ -42,6 +42,22 @@ code_check_parser = subparsers.add_parser(
 )
 code_check_parser.set_defaults(subparser=CODE_CHECK)
 
+# py-check
+PY_CHECK = 'py-check'
+py_check_parser = subparsers.add_parser(
+    name=PY_CHECK,
+    description='Run py check'
+)
+py_check_parser.set_defaults(subparser=PY_CHECK)
+
+# rebuild-environment-images
+REBUILD_ENVIRONMENT_IMAGES = 'rebuild-environment-images'
+rebuild_environment_images_parser = subparsers.add_parser(
+    name=REBUILD_ENVIRONMENT_IMAGES,
+    description='rebuild-environment-images (Dockerfile.build-environment && Dockerfile.release-environment)'
+)
+rebuild_environment_images_parser.set_defaults(subparser=REBUILD_ENVIRONMENT_IMAGES)
+
 # main
 
 arguments = main_parser.parse_args()
@@ -66,6 +82,15 @@ elif arguments.subparser == CREATE_STORAGE_UPDATE:
 elif arguments.subparser == CODE_CHECK:
     code_check = libfhqpm.CodeCheck()
     if code_check.run() > 0:
+        sys.exit(1)
+elif arguments.subparser == PY_CHECK:
+    ret = os.system("python3 -m pycodestyle libfhqpm --max-line-length=100")
+    if ret != 0:
+        sys.exit(1)
+    sys.exit(0)
+elif arguments.subparser == REBUILD_ENVIRONMENT_IMAGES:
+    task = libfhqpm.RebuildEnvironmentImages()
+    if task.run() > 0:
         sys.exit(1)
 else:
     main_parser.print_help(sys.stderr)

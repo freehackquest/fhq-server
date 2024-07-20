@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 ##################################################################################
 #    __ _
 #   / _| |__   __ _       ___  ___ _ ____   _____ _ __
@@ -29,50 +29,37 @@
 #
 ##################################################################################
 
-""" run all tests """
-
+import re
+import os
 import sys
-import subprocess
+import random
 import glob2
+import string
+import datetime
 
 
-class CommandsHelper:
+class RebuildEnvironmentImages:
     def __init__(self):
-        pass
+        now = datetime.datetime.now()
+        self.__dt_tag = now.strftime("%Y-%m-%d")
 
-    def run_command(self, _command, _output=None):
-        """ run_command """
-        print("Run command: " + " ".join(_command))
-        if _output is not None:
-            _output.write("Run command: " + " ".join(_command) + "\n")
-        with subprocess.Popen(
-            _command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            shell=False
-        ) as _proc:
-            _returncode = _proc.poll()
-            while _returncode is None:
-                _returncode = _proc.poll()
-                _line = _proc.stdout.readline()
-                if _line:
-                    _line = _line.decode("utf-8").strip()
-                    print(_line)
-                    if _output is not None:
-                        _output.write(_line + "\n")
-            while _line:
-                _line = _proc.stdout.readline()
-                if _line:
-                    _line = _line.decode("utf-8").strip()
-                    print(_line)
-                    if _output is not None:
-                        _output.write(_line + "\n")
-                else:
-                    break
-            if _returncode != 0:
-                print("ERROR: returncode " + str(_returncode))
-                if _output is not None:
-                    _output.write("ERROR: returncode " + str(_returncode) + "\n")
-                sys.exit(_returncode)
-            return
-        sys.exit("Could not start process")
+    def __build_docker_image(self, tag, filename):
+        cmd = "docker build --rm --tag " + tag + " -f " + filename + " ."
+        ret = os.system(cmd)
+        if ret != 0:
+            print("ERROR: Could not build image by command:  " + cmd)
+            sys.exit(1)
+
+    def run(self):
+        build_env = "Dockerfile.build-environment"
+        release_env = "Dockerfile.release-environment"
+        tag_build = "sea5kg/fhq-server-build-environment"
+        tag_release = "sea5kg/fhq-server-release-environment"
+
+        self.__build_docker_image(tag_build + ":" + self.__dt_tag, build_env)
+        # TODO if :latest exist so remove before
+        self.__build_docker_image(tag_build + ":latest", build_env)
+        self.__build_docker_image(tag_release + ":" + self.__dt_tag, release_env)
+        self.__build_docker_image(tag_release + ":latest", release_env)
+
+        return 0
