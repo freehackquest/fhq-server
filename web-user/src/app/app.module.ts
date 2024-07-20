@@ -56,7 +56,7 @@ import { ModalSignInDialog } from './dialogs/modal-signin-dialog/modal-signin-di
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 import { QuestProposalComponent } from './pages/quest-proposal/quest-proposal.component';
-import { LMarkdownEditorModule } from 'ngx-markdown-editor';
+import { NgxMdModule } from 'ngx-md';
 import { AceModule } from 'ngx-ace-wrapper';
 import { ACE_CONFIG } from 'ngx-ace-wrapper';
 import { AceConfigInterface } from 'ngx-ace-wrapper';
@@ -147,10 +147,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     OverlayModule,
     FormsModule,
     AceModule,
-    LMarkdownEditorModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-//    NgxMdModule.forRoot(),
     HighlightModule,
     MatButtonModule,
     MatFormFieldModule,
@@ -171,7 +169,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     MatToolbarModule,
     MatDialogModule,
     MatExpansionModule,
-    MatRippleModule
+    MatRippleModule,
+    NgxMdModule.forRoot(),
   ],
   exports: [
     MatButtonModule,
