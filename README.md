@@ -133,7 +133,7 @@ $ sudo apt install git-core g++ make cmake qtchooser qt5-default \
 Install latest nodejs (for web-user)
 
 ```
-$ curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+$ curl -sL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 $ sudo apt-get install nodejs
 ```
 
@@ -141,7 +141,7 @@ Configure database:
 
 Run mysql console:
 ```
-$ mysql -h localhost -u root -p
+$ sudo mysql -h localhost -u root
 ```
 
 Execute next queries for create empty database:
