@@ -35,6 +35,7 @@ import os
 import glob2
 import re
 
+
 class CodeCheck:
     def __init__(self):
         self.__root = os.path.realpath(os.path.dirname(__file__))
@@ -90,42 +91,48 @@ class CodeCheck:
     def __check_if_format(self, _line, _filepath, _line_number):
         _pattern = r'.*[ ]+if[ ]*\(.*'
         if re.match(_pattern, _line) and 'if (' not in _line:
-            error_msg = "ERROR: Found wrong if-format (expected 'if (...)' ) in " + _filepath + ":" + str(_line_number)
+            error_msg = "ERROR: Found wrong if-format (expected 'if (...)' )"
+            error_msg += "in " + _filepath + ":" + str(_line_number)
             print(error_msg)
             self.__result["if-format"].append(error_msg)
 
     def __check_for_format(self, _line, _filepath, _line_number):
         _pattern = r'.*[ ]+for[ ]*\(.*'
         if re.match(_pattern, _line) and 'for (' not in _line:
-            error_msg = "ERROR: Found wrong for-format (expected 'for (...)' ) in " + _filepath + ":" + str(_line_number)
+            error_msg = "ERROR: Found wrong for-format (expected 'for (...)' )"
+            error_msg += " in " + _filepath + ":" + str(_line_number)
             print(error_msg)
             self.__result["for-format"].append(error_msg)
 
     def __check_while_format(self, _line, _filepath, _line_number):
         _pattern = r'.*[ ]+while[ ]*\(.*'
         if re.match(_pattern, _line) and 'while (' not in _line:
-            error_msg = "ERROR: Found wrong while-format (expected 'while (...)' ) in " + _filepath + ":" + str(_line_number)
+            error_msg = "ERROR: Found wrong while-format (expected 'while (...)' )"
+            error_msg += " in " + _filepath + ":" + str(_line_number)
             print(error_msg)
             self.__result["while-format"].append(error_msg)
 
     def __check_end_brackets(self, _line, _filepath, _line_number):
         _pattern = r'.*\)[ ]*\{.*'
         if re.match(_pattern, _line) and ') {' not in _line:
-            error_msg = "ERROR: Found wrong end-brackets (expected '...) {...' ) in " + _filepath + ":" + str(_line_number)
+            error_msg = "ERROR: Found wrong end-brackets (expected '...) {...' )"
+            error_msg += " in " + _filepath + ":" + str(_line_number)
             print(error_msg)
             self.__result["end-brackets"].append(error_msg)
 
     def __check_start_bracket_else(self, _line, _filepath, _line_number):
         _pattern = r'.*\}[ ]*else.*'
         if re.match(_pattern, _line) and '} else' not in _line:
-            error_msg = "ERROR: Found wrong start-bracket-else (expected '...} else...' ) in " + _filepath + ":" + str(_line_number)
+            error_msg = "ERROR: Found wrong start-bracket-else (expected '...} else...' )"
+            error_msg += " in " + _filepath + ":" + str(_line_number)
             print(error_msg)
             self.__result["start-bracket-else"].append(error_msg)
 
     def __check_end_bracket_else(self, _line, _filepath, _line_number):
         _pattern = r'.*else[ ]*\{.*'
         if re.match(_pattern, _line) and 'else {' not in _line:
-            error_msg = "ERROR: Found wrong end-bracket-else (expected '...else {...' ) in " + _filepath + ":" + str(_line_number)
+            error_msg = "ERROR: Found wrong end-bracket-else (expected '...else {...' )"
+            error_msg += " in " + _filepath + ":" + str(_line_number)
             print(error_msg)
             self.__result["end-bracket-else"].append(error_msg)
 
@@ -133,9 +140,9 @@ class CodeCheck:
 
         _pattern = r'.*[^\w]+auto[^\w]+.*'
         if re.match(_pattern, _line):
-            if ' = new ' in _line: # skip if used new constructor
+            if ' = new ' in _line:  # skip if used new constructor
                 return
-            if ' = findWsjcppEmploy<' in _line: # skip if used findWsjcppEmploy
+            if ' = findWsjcppEmploy<' in _line:  # skip if used findWsjcppEmploy
                 return
             error_msg = "WARNING: Found auto in " + _filepath + ":" + str(_line_number)
             print(error_msg)
@@ -158,7 +165,7 @@ class CodeCheck:
             _files.extend(glob2.glob(os.path.join(_dir, "**", "*")))
 
         for _filepath in _files:
-            if self.is_ignore_path(_filepath): # skip
+            if self.is_ignore_path(_filepath):  # skip
                 continue
             if os.path.isdir(_filepath):
                 continue

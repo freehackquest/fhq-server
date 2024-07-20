@@ -121,7 +121,7 @@ $ sudo apt install git-core g++ make cmake qtchooser qt5-default \
    libqt5websockets5 libqt5websockets5-dev libqt5sql5-mysql \
    libwebsockets-dev libcurl4-openssl-dev \
    zlib1g zlib1g-dev \
-   python3 python3-pip python3-glob2 \
+   python3 python3-pip python3-glob2 python3-pycodestyle \
    libpng-dev \
    libmysqlclient-dev \
    mysql-server mysql-client \
