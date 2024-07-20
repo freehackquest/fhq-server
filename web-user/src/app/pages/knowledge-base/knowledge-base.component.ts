@@ -23,7 +23,6 @@ export class KnowledgeBaseComponent implements OnInit {
   articleContentNakedOriginal: string = '';
   articleParents: Array<any> = [];
   articleChilds: Array<any> = [];
-  editMode: boolean = false;
   editLang: string = null;
   infoMessage: string = null;
 
@@ -81,7 +80,9 @@ export class KnowledgeBaseComponent implements OnInit {
     this.articleParents.push(curr_el);
     this.loadChilds();
     this.articleContentNaked = r.data.content;
+    console.log("r.data.content", r.data.content);
     this.articleContentNakedOriginal = this.articleContentNaked;
+    console.log("this.articleContentNaked", this.articleContentNaked);
     this.editLang = this._translation.getLocale().language;
   }
 
@@ -134,47 +135,6 @@ export class KnowledgeBaseComponent implements OnInit {
     this.articleParents = [];
     this.articleChilds = [];
     this.update_page(id);
-  }
-
-  start_editing() {
-    if(this._fhq.isAuthorized) {
-      this.editMode = true;
-    } else {
-      this._dialogs.openSignInDialog()
-    }
-  }
-
-  cancel_editing() {
-    this.editMode = false;
-    this.articleContentNaked = this.articleContentNakedOriginal;
-  }
-
-  send_editing() {
-    if(this._fhq.isAuthorized) {
-
-      this._fhq.api().classbook_proposal_add_record({
-        "classbookid": this.classbookId,
-        "lang": 'en'/*this.editLang*/,  // TODO: не работает в апи
-        "name": this.articleName,
-        "content": this.articleContentNaked
-      })
-      .done((r: any) => this.successSendEdition(r))
-      .fail((err: any) => this.errorSendEdition(err));
-    } else {
-      this._dialogs.openSignInDialog()
-    }
-  }
-
-  successSendEdition(r: any) {
-    this.editMode = false;
-    this.infoMessage = "OK, now wait for the approval of the administrator!";
-    // this.update_page(this.classbookId);
-    this.loadData();
-  }
-
-  errorSendEdition(err: any) {
-    this.errorMessage = "Error sending propolsol: " + err.error;
-    console.error(err);
   }
 
   update_page(id) {
