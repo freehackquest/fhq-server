@@ -259,6 +259,14 @@ list (APPEND WSJCPP_LIBRARIES ${LIBMYSQLCLIENT_LIBRARIES})
 ############################
 
 # libhv
+set(WITH_OPENSSL OFF CACHE BOOL "")
+set(WITH_CURL OFF CACHE BOOL "")
+# set(WITH_MQTT OFF CACHE BOOL "")
+# set(WITH_EVPP OFF CACHE BOOL "")
+set(BUILD_EXAMPLES OFF CACHE BOOL "")
+# set(WITH_HTTP_CLIENT OFF CACHE BOOL "")
+set(BUILD_SHARED OFF CACHE BOOL "")
+
 add_subdirectory(src/third-party/libhv)
 list (APPEND WSJCPP_LIBRARIES hv_static)
 list (APPEND WSJCPP_INCLUDE_DIRS "${PROJECT_BINARY_DIR}/src/third-party/libhv/include/hv")
@@ -271,7 +279,8 @@ add_subdirectory(src/third-party/sqlite3)
 #     SQLITE_THREADSAFE=0
 # )
 list (APPEND WSJCPP_LIBRARIES sqlite3-static)
-list (APPEND WSJCPP_INCLUDE_DIRS "${PROJECT_BINARY_DIR}/src/third-party/sqlite3/src")
+message(STATUS "Sqlite Includes: ${PROJECT_SOURCE_DIR}/src/third-party/sqlite3/src")
+list (APPEND WSJCPP_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/third-party/sqlite3/src")
 
 include_directories(${WSJCPP_INCLUDE_DIRS})
 
