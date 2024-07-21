@@ -576,3 +576,27 @@ bool EmployDatabase::initUsefulLinksDatabase() {
   WsjcppLog::ok(TAG, "Initialized useful_links.db");
   return true;
 }
+
+bool EmployDatabase::initEmailDelivery() {
+  // TODO migration
+  m_pUsefulLinks = new FhqServerDatabaseFile(
+    "email_delivery.db",
+    "CREATE TABLE IF NOT EXISTS email_delivery ( "
+    "  id INTEGER PRIMARY KEY AUTOINCREMENT,"
+    // "  uuid VARCHAR(36) NOT NULL,"
+    "  url VARCHAR(2048) NOT NULL,"
+    "  description VARCHAR(2048) NOT NULL,"
+    "  author VARCHAR(127) NOT NULL,"
+    "  dt INTEGER NOT NULL,"
+    "  user_favorites INTEGER NOT NULL,"
+    "  user_clicks INTEGER NOT NULL,"
+    "  user_comments INTEGER NOT NULL,"
+    "  tags VARCHAR(2048) NOT NULL"
+    ");"
+  );
+  if (!m_pUsefulLinks->open()) {
+    return false;
+  }
+  WsjcppLog::ok(TAG, "Initialized email_delivery.db");
+  return true;
+}
