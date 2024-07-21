@@ -93,6 +93,7 @@ private:
   std::string TAG;
   std::string m_sStorageType;
   bool initUsefulLinksDatabase();
+  bool initEmailDelivery();
   int m_nConnectionOutdatedAfterSeconds;
   WsjcppStorage *m_pStorage;
 
@@ -112,4 +113,5 @@ private:
 
   // sqlite3 database files
   FhqServerDatabaseFile *m_pUsefulLinks;
+  FhqServerDatabaseFile *m_pEmailDelivery;
 };
