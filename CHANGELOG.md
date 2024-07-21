@@ -5,8 +5,37 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.52] - ??
+## [v0.2.52] - 2024-07-21
 
+### Added
+
+- Added reading game.info from file_storage/games/
+- Added copyright to any source file
+
+### Removed
+
+- [web-user] Removed proposal translate
+- Removed github pages theme
+- Removed FindPostgreSQL.cmake
+
+### Fixed
+
+- Fix knowlwdge base
+- Updated email-validator
+
+### Security
+
+- [snyk] Updated tslib to 2.4.1
+- Updated to from angular 12 to angular 14
+
+### Changed
+
+- Redesign script rebuild_environment_images.sh to pm.py
+- Removed tests/code-check (redesign to libfhqpm) and fix clang-format style
+- Prepare example for init sqlite database
+- Redesign from ifdef to #pragma once
+- Applyed clang-format
+- Moved src-libhv to src/third-party/libhv and moved quazip-0.7.3 to third-party
 
 
 ## [v0.2.51] - 2023-01-03 (2023 Jan 3)
@@ -42,7 +71,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [v0.2.50] - 2022-10-23 (2022 Oct 23)
 
 ### Fixed
- 
+
 - Fix admin create user
 - Fix #318 - simplify start server via docker-compose
 
