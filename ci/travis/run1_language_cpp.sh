@@ -15,7 +15,7 @@ check_ret() {
     fi
 }
 
-./pm code-check
+./pm.py code-check
 check_ret $? "code-check"
 
 cd unit-tests.wsjcpp
