@@ -9,3 +9,6 @@ tests
 /web-user/node_modules
 /web-user/dist
 _config.yml
+/tmp
+/web-user/.angular
+/backups
