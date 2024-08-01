@@ -36,7 +36,7 @@
     "@angular/router": "^14.0.0",
     "@ng-bootstrap/ng-bootstrap": "^13.1.0",
     "angular-l10n": "^14.0.0",
-    "bootstrap": "~4.6.1",
+    "bootstrap": "~5.0.0",
     "core-js": "^3.23.2",
     "flag-icon-css": "^3.5.0",
     "font-awesome": "^4.7.0",
