@@ -33,12 +33,10 @@
 
 import sys
 import subprocess
-import glob2
 
 
 class CommandsHelper:
-    def __init__(self):
-        pass
+    """ Helper """
 
     def run_command(self, _command, _output=None):
         """ run_command """

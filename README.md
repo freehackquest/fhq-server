@@ -316,7 +316,7 @@ If you wanna fresh enviroment
 $ ./rebuild_environment_images.sh
 ```
 
-Rebuild fresh docker 
+Rebuild fresh docker
 ```
 $ docker build -t sea5kg/fhq-server:latest .
 $ docker tag sea5kg/fhq-server:latest sea5kg/fhq-server:v0.2.xx
