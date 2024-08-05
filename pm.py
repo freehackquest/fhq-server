@@ -58,6 +58,9 @@ rebuild_environment_images_parser = subparsers.add_parser(
 )
 rebuild_environment_images_parser.set_defaults(subparser=REBUILD_ENVIRONMENT_IMAGES)
 
+subcommands = libfhqpm.Subcommands()
+subcommands.do_registry(subparsers)
+
 # main
 
 arguments = main_parser.parse_args()
@@ -65,7 +68,11 @@ if 'subparser' not in arguments:
     main_parser.print_help(sys.stderr)
     sys.exit(1)
 
-if arguments.subparser == CLANG_FORMAT:
+subcommand = arguments.subparser
+
+if subcommands.has_subcommand(arguments.subparser):
+    subcommands.execute(arguments.subparser)
+elif arguments.subparser == CLANG_FORMAT:
     cmd = libfhqpm.CommandsHelper()
     files = []
     files.extend(glob2.glob(os.path.join("src", "**", "*.cpp")))
@@ -84,8 +91,9 @@ elif arguments.subparser == CODE_CHECK:
     if code_check.run() > 0:
         sys.exit(1)
 elif arguments.subparser == PY_CHECK:
-    ret = os.system("python3 -m pycodestyle libfhqpm --max-line-length=100")
-    if ret != 0:
+    ret_pep8 = os.system("python3 -m pycodestyle libfhqpm --max-line-length=100")
+    ret_pylint = os.system("python3 -m pylint libfhqpm --max-line-length=100")
+    if ret_pep8 != 0 or ret_pylint != 0:
         sys.exit(1)
     sys.exit(0)
 elif arguments.subparser == REBUILD_ENVIRONMENT_IMAGES:
