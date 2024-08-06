@@ -202,7 +202,7 @@ fhqadmin.knowledge_base_load_current_item = function(kbid, proposal_id) {
 
 			if(propid === -1) {
 				// classbook_delete_record
-				fhq.classbook_delete_record({
+				fhq.ws.classbook_delete_record({
 					"classbookid": kbid
 				}).done(function(r) {
 					console.log('Success: ', r);
@@ -373,7 +373,7 @@ fhq.pages['knowledge_base'] = function(){
 
 		$('.kbi-delete').unbind().bind('click', function() {
 			var kbid = parseInt($(this).attr('kbid'),10);
-			fhq.classbook_delete_record({
+			fhq.ws.classbook_delete_record({
 				"classbookid": kbid
 			}).done(function(r) {
 				console.log('Success: ', r);
