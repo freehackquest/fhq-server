@@ -5,10 +5,13 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.53] - 2025-08-06 (2025 Aug 06)
+## [v0.2.53] - 2025-06-14
 
-- Fix remove item from knowledge base
+- Updated wsjcpp-yaml from 0.1.7 to 0.1.8
 - Updated years to -2025
+- Fix remove item from knowledge base
+- Moved clean.sh to './pm.py clean'
+- Removed empty file SECURITY.md
 
 
 ## [v0.2.52] - 2024-07-21

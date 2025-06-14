@@ -95,7 +95,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_arguments/")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.h")
 
-# wsjcpp-yaml:v0.1.7
+# wsjcpp-yaml:v0.1.8
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_yaml/")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.h")

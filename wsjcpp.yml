@@ -96,11 +96,11 @@ dependencies:
     installation-dir: "./src.wsjcpp/wsjcpp_arguments"
     installation-datetime: "Tue, 07 Sep 2021 05:23:11 GMT"
   - name: "wsjcpp-yaml"
-    version: "v0.1.7"
+    version: "v0.1.8"
     url: "https://github.com/wsjcpp/wsjcpp-yaml:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_yaml"
-    installation-datetime: "Sat, 22 Oct 2022 19:39:40 GMT"
+    installation-datetime: "Sat, 14 Jun 2025 15:20:21 GMT"
 distribution:
   - source-file: "src/validators/validators.h"
     target-file: "validators.h"
