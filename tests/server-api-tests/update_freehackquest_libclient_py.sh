@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (C) 2011-2023, Evgenii Sopov <mrseakg@gmail.com>
+# Copyright (C) 2011-2025, Evgenii Sopov <mrseakg@gmail.com>
 
 check_ret() {
     if [ $1 -ne 0 ]; then
@@ -14,7 +14,7 @@ check_ret() {
         echo "********************************************************************************"
         echo ""
     fi
-} 
+}
 
 cd ../..
 check_ret $? "Change to ../.."

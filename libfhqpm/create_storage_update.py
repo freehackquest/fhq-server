@@ -7,7 +7,7 @@
 #  |_| |_| |_|\__, |     |___/\___|_|    \_/ \___|_|
 #                |_|
 #
-# Copyright (c) 2011-2024 FreeHackQuest <freehackquest@gmail.com>
+# Copyright (c) 2011-2025 FreeHackQuest <freehackquest@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -131,7 +131,7 @@ class CreateStorageUpdate:
         f_h.write("MIT License\n")
         f_h.write("\n")
         f_h.write(
-            "Copyright (c) 2011-2024 FreeHackQuest <freehackquest@gmail.com>\n" +
+            "Copyright (c) 2011-2025 FreeHackQuest <freehackquest@gmail.com>\n" +
             "\n" +
             "Permission is hereby granted, free of charge, to any person obtaining a copy\n" +
             "of this software and associated documentation files (the \"Software\"), to deal\n" +
@@ -176,7 +176,7 @@ class CreateStorageUpdate:
         f_cpp.write("MIT License\n")
         f_cpp.write("\n")
         f_cpp.write(
-            "Copyright (c) 2011-2023 FreeHackQuest <freehackquest@gmail.com>\n" +
+            "Copyright (c) 2011-2025 FreeHackQuest <freehackquest@gmail.com>\n" +
             "\n" +
             "Permission is hereby granted, free of charge, to any person obtaining a copy\n" +
             "of this software and associated documentation files (the \"Software\"), to deal\n" +
