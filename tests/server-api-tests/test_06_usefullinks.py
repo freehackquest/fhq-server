@@ -11,12 +11,13 @@ def test_0000_cleanup_useful_links(admin_session):
     print(admin_session)
     ul_list = admin_session.useful_links_list({ "filter": "" })
     assert ul_list is not None
-    assert ul_list["result"] == "DONE"
+    assert ul_list["result"] is not None
+    assert ul_list["result"] == 'DONE'
 
     for _ul in ul_list['data']['items']:
-        ul_id = _ul['id']
-        print("remove " + str(ul_id))
-        admin_session.useful_links_delete({"useful_link_id": ul_id})
+        ul_uuid = _ul['uuid']
+        print("removing " + str(ul_uuid))
+        admin_session.useful_links.remove({"useful_link_uuid": ul_uuid})
 
 def test_0001_add_useful_links(admin_session, generate_random):
     """Add """

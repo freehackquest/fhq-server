@@ -134,6 +134,8 @@ bool EmployDatabase::init() {
     return false;
   }
 
+  // migrate data from mysql to sqlite
+
   // TODO
   return true;
 }

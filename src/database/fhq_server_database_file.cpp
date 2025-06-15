@@ -63,6 +63,34 @@ void FhqServerDatabaseFileUpdate::setWeight(int nWeight) { m_nWeight = nWeight; 
 int FhqServerDatabaseFileUpdate::getWeight() { return m_nWeight; }
 
 // ---------------------------------------------------------------------
+// FhqServerDatabaseFileUpdateInfo
+
+FhqServerDatabaseFileUpdateInfo::FhqServerDatabaseFileUpdateInfo(
+  const std::string &sVersionFrom, const std::string &sVersionTo, const std::string &sDescription
+)
+  : m_sVersionFrom(sVersionFrom), m_sVersionTo(sVersionTo), m_sDescription(sDescription) {}
+
+const std::string &FhqServerDatabaseFileUpdateInfo::versionFrom() const { return m_sVersionFrom; }
+
+const std::string &FhqServerDatabaseFileUpdateInfo::versionTo() const { return m_sVersionTo; }
+
+const std::string &FhqServerDatabaseFileUpdateInfo::description() const { return m_sDescription; }
+
+// ---------------------------------------------------------------------
+// FhqServerDatabaseFileUpdate
+
+FhqServerDatabaseFileUpdate::FhqServerDatabaseFileUpdate(
+  const std::string &sVersionFrom, const std::string &sVersionTo, const std::string &sDescription
+)
+  : m_updateInfo(sVersionFrom, sVersionTo, sDescription) {}
+
+const FhqServerDatabaseFileUpdateInfo &FhqServerDatabaseFileUpdate::info() { return m_updateInfo; };
+
+void FhqServerDatabaseFileUpdate::setWeight(int nWeight) { m_nWeight = nWeight; }
+
+int FhqServerDatabaseFileUpdate::getWeight() { return m_nWeight; }
+
+// ---------------------------------------------------------------------
 // FhqServerDatabaseSelectRows
 
 FhqServerDatabaseSelectRows::FhqServerDatabaseSelectRows() { m_pQuery = nullptr; }
@@ -99,6 +127,253 @@ FhqServerDatabaseSqlQuery::FhqServerDatabaseSqlQuery(
     m_sSqlQuery1 = " FROM " + sSqlTable;
     m_sSqlQuery2 = "";
   } else if (m_nSqlType == FhqServerDatabaseSqlQueryType::INSERT) {
+    m_sSqlQuery0 = "INSERT INTO " + sSqlTable + "(";
+    m_sSqlQuery1 = ") VALUES (";
+    m_sSqlQuery2 = ");";
+  } else if (m_nSqlType == FhqServerDatabaseSqlQueryType::UPDATE) {
+    m_sSqlQuery0 = "UPDATE " + sSqlTable + " SET ";
+    m_sSqlQuery1 = " WHERE ";
+  } else {
+    m_sErrorMessage = "Unknown sql type";
+    m_bValid = false;
+  }
+}
+
+bool FhqServerDatabaseSqlQuery::sel(const std::string &sColumnName) {
+  if (!checkName(sColumnName)) {
+    return false;
+  }
+  m_sSqlQuery0 += sColumnName + ", ";
+}
+
+bool FhqServerDatabaseSqlQuery::add(const std::string &sColumnName, const std::string &sValue) {
+  if (!checkName(sColumnName)) {
+    return false;
+  }
+  if (m_nSqlType == FhqServerDatabaseSqlQueryType::SELECT) {
+    m_sErrorMessage = "For select you could not use 'add'";
+    m_bValid = false;
+  } else if (m_nSqlType == FhqServerDatabaseSqlQueryType::INSERT) {
+    m_sSqlQuery0 += sColumnName + ", ";
+    m_sSqlQuery1 += prepareStringValue(sValue) + ", ";
+  } else if (m_nSqlType == FhqServerDatabaseSqlQueryType::UPDATE) {
+    m_sSqlQuery0 += sColumnName + " = " + prepareStringValue(sValue);
+  } else {
+    m_sErrorMessage = "Unknown sql type";
+    m_bValid = false;
+  }
+
+  // m_sSqlQuery = sBefore + sEscapedValue + sAfter;
+
+  //   while (true) {
+  //   /* Locate the substring to replace. */
+  //   index = str.find(sName, index);
+  //   if (index == std::string::npos)
+  //     return false;
+
+  //   /* Make the replacement. */
+  //   str.replace(index, 3, "def");
+
+  //   /* Advance index forward so the next iteration doesn't pick it up as well. */
+  //   index += 3;
+  // }
+  return true;
+}
+
+bool FhqServerDatabaseSqlQuery::add(const std::string &sColumnName, int nValue) {
+  if (!checkName(sColumnName)) {
+    return false;
+  }
+
+  if (m_nSqlType == FhqServerDatabaseSqlQueryType::SELECT) {
+    m_sErrorMessage = "For select you could not use 'add'";
+    m_bValid = false;
+  } else if (m_nSqlType == FhqServerDatabaseSqlQueryType::INSERT) {
+    m_sSqlQuery0 += sColumnName + ", ";
+    m_sSqlQuery1 += std::to_string(nValue) + ", ";
+  } else if (m_nSqlType == FhqServerDatabaseSqlQueryType::UPDATE) {
+    m_sSqlQuery0 += sColumnName + " = " + std::to_string(nValue);
+  }
+
+  return true;
+}
+
+bool FhqServerDatabaseSqlQuery::add(const std::string &sColumnName, long nValue) {
+  if (!checkName(sColumnName)) {
+    return false;
+  }
+
+  if (m_nSqlType == FhqServerDatabaseSqlQueryType::SELECT) {
+    m_sErrorMessage = "For select you could not use 'add'";
+    m_bValid = false;
+  } else if (m_nSqlType == FhqServerDatabaseSqlQueryType::INSERT) {
+    m_sSqlQuery0 += sColumnName + ", ";
+    m_sSqlQuery1 += std::to_string(nValue) + ", ";
+  } else if (m_nSqlType == FhqServerDatabaseSqlQueryType::UPDATE) {
+    m_sSqlQuery0 += sColumnName + " = " + std::to_string(nValue);
+  }
+
+  return true;
+}
+
+bool FhqServerDatabaseSqlQuery::where(const std::string &sColumnName, const std::string &sValue) {
+  if (!checkName(sColumnName)) {
+    return false;
+  }
+  if (m_nSqlType == FhqServerDatabaseSqlQueryType::SELECT) {
+    m_sSqlQuery2 += sColumnName + " = " + prepareStringValue(sValue);
+  } else if (m_nSqlType == FhqServerDatabaseSqlQueryType::INSERT) {
+    m_sErrorMessage = "where can be in insert";
+    return false;
+  } else if (m_nSqlType == FhqServerDatabaseSqlQueryType::UPDATE) {
+    m_sSqlQuery1 += sColumnName + " = " + prepareStringValue(sValue);
+  }
+
+  return true;
+}
+
+bool FhqServerDatabaseSqlQuery::where(const std::string &sColumnName, int nValue) {
+  if (!checkName(sColumnName)) {
+    return false;
+  }
+  if (m_nSqlType == FhqServerDatabaseSqlQueryType::SELECT) {
+    m_sSqlQuery2 += sColumnName + " = " + std::to_string(nValue);
+  } else if (m_nSqlType == FhqServerDatabaseSqlQueryType::INSERT) {
+    m_sErrorMessage = "where can be in insert";
+    return false;
+  } else if (m_nSqlType == FhqServerDatabaseSqlQueryType::UPDATE) {
+    m_sSqlQuery1 += sColumnName + " = " + std::to_string(nValue);
+  }
+}
+
+bool FhqServerDatabaseSqlQuery::where(const std::string &sColumnName, long nValue) {
+  if (!checkName(sColumnName)) {
+    return false;
+  }
+  if (m_nSqlType == FhqServerDatabaseSqlQueryType::SELECT) {
+    m_sSqlQuery2 += sColumnName + " = " + std::to_string(nValue);
+  } else if (m_nSqlType == FhqServerDatabaseSqlQueryType::INSERT) {
+    m_sErrorMessage = "where can be in insert";
+    return false;
+  } else if (m_nSqlType == FhqServerDatabaseSqlQueryType::UPDATE) {
+    m_sSqlQuery1 += sColumnName + " = " + std::to_string(nValue);
+  }
+  return true;
+}
+
+std::string FhqServerDatabaseSqlQuery::getSql() {
+  std::string sSqlQuery = "";
+  size_t size0 = m_sSqlQuery0.size();
+  size_t size1 = m_sSqlQuery1.size();
+  size_t size2 = m_sSqlQuery2.size();
+  if (m_nSqlType == FhqServerDatabaseSqlQueryType::SELECT) {
+    // TODO refactor this to vector and join
+    sSqlQuery = m_sSqlQuery0;
+    if (size0 > 2 && m_sSqlQuery0[size0 - 1] == ' ' && m_sSqlQuery0[size0 - 2] == ',') {
+      sSqlQuery += m_sSqlQuery0.substr(0, size0 - 2);
+    }
+    sSqlQuery += m_sSqlQuery1;
+    if (size2 > 2 && m_sSqlQuery2[size2 - 1] == ' ' && m_sSqlQuery2[size2 - 2] == ',') {
+      sSqlQuery += m_sSqlQuery2.substr(0, size2 - 2);
+    }
+  } else if (m_nSqlType == FhqServerDatabaseSqlQueryType::INSERT) {
+    if (size0 > 2 && m_sSqlQuery0[size0 - 1] == ' ' && m_sSqlQuery0[size0 - 2] == ',') {
+      sSqlQuery += m_sSqlQuery0.substr(0, size0 - 2);
+    }
+    if (size1 > 2 && m_sSqlQuery1[size1 - 1] == ' ' && m_sSqlQuery1[size1 - 2] == ',') {
+      sSqlQuery += m_sSqlQuery1.substr(0, size1 - 2);
+    }
+    sSqlQuery += m_sSqlQuery2;
+  } else if (m_nSqlType == FhqServerDatabaseSqlQueryType::UPDATE) {
+    sSqlQuery = m_sSqlQuery0 + m_sSqlQuery1 + m_sSqlQuery2;
+  }
+  return sSqlQuery;
+}
+
+bool FhqServerDatabaseSqlQuery::isValid() { return m_bValid; }
+
+std::string FhqServerDatabaseSqlQuery::getErrorMessage() { return m_sErrorMessage; }
+
+bool FhqServerDatabaseSqlQuery::checkName(const std::string &sColumnName) {
+  if (sColumnName.size() < 2) {
+    m_sErrorMessage = "Parameter '" + sColumnName + "' must more than 2 characters";
+    m_bValid = false;
+    return false;
+  }
+  // TODO check alphabet
+
+  // if (sName[0] != ':') {
+  //   m_sErrorMessage = "Parameter '" + sName + "' must starts with ':'";
+  //   m_bValid = false;
+  //   return false;
+  // }
+  // nIndex = m_sSqlQuery.find(sName, 0);
+  // if (nIndex == std::string::npos) {
+  //   m_sErrorMessage = "Not found '" + sName + "' in " + m_sSqlQuery;
+  //   m_bValid = false;
+  //   return false;
+  // }
+  return true;
+}
+
+std::string FhqServerDatabaseSqlQuery::prepareStringValue(const std::string &sValue) {
+  // escaping simbols NUL (ASCII 0), \n, \r, \, ', ", и Control-Z.
+  std::string sResult;
+  sResult.reserve(sValue.size() * 2);
+  sResult.push_back('\'');
+  for (int i = 0; i < sValue.size(); i++) {
+    char c = sValue[i];
+    if (c == '\n') {
+      sResult.push_back('\\');
+      sResult.push_back('n');
+    } else if (c == '\r') {
+      sResult.push_back('\\');
+      sResult.push_back('r');
+    } else if (c == '\\' || c == '"') {
+      sResult.push_back('\\');
+      sResult.push_back(c);
+    } else if (c == '\'') {
+      sResult.push_back('\'');
+      sResult.push_back(c);
+    } else if (c == 0) {
+      sResult.push_back('\\');
+      sResult.push_back('0');
+    } else {
+      sResult.push_back(c);
+    }
+  }
+  sResult.push_back('\'');
+  return sResult;
+}
+
+// ---------------------------------------------------------------------
+// FhqServerDatabaseSqlQuerySelect
+
+FhqServerDatabaseSqlQuerySelect::FhqServerDatabaseSqlQuerySelect(const std::string &sSqlTable)
+  : FhqServerDatabaseSqlQuery(FhqServerDatabaseSqlQueryType::SELECT, sSqlTable) {}
+
+// ---------------------------------------------------------------------
+// FhqServerDatabaseSqlQueryInsert
+
+FhqServerDatabaseSqlQueryInsert::FhqServerDatabaseSqlQueryInsert(const std::string &sSqlTable)
+  : FhqServerDatabaseSqlQuery(FhqServerDatabaseSqlQueryType::INSERT, sSqlTable) {}
+
+// ---------------------------------------------------------------------
+// FhqServerDatabaseSqlQueryUpdate
+
+FhqServerDatabaseSqlQueryUpdate::FhqServerDatabaseSqlQueryUpdate(const std::string &sSqlTable)
+  : FhqServerDatabaseSqlQuery(FhqServerDatabaseSqlQueryType::UPDATE, sSqlTable) {}
+
+// ---------------------------------------------------------------------
+// FhqServerDatabaseSqlQuery
+
+FhqServerDatabaseSqlQuery::FhqServerDatabaseSqlQuery(
+  FhqServerDatabaseSqlQueryType nSqlType, const std::string &sSqlTable
+) {
+  m_nSqlType = nSqlType;
+  m_sSqlTable = sSqlTable;
+  m_bValid = true;
+  if (m_nSqlType == FhqServerDatabaseSqlQueryType::INSERT) {
     m_sSqlQuery0 = "INSERT INTO " + sSqlTable + "(";
     m_sSqlQuery1 = ") VALUES (";
     m_sSqlQuery2 = ");";

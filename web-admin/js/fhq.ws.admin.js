@@ -626,19 +626,19 @@ fhq.ws.useful_links_list = function(data){
 
 fhq.ws.useful_links_retrieve = function(data){
     data = data || {};
-    data.cmd = 'useful_links_retrieve';
+    data.cmd = 'useful_links.retrieve';
     return fhq.ws.send(data);
 }
 
 fhq.ws.useful_links_add = function(data){
     data = data || {};
-    data.cmd = 'useful_links_add';
+    data.cmd = 'useful_links.add';
     return fhq.ws.send(data);
 }
 
 fhq.ws.useful_links_delete = function(data){
     data = data || {};
-    data.cmd = 'useful_links_delete';
+    data.cmd = 'useful_links.delete';
     return fhq.ws.send(data);
 }
 

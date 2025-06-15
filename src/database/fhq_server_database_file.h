@@ -130,6 +130,52 @@ public:
   FhqServerDatabaseSqlQueryUpdate(const std::string &sSqlTable);
 };
 
+enum class FhqServerDatabaseSqlQueryType { INSERT, UPDATE };
+
+class FhqServerDatabaseSqlQuery {
+public:
+  FhqServerDatabaseSqlQuery(FhqServerDatabaseSqlQueryType nSqlType, const std::string &sSqlTable);
+  bool sel(const std::string &sColumnName);
+  bool add(const std::string &sColumnName, const std::string &sValue);
+  bool add(const std::string &sColumnName, int nValue);
+  bool add(const std::string &sColumnName, long nValue);
+  bool where(const std::string &sColumnName, const std::string &sValue);
+  bool where(const std::string &sColumnName, int nValue);
+  bool where(const std::string &sColumnName, long nValue);
+
+  std::string getSql();
+  bool isValid();
+  std::string getErrorMessage();
+
+private:
+  std::string prepareStringValue(const std::string &sValue);
+  bool checkName(const std::string &sColumnName);
+  FhqServerDatabaseSqlQueryType m_nSqlType;
+  std::string m_sSqlTable;
+  std::string m_sErrorMessage;
+  bool m_bValid;
+
+  // query parts
+  std::string m_sSqlQuery0;
+  std::string m_sSqlQuery1;
+  std::string m_sSqlQuery2;
+};
+
+class FhqServerDatabaseSqlQuerySelect : public FhqServerDatabaseSqlQuery {
+public:
+  FhqServerDatabaseSqlQuerySelect(const std::string &sSqlTable);
+};
+
+class FhqServerDatabaseSqlQueryInsert : public FhqServerDatabaseSqlQuery {
+public:
+  FhqServerDatabaseSqlQueryInsert(const std::string &sSqlTable);
+};
+
+class FhqServerDatabaseSqlQueryUpdate : public FhqServerDatabaseSqlQuery {
+public:
+  FhqServerDatabaseSqlQueryUpdate(const std::string &sSqlTable);
+};
+
 class FhqServerDatabaseFile {
 public:
   FhqServerDatabaseFile(const std::string &sFilename);

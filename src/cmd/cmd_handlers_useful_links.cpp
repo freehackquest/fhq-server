@@ -33,6 +33,7 @@
 #include <employ_database.h>
 #include <employ_notify.h>
 #include <employ_server_info.h>
+#include <employ_uuids.h>
 #include <md5.h>
 #include <runtasks.h>
 
@@ -43,9 +44,9 @@
 REGISTRY_CMD(CmdHandlerUsefulLinksList)
 
 CmdHandlerUsefulLinksList::CmdHandlerUsefulLinksList()
-  : CmdHandlerBase("useful_links_list", "Method will be return list of useful links") {
+  : CmdHandlerBase("useful_links.filtered_list", "Method will be return list of useful links") {
 
-  setActivatedFromVersion("0.2.21");
+  setActivatedFromVersion("0.2.53");
 
   setAccessUnauthorized(true);
   setAccessUser(true);
@@ -118,21 +119,32 @@ struct QueryFilters {
 // ---------------------------------------------------------------------
 
 void CmdHandlerUsefulLinksList::handle(ModelRequest *pRequest) {
-  nlohmann::json jsonRequest = pRequest->jsonRequest();
-  int nUserId = 0;
-  WsjcppUserSession *pSession = pRequest->getUserSession();
-  if (pSession != nullptr) {
-    nUserId = pSession->userid();
-  }
-
-  bool bIsAdmin = pRequest->isAdmin();
-
   std::string sFilter = pRequest->getInputString("filter", "");
   std::string sFilterByTag = pRequest->getInputString("filter_by_tag", "");
   int nPageIndex = pRequest->getInputInteger("page_index", 0);
   int nPageSize = pRequest->getInputInteger("page_size", 10);
   int nLength = 0;
+
+  bool bIsAdmin = pRequest->isAdmin(); // why in request ????
+  std::string sUserUuid = "";
+
+  // TODO redesign like a isAdmin
+  WsjcppUserSession *pSession = pRequest->getUserSession();
+  if (pSession != nullptr) {
+    sUserUuid = pSession->userUuid();
+    bIsAdmin = pSession->isAdmin();
+  }
+
+  nlohmann::json jsonRequest = pRequest->jsonRequest();
   nlohmann::json jsonData;
+
+  EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+
+  auto *pUsefullLinks = pDatabase->databaseUsefulLinks();
+
+  std::vector<std::string> vUserFavorites = pUsefullLinks->getUserFavorites(const std::string &sUserUuid);
+
+
   QueryFilters queryFilters;
   sFilter = WsjcppCore::trim(sFilter);
   if (sFilter != "") {
@@ -237,8 +249,6 @@ CmdHandlerUsefulLinksRetrieve::CmdHandlerUsefulLinksRetrieve()
   requireIntegerParam("useful_link_id", "Id of useful link");
 }
 
-// ---------------------------------------------------------------------
-
 void CmdHandlerUsefulLinksRetrieve::handle(ModelRequest *pRequest) {
   int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
   int nUserId = 0;
@@ -310,9 +320,9 @@ void CmdHandlerUsefulLinksRetrieve::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksAdd)
 
 CmdHandlerUsefulLinksAdd::CmdHandlerUsefulLinksAdd()
-  : CmdHandlerBase("useful_links_add", "Method for add new useful link") {
+  : CmdHandlerBase("useful_links.add", "Method for add new useful link") {
 
-  setActivatedFromVersion("0.2.21");
+  setActivatedFromVersion("0.2.53");
 
   setAccessUnauthorized(false);
   setAccessUser(false);
@@ -325,118 +335,84 @@ CmdHandlerUsefulLinksAdd::CmdHandlerUsefulLinksAdd()
   requireStringParam("author", "Author");
 }
 
-// ---------------------------------------------------------------------
-
 void CmdHandlerUsefulLinksAdd::handle(ModelRequest *pRequest) {
+  auto *pUuids = findWsjcppEmploy<EmployUuids>();
   std::string sUrl = pRequest->getInputString("url", "");
   std::string sDescription = pRequest->getInputString("description", "");
   std::string sAuthor = pRequest->getInputString("author", "");
 
+  ModelUsefulLink m;
+  m.setUuid(pUuids->generateNewUuid("useful_link"));
+  m.setUrl(sUrl);
+  m.setDescription(sDescription);
+  m.setAuthor(sAuthor);
+  m.setTags("");
+
+  // TODO redesign via employ because there cache update need
+
   EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
-  QSqlDatabase db = *(pDatabase->database());
-  QSqlQuery query(db);
-  // TODO uuid
-  query.prepare("INSERT INTO useful_links(url,description,author,tags,dt) "
-                "VALUES(:url, :description, :author, :tags, NOW())");
-  query.bindValue(":url", QString::fromStdString(sUrl));
-  query.bindValue(":description", QString::fromStdString(sDescription));
-  query.bindValue(":author", QString::fromStdString(sAuthor));
-  query.bindValue(":tags", QString::fromStdString(""));
+  auto *pUsefullLinks = pDatabase->databaseUsefulLinks();
 
-  if (!query.exec()) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+  if (!pUsefullLinks->insertRecord(m)) {
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Could not insert record"));
     return;
   }
 
-  int nRowId = query.lastInsertId().toInt();
-
-  nlohmann::json jsonResult;
-  jsonResult["id"] = nRowId;
-
   nlohmann::json jsonResponse;
-  jsonResponse["data"] = jsonResult;
+  jsonResponse["data"] = m.toJson();
 
   EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
   nlohmann::json jsonMeta;
   jsonMeta["useful_link"] = nlohmann::json();
-  jsonMeta["useful_link"]["id"] = nRowId;
+  jsonMeta["useful_link"]["uuid"] = m.getUuid();
   jsonMeta["useful_link"]["url"] = sUrl;
   jsonMeta["useful_link"]["action"] = "added";
-  pNotify->notifyInfo("useful_links", "Added [useful_link#" + std::to_string(nRowId) + "] " + sUrl + "", jsonMeta);
+  pNotify->notifyInfo("useful_links", "Added [useful_link#" + m.getUuid() + "] " + sUrl + "", jsonMeta);
 
   pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 /*********************************************
- * Useful Links Delete
+ * Useful Links Remove
  **********************************************/
 
-REGISTRY_CMD(CmdHandlerUsefulLinksDelete)
+REGISTRY_CMD(CmdHandlerUsefulLinksRemove)
 
-CmdHandlerUsefulLinksDelete::CmdHandlerUsefulLinksDelete()
-  : CmdHandlerBase("useful_links_delete", "Method for delete link by admin") {
+CmdHandlerUsefulLinksRemove::CmdHandlerUsefulLinksRemove()
+  : CmdHandlerBase("useful_links.remove", "Method for delete link by admin") {
 
-  setActivatedFromVersion("0.2.21");
+  setActivatedFromVersion("0.2.53");
 
   setAccessUnauthorized(false);
   setAccessUser(false);
   setAccessAdmin(true);
 
   // validation and description input fields
-  requireIntegerParam("useful_link_id", "Id of useful link");
+  requireStringParam("useful_link_uuid", "UUID of useful link").addValidator(new WsjcppValidatorUUID());
 }
 
-// ---------------------------------------------------------------------
+void CmdHandlerUsefulLinksRemove::handle(ModelRequest *pRequest) {
 
-void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest) {
+  std::string sUsefulLinkUuid = pRequest->getInputString("useful_link_uuid", "");
 
-  int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
+    // TODO redesign via employ because there cache update need
 
   EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
-  QSqlDatabase db = *(pDatabase->database());
-  QSqlQuery query(db);
-  // TODO uuid
-  query.prepare("DELETE FROM useful_links WHERE id = :useful_link_id");
-  query.bindValue(":useful_link_id", nUsefulLinkId);
+  auto *pUsefullLinks = pDatabase->databaseUsefulLinks();
 
-  if (!query.exec()) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
-    return;
-  }
-
-  query.prepare("DELETE FROM useful_links_comments WHERE usefullinkid = :useful_link_id");
-  query.bindValue(":useful_link_id", nUsefulLinkId);
-
-  if (!query.exec()) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
-    return;
-  }
-
-  query.prepare("DELETE FROM useful_links_user_favorites WHERE usefullinkid = "
-                ":useful_link_id");
-  query.bindValue(":useful_link_id", nUsefulLinkId);
-
-  if (!query.exec()) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
-    return;
-  }
-
-  query.prepare("DELETE FROM useful_links_tags WHERE usefullinkid = :useful_link_id");
-  query.bindValue(":useful_link_id", nUsefulLinkId);
-
-  if (!query.exec()) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+  if (!pUsefullLinks->deleteRecord(sUsefulLinkUuid)) {
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Could not remove record."));
     return;
   }
 
   EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
   nlohmann::json jsonMeta;
   jsonMeta["useful_link"] = nlohmann::json();
-  jsonMeta["useful_link"]["id"] = nUsefulLinkId;
+  jsonMeta["useful_link"]["uuid"] = sUsefulLinkUuid;
   jsonMeta["useful_link"]["action"] = "removed";
-  pNotify->notifyInfo("useful_links", "Removed [useful_link#" + std::to_string(nUsefulLinkId) + "]", jsonMeta);
+  pNotify->notifyInfo("useful_links", "Removed [useful_link#" + sUsefulLinkUuid + "]", jsonMeta);
 
   nlohmann::json jsonResponse;
   pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -449,54 +425,53 @@ void CmdHandlerUsefulLinksDelete::handle(ModelRequest *pRequest) {
 REGISTRY_CMD(CmdHandlerUsefulLinksUpdate)
 
 CmdHandlerUsefulLinksUpdate::CmdHandlerUsefulLinksUpdate()
-  : CmdHandlerBase("useful_links_update", "Method for update useful link") {
+  : CmdHandlerBase("useful_links.update", "Method for update useful link") {
 
-  setActivatedFromVersion("0.2.21");
+  setActivatedFromVersion("0.2.53");
 
   setAccessUnauthorized(false);
   setAccessUser(false);
   setAccessAdmin(true);
 
   // validation and description input fields
-  requireIntegerParam("useful_link_id", "Id of useful link");
+  requireStringParam("useful_link_uuid", "UUID of useful link").addValidator(new WsjcppValidatorUUID());
   requireStringParam("url", "URL"); // TODO validator
   requireStringParam("description", "Description");
   requireStringParam("author", "Author");
 }
 
-// ---------------------------------------------------------------------
-
 void CmdHandlerUsefulLinksUpdate::handle(ModelRequest *pRequest) {
 
-  int nUsefulLinkId = pRequest->getInputInteger("useful_link_id", 0);
+  std::string sUsefulLinkUuid = pRequest->getInputString("useful_link_uuid", "");
   std::string sUrl = pRequest->getInputString("url", "");
   std::string sDescription = pRequest->getInputString("description", "");
   std::string sAuthor = pRequest->getInputString("author", "");
 
+  // TODO redesign via employ because there cache update need
+
   EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
-  QSqlDatabase db = *(pDatabase->database());
-  QSqlQuery query(db);
-  // TODO uuid
-  query.prepare("UPDATE useful_links SET url = :url, description = "
-                ":description WHERE id = :useful_link_id");
-  query.bindValue(":url", QString::fromStdString(sUrl));
-  query.bindValue(":description", QString::fromStdString(sDescription));
-  query.bindValue(":useful_link_id", nUsefulLinkId);
+  auto *pUsefullLinks = pDatabase->databaseUsefulLinks();
 
-  if (!query.exec()) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+  ModelUsefulLink m;
+  m.setUuid(sUsefulLinkUuid);
+  m.setUrl(sUrl);
+  m.setDescription(sDescription);
+  m.setAuthor(sAuthor);
+
+  if (!pUsefullLinks->updateRecord(m)) {
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Could not update record"));
     return;
   }
 
   EmployNotify *pNotify = findWsjcppEmploy<EmployNotify>();
   nlohmann::json jsonMeta;
   jsonMeta["useful_link"] = nlohmann::json();
-  jsonMeta["useful_link"]["id"] = nUsefulLinkId;
+  jsonMeta["useful_link"]["uuid"] = sUsefulLinkUuid;
   jsonMeta["useful_link"]["url"] = sUrl;
   jsonMeta["useful_link"]["action"] = "updated";
   pNotify->notifyInfo(
-    "useful_links", "Updated [useful_link#" + std::to_string(nUsefulLinkId) + "] " + sUrl + "", jsonMeta
+    "useful_links", "Updated [useful_link#" + sUsefulLinkUuid + "] " + sUrl + "", jsonMeta
   );
 
   nlohmann::json jsonResponse;

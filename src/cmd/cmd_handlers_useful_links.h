@@ -51,9 +51,9 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
-class CmdHandlerUsefulLinksDelete : public CmdHandlerBase {
+class CmdHandlerUsefulLinksRemove : public CmdHandlerBase {
 public:
-  CmdHandlerUsefulLinksDelete();
+  CmdHandlerUsefulLinksRemove();
   virtual void handle(ModelRequest *pRequest);
 };
 
