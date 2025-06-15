@@ -151,6 +151,7 @@ list (APPEND WSJCPP_SOURCES "src/fhq/employees/employ_mails.cpp")
 list (APPEND WSJCPP_SOURCES "src/fhq/employees/employ_users.cpp")
 list (APPEND WSJCPP_SOURCES "src/fhq/employees/employ_uuids.cpp")
 list (APPEND WSJCPP_SOURCES "src/fhq/employees/employ_web_server.cpp")
+list (APPEND WSJCPP_SOURCES "src/fhq/employees/employ_usefullinks.cpp")
 
 # tasks
 list (APPEND WSJCPP_SOURCES "src/tasks/runtasks.h")
