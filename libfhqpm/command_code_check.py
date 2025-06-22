@@ -32,17 +32,23 @@
 """ code c++ check """
 
 import os
-import glob2
 import re
+import logging
+
+from .utils_files import UtilsFiles
+from .pm_config import PmConfig
+
+logging.basicConfig()
 
 
-class CodeCheck:
-    def __init__(self):
-        self.__root = os.path.realpath(os.path.dirname(__file__))
-        self.__root = os.path.join(self.__root, "..")
-        self.__root = os.path.normpath(self.__root)
-        # print("Root: " + self.__root)
-        print("")
+class CommandCodeCheck:
+    """ Code check - scan code problems"""
+
+    def __init__(self, config: PmConfig):
+        self.__log = logging.getLogger("CommandCodeCheck")
+        self.__log.setLevel(logging.DEBUG)
+        self.__config = config
+        self.__subcomamnd_name = "code-check"
         self.__result = {
             "tabs": [],
             "todo": [],
@@ -56,36 +62,47 @@ class CodeCheck:
         }
         self.__processed_files = 0
         self.__processed_lines = 0
+        self.__ignore_dirs = [
+            '/third-party/',
+            '/tmp/',
+            '/logs/',
+        ]
 
-    def is_ignore_path(self, _filepath):
-        if '/third-party/' in _filepath:
-            return True
-        if '/tmp/' in _filepath:
-            return True
-        if '/logs/' in _filepath:
-            return True
+    def get_name(self):
+        """ return subcommand name """
+        return self.__subcomamnd_name
+
+    def do_registry(self, subparsers):
+        """ registring sub command """
+        _parser_code_check = subparsers.add_parser(
+            name=self.__subcomamnd_name,
+            description='Check c++ files format'
+        )
+        _parser_code_check.set_defaults(subparser=self.__subcomamnd_name)
+
+    def __is_ignore_path(self, _filepath):
+        """ ignore path or extension """
+        for _dir in self.__ignore_dirs:
+            if _dir in _filepath:
+                return True
         if _filepath.endswith("unit-tests"):
             return True
-        if _filepath.endswith(".png"):
+        if _filepath.endswith(".png") or _filepath.endswith(".sh"):
             return True
-        if _filepath.endswith(".sh"):
-            return True
-        if _filepath.endswith("CMakeLists.txt"):
-            return True
-        if _filepath.endswith("CMakeLists.user-custom.txt"):
+        if _filepath.endswith("CMakeLists.txt") or _filepath.endswith("CMakeLists.user-custom.txt"):
             return True
         return False
 
     def __check_tabs(self, _line, _filepath, _line_number):
         if '\t' in _line:
             error_msg = "ERROR: Found tab in " + _filepath + ":" + str(_line_number)
-            print(error_msg)
+            self.__log.error(error_msg)
             self.__result["tabs"].append(error_msg)
 
     def __check_todo(self, _line, _filepath, _line_number):
         if 'TODO' in _line:
             error_msg = "WARNING: Found TODO in " + _filepath + ":" + str(_line_number)
-            # print(error_msg)
+            # self.__log.error(error_msg)
             self.__result["todo"].append(error_msg)
 
     def __check_if_format(self, _line, _filepath, _line_number):
@@ -93,7 +110,7 @@ class CodeCheck:
         if re.match(_pattern, _line) and 'if (' not in _line:
             error_msg = "ERROR: Found wrong if-format (expected 'if (...)' )"
             error_msg += "in " + _filepath + ":" + str(_line_number)
-            print(error_msg)
+            self.__log.error(error_msg)
             self.__result["if-format"].append(error_msg)
 
     def __check_for_format(self, _line, _filepath, _line_number):
@@ -101,7 +118,7 @@ class CodeCheck:
         if re.match(_pattern, _line) and 'for (' not in _line:
             error_msg = "ERROR: Found wrong for-format (expected 'for (...)' )"
             error_msg += " in " + _filepath + ":" + str(_line_number)
-            print(error_msg)
+            self.__log.error(error_msg)
             self.__result["for-format"].append(error_msg)
 
     def __check_while_format(self, _line, _filepath, _line_number):
@@ -109,7 +126,7 @@ class CodeCheck:
         if re.match(_pattern, _line) and 'while (' not in _line:
             error_msg = "ERROR: Found wrong while-format (expected 'while (...)' )"
             error_msg += " in " + _filepath + ":" + str(_line_number)
-            print(error_msg)
+            self.__log.error(error_msg)
             self.__result["while-format"].append(error_msg)
 
     def __check_end_brackets(self, _line, _filepath, _line_number):
@@ -117,7 +134,7 @@ class CodeCheck:
         if re.match(_pattern, _line) and ') {' not in _line:
             error_msg = "ERROR: Found wrong end-brackets (expected '...) {...' )"
             error_msg += " in " + _filepath + ":" + str(_line_number)
-            print(error_msg)
+            self.__log.error(error_msg)
             self.__result["end-brackets"].append(error_msg)
 
     def __check_start_bracket_else(self, _line, _filepath, _line_number):
@@ -125,7 +142,7 @@ class CodeCheck:
         if re.match(_pattern, _line) and '} else' not in _line:
             error_msg = "ERROR: Found wrong start-bracket-else (expected '...} else...' )"
             error_msg += " in " + _filepath + ":" + str(_line_number)
-            print(error_msg)
+            self.__log.error(error_msg)
             self.__result["start-bracket-else"].append(error_msg)
 
     def __check_end_bracket_else(self, _line, _filepath, _line_number):
@@ -133,7 +150,7 @@ class CodeCheck:
         if re.match(_pattern, _line) and 'else {' not in _line:
             error_msg = "ERROR: Found wrong end-bracket-else (expected '...else {...' )"
             error_msg += " in " + _filepath + ":" + str(_line_number)
-            print(error_msg)
+            self.__log.error(error_msg)
             self.__result["end-bracket-else"].append(error_msg)
 
     def __check_auto(self, _line, _filepath, _line_number):
@@ -145,32 +162,34 @@ class CodeCheck:
             if ' = findWsjcppEmploy<' in _line:  # skip if used findWsjcppEmploy
                 return
             error_msg = "WARNING: Found auto in " + _filepath + ":" + str(_line_number)
-            print(error_msg)
+            self.__log.error(error_msg)
             self.__result["auto"].append(error_msg)
 
     def __print_result(self):
-        print("\n ---- result ----")
-        print("Processed files: ", self.__processed_files)
-        print("Processed lines: ", self.__processed_lines)
+        self.__log.info("\n ---- result ----")
+        self.__log.info("Processed files: %s", self.__processed_files)
+        self.__log.info("Processed lines: %s", self.__processed_lines)
         for _stat in self.__result:
-            print(_stat, len(self.__result[_stat]), "times in code")
+            self.__log.info("%s %s %s", _stat, str(len(self.__result[_stat])), "times in code")
 
-    def run(self):
+    def execute(self, _):
+        """ executing """
+        self.__log.info("Start...")
         _dirs = [
-            os.path.join(self.__root, "src"),
-            os.path.join(self.__root, "unit-tests.wsjcpp"),
+            os.path.join(self.__config.get_root_dir(), "src"),
+            os.path.join(self.__config.get_root_dir(), "unit-tests.wsjcpp"),
         ]
         _files = []
         for _dir in _dirs:
-            _files.extend(glob2.glob(os.path.join(_dir, "**", "*")))
+            _files.extend(UtilsFiles.get_all_files(_dir))
 
         for _filepath in _files:
-            if self.is_ignore_path(_filepath):  # skip
+            if self.__is_ignore_path(_filepath):  # skip
                 continue
             if os.path.isdir(_filepath):
                 continue
             self.__processed_files += 1
-            # print(_filepath)
+            # self.__log.info(_filepath)
             with open(_filepath, "rt", encoding="utf-8") as _file:
                 _lines = _file.readlines()
                 _line_number = 0

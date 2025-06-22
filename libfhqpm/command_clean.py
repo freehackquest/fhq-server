@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 ##################################################################################
 #    __ _
 #   / _| |__   __ _       ___  ___ _ ____   _____ _ __
@@ -29,10 +29,23 @@
 #
 ##################################################################################
 
-import os
+""" subcommand clean removed temporary files """
 
-class SubcommandClean:
-    def __init__(self):
+import sys
+import os
+import logging
+from .utils_files import UtilsFiles
+from .pm_config import PmConfig
+
+logging.basicConfig()
+
+
+class CommandClean:
+    """ CommandClean """
+    def __init__(self, config: PmConfig):
+        self.__log = logging.getLogger("CommandClean")
+        self.__log.setLevel(logging.DEBUG)
+        self.__config = config
         self.__subcomamnd_name = "clean"
 
     def get_name(self):
@@ -41,25 +54,37 @@ class SubcommandClean:
 
     def do_registry(self, subparsers):
         """ registring sub command """
-        _parser = subparsers.add_parser(
+        _parser_clean = subparsers.add_parser(
             name=self.__subcomamnd_name,
-            description='Clean'
+            description='Clean temporary build files'
         )
-        _parser.set_defaults(subparser=self.__subcomamnd_name)
+        _parser_clean.set_defaults(subparser=self.__subcomamnd_name)
 
-    def execute(self):
-        print("Cleaning...")
-
-        to_remove = [
-            "rm -f Makefile",
-            "rm -rf build",
-            "rm -rf tmp",
-            "rm -f fhq-server",
-            "rm -f .qmake.stash",
-            "rm -f fhq-server.pro.user",
-            "rm -f CMakeLists.txt.user",
-            "rm -f debian/files",
+    def execute(self, _):
+        """ executing """
+        self.__log.info("Cleaning...")
+        dir_or_files_to_remove = [
+            "Makefile",
+            "build",
+            "Makefile",
+            "build",
+            "tmp",
+            "fhq-server",
+            ".qmake.stash",
+            "fhq-server.pro.user",
+            "CMakeLists.txt.user",
+            "debian/files",
         ]
-        for _cmd in to_remove:
-            print("Run '" + _cmd + "'")
-            os.system(_cmd)
+        root_dir = self.__config.get_root_dir()
+        for _path in dir_or_files_to_remove:
+            _fullpath = os.path.join(root_dir, _path)
+            self.__log.info("Removing %s", _fullpath)
+            if os.path.isfile(_fullpath):
+                self.__log.info("Removing file %s", _fullpath)
+                os.remove(_fullpath)
+            elif os.path.isdir(_fullpath):
+                self.__log.info("Removing dir %s", _fullpath)
+                UtilsFiles.recoursive_remove_files(_fullpath)
+            else:
+                self.__log.info("Not found")
+        sys.exit(0)

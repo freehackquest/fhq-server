@@ -29,48 +29,23 @@
 #
 ##################################################################################
 
-""" run all tests """
-
-import sys
-import subprocess
+""" Config for a pm """
+import re
 
 
-class CommandsHelper:
-    """ Helper """
+class PmConfig:
+    """ PmConfig """
 
-    def run_command(self, _command, _output=None):
-        """ run_command """
-        print("Run command: " + " ".join(_command))
-        if _output is not None:
-            _output.write("Run command: " + " ".join(_command) + "\n")
-        with subprocess.Popen(
-            _command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            shell=False
-        ) as _proc:
-            _returncode = _proc.poll()
-            while _returncode is None:
-                _returncode = _proc.poll()
-                _line = _proc.stdout.readline()
-                if _line:
-                    _line = _line.decode("utf-8").strip()
-                    print(_line)
-                    if _output is not None:
-                        _output.write(_line + "\n")
-            while _line:
-                _line = _proc.stdout.readline()
-                if _line:
-                    _line = _line.decode("utf-8").strip()
-                    print(_line)
-                    if _output is not None:
-                        _output.write(_line + "\n")
-                else:
-                    break
-            if _returncode != 0:
-                print("ERROR: returncode " + str(_returncode))
-                if _output is not None:
-                    _output.write("ERROR: returncode " + str(_returncode) + "\n")
-                sys.exit(_returncode)
-            return
-        sys.exit("Could not start process")
+    def __init__(self, root_dir):
+        self.__root_dir = root_dir
+        self.__re_uuid = re.compile(
+            r'.*\"([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})\".*'
+        )
+
+    def get_root_dir(self):
+        """ return root dir """
+        return self.__root_dir
+
+    def get_re_uuid(self):
+        """ return regular expression for a search uuid in string """
+        return self.__re_uuid
