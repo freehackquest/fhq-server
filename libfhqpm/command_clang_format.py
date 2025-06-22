@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 ##################################################################################
 #    __ _
 #   / _| |__   __ _       ___  ___ _ ____   _____ _ __
@@ -29,37 +29,48 @@
 #
 ##################################################################################
 
-import re
+""" Command for format c++ code by clang-format """
+
 import os
 import sys
-import random
-import glob2
-import string
-import datetime
+import logging
+from .utils_files import UtilsFiles
+from .pm_config import PmConfig
+from .utils_shell import UtilsShell
+
+logging.basicConfig()
 
 
-class RebuildEnvironmentImages:
-    def __init__(self):
-        now = datetime.datetime.now()
-        self.__dt_tag = now.strftime("%Y-%m-%d")
+class CommandClangFormat:
+    """ CommandClangFormat """
+    def __init__(self, config: PmConfig):
+        self.__log = logging.getLogger("CommandClangFormat")
+        self.__log.setLevel(logging.DEBUG)
+        self.__config = config
+        self.__subcomamnd_name = "clang-format"
 
-    def __build_docker_image(self, tag, filename):
-        cmd = "docker build --rm --tag " + tag + " -f " + filename + " ."
-        ret = os.system(cmd)
-        if ret != 0:
-            print("ERROR: Could not build image by command:  " + cmd)
-            sys.exit(1)
+    def get_name(self):
+        """ return subcommand name """
+        return self.__subcomamnd_name
 
-    def run(self):
-        build_env = "Dockerfile.build-environment"
-        release_env = "Dockerfile.release-environment"
-        tag_build = "sea5kg/fhq-server-build-environment"
-        tag_release = "sea5kg/fhq-server-release-environment"
+    def do_registry(self, subparsers):
+        """ registring sub command """
+        _parser_clang_format = subparsers.add_parser(
+            name=self.__subcomamnd_name,
+            description='Fix cpp and h files use a clang format'
+        )
+        _parser_clang_format.set_defaults(subparser=self.__subcomamnd_name)
 
-        self.__build_docker_image(tag_build + ":" + self.__dt_tag, build_env)
-        # TODO if :latest exist so remove before
-        self.__build_docker_image(tag_build + ":latest", build_env)
-        self.__build_docker_image(tag_release + ":" + self.__dt_tag, release_env)
-        self.__build_docker_image(tag_release + ":latest", release_env)
+    def execute(self, _):
+        """ executing """
+        self.__log.info("Clang-format...")
+        root_dir = self.__config.get_root_dir()
+        src_dir = os.path.join(root_dir, "src")
 
-        return 0
+        files = UtilsFiles.get_all_files(src_dir)
+        for _file in files:
+            if 'third-party' in _file:
+                continue
+            command = ["clang-format", '-style=file', '-i', _file]
+            UtilsShell.run_command(command)
+        sys.exit(0)

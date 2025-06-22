@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 ##################################################################################
 #    __ _
 #   / _| |__   __ _       ___  ___ _ ____   _____ _ __
@@ -29,30 +29,42 @@
 #
 ##################################################################################
 
-from .subcommand_clean import SubcommandClean
+""" Command for linting python scripts """
 
-""" Colelcted all possible subcomamnds """
+import os
+import sys
+import logging
+
+from .pm_config import PmConfig
+
+logging.basicConfig()
 
 
-class Subcommands:
+class CommandPyCheck:
+    """ CommandPyCheck """
+    def __init__(self, config: PmConfig):
+        self.__log = logging.getLogger("CommandPyCheck")
+        self.__log.setLevel(logging.DEBUG)
+        self.__config = config
+        self.__subcomamnd_name = "py-check"
 
-    def __init__(self):
-        self.__executors = []
-        self.__executors.append(SubcommandClean())
-        self.__executors_names = []
-        for _subcommand in self.__executors:
-            self.__executors_names.append(_subcommand.get_name())
-
-    def has_subcommand(self, subcomamnd_name):
+    def get_name(self):
         """ return subcommand name """
-        return subcomamnd_name in self.__executors_names
+        return self.__subcomamnd_name
 
     def do_registry(self, subparsers):
-        """ registry """
-        for _subcommand in self.__executors:
-            _subcommand.do_registry(subparsers)
+        """ registring sub command """
+        _parser = subparsers.add_parser(
+            name=self.__subcomamnd_name,
+            description='Check python files'
+        )
+        _parser.set_defaults(subparser=self.__subcomamnd_name)
 
-    def execute(self, subcommand):
-        for _subcommand in self.__executors:
-            if _subcommand.get_name() == subcommand:
-                _subcommand.execute()
+    def execute(self, _):
+        """ executing """
+        self.__log.info("Starting py-check...")
+        ret_pep8 = os.system("python3 -m pycodestyle libfhqpm --max-line-length=100")
+        ret_pylint = os.system("python3 -m pylint libfhqpm --max-line-length=100")
+        if ret_pep8 != 0 or ret_pylint != 0:
+            sys.exit(1)
+        sys.exit(0)
