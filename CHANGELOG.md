@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Updated wsjcpp-validators from v0.1.2 to v0.1.3
 - Added EmployUuids, added models for useful_links, added new handlers `server_uuid_generate`, `server_uuid_info`
 - Redesign work with sqlite
+- Added src/third-party/easyzip/ https://github.com/winsoft666/easyzip (for replacement quazip-0.7.3
 
 ## [v0.2.52] - 2024-07-21 (2024 Jule 21)
 

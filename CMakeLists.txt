@@ -270,6 +270,13 @@ list (APPEND WSJCPP_LIBRARIES ${LIBMYSQLCLIENT_LIBRARIES})
 #####
 ############################
 
+# easyzip
+set(EASYZIP_BUILD_SHARED_LIBS OFF CACHE BOOL "")
+add_subdirectory(src/third-party/easyzip)
+list (APPEND WSJCPP_LIBRARIES easyzip-static)
+list (APPEND WSJCPP_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/third-party/easyzip/include/easyzip")
+message(STATUS "Easyzip Includes: ${PROJECT_SOURCE_DIR}/src/third-party/easyzip/include/easyzip")
+
 # libhv
 set(WITH_OPENSSL OFF CACHE BOOL "")
 set(WITH_CURL OFF CACHE BOOL "")

@@ -39,6 +39,7 @@
 #include <employ_notify.h>
 #include <fstream>
 #include <iostream>
+#include <easyzip.h>
 #include <quazip.h>
 #include <quazipfile.h>
 #include <quazipfileinfo.h>
@@ -313,6 +314,9 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
   QString tmpZipFile = tmpDir + "/fhq-server-game_" + QString::number(ts) + ".zip";
 
   // prepare zip archive
+  // TODO redesign to easyzip
+  // easyzip::Zipper zipper(tmpZipFile.toStdString());
+
   QuaZip zip(tmpZipFile);
   zip.open(QuaZip::mdCreate);
   QuaZipFile export_zipfile(&zip);
@@ -340,6 +344,8 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
     export_zipfile.close();
   }
   zip.close();
+
+  // zipper.close();
 
   // preapre zip base64
   {
