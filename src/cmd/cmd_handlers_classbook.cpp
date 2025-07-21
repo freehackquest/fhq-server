@@ -33,15 +33,14 @@
 #include <cmd_handlers_classbook.h>
 #include <employ_database.h>
 #include <employ_server_info.h>
+#include <fstream>
 #include <iostream>
-#include <quazip.h>
-#include <quazipfile.h>
-#include <quazipfileinfo.h>
 #include <runtasks.h>
 #include <validators.h>
 #include <wsjcpp_core.h>
 #include <wsjcpp_diff_text.h>
 #include <wsjcpp_hashes.h>
+#include <easyzip.h>
 
 // ---------------------------------------------------------------------
 // This handler will be add classbook record
@@ -359,20 +358,27 @@ void CmdClassbookExportHandler::handle(ModelRequest *pRequest) {
     bool bZip = jsonRequest["zip"];
     if (bZip) {
       QString tmpDir = QDir::tempPath();
-      QString tmpZipFile = tmpDir + "/freehackquest-classbook_" + QString::fromStdString(sLang) + ".zip";
-      // prepare zip archive
-      QuaZip zip(tmpZipFile);
-      zip.open(QuaZip::mdCreate);
-      QuaZipFile export_zipfile(&zip);
+      std::string tmpZipFile = tmpDir.toStdString() + "/freehackquest-classbook_" + sLang + ".zip";
+      // TODO redesign to easyzip
 
-      QString name = "freehackquest-classbook." + QString::fromStdString(sOutput);
-      export_zipfile.open(QIODevice::WriteOnly, QuaZipNewInfo(name));
+      // prepare zip archive
+      std::fstream zipOut;
+      zipOut.open(tmpZipFile.c_str(), std::fstream::in | std::fstream::out);
+      if (!zipOut.is_open()) {
+        std::cout << "Not open file" << std::endl;
+      }
+
+      easyzip::Zipper export_zipfile(std::wstring(tmpZipFile.begin(), tmpZipFile.end()));
+
+      std::string name = "freehackquest-classbook." + sOutput;
+
       // After .toString(), you should specify a text codec to use to encode the
       // string data into the (binary) file. Here, I use UTF-8:
-      export_zipfile.write(file.readAll());
+      std::istringstream fileContent(file.readAll().constData());
+      export_zipfile.add(fileContent, std::wstring(name.begin(), name.end()));
       export_zipfile.close();
-      zip.close();
-      QFile fileZip(tmpZipFile);
+
+      QFile fileZip(QString::fromStdString(tmpZipFile));
       if (!fileZip.open(QIODevice::ReadOnly)) {
         pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Could not open zip file"));
         return;
@@ -380,7 +386,7 @@ void CmdClassbookExportHandler::handle(ModelRequest *pRequest) {
       QByteArray baZip = fileZip.readAll();
       nlohmann::json jsonData;
       jsonData["zipfile_base64"] = QString(baZip.toBase64()).toStdString();
-      jsonData["zipfile_name"] = name.toStdString();
+      jsonData["zipfile_name"] = name;
       jsonResponse["data"] = jsonData;
       fileZip.close();
       fileZip.remove();

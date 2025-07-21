@@ -40,9 +40,6 @@
 #include <fstream>
 #include <iostream>
 #include <easyzip.h>
-#include <quazip.h>
-#include <quazipfile.h>
-#include <quazipfileinfo.h>
 #include <runtasks.h>
 #include <validators.h>
 #include <wsjcpp_hashes.h>
@@ -314,23 +311,28 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
   QString tmpZipFile = tmpDir + "/fhq-server-game_" + QString::number(ts) + ".zip";
 
   // prepare zip archive
-  // TODO redesign to easyzip
-  // easyzip::Zipper zipper(tmpZipFile.toStdString());
+  std::string tmpZipFile1(tmpZipFile.toStdString());
+  // std::fstream ;
+  std::fstream zipOut;
+  zipOut.open(tmpZipFile1.c_str(), std::fstream::in | std::fstream::out);
+  if (!zipOut.is_open()) {
+    std::cout << "Not open file" << std::endl;
+  }
 
-  QuaZip zip(tmpZipFile);
-  zip.open(QuaZip::mdCreate);
-  QuaZipFile export_zipfile(&zip);
+  easyzip::Zipper export_zipfile(std::wstring(tmpZipFile1.begin(), tmpZipFile1.end()));
 
   // pack logo
   {
     QFile fileLogo(sGameLogoFilename);
-    if (fileLogo.exists() && fileLogo.open(QIODevice::ReadOnly)) {
-      export_zipfile.open(QIODevice::WriteOnly, QuaZipNewInfo(QString::fromStdString(sUuid + ".png")));
-      // After .toString(), you should specify a text codec to use to encode the
-      // string data into the (binary) file. Here, I use UTF-8:
-      QByteArray baLogo = fileLogo.readAll();
-      export_zipfile.write(baLogo);
-      export_zipfile.close();
+
+    if (fileLogo.exists()) {
+      std::ifstream in;
+      in.open(sGameLogoFilename.toStdString().c_str());
+      std::string targetname = std::string(sUuid + ".png");
+      std::cout << "point 1 " << targetname << std::endl;
+      std::wstring wtargetname(targetname.begin(), targetname.end());
+      export_zipfile.add(in, wtargetname);
+      // bool add(std::istream& source, const std::wstring& nameInZip, zipFlags flags = Better);
     } else {
       WsjcppLog::warn(TAG, QString("Logo not found " + sGameLogoFilename).toStdString());
     }
@@ -338,17 +340,17 @@ void CmdHandlerGameExport::handle(ModelRequest *pRequest) {
 
   // pack json file
   {
-    export_zipfile.open(QIODevice::WriteOnly, QuaZipNewInfo(QString::fromStdString(sUuid + ".json")));
+    std::string jsonName = sUuid + ".json";
     std::string message = modelGame.toJson().dump();
-    export_zipfile.write(QString(message.c_str()).toUtf8());
-    export_zipfile.close();
+    std::istringstream jsonContent(message);
+    export_zipfile.add(jsonContent, std::wstring(jsonName.begin(), jsonName.end()));
   }
-  zip.close();
 
-  // zipper.close();
+  export_zipfile.close();
 
   // preapre zip base64
   {
+    // TODO redesing without Qt
     QFile fileZip(tmpZipFile);
     if (!fileZip.open(QIODevice::ReadOnly)) {
       pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Could not open zip file"));
