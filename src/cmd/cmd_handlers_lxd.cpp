@@ -35,9 +35,8 @@
 #include <cmd_handlers_lxd.h>
 #include <employ_database.h>
 #include <employ_orchestra.h>
+#include <easyzip.h>
 #include <iostream>
-#include <quazip.h>
-#include <quazipfile.h>
 #include <runtasks.h>
 #include <validators.h>
 #include <vector>
@@ -273,8 +272,6 @@ CmdHandlerLXDList::CmdHandlerLXDList() : CmdHandlerBase("lxd_list", "Get informa
   setAccessAdmin(true);
 }
 
-// ---------------------------------------------------------------------
-
 void CmdHandlerLXDList::handle(ModelRequest *pRequest) {
   EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
   if (!pOrchestra->initConnection()) {
@@ -309,8 +306,6 @@ CmdHandlerLXDExec::CmdHandlerLXDExec() : CmdHandlerBase("lxd_exec", "Exec comman
   requireStringParam("command", "Name of execution command"); // TODO validator
 }
 
-// ---------------------------------------------------------------------
-
 void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
   EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
   if (!pOrchestra->initConnection()) {
@@ -332,8 +327,6 @@ void CmdHandlerLXDExec::handle(ModelRequest *pRequest) {
   }
   pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
 }
-
-// ---------------------------------------------------------------------
 
 bool CmdHandlerLXDExec::exec_command(
   const std::string &sName, const std::string &sCommand, std::string &sError, int &nErrorCode, std::string &sOutput
@@ -379,8 +372,6 @@ CmdHandlerLXDFile::CmdHandlerLXDFile() : CmdHandlerBase("lxd_file", "Pull, push,
     .addValidator(new ValidatorLXDFileActionType());
   requireStringParam("path", "Path to file inside the container");
 }
-
-// ---------------------------------------------------------------------
 
 void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
   EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
@@ -449,8 +440,6 @@ void CmdHandlerLXDFile::handle(ModelRequest *pRequest) {
   }
 }
 
-// ---------------------------------------------------------------------
-
 void CmdHandlerLXDFile::pull_file(
   LXDContainer *pContainer,
   const std::string &sPath,
@@ -478,8 +467,6 @@ void CmdHandlerLXDFile::pull_file(
   sb64File = QByteArray::fromStdString(sRawData).toBase64().toStdString();
 }
 
-// ---------------------------------------------------------------------
-
 bool CmdHandlerLXDFile::push_file(
   LXDContainer *pContainer, const std::string &sPath, const std::string &sb64File, std::string &sError, int &nErrorCode
 ) {
@@ -502,8 +489,6 @@ CmdHandlerLXDOpenPort::CmdHandlerLXDOpenPort() : CmdHandlerBase("lxd_open_port",
   requireIntegerParam("port", "Number container port");
   requireStringParam("protocol", "Protocol");
 }
-
-// ---------------------------------------------------------------------
 
 void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
   EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
@@ -546,8 +531,6 @@ void CmdHandlerLXDOpenPort::handle(ModelRequest *pRequest) {
   }
 }
 
-// ---------------------------------------------------------------------
-
 bool CmdHandlerLXDOpenPort::is_port_valide(
   const std::string &sProto, const int &nPort, std::string &sError, int &nErrorCode
 ) {
@@ -585,8 +568,6 @@ CmdHandlerLXDImportService::CmdHandlerLXDImportService()
 
   requireStringParam("config", "Container's configuration in json dumped string.");
 }
-
-// ---------------------------------------------------------------------
 
 void CmdHandlerLXDImportService::handle(ModelRequest *pRequest) {
   EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
@@ -649,8 +630,6 @@ CmdHandlerLXDImportServiceFromZip::CmdHandlerLXDImportServiceFromZip()
   requireStringParam("zip_file", "Service's configuration in Base64 zip archive.");
 }
 
-// ---------------------------------------------------------------------
-
 void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
   EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
   if (!pOrchestra->initConnection()) {
@@ -666,99 +645,101 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
   QByteArray qbaZip = QByteArray::fromBase64(QByteArray::fromStdString(qsB64Zip));
   QBuffer buffer(&qbaZip);
   buffer.open(QIODevice::ReadOnly);
-  QuaZip zip(&buffer);
-  QuaZipFile file(&zip);
 
-  if (zip.open(QuaZip::mdUnzip)) {
+  // TODO redesign to easyzip
+  // QuaZip zip(&buffer);
+  // QuaZipFile file(&zip);
 
-    if (zip.getZipError() != UNZ_OK) {
-      pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Cant unzip " + std::to_string(zip.getZipError())));
-      return;
-    } else {
-      for (bool more = zip.goToFirstFile(); more; more = zip.goToNextFile()) {
-        if (zip.getCurrentFileName().endsWith("service.json")) {
-          file.open(QIODevice::ReadOnly);
-          sConfig = file.readAll().toStdString();
-          file.close();
-          break;
-        }
-      }
-    }
-  }
+  // if (zip.open(QuaZip::mdUnzip)) {
 
-  if (sConfig.empty()) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, "Not found service.json in zip archive."));
-    zip.close();
-    return;
-  }
+  //   if (zip.getZipError() != UNZ_OK) {
+  //     pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Cant unzip " + std::to_string(zip.getZipError())));
+  //     return;
+  //   } else {
+  //     for (bool more = zip.goToFirstFile(); more; more = zip.goToNextFile()) {
+  //       if (zip.getCurrentFileName().endsWith("service.json")) {
+  //         file.open(QIODevice::ReadOnly);
+  //         sConfig = file.readAll().toStdString();
+  //         file.close();
+  //         break;
+  //       }
+  //     }
+  //   }
+  // }
 
-  if (!nlohmann::json::accept(sConfig)) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Service json file isn't valid."));
-    zip.close();
-    return;
-  }
-  nlohmann::json jsonConfig = nlohmann::json::parse(sConfig);
+  // if (sConfig.empty()) {
+  //   pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, "Not found service.json in zip archive."));
+  //   zip.close();
+  //   return;
+  // }
 
-  if (!pOrchestra->create_service(jsonConfig, sError)) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Cant create service. Error: " + sError));
-    zip.close();
-    return;
-  }
+  // if (!nlohmann::json::accept(sConfig)) {
+  //   pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Service json file isn't valid."));
+  //   zip.close();
+  //   return;
+  // }
+  // nlohmann::json jsonConfig = nlohmann::json::parse(sConfig);
 
-  ServiceLXD *service;
-  if (!pOrchestra->find_service(jsonConfig["name"].get<std::string>(), service)) {
-    pRequest->sendMessageError(
-      cmd(), WsjcppJsonRpc20Error(500, "Cant find service. Error: " + pOrchestra->lastError())
-    );
-    zip.close();
-    return;
-  }
+  // if (!pOrchestra->create_service(jsonConfig, sError)) {
+  //   pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Cant create service. Error: " + sError));
+  //   zip.close();
+  //   return;
+  // }
 
-  service->create_container();
-  LXDContainer *container = service->get_container();
+  // ServiceLXD *service;
+  // if (!pOrchestra->find_service(jsonConfig["name"].get<std::string>(), service)) {
+  //   pRequest->sendMessageError(
+  //     cmd(), WsjcppJsonRpc20Error(500, "Cant find service. Error: " + pOrchestra->lastError())
+  //   );
+  //   zip.close();
+  //   return;
+  // }
 
-  if (container->get_status() != "Running" && !container->start()) {
-    pRequest->sendMessageError(
-      cmd(), WsjcppJsonRpc20Error(500, "Cant start container. Error: " + container->get_error())
-    );
-    zip.close();
-    return;
-  }
+  // service->create_container();
+  // LXDContainer *container = service->get_container();
 
-  if (!container->exec("mkdir -p /root/service")) {
-    pRequest->sendMessageError(
-      cmd(), WsjcppJsonRpc20Error(500, "Cant create service directory. Error: " + container->get_error())
-    );
-    zip.close();
-    return;
-  }
+  // if (container->get_status() != "Running" && !container->start()) {
+  //   pRequest->sendMessageError(
+  //     cmd(), WsjcppJsonRpc20Error(500, "Cant start container. Error: " + container->get_error())
+  //   );
+  //   zip.close();
+  //   return;
+  // }
 
-  for (bool more = zip.goToFirstFile(); more; more = zip.goToNextFile()) {
-    std::string file_name = zip.getCurrentFileName().section('/', -1).toStdString();
-    if (!file_name.empty() && file_name != "service.json") {
-      file.open(QIODevice::ReadOnly);
-      if (!container->push_file("/root/service/" + file_name, file.readAll().toStdString())) {
-        pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, container->get_error()));
-        file.close();
-        zip.close();
-        return;
-      }
-      file.close();
-    }
-  }
+  // if (!container->exec("mkdir -p /root/service")) {
+  //   pRequest->sendMessageError(
+  //     cmd(), WsjcppJsonRpc20Error(500, "Cant create service directory. Error: " + container->get_error())
+  //   );
+  //   zip.close();
+  //   return;
+  // }
 
-  zip.close();
+  // for (bool more = zip.goToFirstFile(); more; more = zip.goToNextFile()) {
+  //   std::string file_name = zip.getCurrentFileName().section('/', -1).toStdString();
+  //   if (!file_name.empty() && file_name != "service.json") {
+  //     file.open(QIODevice::ReadOnly);
+  //     if (!container->push_file("/root/service/" + file_name, file.readAll().toStdString())) {
+  //       pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, container->get_error()));
+  //       file.close();
+  //       zip.close();
+  //       return;
+  //     }
+  //     file.close();
+  //   }
+  // }
 
-  if (!service->build()) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Cant build service. Error: " + service->get_error()));
-    return;
-  }
+  // zip.close();
 
-  if (sError.empty()) {
-    pRequest->sendMessageSuccess(cmd(), jsonResponse);
-  } else {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
-  }
+  // if (!service->build()) {
+  //   pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Cant build service. Error: " + service->get_error()));
+  //   return;
+  // }
+
+  // if (sError.empty()) {
+  //   pRequest->sendMessageSuccess(cmd(), jsonResponse);
+  // } else {
+  //   pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
+  // }
 }
 
 // ---------------------------------------------------------------------
@@ -774,8 +755,6 @@ CmdHandlerLXDStartService::CmdHandlerLXDStartService() : CmdHandlerBase("lxd_sta
 
   requireStringParam("name", "Service's name.");
 }
-
-// ---------------------------------------------------------------------
 
 void CmdHandlerLXDStartService::handle(ModelRequest *pRequest) {
   EmployOrchestra *pOrchestra = findWsjcppEmploy<EmployOrchestra>();
@@ -807,5 +786,3 @@ void CmdHandlerLXDStartService::handle(ModelRequest *pRequest) {
     pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(nErrorCode, sError));
   }
 }
-
-// ---------------------------------------------------------------------
