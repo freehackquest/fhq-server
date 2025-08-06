@@ -125,10 +125,6 @@ fhq.localization = {
 		'en': 'Deb package',
 		'ru': 'Deb пакет'
 	},
-	'Donate':{
-		'en': 'Donate',
-		'ru': 'пожертвования'
-	},
 	'Contacts':{
 		'en': 'Contacts',
 		'ru': 'Контакты'

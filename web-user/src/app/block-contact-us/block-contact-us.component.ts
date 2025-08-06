@@ -17,10 +17,4 @@ export class BlockContactUsComponent implements OnInit {
 
   ngOnInit() {
   }
-
-  openDonatePage() {
-    this._activeModal.dismiss('');
-    this._zone.run(() => this._router.navigate(['/donate'])).then();
-  }
-
 }
