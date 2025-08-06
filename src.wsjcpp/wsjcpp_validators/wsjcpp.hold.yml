@@ -1,9 +1,9 @@
 wsjcpp_version: v0.0.1
 cmake_minimum_required: 3.0
-cmake_cxx_standard: 11
+cmake_cxx_standard: 17
 
 name: wsjcpp-validators
-version: v0.1.2
+version: v0.1.3
 description: Classes for data validation
 issues: https://github.com/wsjcpp/wsjcpp-validators/issues
 
@@ -17,32 +17,21 @@ required-libraries:
 repositories:
   - type: main
     url: "https://github.com/wsjcpp/wsjcpp-validators"
+
 authors:
   - name: Evgenii Sopov
     email: mrseakg@gmail.com
-
-dependencies:
-  - name: "wsjcpp-core"
-    version: "v0.1.7"
-    url: "https://github.com/wsjcpp/wsjcpp-core:master"
-    origin: "https://github.com/"
-    installation-dir: "./src.wsjcpp/wsjcpp_core"
-  - name: "nlohmann/json"
-    version: "v3.9.1"
-    url: "https://github.com/nlohmann/json:develop"
-    origin: "https://github.com/"
-    installation-dir: "./src.wsjcpp/nlohmann_json"
 
 distribution:
   - source-file: "src/wsjcpp_validators.h"
     target-file: "wsjcpp_validators.h"
     type: "source-code"
-    sha1: "78e7f62c964f5e36f3940e03a4c8f673feaea289"
+    sha1: "957928f53bee20c19889892fd11f048ea3e2878e"
   - source-file: "src/wsjcpp_validators.cpp"
     target-file: "wsjcpp_validators.cpp"
     type: "source-code"
-    sha1: "9f4bd5c96b74aae164e785549d72d3a3e37ca8e8"
 
+    sha1: "9a17d195d33a6e2b5311dc0695f2e1314eadf4d6"
 unit-tests:
   cases:
     - name: "ValidatorEmail"
@@ -79,3 +68,12 @@ unit-tests:
       description: "Test validator"
     - name: "ValidatorIntegerMaxValue"
       description: "Test validator"
+
+dependencies:
+  - name: "wsjcpp-core"
+    version: "v0.2.3"
+    url: "https://github.com/wsjcpp/wsjcpp-core:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_core"
+    installation-datetime: "Mon, 14 Jul 2025 16:38:16 GMT"
+
