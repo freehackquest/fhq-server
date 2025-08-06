@@ -71,6 +71,8 @@ class CommandClangFormat:
         for _file in files:
             if 'third-party' in _file:
                 continue
+            if _file.lower().endswith(".json"):
+                continue
             command = ["clang-format", '-style=file', '-i', _file]
             UtilsShell.run_command(command)
         sys.exit(0)
