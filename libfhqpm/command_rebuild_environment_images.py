@@ -51,6 +51,32 @@ class CommandRebuildEnvironmentImages:
         now = datetime.datetime.now()
         self.__dt_tag = now.strftime("%Y-%m-%d")
         self.__subcomamnd_name = "rebuild-environment-images"
+        self.__debian_version = "12"
+        self.__node_version = "24"
+        self.__build_packages = [
+            "make",
+            "cmake",
+            "gcc",
+            "g++",
+            "curl",
+            "pkg-config",
+            "libcurl4-openssl-dev",
+            "zlib1g-dev",
+            "libpng-dev",
+            "default-libmysqlclient-dev",
+            "libwebsockets-dev",
+            "apt-utils",
+            "build-essential",
+            "nodejs",
+        ]
+        self.__release_packages = [
+            "libcurl4",
+            "zlib1g",
+            "libpng16-16",
+            "libmariadb3",
+            "libpthread-stubs0-dev",
+            "locales",
+        ]
 
     def get_name(self):
         """ return subcommand name """
@@ -84,13 +110,98 @@ class CommandRebuildEnvironmentImages:
         # self.__log.info("output: %s", output)
         return output != ""  # output not empty... so has image
 
+    def __update_dockerfile_build_env(self):
+        _filename = "Dockerfile.build-environment"
+        self.__log.info("Update file %s", _filename)
+        os.chdir(self.__config.get_root_dir())
+        command_node = "curl -sL https://deb.nodesource.com/setup_" + self.__node_version + ".x"
+        command_node += " -o setup_node.sh && bash setup_node.sh"
+
+        with open(_filename, "wt", encoding="utf-8", newline="\n") as _file:
+            _file.write("""FROM debian:""" + self.__debian_version + """
+WORKDIR /root/
+
+LABEL "maintainer"="Evgenii Sopov <mrseakg@gmail.com>"
+LABEL "repository"="https://github.com/freehackquest/fhq-server"
+
+RUN apt-get update && \\
+    apt-get install -y curl && \\
+    apt-get clean
+
+RUN """ + command_node + """
+
+# basic libs
+RUN apt-get update && apt-get install -y --no-install-recommends \\
+    """ + " \\\n    ".join(self.__build_packages) + """ \\
+    """ + " \\\n    ".join(self.__release_packages) + """
+
+# RUN node --version
+# RUN npm --version
+
+RUN apt-get install -y --no-install-recommends \\
+    libqt5sql5-mysql \\
+    libqt5websockets5 \\
+    libqt5websockets5-dev \\
+    qtchooser
+
+# prepare cache for build
+RUN mkdir /root/node_modules_cache
+COPY web-user/package.json /root/node_modules_cache
+COPY web-user/package-lock.json /root/node_modules_cache
+COPY web-user/package-lock.json /root/node_modules_cache
+WORKDIR /root/node_modules_cache
+RUN npm install
+""")
+        return _filename
+
+    def __update_dockerfile_release_env(self):
+        _filename = "Dockerfile.release-environment"
+        self.__log.info("Update file %s", _filename)
+        os.chdir(self.__config.get_root_dir())
+        with open(_filename, "wt", encoding="utf-8", newline="\n") as _file:
+            _file.write("""FROM debian:""" + self.__debian_version + """
+
+LABEL "maintainer"="Evgenii Sopov <mrseakg@gmail.com>"
+LABEL "repository"="https://github.com/freehackquest/fhq-server"
+
+RUN apt-get update && \\
+    apt-get install -y \\
+    """ + " \\\n    ".join(self.__release_packages) + """
+
+# RUN locale-gen en_US.UTF-8
+RUN sed -i -e "s/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" /etc/locale.gen && \\
+    echo 'LANG="en_US.UTF-8"'>/etc/default/locale && \\
+    dpkg-reconfigure --frontend=noninteractive locales && \\
+    update-locale LANG=en_US.UTF-8
+# RUN update-locale LANG=en_US.UTF-8
+
+RUN apt-get install -y \\
+    libqt5sql5-mysql \\
+    libqt5websockets5 \\
+    libqt5core5a \\
+    libqt5concurrent5
+
+# RUN apt-get install -y qt5-default qtchooser \\
+
+RUN apt-get clean
+""")
+        return _filename
+
+    def __silent_remove_image(self, image_tag):
+        if self.__has_image(image_tag):
+            self.__log.info("Found image %s, try removing...", image_tag)
+            ret = os.system("docker rmi " + image_tag)
+            if ret != 0:
+                self.__log.error("Could not remove %s", image_tag)
+                sys.exit(1)
+
     def execute(self, _):
         """ executing """
-        self.__log.info("Rebuild environment images...")
         os.chdir(self.__config.get_root_dir())
+        build_env = self.__update_dockerfile_build_env()
+        release_env = self.__update_dockerfile_release_env()
+        self.__log.info("Rebuild environment images...")
 
-        build_env = "Dockerfile.build-environment"
-        release_env = "Dockerfile.release-environment"
         tag_build = "sea5kg/fhq-server-build-environment"
         tag_build_today = tag_build + ":" + self.__dt_tag
         tag_build_latest = tag_build + ":latest"
@@ -98,31 +209,15 @@ class CommandRebuildEnvironmentImages:
         tag_release_today = tag_release + ":" + self.__dt_tag
         tag_release_latest = tag_release + ":latest"
 
-        if self.__has_image(tag_build_today):
-            self.__log.info("Found image %s, try removing...", tag_build_today)
-            ret = os.system("docker rmi " + tag_build_today)
-            if ret != 0:
-                sys.exit("")
+        self.__silent_remove_image(tag_build_today)
         self.__build_docker_image(tag_build_today, build_env)
 
-        if self.__has_image(tag_build_latest):
-            self.__log.info("Found image %s, try removing...", tag_build_latest)
-            ret = os.system("docker rmi " + tag_build_latest)
-            if ret != 0:
-                sys.exit("")
+        self.__silent_remove_image(tag_build_latest)
         self.__build_docker_image(tag_build_latest, build_env)
 
-        if self.__has_image(tag_release_today):
-            self.__log.info("Found image %s, try removing...", tag_release_today)
-            ret = os.system("docker rmi " + tag_release_today)
-            if ret != 0:
-                sys.exit("")
+        self.__silent_remove_image(tag_release_today)
         self.__build_docker_image(tag_release_today, release_env)
 
-        if self.__has_image(tag_release_latest):
-            self.__log.info("Found image %s, try removing...", tag_release_latest)
-            ret = os.system("docker rmi " + tag_release_latest)
-            if ret != 0:
-                sys.exit("")
+        self.__silent_remove_image(tag_release_latest)
         self.__build_docker_image(tag_release_latest, release_env)
         sys.exit(0)

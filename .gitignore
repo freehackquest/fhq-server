@@ -95,3 +95,5 @@ __pycache__
 /tmp
 node_modules
 web-user/.angular
+Dockerfile.build-environment
+Dockerfile.release-environment
