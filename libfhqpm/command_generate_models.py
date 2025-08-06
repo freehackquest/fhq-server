@@ -102,7 +102,7 @@ class CommandGenerateModels:
             typefield = field["type"]
 
             content_cpp_copy.append("  this->set" + varname + "(m.get" + varname + "());")
-            if typefield == "int" or typefield == "long":
+            if typefield in ("int", "long"):
                 content_cpp.append("  m_n" + varname + " = 0;")
                 content_cpp_methods.extend([
                     typefield + " " + classname + "::get" + varname + "() const {"
@@ -114,6 +114,7 @@ class CommandGenerateModels:
                 content_cpp_tojson.append("  jsonRet[\"" + fieldname + "\"] = m_n" + varname + ";")
             elif typefield == "string":
                 content_cpp.append("  m_s" + varname + " = \"\";")
+                _const_str = "const std::string &sVal"
                 content_cpp_methods.extend([
                     "const std::string &" + classname + "::get" + varname + "() const {"
                     " return m_s" + varname + "; }",
@@ -121,7 +122,7 @@ class CommandGenerateModels:
                     "  m_s" + varname + " = sVal;",
                     "  m_s" + varname + "_lowercase = WsjcppCore::toLower(sVal);",
                     "}",
-                    "bool " + classname + "::hasIn" + varname + "_lowercase(const std::string &sVal) {",
+                    "bool " + classname + "::hasIn" + varname + "_lowercase(" + _const_str + ") {",
                     "  return m_s" + varname + "_lowercase.find(sVal) != std::string::npos;",
                     "}",
                     "",
@@ -188,7 +189,7 @@ class CommandGenerateModels:
                 varname = field['varname']
             typefield = field["type"]
 
-            if typefield == "int" or typefield == "long":
+            if typefield in ("int", "long"):
                 content_h.extend([
                     "  " + typefield + " get" + varname + "() const;",
                     "  void set" + varname + "(" + typefield + " nVal);",
