@@ -29,27 +29,27 @@
  *
  ***********************************************************************************/
 
-#include "employ_users.h"
+#pragma once
 
-#include <employ_database.h>
-#include <employ_notify.h>
-#include <employees.h>
+#include "fhq_server_database_file.h"
+#include "model_useful_link.h"
+#include "model_useful_link_comment.h"
+#include "model_useful_link_tag.h"
+#include "model_useful_link_user_favorite.h"
 
-REGISTRY_WJSCPP_EMPLOY(EmployUsers)
+class FhqServerDbUsefulLinks : public FhqServerDatabaseFile {
+public:
+  FhqServerDbUsefulLinks();
+  ~FhqServerDbUsefulLinks();
 
-EmployUsers::EmployUsers()
-  : WsjcppEmployBase(
-      EmployUsers::name(), {EmployDatabase::name(), EmployGlobalSettings::name(), EmployNotify::name()}
-    ) {
-  TAG = EmployUsers::name();
-}
+  std::vector<ModelUsefulLink> getAllRecords();
+  bool insertRecord(const ModelUsefulLink &m);
+  bool deleteRecord(const std::string &sUuid);
+  bool updateRecord(const ModelUsefulLink &m);
 
-bool EmployUsers::init() {
-  WsjcppLog::info(TAG, "Start init users");
-  return true;
-}
+  std::vector<std::string> getUserFavorites(const std::string &sUserUuid);
 
-bool EmployUsers::deinit() {
-  // TODO
-  return true;
-}
+private:
+  std::mutex m_mutex;
+  std::string TAG;
+};

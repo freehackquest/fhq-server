@@ -34,6 +34,7 @@
 #include <employ_database.h>
 #include <employ_files.h>
 #include <employ_server_info.h>
+#include <employ_uuids.h>
 #include <iostream>
 #include <runtasks.h>
 
@@ -49,8 +50,6 @@ CmdHandlerPublicInfo::CmdHandlerPublicInfo()
   setAccessUser(true);
   setAccessAdmin(true);
 }
-
-// ---------------------------------------------------------------------
 
 void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
   EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
@@ -151,8 +150,6 @@ CmdHandlerServerInfo::CmdHandlerServerInfo() : CmdHandlerBase("server_info", "Re
   setAccessAdmin(true);
 }
 
-// ---------------------------------------------------------------------
-
 void CmdHandlerServerInfo::handle(ModelRequest *pRequest) {
   EmployServerInfo *pServerInfo = findWsjcppEmploy<EmployServerInfo>();
   nlohmann::json jsonResponse;
@@ -186,8 +183,6 @@ CmdHandlerServerSettings::CmdHandlerServerSettings() : CmdHandlerBase("server_se
   // validation and description input fields
 }
 
-// ---------------------------------------------------------------------
-
 void CmdHandlerServerSettings::handle(ModelRequest *pRequest) {
   nlohmann::json jsonResponse;
 
@@ -212,8 +207,6 @@ CmdHandlerServerSettingsUpdate::CmdHandlerServerSettingsUpdate()
   requireStringParam("name", "name of setting");
   requireStringParam("value", "value of setting");
 }
-
-// ---------------------------------------------------------------------
 
 void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
   nlohmann::json jsonResponse;
@@ -250,4 +243,75 @@ void CmdHandlerServerSettingsUpdate::handle(ModelRequest *pRequest) {
   std::string sNewValue = pGlobalSettings->get(sName).convertValueToString(true);
   WsjcppLog::info(TAG, "Settings '" + sName + "' updated from '" + sPrevValue + "' -> '" + sNewValue + "'");
   pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+// ---------------------------------------------------------------------
+// This handler for generate new uuid - temporary
+
+REGISTRY_CMD(CmdHandlerServerUuidGenerate)
+
+CmdHandlerServerUuidGenerate::CmdHandlerServerUuidGenerate()
+  : CmdHandlerBase("server.uuid_generate", "for generate new uuid") {}
+
+void CmdHandlerServerUuidGenerate::init() {
+  setActivatedFromVersion("0.2.52");
+  setAccessUnauthorized(false);
+  setAccessUser(false);
+  setAccessAdmin(true);
+
+  EmployUuids *pUuids = findWsjcppEmploy<EmployUuids>();
+  WsjcppLog::info(TAG, "getAllowedTypesOfUuid: " + WsjcppCore::join(pUuids->getAllowedTypesOfUuid(), ","));
+  requireStringParam("typeobj", "type object of uuid for some")
+    .addValidator(new WsjcppValidatorStringListBase("typeobj", pUuids->getAllowedTypesOfUuid()));
+}
+
+void CmdHandlerServerUuidGenerate::handle(ModelRequest *pRequest) {
+  nlohmann::json jsonResponse;
+
+  std::string sTypeOfObject = pRequest->getInputString("typeobj", "");
+
+  EmployUuids *pUuids = findWsjcppEmploy<EmployUuids>();
+  std::string sUuid = pUuids->generateNewUuid(sTypeOfObject);
+
+  jsonResponse["uuid"] = sUuid;
+  jsonResponse["typeobj"] = sTypeOfObject;
+
+  WsjcppLog::info(TAG, "Generated new uuid '" + sUuid + "' for '" + sTypeOfObject + "'");
+  pRequest->sendJsonRpc20(jsonResponse);
+}
+
+// ---------------------------------------------------------------------
+// This handler for get info by uuid
+
+REGISTRY_CMD(CmdHandlerServerUuidInfo)
+
+CmdHandlerServerUuidInfo::CmdHandlerServerUuidInfo() : CmdHandlerBase("server.uuid_info", "return info about uuid") {
+
+  setActivatedFromVersion("0.2.52");
+
+  setAccessUnauthorized(true);
+  setAccessUser(true);
+  setAccessAdmin(true);
+
+  requireStringParam("uuid", "uuid for some object").addValidator(new WsjcppValidatorUUID());
+}
+
+void CmdHandlerServerUuidInfo::handle(ModelRequest *pRequest) {
+  nlohmann::json jsonResponse;
+
+  std::string sUuid = pRequest->getInputString("uuid", "");
+
+  EmployUuids *pUuids = findWsjcppEmploy<EmployUuids>();
+  std::string sTypeOfObject = pUuids->getTypeOfObject(sUuid);
+
+  if (sTypeOfObject == "unknown") {
+    std::string sError = "Uuid '" + sUuid + "' has unknown type";
+    pRequest->sendJsonRpc20(WsjcppJsonRpc20Error(404, sError));
+    return;
+  }
+
+  jsonResponse["uuid"] = sUuid;
+  jsonResponse["typeobj"] = sTypeOfObject;
+
+  pRequest->sendJsonRpc20(jsonResponse);
 }

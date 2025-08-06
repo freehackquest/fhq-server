@@ -67,6 +67,9 @@ ArgumentProcessorApiList::ArgumentProcessorApiList()
 int ArgumentProcessorApiList::exec(
   const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
 ) {
+  WsjcppEmployees::init({});
+  CmdHandlers::init();
+
   std::cout << "\n\n * CmdHandlers (" << g_pCmdHandlers->size() << "):\n";
 
   struct CmdRow {
@@ -131,6 +134,9 @@ ArgumentProcessorApiExportPythonLibrary::ArgumentProcessorApiExportPythonLibrary
 int ArgumentProcessorApiExportPythonLibrary::exec(
   const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
 ) {
+  WsjcppEmployees::init({});
+  CmdHandlers::init();
+
   ExportLibWsjCppCliPy *pExportPython = new ExportLibWsjCppCliPy();
   pExportPython->exportLib();
   delete pExportPython;
@@ -152,6 +158,9 @@ ArgumentProcessorApiExportJavascriptLibrary::ArgumentProcessorApiExportJavascrip
 int ArgumentProcessorApiExportJavascriptLibrary::exec(
   const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
 ) {
+  WsjcppEmployees::init({});
+  CmdHandlers::init();
+
   std::string appName(WSJCPP_APP_NAME);
   std::string appVersion(WSJCPP_APP_VERSION);
 
@@ -182,6 +191,8 @@ ArgumentProcessorApiExportJavaAndroidLibrary::ArgumentProcessorApiExportJavaAndr
 int ArgumentProcessorApiExportJavaAndroidLibrary::exec(
   const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams
 ) {
+  WsjcppEmployees::init({});
+  CmdHandlers::init();
 
   ExportLibWsjCppCliJavaAndroid *pExportJavaAndroid = new ExportLibWsjCppCliJavaAndroid();
   // pExportJavaAndroid->setLibraryName("libfhqcli-java-android");

@@ -29,27 +29,29 @@
  *
  ***********************************************************************************/
 
-#include "employ_users.h"
+#include "fhq_server_db_email_delivery.h"
 
-#include <employ_database.h>
-#include <employ_notify.h>
 #include <employees.h>
 
-REGISTRY_WJSCPP_EMPLOY(EmployUsers)
+// ---------------------------------------------------------------------
+// FhqServerDbEmailDelivery
 
-EmployUsers::EmployUsers()
-  : WsjcppEmployBase(
-      EmployUsers::name(), {EmployDatabase::name(), EmployGlobalSettings::name(), EmployNotify::name()}
+FhqServerDbEmailDelivery::FhqServerDbEmailDelivery()
+  : FhqServerDatabaseFile("email_delivery.db"
+                          // "CREATE TABLE IF NOT EXISTS email_delivery ( "
+                          // "  id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                          // // "  uuid VARCHAR(36) NOT NULL,"
+                          // "  url VARCHAR(2048) NOT NULL,"
+                          // "  description VARCHAR(2048) NOT NULL,"
+                          // "  author VARCHAR(127) NOT NULL,"
+                          // "  dt INTEGER NOT NULL,"
+                          // "  user_favorites INTEGER NOT NULL,"
+                          // "  user_clicks INTEGER NOT NULL,"
+                          // "  user_comments INTEGER NOT NULL,"
+                          // "  tags VARCHAR(2048) NOT NULL"
+                          // ");"
     ) {
-  TAG = EmployUsers::name();
-}
+  TAG = "FhqServerDbEmailDelivery";
+};
 
-bool EmployUsers::init() {
-  WsjcppLog::info(TAG, "Start init users");
-  return true;
-}
-
-bool EmployUsers::deinit() {
-  // TODO
-  return true;
-}
+FhqServerDbEmailDelivery::~FhqServerDbEmailDelivery() {}
