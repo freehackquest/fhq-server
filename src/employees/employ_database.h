@@ -35,44 +35,11 @@
 #include <model_database_connection.h>
 
 #include <QMap>
+#include <fhq_server_db_email_delivery.h>
+#include <fhq_server_db_useful_links.h>
+#include <fhq_server_db_uuids.h>
 #include <mutex>
-#include <sqlite3.h>
 #include <wsjcpp_storages.h>
-
-class FhqServerDatabaseSelectRows {
-public:
-  FhqServerDatabaseSelectRows();
-  ~FhqServerDatabaseSelectRows();
-  void setQuery(sqlite3_stmt *pQuery);
-  bool next();
-  std::string getString(int nColumnNumber);
-  long getLong(int nColumnNumber);
-
-private:
-  sqlite3_stmt *m_pQuery;
-};
-
-class FhqServerDatabaseFile {
-public:
-  FhqServerDatabaseFile(const std::string &sFilename, const std::string &sSqlCreateTable);
-  ~FhqServerDatabaseFile();
-  bool open();
-  bool executeQuery(std::string sSqlInsert);
-  int selectSumOrCount(std::string sSqlSelectCount);
-  bool selectRows(std::string sSqlSelectRows, FhqServerDatabaseSelectRows &selectRows);
-
-private:
-  void copyDatabaseToBackup();
-  std::mutex m_mutex;
-
-  std::string TAG;
-  sqlite3 *m_pDatabaseFile;
-  std::string m_sFilename;
-  std::string m_sFileFullpath;
-  std::string m_sBaseFileBackupFullpath;
-  std::string m_sSqlCreateTable;
-  int m_nLastBackupTime;
-};
 
 class EmployDatabase : public WsjcppEmployBase, public WsjcppSettingsStore {
 public:
@@ -80,6 +47,10 @@ public:
   static std::string name() { return "EmployDatabase"; }
   virtual bool init();
   virtual bool deinit();
+
+  FhqServerDbUuids *databaseUuids();
+  FhqServerDbUsefulLinks *databaseUsefulLinks();
+
   QSqlDatabase *database();
   bool manualCreateDatabase(const std::string &sRootPassword, std::string &sError);
   WsjcppStorageConnection *getStorageConnection();
@@ -92,7 +63,10 @@ public:
 private:
   std::string TAG;
   std::string m_sStorageType;
+
+  bool initUuidsDatabase();
   bool initUsefulLinksDatabase();
+
   bool initEmailDelivery();
   int m_nConnectionOutdatedAfterSeconds;
   WsjcppStorage *m_pStorage;
@@ -112,6 +86,7 @@ private:
   ModelDatabaseConnection *m_pDBConnection_older;
 
   // sqlite3 database files
-  FhqServerDatabaseFile *m_pUsefulLinks;
-  FhqServerDatabaseFile *m_pEmailDelivery;
+  FhqServerDbUuids *m_pUuids;
+  FhqServerDbUsefulLinks *m_pUsefulLinks;
+  FhqServerDbEmailDelivery *m_pEmailDelivery;
 };

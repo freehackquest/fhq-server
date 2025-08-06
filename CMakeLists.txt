@@ -51,6 +51,7 @@ include_directories(${Qt5Core_INCLUDE_DIRS})
 list (APPEND WSJCPP_INCLUDE_DIRS "src")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/argument_processors")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/core")
+list (APPEND WSJCPP_INCLUDE_DIRS "src/database")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/core/3rdParty")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/third-party/quazip-0.7.3/quazip")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/utils")
@@ -85,6 +86,12 @@ list (APPEND WSJCPP_SOURCES "src/core/employees.h")
 list (APPEND WSJCPP_SOURCES "src/core/employees.cpp")
 list (APPEND WSJCPP_SOURCES "src/core/wsjcpp_export_libcli_web_js.h")
 list (APPEND WSJCPP_SOURCES "src/core/wsjcpp_export_libcli_web_js.cpp")
+
+# database
+list (APPEND WSJCPP_SOURCES "src/database/fhq_server_database_file.cpp")
+list (APPEND WSJCPP_SOURCES "src/database/fhq_server_db_email_delivery.cpp")
+list (APPEND WSJCPP_SOURCES "src/database/fhq_server_db_useful_links.cpp")
+list (APPEND WSJCPP_SOURCES "src/database/fhq_server_db_uuids.cpp")
 
 # quazip
 list (APPEND WSJCPP_SOURCES "src/third-party/quazip-0.7.3/quazip/crypt.h")
@@ -139,6 +146,10 @@ list (APPEND WSJCPP_SOURCES "src/models/model_quest_file.cpp")
 list (APPEND WSJCPP_SOURCES "src/models/model_database_connection.cpp")
 list (APPEND WSJCPP_SOURCES "src/models/model_leak.cpp")
 list (APPEND WSJCPP_SOURCES "src/models/model_lxd_orchestra.cpp")
+list (APPEND WSJCPP_SOURCES "src/models/model_useful_link.cpp")
+list (APPEND WSJCPP_SOURCES "src/models/model_useful_link_comment.cpp")
+list (APPEND WSJCPP_SOURCES "src/models/model_useful_link_tag.cpp")
+list (APPEND WSJCPP_SOURCES "src/models/model_useful_link_user_favorite.cpp")
 
 # validators
 list (APPEND WSJCPP_SOURCES "src/validators/validators.cpp")
@@ -169,6 +180,7 @@ list (APPEND WSJCPP_SOURCES "src/employees/employ_orchestra.cpp")
 list (APPEND WSJCPP_SOURCES "src/employees/employ_leaks.cpp")
 list (APPEND WSJCPP_SOURCES "src/employees/employ_mails.cpp")
 list (APPEND WSJCPP_SOURCES "src/employees/employ_users.cpp")
+list (APPEND WSJCPP_SOURCES "src/employees/employ_uuids.cpp")
 
 # tasks
 list (APPEND WSJCPP_SOURCES "src/tasks/runtasks.h")

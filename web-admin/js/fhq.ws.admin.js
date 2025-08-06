@@ -677,3 +677,15 @@ fhq.ws.useful_links_comment_add = function(data){
     data.cmd = 'useful_links_comment_add';
     return fhq.ws.send(data);
 }
+
+fhq.ws.server_uuid_generate = function(data){
+    data = data || {};
+    data.cmd = 'server_uuid_generate';
+    return fhq.ws.send(data);
+}
+
+fhq.ws.server_uuid_info = function(data){
+    data = data || {};
+    data.cmd = 'server_uuid_info';
+    return fhq.ws.send(data);
+}

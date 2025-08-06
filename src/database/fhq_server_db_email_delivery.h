@@ -29,27 +29,15 @@
  *
  ***********************************************************************************/
 
-#include "employ_users.h"
+#pragma once
 
-#include <employ_database.h>
-#include <employ_notify.h>
-#include <employees.h>
+#include "fhq_server_database_file.h"
 
-REGISTRY_WJSCPP_EMPLOY(EmployUsers)
+class FhqServerDbEmailDelivery : public FhqServerDatabaseFile {
+public:
+  FhqServerDbEmailDelivery();
+  ~FhqServerDbEmailDelivery();
 
-EmployUsers::EmployUsers()
-  : WsjcppEmployBase(
-      EmployUsers::name(), {EmployDatabase::name(), EmployGlobalSettings::name(), EmployNotify::name()}
-    ) {
-  TAG = EmployUsers::name();
-}
-
-bool EmployUsers::init() {
-  WsjcppLog::info(TAG, "Start init users");
-  return true;
-}
-
-bool EmployUsers::deinit() {
-  // TODO
-  return true;
-}
+private:
+  std::string TAG;
+};

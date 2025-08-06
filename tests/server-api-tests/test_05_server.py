@@ -53,3 +53,33 @@ def test_server_settings_update(admin_session):
     print(_new_sett)
     assert _new_sett['value'] != _old_sett['value']
     assert _new_sett['value'] == _new_value
+
+def test_server_uuid_generate(admin_session):
+    """ Server uuid generate """
+    print(test_server_settings_readonly.__doc__)
+    ret = admin_session.server.uuid_generate({"typeobj": 'test'})
+    print(ret)
+    assert ret is not None
+    assert ret["result"] is not None
+    assert ret["result"]["typeobj"] == "test"
+
+def test_server_uuid_info(admin_session):
+    """ Server uuid generate """
+    print(test_server_settings_readonly.__doc__)
+    ret = admin_session.server.uuid_generate({"typeobj": 'test'})
+
+    assert ret is not None
+    assert ret["result"] is not None
+    assert ret["result"]["typeobj"] == "test"
+    _uuid = ret["result"]["uuid"]
+
+    ret = admin_session.server.uuid_info({"uuid": _uuid})
+    assert ret is not None
+    assert ret["result"] is not None
+    assert ret["result"]["typeobj"] == "test"
+    assert ret["result"]["uuid"] == _uuid
+
+    ret = admin_session.server.uuid_info({"uuid": "00000000-0000-0000-0000-000000000000"})
+    assert ret is not None
+    assert ret['error'] is not None
+    assert ret['error']['code'] == 404

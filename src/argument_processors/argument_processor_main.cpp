@@ -512,7 +512,7 @@ int ArgumentProcessorShowEmployees::exec(
 // ArgumentProcessorStart
 
 ArgumentProcessorStart::ArgumentProcessorStart(QCoreApplication *pQtApp)
-  : WsjcppArgumentProcessor({"start", "-s"}, "Show employees", "Show employees") {
+  : WsjcppArgumentProcessor({"start", "-s"}, "Start server", "Start server") {
   TAG = "ArgumentProcessorStart";
   m_pQtApp = pQtApp;
 }
@@ -536,6 +536,9 @@ int ArgumentProcessorStart::exec(const std::vector<std::string> &vRoutes, const 
     .inFile();
 
   WsjcppEmployees::init({"start_server"});
+
+  WsjcppLog::info(TAG, "Init handlers");
+  CmdHandlers::init();
 
   QThreadPool::globalInstance()->setMaxThreadCount(5);
   WebSocketServer *pServer = new WebSocketServer(); // here will be init settings

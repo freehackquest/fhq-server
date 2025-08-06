@@ -62,7 +62,7 @@ const std::vector<std::pair<std::string, std::string>> &WsjcppJsonRpc20Error::ge
 
 // ---------------------------------------------------------------------
 
-nlohmann::json WsjcppJsonRpc20Error::toJson() {
+nlohmann::json WsjcppJsonRpc20Error::toJson() const {
   nlohmann::json jsonRet;
   jsonRet["code"] = m_nErrorCode;
   jsonRet["message"] = m_sErrorMessage;
@@ -542,12 +542,26 @@ void ModelRequest::sendMessageSuccess(const std::string &sMethod, nlohmann::json
 // ---------------------------------------------------------------------
 // TODO new for jsonrpc
 
-void ModelRequest::sendResponse(nlohmann::json &jsonResult) {
+// https://www.jsonrpc.org/specification
+
+// TODO: in future will be simplify method name
+void ModelRequest::sendJsonRpc20(nlohmann::json &jsonResult) {
   nlohmann::json jsonResponse;
   jsonResponse["jsonrpc"] = "2.0";
   jsonResponse["method"] = m_sCommand;
   jsonResponse["id"] = m_sMessageId;
   jsonResponse["result"] = jsonResult;
+  m_pServer->sendMessage(m_pClient, jsonResponse);
+}
+
+// TODO: in future will be simplify method name
+void ModelRequest::sendJsonRpc20(const WsjcppJsonRpc20Error &error) {
+  nlohmann::json jsonResponse;
+  jsonResponse["id"] = m_sMessageId;
+  jsonResponse["jsonrpc"] = "2.0";
+  jsonResponse["method"] = m_sCommand;
+  jsonResponse["error"] = error.toJson();
+  WsjcppLog::err(TAG, "WS-ERROR >>> " + m_sCommand + ":" + m_sMessageId + ", messsage: " + error.getErrorMessage());
   m_pServer->sendMessage(m_pClient, jsonResponse);
 }
 
@@ -589,23 +603,15 @@ CmdHandlerBase::CmdHandlerBase(const std::string &sCmd, const std::string &sDesc
   CmdHandlers::addHandler(sCmd, this);
 }
 
-// ---------------------------------------------------------------------
+void CmdHandlerBase::init() {}
 
 std::string CmdHandlerBase::activatedFromVersion() { return m_sActivatedFromVersion; }
 
-// ---------------------------------------------------------------------
-
 std::string CmdHandlerBase::deprecatedFromVersion() { return m_sDeprecatedFromVersion; }
-
-// ---------------------------------------------------------------------
 
 bool CmdHandlerBase::accessUnauthorized() { return m_bAccessUnauthorized; }
 
-// ---------------------------------------------------------------------
-
 bool CmdHandlerBase::accessUser() { return m_bAccessUser; }
-
-// ---------------------------------------------------------------------
 
 bool CmdHandlerBase::accessAdmin() { return m_bAccessAdmin; }
 
@@ -635,8 +641,6 @@ bool CmdHandlerBase::checkAccess(ModelRequest *pRequest) {
 
   return true;
 }
-
-// ---------------------------------------------------------------------
 
 std::string CmdHandlerBase::cmd() { return m_sCmd; }
 
@@ -792,6 +796,14 @@ CmdHandlerBase *CmdHandlers::findCmdHandler(const std::string &sCmd) {
   }
 
   return pCmdHandler;
+}
+
+void CmdHandlers::init() {
+  CmdHandlers::initGlobalVariables();
+  for (std::map<std::string, CmdHandlerBase *>::iterator it = g_pCmdHandlers->begin(); it != g_pCmdHandlers->end();
+       ++it) {
+    it->second->init();
+  }
 }
 
 // ---------------------------------------------------------------------

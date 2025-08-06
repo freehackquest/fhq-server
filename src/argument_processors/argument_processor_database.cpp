@@ -70,6 +70,7 @@ int ArgumentProcessorDatabaseTestConnection::exec(
     WsjcppLog::err(TAG, "Could not init database module");
     return -1;
   }
+  CmdHandlers::init();
   EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
   QSqlDatabase *db = pDatabase->database();
   if (!db->open()) {
