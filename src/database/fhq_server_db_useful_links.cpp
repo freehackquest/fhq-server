@@ -536,8 +536,9 @@ std::vector<std::string> FhqServerDbUsefulLinks::getUserFavorites(const std::str
   sql.sel("usefullinkuuid");
   sql.where("useruuid", sUserUuid);
 
-  // TODO make a special struct like a uuid (fo fix security issues sql inejction or redesign to FhqServerDatabaseSqlQuery)
-  // std::string sSQL = "SELECT * FROM useful_links_user_favorites WHERE  = '" + sUserUuid + "';";
+  // TODO make a special struct like a uuid (fo fix security issues sql inejction or redesign to
+  // FhqServerDatabaseSqlQuery) std::string sSQL = "SELECT * FROM useful_links_user_favorites WHERE  = '" + sUserUuid +
+  // "';";
   if (this->selectRows(sql.getSql(), cur)) {
     while (cur.next()) {
       records.push_back(cur.getString(0));
