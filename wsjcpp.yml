@@ -1,6 +1,6 @@
 wsjcpp_version: "v0.1.1"
 cmake_minimum_required: 3.0
-cmake_cxx_standard: 11
+cmake_cxx_standard: 17
 
 name: "fhq-server"
 version: v0.2.53
@@ -42,11 +42,11 @@ dependencies:
     installation-dir: "./src.wsjcpp/wsjcpp_hashes"
     installation-datetime: "Thu, 06 Jan 2022 07:00:27 GMT"
   - name: "wsjcpp-core"
-    version: "v0.2.2"
+    version: "v0.2.3"
     url: "https://github.com/wsjcpp/wsjcpp-core:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_core"
-    installation-datetime: "Sat, 22 Oct 2022 19:20:47 GMT"
+    installation-datetime: "Wed, 06 Aug 2025 05:35:12 GMT"
   - name: "nlohmann/json"
     version: "v3.10.5"
     url: "https://github.com/nlohmann/json:develop"

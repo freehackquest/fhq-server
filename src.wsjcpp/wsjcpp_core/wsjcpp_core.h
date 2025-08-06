@@ -132,6 +132,9 @@ class WsjcppCore {
         static std::string doPadLeft(const std::string& sIn, char cWhat, size_t nLength);
         static std::string doPadRight(const std::string& sIn, char cWhat, size_t nLength);
 
+        static bool startsWith(const std::string& sLine, const std::string& sStart);
+        static bool endsWith(const std::string& sLine, const std::string& sEnd);
+
 };
 
 
