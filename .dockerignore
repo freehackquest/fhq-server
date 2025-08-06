@@ -11,3 +11,5 @@ _config.yml
 /tmp
 /web-user/.angular
 /backups
+/Dockerfile.build-environment
+/Dockerfile.release-environment
