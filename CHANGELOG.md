@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v0.2.53] - 2025-08-06 (2025 Aug 06)
 
+- Fix remove item from knowledge base
+- Updated years to -2025
 
 
 ## [v0.2.52] - 2024-07-21
