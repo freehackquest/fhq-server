@@ -68,6 +68,8 @@ class CommandClean:
             "build",
             "Makefile",
             "build",
+            "Dockerfile.build-environment",
+            "Dockerfile.release-environment",
             "tmp",
             "fhq-server",
             ".qmake.stash",
