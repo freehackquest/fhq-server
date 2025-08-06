@@ -29,18 +29,31 @@
 #
 ##################################################################################
 
-""" init module for libfhqpm (Project Manager) helper lib for a handling processes in project """
+""" Helpers for processing strings """
 
-from .pm_config import PmConfig
-from .command_rebuild_environment_images import CommandRebuildEnvironmentImages
-from .command_clang_format import CommandClangFormat
-from .command_clean import CommandClean
-from .command_code_check import CommandCodeCheck
-from .command_code_stats import CommandCodeStats
-from .command_create_storage_update import CommandCreateStorageUpdate
-from .command_generate_models import CommandGenerateModels
-from .command_py_check import CommandPyCheck
-from .utils_copyrights import UtilsCopyrights
-from .utils_files import UtilsFiles
-from .utils_shell import UtilsShell
-from .utils_strings import UtilsStrings
+
+class UtilsStrings:
+    """ UtilsStrings """
+
+    @staticmethod
+    def to_camel_case(snake_str):
+        """
+        to_camel_case
+
+        by https://stackoverflow.com/users/487903/jbaiter
+        from stackoverflow
+        """
+        return "".join(x.capitalize() for x in snake_str.lower().split("_"))
+
+    @staticmethod
+    def snakecase_to_camelcase(snake_str):
+        """
+        We capitalize the first letter of each component except the first one
+        with the 'capitalize' method and join them together.
+
+        by https://stackoverflow.com/users/487903/jbaiter
+        from stackoverflow
+        """
+
+        camel_string = UtilsStrings.to_camel_case(snake_str)
+        return snake_str[0].upper() + camel_string[1:]

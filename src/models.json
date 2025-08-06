@@ -1,0 +1,110 @@
+{
+    "useful_link": {
+        "id": {
+            "type": "int",
+            "varname": "LocalId"
+        },
+        "uuid": {
+            "type": "string"
+        },
+        "url": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "author": {
+            "type": "string"
+        },
+        "dt": {
+            "type": "long",
+            "varname": "DateTimeUpdated"
+        },
+        "user_favorites": {
+            "type": "int"
+        },
+        "user_clicks": {
+            "type": "int"
+        },
+        "user_comments": {
+            "type": "int"
+        },
+        "tags": {
+            "type": "string"
+        }
+    },
+    "useful_link_comment": {
+        "id": {
+            "type": "int",
+            "varname": "LocalId"
+        },
+        "usefullinkuuid": {
+            "type": "string",
+            "varname": "UsefulLinkUuid"
+
+        },
+        "usefullinkid": {
+            "type": "int",
+            "varname": "UsefulLinkId"
+        },
+        "useruuid": {
+            "type": "string",
+            "varname": "UserUuid"
+        },
+        "userid": {
+            "type": "int",
+            "varname": "UserId"
+        },
+        "comment": {
+            "type": "string"
+        },
+        "dt": {
+            "type": "long",
+            "varname": "DateTime"
+        }
+    },
+    "useful_link_tag": {
+        "id": {
+            "type": "int",
+            "varname": "LocalId"
+        },
+        "usefullinkuuid": {
+            "type": "string",
+            "varname": "UsefulLinkUuid"
+        },
+        "usefullinkid": {
+            "type": "int",
+            "varname": "UsefulLinkId"
+        },
+        "tagvalue": {
+            "type": "string",
+            "varname": "TagValue"
+        }
+    },
+    "useful_link_user_favorite": {
+        "id": {
+            "type": "int",
+            "varname": "LocalId"
+        },
+        "usefullinkuuid": {
+            "type": "string",
+            "varname": "UsefulLinkUuid"
+        },
+        "usefullinkid": {
+            "type": "int",
+            "varname": "UsefulLinkId"
+        },
+        "useruuid": {
+            "type": "string",
+            "varname": "UserUuid"
+        },
+        "userid": {
+            "type": "int",
+            "varname": "UserId"
+        },
+        "dt": {
+            "type": "long",
+            "varname": "DateTime"
+        }
+    }
+}

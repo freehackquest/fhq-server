@@ -33,9 +33,9 @@
 #include <QtCore/QDir>
 #include <algorithm>
 #include <cmd_handlers_lxd.h>
+#include <easyzip.h>
 #include <employ_database.h>
 #include <employ_orchestra.h>
-#include <easyzip.h>
 #include <iostream>
 #include <runtasks.h>
 #include <validators.h>
@@ -653,8 +653,8 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
   // if (zip.open(QuaZip::mdUnzip)) {
 
   //   if (zip.getZipError() != UNZ_OK) {
-  //     pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Cant unzip " + std::to_string(zip.getZipError())));
-  //     return;
+  //     pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Cant unzip " +
+  //     std::to_string(zip.getZipError()))); return;
   //   } else {
   //     for (bool more = zip.goToFirstFile(); more; more = zip.goToNextFile()) {
   //       if (zip.getCurrentFileName().endsWith("service.json")) {
@@ -731,8 +731,8 @@ void CmdHandlerLXDImportServiceFromZip::handle(ModelRequest *pRequest) {
   // zip.close();
 
   // if (!service->build()) {
-  //   pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Cant build service. Error: " + service->get_error()));
-  //   return;
+  //   pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, "Cant build service. Error: " +
+  //   service->get_error())); return;
   // }
 
   // if (sError.empty()) {
