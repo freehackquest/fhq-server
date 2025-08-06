@@ -55,7 +55,7 @@ public:
   int getErrorCode() const;
   std::string getErrorMessage() const;
   const std::vector<std::pair<std::string, std::string>> &getErrorContext() const;
-  nlohmann::json toJson();
+  nlohmann::json toJson() const;
 
 private:
   std::string m_sErrorMessage;
@@ -216,7 +216,8 @@ public:
   bool hasCommand();
   void sendMessageError(const std::string &cmd, WsjcppJsonRpc20Error error);
   void sendMessageSuccess(const std::string &cmd, nlohmann::json &jsonResponse);
-  void sendResponse(nlohmann::json &jsonResult);
+  void sendJsonRpc20(nlohmann::json &jsonResult);
+  void sendJsonRpc20(const WsjcppJsonRpc20Error &error);
 
   // bool validateInputParameters(Error &error, CmdHandlerBase *pCmdHandler);
 private:
@@ -237,6 +238,7 @@ class CmdHandlerBase { // TODO rename to WJSCppHandler
 
 public:
   CmdHandlerBase(const std::string &sCmd, const std::string &sDescription);
+  virtual void init();
   virtual std::string cmd();
   virtual std::string description();
   std::string activatedFromVersion();
@@ -291,6 +293,7 @@ public:
   static void initGlobalVariables();
   static void addHandler(const std::string &sName, CmdHandlerBase *pCmdHandler);
   static CmdHandlerBase *findCmdHandler(const std::string &sCmd);
+  static void init();
 };
 
 // RegistryCmdHandler

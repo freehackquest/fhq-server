@@ -96,6 +96,7 @@ int ArgumentProcessorConfigPrint::exec(
 ) {
   auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
   WsjcppEmployees::init({});
+  CmdHandlers::init();
   std::cout << "\n * Show settings\n\n";
   pGlobalSettings->printSettings();
   std::cout << "\n * Done\n\n";
@@ -115,6 +116,7 @@ int ArgumentProcessorConfigTestEmail::exec(
 ) {
   auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
   WsjcppEmployees::init({});
+  CmdHandlers::init();
   std::cout << "\n * Send test mail\n\n";
   std::string sTo = pGlobalSettings->get("mail_system_message_admin_email").getStringValue();
   std::string sSubject = "Test Mail";
@@ -138,6 +140,7 @@ int ArgumentProcessorConfigSet::exec(
 ) {
   auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
   WsjcppEmployees::init({});
+  CmdHandlers::init();
   if (vSubParams.size() != 1) {
     return -10; // show help
   }
@@ -192,6 +195,7 @@ int ArgumentProcessorConfigLxdEnable::exec(
 ) {
   auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
   WsjcppEmployees::init({});
+  CmdHandlers::init();
   pGlobalSettings->update("lxd_mode", true);
   std::cout << "\nCurrent LXD mode: " << pGlobalSettings->get("lxd_mode").convertValueToString(false) << "\n";
   return 0;
@@ -210,6 +214,7 @@ int ArgumentProcessorConfigLxdDisable::exec(
 ) {
   auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
   WsjcppEmployees::init({});
+  CmdHandlers::init();
   pGlobalSettings->update("lxd_mode", false);
   std::cout << "\nCurrent LXD mode: " << pGlobalSettings->get("lxd_mode").convertValueToString(false) << "\n";
   return 0;
@@ -235,6 +240,7 @@ int ArgumentProcessorConfigLxdConfigure::exec(
   // config lxd
   std::string sError;
   WsjcppEmployees::init({});
+  CmdHandlers::init();
   if (UtilsLXDAuth::check_trust_certs(sError)) {
     std::cout << "\nGOOD HTTPS connection with LXD\n\n";
   } else if (!sError.empty()) {

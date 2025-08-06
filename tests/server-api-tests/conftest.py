@@ -124,6 +124,7 @@ def admin_session():
         game1 = pytest.admin_session.game_create({
             "uuid": pytest.game1_uuid,
             "name": "test",
+            "freehackquest_game_format_version": 1,
             "description": "test",
             "state": "original",
             "form": "online",

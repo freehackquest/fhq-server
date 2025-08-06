@@ -51,7 +51,8 @@ if __name__ == "__main__":
             run_command(command, _output)
             run_command([
                 'python3', '-m', 'pytest',
-                '-rAs', '-c', 'env-travis.ini'
+                '-rAs', '-c', 'env-travis.ini',
+                # '-k', 'test_server_uuid_info'
             ], _output)
             print('\n\n\nlook result_tests.txt')
         finally:

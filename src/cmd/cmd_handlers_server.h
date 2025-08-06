@@ -60,3 +60,18 @@ public:
   CmdHandlerServerSettingsUpdate();
   virtual void handle(ModelRequest *pRequest);
 };
+
+class CmdHandlerServerUuidGenerate : public CmdHandlerBase {
+
+public:
+  CmdHandlerServerUuidGenerate();
+  virtual void init() override;
+  virtual void handle(ModelRequest *pRequest);
+};
+
+class CmdHandlerServerUuidInfo : public CmdHandlerBase {
+
+public:
+  CmdHandlerServerUuidInfo();
+  virtual void handle(ModelRequest *pRequest);
+};

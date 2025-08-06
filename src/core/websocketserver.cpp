@@ -54,6 +54,7 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent) {
     m_bFailed = true;
     return;
   }
+  CmdHandlers::init();
 
   EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
   int nWsPort = pGlobalSettings->get("port").getNumberValue();

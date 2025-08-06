@@ -29,27 +29,27 @@
  *
  ***********************************************************************************/
 
-#include "employ_users.h"
+#pragma once
 
-#include <employ_database.h>
-#include <employ_notify.h>
 #include <employees.h>
 
-REGISTRY_WJSCPP_EMPLOY(EmployUsers)
+class EmployUuids : public WsjcppEmployBase {
+public:
+  EmployUuids();
+  static std::string name() { return "EmployUuids"; }
+  virtual bool init();
+  virtual bool deinit() override;
 
-EmployUsers::EmployUsers()
-  : WsjcppEmployBase(
-      EmployUsers::name(), {EmployDatabase::name(), EmployGlobalSettings::name(), EmployNotify::name()}
-    ) {
-  TAG = EmployUsers::name();
-}
+  void addAllowedTypesOfUuid(const std::string &sTypeOfObject);
+  const std::vector<std::string> &getAllowedTypesOfUuid();
 
-bool EmployUsers::init() {
-  WsjcppLog::info(TAG, "Start init users");
-  return true;
-}
+  std::string generateNewUuid(const std::string &sTypeOfObject);
+  bool hasUuid(const std::string &sUuid);
+  std::string getTypeOfObject(const std::string &sUuid);
 
-bool EmployUsers::deinit() {
-  // TODO
-  return true;
-}
+private:
+  std::mutex m_mutex;
+  std::vector<std::string> m_vAllowedTypes;
+  std::map<std::string, std::string> m_mapGlobalUuids;
+  std::string TAG;
+};

@@ -12,9 +12,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Fix remove item from knowledge base
 - Moved clean.sh to './pm.py clean'
 - Removed empty file SECURITY.md
+- Updated wsjcpp-core from v0.2.2 to v0.2.3
+- Updated wsjcpp-validators from v0.1.2 to v0.1.3
+- Added EmployUuids, added models for useful_links, added new handlers `server_uuid_generate`, `server_uuid_info`
+- Redesign work with sqlite
 
-
-## [v0.2.52] - 2024-07-21
+## [v0.2.52] - 2024-07-21 (2024 Jule 21)
 
 ### Added
 
