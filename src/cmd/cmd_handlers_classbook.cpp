@@ -31,6 +31,7 @@
 
 #include <QtCore>
 #include <cmd_handlers_classbook.h>
+#include <easyzip.h>
 #include <employ_database.h>
 #include <employ_server_info.h>
 #include <fstream>
@@ -40,7 +41,6 @@
 #include <wsjcpp_core.h>
 #include <wsjcpp_diff_text.h>
 #include <wsjcpp_hashes.h>
-#include <easyzip.h>
 
 // ---------------------------------------------------------------------
 // This handler will be add classbook record
@@ -434,13 +434,13 @@ bool CmdClassbookExportHandler::createHtml(
     }
   }
 
-  out << "<!DOCTYPE HTML><html><head><title>Freehackquest classbook</title>" << endl;
-  out << "<meta charset=\"utf-8\"></head>" << endl;
-  out << "<body><h1> Freehackquest Classbook</h1>" << endl;
-  out << "<h2>Table of contents</h2>" << endl;
+  out << "<!DOCTYPE HTML><html><head><title>Freehackquest classbook</title>" << Qt::endl;
+  out << "<meta charset=\"utf-8\"></head>" << Qt::endl;
+  out << "<body><h1> Freehackquest Classbook</h1>" << Qt::endl;
+  out << "<h2>Table of contents</h2>" << Qt::endl;
   QMap<int, QString>::iterator i;
   for (i = name_of_articles.begin(); i != name_of_articles.end(); ++i) {
-    out << "<h3><a href=#" << i.key() << ">" << i.value().toUtf8() << "</a></h3>" << endl;
+    out << "<h3><a href=#" << i.key() << ">" << i.value().toUtf8() << "</a></h3>" << Qt::endl;
   }
 
   if (sLang == "en") {
@@ -452,8 +452,8 @@ bool CmdClassbookExportHandler::createHtml(
     while (query.next()) {
       QSqlRecord record = query.record();
       out << "<article id=" << record.value("id").toInt() << "><h2>";
-      out << record.value("name").toString().toUtf8() << "</h2>" << endl;
-      out << "<p>" << record.value("content").toString().toUtf8() << "</p></article>" << endl;
+      out << record.value("name").toString().toUtf8() << "</h2>" << Qt::endl;
+      out << "<p>" << record.value("content").toString().toUtf8() << "</p></article>" << Qt::endl;
     }
   } else {
     query.prepare("SELECT classbookid, name, content FROM "
@@ -466,11 +466,11 @@ bool CmdClassbookExportHandler::createHtml(
     while (query.next()) {
       QSqlRecord record = query.record();
       out << "<article><h2 id =" << record.value("classbookid").toInt() << ">";
-      out << record.value("name").toString().toUtf8() << "</h2>" << endl;
-      out << "<p>" << record.value("content").toString().toUtf8() << "</p></article>" << endl;
+      out << record.value("name").toString().toUtf8() << "</h2>" << Qt::endl;
+      out << "<p>" << record.value("content").toString().toUtf8() << "</p></article>" << Qt::endl;
     }
   }
-  out << "</body></html>" << endl;
+  out << "</body></html>" << Qt::endl;
   return true;
 }
 
@@ -505,10 +505,10 @@ bool CmdClassbookExportHandler::createMD(
     }
   }
 
-  out << "# Freehackquest classbook" << endl;
-  out << "## Table of content" << endl;
+  out << "# Freehackquest classbook" << Qt::endl;
+  out << "## Table of content" << Qt::endl;
   for (int i = 0; i < name_of_articles.size(); ++i) {
-    out << "* " << name_of_articles.at(i).toUtf8() << endl;
+    out << "* " << name_of_articles.at(i).toUtf8() << Qt::endl;
   }
 
   if (sLang == "en") {
@@ -519,8 +519,8 @@ bool CmdClassbookExportHandler::createMD(
     }
     while (query.next()) {
       QSqlRecord record = query.record();
-      out << "### " << record.value("name").toString().toUtf8() << endl;
-      out << record.value("content").toString().toUtf8() << endl;
+      out << "### " << record.value("name").toString().toUtf8() << Qt::endl;
+      out << record.value("content").toString().toUtf8() << Qt::endl;
     }
   } else {
     query.prepare("SELECT name, content FROM classbook_localization WHERE lang=:lang");
@@ -531,8 +531,8 @@ bool CmdClassbookExportHandler::createMD(
     }
     while (query.next()) {
       QSqlRecord record = query.record();
-      out << "### " << record.value("name").toString().toUtf8() << endl;
-      out << record.value("content").toString().toUtf8() << endl;
+      out << "### " << record.value("name").toString().toUtf8() << Qt::endl;
+      out << record.value("content").toString().toUtf8() << Qt::endl;
     }
   }
   return true;

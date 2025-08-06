@@ -24,6 +24,7 @@ COMMANDS = [
     libfhqpm.CommandRebuildEnvironmentImages(CONFIG),
     libfhqpm.CommandCodeCheck(CONFIG),
     libfhqpm.CommandCreateStorageUpdate(CONFIG),
+    libfhqpm.CommandGenerateModels(CONFIG),
 ]
 
 def print_custom_help(parser):
