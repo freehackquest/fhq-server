@@ -46,7 +46,6 @@ import { AutomationUssrPresentationComponent } from './pages/automation-ussr-pre
 import { AutomationUssrRatingComponent } from './pages/automation-ussr-rating/automation-ussr-rating.component';
 import { RegistrationComponent } from './pages/registration/registration.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
-import { DonateComponent } from './pages/donate/donate.component';
 import { UsefulLinksComponent } from './pages/useful-links/useful-links.component';
 import { GamesComponent } from './pages/games/games.component';
 import { FeedbackComponent } from './pages/feedback/feedback.component';
@@ -103,7 +102,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     AutomationUssrRatingComponent,
     RegistrationComponent,
     ResetPasswordComponent,
-    DonateComponent,
     UsefulLinksComponent,
     GamesComponent,
     FeedbackComponent,
