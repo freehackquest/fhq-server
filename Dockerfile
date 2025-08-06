@@ -7,7 +7,7 @@ WORKDIR /root/
 # Build server application
 COPY . /root/fhq-server
 WORKDIR /root/fhq-server
-RUN ./clean.sh && ./build_simple.sh
+RUN ./pm.py clean && ./build_simple.sh
 
 # Build web
 COPY ./web-user /root/web-user
