@@ -501,7 +501,7 @@ std::vector<std::string> WsjcppCore::getListOfDirs(const std::string &sDirname) 
     for (auto& entry : std::filesystem::directory_iterator(sDirname)) {
         if (entry.is_directory()) {
             std::string sPath = entry.path();
-            sPath = sPath.substr(sDirname.length()+1);
+            sPath.erase(0, sDirname.size() + 1);
             vDirs.push_back(sPath);
         }
     }
@@ -519,6 +519,7 @@ std::vector<std::string> WsjcppCore::getListOfFiles(const std::string &sDirname)
     for (auto& entry: std::filesystem::directory_iterator(sDirname)) {
         if (!entry.is_directory()) {
             std::string sPath = entry.path();
+            sPath.erase(0, sDirname.size() + 1);
             vFiles.push_back(sPath);
         }
     }
@@ -837,8 +838,6 @@ std::string WsjcppCore::extractURLProtocol(const std::string& sValue) {
     return sRet;
 }
 
-// ---------------------------------------------------------------------
-
 bool WsjcppCore::getEnv(const std::string& sName, std::string& sValue) {
     if (const char* env_p = std::getenv(sName.c_str())) {
         sValue = std::string(env_p);
@@ -847,16 +846,14 @@ bool WsjcppCore::getEnv(const std::string& sName, std::string& sValue) {
     return false;
 }
 
-// ---------------------------------------------------------------------
-
 std::string WsjcppCore::encodeUriComponent(const std::string& sValue) {
     std::stringstream ssRet;
     for (int i = 0; i < sValue.length(); i++) {
         char c = sValue[i];
         if (
             c == '-' || c == '_' || c == '.' || c == '!'
-            || c == '~' || c == '*' || c == '\'' 
-            || c == '(' || c == ')' || (c >= '0' && c <= '9') 
+            || c == '~' || c == '*' || c == '\''
+            || c == '(' || c == ')' || (c >= '0' && c <= '9')
             || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
         ) {
             ssRet << c;
@@ -866,8 +863,6 @@ std::string WsjcppCore::encodeUriComponent(const std::string& sValue) {
     }
     return ssRet.str();
 }
-
-// ---------------------------------------------------------------------
 
 std::string WsjcppCore::decodeUriComponent(const std::string& sValue) {
     std::string sRet = "";
@@ -892,8 +887,6 @@ std::string WsjcppCore::decodeUriComponent(const std::string& sValue) {
     return sRet;
 }
 
-// ---------------------------------------------------------------------
-
 std::string WsjcppCore::getHumanSizeBytes(long nBytes) {
     if (nBytes == 0) {
         return "0B";
@@ -904,7 +897,7 @@ std::string WsjcppCore::getHumanSizeBytes(long nBytes) {
     for (int i = 0; i < 6; i++) {
         if (n0 >= 1 && n0 < 1000) {
             return std::to_string(n0) + arrPrefix[i];
-        }        
+        }
         n0 = nBytes / 1000;
         n1 = nBytes - n0 * 1000;
         n0 += n1 >= 500 ? 1 : 0;
@@ -916,8 +909,6 @@ std::string WsjcppCore::getHumanSizeBytes(long nBytes) {
     }
     return std::to_string(nBytes) + "PB";
 }
-
-// ---------------------------------------------------------------------
 
 bool WsjcppCore::recoursiveCopyFiles(const std::string& sSourceDir, const std::string& sTargetDir) {
     if (!WsjcppCore::dirExists(sSourceDir)) {
@@ -959,8 +950,6 @@ bool WsjcppCore::recoursiveCopyFiles(const std::string& sSourceDir, const std::s
     return true;
 }
 
-// ---------------------------------------------------------------------
-
 bool WsjcppCore::recoursiveRemoveDir(const std::string& sDir) {
     if (!WsjcppCore::dirExists(sDir)) {
         WsjcppLog::err("recoursiveCopyFiles", "Dir '" + sDir + "' did not exists");
@@ -989,8 +978,6 @@ bool WsjcppCore::recoursiveRemoveDir(const std::string& sDir) {
     return true;
 }
 
-// ---------------------------------------------------------------------
-
 bool WsjcppCore::setFilePermissions(const std::string& sFilePath, const WsjcppFilePermissions &filePermissions, std::string& sError) {
 
     mode_t m = 0x0;
@@ -1017,8 +1004,6 @@ bool WsjcppCore::setFilePermissions(const std::string& sFilePath, const WsjcppFi
     return true;
 }
 
-// ---------------------------------------------------------------------
-
 bool WsjcppCore::getFilePermissions(const std::string& sFilePath, WsjcppFilePermissions &filePermissions, std::string& sError) {
     if (!WsjcppCore::fileExists(sFilePath)) {
         sError = "File '" + sFilePath + "' - not found";
@@ -1040,7 +1025,7 @@ bool WsjcppCore::getFilePermissions(const std::string& sFilePath, WsjcppFilePerm
     filePermissions.setOwnerWriteFlag(m & S_IWUSR);
     filePermissions.setOwnerExecuteFlag(m & S_IXUSR);
 
-    
+
     // group
     filePermissions.setGroupReadFlag(m & S_IRGRP);
     filePermissions.setGroupWriteFlag(m & S_IWGRP);
@@ -1054,8 +1039,6 @@ bool WsjcppCore::getFilePermissions(const std::string& sFilePath, WsjcppFilePerm
     return true;
 }
 
-// ---------------------------------------------------------------------
-
 std::string WsjcppCore::doPadLeft(const std::string& sIn, char cWhat, size_t nLength) {
     std::string sRet;
     size_t nPadLen = nLength - sIn.length();
@@ -1064,8 +1047,6 @@ std::string WsjcppCore::doPadLeft(const std::string& sIn, char cWhat, size_t nLe
     }
     return sRet + sIn; 
 }
-
-// ---------------------------------------------------------------------
 
 std::string WsjcppCore::doPadRight(const std::string& sIn, char cWhat, size_t nLength) {
     std::string sRet;
@@ -1076,11 +1057,22 @@ std::string WsjcppCore::doPadRight(const std::string& sIn, char cWhat, size_t nL
     return sIn + sRet;
 }
 
+bool WsjcppCore::startsWith(const std::string& sLine, const std::string& sStart) {
+    return sLine.rfind(sStart, 0) == 0;
+}
+
+bool WsjcppCore::endsWith(const std::string& sLine, const std::string& sEnd) {
+    // https://www.techiedelight.com/check-if-a-string-ends-with-another-string-in-cpp/
+    if (sLine.length() < sEnd.length()) {
+        return false;
+    }
+    return std::equal(sEnd.rbegin(), sEnd.rend(), sLine.rbegin());
+}
+
 // ---------------------------------------------------------------------
 // WsjcppLog
 
 WsjcppLogGlobalConf::WsjcppLogGlobalConf() {
-    // 
     logDir = "./";
     logPrefixFile = "";
     logFile = "";
@@ -1088,8 +1080,6 @@ WsjcppLogGlobalConf::WsjcppLogGlobalConf() {
     logStartTime = 0;
     logRotationPeriodInSeconds = 51000;
 }
-
-// ---------------------------------------------------------------------
 
 void WsjcppLogGlobalConf::doLogRotateUpdateFilename(bool bForce) {
     long t = WsjcppCore::getCurrentTimeInSeconds();
@@ -1104,21 +1094,15 @@ void WsjcppLogGlobalConf::doLogRotateUpdateFilename(bool bForce) {
 
 WsjcppLogGlobalConf WsjcppLog::g_WSJCPP_LOG_GLOBAL_CONF;
 
-// ---------------------------------------------------------------------
-
 void WsjcppLog::info(const std::string & sTag, const std::string &sMessage) {
     WsjcppColorModifier def(WsjcppColorCode::FG_DEFAULT);
     WsjcppLog::add(def, "INFO", sTag, sMessage);
 }
 
-// ---------------------------------------------------------------------
-
 void WsjcppLog::err(const std::string & sTag, const std::string &sMessage) {
     WsjcppColorModifier red(WsjcppColorCode::FG_RED);
     WsjcppLog::add(red, "ERR", sTag, sMessage);
 }
-
-// ---------------------------------------------------------------------
 
 void WsjcppLog::throw_err(const std::string &sTag, const std::string &sMessage) {
     WsjcppColorModifier red(WsjcppColorCode::FG_RED);
@@ -1126,21 +1110,15 @@ void WsjcppLog::throw_err(const std::string &sTag, const std::string &sMessage) 
     throw std::runtime_error(sMessage);
 }
 
-// ---------------------------------------------------------------------
-
 void WsjcppLog::warn(const std::string & sTag, const std::string &sMessage) {
     WsjcppColorModifier yellow(WsjcppColorCode::FG_YELLOW);
     WsjcppLog::add(yellow, "WARN",sTag, sMessage);
 }
 
-// ---------------------------------------------------------------------
-
 void WsjcppLog::ok(const std::string &sTag, const std::string &sMessage) {
     WsjcppColorModifier green(WsjcppColorCode::FG_GREEN);
     WsjcppLog::add(green, "OK", sTag, sMessage);
 }
-
-// ---------------------------------------------------------------------
 
 std::vector<std::string> WsjcppLog::getLastLogMessages() {
     std::lock_guard<std::mutex> lock(WsjcppLog::g_WSJCPP_LOG_GLOBAL_CONF.logMutex);
@@ -1150,8 +1128,6 @@ std::vector<std::string> WsjcppLog::getLastLogMessages() {
     }
     return vRet;
 }
-
-// ---------------------------------------------------------------------
 
 void WsjcppLog::setLogDirectory(const std::string &sDirectoryPath) {
     WsjcppLog::g_WSJCPP_LOG_GLOBAL_CONF.logDir = sDirectoryPath;
@@ -1163,26 +1139,18 @@ void WsjcppLog::setLogDirectory(const std::string &sDirectoryPath) {
     WsjcppLog::g_WSJCPP_LOG_GLOBAL_CONF.doLogRotateUpdateFilename(true);
 }
 
-// ---------------------------------------------------------------------
-
 void WsjcppLog::setPrefixLogFile(const std::string &sPrefixLogFile) {
     WsjcppLog::g_WSJCPP_LOG_GLOBAL_CONF.logPrefixFile = sPrefixLogFile;
     WsjcppLog::g_WSJCPP_LOG_GLOBAL_CONF.doLogRotateUpdateFilename(true);
 }
 
-// ---------------------------------------------------------------------
-
 void WsjcppLog::setEnableLogFile(bool bEnable) {
     WsjcppLog::g_WSJCPP_LOG_GLOBAL_CONF.enableLogFile = bEnable;
 }
 
-// ---------------------------------------------------------------------
-
 void WsjcppLog::setRotationPeriodInSec(long nRotationPeriodInSec) {
     WsjcppLog::g_WSJCPP_LOG_GLOBAL_CONF.logRotationPeriodInSeconds = nRotationPeriodInSec;
 }
-
-// ---------------------------------------------------------------------
 
 void WsjcppLog::add(WsjcppColorModifier &clr, const std::string &sType, const std::string &sTag, const std::string &sMessage) {
     WsjcppLog::g_WSJCPP_LOG_GLOBAL_CONF.doLogRotateUpdateFilename();
@@ -1201,7 +1169,7 @@ void WsjcppLog::add(WsjcppColorModifier &clr, const std::string &sType, const st
         WsjcppLog::g_WSJCPP_LOG_GLOBAL_CONF.logLastMessages.pop_back();
     }
 
-    // log file 
+    // log file
     if (WsjcppLog::g_WSJCPP_LOG_GLOBAL_CONF.enableLogFile) {
         std::ofstream logFile(WsjcppLog::g_WSJCPP_LOG_GLOBAL_CONF.logFile, std::ios::app);
         if (!logFile) {
@@ -1210,7 +1178,7 @@ void WsjcppLog::add(WsjcppColorModifier &clr, const std::string &sType, const st
         }
 
         logFile << sLogMessage << std::endl;
-        logFile.close();    
+        logFile.close();
     }
 }
 
@@ -1269,7 +1237,6 @@ const std::vector<WsjcppResourceFile*> &WsjcppResourcesManager::list() {
     return *g_pWsjcppResourceFiles;
 }
 
-// ---------------------------------------------------------------------
 
 /*
 bool WsjcppResourcesManager::make(const std::string &sWorkspace) {
