@@ -5,7 +5,7 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.53] - 2025-06-14
+## [v0.2.53] - 2025-08-10 (2024 Jule 21)
 
 - Updated wsjcpp-yaml from 0.1.7 to 0.1.8
 - Updated years to -2025
@@ -22,29 +22,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v0.2.52] - 2024-07-21 (2024 Jule 21)
 
-### Added
-
 - Added reading game.info from file_storage/games/
 - Added copyright to any source file
-
-### Removed
-
 - [web-user] Removed proposal translate
 - Removed github pages theme
 - Removed FindPostgreSQL.cmake
-
-### Fixed
-
 - Fix knowlwdge base
 - Updated email-validator
-
-### Security
-
 - [snyk] Updated tslib to 2.4.1
 - Updated to from angular 12 to angular 14
-
-### Changed
-
 - Redesign script rebuild_environment_images.sh to pm.py
 - Removed tests/code-check (redesign to libfhqpm) and fix clang-format style
 - Prepare example for init sqlite database
@@ -52,138 +38,75 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Applyed clang-format
 - Moved src-libhv to src/third-party/libhv and moved quazip-0.7.3 to third-party
 
-
 ## [v0.2.51] - 2023-01-03 (2023 Jan 3)
-
-### Added
 
 - Fixed #469 created 'pm.py'
 - Added copyrights to files  src/storages/updates/
-
-### Removed
-
 - Removed sea5kg_cpplint
-
-### Fixed
-
 - [web-admin] Removed focus from input and textarea
 - Fixed #408 Data too long for column 'user_answer' at row 1 QMYSQL3: Unable to execute statement (max 255 simbols)
 - Fixed #373 Trim filter for search requets by quests
-
-### Changed
-
 - [api] Renamed 'createquest' to 'quests.add'
 - [web-admin] Changed colors
 - Apply clang-format for src/
 - Updated year to 2023
 - Setting: allow_quests_proposals moved to config.yml
-
-### Security
 - [snyk] fix: upgrade core-js from 3.23.1 to 3.23.2
 - [snyk] fix: upgrade marked from 4.0.17 to 4.0.18
 
-
 ## [v0.2.50] - 2022-10-23 (2022 Oct 23)
-
-### Fixed
 
 - Fix admin create user
 - Fix #318 - simplify start server via docker-compose
-
-### Changed
-
 - Fix default user icon
 - Updated wsjcpp-yaml to v0.1.7
 - Moved `fhq-server-tests` to `tests/server-api-tests`
-
-### Removed
-
 - contrib/docker_compose_example
-
-### Added 
-
 - #318 New param for start `--init-default-data-for-containers ./data`
-
 
 ## [v0.2.49] - 2022-08-28 (2022 Aug 28)
 
-### Added 
-
 - web-user: Few records to CTF WALL
-
-### Fixed 
-
 - Fixed contrib/docker_compose_example
-
-### Removed
-
 - web-user: Removed links to twitter
-
-### Security
-
 - web-user: few upgrades of dependency packages
 
 ## [v0.2.48] - 2022-01-09 (2022 Jan 9)
-
-### Added 
 
 - server: Installed wsjcpp-yaml:v0.1.6
 - server: Implemented downloads counter for files
 - web-user: Installed ngx-mardown
 - server: Added new columns (md5, downloads_counter) to quests_files
-
-### Changed
-
 - server: Redesign parsing config file from 'conf.d/fhq-server.conf' to 'config.yml'
 - server: Redesign addFile and removeFile to employ
 - web-user: Redesing statistitics on main page
 - web-user: Redesign bamp on quest page
 - server-api-tests: Redesign server api tests for users to pytest
 - server: Updated nlohman/json to 3.10.5
-
-### Removed
-
 - server: Removed wsjcpp-parse-conf:v0.1.0
 - Removed Travis CI
-
-### Fixed 
-
 - server: Fixed Content-Disposition (on download files)
 - server: Fixed wd - if work directory not found then stop server
 - server: Fixed calculate md5 files on start
-
-### Security
-
 - web-user: [Snyk] fix: upgrade core-js from 3.19.2 to 3.19.3
 - Fixed alerts lgtm
 - server: Upgraded wsjcpp_hashes to v0.2.1
 
 ## [v0.2.47] - 2021-12-31 (2021 Dec 31)
 
-### Added 
- 
 - Implemeted delete files from quest
 - api: added method `quests_files.delete`
 - Moved stickers from https://github.com/freehackquest/freehackquest-stickers
-
-### Changed
-
 - Updated year for copyright
 - Redesign processing with public files
 - web-user: Main page
 - web-user: Hide menu to chat
 - web-user:  Redesign footer 'powered by' and removed 'connection state
 - api: renamed `quests_files_upload` to `quests_files.upload`
-
-### Removed
-
 - web-user: Removed page ctf-attack-defence
 - web-user: Moved information from web-user to README.md
 - web-user: ctf_wall (pull request #418), Moved code from CTF_Wall to web-user/src/app/pages/ctf-wall/ctf-wall.component.html
 - web-user: Removed about
-
-### Security
-
 - fix: upgrade multiple dependencies with Snyk
 - fix: upgrade core-js from 3.17.3 to 3.19.1
 - fix: upgrade @angular/localize from 12.2.5 to 12.2.13
