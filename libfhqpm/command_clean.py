@@ -33,18 +33,15 @@
 
 import sys
 import os
-import logging
 from .utils_files import UtilsFiles
+from .utils_log import UtilsLog
 from .pm_config import PmConfig
-
-logging.basicConfig()
 
 
 class CommandClean:
     """ CommandClean """
     def __init__(self, config: PmConfig):
-        self.__log = logging.getLogger("CommandClean")
-        self.__log.setLevel(logging.DEBUG)
+        self.__log = UtilsLog("CommandClean").get_logger()
         self.__config = config
         self.__subcomamnd_name = "clean"
 
