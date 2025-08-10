@@ -36,16 +36,15 @@ import sys
 import logging
 import datetime
 from .utils_shell import UtilsShell
+from .utils_log import UtilsLog
 from .pm_config import PmConfig
-
-logging.basicConfig()
 
 
 class CommandRebuildEnvironmentImages:
     """ CommandRebuildEnvironmentImages """
 
     def __init__(self, config: PmConfig):
-        self.__log = logging.getLogger("CommandRebuildEnvironmentImages")
+        self.__log = UtilsLog("CommandRebuildEnvironmentImages").get_logger()
         self.__log.setLevel(logging.DEBUG)
         self.__config = config
         now = datetime.datetime.now()

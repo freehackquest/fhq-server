@@ -8,10 +8,16 @@ import argparse
 import libfhqpm
 
 ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
-# find the root dir (dir which contains dir '.git')
-while not os.path.isdir(os.path.join(ROOT_DIR, '.git')):
+# find the root dir (dir which contains dir 'libfhqpm')
+PM_DIR = os.path.join(ROOT_DIR, 'libfhqpm')
+PM_FILE = os.path.join(ROOT_DIR, 'pm.py')
+while not os.path.isdir(PM_DIR) and not os.path.isfile(PM_FILE):
     ROOT_DIR = os.path.join(ROOT_DIR, '..')
     ROOT_DIR = os.path.normpath(ROOT_DIR)
+    PM_DIR = os.path.join(ROOT_DIR, 'libfhqpm')
+    PM_FILE = os.path.join(ROOT_DIR, 'pm.py')
+    if ROOT_DIR == "/":
+        sys.exit("Could not find rood dir")
 # print("ROOT_DIR =", ROOT_DIR)
 
 CONFIG = libfhqpm.PmConfig(ROOT_DIR)

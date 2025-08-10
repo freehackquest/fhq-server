@@ -29,19 +29,32 @@
 #
 ##################################################################################
 
-""" init module for libfhqpm (Project Manager) helper lib for a handling processes in project """
+""" Example logger for commands """
 
-from .pm_config import PmConfig
-from .command_rebuild_environment_images import CommandRebuildEnvironmentImages
-from .command_clang_format import CommandClangFormat
-from .command_clean import CommandClean
-from .command_code_check import CommandCodeCheck
-from .command_code_stats import CommandCodeStats
-from .command_create_storage_update import CommandCreateStorageUpdate
-from .command_generate_models import CommandGenerateModels
-from .command_py_check import CommandPyCheck
-from .utils_copyrights import UtilsCopyrights
-from .utils_log import UtilsLog
-from .utils_files import UtilsFiles
-from .utils_shell import UtilsShell
-from .utils_strings import UtilsStrings
+import logging
+import sys
+
+
+class UtilsLog:
+    """ UtilsLog """
+    def __init__(self, name):
+        self.__log = logging.getLogger(name)
+        self.__log.setLevel(logging.DEBUG)
+        formatter = logging.Formatter(
+            '[%(asctime)s] %(levelname)s [%(filename)s.%(funcName)s:%(lineno)d] %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S'
+        )
+        self.__shellout = logging.StreamHandler(sys.stdout)
+        self.__shellout.setLevel(logging.DEBUG)
+        self.__shellout.setFormatter(formatter)
+        self.__log.addHandler(self.__shellout)
+        self.__log.propagate = False
+
+    def get_logger(self):
+        """ return configured logger """
+        return self.__log
+
+    def set_level(self, level):
+        """ set level """
+        self.__log.setLevel(level)
+        self.__shellout.setLevel(level)
