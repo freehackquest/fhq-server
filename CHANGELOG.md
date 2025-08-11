@@ -5,7 +5,10 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.53] - 2025-08-10 (2024 Jule 21)
+## [v0.2.54] - 2025-08-10 (2025 ???)
+
+
+## [v0.2.53] - 2025-08-10 (2025 Jule 21)
 
 - Updated wsjcpp-yaml from 0.1.7 to 0.1.8
 - Updated years to -2025
