@@ -122,9 +122,9 @@ export class EventsComponent implements OnInit {
     if (this.pageSize !== this.pageSizeOptions[0]) {
       newQueryParams["page_size"] = this.pageSize;
     }
-    
+
     const url = this._router.createUrlTree([], {
-      relativeTo: this._activatedRoute, 
+      relativeTo: this._activatedRoute,
       queryParams: newQueryParams
     }).toString()
     this._location.go(url);
@@ -133,7 +133,7 @@ export class EventsComponent implements OnInit {
     this.length = r.count
     this.dataList = []
     r.data.forEach((el: any) => {
-      el.dt_formated = new Date(el.dt + "Z")
+      el.dt_formated = new Date(el.dt)
       el["links"] = [];
       el.html_message = escape(el.message)
       // el['html_message'] = el['html_message'].replace(/\[user#(\d+)\]/g, '<a href="/user/$1">[user#$1]</a>')

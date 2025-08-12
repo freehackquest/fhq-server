@@ -32,6 +32,7 @@
 #include <QtCore>
 #include <cmd_handlers_events.h>
 #include <employ_database.h>
+#include <employ_public_events.h>
 #include <employ_server_info.h>
 #include <iostream>
 #include <runtasks.h>
@@ -53,27 +54,22 @@ CmdHandlerEventAdd::CmdHandlerEventAdd() : CmdHandlerBase("createpublicevent", "
   requireStringParam("message", "Message");
 }
 
-// ---------------------------------------------------------------------
-
 void CmdHandlerEventAdd::handle(ModelRequest *pRequest) {
-  EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+  auto *pEvents = findWsjcppEmploy<EmployPublicEvents>();
 
-  nlohmann::json jsonResponse;
-  std::string sType = pRequest->getInputString("type", "");
-  std::string sMessage = pRequest->getInputString("message", "");
+  ModelPublicEvent eventInfo;
+  eventInfo.setType(pRequest->getInputString("type", ""));
+  eventInfo.setMessage(pRequest->getInputString("message", ""));
+  eventInfo.setMeta("{}");
 
-  QSqlDatabase db = *(pDatabase->database());
-  QSqlQuery query(db);
-  query.prepare("INSERT INTO public_events(type,message,meta,dt) "
-                "VALUES(:type,:message,:meta,NOW())");
-  query.bindValue(":type", QString::fromStdString(sType));
-  query.bindValue(":message", QString::fromStdString(sMessage));
-  query.bindValue(":meta", "{}");
-  if (!query.exec()) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
+  std::string sErrorMessage;
+  if (!pEvents->addPublicEvent(eventInfo, sErrorMessage)) {
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, sErrorMessage));
     return;
   }
 
+  // TODO return full info
+  nlohmann::json jsonResponse;
   pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
@@ -91,36 +87,23 @@ CmdHandlerEventDelete::CmdHandlerEventDelete() : CmdHandlerBase("deletepubliceve
   requireIntegerParam("eventid", "Event ID");
 }
 
-// ---------------------------------------------------------------------
-
 void CmdHandlerEventDelete::handle(ModelRequest *pRequest) {
-  EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
-
-  nlohmann::json jsonResponse;
+  auto *pEvents = findWsjcppEmploy<EmployPublicEvents>();
 
   int nEventId = pRequest->getInputInteger("eventid", -1);
+  std::string sErrorMessage;
+  if (!pEvents->removePublicEvent(nEventId, sErrorMessage)) {
+    if (sErrorMessage == "NOT_FOUND") {
+      pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Event not found"));
+      return;
+    }
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, sErrorMessage));
+    return;
+  }
+
+  nlohmann::json jsonResponse;
   jsonResponse["eventid"] = nEventId;
-
   nlohmann::json jsonEvent;
-
-  QSqlDatabase db = *(pDatabase->database());
-  QSqlQuery query(db);
-  query.prepare("SELECT * FROM public_events WHERE id = :eventid");
-  query.bindValue(":eventid", nEventId);
-  if (!query.exec()) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
-    return;
-  }
-  if (!query.next()) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Event not found"));
-    return;
-  }
-
-  QSqlQuery query2(db);
-  query2.prepare("DELETE FROM public_events WHERE id = :eventid");
-  query2.bindValue(":eventid", nEventId);
-  query2.exec();
-
   jsonResponse["data"] = jsonEvent;
   pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -140,36 +123,30 @@ CmdHandlerEventInfo::CmdHandlerEventInfo() : CmdHandlerBase("getpublicevent", "R
   requireIntegerParam("eventid", "Event id");
 }
 
-// ---------------------------------------------------------------------
-
 void CmdHandlerEventInfo::handle(ModelRequest *pRequest) {
-  EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+  auto *pEvents = findWsjcppEmploy<EmployPublicEvents>();
 
   nlohmann::json jsonResponse;
   int nEventId = pRequest->getInputInteger("eventid", -1);
-
   jsonResponse["eventid"] = nEventId;
 
+  ModelPublicEvent eventInfo;
+  std::string sErrorMessage = "";
+  if (!pEvents->findPublicEvent(nEventId, eventInfo, sErrorMessage)) {
+    if (sErrorMessage == "NOT_FOUND") {
+      pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Event not found"));
+      return;
+    }
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, sErrorMessage));
+    return;
+  }
   nlohmann::json jsonEvent;
 
-  QSqlDatabase db = *(pDatabase->database());
-  QSqlQuery query(db);
-  query.prepare("SELECT * FROM public_events e WHERE id = :eventid");
-  query.bindValue(":eventid", nEventId);
-  if (!query.exec()) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
-    return;
-  }
-  if (query.next()) {
-    QSqlRecord record = query.record();
-    jsonEvent["dt"] = record.value("dt").toString().toStdString();
-    jsonEvent["id"] = record.value("id").toInt();
-    jsonEvent["type"] = record.value("type").toString().toHtmlEscaped().toStdString();       // TODO htmlspecialchars
-    jsonEvent["message"] = record.value("message").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
-  } else {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Event not found"));
-    return;
-  }
+  jsonEvent["dt"] = eventInfo.getDateTime();
+  jsonEvent["id"] = eventInfo.getLocalId();
+  jsonEvent["type"] = eventInfo.getType();       // TODO htmlspecialchars
+  jsonEvent["message"] = eventInfo.getMessage(); // TODO htmlspecialchars
+  jsonEvent["meta"] = eventInfo.getMeta();
 
   jsonResponse["data"] = jsonEvent;
   pRequest->sendMessageSuccess(cmd(), jsonResponse);
@@ -195,110 +172,44 @@ CmdHandlerEventsList::CmdHandlerEventsList() : CmdHandlerBase("publiceventslist"
 // ---------------------------------------------------------------------
 
 void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
-  EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+  auto *pEvents = findWsjcppEmploy<EmployPublicEvents>();
 
   nlohmann::json jsonResponse;
-
   int nPage = pRequest->getInputInteger("page", 0);
   jsonResponse["page"] = nPage;
 
   int nOnPage = pRequest->getInputInteger("onpage", 10);
-  if (nOnPage > 50) {
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(400, "Parameter 'onpage' could not be more then 50"));
-    return;
-  }
   jsonResponse["onpage"] = nOnPage;
 
-  std::vector<std::string> vFilters;
-  QMap<QString, QString> filter_values;
-
   std::string sType = pRequest->getInputString("type", "");
-  WsjcppCore::trim(sType);
-  if (sType != "") {
-    vFilters.push_back("(e.type = :type)");
-    filter_values[":type"] = QString::fromStdString(sType);
-  }
-
   std::string sSearch = pRequest->getInputString("search", "");
-  WsjcppCore::trim(sSearch);
-  if (sSearch != "") {
-    vFilters.push_back("(e.message LIKE :search)");
-    filter_values[":search"] = "%" + QString::fromStdString(sSearch) + "%";
-    jsonResponse["search"] = sSearch;
-  }
 
-  // TODO redesign join
-  std::string sWhere = "";
-  for (int i = 0; i < vFilters.size(); i++) {
-    if (sWhere.length() > 0) {
-      sWhere += " AND ";
-    }
-    sWhere += vFilters[i];
-  }
+  int nRecordsFound = 0;
 
-  if (sWhere.length() > 0) {
-    sWhere = "WHERE " + sWhere;
+  std::vector<ModelPublicEvent> eventList;
+  std::string sErrorMessage;
+  if (!pEvents->findPublicEvents(eventList, nPage, nOnPage, sType, sSearch, nRecordsFound, sErrorMessage)) {
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, sErrorMessage));
+    return;
   }
-
-  // count quests
-  QSqlDatabase db = *(pDatabase->database());
-
-  {
-    QSqlQuery query(db);
-    query.prepare(
-      "SELECT count(*) as cnt FROM public_events e "
-      " " +
-      QString::fromStdString(sWhere)
-    );
-    foreach (QString key, filter_values.keys()) {
-      query.bindValue(key, filter_values.value(key));
-    }
-    if (!query.exec()) {
-      pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
-      return;
-    }
-    if (query.next()) {
-      QSqlRecord record = query.record();
-      jsonResponse["count"] = record.value("cnt").toInt();
-    }
-  }
+  jsonResponse["count"] = nRecordsFound;
 
   // data
   nlohmann::json jsonPublicEventsList = nlohmann::json::array();
 
-  {
-    QSqlQuery query(db);
-    query.prepare(
-      "SELECT * FROM public_events e"
-      " " +
-      QString::fromStdString(sWhere) +
-      " ORDER BY dt DESC "
-      " LIMIT " +
-      QString::number(nPage * nOnPage) + "," + QString::number(nOnPage)
-    );
-    foreach (QString key, filter_values.keys()) {
-      query.bindValue(key, filter_values.value(key));
+  for (int i = 0; i < eventList.size(); i++) {
+    nlohmann::json jsonEvent;
+    jsonEvent["dt"] = eventList[i].getDateTime();
+    jsonEvent["id"] = eventList[i].getLocalId();
+    jsonEvent["type"] = eventList[i].getType();       // TODO htmlspecialchars
+    jsonEvent["message"] = eventList[i].getMessage(); // TODO htmlspecialchars
+    std::string sMeta = eventList[i].getMeta();
+    if (nlohmann::json::accept(sMeta)) {
+      jsonEvent["meta"] = nlohmann::json::parse(sMeta);
+    } else {
+      jsonEvent["meta"] = "";
     }
-    if (!query.exec()) {
-      pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, query.lastError().text().toStdString()));
-      return;
-    }
-    while (query.next()) {
-      QSqlRecord record = query.record();
-      nlohmann::json jsonEvent;
-      jsonEvent["dt"] = record.value("dt").toString().toStdString();
-      jsonEvent["id"] = record.value("id").toInt();
-      jsonEvent["type"] = record.value("type").toString().toHtmlEscaped().toStdString();       // TODO htmlspecialchars
-      jsonEvent["message"] = record.value("message").toString().toHtmlEscaped().toStdString(); // TODO htmlspecialchars
-      std::string sMeta = record.value("meta").toString().toStdString();
-      if (nlohmann::json::accept(sMeta)) {
-        jsonEvent["meta"] = nlohmann::json::parse(sMeta);
-      } else {
-        jsonEvent["meta"] = "";
-      }
-
-      jsonPublicEventsList.push_back(jsonEvent);
-    }
+    jsonPublicEventsList.push_back(jsonEvent);
   }
 
   jsonResponse["data"] = jsonPublicEventsList;

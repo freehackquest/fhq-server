@@ -29,40 +29,31 @@
  *
  ***********************************************************************************/
 
-#include "add_public_events_task.h"
-#include <QEventLoop>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QNetworkRequest>
-#include <QSqlQuery>  // TODO redesign
-#include <QSqlRecord> // TODO redesign
-#include <QString>
-#include <QThread>
-#include <employ_public_events.h>
+#pragma once
 
-AddPublicEventsTask::AddPublicEventsTask(
-  const std::string &sType, const std::string &sMessage, const nlohmann::json &jsonMeta
-) {
-  m_sType = sType;
-  m_sMessage = sMessage;
-  m_jsonMeta = jsonMeta;
-  TAG = "AddPublicEventsTask";
-};
+#include <employees.h>
+#include <model_public_event.h>
 
-AddPublicEventsTask::~AddPublicEventsTask() {}
+class EmployPublicEvents : public WsjcppEmployBase {
+public:
+  EmployPublicEvents();
+  static std::string name() { return "EmployPublicEvents"; }
+  virtual bool init();
+  virtual bool deinit() override;
 
-void AddPublicEventsTask::run() {
-  WsjcppLog::info(TAG, "message " + m_sMessage);
-  auto *pEvents = findWsjcppEmploy<EmployPublicEvents>();
+  bool findPublicEvent(int nEventId, ModelPublicEvent &eventInfo, std::string &sErrorMessage);
+  bool removePublicEvent(int nEventId, std::string &sErrorMessage);
+  bool addPublicEvent(ModelPublicEvent &eventInfo, std::string &sErrorMessage);
+  bool findPublicEvents(
+    std::vector<ModelPublicEvent> &eventList,
+    int nPage,
+    int nOnPage,
+    const std::string &sType,
+    const std::string &sSearch,
+    int &nRecordsFound,
+    std::string &sErrorMessage
+  );
 
-  ModelPublicEvent eventInfo;
-  eventInfo.setType(m_sType);
-  eventInfo.setMessage(m_sMessage);
-  std::string sMeta = m_jsonMeta.dump();
-  eventInfo.setMeta(sMeta);
-
-  std::string sErrorMessage;
-  if (!pEvents->addPublicEvent(eventInfo, sErrorMessage)) {
-    WsjcppLog::err(TAG, sErrorMessage);
-  }
+private:
+  std::string TAG;
 };
