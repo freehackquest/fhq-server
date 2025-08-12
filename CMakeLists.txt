@@ -118,6 +118,8 @@ list (APPEND WSJCPP_SOURCES "src/models/model_useful_link.cpp")
 list (APPEND WSJCPP_SOURCES "src/models/model_useful_link_comment.cpp")
 list (APPEND WSJCPP_SOURCES "src/models/model_useful_link_tag.cpp")
 list (APPEND WSJCPP_SOURCES "src/models/model_useful_link_user_favorite.cpp")
+list (APPEND WSJCPP_SOURCES "src/models/model_public_event.cpp")
+
 
 # validators
 list (APPEND WSJCPP_SOURCES "src/validators/validators.cpp")

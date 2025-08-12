@@ -106,5 +106,27 @@
             "type": "long",
             "varname": "DateTime"
         }
+    },
+    "public_event": {
+        "id": {
+            "type": "int",
+            "varname": "LocalId"
+        },
+        "uuid": {
+            "type": "string"
+        },
+        "type": {
+            "type": "string"
+        },
+        "message": {
+            "type": "string"
+        },
+        "meta": {
+            "type": "string"
+        },
+        "dt": {
+            "type": "long",
+            "varname": "DateTime"
+        }
     }
 }
