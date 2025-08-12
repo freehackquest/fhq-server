@@ -66,7 +66,15 @@
         "memory_resource": "cpp",
         "random": "cpp",
         "regex": "cpp",
-        "qmutex": "cpp"
+        "qmutex": "cpp",
+        "bit": "cpp",
+        "codecvt": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp",
+        "variant": "cpp"
     },
     "files.autoSave": "off",
     "search.exclude": {
