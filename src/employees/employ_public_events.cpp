@@ -33,6 +33,7 @@
 
 #include <employ_database.h>
 #include <employ_notify.h>
+#include <employ_uuids.h>
 #include <employ_public_events.h>
 #include <employees.h>
 
@@ -40,13 +41,14 @@ REGISTRY_WJSCPP_EMPLOY(EmployPublicEvents)
 
 EmployPublicEvents::EmployPublicEvents()
   : WsjcppEmployBase(
-      EmployPublicEvents::name(), {EmployDatabase::name(), EmployGlobalSettings::name(), EmployNotify::name()}
+      EmployPublicEvents::name(), {EmployDatabase::name(), EmployUuids::name(), EmployGlobalSettings::name(), EmployNotify::name()}
     ) {
   TAG = EmployPublicEvents::name();
 }
 
 bool EmployPublicEvents::init() {
   WsjcppLog::info(TAG, "Start init users");
+  findWsjcppEmploy<EmployUuids>()->addAllowedTypesOfUuid("public_event");
   return true;
 }
 
@@ -112,13 +114,19 @@ bool EmployPublicEvents::removePublicEvent(int nEventId, std::string &sErrorMess
 
 bool EmployPublicEvents::addPublicEvent(ModelPublicEvent &eventInfo, std::string &sErrorMessage) {
   EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+  EmployUuids *pUuids = findWsjcppEmploy<EmployUuids>();
+
+  if (eventInfo.getUuid() == "") {
+    eventInfo.setUuid(pUuids->generateNewUuid("public_event"));
+  }
 
   QSqlDatabase db = *(pDatabase->database());
   QSqlQuery query(db);
-  query.prepare("INSERT INTO public_events(type,message,meta,dt) "
-                "VALUES(:type,:message,:meta,NOW())");
+  query.prepare("INSERT INTO public_events(type,message,meta,uuid,dt) "
+                "VALUES(:type,:message,:meta,:uuid,NOW())");
   query.bindValue(":type", QString::fromStdString(eventInfo.getType()));
   query.bindValue(":message", QString::fromStdString(eventInfo.getMessage()));
+  query.bindValue(":uuid", QString::fromStdString(eventInfo.getUuid()));
   query.bindValue(":meta", "{}");
   if (!query.exec()) {
     sErrorMessage = query.lastError().text().toStdString();

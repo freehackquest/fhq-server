@@ -186,6 +186,7 @@ list (APPEND WSJCPP_SOURCES "src/storages/updates/update_pmlyt8k7nm_215438peu8.c
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update_215438peu8_9gwc2tm5ah.cpp")
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update_9gwc2tm5ah_on73sheet9.cpp")
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update_on73sheet9_ili7looowo.cpp")
+list (APPEND WSJCPP_SOURCES "src/storages/updates/update_ili7looowo_8i52flwubv.cpp")
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update0101.cpp")
 
 # web-server
