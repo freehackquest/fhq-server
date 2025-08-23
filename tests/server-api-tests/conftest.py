@@ -318,7 +318,6 @@ def prepare_files_for_start_in_docker():
     """Prepare dirs and files for start fhq-server in docker"""
     os.makedirs("tmp_docker/data/conf.d", exist_ok=True)
     os.makedirs("tmp_docker/data/logs", exist_ok=True)
-    os.makedirs("tmp_docker/data/fhqjad-store", exist_ok=True)
     os.makedirs("tmp_docker/data/public/games", exist_ok=True)
     if not os.path.exists("tmp_docker/mysql"):
         os.makedirs("tmp_docker/mysql", exist_ok=True)
@@ -348,8 +347,6 @@ web_admin_folder = /usr/share/fhq-server/web-admin/
 web_public_folder = /usr/share/fhq-server/fhq-web-public/
 web_public_folder_url = http://localhost:7080/public/
 web_user_folder = /usr/share/fhq-server/web-user/
-
-web_fhqjad_store = /usr/share/fhq-server/fhqjad-store/
 
 """)
     test_selfsigned_key_path = "tmp_docker/data/conf.d/test-selfsigned.key"
@@ -417,7 +414,6 @@ def try_start_server_for_start_in_docker():
     client = docker.from_env()
     dir_conf = os.getcwd() + "/tmp_docker/data/conf.d"
     dir_public = os.getcwd() + "/tmp_docker/data/public"
-    dir_store = os.getcwd() + "/tmp_docker/data/fhqjad-store"
     dir_logs = os.getcwd() + "/tmp_docker/data/logs"
     mount_fhq_conf = docker.types.Mount(
         target="/etc/fhq-server",
@@ -427,11 +423,6 @@ def try_start_server_for_start_in_docker():
     dir_public = docker.types.Mount(
         target="/usr/share/fhq-server/fhq-web-public",
         source=dir_public,
-        type="bind"
-    )
-    dir_store = docker.types.Mount(
-        target="/usr/share/fhq-server/fhqjad-store",
-        source=dir_store,
         type="bind"
     )
 
@@ -465,7 +456,6 @@ def try_start_server_for_start_in_docker():
         #     -v `pwd`/tmp_docker/data/conf.d:/etc/fhq-server \
         #     -v `pwd`/tmp_docker/data/public:/usr/share/fhq-server/fhq-web-public \
         #     -v `pwd`/tmp_docker/data/logs:/var/log/fhq-server \
-        #     -v `pwd`/tmp_docker/data/fhqjad-store:/usr/share/fhq-server/fhqjad-store \
         #     --name "pytest-fhq-server" \
         #     --network host \
         #     freehackquest/fhq-server:latest

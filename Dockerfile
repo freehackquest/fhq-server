@@ -24,7 +24,6 @@ LABEL "repository"="https://github.com/freehackquest/fhq-server"
 
 COPY --from=0 /root/fhq-server/fhq-server /usr/bin/fhq-server
 RUN mkdir -p /usr/share/fhq-server \
-    && mkdir -p /usr/share/fhq-server/web/fhqjad-store \
     && mkdir -p /usr/share/fhq-server/public/games \
     && mkdir -p /usr/share/fhq-server/web/public/games \
     && mkdir -p /var/log/fhq-server

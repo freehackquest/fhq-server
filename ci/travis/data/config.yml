@@ -30,9 +30,5 @@ web_public_folder_url: http://localhost:7080/public/
 jobs_fast_threads: 2
 jobs_slow_threads: 1
 
-# fhqjad-store
-web_fhqjad_store: ./fhqjad-store
-
-
 # UI configs:
 allow_quests_proposals: yes

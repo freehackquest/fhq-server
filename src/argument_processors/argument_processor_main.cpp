@@ -171,7 +171,6 @@ bool ArgumentProcessorMain::initDefaultDataForContainers(const std::string &sIni
   vDirs.push_back(sNormalizedInitDir + "/data/public/games");
   vDirs.push_back(sNormalizedInitDir + "/data/public/quests");
   vDirs.push_back(sNormalizedInitDir + "/data/public/users");
-  vDirs.push_back(sNormalizedInitDir + "/data/fhqjad-store");
   vDirs.push_back(sNormalizedInitDir + "/data/file_storage");
   vDirs.push_back(sNormalizedInitDir + "/data/file_storage/games");
   vDirs.push_back(sNormalizedInitDir + "/data/file_storage/quests");
@@ -245,9 +244,6 @@ void ArgumentProcessorMain::initDefaultDataConfigYml(const std::string &sNormali
     sDefaultConfigYml += "# Jobs Pool Config\n";
     sDefaultConfigYml += "jobs_fast_threads: 2\n";
     sDefaultConfigYml += "jobs_slow_threads: 1\n";
-    sDefaultConfigYml += "\n";
-    sDefaultConfigYml += "# fhqjad-store\n";
-    sDefaultConfigYml += "web_fhqjad_store: " + m_sWorkDir + "/fhqjad-store\n";
     sDefaultConfigYml += "\n";
     sDefaultConfigYml += "# UI configs\n";
     sDefaultConfigYml += "allow_quests_proposals: no\n";
@@ -534,9 +530,6 @@ int ArgumentProcessorStart::exec(const std::vector<std::string> &vRoutes, const 
     .inFile();
   pGlobalSettings->registrySetting("web_server", "web_public_folder_url")
     .string("http://localhost:7080/public/")
-    .inFile();
-  pGlobalSettings->registrySetting("web_server", "web_fhqjad_store")
-    .dirPath("/usr/share/fhq-server/web/fhqjad-store")
     .inFile();
 
   WsjcppEmployees::init({"start_server"});

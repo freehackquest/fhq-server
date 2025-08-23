@@ -754,10 +754,6 @@ fhq.localization = {
 		'en': 'Web Admin Folder:',
 		'ru': 'Web Admin Folder:'
 	},
-	'setting_name_web_fhqjad_store': {
-		'en': 'Web fhqjad-store Folder:',
-		'ru': 'Web fhqjad-store Folder:'
-	},
 	'setting_name_web_port': {
 		'en': 'Web Port:',
 		'ru': 'Web Port:'

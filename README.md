@@ -353,7 +353,6 @@ $ sudo mkdir /var/log/fhq-server/
 $ sudo mkdir /usr/share/fhq-server/
 $ sudo mkdir /usr/share/fhq-server/web-admin
 $ sudo mkdir /usr/share/fhq-server/web-user
-$ sudo mkdir /usr/share/fhq-server/fhqjad-store
 ```
 
 Create config file `/etc/fhq-server/fhq-server.conf` with content
@@ -387,8 +386,6 @@ web_public_folrer_url = http://localhost:7080/public/
 jobs_fast_threads = 2
 jobs_slow_threads = 1
 
-# fhqjad-store
-web_fhqjad_store = /usr/share/fhq-server/fhqjad-store
 ```
 
 Reload and restart
