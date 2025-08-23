@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v0.2.55] - 2025-??-?? (2025 ??? ??)
 
+- Removed unused option web_fhqjad_store
+- dependabot[bot]: Updated brace-expansion from 2.0.1 to 2.0.2
+- dependabot[bot]: Updated http-proxy-middleware to 2.0.9
+- dependabot[bot]: Updated @babel/helpers from 7.24.8 to 7.28.2 in /web-user
+- dependabot[bot]: Updated prismjs from 1.29.0 to 1.30.0 in /web-user
+- dependabot[bot]: Updated on-headers from 1.0.2 to 1.1.0
+- dependabot[bot]: Updated compression from 1.7.4 to 1.8.1
 
 ## [v0.2.54] - 2025-08-21 (2025 Aug 21)
 
