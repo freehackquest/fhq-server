@@ -57,6 +57,7 @@ UpdateDatabaseAfterServerStartTask::~UpdateDatabaseAfterServerStartTask() {}
 void UpdateDatabaseAfterServerStartTask::run() {
   WsjcppLog::info(TAG, "Begin");
   UpdateMissingUuidsInPublicEvents();
+  MigrateRecordsPublicEventsToSqlite();
 };
 
 void UpdateDatabaseAfterServerStartTask::UpdateMissingUuidsInPublicEvents() {
@@ -110,13 +111,82 @@ void UpdateDatabaseAfterServerStartTask::UpdateMissingUuidsInPublicEvents() {
       }
       nProcessed++;
     }
-    int nNewPersentd = (nProcessed * 100) / nCount;
-    if (nNewPersentd != nPersents) {
-      nPersents = nNewPersentd;
+    int nNewPercent = (nProcessed * 100) / nCount;
+    if (nNewPercent != nPersents) {
+      nPersents = nNewPercent;
       std::string sMessage = "Public events: " + std::to_string(nPersents) + "% processed (" +
                              std::to_string(nProcessed) + "/" + std::to_string(nCount) + ")";
       pNotify->notifyInfo(EmployNotify::SERVER, sMessage);
       WsjcppLog::info(TAG, sMessage);
+    }
+  }
+}
+
+void UpdateDatabaseAfterServerStartTask::MigrateRecordsPublicEventsToSqlite() {
+  auto *pDatabase = findWsjcppEmploy<EmployDatabase>();
+  auto *pUuids = findWsjcppEmploy<EmployUuids>();
+  auto *pNotify = findWsjcppEmploy<EmployNotify>();
+
+  int nCount = 0;
+  QSqlDatabase db = *(pDatabase->database());
+  {
+    // number of records
+    QSqlQuery query(db);
+    query.prepare("SELECT COUNT(*) as cnt FROM public_events");
+    if (!query.exec()) {
+      WsjcppLog::err(TAG, query.lastError().text().toStdString());
+      return;
+    }
+    if (query.next()) {
+      QSqlRecord record = query.record();
+      nCount = record.value("cnt").toInt();
+    }
+    WsjcppLog::info(TAG, "Found records for update: " + std::to_string(nCount));
+     if (nCount == 0) {
+      return;
+    }
+  }
+
+  {
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM public_events ORDER BY id ASC;");
+    if (!query.exec()) {
+      std::string sError = query.lastError().text().toStdString();
+      WsjcppLog::err(TAG, sError);
+      pNotify->notifyDanger(EmployNotify::SERVER, sError);
+      return;
+    }
+    int nProcessed = 0;
+    int nPersents = 0;
+    WsjcppLog::info(TAG, std::to_string(nPersents) + "% processed");
+    while (query.next()) {
+      QSqlRecord record = query.record();
+      int nId = record.value("id").toInt();
+      std::string sUuid = record.value("uuid").toString().toStdString();
+      // WsjcppLog::info(TAG, std::to_string(nId) + " => '" + sUuid + "'");
+      if (sUuid == "") {
+        sUuid = pUuids->generateNewUuid("public_event");
+        // WsjcppLog::info(TAG, std::to_string(nId) + " => '" + sUuid + "'");
+        QSqlQuery queryUpdate(db);
+        queryUpdate.prepare("UPDATE public_events SET uuid = :uuid WHERE id = :id");
+        queryUpdate.bindValue(":uuid", QString::fromStdString(sUuid));
+        queryUpdate.bindValue(":id", nId);
+        if (!queryUpdate.exec()) {
+          std::string sError = queryUpdate.lastError().text().toStdString();
+          WsjcppLog::err(TAG, sError);
+          pNotify->notifyDanger(EmployNotify::SERVER, sError);
+          return;
+        }
+        nProcessed++;
+      }
+      int nNewPercent = (nProcessed * 100) / nCount;
+      if (nNewPercent != nPersents) {
+        nPersents = nNewPercent;
+        std::string sMessage = "Public events: " + std::to_string(nPersents) + "% processed (" +
+                              std::to_string(nProcessed) + "/" + std::to_string(nCount) + ")";
+        pNotify->notifyInfo(EmployNotify::SERVER, sMessage);
+        WsjcppLog::info(TAG, sMessage);
+      }
     }
   }
 }
