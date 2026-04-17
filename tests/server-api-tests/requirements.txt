@@ -1,6 +1,8 @@
 websocket-client>=0.48.0
 freehackquest_libclient_py>=0.2.39
 requests>=2.21.0
+pylint
+pycodestyle
 pytest
 pytest-env
 docker
