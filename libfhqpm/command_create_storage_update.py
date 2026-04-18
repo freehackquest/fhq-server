@@ -106,7 +106,7 @@ class CommandCreateStorageUpdate:
 
         for filepath in _cpp_files:
             # print(filepath)
-            with open(filepath) as _file:
+            with open(filepath, "r", encoding="utf-8") as _file:
                 line = _file.readline()
                 while line:
                     line = line.strip()

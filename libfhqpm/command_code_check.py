@@ -171,8 +171,8 @@ class CommandCodeCheck:
         self.__log.info("\n ---- result ----")
         self.__log.info("Processed files: %s", self.__processed_files)
         self.__log.info("Processed lines: %s", self.__processed_lines)
-        for _stat in self.__result:
-            self.__log.info("%s %s %s", _stat, str(len(self.__result[_stat])), "times in code")
+        for _stat, _item in self.__result.items():
+            self.__log.info("%s %s %s", _stat, str(len(_item)), "times in code")
 
     def execute(self, _):
         """ executing """
@@ -209,8 +209,8 @@ class CommandCodeCheck:
                     self.__check_auto(_line, _filepath, _line_number)
         self.__print_result()
         _errors = 0
-        for _stat in self.__result:
-            for _msg in self.__result[_stat]:
+        for _stat, _item in self.__result:
+            for _msg in _item:
                 if "ERROR" in _msg:
                     _errors += 1
         return _errors

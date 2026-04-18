@@ -26,6 +26,7 @@ COMMANDS = [
     libfhqpm.CommandClean(CONFIG),
     libfhqpm.CommandCodeStats(CONFIG),
     libfhqpm.CommandPyCheck(CONFIG),
+    libfhqpm.CommandCheck(CONFIG),
     libfhqpm.CommandClangFormat(CONFIG),
     libfhqpm.CommandRebuildEnvironmentImages(CONFIG),
     libfhqpm.CommandCodeCheck(CONFIG),

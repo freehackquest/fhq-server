@@ -37,17 +37,17 @@ import os
 import sys
 import logging
 
-from .pm_config import PmConfig
+# from .pm_config import PmConfig
 
 logging.basicConfig()
 
 
 class CommandPyCheck:
     """ CommandPyCheck """
-    def __init__(self, config: PmConfig):
+    def __init__(self, _):  # config: PmConfig):
         self.__log = logging.getLogger("CommandPyCheck")
         self.__log.setLevel(logging.DEBUG)
-        self.__config = config
+        # self.__config = config
         self.__subcomamnd_name = "py-check"
 
     def get_name(self):

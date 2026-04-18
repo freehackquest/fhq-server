@@ -34,6 +34,7 @@
 """ init module for libfhqpm (Project Manager) helper lib for a handling processes in project """
 
 from .pm_config import PmConfig
+from .command_check import CommandCheck
 from .command_rebuild_environment_images import CommandRebuildEnvironmentImages
 from .command_clang_format import CommandClangFormat
 from .command_clean import CommandClean

@@ -1,0 +1,165 @@
+#!/usr/bin/env python3
+##################################################################################
+#    __ _
+#   / _| |__   __ _       ___  ___ _ ____   _____ _ __
+#  | |_| '_ \ / _` | ___ / __|/ _ \ '__\ \ / / _ \ '__|
+#  |  _| | | | (_| ||___|\__ \  __/ |   \ V /  __/ |
+#  |_| |_| |_|\__, |     |___/\___|_|    \_/ \___|_|
+#                |_|
+#
+# Copyright (c) 2011-2026 FreeHackQuest <freehackquest@gmail.com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# Original repository: https://github.com/freehackquest/fhq-server
+#
+##################################################################################
+
+""" subcommand calculate statistics by source code """
+
+import os
+import re
+import sys
+from datetime import datetime
+import logging
+
+from .pm_config import PmConfig
+from .utils_files import UtilsFiles
+
+logging.basicConfig()
+
+
+class CommandCheck:
+    """ CommandCheck """
+    def __init__(self, config: PmConfig):
+        self.__log = logging.getLogger("CommandCheck")
+        self.__log.setLevel(logging.DEBUG)
+        self.__config = config
+        self.__subcommand_name = "check"
+        source_license_lines = self.__get_source_copyright(self.__config.get_root_dir())
+        self.__opt = {
+            "bash_copyright": ["#!/bin/bash"] + self.__bash_format_license(source_license_lines),
+            "cpp_copyright": self.__cpp_format_license(source_license_lines),
+        }
+        # print("\n".join(self.__source_license_lines))
+
+    def get_name(self):
+        """ return subcommand name """
+        return self.__subcommand_name
+
+    def do_registry(self, subparsers):
+        """ registering sub command """
+        _parser_check = subparsers.add_parser(
+            name=self.__subcommand_name,
+            description='Calculate statistics by source code'
+        )
+        _parser_check.set_defaults(subparser=self.__subcommand_name)
+
+    def __get_source_copyright(self, root_dir):
+        _expected_years = "2011-" + str(datetime.now().year)
+        _current_license_lines = UtilsFiles.safe_read_file(
+            os.path.join(root_dir, "LICENSE")
+        )
+        _re_years = re.compile(r'Copyright .* (\d{4}[ ]*-[ ]*\d{4}) ')
+        source_license_lines = [
+            "                     Project",
+            "   __ _",
+            "  / _| |__   __ _       ___  ___ _ ____   _____ _ __",
+            " | |_| '_ \\ / _` | ___ / __|/ _ \\ '__\\ \\ / / _ \\ '__|",
+            " |  _| | | | (_| ||___|\\__ \\  __/ |   \\ V /  __/ |",
+            " |_| |_| |_|\\__, |     |___/\\___|_|    \\_/ \\___|_|",
+            "               |_|",
+            "",
+        ]
+        for _line in _current_license_lines:
+            _line = _line.strip()
+            source_license_lines.append(_line)
+            _m_years = re.match(_re_years, _line)
+            if _m_years:
+                _years = _m_years.group(1)
+                if _years != _expected_years:
+                    self.__log.error(
+                        "\n\nExpected '%s', but got '%s' in LICENSE file\n\n",
+                        _expected_years,
+                        _years
+                    )
+                    sys.exit(1)
+        source_license_lines.extend([
+            "",
+            "Original repository: https://github.com/freehackquest/fhq-server",
+            "",
+        ])
+        return source_license_lines
+
+    def __bash_format_license(self, source_license_lines):
+        ret = [
+            "##################################################################################",
+        ]
+        for ln in source_license_lines:
+            if len(ln) == 0:
+                ret.append("#")
+            else:
+                ret.append("# " + ln)
+        ret.extend([
+            "##################################################################################",
+            "",
+        ])
+        return ret
+
+    def __cpp_format_license(self, source_license_lines):
+        ret = [
+            "/**********************************************************************************",
+        ]
+        for ln in source_license_lines:
+            if len(ln) == 0:
+                ret.append(" *")
+            else:
+                ret.append(" * " + ln)
+        ret.extend([
+            " ***********************************************************************************/",
+            "",
+        ])
+        return ret
+
+    def __check_copyrights(self):
+        root_dir = self.__config.get_root_dir()
+        src_files = UtilsFiles.get_all_files(
+            os.path.join(root_dir, "src"),
+            ignore_dirs="third-party"
+        )
+        # src_wsjcpp_dir = os.path.join(root_dir, "src.wsjcpp")
+        # src_resources_dir = os.path.join(root_dir, "src-resources.wsjcpp")
+        _cpp_copyright = self.__opt["cpp_copyright"]
+        for _filepath in src_files:
+            if _filepath.endswith(".png"):
+                continue  # skip
+            _source_lines = UtilsFiles.safe_read_file(_filepath)
+            if not UtilsFiles.compare_first_lines(_source_lines, _cpp_copyright):
+                self.__log.error(
+                    "\nExpected copyright \n%s\n in file %s\n",
+                    "\n".join(_cpp_copyright),
+                    _filepath
+                )
+
+    def execute(self, _):
+        """ executing """
+        self.__log.info("Start...")
+        self.__check_copyrights()
+
+        sys.exit(0)

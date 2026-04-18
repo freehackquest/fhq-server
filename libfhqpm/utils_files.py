@@ -41,16 +41,18 @@ class UtilsFiles:
     """ UtilsFiles """
 
     @staticmethod
-    def get_all_files(_startdir):
+    def get_all_files(_start_dir, ignore_dirs=None):
         """ recursive find all files in dir """
         _ret = []
-        _rec = [_startdir]
+        _rec = [_start_dir]
         while len(_rec) > 0:
             _dirpath = _rec[0]
             del _rec[0]
             for _file in os.listdir(_dirpath):
                 _filepath = os.path.join(_dirpath, _file)
                 if os.path.isdir(_filepath):
+                    if ignore_dirs is not None and _file in ignore_dirs:
+                        continue
                     _rec.append(_filepath)
                     continue
                 if os.path.isfile(_filepath):
@@ -91,3 +93,20 @@ class UtilsFiles:
             elif os.path.isdir(_fullpath):
                 UtilsFiles.recoursive_remove_files(_fullpath)
         os.rmdir(_dir)
+
+    @staticmethod
+    def compare_first_lines(_lines_right, _lines_left):
+        """ compare first lines """
+        if len(_lines_right) < len(_lines_left):
+            return False
+        _ret = True
+        _idx = 0
+        while _idx < len(_lines_left):
+            _line_left = _lines_left[_idx].rstrip()
+            _line_right = _lines_right[_idx].rstrip()
+
+            if _line_right != _line_left:
+                print(" '" + _line_right + "' != '" + _line_left + "'")
+                _ret = False
+            _idx += 1
+        return _ret
