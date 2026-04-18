@@ -442,7 +442,7 @@ def try_start_server_for_start_in_docker():
             mem_limit="128M",
             memswap_limit="128M",
             auto_remove=True,
-            mounts=[mount_fhq_conf, dir_public, dir_store, dir_logs],
+            mounts=[mount_fhq_conf, dir_public, dir_logs],
             ports={"1234/tcp": 1234, "7080/tcp": 7080},
             name="pytest-fhq-server",
             detach=True,
