@@ -6,4 +6,3 @@ pycodestyle
 pytest
 pytest-env
 docker
-glob2
