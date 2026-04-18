@@ -17,6 +17,7 @@ import docker
 
 from freehackquest_libclient_py import FreeHackQuestClient
 
+
 def pytest_configure():
     """Global variables for pytests"""
     pytest.something = "some"
@@ -62,6 +63,7 @@ def pytest_configure():
         "role": "user"
     }
 
+
 @pytest.fixture(scope="session")
 def local_tmp_dir():
     """tmp directory for tests"""
@@ -70,10 +72,12 @@ def local_tmp_dir():
         os.mkdir(tmp_dir_path)
     return tmp_dir_path
 
+
 @pytest.fixture(scope="session")
 def url_http_web_server():
     """ web_server_http """
     return pytest.test_url_http_web_server
+
 
 def _generate_random(size):
     """ Generate random printable string """
@@ -81,10 +85,12 @@ def _generate_random(size):
     _alphabet = string.ascii_uppercase + string.digits + ' _+=\'"~@!#?/<>'
     return ''.join(random.choice(_alphabet) for _ in _range)
 
+
 @pytest.fixture(scope="session")
 def generate_random():
     """ generate_random """
     return _generate_random
+
 
 def _generate_random_uuid():
     """ _generate_random_uuid """
@@ -100,10 +106,12 @@ def _generate_random_uuid():
     ret = ret + ''.join(random.choice('0123456789abcdef') for _ in range(12))
     return ret
 
+
 @pytest.fixture(scope="session")
 def generate_random_uuid():
     """ generate_random_uuid """
     return _generate_random_uuid
+
 
 @pytest.fixture(scope="session")
 def admin_session():
@@ -117,7 +125,7 @@ def admin_session():
     assert resp is not None
     assert resp['result'] != 'FAIL'
 
-     # loggined = True
+    # loggined = True
     game1 = pytest.admin_session.game_info({"uuid": pytest.game1_uuid})
     assert game1 is not None
     if game1['result'] == 'FAIL':
@@ -138,60 +146,72 @@ def admin_session():
         assert game1['result'] == 'DONE'
     return pytest.admin_session
 
+
 @pytest.fixture(scope="session")
 def admin_password():
     """Return admin_password"""
     return pytest.admin_password
+
 
 @pytest.fixture(scope="session")
 def user1_data():
     """Return user1_data"""
     return pytest.user1_data
 
+
 @pytest.fixture(scope="session")
 def user2_data():
     """Return user2_data"""
     return pytest.user2_data
+
 
 @pytest.fixture(scope="session")
 def user3_data():
     """Return user3_data"""
     return pytest.user3_data
 
+
 @pytest.fixture(scope="session")
 def user3_data_again():
     """Return user3_data"""
     return pytest.user3_data_again
+
 
 @pytest.fixture(scope="session")
 def test_server():
     """Return web server host"""
     return pytest.test_server
 
+
 @pytest.fixture(scope="session")
 def game1_uuid():
     """Return game1 uuid"""
     return pytest.game1_uuid
+
 
 @pytest.fixture(scope="session")
 def game2_uuid():
     """Return game2 uuid"""
     return pytest.game2_uuid
 
+
 @pytest.fixture(scope="session")
 def classbook_record1_uuid():
     """Return classbook record1 uuid"""
     return "C1A55800-0000-0000-0000-000000000001"
+
 
 @pytest.fixture(scope="session")
 def classbook_record2_uuid():
     """Return classbook record2 uuid"""
     return "C1A55800-0000-0000-0000-000000000002"
 
+
 @pytest.fixture(scope="session")
 def classbook_record3_uuid():
     """Return classbook record3 uuid"""
     return "C1A55800-0000-0000-0000-000000000003"
+
 
 @pytest.fixture(scope="session")
 def classbook_record4_uuid():
@@ -203,8 +223,9 @@ def classbook_record4_uuid():
 # QUEST_UUID3 = "03E51000-0000-0000-0000-000000000003"
 # QUEST_UUID4 = "03E51000-0000-0000-0000-000000000004"
 
+
 @pytest.fixture(scope="session", autouse=True)
-def callattr_ahead_of_alltests(): # request
+def callattr_ahead_of_alltests():  # request
     """ Start server before tests and after tests """
     print("Before tests")
     assert start_server() is True
@@ -212,12 +233,14 @@ def callattr_ahead_of_alltests(): # request
     print("\nAfter tests")
     stop_server()
 
+
 def check_port(host, port):
     """Check socket port"""
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     result = sock.connect_ex((host, port))
     sock.close()
     return result == 0
+
 
 def start_server():
     """Start fhq-server"""
@@ -235,6 +258,7 @@ def start_server():
     print("START_SERVER can be 'local' or 'docker'")
     return False
 
+
 def stop_server():
     """Stop fhq-server"""
     if not pytest.server_started:
@@ -250,6 +274,7 @@ def stop_server():
         pytest.server_started = False
     else:
         print("START_SERVER can be 'local' or 'docker'")
+
 
 def start_local_server():
     """Start process of fhq-server"""
@@ -278,6 +303,7 @@ def start_local_server():
         return False
     print("Port available... OK!")
     return True
+
 
 def stop_local_server():
     """Stop process of fhq-server"""
@@ -333,6 +359,7 @@ web_fhqjad_store = /usr/share/fhq-server/fhqjad-store/
     with open(test_selfsigned_crt_path, "w", encoding="utf-8") as test_selfsigned_crt:
         test_selfsigned_crt.write("")
 
+
 # prepare folders with config
 def start_mysql_for_start_in_docker():
     """Start mysql container for start fhq-server in docker"""
@@ -381,9 +408,12 @@ def start_mysql_for_start_in_docker():
         #     mysql:5.7
         # """
 
-# prepare folders with config
+
 def try_start_server_for_start_in_docker():
-    """Try start fhq-server container for start fhq-server in docker"""
+    """
+        Try start fhq-server container for start fhq-server in docker.
+        prepare folders with config.
+    """
     client = docker.from_env()
     dir_conf = os.getcwd() + "/tmp_docker/data/conf.d"
     dir_public = os.getcwd() + "/tmp_docker/data/public"
@@ -441,6 +471,7 @@ def try_start_server_for_start_in_docker():
         #     freehackquest/fhq-server:latest
         # """
 
+
 def start_server_in_docker():
     """Start fhq-server in docker"""
 
@@ -464,6 +495,7 @@ def start_server_in_docker():
             break
 
     return result_check_port
+
 
 def stop_server_in_docker():
     """Stop fhq-server in docker"""

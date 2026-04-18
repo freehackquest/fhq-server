@@ -5,6 +5,7 @@
 Test Scoreboard
 """
 
+
 def test_scoreboard_get(admin_session):
     """ Scoreboard Get """
     print(test_scoreboard_get.__doc__)

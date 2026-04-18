@@ -18,7 +18,7 @@ def test_0001_quests(admin_session, generate_random, generate_random_uuid):
     gameid = games1[0]['local_id']
 
     # to quests_create
-    quest_data =  {
+    quest_data = {
         "uuid": generate_random_uuid(),
         "gameid": gameid,
         "name": generate_random(255).strip(),

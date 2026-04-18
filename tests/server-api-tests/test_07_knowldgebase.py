@@ -6,6 +6,7 @@
 
 from pprint import pprint
 
+
 def remove_item(admin_session, classbookid, padding):
     """ remove item """
     records_list = admin_session.classbook_list({
@@ -31,10 +32,12 @@ def remove_item(admin_session, classbookid, padding):
             raise ValueError('Could not remove classbook record #' + str(classbookid))
         print(" * " + padding + "+ " + str(classbookid) + " - removed")
 
+
 # def test_0001_clean_classbook(admin_session):
 #     """ test_0001_clean_classbook """
 #     print(test_0001_clean_classbook.__doc__)
 #     remove_item(admin_session, 0, "-")
+
 
 def test_0002_add_items(admin_session, generate_random, generate_random_uuid):
     """ test_0002_add_items """

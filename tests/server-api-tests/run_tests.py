@@ -7,6 +7,7 @@ import sys
 import os
 import subprocess
 
+
 def recursive_find_all_py_files(_dir, ignores=None):
     """ recursive_find_all_cbproj_files """
     _ret = []
@@ -58,6 +59,7 @@ def run_command(_command, _output):
         return
     sys.exit("Could not start process")
 
+
 if __name__ == "__main__":
     with open('result_tests.txt', 'w', encoding="utf-8") as _output:
         py_files = recursive_find_all_py_files(".", ignores=[
@@ -75,8 +77,10 @@ if __name__ == "__main__":
 
             command = [
                 'python3', '-m', 'pycodestyle',
+                '--max-line-length=100',
             ]
             command.extend(py_files)
+            run_command(command, _output)
 
             run_command([
                 'python3', '-m', 'pytest',

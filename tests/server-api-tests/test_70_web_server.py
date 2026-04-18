@@ -8,11 +8,15 @@ Test web server
 
 import requests
 
+
 def test_web_server(url_http_web_server):
     """ Coverage """
     print(test_web_server.__doc__)
 
     print("Request main admin page... ")
 
-    _resp = requests.get(url_http_web_server + 'admin/')
+    _resp = requests.get(
+        url_http_web_server + 'admin/',
+        timeout=5,
+    )
     assert _resp.status_code == 200

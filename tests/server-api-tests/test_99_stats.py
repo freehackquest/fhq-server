@@ -7,6 +7,7 @@ Show all statistics (must be run as latest)
 
 import math
 
+
 def test_coverage(admin_session):
     """Coverage"""
     print(test_coverage.__doc__)

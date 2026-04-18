@@ -9,6 +9,7 @@ Test server api leaks
 import uuid
 # import pytest
 
+
 def test_cleanup_leaks_list(admin_session):
     """Cleanup leaks list"""
     print(test_cleanup_leaks_list.__doc__)
@@ -17,6 +18,7 @@ def test_cleanup_leaks_list(admin_session):
     for leak in leaks["data"]:
         admin_session.leaks.delete({"id": leak["id"]})
         print("Leak with id #" + str(leak["id"]) + " was succesfully deleted!")
+
 
 def test_leak_creation(admin_session, game1_uuid):
     """Create item leak test"""
@@ -41,6 +43,7 @@ def test_leak_creation(admin_session, game1_uuid):
     assert leak1['data']['score'] == 100
     assert leak1['data']['score'] != 102
     assert leak1['data']['uuid'] == str(leak_uuid1)
+
 
 def test_leak_update(admin_session):
     """Update item of leak"""

@@ -9,11 +9,13 @@ import random
 import string
 import time
 
+
 def generate_random(size):
     """Generate random printable string"""
     _range = range(size)
     _alphabet = string.ascii_uppercase + string.digits + ' _+=\'"~@!#?/<>'
     return ''.join(random.choice(_alphabet) for _ in _range)
+
 
 def test_publicevents_base(admin_session):
     """ Test Public events base """
@@ -22,7 +24,7 @@ def test_publicevents_base(admin_session):
     assert events is not None
     assert events["result"] == "DONE"
     if events["count"] > 0:
-        pass # remove all current events
+        pass  # remove all current events
     event_message = generate_random(50).strip()
     event_message_correct = event_message
     event_message_correct = event_message_correct.replace('>', '&gt;')

@@ -3,10 +3,11 @@
 # Copyright (C) 2011-2025, Evgenii Sopov <mrseakg@gmail.com>
 
 """
-Test Server Settings
+Test Users api
 """
 
 from freehackquest_libclient_py import FreeHackQuestClient
+
 
 def test_0001_cleanup_users(admin_session, admin_password):
     """ test_0001_cleanup_users """
@@ -40,6 +41,7 @@ def test_0001_cleanup_users(admin_session, admin_password):
             assert user_delete["result"] == "DONE"
             print("User '" + _user + "' succesfull removed")
 
+
 def test_0002_create_users(admin_session, user1_data, user2_data, user3_data, user3_data_again):
     """ test_0002_create_users """
     print(test_0002_create_users.__doc__)
@@ -61,6 +63,7 @@ def test_0002_create_users(admin_session, user1_data, user2_data, user3_data, us
     user3_again = admin_session.users_add(user3_data_again)
     assert user3_again is not None
     assert user3_again["result"] == "FAIL"
+
 
 def test_0003_find_user2_and_update(admin_session, user2_data, test_server):
     """ test_0003_find_user2_and_update """
@@ -134,6 +137,7 @@ def test_0003_find_user2_and_update(admin_session, user2_data, test_server):
     user2_skills = admin_session.user_skills({"userid": user2_found["id"]})
     assert user2_skills is not None
     assert user2_skills["result"] == "DONE"
+
 
 def test_0004_remove_user3(admin_session, user3_data, admin_password):
     """ test_0004_remove_user3 """

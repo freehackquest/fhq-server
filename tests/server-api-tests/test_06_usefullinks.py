@@ -5,11 +5,14 @@
 Test server api leaks
 """
 
+
 def test_0000_cleanup_useful_links(admin_session):
-    """Cleanup useful_links list"""
+    """ Cleanup useful_links list """
     print(test_0000_cleanup_useful_links.__doc__)
     print(admin_session)
-    ul_list = admin_session.useful_links_list({ "filter": "" })
+    ul_list = admin_session.useful_links_list({
+        "filter": ""
+    })
     assert ul_list is not None
     assert ul_list["result"] == "DONE"
 
@@ -18,8 +21,9 @@ def test_0000_cleanup_useful_links(admin_session):
         print("remove " + str(ul_id))
         admin_session.useful_links_delete({"useful_link_id": ul_id})
 
+
 def test_0001_add_useful_links(admin_session, generate_random):
-    """Add """
+    """ Add """
     print(test_0001_add_useful_links.__doc__)
     print(admin_session)
 

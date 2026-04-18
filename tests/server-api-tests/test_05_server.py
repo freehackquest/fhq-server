@@ -8,11 +8,13 @@ Test Server Settings
 import random
 import string
 
+
 def generate_random(size):
     """Generate random printable string"""
     _range = range(size)
     _alphabet = string.ascii_uppercase + string.digits + ' _+=\'"~@!#?/<>'
     return ''.join(random.choice(_alphabet) for _ in _range)
+
 
 def test_server_settings_readonly(admin_session):
     """ Server settings readonly """
@@ -21,6 +23,7 @@ def test_server_settings_readonly(admin_session):
     assert server_api is not None
     assert server_api["result"] == "FAIL"
     print(server_api)
+
 
 def test_server_settings_update(admin_session):
     """ Server settings """
@@ -54,6 +57,7 @@ def test_server_settings_update(admin_session):
     assert _new_sett['value'] != _old_sett['value']
     assert _new_sett['value'] == _new_value
 
+
 def test_server_uuid_generate(admin_session):
     """ Server uuid generate """
     print(test_server_settings_readonly.__doc__)
@@ -63,8 +67,9 @@ def test_server_uuid_generate(admin_session):
     assert ret["result"] is not None
     assert ret["result"]["typeobj"] == "test"
 
+
 def test_server_uuid_info(admin_session):
-    """ Server uuid generate """
+    """ Server uuid info """
     print(test_server_settings_readonly.__doc__)
     ret = admin_session.server.uuid_generate({"typeobj": 'test'})
 
