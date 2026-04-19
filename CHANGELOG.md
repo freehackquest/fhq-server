@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v0.2.55] - 2025-??-?? (2025 ??? ??)
 
+- Implemented './pm.py front --run' and './pm.py front --build' - will be run in docker-container and will not need anymore install npm for frontend to local developer machine
+- Added './pm.py check'
+- Added wss_test.py
+- Updated year license, copyrights
+- Synchronized copyrights in head of source files
 - Removed unused option web_fhqjad_store
 - dependabot[bot]: Updated brace-expansion from 2.0.1 to 2.0.2
 - dependabot[bot]: Updated http-proxy-middleware to 2.0.9
