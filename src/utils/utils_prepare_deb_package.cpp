@@ -50,11 +50,11 @@ void UtilsPrepareDebPackage::prepare(QString /*repo*/, QString tmpdeb) {
   }
   if (file.open(QIODevice::ReadWrite)) {
     QTextStream stream(&file);
-    stream << "Source: " << WSJCPP_APP_NAME << endl;
-    stream << "Section: misc" << endl;
-    stream << "Priority: optional" << endl;
+    stream << "Source: " << WSJCPP_APP_NAME << Qt::endl;
+    stream << "Section: misc" << Qt::endl;
+    stream << "Priority: optional" << Qt::endl;
     // TODO redesign in static method
-    stream << "Maintainer: Evgenii Sopov <mrseakg@gmail.com>" << endl;
+    stream << "Maintainer: Evgenii Sopov <mrseakg@gmail.com>" << Qt::endl;
     // TODO different for ubuntu (default-mysql-server) and for debian
     // (mysql-server)
     QStringList depends;
@@ -78,35 +78,35 @@ void UtilsPrepareDebPackage::prepare(QString /*repo*/, QString tmpdeb) {
             << "libglib2.0-0"
             << "libpcre3";
 
-    stream << "Depends: " << depends.join(", ") << endl;
+    stream << "Depends: " << depends.join(", ") << Qt::endl;
 
     // Version
-    stream << "Version: " << WSJCPP_APP_VERSION << endl;
+    stream << "Version: " << WSJCPP_APP_VERSION << Qt::endl;
     std::cout << "Version: " << WSJCPP_APP_VERSION << "\n";
 
     // TODO calculate correct installed size
-    stream << "Installed-Size: 1024" << endl;
-    stream << "Homepage: https://github.com/freehackquest/backend" << endl;
+    stream << "Installed-Size: 1024" << Qt::endl;
+    stream << "Homepage: https://github.com/freehackquest/backend" << Qt::endl;
 
     // Package
-    stream << "Package: " << WSJCPP_APP_NAME << endl;
+    stream << "Package: " << WSJCPP_APP_NAME << Qt::endl;
     std::cout << "Package: " << std::string(WSJCPP_APP_NAME) << "\n";
 
     // Architecture
     if (QSysInfo::currentCpuArchitecture() == "x86_64") {
-      stream << "Architecture: amd64" << endl;
+      stream << "Architecture: amd64" << Qt::endl;
       std::cout << "Architecture: amd64\n";
     } else if (QSysInfo::currentCpuArchitecture() == "i386") {
-      stream << "Architecture: i386" << endl;
+      stream << "Architecture: i386" << Qt::endl;
       std::cout << "Architecture: i386\n";
     } else {
-      stream << "Architecture: all" << endl;
+      stream << "Architecture: all" << Qt::endl;
       std::cout << "Architecture: all\n";
     }
 
-    stream << "Description: Backend for FreeHackQuest" << endl;
+    stream << "Description: Backend for FreeHackQuest" << Qt::endl;
     stream << "  This is an open source platform for competitions in computer "
               "security."
-           << endl;
+           << Qt::endl;
   }
 }
