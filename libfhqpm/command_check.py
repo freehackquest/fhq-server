@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 ##################################################################################
+#                      Project
 #    __ _
 #   / _| |__   __ _       ___  ___ _ ____   _____ _ __
 #  | |_| '_ \ / _` | ___ / __|/ _ \ '__\ \ / / _ \ '__|
 #  |  _| | | | (_| ||___|\__ \  __/ |   \ V /  __/ |
 #  |_| |_| |_|\__, |     |___/\___|_|    \_/ \___|_|
 #                |_|
+#
+# MIT License
 #
 # Copyright (c) 2011-2026 FreeHackQuest <freehackquest@gmail.com>
 #
@@ -57,11 +60,22 @@ class CommandCheck:
         self.__opt = {
             "bash_copyright": ["#!/bin/bash"] + _bash_copyright,
             "cpp_copyright": self.__cpp_format_license(source_license_lines),
-            # "py_copyright": ["#!/bin/bash"] + _bash_copyright,
+            "py_copyright": ["#!/usr/bin/env python3"] + _bash_copyright,
             "cmake_copyright": _bash_copyright,
         }
         self.__errors = []
         # print("\n".join(self.__source_license_lines))
+        self.__ignore_dirs = [
+            "third-party",
+            "src.wsjcpp",
+            "node_modules",
+            "tmp",
+            "data",
+            "freehackquest_libclient_py",  # TODO
+            ".wsjcpp",
+            "src-resources.wsjcpp",
+            "unit-tests.wsjcpp",
+        ]
 
     def get_name(self):
         """ return subcommand name """
@@ -145,7 +159,7 @@ class CommandCheck:
         root_dir = self.__config.get_root_dir()
         src_files = UtilsFiles.get_all_files(
             os.path.join(root_dir, "src"),
-            ignore_dirs=["third-party"]
+            ignore_dirs=self.__ignore_dirs
         )
         # src_wsjcpp_dir = os.path.join(root_dir, "src.wsjcpp")
         # src_resources_dir = os.path.join(root_dir, "src-resources.wsjcpp")
@@ -162,47 +176,40 @@ class CommandCheck:
                 )
                 self.__errors.append(_filepath)
 
-    def __check_copyrights_bash(self):
-        root_dir = self.__config.get_root_dir()
-        _files = UtilsFiles.get_all_files(
-            os.path.join(root_dir),
-            ignore_dirs=[
-                "third-party",
-                "web-user",
-            ]
-        )
-        _bash_copyright = self.__opt["bash_copyright"]
-        for _filepath in _files:
-            if not _filepath.endswith(".sh"):
-                continue  # skip
-            _source_lines = UtilsFiles.safe_read_file(_filepath)
-            if not UtilsFiles.compare_first_lines(_source_lines, _bash_copyright):
-                self.__log.error(
-                    "\nExpected copyright \n%s\n in file %s\n",
-                    "\n".join(_bash_copyright),
-                    _filepath
-                )
-                self.__errors.append(_filepath)
+    @staticmethod
+    def __cpp_filter(_filepath):
+        if _filepath.endswith(".cpp") or _filepath.endswith(".h"):
+            return True
+        if _filepath.endswith(".cc") or _filepath.endswith(".hpp"):
+            return True
+        return False
 
-    def __check_copyrights_cmake(self):
+    @staticmethod
+    def __cmake_filter(_filepath):
+        return _filepath.endswith("CMakeLists.txt")
+
+    @staticmethod
+    def __shell_filter(_filepath):
+        return _filepath.endswith(".sh")
+
+    @staticmethod
+    def __py_filter(_filepath):
+        return _filepath.endswith(".py")
+
+    def __check_copyrights(self, _copyright, _filter):
         root_dir = self.__config.get_root_dir()
         _files = UtilsFiles.get_all_files(
             os.path.join(root_dir),
-            ignore_dirs=[
-                "third-party",
-                "src.wsjcpp",
-                "unit-tests.wsjcpp",
-            ]
+            ignore_dirs=self.__ignore_dirs
         )
-        _cmake_copyright = self.__opt["cmake_copyright"]
         for _filepath in _files:
-            if not _filepath.endswith("CMakeLists.txt"):
+            if not _filter(_filepath):
                 continue  # skip
             _source_lines = UtilsFiles.safe_read_file(_filepath)
-            if not UtilsFiles.compare_first_lines(_source_lines, _cmake_copyright):
+            if not UtilsFiles.compare_first_lines(_source_lines, _copyright):
                 self.__log.error(
                     "\nExpected copyright \n%s\n in file %s\n",
-                    "\n".join(_cmake_copyright),
+                    "\n".join(_copyright),
                     _filepath
                 )
                 self.__errors.append(_filepath)
@@ -210,9 +217,23 @@ class CommandCheck:
     def execute(self, _):
         """ executing """
         self.__log.info("Start...")
-        self.__check_copyrights_cpp()
-        self.__check_copyrights_bash()
-        self.__check_copyrights_cmake()
+
+        self.__check_copyrights(
+            self.__opt["cpp_copyright"],
+            CommandCheck.__cpp_filter,
+        )
+        self.__check_copyrights(
+            self.__opt["bash_copyright"],
+            CommandCheck.__shell_filter,
+        )
+        self.__check_copyrights(
+            self.__opt["cmake_copyright"],
+            CommandCheck.__cmake_filter,
+        )
+        self.__check_copyrights(
+            self.__opt["py_copyright"],
+            CommandCheck.__py_filter,
+        )
 
         if len(self.__errors) > 0:
             self.__log.info("Errors %s", len(self.__errors))
