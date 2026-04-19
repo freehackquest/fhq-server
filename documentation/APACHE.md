@@ -1,10 +1,6 @@
 # APACHE
 
-* [CONFIGURING](CONFIGURING.md)
-* [HOW-TO-BUILD](HOW-TO-BUILD.md)
-
-
-## Configure proxing websockets
+## Apache. Configure proxy websockets
 
 If you want to avoid problems with blocked websocket ports from users (1234 - ws, 4613 - wss)
 
@@ -34,7 +30,7 @@ $ sudo a2enmod headers
 
 ## Configure proxy websocket (for https)
 
-*if you get reposrts with problems with port from users*
+*if you get reports with problems with port from users*
 
 ```
 <VirtualHost *:443>
