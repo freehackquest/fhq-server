@@ -57,6 +57,7 @@ class CommandCheck:
             "bash_copyright": ["#!/bin/bash"] + self.__bash_format_license(source_license_lines),
             "cpp_copyright": self.__cpp_format_license(source_license_lines),
         }
+        self.__errors = []
         # print("\n".join(self.__source_license_lines))
 
     def get_name(self):
@@ -137,17 +138,17 @@ class CommandCheck:
         ])
         return ret
 
-    def __check_copyrights(self):
+    def __check_copyrights_cpp(self):
         root_dir = self.__config.get_root_dir()
         src_files = UtilsFiles.get_all_files(
             os.path.join(root_dir, "src"),
-            ignore_dirs="third-party"
+            ignore_dirs=["third-party"]
         )
         # src_wsjcpp_dir = os.path.join(root_dir, "src.wsjcpp")
         # src_resources_dir = os.path.join(root_dir, "src-resources.wsjcpp")
         _cpp_copyright = self.__opt["cpp_copyright"]
         for _filepath in src_files:
-            if _filepath.endswith(".png"):
+            if _filepath.endswith(".png") or _filepath.endswith(".json"):
                 continue  # skip
             _source_lines = UtilsFiles.safe_read_file(_filepath)
             if not UtilsFiles.compare_first_lines(_source_lines, _cpp_copyright):
@@ -156,10 +157,38 @@ class CommandCheck:
                     "\n".join(_cpp_copyright),
                     _filepath
                 )
+                self.__errors.append(_filepath)
+
+    def __check_copyrights_bash(self):
+        root_dir = self.__config.get_root_dir()
+        _files = UtilsFiles.get_all_files(
+            os.path.join(root_dir),
+            ignore_dirs=[
+                "third-party",
+                "web-user",
+            ]
+        )
+        _bash_copyright = self.__opt["bash_copyright"]
+        for _filepath in _files:
+            if not _filepath.endswith(".sh"):
+                continue  # skip
+            _source_lines = UtilsFiles.safe_read_file(_filepath)
+            if not UtilsFiles.compare_first_lines(_source_lines, _bash_copyright):
+                self.__log.error(
+                    "\nExpected copyright \n%s\n in file %s\n",
+                    "\n".join(_bash_copyright),
+                    _filepath
+                )
+                self.__errors.append(_filepath)
 
     def execute(self, _):
         """ executing """
         self.__log.info("Start...")
-        self.__check_copyrights()
+        self.__check_copyrights_cpp()
+        self.__check_copyrights_bash()
 
+        if len(self.__errors) > 0:
+            self.__log.info("Errors %s", len(self.__errors))
+            sys.exit(1)
+        self.__log.info("Everything is fine")
         sys.exit(0)
