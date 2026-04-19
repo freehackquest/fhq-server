@@ -57,22 +57,25 @@ class CommandCreateStorageUpdate:
         self.__log = logging.getLogger("CommandCodeCheck")
         self.__log.setLevel(logging.DEBUG)
         self.__config = config
-        self.__subcomamnd_name = "create-storage-update"
+        self.__subcommand_name = "create-storage-update"
         self.__updates = []
         self.__end_points = []
         self.__max_weight = 0
+        self.__copyrights = UtilsCopyrights(
+            os.path.join(self.__config.get_root_dir(), "LICENSE")
+        )
 
     def get_name(self):
         """ return subcommand name """
-        return self.__subcomamnd_name
+        return self.__subcommand_name
 
     def do_registry(self, subparsers):
-        """ registring sub command """
+        """ registering sub command """
         _parser_create_storage_update = subparsers.add_parser(
-            name=self.__subcomamnd_name,
+            name=self.__subcommand_name,
             description='DEPRECATED: Create storage update (for change struct of database)'
         )
-        _parser_create_storage_update.set_defaults(subparser=self.__subcomamnd_name)
+        _parser_create_storage_update.set_defaults(subparser=self.__subcommand_name)
 
     def __recoursive_search_endpoints(self, spoint, weight):
         found = False
@@ -168,7 +171,7 @@ class CommandCreateStorageUpdate:
 
         self.__log.info("Generate header file: %s", filename_h)
         with open(filename_h, 'wt', encoding="utf-8", newline="\n") as f_h:
-            f_h.write(UtilsCopyrights.get_cpp_copyright())
+            f_h.write("\n".join(self.__copyrights.get_cpp_copyrights()))
             f_h.write("\n")
             f_h.write("#pragma once\n")
             f_h.write("\n")
@@ -185,7 +188,7 @@ class CommandCreateStorageUpdate:
         self.__log.info("Generate source file: %s", filename_cpp)
 
         with open(filename_cpp,  "wt", encoding="utf-8", newline="\n") as f_cpp:
-            f_cpp.write(UtilsCopyrights.get_cpp_copyright())
+            f_cpp.write("\n".join(self.__copyrights.get_cpp_copyrights()))
             f_cpp.write("\n")
             f_cpp.write(
                 "#include \"" + classname_update.lower() + ".h\"\n" +
