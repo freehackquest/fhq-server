@@ -40,14 +40,6 @@ body {
     /*padding: 20px;*/
 }
 
-.swa-page-right-content-box {
-    width: 100%;
-    min-height: 100%;
-    padding-left: 190px;
-    padding-top: 0px;
-    background-color: #000;
-}
-
 .swa-page-right-content {
     padding: 20px;
     background-color: #bfd5db;
@@ -103,7 +95,6 @@ body {
 .swa-page-sidebar-button.active {
     color: #cecece;
     background-color: #233342;
-    padding: 5px;
     cursor: pointer;
     text-align: right;
 }
