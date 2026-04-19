@@ -7,7 +7,7 @@
   },
   "scripts": {
     "ng": "ng",
-    "start": "export NODE_OPTIONS=--openssl-legacy-provider && ng serve",
+    "start": "export NODE_OPTIONS=--openssl-legacy-provider && ng serve --host 0.0.0.0",
     "build": "export NODE_OPTIONS=--openssl-legacy-provider && ng build",
     "build-prod": "export NODE_OPTIONS=--openssl-legacy-provider && ng build --configuration production",
     "test": "ng test",

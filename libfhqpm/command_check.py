@@ -64,7 +64,6 @@ class CommandCheck:
             "node_modules",
             "tmp",
             "data",
-            # "freehackquest_libclient_py",  # TODO
             ".wsjcpp",
             "src-resources.wsjcpp",
             "unit-tests.wsjcpp",

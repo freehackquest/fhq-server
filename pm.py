@@ -52,10 +52,13 @@ while not os.path.isdir(PM_DIR) and not os.path.isfile(PM_FILE):
         sys.exit("Could not find rood dir")
 # print("ROOT_DIR =", ROOT_DIR)
 
+libfhqpm.run_main(ROOT_DIR)
+
 CONFIG = libfhqpm.PmConfig(ROOT_DIR)
 
 COMMANDS = [
     libfhqpm.CommandClean(CONFIG),
+    libfhqpm.CommandFront(CONFIG),
     libfhqpm.CommandCodeStats(CONFIG),
     libfhqpm.CommandPyCheck(CONFIG),
     libfhqpm.CommandCheck(CONFIG),
@@ -66,56 +69,32 @@ COMMANDS = [
     libfhqpm.CommandGenerateModels(CONFIG),
 ]
 
-def print_custom_help(parser):
-    """ print more comfortabl help with subcomamnds"""
-    parser.print_help()
-    # retrieve subparsers from parser
-    subparsers_actions = [
-        action for action in parser._actions  # pylint: disable=protected-access
-        if isinstance(action, argparse._SubParsersAction)  # pylint: disable=protected-access
-    ]
-    print("")
-    subcommand_name_maxlen = 0
-    for subparsers_action in subparsers_actions:
-        for choice, subparser in subparsers_action.choices.items():
-            subcommand_name_maxlen = max(subcommand_name_maxlen, len(choice))
-    subcommand_name_maxlen += 3
-    for subparsers_action in subparsers_actions:
-        for choice, subparser in subparsers_action.choices.items():
-            subcommand_short_help = "  " + choice.ljust(subcommand_name_maxlen, " ")
-            subcommand_short_help += subparser.description
-            print(subcommand_short_help)
-            # print(subparser.format_help())
-    print("")
-    parser.exit()
-
-
 class CustomActionHelp(argparse._HelpAction):  # pylint: disable=protected-access
     """ custom help action """
     def __call__(self, parser, namespace, values, option_string=None):
-        print_custom_help(parser)
+        libfhqpm.print_custom_help(parser)
 
 
 if __name__ == "__main__":
     MAIN_PARSER = argparse.ArgumentParser(
-        prog='stxpm',
-        description='Project manager for c++ projects',
-        epilog='Helper tools for work with c++ projects',
+        prog='pm',
+        description='Project manager for current project',
+        epilog='Helper tools for work with current project',
         add_help=False
     )
     MAIN_PARSER.add_argument('--help', '-h', action=CustomActionHelp, help='help')
 
     SUBCOMMANDS = MAIN_PARSER.add_subparsers(title='subcommands')
-    for _comamnd in COMMANDS:
-        _comamnd.do_registry(SUBCOMMANDS)
+    for _command in COMMANDS:
+        _command.do_registry(SUBCOMMANDS)
     ARGS = MAIN_PARSER.parse_args()
     if 'subparser' not in ARGS:
-        print_custom_help(MAIN_PARSER)
+        libfhqpm.print_custom_help(MAIN_PARSER)
         sys.exit(1)
     SUBCOMMAND = ARGS.subparser
-    for _comamnd in COMMANDS:
-        if _comamnd.get_name() == SUBCOMMAND:
-            _comamnd.execute(ARGS)
+    for _command in COMMANDS:
+        if _command.get_name() == SUBCOMMAND:
+            _command.execute(ARGS)
 
 # # new storage upgrade
 # CREATE_STORAGE_UPDATE = 'create-storage-update'
@@ -124,7 +103,7 @@ if __name__ == "__main__":
 #     description=''
 # )
 # clang_format_parser.set_defaults(subparser=CREATE_STORAGE_UPDATE)
-# 
+#
 # elif arguments.subparser == CREATE_STORAGE_UPDATE:
 #     upgarde = libfhqpm.CreateStorageUpdate()
 #     upgarde.create()
