@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v0.2.55] - 2025-??-?? (2025 ??? ??)
 
+- dependabot[bot]: bump flatted from 3.3.1 to 3.4.2 in /web-user
 - Implemented './pm.py front --run' and './pm.py front --build' - will be run in docker-container and will not need anymore install npm for frontend to local developer machine
 - Added './pm.py check'
 - Added wss_test.py
