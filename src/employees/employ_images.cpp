@@ -147,7 +147,7 @@ bool EmployImages::doThumbnailImagePng(
       WsjcppLog::err(TAG, "[read_png_file] File " + sourceImageFile + " could not be opened for reading");
       return false;
     }
-    fread(header, 1, 8, fp);
+    size_t read_bytes = fread(header, 1, 8, fp);
 
     // todo check png file
     // png_const_bytep *png_header = (png_const_bytep *)header;
