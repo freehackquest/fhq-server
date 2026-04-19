@@ -53,9 +53,12 @@ class CommandCheck:
         self.__config = config
         self.__subcommand_name = "check"
         source_license_lines = self.__get_source_copyright(self.__config.get_root_dir())
+        _bash_copyright = self.__bash_format_license(source_license_lines)
         self.__opt = {
-            "bash_copyright": ["#!/bin/bash"] + self.__bash_format_license(source_license_lines),
+            "bash_copyright": ["#!/bin/bash"] + _bash_copyright,
             "cpp_copyright": self.__cpp_format_license(source_license_lines),
+            # "py_copyright": ["#!/bin/bash"] + _bash_copyright,
+            "cmake_copyright": _bash_copyright,
         }
         self.__errors = []
         # print("\n".join(self.__source_license_lines))
@@ -181,11 +184,35 @@ class CommandCheck:
                 )
                 self.__errors.append(_filepath)
 
+    def __check_copyrights_cmake(self):
+        root_dir = self.__config.get_root_dir()
+        _files = UtilsFiles.get_all_files(
+            os.path.join(root_dir),
+            ignore_dirs=[
+                "third-party",
+                "src.wsjcpp",
+                "unit-tests.wsjcpp",
+            ]
+        )
+        _cmake_copyright = self.__opt["cmake_copyright"]
+        for _filepath in _files:
+            if not _filepath.endswith("CMakeLists.txt"):
+                continue  # skip
+            _source_lines = UtilsFiles.safe_read_file(_filepath)
+            if not UtilsFiles.compare_first_lines(_source_lines, _cmake_copyright):
+                self.__log.error(
+                    "\nExpected copyright \n%s\n in file %s\n",
+                    "\n".join(_cmake_copyright),
+                    _filepath
+                )
+                self.__errors.append(_filepath)
+
     def execute(self, _):
         """ executing """
         self.__log.info("Start...")
         self.__check_copyrights_cpp()
         self.__check_copyrights_bash()
+        self.__check_copyrights_cmake()
 
         if len(self.__errors) > 0:
             self.__log.info("Errors %s", len(self.__errors))

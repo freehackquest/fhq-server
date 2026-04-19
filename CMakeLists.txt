@@ -1,4 +1,5 @@
 ##################################################################################
+#                      Project
 #    __ _
 #   / _| |__   __ _       ___  ___ _ ____   _____ _ __
 #  | |_| '_ \ / _` | ___ / __|/ _ \ '__\ \ / / _ \ '__|
@@ -28,8 +29,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
+# Original repository: https://github.com/freehackquest/fhq-server
+#
 ##################################################################################
-# fhq-server CMake script
 
 cmake_minimum_required(VERSION 3.0)
 
