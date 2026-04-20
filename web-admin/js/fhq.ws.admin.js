@@ -600,24 +600,6 @@ fhq.ws.quest_export = function(data){
     return fhq.ws.send(data);
 }
 
-fhq.ws.lxd_info = function(data){
-    data = data || {};
-    data.cmd = 'lxd_info';
-    return fhq.ws.send(data);
-}
-
-fhq.ws.lxd_list = function(data){
-    data = data || {};
-    data.cmd = 'lxd_list';
-    return fhq.ws.send(data);
-}
-
-fhq.ws.lxd_containers = function(data){
-    data = data || {};
-    data.cmd = 'lxd_containers';
-    return fhq.ws.send(data);
-}
-
 fhq.ws.useful_links_list = function(data){
     data = data || {};
     data.cmd = 'useful_links_list';

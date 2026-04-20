@@ -99,16 +99,6 @@ private:
   std::vector<std::string> m_vGameTypes;
 };
 
-class ValidatorLXDFileActionType : public WsjcppValidatorStringBase {
-public:
-  ValidatorLXDFileActionType();
-  virtual bool isValid(const std::string &sValue, std::string &sError);
-
-private:
-  std::string TAG;
-  std::vector<std::string> m_vActionTypes;
-};
-
 class ValidatorLanguage : public WsjcppValidatorStringListBase {
 public:
   ValidatorLanguage();

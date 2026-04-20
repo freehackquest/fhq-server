@@ -47,7 +47,6 @@
 
 #include <QRunnable>
 #include <QThreadPool>
-#include <lxd_async_operation_task.h>
 
 void RunTasks::AddPublicEvents(const std::string &sType, const std::string &sMessage, const nlohmann::json &jsonMeta) {
   AddPublicEventsTask *pAddPublicEventsTask = new AddPublicEventsTask(sType, sMessage, jsonMeta);
@@ -83,16 +82,6 @@ void RunTasks::MailSend(const std::string &sTo, const std::string &sSubject, con
 void RunTasks::NotifyToAll(const nlohmann::json &jsonMessage) {
   NotifyToAllTask *pNotifyToAllTask = new NotifyToAllTask(jsonMessage);
   QThreadPool::globalInstance()->start(pNotifyToAllTask);
-}
-
-void RunTasks::LXDAsyncOperation(
-  void (*func)(const std::string &, std::string &, int &),
-  const std::string &sName,
-  const std::string &sCMD,
-  ModelRequest *pRequest
-) {
-  LXDAsyncOperationTask *pLXDAsyncTask = new LXDAsyncOperationTask(func, sName, sCMD, pRequest);
-  QThreadPool::globalInstance()->start(pLXDAsyncTask);
 }
 
 void RunTasks::UpdateDatabaseAfterServerStart() {

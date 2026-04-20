@@ -594,10 +594,6 @@ fhq.localization = {
 		'en': 'Auth',
 		'ru': 'Auth'
 	},
-	'setting_name_lxd_mode': {
-		'en': 'LXD Mode',
-		'ru': 'LXD Режим'
-	},
 	'setting_name_mail_from': {
 		'en': 'Mail From',
 		'ru': 'Mail From'
@@ -641,26 +637,6 @@ fhq.localization = {
 	'setting_name_server_folder_games_url':{
 		'en': 'Games Logo Files URL',
 		'ru': 'Games Logo Files URL'
-	},
-	'settings_group_lxd':{
-		'en': 'Orchestra (LXD Settings)',
-		'ru': 'Orchestra (LXD Settings)'
-	},
-	'setting_name_lxd_passwd':{
-		'en': 'LXD Password',
-		'ru': 'LXD Password'
-	},
-	'setting_name_lxd_server_ip':{
-		'en': 'LXD Server IP',
-		'ru': 'LXD Server IP'
-	},
-	'setting_name_lxd_server_port':{
-		'en': 'LXD Server Port',
-		'ru': 'LXD Server Port'
-	},
-	'setting_name_path_dir_lxc_ssl':{
-		'en': 'LXD path ssl dir',
-		'ru': 'LXD path ssl dir'
 	},
 	'setting_name_dbhost':{
 		'en': 'DB Host',
