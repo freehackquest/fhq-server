@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v0.2.55] - 2025-??-?? (2025 ??? ??)
 
+- Removed unused and not finished feature lxd/lxc/orchestra
+- Redesign in admin menu to bootstrap
+- Update bootstrap from 4.0.0-beta to v5.3.8
+- Updated jquery-3.1.0.min.js -> jquery-3.7.1.min.js
 - dependabot[bot]: bump picomatch from 2.3.1 to 2.3.2 in /web-user
 - dependabot[bot]: bump node-forge from 1.3.3 to 1.4.0 in /web-user
 - dependabot[bot]: bump lodash-es from 4.17.21 to 4.18.1 in /web-user
