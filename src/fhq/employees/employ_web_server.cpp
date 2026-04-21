@@ -40,12 +40,12 @@
 // #include <QFile>
 // #include <QString>
 // #include <QtCore>
-#include <employ_files.h>
 #include <employ_database.h>
+#include <employ_files.h>
 #include <employ_notify.h>
 #include <sys/stat.h>
-#include <wsjcpp_hashes.h>
 #include <websocketserver.h>
+#include <wsjcpp_hashes.h>
 #include <wsjcpp_light_web_server.h>
 
 // ---------------------------------------------------------------------
@@ -61,7 +61,6 @@ private:
   std::string TAG;
   std::string m_sWebFolder;
 };
-
 
 HttpHandlerWebUserFolder::HttpHandlerWebUserFolder(const std::string &sWebFolder)
   : WsjcppLightWebHttpHandlerBase("web-user-folder") {
@@ -125,7 +124,6 @@ private:
   std::string m_sWebPublicFolder;
   std::string m_sFileStorage;
 };
-
 
 HttpHandlerWebPublicFolder::HttpHandlerWebPublicFolder(
   const std::string &sWebPublicFolder, const std::string &sFileStorage
@@ -224,7 +222,6 @@ private:
   std::string m_sWebFolder;
 };
 
-
 HttpHandlerWebAdminFolder::HttpHandlerWebAdminFolder(const std::string &sWebFolder)
   : WsjcppLightWebHttpHandlerBase("web-admin-folder") {
 
@@ -318,13 +315,9 @@ EmployWebServer::EmployWebServer()
   TAG = EmployWebServer::name();
 }
 
-bool EmployWebServer::init() {
-  return true;
-}
+bool EmployWebServer::init() { return true; }
 
-bool EmployWebServer::deinit() {
-  return true;
-}
+bool EmployWebServer::deinit() { return true; }
 
 int EmployWebServer::start(QCoreApplication *pQtApp) {
 

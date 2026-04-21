@@ -33,27 +33,16 @@
  *
  ***********************************************************************************/
 
-#include <vector>
-#include <iostream>
 #include <core/jobs_pool.h>
+#include <iostream>
+#include <vector>
 
 class JobWaiterResult {
 public:
-  JobWaiterResult() {
-    m_nFinished = 0;
-  }
-
-  void onDone() {
-    m_nFinished++;
-  };
-
-  void onFail(const std::string &sError) {
-    std::cerr << "Failed job" << std::endl;
-  };
-
-  int finishedJobs() {
-    return m_nFinished;
-  };
+  JobWaiterResult() { m_nFinished = 0; }
+  void onDone() { m_nFinished++; };
+  void onFail(const std::string &sError) { std::cerr << "Failed job" << std::endl; };
+  int finishedJobs() { return m_nFinished; };
 
 private:
   int m_nFinished;
@@ -61,7 +50,7 @@ private:
 
 class JobAsyncWaiter : public JobAsync {
 public:
-  JobAsyncWaiter(int n, int ms, JobWaiterResult* pJobWaiterResult) : JobAsync("job-example") { 
+  JobAsyncWaiter(int n, int ms, JobWaiterResult *pJobWaiterResult) : JobAsync("job-example") {
     m_nNumber = n;
     m_nMilliseconds = ms;
     m_pJobWaiterResult = pJobWaiterResult;
@@ -76,7 +65,7 @@ public:
 
 private:
   int m_nMilliseconds;
-  JobWaiterResult* m_pJobWaiterResult;
+  JobWaiterResult *m_pJobWaiterResult;
   int m_nNumber;
 };
 
@@ -92,8 +81,7 @@ int main() {
   }
 
   JobsPool::waitForDone();
-  if (pJobWaiterResult->finishedJobs() != nCountJobs)
-  {
+  if (pJobWaiterResult->finishedJobs() != nCountJobs) {
     std::cerr << "Expected " << pJobWaiterResult->finishedJobs() << ", but got " << nCountJobs << std::endl;
   }
   return 0;

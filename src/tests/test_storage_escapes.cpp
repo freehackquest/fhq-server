@@ -33,8 +33,8 @@
  *
  ***********************************************************************************/
 
-#include <vector>
 #include <iostream>
+#include <vector>
 
 #include <wsjcpp_storages.h>
 
@@ -50,7 +50,6 @@ int main() {
     std::string sql_in;
     std::string sql_expected;
   };
-
 
   std::vector<LTest *> tests;
   tests.push_back(new LTest("\'\"", "\\\'\\\""));

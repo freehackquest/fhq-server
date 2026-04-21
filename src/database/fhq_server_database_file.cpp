@@ -521,7 +521,9 @@ bool FhqServerDatabaseFile::installUpdates() {
 
       for (int iv = 0; iv < installedVersionsTo.size(); iv++) {
         if (sVersionFrom == installedVersionsTo[iv]) {
-          if (std::find(installedVersionsTo.begin(), installedVersionsTo.end(), sVersionTo) == installedVersionsTo.end()) {
+          auto _begin = installedVersionsTo.begin();
+          auto _end = installedVersionsTo.end();
+          if (std::find(_begin, _end, sVersionTo) == _end) {
             if (!pUpdate->applyUpdate(this)) {
               return false;
             }

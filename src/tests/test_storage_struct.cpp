@@ -33,8 +33,8 @@
  *
  ***********************************************************************************/
 
-#include <vector>
 #include <iostream>
+#include <vector>
 
 #include <wsjcpp_storages.h>
 
@@ -47,14 +47,12 @@ int createTestTable0(WsjcppStorage *pStorage) {
     std::cerr << "Problem with createTestTable0" << std::endl;
     return 1;
   }
-  std::string sql_expected =
-    "CREATE TABLE IF NOT EXISTS `test_tbl0` (\r\n"
-    "  `id` INT NOT NULL AUTO_INCREMENT,\r\n"
-    "  `filed1` VARCHAR(255) NOT NULL,\r\n"
-    "  PRIMARY KEY (id),\r\n"
-    "  KEY idx_filed1 (filed1)\r\n"
-    ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;"
-  ;
+  std::string sql_expected = "CREATE TABLE IF NOT EXISTS `test_tbl0` (\r\n"
+                             "  `id` INT NOT NULL AUTO_INCREMENT,\r\n"
+                             "  `filed1` VARCHAR(255) NOT NULL,\r\n"
+                             "  PRIMARY KEY (id),\r\n"
+                             "  KEY idx_filed1 (filed1)\r\n"
+                             ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
   if (vQueries0[0] != sql_expected) {
     std::cerr << "Expected '" << sql_expected << "', but got '" << vQueries0[0] << "'" << std::endl;
     return 1;
@@ -77,8 +75,7 @@ int dropTestTable0(WsjcppStorage *pStorage) {
     return 1;
   }
   pStorage->addStorageChanges(test_tbl0_drop);
-  if (pStorage->existsTable("test_tbl0") != false)
-  {
+  if (pStorage->existsTable("test_tbl0") != false) {
     std::cerr << "Table 'test_tbl0' must be disappeared" << std::endl;
     return 1;
   }
@@ -102,25 +99,23 @@ int createTestTable1(WsjcppStorage *pStorage) {
     std::cerr << "Problem with createTestTable1" << std::endl;
     return 1;
   }
-  std::string sql_expected =
-    "CREATE TABLE IF NOT EXISTS `test_tbl1` (\r\n"
-    "  `id` INT NOT NULL AUTO_INCREMENT,\r\n"
-    "  `filed1` VARCHAR(255) NOT NULL,\r\n"
-    "  `filed2` TEXT NOT NULL,\r\n"
-    "  `filed3` DATETIME NOT NULL,\r\n"
-    "  `filed4` VARCHAR(2000) NOT NULL,\r\n"
-    "  `filed5` INT NOT NULL,\r\n"
-    "  `filed6` INT NOT NULL,\r\n"
-    "  `filed7` INT NOT NULL,\r\n"
-    "  `filed8` INT NOT NULL,\r\n"
-    "  `filed9` DOUBLE DEFAULT 0.0,\r\n"
-    "  PRIMARY KEY (id),\r\n"
-    "  KEY idx_filed1 (filed1),\r\n"
-    "  KEY idx_filed4 (filed4(255)),\r\n"
-    "  UNIQUE KEY idx_f5_and_f7 (filed5,filed7),\r\n"
-    "  UNIQUE KEY idx_f6_and_f8 (filed6,filed8)\r\n"
-    ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;"
-  ;
+  std::string sql_expected = "CREATE TABLE IF NOT EXISTS `test_tbl1` (\r\n"
+                             "  `id` INT NOT NULL AUTO_INCREMENT,\r\n"
+                             "  `filed1` VARCHAR(255) NOT NULL,\r\n"
+                             "  `filed2` TEXT NOT NULL,\r\n"
+                             "  `filed3` DATETIME NOT NULL,\r\n"
+                             "  `filed4` VARCHAR(2000) NOT NULL,\r\n"
+                             "  `filed5` INT NOT NULL,\r\n"
+                             "  `filed6` INT NOT NULL,\r\n"
+                             "  `filed7` INT NOT NULL,\r\n"
+                             "  `filed8` INT NOT NULL,\r\n"
+                             "  `filed9` DOUBLE DEFAULT 0.0,\r\n"
+                             "  PRIMARY KEY (id),\r\n"
+                             "  KEY idx_filed1 (filed1),\r\n"
+                             "  KEY idx_filed4 (filed4(255)),\r\n"
+                             "  UNIQUE KEY idx_f5_and_f7 (filed5,filed7),\r\n"
+                             "  UNIQUE KEY idx_f6_and_f8 (filed6,filed8)\r\n"
+                             ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
   if (vQueries1[0] != sql_expected) {
     std::cerr << "Expected '" << sql_expected << "', but got '" << vQueries1[0] << "'" << std::endl;
     return 1;
@@ -165,76 +160,75 @@ int modifyTestTable1(WsjcppStorage *pStorage) {
 }
 
 int checkModifiedTable1(WsjcppStorage *pStorage) {
-    WsjcppStorageTable tableDef = pStorage->getTableDef("test_tbl1");
-    std::vector<WsjcppStorageColumnDef> vColumns = tableDef.getColumns();
-    if (vColumns.size() != 9) {
-      std::cerr << "Problem with checkModifiedTable1" << std::endl;
+  WsjcppStorageTable tableDef = pStorage->getTableDef("test_tbl1");
+  std::vector<WsjcppStorageColumnDef> vColumns = tableDef.getColumns();
+  if (vColumns.size() != 9) {
+    std::cerr << "Problem with checkModifiedTable1" << std::endl;
+    return 1;
+  }
+
+  std::vector<WsjcppStorageColumnDef> vExpectedColumns;
+  vExpectedColumns.push_back(WsjcppStorageColumnDef("id").number().autoIncrement().primaryKey().notNull());
+  vExpectedColumns.push_back(WsjcppStorageColumnDef("filed3").datetime().notNull());
+  vExpectedColumns.push_back(WsjcppStorageColumnDef("filed4").string(1500).notNull().enableIndex());
+  vExpectedColumns.push_back(WsjcppStorageColumnDef("filed5").number().notNull().enableUniqueIndex("idx_f5_and_f7"));
+  vExpectedColumns.push_back(WsjcppStorageColumnDef("filed6").number().notNull().enableUniqueIndex("idx_f6_and_f8"));
+  vExpectedColumns.push_back(WsjcppStorageColumnDef("filed7").number().notNull().enableUniqueIndex("idx_f5_and_f7"));
+  vExpectedColumns.push_back(WsjcppStorageColumnDef("filed8").number().notNull().enableUniqueIndex("idx_f6_and_f8"));
+  vExpectedColumns.push_back(WsjcppStorageColumnDef("filed9").doubleNumber().defaultValue("0.0"));
+  vExpectedColumns.push_back(WsjcppStorageColumnDef("filed10").number().notNull());
+
+  for (int i = 0; i < vColumns.size(); i++) {
+    WsjcppStorageColumnDef c = vColumns[i];
+    WsjcppStorageColumnDef expectedC = vExpectedColumns[i];
+    if (c.isAutoIncrement() != expectedC.isAutoIncrement()) {
+      std::cerr << "Problem with isAutoIncrement for " << c.columnName() << std::endl;
+      return 1;
+    }
+    if (c.isAutoIncrement() != expectedC.isAutoIncrement()) {
+      std::cerr << "Problem with isAutoIncrement for " << c.columnName() << std::endl;
+      return 1;
+    }
+    if (c.isPrimaryKey() != expectedC.isPrimaryKey()) {
+      std::cerr << "Problem with isPrimaryKey for " << c.columnName() << std::endl;
+      return 1;
+    }
+    if (c.isNotNull() != expectedC.isNotNull()) {
+      std::cerr << "Problem with isNotNull for " << c.columnName() << std::endl;
+      return 1;
+    }
+    if (c.isEnableIndex() != expectedC.isEnableIndex()) {
+      std::cerr << "Problem with isEnableIndex for " << c.columnName() << std::endl;
+      return 1;
+    }
+    if (c.isEnableUniqueIndex() != expectedC.isEnableUniqueIndex()) {
+      std::cerr << "Problem with isEnableUniqueIndex for " << c.columnName() << std::endl;
+      return 1;
+    }
+    if (c.isDefaultValue() != expectedC.isDefaultValue()) {
+      std::cerr << "Problem with isDefaultValue for " << c.columnName() << std::endl;
+      return 1;
+    }
+    if (c.nameOfUniqueIndex() != expectedC.nameOfUniqueIndex()) {
+      std::cerr << "Problem with nameUniqueIndex for " << c.columnName() << std::endl;
+      return 1;
+    }
+    if (c.columnName() != expectedC.columnName()) {
+      std::cerr << "Problem with columnName for " << c.columnName() << std::endl;
+      return 1;
+    }
+    if (c.columnType() != expectedC.columnType()) {
+      std::cerr << "Problem with columnType for " << c.columnName() << std::endl;
+      return 1;
+    }
+    if (c.columnDefaultValue() != expectedC.columnDefaultValue()) {
+      std::cerr << "Problem with columnDefaultValue for " << c.columnName() << std::endl;
       return 1;
     }
 
-    std::vector<WsjcppStorageColumnDef> vExpectedColumns;
-    vExpectedColumns.push_back(WsjcppStorageColumnDef("id").number().autoIncrement().primaryKey().notNull());
-    vExpectedColumns.push_back(WsjcppStorageColumnDef("filed3").datetime().notNull());
-    vExpectedColumns.push_back(WsjcppStorageColumnDef("filed4").string(1500).notNull().enableIndex());
-    vExpectedColumns.push_back(WsjcppStorageColumnDef("filed5").number().notNull().enableUniqueIndex("idx_f5_and_f7"));
-    vExpectedColumns.push_back(WsjcppStorageColumnDef("filed6").number().notNull().enableUniqueIndex("idx_f6_and_f8"));
-    vExpectedColumns.push_back(WsjcppStorageColumnDef("filed7").number().notNull().enableUniqueIndex("idx_f5_and_f7"));
-    vExpectedColumns.push_back(WsjcppStorageColumnDef("filed8").number().notNull().enableUniqueIndex("idx_f6_and_f8"));
-    vExpectedColumns.push_back(WsjcppStorageColumnDef("filed9").doubleNumber().defaultValue("0.0"));
-    vExpectedColumns.push_back(WsjcppStorageColumnDef("filed10").number().notNull());
-
-
-    for (int i = 0; i < vColumns.size(); i++) {
-      WsjcppStorageColumnDef c = vColumns[i];
-      WsjcppStorageColumnDef expectedC = vExpectedColumns[i];
-      if (c.isAutoIncrement() != expectedC.isAutoIncrement()) {
-        std::cerr << "Problem with isAutoIncrement for " << c.columnName() << std::endl;
-        return 1;
-      }
-      if (c.isAutoIncrement() != expectedC.isAutoIncrement()) {
-        std::cerr << "Problem with isAutoIncrement for " << c.columnName() << std::endl;
-        return 1;
-      }
-      if (c.isPrimaryKey() != expectedC.isPrimaryKey()) {
-        std::cerr << "Problem with isPrimaryKey for " << c.columnName() << std::endl;
-        return 1;
-      }
-      if (c.isNotNull() != expectedC.isNotNull()) {
-        std::cerr << "Problem with isNotNull for " << c.columnName() << std::endl;
-        return 1;
-      }
-      if (c.isEnableIndex() != expectedC.isEnableIndex()) {
-        std::cerr << "Problem with isEnableIndex for " << c.columnName() << std::endl;
-        return 1;
-      }
-      if (c.isEnableUniqueIndex() != expectedC.isEnableUniqueIndex()) {
-        std::cerr << "Problem with isEnableUniqueIndex for " << c.columnName() << std::endl;
-        return 1;
-      }
-      if (c.isDefaultValue() != expectedC.isDefaultValue()) {
-        std::cerr << "Problem with isDefaultValue for " << c.columnName() << std::endl;
-        return 1;
-      }
-      if (c.nameOfUniqueIndex() != expectedC.nameOfUniqueIndex()) {
-        std::cerr << "Problem with nameUniqueIndex for " << c.columnName() << std::endl;
-        return 1;
-      }
-      if (c.columnName() != expectedC.columnName()) {
-        std::cerr << "Problem with columnName for " << c.columnName() << std::endl;
-        return 1;
-      }
-      if (c.columnType() != expectedC.columnType()) {
-        std::cerr << "Problem with columnType for " << c.columnName() << std::endl;
-        return 1;
-      }
-      if (c.columnDefaultValue() != expectedC.columnDefaultValue()) {
-        std::cerr << "Problem with columnDefaultValue for " << c.columnName() << std::endl;
-        return 1;
-      }
-
-      // columnTypeSize
-      // compare("primarykey for " + c.columnName(), c.isPrimaryKey(), expectedC.isPrimaryKey());
-    }
+    // columnTypeSize
+    // compare("primarykey for " + c.columnName(), c.isPrimaryKey(), expectedC.isPrimaryKey());
+  }
 
   // StorageTable *pTableDef = pStorage->getTables()["test_tbl1"];
 
@@ -287,11 +281,9 @@ int insertTestTable1(WsjcppStorage *pStorage) {
     std::cerr << "Problem with insertTestTable1" << std::endl;
     return 1;
   }
-  std::string sql_expected =
-    "INSERT INTO test_tbl1"
-    "(filed3, filed4, filed5, filed6, filed7, filed8, filed9, filed10) "
-    "VALUES(\"so\\\"me\", \"some\", 123, 321, 456, 654, 555.000000, 789);"
-  ;
+  std::string sql_expected = "INSERT INTO test_tbl1"
+                             "(filed3, filed4, filed5, filed6, filed7, filed8, filed9, filed10) "
+                             "VALUES(\"so\\\"me\", \"some\", 123, 321, 456, 654, 555.000000, 789);";
   if (vQueries1_ins[0] != sql_expected) {
     std::cerr << "Expected '" << sql_expected << "', but got '" << vQueries1_ins[0] << "'" << std::endl;
     return 1;
@@ -310,15 +302,13 @@ int createTestTable3(WsjcppStorage *pStorage) {
     std::cerr << "Problem with createTestTable3" << std::endl;
     return 1;
   }
-  std::string sql_expected =
-    "CREATE TABLE IF NOT EXISTS `test_tbl3` (\r\n"
-    "  `id` INT NOT NULL AUTO_INCREMENT,\r\n"
-    "  `field1` VARCHAR(123) NOT NULL,\r\n"
-    "  `field2` VARCHAR(223) NOT NULL,\r\n"
-    "  `field3` VARCHAR(323) NOT NULL,\r\n"
-    "  PRIMARY KEY (id)\r\n"
-    ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;"
-  ;
+  std::string sql_expected = "CREATE TABLE IF NOT EXISTS `test_tbl3` (\r\n"
+                             "  `id` INT NOT NULL AUTO_INCREMENT,\r\n"
+                             "  `field1` VARCHAR(123) NOT NULL,\r\n"
+                             "  `field2` VARCHAR(223) NOT NULL,\r\n"
+                             "  `field3` VARCHAR(323) NOT NULL,\r\n"
+                             "  PRIMARY KEY (id)\r\n"
+                             ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
   std::string sql_got = vQueries1[0];
   if (sql_got != sql_expected) {
     std::cerr << "Expected '" << sql_expected << "', but got '" << sql_got << "'" << std::endl;

@@ -333,9 +333,7 @@ void CmdClassbookExportHandler::handle(ModelRequest *pRequest) {
     return;
   }
   QList<QString> langs;
-  langs << "en"
-        << "de"
-        << "ru"; // TODO move to basic support employ
+  langs << "en" << "de" << "ru"; // TODO move to basic support employ
   if (!langs.contains(QString::fromStdString(sLang))) {
     pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(403, "The language is not supported."));
     return;

@@ -65,18 +65,24 @@ void UtilsPrepareDebPackage::prepare(QString /*repo*/, QString tmpdeb) {
     } else {
       depends << "mysql-server";
     }
-    depends << "libqt5websockets5"
-            << "libqt5network5"
-            << "libqt5sql5"
-            << "libqt5sql5-mysql"
-            << "libqt5core5a";
-    depends << "libc6"
-            << "libstdc++6"
-            << "libgcc1"
-            << "zlib1g"
-            << "libicu52"
-            << "libglib2.0-0"
-            << "libpcre3";
+    // clang-format off
+    depends
+      << "libqt5websockets5"
+      << "libqt5network5"
+      << "libqt5sql5"
+      << "libqt5sql5-mysql"
+      << "libqt5core5a"
+    ;
+    depends
+      << "libc6"
+      << "libstdc++6"
+      << "libgcc1"
+      << "zlib1g"
+      << "libicu52"
+      << "libglib2.0-0"
+      << "libpcre3"
+    ;
+    // clang-format on
 
     stream << "Depends: " << depends.join(", ") << Qt::endl;
 

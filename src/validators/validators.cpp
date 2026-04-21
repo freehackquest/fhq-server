@@ -72,7 +72,8 @@ ValidatorQuestSubject::ValidatorQuestSubject() : WsjcppValidatorStringBase("ques
     "ppc",
     "admin",
     "enjoy",
-    "unknown"};
+    "unknown"
+  };
 };
 
 // ---------------------------------------------------------------------

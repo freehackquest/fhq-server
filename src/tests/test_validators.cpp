@@ -33,9 +33,9 @@
  *
  ***********************************************************************************/
 
-#include <vector>
 #include <iostream>
 #include <validators/validators.h>
+#include <vector>
 
 int main() {
   struct LTestVld {
@@ -65,8 +65,7 @@ int main() {
     bool bExpectedResult = tests[i]->m_bExpectedResult;
     std::string sError = "";
     bool bGotResult = pValidator->isValid(sValue, sError);
-    if (bGotResult != bExpectedResult)
-    {
+    if (bGotResult != bExpectedResult) {
       std::cerr << "Test '" << sValue << "' error: " << sError << std::endl;
       return -1;
     }

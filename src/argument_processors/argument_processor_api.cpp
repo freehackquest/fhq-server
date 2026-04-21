@@ -98,6 +98,7 @@ int ArgumentProcessorApiList::exec(
     vRows.push_back(row);
   }
 
+  // clang-format off
   std::cout << " +-" << std::setfill('-') << std::setw(nMaxLenCommandName) << "-"
             << "-+"
             << "--------+--------+--------+\n";
@@ -107,6 +108,7 @@ int ArgumentProcessorApiList::exec(
   std::cout << " +-" << std::setfill('-') << std::setw(nMaxLenCommandName) << "-"
             << "-+"
             << "--------+--------+--------+\n";
+  // clang-format on
 
   for (unsigned int i = 0; i < vRows.size(); i++) {
     std::cout << " | " << std::setfill(' ') << std::setw(nMaxLenCommandName) << vRows[i].sCommandName << " |";
@@ -115,9 +117,11 @@ int ArgumentProcessorApiList::exec(
     std::cout << " " << (vRows[i].bAccessAdmin ? "admin" : "     ") << "  |";
     std::cout << "\n";
   }
+  // clang-format off
   std::cout << " +-" << std::setfill('-') << std::setw(nMaxLenCommandName) << "-"
             << "-+"
             << "--------+--------+--------+\n";
+  // clang-format on
 
   std::cout << "\n\n";
   return 0;

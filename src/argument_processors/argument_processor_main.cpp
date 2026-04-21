@@ -39,18 +39,18 @@
 #include <QString>
 #include <QtCore>
 
-#include <employees.h>
-#include <wsjcpp_core.h>
-#include <wsjcpp_yaml.h>
 #include "argument_processor_api.h"
 #include "argument_processor_config.h"
 #include "argument_processor_database.h"
 #include <employ_database.h>
 #include <employ_images.h>
 #include <employ_server_info.h>
+#include <employees.h>
 #include <fhq/employees/employ_web_server.h>
 #include <utils_prepare_deb_package.h>
+#include <wsjcpp_core.h>
 #include <wsjcpp_print_tree.h>
+#include <wsjcpp_yaml.h>
 
 // ---------------------------------------------------------------------
 // ArgumentProcessorMain
@@ -78,7 +78,8 @@ ArgumentProcessorMain::ArgumentProcessorMain(QCoreApplication *pQtApp)
   std::vector<std::string> vDefaultsWorkdirs = {
     WsjcppCore::getCurrentDirectory() + "/data/",
     WsjcppCore::getCurrentDirectory() + "/ci/travis/data/",
-    "/usr/share/fhq-server/data"};
+    "/usr/share/fhq-server/data"
+  };
   for (int i = 0; i < vDefaultsWorkdirs.size(); i++) {
     if (WsjcppCore::dirExists(vDefaultsWorkdirs[i])) {
       m_sWorkDir = vDefaultsWorkdirs[i];

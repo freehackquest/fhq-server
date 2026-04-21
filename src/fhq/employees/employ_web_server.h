@@ -49,6 +49,5 @@ public:
   int start(QCoreApplication *pQtApp);
 
 private:
-
   std::string TAG;
 };

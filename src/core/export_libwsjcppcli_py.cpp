@@ -280,8 +280,8 @@ void ExportLibWsjCppCliPy::exportAPImd() {
       apimd << pCmdHandlerBase->description() << "\n\n";
     }
     apimd << "Access: unauthorized - **" << (pCmdHandlerBase->accessUnauthorized() ? "yes" : "no") << "**, "
-          << " user - **" << (pCmdHandlerBase->accessUser() ? "yes" : "no") << "**, "
-          << " admin - **" << (pCmdHandlerBase->accessAdmin() ? "yes" : "no") << "**\n"
+          << " user - **" << (pCmdHandlerBase->accessUser() ? "yes" : "no") << "**, " << " admin - **"
+          << (pCmdHandlerBase->accessAdmin() ? "yes" : "no") << "**\n"
           << "\n";
 
     apimd << " #### Input params \n\n";
@@ -311,8 +311,7 @@ void ExportLibWsjCppCliPy::exportAPImd() {
     }
     apimd << "\n\n"
           << " #### example call method \n\n ```\nresponse = cli." + sCmd + "({\n" + pythonTemplate + "\n})\n```"
-          << "\n\n</details>"
-          << "\n\n";
+          << "\n\n</details>" << "\n\n";
   }
 
   apimd.close();
@@ -353,8 +352,7 @@ void ExportLibWsjCppCliPy::export__init__py() {
   __init__.open("freehackquest-libclient-py/freehackquest_libclient_py/__init__.py");
 
   PyCodeBuilder builder;
-  builder
-    .add("#!/usr/bin/env python3")
+  builder.add("#!/usr/bin/env python3")
     .add("##################################################################################")
     .add("#                      Project")
     .add("#    __ _")
@@ -415,8 +413,7 @@ void ExportLibWsjCppCliPy::exportApiGroupsPy() {
     apiGroup.open("freehackquest-libclient-py/freehackquest_libclient_py/" + sFilename + ".py");
 
     PyCodeBuilder builder;
-    builder
-      .add("#!/usr/bin/env python3")
+    builder.add("#!/usr/bin/env python3")
       .add("##################################################################################")
       .add("#                      Project")
       .add("#    __ _")
@@ -587,8 +584,7 @@ void ExportLibWsjCppCliPy::exportClientPy() {
                              "freehackquest_client.py");
 
   PyCodeBuilder builder;
-  builder
-    .add("#!/usr/bin/env python3")
+  builder.add("#!/usr/bin/env python3")
     .add("##################################################################################")
     .add("#                      Project")
     .add("#    __ _")

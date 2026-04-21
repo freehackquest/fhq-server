@@ -66,4 +66,3 @@ public:
   ArgumentProcessorConfigSet();
   virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 };
-
