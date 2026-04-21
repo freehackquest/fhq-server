@@ -48,6 +48,13 @@
 #include <wsjcpp_hashes.h>
 #include <wsjcpp_light_web_server.h>
 
+#include "EventLoop.h"       // libhv
+#include "HttpService.h"     // libhv
+#include "WebSocketServer.h" // libhv
+#include "hlog.h"            // libhv
+#include "hssl.h"            // libhv
+#include "htime.h"           // libhv
+
 // ---------------------------------------------------------------------
 // HttpHandlerWebUserFolder
 
@@ -206,6 +213,223 @@ bool HttpHandlerWebPublicFolder::handle(const std::string &sWorkerId, WsjcppLigh
 
   resp.cacheSec(0).ok().sendFile(sFilePath, sFilename);
   return true;
+}
+
+// ---------------------------------------------------------------------
+// HttpHandlerWebAdminFolder
+
+class FhqHttpServer {
+public:
+  FhqHttpServer();
+  hv::HttpService *getService();
+  void setWebAdminFolder(const std::string &sWebAdminFolder);
+  void setWebPublicFolder(const std::string &sWebPublicFolder);
+  void setWebUserFolder(const std::string &sWebUserFolder);
+  int httpApiV1GetPaths(HttpRequest *req, HttpResponse *resp);
+  int handleGetRequest(HttpRequest *req, HttpResponse *resp);
+  int httpApiV1MyIp(HttpRequest *req, HttpResponse *resp);
+
+private:
+  std::string TAG;
+  hv::HttpService *m_pHttpService;
+  std::string m_sWebAdminFolder;
+  std::string m_sWebUserFolder;
+  std::string m_sWebPublicFolder;
+  std::string m_sApiPathPrefix;
+  EmployDatabase *m_pEmployDatabase;
+};
+
+FhqHttpServer::FhqHttpServer() {
+  TAG = "FhqHttpServer";
+  m_pEmployDatabase = findWsjcppEmploy<EmployDatabase>();
+
+  // {
+  //     logger_t* pLogger = hv_default_logger();
+  //     // logger_set_max_filesize(pLogger, 102400);
+  //     std::string sLogDirPath = m_pConfig->getWorkDir() + "/hv_logs";
+  //     if (!WsjcppCore::dirExists(sLogDirPath)) {
+  //         WsjcppCore::makeDir(sLogDirPath);
+  //     }
+  //     std::string sLogFilePath = sLogDirPath + "/http_" + WsjcppCore::getCurrentTimeForFilename() + ".log";
+  //     logger_set_file(pLogger, sLogFilePath.c_str());
+  // }
+
+  m_sApiPathPrefix = "/api/v1/";
+  m_pHttpService = new HttpService();
+
+  // static files
+  // m_pHttpService->document_root = "./html";
+
+  m_pHttpService->GET(
+    "*", std::bind(&FhqHttpServer::handleGetRequest, this, std::placeholders::_1, std::placeholders::_2)
+  );
+}
+
+hv::HttpService *FhqHttpServer::getService() { return m_pHttpService; }
+
+void FhqHttpServer::setWebAdminFolder(const std::string &sWebAdminFolder) {
+  m_sWebAdminFolder = sWebAdminFolder;
+  WsjcppLog::info(TAG, "m_sWebAdminFolder = " + m_sWebAdminFolder);
+  m_sWebAdminFolder = WsjcppCore::doNormalizePath(m_sWebAdminFolder);
+}
+
+void FhqHttpServer::setWebPublicFolder(const std::string &sWebPublicFolder) {
+  m_sWebPublicFolder = sWebPublicFolder;
+  WsjcppLog::info(TAG, "m_sWebPublicFolder" + m_sWebPublicFolder);
+  m_sWebPublicFolder = WsjcppCore::doNormalizePath(m_sWebPublicFolder);
+}
+
+void FhqHttpServer::setWebUserFolder(const std::string &sWebUserFolder) {
+  m_sWebUserFolder = sWebUserFolder;
+  WsjcppLog::info(TAG, "m_sWebUserFolder" + m_sWebUserFolder);
+  m_sWebUserFolder = WsjcppCore::doNormalizePath(m_sWebUserFolder);
+}
+
+int FhqHttpServer::httpApiV1GetPaths(HttpRequest *req, HttpResponse *resp) {
+  return resp->Json(m_pHttpService->Paths());
+}
+
+int FhqHttpServer::handleGetRequest(HttpRequest *req, HttpResponse *resp) {
+  std::string sOriginalRequestPath = req->path;
+  WsjcppLog::info(TAG, "Request path: " + req->path);
+  std::string sRequestPath;
+  std::string sGetParams;
+
+  // remove get params from path
+  std::size_t nFoundGetParams = sOriginalRequestPath.rfind("?");
+  if (nFoundGetParams != std::string::npos) {
+    sRequestPath = sOriginalRequestPath.substr(0, nFoundGetParams);
+    sGetParams = sOriginalRequestPath.substr(nFoundGetParams);
+  } else {
+    sRequestPath = sOriginalRequestPath;
+  }
+  sRequestPath = WsjcppCore::doNormalizePath(sRequestPath);
+
+  if (sRequestPath == "/admin") {
+    return resp->Redirect("/admin/" + sGetParams);
+  }
+
+  if (m_sWebAdminFolder != "" && sRequestPath == "/admin/") {
+    std::string sFilePath = WsjcppCore::doNormalizePath(m_sWebAdminFolder + "/index.html");
+    if (!WsjcppCore::fileExists(sFilePath)) {
+      return 404; // Not found
+    }
+    return resp->File(sFilePath.c_str());
+  }
+
+  if (m_sWebAdminFolder != "" && sRequestPath.rfind("/admin/", 0) == 0) {
+    std::string sAdminSubpathFile = sRequestPath.substr(strlen("/admin/"));
+    std::string sFilePath = WsjcppCore::doNormalizePath(m_sWebAdminFolder + "/" + sAdminSubpathFile);
+    if (sFilePath.rfind(m_sWebAdminFolder, 0) != 0) {
+      return 403;
+    }
+    // TODO from resources
+    if (!WsjcppCore::fileExists(sFilePath)) {
+      return 404; // Not found
+    }
+    return resp->File(sFilePath.c_str());
+  }
+
+  // public folder
+  if (m_sWebPublicFolder != "" && sRequestPath.rfind("/public/", 0) == 0) {
+    std::string sPublicSubpathFile = sRequestPath.substr(strlen("/public"));
+    std::string sFilePath = WsjcppCore::doNormalizePath(m_sWebPublicFolder + "/" + sPublicSubpathFile);
+    if (sFilePath.rfind(m_sWebPublicFolder, 0) != 0) {
+      return 403;
+    }
+
+    // special counters for quests files
+    if (sRequestPath.rfind("/public/quests/", 0) == 0) {
+      ModelQuestFile model;
+      auto pEmployFiles = findWsjcppEmploy<EmployFiles>();
+      if (!pEmployFiles->findQuestFileByFilePath(sPublicSubpathFile, model)) {
+        return 404;
+      }
+      // std::string sMessageError = "This file not registered in the system '" +
+      // sPublicSubpathFile + "'"; WsjcppLog::err(TAG, sMessageError);
+      // resp.cacheSec(0).notFound().sendText("<h1>" + sMessageError + "</h1>");
+      // return true;
+      if (!WsjcppCore::fileExists(sFilePath)) {
+        return 404; // Not found
+      }
+      std::string sFileName = model.getFileName();
+      pEmployFiles->updateDownloadsCounter(model);
+      int res = resp->File(sFilePath.c_str());
+      resp->SetContentTypeByFilename(sFileName.c_str());
+      resp->SetHeader("Content-Disposition", "attachment; filename=\"" + sFileName + "\"");
+      return res;
+    }
+
+    if (!WsjcppCore::fileExists(sFilePath)) {
+      return 404; // Not found
+    }
+    // TODO make a cache for default user icon
+    return resp->File(sFilePath.c_str());
+  }
+
+  // single app
+  if (m_sWebUserFolder != "") {
+    std::string sIndexPath = WsjcppCore::doNormalizePath(m_sWebUserFolder + "/index.html");
+    if (sRequestPath == "/") {
+      sRequestPath = "/index.html";
+    }
+    std::string sFilePath = WsjcppCore::doNormalizePath(m_sWebUserFolder + "/" + sRequestPath);
+    if (sFilePath.rfind(m_sWebUserFolder, 0) != 0) {
+      return 403;
+    }
+    // Try TODO from resources
+    if (!WsjcppCore::fileExists(sFilePath)) {
+      return resp->File(sIndexPath.c_str());
+    }
+    return resp->File(sFilePath.c_str());
+  }
+
+  // WsjcppLog::info(TAG, "sRequestPath = " + sRequestPath);
+
+  // if (sRequestPath.rfind(m_sTeamLogoPrefix, 0) == 0) {
+  //     std::string sTeamId = sRequestPath.substr(m_nTeamLogoPrefixLength, sRequestPath.length() -
+  //     m_nTeamLogoPrefixLength); Ctf01dTeamLogo *pLogo = m_pTeamLogos->findTeamLogo(sTeamId); if (pLogo == nullptr) {
+  //         return 404;
+  //     }
+  //     resp->Data(
+  //         pLogo->pBuffer,
+  //         pLogo->nBufferSize,
+  //         true // nocopy
+  //     );
+  //     resp->SetContentTypeByFilename(pLogo->sFilename.c_str());
+  //     return 200;
+  // }
+
+  if (sRequestPath.rfind(m_sApiPathPrefix, 0) == 0) {
+    if (sRequestPath == "/api/v1/myip") {
+      return this->httpApiV1MyIp(req, resp);
+    }
+    return this->httpApiV1GetPaths(req, resp);
+  }
+
+  if (sRequestPath == "/") {
+    sRequestPath = "/index.html";
+  }
+  return 404; // Not found
+}
+
+// int FhqHttpServer::httpApiV1Scoreboard(HttpRequest* req, HttpResponse* resp) {
+//     m_pTeamLogos->updateLastWriteTime();
+//     nlohmann::json jsonScoreboard = m_pConfig->scoreboard()->toJson();
+//     m_pTeamLogos->updateScorebordJson(jsonScoreboard);
+//     std::string sScoreboardJson = jsonScoreboard.dump();
+//     resp->Data(
+//         (void *)(sScoreboardJson.c_str()),
+//         sScoreboardJson.length(),
+//         false // nocopy - force copy
+//     );
+//     resp->SetContentTypeByFilename("scoreboard.json");
+//     return 200;
+// }
+
+int FhqHttpServer::httpApiV1MyIp(HttpRequest *req, HttpResponse *resp) {
+  resp->json["myip"] = req->client_addr.ip;
+  return 200;
 }
 
 // ---------------------------------------------------------------------
@@ -380,5 +604,17 @@ int EmployWebServer::start(QCoreApplication *pQtApp) {
   g_httpServer.setMaxWorkers(nWebMaxThreads);
   g_httpServer.start(); // no block this thread
 
-  return pQtApp->exec();
+  // start migration to new http server
+  FhqHttpServer httpServer;
+  httpServer.setWebAdminFolder(sWebAdminFolder);
+  httpServer.setWebPublicFolder(sWebPublicFolder);
+  httpServer.setWebUserFolder(sWebUserFolder);
+  hv::HttpService *pRouter = httpServer.getService();
+  hv::HttpServer server(pRouter);
+  server.setPort(nWebPort + 1);
+  server.setThreadNum(nWebMaxThreads);
+  // server.run(); // wait
+  server.start(); // no wait
+
+  return pQtApp->exec(); // need for a treadpool and for websockets
 }
