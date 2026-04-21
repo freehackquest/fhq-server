@@ -52,14 +52,6 @@ check_ret() {
 ./pm.py code-check
 check_ret $? "code-check"
 
-cd unit-tests.wsjcpp
-check_ret $? "change directory to unit-tests.wsjcpp"
-./build_simple.sh
-check_ret $? "build unit-tests"
-./unit-tests
-check_ret $? "unit-tests"
-cd ..
-
 qmake --version # TODO when will be removed all then qt need remove this line
 ./build_simple.sh
 check_ret $? "build fhq-server"

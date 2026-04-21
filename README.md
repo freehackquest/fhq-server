@@ -179,16 +179,6 @@ $ npm run start
 ```
 So you can see web user here: `http://localhost:4200/`
 
-### Unit-tests 
-
-Build and run unit-tests:
-
-```
-$ cd ~/fhq-server.git/unit-tests.wsjcpp
-$ ./build_simple.sh
-$ ./unit-tests
-```
-
 ### Server api tests
 
 Based on python3 and pytest. Also please check code by pylint.

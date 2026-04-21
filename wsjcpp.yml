@@ -120,21 +120,11 @@ distribution:
   - source-file: "src/storages/mysql/mysql_storage.cpp"
     target-file: "mysql_storage.cpp"
     type: "source-code"
-unit-tests:
-  cases:
-    - name: "Validators"
-      description: "Test Validators"
-    - name: "JobsPool"
-      description: "Test async jobs pool"
-    - name: "StorageEscapes"
-      description: "Test for Storage Escapes"
-    - name: "StorageStruct"
-      description: ""
 
 resources:
   - filepath: "./src/resources/user_default_icon.png"
     filesize: 4232
     pack-as: "binary"
-    modified: 1666471293
-    sha1: ""
+    modified: 1776396504
+    sha1: "91f778e3f5141172dd6da025a678e96e93e00bc3"
 

@@ -182,7 +182,6 @@ class CommandCodeCheck:
         self.__log.info("Start...")
         _dirs = [
             os.path.join(self.__config.get_root_dir(), "src"),
-            os.path.join(self.__config.get_root_dir(), "unit-tests.wsjcpp"),
         ]
         _files = []
         for _dir in _dirs:

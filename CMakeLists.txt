@@ -292,10 +292,6 @@ install(
         ${CMAKE_INSTALL_PREFIX}/bin
 )
 
-# install(FILES install_files/fhq-server.conf.sample DESTINATION ${CMAKE_INSTALL_PREFIX}/../etc/fhq-server COMPONENT config)
-# install(FILES install_files/fhq-server.service DESTINATION ${CMAKE_INSTALL_PREFIX}/../etc/systemd/system COMPONENT config)
-# install(FILES install_files/fhq-server.postinst DESTINATION ${CMAKE_INSTALL_PREFIX}/../var/lib/dpkg/info COMPONENT config)
-# install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/share/fhq-server)
-# install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/log/fhq-server)
-
-
+# enable testing functionality
+enable_testing()
+add_subdirectory(src/tests)

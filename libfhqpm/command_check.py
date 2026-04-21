@@ -66,7 +66,6 @@ class CommandCheck:
             "data",
             ".wsjcpp",
             "src-resources.wsjcpp",
-            "unit-tests.wsjcpp",
         ]
 
     def get_name(self):
