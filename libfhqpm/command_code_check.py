@@ -63,7 +63,6 @@ class CommandCodeCheck:
             "end-brackets": [],
             "start-bracket-else": [],
             "end-bracket-else": [],
-            "auto": [],
         }
         self.__processed_files = 0
         self.__processed_lines = 0
@@ -158,18 +157,6 @@ class CommandCodeCheck:
             self.__log.error(error_msg)
             self.__result["end-bracket-else"].append(error_msg)
 
-    def __check_auto(self, _line, _filepath, _line_number):
-
-        _pattern = r'.*[^\w]+auto[^\w]+.*'
-        if re.match(_pattern, _line):
-            if ' = new ' in _line:  # skip if used new constructor
-                return
-            if ' = findWsjcppEmploy<' in _line:  # skip if used findWsjcppEmploy
-                return
-            error_msg = "WARNING: Found auto in " + _filepath + ":" + str(_line_number)
-            self.__log.error(error_msg)
-            self.__result["auto"].append(error_msg)
-
     def __print_result(self):
         self.__log.info("\n ---- result ----")
         self.__log.info("Processed files: %s", self.__processed_files)
@@ -208,10 +195,9 @@ class CommandCodeCheck:
                     self.__check_end_brackets(_line, _filepath, _line_number)
                     self.__check_start_bracket_else(_line, _filepath, _line_number)
                     self.__check_end_bracket_else(_line, _filepath, _line_number)
-                    self.__check_auto(_line, _filepath, _line_number)
         self.__print_result()
         _errors = 0
-        for _stat, _item in self.__result:
+        for _stat, _item in self.__result.items():
             for _msg in _item:
                 if "ERROR" in _msg:
                     _errors += 1
