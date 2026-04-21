@@ -35,16 +35,20 @@
 
 #pragma once
 
-#include <wsjcpp_light_web_server.h>
+#include <employees.h>
 
-class HttpHandlerWebPublicFolder : public WsjcppLightWebHttpHandlerBase {
+#include <QtCore>
+
+class EmployWebServer : public WsjcppEmployBase {
 public:
-  HttpHandlerWebPublicFolder(const std::string &sWebFolder, const std::string &sFileStorage);
-  virtual bool canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest);
-  virtual bool handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest);
+  EmployWebServer();
+  static std::string name() { return "EmployWebServer"; }
+  virtual bool init();
+  virtual bool deinit();
+
+  int start(QCoreApplication *pQtApp);
 
 private:
+
   std::string TAG;
-  std::string m_sWebPublicFolder;
-  std::string m_sFileStorage;
 };

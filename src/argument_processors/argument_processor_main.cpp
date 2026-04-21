@@ -42,23 +42,15 @@
 #include <employees.h>
 #include <wsjcpp_core.h>
 #include <wsjcpp_yaml.h>
-
 #include "argument_processor_api.h"
 #include "argument_processor_config.h"
 #include "argument_processor_database.h"
 #include <employ_database.h>
 #include <employ_images.h>
 #include <employ_server_info.h>
-#include <employees.h>
-#include <http_handler_web_admin_folder.h>
-#include <http_handler_web_public_folder.h>
-#include <http_handler_web_user_folder.h>
+#include <fhq/employees/employ_web_server.h>
 #include <utils_prepare_deb_package.h>
-#include <websocketserver.h>
-#include <wsjcpp_light_web_server.h>
 #include <wsjcpp_print_tree.h>
-
-WsjcppLightWebServer g_httpServer;
 
 // ---------------------------------------------------------------------
 // ArgumentProcessorMain
@@ -522,64 +514,6 @@ ArgumentProcessorStart::ArgumentProcessorStart(QCoreApplication *pQtApp)
 }
 
 int ArgumentProcessorStart::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
-  auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
-  // auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
-
-  pGlobalSettings->registrySetting("web_server", "web_admin_folder")
-    .dirPath("/usr/share/fhq-server/web-admin")
-    .inFile();
-  pGlobalSettings->registrySetting("web_server", "web_user_folder").dirPath("/usr/share/fhq-server/web-user").inFile();
-  pGlobalSettings->registrySetting("web_server", "web_public_folder")
-    .dirPath("/usr/share/fhq-server/fhq-web-public")
-    .inFile();
-  pGlobalSettings->registrySetting("web_server", "web_public_folder_url")
-    .string("http://localhost:7080/public/")
-    .inFile();
-
-  WsjcppEmployees::init({"start_server"});
-
-  WsjcppLog::info(TAG, "Init handlers");
-  CmdHandlers::init();
-
-  QThreadPool::globalInstance()->setMaxThreadCount(5);
-  WebSocketServer *pServer = new WebSocketServer(); // here will be init settings
-  if (pServer->isFailed()) {
-    WsjcppLog::err(TAG, "Could not start server");
-    return -1;
-  }
-
-  QObject::connect(pServer, &WebSocketServer::closed, m_pQtApp, &QCoreApplication::quit);
-  EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
-  // TODO redesign to check config
-  QSqlDatabase *db = pDatabase->database();
-  if (!db->open()) {
-    return -1;
-  }
-
-  // TODO move inside server start
-  // start web server
-  int nWebPort = pGlobalSettings->get("web_port").getNumberValue();
-  int nWebMaxThreads = pGlobalSettings->get("web_max_threads").getNumberValue();
-  std::string sWebAdminFolder = pGlobalSettings->get("web_admin_folder").getDirPathValue();
-  std::string sWebUserFolder = pGlobalSettings->get("web_user_folder").getDirPathValue();
-  std::string sWebPublicFolder =
-    pGlobalSettings->get("web_public_folder").getDirPathValue(); // TODO must be declared in server
-  std::string sFileStorage = pGlobalSettings->get("file_storage").getDirPathValue();
-  std::string sWebPublicFolderUrl =
-    pGlobalSettings->get("web_public_folder_url").getStringValue(); // TODO must be declared in server
-
-  WsjcppLog::info(
-    TAG,
-    "Starting web-server on " + std::to_string(nWebPort) + " with " + std::to_string(nWebMaxThreads) + " worker threads"
-  );
-
-  g_httpServer.addHandler(new HttpHandlerWebAdminFolder(sWebAdminFolder));
-  g_httpServer.addHandler(new HttpHandlerWebPublicFolder(sWebPublicFolder, sFileStorage));
-  g_httpServer.addHandler(new HttpHandlerWebUserFolder(sWebUserFolder));
-
-  g_httpServer.setPort(nWebPort);
-  g_httpServer.setMaxWorkers(nWebMaxThreads);
-  g_httpServer.start(); // will be block thread
-
-  return m_pQtApp->exec();
+  auto *webServer = findWsjcppEmploy<EmployWebServer>();
+  return webServer->start(m_pQtApp);
 }

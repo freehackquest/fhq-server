@@ -66,7 +66,6 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src/tasks")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages/updates")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/cmd")
-list (APPEND WSJCPP_INCLUDE_DIRS "src/web-server")
 
 # argument_processor
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_main.cpp")
@@ -151,6 +150,7 @@ list (APPEND WSJCPP_SOURCES "src/employees/employ_leaks.cpp")
 list (APPEND WSJCPP_SOURCES "src/employees/employ_mails.cpp")
 list (APPEND WSJCPP_SOURCES "src/employees/employ_users.cpp")
 list (APPEND WSJCPP_SOURCES "src/employees/employ_uuids.cpp")
+list (APPEND WSJCPP_SOURCES "src/fhq/employees/employ_web_server.cpp")
 
 # tasks
 list (APPEND WSJCPP_SOURCES "src/tasks/runtasks.h")
@@ -186,14 +186,6 @@ list (APPEND WSJCPP_SOURCES "src/storages/updates/update_9gwc2tm5ah_on73sheet9.c
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update_on73sheet9_ili7looowo.cpp")
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update_ili7looowo_8i52flwubv.cpp")
 list (APPEND WSJCPP_SOURCES "src/storages/updates/update0101.cpp")
-
-# web-server
-list (APPEND WSJCPP_SOURCES "src/web-server/http_handler_web_user_folder.cpp")
-list (APPEND WSJCPP_SOURCES "src/web-server/http_handler_web_user_folder.h")
-list (APPEND WSJCPP_SOURCES "src/web-server/http_handler_web_public_folder.cpp")
-list (APPEND WSJCPP_SOURCES "src/web-server/http_handler_web_public_folder.h")
-list (APPEND WSJCPP_SOURCES "src/web-server/http_handler_web_admin_folder.cpp")
-list (APPEND WSJCPP_SOURCES "src/web-server/http_handler_web_admin_folder.h")
 
 # main
 list (APPEND WSJCPP_SOURCES "src/main.cpp")
