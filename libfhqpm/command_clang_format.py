@@ -52,19 +52,19 @@ class CommandClangFormat:
         self.__log = logging.getLogger("CommandClangFormat")
         self.__log.setLevel(logging.DEBUG)
         self.__config = config
-        self.__subcomamnd_name = "clang-format"
+        self.__subcommand_name = "clang-format"
 
     def get_name(self):
         """ return subcommand name """
-        return self.__subcomamnd_name
+        return self.__subcommand_name
 
     def do_registry(self, subparsers):
-        """ registring sub command """
+        """ registering sub command """
         _parser_clang_format = subparsers.add_parser(
-            name=self.__subcomamnd_name,
+            name=self.__subcommand_name,
             description='Fix cpp and h files use a clang format'
         )
-        _parser_clang_format.set_defaults(subparser=self.__subcomamnd_name)
+        _parser_clang_format.set_defaults(subparser=self.__subcommand_name)
 
     def execute(self, _):
         """ executing """
@@ -76,7 +76,8 @@ class CommandClangFormat:
         for _file in files:
             if 'third-party' in _file:
                 continue
-            if _file.lower().endswith(".json"):
+            _file_lo = _file.lower()
+            if not _file_lo.endswith(".cpp") and not _file_lo.endswith(".h"):
                 continue
             command = ["clang-format", '-style=file', '-i', _file]
             UtilsShell.run_command(command)

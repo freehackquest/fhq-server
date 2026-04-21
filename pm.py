@@ -105,8 +105,8 @@ if __name__ == "__main__":
 # clang_format_parser.set_defaults(subparser=CREATE_STORAGE_UPDATE)
 #
 # elif arguments.subparser == CREATE_STORAGE_UPDATE:
-#     upgarde = libfhqpm.CreateStorageUpdate()
-#     upgarde.create()
+#     upgrade = libfhqpm.CreateStorageUpdate()
+#     upgrade.create()
 # else:
 #     main_parser.print_help(sys.stderr)
 #     sys.exit(1)
