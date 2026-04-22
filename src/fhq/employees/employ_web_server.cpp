@@ -225,6 +225,7 @@ public:
   void setWebAdminFolder(const std::string &sWebAdminFolder);
   void setWebPublicFolder(const std::string &sWebPublicFolder);
   void setWebUserFolder(const std::string &sWebUserFolder);
+  void setLogDir(const std::string &sLogDir);
   int httpApiV1GetPaths(HttpRequest *req, HttpResponse *resp);
   int handleGetRequest(HttpRequest *req, HttpResponse *resp);
   int httpApiV1MyIp(HttpRequest *req, HttpResponse *resp);
@@ -242,17 +243,6 @@ private:
 FhqHttpServer::FhqHttpServer() {
   TAG = "FhqHttpServer";
   m_pEmployDatabase = findWsjcppEmploy<EmployDatabase>();
-
-  // {
-  //     logger_t* pLogger = hv_default_logger();
-  //     // logger_set_max_filesize(pLogger, 102400);
-  //     std::string sLogDirPath = m_pConfig->getWorkDir() + "/hv_logs";
-  //     if (!WsjcppCore::dirExists(sLogDirPath)) {
-  //         WsjcppCore::makeDir(sLogDirPath);
-  //     }
-  //     std::string sLogFilePath = sLogDirPath + "/http_" + WsjcppCore::getCurrentTimeForFilename() + ".log";
-  //     logger_set_file(pLogger, sLogFilePath.c_str());
-  // }
 
   m_sApiPathPrefix = "/api/v1/";
   m_pHttpService = new HttpService();
@@ -283,6 +273,17 @@ void FhqHttpServer::setWebUserFolder(const std::string &sWebUserFolder) {
   m_sWebUserFolder = sWebUserFolder;
   WsjcppLog::info(TAG, "m_sWebUserFolder" + m_sWebUserFolder);
   m_sWebUserFolder = WsjcppCore::doNormalizePath(m_sWebUserFolder);
+}
+
+void FhqHttpServer::setLogDir(const std::string &sLogDir) {
+  logger_t* pLogger = hv_default_logger();
+  logger_set_max_filesize(pLogger, 102400);
+  std::string sLogDirPath = sLogDir + "/hv_logs";
+  if (!WsjcppCore::dirExists(sLogDirPath)) {
+      WsjcppCore::makeDir(sLogDirPath);
+  }
+  std::string sLogFilePath = sLogDirPath + "/http_" + WsjcppCore::getCurrentTimeForFilename() + ".log";
+  logger_set_file(pLogger, sLogFilePath.c_str());
 }
 
 int FhqHttpServer::httpApiV1GetPaths(HttpRequest *req, HttpResponse *resp) {
@@ -579,7 +580,6 @@ int EmployWebServer::start(QCoreApplication *pQtApp) {
     return -1;
   }
 
-  // TODO move inside server start
   // start web server
   int nWebPort = pGlobalSettings->get("web_port").getNumberValue();
   int nWebMaxThreads = pGlobalSettings->get("web_max_threads").getNumberValue();
@@ -590,6 +590,7 @@ int EmployWebServer::start(QCoreApplication *pQtApp) {
   std::string sFileStorage = pGlobalSettings->get("file_storage").getDirPathValue();
   std::string sWebPublicFolderUrl =
     pGlobalSettings->get("web_public_folder_url").getStringValue(); // TODO must be declared in server
+  std::string sLogDir = pGlobalSettings->get("log_dir").getDirPathValue();
 
   WsjcppLog::info(
     TAG,
@@ -609,6 +610,7 @@ int EmployWebServer::start(QCoreApplication *pQtApp) {
   httpServer.setWebAdminFolder(sWebAdminFolder);
   httpServer.setWebPublicFolder(sWebPublicFolder);
   httpServer.setWebUserFolder(sWebUserFolder);
+  httpServer.setLogDir(sLogDir);
   hv::HttpService *pRouter = httpServer.getService();
   hv::HttpServer server(pRouter);
   server.setPort(nWebPort + 1);

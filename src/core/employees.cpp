@@ -492,7 +492,7 @@ EmployGlobalSettings::EmployGlobalSettings() : WsjcppEmployBase(EmployGlobalSett
 
   TAG = EmployGlobalSettings::name();
 
-  // basicly
+  // basically
   this->registrySetting("runtime", "work_dir").dirPath("").inRuntime().readonly();
   this->registrySetting("runtime", "log_dir").dirPath("").inRuntime().readonly();
   this->registrySetting("runtime", "app_version").string("").inRuntime().readonly();
