@@ -259,31 +259,62 @@ hv::HttpService *FhqHttpServer::getService() { return m_pHttpService; }
 
 void FhqHttpServer::setWebAdminFolder(const std::string &sWebAdminFolder) {
   m_sWebAdminFolder = sWebAdminFolder;
-  WsjcppLog::info(TAG, "m_sWebAdminFolder = " + m_sWebAdminFolder);
+  WsjcppLog::info(TAG, "setWebAdminFolder => " + m_sWebAdminFolder);
   m_sWebAdminFolder = WsjcppCore::doNormalizePath(m_sWebAdminFolder);
 }
 
 void FhqHttpServer::setWebPublicFolder(const std::string &sWebPublicFolder) {
   m_sWebPublicFolder = sWebPublicFolder;
-  WsjcppLog::info(TAG, "m_sWebPublicFolder" + m_sWebPublicFolder);
+  WsjcppLog::info(TAG, "setWebPublicFolder => " + m_sWebPublicFolder);
   m_sWebPublicFolder = WsjcppCore::doNormalizePath(m_sWebPublicFolder);
 }
 
 void FhqHttpServer::setWebUserFolder(const std::string &sWebUserFolder) {
   m_sWebUserFolder = sWebUserFolder;
-  WsjcppLog::info(TAG, "m_sWebUserFolder" + m_sWebUserFolder);
+  WsjcppLog::info(TAG, "setWebUserFolder => " + m_sWebUserFolder);
   m_sWebUserFolder = WsjcppCore::doNormalizePath(m_sWebUserFolder);
+}
+
+void FhqHttpServer_custom_logger(int level, const char* msg, int len) {
+  std::string TAG = "FhqHttpServer-lib-hv";
+  std::string message(msg, len-1); // remove last '\n' character
+  switch(level) {
+    case LOG_LEVEL_DEBUG:
+      WsjcppLog::info(TAG, "debug: " + message);
+      break;
+    case LOG_LEVEL_INFO:
+      WsjcppLog::info(TAG, message);
+      break;
+    case LOG_LEVEL_WARN:
+      WsjcppLog::warn(TAG, message);
+      break;
+    case LOG_LEVEL_ERROR:
+      WsjcppLog::err(TAG, message);
+      break;
+    case LOG_LEVEL_FATAL:
+      WsjcppLog::throw_err(TAG, message);
+      break;
+    default:
+      WsjcppLog::info(TAG, "Unknow level: " + message);
+  }
 }
 
 void FhqHttpServer::setLogDir(const std::string &sLogDir) {
   logger_t* pLogger = hv_default_logger();
-  logger_set_max_filesize(pLogger, 102400);
-  std::string sLogDirPath = sLogDir + "/hv_logs";
-  if (!WsjcppCore::dirExists(sLogDirPath)) {
-      WsjcppCore::makeDir(sLogDirPath);
-  }
-  std::string sLogFilePath = sLogDirPath + "/http_" + WsjcppCore::getCurrentTimeForFilename() + ".log";
-  logger_set_file(pLogger, sLogFilePath.c_str());
+  logger_set_handler(pLogger, FhqHttpServer_custom_logger);
+  logger_set_format(pLogger, "%s");  // removing time and log level
+
+  // Test the log
+  hlogi("This is an info message.");
+
+  // logger_t* pLogger = hv_default_logger();
+  // logger_set_max_filesize(pLogger, 102400);
+  // std::string sLogDirPath = sLogDir + "/hv_logs";
+  // if (!WsjcppCore::dirExists(sLogDirPath)) {
+  //     WsjcppCore::makeDir(sLogDirPath);
+  // }
+  // std::string sLogFilePath = sLogDirPath + "/http_" + WsjcppCore::getCurrentTimeForFilename() + ".log";
+  // logger_set_file(pLogger, sLogFilePath.c_str());
 }
 
 int FhqHttpServer::httpApiV1GetPaths(HttpRequest *req, HttpResponse *resp) {
