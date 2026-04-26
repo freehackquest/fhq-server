@@ -4,12 +4,13 @@ import { FhqService } from '../../services/fhq.service';
 import { FreeHackQuestClient } from '../../services/libfreehackquest-client-angular.service';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/throttleTime';
-import 'rxjs/add/observable/fromEvent';
+// import 'rxjs/add/operator/debounceTime';
+// import 'rxjs/add/operator/throttleTime';
+// import 'rxjs/add/observable/fromEvent';
 
 @Component({
   selector: 'app-games',
+  standalone: false,
   templateUrl: './games.component.html',
   styleUrls: ['./games.component.css']
 })
@@ -41,7 +42,7 @@ export class GamesComponent implements OnInit {
       this.loadData();
     });
   }
-  
+
   loadData() {
     // this.searchTaskControl.value
     const _data = {

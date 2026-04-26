@@ -15,6 +15,7 @@ export interface UserFavoriteLinkElement {
 
 @Component({
   selector: 'app-user-favorites-useful-links',
+  standalone: false,
   templateUrl: './user-favorites-useful-links.component.html',
   styleUrls: ['./user-favorites-useful-links.component.css']
 })

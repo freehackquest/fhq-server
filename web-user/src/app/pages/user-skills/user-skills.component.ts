@@ -13,6 +13,7 @@ export interface UserSkillsElement {
 
 @Component({
   selector: 'app-user-skills',
+  standalone: false,
   templateUrl: './user-skills.component.html',
   styleUrls: ['./user-skills.component.css']
 })

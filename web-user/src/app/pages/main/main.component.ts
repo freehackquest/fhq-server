@@ -5,6 +5,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-main',
+  standalone: false,
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })

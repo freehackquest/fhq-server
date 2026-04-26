@@ -6,6 +6,7 @@ declare var fhq: any;
 
 @Component({
   selector: 'app-server-api',
+  standalone: false, // Add this line
   templateUrl: './server-api.component.html',
   styleUrls: ['./server-api.component.css']
 })

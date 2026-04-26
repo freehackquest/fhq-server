@@ -5,12 +5,13 @@ import { FhqService } from '../../services/fhq.service';
 import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import 'rxjs/add/operator/switchMap';
+// import 'rxjs/add/operator/switchMap';
 
 // import { switch } from 'rxjs/operators/switchMap'; // <- Please read the update!
 
 @Component({
   selector: 'app-scoreboard',
+  standalone: false,
   templateUrl: './scoreboard.component.html',
   styleUrls: ['./scoreboard.component.css']
 })
@@ -40,12 +41,12 @@ export class ScoreboardComponent implements OnInit {
         this.searchValue = newValue
 		this.applyFilter();
 	});
-	  
+
     this.loadData();
   }
 
   applyFilter() {
-	
+
 	const _sv = this.searchValue.toUpperCase();
 	console.log(_sv);
 	this.filteredDataList = []

@@ -7,6 +7,7 @@ import { FhqService } from '../../services/fhq.service';
 
 @Component({
   selector: 'app-modal-dialog-quest-feedback',
+  standalone: false,
   templateUrl: './modal-dialog-quest-feedback.component.html',
   styleUrls: ['./modal-dialog-quest-feedback.component.css']
 })

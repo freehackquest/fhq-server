@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-confidencial',
+  standalone: false,
   templateUrl: './confidencial.component.html',
   styleUrls: ['./confidencial.component.css']
 })

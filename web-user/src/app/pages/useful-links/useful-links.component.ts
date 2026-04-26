@@ -28,6 +28,7 @@ export interface UsefulLinkTag {
 
 @Component({
   selector: 'app-useful-links',
+  standalone: false,
   templateUrl: './useful-links.component.html',
   styleUrls: ['./useful-links.component.css']
 })

@@ -30,7 +30,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { APP_BASE_HREF } from '@angular/common';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { L10nTranslationModule, L10nIntlModule, L10nValidationModule, L10nRoutingModule, L10nLoader } from 'angular-l10n';
+import { L10nTranslationModule, L10nIntlModule, L10nValidationModule, L10nLoader } from 'angular-l10n';
+
 import { l10nConfig, initL10n, AppStorage, HttpTranslationLoader, LocaleValidation } from './l10n-config';
 
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
@@ -134,7 +135,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     ),
     L10nIntlModule,
     L10nValidationModule.forRoot({ validation: LocaleValidation }),
-    L10nRoutingModule.forRoot(),
+    // L10nRoutingModule.forRoot(),
     AppRoutingModule,
     OverlayModule,
     FormsModule,
@@ -203,11 +204,11 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     NgbActiveModal
   ],
   bootstrap: [AppComponent],
-  entryComponents: [
-    SpinnerComponent,
-    ModalSignInDialog,
-    ModalDialogQuestFeedbackComponent,
-  ],
+  // entryComponents: [
+  //   SpinnerComponent,
+  //   ModalSignInDialog,
+  //   ModalDialogQuestFeedbackComponent,
+  // ],
 })
 
 export class AppModule {

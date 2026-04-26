@@ -8,6 +8,7 @@ import { DialogsService } from '../../services/dialogs.service';
 
 @Component({
   selector: 'app-knowledge-base',
+  standalone: false,
   templateUrl: './knowledge-base.component.html',
   styleUrls: [
     './knowledge-base.component.css'

@@ -1,4 +1,4 @@
-<mat-chip-list>
+<mat-chip-set>
   <mat-chip 
     *ngFor="let tag of tagList" 
     (click)="applyFilterByTag(tag.name)"
@@ -6,7 +6,7 @@
   >
     {{ tag.name }} ({{ tag.counter }})
   </mat-chip>
-</mat-chip-list>
+</mat-chip-set>
 
 <mat-form-field class="usefullinks-search-form-field">
   <input
@@ -66,19 +66,19 @@
             <mat-icon aria-hidden="false">comment</mat-icon>
             <span l10nTranslate>comments</span> ({{ element.userComments }})
           </button>
-          
+
           <br><br>
           <strong>{{element.description}}</strong><br>
-          <div *ngIf="element.tags.length > 0"> 
-            <mat-chip-list>
+          <div *ngIf="element.tags.length > 0">
+            <mat-chip-set>
               <mat-chip 
-                *ngFor="let tag of element.tags;" 
+                *ngFor="let tag of element.tags;"
                 (click)="applyFilterByTag(tag)"
                 [selected]="tag == filterByTag"
               >
                 {{ tag }}
               </mat-chip>
-            </mat-chip-list>
+            </mat-chip-set>
           </div>
         </td>
       </ng-container>

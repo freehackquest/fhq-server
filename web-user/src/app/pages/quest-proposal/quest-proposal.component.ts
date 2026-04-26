@@ -5,6 +5,7 @@ import { DialogsService } from '../../services/dialogs.service';
 
 @Component({
   selector: 'app-quest-proposal',
+  standalone: false,
   templateUrl: './quest-proposal.component.html',
   styleUrls: ['./quest-proposal.component.css']
 })

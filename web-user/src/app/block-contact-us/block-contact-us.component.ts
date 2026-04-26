@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-block-contact-us',
+  standalone: false,
   templateUrl: './block-contact-us.component.html',
   styleUrls: ['./block-contact-us.component.css']
 })

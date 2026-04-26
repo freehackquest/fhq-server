@@ -12,6 +12,7 @@ declare var _: any;
 
 @Component({
   selector: 'app-events',
+  standalone: false, // Add this line
   templateUrl: './events.component.html',
   styleUrls: ['./events.component.css']
 })

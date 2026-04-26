@@ -30,7 +30,7 @@ export const l10nConfig: L10nConfig = {
         { locale: { language: 'en' }, dir: 'ltr', text: 'English' },
         { locale: { language: 'de' }, dir: 'ltr', text: 'Deutch' },
     ],
-    defaultRouting: true
+    // defaultRouting: true
 };
 
 export function initL10n(l10nLoader: L10nLoader): () => Promise<void> {

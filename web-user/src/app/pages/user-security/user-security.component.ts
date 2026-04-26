@@ -7,6 +7,7 @@ import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-user-security',
+  standalone: false,
   templateUrl: './user-security.component.html',
   styleUrls: ['./user-security.component.css']
 })

@@ -3,6 +3,7 @@ import { SpinnerService } from '../../services/spinner.service';
 
 @Component({
   selector: 'app-page-not-found',
+  standalone: false, // Add this line
   templateUrl: './page-not-found.component.html',
   styleUrls: ['./page-not-found.component.css']
 })

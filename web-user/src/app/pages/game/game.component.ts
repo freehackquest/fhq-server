@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-game',
+  standalone: false, // Add this line
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.css']
 })

@@ -9,8 +9,10 @@ import { ModalDialogQuestFeedbackComponent } from '../../dialogs/modal-dialog-qu
 import { DialogsService } from '../../services/dialogs.service';
 import { marked } from 'marked';
 
+
 @Component({
   selector: 'app-quest',
+  standalone: false,
   templateUrl: './quest.component.html',
   styleUrls: ['./quest.component.css']
 })
@@ -98,7 +100,9 @@ export class QuestComponent implements OnInit {
     });
 
     this.quest = r.quest;
-    this.questDescription = marked(r.quest.text);
+    this.questDescription = marked.parse(r.quest.text, { async: false });
+
+    // this.questDescription = 
     this._cdr.detectChanges();
   }
 

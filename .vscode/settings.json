@@ -84,5 +84,13 @@
         "**/packs": true,
         "**/log": true,
         "log": true
-    }
-}        
+    },
+    "cSpell.words": [
+        "deeppurple",
+        "freehackquest",
+        "libclient",
+        "okaidia",
+        "pixelworks",
+        "rbush"
+    ]
+}

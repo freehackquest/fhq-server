@@ -15,6 +15,7 @@ export interface DialogData {
 
 @Component({
   selector: 'app-modal-signin-dialog',
+  standalone: false,
   templateUrl: './modal-signin-dialog.component.html',
   styleUrls: ['./modal-signin-dialog.component.css']
 })

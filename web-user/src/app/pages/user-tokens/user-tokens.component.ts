@@ -16,6 +16,7 @@ export interface UserTokensElement {
 
 @Component({
   selector: 'app-user-tokens',
+  standalone: false,
   templateUrl: './user-tokens.component.html',
   styleUrls: ['./user-tokens.component.css']
 })

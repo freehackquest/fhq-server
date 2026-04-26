@@ -6,6 +6,7 @@ import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-useful-link-view',
+  standalone: false,
   templateUrl: './useful-link-view.component.html',
   styleUrls: ['./useful-link-view.component.css']
 })

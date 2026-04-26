@@ -17,14 +17,14 @@
             {{element.description}}
         </p>
         <div *ngIf="element.tags && element.tags.length > 0"> 
-            <mat-chip-list>
+            <mat-chip-set>
                 <mat-chip 
                 *ngFor="let tag of element.tags;" 
                 (click)="applyFilterByTag(tag)"
                 >
                 {{ tag }}
                 </mat-chip>
-            </mat-chip-list>
+            </mat-chip-set>
         </div>
     </mat-card-content>
     <mat-card-actions>

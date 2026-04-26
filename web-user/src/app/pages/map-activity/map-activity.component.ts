@@ -12,6 +12,7 @@ import { Circle as CircleStyle, Fill, Stroke, Style, Text } from 'ol/style.js';
 
 @Component({
   selector: 'app-map-activity',
+  standalone: false, // Add this line
   templateUrl: './map-activity.component.html',
   styleUrls: ['./map-activity.component.css']
 })

@@ -15,6 +15,7 @@ export interface QuestInfoElement {
 
 @Component({
   selector: 'app-quests-by-subject',
+  standalone: false,
   templateUrl: './quests-by-subject.component.html',
   styleUrls: ['./quests-by-subject.component.css']
 })

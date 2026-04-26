@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-ctf-wall',
+  standalone: false, // Add this line
   templateUrl: './ctf-wall.component.html',
   styleUrls: ['./ctf-wall.component.css']
 })

@@ -4,6 +4,7 @@ import { FhqService } from 'src/app/services/fhq.service';
 
 @Component({
   selector: 'app-quests',
+  standalone: false,
   templateUrl: './quests.component.html',
   styleUrls: ['./quests.component.css']
 })

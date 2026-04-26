@@ -7,6 +7,7 @@ declare var fhq: any;
 
 @Component({
   selector: 'app-registration',
+  standalone: false, // Add this line
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.css']
 })

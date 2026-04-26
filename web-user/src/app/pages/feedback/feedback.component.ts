@@ -4,6 +4,7 @@ import { SpinnerService } from '../../services/spinner.service';
 
 @Component({
   selector: 'app-feedback',
+  standalone: false,
   templateUrl: './feedback.component.html',
   styleUrls: ['./feedback.component.css']
 })
