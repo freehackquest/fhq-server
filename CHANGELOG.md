@@ -5,30 +5,38 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.2.55] - 2025-??-?? (2025 ??? ??)
+## [v0.2.55] - 2026-04-27 (2026 Apr 27)
 
+- web-user: Migrated Angular from 14 to 19
+- server: Redesigning web server from wsjcpp light web server to libhv
+- server: Redesigned web_server to like a employ
+- Fixed './pm.py clang-format'
+- Fixed './pm.py code-check' and removed check for word 'auto'
+- web-user: dependabot[bot]: bump protocol-buffers-schema in /web-user
+- web-user: dependabot[bot]: bump follow-redirects from 1.15.6 to 1.16.0 in /web-user
+- Redesign unit-tests.wsjcpp to ctest (cmake)
 - Removed unused and not finished feature lxd/lxc/orchestra
 - Redesign in admin menu to bootstrap
 - Update bootstrap from 4.0.0-beta to v5.3.8
 - Updated jquery-3.1.0.min.js -> jquery-3.7.1.min.js
-- dependabot[bot]: bump picomatch from 2.3.1 to 2.3.2 in /web-user
-- dependabot[bot]: bump node-forge from 1.3.3 to 1.4.0 in /web-user
-- dependabot[bot]: bump lodash-es from 4.17.21 to 4.18.1 in /web-user
-- dependabot[bot]: bump lodash from 4.17.21 to 4.18.1 in /web-user
-- dependabot[bot]: bump immutable from 4.3.6 to 4.3.8 in /web-user
-- dependabot[bot]: bump flatted from 3.3.1 to 3.4.2 in /web-user
+- web-user: dependabot[bot]: bump picomatch from 2.3.1 to 2.3.2 in /web-user
+- web-user: dependabot[bot]: bump node-forge from 1.3.3 to 1.4.0 in /web-user
+- web-user: dependabot[bot]: bump lodash-es from 4.17.21 to 4.18.1 in /web-user
+- web-user: dependabot[bot]: bump lodash from 4.17.21 to 4.18.1 in /web-user
+- web-user: dependabot[bot]: bump immutable from 4.3.6 to 4.3.8 in /web-user
+- web-user: dependabot[bot]: bump flatted from 3.3.1 to 3.4.2 in /web-user
 - Implemented './pm.py front --run' and './pm.py front --build' - will be run in docker-container and will not need anymore install npm for frontend to local developer machine
 - Added './pm.py check'
 - Added wss_test.py
 - Updated year license, copyrights
 - Synchronized copyrights in head of source files
 - Removed unused option web_fhqjad_store
-- dependabot[bot]: Updated brace-expansion from 2.0.1 to 2.0.2
-- dependabot[bot]: Updated http-proxy-middleware to 2.0.9
-- dependabot[bot]: Updated @babel/helpers from 7.24.8 to 7.28.2 in /web-user
-- dependabot[bot]: Updated prismjs from 1.29.0 to 1.30.0 in /web-user
-- dependabot[bot]: Updated on-headers from 1.0.2 to 1.1.0
-- dependabot[bot]: Updated compression from 1.7.4 to 1.8.1
+- web-user: dependabot[bot]: Updated brace-expansion from 2.0.1 to 2.0.2
+- web-user: dependabot[bot]: Updated http-proxy-middleware to 2.0.9
+- web-user: dependabot[bot]: Updated @babel/helpers from 7.24.8 to 7.28.2 in /web-user
+- web-user: dependabot[bot]: Updated prismjs from 1.29.0 to 1.30.0 in /web-user
+- web-user: dependabot[bot]: Updated on-headers from 1.0.2 to 1.1.0
+- web-user: dependabot[bot]: Updated compression from 1.7.4 to 1.8.1
 
 ## [v0.2.54] - 2025-08-21 (2025 Aug 21)
 
