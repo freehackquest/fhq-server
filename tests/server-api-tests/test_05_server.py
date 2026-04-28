@@ -61,7 +61,7 @@ def test_server_settings_readonly(admin_session):
 def test_server_settings_update(admin_session):
     """ Server settings """
     print(test_server_settings_update.__doc__)
-    server_settings = admin_session.server_settings({})
+    server_settings = admin_session.server.settings({})
     assert server_settings is not None
     assert server_settings["result"] == "DONE"
 
@@ -79,7 +79,7 @@ def test_server_settings_update(admin_session):
     })
     assert sett_updated is not None
     assert sett_updated["result"] == "DONE"
-    server_settings2 = admin_session.server_settings({})
+    server_settings2 = admin_session.server.settings({})
     assert server_settings2 is not None
     assert server_settings2["result"] == "DONE"
     _new_sett = None

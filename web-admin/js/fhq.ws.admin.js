@@ -350,13 +350,13 @@ fhq.ws.scoreboard = function(params){
 
 fhq.ws.server_info = function(params){
     params = params || {};
-    params.cmd = 'server_info';
+    params.cmd = 'server.info';
     return fhq.ws.send(params);
 }
 
 fhq.ws.server_settings = function(params){
     params = params || {};
-    params.cmd = 'server_settings';
+    params.cmd = 'server.settings';
     return fhq.ws.send(params);
 }
 

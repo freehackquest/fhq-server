@@ -146,12 +146,13 @@ void CmdHandlerPublicInfo::handle(ModelRequest *pRequest) {
 
 REGISTRY_CMD(CmdHandlerServerInfo)
 
-CmdHandlerServerInfo::CmdHandlerServerInfo() : CmdHandlerBase("server_info", "Return server private information") {
+CmdHandlerServerInfo::CmdHandlerServerInfo() : CmdHandlerBase("server.info", "Return server private information") {
   TAG = "CmdServerInfoHandler";
 
   setAccessUnauthorized(false);
   setAccessUser(false);
   setAccessAdmin(true);
+  setActivatedFromVersion("0.2.56");
 }
 
 void CmdHandlerServerInfo::handle(ModelRequest *pRequest) {
@@ -178,7 +179,7 @@ void CmdHandlerServerInfo::handle(ModelRequest *pRequest) {
 
 REGISTRY_CMD(CmdHandlerServerSettings)
 
-CmdHandlerServerSettings::CmdHandlerServerSettings() : CmdHandlerBase("server_settings", "Return server settings") {
+CmdHandlerServerSettings::CmdHandlerServerSettings() : CmdHandlerBase("server.settings", "Return server settings") {
 
   setAccessUnauthorized(false);
   setAccessUser(false);

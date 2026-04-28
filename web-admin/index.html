@@ -13,13 +13,9 @@
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/libs/css/style.css">
     <link rel="stylesheet" href="assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
-
     <link rel="stylesheet" type="text/css" href="css/simplemde.min.css?ver=1"/>
     <link rel="stylesheet" type="text/css" href="css/swa-pages.css?ver=1"/>
-
-
-    <link rel="stylesheet" type="text/css" href="index.css"/>
-
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
 </head>
 <body>
   <main>
@@ -31,7 +27,7 @@
       <hr>
       <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item">
-          <div class="nav-link active swa-page-sidebar-button swa-menu" page="server_info">Server Info</div>
+          <div class="nav-link text-white swa-page-sidebar-button swa-menu" id="menu_server_info" page="server">Server</div>
         </li>
         <li>
           <div class="nav-link text-white swa-page-sidebar-button swa-menu" page="settings" id="menu_settings" onclick="fhq.pages.settings()">Settings</div>
@@ -155,7 +151,6 @@
     <script defer src="./js/fhq.admin.quests.js"></script>
     <script defer src="./js/fhq.admin.quests_proposal.js"></script>
     <script defer src="./js/fhq.admin.server.js"></script>
-    <script defer src="./js/fhq.admin.version.js"></script>
     <script src="./js/libs/swa-pages.js"></script>
     <script defer src="./js/fhq.ws.admin.js"></script>
     <script defer src="./js/libs/libfhqcli-web-js.js"></script>
@@ -196,7 +191,6 @@
 
             fhq.init({'baseUrl': _baseUrl});
         }
-       
 
         fhq.bind('connected', function() {
             _connectionState = 'OK';
@@ -239,7 +233,7 @@
             }*/
             // (data: any) => this.showNotification(data)
         });
-        
+
         connectToServer();
 
         function logout() {
@@ -247,7 +241,6 @@
             window.location.reload();
         }
 
-        
     </script>
 </body>
 </html>

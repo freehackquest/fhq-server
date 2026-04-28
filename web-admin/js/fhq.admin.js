@@ -110,7 +110,7 @@ fhq.processParams = function() {
         }
         if (!bFound) {
             console.log("Load default page");
-            fhq.pages['server_info']();
+            fhq.pages['server']();
         }
     }
 }

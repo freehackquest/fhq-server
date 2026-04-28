@@ -1456,7 +1456,7 @@ window.fhq = window.fhq || (function() {
        // Access user: no
        // Access admin: yes
         params = params || {};
-        params.cmd = 'server_info';
+        params.cmd = 'server.info';
          return self.send(params);
     }
 
@@ -1465,7 +1465,7 @@ window.fhq = window.fhq || (function() {
        // Access user: no
        // Access admin: yes
         params = params || {};
-        params.cmd = 'server_settings';
+        params.cmd = 'server.settings';
          return self.send(params);
     }
 

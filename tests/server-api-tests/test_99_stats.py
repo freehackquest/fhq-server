@@ -49,7 +49,7 @@ def test_coverage(admin_session):
     assert server_api is not None
     assert server_api["result"] == "DONE"
 
-    server_info = admin_session.server_info({})
+    server_info = admin_session.server.info({})
     assert server_info is not None
     assert server_info["result"] == "DONE"
 

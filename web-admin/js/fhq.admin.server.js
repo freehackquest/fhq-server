@@ -25,13 +25,13 @@ fhq.startUptime = function(server_uptime_sec) {
 	},1000);
 }
 
-fhq.pages['server_info'] = function(){
+fhq.pages['server'] = function(){
 	$('.nav-link.main-menu').removeClass("active");
 	$('#menu_server_info').addClass("active");
 
-	fhq.changeLocationState({'server_info':''});
-	console.warn("server_info");
-	$('#page_name').html('Server Info');
+	fhq.changeLocationState({'server':''});
+	console.warn("server");
+	$('#page_name').html('Server');
 	var el = $('#page_content');
 	fhq.showLoader();
 	el.html('');
