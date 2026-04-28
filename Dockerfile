@@ -1,4 +1,4 @@
-FROM sea5kg/fhq-server-build-environment:2025-08-06
+FROM sea5kg/fhq-server-build-environment:2026-04-27
 WORKDIR /root/
 
 # Fix for building on debian 9.5 system (mysqlclient library)
@@ -17,7 +17,7 @@ RUN node -v
 RUN npm -v
 RUN npm install && npm run build-prod
 
-FROM sea5kg/fhq-server-release-environment:2025-08-06
+FROM sea5kg/fhq-server-release-environment:2026-04-27
 
 LABEL "maintainer"="Evgenii Sopov <mrseakg@gmail.com>"
 LABEL "repository"="https://github.com/freehackquest/fhq-server"
