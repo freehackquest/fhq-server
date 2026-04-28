@@ -2068,7 +2068,7 @@ void CmdHandlerQuestsFilesUpload::handle(ModelRequest *pRequest) {
 
   QByteArray baFileBase64;
   QString sImagePngBase64 = QString::fromStdString(sFileBase64);
-  baFileBase64.append(sImagePngBase64);
+  baFileBase64.append(sImagePngBase64.toLatin1());
   // TODO replace decode base64 to std
   QByteArray baFile = QByteArray::fromBase64(baFileBase64); // .fromBase64(baImagePNGBase64);
 

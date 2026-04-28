@@ -317,7 +317,7 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest) {
   const int randomStringLength = 12; // assuming you want random strings of 12 characters
   QString sPassword;
   for (int i = 0; i < randomStringLength; ++i) {
-    int index = qrand() % possibleCharacters.length();
+    int index = QRandomGenerator::global()->bounded(possibleCharacters.length());
     QChar nextChar = possibleCharacters.at(index);
     sPassword.append(nextChar);
   }
@@ -331,7 +331,7 @@ void CmdHandlerRegistration::handle(ModelRequest *pRequest) {
   const int randomStringLength2 = 8; // assuming you want random strings of 12 characters
   QString sNick;
   for (int i = 0; i < randomStringLength2; ++i) {
-    int index = qrand() % possibleCharacters2.length();
+    int index = QRandomGenerator::global()->bounded(possibleCharacters2.length());
     QChar nextChar = possibleCharacters2.at(index);
     sNick.append(nextChar);
   }
@@ -1073,7 +1073,7 @@ void CmdHandlerUserResetPassword::handle(ModelRequest *pRequest) {
   const int randomStringLength = 12; // assuming you want random strings of 12 characters
   QString sPassword;
   for (int i = 0; i < randomStringLength; ++i) {
-    int index = qrand() % possibleCharacters.length();
+    int index = QRandomGenerator::global()->bounded(possibleCharacters.length());
     QChar nextChar = possibleCharacters.at(index);
     sPassword.append(nextChar);
   }
@@ -1708,7 +1708,8 @@ void CmdHandlerUsersRegistration::handle(ModelRequest *pRequest) {
   const int randomStringLength = 6;
   QString sCode;
   for (int i = 0; i < randomStringLength; ++i) {
-    int index = qrand() % possibleCharacters.length();
+
+    int index = QRandomGenerator::global()->bounded(possibleCharacters.length());
     QChar nextChar = possibleCharacters.at(index);
     sCode.append(nextChar);
   }
@@ -1826,7 +1827,7 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest) {
   const int randomStringLength = 8; // assuming you want random strings of 8 characters
   QString sNick;
   for (int i = 0; i < randomStringLength; ++i) {
-    int index = qrand() % possibleCharacters.length();
+    int index = QRandomGenerator::global()->bounded(possibleCharacters.length());
     QChar nextChar = possibleCharacters.at(index);
     sNick.append(nextChar);
   }
@@ -1837,7 +1838,7 @@ void CmdHandlerUsersRegistrationVerification::handle(ModelRequest *pRequest) {
   const int randomStringLength2 = 12; // assuming you want random strings of 12 characters
   QString sPassword;
   for (int i = 0; i < randomStringLength2; ++i) {
-    int index = qrand() % possibleCharacters2.length();
+    int index = QRandomGenerator::global()->bounded(possibleCharacters2.length());
     QChar nextChar = possibleCharacters2.at(index);
     sPassword.append(nextChar);
   }
@@ -2004,7 +2005,7 @@ void CmdHandlerUsersChangeEmail::handle(ModelRequest *pRequest) {
   const int randomStringLength = 6;
   QString sCode;
   for (int i = 0; i < randomStringLength; ++i) {
-    int index = qrand() % possibleCharacters.length();
+    int index = QRandomGenerator::global()->bounded(possibleCharacters.length());
     QChar nextChar = possibleCharacters.at(index);
     sCode.append(nextChar);
   }

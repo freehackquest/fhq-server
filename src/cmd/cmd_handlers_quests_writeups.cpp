@@ -218,8 +218,10 @@ void CmdHandlerQuestsWriteUpsProposal::handle(ModelRequest *pRequest) {
                            sUserEmail.toStdString() +
                            "\n"
                            "QuestId: #" +
-                           std::to_string(nQuestID) + "\n";
-    "WriteUpID: #" + std::to_string(nWriteUpID) + "\n";
+                           std::to_string(nQuestID) +
+                           "\n"
+                           "WriteUpID: #" +
+                           std::to_string(nWriteUpID) + "\n";
 
     RunTasks::MailSend(sMailToAdmin, sMessageSubject, sContext);
   }

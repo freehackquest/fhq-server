@@ -275,34 +275,34 @@ void FhqHttpServer::setWebUserFolder(const std::string &sWebUserFolder) {
   m_sWebUserFolder = WsjcppCore::doNormalizePath(m_sWebUserFolder);
 }
 
-void FhqHttpServer_custom_logger(int level, const char* msg, int len) {
+void FhqHttpServer_custom_logger(int level, const char *msg, int len) {
   std::string TAG = "FhqHttpServer-lib-hv";
-  std::string message(msg, len-1); // remove last '\n' character
-  switch(level) {
-    case LOG_LEVEL_DEBUG:
-      WsjcppLog::info(TAG, "debug: " + message);
-      break;
-    case LOG_LEVEL_INFO:
-      WsjcppLog::info(TAG, message);
-      break;
-    case LOG_LEVEL_WARN:
-      WsjcppLog::warn(TAG, message);
-      break;
-    case LOG_LEVEL_ERROR:
-      WsjcppLog::err(TAG, message);
-      break;
-    case LOG_LEVEL_FATAL:
-      WsjcppLog::throw_err(TAG, message);
-      break;
-    default:
-      WsjcppLog::info(TAG, "Unknow level: " + message);
+  std::string message(msg, len - 1); // remove last '\n' character
+  switch (level) {
+  case LOG_LEVEL_DEBUG:
+    WsjcppLog::info(TAG, "debug: " + message);
+    break;
+  case LOG_LEVEL_INFO:
+    WsjcppLog::info(TAG, message);
+    break;
+  case LOG_LEVEL_WARN:
+    WsjcppLog::warn(TAG, message);
+    break;
+  case LOG_LEVEL_ERROR:
+    WsjcppLog::err(TAG, message);
+    break;
+  case LOG_LEVEL_FATAL:
+    WsjcppLog::throw_err(TAG, message);
+    break;
+  default:
+    WsjcppLog::info(TAG, "Unknow level: " + message);
   }
 }
 
 void FhqHttpServer::setLogDir(const std::string &sLogDir) {
-  logger_t* pLogger = hv_default_logger();
+  logger_t *pLogger = hv_default_logger();
   logger_set_handler(pLogger, FhqHttpServer_custom_logger);
-  logger_set_format(pLogger, "%s");  // removing time and log level
+  logger_set_format(pLogger, "%s"); // removing time and log level
 
   // Test the log
   hlogi("This is an info message.");

@@ -40,9 +40,9 @@
 
 #include <QMap>
 #include <fhq_server_db_email_delivery.h>
+#include <fhq_server_db_public_events.h>
 #include <fhq_server_db_useful_links.h>
 #include <fhq_server_db_uuids.h>
-#include <fhq_server_db_public_events.h>
 #include <mutex>
 #include <wsjcpp_storages.h>
 

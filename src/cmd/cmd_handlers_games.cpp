@@ -658,7 +658,7 @@ void CmdHandlerGameUpdateLogo::handle(ModelRequest *pRequest) {
   // TODO can be crash
   nlohmann::json jsonRequest = pRequest->jsonRequest();
   QString sImagePngBase64 = QString::fromStdString(jsonRequest["image_png_base64"]);
-  baImagePNGBase64.append(sImagePngBase64);
+  baImagePNGBase64.append(sImagePngBase64.toLatin1());
   // TODO replace decode base64 to std
   QByteArray baImagePNG = QByteArray::fromBase64(baImagePNGBase64); // .fromBase64(baImagePNGBase64);
 
