@@ -92,6 +92,7 @@ list (APPEND WSJCPP_SOURCES "src/core/wsjcpp_export_libcli_web_js.cpp")
 # database
 list (APPEND WSJCPP_SOURCES "src/database/fhq_server_database_file.cpp")
 list (APPEND WSJCPP_SOURCES "src/database/fhq_server_db_email_delivery.cpp")
+list (APPEND WSJCPP_SOURCES "src/database/fhq_server_db_public_events.cpp")
 list (APPEND WSJCPP_SOURCES "src/database/fhq_server_db_useful_links.cpp")
 list (APPEND WSJCPP_SOURCES "src/database/fhq_server_db_uuids.cpp")
 

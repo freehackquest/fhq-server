@@ -42,6 +42,7 @@
 #include <fhq_server_db_email_delivery.h>
 #include <fhq_server_db_useful_links.h>
 #include <fhq_server_db_uuids.h>
+#include <fhq_server_db_public_events.h>
 #include <mutex>
 #include <wsjcpp_storages.h>
 
@@ -53,6 +54,7 @@ public:
   virtual bool deinit();
 
   FhqServerDbUuids *databaseUuids();
+  FhqServerDbPublicEvents *databasePublicEvents();
   FhqServerDbUsefulLinks *databaseUsefulLinks();
 
   QSqlDatabase *database();
@@ -69,6 +71,7 @@ private:
   std::string m_sStorageType;
 
   bool initUuidsDatabase();
+  bool initPublicEventsDatabase();
   bool initUsefulLinksDatabase();
 
   bool initEmailDelivery();
@@ -91,6 +94,7 @@ private:
 
   // sqlite3 database files
   FhqServerDbUuids *m_pUuids;
+  FhqServerDbPublicEvents *m_pPublicEvents;
   FhqServerDbUsefulLinks *m_pUsefulLinks;
   FhqServerDbEmailDelivery *m_pEmailDelivery;
 };

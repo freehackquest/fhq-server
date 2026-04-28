@@ -137,6 +137,9 @@ bool EmployDatabase::init() {
   if (!this->initUuidsDatabase()) {
     return false;
   }
+  if (!this->initPublicEventsDatabase()) {
+    return false;
+  }
 
   // TODO
   return true;
@@ -149,6 +152,7 @@ bool EmployDatabase::deinit() {
 
 FhqServerDbUsefulLinks *EmployDatabase::databaseUsefulLinks() { return m_pUsefulLinks; }
 FhqServerDbUuids *EmployDatabase::databaseUuids() { return m_pUuids; }
+FhqServerDbPublicEvents *EmployDatabase::databasePublicEvents() { return m_pPublicEvents; }
 
 bool EmployDatabase::manualCreateDatabase(const std::string &sRootPassword, std::string &sError) {
   EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
@@ -422,7 +426,16 @@ bool EmployDatabase::initUuidsDatabase() {
   if (!m_pUuids->open()) {
     return false;
   }
-  WsjcppLog::ok(TAG, "Initialized " + m_pUsefulLinks->getFileFullpath());
+  WsjcppLog::ok(TAG, "Initialized " + m_pUuids->getFileFullpath());
+  return true;
+}
+
+bool EmployDatabase::initPublicEventsDatabase() {
+  m_pPublicEvents = new FhqServerDbPublicEvents();
+  if (!m_pPublicEvents->open()) {
+    return false;
+  }
+  WsjcppLog::ok(TAG, "Initialized " + m_pPublicEvents->getFileFullpath());
   return true;
 }
 
