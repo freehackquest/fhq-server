@@ -5,6 +5,10 @@ All notable changes to fhq-server project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.2.56] - 2026-??-?? (2026 ?? ??)
+
+
+
 ## [v0.2.55] - 2026-04-27 (2026 Apr 27)
 
 - web-user: Migrated Angular from 14 to 19
