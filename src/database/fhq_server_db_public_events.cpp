@@ -38,12 +38,14 @@
 #include <employ_database.h>
 #include <employees.h>
 
-// ---------------------------------------------------------------------
-// FhqServerDbPublicEventsUpdates
+namespace fhq {
 
-class FhqServerDbPublicEventsUpdate_000_001 : public FhqServerDatabaseFileUpdate {
+// ---------------------------------------------------------------------
+// DbPublicEventsUpdates
+
+class DbPublicEventsUpdate_000_001 : public FhqServerDatabaseFileUpdate {
 public:
-  FhqServerDbPublicEventsUpdate_000_001() : FhqServerDatabaseFileUpdate("", "v001", "Init table public_events") {}
+  DbPublicEventsUpdate_000_001() : FhqServerDatabaseFileUpdate("", "v001", "Init table public_events") {}
   virtual bool applyUpdate(FhqServerDatabaseFile *pDatabaseFile) override {
     // IF NOT EXISTS
     return pDatabaseFile->executeQuery("CREATE TABLE public_events ( "
@@ -57,50 +59,48 @@ public:
   }
 };
 
-class FhqServerDbPublicEventsUpdate_001_002 : public FhqServerDatabaseFileUpdate {
+class DbPublicEventsUpdate_001_002 : public FhqServerDatabaseFileUpdate {
 public:
-  FhqServerDbPublicEventsUpdate_001_002() : FhqServerDatabaseFileUpdate("v001", "v002", "Create uniq index") {}
+  DbPublicEventsUpdate_001_002() : FhqServerDatabaseFileUpdate("v001", "v002", "Create uniq index") {}
   virtual bool applyUpdate(FhqServerDatabaseFile *pDatabaseFile) override {
     return pDatabaseFile->executeQuery("CREATE UNIQUE INDEX IF NOT EXISTS uuids_col_uuid ON public_events (uuid)");
   }
 };
 
 // ---------------------------------------------------------------------
-// FhqServerDbPublicEvents
+// DbPublicEvents
 
-FhqServerDbPublicEvents::FhqServerDbPublicEvents() : FhqServerDatabaseFile("public_events.db") {
-  TAG = "FhqServerDbPublicEvents";
-  m_vDbUpdates.push_back(new FhqServerDbPublicEventsUpdate_000_001());
-  m_vDbUpdates.push_back(new FhqServerDbPublicEventsUpdate_001_002());
+DbPublicEvents::DbPublicEvents() : FhqServerDatabaseFile("public_events.db") {
+  TAG = "DbPublicEvents";
+  m_vDbUpdates.push_back(new DbPublicEventsUpdate_000_001());
+  m_vDbUpdates.push_back(new DbPublicEventsUpdate_001_002());
 };
 
-FhqServerDbPublicEvents::~FhqServerDbPublicEvents() {}
+DbPublicEvents::~DbPublicEvents() {}
 
-// std::map<std::string, std::string> FhqServerDbPublicEvents::getAllRecords() {
-//   std::lock_guard<std::mutex> lock(m_mutex);
+bool DbPublicEvents::deleteRecord(const std::string &uuid, std::string &errorMessage) {
+  std::lock_guard<std::mutex> lock(m_mutex);
 
-//   std::map<std::string, std::string> mapUuids;
-//   std::string sSql = "SELECT uuid, typeobj FROM uuids;";
-//   FhqServerDatabaseSelectRows cur;
-//   if (this->selectRows(sSql, cur)) {
-//     while (cur.next()) {
-//       mapUuids[cur.getString(0)] = cur.getString(1);
-//     }
-//   }
-//   return mapUuids;
-// }
+  bool bFound = false;
 
-// bool FhqServerDbPublicEvents::insertUuid(const std::string &sUuid, const std::string &sTypeOfObject) {
-//   std::lock_guard<std::mutex> lock(m_mutex);
+  std::string sql = "SELECT uuid FROM public_events;";
+  FhqServerDatabaseSelectRows cur;
+  if (this->selectRows(sql, cur)) {
+    while (cur.next()) {
+      bFound = true;
+    }
+  }
+  if (!bFound) {
+    errorMessage = "NOT_FOUND";
+    return bFound;
+  }
+  sql = "DELETE FROM public_events uuid = '" + uuid + "';";
+  if (!this->executeQuery(sql)) {
+    errorMessage = "Could not delete record from public_events by uuid '" + uuid + "'";
+    WsjcppLog::err(TAG, errorMessage);
+    return false;
+  }
+  return true;
+}
 
-//   FhqServerDatabaseSqlQueryInsert sql("uuids");
-//   sql.add("uuid", sUuid);
-//   sql.add("typeobj", sTypeOfObject);
-//   sql.add("dt", WsjcppCore::getCurrentTimeInMilliseconds());
-
-//   if (!this->executeQuery(sql.getSql())) {
-//     WsjcppLog::err(TAG, "Could not insert " + sql.getSql());
-//     return false;
-//   }
-//   return true;
-// }
+} // namespace fhq

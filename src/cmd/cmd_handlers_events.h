@@ -43,6 +43,12 @@ public:
   virtual void handle(ModelRequest *pRequest);
 };
 
+class CmdHandlerEventDeleteDeprecated : public CmdHandlerBase {
+public:
+  CmdHandlerEventDeleteDeprecated();
+  virtual void handle(ModelRequest *pRequest);
+};
+
 class CmdHandlerEventDelete : public CmdHandlerBase {
 public:
   CmdHandlerEventDelete();

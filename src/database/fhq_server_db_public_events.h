@@ -39,15 +39,18 @@
 
 #include <map>
 
-class FhqServerDbPublicEvents : public FhqServerDatabaseFile {
-public:
-  FhqServerDbPublicEvents();
-  ~FhqServerDbPublicEvents();
+namespace fhq {
 
-  // std::map<std::string, std::string> getAllRecords();
-  // bool insertUuid(const std::string &sUuid, const std::string &sTypeOfObject);
+class DbPublicEvents : public FhqServerDatabaseFile {
+public:
+  DbPublicEvents();
+  ~DbPublicEvents();
+
+  bool deleteRecord(const std::string &uuid, std::string &errorMessage);
 
 private:
   std::mutex m_mutex;
   std::string TAG;
 };
+
+} // namespace fhq

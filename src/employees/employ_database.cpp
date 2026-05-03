@@ -152,7 +152,7 @@ bool EmployDatabase::deinit() {
 
 FhqServerDbUsefulLinks *EmployDatabase::databaseUsefulLinks() { return m_pUsefulLinks; }
 FhqServerDbUuids *EmployDatabase::databaseUuids() { return m_pUuids; }
-FhqServerDbPublicEvents *EmployDatabase::databasePublicEvents() { return m_pPublicEvents; }
+std::shared_ptr<fhq::DbPublicEvents> EmployDatabase::dbPublicEvents() { return m_publicEvents; }
 
 bool EmployDatabase::manualCreateDatabase(const std::string &sRootPassword, std::string &sError) {
   EmployGlobalSettings *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
@@ -431,11 +431,11 @@ bool EmployDatabase::initUuidsDatabase() {
 }
 
 bool EmployDatabase::initPublicEventsDatabase() {
-  m_pPublicEvents = new FhqServerDbPublicEvents();
-  if (!m_pPublicEvents->open()) {
+  m_publicEvents = std::make_shared<fhq::DbPublicEvents>();
+  if (!m_publicEvents->open()) {
     return false;
   }
-  WsjcppLog::ok(TAG, "Initialized " + m_pPublicEvents->getFileFullpath());
+  WsjcppLog::ok(TAG, "Initialized " + m_publicEvents->getFileFullpath());
   return true;
 }
 
@@ -445,6 +445,6 @@ bool EmployDatabase::initEmailDelivery() {
   if (!m_pEmailDelivery->open()) {
     return false;
   }
-  WsjcppLog::ok(TAG, "Initialized email_delivery.db");
+  WsjcppLog::ok(TAG, "Initialized " + m_pEmailDelivery->getFileFullpath());
   return true;
 }

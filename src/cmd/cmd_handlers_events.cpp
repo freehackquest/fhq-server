@@ -36,6 +36,7 @@
 #include <QtCore>
 #include <cmd_handlers_events.h>
 #include <employ_database.h>
+#include <employ_uuids.h>
 #include <employ_public_events.h>
 #include <employ_server_info.h>
 #include <iostream>
@@ -60,10 +61,12 @@ CmdHandlerEventAdd::CmdHandlerEventAdd() : CmdHandlerBase("createpublicevent", "
 
 void CmdHandlerEventAdd::handle(ModelRequest *pRequest) {
   auto *pEvents = findWsjcppEmploy<EmployPublicEvents>();
+  auto *pUuids = findWsjcppEmploy<EmployUuids>();
 
   ModelPublicEvent eventInfo;
   eventInfo.setType(pRequest->getInputString("type", ""));
   eventInfo.setMessage(pRequest->getInputString("message", ""));
+  eventInfo.setUuid(pUuids->generateNewUuid("public_event"));
   eventInfo.setMeta("{}");
 
   std::string sErrorMessage;
@@ -72,42 +75,87 @@ void CmdHandlerEventAdd::handle(ModelRequest *pRequest) {
     return;
   }
 
-  // TODO return full info
   nlohmann::json jsonResponse;
+  nlohmann::json jsonEvent;
+  jsonEvent["uuid"] = eventInfo.getUuid();
+  jsonEvent["type"] = eventInfo.getType();
+  jsonEvent["message"] = eventInfo.getMessage();
+  jsonResponse["data"] = jsonEvent;
+
   pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
 
 // ---------------------------------------------------------------------
-// This handler will be delete public event
+// This handler will be delete public event (deprecated)
 
-REGISTRY_CMD(CmdHandlerEventDelete)
+REGISTRY_CMD(CmdHandlerEventDeleteDeprecated)
 
-CmdHandlerEventDelete::CmdHandlerEventDelete() : CmdHandlerBase("deletepublicevent", "Delete public event") {
+CmdHandlerEventDeleteDeprecated::CmdHandlerEventDeleteDeprecated() : CmdHandlerBase("deletepublicevent", "Delete public event") {
 
   setAccessUnauthorized(false);
   setAccessUser(false);
   setAccessAdmin(true);
 
+  setDeprecatedFromVersion("0.2.55");
+
   requireIntegerParam("eventid", "Event ID");
+}
+
+void CmdHandlerEventDeleteDeprecated::handle(ModelRequest *pRequest) {
+  auto *events = findWsjcppEmploy<EmployPublicEvents>();
+
+  int eventId = pRequest->getInputInteger("eventid", -1);
+  std::string errorMessage;
+  if (!events->removePublicEvent(eventId, errorMessage)) {
+    if (errorMessage == "NOT_FOUND") {
+      pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Event not found"));
+      return;
+    }
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, errorMessage));
+    return;
+  }
+
+  nlohmann::json jsonResponse;
+  nlohmann::json jsonEvent;
+  jsonEvent["eventid"] = eventId;
+  jsonResponse["data"] = jsonEvent;
+  pRequest->sendMessageSuccess(cmd(), jsonResponse);
+}
+
+// ---------------------------------------------------------------------
+// This handler will be delete public event (from 0.2.56)
+
+REGISTRY_CMD(CmdHandlerEventDelete)
+
+CmdHandlerEventDelete::CmdHandlerEventDelete() : CmdHandlerBase("public_events.delete", "Delete public event") {
+
+  setAccessUnauthorized(false);
+  setAccessUser(false);
+  setAccessAdmin(true);
+
+  setActivatedFromVersion("0.2.56");
+
+  requireStringParam("uuid", "Event UUID")
+    .addValidator(new WsjcppValidatorUUID());
 }
 
 void CmdHandlerEventDelete::handle(ModelRequest *pRequest) {
   auto *pEvents = findWsjcppEmploy<EmployPublicEvents>();
 
-  int nEventId = pRequest->getInputInteger("eventid", -1);
-  std::string sErrorMessage;
-  if (!pEvents->removePublicEvent(nEventId, sErrorMessage)) {
-    if (sErrorMessage == "NOT_FOUND") {
+  const std::string eventUuid = pRequest->getInputString("uuid", "");
+  std::string errorMessage;
+  if (!pEvents->removePublicEventByUuid(eventUuid, errorMessage)) {
+    if (errorMessage == "NOT_FOUND") {
       pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(404, "Event not found"));
       return;
     }
-    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, sErrorMessage));
+    pRequest->sendMessageError(cmd(), WsjcppJsonRpc20Error(500, errorMessage));
     return;
   }
 
   nlohmann::json jsonResponse;
-  jsonResponse["eventid"] = nEventId;
   nlohmann::json jsonEvent;
+  jsonEvent["uuid"] = eventUuid;
   jsonResponse["data"] = jsonEvent;
   pRequest->sendMessageSuccess(cmd(), jsonResponse);
 }
@@ -125,6 +173,7 @@ CmdHandlerEventInfo::CmdHandlerEventInfo() : CmdHandlerBase("getpublicevent", "R
 
   // validation and description input fields
   requireIntegerParam("eventid", "Event id");
+  // TODO redesign to uuid
 }
 
 void CmdHandlerEventInfo::handle(ModelRequest *pRequest) {
@@ -148,6 +197,7 @@ void CmdHandlerEventInfo::handle(ModelRequest *pRequest) {
 
   jsonEvent["dt"] = eventInfo.getDateTime();
   jsonEvent["id"] = eventInfo.getLocalId();
+  jsonEvent["uuid"] = eventInfo.getUuid();
   jsonEvent["type"] = eventInfo.getType();       // TODO htmlspecialchars
   jsonEvent["message"] = eventInfo.getMessage(); // TODO htmlspecialchars
   jsonEvent["meta"] = eventInfo.getMeta();
@@ -205,6 +255,7 @@ void CmdHandlerEventsList::handle(ModelRequest *pRequest) {
     nlohmann::json jsonEvent;
     jsonEvent["dt"] = eventList[i].getDateTime();
     jsonEvent["id"] = eventList[i].getLocalId();
+    jsonEvent["uuid"] = eventList[i].getUuid();
     jsonEvent["type"] = eventList[i].getType();       // TODO htmlspecialchars
     jsonEvent["message"] = eventList[i].getMessage(); // TODO htmlspecialchars
     std::string sMeta = eventList[i].getMeta();

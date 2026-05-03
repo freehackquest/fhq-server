@@ -54,8 +54,8 @@ public:
   virtual bool deinit();
 
   FhqServerDbUuids *databaseUuids();
-  FhqServerDbPublicEvents *databasePublicEvents();
   FhqServerDbUsefulLinks *databaseUsefulLinks();
+  std::shared_ptr<fhq::DbPublicEvents> dbPublicEvents();
 
   QSqlDatabase *database();
   bool manualCreateDatabase(const std::string &sRootPassword, std::string &sError);
@@ -94,7 +94,7 @@ private:
 
   // sqlite3 database files
   FhqServerDbUuids *m_pUuids;
-  FhqServerDbPublicEvents *m_pPublicEvents;
   FhqServerDbUsefulLinks *m_pUsefulLinks;
   FhqServerDbEmailDelivery *m_pEmailDelivery;
+  std::shared_ptr<fhq::DbPublicEvents> m_publicEvents;
 };

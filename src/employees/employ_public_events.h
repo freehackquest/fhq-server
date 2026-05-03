@@ -46,8 +46,9 @@ public:
   virtual bool deinit() override;
 
   bool findPublicEvent(int nEventId, ModelPublicEvent &eventInfo, std::string &sErrorMessage);
-  bool removePublicEvent(int nEventId, std::string &sErrorMessage);
-  bool addPublicEvent(ModelPublicEvent &eventInfo, std::string &sErrorMessage);
+  bool removePublicEvent(int eventId, std::string &errorMessage); // deprecated
+  bool removePublicEventByUuid(const std::string &uuid, std::string &errorMessage);
+  bool addPublicEvent(ModelPublicEvent &eventInfo, std::string &errorMessage);
   bool findPublicEvents(
     std::vector<ModelPublicEvent> &eventList,
     int nPage,

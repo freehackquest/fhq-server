@@ -91,28 +91,70 @@ bool EmployPublicEvents::findPublicEvent(int nEventId, ModelPublicEvent &eventIn
   return true;
 }
 
-bool EmployPublicEvents::removePublicEvent(int nEventId, std::string &sErrorMessage) {
+/**
+ * @brief Removes a public event by its unique identifier.
+ *
+ * @deprecated This method is deprecated as of version 0.2.55
+ * Use removePublicEventByUuid(const std::string &uuid, std::string &errorMessage) instead.
+ *
+ * @param[in] eventId The unique ID of the event to be removed.
+ * @param[out] errorMessage Reference to a string for error details.
+ *
+ * @return true if the event was successfully removed, false otherwise.
+ */
+[[deprecated("Use removePublicEvent(const std::string &uuid, std::string &errorMessage) instead")]]
+bool EmployPublicEvents::removePublicEvent(int eventId, std::string &errorMessage) {
   EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
 
   QSqlDatabase db = *(pDatabase->database());
   QSqlQuery query(db);
   query.prepare("SELECT * FROM public_events WHERE id = :eventid");
-  query.bindValue(":eventid", nEventId);
+  query.bindValue(":eventid", eventId);
   if (!query.exec()) {
-    sErrorMessage = query.lastError().text().toStdString();
+    errorMessage = query.lastError().text().toStdString();
     return false;
   }
   if (!query.next()) {
-    sErrorMessage = "NOT_FOUND";
+    errorMessage = "NOT_FOUND";
     return false;
   }
 
   QSqlQuery query2(db);
   query2.prepare("DELETE FROM public_events WHERE id = :eventid");
-  query2.bindValue(":eventid", nEventId);
+  query2.bindValue(":eventid", eventId);
   query2.exec();
 
   // TODO notify
+  return true;
+}
+
+bool EmployPublicEvents::removePublicEventByUuid(const std::string &uuid, std::string &errorMessage) {
+  EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+  // first search in mysql and then try remove from sqlite
+  QSqlDatabase db = *(pDatabase->database());
+  QSqlQuery query(db);
+  query.prepare("SELECT * FROM public_events WHERE uuid = :uuid");
+  query.bindValue(":uuid", QString::fromStdString(uuid));
+  if (!query.exec()) {
+    errorMessage = query.lastError().text().toStdString();
+    return false;
+  }
+  bool bFound = query.next();
+  if (bFound) {
+    QSqlQuery query2(db);
+    query2.prepare("DELETE FROM public_events WHERE id = :uuid");
+    query2.bindValue(":uuid", QString::fromStdString(uuid));
+    query2.exec();
+    return true;
+  }
+  auto publicEvents = pDatabase->dbPublicEvents();
+  if (!publicEvents->deleteRecord(uuid, errorMessage)) {
+    return false;
+  }
+  if (!bFound) {
+    errorMessage = "NOT_FOUND";
+    return false;
+  }
   return true;
 }
 
