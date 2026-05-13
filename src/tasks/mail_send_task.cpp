@@ -35,8 +35,9 @@
 
 #include <QSqlQuery>  // TODO redesign
 #include <QSqlRecord> // TODO redesign
+#include <QVariant> // TODO redesign
 #include <curl/curl.h>
-#include <employ_database.h>
+#include <fhq/employees/employ_database.h>
 #include <iostream>
 #include <mail_send_task.h>
 #include <sstream>

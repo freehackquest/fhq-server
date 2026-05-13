@@ -36,9 +36,9 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlRecord>
-#include <employ_database.h>
-#include <employ_notify.h>
-#include <employees.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_notify.h>
+#include <fhq/employees/employ_server.h>
 #include <runtasks.h>
 #include <sys/stat.h>
 

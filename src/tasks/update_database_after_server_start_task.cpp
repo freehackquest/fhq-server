@@ -44,9 +44,9 @@
 #include <QString>
 #include <QThread>
 
-#include <employ_database.h>
-#include <employ_notify.h>
-#include <employ_uuids.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_notify.h>
+#include <fhq/employees/employ_uuids.h>
 
 UpdateDatabaseAfterServerStartTask::UpdateDatabaseAfterServerStartTask() {
   TAG = "UpdateDatabaseAfterServerStartTask";

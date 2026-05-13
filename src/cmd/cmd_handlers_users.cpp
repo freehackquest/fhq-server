@@ -36,9 +36,9 @@
 #include <QDateTime>
 #include <QtCore>
 #include <cmd_handlers_users.h>
-#include <employ_database.h>
-#include <employ_scoreboard.h>
-#include <employ_server_info.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_scoreboard.h>
+#include <fhq/employees/employ_server_info.h>
 #include <iostream>
 #include <json.hpp>
 #include <runtasks.h>

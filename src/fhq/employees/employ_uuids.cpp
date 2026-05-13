@@ -36,9 +36,9 @@
 #include "employ_uuids.h"
 
 #include <algorithm>
-#include <employ_database.h>
-#include <employ_notify.h>
-#include <employees.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_notify.h>
+#include <wsjcpp_employees.h>
 
 REGISTRY_WJSCPP_EMPLOY(EmployUuids)
 

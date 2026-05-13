@@ -34,10 +34,10 @@
  ***********************************************************************************/
 
 #include <cmd_handlers_quests.h>
-#include <employ_database.h>
-#include <employ_files.h>
-#include <employ_notify.h>
-#include <employ_server_info.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_files.h>
+#include <fhq/employees/employ_notify.h>
+#include <fhq/employees/employ_server_info.h>
 #include <runtasks.h>
 #include <validators.h>
 #include <wsjcpp_hashes.h>

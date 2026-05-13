@@ -35,16 +35,25 @@
 
 #pragma once
 
-#include <employees.h>
-#include <model_leak.h>
+#include <wsjcpp_employees.h>
 
-class EmployChats : public WsjcppEmployBase {
+class EmployUuids : public WsjcppEmployBase {
 public:
-  EmployChats();
-  static std::string name() { return "EmployChats"; }
+  EmployUuids();
+  static std::string name() { return "EmployUuids"; }
   virtual bool init();
-  virtual bool deinit();
+  virtual bool deinit() override;
+
+  void addAllowedTypesOfUuid(const std::string &sTypeOfObject);
+  const std::vector<std::string> &getAllowedTypesOfUuid();
+
+  std::string generateNewUuid(const std::string &sTypeOfObject);
+  bool hasUuid(const std::string &sUuid);
+  std::string getTypeOfObject(const std::string &sUuid);
 
 private:
+  std::mutex m_mutex;
+  std::vector<std::string> m_vAllowedTypes;
+  std::map<std::string, std::string> m_mapGlobalUuids;
   std::string TAG;
 };

@@ -33,53 +33,32 @@
  *
  ***********************************************************************************/
 
-#include <QMap>
-#include <QSqlQuery>
-#include <QSqlRecord>
-#include <QString>
-#include <QVariant>
-#include <employ_database.h>
-#include <employ_quests.h>
+#pragma once
 
-REGISTRY_WJSCPP_EMPLOY(EmployQuests)
+#include <wsjcpp_employees.h>
+#include <model_public_event.h>
 
-// ---------------------------------------------------------------------
+class EmployPublicEvents : public WsjcppEmployBase {
+public:
+  EmployPublicEvents();
+  static std::string name() { return "EmployPublicEvents"; }
+  virtual bool init();
+  virtual bool deinit() override;
 
-EmployQuests::EmployQuests() : WsjcppEmployBase(EmployQuests::name(), {EmployDatabase::name()}) {
-  TAG = EmployQuests::name();
-}
+  bool findPublicEvent(int nEventId, ModelPublicEvent &eventInfo, std::string &sErrorMessage);
+  bool removePublicEvent(int eventId, std::string &errorMessage); // deprecated
+  bool removePublicEventByUuid(const std::string &uuid, std::string &errorMessage);
+  bool addPublicEvent(ModelPublicEvent &eventInfo, std::string &errorMessage);
+  bool findPublicEvents(
+    std::vector<ModelPublicEvent> &eventList,
+    int nPage,
+    int nOnPage,
+    const std::string &sType,
+    const std::string &sSearch,
+    int &nRecordsFound,
+    std::string &sErrorMessage
+  );
 
-// ---------------------------------------------------------------------
-
-bool EmployQuests::init() {
-
-  EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
-  QSqlDatabase db = *(pDatabase->database());
-  QSqlQuery query(db);
-  query.prepare("SELECT subject, COUNT(*) as cnt FROM `quest` WHERE "
-                "quest.state = :state GROUP BY subject");
-  query.bindValue(":state", "open");
-
-  if (!query.exec()) {
-    WsjcppLog::err(TAG, query.lastError().text().toStdString());
-    return false;
-  }
-
-  // cache for subjects
-  while (query.next()) {
-    QSqlRecord record = query.record();
-    std::string sSubject = record.value("subject").toString().toStdString();
-    int nCount = record.value("cnt").toInt();
-    m_mapQuestsSubjects.insert(std::pair<std::string, int>(sSubject, nCount));
-  }
-  return true;
-}
-
-// ---------------------------------------------------------------------
-
-bool EmployQuests::deinit() {
-  // TODO
-  return true;
-}
-
-// ---------------------------------------------------------------------
+private:
+  std::string TAG;
+};

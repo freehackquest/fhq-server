@@ -34,8 +34,8 @@
  ***********************************************************************************/
 
 #include "argument_processor_database.h"
-#include <employ_database.h>
-#include <employees.h>
+#include <fhq/employees/employ_database.h>
+#include <cmd_handlers.h>
 #include <unistd.h> // getpass
 #include <wsjcpp_core.h>
 #include <wsjcpp_storages.h>

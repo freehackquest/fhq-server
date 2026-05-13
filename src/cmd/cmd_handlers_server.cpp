@@ -35,10 +35,10 @@
 
 #include <QtCore>
 #include <cmd_handlers_server.h>
-#include <employ_database.h>
-#include <employ_files.h>
-#include <employ_server_info.h>
-#include <employ_uuids.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_files.h>
+#include <fhq/employees/employ_server_info.h>
+#include <fhq/employees/employ_uuids.h>
 #include <iostream>
 #include <runtasks.h>
 

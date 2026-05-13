@@ -38,10 +38,10 @@
 #include <QTemporaryDir>
 #include <cmd_handlers_games.h>
 #include <easyzip.h>
-#include <employ_database.h>
-#include <employ_games.h>
-#include <employ_images.h>
-#include <employ_notify.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_games.h>
+#include <fhq/employees/employ_images.h>
+#include <fhq/employees/employ_notify.h>
 #include <fstream>
 #include <iostream>
 #include <runtasks.h>

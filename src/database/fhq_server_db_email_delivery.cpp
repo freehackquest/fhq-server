@@ -35,7 +35,7 @@
 
 #include "fhq_server_db_email_delivery.h"
 
-#include <employees.h>
+#include <wsjcpp_employees.h>
 
 // ---------------------------------------------------------------------
 // FhqServerDbEmailDelivery

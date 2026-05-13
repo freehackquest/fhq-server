@@ -35,11 +35,14 @@
 
 #include "employ_public_events.h"
 
-#include <employ_database.h>
-#include <employ_notify.h>
-#include <employ_public_events.h>
-#include <employ_uuids.h>
-#include <employees.h>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QVariant>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_notify.h>
+#include <fhq/employees/employ_public_events.h>
+#include <fhq/employees/employ_uuids.h>
+#include <wsjcpp_employees.h>
 
 REGISTRY_WJSCPP_EMPLOY(EmployPublicEvents)
 

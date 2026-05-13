@@ -37,8 +37,8 @@
 #include <QSqlRecord>
 #include <QThread>
 #include <QVariant>
-#include <employ_database.h>
-#include <employees.h>
+#include <fhq/employees/employ_database.h>
+#include <wsjcpp_employees.h>
 #include <sqlite3.h>
 
 // ---------------------------------------------------------------------

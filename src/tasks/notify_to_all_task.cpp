@@ -33,7 +33,8 @@
  *
  ***********************************************************************************/
 
-#include <employees.h>
+#include <wsjcpp_employees.h>
+#include <fhq/employees/employ_server.h>
 #include <notify_to_all_task.h>
 
 NotifyToAllTask::NotifyToAllTask(const nlohmann::json &jsonMessage) {

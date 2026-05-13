@@ -35,7 +35,7 @@
 
 #include "cmd_handlers.h"
 #include <QtGlobal>
-#include <employees.h>
+#include <fhq/employees/employ_global_settings.h>
 
 // ---------------------------------------------------------------------
 // WsjcppJsonRpc20Error -

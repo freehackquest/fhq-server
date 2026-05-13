@@ -39,10 +39,10 @@
 #include <QSqlRecord>
 #include <QString>
 #include <QVariant>
-#include <employ_database.h>
-#include <employ_games.h>
-#include <employ_leaks.h>
-#include <employ_notify.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_games.h>
+#include <fhq/employees/employ_leaks.h>
+#include <fhq/employees/employ_notify.h>
 
 REGISTRY_WJSCPP_EMPLOY(EmployLeaks)
 

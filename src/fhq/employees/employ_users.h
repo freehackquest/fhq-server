@@ -35,37 +35,17 @@
 
 #pragma once
 
-#include <employees.h>
-#include <json.hpp>
+#include <wsjcpp_employees.h>
 
-class EmployScoreboard : public WsjcppEmployBase {
+class EmployUsers : public WsjcppEmployBase {
 public:
-  EmployScoreboard();
-  static std::string name() { return "EmployScoreboard"; }
+  EmployUsers();
+  static std::string name() { return "EmployUsers"; }
   virtual bool init();
   virtual bool deinit() override;
-  void loadSync();
-  int count();
-  nlohmann::json toJson();
 
-  void asyncUpdatedQuestScore(int nQuestID);
-  void asyncUpdatedUserRating(int nUserID);
-  void asyncUpdatedLeaksScore(int nUserID);
+  // TODO employee
 
 private:
   std::string TAG;
-  struct User {
-    int userid = 0;
-    std::string logo = "";
-    std::string nick = "";
-    std::string university = "";
-  };
-
-  struct ScoreboardRow {
-    int place = 0;
-    int rating = 0;
-    std::vector<User *> vUsers;
-  };
-  std::vector<ScoreboardRow *> m_vRows;
-  int findScoreboardRowByRating(int rating);
 };

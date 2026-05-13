@@ -34,8 +34,8 @@
  ***********************************************************************************/
 
 #include "employ_mails.h"
-#include <employ_database.h>
-#include <employ_notify.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_notify.h>
 
 REGISTRY_WJSCPP_EMPLOY(EmployMails)
 

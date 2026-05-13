@@ -45,8 +45,8 @@
 #include <QtNetwork/QSslKey>
 
 #include <cmd_handlers.h>
-#include <employ_server_info.h>
-#include <employees.h>
+#include <fhq/employees/employ_server_info.h>
+#include <fhq/employees/employ_global_settings.h>
 
 // ---------------------------------------------------------------------
 

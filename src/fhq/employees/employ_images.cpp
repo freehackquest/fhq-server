@@ -33,7 +33,7 @@
  *
  ***********************************************************************************/
 
-#include <employ_images.h>
+#include <fhq/employees/employ_images.h>
 
 #define PNG_DEBUG 3
 #include <png.h>

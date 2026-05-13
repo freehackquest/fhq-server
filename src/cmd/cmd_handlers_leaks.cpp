@@ -34,8 +34,9 @@
  ***********************************************************************************/
 
 #include <cmd_handlers_leaks.h>
-#include <employ_database.h>
-#include <employ_leaks.h>
+#include <fhq/employees/employ_server.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_leaks.h>
 #include <iostream>
 
 // ---------------------------------------------------------------------

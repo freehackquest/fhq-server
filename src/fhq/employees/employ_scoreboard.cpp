@@ -38,8 +38,8 @@
 #include <QSqlRecord>
 #include <QString>
 #include <QVariant>
-#include <employ_database.h>
-#include <employ_scoreboard.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_scoreboard.h>
 
 REGISTRY_WJSCPP_EMPLOY(EmployScoreboard)
 

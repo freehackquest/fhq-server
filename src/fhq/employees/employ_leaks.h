@@ -35,30 +35,24 @@
 
 #pragma once
 
-#include <employees.h>
-#include <model_public_event.h>
+#include <wsjcpp_employees.h>
+#include <model_leak.h>
 
-class EmployPublicEvents : public WsjcppEmployBase {
+class EmployLeaks : public WsjcppEmployBase {
 public:
-  EmployPublicEvents();
-  static std::string name() { return "EmployPublicEvents"; }
+  EmployLeaks();
+  static std::string name() { return "EmployLeaks"; }
   virtual bool init();
-  virtual bool deinit() override;
+  virtual bool deinit();
 
-  bool findPublicEvent(int nEventId, ModelPublicEvent &eventInfo, std::string &sErrorMessage);
-  bool removePublicEvent(int eventId, std::string &errorMessage); // deprecated
-  bool removePublicEventByUuid(const std::string &uuid, std::string &errorMessage);
-  bool addPublicEvent(ModelPublicEvent &eventInfo, std::string &errorMessage);
-  bool findPublicEvents(
-    std::vector<ModelPublicEvent> &eventList,
-    int nPage,
-    int nOnPage,
-    const std::string &sType,
-    const std::string &sSearch,
-    int &nRecordsFound,
-    std::string &sErrorMessage
-  );
+  int addLeak(ModelLeak *pModelLeak, std::string &sError);
+  const ModelLeak *findLeakByUuid(std::string sUuid);
+  int removeLeak(std::string sUuid);
+  int updateLeak(ModelLeak *pModelLeak);
+  nlohmann::json toJson();
 
 private:
   std::string TAG;
+  std::vector<ModelLeak *> m_vectCacheLeaks;
+  std::map<std::string, ModelLeak *> m_mapCacheLeaks;
 };

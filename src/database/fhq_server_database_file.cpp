@@ -35,7 +35,7 @@
 
 #include "fhq_server_database_file.h"
 
-#include <employees.h>
+#include <fhq/employees/employ_global_settings.h>
 #include <sqlite3.h>
 
 // ---------------------------------------------------------------------

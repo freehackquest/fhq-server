@@ -35,10 +35,10 @@
 
 #include <QtCore>
 #include <cmd_handlers_events.h>
-#include <employ_database.h>
-#include <employ_uuids.h>
-#include <employ_public_events.h>
-#include <employ_server_info.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_uuids.h>
+#include <fhq/employees/employ_public_events.h>
+#include <fhq/employees/employ_server_info.h>
 #include <iostream>
 #include <runtasks.h>
 #include <validators.h>

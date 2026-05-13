@@ -38,10 +38,10 @@
 #include <QSqlRecord>
 #include <QString>
 #include <QVariant>
-#include <employ_database.h>
-#include <employ_notify.h>
-#include <employ_server_info.h>
-#include <employees.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_notify.h>
+#include <fhq/employees/employ_server_info.h>
+#include <wsjcpp_employees.h>
 #include <runtasks.h>
 
 REGISTRY_WJSCPP_EMPLOY(EmployServerInfo)

@@ -42,10 +42,10 @@
 #include "argument_processor_api.h"
 #include "argument_processor_config.h"
 #include "argument_processor_database.h"
-#include <employ_database.h>
-#include <employ_images.h>
-#include <employ_server_info.h>
-#include <employees.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_images.h>
+#include <fhq/employees/employ_server_info.h>
+#include <fhq/employees/employ_server.h>
 #include <fhq/employees/employ_web_server.h>
 #include <utils_prepare_deb_package.h>
 #include <wsjcpp_core.h>
@@ -515,6 +515,6 @@ ArgumentProcessorStart::ArgumentProcessorStart(QCoreApplication *pQtApp)
 }
 
 int ArgumentProcessorStart::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
-  auto *webServer = findWsjcppEmploy<EmployWebServer>();
+  auto *webServer = findWsjcppEmploy<fhq::EmployWebServer>();
   return webServer->start(m_pQtApp);
 }

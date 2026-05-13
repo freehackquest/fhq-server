@@ -35,9 +35,8 @@
 
 #pragma once
 
-#include <employees.h>
+#include <fhq/employees/employ_global_settings.h>
 #include <model_database_connection.h>
-
 #include <QMap>
 #include <fhq_server_db_email_delivery.h>
 #include <fhq_server_db_public_events.h>

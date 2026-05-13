@@ -33,19 +33,37 @@
  *
  ***********************************************************************************/
 
-#pragma once
+#include "employ_chats.h"
+#include <QMap>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QString>
+#include <QVariant>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_games.h>
+#include <fhq/employees/employ_notify.h>
 
-#include <employees.h>
+REGISTRY_WJSCPP_EMPLOY(EmployChats)
 
-class EmployUsers : public WsjcppEmployBase {
-public:
-  EmployUsers();
-  static std::string name() { return "EmployUsers"; }
-  virtual bool init();
-  virtual bool deinit() override;
+// ---------------------------------------------------------------------
 
-  // TODO employee
+EmployChats::EmployChats() : WsjcppEmployBase(EmployChats::name(), {EmployDatabase::name(), EmployNotify::name()}) {
+  TAG = EmployChats::name();
+}
 
-private:
-  std::string TAG;
-};
+// ---------------------------------------------------------------------
+
+bool EmployChats::init() {
+  // TODO
+  return true;
+}
+
+// ---------------------------------------------------------------------
+
+bool EmployChats::deinit() {
+  // TODO
+  return true;
+}
+
+// ---------------------------------------------------------------------

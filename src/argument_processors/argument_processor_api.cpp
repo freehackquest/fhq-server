@@ -35,7 +35,7 @@
 
 #include "argument_processor_api.h"
 #include <algorithm>
-#include <employees.h>
+#include <wsjcpp_employees.h>
 #include <export_libwsjcppcli_java_android.h>
 #include <export_libwsjcppcli_py.h>
 #include <iomanip>

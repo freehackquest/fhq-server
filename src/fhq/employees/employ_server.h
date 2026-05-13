@@ -35,28 +35,38 @@
 
 #pragma once
 
-#include <employees.h>
+#include <core/cmd_handlers.h>
+#include <map>
+#include <string>
+#include <vector>
+#include <wsjcpp_employees.h>
 
-class EmployImages : public WsjcppEmployBase {
-private:
-  std::string TAG;
+// employ enum code results
+enum EmployResult {
+  OK,
+  DATABASE_ERROR,
+  ALREADY_EXISTS,
+  GAME_NOT_FOUND,
+  QUEST_NOT_FOUND,
+  LEAK_NOT_FOUND,
+  ERROR_NAME_IS_EMPTY,
+};
 
-  // singletone object
-  // EmployImages() { };
-  // ~EmployImages() { };
-  EmployImages(EmployImages const &) = delete;            // disabled
-  EmployImages &operator=(EmployImages const &) = delete; // disabled
+// EmployServer
 
+class EmployServer : public WsjcppEmployBase {
 public:
-  EmployImages();
-  /*static EmployImages* getInstance() {
-      static EmployImages *pInstance;
-      return pInstance;
-  };*/
-  static std::string name() { return "EmployImages"; }
+  EmployServer();
+  static std::string name() { return "EmployServer"; }
   virtual bool init();
   virtual bool deinit();
-  bool doThumbnailImagePng(
-    const std::string &sourceFilepath, const std::string &targetFilepath, int width_resize, int height_resize
-  );
+  bool
+  validateInputParameters(WsjcppJsonRpc20Error &error, CmdHandlerBase *pCmdHandler, const nlohmann::json &jsonMessage);
+  void setServer(IWebSocketServer *pWebSocketServer);
+  void sendToAll(const nlohmann::json &jsonMessage);
+  void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage);
+
+private:
+  std::string TAG;
+  IWebSocketServer *m_pWebSocketServer;
 };

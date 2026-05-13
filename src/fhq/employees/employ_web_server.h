@@ -35,9 +35,11 @@
 
 #pragma once
 
-#include <employees.h>
+#include <wsjcpp_employees.h>
 
 #include <QtCore>
+
+namespace fhq {
 
 class EmployWebServer : public WsjcppEmployBase {
 public:
@@ -51,3 +53,5 @@ public:
 private:
   std::string TAG;
 };
+
+} // namespace fhq

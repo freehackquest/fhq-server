@@ -33,27 +33,39 @@
  *
  ***********************************************************************************/
 
-#include "employ_users.h"
+#pragma once
 
-#include <employ_database.h>
-#include <employ_notify.h>
-#include <employees.h>
+#include <wsjcpp_employees.h>
+#include <json.hpp>
 
-REGISTRY_WJSCPP_EMPLOY(EmployUsers)
+class EmployScoreboard : public WsjcppEmployBase {
+public:
+  EmployScoreboard();
+  static std::string name() { return "EmployScoreboard"; }
+  virtual bool init();
+  virtual bool deinit() override;
+  void loadSync();
+  int count();
+  nlohmann::json toJson();
 
-EmployUsers::EmployUsers()
-  : WsjcppEmployBase(
-      EmployUsers::name(), {EmployDatabase::name(), EmployGlobalSettings::name(), EmployNotify::name()}
-    ) {
-  TAG = EmployUsers::name();
-}
+  void asyncUpdatedQuestScore(int nQuestID);
+  void asyncUpdatedUserRating(int nUserID);
+  void asyncUpdatedLeaksScore(int nUserID);
 
-bool EmployUsers::init() {
-  WsjcppLog::info(TAG, "Start init users");
-  return true;
-}
+private:
+  std::string TAG;
+  struct User {
+    int userid = 0;
+    std::string logo = "";
+    std::string nick = "";
+    std::string university = "";
+  };
 
-bool EmployUsers::deinit() {
-  // TODO
-  return true;
-}
+  struct ScoreboardRow {
+    int place = 0;
+    int rating = 0;
+    std::vector<User *> vUsers;
+  };
+  std::vector<ScoreboardRow *> m_vRows;
+  int findScoreboardRowByRating(int rating);
+};

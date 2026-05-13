@@ -36,8 +36,8 @@
 #include <QtCore>
 #include <cmd_handlers_classbook.h>
 #include <easyzip.h>
-#include <employ_database.h>
-#include <employ_server_info.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_server_info.h>
 #include <fstream>
 #include <iostream>
 #include <runtasks.h>

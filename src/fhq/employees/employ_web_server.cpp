@@ -40,9 +40,9 @@
 // #include <QFile>
 // #include <QString>
 // #include <QtCore>
-#include <employ_database.h>
-#include <employ_files.h>
-#include <employ_notify.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_files.h>
+#include <fhq/employees/employ_notify.h>
 #include <sys/stat.h>
 #include <websocketserver.h>
 #include <wsjcpp_hashes.h>
@@ -54,6 +54,8 @@
 #include "hlog.h"            // libhv
 #include "hssl.h"            // libhv
 #include "htime.h"           // libhv
+
+namespace fhq {
 
 // ---------------------------------------------------------------------
 // HttpHandlerWebUserFolder
@@ -651,3 +653,5 @@ int EmployWebServer::start(QCoreApplication *pQtApp) {
 
   return pQtApp->exec(); // need for a treadpool and for websockets
 }
+
+} // namespace fhq

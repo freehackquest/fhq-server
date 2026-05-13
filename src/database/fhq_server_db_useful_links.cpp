@@ -35,8 +35,13 @@
 
 #include "fhq_server_db_useful_links.h"
 
-#include <employ_database.h>
-#include <employees.h>
+
+#include <fhq/employees/employ_database.h>
+#include <wsjcpp_employees.h>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QVariant>
+
 // #include <algorithm>
 
 // ---------------------------------------------------------------------

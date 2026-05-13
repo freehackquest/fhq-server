@@ -40,7 +40,7 @@
 #include <QSqlQuery>  // TODO redesign
 #include <QSqlRecord> // TODO redesign
 #include <QThread>
-#include <employ_database.h>
+#include <fhq/employees/employ_database.h>
 #include <update_quest_solved_task.h>
 
 UpdateQuestSolvedTask::UpdateQuestSolvedTask(int nQuestID) {

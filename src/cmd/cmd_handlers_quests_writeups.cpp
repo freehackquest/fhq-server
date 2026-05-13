@@ -34,9 +34,9 @@
  ***********************************************************************************/
 
 #include <cmd_handlers_quests_writeups.h>
-#include <employ_database.h>
-#include <employ_notify.h>
-#include <employ_server_info.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_notify.h>
+#include <fhq/employees/employ_server_info.h>
 #include <md5.h>
 #include <runtasks.h>
 

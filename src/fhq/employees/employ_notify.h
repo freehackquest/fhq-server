@@ -33,47 +33,38 @@
  *
  ***********************************************************************************/
 
-#include <iostream>
-#include <string>
+#pragma once
 
-#include <QFile>
-#include <QString>
-#include <QtCore>
+#include <wsjcpp_employees.h>
+#include <model_notification.h>
 
-#include <algorithm>
-#include <iomanip>
-#include <sstream>
+class EmployNotify : public WsjcppEmployBase {
+public:
+  EmployNotify();
+  static std::string name() { return "EmployNotify"; }
+  virtual bool init();
+  virtual bool deinit();
 
-#include "argument_processor_main.h"
-#include <fhq/employees/employ_global_settings.h>
-#include <jobs_pool.h>
-#include <wsjcpp_arguments.h>
-#include <wsjcpp_core.h>
+  static std::string SERVER;
+  static std::string GAMES;
+  static std::string QUESTS;
+  static std::string USERS;
+  static std::string SCOREBOARD;
+  static std::string LEAKS;
 
-int main(int argc, char **argv) {
-  std::string appName(WSJCPP_APP_NAME);
-  std::string appVersion(WSJCPP_APP_VERSION);
-  std::string appAuthor("FreeHackQuest Team");
-  std::string sLibraryNameForExports("fhq");
-  WsjcppCore::init(argc, argv, appName, appVersion, appAuthor, sLibraryNameForExports);
+  void sendNotification(ModelNotification &modelNotification); // TODO wrong
 
-  QCoreApplication qtApp(argc, argv);
+  void notifyWarning(const std::string &sSection, const std::string &sMessage);
+  void notifyDanger(const std::string &sSection, const std::string &sMessage);
+  void notifyInfo(const std::string &sSection,
+                  const std::string &sMessage); // TODO deprated
+  void notifyInfo(const std::string &sSection, const std::string &sMessage, const nlohmann::json &jsonMeta);
+  void notifySuccess(const std::string &sSection, const std::string &sMessage);
 
-  std::string TAG = "MAIN";
-  WsjcppLog::setPrefixLogFile(appName);
-  std::string sLogDir = "/var/log/" + appName;
-  if (!WsjcppCore::dirExists(sLogDir)) {
-    sLogDir = WsjcppCore::getCurrentDirectory() + "./";
-    sLogDir = WsjcppCore::doNormalizePath(sLogDir);
-  }
-  WsjcppLog::setLogDirectory(sLogDir);
-
-  auto *pGlobalSettings = findWsjcppEmploy<EmployGlobalSettings>();
-  pGlobalSettings->update("app_name", appName);
-  pGlobalSettings->update("app_version", appVersion);
-  pGlobalSettings->update("app_author", appAuthor);
-
-  ArgumentProcessorMain *pMain = new ArgumentProcessorMain(&qtApp);
-  WsjcppArguments prog(argc, (const char **)argv, pMain);
-  return prog.exec();
-}
+private:
+  void sendNotification(const std::string &sType, const std::string &sSection, const std::string &sMessage);
+  void sendNotification(
+    const std::string &sType, const std::string &sSection, const std::string &sMessage, const nlohmann::json &jsonMeta
+  );
+  std::string TAG;
+};

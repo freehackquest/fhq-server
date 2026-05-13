@@ -33,35 +33,51 @@
  *
  ***********************************************************************************/
 
-#include "employ_chats.h"
 #include <QMap>
-#include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QString>
 #include <QVariant>
-#include <employ_database.h>
-#include <employ_games.h>
-#include <employ_notify.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_quests.h>
 
-REGISTRY_WJSCPP_EMPLOY(EmployChats)
+REGISTRY_WJSCPP_EMPLOY(EmployQuests)
 
 // ---------------------------------------------------------------------
 
-EmployChats::EmployChats() : WsjcppEmployBase(EmployChats::name(), {EmployDatabase::name(), EmployNotify::name()}) {
-  TAG = EmployChats::name();
+EmployQuests::EmployQuests() : WsjcppEmployBase(EmployQuests::name(), {EmployDatabase::name()}) {
+  TAG = EmployQuests::name();
 }
 
 // ---------------------------------------------------------------------
 
-bool EmployChats::init() {
-  // TODO
+bool EmployQuests::init() {
+
+  EmployDatabase *pDatabase = findWsjcppEmploy<EmployDatabase>();
+  QSqlDatabase db = *(pDatabase->database());
+  QSqlQuery query(db);
+  query.prepare("SELECT subject, COUNT(*) as cnt FROM `quest` WHERE "
+                "quest.state = :state GROUP BY subject");
+  query.bindValue(":state", "open");
+
+  if (!query.exec()) {
+    WsjcppLog::err(TAG, query.lastError().text().toStdString());
+    return false;
+  }
+
+  // cache for subjects
+  while (query.next()) {
+    QSqlRecord record = query.record();
+    std::string sSubject = record.value("subject").toString().toStdString();
+    int nCount = record.value("cnt").toInt();
+    m_mapQuestsSubjects.insert(std::pair<std::string, int>(sSubject, nCount));
+  }
   return true;
 }
 
 // ---------------------------------------------------------------------
 
-bool EmployChats::deinit() {
+bool EmployQuests::deinit() {
   // TODO
   return true;
 }

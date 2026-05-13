@@ -33,17 +33,27 @@
  *
  ***********************************************************************************/
 
-#pragma once
+#include "employ_users.h"
 
-#include <employees.h>
+#include <fhq/employees/employ_database.h>
+#include <fhq/employees/employ_notify.h>
+#include <wsjcpp_employees.h>
 
-class EmployMails : public WsjcppEmployBase {
-public:
-  EmployMails();
-  static std::string name() { return "EmployMails"; }
-  virtual bool init();
-  virtual bool deinit();
+REGISTRY_WJSCPP_EMPLOY(EmployUsers)
 
-private:
-  std::string TAG;
-};
+EmployUsers::EmployUsers()
+  : WsjcppEmployBase(
+      EmployUsers::name(), {EmployDatabase::name(), EmployGlobalSettings::name(), EmployNotify::name()}
+    ) {
+  TAG = EmployUsers::name();
+}
+
+bool EmployUsers::init() {
+  WsjcppLog::info(TAG, "Start init users");
+  return true;
+}
+
+bool EmployUsers::deinit() {
+  // TODO
+  return true;
+}

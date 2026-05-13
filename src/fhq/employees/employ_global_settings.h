@@ -35,22 +35,11 @@
 
 #pragma once
 
-#include <cmd_handlers.h>
 #include <map>
 #include <string>
 #include <vector>
 #include <wsjcpp_employees.h>
-
-// employ enum code results
-enum EmployResult {
-  OK,
-  DATABASE_ERROR,
-  ALREADY_EXISTS,
-  GAME_NOT_FOUND,
-  QUEST_NOT_FOUND,
-  LEAK_NOT_FOUND,
-  ERROR_NAME_IS_EMPTY,
-};
+#include <json.hpp>
 
 enum WsjcppSettingStorageType {
   WJSCPP_SETTING_IN_NONE,
@@ -197,7 +186,7 @@ public:
   virtual void initSettingItem(WsjcppSettingItem *pSettingItem) = 0;
 };
 
-// WsjcppEmployGlobalSettings
+// EmployGlobalSettings
 
 class EmployGlobalSettings : public WsjcppEmployBase {
 public:
@@ -234,23 +223,4 @@ private:
   void eventSettingsChanged(const WsjcppSettingItem *pSettingItem);
   std::map<std::string, WsjcppSettingItem *> m_mapSettingItems;
   std::vector<WsjcppSettingListener *> m_vListeners;
-};
-
-// WJSCppEmployServer
-
-class EmployServer : public WsjcppEmployBase {
-public:
-  EmployServer();
-  static std::string name() { return "EmployServer"; }
-  virtual bool init();
-  virtual bool deinit();
-  bool
-  validateInputParameters(WsjcppJsonRpc20Error &error, CmdHandlerBase *pCmdHandler, const nlohmann::json &jsonMessage);
-  void setServer(IWebSocketServer *pWebSocketServer);
-  void sendToAll(const nlohmann::json &jsonMessage);
-  void sendToOne(QWebSocket *pClient, const nlohmann::json &jsonMessage);
-
-private:
-  std::string TAG;
-  IWebSocketServer *m_pWebSocketServer;
 };

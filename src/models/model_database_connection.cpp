@@ -33,7 +33,7 @@
  *
  ***********************************************************************************/
 
-#include <employees.h>
+#include <fhq/employees/employ_global_settings.h>
 #include <model_database_connection.h>
 
 ModelDatabaseConnection::ModelDatabaseConnection(QString sNameConnection) {

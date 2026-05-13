@@ -35,7 +35,8 @@
 
 #include "argument_processor_config.h"
 #include <algorithm>
-#include <employees.h>
+#include <wsjcpp_employees.h>
+#include <fhq/employees/employ_global_settings.h>
 #include <iomanip>
 #include <runtasks.h>
 #include <unistd.h> // getpass

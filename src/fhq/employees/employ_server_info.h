@@ -35,24 +35,40 @@
 
 #pragma once
 
-#include <employees.h>
-#include <model_leak.h>
+#include "employ_server.h"
+#include <QDateTime>
+#include <QMap>
+#include <QMutex>
 
-class EmployLeaks : public WsjcppEmployBase {
+class EmployServerInfo : public WsjcppEmployBase {
 public:
-  EmployLeaks();
-  static std::string name() { return "EmployLeaks"; }
+  EmployServerInfo();
+  static std::string name() { return "EmployServerInfo"; }
   virtual bool init();
-  virtual bool deinit();
+  virtual bool deinit() override;
 
-  int addLeak(ModelLeak *pModelLeak, std::string &sError);
-  const ModelLeak *findLeakByUuid(std::string sUuid);
-  int removeLeak(std::string sUuid);
-  int updateLeak(ModelLeak *pModelLeak);
+  void incrementRequests(const std::string &cmd);
+  void serverStarted();
+  int countQuests();
+  int countQuestsAttempt();
+  int countQuestsCompleted();
+  void incrementQuests();
+  void decrementQuests();
+  void incrementQuestsAttempt();
+  void incrementQuestsCompleted();
+  void initCounters();
+  nlohmann::json developers();
+
+  long getServerStart();
   nlohmann::json toJson();
 
 private:
+  QMap<std::string, int> m_requestsCounter;
+  QMutex m_mtxIncrementRequests;
+
   std::string TAG;
-  std::vector<ModelLeak *> m_vectCacheLeaks;
-  std::map<std::string, ModelLeak *> m_mapCacheLeaks;
+  long m_dtServerStarted;
+  int m_nCountQuests;
+  int m_nCountQuestsAttempt;
+  int m_nCountQuestsCompleted;
 };

@@ -35,16 +35,28 @@
 
 #pragma once
 
-#include <employees.h>
+#include <wsjcpp_employees.h>
 
-class EmployQuests : public WsjcppEmployBase {
-public:
-  EmployQuests();
-  static std::string name() { return "EmployQuests"; }
-  virtual bool init();
-  virtual bool deinit() override;
-
+class EmployImages : public WsjcppEmployBase {
 private:
   std::string TAG;
-  std::map<std::string, int> m_mapQuestsSubjects;
+
+  // singletone object
+  // EmployImages() { };
+  // ~EmployImages() { };
+  EmployImages(EmployImages const &) = delete;            // disabled
+  EmployImages &operator=(EmployImages const &) = delete; // disabled
+
+public:
+  EmployImages();
+  /*static EmployImages* getInstance() {
+      static EmployImages *pInstance;
+      return pInstance;
+  };*/
+  static std::string name() { return "EmployImages"; }
+  virtual bool init();
+  virtual bool deinit();
+  bool doThumbnailImagePng(
+    const std::string &sourceFilepath, const std::string &targetFilepath, int width_resize, int height_resize
+  );
 };

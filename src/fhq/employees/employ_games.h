@@ -35,36 +35,28 @@
 
 #pragma once
 
-#include <employees.h>
-#include <model_notification.h>
+#include <wsjcpp_employees.h>
+#include "employ_server.h"
+#include <model_game.h>
 
-class EmployNotify : public WsjcppEmployBase {
+class EmployGames : public WsjcppEmployBase {
 public:
-  EmployNotify();
-  static std::string name() { return "EmployNotify"; }
+  EmployGames();
+  static std::string name() { return "EmployGames"; }
   virtual bool init();
   virtual bool deinit();
 
-  static std::string SERVER;
-  static std::string GAMES;
-  static std::string QUESTS;
-  static std::string USERS;
-  static std::string SCOREBOARD;
-  static std::string LEAKS;
-
-  void sendNotification(ModelNotification &modelNotification); // TODO wrong
-
-  void notifyWarning(const std::string &sSection, const std::string &sMessage);
-  void notifyDanger(const std::string &sSection, const std::string &sMessage);
-  void notifyInfo(const std::string &sSection,
-                  const std::string &sMessage); // TODO deprated
-  void notifyInfo(const std::string &sSection, const std::string &sMessage, const nlohmann::json &jsonMeta);
-  void notifySuccess(const std::string &sSection, const std::string &sMessage);
+  bool findGame(int nLocalId, ModelGame &modelGame);
+  bool findGame(const std::string &sUuid, ModelGame &modelGame);
+  EmployResult addGame(const ModelGame &modelGame, std::string &sError);
+  EmployResult updateGame(const ModelGame &modelGame, std::string &sError);
+  EmployResult removeGame(const std::string &sUuid);
+  const std::vector<ModelGame *> &getListOfGames();
 
 private:
-  void sendNotification(const std::string &sType, const std::string &sSection, const std::string &sMessage);
-  void sendNotification(
-    const std::string &sType, const std::string &sSection, const std::string &sMessage, const nlohmann::json &jsonMeta
-  );
+  bool testCreateFile(const std::string &sPath);
+
   std::string TAG;
+  std::vector<ModelGame *> m_vectCacheGame;
+  std::map<std::string, ModelGame *> m_mapCacheGames;
 };

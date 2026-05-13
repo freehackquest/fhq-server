@@ -40,7 +40,7 @@
 #include <QSqlQuery>  // TODO redesign
 #include <QSqlRecord> // TODO redesign
 #include <QThread>
-#include <employ_database.h>
+#include <fhq/employees/employ_database.h>
 #include <update_user_rating_task.h>
 
 UpdateUserRatingTask::UpdateUserRatingTask(int nUserID) {

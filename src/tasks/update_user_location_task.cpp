@@ -41,7 +41,7 @@
 #include <QSqlQuery>  // TODO redesign
 #include <QSqlRecord> // TODO redesign
 #include <QThread>
-#include <employ_database.h>
+#include <fhq/employees/employ_database.h>
 #include <wsjcpp_geoip.h>
 
 UpdateUserLocationTask::UpdateUserLocationTask(int userid, const std::string &sLastIP) {

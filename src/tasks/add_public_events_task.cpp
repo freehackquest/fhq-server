@@ -42,7 +42,7 @@
 #include <QSqlRecord> // TODO redesign
 #include <QString>
 #include <QThread>
-#include <employ_public_events.h>
+#include <fhq/employees/employ_public_events.h>
 
 AddPublicEventsTask::AddPublicEventsTask(
   const std::string &sType, const std::string &sMessage, const nlohmann::json &jsonMeta

@@ -34,7 +34,10 @@
  ***********************************************************************************/
 
 #include "update_215438peu8_9gwc2tm5ah.h"
-#include <employ_database.h>
+#include <QSqlRecord>
+#include <QSqlQuery>
+#include <QVariant>
+#include <fhq/employees/employ_database.h>
 
 REGISTRY_WSJCPP_STORAGE_UPDATE(Update_215438peu8_9gwc2tm5ah)
 
